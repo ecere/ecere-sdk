@@ -54,7 +54,7 @@ private:
 
       bool DataBox::NotifyClose(DropBox dropBox)
       {
-         //dropBox.Deactivate();   
+         //dropBox.Deactivate();
          return true;
       }
    };
@@ -176,7 +176,7 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
       char * string = "";
       EditBox editBox
       {
-         window, master = master, visible = false, //position = { x, y }, 
+         window, master = master, visible = false, //position = { x, y },
          borderStyle = 0,
          modifyVirtualArea = false, //sizeAnchor = { { w, h }, isClientH = true };
          autoSize = (eClass_IsDerived(window._class, class(DataBox)) ? ((DataBox)window).autoSize : false);
@@ -221,7 +221,7 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
       }
       return editBox;
    }
-   
+
 }
 
 __on_register_module()

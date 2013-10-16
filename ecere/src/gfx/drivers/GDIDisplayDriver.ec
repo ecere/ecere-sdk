@@ -35,7 +35,7 @@ class GDIDisplay : LFBDisplay
    ~GDIDisplay()
    {
       if(memDC) DeleteDC(memDC);
-      if(memBitmap) DeleteObject(memBitmap); 
+      if(memBitmap) DeleteObject(memBitmap);
       if(palette) DeleteObject(palette);
       delete logPalette;
    }
@@ -51,7 +51,7 @@ class GDISystem : LFBSystem
 
    ~GDISystem()
    {
-      if(tmpDC)                                                                           
+      if(tmpDC)
          ReleaseDC(0, tmpDC);
    }
 };
@@ -81,11 +81,11 @@ static class GDIFont
 
 static PixelFormat GetColorFormat(int depth)
 {
-   if(depth == 8) 
+   if(depth == 8)
       return pixelFormat8;
-   else if(depth == 16) 
+   else if(depth == 16)
       return pixelFormat555;
-   else 
+   else
       return pixelFormat888;
 }
 
@@ -279,7 +279,7 @@ class GDIDisplayDriver : DisplayDriver
             info->bmiHeader.biBitCount = (uint16)gdiSystem.depth;
             info->bmiHeader.biWidth = gdiDisplay.bitmap.stride;
             info->bmiHeader.biHeight = -height;
-    
+
             for(c=0; c<256; c++)
             {
                info->bmiColors[c].rgbReserved = 0;
@@ -364,7 +364,7 @@ class GDIDisplayDriver : DisplayDriver
          ScrollDC(gdiDisplay.hdc, -x, -y, (RECT *)&box, (RECT *)&box, gdiDisplay.rgn, null);
       }
       ScrollDC(gdiDisplay.memDC, -x, -y, (RECT *)&box, (RECT *)&box, null, null);
- 
+
       numBytes = GetRegionData(gdiDisplay.rgn, 0, null);
       gdiDisplay.data = (RGNDATA *) new0 byte[numBytes];
       GetRegionData(gdiDisplay.rgn, numBytes, gdiDisplay.data);
@@ -416,8 +416,8 @@ class GDIDisplayDriver : DisplayDriver
       }
       else
       {
-         BitBlt(gdiDisplay.hdc, 
-            updateBox.left,updateBox.top, 
+         BitBlt(gdiDisplay.hdc,
+            updateBox.left,updateBox.top,
             updateBox.right - updateBox.left + 1, updateBox.bottom - updateBox.top + 1,
             gdiDisplay.memDC, updateBox.left, updateBox.top, SRCCOPY);
       }
@@ -503,7 +503,7 @@ class GDIDisplayDriver : DisplayDriver
                surface.offset.x = x;
                surface.offset.y = y;
                surface.unclippedBox = surface.box = clip;
-         
+
                result = true;
             }
          }
@@ -531,7 +531,7 @@ class GDIDisplayDriver : DisplayDriver
                surface.offset.x = x;
                surface.offset.y = y;
                surface.unclippedBox = surface.box = clip;
-         
+
                SetDCBrushColor(gdiSurface.hdc, RGB(0,0,0));
                SetDCPenColor(gdiSurface.hdc, RGB(255,255,255));
 
@@ -545,7 +545,7 @@ class GDIDisplayDriver : DisplayDriver
    void Clip(Display display, Surface surface, Box clip)
    {
       GDISurface gdiSurface = surface.driverData;
-      HRGN clippedRgn = null; 
+      HRGN clippedRgn = null;
       if(clip != null)
       {
          Box box = clip;
@@ -564,7 +564,7 @@ class GDIDisplayDriver : DisplayDriver
          }
          else
             clippedRgn = CreateRectRgn(0, 0, 0, 0);
-         
+
          if(clippedRgn)
             SelectClipRgn(gdiSurface.hdc,clippedRgn);
       }
@@ -597,7 +597,7 @@ class GDIDisplayDriver : DisplayDriver
             HBITMAP screenBmp = CreateCompatibleBitmap(hdc, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
             HBITMAP back = SelectObject(memDC, screenBmp);
             uint16 depth;
-            
+
             switch(format)
             {
                case pixelFormat8: depth = 8; break;
@@ -627,7 +627,7 @@ class GDIDisplayDriver : DisplayDriver
             DeleteDC(memDC);
 
             result = true;
-         }   
+         }
       }
       return result;
    }
@@ -640,7 +640,7 @@ class GDIDisplayDriver : DisplayDriver
          GDISurface gdiSurface = surface.driverData;
          GDIDisplay gdiDisplay = display ? display.driverData : null;
          COLORREF rgb = RGB(color.color.r, color.color.g, color.color.b);
-         
+
          SetTextColor(gdiSurface.hdc, rgb);
          gdiSurface.color = rgb;
       }
@@ -651,11 +651,11 @@ class GDIDisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).SetBackground(display, surface, color);
 
       if(display && (!display.alphaBlend || display.pixelFormat != pixelFormat888))
-      { 
+      {
          GDISurface gdiSurface = surface.driverData;
          GDIDisplay gdiDisplay = display ? display.driverData : null;
          COLORREF rgb;
-         
+
          if(gdiSurface.bitmap.pixelFormat == pixelFormat8 && display)
             color = gdiSurface.bitmap.palette[gdiDisplay.rgbLookup[(uint16)(Color555) color]];
          rgb = RGB(color.color.r, color.color.g, color.color.b);
@@ -723,7 +723,7 @@ class GDIDisplayDriver : DisplayDriver
       else
       {
          return ((subclass(DisplayDriver))class(LFBDisplayDriver)).ConvertBitmap(displaySystem, src, format, palette);
-      } 
+      }
    }
 
    bool AllocateBitmap(DisplaySystem displaySystem, Bitmap bitmap, int width, int height, int stride, PixelFormat format, bool allocatePalette)
@@ -763,7 +763,7 @@ class GDIDisplayDriver : DisplayDriver
                   }
                }
 
-               bitmap.stride=stride;   
+               bitmap.stride=stride;
                bitmap.width=width;
                bitmap.height=height;
                bitmap.size=(uint)stride*(uint)height;
@@ -788,7 +788,7 @@ class GDIDisplayDriver : DisplayDriver
                info->bmiHeader.biBitCount = depth;
                info->bmiHeader.biWidth = bitmap.stride;
                info->bmiHeader.biHeight = -height;
-    
+
                for(c=0; c<256; c++)
                {
                   info->bmiColors[c].rgbReserved = 0;
@@ -880,9 +880,9 @@ class GDIDisplayDriver : DisplayDriver
       {
          if(gdiFont.gdiFont)
             DeleteObject(gdiFont.gdiFont);
-         if(gdiFont.font) 
+         if(gdiFont.font)
             ((subclass(DisplayDriver))class(LFBDisplayDriver)).UnloadFont(displaySystem, gdiFont.font);
-         delete gdiFont; 
+         delete gdiFont;
       }
    }
 
@@ -893,16 +893,16 @@ class GDIDisplayDriver : DisplayDriver
       {
          if(!gdiFont.font)
          {
-            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem, 
-               gdiFont.faceName, gdiFont.size, gdiFont.flags);         
+            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem,
+               gdiFont.faceName, gdiFont.size, gdiFont.flags);
          }
-         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextFont(display, surface, gdiFont.font);          
-      } 
-      else 
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextFont(display, surface, gdiFont.font);
+      }
+      else
       {
          GDISurface gdiSurface = surface.driverData;
          SelectObject(gdiSurface.hdc, gdiFont.gdiFont);
-      }      
+      }
    }
 
    void TextOpacity(Display display, Surface surface, bool opaque)
@@ -912,7 +912,7 @@ class GDIDisplayDriver : DisplayDriver
       {
          GDISurface gdiSurface = surface.driverData;
          SetBkMode(gdiSurface.hdc, opaque ? OPAQUE : TRANSPARENT);
-      }      
+      }
    }
 
    void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
@@ -922,8 +922,8 @@ class GDIDisplayDriver : DisplayDriver
          GDIFont gdiFont = (GDIFont)surface.font;
          if(!gdiFont.font)
          {
-            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem, 
-               gdiFont.faceName, gdiFont.size, gdiFont.flags);         
+            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem,
+               gdiFont.faceName, gdiFont.size, gdiFont.flags);
          }
          if(surface.textOpacity)
          {
@@ -973,14 +973,14 @@ class GDIDisplayDriver : DisplayDriver
 
          // UNICODE FIX: proper space computation
          if(width) *width = size.cx + (wordCount - realLen) * space.cx;
-         if(height) 
+         if(height)
          {
             if(realLen)
                *height = size.cy;
             else
                *height = wordCount ? space.cy : 0;
          }
-      }      
+      }
    }
 
    void FontExtent(DisplaySystem displaySystem, Font font, char * text, int len, int * width, int * height)
@@ -1010,7 +1010,7 @@ class GDIDisplayDriver : DisplayDriver
             if(width) *width = 0;
             if(height) *height = 0;
          }
-      }      
+      }
    }
 
    void DrawingChar(Display display, Surface surface, byte character)

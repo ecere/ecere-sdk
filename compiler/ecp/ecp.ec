@@ -15,7 +15,7 @@ import "ec"
 
 // #include <stdarg.h>
 
-// WARNING: PropertyDefine, ClassDefine and DataMemberDefine must remain compatible 
+// WARNING: PropertyDefine, ClassDefine and DataMemberDefine must remain compatible
 struct ClassDefine : Definition
 {
    char * base;
@@ -53,7 +53,7 @@ class MethodDefine : struct
    bool isVirtual;
 };
 
-// WARNING: PropertyDefine, ClassDefine and DataMemberDefine must remain compatible 
+// WARNING: PropertyDefine, ClassDefine and DataMemberDefine must remain compatible
 class PropertyDefine : struct
 {
    PropertyDefine prev, next;
@@ -67,7 +67,7 @@ class PropertyDefine : struct
    bool hasSet, hasGet;
 };
 
-// WARNING: PropertyDefine, ClassDefine and DataMemberDefine must remain compatible 
+// WARNING: PropertyDefine, ClassDefine and DataMemberDefine must remain compatible
 class DataMemberDefine : struct
 {
    DataMemberDefine prev, next;
@@ -155,7 +155,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
             if(decl.type == structDeclaration)
             {
                Declarator d;
-               
+
                if(decl.declarators)
                {
                   for(d = decl.declarators->first; d; d = d.next)
@@ -164,7 +164,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                      //if(d.type != DeclaratorFunction)
                      if(declId)
                      {
-                        dataMemberDefine = DataMemberDefine 
+                        dataMemberDefine = DataMemberDefine
                         {
                            isProperty = MemberType::dataMember;
                            memberType = normalMember;
@@ -194,7 +194,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                               if(posExp.isConstant)
                                  bitPos = strtol(posExp.constant, null, 0);
                               FreeExpression(posExp);
-                     
+
                            }
 
                            d.structDecl.exp = null;
@@ -228,10 +228,10 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                               PrintType(dataType, typeString, false, true);
 
                               if(member)
-                                 dataMember = eMember_AddDataMember(member, declId.string, 
+                                 dataMember = eMember_AddDataMember(member, declId.string,
                                     typeString, /*ComputeTypeSize(dataType)*/ 0, 0, def.memberAccess);
                               else
-                                 dataMember = eClass_AddDataMember(regClass, declId.string, 
+                                 dataMember = eClass_AddDataMember(regClass, declId.string,
                                     typeString, /*ComputeTypeSize(dataType)*/ 0, 0, def.memberAccess);
                               if(dataMember)
                                  dataMember.dataType = dataType;
@@ -261,7 +261,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                               memberType = (spec.type == SpecifierType::unionSpecifier) ? unionMember : structMember;
                            };
                            parentMemberDefine.dataMembers.Add(dataMemberDefine);
-                           
+
                            AddDefinitions(null, dataMemberDefine, null, dataMember, spec.definitions);
 
                            if(member)
@@ -284,10 +284,10 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                               PrintType(dataType, typeString, false, true);
 
                               if(member)
-                                 dataMember = eMember_AddDataMember(member, id.string, 
+                                 dataMember = eMember_AddDataMember(member, id.string,
                                     typeString, /*ComputeTypeSize(dataType)*/ 0, 0, def.memberAccess);
                               else
-                                 dataMember = eClass_AddDataMember(regClass, id.string, 
+                                 dataMember = eClass_AddDataMember(regClass, id.string,
                                     typeString, /*ComputeTypeSize(dataType)*/ 0, 0, def.memberAccess);
 
                               //delete dataTypeString;
@@ -364,7 +364,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                if(prop)
                {
                   prop.symbol = Symbol
-                  { 
+                  {
                      string = CopyString(propertyDef.symbol.string);
                      id = propertyDef.symbol.id;
                      type = propertyDef.symbol.type;
@@ -452,7 +452,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
 
                member = eClass_AddDataMember(regClass, def.id.string, null, 0, 0, def.memberAccess);
 
-               dataMemberDefine = DataMemberDefine 
+               dataMemberDefine = DataMemberDefine
                {
                   isProperty = dataMember;
                   memberType = normalMember;
@@ -498,12 +498,12 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             }
          }
       }
-      else if(baseType.kind == structType || baseType.kind == unionType) 
+      else if(baseType.kind == structType || baseType.kind == unionType)
       {
          classType = noHeadClass;
          baseName[0] = '\0';
       }
-      else 
+      else
          unitType = true;
       FreeType(baseType);
 
@@ -575,7 +575,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       unionDefine = DataMemberDefine
       {
          isProperty = dataMember;
-         memberType = DataMemberType::unionMember;      
+         memberType = DataMemberType::unionMember;
       };
       classDefine.propertiesAndMembers.Add(unionDefine);
 
@@ -673,7 +673,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             switch(param.type)
             {
                case type:
-                  defaultArg.dataTypeString = 
+                  defaultArg.dataTypeString =
                      StringFromSpecDecl(param.defaultArgument.templateDatatype.specifiers, param.defaultArgument.templateDatatype.decl);
                   break;
                case identifier:
@@ -688,7 +688,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      else
                         strcpy(memberString, param.defaultArgument.identifier._class.name);
                   }
-                  
+
                   if(memberString[0])
                   {
                      strcat(memberString, "::");
@@ -730,7 +730,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             char * typeString = param.dataType ? StringFromSpecDecl(param.dataType.specifiers, param.dataType.decl) : null;
             eClass_AddTemplateParameter(regClass, param.identifier.string, param.type, typeString, defaultArg);
 
-            /*eClass_AddTemplateParameter(regClass, param.identifier.string, param.type, 
+            /*eClass_AddTemplateParameter(regClass, param.identifier.string, param.type,
                (param.type == type) ? eSystem_FindClass(regClass.module, typeString) : CopyString(typeString), defaultArg);*/
             // delete typeString;
          }
@@ -755,7 +755,7 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                refCount = 1;
             };
             e.exp.destType = destType;
-            
+
             // Set parsingType to avoid producing errors
             SetParsingType(true);
             ProcessExpressionType(e.exp);
@@ -788,7 +788,7 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
             }
             else
                // Sort of an error
-               eEnum_AddValue(regClass, e.id.string);                        
+               eEnum_AddValue(regClass, e.id.string);
          }
          else
             eEnum_AddValue(regClass, e.id.string);
@@ -827,7 +827,7 @@ void PreCompPreProcessClassDefinitions()
                   Specifier specifier;
                   for(specifier = declaration.specifiers->first; specifier; specifier = specifier.next)
                   {
-                     if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string && 
+                     if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string &&
                         (declaration.declMode || specifier.baseSpecs || (specifier.type == enumSpecifier && specifier.definitions)))
                      {
                         Symbol symbol = FindClass(specifier.id.string);
@@ -920,7 +920,7 @@ void PreCompPreProcessClassDefinitions()
          typeString[0] = '\0';
          PrintType(function.declarator.symbol.type, typeString, true, true);
          functionDefine = FunctionDefine
-         { 
+         {
             type = functionDefinition;
             name = CopyString(function.declarator.symbol.string);
             dataType = CopyString(typeString);
@@ -951,7 +951,7 @@ void PreCompPreProcessClassDefinitions()
                Specifier specifier;
                for(specifier = declaration.specifiers->first; specifier; specifier = specifier.next)
                {
-                  if((specifier.type == enumSpecifier) && specifier.id && specifier.id.string && 
+                  if((specifier.type == enumSpecifier) && specifier.id && specifier.id.string &&
                      (declaration.declMode || specifier.baseSpecs || (specifier.type == enumSpecifier && specifier.definitions)))
                   {
                      Symbol symbol = FindClass(specifier.id.string);
@@ -1208,7 +1208,7 @@ static void OutputSymbols(char * fileName)
                }
                f.Printf("         .\n");
             }
-            
+
             if(!classDefine.isStatic)
             {
                if(classDefine.methods.first)
@@ -1275,7 +1275,7 @@ static void OutputSymbols(char * fileName)
       }
       f.Printf("   .\n");
       delete f;
-   }   
+   }
 }
 
 class PrecompApp : Application
@@ -1484,7 +1484,7 @@ class PrecompApp : Application
          globalContext.types.Add((BTNode)Symbol { string = CopyString("uintptr_t"), type = ProcessTypeString("uintptr", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("ssize_t"), type = ProcessTypeString("intsize", false) });
          globalContext.types.Add((BTNode)Symbol { string = CopyString("size_t"), type = ProcessTypeString("uintsize", false) });
-         
+
          {
             char * outputFilePath = GetOutputFile();
             if(FileExists(outputFilePath))

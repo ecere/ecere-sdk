@@ -139,11 +139,11 @@ public class Mixer
                   } while(se >= frequency);
                   if(s < sound.length)
                   {
-                     sampleL = sBuffer[s];                  
+                     sampleL = sBuffer[s];
                      sampleR = (chn == 2) ? sBuffer[s+1] : sampleL;
                   }
                   else
-                     break;                   
+                     break;
                }
             }
             v.pos = s;
@@ -188,11 +188,11 @@ public class Mixer
                   } while(se >= frequency);
                   if(s < sound.length)
                   {
-                     sampleL = sBuffer[s];                  
+                     sampleL = sBuffer[s];
                      sampleR = (chn == 2) ? sBuffer[s+1] : sampleL;
                   }
                   else
-                     break;                   
+                     break;
                }
             }
             v.pos = s;
@@ -264,7 +264,7 @@ public:
          windowHandle = systemHandle;
          volume = 100;
       };
-      
+
       if(!OpenAudio(wantedSpec, spec))
       {
          MessageBox { contents = "OpenAudio failed" }.Modal();

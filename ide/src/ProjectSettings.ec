@@ -137,7 +137,7 @@ class ProjectSettings : Window
       char * nodeName = currentNode && currentNode != project.topNode ? currentNode.name : "";
       char * config = buildTab.selectedConfigName;
       char * platform = buildTab.selectedPlatformName;
-      char * label = new char[strlen(dialogTitle) + 3 + strlen(project.topNode.name) + 3 + 
+      char * label = new char[strlen(dialogTitle) + 3 + strlen(project.topNode.name) + 3 +
                               strlen(nodeName) + 2 + strlen(config) + 1 + strlen(platform) + 1 + 1];
       strcpy(label, dialogTitle);
       strcat(label, " - ");
@@ -325,7 +325,7 @@ class OptionBox<class Z> : CommonControl
          return true;
       }
    };
-   
+
    bool Window::OptionBox_OnRightButtonDown(int x, int y, Modifiers mods)
    {
       OptionBox ob = (OptionBox)id;
@@ -362,7 +362,7 @@ class OptionBox<class Z> : CommonControl
                break;
          }
       }
-      
+
       if(!c)
       {
          label = null;
@@ -441,7 +441,7 @@ class OptionBox<class Z> : CommonControl
          buildTab = (BuildTab)buildTab.master;
       if(buildTab) buildTab.modifiedDocument = true;
    }
-   
+
    void Unset()
    {
       char * platformName = platform ? platform.OnGetString(0,0,0) : null;
@@ -571,7 +571,7 @@ class OptionBox<class Z> : CommonControl
                      skipped = true;
                      break;
                   }
-               }               
+               }
 
                if(skipped && c.options && OptionSet(c.options))
                {
@@ -675,7 +675,7 @@ class OptionBox<class Z> : CommonControl
                      }
                      break;
                   }
-               }               
+               }
 
                nodeConfig = c;
                break;
@@ -882,7 +882,7 @@ class MultiStringOptionBox : OptionBox<Array<String>>
                if(!found) tempStrings.Add(s);
             }
          }
-      }         
+      }
       else
       {
          SetStrings(options ? *(Array<String>*)((byte *)options + option) : null);
@@ -1097,7 +1097,7 @@ class BoolOptionBox : OptionBox<SetBool>
    void RetrieveOption(ProjectOptions options, bool isCfgOrPlt)
    {
       bool checked = ((Button)editor).checked;
-      *(SetBool*)((byte *)options + option) = checked ? true : 
+      *(SetBool*)((byte *)options + option) = checked ? true :
          ((currentNode.parent || isCfgOrPlt) ? false : unset);
    }
 
@@ -1156,7 +1156,7 @@ class DropOptionBox : OptionBox
          ((OptionBox)dropBox.id).Retrieve();
          return true;
       }
-   };   
+   };
 
    void LoadOption(ProjectOptions options)
    {
@@ -1261,7 +1261,7 @@ void DrawStipple(Surface surface, Size clientSize)
 
    surface.LineStipple(0x5555);
    surface.Rectangle(x1, y1, x2, y2);
-   surface.LineStipple(0);            
+   surface.LineStipple(0);
 }
 
 class BuildTab : Tab
@@ -1302,7 +1302,7 @@ class BuildTab : Tab
             if(button && button.id)
             {
                Platform platform = (Platform)button.id;
-               char * platformName = platform ? platform.OnGetString(0,0,0) : null; // all these platformName are leaking, no? 
+               char * platformName = platform ? platform.OnGetString(0,0,0) : null; // all these platformName are leaking, no?
                return platformName;
             }
          }
@@ -1340,7 +1340,7 @@ class BuildTab : Tab
          }
          return SelectorBar::OnKeyDown(key, ch);
       }
-      
+
       bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
          ((BuildTab)master).labelConfigurations.Update(null);
@@ -1385,7 +1385,7 @@ class BuildTab : Tab
          config.options.debug = true;
          config.options.optimization = none;
          config.options.warnings = all;
-         */         
+         */
 
          button =
          {
@@ -1455,7 +1455,7 @@ class BuildTab : Tab
          return true;
       }
    };
-   
+
    Label labelPlatforms
    {
       this, anchor = { left = 8, top = 44 }, labeledWindow = platformSelector;
@@ -1593,7 +1593,7 @@ class BuildTab : Tab
       }
 
       project.topNode.RenameConfig(config.name, *newName);
-      
+
       modifiedDocument = true;
       return true;
    }
@@ -1633,7 +1633,7 @@ class BuildTab : Tab
          if(!node) node = project.topNode;
 
          newNodeRes = node.isInResources;
-         
+
          currentNode = node;
          if(!ignoreAsLastSelection)
             lastSelectedNode = node;
@@ -1682,7 +1682,7 @@ class BuildTab : Tab
             compilerTab.labelIncludeDirs.visible = !newNodeRes;
             compilerTab.includeDirs.visible = !newNodeRes;
          }
-         
+
          if(node == project.topNode)
          {
             compilerTab.objDir.visible = true;
@@ -1728,7 +1728,7 @@ class BuildTab : Tab
          checked = true;
          NotifyClicked = ConfigClicked;
       };
-      
+
       config = null;
 
       if(project.topNode.configurations)
@@ -1743,14 +1743,14 @@ class BuildTab : Tab
          }
       }
    }
-   
+
    void Init()
    {
       Platform p;
       SelectorButton button;
 
       activeConfigName = project.config ? CopyString(project.config.name) : null;
-      
+
       compilerTab.AddNode(project.topNode, null);
 
       CreateConfigButtons();
@@ -1767,7 +1767,7 @@ class BuildTab : Tab
       {
          SelectorButton button
          {
-            platformSelector, master = this, text = p.OnGetString(0,0,0), id = (int64)p; 
+            platformSelector, master = this, text = p.OnGetString(0,0,0), id = (int64)p;
             NotifyClicked = PlatformClicked;
          };
       }
@@ -1959,7 +1959,7 @@ class CompilerTab : Tab
       }
    };
 
-   Window rightPane 
+   Window rightPane
    {
       this, anchor = { left = 196, top = 0, right = 0, bottom = 0 }, background = formColor, tabCycle = true;
    };
@@ -2098,9 +2098,9 @@ class CompilerTab : Tab
 
       row.SetData(null, node);
 
-      if(node.files && node.files.first && node.parent && 
-            !(!node.parent.parent && 
-               (!strcmpi(node.name, "notes") || !strcmpi(node.name, "sources") || 
+      if(node.files && node.files.first && node.parent &&
+            !(!node.parent.parent &&
+               (!strcmpi(node.name, "notes") || !strcmpi(node.name, "sources") ||
                   !strcmpi(node.name, "src") || !strcmpi(node.name, "tools"))))
          row.collapsed = true;
       else if(node.type == folder)
@@ -2123,7 +2123,7 @@ class CompilerTab : Tab
       if(activeChild && activeChild.active)
       {
          Window control = activeChild;
-         control.Deactivate();         
+         control.Deactivate();
          control.Activate();
       }
    }
@@ -2146,14 +2146,14 @@ class LinkerTab : Tab
       this, position = { 8, 24 }, size = { 200, 22 };
       text = $"Target Name", hotKey = altN, option = OPTION(targetFileName);
    };
-   
+
    Label labelTargetType { this, position = { 216, 8 }, labeledWindow = targetType };
    TargetTypeDB targetType
    {
       this, position = { 216, 24 }, size = { 120, 22 };
       text = $"Target Type", hotKey = altT, option = OPTION(targetType);
    };
-   
+
    Label labelTargetDirectory { this, position = { 344, 8 }, labeledWindow = targetDirectory };
    PathOptionBox targetDirectory
    {
@@ -2213,7 +2213,7 @@ class LinkerTab : Tab
       if(activeChild && activeChild.active)
       {
          Window control = activeChild;
-         control.Deactivate();         
+         control.Deactivate();
          control.Activate();
       }
    }
@@ -2256,7 +2256,7 @@ class BuilderTab : Tab
       if(activeChild && activeChild.active)
       {
          Window control = activeChild;
-         control.Deactivate();         
+         control.Deactivate();
          control.Activate();
       }
    }

@@ -19,7 +19,7 @@ class CubeApp : GuiApplication
 Camera camera
 {
    fixed,
-   position = { 0, 0, -200 }, 
+   position = { 0, 0, -200 },
    orientation = Euler { 0, 0, 0 },
    fov = 53;
 };
@@ -80,7 +80,7 @@ class Test3D : Window
 
          temp.Multiply(orientation, thisSpin);
          orientation.Normalize(temp);
-         
+
          cube.transform.orientation = orientation;
          cube.UpdateTransform();
          Update(null);
@@ -92,7 +92,7 @@ class Test3D : Window
    bool OnLoadGraphics()
    {
       display.ambient = ColorRGB { 0.7f, 0.7f, 0.7f };
-      
+
       material.baseMap = texture.bitmap;
       cube.Create(displaySystem);
       cube.mesh.ApplyMaterial(material);
@@ -103,12 +103,12 @@ class Test3D : Window
 
       return true;
    }
- 
+
    void OnResize(int w, int h)
    {
       camera.Setup(w, h, null);
    }
- 
+
    void OnRedraw(Surface surface)
    {
       surface.Clear(colorAndDepth);

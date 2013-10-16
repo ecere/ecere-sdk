@@ -8,7 +8,7 @@ public class FindPrime
    bool HasPrimeFactor(int x)
    {
       int max = (int)floor(sqrt((double)x));
-     
+
       for(i : primeList)
       {
          if(i > max) break;

@@ -56,7 +56,7 @@ public class BitmapResource : Resource
       if(fileName)
       {
          DisplaySystem ds = displaySystem;
-         
+
          bitmap = Bitmap { alphaBlend = (alphaBlend && displaySystem.pixelFormat != pixelFormat8), keepData = keepData };
 #if defined(__WIN32__)
          // if(bitmap.alphaBlend) ds = null;
@@ -91,7 +91,7 @@ public class BitmapResource : Resource
    {
       Window editData = class::OnEdit(window, master, x + 24, y, w - 48, h, userData);
       Button browse
-      { 
+      {
          window, master = editData, inactive = true, text = "...", hotKey = f2,
          position = { Max(x + 24, x + w - 24), y }, size = { 24, h };
 
@@ -108,7 +108,7 @@ public class BitmapResource : Resource
                // TOCHECK: Why do we need to Refresh here?
                master.Refresh();
 
-               // TODO: This is a Button? 
+               // TODO: This is a Button?
                // contents = filePath;
             }
             return true;
@@ -164,7 +164,7 @@ public:
       set
       {
          mono = value;
-      } 
+      }
       get { return this ? mono : false; }
    };
    property bool transparent { set { transparent = value; } get { return this ? transparent : false; } isset { return (this && !transparent) ? true : false; } };

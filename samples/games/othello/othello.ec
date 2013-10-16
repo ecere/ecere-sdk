@@ -44,7 +44,7 @@ class Othello : Window
    OthelloService service { port = OTHELLO_PORT, othello = this };
 
    // Default properties
-   background = black, tabCycle = true, text = "ECERE Othello", borderStyle = sizable, hasClose = true, 
+   background = black, tabCycle = true, text = "ECERE Othello", borderStyle = sizable, hasClose = true,
    size.h = 480, clientSize.w = NUM_COLUMNS*WIDTH;
 
    // --- Othello Utilities ---
@@ -52,20 +52,20 @@ class Othello : Window
    {
       int x,y;
       int numChips = 0;
-   
+
       sx += dx;
       sy += dy;
-   
+
       // Out of the board...
       if(sx < 0 || sx >= NUM_COLUMNS || sy < 0 || sy >= NUM_ROWS)
          return 0;
-   
+
       // Chip of the same color...
       if(board[sy][sx] == color || board[sy][sx] == empty)
          return 0;
-   
-      for(x = sx, y = sy; 
-          x >= 0 && x < NUM_COLUMNS && y >= 0 && y < NUM_ROWS; 
+
+      for(x = sx, y = sy;
+          x >= 0 && x < NUM_COLUMNS && y >= 0 && y < NUM_ROWS;
           x += dx, y += dy)
       {
          // Chip of the same color at the end of the line...
@@ -73,11 +73,11 @@ class Othello : Window
          {
             if(turn)
             {
-               for(x = sx, y = sy; 
+               for(x = sx, y = sy;
                    x >= 0 && x < NUM_COLUMNS && y >= 0 && y < NUM_ROWS;
                    x += dx, y += dy)
                {
-                  if(board[y][x] == color) 
+                  if(board[y][x] == color)
                      break;
                   else
                      board[y][x] = color;
@@ -92,11 +92,11 @@ class Othello : Window
          else
             numChips ++;
       }
-   
+
       // No chip of the same color at the end...
       return 0;
    }
-   
+
    bool PossibleMove()
    {
       bool validMove = false;
@@ -107,12 +107,12 @@ class Othello : Window
                validMove = true;
       return validMove;
    }
-   
+
    int TurnChips(int sx, int sy, ChipColor color, int turn)
    {
       int x,y;
       int numChips = 0;
-   
+
       for(y = -1; y <= 1; y++)
          for(x = -1; x <= 1; x++)
             if(x || y)
@@ -123,23 +123,23 @@ class Othello : Window
          this.numChips[color] += numChips + 1;
          this.numChips[1-color] -= numChips;
          this.turn = 1-color;
-   
+
          if(!PossibleMove())
          {
             this.turn = color;
             if(!PossibleMove())
                gameOver = true;
          }
-         
+
          Update(null);
       }
       return numChips;
    }
-   
+
    void NewGame()
    {
       int x,y;
-   
+
       for(y = 0; y<NUM_ROWS; y++)
          for(x = 0; x<NUM_COLUMNS; x++)
             board[y][x] = empty;
@@ -150,7 +150,7 @@ class Othello : Window
       gameOver = false;
       Update(null);
    }
-   
+
    void EnableButtons()
    {
       join.disabled = false;
@@ -158,25 +158,25 @@ class Othello : Window
       disconnect.disabled = false;
       stop.disabled = false;
       localGame.disabled = false;
-      
+
       if(gameRunning || hosting || sockets[SERVER])
          localGame.disabled = true;
-      if(!hosting) 
+      if(!hosting)
          stop.disabled = true;
       if(!gameRunning && !sockets[SERVER])
          disconnect.disabled = true;
-   
+
       if(hosting || sockets[SERVER] || local)
          host.disabled = true;
-         
+
       if(sockets[SERVER] || local || hosting)
          join.disabled = true;
-   
+
       address.disabled = join.disabled;
    }
 
    // Children
-   Button localGame 
+   Button localGame
    {
       parent = this, text = "Local Game", position = Point{ 160, 330 }, size = Size { 100, 20 }, hotKey = altL;
 
@@ -333,7 +333,7 @@ class Othello : Window
             surface.WriteTextf(50, 420, "It is your turn to move.");
       }
    }
- 
+
    bool OnKeyDown(Key key, unichar ch)
    {
       if(key == escape) Destroy(0);
@@ -358,7 +358,7 @@ class Othello : Window
          }
       }
       return true;
-   }                    
+   }
 }
 
 // --- Othello Communication ---
@@ -377,7 +377,7 @@ class OthelloSocket : Socket
          othello.sockets[SERVER] = null;
          othello.gameRunning = false;
       }
-   
+
       othello.EnableButtons();
       othello.Update(null);
    }
@@ -401,7 +401,7 @@ class OthelloSocket : Socket
       }
       return 0;
    }
-   
+
    void OnConnect()
    {
       othello.sockets[SERVER] = this;
@@ -409,7 +409,7 @@ class OthelloSocket : Socket
       othello.EnableButtons();
       othello.NewGame();
    }
-   
+
    property Othello othello { set { othello = value; } }
 }
 
@@ -421,10 +421,10 @@ class OthelloService : Service
       if(!othello.sockets[CLIENT] && !othello.gameRunning)
       {
          OPacket packet { newGame };
-   
+
          othello.sockets[CLIENT] = OthelloSocket { this, othello = othello };
          othello.sockets[CLIENT].Send((byte *)&packet, sizeof(OPacket));
-   
+
          othello.NewGame();
          othello.gameRunning = true;
          othello.EnableButtons();

@@ -82,19 +82,19 @@ public struct Vector3D
       }, { sourceX, sourceY, sourceZ });
       */
 
-      double var1 = 
+      double var1 =
          matrix.m[2][0] * matrix.m[0][2] * matrix.m[1][1]
        - matrix.m[0][2] * matrix.m[2][1] * matrix.m[1][0]
        - matrix.m[2][2] * matrix.m[0][0] * matrix.m[1][1]
        - matrix.m[0][2] * matrix.m[0][1] * matrix.m[1][0]
        + matrix.m[2][1] * matrix.m[0][0] * matrix.m[1][2]
        + matrix.m[0][1] * matrix.m[0][0] * matrix.m[1][2];
-      
+
       x = (
          - matrix.m[2][2] * source.x * matrix.m[1][1]
          + matrix.m[2][2] * matrix.m[1][0] * source.y
          - matrix.m[2][2] * matrix.m[1][0] * matrix.m[3][1]
-         + matrix.m[2][2] * matrix.m[3][0] * matrix.m[1][1] 
+         + matrix.m[2][2] * matrix.m[3][0] * matrix.m[1][1]
          - matrix.m[2][0] * matrix.m[3][2] * matrix.m[1][1]
          + source.x * matrix.m[2][1] * matrix.m[1][2]
          + source.x * matrix.m[0][1] * matrix.m[1][2]
@@ -140,7 +140,7 @@ public struct Vector3D
    property double lengthApprox
    {
       get
-      { 
+      {
          double ix = Abs(x), iy = Abs(y), iz = Abs(z);
          double tmp;
          if(ix < iy) { tmp = ix; ix = iy; iy = tmp; }
@@ -154,7 +154,7 @@ public struct Vector3D
 public struct Vector3Df
 {
    float x, y, z;
-   
+
    void Add(Vector3Df vector1, Vector3Df vector2)
    {
       x = vector1.x + vector2.x;
@@ -226,12 +226,12 @@ public struct Vector3Df
        - matrix.m[0][2] * matrix.m[0][1] * matrix.m[1][0]
        + matrix.m[2][1] * matrix.m[0][0] * matrix.m[1][2]
        + matrix.m[0][1] * matrix.m[0][0] * matrix.m[1][2]);
-      
+
       x = (float)(
          - matrix.m[2][2] * source.x * matrix.m[1][1]
          + matrix.m[2][2] * matrix.m[1][0] * source.y
          - matrix.m[2][2] * matrix.m[1][0] * matrix.m[3][1]
-         + matrix.m[2][2] * matrix.m[3][0] * matrix.m[1][1] 
+         + matrix.m[2][2] * matrix.m[3][0] * matrix.m[1][1]
          - matrix.m[2][0] * matrix.m[3][2] * matrix.m[1][1]
          + source.x * matrix.m[2][1] * matrix.m[1][2]
          + source.x * matrix.m[0][1] * matrix.m[1][2]
@@ -245,7 +245,7 @@ public struct Vector3Df
          + matrix.m[2][0] * source.z * matrix.m[1][1]
          - matrix.m[3][0] * matrix.m[0][1] * matrix.m[1][2]
          ) / var1;
-      
+
       y = - (float)(
          - matrix.m[2][0] * matrix.m[0][2] * source.y
          + matrix.m[2][1] * matrix.m[0][0] * matrix.m[3][2]
@@ -277,7 +277,7 @@ public struct Vector3Df
    property float lengthApprox
    {
       get
-      { 
+      {
          float ix = Abs(x), iy = Abs(y), iz = Abs(z);
          float tmp;
          if(ix < iy) { tmp = ix; ix = iy; iy = tmp; }

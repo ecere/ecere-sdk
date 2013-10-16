@@ -229,7 +229,7 @@ void AeroSnapPosition(Window window, int x, int y, int w, int h)
 class Win32Interface : Interface
 {
    class_property(name) = "Win32";
-   
+
    void ::RepositionDesktop(bool updateChildren)
    {
       int c;
@@ -243,7 +243,7 @@ class Win32Interface : Interface
       static double lastAutoHideCheck = 0;
       int newTaskBarState = taskBarState;
       HMONITOR primaryMonitor;
-            
+
       time = GetTime();
       if(time - lastTime < 0.1) return;
       lastTime = time;
@@ -272,7 +272,7 @@ class Win32Interface : Interface
       memcpy(lastMonitorAreas, monitorAreas, sizeof(monitorAreas));
 
       guiApp.virtualScreen =
-      { 
+      {
          GetSystemMetrics(SM_CXVIRTUALSCREEN),
          GetSystemMetrics(SM_CYVIRTUALSCREEN)
       };
@@ -332,7 +332,7 @@ class Win32Interface : Interface
                }
             }
          }
-   
+
         if(c < monitor ||
          placement.rcNormalPosition.left != taskBarPlacement.rcNormalPosition.left ||
          placement.rcNormalPosition.top != taskBarPlacement.rcNormalPosition.top ||
@@ -366,7 +366,7 @@ class Win32Interface : Interface
       Key key;
       // UNICODE FIX
       bool frenchShift = (ch < 0x10000) ? (((VkKeyScan((uint16)ch) >> 8) & 6) == 6) : false;
-      
+
       if(msg == WM_CHAR || msg == WM_DEADCHAR)
       {
          wParam = 0;
@@ -395,7 +395,7 @@ class Win32Interface : Interface
          code.ctrl = true;
       if(key != leftAlt && key != rightAlt && ::GetKeyState(VK_MENU) & 0x80000 && !frenchShift)
          code.alt = true;
-      
+
       if(msg == WM_MOUSEWHEEL)
       {
          result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, 0);
@@ -407,10 +407,10 @@ class Win32Interface : Interface
          if(::GetKeyState(VK_CAPITAL))
             ch = toupper(ch);
          */
-         
+
          if(msg == WM_KEYUP || msg == WM_SYSKEYUP)
          {
-            result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, code, ch); 
+            result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, code, ch);
          }
          else
          {
@@ -431,7 +431,7 @@ class Win32Interface : Interface
                result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code,ch);
          }
       }
-               
+
       return result;
    }
 
@@ -463,7 +463,7 @@ class Win32Interface : Interface
                   if(wParam)
                   {
                      Window modalRoot = window.FindModal();
-                     
+
                      HWND modalWindow = modalRoot ? modalRoot.windowHandle : null;
 
                      FLASHWINFO flashInfo = { 0 };
@@ -510,7 +510,7 @@ class Win32Interface : Interface
                {
                   for(window = guiApp.desktop.firstChild; window; window = window.next)
                      SetWindowPos(window.windowHandle, window.style.stayOnTop ? HWND_TOPMOST : HWND_TOP, 0,0,0,0,
-                        SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE); //|SWP_NOREDRAW); 
+                        SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE); //|SWP_NOREDRAW);
                   activateApp = false;
                }
 
@@ -546,20 +546,20 @@ class Win32Interface : Interface
                   else
                   {
                      Window window;
-                     
+
                      if(wParam && !guiApp.desktop.active /*&& lParam != GetCurrentThreadID()*/)
                      {
                         activateApp = true;
                         /*
                         for(window = guiApp.desktop.firstChild; window; window = window.next)
                            SetWindowPos(window.windowHandle, window.style.stayOnTop ? HWND_TOPMOST : HWND_TOP, 0,0,0,0,
-                              SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE); //|SWP_NOREDRAW); 
-                        */ 
+                              SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOMOVE|SWP_NOSIZE); //|SWP_NOREDRAW);
+                        */
                      }
                      guiApp.SetAppFocus((bool)wParam);
                   }
                }
-               else 
+               else
                   guiApp.SetAppFocus((bool)wParam);
                break;
             case WM_PAINT:
@@ -579,20 +579,20 @@ class Win32Interface : Interface
                   BoxItem item = window.dirtyArea.count ? (BoxItem)ACCESS_ITEM(window.dirtyArea, window.dirtyArea.first) : null;
 
                   BeginPaint(windowHandle, &ps);
-                  
+
                   // Prevent flickering if we're going to update anyways
                   /*
-                  printf("   Paint message (%d, %d)-(%d, %d)\n", 
+                  printf("   Paint message (%d, %d)-(%d, %d)\n",
                      item ? item.box.left : 0,
                      item ? item.box.top : 0,
                      item ? item.box.right : 0,
                      item ? item.box.bottom : 0);
                   */
-                  // Causes redraw bug...      
+                  // Causes redraw bug...
                   if(!window.manageDisplay || !item ||
-                     item.box.left > 0 || 
+                     item.box.left > 0 ||
                      item.box.top > 0 ||
-                     item.box.right < window.size.w - 1 || 
+                     item.box.right < window.size.w - 1 ||
                      item.box.bottom < window.size.h - 1)
                   {
                      Box box { ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right-1, ps.rcPaint.bottom-1 };
@@ -612,7 +612,7 @@ class Win32Interface : Interface
                {
                   lastBits = (int)wParam;
                   lastRes = (int)lParam;
-               
+
                   externalDisplayChange = true;
                   if(guiApp.desktop.DisplayModeChanged())
                   {
@@ -629,14 +629,14 @@ class Win32Interface : Interface
             // Keyboard Messages
             case WM_SYSKEYDOWN:
             case WM_KEYDOWN:
-            case WM_SYSKEYUP: 
+            case WM_SYSKEYUP:
             case WM_KEYUP:
-            case WM_CHAR: 
-            //case WM_DEADCHAR: 
+            case WM_CHAR:
+            //case WM_DEADCHAR:
             {
                MSG charMsg;
                DWORD min, max;
-               
+
                if(msg != WM_CHAR && window.composing)
                   break;
 
@@ -772,7 +772,7 @@ class Win32Interface : Interface
                   return HTCLIENT;
 
             // Mouse Messages
-            case WM_LBUTTONUP:  
+            case WM_LBUTTONUP:
             case WM_RBUTTONUP:
             case WM_MBUTTONUP:
             case WM_LBUTTONDOWN:
@@ -784,7 +784,7 @@ class Win32Interface : Interface
             case WM_MOUSEMOVE:
                x = window.absPosition.x;
                y = window.absPosition.y;
-            /*case WM_NCLBUTTONUP:  
+            /*case WM_NCLBUTTONUP:
             case WM_NCRBUTTONUP:
             case WM_NCMBUTTONUP:
             case WM_NCLBUTTONDOWN:
@@ -797,7 +797,7 @@ class Win32Interface : Interface
             {
                Modifiers code = 0;
                bool consequential = false;
- 
+
                x += (short)LOWORD(lParam);
                y += (short)HIWORD(lParam);
 
@@ -813,7 +813,7 @@ class Win32Interface : Interface
                if(wParam & MK_LBUTTON) code.left = true;
                if(wParam & MK_MBUTTON) code.middle = true;
                if(wParam & MK_RBUTTON) code.right = true;
-               
+
                if(msg == WM_MOUSEMOVE)
                {
                   if(lastPos.x == x && lastPos.y == y)
@@ -835,7 +835,7 @@ class Win32Interface : Interface
                         break;
                   //case WM_NCLBUTTONDOWN:
                   case WM_LBUTTONDOWN:
-                     window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown,x,y,&code, false, 
+                     window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown,x,y,&code, false,
                                              /*(msg == WM_LBUTTONDBLCLK) ? false: */true);
                      break;
                   //case WM_NCLBUTTONUP:
@@ -846,7 +846,7 @@ class Win32Interface : Interface
                         break;
                   //case WM_NCMBUTTONDOWN:
                   case WM_MBUTTONDOWN:
-                     window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown, x,y,&code, false, 
+                     window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown, x,y,&code, false,
                                              (msg == WM_LBUTTONDBLCLK) ? false: true);
                      break;
                   //case WM_NCMBUTTONUP:
@@ -859,7 +859,7 @@ class Win32Interface : Interface
                         break;
                   //case WM_NCRBUTTONDOWN:
                   case WM_RBUTTONDOWN:
-                     window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown, x,y,&code, false, 
+                     window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown, x,y,&code, false,
                                              (msg == WM_LBUTTONDBLCLK) ? false: true);
                      break;
                   //case WM_NCRBUTTONUP:
@@ -1014,15 +1014,15 @@ class Win32Interface : Interface
 
    bool CALLBACK ::JoystickAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi, void * context )
    {
-      DIPROPRANGE diprg; 
+      DIPROPRANGE diprg;
       IDirectInputDevice2 * curJoy = (IDirectInputDevice2 *)context;
 
-      diprg.diph.dwSize       = sizeof(DIPROPRANGE); 
-      diprg.diph.dwHeaderSize = sizeof(DIPROPHEADER); 
-      diprg.diph.dwHow        = DIPH_BYOFFSET; 
+      diprg.diph.dwSize       = sizeof(DIPROPRANGE);
+      diprg.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+      diprg.diph.dwHow        = DIPH_BYOFFSET;
       diprg.diph.dwObj        = pdidoi->dwOfs;
-      diprg.lMin              = -128; 
-      diprg.lMax              = 127; 
+      diprg.lMin              = -128;
+      diprg.lMax              = 127;
       if(curJoy->lpVtbl->SetProperty(curJoy, DIPROP_RANGE, &diprg.diph))
          return DIENUM_STOP;
       return DIENUM_CONTINUE;
@@ -1032,7 +1032,7 @@ class Win32Interface : Interface
    void ::TerminateDirectInput()
    {
       int j;
-      if (directMouse) 
+      if (directMouse)
       {
          directMouse->lpVtbl->Unacquire(directMouse);
          directMouse->lpVtbl->Release(directMouse);
@@ -1041,7 +1041,7 @@ class Win32Interface : Interface
    #ifndef ECERE_NOJOYSTICK
       for(j=0; j<numJoysticks; j++)
       {
-         if (directJoysticks[j]) 
+         if (directJoysticks[j])
          {
             directJoysticks[j]->lpVtbl->Unacquire(directJoysticks[j]);
             directJoysticks[j]->lpVtbl->Release(directJoysticks[j]);
@@ -1050,7 +1050,7 @@ class Win32Interface : Interface
       }
       numJoysticks = 0;
    #endif
-      if(dInput) 
+      if(dInput)
       {
          dInput->lpVtbl->Release(dInput);
          dInput = null;
@@ -1087,7 +1087,7 @@ class Win32Interface : Interface
                dInput->lpVtbl->EnumDevices(dInput, DIDEVTYPE_JOYSTICK, JoystickCallback, null, DIEDFL_ATTACHEDONLY );
                for(j=0; j<NUMJOY; j++)
                   if(directJoysticks[j])
-                     if(!directJoysticks[j]->lpVtbl->SetDataFormat(directJoysticks[j], &c_dfDIJoystick )) 
+                     if(!directJoysticks[j]->lpVtbl->SetDataFormat(directJoysticks[j], &c_dfDIJoystick ))
                         directJoysticks[j]->lpVtbl->EnumObjects(directJoysticks[j], JoystickAxesCallback, directJoysticks[j], DIDFT_AXIS );
    #endif
                result = true;
@@ -1111,7 +1111,7 @@ class Win32Interface : Interface
                directMouse->lpVtbl->SetCooperativeLevel(directMouse, /*fullScreenMode ? */windowHandle /*: HWND_DESKTOP*/, DISCL_EXCLUSIVE|DISCL_FOREGROUND);
                directMouse->lpVtbl->Acquire(directMouse);
             }
-            else 
+            else
                directMouse->lpVtbl->Unacquire(directMouse);
          }
    #ifndef ECERE_NOJOYSTICK
@@ -1161,10 +1161,10 @@ class Win32Interface : Interface
    // --- User Interface System ---
    bool Initialize()
    {
-      WNDCLASS wcl = 
-      { 
-         CS_DBLCLKS, ApplicationWindow, 0L, 0L, 0, 
-         LoadIcon(null, IDI_APPLICATION), 
+      WNDCLASS wcl =
+      {
+         CS_DBLCLKS, ApplicationWindow, 0L, 0L, 0,
+         LoadIcon(null, IDI_APPLICATION),
          null,
          null,
          null,
@@ -1203,7 +1203,7 @@ class Win32Interface : Interface
          1000.0 / 500.0,
          TimerProc,0,TIME_PERIODIC);
          */
-      
+
    /*
       topWindow = CreateWindowEx(0, className, "",WS_POPUP,0,0,1,1,HWND_DESKTOP,
          null, hInstance, null);
@@ -1224,7 +1224,7 @@ class Win32Interface : Interface
       if(hiResTimer) timeKillEvent(hiResTimer);
       if(hertz)
          hiResTimer = timeSetEvent(1000 / hertz, 1000 / hertz, TimerProc, 0, TIME_PERIODIC);
-   }  
+   }
 
    bool ProcessInput(bool processAll)
    {
@@ -1345,13 +1345,13 @@ class Win32Interface : Interface
       {
          windowHandle = CreateWindowEx(0, className, text,
                         WS_POPUP,
-                        0,0,GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN), 
-                        HWND_DESKTOP, 
+                        0,0,GetSystemMetrics(SM_CXSCREEN),GetSystemMetrics(SM_CYSCREEN),
+                        HWND_DESKTOP,
                         null, hInstance, null);
          ShowWindow(windowHandle, SW_SHOWNORMAL);
       }
       else if(window.systemParent)
-         windowHandle = CreateWindowEx(0, className, text, 
+         windowHandle = CreateWindowEx(0, className, text,
          WS_CHILD,0,0,1,1, window.systemParent, null, hInstance, null);
       else
       {
@@ -1364,7 +1364,7 @@ class Win32Interface : Interface
 
          if(rootWindow && (window._isModal || window.style.interim))
             parentWindow = rootWindow.is3D ? rootWindow.parent.windowHandle : rootWindow.windowHandle;
-            
+
          if(window.alphaBlend)
          // if(window.background.a < 255) //&& window.style & ES_REDRAW) Not needed anymore?
             exStyle |= WS_EX_LAYERED; // | WS_EX_TRANSPARENT;
@@ -1401,7 +1401,7 @@ class Win32Interface : Interface
             windowHandle = CreateWindowEx(
                exStyle,
                className, text,
-               style | (window.systemParent ? WS_CHILD : 
+               style | (window.systemParent ? WS_CHILD :
                (WS_POPUP | (window.style.hasMinimize ? WS_MINIMIZEBOX : 0))),
                   0,0,1,1, parentWindow, null, hInstance, null);
    #if 0
@@ -1509,7 +1509,7 @@ class Win32Interface : Interface
 #endif
             // SetLayeredWindowAttributes(window.windowHandle, 0, 255 /*Max(A(window.background),1)*/, LWA_ALPHA);
          }
-      }  
+      }
    }
 
    void OffsetWindow(Window window, int * x, int * y)
@@ -1536,7 +1536,7 @@ class Win32Interface : Interface
          {
             case maximized:
             case normal:
-               ShowWindow(window.windowHandle, ((window.active || window.creationActivation == activate) && !externalDisplayChange) ? 
+               ShowWindow(window.windowHandle, ((window.active || window.creationActivation == activate) && !externalDisplayChange) ?
                   ((window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL) : SW_SHOWNOACTIVATE);
                break;
             case minimized:
@@ -1633,7 +1633,7 @@ class Win32Interface : Interface
    void SetCaret(int x, int y, int size)
    {
 
-   }  
+   }
 
    // --- Clipboard manipulation ---
 
@@ -1764,7 +1764,7 @@ class Win32Interface : Interface
              middle = (dims.rgbButtons[2] & 0x80) ? true : false };
       }
    #endif
-      
+
       return result;
    }
 
@@ -1776,9 +1776,9 @@ class Win32Interface : Interface
       {
          DIJOYSTATE dijs = {0};
    #ifndef ECERE_NOJOYSTICK
-         if(acquiredWindow && device < numJoysticks) 
+         if(acquiredWindow && device < numJoysticks)
          {
-            if(directJoysticks[device]) 
+            if(directJoysticks[device])
             {
                directJoysticks[device]->lpVtbl->Poll(directJoysticks[device]);
                if(directJoysticks[device]->lpVtbl->GetDeviceState(directJoysticks[device], sizeof(DIJOYSTATE), &dijs ))
@@ -1793,7 +1793,7 @@ class Win32Interface : Interface
          joystick.rx = dijs.lRx;
          joystick.ry = dijs.lRy;
          joystick.rz = dijs.lRz;
-         joystick.buttons = 
+         joystick.buttons =
               ((dijs.rgbButtons[0] & 0x80) ? JOY_BUTTON1 : 0)
             | ((dijs.rgbButtons[1] & 0x80) ? JOY_BUTTON2 : 0)
             | ((dijs.rgbButtons[2] & 0x80) ? JOY_BUTTON3 : 0)
@@ -1871,7 +1871,7 @@ class Win32Interface : Interface
             PixelFormat format = window.display.pixelFormat;
             int bits = GetDepthBits(format);
             bool blend;
-            
+
             bitmap.Convert(null, pixelFormat888, null);
             and.Allocate(null, (bitmap.width+7/8), bitmap.height, 0, pixelFormat8, false);
 
@@ -1909,7 +1909,7 @@ class Win32Interface : Interface
             }
             if(bits == 15) { bits = 16; format = pixelFormat565; };
             bitmap.Convert(null, format, null);
-            
+
             icon = CreateIcon(hInstance, bitmap.width, bitmap.height, 1, (byte)bits, and.picture, bitmap.picture);
             delete and;
          }
@@ -1931,7 +1931,7 @@ class Win32Interface : Interface
          GetMonitorInfo(monitor, &info);
          // box = { info.rcWork.left, info.rcWork.top, info.rcWork.right, info.rcWork.bottom };
          box = { info.rcMonitor.left, info.rcMonitor.top, info.rcMonitor.right-1, info.rcMonitor.bottom-1 };
-         
+
          if(taskBarMonitor == monitor)
          {
             if(taskBarPlacement.rcNormalPosition.top <= box.top && taskBarPlacement.rcNormalPosition.bottom >= box.bottom)
@@ -1968,7 +1968,7 @@ class Win32Interface : Interface
          box.top -= desktopY;
          box.right -= desktopX;
          box.bottom -= desktopY;
-      }      
+      }
    }
 }
 

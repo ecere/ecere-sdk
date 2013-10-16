@@ -94,7 +94,7 @@ public:
       {
          Container array;
          result = GetArray(type, &array);
-         
+
          if(type && eClass_IsDerived(type, class(Container)))
          {
             value.p = array;
@@ -139,9 +139,9 @@ public:
          }
          buffer[c] = 0;
          result = success;
-         
+
          if(type)
-         { 
+         {
             if(!strcmp(type.name, "bool"))
             {
                if(!strcmpi(buffer, "false")) value.i = 0;
@@ -156,7 +156,7 @@ public:
                else
                   result = typeMismatch;
             }
-            else if(!strcmpi(buffer, "null")) 
+            else if(!strcmpi(buffer, "null"))
             {
                value.p = 0;
             }
@@ -214,18 +214,18 @@ public:
                {
                   t = value.ui64;
                }
-               else if(arrayType.typeSize == sizeof(int) || !strcmp(arrayType.dataTypeString, "int") || 
+               else if(arrayType.typeSize == sizeof(int) || !strcmp(arrayType.dataTypeString, "int") ||
                   !strcmp(arrayType.dataTypeString, "unsigned int") || !strcmp(arrayType.dataTypeString, "uint"))
                {
                   t = value.i;
                }
-               else if(arrayType.typeSize == sizeof(short int) || !strcmp(arrayType.dataTypeString, "short") || 
-                  !strcmp(arrayType.dataTypeString, "unsigned short") || !strcmp(arrayType.dataTypeString, "uint16") || 
+               else if(arrayType.typeSize == sizeof(short int) || !strcmp(arrayType.dataTypeString, "short") ||
+                  !strcmp(arrayType.dataTypeString, "unsigned short") || !strcmp(arrayType.dataTypeString, "uint16") ||
                   !strcmp(arrayType.dataTypeString, "int16"))
                {
                   t = value.s;
                }
-               else if(arrayType.typeSize == sizeof(byte) || !strcmp(arrayType.dataTypeString, "char") || 
+               else if(arrayType.typeSize == sizeof(byte) || !strcmp(arrayType.dataTypeString, "char") ||
                   !strcmp(arrayType.dataTypeString, "unsigned char") || !strcmp(arrayType.dataTypeString, "byte"))
                {
                   t = value.c;
@@ -265,7 +265,7 @@ public:
             }
          }
       }
-      ch = 0;  
+      ch = 0;
       return result;
    }
 
@@ -299,7 +299,7 @@ public:
                      f.Getc(&unicode[0]);
                      f.Getc(&unicode[1]);
                      f.Getc(&unicode[2]);
-                     f.Getc(&unicode[3]);                  
+                     f.Getc(&unicode[3]);
                   }
                   escaped = false;
                }
@@ -370,7 +370,7 @@ public:
                      }
                      else
                         PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
-                  }                    
+                  }
                }
                // Find Member in Object Class
                {
@@ -425,18 +425,18 @@ public:
                                  {
                                     *(uint64 *)((byte *)*object + member._class.offset + member.offset) = value.ui64;
                                  }
-                                 else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") || 
+                                 else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                                     !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                                  {
                                     *(int *)((byte *)*object + member._class.offset + member.offset) = value.i;
                                  }
-                                 else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") || 
-                                    !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || 
+                                 else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                                    !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                                     !strcmp(type.dataTypeString, "int16"))
                                  {
                                     *(short *)((byte *)*object + member._class.offset + member.offset) = value.s;
                                  }
-                                 else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") || 
+                                 else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                                     !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                                  {
                                     *(char *)((byte *)*object + member._class.offset + member.offset) = value.c;
@@ -467,18 +467,18 @@ public:
                                  {
                                     ((void (*)(void *, uint64))(void *)prop.Set)(*object, value.ui64);
                                  }
-                                 else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") || 
+                                 else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                                     !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                                  {
                                     ((void (*)(void *, int))(void *)prop.Set)(*object, value.i);
                                  }
-                                 else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") || 
-                                    !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || 
+                                 else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                                    !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                                     !strcmp(type.dataTypeString, "int16"))
                                  {
                                     ((void (*)(void *, short))(void *)prop.Set)(*object, value.s);
                                  }
-                                 else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") || 
+                                 else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                                     !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                                  {
                                     ((void (*)(void *, char))(void *)prop.Set)(*object, value.c);
@@ -577,7 +577,7 @@ bool WriteArray(File f, Class type, Container array, int indent)
       Class arrayType = type.templateArgs[0].dataTypeClass;
       f.Puts("[\n");
       indent++;
-      
+
       while(it.Next())
       {
          byte * pointer;
@@ -586,8 +586,8 @@ bool WriteArray(File f, Class type, Container array, int indent)
          if(!isFirst)
             f.Puts(",\n");
          else
-            isFirst = false;         
-         
+            isFirst = false;
+
          // Add value
          // TODO: Verify the matching between template type and uint64
          if(arrayType.type == structClass)
@@ -607,18 +607,18 @@ bool WriteArray(File f, Class type, Container array, int indent)
          {
             value.ui64 = t;
          }
-         else if(arrayType.typeSize == sizeof(int) || !strcmp(arrayType.dataTypeString, "int") || 
+         else if(arrayType.typeSize == sizeof(int) || !strcmp(arrayType.dataTypeString, "int") ||
             !strcmp(arrayType.dataTypeString, "unsigned int") || !strcmp(arrayType.dataTypeString, "uint"))
          {
             value.i = (int)t;
          }
-         else if(arrayType.typeSize == sizeof(short int) || !strcmp(arrayType.dataTypeString, "short") || 
-            !strcmp(arrayType.dataTypeString, "unsigned short") || !strcmp(arrayType.dataTypeString, "uint16") || 
+         else if(arrayType.typeSize == sizeof(short int) || !strcmp(arrayType.dataTypeString, "short") ||
+            !strcmp(arrayType.dataTypeString, "unsigned short") || !strcmp(arrayType.dataTypeString, "uint16") ||
             !strcmp(arrayType.dataTypeString, "int16"))
          {
             value.s = (short)t;
          }
-         else if(arrayType.typeSize == sizeof(byte) || !strcmp(arrayType.dataTypeString, "char") || 
+         else if(arrayType.typeSize == sizeof(byte) || !strcmp(arrayType.dataTypeString, "char") ||
             !strcmp(arrayType.dataTypeString, "unsigned char") || !strcmp(arrayType.dataTypeString, "byte"))
          {
             value.c = (char)t;
@@ -629,11 +629,11 @@ bool WriteArray(File f, Class type, Container array, int indent)
          }
          for(i = 0; i<indent; i++) f.Puts("   ");
          WriteValue(f, arrayType, value, indent);
-      }      
+      }
       f.Puts("\n");
       indent--;
       for(i = 0; i<indent; i++) f.Puts("   ");
-      f.Puts("]");      
+      f.Puts("]");
    }
    else
       f.Puts("null");
@@ -733,7 +733,7 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
    else if(type.type == enumClass)
    {
       f.Puts("\"");
-      WriteNumber(f, type, value, indent);      
+      WriteNumber(f, type, value, indent);
       f.Puts("\"");
    }
    else if(eClass_IsDerived(type, class(Container)))
@@ -791,7 +791,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
          Property prop;
          int c;
          bool isFirst = true;
-         
+
          f.Puts("{\n");
          indent++;
 
@@ -821,18 +821,18 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   {
                      value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
                   }
-                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") || 
+                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                      !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                   {
                      value.i = ((int (*)(void *))(void *)prop.Get)(object);
                   }
-                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") || 
-                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || 
+                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                      !strcmp(type.dataTypeString, "int16"))
                   {
                      value.s = ((short (*)(void *))(void *)prop.Get)(object);
                   }
-                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") || 
+                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                      !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                   {
                      value.c = ((char (*)(void *))(void *)prop.Get)(object);
@@ -885,7 +885,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   {
                      value.ui64 = *(uint64 *)((byte *)object + member._class.offset + member.offset);
                   }
-                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") || 
+                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                      !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                   {
                      value.i = *(int *)((byte *)object + member._class.offset + member.offset);
@@ -893,20 +893,20 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         if(!value.i)
                            continue;
                   }
-                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") || 
-                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || 
+                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                      !strcmp(type.dataTypeString, "int16"))
                   {
                      value.s = *(short *)((byte *)object + member._class.offset + member.offset);
                   }
-                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") || 
+                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                      !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                   {
                      value.c = *(char *)((byte *)object + member._class.offset + member.offset);
                   }
                   else
                   {
-                     value.i = *(int *)((byte *)object + member._class.offset + member.offset);  
+                     value.i = *(int *)((byte *)object + member._class.offset + member.offset);
                   }
 
                   if(!isFirst) f.Puts(",\n");
@@ -920,7 +920,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   isFirst = false;
                }
             }
-         }   
+         }
 
          indent--;
          f.Puts("\n");

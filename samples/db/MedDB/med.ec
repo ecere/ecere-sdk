@@ -10,7 +10,7 @@ class ConcentrationEditor : Window
 {
    DataBox formEditor;
    DataBox amountEditor;
-   DataBox unitEditor;   
+   DataBox unitEditor;
 }
 
 default:
@@ -27,7 +27,7 @@ class Concentration
 {
 public:
    Form form;
-   double amount;   
+   double amount;
    Unit unit;
 
    bool Window::NotifyChanged(bool closed)
@@ -97,7 +97,7 @@ public:
          editor.amountEditor.SaveData();
       return false;
    }
-   
+
    void OnFree() { }    // WE DON'T WANT THE LISTBOX TO DELETE THE INSTANCES...
 };
 
@@ -118,7 +118,7 @@ dbtable "DrugClasses" DrugClass
    String name "name";
 };
 
-dbtable "SubClasses" SubClass 
+dbtable "SubClasses" SubClass
 {
    SubClass   id    "id";
    String     name  "name";

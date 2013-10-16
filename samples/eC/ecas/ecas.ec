@@ -15,7 +15,7 @@ class Form1 : Window
 
    bool OnCreate(void)
    {
-      
+
       return true;
    }
 
@@ -23,7 +23,7 @@ class Form1 : Window
    {
       if (ch=='\r')
          DoParse(true);
-      
+
       return true;
    }
 

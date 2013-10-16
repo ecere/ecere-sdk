@@ -201,7 +201,7 @@ class MedTesting : Window
                else
                {
                   boxCommercialNames.Load();
-                  boxGenericName.Clear();               
+                  boxGenericName.Clear();
                }
                boxSubClass.Clear();
                boxClass.Clear();
@@ -210,7 +210,7 @@ class MedTesting : Window
 
                answers.disabled = false;
             }
-         }         
+         }
          return true;
       }
    };
@@ -225,7 +225,7 @@ class MedTesting : Window
          SubClass subClass = row.subClass;
          DrugClass drugClass = row.drugClass;
          Restriction restriction = row.restriction;
-         FormConcentrations formConcentrations = row.formConcentrations;         
+         FormConcentrations formConcentrations = row.formConcentrations;
 
          // if(commercialNames.OnCompare(*(void **)boxCommercialNames.data))
          if(class(StringList)._vTbl[__ecereVMethodID_class_OnCompare](class(StringList), commercialNames, *(void **)boxCommercialNames.data))
@@ -234,7 +234,7 @@ class MedTesting : Window
          // if(genericName.OnCompare(*(void **)boxGenericName.data))
          if(class(String)._vTbl[__ecereVMethodID_class_OnCompare](class(String), genericName, *(void **)boxGenericName.data))
             boxGenericName.foreground = red;
-         
+
          if(drugClass.OnCompare(boxClass.data))
             boxClass.foreground = red;
 

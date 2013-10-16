@@ -12,11 +12,11 @@ class SettingsDialog : Window
    tabCycle = true;
    size = { 436, 120 };
    anchor = { horz = -83, vert = -104 };
-   
+
    Label docLabel { this, text = $"Documentation Path:", anchor = { left = 16, top = 16 }, labeledWindow = pathEditBox };
 
-   Button browseBtn 
-   { 
+   Button browseBtn
+   {
       this, text = "...", font = { $"Tahoma", 8.25f, bold = true }, hotKey = f2;
       anchor = { right = 20, top = 16 };
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -26,7 +26,7 @@ class SettingsDialog : Window
             pathEditBox.contents = settingsFileDialog.filePath; // display the selected directory in the edit box
          }
          return true;
-      }     
+      }
    };
 
    FileDialog settingsFileDialog
@@ -34,8 +34,8 @@ class SettingsDialog : Window
       type = selectDir, text = $"Select a path"; // set the file dialog box to choose a directory instead of a file.
    };
 
-   Button saveBtn 
-   { 
+   Button saveBtn
+   {
       this, text = $"Save", size = { 68, 21 }, position = { 224, 56 }, isDefault = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -44,11 +44,11 @@ class SettingsDialog : Window
          settingsContainer.Save(); // write that path to the ini file
          Destroy(DialogResult::ok); // close the window
          return true;
-      }  
+      }
    };
 
-   Button cancelBtn 
-   { 
+   Button cancelBtn
+   {
       this, text = $"Cancel", size = { 68, 21 }, position = { 304, 56 }, hotKey = escape;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)

@@ -32,7 +32,7 @@ public:
    {
       if(this && field)
       {
-         field._statusBar = null; 
+         field._statusBar = null;
          width -= field.width + (guiApp.textMode ? 0 : 6);
          fields.Remove(field);
          delete field;
@@ -86,7 +86,7 @@ private:
 
       if(!guiApp.textMode)
          surface.ThinBevel(false, -1,0, clientSize.w+2, clientSize.h+1);
-      
+
       for(field = fields.first; field; field = field.next)
       {
          int x = position - field.width;
@@ -111,7 +111,7 @@ private:
             surface.Clip(clip);
             surface.TextExtent(field.text, strlen(field.text), &tw, null);
             surface.WriteTextf(x + (field.width - tw) / 2, 2, field.text);
-            surface.Clip(null);         
+            surface.Clip(null);
          }
          position -= field.width + (guiApp.textMode ? 0 : 6);
       }
@@ -123,7 +123,7 @@ private:
          surface.SetForeground(white);
       else
          surface.SetForeground(foreground);
-         
+
       surface.WriteTextf(2, 2, text);
       surface.Clip(null);
    }
@@ -159,7 +159,7 @@ public:
    }
    property Color color
    {
-      set 
+      set
       {
          if(this)
          {

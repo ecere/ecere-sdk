@@ -47,7 +47,7 @@ static subclass(GlobalSettingsDriver) GetGlobalSettingsDriver(char * driverName)
       if(driver.name && !strcmp(driver.name, driverName))
          return driver;
    }
-   
+
    /*{
       Module module;
       char moduleName[MAX_LOCATION];
@@ -56,7 +56,7 @@ static subclass(GlobalSettingsDriver) GetGlobalSettingsDriver(char * driverName)
       {
          //Class dsdClass = class(GlobalSettingsDriver);
          Class dsdClass = eSystem_FindClass(module /-__thisModule.application-/, "GlobalSettingsDriver");
-         
+
          for(link = dsdClass.derivatives.first; link; link = link.next)
          {
             subclass(GlobalSettingsDriver) driver = link.data;
@@ -79,7 +79,7 @@ public:
    {
       set { delete settingsName; if(value && value[0]) settingsName = CopyString(value); }
       get { return settingsName; }
-   }; 
+   };
    property char * settingsExtension
    {
       set { delete settingsExtension; if(value && value[0]) settingsExtension = CopyString(value); }
@@ -93,7 +93,7 @@ public:
    property char * settingsFilePath
    {
       get { return settingsFilePath; }
-   }; 
+   };
    property bool allowDefaultLocations
    {
       set { allowDefaultLocations = value; }
@@ -164,7 +164,7 @@ private:
 
    char * PreparePortablePath()
    {
-      // 
+      //
       char * path = null;
       char location[MAX_LOCATION];
       LocateModule(null, location);
@@ -255,7 +255,7 @@ private:
       }
       return path;
    }
-   
+
    char * PrepareSystemPath()
    {
       char * path = new char[MAX_LOCATION];
@@ -384,7 +384,7 @@ public:
                   result = success;
             }
          }
-         
+
       }
       return result;
    }
@@ -519,7 +519,7 @@ public:
                      }
                   }
                   result = true;
-                  break;               
+                  break;
                }
             }
          }
@@ -561,7 +561,7 @@ public:
                   item.Next();
                   if(item.pointer)
                      strcat(outputLine, ",");
-               }            
+               }
                break;
             }
             case singleString:
@@ -599,8 +599,8 @@ public:
                if(!f.GetLine(line, sizeof(line)))
                   break;
                if(posBeforeSection == -1 || !line[0])
-                  posBeforeSection = pos;                
-               
+                  posBeforeSection = pos;
+
                if(line[0] == '[')
                {
                   // We've already reached next section

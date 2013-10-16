@@ -50,7 +50,7 @@ BOOL WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWO
 
 // Missing function...
 /*
-#ifndef WNetGetResourceInformation 
+#ifndef WNetGetResourceInformation
 DWORD APIENTRY WNetGetResourceInformationA(LPNETRESOURCE lpNetResource, LPVOID lpBuffer, LPDWORD lpcbBuffer, LPTSTR* lplpSystem);
 #ifdef UNICODE
 #define WNetGetResourceInformation  WNetGetResourceInformationW
@@ -290,7 +290,7 @@ public class File : IOChannel
    {
       Window editData = class::OnEdit(dataBox, obsolete, x + 24, y, w - 48, h, userData);
       Button load
-      { 
+      {
          dataBox, inactive = true, text = $"Import"."Imp", hotKey = f2,
          position = { Max(x + 24, x + w - 24), y }, size = { 24, h };
 
@@ -314,7 +314,7 @@ public class File : IOChannel
          }
       };
       Button save
-      { 
+      {
          dataBox, inactive = true, text = $"Export"."Exp", hotKey = f2,
          position = { Max(x + 24, x + w - 48), y }, size = { 24, h };
 
@@ -335,10 +335,10 @@ public class File : IOChannel
                   {
                      byte buffer[4096];
                      uint read = input.Read(buffer, 1, sizeof(buffer));
-                     f.Write(buffer, 1, read);                     
+                     f.Write(buffer, 1, read);
                   }
                   delete f;
-               }               
+               }
             }
             return true;
          }
@@ -518,7 +518,7 @@ public:
    {
       return input ? feof(input) : true;
    }
-   
+
    virtual bool Truncate(FileSize size)
    {
    #ifdef ECERE_BOOTSTRAP
@@ -529,7 +529,7 @@ public:
       return output ? (_chsize(fileno(output), size) == 0) : false;
    #else
       return output ? (ftruncate(fileno(output), size) == 0) : false;
-   #endif   
+   #endif
    #endif
    }
 
@@ -537,7 +537,7 @@ public:
    {
       return FILE_GetSize(input);
    }
-   
+
    virtual void CloseInput(void)
    {
       if(input)
@@ -630,13 +630,13 @@ public:
          while(c<max-1)
          {
             char ch = 0;
-         
+
             if(/*!Peek() || */ !Getc(&ch))
             {
                result = false;
                break;
             }
-            if(ch =='\n') 
+            if(ch =='\n')
                break;
             if(ch !='\r')
                s[c++]=ch;
@@ -680,11 +680,11 @@ public:
             else
                string[c]=ch;
 
-            if(!Getc(&ch)) 
+            if(!Getc(&ch))
             {
                c++;
                result = false;
-               break;            
+               break;
             }
          }
          string[c]=0;
@@ -727,7 +727,7 @@ public:
       set
       {
          FILE_set_buffered(input, output, value);
-      }      
+      }
    }
    property bool eof { get { return Eof(); } }
 
@@ -805,7 +805,7 @@ public:
          //if(!result)
          {
             /* TOFIX:
-            LogErrorCode((mode == Read || mode == ReadWrite) ? 
+            LogErrorCode((mode == Read || mode == ReadWrite) ?
                ERR_FILE_NOT_FOUND : ERR_FILE_WRITE_FAILED, fileName);
             */
          }
@@ -900,7 +900,7 @@ default void TimeStampToWin32FileTime(TimeStamp t, FILETIME * fileTime)
    // TIME_ZONE_INFORMATION tz = { 0 };
    SYSTEMTIME st, lt;
    DateTime tm;
-   
+
    tm = t;
 
    st.wYear = (short)tm.year;
@@ -1007,7 +1007,7 @@ public File FileOpen(char * fileName, FileOpenMode mode)
             {
                delete file;
                /* TOFIX:
-               LogErrorCode((mode == Read || mode == ReadWrite) ? 
+               LogErrorCode((mode == Read || mode == ReadWrite) ?
                   ERR_FILE_NOT_FOUND : ERR_FILE_WRITE_FAILED, fileName);
                */
             }
@@ -1113,7 +1113,7 @@ public bool FileSetTime(char * fileName, TimeStamp created, TimeStamp accessed, 
       if(hFile != INVALID_HANDLE_VALUE)
       {
          FILETIME c, a, m;
-      
+
          TimeStampToWin32FileTime(created, &c);
          TimeStampToWin32FileTime(accessed, &a);
          TimeStampToWin32FileTime(modified, &m);
@@ -1127,7 +1127,7 @@ public bool FileSetTime(char * fileName, TimeStamp created, TimeStamp accessed, 
             mm = Win32FileTimeToTimeStamp(&m);
          }
          */
-                  
+
          if(SetFileTime(hFile, &c, &a, &m))
             result = true;
 
@@ -1183,7 +1183,7 @@ static FileDesc FileFind(char * path, char * extensions)
       else
       {
          Dir d;
-      
+
          if((d = file.dir = Dir {}))
          {
 #if defined(__WIN32__)
@@ -1217,8 +1217,8 @@ static FileDesc FileFind(char * path, char * extensions)
                      }
                      drives ^= (1<<c);
                      if(driveType == DRIVE_NO_ROOT_DIR) continue;
-                  
-                     if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE && 
+
+                     if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE &&
                         GetVolumeInformation(_wfilePath, _wvolume, MAX_FILENAME - 1, null, null, null, null, 0))
                      {
                         file.path[2] = '\0';
@@ -1356,7 +1356,7 @@ static FileDesc FileFind(char * path, char * extensions)
 
                      size = 512 * sizeof(NETRESOURCE);
                      resources = (NETRESOURCE *)new0 byte[size];
-                  
+
                      // Entire Network
                      WNetOpenEnum(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, &buffer[c], &handle);
                      while(true)
@@ -1545,7 +1545,7 @@ private class FileDesc : struct
                         _wpath[3] = 0;
                      }
 
-                     if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE && 
+                     if(driveType != DRIVE_REMOVABLE && driveType != DRIVE_REMOTE &&
                         GetVolumeInformation(_wpath, _wvolume, MAX_FILENAME - 1, null, null, null, null, 0))
                      {
                         UTF16toUTF8Buffer(_wvolume, volume, MAX_FILENAME);
@@ -1639,7 +1639,7 @@ private class FileDesc : struct
                               break;
                            countInGroup = 0xFFFFFFFF;
                            resources = (NETRESOURCE *)renew0 resources byte[size];
-                           
+
                         }
                         WNetCloseEnum(handle);
                         d.numResources = countInGroup;
@@ -1665,7 +1665,7 @@ private class FileDesc : struct
                      }
                      else
                      {
-                        if(d.resources) 
+                        if(d.resources)
                            delete d.resources;
                      }
                   }
@@ -1778,7 +1778,7 @@ public File CreateTemporaryFile(char * tempFileName, char * template)
    //strcpy(buffer, template);
    strcat(buffer, "XXXXXX");
    // mktemp(buffer);
-   fd = mkstemp(buffer);   
+   fd = mkstemp(buffer);
    strcpy(tempFileName, buffer);
    f = { };
    f.output = f.input = fdopen(fd, "r+");
@@ -1787,7 +1787,7 @@ public File CreateTemporaryFile(char * tempFileName, char * template)
    GetTempPathA(MAX_LOCATION, tempPath);     // TODO: Patch this whole thing to support Unicode temp path
    GetTempFileNameA(tempPath, template, 0, tempFileName);
    f = FileOpen(tempFileName, readWrite);
-#endif   
+#endif
    return f;
 #endif
 }

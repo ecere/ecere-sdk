@@ -41,7 +41,7 @@ public class Thread
    ~Thread()
    {
 #if defined(__WIN32__)
-      if(handle) 
+      if(handle)
          CloseHandle(handle);
 #endif
    }
@@ -114,7 +114,7 @@ public:
          handle = null;
       }
 #else
-      if(started) 
+      if(started)
          pthread_kill(id, SIGQUIT);
 #endif
       if(started)
@@ -130,7 +130,7 @@ public:
       if(WaitForSingleObject(handle, INFINITE /*2000*/) == WAIT_TIMEOUT)
          PrintLn("Thread not returning?\n");
 #else
-      
+
       /*dontDetach = true;
       if(started)
          pthread_join(id, NULL);*/
@@ -151,7 +151,7 @@ public:
       param.sched_priority = (priority > 0) ? (priority * 99 / 15) : 0;
       pthread_setschedparam(id, policy, &param);
       */
-#endif      
+#endif
    }
 
    property bool created { get { return started; } };

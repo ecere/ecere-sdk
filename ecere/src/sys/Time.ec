@@ -157,7 +157,7 @@ static uint TIME_CompTimeZoneID(const TIME_ZONE_INFORMATION *pTZinfo, FILETIME *
       else if( beforeStandardDate || afterDaylightDate )
          retval = TIME_ZONE_ID_DAYLIGHT;
    }
-   else 
+   else
       retval = TIME_ZONE_ID_UNKNOWN;
    return retval;
 }
@@ -177,7 +177,7 @@ static bool TIME_GetTimezoneBias(const TIME_ZONE_INFORMATION *pTZinfo, FILETIME 
    return true;
 }
 
-static bool _TzSpecificLocalTimeToSystemTime(LPTIME_ZONE_INFORMATION lpTimeZoneInformation, LPSYSTEMTIME lpLocalTime, LPSYSTEMTIME lpUniversalTime)       
+static bool _TzSpecificLocalTimeToSystemTime(LPTIME_ZONE_INFORMATION lpTimeZoneInformation, LPSYSTEMTIME lpLocalTime, LPSYSTEMTIME lpUniversalTime)
 {
    FILETIME ft;
    LONG lBias;
@@ -219,7 +219,7 @@ public class Time : double
       value = (int)(time / (60 * 60 * 24));
       if(value)
       {
-         
+
          sprintf(temp, "%d:", value);
          strcat(tempString, temp);
          time -= value * 60 * 60 * 24;
@@ -532,7 +532,7 @@ public struct DateTime
       #else
          struct tm tm;
          //time_t t = (time_t)(SecSince1970)this;
-         time_t t = MakeTimeTfromDT(this);         
+         time_t t = MakeTimeTfromDT(this);
          gmtime_r(&t, &tm);
          value.year = tm.tm_year + 1900;
          value.month = (Month)tm.tm_mon;
@@ -594,7 +594,7 @@ public struct DateTime
       {
          int64 days, y;
          int rem;
-            
+
          days = value / SECS_PER_DAY;
          rem = (int)(value % SECS_PER_DAY);
 
@@ -666,7 +666,7 @@ public struct DateTime
       if(!year && !day && !month && !this.hour && !minute && !second)
          stringOutput[0] = 0;
       else
-         sprintf(stringOutput, "%s %s %2d %2d:%02d:%02d %s %04d", 
+         sprintf(stringOutput, "%s %s %2d %2d:%02d:%02d %s %04d",
             shortDaysNames[dayOfTheWeek], shortMonthsNames[month], day, hour, minute, second, ampm[pm], year);
 
       return stringOutput;
@@ -690,16 +690,16 @@ public struct DateTime
       for(c = 0; c < count; c++)
       {
          int i;
-         for(i = 0; i<7; i++) 
+         for(i = 0; i<7; i++)
             if(!strcmpi(tokens[c], shortDaysNames[i]) || !strcmpi(tokens[c], longDaysNames[i]) ||
                !strcmpi(tokens[c], enShortDaysNames[i]) || !strcmpi(tokens[c], enLongDaysNames[i]))
-               break;               
+               break;
          if(i < 7) { dayOfTheWeek = (DayOfTheWeek)i; foundDayOfTheWeek = true; continue; }
 
-         for(i = 0; i<12; i++) 
+         for(i = 0; i<12; i++)
             if(!strcmpi(tokens[c], shortMonthsNames[i]) || !strcmpi(tokens[c], longMonthsNames[i]) ||
                !strcmpi(tokens[c], enShortMonthsNames[i]) || !strcmpi(tokens[c], enLongMonthsNames[i]))
-               break;               
+               break;
          if(i < 12) { month = (Month)i; continue; }
 
          if(strchr(tokens[c], ':'))
@@ -714,9 +714,9 @@ public struct DateTime
                else if(!strcmpi(subTokens[t], "pm")) pm = true;
                else if(t-am-pm == 0) hour = atoi(subTokens[t]);
                else if(t-am-pm == 1) minute = atoi(subTokens[t]);
-               else if(t-am-pm == 2) second = atoi(subTokens[t]);               
+               else if(t-am-pm == 2) second = atoi(subTokens[t]);
             }
-            
+
             if(c < count - 1)
             {
                if(!strcmpi(tokens[c+1], "am")) am = true;
@@ -728,7 +728,7 @@ public struct DateTime
 
             continue;
          }
-         
+
          if(!foundDate)
          {
             if(strchr(tokens[c], '/') || strchr(tokens[c], '-'))

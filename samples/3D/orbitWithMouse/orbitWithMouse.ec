@@ -111,7 +111,7 @@ static bool CreateBack(Mesh mesh, int width, int height, int depth, DisplaySyste
          };
          uint16 indices[4] =
          {
-            5,6,7,4, 
+            5,6,7,4,
          };
 
          CopyBytes(mesh.vertices, vertices, sizeof(vertices));
@@ -252,9 +252,9 @@ static bool CreateSide(Mesh mesh, int width, int height, int depth, DisplaySyste
          uint16 indices[16] =
          {
             // up, down, right, left
-            17,21,20,16 , 
-            22,18,19,23, 
-            9,10,14,13, 
+            17,21,20,16 ,
+            22,18,19,23,
+            9,10,14,13,
             12,15,11,8
          };
 
@@ -281,7 +281,7 @@ static bool CreateSide(Mesh mesh, int width, int height, int depth, DisplaySyste
 class Desktop3D : Window
 {
    text = "Orbiting 3D Desktop", size = Size { WINDOW_WIDTH,WINDOW_HEIGHT };
-      
+
    Object lookAt {};
    Camera camera
    {
@@ -340,7 +340,7 @@ class Desktop3D : Window
             dock.speed = 0;
             dock.currentIcon--;
             if(dock.currentIcon < 0)
-               dock.currentIcon += NUM_ICONS;                  
+               dock.currentIcon += NUM_ICONS;
             dockTimer.Stop();
          }
          return true;
@@ -386,13 +386,13 @@ class Desktop3D : Window
             if(sliding == 1 && switching == 1 && entering == 1)
             {
                globalPosition += (double)diffTime * ORBIT_SPEED;
-         
+
                for(child = firstChild; child; child = child.next)
                {
                   if(child.display != display)
                   {
                      Window3D window3D = Desktop3DGetWindowHandle(child);
-               
+
                      if(window3D.position < window3D.wantedPosition - 0.000001)
                      {
                         window3D.wantedPosition += (double)diffTime * ORBIT_SPEED;
@@ -481,7 +481,7 @@ class Desktop3D : Window
             position.x = fromPosition.x + factor * (toPosition.x - fromPosition.x);
             position.y = fromPosition.y + factor * (toPosition.y - fromPosition.y);
             position.z = fromPosition.z + factor * (toPosition.z - fromPosition.z);
-            
+
             camera.AdjustAngle(angle);
             camera.AdjustPosition(position);
          }
@@ -507,7 +507,7 @@ class Desktop3D : Window
       // sliding = 1;
       switching = 1;
       entering = 1;
-      
+
       light.diffuse = white;
       light.specular = white;
       light.orientation = Euler {  }; //Quaternion { 1,0,Pi,0 };
@@ -584,7 +584,7 @@ class Desktop3D : Window
          icon -= 2;
          if(icon < 0) icon += NUM_ICONS;
       /*
-         eSurface_Blit(surface, dock.background, 0,0,0,0, 
+         eSurface_Blit(surface, dock.background, 0,0,0,0,
             dock.background->width, dock.background->height);
       */
          for(c = 0; c<NUM_ICONS; c++)
@@ -658,7 +658,7 @@ class Desktop3D : Window
    void OnRedraw(Surface surface)
    {
       Window child;
-      
+
       surface.Clear(depthBuffer);
 
       //PrintLn("position: ", camera.cPosition);
@@ -730,7 +730,7 @@ class Desktop3D : Window
 
                camera.Unproject(startPositionProjected, startPositionView);
                camera.Untransform(startPositionView, startPositionWorld);
-               
+
                finalPosition.x = (float)(cos(window3D.position) * ORBIT_RADIUS);
                finalPosition.y = 0;
                finalPosition.z = (float)(sin(window3D.position) * ORBIT_RADIUS);
@@ -788,8 +788,8 @@ class Desktop3D : Window
          }
       }
 
-      // display.DrawObject(knot);   
-     
+      // display.DrawObject(knot);
+
       display.SetCamera(null, null);
 
       Dock_OnRedraw(surface);
@@ -813,7 +813,7 @@ class Desktop3D : Window
          display.DrawObject(window3D.cube.Find("Front"));
       }
       else
-      {     
+      {
          HitRecord hit;
          OldList list;
 
@@ -827,7 +827,7 @@ class Desktop3D : Window
             }
          }
          display.GetHits(list);
-        
+
          hit = list.first;
          if(hit && hit.numTags)
          {
@@ -921,7 +921,7 @@ class Desktop3D : Window
             }
          }
       }
-      
+
       return true;
    }
 
@@ -963,14 +963,14 @@ class Desktop3D : Window
    {
       int mx, my;
       bool back;
-      
+
       Window clickedWindow = GetCursorLocation(x, y, &mx, &my, &back);
       if(clickedWindow)
       {
          Desktop3DMouseMessage(clickedWindow, 26, mx, my, &mods, false, true);
 
       }
-            
+
       if(moving)
       {
          ReleaseCapture();
@@ -982,7 +982,7 @@ class Desktop3D : Window
    bool OnKeyHit(Key key, unichar character)
    {
       static int id = 0;
-      static char * shotFileNames[] = 
+      static char * shotFileNames[] =
       {
          ":shot1.jpg", ":shot2.jpg", ":shot3.jpg", ":shot4.jpg"
       };
@@ -1067,7 +1067,7 @@ class Desktop3D : Window
                   {
                      EditBox
                      {
-                        this, multiLine = true, is3D = true, borderStyle = Fixed, hasClose = true, text = "Video", 
+                        this, multiLine = true, is3D = true, borderStyle = Fixed, hasClose = true, text = "Video",
                         size = Size { WINDOW_WIDTH, WINDOW_HEIGHT }, fileName = ":430.flc"
                      }.Create();
                   }
@@ -1075,7 +1075,7 @@ class Desktop3D : Window
                   {
                      Picture
                      {
-                        this, is3D = true, borderStyle = fixed, hasClose = true, text = "3D Window", 
+                        this, is3D = true, borderStyle = fixed, hasClose = true, text = "3D Window",
                         size = Size { WINDOW_WIDTH, WINDOW_HEIGHT }, image = BitmapResource { fileName = shotFileNames[id] }, opacity = 1, inactive = false
                      }.Create();
                   }
@@ -1275,11 +1275,11 @@ static Window3D Setup3DWindow(Window window, int w, int h)
          if(child == window)
             child3D = window3D;
 
-         child3D.wantedPosition = virtualDesktop.globalPosition + 
+         child3D.wantedPosition = virtualDesktop.globalPosition +
             child3D.id * 2*Pi / (virtualDesktop.numWindows+1);
          if(child == window)
             window3D.position = window3D.wantedPosition;
-         virtualDesktop.poppingBiggest = Max(virtualDesktop.poppingBiggest, 
+         virtualDesktop.poppingBiggest = Max(virtualDesktop.poppingBiggest,
             child3D.position - child3D.wantedPosition);
       }
    }
@@ -1300,7 +1300,7 @@ static void Update3DWindow(Window window, Box box)
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-   glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 
+   glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
       box.left,
       window.size.h - h - box.top,
       box.left + virtualDesktop.clientStart.x,

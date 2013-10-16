@@ -109,12 +109,12 @@ static void ball_line_collide_sub(BallLineReturn ret,double r,const Vector2D a,c
 {
 	Vector2D pc1;
 	double t_pa,t_pb,t_c0,t_c1;
-	
+
 	//TODO:  Consider |b|=0
-	
+
 	t_pa=LineIntersect(a,b,pa);
 	t_pb=LineIntersect(a,b,pb);
-	
+
    ret.s = b;
 	if (t_pa<t_pb && t_pa!=INF)
 	{
@@ -126,9 +126,9 @@ static void ball_line_collide_sub(BallLineReturn ret,double r,const Vector2D a,c
 		ret.t=t_pb;
 		goto finalize;
 	}
-	
+
 	t_c0=CircleIntersect(a,r,pc);
-	
+
 	if (t_c0!=INF)
 	{
 		ret.t=t_c0;
@@ -136,10 +136,10 @@ static void ball_line_collide_sub(BallLineReturn ret,double r,const Vector2D a,c
 		ret.s.y = pc.x - a.x*t_c0;
 		goto finalize;
 	}
-	
+
    pc1.Add(pc, b);
 	t_c1=CircleIntersect(a,r,pc1);
-	
+
 	if (t_c1!=INF)
 	{
 		ret.t=t_c1;
@@ -147,7 +147,7 @@ static void ball_line_collide_sub(BallLineReturn ret,double r,const Vector2D a,c
 		ret.s.y = pc1.x - a.x*t_c1;
 		goto finalize;
 	}
-	
+
 	ret.t=INF;
 	return;
 finalize:
@@ -161,9 +161,9 @@ void BallLineCollide(BallLineReturn ret,double r,const Vector2D a,const Vector2D
 	Vector2D a2; //copy of 'a' that can be reversed for backtracing
 	char backtracing=0;
    //printf("Colliding %f, <%f,%f>, <%f,%f>, <%f,%f>\n", r, a.x, a.y, b.x, b.y, pc.x, pc.y);
-	
+
 	//TODO:  Consider |b|=0
-	
+
 	//initialize some vectors
    a2 = a;
    p.x = b.y;
@@ -175,14 +175,14 @@ void BallLineCollide(BallLineReturn ret,double r,const Vector2D a,const Vector2D
    pb.Add(pc,p);
 	p.x*=2.0;
 	p.y*=2.0;
-	
+
 	//Find out if the ball is inside the line (and thus if we need to backtrace)
 	{
-		
+
 		double dist_ca,dist_cb;
 		double b_squared,p_squared,v_dot_b,v_dot_p;
 		double pcx=pc.x,pcy=pc.y;
-		
+
 		dist_ca=pcx*pcx+pcy*pcy;
 		pcx+=b.x;
 		pcy+=b.y;

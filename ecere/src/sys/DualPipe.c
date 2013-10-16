@@ -170,7 +170,7 @@ bool DualPipe_Seek(_DualPipe * dp, int pos, FileSeekMode mode)
          result = SetFilePointer(dp->inputHandle, pos, null, FILE_END) != -1;
          break;
    }
-   return result;   
+   return result;
 #endif
    return false;
 }
@@ -195,7 +195,7 @@ bool DualPipe_Eof(_DualPipe * dp)
 // Not yet supported... Will ever be?
 bool DualPipe_GetSize(_DualPipe * dp)
 {
-   return 0; 
+   return 0;
 }
 
 bool DualPipe_Peek(_DualPipe * dp)
@@ -208,7 +208,7 @@ bool DualPipe_Peek(_DualPipe * dp)
       unsigned int read;
       char buffer[1];
       dp->eof = !ReadFile(dp->inputHandle, buffer, 0, (DWORD *)&read, null);
-   }      
+   }
    return avail ? true : false;
 #else
    bool result = false; //true; // false
@@ -273,7 +273,7 @@ int DualPipe_GetProcessID(_DualPipe * dp)
 
 void DualPipe_Wait(_DualPipe * dp)
 {
-#if defined(__WIN32__)   
+#if defined(__WIN32__)
    WaitForSingleObject(dp->hProcess, INFINITE);
 #else
    if(dp->pid)
@@ -283,7 +283,7 @@ void DualPipe_Wait(_DualPipe * dp)
       dp->exitCode = WEXITSTATUS(status);
       dp->gotExitCode = true;
    }
-#endif   
+#endif
 }
 
 _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, void ** inputPtr, void ** outputPtr)
@@ -297,7 +297,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
       FILE * input = null, * output = null;
       int hInput[2] = { 0 }, hOutput[2] = { 0 };
       pid_t pid;
-      
+
       if((mode & POM_error) || (mode & POM_output))
          pipe(hOutput);
 
@@ -330,21 +330,21 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
             close(hInput[PIPE_WRITE]);
          if(hOutput[PIPE_READ])
             close(hOutput[PIPE_READ]);
-         
+
          if((mode & POM_error) && hOutput[PIPE_WRITE] != STDERR_FILENO)
             dup2(hOutput[PIPE_WRITE], STDERR_FILENO);
 
          if((mode & POM_output) && hOutput[PIPE_WRITE] != STDOUT_FILENO)
             dup2(hOutput[PIPE_WRITE], STDOUT_FILENO);
          if(hOutput[PIPE_WRITE] && hOutput[PIPE_WRITE] != STDOUT_FILENO)
-            close(hOutput[PIPE_WRITE]);            
-         
+            close(hOutput[PIPE_WRITE]);
+
          if((mode & POM_input) && hInput[PIPE_READ] != STDIN_FILENO)
          {
             dup2(hInput[PIPE_READ], STDIN_FILENO);
             close(hInput[PIPE_READ]);
          }
-         
+
 #if 0 //#ifdef _DEBUG
          fprintf(stderr, "\n_DualPipeOpen (in child): %s\n\n", commandLineCopy);
 #endif
@@ -415,10 +415,10 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
       if((mode & POM_output) || !hStdOut)
          CreatePipe(&hOutput[PIPE_READ],&hOutput[PIPE_WRITE],&sa,0);
 
-      if(( (mode & POM_error) && !(mode & POM_output)) || 
+      if(( (mode & POM_error) && !(mode & POM_output)) ||
          (!(mode & POM_error) && !hStdErr))
          CreatePipe(&hError[PIPE_READ], &hError[PIPE_WRITE],&sa,0);
-         
+
       if((mode & POM_input) || !hStdIn)
          CreatePipe(&hInput[PIPE_READ], &hInput[PIPE_WRITE], &sa,0);
 
@@ -430,7 +430,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
          DuplicateHandle(GetCurrentProcess(),hOutput[PIPE_READ],GetCurrentProcess(),&hOutputRead,0,FALSE,DUPLICATE_SAME_ACCESS);
          DuplicateHandle(GetCurrentProcess(),hOutput[PIPE_WRITE],GetCurrentProcess(),&hError[PIPE_WRITE],0,TRUE,DUPLICATE_SAME_ACCESS);
       }
-      else 
+      else
       {
          if(hOutput[PIPE_WRITE])
             DuplicateHandle(GetCurrentProcess(),hOutput[PIPE_READ],GetCurrentProcess(),&hOutputRead,0,FALSE,DUPLICATE_SAME_ACCESS);

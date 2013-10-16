@@ -3,7 +3,7 @@
 
    Copyright (c) 2001-2007 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    tetris.ec - Tetris
 ****************************************************************************/
 import "ecere"
@@ -275,7 +275,7 @@ class Tetris : Window
       host.disabled = false;
       disconnect.disabled = false;
       stop.disabled = false;
-      
+
       if(!hosting)
          stop.disabled = true;
       if(!sockets[SERVER])
@@ -283,7 +283,7 @@ class Tetris : Window
 
       if(hosting || sockets[SERVER])
          host.disabled = true;
-         
+
       if(sockets[CLIENT] || hosting)
          join.disabled = true;
 
@@ -331,7 +331,7 @@ class Tetris : Window
                      case 0: case 2: rx += piece->x0; break;
                      case 1: case 3: rx += piece->x1; break;
                   }
-                  
+
                   square = piece->data[y * piece->w + x];
                   if(square)
                      surface.Blit(squares[square-1], (rx + playerx) * 16, (ry + playery) * 16, 0, 0, 16, 16);
@@ -357,7 +357,7 @@ class Tetris : Window
                   case 0: case 2: rx += piece->x0; break;
                   case 1: case 3: rx += piece->x1; break;
                }
-               
+
                square = piece->data[y * piece->w + x];
                if(square)
                   surface.Blit(squares[square-1], rx * 16 + (WIDTH + 2) * 16, ry * 16 + 10, 0, 0, 16, 16);
@@ -480,7 +480,7 @@ class Tetris : Window
                memmove(&board[1], &board, y * WIDTH);
             memset(&board, 0, WIDTH);
             y++;
-         }  
+         }
       }
 
       NewPiece();
@@ -493,7 +493,7 @@ class Tetris : Window
          playery++;
       }
       playery--;
-      FreezePiece();  
+      FreezePiece();
    }
 
    bool CheckPiece()
@@ -554,7 +554,7 @@ class Tetris : Window
                playerx = Min(playerx, 12 - ((angle == 0 || angle == 2) ? (piece->x0 + piece->w) : (piece->x1 + piece->h)));
                if(CheckPiece())
                {
-                  if(key == left) playerx++; else playerx--;               
+                  if(key == left) playerx++; else playerx--;
                }
                break;
             case down:
@@ -565,7 +565,7 @@ class Tetris : Window
                   FreezePiece();
                }
                break;
-            case up: 
+            case up:
             {
                int oldx = playerx;
                angle++;

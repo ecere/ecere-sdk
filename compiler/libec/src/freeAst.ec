@@ -399,7 +399,7 @@ static void _FreeExpression(Expression exp, bool freePointer)
       {
          if(exp.index.exp)
             FreeExpression(exp.index.exp);
-         if(exp.index.index) 
+         if(exp.index.index)
             FreeList(exp.index.index, FreeExpression);
          break;
       }
@@ -693,10 +693,10 @@ void FreeStatement(Statement stmt)
       {
          if(stmt.forStmt.init)
             FreeStatement(stmt.forStmt.init);
-         
+
          if(stmt.forStmt.check)
             FreeStatement(stmt.forStmt.check);
-         
+
          if(stmt.forStmt.increment)
             FreeList(stmt.forStmt.increment, FreeExpression);
          if(stmt.forStmt.stmt)
@@ -888,7 +888,7 @@ void FreeInstance(Instantiation inst)
 
    if(inst._class)
       FreeSpecifier(inst._class);
-   
+
    // Free symbol?
    // Free data;
 
@@ -936,7 +936,7 @@ void FreeProperty(PropertyDef def)
       FreeStatement(def.issetStmt);
    if(def.category)
       FreeExpression(def.category);
-   
+
    /*
    if(def.getFunction)
       FreeFunction(def.getFunction);
@@ -1071,15 +1071,15 @@ void FreeExternal(External external)
 {
    switch(external.type)
    {
-      case functionExternal: 
+      case functionExternal:
          if(external.function)
             FreeFunction(external.function);
          break;
-      case declarationExternal: 
+      case declarationExternal:
          if(external.declaration)
             FreeDeclaration(external.declaration);
          break;
-      case classExternal: 
+      case classExternal:
          if(external._class)
             FreeClass(external._class);
          break;
@@ -1132,7 +1132,7 @@ void FreeModuleData(Module module)
 {
    Class _class;
    GlobalFunction function;
-   
+
    // Unload classes
    for(_class = module.classes.first; _class; _class = _class.next)
    {
@@ -1202,12 +1202,12 @@ void FreeModuleData(Module module)
          }
       }
    }
-   
+
    for(function = module.functions.first; function; function = function.next)
    {
-      if(function.dataType) 
+      if(function.dataType)
          FreeType(function.dataType);
-      if(function.symbol) 
+      if(function.symbol)
          FreeSymbol(function.symbol);
    }
 

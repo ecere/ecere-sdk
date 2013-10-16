@@ -9,7 +9,7 @@ public struct AnchorValue
    union
    {
       int distance;
-      float percent;      
+      float percent;
    };
    property int
    {
@@ -36,7 +36,7 @@ public struct AnchorValue
          c = strlen(stringOutput)-1;
          for( ; c >= 0; c--)
          {
-            if(stringOutput[c] != '0') 
+            if(stringOutput[c] != '0')
                last = Max(last, c);
             if(stringOutput[c] == '.')
             {
@@ -61,7 +61,7 @@ public struct AnchorValue
       if(strchr(stringOutput, '.'))
       {
          float percent = (float)strtod(stringOutput, &end);
-         
+
          if(end != stringOutput)
          {
             this.percent = percent;
@@ -96,7 +96,7 @@ public struct MiddleAnchorValue
    union
    {
       int distance;
-      float percent;      
+      float percent;
    };
    property int
    {
@@ -119,7 +119,7 @@ public struct MiddleAnchorValue
          c = strlen(stringOutput)-1;
          for( ; c >= 0; c--)
          {
-            if(stringOutput[c] != '0') 
+            if(stringOutput[c] != '0')
                last = Max(last, c);
             if(stringOutput[c] == '.')
             {
@@ -164,7 +164,7 @@ public struct Anchor
 {
    union { AnchorValue left; MiddleAnchorValue horz; };
    union { AnchorValue top; MiddleAnchorValue vert; };
-   AnchorValue right, bottom;      
+   AnchorValue right, bottom;
 
    char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
@@ -175,7 +175,7 @@ public struct Anchor
       tempString[0] = '\0';
       anchorValue = left.OnGetString(tempString, null, &subNeedClass);
       if(anchorValue[0]) { if(stringOutput[0]) strcat(stringOutput, ", "); strcat(stringOutput, "left = "); strcat(stringOutput, anchorValue); }
-      
+
       //if(((!left.type && !right.type) && horz.distance) || horz.type == middleRelative)
       if(!right.type && ((!left.type && horz.distance) || horz.type == middleRelative))
       {
@@ -183,11 +183,11 @@ public struct Anchor
          anchorValue = horz.OnGetString(tempString, null, &subNeedClass);
          if(anchorValue[0]) { if(stringOutput[0]) strcat(stringOutput, ", "); strcat(stringOutput, "horz = "); strcat(stringOutput, anchorValue); }
       }
-      
+
       tempString[0] = '\0';
       anchorValue = top.OnGetString(tempString, null, &subNeedClass);
       if(anchorValue[0]) { if(stringOutput[0]) strcat(stringOutput, ", "); strcat(stringOutput, "top = "); strcat(stringOutput, anchorValue); }
-      
+
       tempString[0] = '\0';
       anchorValue = right.OnGetString(tempString, null, &subNeedClass);
       if(anchorValue[0]) { if(stringOutput[0]) strcat(stringOutput, ", "); strcat(stringOutput, "right = "); strcat(stringOutput, anchorValue); }
@@ -199,11 +199,11 @@ public struct Anchor
          anchorValue = vert.OnGetString(tempString, null, &subNeedClass);
          if(anchorValue[0]) { if(stringOutput[0]) strcat(stringOutput, ", "); strcat(stringOutput, "vert = "); strcat(stringOutput, anchorValue); }
       }
-      
+
       tempString[0] = '\0';
       anchorValue = bottom.OnGetString(tempString, null, &subNeedClass);
       if(anchorValue[0]) { if(stringOutput[0]) strcat(stringOutput, ", "); strcat(stringOutput, "bottom = "); strcat(stringOutput, anchorValue); }
-      
+
       return stringOutput;
    }
 
@@ -234,7 +234,7 @@ public struct Anchor
          control = control;
          borderStyle = 0;
       };
-      
+
       comboBox.Create();
 
       {
@@ -379,7 +379,7 @@ private class AnchorRelButton : Button
    {
       int cw = clientSize.w;
       int ch = clientSize.h;
-      
+
       if(checked)
       {
          surface.SetForeground(black);
@@ -470,7 +470,7 @@ private class AnchorRelButton : Button
             //anchor.horz.type = anchor.horz.distance ? offset : none;
          }
          else if(anchor.horz.type == middleRelative) anchor.horz.percent = (float) ((x + w / 2) - (vpw / 2)) / vpw;
-         if(!anchor.top.type && !anchor.bottom.type) 
+         if(!anchor.top.type && !anchor.bottom.type)
          {
             anchor.vert.distance = (y + h / 2) - (vph / 2);
             //anchor.vert.type = anchor.vert.distance ? offset : none;
@@ -528,8 +528,8 @@ private class AnchorDropBox : DropBox
       };
       for(c = 0; c<4; c++)
       {
-         Button button = buttons[c] = AnchorButton 
-         { 
+         Button button = buttons[c] = AnchorButton
+         {
             anchorEditor, id = c,
             size = Size { (c%2)?10:28, (c%2)?28:10 }
          };
@@ -543,7 +543,7 @@ private class AnchorDropBox : DropBox
             case 0:
                if(anchorValue.left.type && anchorValue.left.type != middleRelative) button.checked = true;
                if(anchorValue.left.type == relative || anchorValue.horz.type == middleRelative) relButton.checked = true;
-               
+
                button.anchor = Anchor { left = 0 };
                relButton.anchor = Anchor { left = 5, vert = 16 };
                break;
@@ -554,14 +554,14 @@ private class AnchorDropBox : DropBox
                button.anchor = Anchor { top = 0 };
                relButton.anchor = Anchor { top = 5, horz = 16 };
                break;
-            case 2: 
+            case 2:
                if(anchorValue.right.type && anchorValue.right.type != middleRelative) button.checked = true;
                if(anchorValue.right.type == relative || anchorValue.horz.type == middleRelative) relButton.checked = true;
-               
+
                button.anchor = Anchor { right = 0 };
                relButton.anchor = Anchor { right = 5, vert = 16 };
                break;
-            case 3: 
+            case 3:
                if(anchorValue.bottom.type && anchorValue.bottom.type != middleRelative) button.checked = true;
                if(anchorValue.bottom.type == relative || anchorValue.vert.type == middleRelative) relButton.checked = true;
 
@@ -573,7 +573,7 @@ private class AnchorDropBox : DropBox
       anchorEditor.Create();
       return anchorEditor;
    }
-      
+
    void OnCloseDropDown(Window anchorEditor)
    {
       // TOFIX: Patch for update bug

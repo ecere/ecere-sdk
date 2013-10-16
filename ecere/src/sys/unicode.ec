@@ -77,9 +77,9 @@ public uint16 * UTF8toUTF16Len(char * source, int byteCount, int * wordCount)
          }
          if(i < numBytes)
             error = true;
-         if(codePoint > 0x10FFFF || (codePoint >= 0xD800 && codePoint <= 0xDFFF) || 
-           (codePoint < 0x80 && numBytes > 1) || 
-           (codePoint < 0x800 && numBytes > 2) || 
+         if(codePoint > 0x10FFFF || (codePoint >= 0xD800 && codePoint <= 0xDFFF) ||
+           (codePoint < 0x80 && numBytes > 1) ||
+           (codePoint < 0x800 && numBytes > 2) ||
            (codePoint < 0x10000 && numBytes > 3))
             error = true;
          if(error)
@@ -162,7 +162,7 @@ public int UTF8toUTF16BufferLen(char * source, uint16 * dest, int max, int len)
       dest[d] = 0;
       return d;
    }
-   return 0;   
+   return 0;
 }
 
 public int UTF16BEtoUTF8Buffer(uint16 * source, byte * dest, int max)
@@ -176,7 +176,7 @@ public int UTF16BEtoUTF8Buffer(uint16 * source, byte * dest, int max)
       if(u16 < 0xD800 || u16 > 0xDBFF)
       {
          // TOFIX: PRECOMP ERROR IF NO BRACKETS
-         ch = (unichar)u16;         
+         ch = (unichar)u16;
       }
       else
       {
@@ -286,7 +286,7 @@ public enum PredefinedCharCategories : CharCategories
    separators = CharCategories { separatorSpace = true, separatorLine = true, separatorParagraph = true },
    others = CharCategories { otherControl = true, otherFormat = true, otherSurrogate = true, otherPrivateUse = true, otherNotAssigned = true },
    letters = CharCategories { letterUpperCase = true, letterLowerCase = true, letterTitleCase = true, letterModifier = true, letterOther = true },
-   punctuation = CharCategories { punctiationConnector = true, punctuationDash = true, punctuationOpen = true, punctuationClose = true, punctuationInitial = true, 
+   punctuation = CharCategories { punctiationConnector = true, punctuationDash = true, punctuationOpen = true, punctuationClose = true, punctuationInitial = true,
                      punctuationFinal = true, punctuationOther = true },
    symbols = CharCategories { symbolMath = true, symbolCurrency = true, symbolModifier = true, symbolOther = true },
    connector = CharCategories { punctuationConnector = true },
@@ -372,21 +372,21 @@ static void FreeRange(Range range)
 
 static CharCategory asciiCategories[] =
 {
-   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc, 
-   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc, 
-   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc, 
-   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc, 
+   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc,
+   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc,
+   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc,
+   Cc, Cc, Cc, Cc, Cc, Cc, Cc, Cc,
    Zs, Po, Po, Po, Sc, Po, Po, Po,
    Ps, Pe, Po, Sm, Cs, Pd, Po, Po,
    Nd, Nd, Nd, Nd, Nd, Nd, Nd, Nd,
    Nd, Nd, Po, Po, Sm, Sm, Sm, Po,
-   Po, Lu, Lu, Lu, Lu, Lu, Lu, Lu, 
-   Lu, Lu, Lu, Lu, Lu, Lu, Lu, Lu, 
-   Lu, Lu, Lu, Lu, Lu, Lu, Lu, Lu, 
+   Po, Lu, Lu, Lu, Lu, Lu, Lu, Lu,
+   Lu, Lu, Lu, Lu, Lu, Lu, Lu, Lu,
+   Lu, Lu, Lu, Lu, Lu, Lu, Lu, Lu,
    Lu, Lu, Lu, Ps, Po, Pe, Sk, Pc,
-   Sk, Ll, Ll, Ll, Ll, Ll, Ll, Ll, 
-   Ll, Ll, Ll, Ll, Ll, Ll, Ll, Ll, 
-   Ll, Ll, Ll, Ll, Ll, Ll, Ll, Ll, 
+   Sk, Ll, Ll, Ll, Ll, Ll, Ll, Ll,
+   Ll, Ll, Ll, Ll, Ll, Ll, Ll, Ll,
+   Ll, Ll, Ll, Ll, Ll, Ll, Ll, Ll,
    Ll, Ll, Ll, Ps, Sm, Pe, Sm, Cc
 };
 
@@ -496,7 +496,7 @@ static class UnicodeDatabase
                            {
                               node.key = (uintptr)new Range[1];
                               *(Range *)node.key = range;
-                           } 
+                           }
                            else
                               delete node;
                         }
@@ -527,7 +527,7 @@ static class UnicodeDatabase
                string[len++] = ';';
                string[len++] = ' ';
                range->category.OnGetString(string + len, null, null);
-               len += 2;                              
+               len += 2;
                string[len++] = '\n';
                string[len] = '\0';
                f.Puts(string);
@@ -535,7 +535,7 @@ static class UnicodeDatabase
             delete f;
          }
          */
-      }      
+      }
    }
    ~UnicodeDatabase()
    {

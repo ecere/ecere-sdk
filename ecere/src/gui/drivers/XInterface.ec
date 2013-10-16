@@ -202,7 +202,7 @@ static Visual * FindFullColorVisual(X11Display *dpy, int * depth)
    XVisualInfo vinfo;
    XVisualInfo *vinfo_ret;
    int numitems;
-  
+
    vinfo._class = TrueColor;
    vinfo_ret = XGetVisualInfo(dpy, VisualClassMask, &vinfo, &numitems);
    if(numitems)
@@ -223,7 +223,7 @@ static Visual * FindFullColorVisual(X11Display *dpy, int * depth)
             return vinfo.visual;
          }
       }
-   } 
+   }
    return null;
 }
 
@@ -233,7 +233,7 @@ static void RepositionDesktop(bool updateChildren)
    int w, h;
    Screen * x_screen = XDefaultScreenOfDisplay(xGlobalDisplay);
    X11Window x_root;
-   int current = 0;   
+   int current = 0;
    char *data = null;
    int format;
    unsigned long len, fill;
@@ -247,7 +247,7 @@ static void RepositionDesktop(bool updateChildren)
    w = XDisplayWidth(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
    h = XDisplayHeight(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
    x_root = XRootWindowOfScreen(x_screen);
-   
+
    if(atoms[_net_number_of_desktops] != None)
    {
       if(XGetWindowProperty(xGlobalDisplay, x_root, atoms[_net_number_of_desktops], 0, 1, False,
@@ -256,7 +256,7 @@ static void RepositionDesktop(bool updateChildren)
       {
          printf("cant get xa desktops property\n");
       }
-      
+
       if(data)
       {
          int desktops = 0;
@@ -268,16 +268,16 @@ static void RepositionDesktop(bool updateChildren)
          data = null;
       }
    }
-   
+
    if(atoms[_net_current_desktop] != None)
-   {   
+   {
       if(XGetWindowProperty(xGlobalDisplay, x_root, atoms[_net_current_desktop], 0, 1, False,
                             XA_CARDINAL, &type, &format, &len, &fill,
                             &data) != Success)
       {
          printf("cant get xa current property\n");
       }
-      
+
       if(data)
       {
          current = (int)*(long *)data;
@@ -286,7 +286,7 @@ static void RepositionDesktop(bool updateChildren)
 
          //printf("_NET_CURRENT_DESKTOP is %d\n", current);
       }
-   }   
+   }
    if(atoms[_net_workarea] != None)
    {
       long *workareas;
@@ -297,22 +297,22 @@ static void RepositionDesktop(bool updateChildren)
       {
          //printf("warning\n");
       }
-      
+
       /*
       if(type == None || format == 0)
          printf("warning\n");
 
       if(fill)
          printf("warning\n");
-      
+
       if(len % 4)
          printf("warning\n");
       */
-  
+
       if(data)
       {
          workareas = (long *)data;
-     
+
          x = (int)workareas[current * 4];
          y = (int)workareas[current * 4 + 1];
          w = (int)workareas[current * 4 + 2];
@@ -389,7 +389,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    /*
    key = key - 8;
    //Logf("Got 0x%x (%d)\n", key, key);
-   
+
    switch(key)
    {
       case KEYCODE_HOME: key = home; break;
@@ -404,7 +404,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
       case KEYCODE_DEL: key = del; break;
       case KEYCODE_SLASH: key = keyPadSlash; break;
    }
-  
+
    ch = (byte)Interface::TranslateKey(key, event->state & ShiftMask);
    */
 /*
@@ -417,7 +417,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    if(!buf)
       buf = malloc((uint)bufsize);
    if(windowData && windowData.ic)
-   { 
+   {
       buflength = XmbLookupString(windowData.ic, event, buf, (int)bufsize, &keysym, &status);
       if (status == XBufferOverflow)
       {
@@ -462,7 +462,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
          // case XK_Begin:
 
          // case XK_Select:
-         // case XK_Print: 
+         // case XK_Print:
          // case XK_Execute:
          case XK_Insert:      key = insert; break;
          // case XK_Undo:
@@ -480,7 +480,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
          // case XK_script_switch:
          case XK_Num_Lock:    key = numLock; break;
 
-         // case XK_KP_Space: 
+         // case XK_KP_Space:
          // case XK_KP_Tab:
          case XK_KP_Enter:    key = keyPadEnter; break;
          // case XK_KP_F1:
@@ -505,7 +505,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
          case XK_KP_Add:      key = keyPadPlus; break;
          case XK_KP_Separator:key = keyPadDelete; break;
          case XK_KP_Subtract: key = keyPadMinus; break;
-         // case XK_KP_Decimal: 
+         // case XK_KP_Decimal:
          case XK_KP_Divide:   key = keyPadSlash; break;
 
          case XK_KP_0:  key = keyPad0; break;
@@ -586,7 +586,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
          case XK_Control_L: key = leftControl; break;
          case XK_Control_R: key = rightControl; break;
          case XK_Caps_Lock: key = capsLock; break;
-         // case XK_Shift_Lock: 
+         // case XK_Shift_Lock:
          // case XK_Meta_L:
          // case XK_Meta_R:
          case XK_Alt_L: key = leftAlt; break;
@@ -717,7 +717,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
       code.alt = true;
       /*buflength = 0;
       ch = 0;*/
-   } 
+   }
 #endif
 
    // Logf("Key Message: %s, keysym: 0x%x, key: %d state: %d, ch: %c\n", release ? ((release == 2) ? "REPEAT" : "KeyRelease") : "KeyPress", keysym, key, event->state, (byte)ch);
@@ -743,7 +743,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
                int numBytes;
                ch = UTF8GetChar(buf + c, &numBytes);
                if(ch == 127) ch = 0;
-               result = window.KeyMessage((c == 0) ? 
+               result = window.KeyMessage((c == 0) ?
                   __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown : __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit,
                   (c == 0) ? code : 0, ch);
                c += numBytes;
@@ -767,10 +767,10 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
             }
          else
             result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, ch);
-      } 
+      }
    }
    delete window;
-            
+
    return result;
 }
 /*
@@ -823,7 +823,7 @@ static uint XTimerThread(Thread thread)
       //bool waitSemaphore = false;
       fd_set readSet, writeSet, exceptSet;
       struct timeval tv = { (timerDelay == MAXINT) ? 0 : (timerDelay / 1000000), (timerDelay == MAXINT) ? (int)(1000000 / 18.2) : (timerDelay % 1000000) };
-      
+
       if(xTerminate) break;
       FD_ZERO(&readSet);
       FD_ZERO(&writeSet);
@@ -853,7 +853,7 @@ static uint XTimerThread(Thread thread)
             PropertyChangeMask, (union _XEvent *)&event);
       }
       xMutex.Release();
-      guiApp.SignalEvent();  
+      guiApp.SignalEvent();
       xSemaphore.Wait();
 
 #if 0
@@ -936,7 +936,7 @@ static void WaitForViewableWindow(Window window)
    //int attempts = 0;
    //Logf("Wait for viewable %s\n", window.name);
    XFlush(xGlobalDisplay);
-   //while(attempts++ < 40) 
+   //while(attempts++ < 40)
    while(true)
    {
       XWindowAttributes attributes = { 0 };
@@ -958,7 +958,7 @@ static void WaitForViewableWindow(Window window)
 {
    bool terminate;
    uint delay;
-   
+
    void Stop()
    {
       if(started)
@@ -967,7 +967,7 @@ static void WaitForViewableWindow(Window window)
          Wait();
       }
    }
-   
+
    uint Main()
    {
       while(!terminate)
@@ -1068,7 +1068,7 @@ class XInterface : Interface
       joystickFD[1] = open("/dev/js1", O_RDONLY);
       joystickFD[2] = open("/dev/js2", O_RDONLY);
       joystickFD[3] = open("/dev/js3", O_RDONLY);
-    
+
       if(xGlobalDisplay)
       {
          XWindowAttributes attributes = { 0 };
@@ -1084,7 +1084,7 @@ class XInterface : Interface
                XVisualInfo vinfo;
                XVisualInfo *vinfo_ret;
                int numitems = 0;
-              
+
                vinfo.visualid = XVisualIDFromVisual(xSystemVisual);
                vinfo_ret = XGetVisualInfo(xGlobalDisplay, VisualIDMask, &vinfo, &numitems);
                if(numitems)
@@ -1122,16 +1122,16 @@ class XInterface : Interface
                   else
                      printf("Could not get a 555 visual\n");
                   */
-               } 
+               }
                break;
             }
          }
          // printf("Got a depth of %d\n", xSystemDepth);
 
-         {  
+         {
             int major, minor, pixmaps;
             xSharedMemory = XShmQueryExtension(xGlobalDisplay) && XShmQueryVersion(xGlobalDisplay, &major, &minor, &pixmaps) && pixmaps;
-         }  
+         }
 
          // printf("Opening IM\n");
          im = XOpenIM(xGlobalDisplay, null, null, null);
@@ -1145,7 +1145,7 @@ class XInterface : Interface
             XkbSetDetectableAutoRepeat(xGlobalDisplay, True, &autoRepeatDetectable);
 
             XInternAtoms(xGlobalDisplay, (char**)atomNames, AtomIdents::enumSize, False, atoms);
-            
+
             {
                Atom protocols[2] = { atoms[wm_delete_window], atoms[wm_take_focus] };
 
@@ -1178,7 +1178,7 @@ class XInterface : Interface
 
                /*
                XIMStyles *IMcando;
-               XIMStyle  clientCanDo; 
+               XIMStyle  clientCanDo;
                XIMStyle  styleWeWillUse = null;
                int i;
                XVaNestedList arglist;
@@ -1191,7 +1191,7 @@ class XInterface : Interface
                   XIMPreeditPosition | XIMStatusArea |
                   XIMPreeditArea | XIMStatusArea |
                   XIMPreeditNothing | XIMStatusNothing;
-               
+
                for(i=0; i<IMcando->count_styles; i++)
                {
                    XIMStyle tmpStyle;
@@ -1224,7 +1224,7 @@ class XInterface : Interface
                XSetICFocus(ic);
                */
             }
-            
+
             xMutex.Wait();
             timerThread = Thread { };
             incref timerThread;
@@ -1232,7 +1232,7 @@ class XInterface : Interface
             timerThread.Create();
 
             return true;
-         }   
+         }
       }
       return false;
    }
@@ -1472,7 +1472,7 @@ class XInterface : Interface
                   break;
                }
                case MotionNotify:
-               { 
+               {
                   static uint lastTime = 0;
                   XMotionEvent * event = (XMotionEvent *) thisEvent;
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, EventChecker, (void *)MotionNotify));
@@ -1538,7 +1538,7 @@ class XInterface : Interface
    		         }
                   else
    			         respond.xselection._property = None;
-   	 	         
+
                   respond.xselection.type = SelectionNotify;
    		         respond.xselection.display = req->display;
    		         respond.xselection.requestor = req->requestor;
@@ -1603,7 +1603,7 @@ class XInterface : Interface
                      if(XCheckTypedWindowEvent(xGlobalDisplay, thisEvent->window, FocusOut, (XEvent *)thisEvent))
                      {
                         XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
-                        
+
                         XFindContext(xGlobalDisplay, thisEvent->window, windowContext, (XPointer *) &window);
                         if(window)
                         {
@@ -1636,7 +1636,7 @@ class XInterface : Interface
                      {
                         XWindowData windowData;
                         XFindContext(xGlobalDisplay, thisEvent->window, windowContext, (XPointer *) &window);
-                        
+
                         if(window)
                         {
                            XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
@@ -1677,7 +1677,7 @@ class XInterface : Interface
                      {
                         XCheckTypedEvent(xGlobalDisplay, /*thisEvent->window, */ButtonPress, (XEvent *)thisEvent);
                      }
-                     
+
                      //delete lastActive;
                      /*
                      lastActive = window;
@@ -1741,7 +1741,7 @@ class XInterface : Interface
                         X11Window rootChild;
                         int rootX, rootY;
                         XTranslateCoordinates(xGlobalDisplay, event->window,
-                           RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0, 
+                           RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0,
                            &rootX, &rootY, &rootChild);
                         x = rootX;
                         y = rootY;
@@ -1784,7 +1784,7 @@ class XInterface : Interface
                      activeWindow = (X11Window)window.windowHandle;
 
                      timeStamp = (int)event->data.l[1];
-                     
+
                      windowData = window.windowData;
                      laterFocus = windowData.laterFocus;
                      windowData.laterFocus = true;
@@ -1795,7 +1795,7 @@ class XInterface : Interface
                      if(guiApp.interimWindow && guiApp.interimWindow.created && window != guiApp.interimWindow) break; //window == window.parent.activeChild) break;
                      // if(window == window.parent.activeChild) break;
                      incref window;
-   
+
                      {
                         XEvent checkEvent;
                         //XFlush(xGlobalDisplay);
@@ -1860,7 +1860,7 @@ class XInterface : Interface
                            else
                            {
                               XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, (uint)timeStamp);
-                              window.ExternalActivate(true, true, window, null); // lastActive); 
+                              window.ExternalActivate(true, true, window, null); // lastActive);
                               if(windowData && windowData.ic)
                               {
                                  // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, 0);
@@ -2049,7 +2049,7 @@ class XInterface : Interface
                GLX_BLUE_SIZE, 1
             };
             int numAttribs = 14;
-            
+
             GLXFBConfig *fbconfigs = null, fbconfig;
             int numfbconfigs;
             int i;
@@ -2119,12 +2119,12 @@ class XInterface : Interface
       }
       if(!visualInfo)
       {
-         int attrList[] = 
+         int attrList[] =
          {
             GLX_USE_GL, GLX_DEPTH_SIZE, 1,
-            GLX_RGBA, 
+            GLX_RGBA,
             GLX_RED_SIZE, 1, GLX_GREEN_SIZE, 1, GLX_BLUE_SIZE, 1,
-            GLX_DOUBLEBUFFER, 
+            GLX_DOUBLEBUFFER,
             None
          };
          visualInfo = glXChooseVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay), attrList);
@@ -2145,7 +2145,7 @@ class XInterface : Interface
       if(fullScreenMode)
       {
          windowHandle = XCreateWindow(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay),
-            0,0,guiApp.desktop.size.w,guiApp.desktop.size.h,0, depth, InputOutput, visual ? visual : CopyFromParent, 
+            0,0,guiApp.desktop.size.w,guiApp.desktop.size.h,0, depth, InputOutput, visual ? visual : CopyFromParent,
             CWEventMask | (visual ? (CWColormap | CWBorderPixel) : 0)/*| CWOverrideRedirect*/, &attributes);
       }
       /*
@@ -2175,8 +2175,8 @@ class XInterface : Interface
             if(window.style.showInTaskBar)
                parentWindow = (X11Window)null;
 
-            windowHandle = XCreateWindow(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), 
-               0,0,1,1,0, depth, InputOutput, visual ? visual : CopyFromParent, 
+            windowHandle = XCreateWindow(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay),
+               0,0,1,1,0, depth, InputOutput, visual ? visual : CopyFromParent,
                CWEventMask | CWOverrideRedirect | (visual ? (CWColormap | CWBorderPixel) : 0), &attributes);
 
             if(parentWindow && (window.interim || window.isModal))
@@ -2228,13 +2228,13 @@ class XInterface : Interface
          int num_missing_charsets = 0;
          char *default_string;
          XFontSet fontset;
-         XRectangle area = { 0, 0,  400, 400 };         
+         XRectangle area = { 0, 0,  400, 400 };
          XVaNestedList argList;
 
          // sprintf(fontString, "-*-%s-*-r-*-*-*-%d-*-*-*-*-*-*", "Helvetica" /*window.font.faceName*/, (int)(window.font.size * 20));
          fontset = XCreateFontSet(xGlobalDisplay, fontString, &missing_charsets, &num_missing_charsets, &default_string);
          argList = XVaCreateNestedList(0,
-                                       XNSpotLocation, &cursor_location, 
+                                       XNSpotLocation, &cursor_location,
                                        //XNArea, &area,
                                        XNFontSet, fontset,/*
                                        XNForeground,
@@ -2271,7 +2271,7 @@ class XInterface : Interface
       */
 
       {
-         if ( atoms[_motif_wm_hints] != None ) 
+         if ( atoms[_motif_wm_hints] != None )
          {
             MWM_Hints hints
             {
@@ -2289,16 +2289,16 @@ class XInterface : Interface
          if(atoms[_net_wm_pid] != None)
          {
             int pid = getpid();
-            // printf("Setting _NET_WM_PID to %d\n", pid); 
+            // printf("Setting _NET_WM_PID to %d\n", pid);
             XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_pid], XA_CARDINAL, 32,
-               PropModeReplace, (unsigned char*)&pid, 1);            
+               PropModeReplace, (unsigned char*)&pid, 1);
          }
       }
-      
+
       /*
       {
          Atom protocolsAtom = XInternAtom(xGlobalDisplay, "WM_PROTOCOLS", False);
-         if ( protocolsAtom != None ) 
+         if ( protocolsAtom != None )
          {
             MWM_Hints hints = { MWM_HINTS_DECORATIONS|MWM_HINTS_FUNCTIONS, 0, 0, 0, 0 };
             XChangeProperty(xGlobalDisplay, windowHandle, atoms[_motif_wm_hints], atoms[_motif_wm_hints], 32,
@@ -2307,7 +2307,7 @@ class XInterface : Interface
       }*/
       // XFlush(xGlobalDisplay);
       window.windowData = XWindowData { visualInfo, ic };
-      
+
       XSaveContext(xGlobalDisplay, windowHandle, windowContext, (XPointer)window);
 
       XSelectInput(xGlobalDisplay, windowHandle, mask);
@@ -2350,7 +2350,7 @@ class XInterface : Interface
    {
       XEvent event;
 
-      XDeleteContext(xGlobalDisplay, (XID)window, windowContext); 
+      XDeleteContext(xGlobalDisplay, (XID)window, windowContext);
       XSaveContext(xGlobalDisplay, (X11Window)window.windowHandle, windowContext, null);
       XDestroyWindow(xGlobalDisplay, (X11Window)window.windowHandle);
       XSync(xGlobalDisplay, 0);
@@ -2380,7 +2380,7 @@ class XInterface : Interface
             atoms[utf8_string], 8, PropModeReplace, (byte *)name, name ? strlen(name) : 0);
          XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[wm_name],
             atoms[utf8_string], 8, PropModeReplace, (byte *)name, name ? strlen(name) : 0);
-      }   
+      }
    }
 
    void PositionRootWindow(Window window, int x, int y, int w, int h, bool move, bool resize)
@@ -2481,7 +2481,7 @@ class XInterface : Interface
             WaitForViewableWindow(window);
             if(window.creationActivation == activate && state != minimized)
                ActivateRootWindow(window);
-            
+
             if(state == minimized)
             {
                uint iconic = IconicState;
@@ -2493,7 +2493,7 @@ class XInterface : Interface
                XChangeProperty(xGlobalDisplay, window.windowHandle, atoms[wm_state], XA_CARDINAL, 32,
                   PropModeReplace, &iconic, 1);
                */
-               
+
                /*
                XClientMessageEvent event = { 0 };
                event.type = ClientMessage;
@@ -2545,7 +2545,7 @@ class XInterface : Interface
 
                   // With native decorations, we do it the first time
                   // or the WM (Gnome) is sticking it to the top/right!
-                  XMoveResizeWindow(xGlobalDisplay, 
+                  XMoveResizeWindow(xGlobalDisplay,
                      (X11Window)window.windowHandle,
                      x, y, w, h);
                   UpdateRootWindow(window);
@@ -2612,18 +2612,18 @@ class XInterface : Interface
                event.send_event = 1;
                event.format = 32;
                event.data.l[0] = 0;
-               
+
                //event.data.l[0] = 2;
                //event.data.l[1] = timeStamp;
-               
+
 
                //event.data.l[1] = atoms[_net_wm_user_time];
                //event.data.l[2] = activeWindow; //guiApp.desktop.activeChild.windowHandle;
-               
+
 #ifdef _DEBUG
                //printf("(ActivateRootWindow) Setting _NET_ACTIVE_WINDOW for %s (%x)\n", window._class.name, window);
 #endif
-               
+
                XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
 //#if defined(__APPLE__)
                XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, CurrentTime);
@@ -2656,7 +2656,7 @@ class XInterface : Interface
       unsigned int state;
       ((GuiApplication)__thisModule.application).Lock();
       //XLockDisplay(xGlobalDisplay);
-      XQueryPointer(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), &childWindow, 
+      XQueryPointer(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), &childWindow,
          &rootWindow, x, y, &mx, &my, &state);
       //XUnlockDisplay(xGlobalDisplay);
       ((GuiApplication)__thisModule.application).Unlock();
@@ -2671,14 +2671,14 @@ class XInterface : Interface
    {
       ((GuiApplication)__thisModule.application).Lock();
       //XLockDisplay(xGlobalDisplay);
-      if(box && box.left > 0 && box.top > 0 && 
+      if(box && box.left > 0 && box.top > 0 &&
          box.right < guiApp.desktop.clientSize.w - 1 && box.bottom < guiApp.desktop.clientSize.h - 1)
       {
          if(!window.parent || !window.parent.display)
          {
-            XMoveResizeWindow(xGlobalDisplay, confineWindow, box.left + desktopX, box.top + desktopY, 
+            XMoveResizeWindow(xGlobalDisplay, confineWindow, box.left + desktopX, box.top + desktopY,
                box.right - box.left + 1, box.bottom - box.top + 1);
-      
+
             if(!restrictedWindow)
                XMapWindow(xGlobalDisplay, confineWindow);
 
@@ -2699,7 +2699,7 @@ class XInterface : Interface
          }
          else
             XUngrabPointer(xGlobalDisplay, CurrentTime);
-         
+
          if(restrictedWindow)
             XUnmapWindow(xGlobalDisplay, confineWindow);
 
@@ -2726,7 +2726,7 @@ class XInterface : Interface
       else if(capturedWindow != None)
       {
          if(restrictedWindow)
-            XGrabPointer(xGlobalDisplay, (X11Window) restrictedWindow.rootWindow.windowHandle, False, 
+            XGrabPointer(xGlobalDisplay, (X11Window) restrictedWindow.rootWindow.windowHandle, False,
                ButtonPressMask | ButtonReleaseMask | PointerMotionMask, GrabModeAsync,
                GrabModeAsync, confineWindow, fullScreenMode ? nullCursor : None, CurrentTime);
          else
@@ -2768,7 +2768,7 @@ class XInterface : Interface
             XSetICValues(windowData.ic, XNPreeditAttributes, argList, 0);
          }
       }
-   }  
+   }
 
    void ClearClipboard()
    {
@@ -2785,7 +2785,7 @@ class XInterface : Interface
    {
       bool result = false;
       if((clipBoard.text = new0 byte[size]))
-         result = true;   
+         result = true;
       return result;
    }
 
@@ -2796,16 +2796,16 @@ class XInterface : Interface
       if(clipBoard.text)
       {
          Window rootWindow = guiApp.desktop;
-         if(!fullScreenMode) 
+         if(!fullScreenMode)
          {
-            for(rootWindow = rootWindow.children.first; 
-               rootWindow && !rootWindow.windowHandle; 
+            for(rootWindow = rootWindow.children.first;
+               rootWindow && !rootWindow.windowHandle;
                rootWindow = rootWindow.next);
          }
          if(clipBoardData)
             delete clipBoardData;
          else if(rootWindow)
-      	   XSetSelectionOwner(xGlobalDisplay, atoms[clipboard], 
+            XSetSelectionOwner(xGlobalDisplay, atoms[clipboard],
                (X11Window) rootWindow.windowHandle, CurrentTime);
          clipBoardData = clipBoard.text;
          clipBoard.text = null;
@@ -2833,8 +2833,8 @@ class XInterface : Interface
          Window rootWindow = guiApp.desktop;
          if(!fullScreenMode)
          {
-            for(rootWindow = rootWindow.children.first; 
-               rootWindow && !rootWindow.windowHandle; 
+            for(rootWindow = rootWindow.children.first;
+               rootWindow && !rootWindow.windowHandle;
                rootWindow = rootWindow.next);
          }
          if(rootWindow)
@@ -2908,7 +2908,7 @@ class XInterface : Interface
    bool GetJoystickState(int device, Joystick joystick)
    {
       bool result = false;
-   #if defined(__linux__)   
+   #if defined(__linux__)
       if(joystick && device < 4)
       {
          struct JS_DATA_TYPE js = { 0 };
@@ -2921,7 +2921,7 @@ class XInterface : Interface
             result = true;
          }
       }
-   #endif   
+   #endif
       return result;
    }
 
@@ -2942,7 +2942,7 @@ class XInterface : Interface
          hiResTimer.Create();
       }
       */
-   }  
+   }
 
    bool SetIcon(Window window, BitmapResource resource)
    {

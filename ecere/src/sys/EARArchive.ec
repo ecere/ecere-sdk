@@ -21,7 +21,7 @@ static class FreeBlock : struct
 };
 
 static struct EARHeader
-{                                               
+{
    byte recognition[sizeof(earRecognition)] __attribute__((packed));
    uint version　                           __attribute__((packed));
    FileSize totalSize　                     __attribute__((packed));
@@ -98,7 +98,7 @@ static FileAttribs EARGetEntry(File f, EAREntry entry, char * name, char * path)
       for(;;)
       {
          char fileName[MAX_FILENAME];
-         
+
          f.Read(entry, sizeof(EAREntry), 1);
          f.Read(fileName, 1, entry.nameLen);
          fileName[entry.nameLen] = '\0';
@@ -181,7 +181,7 @@ class EARArchive : Archive
          // Fix the size of the archive
          FileTruncate(path, archiveStart);
       }*/
-      
+
       freeBlocks.Free(null);
    }
 
@@ -229,7 +229,7 @@ class EARArchive : Archive
             rootDir = Position(2*sizeof(uint));
             dir.position = rootDir;
          }
-         
+
          result = dir;
 
          // Open rest of directory...
@@ -303,7 +303,7 @@ class EARArchive : Archive
          if(f.Seek(dirPosition + sizeof(uint), start))
             f.Write(&last, sizeof(uint), 1);
       }
-      
+
       for(; position; position = next)
       {
          EAREntry entry { };
@@ -376,7 +376,7 @@ class EARArchive : Archive
       for(position = directory.first; position; position = entry.next)
       {
          char fileName[MAX_FILENAME];
-      
+
          if(f.Seek(position, start) && f.Read(entry, sizeof(EAREntry), 1))
          {
             if(entry.nameLen > MAX_FILENAME)
@@ -399,12 +399,12 @@ class EARArchive : Archive
    void AddFreeBlock(uint position, uint size)
    {
       FreeBlock block, prevBlock, nextBlock = null;
-      
+
       // Find the previous and next free block
       prevBlock = null;
       for(block = freeBlocks.first; block; block = block.next)
          if(block.end < position)
-            prevBlock = block; 
+            prevBlock = block;
          else
          {
             nextBlock = block;
@@ -493,12 +493,12 @@ class EARArchive : Archive
          size = sizeof(EAREntry) + entry.nameLen + (entry.cSize ? entry.cSize : entry.size);
 
       // Unlink this file
-      if(entry.prev) 
+      if(entry.prev)
       {
          f.Seek(entry.prev + OFFSET(EAREntry, next), start);
          f.Write(&entry.next, sizeof(uint), 1);
       }
-      if(entry.next) 
+      if(entry.next)
       {
          f.Seek(entry.next + OFFSET(EAREntry, prev), start);
          f.Write(&entry.prev, sizeof(uint), 1);
@@ -779,7 +779,7 @@ class EARArchiveDir : ArchiveDir
             strcpy(namePart, DIR_SEPS);
 
          // Search for directory
-         
+
          position = archive.Find(this, namePart, entry);
          if(position)
          {
@@ -794,9 +794,9 @@ class EARArchiveDir : ArchiveDir
 
                archive.f.Read(&dir.first, sizeof(uint), 1);
                archive.f.Read(&dir.last, sizeof(uint), 1);
-               
+
                result = dir;
-            }               
+            }
          }
 
          // If directory doesn't exist already
@@ -863,7 +863,7 @@ class EARArchiveDir : ArchiveDir
       strcpy(namePart, name);
       if(!strcmp(namePart, "/") || !strcmp(namePart, "\\"))
          strcpy(namePart, DIR_SEPS);
-  
+
       position = archive.Find(this, namePart, entry);
       if(position)
       {
@@ -895,7 +895,7 @@ class EARArchiveDir : ArchiveDir
                archive.f.Seek(entry.prev + OFFSET(EAREntry, next), start);
                archive.f.Write(&entry.next, sizeof(uint), 1);
             }
-            if(entry.next) 
+            if(entry.next)
             {
                archive.f.Seek(entry.next + OFFSET(EAREntry, prev), start);
                archive.f.Write(&entry.prev, sizeof(uint), 1);
@@ -948,7 +948,7 @@ class EARArchiveDir : ArchiveDir
             dataSize = 2 * sizeof(uint);
          else
             dataSize = entry.cSize ? entry.cSize : entry.size;
-      
+
          newEntry.nameLen = strlen(newName);
          if(newEntry.nameLen > entry.nameLen)
          {
@@ -960,12 +960,12 @@ class EARArchiveDir : ArchiveDir
             archive.f.Write(newName, sizeof(char), newEntry.nameLen);
 
             // Fix the links
-            if(entry.prev) 
+            if(entry.prev)
             {
                archive.f.Seek(entry.prev + OFFSET(EAREntry, next), start);
                archive.f.Write(&newPosition, sizeof(uint), 1);
             }
-            if(entry.next) 
+            if(entry.next)
             {
                archive.f.Seek(entry.next + OFFSET(EAREntry, prev), start);
                archive.f.Write(&newPosition, sizeof(uint), 1);
@@ -983,7 +983,7 @@ class EARArchiveDir : ArchiveDir
 
             // There will be free space at the end of an entry with a shorter new name
             if(newEntry.nameLen < entry.nameLen)
-               archive.AddFreeBlock(position + sizeof(EAREntry) + newEntry.nameLen + dataSize, entry.nameLen - newEntry.nameLen);            
+               archive.AddFreeBlock(position + sizeof(EAREntry) + newEntry.nameLen + dataSize, entry.nameLen - newEntry.nameLen);
          }
          if(entry.nameLen != newEntry.nameLen)
          {
@@ -1076,9 +1076,9 @@ class EARArchiveDir : ArchiveDir
             break;
          // Only updates changed files
          case refresh:
-            if(oldPosition && 
-                 (oldEntry.size != stats.size || 
-                  oldEntry.modified != (TimeStamp32)stats.modified || 
+            if(oldPosition &&
+                 (oldEntry.size != stats.size ||
+                  oldEntry.modified != (TimeStamp32)stats.modified ||
                   oldEntry.created != (TimeStamp32)stats.created))
                   archive.Delete(this, oldPosition, oldEntry);
             else
@@ -1088,8 +1088,8 @@ class EARArchiveDir : ArchiveDir
          case update:
             if(oldPosition)
             {
-               if(oldEntry.size != stats.size || 
-                  oldEntry.modified != (TimeStamp32)stats.modified || 
+               if(oldEntry.size != stats.size ||
+                  oldEntry.modified != (TimeStamp32)stats.modified ||
                   oldEntry.created != (TimeStamp32)stats.created)
                   archive.Delete(this, oldPosition, oldEntry);
                else
@@ -1109,11 +1109,11 @@ class EARArchiveDir : ArchiveDir
          entry.prev = last;
          entry.next = 0;
          entry.type = ENTRY_FILE;
-         
+
          entry.size = stats.size;
          entry.created = (TimeStamp32)stats.created;
          entry.modified = (TimeStamp32)stats.modified;
-      
+
          if(compression)
          {
             byte * uncompressed = new byte[entry.size];
@@ -1197,7 +1197,7 @@ class EARArchiveDir : ArchiveDir
       {
          if(newPosition) *newPosition = 0;
       }
-               
+
       // archive.f.handle = archive.f;
       return true;
    }
@@ -1296,7 +1296,7 @@ class EARFile : File
       bool result = false;
       switch(mode)
       {
-         case start:   
+         case start:
             if(pos <= (int)size)
             {
                position = pos;
@@ -1327,7 +1327,7 @@ class EARFile : File
             }
             break;
       }
-      return result;   
+      return result;
    }
 
    uint Tell()
@@ -1518,7 +1518,7 @@ class EARFileSystem : FileSystem
                   file.stats.accessed = file.stats.modified = (TimeStamp)entry.modified;
                   file.stats.created = (TimeStamp)entry.created;
                   file.stats.size = entry.size;
-                  
+
                   strcpy(file.path, d.path);
                   PathCat(file.path, file.name);
                   d.next = entry.next;
@@ -1660,9 +1660,9 @@ class EARFileSystem : FileSystem
                   EAR_RECOGNITION,
                   MDWORD(0, 1)
                };
-                    
+
                archive.f.Seek(0, end);
-         
+
                archive.archiveStart = archive.f.Tell();
                archive.freeBlocks.Add(FreeBlock { start = archive.archiveStart + sizeof(EARHeader), end = MAXDWORD });
 

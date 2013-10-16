@@ -137,7 +137,7 @@ class IRCSocket : Socket
       // console.Log("\n");
       console.Log(buffer);
 
-      
+
    /*   // Auto connect login Script
       if(!strcmpi(buffer, "NOTICE AUTH :*** Got ident response"))
       {
@@ -166,7 +166,7 @@ class IRCSocket : Socket
    {
       ircSocket.Sendf("NICK %s\n", const_NickName );
       ircSocket.Sendf("USER %s %s %s %s\n", const_NickName, const_NickName, const_NickName , const_NickName );
-      
+
    }
 }
 

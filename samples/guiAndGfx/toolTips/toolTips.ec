@@ -25,7 +25,7 @@ class ToolTipsDemo : Window
       button2, tip = "You can change fonts and colors!";
       alphaBlend = true, opacity = 0.75;
       font = { "Comic Sans MS", 12 };
-      background = lightSkyBlue, foreground = darkSlateBlue;      
+      background = lightSkyBlue, foreground = darkSlateBlue;
    };
 }
 

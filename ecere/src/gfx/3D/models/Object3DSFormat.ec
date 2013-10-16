@@ -27,8 +27,8 @@ import "Object"
 #define TRI_VERTEXL           0x4110
 #define TRI_FACEL1            0x4120
 #define TRI_MATERIAL          0x4130
-#define TRI_MAPPINGCOORS      0x4140 
-#define TRI_SMOOTHING         0x4150 
+#define TRI_MAPPINGCOORS      0x4140
+#define TRI_SMOOTHING         0x4150
 #define TRI_LOCAL             0x4160
 
 // Light Chunks
@@ -180,7 +180,7 @@ static bool ReadChunks(bool (* chunkParser)(FileInfo * info, void * data), FileI
       info->f.Seek(info->pos, start);
       childInfo.chunkId = ReadWORD(info->f);
       length = ReadDWORD(info->f);
-       
+
       childInfo.pos += sizeof(uint16) + sizeof(uint);
       childInfo.end = info->pos + length;
 
@@ -249,7 +249,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
    int * numShared;
 
    VertexConfigList * configLists = new0 VertexConfigList[nVertices];
-   
+
    nNewVertices = nVertices;
    for(c = 0; c<info->nFaces; c++)
    {
@@ -262,7 +262,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
          int v;
          VertexConfigList * configList = &configLists[index];
          VertexConfig * config = null;
-         for(v = 0; v<configList->numConfig; v++) 
+         for(v = 0; v<configList->numConfig; v++)
          {
             uint smoothGroups = configList->config[v].smoothGroups;
             if(smoothGroups == face->smoothGroups)
@@ -294,7 +294,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
                configList->config = renew configList->config VertexConfig[configList->numConfig + 1];
                config = &configList->config[configList->numConfig++];
                config->index = index;
-               config->smoothGroups = face->smoothGroups;                  
+               config->smoothGroups = face->smoothGroups;
             }
          }
          else
@@ -344,7 +344,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
             *normal = { 0,0,0 };
          }
       }
-      
+
       delete oldVertices;
       delete oldTexCoords;
    }
@@ -357,8 +357,8 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
       int i;
       Plane plane;
       Vector3Df planeNormal;
-      plane.FromPointsf(mesh.vertices[face->oldIndices[2]], 
-                       mesh.vertices[face->oldIndices[1]], 
+      plane.FromPointsf(mesh.vertices[face->oldIndices[2]],
+                       mesh.vertices[face->oldIndices[1]],
                        mesh.vertices[face->oldIndices[0]]);
       planeNormal = { (float)plane.normal.x, (float)plane.normal.y, (float)plane.normal.z };
       if(face->smoothGroups)
@@ -447,7 +447,7 @@ static bool ReadFacesListChunks(FileInfo * info, Object object)
             {
                int c;
                uint16 count = ReadWORD(info->f);
-               mesh.primitives = renew mesh.primitives PrimitiveSingle[mesh.nPrimitives + count]; 
+               mesh.primitives = renew mesh.primitives PrimitiveSingle[mesh.nPrimitives + count];
                for(c = 0; c<count; c++)
                {
                   uint16 face = ReadWORD(info->f);
@@ -473,7 +473,7 @@ static bool ReadFacesListChunks(FileInfo * info, Object object)
 
                   triangle->material = mat;
 
-                  info->faces[face].done = (byte)bool::true;                  
+                  info->faces[face].done = (byte)bool::true;
                }
                object.flags.translucent = true;
             }
@@ -501,7 +501,7 @@ static bool ReadFacesListChunks(FileInfo * info, Object object)
                         group.indices[c*3+1] = info->faces[face].indices[1];
                         group.indices[c*3+2] = info->faces[face].indices[2];
                      }
-                     info->faces[face].done = (byte)bool::true;   
+                     info->faces[face].done = (byte)bool::true;
                   }
                   mesh.UnlockPrimitiveGroup(group);
                }
@@ -578,7 +578,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
             int i;
             for(i = 0; i<3; i++)
             {
-               info->faces[c].oldIndices[i] = 
+               info->faces[c].oldIndices[i] =
                info->faces[c].indices[i] = ReadWORD(info->f);
             }
             ReadWORD(info->f);
@@ -595,7 +595,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          // Add faces without a material all together
          count = 0;
          for(c = 0; c<nFaces; c++)
-            if(!info->faces[c].done) 
+            if(!info->faces[c].done)
                count++;
          if(count)
          {
@@ -671,8 +671,8 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          zAxis.Normalize(zAxis);
 
          orth.CrossProduct(yAxis, zAxis);
-         if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(xAxis.x)) || 
-            (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(xAxis.y)) || 
+         if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(xAxis.x)) ||
+            (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(xAxis.y)) ||
             (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(xAxis.z)))
          {
             object.flags.flipWindings ^= true;
@@ -680,8 +680,8 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          }
 
          orth.CrossProduct(zAxis, xAxis);
-         if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(yAxis.x)) || 
-            (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(yAxis.y)) || 
+         if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(yAxis.x)) ||
+            (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(yAxis.y)) ||
             (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(yAxis.z)))
          {
             object.flags.flipWindings ^= true;
@@ -689,8 +689,8 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          }
 
          orth.CrossProduct(xAxis, yAxis);
-         if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(zAxis.x)) || 
-            (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(zAxis.y)) || 
+         if((Abs(orth.x) > 0.00001 && Sgn(orth.x) != Sgn(zAxis.x)) ||
+            (Abs(orth.y) > 0.00001 && Sgn(orth.y) != Sgn(zAxis.y)) ||
             (Abs(orth.z) > 0.00001 && Sgn(orth.z) != Sgn(zAxis.z)))
          {
             object.flags.flipWindings ^= true;
@@ -742,7 +742,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          for(c = 0; c<mesh.nVertices; c++)
          {
             Vector3Df vertex = mesh.vertices[c];
-            
+
             mesh.vertices[c].MultMatrix(vertex, inverse);
 
             mesh.vertices[c].x -= object.pivot.x;
@@ -797,7 +797,7 @@ static bool ReadMap(FileInfo * info, Material mat)
                delete opacityMap;
             }
          }
-         
+
          if(mat.baseMap)
          {
             if(!mat.baseMap.displaySystem && info->parent->chunkId == MAT_MAPOPACITY && opacityMap)
@@ -808,7 +808,7 @@ static bool ReadMap(FileInfo * info, Material mat)
                for(c = 0; c < opacityMap.width * opacityMap.height; c++)
                   picture[c] = ColorAlpha { ((ColorAlpha *)opacityMap.picture)[c].color.r, picture[c].color };
             }
-            mat.diffuse.r = mat.diffuse.g = mat.diffuse.b = 
+            mat.diffuse.r = mat.diffuse.g = mat.diffuse.b =
             mat.ambient.r = mat.ambient.g = mat.ambient.b = 1.0f;
          }
          if(opacityMap != mat.baseMap)
@@ -948,12 +948,12 @@ static bool ReadLight(FileInfo * info, Object object)
       }
       case LIT_ATTENUATION:
       {
-         /* solve ( 
-            { 
-               d = 300, small = 0.001, 
-               Kl = 0, Kc = 0, 
+         /* solve (
+            {
+               d = 300, small = 0.001,
+               Kl = 0, Kc = 0,
                d * (Kl + Kq * d) = (1 / small) - Kc
-            }, 
+            },
             { Kc, Kl, Kq, small, d });
          */
 
@@ -1266,7 +1266,7 @@ static bool ReadFrameInfoBlock(FileInfo * info, ObjectInfoBlock * block)
 
                key->frame = ReadDWORD(info->f);
                accelerationFlags = ReadWORD(info->f);
-               
+
                if(accelerationFlags & ACCFLAG_TENSION)
                   key->tension = ReadFloat(info->f);
                if(accelerationFlags & ACCFLAG_CONTINUITY)
@@ -1292,7 +1292,7 @@ static bool ReadFrameInfoBlock(FileInfo * info, ObjectInfoBlock * block)
                      Vector3Df axis;
                      Angle angle = ReadFloat(info->f);
                      Vector3Df fixedAxis;
-                     
+
                      Read3DVertex(info->f, axis);
                      fixedAxis.x = axis.x;
                      fixedAxis.y = -axis.z;
@@ -1389,7 +1389,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                object = Object { };
                object.name = block.dummyName;
                info->rootObject.children.AddName(object);
-               object.transform.scaling = { 1,1,1 }; 
+               object.transform.scaling = { 1,1,1 };
             }
             else
             {
@@ -1474,7 +1474,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                object = Object { };
                object.name = block.dummyName;
                info->rootObject.children.AddName(object);
-               object.transform.scaling = { 1, 1, 1 }; 
+               object.transform.scaling = { 1, 1, 1 };
                object.flags.camera = true;
             }
             else
@@ -1542,7 +1542,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                object = Object { };
                object.name = block.dummyName;
                info->rootObject.children.AddName(object);
-               object.transform.scaling = { 1,1,1 }; 
+               object.transform.scaling = { 1,1,1 };
             }
             else
             {
@@ -1614,7 +1614,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                object = Object { };
                object.name = block.dummyName;
                info->rootObject.children.AddName(object);
-               object.transform.scaling = { 1, 1, 1 }; 
+               object.transform.scaling = { 1, 1, 1 };
                object.flags.light = true;
             }
             else
@@ -1735,7 +1735,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
          info->rootObject.startFrame = ReadDWORD(info->f);
          info->rootObject.endFrame = ReadDWORD(info->f);
          *&(info->rootObject.frame) = info->rootObject.startFrame;
-         break;         
+         break;
       }
    }
    return true;
@@ -1800,7 +1800,7 @@ class Object3DSFormat : ObjectFormat
                result = true;
             }
             delete info.f;
-         }   
+         }
       }
       if(!result)
          object.Free(displaySystem);

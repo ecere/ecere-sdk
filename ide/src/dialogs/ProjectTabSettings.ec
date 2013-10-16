@@ -22,7 +22,7 @@ class ProjectTab : Tab
       text = $"Module Version", hotKey = altV;
       NotifyModified = ProjectControlModified;
    };
-   
+
    Label lcompilerConfigsDir { this, position = { 8, 96 }, labeledWindow = compilerConfigsDir };
    PathBox compilerConfigsDir
    {
@@ -62,7 +62,7 @@ class ProjectTab : Tab
          project.description = s = description.multiLineContents; delete s;
          project.license = s = license.multiLineContents; delete s;
          project.compilerConfigsDir = compilerConfigsDir.path;
-         
+
          project.topNode.modified = true;
          project.ModifiedAllConfigs(true, false, true, false);
          ide.projectView.modifiedDocument = true;

@@ -27,16 +27,16 @@ static int CC(int color)
       character == 141 || character == 142 || character == 143 || character == 155 ||
       character == 156)
       character = 32;
-   else if(character < 32) 
+   else if(character < 32)
    {
       character += 95;
       result |= A_ALTCHARSET;
    }
    if(color == 0x0800)
-      result |= A_DIM; 
-   else if(color & 0x0800) 
+      result |= A_DIM;
+   else if(color & 0x0800)
       result |= A_BOLD;
-   if(color & 0x8000) 
+   if(color & 0x8000)
       result |= A_BLINK;
    result |= character;
    return result;
@@ -101,7 +101,7 @@ class NCursesDisplayDriver : DisplayDriver
 
       cursesDisplay.bitmap.picture = new0 byte[2 * width / textCellW * height / textCellW];
       if(cursesDisplay.bitmap.picture)
-      {  
+      {
          cursesDisplay.bitmap.stride = width / textCellW;
          cursesDisplay.bitmap.pixelFormat = pixelFormatText;
          cursesDisplay.bitmap.size = width / textCellW * height / textCellH;
@@ -188,12 +188,12 @@ class NCursesDisplayDriver : DisplayDriver
 
          if(lfbSurface.opaqueText)
          {
-            mvaddch((y+surface.offset.y),x+surface.offset.x, 
+            mvaddch((y+surface.offset.y),x+surface.offset.x,
                CC(lfbSurface.background|lfbSurface.foreground|lfbSurface.drawingChar));
          }
          else
          {
-            mvaddch((y+surface.offset.y),x+surface.offset.x, 
+            mvaddch((y+surface.offset.y),x+surface.offset.x,
               CC(lfbSurface.background|lfbSurface.foreground|lfbSurface.drawingChar));
          }
       }
@@ -224,7 +224,7 @@ class NCursesDisplayDriver : DisplayDriver
          }
          else
          {
-            uint16 * lfbPtr = ((uint16 *)lfbSurface.bitmap.picture) + 
+            uint16 * lfbPtr = ((uint16 *)lfbSurface.bitmap.picture) +
                (y1+surface.offset.y)*lfbSurface.bitmap.stride+x1+surface.offset.x;
             int y;
             for(y=y1;y<=y2; y++, lfbPtr += lfbSurface.bitmap.stride)
@@ -252,7 +252,7 @@ class NCursesDisplayDriver : DisplayDriver
          }
          else
          {
-            uint16 * lfbPtr = ((uint16 *)lfbSurface.bitmap.picture) + 
+            uint16 * lfbPtr = ((uint16 *)lfbSurface.bitmap.picture) +
                (y1+surface.offset.y)*display.width / textCellW+x1+surface.offset.x;
             int x;
             for(x=x1;x<=x2; x++, lfbPtr++)
@@ -292,7 +292,7 @@ class NCursesDisplayDriver : DisplayDriver
          for(y=y1;y<=y2; y++)
          {
             mvhline(y+surface.offset.y,x1+surface.offset.x,
-               CC(lfbSurface.background | lfbSurface.foreground | lfbSurface.drawingChar),x2-x1+1); 
+               CC(lfbSurface.background | lfbSurface.foreground | lfbSurface.drawingChar),x2-x1+1);
          }
       }
    }
@@ -373,7 +373,7 @@ class NCursesDisplayDriver : DisplayDriver
       x /= textCellW;
       y /= textCellH;
 
-      if(y > surface.box.bottom || y < surface.box.top) 
+      if(y > surface.box.bottom || y < surface.box.top)
          return;
       y += surface.offset.y;
       lfbPtr = ((uint16 *)lfbSurface.bitmap.picture) + y * lfbSurface.bitmap.stride + x + surface.offset.x;

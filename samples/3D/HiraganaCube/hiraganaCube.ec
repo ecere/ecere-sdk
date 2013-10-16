@@ -19,7 +19,7 @@ class CubeApp : GuiApplication
 Camera camera
 {
    fixed,
-   position = { 0, 0, -200 }, 
+   position = { 0, 0, -200 },
    orientation = Euler { 0, 0, 0 },
    fov = 53;
 };
@@ -75,7 +75,7 @@ class Test3D : Window
 
          temp.Multiply(orientation, thisSpin);
          orientation.Normalize(temp);
-         
+
          cube.transform.orientation = orientation;
          cube.UpdateTransform();
          Update(null);
@@ -93,13 +93,13 @@ class Test3D : Window
          delete textures[c];
          delete group.material;
       }
-      
+
    }
    bool OnLoadGraphics()
    {
       char * hiragana[6] = { "あ", "い", "う", "え", "お", "ん" };
       int c;
-      
+
       PrimitiveGroup group;
       Font font;
       DisplaySystem lfbSystem { };
@@ -109,19 +109,19 @@ class Test3D : Window
       //font = lfbSystem.LoadFont("Arial Unicode MS", 180, 0);
       //font = lfbSystem.LoadFont("MingLiu", 150, 0);
       font = lfbSystem.LoadFont("FreeSans.ttf", 175, 0);
-      
+
       for(group = cube.mesh.groups.first, c = 0; c<6; c++, group = group.next)
       {
          Surface surface;
          int tw, th;
          textures[c] = Bitmap { };
          textures[c].Allocate(null, 256, 256, 0, pixelFormat888, false);
-         
+
          surface = textures[c].GetSurface(0,0, null);
          surface.TextFont(font);
          surface.SetBackground(ColorAlpha { 255/*64*/, beige });
          surface.Clear(colorBuffer);
-         surface.SetForeground(ColorAlpha { 255/*128*/, ColorHSV { 60 * c, 100, 50 }}); 
+         surface.SetForeground(ColorAlpha { 255/*128*/, ColorHSV { 60 * c, 100, 50 }});
          surface.TextExtent(hiragana[c], strlen(hiragana[c]), &tw, &th);
          //surface.WriteText((256 - tw) / 2, (256 - th) / 2 /*+ 20*/, hiragana[c], strlen(hiragana[c]));
          surface.WriteText(12,-45, hiragana[c], strlen(hiragana[c]));
@@ -145,12 +145,12 @@ class Test3D : Window
       cube.UpdateTransform();
       return true;
    }
- 
+
    void OnResize(int w, int h)
    {
       camera.Setup(w, h, null);
    }
- 
+
    void OnRedraw(Surface surface)
    {
       surface.Clear(colorAndDepth);

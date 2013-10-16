@@ -5,7 +5,7 @@ define app = ((GuiApplication)__thisModule);
 struct WindowAsteroid {
    Window win;
    int dx, dy;
-   
+
    property int x {
       get { return win.position.x; }
       set { win.position.x = value; }
@@ -29,7 +29,7 @@ public:
    Window holder;
    uint count;
    WindowAsteroid *item;
-   
+
    void Initialize(uint wcount, Window win[]) {
       uint i;
       count = wcount;
@@ -43,7 +43,7 @@ public:
          } while (!item[i].dx && !item[i].dy);
       }
    }
-   
+
    void Advance(void) {
       WindowAsteroid *i = item;
       uint d = count;
@@ -56,7 +56,7 @@ public:
             i->dy = -i->dy;
       }
    }
-   
+
    ~WindowAsteroidField() {
       delete item;
    }
@@ -125,8 +125,8 @@ class Form2 : Window
          return true;
       }
    };
-   Button button4 
-   {      
+   Button button4
+   {
       this, text = "Enabled", position = { 288, 88 }, isCheckbox = true, checked = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -137,8 +137,8 @@ class Form2 : Window
    };
    EditBox editBox1 { this, text = "editBox1", contents = "0", position = { 96, 56 }, readOnly = true };
    EditBox editBox2 { this, text = "editBox2", contents = "0", position = { 296, 56 }, readOnly = true };
-   Button button3 
-   {      
+   Button button3
+   {
       this, text = "Enabled", position = { 88, 88 }, isCheckbox = true, checked = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -147,8 +147,8 @@ class Form2 : Window
          return true;
       }
    };
-   Button button2 
-   {      
+   Button button2
+   {
       this, text = "Up Me", size = { 119, 21 }, position = { 280, 24 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -158,8 +158,8 @@ class Form2 : Window
          return true;
       }
    };
-   Button button1 
-   {      
+   Button button1
+   {
       this, text = "Up Me", size = { 95, 21 }, position = { 88, 24 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)

@@ -14,7 +14,7 @@ public class Label : CommonControl
 public:
    property Window labeledWindow
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          Size size;
@@ -42,13 +42,13 @@ public:
    };
 
    property bool isGroupBox
-   { 
-      property_category $"Appearance" 
+   {
+      property_category $"Appearance"
       set
       {
          isGroupBox = value;
          inactive = !value;
-      } 
+      }
       get { return isGroupBox; }
    };
 

@@ -29,7 +29,7 @@ class SlideShow : Window
 
    background = black;
    anchor = Anchor { 0, 0, 0, 0 };
-   
+
    void NextImage(int direction)
    {
       timer.Stop();
@@ -39,8 +39,8 @@ class SlideShow : Window
       {
          PictureFile oldFileName = fileName;
          int oldDirID = fileName.dirID;
-         while(fileName.dirID == oldDirID || 
-            (direction == -2 && 
+         while(fileName.dirID == oldDirID ||
+            (direction == -2 &&
                (fileName.prev ? fileName.prev : (PictureFile)fileNames.last).dirID == fileName.dirID))
          {
             if(Sgn(direction) == 1)
@@ -54,7 +54,7 @@ class SlideShow : Window
                if(!fileName) fileName = fileNames.last;
             }
             if(Abs(direction) == 1) break;
-            
+
             if(fileName == oldFileName) break;
          }
       }
@@ -80,7 +80,7 @@ class SlideShow : Window
    {
       FileListing listing { directory, "pcx, jpg, bmp, png" };
       OldList list { };
-   
+
       PictureFile fileName;
       int thisDirID = dirID++;
 
@@ -97,7 +97,7 @@ class SlideShow : Window
       for(;(fileName = list.first);)
       {
          list.Remove(fileName);
-         
+
          if(fileName.dir)
          {
             AddDirectory(files, fileName.name);

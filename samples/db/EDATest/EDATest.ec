@@ -15,10 +15,10 @@ class EDABetterTestForm : Window
    DataSource ds { };
    Database db;
    Table tbl;
-   
+
    Label groupDrv { this, anchor = { left = 8, top = 8, right = 8 }, size = { h = 60 }, text = "Driver", inactive = false, isGroupBox = true };
-   
-   DropBox driver 
+
+   DropBox driver
    {
       groupDrv, this, "Driver", size = { 136, 24 }, position = { 16, 24 };
 
@@ -83,10 +83,10 @@ class EDABetterTestForm : Window
 
       bool OnPostCreate(void)
       {
-         //AddField({ "subclass(DataSourceDriver)" });  // won't compile, should be done differently? 
+         //AddField({ "subclass(DataSourceDriver)" });  // won't compile, should be done differently?
          //AddRow().SetData(null, GetDataDriver("EDB"));
          //AddRow().SetData(null, GetDataDriver("MySQL"));
-         
+
          AddString("EDB");
          AddString("MemoryEDB");
          AddString("MySQL");
@@ -100,7 +100,7 @@ class EDABetterTestForm : Window
    };
 
    Label groupDs { this, anchor = { left = 8, top = 76, right = 8 }, size = { h = 60 }, text = "Datasource (Host, Port, Username, Password)", inactive = false, isGroupBox = true, disabled = true };
-   
+
    EditBox host { groupDs, this, size = { 142, 24 }, position = { 16, 24 } };
    EditBox port { groupDs, this, size = { 70, 24 }, position = { 168, 24 } };
    EditBox username { groupDs, this, size = { 150, 24 }, position = { 264, 24 } };
@@ -108,7 +108,7 @@ class EDABetterTestForm : Window
    Button openDs
    {
       groupDs, this, text = "Open", position = { 552, 24 };
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          ds.driver = driver.currentRow.string;
@@ -143,7 +143,7 @@ class EDABetterTestForm : Window
    Button closeDs
    {
       groupDs, this, text = "Close", position = { 598, 24 }, disabled = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          ds.driver = null;
@@ -162,7 +162,7 @@ class EDABetterTestForm : Window
    Button testDs
    {
       groupDs, this, text = "Test", position = { 644, 24 }, disabled = false;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          int c;
@@ -175,8 +175,8 @@ class EDABetterTestForm : Window
          return true;
       }
    };
-   
-   
+
+
    Label groupDb { this, text = "Database (List, Name)", anchor = { left = 8, top = 152, right = 8 }, size = { h = 120 }, inactive = false, isGroupBox = true, disabled = true };
 
    ListBox listDatabases
@@ -198,7 +198,7 @@ class EDABetterTestForm : Window
    Button openDb
    {
       groupDb, this, "Open", position = { 448, 24 };
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          db = ds.OpenDatabase(nameDb.contents, dbCreate.checked ? create : no);
@@ -225,7 +225,7 @@ class EDABetterTestForm : Window
    Button closeDb
    {
       groupDb, this, "Close", position = { 496, 24 }, disabled = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          delete db;
@@ -244,7 +244,7 @@ class EDABetterTestForm : Window
    Button deleteDb
    {
       groupDb, this, "Delete", position = { 544, 24 }, disabled = false;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!ds.DeleteDatabase(nameDb.contents))
@@ -276,7 +276,7 @@ class EDABetterTestForm : Window
    Button openTbl
    {
       groupTbl, this, "Open", position = { 448, 24 };
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          tbl = db.OpenTable(nameTbl.contents, { type = tableRows, create = tblCreate.checked ? create : no });
@@ -309,7 +309,7 @@ class EDABetterTestForm : Window
                   tblFields.GUIListBoxAddRowsField(listFields, "Name");
                delete tblFields;
             }
-            
+
             tableBox.text = tbl.name;
             tbl.GUIListBoxAddFields(tableBox);
             tbl.GUIListBoxAddRows(tableBox);
@@ -320,7 +320,7 @@ class EDABetterTestForm : Window
    Button closeTbl
    {
       groupTbl, this, "Close", position = { 496, 24 }, disabled = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          delete tbl;
@@ -342,7 +342,7 @@ class EDABetterTestForm : Window
 
    ListBox listFields { groupFld, this, size = { 200, 88 }, position = { 16, 24 } };
    EditBox nameFld { groupFld, this, size = { 200, 24 }, position = { 232, 24 } };
-   DropBox fldDataType 
+   DropBox fldDataType
    {
       groupFld, this, "Data Type", size = { 136, 24 }, position = { 448, 24 };
 
@@ -363,7 +363,7 @@ class EDABetterTestForm : Window
    Button createFld
    {
       groupFld, this, "Create", position = { 600, 24 };
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(tbl.AddField(nameFld.contents, fldDataType.currentRow.GetData(null), 0))
@@ -382,7 +382,7 @@ class EDABetterTestForm : Window
    Button addRow
    {
       this, text = "AddRow", anchor = { left = 10, bottom = 10 };
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          Row row { tbl };
@@ -396,7 +396,7 @@ class EDABetterTestForm : Window
    Button find
    {
       this, text = "Find", anchor = { left = 110, bottom = 10 };
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          Row row { tbl };
@@ -427,7 +427,7 @@ class EDABetterTestForm : Window
             DataRow curRow = listBox.firstRow;
             Row row { tbl };
             int sysID = 0;
-            
+
             while(row.Next() && curRow)
             {
                if(curRow == listBox.currentRow)

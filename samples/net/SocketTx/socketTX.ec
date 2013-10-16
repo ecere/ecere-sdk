@@ -8,7 +8,7 @@ struct SamplePacket
 {
    int stringLen;
    // stringLen + 1 bytes are actually used (variable size depending on string)
-   char string[1];   
+   char string[1];
 };
 
 // We don't really need anything special in this class here, we could simply use Socket directly

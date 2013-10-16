@@ -6,7 +6,7 @@ class MySocket : Socket
    {
       printf("Connected!\n");
    }
-   
+
 }
 
 MySocket socket { };

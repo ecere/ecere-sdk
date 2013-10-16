@@ -52,7 +52,7 @@ extern int __ecereVMethodID_class_OnSaveEdit;
 
 private:
 
-public class DataField 
+public class DataField
 {
 public:
    property Class dataType
@@ -133,7 +133,7 @@ public:
       set
       {
          userData = value;
-      } 
+      }
       get
       {
          return this ? userData : null;
@@ -141,7 +141,7 @@ public:
    };
    property bool freeData
    {
-      set { freeData = value; } get { return freeData; }      
+      set { freeData = value; } get { return freeData; }
    };
    property DataField prev { get { return prev; } };
    property DataField next { get { return next; } };
@@ -223,11 +223,11 @@ private:
          listBox.fields.Remove(this);
          for(field = listBox.fields.first; field; field = field.next)
          {
-            if(field.index >= index) 
+            if(field.index >= index)
                field.index--;
          }
          if(listBox.currentField == this)
-            listBox.currentField = null;            
+            listBox.currentField = null;
          listBox.numFields--;
          listBox.OnResize(listBox.clientSize.w, listBox.clientSize.h);
          listBox = null;
@@ -292,11 +292,11 @@ public:
                      if(!listBox.clickedRow)
                         listBox.clickedRow = this;
                   }
-                  if(listBox.currentRow && !listBox.currentRow.parent.IsExpanded()) 
+                  if(listBox.currentRow && !listBox.currentRow.parent.IsExpanded())
                   {
                      listBox.SetCurrentRow(this, true);
                   }
-                  if(listBox.firstRowShown && !listBox.firstRowShown.parent.IsExpanded()) 
+                  if(listBox.firstRowShown && !listBox.firstRowShown.parent.IsExpanded())
                   {
                      listBox.firstRowShown = GetPrevRow();
                      if(!listBox.firstRowShown)
@@ -313,7 +313,7 @@ public:
 
                listBox.SetScrollArea(
                   listBox.width,
-                  (listBox.rowCount * listBox.rowHeight) + 
+                  (listBox.rowCount * listBox.rowHeight) +
                   ((listBox.style.header) ? listBox.rowHeight : 0) -
                   ((!((listBox.clientSize.h+1) % listBox.rowHeight)) ? listBox.rowHeight : 0), true);
                listBox.Update(null);
@@ -358,14 +358,14 @@ public:
             listBox.HideEditBox(false, false, true);
 
             /*
-            if(this == listBox.clickedRow) 
+            if(this == listBox.clickedRow)
             {
                listBox.clickedRow = GetNextRow();
                if(!listBox.clickedRow)
                   listBox.clickedRow = GetPrevRow();
             }
 
-            if(this == listBox.currentRow) 
+            if(this == listBox.currentRow)
             {
                DataRow newCurrentRow = GetNextRow();
                if(!listBox.newCurrentRow)
@@ -373,7 +373,7 @@ public:
                listBox.SetCurrentRow(newCurrentRow, true);
             }
 
-            if(this == listBox.firstRowShown) 
+            if(this == listBox.firstRowShown)
             {
                listBox.firstRowShown = GetPrevRow();
                if(!listBox.firstRowShown)
@@ -423,7 +423,7 @@ public:
 
                listBox.SetScrollArea(
                   listBox.width,
-                  (listBox.rowCount * listBox.rowHeight) + 
+                  (listBox.rowCount * listBox.rowHeight) +
                   ((listBox.style.header) ? listBox.rowHeight : 0) -
                   ((!((listBox.clientSize.h+1) % listBox.rowHeight)) ? listBox.rowHeight : 0), true);
                if(listBox.style.autoScroll)
@@ -493,7 +493,7 @@ public:
 
             if(!after || after.index < index)
             {
-               if(after == listBox.firstRowShown.prev) 
+               if(after == listBox.firstRowShown.prev)
                   listBox.firstRowShown = this;
 
                // All rows between AFTER (exclusive) and ROW (exclusive) are incremented by one
@@ -698,7 +698,7 @@ public:
                      break;
                if(field)
                {
-                  int size = (field.dataType && field.dataType.typeSize) ? 
+                  int size = (field.dataType && field.dataType.typeSize) ?
                      (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                   ListBoxCell cell = (ListBoxCell)new0 byte[size];
                   row.cells.Add(cell);
@@ -723,11 +723,11 @@ public:
                listBox.rowCount++;
 
                for(search = row.GetNextRow(); search; search = search.GetNextRow())
-                  search.index++;            
+                  search.index++;
 
                listBox.SetScrollArea(
                   listBox.width,
-                  (listBox.rowCount * listBox.rowHeight) + 
+                  (listBox.rowCount * listBox.rowHeight) +
                   ((listBox.style.header) ? listBox.rowHeight : 0) -
                   ((!((listBox.clientSize.h+1) % listBox.rowHeight)) ? listBox.rowHeight : 0), true);
                if(listBox.style.autoScroll)
@@ -835,8 +835,8 @@ private:
       int result = 0;
       ListBoxCell cell1, cell2;
       uint index;
-      for(index = 0, cell1 = cells.first, cell2 = b.cells.first; 
-          index != sortField.index; 
+      for(index = 0, cell1 = cells.first, cell2 = b.cells.first;
+          index != sortField.index;
           index++, cell1 = cell1.next, cell2 = cell2.next);
    /*
       if(!cell1.isSet && !cell2.isSet)
@@ -854,14 +854,14 @@ private:
       {
          if(sortField.dataType.type == normalClass || sortField.dataType.type == noHeadClass)
          {
-            result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType, 
-               (cell1.isSet && cell1.data) ? cell1.data[0] : null, 
+            result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType,
+               (cell1.isSet && cell1.data) ? cell1.data[0] : null,
                (cell2.isSet && cell2.data) ? cell2.data[0] : null);
          }
          else
          {
-            result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType, 
-               cell1.isSet ? cell1.data : null, 
+            result = ((int (*)(void *, void *, void *))(void *)sortField.dataType._vTbl[__ecereVMethodID_class_OnCompare])(sortField.dataType,
+               cell1.isSet ? cell1.data : null,
                cell2.isSet ? cell2.data : null);
          }
       }
@@ -918,9 +918,9 @@ private:
    {
       DataRow row;
       // Find Next row
-      if(subRows.first && !collapsed) 
+      if(subRows.first && !collapsed)
          row = subRows.first;
-      else 
+      else
       {
          for(row = this; row; row = row.parent)
          {
@@ -980,7 +980,7 @@ public:
 
    property int rowHeight
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       isset { return style.heightSet; }
       set
       {
@@ -1001,7 +1001,7 @@ public:
    };
    property Seconds typingTimeout
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          typedString[0] = '\0';
@@ -1018,7 +1018,7 @@ public:
    property bool hasClearHeader { property_category $"Appearance" set { style.clearHeader = value; if(value) property::hasHeader = true; } get { return style.clearHeader; } };
    property bool hasHeader
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          if(value && !style.header)
@@ -1044,7 +1044,7 @@ public:
          style.header = value;
       }
       get { return style.header; }
-   };   
+   };
    property bool multiSelect { property_category $"Behavior" set { style.multiSelect = value; } get { return style.multiSelect; } };
    property bool alwaysEdit { property_category $"Behavior" set { style.alwaysEdit = value; } get { return style.alwaysEdit; } };
    property bool fullRowSelect { property_category $"Appearance" set { style.fullRowSelect = value; } get { return style.fullRowSelect; } };
@@ -1055,7 +1055,7 @@ public:
    property bool noDragging { property_category $"Behavior" set { style.noDragging = value; } get { return style.noDragging; } };
    property bool fillLastField
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          style.fillLastField = value;
@@ -1106,7 +1106,7 @@ public:
    virtual bool Window::NotifyResized(ListBox listBox, DataField field, Modifiers mods);
    virtual bool Window::NotifyCollapse(ListBox listBox, DataRow row, bool collapsed);
    virtual bool Window::NotifyKeyHit(ListBox listBox, DataRow row, Key key, unichar ch);
-   virtual bool Window::NotifyModified(ListBox listBox, DataRow row);   
+   virtual bool Window::NotifyModified(ListBox listBox, DataRow row);
    virtual bool Window::NotifyEditing(ListBox listBox, DataRow row);
 
 #ifdef _DEBUG
@@ -1144,7 +1144,7 @@ public:
          incref addedField;
          addedField.listBox = this;
          fields.Add(addedField);
-      
+
          addedField.sortOrder = 1;
          addedField.index = numFields;
          numFields++;
@@ -1181,16 +1181,16 @@ public:
             field = addedField;
             for(row = rows.first; row; )
             {
-               int size = (field.dataType && field.dataType.typeSize) ? 
+               int size = (field.dataType && field.dataType.typeSize) ?
                   (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                ListBoxCell cell = (ListBoxCell)new0 byte[size];
                row.cells.Add(cell);
                FillBytes(cell.data, 0, size - (uint)&((ListBoxCell)0).data);
                cell.isSet = false;
 
-               if(row.subRows.first) 
+               if(row.subRows.first)
                   row = row.subRows.first;
-               else 
+               else
                {
                   for(; row; row = row.parent)
                   {
@@ -1255,9 +1255,9 @@ public:
                   delete cell;
                }
 
-               if(row.subRows.first) 
+               if(row.subRows.first)
                   row = row.subRows.first;
-               else 
+               else
                {
                   for(; row; row = row.parent)
                   {
@@ -1289,16 +1289,16 @@ public:
          row.listBox = this;
 
          for(search = row.GetNextRow(); search; search = search.GetNextRow())
-            search.index++;         
+            search.index++;
 
          this.rowCount++;
          row.cells.Clear();
-         
+
          firstRowShown = row;
 
          SetScrollArea(
             width,
-            (rowCount * rowHeight) + 
+            (rowCount * rowHeight) +
             ((style.header) ? rowHeight : 0) -
             ((!((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
          if(style.autoScroll)
@@ -1342,7 +1342,7 @@ public:
                         break;
                   if(field)
                   {
-                     int size = (field.dataType && field.dataType.typeSize) ? 
+                     int size = (field.dataType && field.dataType.typeSize) ?
                         (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                      ListBoxCell cell = (ListBoxCell) new0 byte[size];
                      row.cells.Add(cell);
@@ -1359,7 +1359,7 @@ public:
                if(rowHeight)
                   SetScrollArea(
                      width,
-                     (rowCount * rowHeight) + 
+                     (rowCount * rowHeight) +
                      ((style.header) ? rowHeight : 0) -
                      ((!((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
                if(style.autoScroll)
@@ -1399,7 +1399,7 @@ public:
             row.listBox = this;
 
             for(search = row.GetNextRow(); search; search = search.GetNextRow())
-               search.index++;         
+               search.index++;
 
             this.rowCount++;
             row.cells.Clear();
@@ -1410,7 +1410,7 @@ public:
                      break;
                if(field)
                {
-                  int size = (field.dataType && field.dataType.typeSize) ? 
+                  int size = (field.dataType && field.dataType.typeSize) ?
                      (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                   ListBoxCell cell = (ListBoxCell) new0 byte[size];
                   row.cells.Add(cell);
@@ -1425,7 +1425,7 @@ public:
 
             SetScrollArea(
                width,
-               (rowCount * rowHeight) + 
+               (rowCount * rowHeight) +
                ((style.header) ? rowHeight : 0) -
                ((!((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
             if(style.autoScroll)
@@ -1497,20 +1497,20 @@ public:
          if(row.parent.IsExpanded())
          {
             for(search = row.GetNextRow(); search; search = search.GetNextRow())
-               search.index--;         
+               search.index--;
             this.rowCount--;
          }
 
          HideEditBox(false, false, true);
 
-         if(row == clickedRow) 
+         if(row == clickedRow)
          {
             clickedRow = row.GetNextRow();
             if(!clickedRow)
                clickedRow = row.GetPrevRow();
          }
 
-         if(row == currentRow) 
+         if(row == currentRow)
          {
             DataRow newCurrentRow = row.GetNextRow();
             if(!newCurrentRow)
@@ -1518,7 +1518,7 @@ public:
             SetCurrentRow(newCurrentRow, true);
          }
 
-         if(row == firstRowShown) 
+         if(row == firstRowShown)
          {
             firstRowShown = row.GetPrevRow();
             if(!firstRowShown)
@@ -1532,7 +1532,7 @@ public:
 
          SetScrollArea(
             this.width,
-            (this.rowCount * rowHeight) + 
+            (this.rowCount * rowHeight) +
             ((style.header) ? rowHeight : 0) -
             ((!((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
 
@@ -1719,7 +1719,7 @@ public:
       if(this)
       {
          DataRow row = null;
-      
+
          for(row = rows.first; row; row = row.next)
          {
             if(!row.noneRow && row.tag == tag)
@@ -1744,10 +1744,10 @@ public:
 
          HideEditBox(false, true, false);
          editData.Destroy(0);
-               
+
          firstRowShown = currentRow = null;
          ClearEx();
-     
+
          if(master)
          {
             if(style.freeSelect)
@@ -1759,12 +1759,12 @@ public:
          if(style.alwaysEdit && currentRow)
             currentRow.Edit(currentField);
 
-      
+
          this.rowCount = 0;
-      
+
          SetScrollArea(
                this.width,
-               (this.rowCount * rowHeight) + 
+               (this.rowCount * rowHeight) +
                ((style.header) ? rowHeight : 0) -
                ((rowHeight && !((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
          Update(null);
@@ -1902,7 +1902,7 @@ private:
       if(*row)
       {
          if(!*field) *field = this ? currentField : null;
-         if(!*field && this) 
+         if(!*field && this)
          {
             for(*field = fields.first; (*field).index != 0; *field = (*field).next);
          }
@@ -1923,9 +1923,9 @@ private:
       if(editData && editData.visible)
       {
          Class dataType = currentField.dataType;
-         if(save) 
+         if(save)
             editData.SaveData();
-         
+
          editData.visible = false;
          NotifyEditDone(master, this, currentRow);
 
@@ -1938,7 +1938,7 @@ private:
             int height = rowHeight - (style.alwaysEdit ? 1 : 0);
             int y = currentRow.index * rowHeight + (style.header ? rowHeight : 0);
             int x = currentField.x;
-            int width = (!currentField.next && style.fillLastField && (!hasHorzScroll || clientSize.w - currentField.x > currentField.width + EXTRA_SPACE)) ? 
+            int width = (!currentField.next && style.fillLastField && (!hasHorzScroll || clientSize.w - currentField.x > currentField.width + EXTRA_SPACE)) ?
                   clientSize.w - currentField.x : (currentField.width + EXTRA_SPACE);
 
             if(!style.alwaysEdit)
@@ -1959,7 +1959,7 @@ private:
          }
          else
             printf("");
-            
+
          /*else
             currentField = null;*/
       }
@@ -2036,7 +2036,7 @@ private:
             x += 15;
          for(field = fields.first; field; field = field.next)
          {
-            width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+            width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                clientSize.w - field.x : (field.width + EXTRA_SPACE);
             if(field == currentField) break;
             x += width;
@@ -2076,7 +2076,7 @@ private:
 
             for(field = fields.first; field; field = field.next)
             {
-               width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+               width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                   clientSize.w - field.x : (field.width + EXTRA_SPACE);
                if(field == whichField) break;
                x += width;
@@ -2125,7 +2125,7 @@ private:
                      bool result = DataBox::OnKeyDown(key, ch);
                      if(visible && active)   // Added this check here, because we will not use enter/escape otherwise, and lose DataBox's result
                      {
-                        if((SmartKey)key == enter || (SmartKey)key == escape) 
+                        if((SmartKey)key == enter || (SmartKey)key == escape)
                            return true;
                      }
                      return result;
@@ -2210,7 +2210,7 @@ private:
          // Vertical lines
          for(field = fields.first; field; field = field.next)
          {
-            int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+            int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                clientSize.w - field.x : (field.width + EXTRA_SPACE);
             if(field.prev && y > 0)
                surface.VLine(0, y-1, x);
@@ -2250,7 +2250,7 @@ private:
                int y1 = y + PLUSY + 4;
                int y2;
                DataRow child;
-            
+
                for(child = row.collapsed ? null : row.subRows.first; child && child != row; )
                {
                   numRows++;
@@ -2585,7 +2585,7 @@ private:
       if(sortField && !style.clearHeader && style.header)
       {
          DataField field = sortField;
-         int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+         int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
             clientSize.w - field.x : (field.width + EXTRA_SPACE);
          int tw = 0, th = 0;
          if(field.header)
@@ -2594,9 +2594,9 @@ private:
          {
             bool up = field.sortOrder == 1;
             int x = 4, y = 4;
-            Box clip = 
-            { 
-               field.x + 2 - scroll.x, 0, 
+            Box clip =
+            {
+               field.x + 2 - scroll.x, 0,
                field.x + width + EXTRA_SPACE - 1 - scroll.x, rowHeight
             };
             surface.Clip(&clip);
@@ -2606,7 +2606,7 @@ private:
                   x = field.x + (width + EXTRA_SPACE - tw) / 2 + tw + EXTRA_SPACE + 4;
                else
                   x = field.x + tw + EXTRA_SPACE + 4;
-             
+
                x = Min(x, field.x + width - 4);
             }
             else if(field.alignment == right)
@@ -2630,7 +2630,7 @@ private:
                   surface.PutPixel(x + 1, y + 5);
                   surface.PutPixel(x + 1, y + 3);
                   surface.PutPixel(x + 2, y + 1);
-            
+
                   surface.SetForeground(white);
                   surface.DrawLine(x + 4, y, x + 7, y + 5);
                   surface.PutPixel(x + 6, y + 5);
@@ -2646,7 +2646,7 @@ private:
                   surface.PutPixel(x + 1, y+1);
                   surface.PutPixel(x + 1, y+3);
                   surface.PutPixel(x + 2, y+5);
-            
+
                   surface.SetForeground(white);
                   surface.DrawLine(x + 4, y+6, x + 7, y+1);
                   surface.PutPixel(x + 6, y+1);
@@ -2679,13 +2679,13 @@ private:
 
       SetScrollArea(
          width,
-         (rowCount * rowHeight) + 
+         (rowCount * rowHeight) +
          ((style.header) ? rowHeight : 0) -
          ((!((clientSize.h+1) % rowHeight)) ? rowHeight : 0), true);
 
       for(field = fields.first; field; field = field.next)
       {
-         int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+         int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
             clientSize.w - field.x : (field.width + EXTRA_SPACE);
          if(style.header && field.headButton)
          {
@@ -2743,7 +2743,7 @@ private:
       // false: dont destroy edit box
       HideEditBox(true, false, true);
       if(style.resizable && ((!field && x < RESIZE_BORDER && fields.last) ||
-         (field && x < RESIZE_BORDER && field.prev) || 
+         (field && x < RESIZE_BORDER && field.prev) ||
          (field && x >= control.clientSize.w - RESIZE_BORDER)))
       {
          if(!field)
@@ -2782,7 +2782,7 @@ private:
          x += control.position.x;
 
          // Tweak to prevent shrinking field if we're actually moving right
-         if(x - scroll.x > this.oldX && 
+         if(x - scroll.x > this.oldX &&
             this.startWidth + x - this.resizeX < field.width)
          {
             this.oldX = x - scroll.x;
@@ -2804,9 +2804,9 @@ private:
             int fieldX = 0;
             for(field = fields.first; field; field = field.next)
             {
-               fieldX += ((field.width || style.resizable) ? 
+               fieldX += ((field.width || style.resizable) ?
                   field.width : clientSize.w) + EXTRA_SPACE;
-               if(fieldX > x) 
+               if(fieldX > x)
                   break;
             }
             if(draggingField == field)
@@ -2816,7 +2816,7 @@ private:
                        field.x >= field.x + field.width + EXTRA_SPACE - clientSize.w)
                {
                   SetScrollPosition(
-                     field.x + field.width + EXTRA_SPACE - clientSize.w, 
+                     field.x + field.width + EXTRA_SPACE - clientSize.w,
                      scroll.y);
                }
                else if(field.x + field.width + EXTRA_SPACE - clientSize.w > scroll.x ||
@@ -2887,7 +2887,7 @@ private:
       if(draggingField)
       {
          bool result = true;
-         
+
          if(style.moveFields)
          {
             if(dropField)
@@ -2900,9 +2900,9 @@ private:
                x += draggingField.x;
                for(field = fields.first; field; field = field.next)
                {
-                  fieldX += ((field.width || style.resizable) ? 
+                  fieldX += ((field.width || style.resizable) ?
                      field.width : clientSize.w) + EXTRA_SPACE;
-                  if(fieldX > x) 
+                  if(fieldX > x)
                   {
                      switchField = field;
                      break;
@@ -2998,7 +2998,7 @@ private:
 
    bool OnLoadGraphics()
    {
-      display.FontExtent(fontObject, "W", 1, null, &fontH); 
+      display.FontExtent(fontObject, "W", 1, null, &fontH);
       if(!style.heightSet)
       {
          rowHeight = Max(fontH + 2, 16) + (style.alwaysEdit ? 1 : 0);
@@ -3038,7 +3038,7 @@ private:
             Font font = fontObject;
             Font boldFont = this.boldFont.font;
             Display display = this.display;
-            
+
             for(row = rows.first; row; row = row.GetNextRow())
             {
                Bitmap icon = row.icon ? row.icon.bitmap : null;
@@ -3159,7 +3159,7 @@ private:
 
          for(field = fields.first; field; field = field.next)
          {
-            int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+            int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                clientSize.w - field.x : (field.width + EXTRA_SPACE);
 
             if(field.prev)
@@ -3176,7 +3176,7 @@ private:
 
       if((editData && editData.visible) || (style.alwaysEdit))
          return true;
-      
+
       if(x == MAXINT && y == MAXINT)
       {
          x = this.mouseX;
@@ -3195,18 +3195,18 @@ private:
          mouseY = y;
 
          if(this.dragging &&
-            ((vertScroll && vertScroll.visible && 
+            ((vertScroll && vertScroll.visible &&
              (y < 0 || y >= clientSize.h)) ||
-             (horzScroll && horzScroll.visible && 
+             (horzScroll && horzScroll.visible &&
              (x < 0 || x >= clientSize.w))))
          {
             timer.Start();
             if(isTimer)
             {
-               if(vertScroll && vertScroll.visible && 
+               if(vertScroll && vertScroll.visible &&
                   (y < 0 || y >= clientSize.h))
                   vertScroll.Action((y<0)?up:down, 0, 0);
-               if(horzScroll && horzScroll.visible && 
+               if(horzScroll && horzScroll.visible &&
                   (x < 0 || x >= clientSize.w))
                   horzScroll.Action((x<0)?up:down, 0, 0);
             }
@@ -3237,7 +3237,7 @@ private:
                {
                   DataRow thisRow;
                   for(thisRow = rows.first; thisRow; thisRow = thisRow.GetNextRow())
-                     if((thisRow.selectedFlag == selected || thisRow.selectedFlag == tempSelected) || 
+                     if((thisRow.selectedFlag == selected || thisRow.selectedFlag == tempSelected) ||
                         thisRow == row)
                         break;
                   if(thisRow != row)
@@ -3351,7 +3351,7 @@ private:
 
          for(field = fields.first; field; field = field.next)
          {
-            int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+            int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                clientSize.w - field.x : (field.width + EXTRA_SPACE);
 
             if(field.prev)
@@ -3405,7 +3405,7 @@ private:
          for(row = firstRowShown; row; row = row.GetNextRow(), rowIndex ++)
          {
             rowY += rowHeight;
-            if(rowY > y || (style.multiSelect && !row.GetNextRow())) 
+            if(rowY > y || (style.multiSelect && !row.GetNextRow()))
             {
                int plusIndent = 0;
                if(style.treeBranch)
@@ -3421,7 +3421,7 @@ private:
                if(style.collapse && row.subRows.first && (row.parent || !(style.treeBranch) || (style.rootCollapse)) &&
                   (x >= rowStart + 3 + plusIndent && y >= rowY - rowHeight + PLUSY && x <= rowStart + 11 + plusIndent && y <= rowY - rowHeight + PLUSY + 8))
                */
-               if(style.collapse && 
+               if(style.collapse &&
                   (x >= rowStart && y >= rowY - rowHeight && x <= rowStart + 18 + plusIndent && y <= rowY + rowHeight-1))
                {
                   if(row.subRows.first && (row.parent || !(style.treeBranch) || (style.rootCollapse)) && x >= plusIndent)
@@ -3445,7 +3445,7 @@ private:
                         clickedRow = row;
                         //this.clickedRowIndex = rowIndex;
                      }
-                     else if(style.moveRows && !(mods.shift) && 
+                     else if(style.moveRows && !(mods.shift) &&
                         (row.selectedFlag == selected || row.selectedFlag == tempSelected) &&
                         !right && !(mods.isActivate))
                         moveMultiple = true;
@@ -3492,7 +3492,7 @@ private:
                                     {
                                        if(selRow != clickedRow)
                                        {
-                                          if(selRow.selectedFlag) 
+                                          if(selRow.selectedFlag)
                                              selRow.selectedFlag = tempUnselected;
                                           else
                                              selRow.selectedFlag = tempSelected;
@@ -3617,7 +3617,7 @@ private:
 
          if(style.freeSelect)
             NotifyHighlight(master, this, currentRow, mods);
-         else if((moveMultiple || (!(style.multiSelect) && previousRow == currentRow)) && 
+         else if((moveMultiple || (!(style.multiSelect) && previousRow == currentRow)) &&
             newCurrentRow && !(mods.shift))
          {
             if(!right)
@@ -3647,19 +3647,19 @@ private:
 
                      for(field = fields.first; field; field = field.next)
                      {
-                        int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+                        int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                            clientSize.w - field.x : (field.width + EXTRA_SPACE);
 
                         if(!field.prev) width -= indent;
                         if(x >= sx && x < sx + width)
-                           break;                     
+                           break;
                         sx += width;
                      }
                      if(field == currentField)
                         editData.Deactivate();
                      else
                      {
-                        currentRow.Edit(field);                     
+                        currentRow.Edit(field);
                         editData.Activate();
                      }
                   }
@@ -3681,7 +3681,7 @@ private:
 
                      if(style.collapse && !(style.treeBranch))
                         sx += 15;
-                  
+
                      whichField = currentField;
 
                      {
@@ -3694,7 +3694,7 @@ private:
 
                      for(field = fields.first; field; field = field.next)
                      {
-                        int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+                        int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                            clientSize.w - field.x : (field.width + EXTRA_SPACE);
                         if(!field.prev) width -= indent;
                         if(x >= sx && x < sx + width && newCurrentRow)
@@ -3739,7 +3739,7 @@ private:
 
                   for(field = fields.first; field; field = field.next)
                   {
-                     int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+                     int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                         clientSize.w - field.x : (field.width + EXTRA_SPACE);
 
                      if(!field.prev) width -= indent;
@@ -3829,7 +3829,7 @@ private:
          for(row = firstRowShown; row; row = row.GetNextRow())
          {
             rowY += rowHeight;
-            if(rowY > y) 
+            if(rowY > y)
             {
                switchRow = row;
                break;
@@ -3842,14 +3842,14 @@ private:
             int fieldX = 0;
             for(field = fields.first; field; field = field.next)
             {
-               int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ? 
+               int width = (!field.next && style.fillLastField && (!hasHorzScroll || clientSize.w - field.x > field.width + EXTRA_SPACE)) ?
                   clientSize.w - field.x : (field.width + EXTRA_SPACE);
                fieldX += width;
 
-               if(fieldX > x + scroll.x) 
+               if(fieldX > x + scroll.x)
                   break;
             }
-            
+
             if(field && field.editable)
             {
                // true: destroy edit box
@@ -3892,7 +3892,7 @@ private:
                clickedRow = row;
             }
             else
-            { 
+            {
                if(style.multiSelect)
                {
                   if(!switchRow.selectedFlag)
@@ -3997,7 +3997,7 @@ private:
       for(row = firstRowShown; row; row = row.GetNextRow())
       {
          rowY += rowHeight;
-         if(rowY > y || (style.multiSelect && !row.GetNextRow())) 
+         if(rowY > y || (style.multiSelect && !row.GetNextRow()))
          {
             if(style.treeBranch)
             {
@@ -4060,7 +4060,7 @@ private:
             bool looped = false;
             if(len == 1 && currentRow)
                startRow = (next = startRow.GetNextRow(), (next ? next : rows.first));
-        
+
             for(row = startRow; row != startRow || !looped; next = row.GetNextRow(), row = next ? next : rows.first)
             {
                void * data = row.GetData(field);
@@ -4142,10 +4142,10 @@ private:
             draggingField = null;
             Update(null);
             return false;
-         }      
+         }
       }
 
-      if(!currentField || !currentField.editable)            
+      if(!currentField || !currentField.editable)
          for(field = fields.first; field; field = field.next)
          {
             if(field.editable)
@@ -4175,7 +4175,7 @@ private:
             return false;
          }
       }
- 
+
       if(!NotifyKeyDown(master, this, currentRow, key, ch))
          return false;
 
@@ -4186,7 +4186,7 @@ private:
             return editData.OnKeyDown(key, ch);
          return true;   // We want to pick up the OnKeyHit to replace contents, but skip GoToLetter
       }
-      
+
       if(ch >=32 && ch != 128 && !key.alt && !key.ctrl && GoToLetter(ch, false))
       {
          /*if(inactive && window.state != Hidden)
@@ -4554,7 +4554,7 @@ private:
    {
       delay = 0.5; // typingTimeOut
       userData = this;
-      
+
       bool DelayExpired()
       {
          typedString[0] = '\0';

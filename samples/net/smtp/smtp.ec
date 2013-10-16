@@ -18,7 +18,7 @@ class SMTPSocket : Socket
    }
    void OnDisconnect(int code)
    {
-      replied = true;      
+      replied = true;
    }
    void WaitReply()
    {
@@ -41,15 +41,15 @@ void Send(char * host, char * to, char * from, File file)
       socket.WaitReply();
       socket.SendString("HELO localhost\n");
       socket.WaitReply();
-      socket.Sendf("MAIL from: %s\n", from); 
+      socket.Sendf("MAIL from: %s\n", from);
       socket.WaitReply();
-      socket.Sendf("RCPT To: %s\n", to); 
+      socket.Sendf("RCPT To: %s\n", to);
       socket.WaitReply();
-      socket.SendString("DATA\n"); 
+      socket.SendString("DATA\n");
       socket.WaitReply();
       socket.SendString("Subject: Email test\n");
       socket.SendString("Content-Type: text/html; charset=Windows-1252\n");
-     
+
       file.Seek(0, start);
       while(!file.Eof())
       {
@@ -75,5 +75,5 @@ class MyApp : GuiApplication
          Send("mail.mailserver.com", "destaddress@destdomain.com", "srcaddress@srcdomain.com", f);
       delete f;
       getch();
-   }   
+   }
 }

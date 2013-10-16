@@ -46,8 +46,8 @@ class Form1 : Window
          return true;
       }
    };
-   Button btnHost 
-   {      
+   Button btnHost
+   {
       this, text = "Host", position = { 32, 16 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -57,8 +57,8 @@ class Form1 : Window
       }
    };
    EditBox message { this, size = { 510, 43 }, position = { 16, 400 } };
-   Button btnSend 
-   {      
+   Button btnSend
+   {
       this, text = "Send", isDefault = true, size = { 60, 37 }, position = { 552, 400 };
       disabled = true;
 

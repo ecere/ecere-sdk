@@ -63,7 +63,7 @@ static class D3DSystem : struct
    IDirect3D9 * (WINAPI * direct3DCreate9)(UINT);
    uint usage;
    D3DPRESENT_PARAMETERS d3dpp;
-   
+
    IDirect3DVertexDeclaration9 * decls[NUM_VERTEX_DECLS], * decl2D;
    bool ready;
    HWND hwnd;
@@ -136,7 +136,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
       D3DDisplay d3dDisplay = display.driverData;
-      
+
       //if(!IDirect3DDevice9_GetBackBuffer(d3dSystem.d3dDevice, 0, 0, D3DBACKBUFFER_TYPE_MONO, &d3dDisplay.backBuffer))
       {
          D3DLOCKED_RECT lockedRect;
@@ -167,7 +167,7 @@ class Direct3D9DisplayDriver : DisplayDriver
             lfbBitmap.stride = lockedRect.Pitch >> GetColorDepthShifts(lfbBitmap.pixelFormat);
             lfbBitmap.width = display.width;
             lfbBitmap.height = display.height;
-            
+
             *lfbSurface = lfbBitmap.GetSurface(surface ? surface.offset.x : 0, surface ? surface.offset.y : 0, surface ? surface.box : null);
             result = true;
          }
@@ -266,7 +266,7 @@ class Direct3D9DisplayDriver : DisplayDriver
                      }
                      else
                      {
-                        d3dSystem.d3dpp.hDeviceWindow = d3dSystem.hwnd = 
+                        d3dSystem.d3dpp.hDeviceWindow = d3dSystem.hwnd =
                            CreateWindow("static", null, 0,0,0,0,0,null,null,null,null);
                         d3dSystem.d3dpp.Windowed = TRUE;
                      }
@@ -275,7 +275,7 @@ class Direct3D9DisplayDriver : DisplayDriver
                      d3dSystem.format = d3dSystem.d3dpp.BackBufferFormat = d3ddm.Format;
                      d3dSystem.d3dpp.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-                     if(!IDirect3D9_CreateDevice(d3dSystem.direct3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, 
+                     if(!IDirect3D9_CreateDevice(d3dSystem.direct3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
                         d3dSystem.d3dpp.hDeviceWindow,
                                D3DCREATE_HARDWARE_VERTEXPROCESSING|D3DCREATE_PUREDEVICE|D3DCREATE_FPU_PRESERVE,
                                &d3dSystem.d3dpp, &d3dSystem.d3dDevice))
@@ -283,7 +283,7 @@ class Direct3D9DisplayDriver : DisplayDriver
                      else
                      {
                         d3dSystem.usage = D3DUSAGE_SOFTWAREPROCESSING;
-                        if(!IDirect3D9_CreateDevice(d3dSystem.direct3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, 
+                        if(!IDirect3D9_CreateDevice(d3dSystem.direct3D, D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
                               d3dSystem.d3dpp.hDeviceWindow,
                                   D3DCREATE_SOFTWARE_VERTEXPROCESSING|D3DCREATE_FPU_PRESERVE,
                                   &d3dSystem.d3dpp, &d3dSystem.d3dDevice))
@@ -471,26 +471,26 @@ class Direct3D9DisplayDriver : DisplayDriver
             //d3dDisplay.d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             //d3dDisplay.d3dpp.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
-            result = !IDirect3DDevice9_CreateAdditionalSwapChain(d3dSystem.d3dDevice, 
+            result = !IDirect3DDevice9_CreateAdditionalSwapChain(d3dSystem.d3dDevice,
                &d3dDisplay.d3dpp, &d3dDisplay.swapChain);
 
             if(!result)
             {
                d3dDisplay.d3dpp.MultiSampleType = D3DMULTISAMPLE_2_SAMPLES;
-               result = !IDirect3DDevice9_CreateAdditionalSwapChain(d3dSystem.d3dDevice, 
+               result = !IDirect3DDevice9_CreateAdditionalSwapChain(d3dSystem.d3dDevice,
                   &d3dDisplay.d3dpp, &d3dDisplay.swapChain);
             }
             if(!result)
             {
                d3dDisplay.d3dpp.MultiSampleType = D3DMULTISAMPLE_NONE;
-               result = !IDirect3DDevice9_CreateAdditionalSwapChain(d3dSystem.d3dDevice, 
+               result = !IDirect3DDevice9_CreateAdditionalSwapChain(d3dSystem.d3dDevice,
                   &d3dDisplay.d3dpp, &d3dDisplay.swapChain);
             }
          }
 
          if(result)
          {
-            if(!IDirect3DSwapChain9_GetBackBuffer(d3dDisplay.swapChain, 
+            if(!IDirect3DSwapChain9_GetBackBuffer(d3dDisplay.swapChain,
                0, D3DBACKBUFFER_TYPE_MONO, &d3dDisplay.backBuffer))
             {
                if(!IDirect3DDevice9_CreateDepthStencilSurface(d3dSystem.d3dDevice, width, height,
@@ -501,7 +501,7 @@ class Direct3D9DisplayDriver : DisplayDriver
                }
             }
          }
-            
+
          if(d3dSystem.ready)
          {
             float fogDensity = 0;
@@ -584,7 +584,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       {
          //eSystem_Sleep(0.05);
          IDirect3DDevice9_EndScene(d3dSystem.d3dDevice);
-         
+
          if(display.displaySystem.flags.flipping)
          {
             // IDirect3DDevice9_Present(d3dSystem.d3dDevice, null, null, null, null);
@@ -674,7 +674,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          IDirect3DTexture9 * texture;
          uint w = pow2i(Min(bitmap.width, 512)), h = pow2i(Min(bitmap.height, 512));
 
-         if(!IDirect3DDevice9_CreateTexture(d3dSystem.d3dDevice, w, h, mipMaps ? log2i(Max(w+1, h+1)) : 1, 0, 
+         if(!IDirect3DDevice9_CreateTexture(d3dSystem.d3dDevice, w, h, mipMaps ? log2i(Max(w+1, h+1)) : 1, 0,
                D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &texture, null))
          {
             int level;
@@ -702,7 +702,7 @@ class Direct3D9DisplayDriver : DisplayDriver
                      case D3DFMT_A1R5G5B5: mipMap.pixelFormat = pixelFormat555; break;
                   }
                   mipMap.stride = lockedRect.Pitch >> GetColorDepthShifts(mipMap.pixelFormat);
-               
+
                   mipSurface = mipMap.GetSurface(0,0,null);
                   if(mipSurface)
                   {
@@ -716,7 +716,7 @@ class Direct3D9DisplayDriver : DisplayDriver
                      delete mipSurface;
                   }
 
-                  IDirect3DTexture9_UnlockRect(texture, level);            
+                  IDirect3DTexture9_UnlockRect(texture, level);
 
                   mipMap.picture = null;
                   delete mipMap;
@@ -795,7 +795,7 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void SetBackground(Display display, Surface surface, ColorAlpha color)
    {
-      D3DSurface d3dSurface = surface.driverData;  
+      D3DSurface d3dSurface = surface.driverData;
       d3dSurface.background = color;
    }
 
@@ -828,7 +828,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          { (float)x2, (float)y2, 1.0f, surface.foreground, 0, 0 }
       };
 
-      if(x1 == x2) 
+      if(x1 == x2)
       {
          /*
          vertex[0].y-= 0.5f;
@@ -836,7 +836,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          */
          vertex[1].y+= 1.0f;
       }
-      else if(y1 == y2) 
+      else if(y1 == y2)
       {
          /*
          vertex[0].x-= 0.5f;
@@ -864,7 +864,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          { (float)x1, (float)y1, 1.0f, surface.foreground, 0, 0 }
       };
 
-      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_LINESTRIP, 4, 
+      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_LINESTRIP, 4,
          vertex, sizeof(Vertex));
 
    }
@@ -889,7 +889,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          { (float)x2 + 1.0f, (float)y2 + 1.5f, 1.0f, d3dSurface.background, 0, 0 }
       };
 
-      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2, 
+      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2,
          vertex, sizeof(Vertex));
    }
 
@@ -901,7 +901,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       D3DDisplay d3dDisplay = display.driverData;
       IDirect3DDevice9_Clear(d3dSystem.d3dDevice, 0, null,
          ((type == depthBuffer) ? 0 : D3DCLEAR_TARGET) |
-         ((type == colorBuffer) ? 0 : D3DCLEAR_ZBUFFER), 
+         ((type == colorBuffer) ? 0 : D3DCLEAR_ZBUFFER),
          d3dSurface.background, 1,0);
    }
 
@@ -919,18 +919,18 @@ class Direct3D9DisplayDriver : DisplayDriver
       Color foreground = d3dSurface.writingText ? surface.foreground : white;
       Vertex vertex[4] =
       {
-         { (float)dx, (float)dy, 1.0f, foreground, 
+         { (float)dx, (float)dy, 1.0f, foreground,
             (float)sx / (src.width-1), (float)sy/ (src.height-1) },
-         { (float)(dx+w), (float)dy, 1.0f, foreground, 
+         { (float)(dx+w), (float)dy, 1.0f, foreground,
             (float)(sx+w)/ (src.width-1), (float)sy/ (src.height-1) },
-         { (float)dx, (float)(dy+h), 1.0f, foreground, 
+         { (float)dx, (float)(dy+h), 1.0f, foreground,
             (float)sx/ (src.width-1), (float)(sy+h)/ (src.height-1) },
-         { (float)(dx+w), (float)(dy+h), 1.0f, foreground, 
+         { (float)(dx+w), (float)(dy+h), 1.0f, foreground,
             (float)(sx+w) / (src.width-1), (float)(sy+h)/ (src.height-1) }
       };
 
       IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, (IDirect3DBaseTexture9 *)src.picture);
-      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2, 
+      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2,
          vertex, sizeof(Vertex));
       IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, null);
    }
@@ -943,18 +943,18 @@ class Direct3D9DisplayDriver : DisplayDriver
       D3DDisplay d3dDisplay = display.driverData;
       Vertex vertex[4] =
       {
-         { (float)dx, (float)dy, 1.0f, surface.foreground, 
+         { (float)dx, (float)dy, 1.0f, surface.foreground,
             (float)sx / (src.width-1), (float)sy/ (src.height-1) },
-         { (float)(dx+w), (float)dy, 1.0f, surface.foreground, 
+         { (float)(dx+w), (float)dy, 1.0f, surface.foreground,
             (float)(sx+sw)/ (src.width-1), (float)sy/ (src.height-1) },
-         { (float)dx, (float)(dy+h), 1.0f, surface.foreground, 
+         { (float)dx, (float)(dy+h), 1.0f, surface.foreground,
             (float)sx/ (src.width-1), (float)(sy+sh)/ (src.height-1) },
-         { (float)(dx+w), (float)(dy+h), 1.0f, surface.foreground, 
+         { (float)(dx+w), (float)(dy+h), 1.0f, surface.foreground,
             (float)(sx+sw) / (src.width-1), (float)(sy+sh)/ (src.height-1) }
       };
 
       IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, (IDirect3DBaseTexture9 *)src.picture);
-      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2, 
+      IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2,
          vertex, sizeof(Vertex));
       IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, null);
    }
@@ -1046,7 +1046,7 @@ class Direct3D9DisplayDriver : DisplayDriver
                { (float)x2 + 1.0f, (float)y2 /*+ 1.5f*/, 1.0f, d3dSurface.background, 0, 0 }
             };
 
-            IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2, 
+            IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2,
                vertex, sizeof(Vertex));
          }
          //display.displaySystem.driver.Area(display, surface, x, y, x+w-1, y+h-1);
@@ -1079,7 +1079,7 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       D3DDisplay d3dDisplay = display.driverData;
       /*
-      IDirect3DDevice9_SetRenderState(d3dSystem.d3dDevice, D3DRS_LINEPATTERN, 
+      IDirect3DDevice9_SetRenderState(d3dSystem.d3dDevice, D3DRS_LINEPATTERN,
          stipple?Muint(1,stipple):0);
       */
    }
@@ -1096,7 +1096,7 @@ class Direct3D9DisplayDriver : DisplayDriver
             IDirect3DDevice9_SetRenderState(d3dSystem.d3dDevice, D3DRS_MULTISAMPLEANTIALIAS, value ? TRUE : FALSE);
             break;
          case fillMode:
-            IDirect3DDevice9_SetRenderState(d3dSystem.d3dDevice, D3DRS_FILLMODE, 
+            IDirect3DDevice9_SetRenderState(d3dSystem.d3dDevice, D3DRS_FILLMODE,
                ((FillModeValue)value == solid) ? D3DFILL_SOLID : D3DFILL_WIREFRAME);
             break;
          case depthTest:
@@ -1140,10 +1140,10 @@ class Direct3D9DisplayDriver : DisplayDriver
       D3DDisplay d3dDisplay = display.driverData;
       if(light != null)
       {
-         D3DLIGHT9 d3dLight = 
+         D3DLIGHT9 d3dLight =
          {
             // Opacity on the light?
-            D3DLIGHT_DIRECTIONAL, 
+            D3DLIGHT_DIRECTIONAL,
             { light.diffuse.r, light.diffuse.g, light.diffuse.b,     1.0f },
             { light.specular.r, light.specular.g, light.specular.b,  1.0f },
             { light.ambient.r, light.ambient.g, light.ambient.b,     1.0f },
@@ -1169,7 +1169,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          }
 
          d3dDisplay.lights[id] = d3dLight;
-         
+
          IDirect3DDevice9_LightEnable(d3dSystem.d3dDevice, id, TRUE);
          IDirect3DDevice9_SetLight(d3dSystem.d3dDevice, id, &d3dDisplay.lights[id] /*d3dLight*/);
 
@@ -1404,21 +1404,21 @@ class Direct3D9DisplayDriver : DisplayDriver
          if((mesh.flags.vertices) && !d3dMesh.vertices)
          {
             mesh.vertices = new Vector3Df[mesh.nVertices];
-            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * mesh.nVertices, 
+            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * mesh.nVertices,
                d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.vertices, null))
                result = false;
          }
          if((mesh.flags.normals) && !d3dMesh.normals)
          {
             mesh.normals = new Vector3Df[mesh.nVertices];
-            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * mesh.nVertices, 
+            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * mesh.nVertices,
                d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.normals, null))
                result = false;
          }
          if((mesh.flags.texCoords1) && !d3dMesh.texCoords)
          {
             mesh.texCoords = new Pointf[mesh.nVertices];
-            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Pointf) * mesh.nVertices, 
+            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Pointf) * mesh.nVertices,
                d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.texCoords, null))
                result = false;
          }
@@ -1448,7 +1448,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          {
             memcpy(normals, mesh.normals, mesh.nVertices * sizeof(Vector3Df));
             IDirect3DVertexBuffer9_Unlock(d3dMesh.normals);
-         }      
+         }
       }
       if(flags.texCoords1 && mesh.texCoords)
       {
@@ -1457,7 +1457,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          {
             memcpy(texCoords, mesh.texCoords, mesh.nVertices * sizeof(Pointf));
             IDirect3DVertexBuffer9_Unlock(d3dMesh.texCoords);
-         }      
+         }
       }
    }
 
@@ -1486,7 +1486,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       if(d3dIndices && nIndices)
       {
          d3dIndices.indices = (void *)(indices32bit ? new uint32[nIndices] : new uint16[nIndices]);
-         IDirect3DDevice9_CreateIndexBuffer(d3dDevice, (indices32bit ? sizeof(uint32) : sizeof(uint16)) * nIndices, 0, indices32bit ? D3DFMT_INDEX32 : D3DFMT_INDEX16, 
+         IDirect3DDevice9_CreateIndexBuffer(d3dDevice, (indices32bit ? sizeof(uint32) : sizeof(uint16)) * nIndices, 0, indices32bit ? D3DFMT_INDEX32 : D3DFMT_INDEX16,
             D3DPOOL_MANAGED, &d3dIndices.buffer, null);
          d3dIndices.nIndices = nIndices;
       }
@@ -1546,7 +1546,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       D3DSystem d3dSystem = displaySystem.driverData;
       D3DDisplay d3dDisplay = display.driverData;
       IDirect3DDevice9 * d3dDevice = d3dSystem.d3dDevice;
-      
+
       if(primitiveTypes[primitive->type.primitiveType])
       {
          int numPrimitives = (primitive->type.vertexRange) ? primitive->nVertices : primitive->nIndices;
@@ -1556,17 +1556,17 @@ class Direct3D9DisplayDriver : DisplayDriver
          {
             case lines:     numPrimitives /= 2; break;
             case triangles: numPrimitives /= 3; break;
-            case triStrip: 
+            case triStrip:
             case triFan:
-               numPrimitives -= 2; 
+               numPrimitives -= 2;
                break;
             case lineStrip:
-               numPrimitives --; 
+               numPrimitives --;
                break;
             case quads:
                numPrimitives /= 4;
                break;
-         }     
+         }
          if(primitive->type.vertexRange)
          {
             if(primitive->type.primitiveType == quads)

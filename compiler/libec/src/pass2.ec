@@ -8,7 +8,7 @@ static Statement curCompound;
 
 static void _FixRefExp(Expression * expPtr, Expression * memberExpPtr)
 {
-   
+
    Expression memberExp = *memberExpPtr;
    if(memberExp && memberExp.type == ExpressionType::memberExp &&
       memberExp.member.exp && (memberExp.member.exp.type == bracketsExp || memberExp.member.exp.type == extensionExpressionExp))
@@ -29,7 +29,7 @@ static void _FixRefExp(Expression * expPtr, Expression * memberExpPtr)
          *(Expression *)((byte *)newExp + (uint)((byte *)memberExpPtr - (byte *)exp)) = memberExp;
 
          memberExp.member.exp = idExp;
-      
+
          exp.type = bracketsExp;
          exp.list = bracketExp.list;
          bracketExp.list = null;
@@ -50,7 +50,7 @@ static void _FixRefExp(Expression * expPtr, Expression * memberExpPtr)
       *memberExpPtr = null;
       newExp = CopyExpression(exp);
       *(Expression *)((byte *)newExp + (uint)((byte *)memberExpPtr - (byte *)exp)) = memberExp.list->last;
-   
+
       exp.type = bracketsExp;
       exp.list = memberExp.list;
       memberExp.list = null;
@@ -96,11 +96,11 @@ static Expression FixReference(Expression e, bool wantReference)
          Class _class = type._class ? type._class.registered : null;
          // TOLOOKINTO: What was systemClass used for here? Exclude "typed_object"...
          // TOFIX: In which case with systemClass do we actually want this to come here? Can't think of any!
-         if(_class && ((_class.type == structClass && !type.declaredWithStruct) || _class.type == noHeadClass || 
-           (_class.type == systemClass && _class.base && 
-           strcmp(_class.fullName, "uintptr") && 
-           strcmp(_class.fullName, "intptr") && 
-           strcmp(_class.fullName, "uintsize") && 
+         if(_class && ((_class.type == structClass && !type.declaredWithStruct) || _class.type == noHeadClass ||
+           (_class.type == systemClass && _class.base &&
+           strcmp(_class.fullName, "uintptr") &&
+           strcmp(_class.fullName, "intptr") &&
+           strcmp(_class.fullName, "uintsize") &&
            strcmp(_class.fullName, "intsize"))))
          {
             // if(wantReference != ((_class.type == systemClass) ? false : e.byReference))
@@ -148,7 +148,7 @@ static Expression FixReference(Expression e, bool wantReference)
                            exp.op.op = '&';
                         else
                            exp.op.op = '*';
-                       
+
                         e.byReference = wantReference;
                         exp.byReference = wantReference;
                      }
@@ -320,7 +320,7 @@ static void ProcessExpression(Expression exp)
          switch(exp.op.op)
          {
             // Assignment Operators
-            case '=': 
+            case '=':
                if(exp.op.exp2)
                   exp.op.exp2.usage.usageGet = true;
                break;
@@ -381,7 +381,7 @@ static void ProcessExpression(Expression exp)
             case '|':
             case '^':
             case AND_OP:
-            case OR_OP:            
+            case OR_OP:
                if(exp.op.exp1)
                   exp.op.exp1.usage.usageGet = true;
                if(exp.op.exp2)
@@ -405,7 +405,7 @@ static void ProcessExpression(Expression exp)
                Expression lastExp = exp.op.exp1, parentExp = null;
                Property lastProperty = null;
                Class propertyClass;
-               
+
                char setName[1024], getName[1024];
                testExp = exp.op.exp1.member.exp;
                while(true)
@@ -424,7 +424,7 @@ static void ProcessExpression(Expression exp)
                   }
                   if(!testExp) break;
 
-                  if(testExp.member.memberType == propertyMember || 
+                  if(testExp.member.memberType == propertyMember ||
                      testExp.member.memberType == reverseConversionMember)
                   {
                      Type type = testExp.member.exp.expType;
@@ -440,7 +440,7 @@ static void ProcessExpression(Expression exp)
                               _class = FindClass(testExp.member.member.string).registered;
                               // lastProperty = eClass_FindProperty(_class, convertTo.name, privateModule);
                               lastProperty = eClass_FindProperty(_class, convertTo.fullName, privateModule);
-                           }                              
+                           }
                            else
                            {
                               lastProperty = eClass_FindProperty(_class, testExp.member.member.string, privateModule);
@@ -449,8 +449,8 @@ static void ProcessExpression(Expression exp)
                            {
                               DeclareProperty(lastProperty, setName, getName);
                               // propertyClass = convertTo ? _class : ((Symbol)lastProperty.symbol)._class;
-                              propertyClass = convertTo ? _class : 
-                                 ((((Symbol)lastProperty.symbol).type && 
+                              propertyClass = convertTo ? _class :
+                                 ((((Symbol)lastProperty.symbol).type &&
                                     ((Symbol)lastProperty.symbol).type.kind == classType) ? ((Symbol)lastProperty.symbol).type._class.registered : ((Symbol)lastProperty.symbol)._class);
                               // TODO: Handle this kind of things with bit classes?
                               if(propertyClass && propertyClass.type == structClass)
@@ -464,7 +464,7 @@ static void ProcessExpression(Expression exp)
                                  parentExp = lastExp;
                               }
                            }
-                           
+
                         }
                      }
                   }
@@ -480,7 +480,7 @@ static void ProcessExpression(Expression exp)
                      Expression value;
                      char className[1024];
                      Expression tempExp;
-                  
+
                      sprintf(className, "__simpleStruct%d", curContext.simpleID); //++);
                      tempExp = QMkExpId(className);
                      tempExp.expType = MkClassType(propertyClass.fullName);
@@ -500,7 +500,7 @@ static void ProcessExpression(Expression exp)
                      tempExp.expType.refCount++;
 
                      // Go on as usual with these new values:
-                     exp.op.exp1 = topExp;                  
+                     exp.op.exp1 = topExp;
                      exp.op.exp2 = value;
                      exp.op.op = '=';
 
@@ -513,7 +513,7 @@ static void ProcessExpression(Expression exp)
                      Expression value;
                      char className[1024];
                      Expression tempExp;
-                  
+
                      sprintf(className, "__simpleStruct%d", curContext.simpleID); //++);
                      tempExp = QMkExpId(className);
                      tempExp.expType = MkClassType(propertyClass.fullName);
@@ -535,7 +535,7 @@ static void ProcessExpression(Expression exp)
                      //value = MkExpOp(exp.op.exp1, exp.op.op, exp.op.exp2);
 
                      // Go on as usual with these new values:
-                     exp.op.exp1 = topExp;                  
+                     exp.op.exp1 = topExp;
                      exp.op.exp2 = value;
                      exp.op.op = '=';
 
@@ -547,7 +547,7 @@ static void ProcessExpression(Expression exp)
 
             memberExp = exp.op.exp1;
 
-            while(memberExp && ((memberExp.type == bracketsExp && memberExp.list->count == 1) || 
+            while(memberExp && ((memberExp.type == bracketsExp && memberExp.list->count == 1) ||
                memberExp.type == extensionExpressionExp || memberExp.type == extensionCompoundExp))
             {
                parentExp = memberExp;
@@ -557,13 +557,13 @@ static void ProcessExpression(Expression exp)
                   memberExp = memberExp.list->last;
             }
 
-            if(memberExp && memberExp.type == indexExp && memberExp.index.exp && memberExp.index.exp.expType && 
+            if(memberExp && memberExp.type == indexExp && memberExp.index.exp && memberExp.index.exp.expType &&
                memberExp.index.exp.expType.kind == classType && memberExp.index.exp.expType._class && memberExp.index.exp.expType._class.registered &&
                memberExp.index.exp.expType._class.registered != containerClass && eClass_IsDerived(memberExp.index.exp.expType._class.registered, containerClass))
             {
                ProcessExpression(memberExp);
 
-               while(memberExp && ((memberExp.type == bracketsExp && memberExp.list->count == 1) || 
+               while(memberExp && ((memberExp.type == bracketsExp && memberExp.list->count == 1) ||
                   memberExp.type == extensionExpressionExp || memberExp.type == extensionCompoundExp))
                {
                   parentExp = memberExp;
@@ -621,20 +621,20 @@ static void ProcessExpression(Expression exp)
 
                      if(_class && _class.type == bitClass && memberExp.member.memberType == dataMember)
                      {
-                         BitMember bitMember = 
-                            (BitMember)eClass_FindDataMember(_class, 
+                         BitMember bitMember =
+                            (BitMember)eClass_FindDataMember(_class,
                               memberExp.member.member.string, privateModule, null, null);
                          char mask[32], shift[10];
                          OldList * specs = MkList();
                          //Declarator decl = SpecDeclFromString(bitMember.dataTypeString, specs, null);
-                         Declarator decl = SpecDeclFromString(_class.dataTypeString, specs, null);                         
+                         Declarator decl = SpecDeclFromString(_class.dataTypeString, specs, null);
                          TypeName type = MkTypeName(specs, decl);
 
                          if(bitMember.mask > MAXDWORD)
                             sprintf(mask, FORMAT64HEXLL, bitMember.mask);
                          else
                             sprintf(mask, FORMAT64HEX, bitMember.mask);
-                         sprintf(shift, "%d", bitMember.pos);                         
+                         sprintf(shift, "%d", bitMember.pos);
 
                          // color = (color & ~0xFF0000) | (((unsigned char)200) << 16)
                          exp.op.exp1 = memberExp.member.exp;
@@ -651,7 +651,7 @@ static void ProcessExpression(Expression exp)
                          else
                          {
                             exp.op.exp2 = MkExpOp(
-                               MkExpBrackets(MkListOne(MkExpOp(CopyExpression(memberExp.member.exp), '&', 
+                               MkExpBrackets(MkListOne(MkExpOp(CopyExpression(memberExp.member.exp), '&',
                                  MkExpOp(null, '~', MkExpConstant(mask))))), '|',
                                MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(
                                  MkListOne(MkExpCast(type, exp.op.exp2))), LEFT_OP, MkExpConstant(shift)))));
@@ -685,7 +685,7 @@ static void ProcessExpression(Expression exp)
 
                         if(memberExp.member.memberType == classPropertyMember)
                            classProperty = eClass_FindClassProperty(_class, memberExp.member.member.string);
-                        
+
                         exp.tempCount = memberExp.member.exp.tempCount;
 
                         if(classProperty)
@@ -744,14 +744,14 @@ static void ProcessExpression(Expression exp)
                               if(operator != '=')
                               {
                                  if(operator == INC_OP)
-                                    value = MkExpOp(CopyExpression(memberExp), 
+                                    value = MkExpOp(CopyExpression(memberExp),
                                        '+', MkExpConstant("1"));
                                  else if(operator == DEC_OP)
-                                    value = MkExpOp(CopyExpression(memberExp), 
+                                    value = MkExpOp(CopyExpression(memberExp),
                                        '-', MkExpConstant("1"));
                                  else
                                  {
-                                    value = MkExpOp(CopyExpression(memberExp), 
+                                    value = MkExpOp(CopyExpression(memberExp),
                                        operator, value);
                                     exp2 = null;
                                  }
@@ -762,9 +762,9 @@ static void ProcessExpression(Expression exp)
                               else if(value)
                               {
                                  // Dont free exp2, we're using it
-                                 exp2 = null;                              
+                                 exp2 = null;
                               }
-                        
+
                               if(value)
                                  value.usage.usageArg = true;
 
@@ -774,7 +774,7 @@ static void ProcessExpression(Expression exp)
                                  ProcessExpression(memberExp.member.exp);
 
                               // If get flag present
-                              if(exp.usage.usageGet && 
+                              if(exp.usage.usageGet &&
                                  ((!convertTo && prop.Get) || (convertTo && prop.Set)))
                               {
                                  OldList * list = MkList();
@@ -782,7 +782,7 @@ static void ProcessExpression(Expression exp)
                                  char ecereTemp[100];
                                  Context context = PushContext();
                                  exp.tempCount++;
-                           
+
                                  curExternal.function.tempCount = Max(curExternal.function.tempCount, exp.tempCount);
                                  sprintf(ecereTemp, "__ecTemp%d", exp.tempCount);
 
@@ -791,7 +791,7 @@ static void ProcessExpression(Expression exp)
                                  exp.compound = MkCompoundStmt(
                                     MkListOne(MkDeclaration(MkListOne(MkSpecifier(VOID)), MkListOne(MkInitDeclarator(
                                        MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))),
-                                          MkInitializerAssignment(QBrackets(memberExp.member.exp)))))), 
+                                          MkInitializerAssignment(QBrackets(memberExp.member.exp)))))),
                                     list);
 
                                  // Add the set
@@ -808,7 +808,7 @@ static void ProcessExpression(Expression exp)
                                     ListAdd(args, value);
                                     ListAdd(list, MkExpressionStmt(MkListOne(MkExpCall(QMkExpId(setName), args))));
                                  }
-                              
+
                                  // Add the get
                                  args = MkList();
                                  if(convertTo)
@@ -896,7 +896,7 @@ static void ProcessExpression(Expression exp)
                               {
                                  OldList * list = MkList();
                                  OldList * args;
-                           
+
                                  // Set the method
                                  args = MkList();
                                  ListAdd(args, memberExp.member.exp);
@@ -963,7 +963,7 @@ static void ProcessExpression(Expression exp)
          {
             Expression object = exp.op.exp2;
             OldList * args = MkList();
-            
+
             exp.type = bracketsExp;
             exp.list = MkList();
 
@@ -975,7 +975,7 @@ static void ProcessExpression(Expression exp)
 
             // TOFIX: Same time as when we fix for = 0
 
-            if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && 
+            if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered &&
                exp.expType._class.registered.type == normalClass &&
                strcmp(exp.expType._class.registered.dataTypeString, "char *"))
             {
@@ -994,17 +994,17 @@ static void ProcessExpression(Expression exp)
                MangleClassName(className);
 
                DeclareClass(exp.expType._class, className);
-               
+
                // Call the non virtual destructor
                ListAdd(list, MkExpCall(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), CopyList(args, CopyExpression)));
                ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
 
                ListAdd(exp.list, MkExpBrackets(MkListOne(MkExpCondition(CopyExpression(object), MkListOne(
-                  
-                  MkExpBrackets(MkListOne(MkExpCondition(   
+
+                  MkExpBrackets(MkListOne(MkExpCondition(
                   MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")),
                   MkListOne(MkExpBrackets(list)), MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), CopyList(args, CopyExpression)))))), MkExpConstant("0"))))
-                  
+
                   );
                */
 
@@ -1027,15 +1027,15 @@ static void ProcessExpression(Expression exp)
                   ListAdd(list,
                      MkExpCondition(
                         MkExpPointer(
-                           QMkExpId(className), 
+                           QMkExpId(className),
                            MkIdentifier("Destructor")
                         ),
                         MkListOne(
                            MkExpCall(
                               MkExpPointer(
-                                 QMkExpId(className), 
+                                 QMkExpId(className),
                                  MkIdentifier("Destructor")
-                              ), 
+                              ),
                               CopyList(args, CopyExpression)
                            )
                         ),
@@ -1044,11 +1044,11 @@ static void ProcessExpression(Expression exp)
                   );
                }
                ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
-               ListAdd(exp.list, 
+               ListAdd(exp.list,
                   MkExpBrackets(
                      MkListOne(
                         MkExpCondition(
-                           CopyExpression(object), 
+                           CopyExpression(object),
                            MkListOne(
                               MkExpBrackets(list)
                            ),
@@ -1077,7 +1077,7 @@ static void ProcessExpression(Expression exp)
                      MkExpBrackets(MkListOne(MkExpCast(typeName,
                         MkExpIndex(MkExpPointer(classExp, MkIdentifier("_vTbl")),
                            MkListOne(MkExpIdentifier(MkIdentifier("__ecereVMethodID_class_OnFree"))))))), args));
-                  //ProcessExpression(exp.list->last);                  
+                  //ProcessExpression(exp.list->last);
                }
             }
             else
@@ -1096,7 +1096,7 @@ static void ProcessExpression(Expression exp)
          if(exp.type == opExp)
          {
             // Handle assigment of template structures
-            if(exp.op.op == '=' && exp.op.exp1 && exp.op.exp1.expType && exp.op.exp1.expType.kind == templateType && 
+            if(exp.op.op == '=' && exp.op.exp1 && exp.op.exp1.expType && exp.op.exp1.expType.kind == templateType &&
                (exp.op.exp1.type == indexExp || (exp.op.exp1.type == opExp && exp.op.exp1.op.op == '*' && !exp.op.exp1.op.exp1)))
             {
                Expression argExp = GetTemplateArgExp(exp.op.exp1.expType.templateParameter, thisClass, false);
@@ -1109,22 +1109,22 @@ static void ProcessExpression(Expression exp)
                   Expression derefExp = exp.op.exp1;
                   Expression sizeExp = MkExpCondition(MkExpBrackets(MkListOne(
                         MkExpOp(
-                           MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), 
+                           MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))),
                            OR_OP,
                            MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))),
                            MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)))),
                            MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize")));
-   
+
                   if(exp.op.exp1.type == indexExp)
                   {
                      Expression indexExp = derefExp.index.exp;
                      OldList * indexExpIndex = derefExp.index.index;
-                     
+
                      derefExp.index.index = null;
                      derefExp.index.exp = null;
                      FreeExpression(derefExp);
 
-                     derefExp = MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), indexExp), '+', 
+                     derefExp = MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), indexExp), '+',
                         MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(indexExpIndex), '*', MkExpBrackets(MkListOne(CopyExpression(sizeExp)))))));
                   }
                   else
@@ -1134,13 +1134,13 @@ static void ProcessExpression(Expression exp)
                      FreeExpression(derefExp);
                      derefExp = indexExp;
                   }
-                  
+
                   args->Add(derefExp);
                   ProcessExpressionType(args->last);
                   ProcessExpression(args->last);
 
-                  args->Add(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), 
-                     MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), 
+                  args->Add(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)),
+                     MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))),
                         MkListOne(exp.op.exp2), MkExpOp(null, '&', CopyExpression(exp.op.exp2)))));
 
                   thisClass = curExternal.function ? curExternal.function._class : null;
@@ -1151,17 +1151,17 @@ static void ProcessExpression(Expression exp)
                         type = MkClassType(thisClass.fullName);
                      };
                      globalContext.symbols.Add((BTNode)thisSymbol);
-                     
+
                      ProcessExpressionType(args->last);
                      ProcessExpression(args->last);
 
                      args->Add(sizeExp);
                      ProcessExpressionType(args->last);
                      ProcessExpression(args->last);
-                     
+
                      exp.list = MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("memcpy")), args));
                      exp.type = bracketsExp;
-                  
+
                      //globalContext.symbols.Delete((BTNode)thisSymbol);
                      globalContext.symbols.Remove((BTNode)thisSymbol);
                      FreeSymbol(thisSymbol);
@@ -1170,7 +1170,7 @@ static void ProcessExpression(Expression exp)
                   return;
                }
             }
-            else if(exp.op.op == '*' && !exp.op.exp1 && exp.op.exp2 && exp.op.exp2.expType && exp.op.exp2.expType.kind == pointerType && 
+            else if(exp.op.op == '*' && !exp.op.exp1 && exp.op.exp2 && exp.op.exp2.expType && exp.op.exp2.expType.kind == pointerType &&
                exp.op.exp2.expType.type && exp.op.exp2.expType.type.kind == templateType)
             {
                Expression argExp = GetTemplateArgExp(exp.op.exp2.expType.type.templateParameter, thisClass, false);
@@ -1178,11 +1178,11 @@ static void ProcessExpression(Expression exp)
                {
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
                   Expression sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
-               
+
                   exp.type = bracketsExp;
                   exp.list = MkListOne(
                      // (uint64)
-                     MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), 
+                     MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null),
 
                      // ((class.type == structClass) ?
                      MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))),
@@ -1193,11 +1193,11 @@ static void ProcessExpression(Expression exp)
                      // ((class.type == normalClass || class.type == noHeadClass) ?
                      MkExpCondition(MkExpBrackets(MkListOne(
                         MkExpOp(
-                           MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), 
+                           MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))),
                            OR_OP,
                            MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))),
                         // *((void **)array)
-                        MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpOp(null, '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, MkPointer(null, null)), null)), 
+                        MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpOp(null, '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, MkPointer(null, null)), null)),
                            CopyExpression(exp.op.exp2))))))),
 
                      // ((class.size == 1) ?
@@ -1219,9 +1219,9 @@ static void ProcessExpression(Expression exp)
                            CopyExpression(exp.op.exp2)))))),
 
                      // *((uint64 *)array)
-                     MkExpOp(null, '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)), 
+                     MkExpOp(null, '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)),
                         exp.op.exp2)))))))))))))))))))));
-                  
+
                   // Add this to the context
                   thisClass = curExternal.function ? curExternal.function._class : null;
                   {
@@ -1231,10 +1231,10 @@ static void ProcessExpression(Expression exp)
                         type = MkClassType(thisClass.fullName);
                      };
                      globalContext.symbols.Add((BTNode)thisSymbol);
-                     
+
                      ProcessExpressionType(exp.list->first);
                      ProcessExpression(exp.list->first);
-                     
+
                      //globalContext.symbols.Delete((BTNode)thisSymbol);
                      globalContext.symbols.Remove((BTNode)thisSymbol);
                      FreeSymbol(thisSymbol);
@@ -1253,9 +1253,9 @@ static void ProcessExpression(Expression exp)
                   ProcessExpression(exp.op.exp1);
 
                   // TESTING THIS...
-                  if(exp.op.op == '=' && exp.op.exp2 && (!exp.op.exp2.byReference || 
-                     (exp.op.exp2.expType && exp.op.exp2.expType.kind == classType && exp.op.exp2.expType._class && 
-                      exp.op.exp2.expType._class.registered && exp.op.exp2.expType._class.registered.type == structClass)) && 
+                  if(exp.op.op == '=' && exp.op.exp2 && (!exp.op.exp2.byReference ||
+                     (exp.op.exp2.expType && exp.op.exp2.expType.kind == classType && exp.op.exp2.expType._class &&
+                      exp.op.exp2.expType._class.registered && exp.op.exp2.expType._class.registered.type == structClass)) &&
                      exp.op.exp2.expType && (exp.op.exp2.expType.kind != pointerType && exp.op.exp2.expType.kind != templateType /*|| !exp.op.exp2.expType.type || exp.op.exp2.expType.type.kind != voidType*/))
                      FixReference(exp.op.exp1, false);
                   // TEST: exp.tempCount = Max(exp.op.exp1.tempCount, exp.tempCount);
@@ -1270,11 +1270,11 @@ static void ProcessExpression(Expression exp)
                   if(exp.op.exp1 || (exp.op.op != '*' && exp.op.op != '&'))
                   {
                      // TESTING THIS IF:
-                     if((!exp.op.exp1 && 
-                        (!exp.op.exp2 || !exp.op.exp2.expType || exp.op.exp2.expType.kind != classType || !exp.op.exp2.expType._class || !exp.op.exp2.expType._class.registered || 
-                        (exp.op.exp2.expType._class.registered.type != normalClass && 
-                         exp.op.exp2.expType._class.registered.type != structClass && 
-                         exp.op.exp2.expType._class.registered.type != noHeadClass))) 
+                     if((!exp.op.exp1 &&
+                        (!exp.op.exp2 || !exp.op.exp2.expType || exp.op.exp2.expType.kind != classType || !exp.op.exp2.expType._class || !exp.op.exp2.expType._class.registered ||
+                        (exp.op.exp2.expType._class.registered.type != normalClass &&
+                         exp.op.exp2.expType._class.registered.type != structClass &&
+                         exp.op.exp2.expType._class.registered.type != noHeadClass)))
 
                             // TESTING THIS TEMPLATE TYPE CHECK HERE
                         || (exp.op.exp1 && exp.op.exp1.expType && exp.op.exp1.expType.kind != pointerType && exp.op.exp1.expType.kind != templateType))
@@ -1316,16 +1316,16 @@ static void ProcessExpression(Expression exp)
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
                   Expression e;
                   exp.type = bracketsExp;
-                  exp.list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), 
-                                 MkExpOp(null, '&', exp2)), '+', 
-                                    MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), 
+                  exp.list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)),
+                                 MkExpOp(null, '&', exp2)), '+',
+                                    MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")),
                                        MkListOne((e = MkExpCondition(MkExpBrackets(MkListOne(
-                              
+
                               MkExpOp(
                                  MkExpOp(
-                                    MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))), 
+                                    MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))),
                                        OR_OP,
-                                       MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))), 
+                                       MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))),
                                        OR_OP,
                                        MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass"))))
                              )),
@@ -1390,8 +1390,8 @@ static void ProcessExpression(Expression exp)
       case indexExp:
       {
          Expression e;
-         /*bool isBuiltin = exp && exp.index.exp && 
-            (exp.index.exp.type == ExpressionType::arrayExp || 
+         /*bool isBuiltin = exp && exp.index.exp &&
+            (exp.index.exp.type == ExpressionType::arrayExp ||
               (exp.index.exp.type == castExp && exp.index.exp.cast.exp.type == ExpressionType::arrayExp));
          */
          Expression checkedExp = exp.index.exp;
@@ -1415,7 +1415,7 @@ static void ProcessExpression(Expression exp)
          exp.index.exp.usage.usageGet = true;
          ProcessExpression(exp.index.exp);
 
-         if(exp.index.exp.expType && exp.index.exp.expType.kind == pointerType && 
+         if(exp.index.exp.expType && exp.index.exp.expType.kind == pointerType &&
             exp.index.exp.expType.type && exp.index.exp.expType.type.kind == templateType)
          {
             Expression argExp = GetTemplateArgExp(exp.index.exp.expType.type.templateParameter, thisClass, false);
@@ -1423,27 +1423,27 @@ static void ProcessExpression(Expression exp)
             {
                Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
                Expression sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
-            
+
                exp.type = bracketsExp;
                exp.list = MkListOne(
                   // (uint64)
-                  MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), 
+                  MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null),
 
                   // ((class.type == structClass) ?
                   MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))),
                      // ((byte *)array) + (i) * class.size
                      MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpBrackets(MkListOne(MkExpOp(
-                        MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), CopyExpression(exp.index.exp)))), '+', 
+                        MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), CopyExpression(exp.index.exp)))), '+',
                         MkExpOp(MkExpBrackets(CopyList(exp.index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))),
 
                   // ((class.type == normalClass || class.type == noHeadClass) ?
                   MkExpCondition(MkExpBrackets(MkListOne(
                      MkExpOp(
-                        MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), 
+                        MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))),
                         OR_OP,
                         MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))),
                      // ((void **)array)[i]
-                     MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, MkPointer(null, null)), null)), 
+                     MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, MkPointer(null, null)), null)),
                         CopyExpression(exp.index.exp)))), CopyList(exp.index.index, CopyExpression)))),
 
                   // ((class.size == 1) ?
@@ -1465,9 +1465,9 @@ static void ProcessExpression(Expression exp)
                         CopyExpression(exp.index.exp)))), CopyList(exp.index.index, CopyExpression))),
 
                   // ((uint64 *)array)[i]
-                  MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)), 
+                  MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)),
                      exp.index.exp))), exp.index.index))))))))))))))))));
-               
+
                // Add this to the context
                thisClass = curExternal.function ? curExternal.function._class : null;
                {
@@ -1477,10 +1477,10 @@ static void ProcessExpression(Expression exp)
                      type = MkClassType(thisClass.fullName);
                   };
                   globalContext.symbols.Add((BTNode)thisSymbol);
-                     
+
                   ProcessExpressionType(exp.list->first);
                   ProcessExpression(exp.list->first);
-                     
+
                   //globalContext.symbols.Delete((BTNode)thisSymbol);
                   globalContext.symbols.Remove((BTNode)thisSymbol);
                   FreeSymbol(thisSymbol);
@@ -1525,7 +1525,7 @@ static void ProcessExpression(Expression exp)
                   OldList * specs = MkList();
                   Declarator decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, null);
                   TypeName typeName = MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl);
-                  exp.index.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, 
+                  exp.index.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
                      MkExpPointer(MkExpCast(QMkType("BuiltInContainer", QMkPtrDecl(null)), exp.index.exp), MkIdentifier("data")))));
                   ProcessExpressionType(exp.index.exp);
                   ProcessExpression(exp);
@@ -1543,16 +1543,16 @@ static void ProcessExpression(Expression exp)
                   Context context = PushContext();
 
                   sprintf(iteratorType, "Iterator<%s, %s >", _class.templateArgs[2].dataTypeString, _class.templateArgs[1].dataTypeString);
-         
+
                   ListAdd(instMembers, MkMemberInit(null, MkInitializerAssignment(exp.index.exp)));
-                  
+
                   ListAdd(declarations, MkDeclarationInst(MkInstantiationNamed(MkListOne(MkSpecifierName(iteratorType)),
                      MkExpIdentifier(MkIdentifier("__internalIterator")), MkListOne(MkMembersInitList(instMembers)))));
 
                   ListAdd(args, MkExpBrackets(exp.index.index));
                   ListAdd(args, exp.usage.usageSet ? MkExpIdentifier(MkIdentifier("true")) : MkExpIdentifier(MkIdentifier("false")));
-                  
-                  ListAdd(statements, MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("__internalIterator")), 
+
+                  ListAdd(statements, MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("__internalIterator")),
                      MkIdentifier("Index")), args))));
 
                   // ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(null, '&', MkExpIdentifier(MkIdentifier("__internalIterator"))))));
@@ -1622,9 +1622,9 @@ static void ProcessExpression(Expression exp)
                // Cast function to its type
                {
                   Context context = SetupTemplatesContext(method._class);
-                  
+
                   decl = SpecDeclFromString(method.dataTypeString, specs, MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), null)));
-                  
+
                   FinishTemplatesContext(context);
                }
                curContext = back;
@@ -1800,7 +1800,7 @@ static void ProcessExpression(Expression exp)
 
                   // Testing this (COMMENTED OUT TESTING, CALLING METHODS ON ENUM/UNIT ADDED & IN FRONT OF VARIABLES
                   /*
-                  if(memberExp.member.exp.expType.kind != classType || 
+                  if(memberExp.member.exp.expType.kind != classType ||
                      memberExp.member.exp.expType._class.registered.type == enumClass ||
                      memberExp.member.exp.expType._class.registered.type == unitClass)
                   {
@@ -1813,7 +1813,7 @@ static void ProcessExpression(Expression exp)
                      // THIS WAS NASTY:
                      // memberExp.member.exp.expType.kind = classType;
                      // memberExp.member.exp.expType._class = FindClass(typeString);
-                     
+
                      FreeType(memberExp.member.exp.expType);
                      memberExp.member.exp.expType = Type
                      {
@@ -1830,20 +1830,20 @@ static void ProcessExpression(Expression exp)
                      }
                   }
                   */
-                  
+
                   if(typedObject && memberExp.member.exp && memberExp.member.exp.expType)
                   {
                      bool changeReference = false;
                      Expression memberExpMemberExp = CopyExpression(memberExp.member.exp);
 
                      // Patched so that class isn't considered SYSTEM...
-                     if(argClass && (argClass.type == enumClass || argClass.type == unitClass || argClass.type == bitClass || argClass.type == systemClass) && strcmp(argClass.fullName, "class") && 
+                     if(argClass && (argClass.type == enumClass || argClass.type == unitClass || argClass.type == bitClass || argClass.type == systemClass) && strcmp(argClass.fullName, "class") &&
                         strcmp(argClass.fullName, "uintptr") && strcmp(argClass.fullName, "intptr"))
                         changeReference = true;
-                     if(!memberExp.member.exp.expType.classObjectType && 
+                     if(!memberExp.member.exp.expType.classObjectType &&
                         (((
-                           (memberExp.member.exp.expType.kind != pointerType && 
-                              (memberExp.member.exp.expType.kind != classType || !memberExp.member.exp.expType._class || 
+                           (memberExp.member.exp.expType.kind != pointerType &&
+                              (memberExp.member.exp.expType.kind != classType || !memberExp.member.exp.expType._class ||
                                !memberExp.member.exp.expType._class.registered || memberExp.member.exp.expType._class.registered.type == structClass)))) ||
                            method.dataType.byReference)) // ADDED THIS FOR OnGetDataFromString
                         changeReference = true;
@@ -1851,7 +1851,7 @@ static void ProcessExpression(Expression exp)
                         changeReference = true;
                      if(changeReference)
                      {
-                        if(memberExp.member.exp.type == bracketsExp && memberExp.member.exp.list && memberExp.member.exp.list->count == 1 && 
+                        if(memberExp.member.exp.type == bracketsExp && memberExp.member.exp.list && memberExp.member.exp.list->count == 1 &&
                            ((Expression)memberExp.member.exp.list->first).type == opExp && ((Expression)memberExp.member.exp.list->first).op.op == '*' && !((Expression)memberExp.member.exp.list->first).op.exp1)
                         {
                            exp.call.arguments->Insert(null, ((Expression)memberExp.member.exp.list->first).op.exp2);
@@ -1913,7 +1913,7 @@ static void ProcessExpression(Expression exp)
                         if(memberExp.member.exp && memberExp.member.exp.expType && memberExp.member.exp.expType.classObjectType == ClassObjectType::typedObject)
                            strcpy(className, "class");
                         else if(cl)
-                        {                           
+                        {
                            // Need the class itself here...
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, cl.fullName, true);
@@ -2055,7 +2055,7 @@ static void ProcessExpression(Expression exp)
                               newExp = checkedExp.op.exp2;
                               checkedExp.op.exp2 = null;
                               FreeExpContents(checkedExp);
-                              
+
                               if(e.expType && e.expType.passAsTemplate)
                               {
                                  char size[100];
@@ -2067,7 +2067,7 @@ static void ProcessExpression(Expression exp)
                               }
 
                               if(parentExp.type == callExp)
-                              {                              
+                              {
                                  exp.call.arguments->Insert(e.prev, newExp);
                                  exp.call.arguments->Remove(e);
                                  e = newExp;
@@ -2158,10 +2158,10 @@ static void ProcessExpression(Expression exp)
                                     /*
 
                                     e.compound = MkCompoundStmt(
-                                       MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))), 
+                                       MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))),
                                        MkListOne(MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("__internalValue"))))));
                                     */
-                                    
+
                                     e.compound.compound.context = context;
                                     PopContext(context);
                                     curContext = context.parent;
@@ -2189,7 +2189,7 @@ static void ProcessExpression(Expression exp)
                               newExp = MkExpOp(null, '&', checkedExp);
                               newExp.byReference = true;
                               if(parentExp.type == callExp)
-                              {                              
+                              {
                                  exp.call.arguments->Insert(e.prev, newExp);
                                  exp.call.arguments->Remove(e);
                                  e = newExp;
@@ -2209,7 +2209,7 @@ static void ProcessExpression(Expression exp)
                            }
                         }
                      }
-                     
+
                      if(destType.classObjectType == ClassObjectType::typedObject)
                      {
                         char className[1024];
@@ -2243,7 +2243,7 @@ static void ProcessExpression(Expression exp)
                            c = MkExpExtensionCompound(MkCompoundStmt(
                                  MkListOne(MkDeclaration(
                                     MkListOne(MkSpecifierName("Instance")),
-                                    MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), 
+                                    MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
                                        MkInitializerAssignment(CopyExpression(e)))))),
                                  MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
                                     MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
@@ -2270,8 +2270,8 @@ static void ProcessExpression(Expression exp)
             }
             if(ellipsisDestType)
             {
-               if(usedEllipsis || 
-                  (exp.call.exp.expType && exp.call.exp.expType.kind == functionType && exp.call.exp.expType.params.last && 
+               if(usedEllipsis ||
+                  (exp.call.exp.expType && exp.call.exp.expType.kind == functionType && exp.call.exp.expType.params.last &&
                    ((Type)exp.call.exp.expType.params.last).kind == ellipsisType))
                {
                   exp.call.arguments->Insert(exp.call.arguments->last, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null),null)),MkExpConstant("0")));
@@ -2330,7 +2330,7 @@ static void ProcessExpression(Expression exp)
                   prop = eClass_FindProperty(_class, exp.member.member.string, null);
                if(!prop)
                   prop = eClass_FindProperty(_class, exp.member.member.string, privateModule);
-               if(prop && (exp.usage.usageRef || 
+               if(prop && (exp.usage.usageRef ||
                   (exp.usage.usageGet && !prop.Get && !prop.conversion) ||
                   (exp.usage.usageDelete && !prop.Set && !prop.conversion)))
                {
@@ -2340,7 +2340,7 @@ static void ProcessExpression(Expression exp)
                      exp.member.memberType = dataMember;
                      prop = null;
                   }
-                  else 
+                  else
                   {
                      if(exp.usage.usageRef)
                         Compiler_Error($"cannot obtain address of property\n");
@@ -2390,7 +2390,7 @@ static void ProcessExpression(Expression exp)
 
                      DeclareProperty(prop, setName, getName);
                      //propertyClass = convertTo ? _class : ((Symbol)prop.symbol)._class;
-                     propertyClass = convertTo ? _class : 
+                     propertyClass = convertTo ? _class :
                         ((((Symbol)prop.symbol).type && ((Symbol)prop.symbol).type.kind == classType) ? ((Symbol)prop.symbol).type._class.registered : ((Symbol)prop.symbol)._class);
 
 
@@ -2409,8 +2409,8 @@ static void ProcessExpression(Expression exp)
                            // Make a declaration in the closest compound statement
                            // (Do not reuse (since using address for function calls)...)
                            sprintf(className, "__simpleStruct%d", curContext.simpleID++);
-                           declarator = 
-                              SpecDeclFromString(propertyClass.dataTypeString, specs, 
+                           declarator =
+                              SpecDeclFromString(propertyClass.dataTypeString, specs,
                                  MkDeclaratorIdentifier(MkIdentifier(className)));
 
                            ListAdd(decls, MkInitDeclarator(declarator, null));
@@ -2647,12 +2647,12 @@ static void ProcessExpression(Expression exp)
                   else
                      sprintf(mask, FORMAT64HEX, bitMember.mask);
                   sprintf(shift, "%d", bitMember.pos);
-                  
+
                   FreeIdentifier(exp.member.member);
-                 
+
                   // ((type) ((color & mask) >> bitPos))
                   ListAdd(list, MkExpCast(type, MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(
-                     MkExpOp(exp.member.exp, '&', MkExpConstant(mask)))), RIGHT_OP, 
+                     MkExpOp(exp.member.exp, '&', MkExpConstant(mask)))), RIGHT_OP,
                         MkExpConstant(shift))))));
 
                   exp.type = bracketsExp;
@@ -2739,13 +2739,13 @@ static void ProcessExpression(Expression exp)
                         }
                         else
                         {
-                           e = QBrackets(MkExpOp(QMkExpId(ecereTemp), '+', 
+                           e = QBrackets(MkExpOp(QMkExpId(ecereTemp), '+',
                               MkExpPointer(QMkExpId(className), MkIdentifier("offset"))));
                         }
 
                         compound.compound.context = context;
                         compound.compound.statements = MkListOne(MkExpressionStmt(MkListOne(
-                           QBrackets(MkExpCast(MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null)), 
+                           QBrackets(MkExpCast(MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null)),
                               MkDeclaratorPointer(MkPointer(null, null), null)), e)))));
 
                         exp.member.exp =  MkExpExtensionCompound(compound);
@@ -2758,11 +2758,11 @@ static void ProcessExpression(Expression exp)
                         bytePtr = MkExpCast(QMkType("char", QMkPtrDecl(null)), /*CopyExpression(*/exp.member.exp/*)*/);
                         // DISABLED BECAUSE PREVENTS GETTING ADDRESS OF MEMBERS WITH ADDRESS 0
                         /*
-                        e = QBrackets(QMkExpCond(exp.member.exp, 
+                        e = QBrackets(QMkExpCond(exp.member.exp,
                            QBrackets(MkExpOp(bytePtr, '+', MkExpPointer(classExp, MkIdentifier("offset")))),
                            MkExpConstant("0")));
                         */
-                        
+
                         // if(class.fixed)
                         if(member._class.fixed)
                         {
@@ -2830,7 +2830,7 @@ static void ProcessExpression(Expression exp)
             if(argExp)
             {
                Expression classExp;
-               
+
                FreeTypeName(exp.typeName);
 
                classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
@@ -2840,16 +2840,16 @@ static void ProcessExpression(Expression exp)
                   MkExpCondition(MkExpBrackets(MkListOne(
                      MkExpOp(
                         MkExpOp(
-                           MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, 
-                              MkExpIdentifier(MkIdentifier("normalClass"))), 
+                           MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP,
+                              MkExpIdentifier(MkIdentifier("normalClass"))),
                         OR_OP,
                         MkExpOp(
-                           MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, 
+                           MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP,
                               MkExpIdentifier(MkIdentifier("noHeadClass"))
                             )))),
                      MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)))),
                      MkExpMember(classExp, MkIdentifier("typeSize")))
-                  ); 
+                  );
 
                ProcessExpressionType(exp);
                ProcessExpression(exp);
@@ -2868,7 +2868,7 @@ static void ProcessExpression(Expression exp)
                exp.byReference = exp.cast.exp.byReference;
             if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass &&
                exp.cast.exp.expType && (exp.cast.exp.expType.kind == pointerType || exp.cast.exp.expType.kind == arrayType || (
-                  exp.cast.exp.expType.kind == classType && exp.cast.exp.expType._class && exp.cast.exp.expType._class.registered && 
+                  exp.cast.exp.expType.kind == classType && exp.cast.exp.expType._class && exp.cast.exp.expType._class.registered &&
                      !strcmp(exp.cast.exp.expType._class.registered.dataTypeString, "char *")) ) )
                exp.byReference = true;
          }
@@ -2918,7 +2918,7 @@ static void ProcessExpression(Expression exp)
             char className[1024];
             char * string = StringFromSpecDecl(exp._classExp.specifiers, exp._classExp.decl);
             Symbol classSym = FindClass(string);
-            
+
             strcpy(className, "__ecereClass_");
             FullClassNameCat(className, string, true);      // TODO: Verify this
             MangleClassName(className);
@@ -2983,7 +2983,7 @@ static void ProcessDeclaration(Declaration decl)
          if(decl.declarators)
          {
             InitDeclarator d;
-         
+
             for(d = decl.declarators->first; d; d = d.next)
             {
                if(d.initializer)
@@ -3125,7 +3125,7 @@ static void ProcessStatement(Statement stmt)
             ProcessStatement(stmt.forStmt.check);
          }
          if(stmt.forStmt.increment)
-         {        
+         {
             for(exp = stmt.forStmt.increment->first; exp; exp = exp.next)
             {
                ProcessExpression(exp);
@@ -3238,7 +3238,7 @@ public void ProcessMemberAccess()
             ProcessDeclaration(external.declaration);
       }
    }
-   
+
    for(external = ast->first; external; external = external.next)
    {
       curExternal = external;
@@ -3284,7 +3284,7 @@ public void ProcessMemberAccess()
                      type = MkClassType(regClass.fullName);
                   };
                   globalContext.symbols.Add((BTNode)thisSymbol);
-                  
+
                   for(defProperty = def.defProperties->first; defProperty; defProperty = defProperty.next)
                   {
                      //thisClass = regClass;
@@ -3307,7 +3307,7 @@ public void ProcessMemberAccess()
                      type = MkClassType(regClass.fullName);
                   };
                   globalContext.symbols.Add((BTNode)thisSymbol);
-                  
+
                   //thisClass = regClass;
                   if(prop.setStmt)
                   {
@@ -3351,7 +3351,7 @@ public void ProcessMemberAccess()
                else if(def.type == propertyWatchClassDef && def.propertyWatch)
                {
                   PropertyWatch propertyWatch = def.propertyWatch;
-        
+
                   // Add this to the context
                   Symbol thisSymbol
                   {
@@ -3359,7 +3359,7 @@ public void ProcessMemberAccess()
                      type = MkClassType(regClass.fullName);
                   };
                   globalContext.symbols.Add((BTNode)thisSymbol);
-                  
+
                   //thisClass = regClass;
                   if(propertyWatch.compound)
                   {

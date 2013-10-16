@@ -52,7 +52,7 @@ class Test3DS : Window
             else if(key == k2)   cameraObject = model.Find("Camera02");
             else if(key == k3)   cameraObject = model.Find("Camera03");
             else if(key == k4)   cameraObject = model.Find("Full Scree");
-            
+
             camera = cameraObject.camera;
             camera.Setup(clientSize.w, clientSize.h, null);
             Update(null);

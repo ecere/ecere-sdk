@@ -42,7 +42,7 @@ class CheckListBox : ListBox
 
    checkIndent = 20;
 
-   fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true, 
+   fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true,
    noDragging = true;
    // rowHeight = 18;
 
@@ -50,7 +50,7 @@ class CheckListBox : ListBox
    {
       buttonMaps.RemoveAll();
    }
-   
+
    bool NotifyCollapse(CheckListBox listBox, DataRow row, bool collapsed)
    {
       DataRow r;
@@ -73,9 +73,9 @@ class CheckListBox : ListBox
          {
             listBox.SetupButtons(r, false);
          }
-         if(r.firstRow && !r.collapsed) 
+         if(r.firstRow && !r.collapsed)
             r = r.firstRow;
-         else 
+         else
             for(; r != row; r = r.parent)
                if(r.next) { r = r.next; break; }
       }
@@ -98,7 +98,7 @@ class CheckListBox : ListBox
       }
       return false;
    }
-   
+
    void SetupButtons(DataRow row, bool recurse)
    {
       DataRow parent;
@@ -146,7 +146,7 @@ class CheckListBox : ListBox
       if(ListBox::OnCreate())
       {
          DataRow row;
-         
+
          buttonMaps.RemoveAll();
 
          for(row = firstRow; row; row = row.next)
@@ -165,10 +165,10 @@ class CheckListBox : ListBox
          DataRow r;
          for(r = row; r; r = r.parent)
             if(rowChecks.Find(r))
-            { 
+            {
                checked = true;
                break;
-            }         
+            }
          SetCheck(row, !checked);
       }
    }
@@ -193,7 +193,7 @@ class CheckListBox : ListBox
       }
       NotifyChecked(master, this, row);
    }
-   
+
    void UnsetChildren(DataRow row)
    {
       DataRow r;
@@ -212,9 +212,9 @@ class CheckListBox : ListBox
             it.Remove();
          UnsetChildren(r);
          NotifyChecked(master, this, r);
-      }      
+      }
    }
-   
+
    void SetCheck(DataRow row, bool checked)
    {
       DataRow parent;
@@ -312,7 +312,7 @@ class CheckListBox : ListBox
          }
       }
    }
-   
+
    bool NotifyKeyDown(CheckListBox listBox, DataRow row, Key key, unichar ch)
    {
       if(key == space)

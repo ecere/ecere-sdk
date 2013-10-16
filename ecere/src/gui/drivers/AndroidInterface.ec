@@ -794,7 +794,7 @@ class AndroidInterface : Interface
       if(window && window.windowData)
       {
       }
-   }  
+   }
 
    void ClearClipboard()
    {
@@ -808,7 +808,7 @@ class AndroidInterface : Interface
    {
       bool result = false;
       if((clipBoard.text = new0 byte[size]))
-         result = true;   
+         result = true;
       return result;
    }
 
@@ -880,7 +880,7 @@ class AndroidInterface : Interface
    void SetTimerResolution(uint hertz)
    {
       // timerDelay = hertz ? (1000000 / hertz) : MAXINT;
-   }  
+   }
 
    bool SetIcon(Window window, BitmapResource resource)
    {
@@ -1099,7 +1099,7 @@ class AndroidActivity : AndroidAppGlue
          //PrintLn("Got a motion input event: ", action);
          /*
          if(action == 8) //AMOTION_EVENT_ACTION_SCROLL)
-            axis = AMotionEvent_getAxisValue(event, 9, index); //AMOTION_EVENT_AXIS_VSCROLL); 
+            axis = AMotionEvent_getAxisValue(event, 9, index); //AMOTION_EVENT_AXIS_VSCROLL);
          */
 
          AInputQueue_finishEvent(inputQueue, event, 1);
@@ -1245,7 +1245,7 @@ class AndroidActivity : AndroidAppGlue
 
       {
          Module app;
-          
+
          // Evolve the Application class into a GuiApplication
          eInstance_Evolve((Instance *)&__androidCurrentModule, class(GuiApplication));
 

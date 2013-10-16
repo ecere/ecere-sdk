@@ -1,6 +1,6 @@
 /********************************************************
-   This sample demonstrates how to use the XMLParser 
-   class to parse an XML communication protocol and 
+   This sample demonstrates how to use the XMLParser
+   class to parse an XML communication protocol and
    update model objects accordingly.
 ********************************************************/
 
@@ -66,7 +66,7 @@ class TrackXMLParser : XMLParser
          if(object)
          {
             object.type = type;
-            object.description = desc;            
+            object.description = desc;
          }
          else
          {

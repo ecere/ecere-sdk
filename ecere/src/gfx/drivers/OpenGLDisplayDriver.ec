@@ -149,160 +149,160 @@ static double nearPlane = 1;
 #define WGL_SAMPLE_BUFFERS_ARB              0x2041
 #define WGL_SAMPLES_ARB                     0x2042
 
-#define  WGL_WGLEXT_VERSION   1 
-#define  WGL_FRONT_COLOR_BUFFER_BIT_ARB   0x00000001 
-#define  WGL_BACK_COLOR_BUFFER_BIT_ARB   0x00000002 
-#define  WGL_DEPTH_BUFFER_BIT_ARB   0x00000004 
-#define  WGL_STENCIL_BUFFER_BIT_ARB   0x00000008 
-#define  WGL_NUMBER_PIXEL_FORMATS_ARB   0x2000 
-#define  WGL_DRAW_TO_WINDOW_ARB   0x2001 
-#define  WGL_DRAW_TO_BITMAP_ARB   0x2002 
-#define  WGL_ACCELERATION_ARB   0x2003 
-#define  WGL_NEED_PALETTE_ARB   0x2004 
-#define  WGL_NEED_SYSTEM_PALETTE_ARB   0x2005 
-#define  WGL_SWAP_LAYER_BUFFERS_ARB   0x2006 
-#define  WGL_SWAP_METHOD_ARB   0x2007 
-#define  WGL_NUMBER_OVERLAYS_ARB   0x2008 
-#define  WGL_NUMBER_UNDERLAYS_ARB   0x2009 
-#define  WGL_TRANSPARENT_ARB   0x200A 
-#define  WGL_TRANSPARENT_RED_VALUE_ARB   0x2037 
-#define  WGL_TRANSPARENT_GREEN_VALUE_ARB   0x2038 
-#define  WGL_TRANSPARENT_BLUE_VALUE_ARB   0x2039 
-#define  WGL_TRANSPARENT_ALPHA_VALUE_ARB   0x203A 
-#define  WGL_TRANSPARENT_INDEX_VALUE_ARB   0x203B 
-#define  WGL_SHARE_DEPTH_ARB   0x200C 
-#define  WGL_SHARE_STENCIL_ARB   0x200D 
-#define  WGL_SHARE_ACCUM_ARB   0x200E 
-#define  WGL_SUPPORT_GDI_ARB   0x200F 
-#define  WGL_SUPPORT_OPENGL_ARB   0x2010 
-#define  WGL_DOUBLE_BUFFER_ARB   0x2011 
-#define  WGL_STEREO_ARB   0x2012 
-#define  WGL_PIXEL_TYPE_ARB   0x2013 
-#define  WGL_COLOR_BITS_ARB   0x2014 
-#define  WGL_RED_BITS_ARB   0x2015 
-#define  WGL_RED_SHIFT_ARB   0x2016 
-#define  WGL_GREEN_BITS_ARB   0x2017 
-#define  WGL_GREEN_SHIFT_ARB   0x2018 
-#define  WGL_BLUE_BITS_ARB   0x2019 
-#define  WGL_BLUE_SHIFT_ARB   0x201A 
-#define  WGL_ALPHA_BITS_ARB   0x201B 
-#define  WGL_ALPHA_SHIFT_ARB   0x201C 
-#define  WGL_ACCUM_BITS_ARB   0x201D 
-#define  WGL_ACCUM_RED_BITS_ARB   0x201E 
-#define  WGL_ACCUM_GREEN_BITS_ARB   0x201F 
-#define  WGL_ACCUM_BLUE_BITS_ARB   0x2020 
-#define  WGL_ACCUM_ALPHA_BITS_ARB   0x2021 
-#define  WGL_DEPTH_BITS_ARB   0x2022 
-#define  WGL_STENCIL_BITS_ARB   0x2023 
-#define  WGL_AUX_BUFFERS_ARB   0x2024 
-#define  WGL_NO_ACCELERATION_ARB   0x2025 
-#define  WGL_GENERIC_ACCELERATION_ARB   0x2026 
-#define  WGL_FULL_ACCELERATION_ARB   0x2027 
-#define  WGL_SWAP_EXCHANGE_ARB   0x2028 
-#define  WGL_SWAP_COPY_ARB   0x2029 
-#define  WGL_SWAP_UNDEFINED_ARB   0x202A 
-#define  WGL_TYPE_RGBA_ARB   0x202B 
-#define  WGL_TYPE_COLORINDEX_ARB   0x202C 
-#define  ERROR_INVALID_PIXEL_TYPE_ARB   0x2043 
-#define  ERROR_INCOMPATIBLE_DEVICE_CONTEXTS_ARB   0x2054 
-#define  WGL_DRAW_TO_PBUFFER_ARB   0x202D 
-#define  WGL_MAX_PBUFFER_PIXELS_ARB   0x202E 
-#define  WGL_MAX_PBUFFER_WIDTH_ARB   0x202F 
-#define  WGL_MAX_PBUFFER_HEIGHT_ARB   0x2030 
-#define  WGL_PBUFFER_LARGEST_ARB   0x2033 
-#define  WGL_PBUFFER_WIDTH_ARB   0x2034 
-#define  WGL_PBUFFER_HEIGHT_ARB   0x2035 
-#define  WGL_PBUFFER_LOST_ARB   0x2036 
-#define  ERROR_INVALID_PIXEL_TYPE_EXT   0x2043 
-#define  WGL_NUMBER_PIXEL_FORMATS_EXT   0x2000 
-#define  WGL_DRAW_TO_WINDOW_EXT   0x2001 
-#define  WGL_DRAW_TO_BITMAP_EXT   0x2002 
-#define  WGL_ACCELERATION_EXT   0x2003 
-#define  WGL_NEED_PALETTE_EXT   0x2004 
-#define  WGL_NEED_SYSTEM_PALETTE_EXT   0x2005 
-#define  WGL_SWAP_LAYER_BUFFERS_EXT   0x2006 
-#define  WGL_SWAP_METHOD_EXT   0x2007 
-#define  WGL_NUMBER_OVERLAYS_EXT   0x2008 
-#define  WGL_NUMBER_UNDERLAYS_EXT   0x2009 
-#define  WGL_TRANSPARENT_EXT   0x200A 
-#define  WGL_TRANSPARENT_VALUE_EXT   0x200B 
-#define  WGL_SHARE_DEPTH_EXT   0x200C 
-#define  WGL_SHARE_STENCIL_EXT   0x200D 
-#define  WGL_SHARE_ACCUM_EXT   0x200E 
-#define  WGL_SUPPORT_GDI_EXT   0x200F 
-#define  WGL_SUPPORT_OPENGL_EXT   0x2010 
-#define  WGL_DOUBLE_BUFFER_EXT   0x2011 
-#define  WGL_STEREO_EXT   0x2012 
-#define  WGL_PIXEL_TYPE_EXT   0x2013 
-#define  WGL_COLOR_BITS_EXT   0x2014 
-#define  WGL_RED_BITS_EXT   0x2015 
-#define  WGL_RED_SHIFT_EXT   0x2016 
-#define  WGL_GREEN_BITS_EXT   0x2017 
-#define  WGL_GREEN_SHIFT_EXT   0x2018 
-#define  WGL_BLUE_BITS_EXT   0x2019 
-#define  WGL_BLUE_SHIFT_EXT   0x201A 
-#define  WGL_ALPHA_BITS_EXT   0x201B 
-#define  WGL_ALPHA_SHIFT_EXT   0x201C 
-#define  WGL_ACCUM_BITS_EXT   0x201D 
-#define  WGL_ACCUM_RED_BITS_EXT   0x201E 
-#define  WGL_ACCUM_GREEN_BITS_EXT   0x201F 
-#define  WGL_ACCUM_BLUE_BITS_EXT   0x2020 
-#define  WGL_ACCUM_ALPHA_BITS_EXT   0x2021 
-#define  WGL_DEPTH_BITS_EXT   0x2022 
-#define  WGL_STENCIL_BITS_EXT   0x2023 
-#define  WGL_AUX_BUFFERS_EXT   0x2024 
-#define  WGL_NO_ACCELERATION_EXT   0x2025 
-#define  WGL_GENERIC_ACCELERATION_EXT   0x2026 
-#define  WGL_FULL_ACCELERATION_EXT   0x2027 
-#define  WGL_SWAP_EXCHANGE_EXT   0x2028 
-#define  WGL_SWAP_COPY_EXT   0x2029 
-#define  WGL_SWAP_UNDEFINED_EXT   0x202A 
-#define  WGL_TYPE_RGBA_EXT   0x202B 
-#define  WGL_TYPE_COLORINDEX_EXT   0x202C 
-#define  WGL_DRAW_TO_PBUFFER_EXT   0x202D 
-#define  WGL_MAX_PBUFFER_PIXELS_EXT   0x202E 
-#define  WGL_MAX_PBUFFER_WIDTH_EXT   0x202F 
-#define  WGL_MAX_PBUFFER_HEIGHT_EXT   0x2030 
-#define  WGL_OPTIMAL_PBUFFER_WIDTH_EXT   0x2031 
-#define  WGL_OPTIMAL_PBUFFER_HEIGHT_EXT   0x2032 
-#define  WGL_PBUFFER_LARGEST_EXT   0x2033 
-#define  WGL_PBUFFER_WIDTH_EXT   0x2034 
-#define  WGL_PBUFFER_HEIGHT_EXT   0x2035 
-#define  WGL_DEPTH_FLOAT_EXT   0x2040 
-#define  WGL_SAMPLE_BUFFERS_3DFX   0x2060 
-#define  WGL_SAMPLES_3DFX   0x2061 
-#define  WGL_SAMPLE_BUFFERS_EXT   0x2041 
-#define  WGL_SAMPLES_EXT   0x2042 
-#define  WGL_GENLOCK_SOURCE_MULTIVIEW_I3D   0x2044 
-#define  WGL_GENLOCK_SOURCE_EXTENAL_SYNC_I3D   0x2045 
-#define  WGL_GENLOCK_SOURCE_EXTENAL_FIELD_I3D   0x2046 
-#define  WGL_GENLOCK_SOURCE_EXTENAL_TTL_I3D   0x2047 
-#define  WGL_GENLOCK_SOURCE_DIGITAL_SYNC_I3D   0x2048 
-#define  WGL_GENLOCK_SOURCE_DIGITAL_FIELD_I3D   0x2049 
-#define  WGL_GENLOCK_SOURCE_EDGE_FALLING_I3D   0x204A 
-#define  WGL_GENLOCK_SOURCE_EDGE_RISING_I3D   0x204B 
-#define  WGL_GENLOCK_SOURCE_EDGE_BOTH_I3D   0x204C 
-#define  WGL_GAMMA_TABLE_SIZE_I3D   0x204E 
-#define  WGL_GAMMA_EXCLUDE_DESKTOP_I3D   0x204F 
-#define  WGL_DIGITAL_VIDEO_CURSOR_ALPHA_FRAMEBUFFER_I3D   0x2050 
-#define  WGL_DIGITAL_VIDEO_CURSOR_ALPHA_VALUE_I3D   0x2051 
-#define  WGL_DIGITAL_VIDEO_CURSOR_INCLUDED_I3D   0x2052 
-#define  WGL_DIGITAL_VIDEO_GAMMA_CORRECTED_I3D   0x2053 
-#define  WGL_ARB_buffer_region   1 
-#define  WGL_ARB_extensions_string   1 
-#define  WGL_ARB_pixel_format   1 
-#define  WGL_ARB_make_current_read   1 
-#define  WGL_ARB_pbuffer   1 
-#define  WGL_EXT_display_color_table   1 
-#define  WGL_EXT_extensions_string   1 
-#define  WGL_EXT_make_current_read   1 
-#define  WGL_EXT_pbuffer   1 
-#define  WGL_EXT_pixel_format   1 
-#define  WGL_EXT_swap_control   1 
-#define  WGL_WGL_EXT_depth_float   1 
-#define  WGL_WGL_3DFX_multisample   1 
-#define  WGL_WGL_EXT_multisample   1 
-#define  WGL_NV_allocate_memory   1 
+#define  WGL_WGLEXT_VERSION   1
+#define  WGL_FRONT_COLOR_BUFFER_BIT_ARB   0x00000001
+#define  WGL_BACK_COLOR_BUFFER_BIT_ARB   0x00000002
+#define  WGL_DEPTH_BUFFER_BIT_ARB   0x00000004
+#define  WGL_STENCIL_BUFFER_BIT_ARB   0x00000008
+#define  WGL_NUMBER_PIXEL_FORMATS_ARB   0x2000
+#define  WGL_DRAW_TO_WINDOW_ARB   0x2001
+#define  WGL_DRAW_TO_BITMAP_ARB   0x2002
+#define  WGL_ACCELERATION_ARB   0x2003
+#define  WGL_NEED_PALETTE_ARB   0x2004
+#define  WGL_NEED_SYSTEM_PALETTE_ARB   0x2005
+#define  WGL_SWAP_LAYER_BUFFERS_ARB   0x2006
+#define  WGL_SWAP_METHOD_ARB   0x2007
+#define  WGL_NUMBER_OVERLAYS_ARB   0x2008
+#define  WGL_NUMBER_UNDERLAYS_ARB   0x2009
+#define  WGL_TRANSPARENT_ARB   0x200A
+#define  WGL_TRANSPARENT_RED_VALUE_ARB   0x2037
+#define  WGL_TRANSPARENT_GREEN_VALUE_ARB   0x2038
+#define  WGL_TRANSPARENT_BLUE_VALUE_ARB   0x2039
+#define  WGL_TRANSPARENT_ALPHA_VALUE_ARB   0x203A
+#define  WGL_TRANSPARENT_INDEX_VALUE_ARB   0x203B
+#define  WGL_SHARE_DEPTH_ARB   0x200C
+#define  WGL_SHARE_STENCIL_ARB   0x200D
+#define  WGL_SHARE_ACCUM_ARB   0x200E
+#define  WGL_SUPPORT_GDI_ARB   0x200F
+#define  WGL_SUPPORT_OPENGL_ARB   0x2010
+#define  WGL_DOUBLE_BUFFER_ARB   0x2011
+#define  WGL_STEREO_ARB   0x2012
+#define  WGL_PIXEL_TYPE_ARB   0x2013
+#define  WGL_COLOR_BITS_ARB   0x2014
+#define  WGL_RED_BITS_ARB   0x2015
+#define  WGL_RED_SHIFT_ARB   0x2016
+#define  WGL_GREEN_BITS_ARB   0x2017
+#define  WGL_GREEN_SHIFT_ARB   0x2018
+#define  WGL_BLUE_BITS_ARB   0x2019
+#define  WGL_BLUE_SHIFT_ARB   0x201A
+#define  WGL_ALPHA_BITS_ARB   0x201B
+#define  WGL_ALPHA_SHIFT_ARB   0x201C
+#define  WGL_ACCUM_BITS_ARB   0x201D
+#define  WGL_ACCUM_RED_BITS_ARB   0x201E
+#define  WGL_ACCUM_GREEN_BITS_ARB   0x201F
+#define  WGL_ACCUM_BLUE_BITS_ARB   0x2020
+#define  WGL_ACCUM_ALPHA_BITS_ARB   0x2021
+#define  WGL_DEPTH_BITS_ARB   0x2022
+#define  WGL_STENCIL_BITS_ARB   0x2023
+#define  WGL_AUX_BUFFERS_ARB   0x2024
+#define  WGL_NO_ACCELERATION_ARB   0x2025
+#define  WGL_GENERIC_ACCELERATION_ARB   0x2026
+#define  WGL_FULL_ACCELERATION_ARB   0x2027
+#define  WGL_SWAP_EXCHANGE_ARB   0x2028
+#define  WGL_SWAP_COPY_ARB   0x2029
+#define  WGL_SWAP_UNDEFINED_ARB   0x202A
+#define  WGL_TYPE_RGBA_ARB   0x202B
+#define  WGL_TYPE_COLORINDEX_ARB   0x202C
+#define  ERROR_INVALID_PIXEL_TYPE_ARB   0x2043
+#define  ERROR_INCOMPATIBLE_DEVICE_CONTEXTS_ARB   0x2054
+#define  WGL_DRAW_TO_PBUFFER_ARB   0x202D
+#define  WGL_MAX_PBUFFER_PIXELS_ARB   0x202E
+#define  WGL_MAX_PBUFFER_WIDTH_ARB   0x202F
+#define  WGL_MAX_PBUFFER_HEIGHT_ARB   0x2030
+#define  WGL_PBUFFER_LARGEST_ARB   0x2033
+#define  WGL_PBUFFER_WIDTH_ARB   0x2034
+#define  WGL_PBUFFER_HEIGHT_ARB   0x2035
+#define  WGL_PBUFFER_LOST_ARB   0x2036
+#define  ERROR_INVALID_PIXEL_TYPE_EXT   0x2043
+#define  WGL_NUMBER_PIXEL_FORMATS_EXT   0x2000
+#define  WGL_DRAW_TO_WINDOW_EXT   0x2001
+#define  WGL_DRAW_TO_BITMAP_EXT   0x2002
+#define  WGL_ACCELERATION_EXT   0x2003
+#define  WGL_NEED_PALETTE_EXT   0x2004
+#define  WGL_NEED_SYSTEM_PALETTE_EXT   0x2005
+#define  WGL_SWAP_LAYER_BUFFERS_EXT   0x2006
+#define  WGL_SWAP_METHOD_EXT   0x2007
+#define  WGL_NUMBER_OVERLAYS_EXT   0x2008
+#define  WGL_NUMBER_UNDERLAYS_EXT   0x2009
+#define  WGL_TRANSPARENT_EXT   0x200A
+#define  WGL_TRANSPARENT_VALUE_EXT   0x200B
+#define  WGL_SHARE_DEPTH_EXT   0x200C
+#define  WGL_SHARE_STENCIL_EXT   0x200D
+#define  WGL_SHARE_ACCUM_EXT   0x200E
+#define  WGL_SUPPORT_GDI_EXT   0x200F
+#define  WGL_SUPPORT_OPENGL_EXT   0x2010
+#define  WGL_DOUBLE_BUFFER_EXT   0x2011
+#define  WGL_STEREO_EXT   0x2012
+#define  WGL_PIXEL_TYPE_EXT   0x2013
+#define  WGL_COLOR_BITS_EXT   0x2014
+#define  WGL_RED_BITS_EXT   0x2015
+#define  WGL_RED_SHIFT_EXT   0x2016
+#define  WGL_GREEN_BITS_EXT   0x2017
+#define  WGL_GREEN_SHIFT_EXT   0x2018
+#define  WGL_BLUE_BITS_EXT   0x2019
+#define  WGL_BLUE_SHIFT_EXT   0x201A
+#define  WGL_ALPHA_BITS_EXT   0x201B
+#define  WGL_ALPHA_SHIFT_EXT   0x201C
+#define  WGL_ACCUM_BITS_EXT   0x201D
+#define  WGL_ACCUM_RED_BITS_EXT   0x201E
+#define  WGL_ACCUM_GREEN_BITS_EXT   0x201F
+#define  WGL_ACCUM_BLUE_BITS_EXT   0x2020
+#define  WGL_ACCUM_ALPHA_BITS_EXT   0x2021
+#define  WGL_DEPTH_BITS_EXT   0x2022
+#define  WGL_STENCIL_BITS_EXT   0x2023
+#define  WGL_AUX_BUFFERS_EXT   0x2024
+#define  WGL_NO_ACCELERATION_EXT   0x2025
+#define  WGL_GENERIC_ACCELERATION_EXT   0x2026
+#define  WGL_FULL_ACCELERATION_EXT   0x2027
+#define  WGL_SWAP_EXCHANGE_EXT   0x2028
+#define  WGL_SWAP_COPY_EXT   0x2029
+#define  WGL_SWAP_UNDEFINED_EXT   0x202A
+#define  WGL_TYPE_RGBA_EXT   0x202B
+#define  WGL_TYPE_COLORINDEX_EXT   0x202C
+#define  WGL_DRAW_TO_PBUFFER_EXT   0x202D
+#define  WGL_MAX_PBUFFER_PIXELS_EXT   0x202E
+#define  WGL_MAX_PBUFFER_WIDTH_EXT   0x202F
+#define  WGL_MAX_PBUFFER_HEIGHT_EXT   0x2030
+#define  WGL_OPTIMAL_PBUFFER_WIDTH_EXT   0x2031
+#define  WGL_OPTIMAL_PBUFFER_HEIGHT_EXT   0x2032
+#define  WGL_PBUFFER_LARGEST_EXT   0x2033
+#define  WGL_PBUFFER_WIDTH_EXT   0x2034
+#define  WGL_PBUFFER_HEIGHT_EXT   0x2035
+#define  WGL_DEPTH_FLOAT_EXT   0x2040
+#define  WGL_SAMPLE_BUFFERS_3DFX   0x2060
+#define  WGL_SAMPLES_3DFX   0x2061
+#define  WGL_SAMPLE_BUFFERS_EXT   0x2041
+#define  WGL_SAMPLES_EXT   0x2042
+#define  WGL_GENLOCK_SOURCE_MULTIVIEW_I3D   0x2044
+#define  WGL_GENLOCK_SOURCE_EXTENAL_SYNC_I3D   0x2045
+#define  WGL_GENLOCK_SOURCE_EXTENAL_FIELD_I3D   0x2046
+#define  WGL_GENLOCK_SOURCE_EXTENAL_TTL_I3D   0x2047
+#define  WGL_GENLOCK_SOURCE_DIGITAL_SYNC_I3D   0x2048
+#define  WGL_GENLOCK_SOURCE_DIGITAL_FIELD_I3D   0x2049
+#define  WGL_GENLOCK_SOURCE_EDGE_FALLING_I3D   0x204A
+#define  WGL_GENLOCK_SOURCE_EDGE_RISING_I3D   0x204B
+#define  WGL_GENLOCK_SOURCE_EDGE_BOTH_I3D   0x204C
+#define  WGL_GAMMA_TABLE_SIZE_I3D   0x204E
+#define  WGL_GAMMA_EXCLUDE_DESKTOP_I3D   0x204F
+#define  WGL_DIGITAL_VIDEO_CURSOR_ALPHA_FRAMEBUFFER_I3D   0x2050
+#define  WGL_DIGITAL_VIDEO_CURSOR_ALPHA_VALUE_I3D   0x2051
+#define  WGL_DIGITAL_VIDEO_CURSOR_INCLUDED_I3D   0x2052
+#define  WGL_DIGITAL_VIDEO_GAMMA_CORRECTED_I3D   0x2053
+#define  WGL_ARB_buffer_region   1
+#define  WGL_ARB_extensions_string   1
+#define  WGL_ARB_pixel_format   1
+#define  WGL_ARB_make_current_read   1
+#define  WGL_ARB_pbuffer   1
+#define  WGL_EXT_display_color_table   1
+#define  WGL_EXT_extensions_string   1
+#define  WGL_EXT_make_current_read   1
+#define  WGL_EXT_pbuffer   1
+#define  WGL_EXT_pixel_format   1
+#define  WGL_EXT_swap_control   1
+#define  WGL_WGL_EXT_depth_float   1
+#define  WGL_WGL_3DFX_multisample   1
+#define  WGL_WGL_EXT_multisample   1
+#define  WGL_NV_allocate_memory   1
 
 /*
 typedef void (APIENTRY * PFNGLACTIVETEXTUREARBPROC) (GLenum target);
@@ -525,7 +525,7 @@ static bool egl_init_display(ANativeWindow* window)
 
    currentVertexBuffer = 0;
    return true;
-}  
+}
 
 static void egl_term_display()
 {
@@ -604,7 +604,7 @@ void glesTexCoord2f(float x, float y)
       vertexPointer[count*(2+numVertexCoords)+1] = vertexPointer[(count-3)*(2+numVertexCoords)+1];
       count++;
    }
-} 
+}
 void glesTexCoord2i(int x, int y)       { glesTexCoord2f((float)x, (float)y); }
 void glesTexCoord2d(double x, double y) { glesTexCoord2f((float)x, (float)y); }
 void glesTexCoord2fv(float * a)         { glesTexCoord2f(a[0], a[1]); }
@@ -914,7 +914,7 @@ void glesOrtho( double l, double r, double b, double t, double n, double f )
 {
    float matrix[4][4] =
    {
-      { (float)(2 / (r - l)), 0, 0, 0 }, 
+      { (float)(2 / (r - l)), 0, 0, 0 },
       { 0, (float)(2 / (t - b)), 0, 0 },
       { 0, 0, (float)(-2 / (f - n)), 0 },
       { (float)(-(r + l) / (r - l)), (float)(-(t + b) / (t - b)), (float)(-(f + n) / (f - n)), 1 }
@@ -1352,20 +1352,20 @@ class OpenGLDisplayDriver : DisplayDriver
    #if defined(__WIN32__)
          wglMakeCurrent( null, null );
 
-         if(oglDisplay.glrc) 
+         if(oglDisplay.glrc)
             wglDeleteContext(oglDisplay.glrc);
-      
+
          if(oglDisplay.hdc && oglDisplay.pBuffer)
             wglReleasePbufferDCARB(oglDisplay.pBuffer, oglDisplay.hdc);
 
          if(oglDisplay.pBuffer)
             wglDestroyPbufferARB(oglDisplay.pBuffer);
 
-         if(oglDisplay.hdc) 
+         if(oglDisplay.hdc)
             ReleaseDC(display.window, oglDisplay.hdc);
 
          if(oglDisplay.memDC) DeleteDC(oglDisplay.memDC);
-         if(oglDisplay.memBitmap) DeleteObject(oglDisplay.memBitmap); 
+         if(oglDisplay.memBitmap) DeleteObject(oglDisplay.memBitmap);
 
    #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
@@ -1392,14 +1392,14 @@ class OpenGLDisplayDriver : DisplayDriver
                if(oglDisplay.shminfoShape.shmaddr != (void *)-1)
                   shmdt(oglDisplay.shminfoShape.shmaddr);
                shmctl(oglDisplay.shminfoShape.shmid, IPC_RMID, 0);
-            }                  
+            }
             XDestroyImage(oglDisplay.shapeImage);
             oglDisplay.shapeImage = None;
          }
 
          glXMakeCurrent(xGlobalDisplay, None, null);
-      
-         if(oglDisplay.glContext) 
+
+         if(oglDisplay.glContext)
             glXDestroyContext(xGlobalDisplay, oglDisplay.glContext);
       #endif
    #endif
@@ -1428,7 +1428,7 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSystem.hdc = GetDC(oglSystem.hwnd);
       if(oglSystem.hdc)
       {
-   	   
+
          oglSystem.pfd.nSize = (short)sizeof(oglSystem.pfd);
          oglSystem.pfd.nVersion = 1;
          oglSystem.pfd.dwFlags = PFD_DRAW_TO_WINDOW /*PFD_DRAW_TO_BITMAP*/ | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
@@ -1486,7 +1486,7 @@ class OpenGLDisplayDriver : DisplayDriver
    	            int numFormats;
    	            float fAttributes[] = {0,0};
    	            int iAttributes[] =
-                  { 
+                  {
                      WGL_DRAW_TO_WINDOW_ARB,GL_TRUE,
    		            WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
    		            WGL_ACCELERATION_ARB,WGL_FULL_ACCELERATION_ARB,
@@ -1604,10 +1604,10 @@ class OpenGLDisplayDriver : DisplayDriver
    #if defined(__WIN32__)
       wglMakeCurrent( null, null );
 
-      if(oglSystem.glrc) 
+      if(oglSystem.glrc)
          wglDeleteContext(oglSystem.glrc);
-      
-      if(oglSystem.hdc) 
+
+      if(oglSystem.hdc)
          ReleaseDC(oglSystem.hwnd, oglSystem.hdc);
       DestroyWindow(oglSystem.hwnd);
 
@@ -1763,7 +1763,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             /*WGL_TEXTURE_FORMAT_ARB, WGL_TEXTURE_RGBA_ARB,
             WGL_TEXTURE_TARGET_ARB, WGL_TEXTURE_2D_ARB, */0
-         }; 
+         };
          int pixelFormat = 0;
          if(wglChoosePixelFormatARB)
          {
@@ -1771,7 +1771,7 @@ class OpenGLDisplayDriver : DisplayDriver
             int numFormats;
             float fAttributes[] = {0,0};
             int iAttributes[] =
-            { 
+            {
                //WGL_DRAW_TO_BITMAP_ARB, GL_TRUE,
                WGL_DRAW_TO_PBUFFER_ARB,GL_TRUE,
 	            WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
@@ -1785,7 +1785,7 @@ class OpenGLDisplayDriver : DisplayDriver
 	            WGL_SAMPLES_ARB, 4,						// Check For 4x Multisampling
 	            0,0
             };
-            
+
             //Log("Found wglChoosePixelFormatARB\n");
 
             valid = wglChoosePixelFormatARB(oglSystem.hdc,iAttributes,fAttributes,1,&pixelFormat,&numFormats);
@@ -1820,7 +1820,7 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                wglMakeCurrent(null, null);
             }
-         }  
+         }
 
          wglMakeCurrent( null, null );
          wglMakeCurrent( oglDisplay.hdc, oglDisplay.glrc );
@@ -1831,8 +1831,8 @@ class OpenGLDisplayDriver : DisplayDriver
 
          if(!useSingleGLContext)
             wglMakeCurrent( null, null );
-           
-         if(oglDisplay.glrc) 
+
+         if(oglDisplay.glrc)
             wglDeleteContext(oglDisplay.glrc);
 
          oglDisplay.pBuffer = wglCreatePbufferARB(oglSystem.hdc, pixelFormat, width, height, attributes);
@@ -1846,8 +1846,8 @@ class OpenGLDisplayDriver : DisplayDriver
             wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
 
             //wglQueryPbufferARB(pBuffer, WGL_PBUFFER_WIDTH_ARB, &width);
-            //wglQueryPbufferARB(pBuffer, WGL_PBUFFER_HEIGHT_ARB, &height); 
-            
+            //wglQueryPbufferARB(pBuffer, WGL_PBUFFER_HEIGHT_ARB, &height);
+
             // glDeleteBuffersARB(2, oglDisplay.imageBuffers);
 
             if((info = (BITMAPINFO *)new0 byte[sizeof(BITMAPINFOHEADER)+sizeof(RGBQUAD)*256]))
@@ -1977,7 +1977,7 @@ class OpenGLDisplayDriver : DisplayDriver
                   if(oglDisplay.shminfoShape.shmaddr != (void *)-1)
                      shmdt(oglDisplay.shminfoShape.shmaddr);
                   shmctl(oglDisplay.shminfoShape.shmid, IPC_RMID, 0);
-               }                  
+               }
                XDestroyImage(oglDisplay.shapeImage);
                oglDisplay.shapeImage = None;
             }
@@ -2005,11 +2005,11 @@ class OpenGLDisplayDriver : DisplayDriver
                   glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
 
                   // Initialize Shared Memory Pixmap
-                  oglDisplay.image = XShmCreateImage(xGlobalDisplay, DefaultVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 32, 
+                  oglDisplay.image = XShmCreateImage(xGlobalDisplay, DefaultVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 32,
                      ZPixmap, null, &oglDisplay.shminfo, width, height);
                   if(oglDisplay.image)
                   {
-                     oglDisplay.shminfo.shmid = shmget(IPC_PRIVATE, 
+                     oglDisplay.shminfo.shmid = shmget(IPC_PRIVATE,
                         oglDisplay.image->bytes_per_line * oglDisplay.image->height, IPC_CREAT|0777);
                      if(oglDisplay.shminfo.shmid != -1)
                      {
@@ -2019,15 +2019,15 @@ class OpenGLDisplayDriver : DisplayDriver
                            oglDisplay.shminfo.readOnly = False;
                            if(XShmAttach(xGlobalDisplay, &oglDisplay.shminfo))
                            {
-                              oglDisplay.pixmap = XShmCreatePixmap(xGlobalDisplay, (X11Window)display.window, oglDisplay.shminfo.shmaddr, 
+                              oglDisplay.pixmap = XShmCreatePixmap(xGlobalDisplay, (X11Window)display.window, oglDisplay.shminfo.shmaddr,
                                  &oglDisplay.shminfo, width, height, 32);
 
                               // Initialize Shared Memory Shape Pixmap
-                              oglDisplay.shapeImage = XShmCreateImage(xGlobalDisplay, DefaultVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 1, 
+                              oglDisplay.shapeImage = XShmCreateImage(xGlobalDisplay, DefaultVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 1,
                                  ZPixmap, null, &oglDisplay.shminfoShape, width, height);
                               if(oglDisplay.shapeImage)
                               {
-                                 oglDisplay.shminfoShape.shmid = shmget(IPC_PRIVATE, 
+                                 oglDisplay.shminfoShape.shmid = shmget(IPC_PRIVATE,
                                     oglDisplay.shapeImage->bytes_per_line * oglDisplay.shapeImage->height, IPC_CREAT|0777);
                                  if(oglDisplay.shminfoShape.shmid != -1)
                                  {
@@ -2037,7 +2037,7 @@ class OpenGLDisplayDriver : DisplayDriver
                                        oglDisplay.shminfoShape.readOnly = False;
                                        if(XShmAttach(xGlobalDisplay, &oglDisplay.shminfoShape))
                                        {
-                                          oglDisplay.shapePixmap = XShmCreatePixmap(xGlobalDisplay, (X11Window)display.window, oglDisplay.shminfoShape.shmaddr, 
+                                          oglDisplay.shapePixmap = XShmCreatePixmap(xGlobalDisplay, (X11Window)display.window, oglDisplay.shminfoShape.shmaddr,
                                              &oglDisplay.shminfoShape, width, height, 1);
                                           //oglDisplay.shapePixmap = XCreatePixmap(xGlobalDisplay, (X11Window)display.window, width, height, 1);
 
@@ -2051,9 +2051,9 @@ class OpenGLDisplayDriver : DisplayDriver
                                              #endif
                                              oglDisplay.pixmapPicture = XRenderCreatePicture(xGlobalDisplay, oglDisplay.pixmap, format, CPRepeat, &attributes);
                                              oglDisplay.windowPicture = XRenderCreatePicture(xGlobalDisplay, (X11Window)display.window, format, 0, &attributes);
-                                             oglDisplay.shapePicture = XRenderCreatePicture(xGlobalDisplay, oglDisplay.shapePixmap, 
+                                             oglDisplay.shapePicture = XRenderCreatePicture(xGlobalDisplay, oglDisplay.shapePixmap,
                                                 XRenderFindStandardFormat(xGlobalDisplay, PictStandardA1), 0, &attributes);
-                                          }  
+                                          }
 
                                           oglDisplay.picture = oglDisplay.shminfo.shmaddr;
                                           oglDisplay.stride = oglDisplay.image->bytes_per_line / 4;
@@ -2094,7 +2094,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       if(!result)
          return false;
-         
+
       result = false;
 
       glViewport(0,0,width,height);
@@ -2111,7 +2111,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       if(oglDisplay.flippingBuffer || !width || !height)
          result = true;
-         
+
       return result;
    }
 
@@ -2178,15 +2178,15 @@ class OpenGLDisplayDriver : DisplayDriver
             // outstanding DMA transfers into the buffer to finish.
             glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, oglDisplay.imageBuffers[0]);
             oglDisplay.pboMemory1 = (byte *)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB, GL_READ_ONLY);
-           
+
             // glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, oglDisplay.imageBuffers[1]);
             // oglDisplay.pboMemory2 = (byte *)glMapBufferARB(GL_PIXEL_PACK_BUFFER_ARB,GL_READ_ONLY);
 
-           
+
             memcpy(oglDisplay.picture, oglDisplay.pboMemory1, display.width * display.height * 4);
             //memcpy(oglDisplay.picture + display.width * display.height * 4 / 2, oglDisplay.pboMemory2, display.width * display.height * 4/ 2);
             */
-            
+
             UpdateLayeredWindow(display.window, hdc, &point, &size, oglDisplay.memDC, &srcPoint, 0, &blend, ULW_ALPHA);
             /*
 
@@ -2196,7 +2196,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
             // glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, oglDisplay.imageBuffers[1]);
             // glUnmapBufferARB(GL_PIXEL_PACK_BUFFER_ARB);
-           
+
             // Bind two different buffer objects and start the glReadPixels
             // asynchronously. Each call will return directly after
             // starting the DMA transfer.
@@ -2211,7 +2211,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
       #else
-            XTransform transform = 
+            XTransform transform =
             {
                {
                   { (int)(1.0f * (1<<16)), (int)(0.0f * (1<<16)),  (int)(0 * (1 << 16)) },
@@ -2231,12 +2231,12 @@ class OpenGLDisplayDriver : DisplayDriver
      #endif
 #endif
          }
-      } 
+      }
       else
 #endif
       {
 #if defined(__WIN32__)
-         //wglSwapLayerBuffers(oglDisplay.hdc,WGL_SWAP_MAIN_PLANE); 
+         //wglSwapLayerBuffers(oglDisplay.hdc,WGL_SWAP_MAIN_PLANE);
          SwapBuffers(oglDisplay.hdc);
 #elif defined(__unix__) || defined(__APPLE__)
       #if defined(__ANDROID__)
@@ -2263,7 +2263,7 @@ class OpenGLDisplayDriver : DisplayDriver
       bool result = false;
       Bitmap mipMap { };
       int glBitmap = -1;
-      
+
       uint w = width, h = height;
       if(oglSystem.pow2textures)
       {
@@ -2327,7 +2327,7 @@ class OpenGLDisplayDriver : DisplayDriver
             for(c=0; c<bitmap.size; c++)
             {
                // ((ColorRGBA *)bitmap.picture)[c] = ((ColorAlpha *)bitmap.picture)[c];
-               // TODO: 
+               // TODO:
                ColorAlpha color = ((ColorAlpha *)bitmap.picture)[c];
                ((ColorRGBA *)bitmap.picture)[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
             }
@@ -2378,7 +2378,7 @@ class OpenGLDisplayDriver : DisplayDriver
                   delete mipMap;
                }
             }
-            else 
+            else
                mipMap = bitmap;
 
             if(result)
@@ -2398,7 +2398,7 @@ class OpenGLDisplayDriver : DisplayDriver
                   result = false;
                }
             }
-            if(mipMap != bitmap) 
+            if(mipMap != bitmap)
                delete mipMap;
             if(!mipMaps) break;
          }
@@ -2499,7 +2499,7 @@ class OpenGLDisplayDriver : DisplayDriver
       bool result = false;
       OGLDisplay oglDisplay = display.driverData;
       ColorAlpha * flippingBuffer = oglDisplay.flippingBuffer;
-      
+
       if(oglDisplay.flippingBuffer)
       {
          if(bitmap.pixelFormat != pixelFormat888 || bitmap.width < w || bitmap.height < h)
@@ -2579,7 +2579,7 @@ class OpenGLDisplayDriver : DisplayDriver
       glBegin(GL_POINTS);
       // glVertex2i(x+surface.offset.x, y+surface.offset.y);
       glVertex2f(x+surface.offset.x + 0.5f, y+surface.offset.y + 0.5f);
-       
+
       glEnd();
    }
 
@@ -2615,7 +2615,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glVertex2f(x1 + 0.5f, y1 + 0.5f);
          glVertex2f(x2 + 0.5f, y2 + 0.5f);
       }
-      
+
       glEnd();
    }
 
@@ -2681,7 +2681,7 @@ class OpenGLDisplayDriver : DisplayDriver
       glColor4fv(oglSurface.background);
       glRecti(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);
-              
+
       /*
       glRectf(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);
@@ -2731,7 +2731,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else if(oglSurface.xOffset)
          glTranslated(oglSurface.xOffset / 64.0/*-0.375*/, 0.0, 0.0);
-         
+
       glBindTexture(GL_TEXTURE_2D, (uint)bitmap.driverData);
       glBegin(GL_QUADS);
 
@@ -2809,13 +2809,13 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          glTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
          glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
-      
+
          glTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
          glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
-      
+
          glTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
          glVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
-      
+
          glTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
          glVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
       }
@@ -2823,13 +2823,13 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          glTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
          glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
-      
+
          glTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
          glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
-      
+
          glTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
          glVertex2i(dx+w+surface.offset.x, dy+h+surface.offset.y);
-      
+
          glTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
          glVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
       }
@@ -2862,13 +2862,13 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          w = Abs(w);
          sw = Abs(sw);
-         flipX = true; 
+         flipX = true;
       }
       if(Sgn(h) != Sgn(sh))
       {
          h = Abs(h);
          sh = Abs(sh);
-         flipY = true; 
+         flipY = true;
       }
 
       s2dw=(float)w / sw;
@@ -2905,7 +2905,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //Clip against the edges of the surfaceination
       if(dx<surface.box.left)
       {
-         //if(!flip) 
+         //if(!flip)
          sx+=(int)((surface.box.left-dx)*d2sw);
          sw-=(int)((surface.box.left-dx)*d2sw);
          w-=surface.box.left-dx;
@@ -2975,7 +2975,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //Clip against the edges of the surfaceination
       if(dx<surface.box.left)
       {
-         //if(!flip) 
+         //if(!flip)
          sx+=surface.box.left-dx;
          w-=surface.box.left-dx;
          dx=surface.box.left;
@@ -3203,7 +3203,7 @@ class OpenGLDisplayDriver : DisplayDriver
          color[1] = light.diffuse.g * light.multiplier;
          color[2] = light.diffuse.b * light.multiplier;
          glLightfv(GL_LIGHT0 + id, GL_DIFFUSE, color);
-         
+
          color[0] = light.ambient.r * light.multiplier;
          color[1] = light.ambient.g * light.multiplier;
          color[2] = light.ambient.b * light.multiplier;
@@ -3212,7 +3212,7 @@ class OpenGLDisplayDriver : DisplayDriver
          color[1] = light.specular.g * light.multiplier;
          color[2] = light.specular.b * light.multiplier;
          glLightfv(GL_LIGHT0 + id, GL_SPECULAR,color);
-         
+
          if(lightObject)
          {
             Vector3D positionVector;
@@ -3250,7 +3250,7 @@ class OpenGLDisplayDriver : DisplayDriver
             position[0] = (float)positionVector.x;
             position[1] = (float)positionVector.y;
             position[2] = (float)positionVector.z;
-            
+
             glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
 
             /*
@@ -3264,7 +3264,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glEnd();
             glEnable(GL_DEPTH_TEST);
             glEnable(GL_LIGHTING);
-                     
+
 
             // Display Target
             if(lightObject.flags.root || !lightObject.parent)
@@ -3274,7 +3274,7 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             else
             {
-               positionVector.MultMatrix(light.target.transform.position, 
+               positionVector.MultMatrix(light.target.transform.position,
                   lightObject.light.target.parent.matrix);
                positionVector.Subtract(positionVector, display.camera.cPosition);
             }
@@ -3316,7 +3316,7 @@ class OpenGLDisplayDriver : DisplayDriver
          }
          else
          {
-            
+
             Vector3Df vector { 0,0,-1 };
             Vector3Df direction;
             Matrix mat;
@@ -3365,7 +3365,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             float pickX = display.display3D.pickX + surface.offset.x;
             float pickY = display.height - (display.display3D.pickY + surface.offset.y) - 1;
-            Matrix pickMatrix = 
+            Matrix pickMatrix =
             {
                {
                   w / display.display3D.pickWidth, 0, 0, 0,
@@ -3496,7 +3496,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
          }
       }
-      {   
+      {
          float color[4] = { material.specular.r, material.specular.g, material.specular.b, 0 };
          glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color);
       }
@@ -3504,7 +3504,7 @@ class OpenGLDisplayDriver : DisplayDriver
          float color[4] = { material.emissive.r, material.emissive.g, material.emissive.b, 0 };
          glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, color);
       }
-      
+
       glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &material.power);
    }
 
@@ -3606,7 +3606,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       OGLMesh oglMesh = mesh.data;
       if(!flags) flags = mesh.flags;
-      
+
       if(vboAvailable)
       {
          if(!(flags.vertices) || oglMesh.vertices)
@@ -3648,7 +3648,7 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       if(oglIndices)
       {
-         if(oglIndices.buffer) 
+         if(oglIndices.buffer)
             GLDeleteBuffers(1, &oglIndices.buffer);
          delete oglIndices.indices;
          delete oglIndices;
@@ -3672,7 +3672,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(vboAvailable)
       {
          GLBindBuffer( GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
-         GLBufferData( indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, GL_ELEMENT_ARRAY_BUFFER_ARB, nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)), 
+         GLBufferData( indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, GL_ELEMENT_ARRAY_BUFFER_ARB, nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
             oglIndices.indices, GL_STATIC_DRAW_ARB);
          GLBindBuffer( GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
       }
@@ -3680,7 +3680,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    uint16 * LockIndices(DisplaySystem displaySystem, OGLIndices oglIndices)
    {
-      
+
       return oglIndices.indices;
    }
 
@@ -3689,7 +3689,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //Logf("SelectMesh\n");
 
 #if !defined( __ANDROID__) && !defined(__APPLE__)
-      if(display.display3D.mesh && glUnlockArraysEXT)   
+      if(display.display3D.mesh && glUnlockArraysEXT)
          glUnlockArraysEXT();
 #endif
       if(mesh)
@@ -3779,7 +3779,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glDrawArrays(primitiveTypes[primitive->type.primitiveType], primitive->first, primitive->nVertices);
       else
       {
-         //    *** Hoping the data won't be uploaded at all (Won't really work if another group of the mesh is using the mesh ) *** 
+         //    *** Hoping the data won't be uploaded at all (Won't really work if another group of the mesh is using the mesh ) ***
          // HACK TO SPEED THINGS UP...
 #ifndef __ANDROID__
          GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
@@ -3810,12 +3810,12 @@ class OpenGLDisplayDriver : DisplayDriver
             if(!display.display3D.collectingHits && vboAvailable && oglIndices)
             {
                GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, oglIndices.buffer);
-               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
+               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
                   primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, 0);
                GLBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
             }
             else
-               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
+               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
                   primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, oglIndices ? oglIndices.indices : primitive->indices);
          }
       }

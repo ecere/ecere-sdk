@@ -86,7 +86,7 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
          f.Read(&transStrings, sizeof(uint), 1);   if(swap) SWAP_DWORD(transStrings);
          f.Read(&hashingSize, sizeof(uint), 1);    if(swap) SWAP_DWORD(hashingSize);
          f.Read(&hashingOffset, sizeof(uint), 1);  if(swap) SWAP_DWORD(hashingOffset);
-         
+
          if(!moduleMaps)
             moduleMaps = { };
          {

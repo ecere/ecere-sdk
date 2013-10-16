@@ -188,13 +188,13 @@ public struct Quaternion
 
       if ( cosom < 0.0 )
       {
-         cosom = -cosom; 
+         cosom = -cosom;
          to1[0] = -to.x;
          to1[1] = -to.y;
          to1[2] = -to.z;
          to1[3] = -to.w;
-      } 
-      else  
+      }
+      else
       {
          to1[0] = to.x;
          to1[1] = to.y;
@@ -202,16 +202,16 @@ public struct Quaternion
          to1[3] = to.w;
       }
 
-      if ( (1.0 - cosom) > DELTA ) 
+      if ( (1.0 - cosom) > DELTA )
       {
          omega = acos(cosom);
          sinom = sin(omega);
          scale0 = sin((1.0 - t) * omega) / sinom;
          scale1 = sin(t * omega) / sinom;
 
-      } 
-      else 
-      {        
+      }
+      else
+      {
          scale0 = 1.0 - t;
          scale1 = t;
       }

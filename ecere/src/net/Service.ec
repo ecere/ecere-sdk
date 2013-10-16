@@ -93,7 +93,7 @@ public:
 
                FD_SET(s, &network.readSet);
                FD_SET(s, &network.exceptSet);
-               if(s >= network.ns) 
+               if(s >= network.ns)
                {
                   network.ns = (int)(s+1);
                   network.socketsSemaphore.Release();

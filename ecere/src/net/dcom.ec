@@ -171,7 +171,7 @@ public:
                    processingSocket = (DCOMServerSocket)next)
                {
                   next = processingSocket.next;
-                  if(processingSocket.connected && 
+                  if(processingSocket.connected &&
                      (int64)processingSocket.thread.id == currentThreadID)
                      break;
                }
@@ -273,7 +273,7 @@ static uint32 htoled(uint32 value)
 
 static uint32 letohd(uint32 value)
 {
-   return GETLEDWORD((byte *)&value);   
+   return GETLEDWORD((byte *)&value);
 }
 
 class DCOMServerThread : Thread
@@ -413,16 +413,16 @@ class DCOMClientThread : Thread
             Class runClass = eSystem_FindClass(__thisModule.application, createInstance.className + 4);
             DCOMServerObject object;
             int vid;
-            
+
             if(!_class)
                _class = eSystem_FindClass(runClass.module, createInstance.className);
-            
+
             objects = renew objects DCOMServerObject[numObjects+1];
             object = objects[numObjects] = eInstance_New(_class);
             incref object;
             object.serverSocket = this;
             object.id = numObjects++;
-            object.instance = eInstance_New(runClass);   
+            object.instance = eInstance_New(runClass);
             incref object.instance;
             object.instance._vTbl = new void *[object.instance._class.vTblSize + 1];
             object.instance._vTbl++;
@@ -617,7 +617,7 @@ public:
          packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_CreateInstance);
          packet.size = size;
          CopyBytes(packet.className, "DCOM", 4);
-         CopyBytes(packet.className + 4, _class.name + strlen("DCOMClient_"), len-4+1);     
+         CopyBytes(packet.className + 4, _class.name + strlen("DCOMClient_"), len-4+1);
          answered = false;
          SendPacket(packet);
          delete packet;

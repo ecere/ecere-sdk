@@ -22,14 +22,14 @@ class GlobalSettingsDialog : Window
    IDESettings ideSettings;
    IDESettingsContainer settingsContainer;
    String workspaceActiveCompiler;
-   
+
    TabControl tabControl { this, background = formColor, anchor = { left = 8, top = 8, right = 8, bottom = 40 } };
-   
+
    EditorTab editorTab { this, tabControl = tabControl };
    CompilersTab compilersTab { this, tabControl = tabControl };
    ProjectOptionsTab projectOptionsTab { this, tabControl = tabControl };
    WorkspaceOptionsTab workspaceOptionsTab { this, tabControl = tabControl };
-   
+
    property bool settingsModified
    {
       get
@@ -72,7 +72,7 @@ class GlobalSettingsDialog : Window
             bool compilerSettingsChanged = false;
             bool projectOptionsChanged = false;
             bool workspaceOptionsChanged = false;
-            
+
             if(editorTab.modifiedDocument)
             {
                if(editorTab.useFreeCaret.checked != ideSettings.useFreeCaret ||
@@ -85,7 +85,7 @@ class GlobalSettingsDialog : Window
                   editorSettingsChanged = true;
                }
             }
-            
+
             if(compilersTab.modifiedDocument)
             {
                Workspace workspace = ide.workspace;
@@ -138,7 +138,7 @@ class GlobalSettingsDialog : Window
             projectOptionsTab.modifiedDocument = false;
             workspaceOptionsTab.modifiedDocument = false;
          }
-         
+
          Destroy(DialogResult::ok);
          return true;
       }
@@ -193,7 +193,7 @@ class GlobalSettingsDialog : Window
          activateCompiler = readonlyCompiler;
       if(!activateCompiler && ideSettings.compilerConfigs.count)
          activateCompiler = ideSettings.compilerConfigs[0];
-      
+
       for(compiler : ideSettings.compilerConfigs)
          compilersTab.AddCompiler(compiler.Copy(), compiler == activateCompiler);
       compilersTab.compilerConfigsDir.path = ideSettings.compilerConfigsDir;
@@ -201,7 +201,7 @@ class GlobalSettingsDialog : Window
       // ProjectOptionsTab
       projectOptionsTab.defaultTargetDir.path = ideSettings.projectDefaultTargetDir;
       projectOptionsTab.defaultIntermediateObjDir.path = ideSettings.projectDefaultIntermediateObjDir;
-      
+
       return true;
    }
 
@@ -263,7 +263,7 @@ static void DrawStipple(Surface surface, Size clientSize)
 
    surface.LineStipple(0x5555);
    surface.Rectangle(x1, y1, x2, y2);
-   surface.LineStipple(0);            
+   surface.LineStipple(0);
 }
 
 class CompilersTab : GlobalSettingsSubTab
@@ -298,7 +298,7 @@ class CompilersTab : GlobalSettingsSubTab
          }
          return SelectorBar::OnKeyDown(key, ch);
       }
-      
+
       bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
          ((CompilersTab)master).labelCompilers.Update(null);
@@ -322,7 +322,7 @@ class CompilersTab : GlobalSettingsSubTab
    };
 
    TabControl tabControl { this, background = formColor, anchor = { left = 8, top = 68, right = 8, bottom = 8 } };
-   
+
    CompilerDirectoriesTab dirsTab { this, tabControl = tabControl };
    CompilerToolchainTab toolchainTab { this, tabControl = tabControl };
    CompilerEnvironmentTab environmentTab { this, tabControl = tabControl };
@@ -621,10 +621,10 @@ class CompilerDirectoriesTab : CompilersSubTab
             }
          };
          incref dirs[c];
-         
+
          if(c)
             dirs[c].visible = false;
-         
+
          // (width) Should be 324 for text...
          //field[c] = { dataType = class(char *), editable = true };
          //dirs[c].AddField(field[c]);
@@ -657,7 +657,7 @@ class CompilerDirectoriesTab : CompilersSubTab
          else if(c == executables)
             dirTypeTglBtn[c].hotKey = altE;
          }
-      }   
+      }
       currentDirs = dirs[includes];
       dirTypeTglBtn[includes].checked = true;
       return true;
@@ -895,14 +895,14 @@ class CompilerOptionsTab : CompilersSubTab
       bool OnKeyDown(Key key, unichar ch)
       {
          if((SmartKey)key == enter)
-         {  
+         {
             DataBox::OnKeyDown(key, ch);
             return true;
          }
          else
             return DataBox::OnKeyDown(key, ch);
       }
-      
+
       bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
       {
          if(!active)
@@ -1087,7 +1087,7 @@ class CompilerOptionsTab : CompilersSubTab
          excludedLibraries.strings = compiler.excludeLibs;
          compilerFlags.strings = compiler.compilerFlags;
          linkerFlags.strings = compiler.linkerFlags;
-         
+
          labelTargetPlatform.disabled = disabled;
          targetPlatform.disabled = disabled;
 
@@ -1153,7 +1153,7 @@ class ProjectOptionsTab : GlobalSettingsSubTab
    };
 }
 
-// COMPILER TOFIX: if class GlobalSettingsSubTab is after class WorkspaceOptionsTab the OnPostCreate 
+// COMPILER TOFIX: if class GlobalSettingsSubTab is after class WorkspaceOptionsTab the OnPostCreate
 //                 of WorkspaceOptionsTab will *not* be called!
 class GlobalSettingsSubTab : Tab
 {
@@ -1196,7 +1196,7 @@ class WorkspaceOptionsTab : GlobalSettingsSubTab
          for(compiler : dialog.ideSettings.compilerConfigs)
          {
             row = defaultCompilerDropBox.AddString(compiler.name);
-            if(dialog.ideSettings.defaultCompiler && dialog.ideSettings.defaultCompiler[0] && 
+            if(dialog.ideSettings.defaultCompiler && dialog.ideSettings.defaultCompiler[0] &&
                   !strcmp(compiler.name, dialog.ideSettings.defaultCompiler))
                defaultCompilerDropBox.currentRow = row;
          }

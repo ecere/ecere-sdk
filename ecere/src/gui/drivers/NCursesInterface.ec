@@ -106,9 +106,9 @@ static void AddMessagesToQueue(int ch)
       if(ch == 0x1B) //Escaped = true;
       {
          ch = getch();
-#ifdef NCDEBUG            
+#ifdef NCDEBUG
          fprintf(f, "  \\e: %d\n",ch);
-#endif            
+#endif
          if((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9'))
          {
             key = characters2Key[ch];
@@ -119,11 +119,11 @@ static void AddMessagesToQueue(int ch)
             ch = getch();
 #ifdef NCDEBUG
             fprintf(f, "   [: %d\n",ch);
-#endif               
+#endif
             ch1 = getch();
 #ifdef NCDEBUG
             fprintf(f, "   MOD: %c\n",ch1);
-#endif      
+#endif
             if(ch == '[')
             {
                if(ch1 == 'A') key = f1;
@@ -143,7 +143,7 @@ static void AddMessagesToQueue(int ch)
                switch(ch)
                {
                   case '1': case '7': key = home; break;
-                  case '2': key = insert; break; 
+                  case '2': key = insert; break;
                   case '3': key = del; break;
                   case '4': case '8': key = end; break;
                   case '5': key = pageUp; break;
@@ -162,7 +162,7 @@ static void AddMessagesToQueue(int ch)
             ch = getch();
 #ifdef NCDEBUG
             fprintf(f, "   O: %d\n",ch);
-#endif               
+#endif
             keyFlags.ctrl = true;
             switch(ch)
             {
@@ -180,7 +180,7 @@ static void AddMessagesToQueue(int ch)
                key = escape;
                ch = 27;
             }
-            else 
+            else
                ch = 0;
             /*else
             {
@@ -188,7 +188,7 @@ static void AddMessagesToQueue(int ch)
             }*/
          }
       }
-      else if(ch<256) 
+      else if(ch<256)
       {
          key = characters2Key[ch];
          if(!key && ch <= 26)
@@ -252,7 +252,7 @@ static void AddMessagesToQueue(int ch)
                if(event.bstate & BUTTON1_PRESSED)
                {
                   Time time = GetTime();
-                  if(time - lastTime[0] < DBLCLICK_DELAY && 
+                  if(time - lastTime[0] < DBLCLICK_DELAY &&
                      Abs(mousePosition.x - lastPos[0].x) < DBLCLICK_DELTA &&
                      Abs(mousePosition.y - lastPos[0].y) < DBLCLICK_DELTA)
                      AddMsg(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick, x, y, keyFlags);
@@ -266,7 +266,7 @@ static void AddMessagesToQueue(int ch)
                if(event.bstate & BUTTON3_PRESSED)
                {
                   Time time = GetTime();
-                  if(time - lastTime[2] < DBLCLICK_DELAY && 
+                  if(time - lastTime[2] < DBLCLICK_DELAY &&
                      Abs(mousePosition.x - lastPos[2].x) < DBLCLICK_DELTA &&
                      Abs(mousePosition.y - lastPos[2].y) < DBLCLICK_DELTA)
                      AddMsg(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleClick, x, y, keyFlags);
@@ -280,7 +280,7 @@ static void AddMessagesToQueue(int ch)
                if(event.bstate & BUTTON2_PRESSED)
                {
                   Time time = GetTime();
-                  if(time - lastTime[1] < DBLCLICK_DELAY && 
+                  if(time - lastTime[1] < DBLCLICK_DELAY &&
                      Abs(mousePosition.x - lastPos[1].x) < DBLCLICK_DELTA &&
                      Abs(mousePosition.y - lastPos[1].y) < DBLCLICK_DELTA)
                      AddMsg(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleDoubleClick, x, y, keyFlags);
@@ -346,7 +346,7 @@ class NCursesInterface : Interface
 
       byte c = 0,f,b;
       initscr();
-      
+
       SetLoggingMode(buffer, null);
       if((bool)has_colors())
       {
@@ -355,7 +355,7 @@ class NCursesInterface : Interface
             for(f=0; f<8; f++)
                init_pair(c++,colorMap[f],colorMap[b]);
       }
-     
+
       printf( "\033(U\017");
       fflush(stdout);
       intrflush(stdscr, (_Bool)false);
@@ -383,7 +383,7 @@ class NCursesInterface : Interface
    	ncursesMutex = Mutex { };
 
       ncursesTerminate = false;
-      
+
       ncursesThread = Thread { };
       incref ncursesThread;
       ncursesThread.Main = NCursesThread;
@@ -605,7 +605,7 @@ class NCursesInterface : Interface
       }
       else
          caretVisible = false;
-   }  
+   }
 
    // --- Clipboard manipulation ---
 
@@ -618,7 +618,7 @@ class NCursesInterface : Interface
    {
       bool result = false;
       if((clipBoard.text = new char[size]))
-         result = true;   
+         result = true;
       return result;
    }
 

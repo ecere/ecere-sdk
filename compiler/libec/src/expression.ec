@@ -2,20 +2,20 @@
 /* A Bison parser, made by GNU Bison 2.4.2.  */
 
 /* Skeleton implementation for Bison's Yacc-like parsers in C
-   
+
       Copyright (C) 1984, 1989-1990, 2000-2006, 2009-2010 Free Software
    Foundation, Inc.
-   
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -28,7 +28,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -3081,7 +3081,7 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
+
 
 #if YYERROR_VERBOSE
 
@@ -3292,7 +3292,7 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
     }
 }
 #endif /* YYERROR_VERBOSE */
-
+
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -6712,16 +6712,16 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 954 "expression.y"
-    { 
-         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list)); 
-         (yyval.initializer).loc = (yyloc); 
+    {
+         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list));
+         (yyval.initializer).loc = (yyloc);
 
          {
             Expression exp = MkExpDummy();
             Initializer init = MkInitializerAssignment(exp);
             init.loc = (yylsp[(3) - (4)]);
             exp.loc = (yylsp[(3) - (4)]);
-            ListAdd((yyvsp[(2) - (4)].list), init); 
+            ListAdd((yyvsp[(2) - (4)].list), init);
          }
       ;}
     break;
@@ -6842,11 +6842,11 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1040 "expression.y"
-    { 
-      (yyval.stmt) = MkCompoundStmt(null, null); 
-      (yyval.stmt).compound.context = PushContext(); 
+    {
+      (yyval.stmt) = MkCompoundStmt(null, null);
+      (yyval.stmt).compound.context = PushContext();
       PopContext((yyval.stmt).compound.context);
-      (yyval.stmt).loc = (yyloc); 
+      (yyval.stmt).loc = (yyloc);
    ;}
     break;
 

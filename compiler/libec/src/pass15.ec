@@ -360,7 +360,7 @@ void ComputeClassMembers(Class _class, bool isMember)
 {
    DataMember member = isMember ? (DataMember) _class : null;
    Context context = isMember ? null : SetupTemplatesContext(_class);
-   if(member || ((_class.type == bitClass || _class.type == normalClass || _class.type == structClass || _class.type == noHeadClass) && 
+   if(member || ((_class.type == bitClass || _class.type == normalClass || _class.type == structClass || _class.type == noHeadClass) &&
                  (_class.type == bitClass || (!_class.structSize || _class.structSize == _class.offset)) && _class.computeSize))
    {
       int c;
@@ -440,7 +440,7 @@ void ComputeClassMembers(Class _class, bool isMember)
                   int alignment = 0;
 
                   // Prevent infinite recursion
-                  if(dataMember.dataType.kind != classType || 
+                  if(dataMember.dataType.kind != classType ||
                      ((!dataMember.dataType._class || !dataMember.dataType._class.registered || dataMember.dataType._class.registered != _class ||
                      _class.type != structClass)))
                      ComputeTypeSize(dataMember.dataType);
@@ -607,7 +607,7 @@ void ComputeClassMembers(Class _class, bool isMember)
       {
          member.memberOffset = unionMemberOffset;
       }
-      
+
       if(!isMember)
       {
          /*if(_class.type == structClass)
@@ -668,7 +668,7 @@ public void ComputeModuleClasses(Module module)
 {
    Class _class;
    OldLink subModule;
-   
+
    for(subModule = module.modules.first; subModule; subModule = subModule.next)
       ComputeModuleClasses(subModule.data);
    for(_class = module.classes.first; _class; _class = _class.next)
@@ -707,8 +707,8 @@ public int ComputeTypeSize(Type type)
                   size += type.alignment - (size % type.alignment);
 
             }
-            else if(_class && (_class.type == unitClass || 
-                   _class.type == enumClass || 
+            else if(_class && (_class.type == unitClass ||
+                   _class.type == enumClass ||
                    _class.type == bitClass))
             {
                if(!_class.dataType)
@@ -720,12 +720,12 @@ public int ComputeTypeSize(Type type)
             break;
          }
          case pointerType: case subClassType: size = type.alignment = targetBits / 8; /*sizeof(void *); */break;
-         case arrayType: 
+         case arrayType:
             if(type.arraySizeExp)
             {
                ProcessExpressionType(type.arraySizeExp);
                ComputeExpression(type.arraySizeExp);
-               if(!type.arraySizeExp.isConstant || (type.arraySizeExp.expType.kind != intType && type.arraySizeExp.expType.kind != enumType && 
+               if(!type.arraySizeExp.isConstant || (type.arraySizeExp.expType.kind != intType && type.arraySizeExp.expType.kind != enumType &&
                   (type.arraySizeExp.expType.kind != classType || !type.arraySizeExp.expType._class.registered || type.arraySizeExp.expType._class.registered.type != enumClass)))
                {
                   Location oldLoc = yylloc;
@@ -759,7 +759,7 @@ public int ComputeTypeSize(Type type)
             size = ComputeTypeSize(type.type) * type.arraySize;
             if(type.type)
                type.alignment = type.type.alignment;
-            
+
             break;
          case structType:
          {
@@ -786,7 +786,7 @@ public int ComputeTypeSize(Type type)
             for(member = type.members.first; member; member = member.next)
             {
                uint addSize = ComputeTypeSize(member);
-               
+
                member.offset = size;
                if(member.alignment && size % member.alignment)
                   member.offset += member.alignment - (size % member.alignment);
@@ -874,7 +874,7 @@ public int ComputeTypeSize(Type type)
                   OldList * specs = MkList(), * decls = MkList();
                   Declarator decl;
 
-                  decl = SpecDeclFromString(member.dataTypeString, specs, 
+                  decl = SpecDeclFromString(member.dataTypeString, specs,
                      MkDeclaratorIdentifier(MkIdentifier(member.name)));
                   ListAdd(decls, MkStructDeclarator(decl, null));
                   ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(specs, decls, null)));
@@ -912,10 +912,10 @@ public int ComputeTypeSize(Type type)
             case structMember:
             {
                OldList * specs = MkList(), * list = MkList();
-               
+
                size = 0;
                AddMembers(list, (Class)member, true, &size, topClass, null);
-               ListAdd(specs, 
+               ListAdd(specs,
                   MkStructOrUnion((member.type == unionMember)?unionSpecifier:structSpecifier, null, list));
                ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(specs, null, null)));
                alignment = member.structAlignment;
@@ -947,8 +947,8 @@ public int ComputeTypeSize(Type type)
       {
          char sizeString[50];
          sprintf(sizeString, "%d", maxSize - totalSize);
-         ListAdd(declarations, 
-            MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)), 
+         ListAdd(declarations,
+            MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(CHAR)),
             MkListOne(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__ecere_padding")), MkExpConstant(sizeString))), null)));
          if(addedPadding)
             *addedPadding = true;
@@ -965,7 +965,7 @@ static int DeclareMembers(Class _class, bool isMember)
    uint totalSize = 0;
    DataMember member;
    Context context = isMember ? null : SetupTemplatesContext(_class);
-   
+
    if(!isMember && (_class.type == structClass || _class.type == noHeadClass) && _class.base.type != systemClass)
       DeclareMembers(_class.base, false);
 
@@ -1011,7 +1011,7 @@ void DeclareStruct(char * name, bool skipNoHead)
    if(!inCompiler || !classSym) return;
 
    // We don't need any declaration for bit classes...
-   if(classSym.registered && 
+   if(classSym.registered &&
       (classSym.registered.type == bitClass || classSym.registered.type == unitClass || classSym.registered.type == enumClass))
       return;
 
@@ -1026,7 +1026,7 @@ void DeclareStruct(char * name, bool skipNoHead)
       OldList * specifiers, * declarators;
       OldList * declarations = null;
       char structName[1024];
-      external = (classSym.registered && classSym.registered.type == structClass) ? 
+      external = (classSym.registered && classSym.registered.type == structClass) ?
          classSym.pointerExternal : classSym.structExternal;
 
       // TEMPORARY HACK: Pass 3 will move up struct declarations without moving members
@@ -1043,14 +1043,14 @@ void DeclareStruct(char * name, bool skipNoHead)
          }
          return;
       }
-      
+
       //if(!skipNoHead)
          DeclareMembers(classSym.registered, false);
 
       structName[0] = 0;
       FullClassNameCat(structName, name, false);
 
-      /*if(!external)      
+      /*if(!external)
          external = MkExternalDeclaration(null);*/
 
       if(!skipNoHead)
@@ -1095,7 +1095,7 @@ void DeclareStruct(char * name, bool skipNoHead)
          }
          else
          {
-            if(!external)      
+            if(!external)
                external = MkExternalDeclaration(null);
 
             specifiers = MkList();
@@ -1281,7 +1281,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
             declarators = MkList();
             params = MkList();
 
-            ListAdd(params, MkTypeName(MkListOne(MkSpecifierName /*MkClassName*/(prop._class.fullName)), 
+            ListAdd(params, MkTypeName(MkListOne(MkSpecifierName /*MkClassName*/(prop._class.fullName)),
                MkDeclaratorIdentifier(MkIdentifier("this"))));
 
             d = MkDeclaratorIdentifier(MkIdentifier(getName));
@@ -1317,13 +1317,13 @@ void DeclareProperty(Property prop, char * setName, char * getName)
                d = PlugDeclarator(typeDecl, d);
             else
             {
-               ListAdd(params, MkTypeName(specifiers, 
+               ListAdd(params, MkTypeName(specifiers,
                   PlugDeclarator(typeDecl, MkDeclaratorIdentifier(MkIdentifier("value")))));
                specifiers = MkList();
             }
 
             d = MkDeclaratorFunction(d, params);
- 
+
             //if(imported)
             if(dllImport)
                specifiers->Insert(null, MkSpecifier(EXTERN));
@@ -1372,7 +1372,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
             // TESTING COMMENTING THIS FIRST LINE OUT, what was the problem? Trying to add noHeadClass here ...
             if(!prop.conversion || prop._class.type == structClass)
             {
-               ListAdd(params, MkTypeName(MkListOne(MkSpecifierName/*MkClassName*/(prop._class.fullName)), 
+               ListAdd(params, MkTypeName(MkListOne(MkSpecifierName/*MkClassName*/(prop._class.fullName)),
                   MkDeclaratorIdentifier(MkIdentifier("this"))));
             }
 
@@ -1454,7 +1454,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
 
          {
             OldList * list = MkList();
-            ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), 
+            ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null),
                   MkDeclaratorIdentifier(MkIdentifier(propName))), null));
 
             if(!imported)
@@ -1467,7 +1467,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
 
                MangleClassName(propName);
 
-               ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), 
+               ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null),
                      MkDeclaratorIdentifier(MkIdentifier(propName))), null));
             }
             decl = MkDeclaration(specifiers, list);
@@ -1695,7 +1695,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
          int c;
          int paramCount = 0;
          int lastParam = -1;
-         
+
          char templateString[1024];
          ClassTemplateParameter param;
          sprintf(templateString, "%s<", expClass.templateClass.fullName);
@@ -1708,7 +1708,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
                int id = p;
                Class sClass;
                ClassTemplateArgument arg;
-               for(sClass = cClass.base; sClass; sClass = sClass.base) 
+               for(sClass = cClass.base; sClass; sClass = sClass.base)
                {
                   if(sClass.templateClass) sClass = sClass.templateClass;
                   id += sClass.templateParams.count;
@@ -1723,12 +1723,12 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
                   Class nextClass;
                   if(sClass.templateClass) sClass = sClass.templateClass;
 
-                  for(nextClass = sClass.base; nextClass; nextClass = nextClass.base) 
+                  for(nextClass = sClass.base; nextClass; nextClass = nextClass.base)
                   {
                      if(nextClass.templateClass) nextClass = nextClass.templateClass;
                      p += nextClass.templateParams.count;
                   }
-                  
+
                   for(cParam = sClass.templateParams.first; cParam; cParam = cParam.next, p++)
                   {
                      if(cParam.type == TemplateParameterType::type && arg.dataTypeString && !strcmp(cParam.name, arg.dataTypeString))
@@ -1797,7 +1797,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
                      lastParam = p;
                   }
                   p++;
-               }               
+               }
             }
          }
          {
@@ -1905,7 +1905,7 @@ void ProcessInstantiationType(Instantiation inst)
       MembersInit members;
       Symbol classSym; // = inst._class.symbol; // FindClass(inst._class.name);
       Class _class;
-      
+
       /*if(!inst._class.symbol)
          inst._class.symbol = FindClass(inst._class.name);*/
       classSym = inst._class.symbol;
@@ -1954,7 +1954,7 @@ void ProcessInstantiationType(Instantiation inst)
                      strcat(name, nameID.string);
                      strcat(name, "_");
                      sprintf(number, "_%08d", instMethodID++);
-                     strcat(name, number);                     
+                     strcat(name, number);
                      nameID.string = CopyString(name);
                   }
 
@@ -1963,7 +1963,7 @@ void ProcessInstantiationType(Instantiation inst)
                   {
                      Symbol symbol = declarator.symbol;
                      Method method = eClass_FindMethod(_class, unmangled, privateModule);
-                                    
+
                      if(method && method.type == virtualMethod)
                      {
                         symbol.method = method;
@@ -1971,7 +1971,7 @@ void ProcessInstantiationType(Instantiation inst)
 
                         if(!symbol.type.thisClass)
                         {
-                           if(method.dataType.thisClass && currentClass && 
+                           if(method.dataType.thisClass && currentClass &&
                               eClass_IsDerived(currentClass, method.dataType.thisClass.registered))
                            {
                               if(!currentClass.symbol)
@@ -2038,7 +2038,7 @@ void ProcessInstantiationType(Instantiation inst)
                         delete declarator.symbol.string;
                         declarator.symbol.string = CopyString(name);
                      }
-                     
+
                      if(!declarator.symbol.parent && globalContext.symbols.root != (BTNode)declarator.symbol)
                      {
                         printf("TOCHECK: Will this ever be in a list? Yes.\n");
@@ -2049,7 +2049,7 @@ void ProcessInstantiationType(Instantiation inst)
 
                      }
                      */
-                  
+
                      //curExternal = curExternal.prev;
                      //afterExternal = afterExternal->next;
 
@@ -2071,11 +2071,11 @@ void ProcessInstantiationType(Instantiation inst)
                            {
                               //Declaration decl = MkDeclaration(members.function.specifiers, MkListOne(MkInitDeclarator(CopyDeclarator(declarator), null)));
 
-                              Declaration decl = MkDeclaration(CopyList(createdExternal.function.specifiers, CopySpecifier), 
+                              Declaration decl = MkDeclaration(CopyList(createdExternal.function.specifiers, CopySpecifier),
                                  MkListOne(MkInitDeclarator(CopyDeclarator(declarator), null)));
-                     
+
                               //externalDecl = MkExternalDeclaration(decl);
-                        
+
                               //***** ast->Insert(external.prev, externalDecl);
                               //ast->Insert(curExternal.prev, externalDecl);
                               externalDecl.declaration = decl;
@@ -2234,7 +2234,7 @@ public Context SetupTemplatesContext(Class _class)
                   // ADD DATA TYPE HERE...
                   p.param = param = TemplateParameter
                   {
-                     identifier = MkIdentifier(p.name), type = p.type, 
+                     identifier = MkIdentifier(p.name), type = p.type,
                      dataTypeString = p.dataTypeString /*, dataType = { specs, decl }*/
                   };
                }
@@ -2360,7 +2360,7 @@ public void DeclareMethod(Method method, char * name)
             if(!classSym._import)
             {
                ModuleImport module;
-               
+
                if(method._class.module && method._class.module.name)
                   module = FindModule(method._class.module);
                else
@@ -2404,7 +2404,7 @@ public void DeclareMethod(Method method, char * name)
             }
             /*
             if(!method.thisClass || strcmp(method.thisClass, "void"))
-               symbol.type.params.Insert(null, 
+               symbol.type.params.Insert(null,
                   MkClassType(method.thisClass ? method.thisClass : method._class.fullName));
             */
          }
@@ -2482,7 +2482,7 @@ public void DeclareMethod(Method method, char * name)
                {
                   Class _class = method.dataType.thisClass ? method.dataType.thisClass.registered : method._class;
                   TypeName thisParam = MkTypeName(MkListOne(
-                     MkSpecifierName/*MkClassName*/(method.dataType.thisClass ? method.dataType.thisClass.string : method._class.fullName)), 
+                     MkSpecifierName/*MkClassName*/(method.dataType.thisClass ? method.dataType.thisClass.string : method._class.fullName)),
                      (_class && _class.type == systemClass) ? MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("this"))) : MkDeclaratorIdentifier(MkIdentifier("this")));
                   TypeName firstParam = ((TypeName)funcDecl.function.parameters->first);
                   Specifier firstSpec = firstParam.qualifiers ? firstParam.qualifiers->first : null;
@@ -2504,7 +2504,7 @@ public void DeclareMethod(Method method, char * name)
             else if(!funcDecl.function.parameters)
             {
                funcDecl.function.parameters = MkList();
-               funcDecl.function.parameters->Insert(null, 
+               funcDecl.function.parameters->Insert(null,
                   MkTypeName(MkListOne(MkSpecifier(VOID)),null));
             }*/
          }
@@ -2557,7 +2557,7 @@ char * ReplaceThisClass(Class _class)
       int p = 0;
       ClassTemplateParameter param;
       int lastParam = -1;
-      
+
       char className[1024];
       strcpy(className, _class.fullName);
       for(param = _class.templateParams.first; param; param = param.next)
@@ -2587,7 +2587,7 @@ char * ReplaceThisClass(Class _class)
       return CopyString(className);
    }
    else
-      return CopyString(_class.fullName);   
+      return CopyString(_class.fullName);
 }
 
 Type ReplaceThisClassType(Class _class)
@@ -2600,7 +2600,7 @@ Type ReplaceThisClassType(Class _class)
       int lastParam = -1;
       char className[1024];
       strcpy(className, _class.fullName);
-      
+
       for(param = _class.templateParams.first; param; param = param.next)
       {
          // if((!param.defaultArg.dataTypeString && !param.defaultArg.expression.ui64))
@@ -2744,7 +2744,7 @@ bool DeclareFunction(GlobalFunction function, char * name)
             if(funcDecl && !funcDecl.function.parameters)
             {
                funcDecl.function.parameters = MkList();
-               funcDecl.function.parameters->Insert(null, 
+               funcDecl.function.parameters->Insert(null,
                   MkTypeName(MkListOne(MkSpecifier(VOID)),null));
             }
 
@@ -2889,7 +2889,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          if(dest.classObjectType == anyObject && source.classObjectType != typedObject)
             return true;
       }
-      
+
       if((dest.kind == structType && source.kind == structType) ||
          (dest.kind == unionType && source.kind == unionType))
       {
@@ -2906,7 +2906,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          || source.kind == subClassType || source.kind == pointerType || source.kind == arrayType || source.kind == functionType || source.kind == thisClassType)
 
          /*source.kind != voidType && source.kind != structType && source.kind != unionType  */
-      
+
          /*&& (source.kind != classType /-*|| source._class.registered.type != structClass)*/)
          return true;
       if(!isConversionExploration && source.kind == pointerType && source.type.kind == voidType &&
@@ -2939,14 +2939,14 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          // Don't match enum inheriting from other enum if resolving enumeration values
          // TESTING: !dest.classObjectType
          else if(source._class && dest._class && (dest.classObjectType == source.classObjectType || !dest.classObjectType) &&
-            (enumBaseType || 
-               (!source._class.registered || source._class.registered.type != enumClass) || 
+            (enumBaseType ||
+               (!source._class.registered || source._class.registered.type != enumClass) ||
                (!dest._class.registered || dest._class.registered.type != enumClass)) && eClass_IsDerived(source._class.registered, dest._class.registered))
             return true;
          else
          {
             // Added this so that DefinedColor = Color doesn't go through ColorRGB property
-            if(enumBaseType && 
+            if(enumBaseType &&
                dest._class && dest._class.registered && dest._class.registered.type == enumClass &&
                ((source._class && source._class.registered && source._class.registered.type != enumClass) || source.kind == classType)) // Added this here for a base enum to be acceptable for a derived enum (#139)
             {
@@ -2985,8 +2985,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                            return true;
                         else if(conversions != null)
                         {
-                           if(_class.type == unitClass && convert.dataType.kind == classType && convert.dataType._class && 
-                              convert.dataType._class.registered && _class.base == convert.dataType._class.registered.base && 
+                           if(_class.type == unitClass && convert.dataType.kind == classType && convert.dataType._class &&
+                              convert.dataType._class.registered && _class.base == convert.dataType._class.registered.base &&
                               (dest.kind != classType || dest._class.registered != _class.base))
                               return true;
                            else
@@ -3027,8 +3027,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                            return true;
                         else if(conversions != null)
                         {
-                           if(_class.type == unitClass && convert.dataType.kind == classType && convert.dataType._class && 
-                              convert.dataType._class.registered && _class.base == convert.dataType._class.registered.base && 
+                           if(_class.type == unitClass && convert.dataType.kind == classType && convert.dataType._class &&
+                              convert.dataType._class.registered && _class.base == convert.dataType._class.registered.base &&
                               (source.kind != classType || source._class.registered != _class.base))
                               return true;
                            else
@@ -3046,7 +3046,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
             }
             /*if(dest._class.registered && !strcmp(dest._class.registered.name, "bool"))
             {
-               if(source.kind != voidType && source.kind != structType && source.kind != unionType && 
+               if(source.kind != voidType && source.kind != structType && source.kind != unionType &&
                   (source.kind != classType || source._class.registered.type != structClass))
                   return true;
             }*/
@@ -3089,8 +3089,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                            return true;
                         else if(conversions != null)
                         {
-                           if(_class.type == unitClass && convert.dataType.kind == classType && convert.dataType._class && 
-                              convert.dataType._class.registered && _class.base == convert.dataType._class.registered.base && 
+                           if(_class.type == unitClass && convert.dataType.kind == classType && convert.dataType._class &&
+                              convert.dataType._class.registered && _class.base == convert.dataType._class.registered.base &&
                               (dest.kind != classType || dest._class.registered != _class.base))
                               return true;
                            else
@@ -3122,7 +3122,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
 
       if(source.kind == classType || source.kind == subClassType)
          ;
-      else if(dest.kind == source.kind && 
+      else if(dest.kind == source.kind &&
          (dest.kind != structType && dest.kind != unionType &&
           dest.kind != functionType && dest.kind != arrayType && dest.kind != pointerType && dest.kind != methodType))
           return true;
@@ -3145,21 +3145,21 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       else if(dest.kind == enumType &&
          (source.kind == intType || source.kind == shortType || source.kind == charType || source.kind == longType || source.kind == int64Type || source.kind == intPtrType || source.kind == intSizeType))
           return true;
-      else if((dest.kind == functionType || (dest.kind == pointerType && dest.type.kind == functionType) || dest.kind == methodType) && 
+      else if((dest.kind == functionType || (dest.kind == pointerType && dest.type.kind == functionType) || dest.kind == methodType) &&
               ((source.kind == functionType || (source.kind == pointerType && source.type.kind == functionType) || source.kind == methodType)))
       {
          Type paramSource, paramDest;
 
-         if(dest.kind == methodType)     
+         if(dest.kind == methodType)
             owningClassDest = dest.methodClass ? dest.methodClass : dest.method._class;
-         if(source.kind == methodType)   
+         if(source.kind == methodType)
             owningClassSource = source.methodClass ? source.methodClass : source.method._class;
 
          if(dest.kind == pointerType && dest.type.kind == functionType) dest = dest.type;
          if(source.kind == pointerType && source.type.kind == functionType) source = source.type;
-         if(dest.kind == methodType) 
+         if(dest.kind == methodType)
             dest = dest.method.dataType;
-         if(source.kind == methodType) 
+         if(source.kind == methodType)
             source = source.method.dataType;
 
          paramSource = source.params.first;
@@ -3167,8 +3167,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          paramDest = dest.params.first;
          if(paramDest && paramDest.kind == voidType) paramDest = null;
 
-     
-         if((dest.staticMethod || (!dest.thisClass && !owningClassDest)) && 
+
+         if((dest.staticMethod || (!dest.thisClass && !owningClassDest)) &&
             !(source.staticMethod || (!source.thisClass && !owningClassSource)))
          {
             // Source thisClass must be derived from destination thisClass
@@ -3204,7 +3204,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                      if(owningClassDest)
                        Compiler_Error($"%s expected to be derived from method class\n", owningClassDest.fullName);
                      else
-                        Compiler_Error($"overriding class expected to be derived from method class\n");      
+                        Compiler_Error($"overriding class expected to be derived from method class\n");
                      return false;
                   }
                }
@@ -3230,7 +3230,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                      //if(owningClass)
                         Compiler_Error($"%s expected to be derived from method class\n", /*owningClass.name*/ source.thisClass.registered.fullName);
                      //else
-                        //Compiler_Error($"overriding class expected to be derived from method class\n");      
+                        //Compiler_Error($"overriding class expected to be derived from method class\n");
                      return false;
                   }
                }
@@ -3246,7 +3246,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          }
 
          // Check parameters
-      
+
          for(; paramDest; paramDest = paramDest.next)
          {
             if(!paramSource)
@@ -3295,14 +3295,14 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                }
 
                // paramDest must be derived from paramSource
-               if(!MatchTypes(paramDestType, paramSourceType, null, null, null, true, true, false, false) && 
+               if(!MatchTypes(paramDestType, paramSourceType, null, null, null, true, true, false, false) &&
                   (!acceptReversedParams || !MatchTypes(paramSourceType, paramDestType, null, null, null, true, true, false, false)))
                {
                   char type[1024];
                   type[0] = 0;
                   PrintType(paramDest, type, false, true);
                   Compiler_Warning($"incompatible parameter %s (expected %s)\n", paramSource.name, type);
-                  
+
                   if(paramDestType != paramDest)
                      FreeType(paramDestType);
                   return false;
@@ -3310,7 +3310,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                if(paramDestType != paramDest)
                   FreeType(paramDestType);
             }
-         
+
             paramSource = paramSource.next;
          }
          if(paramSource)
@@ -3324,7 +3324,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       {
          return true;
       }
-      else if((dest.kind == pointerType || dest.kind == arrayType) && 
+      else if((dest.kind == pointerType || dest.kind == arrayType) &&
          (source.kind == arrayType || source.kind == pointerType))
       {
          if(MatchTypes(source.type, dest.type, null, null, null, true, true, false, false))
@@ -3340,7 +3340,7 @@ static void FreeConvert(Conversion convert)
       FreeType(convert.resultType);
 }
 
-bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type dest, 
+bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type dest,
                               char * string, OldList conversions)
 {
    BTNamedLink link;
@@ -3391,7 +3391,7 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
                         sourceExp.constant = CopyString(constant);
                         //for(;baseClass.base && baseClass.base.type != systemClass; baseClass = baseClass.base);
                      }
-                  
+
                      while(converts.first)
                      {
                         Conversion convert = converts.first;
@@ -3418,7 +3418,7 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
 public bool ModuleVisibility(Module searchIn, Module searchFor)
 {
    SubModule subModule;
-   
+
    if(searchFor == searchIn)
       return true;
 
@@ -3466,10 +3466,10 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
        if(source._class && source._class.registered && source._class.registered.type == unitClass)
        {
           Class sourceBase, destBase;
-          for(sourceBase = source._class.registered; 
+          for(sourceBase = source._class.registered;
               sourceBase && sourceBase.base && sourceBase.base.type != systemClass;
               sourceBase = sourceBase.base);
-          for(destBase = dest._class.registered; 
+          for(destBase = dest._class.registered;
               destBase && destBase.base && destBase.base.type != systemClass;
               destBase = destBase.base);
           //if(source._class.registered == dest._class.registered)
@@ -3502,7 +3502,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
             value = -strtoull(sourceExp.op.exp2.constant, null, 0);
       }
 
-      if(dest.kind != classType && source.kind == classType && source._class && source._class.registered && 
+      if(dest.kind != classType && source.kind == classType && source._class && source._class.registered &&
          !strcmp(source._class.registered.fullName, "ecere::com::unichar"))
       {
          FreeType(source);
@@ -3537,7 +3537,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                backupSourceExpType = sourceExp.expType;
                sourceExp.expType = dest; dest.refCount++;
                //sourceExp.expType = MkClassType(_class.fullName);
-               flag = true;            
+               flag = true;
 
                delete tempType;
             }
@@ -3555,7 +3555,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                FreeType(sourceExp.expType);
                source = sourceExp.expType = MkClassType(dest._class.string);
                source.refCount++;
-               
+
                //source.kind = classType;
                //source._class = dest._class;
             }
@@ -3575,7 +3575,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                FreeType(source);
                source = sourceExp.expType = MkClassType(dest._class.string);
                source.refCount++;
-               
+
                //source.kind = classType;
                //source._class = dest._class;
             }
@@ -3617,14 +3617,14 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                // Testing this simpler piece of code... (Broke Units Conversion to no unit Logic)
                if(!source._class.registered.dataType)
                   source._class.registered.dataType = ProcessTypeString(source._class.registered.dataTypeString, false);
-               
+
                FreeType(dest);
                dest = MkClassType(source._class.string);
                //if(MatchTypes(source._class.registered.dataType, dest, conversions, null, null, true, false, false))
                //   dest = MkClassType(source._class.string);
             }
             */
-            
+
             if(dest.kind != classType)
             {
                Type tempType { };
@@ -3643,14 +3643,14 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 
                if(tempType._class)
                   MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false);
-               
+
                // PUT THIS BACK TESTING UNITS?
                if(conversions.last)
                {
                   ((Conversion)(conversions.last)).resultType = dest;
                   dest.refCount++;
                }
-               
+
                FreeType(sourceExp.expType);
                sourceExp.expType = MkClassType(_class.fullName);
                sourceExp.expType.truth = source.truth;
@@ -3676,7 +3676,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                dest = MkClassType(source._class.string);
                dest.truth = source.truth;
                dest.classObjectType = source.classObjectType;
-               
+
                FreeType(source);
                source = _class.dataType;
                source.refCount++;
@@ -3712,7 +3712,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       if(dest.kind == classType)
       {
          Class _class = dest._class ? dest._class.registered : null;
-         if(_class && !dest.truth && (_class.type == unitClass || !strcmp(_class.fullName, "bool") || 
+         if(_class && !dest.truth && (_class.type == unitClass || !strcmp(_class.fullName, "bool") ||
             (/*_class.type == enumClass*/_class.type != structClass && !value && source.kind == intType) || _class.type == bitClass))   // TOCHECK: enumClass, bitClass is new here...
          {
             if(_class.type == normalClass || _class.type == noHeadClass)
@@ -3750,13 +3750,13 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          }
 
          // Accept lower precision types for units, since we want to keep the unit type
-         if(dest.kind == doubleType && 
+         if(dest.kind == doubleType &&
             (source.kind == doubleType || source.kind == floatType || dest.kind == int64Type || source.kind == intType || source.kind == shortType ||
              source.kind == charType))
          {
             specs = MkListOne(MkSpecifier(DOUBLE));
          }
-         else if(dest.kind == floatType && 
+         else if(dest.kind == floatType &&
             (source.kind == floatType || dest.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == charType ||
             source.kind == doubleType))
          {
@@ -3803,25 +3803,25 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
             return false;
          }
       }
-      else if(dest.kind == doubleType && 
+      else if(dest.kind == doubleType &&
          (source.kind == doubleType || source.kind == floatType || source.kind == int64Type || source.kind == intType || source.kind == enumType || source.kind == shortType ||
           source.kind == charType))
       {
          specs = MkListOne(MkSpecifier(DOUBLE));
       }
-      else if(dest.kind == floatType && 
+      else if(dest.kind == floatType &&
          (source.kind == floatType || source.kind == enumType || source.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == charType))
       {
          specs = MkListOne(MkSpecifier(FLOAT));
       }
-      else if(dest.kind == charType && (source.kind == charType || source.kind == enumType || source.kind == shortType || source.kind == intType) && 
+      else if(dest.kind == charType && (source.kind == charType || source.kind == enumType || source.kind == shortType || source.kind == intType) &&
          (dest.isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
       {
          specs = MkList();
          if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
          ListAdd(specs, MkSpecifier(CHAR));
       }
-      else if(dest.kind == shortType && (source.kind == enumType || source.kind == charType || source.kind == shortType || 
+      else if(dest.kind == shortType && (source.kind == enumType || source.kind == charType || source.kind == shortType ||
          (source.kind == intType && (dest.isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
       {
          specs = MkList();
@@ -3840,7 +3840,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
          ListAdd(specs, MkSpecifier(INT64));
       }
-      else if(dest.kind == enumType && 
+      else if(dest.kind == enumType &&
          (source.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == charType))
       {
          specs = MkListOne(MkEnum(MkIdentifier(dest.enumName), null));
@@ -3881,7 +3881,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          }
          else
             sourceExp.cast.exp = newExp;
-         
+
          FreeType(sourceExp.expType);
          sourceExp.expType = null;
          ProcessExpressionType(sourceExp);
@@ -4145,9 +4145,9 @@ public void ReadString(char * output,  char * string)
          d++;
          escaped = false;
       }
-      else 
+      else
       {
-         if(ch == '\"') 
+         if(ch == '\"')
             quoted ^= true;
          else if(quoted)
          {
@@ -4167,13 +4167,13 @@ public Operand GetOperand(Expression exp)
    Type type = exp.expType;
    if(type)
    {
-      while(type.kind == classType && 
+      while(type.kind == classType &&
          type._class.registered && (type._class.registered.type == bitClass || type._class.registered.type == unitClass || type._class.registered.type == enumClass))
       {
          if(!type._class.registered.dataType)
             type._class.registered.dataType = ProcessTypeString(type._class.registered.dataTypeString, false);
          type = type._class.registered.dataType;
-         
+
       }
       op.kind = type.kind;
       op.type = exp.expType;
@@ -4279,7 +4279,7 @@ public Operand GetOperand(Expression exp)
                op.ui64 = _strtoui64(exp.constant, null, 0);
                op.kind = pointerType;
                op.ops = uintOps;
-               // op.ptrSize = 
+               // op.ptrSize =
                break;
          }
       }
@@ -4470,7 +4470,7 @@ void PopulateInstance(Instantiation inst)
                      exp.type = identifierExp;
                      exp.destType = MkClassType(_class.fullName);
                      ProcessExpressionType(exp);
-                  }                     
+                  }
                }
                if(_class.type == enumClass || _class.type == unitClass || _class.type == bitClass)
                {
@@ -4537,9 +4537,9 @@ void ComputeInstantiation(Expression exp)
 
    if(_class && (_class.type == structClass || _class.type == normalClass || _class.type == noHeadClass ))
    {
-      // Don't recompute the instantiation... 
+      // Don't recompute the instantiation...
       // Non Simple classes will have become constants by now
-      if(inst.data) 
+      if(inst.data)
          return;
 
       if(_class.type == normalClass || _class.type == noHeadClass)
@@ -4583,7 +4583,7 @@ void ComputeInstantiation(Expression exp)
                            else
                            {
                               dataMember = curMember;
-                              
+
                               // CHANGED THIS HERE
                               eClass_FindDataMemberAndOffset(_class, dataMember.name, &dataMemberOffset, privateModule, null, null);
 
@@ -4642,7 +4642,7 @@ void ComputeInstantiation(Expression exp)
                         {
                            if(!dataMember.dataType)
                               dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
-                           
+
                            type = dataMember.dataType;
                         }
 
@@ -4661,7 +4661,7 @@ void ComputeInstantiation(Expression exp)
                                     type = prop.dataType;
                                  else
                                  {
-                                    dataMember = eClass_FindDataMemberAndOffset(type._class.registered, 
+                                    dataMember = eClass_FindDataMemberAndOffset(type._class.registered,
                                        ident.string, &dataMemberOffset, privateModule, null, null);
                                     if(dataMember)
                                        type = dataMember.dataType;
@@ -4705,7 +4705,7 @@ void ComputeInstantiation(Expression exp)
                            if(dataMember)
                            {
                               void * ptr = inst.data + dataMemberOffset;
-                              
+
                               if(value.type == constantExp)
                               {
                                  switch(type.kind)
@@ -4891,7 +4891,7 @@ void ComputeInstantiation(Expression exp)
                               if(type.kind == classType && type._class && type._class.registered)
                               {
                                  if(!type._class.registered.dataType)
-                                    type._class.registered.dataType = ProcessTypeString(type._class.registered.dataTypeString, false);                                    
+                                    type._class.registered.dataType = ProcessTypeString(type._class.registered.dataTypeString, false);
                                  type = type._class.registered.dataType;
                               }
 
@@ -4953,7 +4953,7 @@ void ComputeInstantiation(Expression exp)
                            ComputeExpression(member.initializer.exp);
                            exp.constant = member.initializer.exp.constant;
                            exp.type = constantExp;
-                           
+
                            member.initializer.exp.constant = null;
                         }
                      }
@@ -5143,7 +5143,7 @@ void ComputeExpression(Expression exp)
                if(op2.type) op2.type.refCount++;
             }
          }
-         else 
+         else
          {
             exp1 = exp.op.exp2;
             op1 = GetOperand(exp1);
@@ -5202,7 +5202,7 @@ void ComputeExpression(Expression exp)
             case '-':
                if(exp.op.exp1)
                {
-                  if(op1.ops.Sub) 
+                  if(op1.ops.Sub)
                   {
                      FreeExpContents(exp);
                      op1.ops.Sub(exp, op1, op2);
@@ -5210,7 +5210,7 @@ void ComputeExpression(Expression exp)
                }
                else
                {
-                  if(op1.ops.Neg) 
+                  if(op1.ops.Neg)
                   {
                      FreeExpContents(exp);
                      op1.ops.Neg(exp, op1);
@@ -5233,7 +5233,7 @@ void ComputeExpression(Expression exp)
                break;
             // Binary only operators
             case '/':
-               if(op1.ops.Div) 
+               if(op1.ops.Div)
                {
                   FreeExpContents(exp);
                   op1.ops.Div(exp, op1, op2);
@@ -5311,14 +5311,14 @@ void ComputeExpression(Expression exp)
                }
                break;
             case '|':
-               if(op1.ops.BitOr) 
+               if(op1.ops.BitOr)
                {
                   FreeExpContents(exp);
                   op1.ops.BitOr(exp, op1, op2);
                }
                break;
             case '^':
-               if(op1.ops.BitXor) 
+               if(op1.ops.BitXor)
                {
                   FreeExpContents(exp);
                   op1.ops.BitXor(exp, op1, op2);
@@ -5429,7 +5429,7 @@ void ComputeExpression(Expression exp)
                _class = classSym ? classSym.registered : null;
                prop = eClass_FindProperty(_class, convertTo.fullName, privateModule);
             }
-      
+
             if(prop)
             {
                if(prop.compiled)
@@ -5464,7 +5464,7 @@ void ComputeExpression(Expression exp)
                            double value;
                            double (*Get)(double);
                            GetDouble(exp.member.exp, &value);
-                     
+
                            if(convertTo)
                               Get = (void *)prop.Set;
                            else
@@ -5519,7 +5519,7 @@ void ComputeExpression(Expression exp)
                                  exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
-                              
+
                                  GetInt(value, &intValue);
 
                                  Set(exp.instance.data, intValue);
@@ -5536,7 +5536,7 @@ void ComputeExpression(Expression exp)
                                  exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
-                              
+
                                  GetInt64(value, &intValue);
 
                                  Set(exp.instance.data, intValue);
@@ -5554,7 +5554,7 @@ void ComputeExpression(Expression exp)
                                  exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
-                              
+
                                  GetIntPtr(value, &intValue);
 
                                  Set(exp.instance.data, intValue);
@@ -5589,7 +5589,7 @@ void ComputeExpression(Expression exp)
                                  exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
-                              
+
                                  GetDouble(value, &doubleValue);
 
                                  Set(exp.instance.data, doubleValue);
@@ -5736,7 +5736,7 @@ void ComputeExpression(Expression exp)
          Type type = ProcessType(exp.typeName.qualifiers, exp.typeName.declarator);
          FreeExpContents(exp);
          exp.constant = PrintUInt(ComputeTypeSize(type));
-         exp.type = constantExp;         
+         exp.type = constantExp;
          FreeType(type);
          break;
       }
@@ -5795,7 +5795,7 @@ void ComputeExpression(Expression exp)
                   type = _class.dataType;
                }
             }
-            
+
             switch(type.kind)
             {
                case charType:
@@ -5916,7 +5916,7 @@ void ComputeExpression(Expression exp)
                   break;
                }
                case doubleType:
-               {  
+               {
                   double value;
                   GetDouble(e, &value);
                   FreeExpContents(exp);
@@ -5954,7 +5954,7 @@ void ComputeExpression(Expression exp)
          if(op2.type) FreeType(op2.type);
          if(op3.type) FreeType(op3.type);
          break;
-      }  
+      }
    }
 }
 
@@ -6006,7 +6006,7 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla)
                }
                else
                {
-               
+
                   /*if(exp.isConstant)
                   {
                      // Color { ColorRGB = [exp] };
@@ -6082,9 +6082,9 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla)
       }
       if(!result && exp.expType && exp.destType)
       {
-         if((exp.destType.kind == classType && exp.expType.kind == pointerType && 
+         if((exp.destType.kind == classType && exp.expType.kind == pointerType &&
              exp.expType.type.kind == classType && exp.expType.type._class == exp.destType._class && exp.destType._class.registered && exp.destType._class.registered.type == structClass) ||
-            (exp.expType.kind == classType && exp.destType.kind == pointerType && 
+            (exp.expType.kind == classType && exp.destType.kind == pointerType &&
             exp.destType.type.kind == classType && exp.destType.type._class == exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass))
             result = true;
       }
@@ -6124,7 +6124,7 @@ void CheckTemplateTypes(Expression exp)
                OldList * unionDefs = MkList();
                OldList * statements = MkList();
                context = PushContext();
-               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), null))); 
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), null)));
                ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), null)));
                specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
                exp.type = extensionCompoundExp;
@@ -6171,7 +6171,7 @@ void CheckTemplateTypes(Expression exp)
                OldList * unionDefs = MkList();
                OldList * statements = MkList();
                context = PushContext();
-               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), null))); 
+               ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), null)));
                ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), null)));
                specs = MkListOne(MkStructOrUnion(unionSpecifier, null, unionDefs ));
                exp.type = extensionCompoundExp;
@@ -6230,7 +6230,7 @@ void CheckTemplateTypes(Expression exp)
                typeString[0] = '\0';
                PrintType(exp.expType, typeString, false, false);
                decl = SpecDeclFromString(typeString, specs, null);
-               
+
                exp.type = castExp;
                //exp.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), null);
                exp.cast.typeName = MkTypeName(specs, decl);
@@ -6367,7 +6367,7 @@ static void ProcessDeclaration(Declaration decl);
 
          // Modified this recently...
          Context tmpContext = curContext;
-         curContext = null;         
+         curContext = null;
          symbol.pointerExternal = MkExternalDeclaration(MkDeclaration(CopyList(function.specifiers, CopySpecifier), MkListOne(MkInitDeclarator(CopyDeclarator(function.declarator), null))));
          curContext = tmpContext;
 
@@ -6398,7 +6398,7 @@ static void GetTypeSpecs(Type type, OldList * specs)
    if(!type.isSigned && type.kind != intPtrType && type.kind != intSizeType) ListAdd(specs, MkSpecifier(UNSIGNED));
    switch(type.kind)
    {
-      case classType: 
+      case classType:
       {
          if(type._class.registered)
          {
@@ -6415,7 +6415,7 @@ static void GetTypeSpecs(Type type, OldList * specs)
       case int64Type: ListAdd(specs, MkSpecifier(INT64)); break;
       case intPtrType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intptr" : "uintptr")); break;
       case intSizeType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intsize" : "uintsize")); break;
-      case intType: 
+      case intType:
       default:
          ListAdd(specs, MkSpecifier(INT)); break;
    }
@@ -6521,7 +6521,7 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
          case subClassType:
             strcat(string, "subclass(");
             strcat(string, type._class ? type._class.string : "int");
-            strcat(string, ")");                  
+            strcat(string, ")");
             break;
          case templateType:
             strcat(string, type.templateParameter.identifier.string);
@@ -6966,7 +6966,7 @@ void ApplyAnyObjectLogic(Expression e)
                   newExp = checkedExp.op.exp2;
                   checkedExp.op.exp2 = null;
                   FreeExpContents(checkedExp);
-                  
+
                   if(e.expType && e.expType.passAsTemplate)
                   {
                      char size[100];
@@ -7036,11 +7036,11 @@ void ApplyAnyObjectLogic(Expression e)
                         /*
                         e.compound = MkCompoundStmt(
                            MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(
-                              MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))), 
+                              MkDeclaratorIdentifier(MkIdentifier("__internalValue")), MkInitializerAssignment(newExp))))),
 
                            MkListOne(MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("__internalValue"))))));
                         */
-                        
+
                         {
                            Type type = e.destType;
                            e.destType = { };
@@ -7096,7 +7096,7 @@ void ApplyAnyObjectLogic(Expression e)
       // FixReference(e, true);
    }
 //#if 0
-   if((!destType || destType.kind == ellipsisType || destType.kind == voidType) && e.expType && (e.expType.classObjectType == anyObject || e.expType.classObjectType == typedObject) && 
+   if((!destType || destType.kind == ellipsisType || destType.kind == voidType) && e.expType && (e.expType.classObjectType == anyObject || e.expType.classObjectType == typedObject) &&
       (e.expType.byReference || (e.expType.kind == classType && e.expType._class && e.expType._class.registered &&
          (e.expType._class.registered.type == bitClass || e.expType._class.registered.type == enumClass || e.expType._class.registered.type == unitClass ) )))
    {
@@ -7141,11 +7141,11 @@ void ApplyAnyObjectLogic(Expression e)
 // TOFIX: Try this for a nice IDE crash!
 //#endif
    // The other way around
-   else 
+   else
 //#endif
-   if(destType && e.expType && 
+   if(destType && e.expType &&
          //e.expType.kind == classType && e.expType._class && e.expType._class.registered && !strcmp(e.expType._class.registered.name, "class") &&
-         (e.expType.classObjectType == anyObject || e.expType.classObjectType == typedObject) && 
+         (e.expType.classObjectType == anyObject || e.expType.classObjectType == typedObject) &&
          !destType.classObjectType && /*(destType.kind != pointerType || !destType.type || destType.type.kind != voidType) &&*/ destType.kind != voidType)
    {
       if(destType.kind == ellipsisType)
@@ -7166,7 +7166,7 @@ void ApplyAnyObjectLogic(Expression e)
          if(e.expType.kind == classType && e.expType._class && e.expType._class.registered && strcmp(e.expType._class.registered.name, "class"))
             type = e.expType;
          else
-            type = destType;            
+            type = destType;
 
          backupClassObjectType = type.classObjectType;
          backupByReference = type.byReference;
@@ -7186,8 +7186,8 @@ void ApplyAnyObjectLogic(Expression e)
          thisExp.next = null;
          e.Clear();
 
-         if( ( type.kind == classType && type._class && type._class.registered && 
-                   (type._class.registered.type == systemClass || type._class.registered.type == bitClass || 
+         if( ( type.kind == classType && type._class && type._class.registered &&
+                   (type._class.registered.type == systemClass || type._class.registered.type == bitClass ||
                     type._class.registered.type == enumClass || type._class.registered.type == unitClass) ) ||
              (type.kind != pointerType && type.kind != intPtrType && type.kind != arrayType && type.kind != classType) ||
              (!destType.byReference && byReference && (destType.kind != pointerType || type.kind != pointerType)))
@@ -7222,16 +7222,16 @@ void ProcessExpressionType(Expression exp)
    bool unresolved = false;
    Location oldyylloc = yylloc;
    bool notByReference = false;
-#ifdef _DEBUG   
+#ifdef _DEBUG
    char debugExpString[4096];
    debugExpString[0] = '\0';
    PrintExpression(exp, debugExpString);
 #endif
-   if(!exp || exp.expType) 
+   if(!exp || exp.expType)
       return;
 
    //eSystem_Logf("%s\n", expString);
-   
+
    // Testing this here
    yylloc = exp.loc;
    switch(exp.type)
@@ -7335,10 +7335,10 @@ void ProcessExpressionType(Expression exp)
                {
                   if(_class && _class.type == structClass && !type.declaredWithStruct)
                      exp.byReference = true;
-                  
+
                   //TESTING COMMENTING THIS OUT IN FAVOR OF ApplyAnyObjectLogic
-                  /*if(type && _class && (type.classObjectType == typedObject || type.classObjectType == anyObject) && 
-                     ((_class.type == unitClass || _class.type == enumClass || _class.type == bitClass) || 
+                  /*if(type && _class && (type.classObjectType == typedObject || type.classObjectType == anyObject) &&
+                     ((_class.type == unitClass || _class.type == enumClass || _class.type == bitClass) ||
                      (type.byReference && (_class.type == normalClass || _class.type == noHeadClass))))
                   {
                      Identifier id = exp.identifier;
@@ -7355,7 +7355,7 @@ void ProcessExpressionType(Expression exp)
                      exp.list = MkListOne(MkExpOp(null, '*', MkExpIdentifier(exp.identifier)));
                      ((Expression)exp.list->first).op.exp2.expType = exp.expType;
                      exp.expType = null;
-                     ProcessExpressionType(exp);                     
+                     ProcessExpressionType(exp);
                   }
                   else if(symbol.isIterator != 4)
                   {
@@ -7533,10 +7533,10 @@ void ProcessExpressionType(Expression exp)
          if(exp.instance._class)
          {
             exp.expType = MkClassType(exp.instance._class.name);
-            /*if(exp.expType._class && exp.expType._class.registered && 
+            /*if(exp.expType._class && exp.expType._class.registered &&
                (exp.expType._class.registered.type == normalClass || exp.expType._class.registered.type == noHeadClass))
                exp.expType.byReference = true;*/
-         }         
+         }
          break;
       }
       case constantExp:
@@ -7659,7 +7659,7 @@ void ProcessExpressionType(Expression exp)
          switch(exp.op.op)
          {
             // Assignment Operators
-            case '=': 
+            case '=':
             case MUL_ASSIGN:
             case DIV_ASSIGN:
             case MOD_ASSIGN:
@@ -7708,7 +7708,7 @@ void ProcessExpressionType(Expression exp)
             case '/':
             case '%':
             case '*':
-               
+
                if(exp.op.op != '*' || exp.op.exp1)
                {
                   useSideType = true;
@@ -7751,11 +7751,11 @@ void ProcessExpressionType(Expression exp)
          {
             if(exp.destType && exp.destType.kind == classType &&
                exp.destType._class && exp.destType._class.registered && useDestType &&
-               
-              ((exp.destType._class.registered.type == unitClass && useSideUnit) || 
+
+              ((exp.destType._class.registered.type == unitClass && useSideUnit) ||
                exp.destType._class.registered.type == enumClass ||
                exp.destType._class.registered.type == bitClass
-               )) 
+               ))
 
               //(exp.destType._class.registered.type == unitClass || exp.destType._class.registered.type == enumClass) && useDestType)
             {
@@ -7768,7 +7768,7 @@ void ProcessExpressionType(Expression exp)
             {
                if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
                exp.op.exp1.destType = dummy;
-               dummy.refCount++;               
+               dummy.refCount++;
             }
 
             // TESTING THIS HERE...
@@ -7826,7 +7826,7 @@ void ProcessExpressionType(Expression exp)
                }
                else
                {
-                  // Don't convert to the type for those... (e.g.: Degrees a; a /= 2;) 
+                  // Don't convert to the type for those... (e.g.: Degrees a; a /= 2;)
                   if(exp.op.op == MUL_ASSIGN || exp.op.op == DIV_ASSIGN ||exp.op.op == MOD_ASSIGN ||exp.op.op == LEFT_ASSIGN ||exp.op.op == RIGHT_ASSIGN/* ||
                      exp.op.op == AND_ASSIGN || exp.op.op == OR_ASSIGN*/);
                   else
@@ -7841,10 +7841,10 @@ void ProcessExpressionType(Expression exp)
                exp.expType = type1;
             }
             else if(exp.destType && exp.destType.kind == classType &&
-               exp.destType._class && exp.destType._class.registered && 
-               
-                  ((exp.destType._class.registered.type == unitClass && useDestType && useSideUnit) || 
-                  (exp.destType._class.registered.type == enumClass && useDestType)) 
+               exp.destType._class && exp.destType._class.registered &&
+
+                  ((exp.destType._class.registered.type == unitClass && useDestType && useSideUnit) ||
+                  (exp.destType._class.registered.type == enumClass && useDestType))
                   )
             {
                if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
@@ -7860,7 +7860,7 @@ void ProcessExpressionType(Expression exp)
             }
 
             // TESTING THIS HERE... (DANGEROUS)
-            if(type1 && boolResult && useSideType && type1.kind == classType && type1._class && type1._class.registered && 
+            if(type1 && boolResult && useSideType && type1.kind == classType && type1._class && type1._class.registered &&
                (type1._class.registered.type == bitClass || type1._class.registered.type == enumClass))
             {
                FreeType(exp.op.exp2.destType);
@@ -7875,23 +7875,23 @@ void ProcessExpressionType(Expression exp)
             {
                if(exp.op.exp2.expType.kind == intSizeType || exp.op.exp2.expType.kind == intPtrType || exp.op.exp2.expType.kind == int64Type || exp.op.exp2.expType.kind == intType || exp.op.exp2.expType.kind == shortType || exp.op.exp2.expType.kind == charType)
                {
-                  if(exp.op.op != '=' && type1.type.kind == voidType) 
+                  if(exp.op.op != '=' && type1.type.kind == voidType)
                      Compiler_Error($"void *: unknown size\n");
                }
-               else if(exp.op.exp2.expType.kind == pointerType || exp.op.exp2.expType.kind == arrayType || exp.op.exp2.expType.kind == functionType || exp.op.exp2.expType.kind == methodType|| 
+               else if(exp.op.exp2.expType.kind == pointerType || exp.op.exp2.expType.kind == arrayType || exp.op.exp2.expType.kind == functionType || exp.op.exp2.expType.kind == methodType||
                            (type1.type.kind == voidType && exp.op.exp2.expType.kind == classType && exp.op.exp2.expType._class.registered &&
-                              (exp.op.exp2.expType._class.registered.type == normalClass || 
+                              (exp.op.exp2.expType._class.registered.type == normalClass ||
                               exp.op.exp2.expType._class.registered.type == structClass ||
                               exp.op.exp2.expType._class.registered.type == noHeadClass)))
                {
                   if(exp.op.op == ADD_ASSIGN)
-                     Compiler_Error($"cannot add two pointers\n");                   
+                     Compiler_Error($"cannot add two pointers\n");
                }
-               else if((exp.op.exp2.expType.kind == classType && type1.kind == pointerType && type1.type.kind == classType && 
+               else if((exp.op.exp2.expType.kind == classType && type1.kind == pointerType && type1.type.kind == classType &&
                   type1.type._class == exp.op.exp2.expType._class && exp.op.exp2.expType._class.registered && exp.op.exp2.expType._class.registered.type == structClass))
                {
                   if(exp.op.op == ADD_ASSIGN)
-                     Compiler_Error($"cannot add two pointers\n");                   
+                     Compiler_Error($"cannot add two pointers\n");
                }
                else if(inCompiler)
                {
@@ -7899,7 +7899,7 @@ void ProcessExpressionType(Expression exp)
                   char type2String[1024];
                   type1String[0] = '\0';
                   type2String[0] = '\0';
-                  
+
                   PrintType(exp.op.exp2.expType, type1String, false, true);
                   PrintType(type1, type2String, false, true);
                   ChangeCh(expString, '\n', ' ');
@@ -7954,7 +7954,7 @@ void ProcessExpressionType(Expression exp)
          {
             if(boolOps)
             {
-               if(exp.op.exp1) 
+               if(exp.op.exp1)
                {
                   if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
                   exp.op.exp1.destType = MkClassType("bool");
@@ -7967,7 +7967,7 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp1.expType = MkClassType("bool");
                   exp.op.exp1.expType.truth = true;
                }
-               if(exp.op.exp2) 
+               if(exp.op.exp2)
                {
                   if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
                   exp.op.exp2.destType = MkClassType("bool");
@@ -7981,12 +7981,12 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp2.expType.truth = true;
                }
             }
-            else if(exp.op.exp1 && exp.op.exp2 && 
-               ((useSideType /*&& 
-                     (useSideUnit || 
+            else if(exp.op.exp1 && exp.op.exp2 &&
+               ((useSideType /*&&
+                     (useSideUnit ||
                         ((!type1 || type1.kind != classType || type1._class.registered.type != unitClass) &&
                          (!type2 || type2.kind != classType || type2._class.registered.type != unitClass)))*/) ||
-                  ((!type1 || type1.kind != classType || !strcmp(type1._class.string, "String")) && 
+                  ((!type1 || type1.kind != classType || !strcmp(type1._class.string, "String")) &&
                   (!type2 || type2.kind != classType || !strcmp(type2._class.string, "String")))))
             {
                if(type1 && type2 &&
@@ -8000,9 +8000,9 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp1.destType = type2;
                   type2.refCount++;
                   // Warning here for adding Radians + Degrees with no destination type
-                  if(!boolResult && type1.kind == classType && (!exp.destType || exp.destType.kind != classType) && 
-                     type1._class.registered && type1._class.registered.type == unitClass && 
-                     type2._class.registered && type2._class.registered.type == unitClass && 
+                  if(!boolResult && type1.kind == classType && (!exp.destType || exp.destType.kind != classType) &&
+                     type1._class.registered && type1._class.registered.type == unitClass &&
+                     type2._class.registered && type2._class.registered.type == unitClass &&
                      type1._class.registered != type2._class.registered)
                      Compiler_Warning($"operating on %s and %s with an untyped result, assuming %s\n",
                         type1._class.string, type2._class.string, type1._class.string);
@@ -8015,7 +8015,7 @@ void ProcessExpressionType(Expression exp)
                         Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
 
                         exp.op.exp1 = MkExpBrackets(MkListOne(MkExpCast(
-                           MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), 
+                           MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)),
                            exp.op.exp1)));
 
                         ProcessExpressionType(exp.op.exp1);
@@ -8024,16 +8024,16 @@ void ProcessExpressionType(Expression exp)
                         {
                            ProcessExpressionType(classExp);
 
-                           exp.op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp.op.exp2, '*', 
+                           exp.op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp.op.exp2, '*',
                               // ((_class.type == noHeadClass || _class.type == normalClass) ? sizeof(void *) : type.size)
                               MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(
                                  // noHeadClass
                                  MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("5")),
-                                    OR_OP, 
+                                    OR_OP,
                                  // normalClass
                                  MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("0"))))),
                                     MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(
-                                       MkPointer(null, null), null)))),                                  
+                                       MkPointer(null, null), null)))),
                                        MkExpMember(classExp, MkIdentifier("typeSize"))))))));
 
                            if(!exp.op.exp2.expType)
@@ -8043,17 +8043,17 @@ void ProcessExpressionType(Expression exp)
                         }
                      }
                   }
-                  
+
                   if(!boolResult && ((type1.kind == pointerType || type1.kind == arrayType || (type1.kind == classType && !strcmp(type1._class.string, "String"))) && (type2.kind == intSizeType || type2.kind == intPtrType || type2.kind == int64Type || type2.kind == intType || type2.kind == shortType || type2.kind == charType)))
                   {
-                     if(type1.kind != classType && type1.type.kind == voidType) 
+                     if(type1.kind != classType && type1.type.kind == voidType)
                         Compiler_Error($"void *: unknown size\n");
                      exp.expType = type1;
                      if(type1) type1.refCount++;
                   }
                   else if(!boolResult && ((type2.kind == pointerType || type2.kind == arrayType || (type2.kind == classType && !strcmp(type2._class.string, "String"))) && (type1.kind == intSizeType || type1.kind == intPtrType || type1.kind == int64Type || type1.kind == intType || type1.kind == shortType || type1.kind == charType)))
                   {
-                     if(type2.kind != classType && type2.type.kind == voidType) 
+                     if(type2.kind != classType && type2.type.kind == voidType)
                         Compiler_Error($"void *: unknown size\n");
                      exp.expType = type2;
                      if(type2) type2.refCount++;
@@ -8063,7 +8063,7 @@ void ProcessExpressionType(Expression exp)
                   {
                      Compiler_Warning($"different levels of indirection\n");
                   }
-                  else 
+                  else
                   {
                      bool success = false;
                      if(type1.kind == pointerType && type2.kind == pointerType)
@@ -8095,28 +8095,28 @@ void ProcessExpressionType(Expression exp)
                                     exp.list = MkListOne(MkExpOp(
                                        MkExpBrackets(MkListOne(MkExpOp(
                                              MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpBrackets(MkListOne(exp.op.exp1)))
-                                             , exp.op.op, 
-                                             MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpBrackets(MkListOne(exp.op.exp2)))))), '/', 
-                                          
+                                             , exp.op.op,
+                                             MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpBrackets(MkListOne(exp.op.exp2)))))), '/',
+
                                              //MkExpMember(classExp, MkIdentifier("typeSize"))
 
                                              // ((_class.type == noHeadClass || _class.type == normalClass) ? sizeof(void *) : type.size)
                                              MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(
                                                 // noHeadClass
                                                 MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass"))),
-                                                   OR_OP, 
+                                                   OR_OP,
                                                 // normalClass
                                                 MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))))),
                                                    MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(
-                                                      MkPointer(null, null), null)))),                                  
+                                                      MkPointer(null, null), null)))),
                                                       MkExpMember(classExp, MkIdentifier("typeSize")))))
 
-                                             
+
                                              ));
-                                    
+
                                     ProcessExpressionType(((Expression)exp.list->first).op.exp2);
                                     FreeType(dummy);
-                                    return;                                       
+                                    return;
                                  }
                               }
                            }
@@ -8224,7 +8224,7 @@ void ProcessExpressionType(Expression exp)
                      exp.expType = type2;
                      type2.refCount++;
                   }
-                  
+
                   if(!boolResult && useSideUnit && type2 && type2.kind == classType && type2._class.registered && type2._class.registered.type == unitClass && type1 && type1.kind != classType)
                   {
                      if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
@@ -8294,7 +8294,7 @@ void ProcessExpressionType(Expression exp)
                         if(type2._class.registered.dataType)
                            type2._class.registered.dataType.refCount++;
                         CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false);
-                        
+
                         //exp.expType = type2._class.registered.dataType; //type2;
                         //if(type2) type2.refCount++;
                      }
@@ -8434,7 +8434,7 @@ void ProcessExpressionType(Expression exp)
                if(type1) type1.refCount++;
             }
          }
-         
+
          yylloc = exp.loc;
          if(exp.op.exp1 && !exp.op.exp1.expType)
          {
@@ -8519,7 +8519,7 @@ void ProcessExpressionType(Expression exp)
             FreeType(exp.expType);
             FreeType(exp.destType);
             delete exp.list;
-            
+
             *exp = *e;
 
             exp.prev = prev;
@@ -8637,7 +8637,7 @@ void ProcessExpressionType(Expression exp)
                   a = exp.call.arguments->first;
                   tempExp1 = a;
                }
-               
+
                if(a)
                {
                   exp.call.arguments->Clear();
@@ -8685,7 +8685,7 @@ void ProcessExpressionType(Expression exp)
                               if(b.expType)
                                  b.expType.refCount++;
                               ListAdd(exp.list, MkExpOp(CopyExpression(tempExp2), '=', b));
-                           }                        
+                           }
 
                            decl = MkDeclaration(specs, decls);
                            if(!curCompound.compound.declarations)
@@ -8698,7 +8698,7 @@ void ProcessExpressionType(Expression exp)
                   if(!strcmp(id.string, "Max") || !strcmp(id.string, "Min"))
                   {
                      int op = (!strcmp(id.string, "Max")) ? '>' : '<';
-                     ListAdd(exp.list, 
+                     ListAdd(exp.list,
                         MkExpCondition(MkExpBrackets(MkListOne(
                            MkExpOp(CopyExpression(tempExp1), op, CopyExpression(tempExp2)))),
                            MkListOne(CopyExpression(tempExp1)), CopyExpression(tempExp2)));
@@ -8708,7 +8708,7 @@ void ProcessExpressionType(Expression exp)
                   }
                   else if(!strcmp(id.string, "Abs"))
                   {
-                     ListAdd(exp.list, 
+                     ListAdd(exp.list,
                         MkExpCondition(MkExpBrackets(MkListOne(
                            MkExpOp(CopyExpression(tempExp1), '<', MkExpConstant("0")))),
                            MkListOne(MkExpOp(null, '-', CopyExpression(tempExp1))), CopyExpression(tempExp1)));
@@ -8719,7 +8719,7 @@ void ProcessExpressionType(Expression exp)
                   else if(!strcmp(id.string, "Sgn"))
                   {
                      // ((!(a))?(0):(((a)<0)?(-1):(1)))
-                     ListAdd(exp.list, 
+                     ListAdd(exp.list,
                         MkExpCondition(MkExpBrackets(MkListOne(
                            MkExpOp(null, '!', CopyExpression(tempExp1)))), MkListOne(MkExpConstant("0")),
                               MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(
@@ -8764,7 +8764,7 @@ void ProcessExpressionType(Expression exp)
          {
             methodType = functionType;
             functionType = methodType.method.dataType;
-            
+
             //if(functionType.returnType && functionType.returnType.kind == thisClassType)
             // TOCHECK: Instead of doing this here could this be done per param?
             if(exp.call.exp.expType.usedClass)
@@ -8786,12 +8786,12 @@ void ProcessExpressionType(Expression exp)
                      Context context = SetupTemplatesContext(exp.call.exp.expType.usedClass);
 
                      decl = SpecDeclFromString(typeString, specs, null);
-                     
+
                      // SET THIS TO FALSE WHEN PROCESSING THISCLASS OUTSIDE THE CLASS
                      if(thisClass != (exp.call.exp.expType.usedClass.templateClass ? exp.call.exp.expType.usedClass.templateClass :
                         exp.call.exp.expType.usedClass))
                         thisClassParams = false;
-                     
+
                      ReplaceThisClassSpecifiers(specs, exp.call.exp.expType.usedClass);
                      {
                         Class backupThisClass = thisClass;
@@ -8849,7 +8849,7 @@ void ProcessExpressionType(Expression exp)
             // Fixed #141 by adding '&& !functionType.extraParam'
             if(!functionType.staticMethod && !functionType.extraParam)
             {
-               if(memberExp && memberExp.member.exp && memberExp.member.exp.expType && memberExp.member.exp.expType.kind == subClassType && 
+               if(memberExp && memberExp.member.exp && memberExp.member.exp.expType && memberExp.member.exp.expType.kind == subClassType &&
                   memberExp.member.exp.expType._class)
                {
                   type = MkClassType(memberExp.member.exp.expType._class.string);
@@ -8940,7 +8940,7 @@ void ProcessExpressionType(Expression exp)
                      ClassTemplateArgument arg = _class.templateArgs[id];
                      {
                         Context context = SetupTemplatesContext(_class);
-                     
+
                         /*if(!arg.dataType)
                            arg.dataType = ProcessTypeString(arg.dataTypeString, false);*/
                         templatedType = ProcessTypeString(arg.dataTypeString, false);
@@ -9098,7 +9098,7 @@ void ProcessExpressionType(Expression exp)
          }
 
          ProcessExpressionType(exp.member.exp);
-         if(exp.member.exp.expType && exp.member.exp.expType.kind == classType && exp.member.exp.expType._class && 
+         if(exp.member.exp.expType && exp.member.exp.expType.kind == classType && exp.member.exp.expType._class &&
             exp.member.exp.expType._class.registered && exp.member.exp.expType._class.registered.type == normalClass)
          {
             exp.isConstant = false;
@@ -9159,7 +9159,7 @@ void ProcessExpressionType(Expression exp)
                      int c;
                      int paramCount = 0;
                      int lastParam = -1;
-                     
+
                      char templateString[1024];
                      ClassTemplateParameter param;
                      sprintf(templateString, "%s<", expClass.templateClass.fullName);
@@ -9181,7 +9181,7 @@ void ProcessExpressionType(Expression exp)
                               int p = 0;
                               Class nextClass;
                               for(nextClass = sClass.base; nextClass; nextClass = nextClass.base) p += nextClass.templateParams.count;
-                              
+
                               for(cParam = sClass.templateParams.first; cParam; cParam = cParam.next, p++)
                               {
                                  if(cParam.type == TemplateParameterType::type && arg.dataTypeString && !strcmp(cParam.name, arg.dataTypeString))
@@ -9255,7 +9255,7 @@ void ProcessExpressionType(Expression exp)
                                  lastParam = p;
                               }
                               p++;
-                           }               
+                           }
                         }
                      }
                      {
@@ -9269,7 +9269,7 @@ void ProcessExpressionType(Expression exp)
                         FreeType(exp.expType);
                         exp.expType = ProcessTypeString(templateString, false);
                         FinishTemplatesContext(context);
-                     }                     
+                     }
                   }
 
                   // *([expType] *)(((byte *)[exp.member.exp]) + [argExp].member.offset)
@@ -9282,15 +9282,15 @@ void ProcessExpressionType(Expression exp)
                   MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl)), MkExpBrackets(MkListOne(MkExpOp(
                      MkExpBrackets(MkListOne(
                         MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), expMember))),
-                           '+',  
-                           MkExpOp(MkExpMember(MkExpMember(argExp, MkIdentifier("member")), MkIdentifier("offset")), 
+                           '+',
+                           MkExpOp(MkExpMember(MkExpMember(argExp, MkIdentifier("member")), MkIdentifier("offset")),
                            '+',
                            MkExpMember(MkExpMember(MkExpMember(CopyExpression(argExp), MkIdentifier("member")), MkIdentifier("_class")), MkIdentifier("offset")))))))
-                           
+
                            ));
                }
             }
-            else if(type.templateParameter && type.templateParameter.type == TemplateParameterType::type && 
+            else if(type.templateParameter && type.templateParameter.type == TemplateParameterType::type &&
                (type.templateParameter.dataType || type.templateParameter.dataTypeString))
             {
                type = ProcessTemplateParameterType(type.templateParameter);
@@ -9346,8 +9346,8 @@ void ProcessExpressionType(Expression exp)
 
             if(_class && id)
             {
-               /*bool thisPtr = 
-                  (exp.member.exp.type == identifierExp && 
+               /*bool thisPtr =
+                  (exp.member.exp.type == identifierExp &&
                   !strcmp(exp.member.exp.identifier.string, "this"));*/
                Property prop = null;
                Method method = null;
@@ -9432,16 +9432,16 @@ void ProcessExpressionType(Expression exp)
 
                         FreeType(classExp.expType);
                         classExp.expType = ProcessTypeString("ecere::com::Class", false);
-                     
+
                         strcpy(structName, "__ecereClassData_");
                         FullClassNameCat(structName, type._class.string, false);
                         exp.type = pointerExp;
                         exp.member.member = id;
 
                         exp.member.exp = MkExpBrackets(MkListOne(MkExpCast(
-                           MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null)), MkDeclaratorPointer(MkPointer(null, null), null)), 
+                           MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null)), MkDeclaratorPointer(MkPointer(null, null), null)),
                               MkExpBrackets(MkListOne(MkExpOp(
-                                 MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null,null), null)), 
+                                 MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null,null), null)),
                                     MkExpMember(classExp, MkIdentifier("data"))), '+',
                                        MkExpMember(MkExpClass(MkListOne(MkSpecifierName(type._class.string)), null), MkIdentifier("offsetClass")))))
                                  )));
@@ -9466,13 +9466,13 @@ void ProcessExpressionType(Expression exp)
                      }
                   }
                }
-      
+
                if(prop)
                {
                   exp.member.memberType = propertyMember;
                   if(!prop.dataType)
                      ProcessPropertyType(prop);
-                  exp.expType = prop.dataType;                     
+                  exp.expType = prop.dataType;
                   if(prop.dataType) prop.dataType.refCount++;
                }
                else if(member)
@@ -9627,7 +9627,7 @@ void ProcessExpressionType(Expression exp)
                         if(sClass.templateClass) sClass = sClass.templateClass;
                         for(curParam = sClass.templateParams.first; curParam; curParam = curParam.next)
                         {
-                           if(curParam.type == TemplateParameterType::type && 
+                           if(curParam.type == TemplateParameterType::type &&
                               !strcmp(exp.expType.type.templateParameter.identifier.string, curParam.name))
                            {
                               for(sClass = sClass.base; sClass; sClass = sClass.base)
@@ -9646,7 +9646,7 @@ void ProcessExpressionType(Expression exp)
                         Type basicType;
                         /*if(!arg.dataType)
                            arg.dataType = ProcessTypeString(arg.dataTypeString, false);*/
-                        
+
                         basicType = ProcessTypeString(arg.dataTypeString, false);
                         if(basicType)
                         {
@@ -9660,7 +9660,7 @@ void ProcessExpressionType(Expression exp)
                            if(tClass.templateClass)
                               basicType.passAsTemplate = true;
                            */
-                           
+
                            FreeType(exp.expType);
 
                            exp.expType = Type { refCount = 1, kind = pointerType, type = basicType };
@@ -9726,7 +9726,7 @@ void ProcessExpressionType(Expression exp)
                                  {
                                     if(!strcmp(paramCur.name, param.name))
                                     {
-                                       
+
                                        break;
                                     }
                                     cp++;
@@ -9785,7 +9785,7 @@ void ProcessExpressionType(Expression exp)
                                     {
                                        strcat(templateString, param.name);
                                        strcat(templateString, " = ");
-                                    }                                       
+                                    }
                                     strcat(templateString, argument);
                                     paramCount++;
                                     lastParam = p;
@@ -9824,7 +9824,7 @@ void ProcessExpressionType(Expression exp)
                   memberType.refCount++;
             }
          }
-         else 
+         else
          {
             char expString[10240];
             expString[0] = '\0';
@@ -9844,7 +9844,7 @@ void ProcessExpressionType(Expression exp)
                   exp.expType = ReplaceThisClassType(_class);
                }
             }
-         }         
+         }
          yylloc = oldyylloc;
          break;
       }
@@ -9948,7 +9948,7 @@ void ProcessExpressionType(Expression exp)
          type.count = 0;
          exp.expType = type;
          //type.refCount++;
-         
+
          // if(!NeedCast(exp.cast.exp.expType, exp.cast.exp.destType))
          if(!exp.cast.exp.needCast && !NeedCast(exp.cast.exp.expType, type))
          {
@@ -9962,7 +9962,7 @@ void ProcessExpressionType(Expression exp)
             //FreeType(exp.destType);
             FreeType(exp.expType);
             FreeTypeName(exp.cast.typeName);
-            
+
             *exp = *castExp;
             FreeType(exp.expType);
             FreeType(exp.destType);
@@ -10095,9 +10095,9 @@ void ProcessExpressionType(Expression exp)
                classExp = MkExpIdentifier(MkIdentifier("class"));
 
             exp.member.exp = MkExpBrackets(MkListOne(MkExpCast(
-               MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null)), MkDeclaratorPointer(MkPointer(null, null), null)), 
+               MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null)), MkDeclaratorPointer(MkPointer(null, null), null)),
                   MkExpBrackets(MkListOne(MkExpOp(
-                     MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null,null), null)), 
+                     MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null,null), null)),
                         MkExpMember(classExp, MkIdentifier("data"))), '+',
                            MkExpMember(MkExpClass(MkListOne(MkSpecifierName(_class.fullName)), null), MkIdentifier("offsetClass")))))
                      )));
@@ -10136,7 +10136,7 @@ void ProcessExpressionType(Expression exp)
                         FreeType(type);
                         type = e.expType;
                         e.expType = null;
-                        
+
                         e = exp.list->first;
                         ProcessExpressionType(e);
                         if(e.expType)
@@ -10149,7 +10149,7 @@ void ProcessExpressionType(Expression exp)
                               FreeType(type);
                               type = null;
                               break;
-                           }                           
+                           }
                         }
                      }
                   }
@@ -10205,7 +10205,7 @@ void ProcessExpressionType(Expression exp)
                FreeType(type);
                delete exp.list;
             }
-            
+
             DeclareStruct("ecere::com::BuiltInContainer", false);
 
             ListAdd(structInitializers, /*MkIdentifier("_vTbl")*/    MkInitializerAssignment(MkExpMember(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), null), MkIdentifier("_vTbl"))));
@@ -10338,7 +10338,7 @@ void ProcessExpressionType(Expression exp)
                //CheckExpressionType(exp, exp.destType, false);
 
                if(exp.destType.truth && exp.destType._class && exp.destType._class.registered && !strcmp(exp.destType._class.registered.name, "bool") &&
-                  exp.expType.kind != voidType && exp.expType.kind != structType && exp.expType.kind != unionType && 
+                  exp.expType.kind != voidType && exp.expType.kind != structType && exp.expType.kind != unionType &&
                   (exp.expType.kind != classType || exp.expType.classObjectType || (exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type != structClass)));
                else
                {
@@ -10379,7 +10379,7 @@ void ProcessExpressionType(Expression exp)
 
          PrintType(exp.expType, typeString, false, false);
          decl = SpecDeclFromString(typeString, specs, null);
-         
+
          exp.cast.typeName = MkTypeName(specs, decl);
          exp.cast.exp = newExp;
       }
@@ -10405,8 +10405,8 @@ void ProcessExpressionType(Expression exp)
 
    // Mark nohead classes as by reference, unless we're casting them to an integral type
    if(!notByReference && exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered &&
-      exp.expType._class.registered.type == noHeadClass && (!exp.destType || 
-         (exp.destType.kind != intType && exp.destType.kind != int64Type && exp.destType.kind != intPtrType && exp.destType.kind != intSizeType && 
+      exp.expType._class.registered.type == noHeadClass && (!exp.destType ||
+         (exp.destType.kind != intType && exp.destType.kind != int64Type && exp.destType.kind != intPtrType && exp.destType.kind != intSizeType &&
           exp.destType.kind != longType && exp.destType.kind != shortType && exp.destType.kind != charType)))
    {
       exp.byReference = true;
@@ -10417,7 +10417,7 @@ void ProcessExpressionType(Expression exp)
 static void FindNextDataMember(Class _class, Class * curClass, DataMember * curMember, DataMember * subMemberStack, int * subMemberStackPos)
 {
    // THIS CODE WILL FIND NEXT MEMBER...
-   if(*curMember) 
+   if(*curMember)
    {
       *curMember = (*curMember).next;
 
@@ -10439,7 +10439,7 @@ static void FindNextDataMember(Class _class, Class * curClass, DataMember * curM
 
             *curMember = (*curMember).members.first;
             while(*curMember && (*curMember).isProperty)
-               *curMember = (*curMember).next;                     
+               *curMember = (*curMember).next;
          }
       }
    }
@@ -10472,7 +10472,7 @@ static void FindNextDataMember(Class _class, Class * curClass, DataMember * curM
 
                *curMember = (*curMember).members.first;
                while(*curMember && (*curMember).isProperty)
-                  *curMember = (*curMember).next;                     
+                  *curMember = (*curMember).next;
             }
          }
       }
@@ -10681,14 +10681,14 @@ static void ProcessDeclarator(Declarator decl)
                   declarator = null;
                };
                if(!decl.function.parameters)
-                  decl.function.parameters = MkList();               
+                  decl.function.parameters = MkList();
                decl.function.parameters->Insert(null, param);
                id._class = null;
             }
             if(decl.function.parameters)
             {
                TypeName param;
-               
+
                for(param = decl.function.parameters->first; param; param = param.next)
                {
                   if(param.qualifiers && param.qualifiers->first)
@@ -10702,7 +10702,7 @@ static void ProcessDeclarator(Declarator decl)
                            qualifiers = MkListOne(MkSpecifier(VOID));
                            declarator = MkDeclaratorPointer(MkPointer(null,null), d);
                         };
-                        
+
                         FreeList(param.qualifiers, FreeSpecifier);
 
                         param.qualifiers = MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
@@ -10714,11 +10714,11 @@ static void ProcessDeclarator(Declarator decl)
                      else if(spec && spec.specifier == ANY_OBJECT)
                      {
                         Declarator d = param.declarator;
-                        
+
                         FreeList(param.qualifiers, FreeSpecifier);
 
                         param.qualifiers = MkListOne(MkSpecifier(VOID));
-                        param.declarator = MkDeclaratorPointer(MkPointer(null,null), d);                        
+                        param.declarator = MkDeclaratorPointer(MkPointer(null,null), d);
                      }
                      else if(spec.specifier == THISCLASS)
                      {
@@ -10757,7 +10757,7 @@ static void ProcessDeclaration(Declaration decl)
          if(decl.declarators)
          {
             InitDeclarator d;
-         
+
             for(d = decl.declarators->first; d; d = d.next)
             {
                Type type, subType;
@@ -10769,17 +10769,17 @@ static void ProcessDeclaration(Declaration decl)
                {
                   ProcessInitializer(d.initializer, type);
 
-                  // Change "ColorRGB a = ColorRGB { 1,2,3 } => ColorRGB a { 1,2,3 }                  
-                  
+                  // Change "ColorRGB a = ColorRGB { 1,2,3 } => ColorRGB a { 1,2,3 }
+
                   if(decl.declarators->count == 1 && d.initializer.type == expInitializer &&
                      d.initializer.exp.type == instanceExp)
                   {
-                     if(type.kind == classType && type._class == 
+                     if(type.kind == classType && type._class ==
                         d.initializer.exp.expType._class)
                      {
                         Instantiation inst = d.initializer.exp.instance;
                         inst.exp = MkExpIdentifier(CopyIdentifier(GetDeclId(d.declarator)));
-                        
+
                         d.initializer.exp.instance = null;
                         if(decl.specifiers)
                            FreeList(decl.specifiers, FreeSpecifier);
@@ -10905,7 +10905,7 @@ static void CreateFireWatcher(Property prop, Expression object, Statement stmt)
       ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireWatchers")), args));
    }
 
-   
+
    {
       args = MkList();
       ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
@@ -10917,8 +10917,8 @@ static void CreateFireWatcher(Property prop, Expression object, Statement stmt)
       ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
       ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args));
    }
-   
-   if(curFunction.propSet && !strcmp(curFunction.propSet.string, prop.name) && 
+
+   if(curFunction.propSet && !strcmp(curFunction.propSet.string, prop.name) &&
       (!object || (object.type == identifierExp && !strcmp(object.identifier.string, "this"))))
       curFunction.propSet.fireWatchersDone = true;
 }
@@ -11109,8 +11109,8 @@ static void ProcessStatement(Statement stmt)
          char iteratorType[1024];
          Type source;
          Expression e;
-         bool isBuiltin = exp && exp->last && 
-            (((Expression)exp->last).type == ExpressionType::arrayExp || 
+         bool isBuiltin = exp && exp->last &&
+            (((Expression)exp->last).type == ExpressionType::arrayExp ||
               (((Expression)exp->last).type == castExp && ((Expression)exp->last).cast.exp.type == ExpressionType::arrayExp));
          Expression arrayExp;
          char * typeString = null;
@@ -11139,7 +11139,7 @@ static void ProcessStatement(Statement stmt)
             Class linkListClass = eSystem_FindClass(privateModule, "LinkList");
             Class customAVLTreeClass = eSystem_FindClass(privateModule, "CustomAVLTree");
             stmt.type = compoundStmt;
-            
+
             stmt.compound.context = Context { };
             stmt.compound.context.parent = curContext;
             curContext = stmt.compound.context;
@@ -11155,7 +11155,7 @@ static void ProcessStatement(Statement stmt)
                   isMap = true;
             }
             else if(source && eClass_IsDerived(source._class.registered, arrayClass)) isArray = true;
-            else if(source && eClass_IsDerived(source._class.registered, linkListClass)) 
+            else if(source && eClass_IsDerived(source._class.registered, linkListClass))
             {
                Class listClass = eSystem_FindClass(privateModule, "List");
                isLinkList = true;
@@ -11166,19 +11166,19 @@ static void ProcessStatement(Statement stmt)
             {
                Declarator decl;
                OldList * specs = MkList();
-               decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, 
+               decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs,
                   MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(id)));
                stmt.compound.declarations = MkListOne(
                   MkDeclaration(specs, MkListOne(MkInitDeclarator(decl, null))));
                ListAdd(stmt.compound.declarations, MkDeclaration(MkListOne(MkSpecifierName(source._class.registered.fullName)),
-                  MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalArray")), 
+                  MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalArray")),
                      MkInitializerAssignment(MkExpBrackets(exp))))));
             }
             else if(isBuiltin)
             {
                Type type = null;
                char typeStringBuf[1024];
-               
+
                // TODO: Merge this code?
                arrayExp = (((Expression)exp->last).type == ExpressionType::arrayExp) ? (Expression)exp->last : ((Expression)exp->last).cast.exp;
                if(((Expression)exp->last).type == castExp)
@@ -11213,7 +11213,7 @@ static void ProcessStatement(Statement stmt)
                               FreeType(type);
                               type = e.expType;
                               e.expType = null;
-                              
+
                               e = arrayExp.list->first;
                               ProcessExpressionType(e);
                               if(e.expType)
@@ -11226,7 +11226,7 @@ static void ProcessStatement(Statement stmt)
                                     FreeType(type);
                                     type = null;
                                     break;
-                                 }                           
+                                 }
                               }
                            }
                         }
@@ -11268,7 +11268,7 @@ static void ProcessStatement(Statement stmt)
                      delete arrayExp.list;
                   }
                   decl = SpecDeclFromString(typeString, specs, MkDeclaratorIdentifier(id));
-                  stmt.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, CopySpecifier), 
+                  stmt.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, CopySpecifier),
                      MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), /*CopyDeclarator(*/decl/*)*/), null))));
 
                   ListAdd(stmt.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(
@@ -11287,12 +11287,12 @@ static void ProcessStatement(Statement stmt)
                Declarator decl;
                OldList * specs = MkList();
 
-               decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, 
+               decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs,
                   MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(id)));
                stmt.compound.declarations = MkListOne(
                   MkDeclaration(specs, MkListOne(MkInitDeclarator(decl, null))));
                ListAdd(stmt.compound.declarations, MkDeclaration(MkListOne(MkSpecifierName("BuiltInContainer")),
-                  MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(MkIdentifier("__internalArray"))), 
+                  MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(MkIdentifier("__internalArray"))),
                      MkInitializerAssignment(MkExpBrackets(exp))))));
                */
             }
@@ -11303,7 +11303,7 @@ static void ProcessStatement(Statement stmt)
                decl = SpecDeclFromString(_class.templateArgs[3].dataTypeString, specs, MkDeclaratorIdentifier(id));
                stmt.compound.declarations = MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(decl, null))));
                ListAdd(stmt.compound.declarations, MkDeclaration(MkListOne(MkSpecifierName(source._class.registered.fullName)),
-                  MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalLinkList")), 
+                  MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalLinkList")),
                      MkInitializerAssignment(MkExpBrackets(exp))))));
             }
             /*else if(isCustomAVLTree)
@@ -11313,7 +11313,7 @@ static void ProcessStatement(Statement stmt)
                decl = SpecDeclFromString(_class.templateArgs[3].dataTypeString, specs, MkDeclaratorIdentifier(id));
                stmt.compound.declarations = MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(decl, null))));
                ListAdd(stmt.compound.declarations, MkDeclaration(MkListOne(MkSpecifierName(source._class.registered.fullName)),
-                  MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalTree")), 
+                  MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalTree")),
                      MkInitializerAssignment(MkExpBrackets(exp))))));
             }*/
             else if(_class.templateArgs)
@@ -11325,7 +11325,7 @@ static void ProcessStatement(Statement stmt)
 
                stmt.compound.declarations = MkListOne(
                   MkDeclarationInst(MkInstantiationNamed(MkListOne(MkSpecifierName(iteratorType)),
-                  MkExpIdentifier(id), MkListOne(MkMembersInitList(MkListOne(MkMemberInit(isMap ? MkListOne(MkIdentifier("map")) : null, 
+                  MkExpIdentifier(id), MkListOne(MkMembersInitList(MkListOne(MkMemberInit(isMap ? MkListOne(MkIdentifier("map")) : null,
                   MkInitializerAssignment(MkExpBrackets(exp)))))))));
             }
             symbol = FindSymbol(id.string, curContext, curContext, false, false);
@@ -11342,7 +11342,7 @@ static void ProcessStatement(Statement stmt)
             {
                stmt.compound.statements = MkListOne(MkForStmt(
                   MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array"))))),
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<', 
+                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
                      MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array")), '+', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))),
                   MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
                   block));
@@ -11360,7 +11360,7 @@ static void ProcessStatement(Statement stmt)
 
                stmt.compound.statements = MkListOne(MkForStmt(
                   MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpIdentifier(MkIdentifier("__internalArray"))))),
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<', 
+                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
                      MkExpOp(MkExpIdentifier(MkIdentifier("__internalArray")), '+', MkExpConstant(count))))),
                   MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
                   block));
@@ -11369,7 +11369,7 @@ static void ProcessStatement(Statement stmt)
                Declarator decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, MkDeclaratorPointer(MkPointer(null, null), null));
                stmt.compound.statements = MkListOne(MkForStmt(
                   MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("data"))))),
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<', 
+                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
                      MkExpOp(MkExpCast(MkTypeName(specs, decl), MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("data"))), '+', MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))),
                   MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
                   block));
@@ -11382,7 +11382,7 @@ static void ProcessStatement(Statement stmt)
             {
                Class typeClass = eSystem_FindClass(_class.module, _class.templateArgs[3].dataTypeString);
                Class listItemClass = eSystem_FindClass(_class.module, "ListItem");
-               if(typeClass && eClass_IsDerived(typeClass, listItemClass) && _class.templateArgs[5].dataTypeString && 
+               if(typeClass && eClass_IsDerived(typeClass, listItemClass) && _class.templateArgs[5].dataTypeString &&
                   !strcmp(_class.templateArgs[5].dataTypeString, "LT::link"))
                {
                   stmt.compound.statements = MkListOne(MkForStmt(
@@ -11429,7 +11429,7 @@ static void ProcessStatement(Statement stmt)
             if(stmt.compound.declarations->first)
                ProcessDeclaration(stmt.compound.declarations->first);
 
-            if(symbol) 
+            if(symbol)
                symbol.isIterator = isMap ? 2 : ((isArray || isBuiltin) ? 3 : (isLinkList ? (isList ? 5 : 4) : (isCustomAVLTree ? 6 : 1)));
 
             ProcessStatement(stmt);
@@ -11526,7 +11526,7 @@ static void ProcessStatement(Statement stmt)
                {
                   ClassFunction func;
                   char watcherName[1024];
-                  Class watcherClass = watcher ? 
+                  Class watcherClass = watcher ?
                      ((watcher.expType && watcher.expType.kind == classType && watcher.expType._class) ? watcher.expType._class.registered : null) : thisClass;
                   External createdExternal;
 
@@ -11569,7 +11569,7 @@ static void ProcessStatement(Statement stmt)
 
                      // Create a declaration above
                      {
-                        Declaration decl = MkDeclaration(CopyList(createdExternal.function.specifiers, CopySpecifier), 
+                        Declaration decl = MkDeclaration(CopyList(createdExternal.function.specifiers, CopySpecifier),
                            MkListOne(MkInitDeclarator(CopyDeclarator(createdExternal.function.declarator), null)));
                         externalDecl.declaration = decl;
                         if(decl.symbol && !decl.symbol.pointerExternal)
@@ -11598,8 +11598,8 @@ static void ProcessStatement(Statement stmt)
                               char getName[1024], setName[1024];
                               OldList * args = MkList();
 
-                              DeclareProperty(prop, setName, getName);                              
-                              
+                              DeclareProperty(prop, setName, getName);
+
                               // eInstance_Watch(stmt.watch.object, prop, stmt.watch.watcher, callback);
                               strcpy(propName, "__ecereProp_");
                               FullClassNameCat(propName, prop._class.fullName, false);
@@ -11658,7 +11658,7 @@ static void ProcessStatement(Statement stmt)
 
          if(inCompiler)
          {
-            _class = object ? 
+            _class = object ?
                   ((object.expType && object.expType.kind == classType && object.expType._class) ? object.expType._class.registered : null) : thisClass;
 
             if(_class)
@@ -11742,7 +11742,7 @@ static void ProcessStatement(Statement stmt)
                   if(!watches)
                   {
                      OldList * args;
-                     // eInstance_StopWatching(object, null, watcher); 
+                     // eInstance_StopWatching(object, null, watcher);
                      args = MkList();
                      ListAdd(args, CopyExpression(object));
                      ListAdd(args, MkExpConstant("0"));
@@ -11761,8 +11761,8 @@ static void ProcessStatement(Statement stmt)
                            OldList * args = MkList();
 
                            DeclareProperty(prop, setName, getName);
-         
-                           // eInstance_StopWatching(object, prop, watcher); 
+
+                           // eInstance_StopWatching(object, prop, watcher);
                            strcpy(propName, "__ecereProp_");
                            FullClassNameCat(propName, prop._class.fullName, false);
                            strcat(propName, "_");
@@ -11807,7 +11807,7 @@ static void ProcessFunction(FunctionDefinition function)
 
    yylloc = function.loc;
    // Process thisClass
-   
+
    if(type && type.thisClass)
    {
       Symbol classSym = type.thisClass;
@@ -11862,7 +11862,7 @@ static void ProcessFunction(FunctionDefinition function)
          FullClassNameCat(structName, _class.fullName, false);
 
          // [class] this
-         
+
 
          funcDecl = GetFuncDecl(function.declarator);
          if(funcDecl)
@@ -11879,12 +11879,12 @@ static void ProcessFunction(FunctionDefinition function)
 
             // DANGER: Watch for this... Check if it's a Conversion?
             // if((_class.type != bitClass && _class.type != unitClass && _class.type != enumClass) || function != (FunctionDefinition)symbol.externalSet)
-            
+
             // WAS TRYING THIS FOR CONVERSION PROPERTIES ON NOHEAD CLASSES: if((_class.type == structClass) || function != (FunctionDefinition)symbol.externalSet)
             if(!function.propertyNoThis)
             {
                TypeName thisParam;
-               
+
                if(type.classObjectType != classPointer)
                {
                   thisParam = QMkClass(_class.fullName, MkDeclaratorIdentifier(MkIdentifier("this")));
@@ -11939,10 +11939,10 @@ static void ProcessFunction(FunctionDefinition function)
                      funcDecl.function.parameters->Insert(null, thisParam);
                   }
                }
-            }         
+            }
          }
       }
-      
+
       // Add this to the context
       if(function.body)
       {
@@ -11969,7 +11969,7 @@ static void ProcessFunction(FunctionDefinition function)
       }
 
       // Pointer to class data
-      
+
       if(inCompiler && _class && (_class.type == normalClass /*|| _class.type == noHeadClass*/) && type.classObjectType != classPointer)
       {
          DataMember member = null;
@@ -11990,11 +11990,11 @@ static void ProcessFunction(FunctionDefinition function)
          if(member)
          {
             char pointerName[1024];
-   
+
             Declaration decl;
             Initializer initializer;
             Expression exp, bytePtr;
-   
+
             strcpy(pointerName, "__ecerePointer_");
             FullClassNameCat(pointerName, _class.fullName, false);
             {
@@ -12031,7 +12031,7 @@ static void ProcessFunction(FunctionDefinition function)
                kind = pointerType;
                type = Type { refCount = 1, kind = voidType };
             };
-   
+
             if(function.body)
             {
                yylloc = function.body.loc;
@@ -12062,7 +12062,7 @@ static void ProcessFunction(FunctionDefinition function)
             }
          }
       }
-      
+
 
       // Loop through the function and replace undeclared identifiers
       // which are a member of the class (methods, properties or data)
@@ -12172,7 +12172,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
             type = regClass ? MkClassType(regClass.fullName) : null;
          };
          globalContext.symbols.Add((BTNode)thisSymbol);
-         
+
          for(defProperty = def.defProperties->first; defProperty; defProperty = defProperty.next)
          {
             thisClass = regClass;
@@ -12192,7 +12192,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
          Symbol thisSymbol = Symbol { string = CopyString("this"), type = MkClassType(regClass.fullName) };
          globalContext.symbols.Add(thisSymbol);
          */
-         
+
          thisClass = regClass;
          if(prop.setStmt)
          {
@@ -12250,7 +12250,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
       else if(def.type == propertyWatchClassDef && def.propertyWatch)
       {
          PropertyWatch propertyWatch = def.propertyWatch;
-        
+
          thisClass = regClass;
          if(propertyWatch.compound)
          {

@@ -58,13 +58,13 @@ void ToUpperAndUnderscore(String stringValue)
 
 int OracleExecuteNonQuery(OCIEnv* env, OCISvcCtx* svc, String command)
 {
-   OCIStmt* stmt; 
+   OCIStmt* stmt;
    OCIError* err;
    text errbuf[512];
    ub4 buflen;
    ub4 errcode;
    int r;
-   
+
    OCIHandleAlloc(env, (dvoid**)&err, OCI_HTYPE_ERROR,   0, 0);
    OCIHandleAlloc(env, (dvoid**)&stmt, OCI_HTYPE_STMT, 0, 0);
 
@@ -74,7 +74,7 @@ int OracleExecuteNonQuery(OCIEnv* env, OCISvcCtx* svc, String command)
 
    r = OCIStmtExecute(svc, stmt, err, 1, 0,
       (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_COMMIT_ON_SUCCESS);
-   
+
    OCIStmtRelease(stmt, err, (OraText *)NULL, 0, OCI_DEFAULT);
 
    if (err) OCIHandleFree(err, OCI_HTYPE_ERROR);
@@ -141,7 +141,7 @@ class OracleDataSource : DataSourceDriver
 
       char s[MAX_F_STRING];
       char t[MAX_LOCATION];
-      
+
       s[0] = '\0';
       strcat(s, "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(");
       if(ds.host)
@@ -153,14 +153,14 @@ class OracleDataSource : DataSourceDriver
       if(name)
          sprintf(t, "SID=%s", name), strcat(s, t);
       strcat(s, ")))");
-      
+
       if (ses) OCIHandleFree(ses, OCI_HTYPE_SESSION);
       if (svc) OCIHandleFree(svc, OCI_HTYPE_SVCCTX);
       if (srv) OCIHandleFree(srv, OCI_HTYPE_SERVER);
       if (err) OCIHandleFree(err, OCI_HTYPE_ERROR);
       if (env) OCIHandleFree(env, OCI_HTYPE_ENV);
 
-      r = OCIEnvCreate(&env, OCI_DEFAULT, 0, 0, 0, 0, 0, 0);                  
+      r = OCIEnvCreate(&env, OCI_DEFAULT, 0, 0, 0, 0, 0, 0);
 
       OCIHandleAlloc(env, (dvoid**)&err, OCI_HTYPE_ERROR,   0, 0);
       OCIHandleAlloc(env, (dvoid**)&srv, OCI_HTYPE_SERVER,  0, 0);
@@ -171,7 +171,7 @@ class OracleDataSource : DataSourceDriver
 
       OCIAttrSet(svc, OCI_HTYPE_SVCCTX, srv, 0, OCI_ATTR_SERVER,  err);
 
-      OCIAttrSet(ses, OCI_HTYPE_SESSION, ds.user, strlen(ds.user), OCI_ATTR_USERNAME, err); 
+      OCIAttrSet(ses, OCI_HTYPE_SESSION, ds.user, strlen(ds.user), OCI_ATTR_USERNAME, err);
       OCIAttrSet(ses, OCI_HTYPE_SESSION, ds.pass, strlen(ds.pass), OCI_ATTR_PASSWORD, err);
 
       r = OCISessionBegin(svc, err, ses, OCI_CRED_RDBMS, OCI_DEFAULT);
@@ -236,7 +236,7 @@ class OracleDatabase : Database
    OCIServer* srv;
    OCISvcCtx* svc;
    OCISession* ses;
-   
+
    ~OracleDatabase()
    {
       //
@@ -278,7 +278,7 @@ class OracleDatabase : Database
       OCIDefine* p_dfn3;
       char p_sli1[1024];
       char p_sli2[1024];
-      int p_sli3; 
+      int p_sli3;
 
       int oracleType;
 
@@ -313,7 +313,7 @@ class OracleDatabase : Database
          OracleField field;
          int num;
 
-         OCIStmt* stmtRows; 
+         OCIStmt* stmtRows;
 
          OCIHandleAlloc(env, (dvoid**)&stmtRows, OCI_HTYPE_STMT, 0, 0);
 
@@ -352,10 +352,10 @@ class OracleDatabase : Database
 
             if (type)
             {
-               if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") || 
-                  !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") || 
-                  !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") || 
-                  !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || 
+               if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") ||
+                  !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") ||
+                  !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") ||
+                  !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") ||
                   !strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                   !strcmp(type.dataTypeString, "char") || !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                   oracleType = SQLT_INT;
@@ -383,7 +383,7 @@ class OracleDatabase : Database
             {
                oracleType = SQLT_TIMESTAMP_TZ;
             }
-            
+
             field = { name = CopyString(p_sli1), type = type, length = p_sli3, num = table.fields.count, oracleType = oracleType };
             incref field;
             table.fields.Add(field);
@@ -391,7 +391,7 @@ class OracleDatabase : Database
 
          OCIStmtRelease(stmtRows, err, (OraText *)NULL, 0, OCI_DEFAULT);
 
-         if (stmtRows) OCIHandleFree(stmtRows, OCI_HTYPE_STMT);   
+         if (stmtRows) OCIHandleFree(stmtRows, OCI_HTYPE_STMT);
       }
 
       return (Table)table;
@@ -433,7 +433,7 @@ class OracleTable : Table
    OCIStmt* stmt;
    OCIDefine* def;
    OCIDefine* p_dfn;
-   char p_sli[1024];  
+   char p_sli[1024];
 
    Field AddField(const String fieldName, Class type, int length)
    {
@@ -448,17 +448,17 @@ class OracleTable : Table
       command[0] = 0;
 
       if(FindField(fieldName)) return null;
-      
+
       oracleType = SQLT_BLOB;
 
       ((Class)(&type)).OnGetDataFromString(type);    // TODO: THIS REQUIRES A FIX SOMEWHERE ELSE
 
       if (type)
       {
-         if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") || 
-            !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") || 
-            !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") || 
-            !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || 
+         if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") ||
+            !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") ||
+            !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") ||
+            !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") ||
             !strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
             !strcmp(type.dataTypeString, "char") || !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
             oracleType = SQLT_INT;
@@ -496,7 +496,7 @@ class OracleTable : Table
 
    Field FindField(const String name)
    {
-      String upperName = CopyString(name);     
+      String upperName = CopyString(name);
       ToUpperAndUnderscore(upperName);
 
       for(f : fields)
@@ -517,8 +517,8 @@ class OracleTable : Table
                }
             }
 
-            delete upperFieldName;            
-            return (Field)f;  
+            delete upperFieldName;
+            return (Field)f;
          }
 
          delete upperFieldName;
@@ -555,8 +555,8 @@ class OracleTable : Table
       int nCols, nRows;
       int result;
       uint rowCount = 0;
-      
-      OCIStmt* stmtCount; 
+
+      OCIStmt* stmtCount;
       OCIError* err;
       text errbuf[512];
       ub4 buflen;
@@ -638,7 +638,7 @@ class OracleTable : Table
       }
 
       if (stmt) OCIHandleFree(stmt, OCI_HTYPE_STMT);
-      OCIHandleAlloc(db.env, (dvoid**)&stmt, OCI_HTYPE_STMT, 0, 0); 
+      OCIHandleAlloc(db.env, (dvoid**)&stmt, OCI_HTYPE_STMT, 0, 0);
 
       for (i = 0; i < fields.count; i++)
       {
@@ -650,7 +650,7 @@ class OracleTable : Table
       r = OCIStmtPrepare(stmt, db.err, (OraText *)command,
          (ub4)strlen((char *)command),
          (ub4) OCI_NTV_SYNTAX, (ub4) OCI_DEFAULT);
-      
+
       for (i = 0; i < fields.count; i++)
       {
          OracleField field = fields[i];
@@ -696,7 +696,7 @@ class OracleTable : Table
 
    ~OracleTable()
    {
-      if (stmt) OCIHandleFree(stmt, OCI_HTYPE_STMT); 
+      if (stmt) OCIHandleFree(stmt, OCI_HTYPE_STMT);
 
       delete name;
       delete specialStatement;
@@ -713,7 +713,7 @@ class OracleRow : DriverRow
    done = true;
    int64 rowID;
    int numVal;
-   
+
    bool Nil()
    {
       return done;
@@ -728,7 +728,7 @@ class OracleRow : DriverRow
       int r;
 
       text errbuf[512];
-      ub4 errcode;  
+      ub4 errcode;
       int i;
 
       switch(move)
@@ -764,7 +764,7 @@ class OracleRow : DriverRow
             break;
          }
          case previous:
-         {           
+         {
             break;
          }
          case nil:
@@ -804,7 +804,7 @@ class OracleRow : DriverRow
       {
          OracleField oracleField = (OracleField)fld;
          Class dataType = oracleField.type;
-         int r;  
+         int r;
 
          switch (oracleField.oracleType)
          {
@@ -819,7 +819,7 @@ class OracleRow : DriverRow
 
                      rowID = 1;
                      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-                     
+
                      if (oracleField.p_sliInt == dataValue)
                      {
                         return true;
@@ -841,7 +841,7 @@ class OracleRow : DriverRow
 
                      rowID = 1;
                      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-                     
+
                      if (oracleField.p_sliInt == dataValue)
                      {
                         return true;
@@ -863,7 +863,7 @@ class OracleRow : DriverRow
 
                      rowID = 1;
                      r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-                     
+
                      if (oracleField.p_sliInt == dataValue)
                      {
                         return true;
@@ -887,7 +887,7 @@ class OracleRow : DriverRow
 
                         rowID = 1;
                         r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-                        
+
                         if (oracleField.p_sliInt == dataValue)
                         {
                            return true;
@@ -908,7 +908,7 @@ class OracleRow : DriverRow
 
                         rowID = 1;
                         r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-                        
+
                         if (oracleField.p_sliInt == dataValue)
                         {
                            return true;
@@ -922,7 +922,7 @@ class OracleRow : DriverRow
                               return true;
                            }
                         }
-                     }                     
+                     }
                      break;
                   }
                }
@@ -934,7 +934,7 @@ class OracleRow : DriverRow
 
                rowID = 1;
                r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-               
+
                if (oracleField.p_sliInt == dataValue)
                {
                   return true;
@@ -956,7 +956,7 @@ class OracleRow : DriverRow
 
                rowID = 1;
                r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-               
+
                if (!strcmp(oracleField.p_sli, dataValue))
                {
                   return true;
@@ -981,9 +981,9 @@ class OracleRow : DriverRow
 
                rowID = 1;
                r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_FIRST, 0, OCI_DEFAULT);
-               
+
                OCIDateTimeGetDate(tbl.db.env, tbl.db.err, oracleField.p_sliDateTime,
-                  &year, &month, &day);  
+                  &year, &month, &day);
 
                if ((year == date.year) && ((Month)(month-1) == date.month) && (day == date.day))
                {
@@ -1009,7 +1009,7 @@ class OracleRow : DriverRow
             }
          }
       }
-      
+
       return false;
    }
 
@@ -1059,17 +1059,17 @@ class OracleRow : DriverRow
       {
          /* New row with id as max(id)+i*/
          sprintf(command, "INSERT INTO %s (%s) SELECT MAX(CAST(%s AS INTEGER)) + 1 FROM %s",
-            tableName, primaryKeyName, primaryKeyName, tbl.name); 
+            tableName, primaryKeyName, primaryKeyName, tbl.name);
       }
 
       OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
-      
+
       OCIStmtRelease(tbl.stmt, tbl.db.err, (OraText *)NULL, 0, OCI_DEFAULT);
 
       r = OCIStmtExecute(tbl.db.svc, tbl.stmt, tbl.db.err, 0, 0,
-         (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_STMT_SCROLLABLE_READONLY); 
+         (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_STMT_SCROLLABLE_READONLY);
       r = OCIStmtFetch2(tbl.stmt, tbl.db.err, 1, OCI_FETCH_LAST, 0, OCI_DEFAULT);
-      
+
       delete primaryKeyName;
       delete tableName;
 
@@ -1098,7 +1098,7 @@ class OracleRow : DriverRow
       {
          primaryKeyName = CopyString(tbl.GetFirstField().name);
       }
-      
+
       primaryKeyField = (OracleField)tbl.FindField(primaryKeyName);
 
       tableName = CopyString(tbl.name);
@@ -1208,7 +1208,7 @@ class OracleRow : DriverRow
             buffer.count = buffer._size;
 
             dataType._vTbl[__ecereVMethodID_class_OnUnserialize](dataType, data, buffer);
-           
+
             buffer._buffer = null;
             delete buffer;
             break;
@@ -1242,7 +1242,7 @@ class OracleRow : DriverRow
       {
          primaryKeyName = CopyString(tbl.GetFirstField().name);
       }
-      
+
       primaryKeyField = (OracleField)tbl.FindField(primaryKeyName);
       if (primaryKeyField.oracleType == SQLT_STR)
       {
@@ -1294,7 +1294,7 @@ class OracleRow : DriverRow
                }
             }
             break;
-         case SQLT_FLT:            
+         case SQLT_FLT:
             sprintf(command, "UPDATE %s SET %s = '%i' WHERE %s = %s", tableName, fieldName, (uint16)data, primaryKeyName, primaryKeyValue);
             r = OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
             break;
@@ -1327,7 +1327,7 @@ class OracleRow : DriverRow
             break;
          }
          case SQLT_BLOB: // No basic datatype
-         {           
+         {
             break;
          }
       }
@@ -1341,16 +1341,16 @@ class OracleRow : DriverRow
 
       actualRowID = rowID;
       OracleExecuteNonQuery(tbl.db.env, tbl.db.svc, command);
-      
+
       OCIStmtRelease(tbl.stmt, tbl.db.err, (OraText *)NULL, 0, OCI_DEFAULT);
 
       r = OCIStmtExecute(tbl.db.svc, tbl.stmt, tbl.db.err, 0, 0,
-         (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_STMT_SCROLLABLE_READONLY); 
+         (OCISnapshot *) 0, (OCISnapshot *) 0, OCI_STMT_SCROLLABLE_READONLY);
       r = OCIStmtFetch2(tbl.stmt, tbl.db.err, (uint)actualRowID, OCI_FETCH_ABSOLUTE, 0, OCI_DEFAULT);
-      
+
       if ((r == OCI_SUCCESS) || (r == OCI_SUCCESS_WITH_INFO))
          return true;
-      
+
       return false;
    }
 
@@ -1361,7 +1361,7 @@ class OracleRow : DriverRow
 
    bool GoToSysID(uint id)
    {
-      /* We need to find in primaryKey field the row matching primaryKey field value and id */    
+      /* We need to find in primaryKey field the row matching primaryKey field value and id */
       char idValue[64];
       int r;
       int i;

@@ -158,7 +158,7 @@ class OperatorsApp : Application
          byte a = 0x20;
          PrintLn((a & 0x20) == 0x20);
       }
-      
+
       system("pause");
    }
 }

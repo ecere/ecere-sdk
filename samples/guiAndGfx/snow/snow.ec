@@ -57,14 +57,14 @@ class Snowing : Window
          surface.background = backgroundColor;
          surface.Area(0,0, w-1, h-1);
          surface.WriteText((clientSize.w - tw)/2, (clientSize.h - th)/2, textString, len);
-         
+
          #ifndef __WIN32__
          XSync(IS_XGetDisplay());   // TODO: Need an API for this...
          #endif
 
          memcpy(buffer.picture, bitmap.picture, buffer.sizeBytes);
       }
-           
+
       if(screenBuffer)
       {
          int x,y;
@@ -109,7 +109,7 @@ class Snowing : Window
          bool atRight = (offset % stride) >= w - 1;
          switch(GetRandom(0, 2))
          {
-            case 0: 
+            case 0:
                if(!SnowTo(offset, stride))
                {
                   if(GetRandom(0, 4) == 0)

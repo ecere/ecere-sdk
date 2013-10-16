@@ -115,7 +115,7 @@ class ScrabbleGame
          LoadWords(dicos[value]);
       }
    }
-   
+
    Letters board[15][15];
    Letters blankValues[15][15];
    PlayedMove curMove;
@@ -161,12 +161,12 @@ class ScrabbleGame
          move.tiles[move.numTiles++].letter = letter;
       }
    }
-   
+
    void NewGame()
    {
       int c;
       int numPlayers = 0;
-      
+
       for(c = 0; c<MaxPlayers; c++)
          if(players[c])
             numPlayers++;
@@ -177,9 +177,9 @@ class ScrabbleGame
          Letters l;
          PlayerList list { };
          PlayedMove tiles { };
-         
+
          numLettersAvailable = 0;
-         
+
          for(l = 0; l<Letters::empty; l++)
          {
             numLettersAvailable += lettersCount[language][l];
@@ -231,17 +231,17 @@ class ScrabbleGame
             char word[100];
             f.GetLine(word, sizeof(word));
             dictionary.Add(CopyString(word));
-         }        
+         }
          delete f;
       }
-      
+
       /*{
          IteratorPointer test1, test2;
          test1 = dictionary.Find("gewurztraminer");
          test2 = dictionary.Find("gewurstraminer");
          Print("");
       }*/
-      
+
    }
 
    bool CheckWord(Letters newBoard[15][15], Direction direction, int where, int start, int end, int * score)
@@ -345,7 +345,7 @@ class ScrabbleGame
       }
 
       for(c = first; c>=0; c--)
-      {         
+      {
          Letters letter = direction ? newBoard[c][where] : newBoard[where][c];
          if(letter == empty) break;
          wordStart = c;
@@ -353,7 +353,7 @@ class ScrabbleGame
             anchored = true;
       }
       for(c = last; c<15; c++)
-      {         
+      {
          Letters letter = direction ? newBoard[c][where] : newBoard[where][c];
          if(letter == empty) break;
          wordEnd = c;
@@ -371,7 +371,7 @@ class ScrabbleGame
             int a;
 
             for(a = where; a>=0; a--)
-            {         
+            {
                Letters letter = direction ? newBoard[c][a] : newBoard[a][c];
                if(letter == empty) break;
                wordStart = a;
@@ -379,7 +379,7 @@ class ScrabbleGame
                   anchored = true;
             }
             for(a = where; a<15; a++)
-            {         
+            {
                Letters letter = direction ? newBoard[c][a] : newBoard[a][c];
                if(letter == empty) break;
                wordEnd = a;
@@ -429,7 +429,7 @@ public:
          delete scrabbleGame.players[player.id];
          delete player;
          scrabbleGame.EndGame();
-      }      
+      }
    }
 
    int Join()
@@ -538,7 +538,7 @@ public:
       {
          int c;
          PlayedMove newTiles { };
-                  
+
          for(c = 0; c<move.numTiles; c++)
          {
             int d;
@@ -548,7 +548,7 @@ public:
                   memmove(player.letters + d, player.letters + d + 1, sizeof(int) * (player.numLetters - d - 1));
                   player.numLetters--;
                   break;
-               }                        
+               }
          }
 
          scrabbleGame.GetTiles(scrabbleGame.curPlayer, newTiles);
@@ -556,7 +556,7 @@ public:
          for(c = 0; c<move.numTiles; c++)
          {
             scrabbleGame.lettersAvailable[move.tiles[c].letter]++;
-            scrabbleGame.numLettersAvailable++;                  
+            scrabbleGame.numLettersAvailable++;
          }
 
          scrabbleGame.curMove = { }; // TODO: Add informing other players of number of exchanged letters when passing...

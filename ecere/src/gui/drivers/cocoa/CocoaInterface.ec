@@ -18,10 +18,10 @@ class CocoaInterface : Interface
     bool Initialize()
     {
         bool result;
-    
+
         printf("Initialize %s:%i\n", __FILE__, __LINE__);
         result = CocoaInitialize();
-     
+
         return result;
     }
 
@@ -34,10 +34,10 @@ class CocoaInterface : Interface
     bool ProcessInput(bool processAll)
     {
         bool result;
-    
+
         //printf("ProcessInput %s:%i\n", __FILE__, __LINE__);
         result = CocoaProcessInput(processAll);
-        
+
         return result;
     }
 
@@ -63,12 +63,12 @@ class CocoaInterface : Interface
     {
         static char *graphicsDrivers[] = { "CocoaOpenGL" };
         *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
-        
+
         return (char **)graphicsDrivers;
     }
 
     void GetCurrentMode(bool * fullScreen, int * resolution, int * colorDepth, int * refreshRate)
-    {        
+    {
         printf("GetCurrentMode %s:%i\n", __FILE__, __LINE__);
         CocoaGetCurrentMode(fullScreen, resolution, colorDepth, refreshRate);
     }
@@ -82,7 +82,7 @@ class CocoaInterface : Interface
     bool ScreenMode(bool fullScreen, int resolution, int colorDepth, int refreshRate, bool * textMode)
     {
         printf("STUB! %s:%i\n", __FILE__, __LINE__);
-        
+
         *textMode = false;
         return true;
     }
@@ -93,7 +93,7 @@ class CocoaInterface : Interface
         // TODO:
         printf("CreateRootWindow %s:%i\n", __FILE__, __LINE__);
         window.windowHandle = CocoaCreateRootWindow(window);
-        
+
         return window.windowHandle;
     }
 
@@ -153,7 +153,7 @@ class CocoaInterface : Interface
         // TODO:
         printf("STUB! %s:%i\n", __FILE__, __LINE__);
     }
-    
+
     void ActivateRootWindow(Window window)
     {
         // TODO:
@@ -214,7 +214,7 @@ class CocoaInterface : Interface
     {
         // TODO:
         printf("STUB! %s:%i\n", __FILE__, __LINE__);
-    }  
+    }
 
     void ClearClipboard()
     {
@@ -277,13 +277,13 @@ class CocoaInterface : Interface
     {
         // TODO:
         printf("STUB! %s:%i\n", __FILE__, __LINE__);
-    }  
+    }
 
     bool SetIcon(Window window, BitmapResource resource)
     {
         // TODO:
         printf("STUB! %s:%i\n", __FILE__, __LINE__);
-        
+
         return true;
     }
 }

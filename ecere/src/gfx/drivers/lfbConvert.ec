@@ -29,12 +29,12 @@ static void BMP8_8(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
    {
       if(lfbSystem && lfbSystem.palette == dst.palette)
          CONVERT(
-            pixel ? 
-               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(src.palette[pixel])]) ? 
+            pixel ?
+               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(src.palette[pixel])]) ?
                   pixel
-               : 
-                  lfbSystem.rgbLookup[0x421]) 
-            : 
+               :
+                  lfbSystem.rgbLookup[0x421])
+            :
                0,
             byte,byte)
       else
@@ -109,11 +109,11 @@ static void BMP444_8(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
    {
       if(lfbSystem && lfbSystem.palette == dst.palette)
          CONVERT(
-            pixel ? 
-               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(pixel)]) ? 
-                  pixel 
-               : 
-                  lfbSystem.rgbLookup[0x421]) 
+            pixel ?
+               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(pixel)]) ?
+                  pixel
+               :
+                  lfbSystem.rgbLookup[0x421])
             :
                0,
             Color444, byte)
@@ -167,11 +167,11 @@ static void BMP555_8(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
    {
       if(lfbSystem && lfbSystem.palette == dst.palette)
          CONVERT(
-            pixel ? 
-               ( (pixel = lfbSystem.rgbLookup[pixel]) ? 
-                  pixel 
-               : 
-                  lfbSystem.rgbLookup[0x421]) 
+            pixel ?
+               ( (pixel = lfbSystem.rgbLookup[pixel]) ?
+                  pixel
+               :
+                  lfbSystem.rgbLookup[0x421])
             :
                0,
             Color555, byte)
@@ -225,11 +225,11 @@ static void BMP565_8(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
    {
       if(lfbSystem && lfbSystem.palette == dst.palette)
          CONVERT(
-            pixel ? 
-               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(pixel)]) ? 
-                  pixel 
-               : 
-                  lfbSystem.rgbLookup[0x421]) 
+            pixel ?
+               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(pixel)]) ?
+                  pixel
+               :
+                  lfbSystem.rgbLookup[0x421])
             :
                0,
             Color565, byte)
@@ -283,11 +283,11 @@ static void BMP888_8(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
    {
       if(lfbSystem && lfbSystem.palette == dst.palette)
          CONVERT(
-            (pixel & 0xFFFFFF) ? 
-               ( (pixel = lfbSystem.rgbLookup[(Color555)(pixel)]) ? 
-                  pixel 
-               : 
-                  lfbSystem.rgbLookup[0x421]) 
+            (pixel & 0xFFFFFF) ?
+               ( (pixel = lfbSystem.rgbLookup[(Color555)(pixel)]) ?
+                  pixel
+               :
+                  lfbSystem.rgbLookup[0x421])
             :
                0,
             ColorAlpha,byte)
@@ -384,19 +384,19 @@ static void BMPRGBA_8(LFBSystem lfbSystem, Bitmap src, Bitmap dst)
    {
       if(lfbSystem && lfbSystem.palette == dst.palette)
          CONVERT(
-            //(pixel & 0xFF000000) ? 
-            (pixel.a) ? 
-               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(pixel)]) ? 
+            //(pixel & 0xFF000000) ?
+            (pixel.a) ?
+               ( (pixel = lfbSystem.rgbLookup[(uint16)(Color555)(pixel)]) ?
                   pixel
-               : 
-                  lfbSystem.rgbLookup[0x421]) 
+               :
+                  lfbSystem.rgbLookup[0x421])
             :
                0,
             ColorRGBA, byte)
       else
       {
-         //CONVERT((pixel & 0xFF000000) ? 
-         CONVERT((pixel.a > 192) ? 
+         //CONVERT((pixel & 0xFF000000) ?
+         CONVERT((pixel.a > 192) ?
             (BestColorMatch(dst.palette,1,255, (ColorAlpha)(pixel))) : 0, ColorRGBA, byte)
       }
    }

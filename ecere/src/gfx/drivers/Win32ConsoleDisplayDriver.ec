@@ -57,7 +57,7 @@ class Win32ConsoleDisplayDriver : DisplayDriver
       {
          if(((subclass(DisplayDriver))class(LFBDisplayDriver)).CreateDisplay(display))
          {
-            
+
             conDisplay.bitmap.pixelFormat = pixelFormatText;
             result = true;
          }
@@ -214,7 +214,7 @@ class Win32ConsoleDisplayDriver : DisplayDriver
          if(y2>surface.box.bottom)y2=surface.box.bottom;
          if(y2 < y1) return;
 
-         lfbPtr = conDisplay.charInfo + 
+         lfbPtr = conDisplay.charInfo +
             (y1+surface.offset.y)*display.width / textCellW+x1+surface.offset.x;
          for(y = y1; y <= y2; y++)
          {
@@ -238,7 +238,7 @@ class Win32ConsoleDisplayDriver : DisplayDriver
          if(x2>surface.box.right)x2=surface.box.right;
          if(x2 < x1) return;
 
-         lfbPtr = conDisplay.charInfo + 
+         lfbPtr = conDisplay.charInfo +
             (y1+surface.offset.y)*display.width / textCellW+x1+surface.offset.x;
 
          if(conSurface.opaqueText)
@@ -366,7 +366,7 @@ class Win32ConsoleDisplayDriver : DisplayDriver
       x /= textCellW;
       y /= textCellH;
 
-      if(y > surface.box.bottom || y < surface.box.top) 
+      if(y > surface.box.bottom || y < surface.box.top)
          return;
       lfbPtr += (y+surface.offset.y) * display.width / textCellW + x + surface.offset.x;
       for(c=0; (c<len && x < surface.box.left); c++, x++,lfbPtr++);

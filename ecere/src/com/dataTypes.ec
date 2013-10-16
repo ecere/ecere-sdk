@@ -268,8 +268,8 @@ static int DataMember_OnCompare(DataMember parentMember, void * data1, void * da
 
          if(memberType.type == structClass || memberType.type == normalClass || memberType.type == noHeadClass)
          {
-            memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, 
-               (byte *)data1 + member.offset, 
+            memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType,
+               (byte *)data1 + member.offset,
                (byte *)data2 + member.offset);
             if(memberResult)
                return memberResult;
@@ -286,8 +286,8 @@ static int DataMember_OnCompare(DataMember parentMember, void * data1, void * da
       }
       else
       {
-         memberResult = DataMember_OnCompare(member, 
-            (byte *)data1 + member.offset, 
+         memberResult = DataMember_OnCompare(member,
+            (byte *)data1 + member.offset,
             (byte *)data2 + member.offset);
          if(memberResult)
             return memberResult;
@@ -324,7 +324,7 @@ static int OnCompare(Class _class, void * data1, void * data2)
                if(member.isProperty || member.type == normalMember)
                {
                   Class memberType = member.dataTypeClass;
-                        
+
                   if(!memberType)
                      memberType = member.dataTypeClass = eSystem_FindClass(module, member.dataTypeString);
                   /*
@@ -371,14 +371,14 @@ static int OnCompare(Class _class, void * data1, void * data2)
                            if(memberType.type == normalClass || memberType.type == noHeadClass)
                            {
                               // TESTING THIS!
-                              memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, 
-                                 *(void **)((byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), 
+                              memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType,
+                                 *(void **)((byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)),
                                  *(void **)((byte *)data2 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)));
                            }
                            else
                            {
-                              memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType, 
-                                 (byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset), 
+                              memberResult = ((int (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnCompare])(memberType,
+                                 (byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset),
                                  (byte *)data2 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                            }
                         }
@@ -406,8 +406,8 @@ static int OnCompare(Class _class, void * data1, void * data2)
                }
                else
                {
-                  memberResult = DataMember_OnCompare(member, 
-                     (byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset), 
+                  memberResult = DataMember_OnCompare(member,
+                     (byte *)data1 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset),
                      (byte *)data2 + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                }
                if(memberResult)
@@ -546,7 +546,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
             Class memberType = member.dataTypeClass;
             char * name = member.name;
             if(member.id < 0) continue;
-                  
+
             memberString[0] = 0;
 
             if(!memberType)
@@ -583,7 +583,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         if(value.p || prop.IsSet)
                         {
                            bool needClass = true;
-                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, 
+                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType,
                               (memberType.type == normalClass) ? value.p : &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
@@ -745,7 +745,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         tempString[len++] = memberString[c];
                         tempString[len] = 0;
                      }
-                  }                              
+                  }
                   strcat(tempString, "\"");
                }
                else
@@ -856,13 +856,13 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
 
       result = true;
 
-      if(_class.type == noHeadClass || _class.type == normalClass) 
+      if(_class.type == noHeadClass || _class.type == normalClass)
       {
          data = *data = eInstance_New(_class);
-         if(_class.type == normalClass) 
+         if(_class.type == normalClass)
             ((Instance)data)._refCount++;
       }
-      else if(/*_class.type == noHeadClass || */_class.type == structClass) 
+      else if(/*_class.type == noHeadClass || */_class.type == structClass)
          memset(data, 0, _class.structSize);
       // Bit classes cleared outside?
 
@@ -898,7 +898,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
             // Is it used by the compiler?
             else if(ch == ' ') // || ch == '\n' || ch == '\t' || ch == '\r')
             {
-               if(gotChar) 
+               if(gotChar)
                   memberString[count++] = ch;
             }
             else if(ch == ',')
@@ -916,7 +916,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
             else if(ch == '{')
             {
                // If bracket is not initialization
-               if(gotChar && !brackets) 
+               if(gotChar && !brackets)
                {
                   count = 0;
                   gotChar = false;
@@ -950,7 +950,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
                   //TrimLSpaces(memberString, memberName);
                   //TrimRSpaces(memberName, memberString);
                   //strcpy(memberName, memberString);
-            
+
                   TrimRSpaces(memberString, memberName);
                   count = 0;
                   gotChar = false;
@@ -1000,7 +1000,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
          if(found)
          {
             Class memberType = thisMember.dataTypeClass;
-            
+
             if(!memberType)
                memberType = thisMember.dataTypeClass = eSystem_FindClass(module, thisMember.dataTypeString);
             if(!memberType)
@@ -1009,7 +1009,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
             {
                if(thisMember)
                {
-                  if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, 
+                  if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType,
                      (byte *)data + (((thisMember._class.type == normalClass) ? thisMember._class.offset : 0) + memberOffset), memberString))
                      result = false;
                }
@@ -1049,7 +1049,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
          }
          else
             result = false;
-            
+
          count = 0;
          memberName[0] = '\0';
       }
@@ -1139,7 +1139,7 @@ static void OnSerialize(Class _class, void * data, IOChannel channel)
                if(member.isProperty || member.type == normalMember)
                {
                   Class memberType = member.dataTypeClass;
-                        
+
                   if(!memberType)
                      memberType = member.dataTypeClass = eSystem_FindClass(module, member.dataTypeString);
                   if(memberType)
@@ -1226,7 +1226,7 @@ static int DataMember_OnUnserialize(DataMember parentMember, void * data, IOChan
    }
    return 0;
 }
- 
+
 static void OnUnserialize(Class _class, void ** data, IOChannel channel)
 {
    Module module = _class.module;
@@ -1245,10 +1245,10 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
          {
             // TOFIX: Seriously!?!?? Fix me!
             data = *data = eInstance_New(_class);
-            if(_class.type == normalClass) 
+            if(_class.type == normalClass)
                ((Instance)data)._refCount++;
          }
-         else if(/*_class.type == noHeadClass || */_class.type == structClass) 
+         else if(/*_class.type == noHeadClass || */_class.type == structClass)
             memset(data, 0, _class.structSize);
 
          while(lastClass != _class)
@@ -1264,7 +1264,7 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
                if(member.isProperty || member.type == normalMember)
                {
                   Class memberType = member.dataTypeClass;
-                        
+
                   if(!memberType)
                      memberType = member.dataTypeClass = eSystem_FindClass(module, member.dataTypeString);
                   if(memberType)
@@ -1287,7 +1287,7 @@ static void OnUnserialize(Class _class, void ** data, IOChannel channel)
                         }*/
                      }
                      else
-                        ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, 
+                        ((void (*)(void *, void *, void *))(void *)memberType._vTbl[__ecereVMethodID_class_OnUnserialize])(memberType,
                            (byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset), channel);
                   }
                   else
@@ -1623,7 +1623,7 @@ static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, char * strin
 {
    byte bytes[4];
    if(channel.ReadData(bytes, 4) == 4)
-      *data = GETXDWORD(bytes);   
+      *data = GETXDWORD(bytes);
    else
       *data = 0;
 }
@@ -1664,7 +1664,7 @@ static void IntPtr64_OnSerialize(Class _class, int64 data, IOChannel channel)
 {
    byte bytes[8];
    if(channel.ReadData(bytes, 8) == 8)
-      *data = GETXQWORD(bytes);   
+      *data = GETXQWORD(bytes);
    else
       *data = 0;
 }
@@ -1680,7 +1680,7 @@ static void IntPtr64_OnSerialize(Class _class, int64 data, IOChannel channel)
 {
    byte bytes[2];
    if(channel.ReadData(bytes, 2) == 2)
-      *data = GETXWORD(bytes);   
+      *data = GETXWORD(bytes);
    else
       *data = 0;
 }
@@ -1693,7 +1693,7 @@ static void RegisterClass_Integer(Module module)
    integerClass.dataTypeString = CopyString("int");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(int);
-   
+
    eClass_AddMethod(integerClass, "OnCompare", null, Integer_OnCompare, publicAccess);
    eClass_AddMethod(integerClass, "OnGetString", null, Integer_OnGetString, publicAccess);
    eClass_AddMethod(integerClass, "OnGetDataFromString", null, Integer_OnGetDataFromString, publicAccess);
@@ -1937,7 +1937,7 @@ static char * Float_OnGetString(Class _class, float * data, char * string, void 
    c = strlen(string)-1;
    for( ; c >= 0; c--)
    {
-      if(string[c] != '0') 
+      if(string[c] != '0')
          last = Max(last, c);
       if(string[c] == '.')
       {
@@ -1975,7 +1975,7 @@ static void Float_OnUnserialize(Class _class, float * data, IOChannel channel)
 {
    byte bytes[4];
    if(channel.ReadData(bytes, 4) == 4)
-      *(uint *)data = GETXDWORD(bytes);   
+      *(uint *)data = GETXDWORD(bytes);
    else
       *data = 0;
 }
@@ -2021,7 +2021,7 @@ static char * Double_OnGetString(Class _class, double * data, char * string, voi
    c = strlen(string)-1;
    for( ; c >= 0; c--)
    {
-      if(string[c] != '0') 
+      if(string[c] != '0')
          last = Max(last, c);
       if(string[c] == '.')
       {
@@ -2045,7 +2045,7 @@ static bool Double_OnGetDataFromString(Class _class, double * data, char * strin
    {
       *data = result;
       return true;
-   
+
     }
     return false;
 }
@@ -2157,7 +2157,7 @@ static bool String_OnGetDataFromString(Class _class, char ** data, char * newDat
    }
    return true;
 }
- 
+
 /*static */int String_OnCompare(Class _class, char * string1, char * string2)
 {
    int result = 0;
@@ -2177,7 +2177,7 @@ static char * String_OnGetString(Class _class, char * string, char * tempString,
 
 static void String_OnFree(Class _class, char * string)
 {
-   if(string) 
+   if(string)
    {
       eSystem_Delete(string);
    }
@@ -2224,14 +2224,14 @@ static void RegisterClass_String(Module module)
    delete stringClass.dataTypeString;
    stringClass.dataTypeString = CopyString("char *");
    stringClass.structSize = 0;
-   
+
    eClass_AddMethod(stringClass, "OnCompare", null, String_OnCompare, publicAccess);
    eClass_AddMethod(stringClass, "OnCopy", null, String_OnCopy, publicAccess);
    eClass_AddMethod(stringClass, "OnFree", null, String_OnFree, publicAccess);
    eClass_AddMethod(stringClass, "OnGetString", null, String_OnGetString, publicAccess);
    eClass_AddMethod(stringClass, "OnGetDataFromString", null, String_OnGetDataFromString, publicAccess);
    eClass_AddMethod(stringClass, "OnSerialize", null, String_OnSerialize, publicAccess);
-   eClass_AddMethod(stringClass, "OnUnserialize", null, String_OnUnserialize, publicAccess); 
+   eClass_AddMethod(stringClass, "OnUnserialize", null, String_OnUnserialize, publicAccess);
    // eClass_AddProperty(stringClass, null, "Class", null, String_GetClass, publicAccess);
 
    stringClass = eSystem_RegisterClass(normalClass, "String", "char *", 0, 0, null, null, module, baseSystemAccess, publicAccess);
@@ -2299,7 +2299,7 @@ public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, 
             if(len + newLen >= maxLen) newLen = maxLen-1-len;
             if(result != buffer + len)
                memcpy(buffer + len, result, newLen);
-            len += newLen;              
+            len += newLen;
          }
       }
    }

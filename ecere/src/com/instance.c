@@ -56,7 +56,7 @@ int osfStdin, osfStdout;
 FILE * fStdIn, * fStdOut;
 #endif
 
-FILE *eC_stdin(void)  { 
+FILE *eC_stdin(void)  {
 #if defined(__WIN32__)
    if(!fStdIn)
    {
@@ -172,7 +172,7 @@ static bool DualPipe_GetLine(FILE * p, char *s, int max)
             result = false;
             break;
          }
-         if(ch =='\n') 
+         if(ch =='\n')
             break;
          if(ch !='\r')
             s[c++]=(char)ch;
@@ -374,7 +374,7 @@ bool Instance_LocateModule(char * name, char * fileName)
          sysctl(mib, 4, fileName, &cb, null, 0);
          if(fileName[0])
             return true;
-      }  
+      }
 #endif
 #if !defined(__linux__)
       {
@@ -517,13 +517,13 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
       if(returnCode == NSObjectFileImageSuccess)
       {
          printf("NSObjectFileImageSuccess!\n");
-         library = NSLinkModule(fileImage,fileName, 
+         library = NSLinkModule(fileImage,fileName,
               NSLINKMODULE_OPTION_RETURN_ON_ERROR
             | NSLINKMODULE_OPTION_PRIVATE);
          // NSDestroyObjectFileImage(fileImage);
          if(library)
          {
-            *Load = NSAddressOfSymbol(NSLookupSymbolInModule(library, "__ecereDll_Load")); 
+            *Load = NSAddressOfSymbol(NSLookupSymbolInModule(library, "__ecereDll_Load"));
             *Unload = NSAddressOfSymbol(NSLookupSymbolInModule(library, "__ecereDll_Unload"));
             if(!*Load)
             {

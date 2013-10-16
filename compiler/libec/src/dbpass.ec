@@ -111,7 +111,7 @@ static void ProcessExpression(Expression exp)
       {
          Expression expression;
          ProcessExpression(exp.index.exp);
-         
+
          for(expression = exp.index.index->first; expression; expression = expression.next)
          {
             ProcessExpression(expression);
@@ -121,7 +121,7 @@ static void ProcessExpression(Expression exp)
       case callExp:
       {
          ProcessExpression(exp.call.exp);
-         
+
          if(exp.call.arguments)
          {
             Expression expression;
@@ -169,7 +169,7 @@ static void ProcessExpression(Expression exp)
          sprintf(name, "__ecereDBField_%s_%s", tableName, exp.db.id.string);
          FreeExpContents(exp);
          exp.type = identifierExp;
-         exp.identifier = MkIdentifier(name);                          
+         exp.identifier = MkIdentifier(name);
          break;
       }
       case dbtableExp:
@@ -183,7 +183,7 @@ static void ProcessExpression(Expression exp)
          sprintf(name, "__ecereDBTable_%s", tableName);
          FreeExpContents(exp);
          exp.type = identifierExp;
-         exp.identifier = MkIdentifier(name);                          
+         exp.identifier = MkIdentifier(name);
          break;
       }
       case dbindexExp:
@@ -197,7 +197,7 @@ static void ProcessExpression(Expression exp)
          sprintf(name, "__ecereDBIndex_%s_%s", tableName, exp.db.id.string);
          FreeExpContents(exp);
          exp.type = identifierExp;
-         exp.identifier = MkIdentifier(name);                          
+         exp.identifier = MkIdentifier(name);
          break;
       }
       case dbopenExp:
@@ -212,18 +212,18 @@ static void ProcessExpression(Expression exp)
 
             databaseOpenStmt.compound.context = Context { parent = curContext };
 
-            databaseOpenStmt.compound.declarations->Add(MkDeclaration(MkListOne(MkSpecifierName("Database")), 
+            databaseOpenStmt.compound.declarations->Add(MkDeclaration(MkListOne(MkSpecifierName("Database")),
                MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("db")), null))));
 
             // bool createNow = false;
-            databaseOpenStmt.compound.declarations->Add(MkDeclaration(MkListOne(MkSpecifierName("bool")), 
+            databaseOpenStmt.compound.declarations->Add(MkDeclaration(MkListOne(MkSpecifierName("bool")),
                MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("createNow")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("false")))))));
 
             // static bool initialized = false;
             args = MkList();
             args->Add(MkSpecifier(STATIC));
             args->Add(MkSpecifierName("bool"));
-            databaseOpenStmt.compound.declarations->Add(MkDeclaration(args, 
+            databaseOpenStmt.compound.declarations->Add(MkDeclaration(args,
                MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("initialized")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("false")))))));
 
             // Assuming we're in a function where we can return 0 (Typically a DataBase InitSchema() or an Application constructor)
@@ -237,49 +237,49 @@ static void ProcessExpression(Expression exp)
             args = MkList();
             args->Add(CopyExpression(exp.dbopen.name));
             args->Add(MkExpIdentifier(MkIdentifier("no")));
-            databaseOpenStmt.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("db")), '=', 
+            databaseOpenStmt.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("db")), '=',
                MkExpCall(MkExpMember(CopyExpression(exp.dbopen.ds), MkIdentifier("OpenDatabase")), args)))));
-            
+
             /*if(!db)
             {
                db = ds.OpenDatabase("med", create);
                createNow = true;
             }
             */
-            databaseOpenStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpOp(null, '!', MkExpIdentifier(MkIdentifier("db")))), 
+            databaseOpenStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpOp(null, '!', MkExpIdentifier(MkIdentifier("db")))),
                compound = MkCompoundStmt(null, MkList()), null));
             compound.compound.context = Context { parent = databaseOpenStmt.compound.context };
-            
+
             args = MkList();
             args->Add(exp.dbopen.name);
             args->Add(MkExpIdentifier(MkIdentifier("create")));
-            compound.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("db")), '=', 
+            compound.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("db")), '=',
                MkExpCall(MkExpMember(exp.dbopen.ds, MkIdentifier("OpenDatabase")), args)))));
-            compound.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("createNow")), '=', 
+            compound.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("createNow")), '=',
                MkExpIdentifier(MkIdentifier("true"))))));
 
             exp.dbopen.name = null;
             exp.dbopen.ds = null;
 
             // if(db)
-            databaseOpenStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("db"))), 
+            databaseOpenStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("db"))),
                ifDBStmt = MkCompoundStmt(MkList(), MkList()), null));
 
             ifDBStmt.compound.context = Context { parent = databaseOpenStmt.compound.context };
 
             // FieldIndex indexes[numIndexes] = { null };
             sprintf(numIndexesString, "%d", numIndexes);
-            ifDBStmt.compound.declarations->Add(MkDeclaration(MkListOne(MkSpecifierName("FieldIndex")), MkListOne(MkInitDeclarator(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("indexes")), 
+            ifDBStmt.compound.declarations->Add(MkDeclaration(MkListOne(MkSpecifierName("FieldIndex")), MkListOne(MkInitDeclarator(MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("indexes")),
                MkExpConstant(numIndexesString)), MkInitializerList(MkListOne(MkInitializerList(MkListOne(MkInitializerAssignment(MkExpIdentifier(MkIdentifier("null")))))))))));
-            
+
             // db.Begin();
             ifDBStmt.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("db")), MkIdentifier("Begin")), MkList()))));
 
             ifDBStmt.compound.statements->Add(compound = MkCompoundStmt(null, tableStatements));
             compound.compound.context = Context { parent = ifDBStmt.compound.context };
             /*
-            ifDBStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("createNow"))), 
-               (compound = MkCompoundStmt(null, addFieldStatements), compound.compound.context = Context { parent = ifDBStmt.compound.context }, compound), 
+            ifDBStmt.compound.statements->Add(MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("createNow"))),
+               (compound = MkCompoundStmt(null, addFieldStatements), compound.compound.context = Context { parent = ifDBStmt.compound.context }, compound),
                (compound2 = MkCompoundStmt(null, findFieldStatements), compound2.compound.context = Context { parent = ifDBStmt.compound.context }, compound2)));
             */
             ifDBStmt.compound.statements->Add(
@@ -432,12 +432,12 @@ static void ProcessStatement(Statement stmt)
          {
             ProcessStatement(stmt.forStmt.init);
          }
-         
+
          if(stmt.forStmt.check)
          {
             ProcessStatement(stmt.forStmt.check);
          }
-         
+
          if(stmt.forStmt.increment)
          {
             for(exp = stmt.forStmt.increment->first; exp; exp = exp.next)
@@ -460,7 +460,7 @@ static void ProcessStatement(Statement stmt)
          if(stmt.expressions)
          {
             Expression exp;
-            
+
             for(exp = stmt.expressions->first; exp; exp = exp.next)
             {
                ProcessExpression(exp);
@@ -521,7 +521,7 @@ static void ProcessInitializer(Initializer initializer)
       case listInitializer:
       {
          Initializer init;
-         
+
          for(init = initializer.list->first; init; init = init.next)
          {
             ProcessInitializer(init);
@@ -575,7 +575,7 @@ static void ProcessDeclaration(Declaration decl)
             for(d = decl.declarators->first; d; d = d.next)
             {
                ProcessInitDeclarator(d);
-            }   
+            }
          }
          break;
       }
@@ -608,7 +608,7 @@ static void ProcessInstance(Instantiation inst)
       MembersInit init;
       MemberInit memberInit;
       for(init = inst.members->first; init; init = init.next)
-      {         
+      {
          if(init.type == dataMembersInit && init.dataMembers)
          {
             for(memberInit = init.dataMembers->first; memberInit; memberInit = memberInit.next)
@@ -717,7 +717,7 @@ static void ProcessDBTable(DBTableDef table)
 
    sprintf(rowClassName, "Row%s", tableName);
    ChangeCh(rowClassName, ' ', '_');
-      
+
    if(!tableStatements)
    {
       tableStatements = MkList();
@@ -734,7 +734,7 @@ static void ProcessDBTable(DBTableDef table)
          MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(tableID)), null))));
       external.declaration.declMode = table.declMode;
       ast->Insert(addAfter, external);
-  
+
       // tClasses          = db.OpenTable("Classes",        { tableRows, create });
       args = MkList();
       tableStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(tableID)), '=', MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("db")), MkIdentifier("OpenTable")),
@@ -805,7 +805,7 @@ static void ProcessDBTable(DBTableDef table)
                      curContext = rowSet.compound.context = Context { parent = globalContext };
 
                      // Find(fieldSECid, middle, nil, value);
-                     rowSet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("Find")), 
+                     rowSet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("Find")),
                         args = MkList()))));
                      args->Add(MkExpIdentifier(MkIdentifier(fieldID)));
                      args->Add(MkExpIdentifier(MkIdentifier("middle")));
@@ -815,7 +815,7 @@ static void ProcessDBTable(DBTableDef table)
                      curContext = globalContext;
 
                      def = MkClassDefProperty(MkProperty(
-                        CopyList(entry.dataType.qualifiers, CopySpecifier), CopyDeclarator(entry.dataType.declarator), 
+                        CopyList(entry.dataType.qualifiers, CopySpecifier), CopyDeclarator(entry.dataType.declarator),
                            MkIdentifier(name), rowSet, null));
                      def.propertyDef.symbol.id = def.propertyDef.symbol.idCode = symbolID;
                      def.memberAccess = publicAccess;
@@ -826,7 +826,7 @@ static void ProcessDBTable(DBTableDef table)
                {
                   Statement rowSet = MkCompoundStmt(MkList(), MkList()), rowGet = MkCompoundStmt(MkList(), MkList());
                   ClassDef def;
-                  
+
                   curContext = rowGet.compound.context = Context { parent = globalContext };
 
                   // *** GET ***
@@ -838,13 +838,13 @@ static void ProcessDBTable(DBTableDef table)
                   else
                   {
                      Expression exp;
-                     rowGet.compound.declarations->Add(MkDeclaration(CopyList(entry.dataType.qualifiers, CopySpecifier), 
+                     rowGet.compound.declarations->Add(MkDeclaration(CopyList(entry.dataType.qualifiers, CopySpecifier),
                         MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
                      exp.destType = Type { kind = intType, refCount = 1 };
                   }
 
                   // GetData(fieldCNTid, d);
-                  rowGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("GetData")), 
+                  rowGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("GetData")),
                      args = MkList()))));
                   args->Add(MkExpIdentifier(MkIdentifier(fieldID)));
                   /*if(spec.type == nameSpecifier && spec.symbol && spec.symbol.registered && spec.symbol.registered.type == structClass)
@@ -855,7 +855,7 @@ static void ProcessDBTable(DBTableDef table)
                   // return d;
                   if(spec.type == nameSpecifier && spec.symbol && spec.symbol.registered && spec.symbol.registered.type == structClass)
                   {
-                     rowGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("value")), '=', 
+                     rowGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("value")), '=',
                         MkExpIdentifier(MkIdentifier("d"))))));
                   }
                   else
@@ -863,9 +863,9 @@ static void ProcessDBTable(DBTableDef table)
 
                   // *** SET ***
                   curContext = rowSet.compound.context = Context { parent = globalContext };
-                  
+
                   // SetData(fieldCNTid, value);
-                  rowSet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("SetData")), 
+                  rowSet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("SetData")),
                      args = MkList()))));
                   args->Add(MkExpIdentifier(MkIdentifier(fieldID)));
                   args->Add(MkExpIdentifier(MkIdentifier("value")));
@@ -884,7 +884,7 @@ static void ProcessDBTable(DBTableDef table)
                      MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(fieldID)), null))));
                   ast->Add(external);
                   external.declaration.declMode = table.declMode;
-               
+
                   // fieldCLSname      = tClasses.AddField("name", class(String), 0 );
                   args = MkList();
                   addFieldStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(fieldID)), '=', MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier(tableID)), MkIdentifier("FindField")),
@@ -893,7 +893,7 @@ static void ProcessDBTable(DBTableDef table)
 
                   args = MkList();
                   addFieldStatements->Add(
-                     MkIfStmt(MkListOne(MkExpOp(null, '!', MkExpIdentifier(MkIdentifier(fieldID)))), 
+                     MkIfStmt(MkListOne(MkExpOp(null, '!', MkExpIdentifier(MkIdentifier(fieldID)))),
                         MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(fieldID)), '=', MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier(tableID)), MkIdentifier("AddField")),
                      args)))), null));
                   args->Add(MkExpString(entry.name));
@@ -911,11 +911,11 @@ static void ProcessDBTable(DBTableDef table)
                if(isIndex)
                {
                   // indexes[0].field = fieldCLSid;
-                  indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")), 
+                  indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")),
                      MkListOne(MkExpConstant("0"))), MkIdentifier("field")),  '=', MkExpIdentifier(MkIdentifier(fieldID))))));
 
                   // indexes[0].order = ascending;
-                  indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")), 
+                  indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")),
                      MkListOne(MkExpConstant("0"))), MkIdentifier("order")),  '=', MkExpIdentifier(MkIdentifier("ascending"))))));
 
                   // tClasses.Index(1, indexes);
@@ -955,7 +955,7 @@ static void ProcessDBTable(DBTableDef table)
          def = MkClassDefClassPropertyValue(MkIdentifier("nameField"), MkInitializerAssignment(exp = MkExpOp(null, '&', MkExpDBField(CopyString(table.name), MkIdentifier(nameField)))));
          ProcessExpression(exp);
          idClassDefs->Add(def);
-      }      
+      }
       // indexed = true;
    }
 
@@ -984,9 +984,9 @@ static void ProcessDBTable(DBTableDef table)
 
                   // *** GET ***
                   // RowContacts r { this };
-                  idGet.compound.declarations->Add(MkDeclarationInst(MkInstantiation(MkSpecifierName(rowClassName), MkExpIdentifier(MkIdentifier("r")), 
+                  idGet.compound.declarations->Add(MkDeclarationInst(MkInstantiation(MkSpecifierName(rowClassName), MkExpIdentifier(MkIdentifier("r")),
                      MkListOne(MkMembersInitList(MkListOne(MkMemberInit(null, MkInitializerAssignment(MkExpIdentifier(MkIdentifier("this"))))))))));
-                  
+
                   // Contact d = null;
                   if(spec.type == nameSpecifier && spec.symbol && spec.symbol.registered && spec.symbol.registered.type == structClass)
                   {
@@ -995,13 +995,13 @@ static void ProcessDBTable(DBTableDef table)
                   else
                   {
                      Expression exp;
-                     idGet.compound.declarations->Add(MkDeclaration(CopyList(entry.dataType.qualifiers, CopySpecifier), 
+                     idGet.compound.declarations->Add(MkDeclaration(CopyList(entry.dataType.qualifiers, CopySpecifier),
                         MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
                      exp.destType = Type { kind = intType, refCount = 1 };
                   }
 
                   // r.GetData(fieldCNTid, d);
-                  idGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("r")), MkIdentifier("GetData")), 
+                  idGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("r")), MkIdentifier("GetData")),
                      args = MkList()))));
                   args->Add(MkExpIdentifier(MkIdentifier(fieldID)));
                   /*if(spec.type == nameSpecifier && spec.symbol && spec.symbol.registered && spec.symbol.registered.type == structClass)
@@ -1015,7 +1015,7 @@ static void ProcessDBTable(DBTableDef table)
                   // return d;
                   if(spec.type == nameSpecifier && spec.symbol && spec.symbol.registered && spec.symbol.registered.type == structClass)
                   {
-                     idGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("value")), '=', 
+                     idGet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("value")), '=',
                         MkExpIdentifier(MkIdentifier("d"))))));
                   }
                   else
@@ -1023,14 +1023,14 @@ static void ProcessDBTable(DBTableDef table)
 
                   // *** SET ***
                   curContext = idSet.compound.context = Context { parent = globalContext };
-                  
+
                   // RowContacts r { this };
 
-                  idSet.compound.declarations->Add(MkDeclarationInst(MkInstantiation(MkSpecifierName(rowClassName), MkExpIdentifier(MkIdentifier("r")), 
+                  idSet.compound.declarations->Add(MkDeclarationInst(MkInstantiation(MkSpecifierName(rowClassName), MkExpIdentifier(MkIdentifier("r")),
                      MkListOne(MkMembersInitList(MkListOne(MkMemberInit(null, MkInitializerAssignment(MkExpIdentifier(MkIdentifier("this"))))))))));
 
                   // r.SetData(fieldCNTid, value);
-                  idSet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("r")), MkIdentifier("SetData")), 
+                  idSet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("r")), MkIdentifier("SetData")),
                      args = MkList()))));
                   args->Add(MkExpIdentifier(MkIdentifier(fieldID)));
                   args->Add(MkExpIdentifier(MkIdentifier("value")));
@@ -1039,9 +1039,9 @@ static void ProcessDBTable(DBTableDef table)
                   idSet.compound.statements->Add(MkExpressionStmt(MkListOne(MkExpOp(null, DELETE, MkExpIdentifier(MkIdentifier("r"))))));
 
                   curContext = globalContext;
-                  
+
                   def = MkClassDefProperty(MkProperty(
-                     CopyList(entry.dataType.qualifiers, CopySpecifier), CopyDeclarator(entry.dataType.declarator), 
+                     CopyList(entry.dataType.qualifiers, CopySpecifier), CopyDeclarator(entry.dataType.declarator),
                         CopyIdentifier(entry.id), idSet, idGet));
                   def.propertyDef.symbol.id = def.propertyDef.symbol.idCode = symbolID;
                   def.memberAccess = publicAccess;
@@ -1094,9 +1094,9 @@ static void ProcessDBTable(DBTableDef table)
                      sprintf(num, "%d", c);
                      sprintf(fieldID, "__ecereDBField_%s_%s", tableName, item.id.string);
 
-                     indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")), 
+                     indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")),
                         MkListOne(MkExpConstant(num))), MkIdentifier("field")),  '=', MkExpIdentifier(MkIdentifier(fieldID))))));
-                     indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")), 
+                     indexStatements->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIndex(MkExpIdentifier(MkIdentifier("indexes")),
                         MkListOne(MkExpConstant(num))), MkIdentifier("order")),  '=', MkExpIdentifier(MkIdentifier((item.order == ascending) ? "ascending" : "descending"))))));
                   }
                   sprintf(num, "%d", c);
@@ -1164,13 +1164,13 @@ public void ProcessDBTableDefinitions()
 
          switch(external.type)
          {
-            case functionExternal: 
+            case functionExternal:
                ProcessFunction(external.function);
                break;
-            case declarationExternal: 
+            case declarationExternal:
                ProcessDeclaration(external.declaration);
                break;
-            case classExternal: 
+            case classExternal:
                ProcessClass(external._class);
                break;
          }

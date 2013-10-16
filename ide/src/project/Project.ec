@@ -97,7 +97,7 @@ void ProjectNode::LegacyBinaryLoadNode(File f)
    fileNameLen += len;
    path = new char[len+1];
    f.Read(path, sizeof(char), len+1);
-   
+
    /*
    fileName = new char[fileNameLen+2];
    strcpy(fileName, path);
@@ -107,7 +107,7 @@ void ProjectNode::LegacyBinaryLoadNode(File f)
 
    f.Read(&type, sizeof(type), 1);
    f.Read(&count, sizeof(count), 1);
-   
+
    if(type == file)
    {
       nodeType = file;
@@ -194,7 +194,7 @@ void ProjectNode::LegacyAsciiSaveNode(File f, char * indentation, char * insideP
       if(path && path[0])
          f.Printf("%s   Path = %s\n", indentation, path);
    }
-   
+
    /*if(buildExclusions.first && type != project)
    {
       for(item = buildExclusions.first; item; item = item.next)
@@ -219,7 +219,7 @@ void ProjectNode::LegacyAsciiSaveNode(File f, char * indentation, char * insideP
       f.Printf("\n");
    }
    */
-   
+
    if(type == project && (files.count /*|| preprocessorDefs.first*/))
    {
       f.Printf("\n");
@@ -569,7 +569,7 @@ int OutputFileList(File f, char * name, Array<String> list, Map<String, int> var
       {
          if(numOfBreaks > 1)
             f.Printf("%s%d =", name, c+1);
-         
+
          len = 3;
          itemCount = breaks[c];
          for(n=offset; n<offset+itemCount; n++)
@@ -678,7 +678,7 @@ static void OutputLibraries(File f, Array<String> libraries)
                strcpy(temp, item);
             StripExtension(temp);
             s = temp;
-         } 
+         }
          f.Puts(" \\\n\t$(call _L,");
          usedFunction = true;
       }
@@ -1266,7 +1266,7 @@ private:
       }
       else
          PathCatSlash(string, targetFileName);
-      
+
       switch(targetType)
       {
          case executable:
@@ -1375,8 +1375,8 @@ private:
          if(c && ((c.options && cfg.options && cfg.options.console != c.options.console) ||
                (!c.options || !cfg.options)))
             cfg.symbolGenModified = true;
-         if(c && ((c.options && cfg.options && 
-               ( (cfg.options.libraries && c.options.libraries && cfg.options.libraries.OnCompare(c.options.libraries)) || (!cfg.options.libraries || !c.options.libraries)) ) 
+         if(c && ((c.options && cfg.options &&
+               ( (cfg.options.libraries && c.options.libraries && cfg.options.libraries.OnCompare(c.options.libraries)) || (!cfg.options.libraries || !c.options.libraries)) )
             || (!c.options || !cfg.options)))
             cfg.linkingModified = true;
 
@@ -1419,7 +1419,7 @@ private:
          ide.workspace.modified = true;
       }
    }
-   
+
    void RotateActiveConfig(bool forward, bool syncAllProjects)
    {
       if(configurations.first && configurations.last != configurations.first)
@@ -1515,7 +1515,7 @@ private:
       DynamicString windres { };
 
       /*
-      if(bitDepth == 64 && compiler.targetPlatform == win32) 
+      if(bitDepth == 64 && compiler.targetPlatform == win32)
          gnuToolchainPrefix = "x86_64-w64-mingw32-";
       else if(bitDepth == 32 && compiler.targetPlatform == win32)
          gnuToolchainPrefix = "i686-w64-mingw32-";
@@ -1783,7 +1783,7 @@ private:
                         {
                            // Silence warnings for compiled eC
                            char * objDir = strstr(moduleName, objDirExp.dir);
-                        
+
                            if(linking)
                            {
                               if((pointer = strstr(line, "undefined"))  ||
@@ -1945,7 +1945,7 @@ private:
                ide.outputView.buildBox.Logf("%d %s, ", numErrors, (numErrors > 1) ? $"errors" : $"error");
             else
                ide.outputView.buildBox.Logf($"no error, ");
-   
+
             if(numWarnings)
                ide.outputView.buildBox.Logf("%d %s\n", numWarnings, (numWarnings > 1) ? $"warnings" : $"warning");
             else
@@ -2218,14 +2218,14 @@ private:
       strcpy(makeFilePath, topNode.path);
       CatMakeFileName(makeFile, config);
       PathCatSlash(makeFilePath, makeFile);
-      
+
       if(compiler.type.isVC)
       {
          bool result = false;
          char oldwd[MAX_LOCATION];
          GetWorkingDir(oldwd, sizeof(oldwd));
          ChangeWorkingDir(topNode.path);
-         
+
          // TODO: justPrint support
          sprintf(command, "%s /useenv /clean /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
          if(justPrint)
@@ -2273,7 +2273,7 @@ private:
    }
 
    void Run(char * args, CompilerConfig compiler, ProjectConfig config, int bitDepth)
-   {   
+   {
       String target = new char[maxPathLen];
       char oldDirectory[MAX_LOCATION];
       char * executableLauncher = compiler.executableLauncher;
@@ -3518,7 +3518,7 @@ private:
 
       ReplaceSpaces(objDirNoSpaces, objDirExp);
       ReplaceSpaces(fixedModuleName, moduleName);
-      
+
       //sprintf(fixedModuleName, "%s.main", fixedPrjName);
       //strcat(fixedModuleName, ".main");
 
@@ -3690,13 +3690,13 @@ Project LegacyBinaryLoadProject(File f, char * filePath)
 
       PathCatSlash(topNodePath, filePath);
       project.filePath = topNodePath;
-      
+
       /* THIS IS ALREADY DONE BY filePath property
       StripLastDirectory(topNodePath, topNodePath);
       project.topNode.path = CopyString(topNodePath);
       */
       // Shouldn't this be done BEFORE the StripLastDirectory? project.filePath = topNodePath;
-      
+
       // newConfig.options.defaultNameSpace = "";
       /*newConfig.objDir.dir = "obj";
       newConfig.targetDir.dir = "";*/
@@ -3740,7 +3740,7 @@ Project LegacyBinaryLoadProject(File f, char * filePath)
 
          f.Read(&temp, sizeof(int),1);
          project./*config.*/options.debug = temp ? true : false;
-         f.Read(&temp, sizeof(int),1);         
+         f.Read(&temp, sizeof(int),1);
          project./*config.*/options.optimization = temp ? speed : none;
          f.Read(&temp, sizeof(int),1);
          project./*config.*/options.profile = temp ? true : false;
@@ -3767,7 +3767,7 @@ Project LegacyBinaryLoadProject(File f, char * filePath)
             project.options.libraryDirs = { };
             for(c = 0; c < count; c++)
             {
-               char * name;            
+               char * name;
                f.Read(&len, sizeof(int),1);
                name = new char[len+1];
                f.Read(name, sizeof(char), len+1);
@@ -3822,7 +3822,7 @@ Project LegacyBinaryLoadProject(File f, char * filePath)
 }
 
 void ProjectConfig::LegacyProjectConfigLoad(File f)
-{  
+{
    delete options;
    options = { };
    while(!f.Eof())
@@ -3833,7 +3833,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
       char * equal;
       int len;
       uint pos;
-      
+
       pos = f.Tell();
       f.GetLine(buffer, 65536 - 1);
       TrimLSpaces(buffer, buffer);
@@ -4296,7 +4296,7 @@ void SplitPlatformLibraries(Project project)
                }
             }
          }
-      }      
+      }
    }
 }
 
@@ -4334,16 +4334,16 @@ void CombineIdenticalConfigOptions(Project project)
                      if(cfg.options.targetType != staticLibrary)
                      {
                         int result;
-                        
+
                         if(type.type == noHeadClass || type.type == normalClass)
                         {
-                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
                               *(void **)((byte *)firstConfig.options + member.offset + member._class.offset),
                               *(void **)((byte *)cfg.options         + member.offset + member._class.offset));
                         }
                         else
                         {
-                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
                               (byte *)firstConfig.options + member.offset + member._class.offset,
                               (byte *)cfg.options         + member.offset + member._class.offset);
                         }
@@ -4353,30 +4353,30 @@ void CombineIdenticalConfigOptions(Project project)
                            break;
                         }
                      }
-                  }                  
+                  }
                }
                if(same)
                {
                   if(type.type == noHeadClass || type.type == normalClass)
                   {
-                     if(!((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+                     if(!((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
                         *(void **)((byte *)firstConfig.options + member.offset + member._class.offset),
                         *(void **)((byte *)nullOptions         + member.offset + member._class.offset)))
                         continue;
                   }
                   else
                   {
-                     if(!((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+                     if(!((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
                         (byte *)firstConfig.options + member.offset + member._class.offset,
                         (byte *)nullOptions         + member.offset + member._class.offset))
                         continue;
                   }
 
                   if(!project.options) project.options = { };
-                  
+
                   /*if(type.type == noHeadClass || type.type == normalClass)
                   {
-                     ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type, 
+                     ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type,
                         (byte *)project.options + member.offset + member._class.offset,
                         *(void **)((byte *)firstConfig.options + member.offset + member._class.offset));
                   }
@@ -4384,12 +4384,12 @@ void CombineIdenticalConfigOptions(Project project)
                   {
                      void * address = (byte *)firstConfig.options + member.offset + member._class.offset;
                      // TOFIX: ListBox::SetData / OnCopy mess
-                     ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type, 
+                     ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCopy])(type,
                         (byte *)project.options + member.offset + member._class.offset,
-                        (type.typeSize > 4) ? address : 
-                           ((type.typeSize == 4) ? (void *)*(uint32 *)address : 
-                              ((type.typeSize == 2) ? (void *)*(uint16*)address : 
-                                 (void *)*(byte *)address )));                              
+                        (type.typeSize > 4) ? address :
+                           ((type.typeSize == 4) ? (void *)*(uint32 *)address :
+                              ((type.typeSize == 2) ? (void *)*(uint16*)address :
+                                 (void *)*(byte *)address )));
                   }*/
                   memcpy(
                      (byte *)project.options + member.offset + member._class.offset,
@@ -4400,16 +4400,16 @@ void CombineIdenticalConfigOptions(Project project)
                      if(cfg.options.targetType == staticLibrary)
                      {
                         int result;
-                        
+
                         if(type.type == noHeadClass || type.type == normalClass)
                         {
-                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
                               *(void **)((byte *)firstConfig.options + member.offset + member._class.offset),
                               *(void **)((byte *)cfg.options         + member.offset + member._class.offset));
                         }
                         else
                         {
-                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+                           result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
                               (byte *)firstConfig.options + member.offset + member._class.offset,
                               (byte *)cfg.options         + member.offset + member._class.offset);
                         }
@@ -4420,16 +4420,16 @@ void CombineIdenticalConfigOptions(Project project)
                      {
                         if(type.type == noHeadClass || type.type == normalClass)
                         {
-                           ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, 
+                           ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type,
                               *(void **)((byte *)cfg.options + member.offset + member._class.offset));
                         }
                         else
                         {
-                           ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, 
+                           ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type,
                               (byte *)cfg.options + member.offset + member._class.offset);
                         }
                         memset((byte *)cfg.options + member.offset + member._class.offset, 0, type.typeSize);
-                     }                     
+                     }
                   }
                   memset((byte *)firstConfig.options + member.offset + member._class.offset, 0, type.typeSize);
                }
@@ -4540,15 +4540,15 @@ Project LoadProject(char * filePath, char * activeConfigName)
          {
             project.resNode = project.topNode.Add(project, "Resources", project.topNode.files.last, resources, archiveFile, false);
          }
-         
+
          if(!project.moduleName)
             project.moduleName = CopyString(project.name);
-         if(project.config && 
+         if(project.config &&
             (!project.options || !project.options.targetFileName || !project.options.targetFileName[0]) &&
             (!project.config.options.targetFileName || !project.config.options.targetFileName[0]))
          {
             //delete project.config.options.targetFileName;
-            
+
             project.options.targetFileName = /*CopyString(*/project.moduleName/*)*/;
             project.config.options.optimization = none;
             project.config.options.debug = true;

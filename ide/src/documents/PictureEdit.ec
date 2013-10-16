@@ -3,7 +3,7 @@
 
    Copyright (c) 2003 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    pictureEdit.ec - Picture Editor Control
 ****************************************************************************/
 #ifdef ECERE_STATIC
@@ -47,9 +47,9 @@ class PictureEdit : Window
    float zoomFactor;
    char fileName[MAX_LOCATION];
    Bitmap bitmap;
-   
+
    //saveDialog = pictureEditFileDialog;
-   
+
    Menu fileMenu { menu, $"File", f }
       MenuItem { fileMenu, $"Save", s, ctrlS, NotifySelect = MenuFileSave };
       MenuItem { fileMenu, $"Save As...", a, NotifySelect = MenuFileSaveAs };
@@ -120,7 +120,7 @@ class PictureEdit : Window
             }
          };
          #endif
-   
+
    property char * bitmapFile
    {
       set
@@ -145,14 +145,14 @@ class PictureEdit : Window
                   clientSize = size;
 
                   /*
-                  Move(eWindow_GetStartX(window), eWindow_GetStartY(window), 
-                     (!eWindow_GetStartWidth(window)) ? (A_CLIENT|bitmap.width) : eWindow_GetStartWidth(window), 
+                  Move(eWindow_GetStartX(window), eWindow_GetStartY(window),
+                     (!eWindow_GetStartWidth(window)) ? (A_CLIENT|bitmap.width) : eWindow_GetStartWidth(window),
                      (!eWindow_GetStartHeight(window)) ? (A_CLIENT|bitmap.height) : eWindow_GetStartHeight(window));
                   */
 
                   /*
-                  Move(eWindow_GetStartX(window), eWindow_GetStartY(window), 
-                     (!) ? (A_CLIENT|bitmap.width) : eWindow_GetStartWidth(window), 
+                  Move(eWindow_GetStartX(window), eWindow_GetStartY(window),
+                     (!) ? (A_CLIENT|bitmap.width) : eWindow_GetStartWidth(window),
                      (!eWindow_GetStartHeight(window)) ? (A_CLIENT|bitmap.height) : eWindow_GetStartHeight(window));
                   */
                }
@@ -186,15 +186,15 @@ class PictureEdit : Window
          int h = (int)(bitmap.height * zoomFactor);
          if(w == bitmap.width && h == bitmap.height)
          {
-            surface.Blit(bitmap, 
-               Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2), 
+            surface.Blit(bitmap,
+               Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
                scroll.x, scroll.y, w, h);
          }
          else
          {
-            surface.Filter(bitmap, 
-               Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2), 
-               (int)(scroll.x / zoomFactor), (int)(scroll.y / zoomFactor), w, h, 
+            surface.Filter(bitmap,
+               Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
+               (int)(scroll.x / zoomFactor), (int)(scroll.y / zoomFactor), w, h,
                bitmap.width, bitmap.height);
          }
       }
@@ -214,16 +214,16 @@ class PictureEdit : Window
             if(bitmap && zoomFactor < 25)
             {
                float x = 0.5f, y = 0.5f;
-               if(bitmap.width * zoomFactor > clientSize.w) 
+               if(bitmap.width * zoomFactor > clientSize.w)
                   x = scroll.x / (bitmap.width * zoomFactor - clientSize.w);
-               if(bitmap.height * zoomFactor > clientSize.h) 
+               if(bitmap.height * zoomFactor > clientSize.h)
                   y = scroll.y / (bitmap.height * zoomFactor - clientSize.h);
 
                zoomFactor *= 1.5;
                scrollArea = Size { bitmap.width * zoomFactor,  bitmap.height * zoomFactor };
 
-               scroll = Point { 
-                     (int)(Max(0, bitmap.width * zoomFactor - clientSize.w) * x), 
+               scroll = Point {
+                     (int)(Max(0, bitmap.width * zoomFactor - clientSize.w) * x),
                      (int)(Max(0, bitmap.height * zoomFactor - clientSize.h) * y) };
 
                Update(null);
@@ -234,15 +234,15 @@ class PictureEdit : Window
             if(bitmap && zoomFactor > 0.05)
             {
                float x = 0.5f, y = 0.5f;
-               if(bitmap.width * zoomFactor > clientSize.w) 
+               if(bitmap.width * zoomFactor > clientSize.w)
                   x = scroll.x / (bitmap.width * zoomFactor - clientSize.w);
-               if(bitmap.height * zoomFactor > clientSize.w) 
+               if(bitmap.height * zoomFactor > clientSize.w)
                   y = scroll.y / (bitmap.height * zoomFactor - clientSize.h);
 
                zoomFactor /= 1.5;
                scrollArea = Size { bitmap.width * zoomFactor, bitmap.height * zoomFactor };
 
-               scroll = Point { 
+               scroll = Point {
                      (int)(Max(0, bitmap.width * zoomFactor - clientSize.w) * x),
                      (int)(Max(0, bitmap.height * zoomFactor - clientSize.h) * y) };
 
@@ -258,7 +258,7 @@ class PictureEdit : Window
       bool result = false;
       if(bitmap)
       {
-         if(bitmap.Save(fileName, 
+         if(bitmap.Save(fileName,
             ((FileType *)pictureEditFileDialog.types)[pictureEditFileDialog.fileType].typeExtension, (void *) bool::true))
          {
             modifiedDocument = false;
@@ -267,7 +267,7 @@ class PictureEdit : Window
       }
       return result;
    }
-   
+
    PictureEdit()
    {
       zoomFactor = 1.0f;
@@ -335,7 +335,7 @@ class AdjustHSV : Window
          double tolH = 1;
          double tolS = 1;
          double tolV = 1;
-         
+
          h = target.h - replace.h;
          s = target.s / replace.s;
          v = target.v / replace.v;

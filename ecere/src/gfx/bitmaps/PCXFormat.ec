@@ -100,9 +100,9 @@ class PCXFormat : BitmapFormat
                   {
                      switch(colorPlane)
                      {
-                        case 0: 
+                        case 0:
                            ((RGBA32*)bitmap.picture)[iptr].a = 255;
-                           ((RGBA32*)bitmap.picture)[iptr].r = b; 
+                           ((RGBA32*)bitmap.picture)[iptr].r = b;
                            break;
                         case 1: ((RGBA32*)bitmap.picture)[iptr].g = b; break;
                         case 2: ((RGBA32*)bitmap.picture)[iptr].b = b; break;
@@ -127,7 +127,7 @@ class PCXFormat : BitmapFormat
                   x++;
                   iptr++;
                   if(x == header.bytesPerLine)
-                  { 
+                  {
                      iptr+= bitmap.stride - x;
                      x = 0;
                      y++;
@@ -218,7 +218,7 @@ class PCXFormat : BitmapFormat
                            case 0: b = ((RGBA32*)bitmap.picture)[iptr].r; break;
                            case 1: b = ((RGBA32*)bitmap.picture)[iptr].g; break;
                            case 2: b = ((RGBA32*)bitmap.picture)[iptr].b; break;
-                        }  
+                        }
                      }
                      else
                         b = bitmap.picture[iptr];
@@ -232,16 +232,16 @@ class PCXFormat : BitmapFormat
                         last = b;
                      }
                      count++,x++;iptr++;
-            
+
                      if(x==bitmap.width)
                      {
                         x = 0;
                         if(bitmap.pixelFormat == pixelFormat888)
                         {
                            colorPlane ++;
-                           if(colorPlane == 3) 
-                           { 
-                              colorPlane = 0; 
+                           if(colorPlane == 3)
+                           {
+                              colorPlane = 0;
                               y++;
                            }
                         }
@@ -250,7 +250,7 @@ class PCXFormat : BitmapFormat
                         iptr = y*bitmap.stride;
                         if(div)
                         {
-                           if(last == padder && count <= 63-div && 
+                           if(last == padder && count <= 63-div &&
                              (colorPlane || bitmap.pixelFormat == pixelFormat8))
                               count += div;
                            else
@@ -262,7 +262,7 @@ class PCXFormat : BitmapFormat
                         if(!colorPlane)
                            break;
                      }
-                     if(count >= 63) 
+                     if(count >= 63)
                         break;
                   }
                   if((count>1)||(last>=192))
@@ -309,7 +309,7 @@ class PCXFormat : BitmapFormat
                }
             }
             delete f;
-         }      
+         }
       }
       return result;
    }
@@ -341,7 +341,7 @@ class PCXFormat : BitmapFormat
             }
          }
          delete f;
-      }   
+      }
       return result;
    }
 }

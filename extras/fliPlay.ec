@@ -13,8 +13,8 @@ class FliPlay : Window
       {
          Surface surface;
 
-         animation.PlayFrame(image);   
-         
+         animation.PlayFrame(image);
+
          surface = temp.GetSurface(0,0,null);
          /*
          if(surface)
@@ -64,7 +64,7 @@ class FliPlay : Window
       // temp.Allocate(null, w, h, 0, PixelFormatRGBA, false);
       temp.Allocate(null, w, h, 0, PixelFormat888, false);
       surface = temp.GetSurface(0,0,null);
-      surface.Stretch(image, 0,0,0,0, temp.width, temp.height, 
+      surface.Stretch(image, 0,0,0,0, temp.width, temp.height,
          image.width, image.height);
       delete surface;
    }
@@ -83,7 +83,7 @@ class FliPlay : Window
 
       //surface.Stretch(image, 0,0,0,0, clientSize.w, clientSize.h, image.width,image.height);
    }
-   
+
    void OnDestroy()
    {
       image.Free();
@@ -92,8 +92,8 @@ class FliPlay : Window
 
    bool OnKeyDown(Key key, unichar ch)
    {
-      if(key == escape) 
-         Destroy(0); 
+      if(key == escape)
+         Destroy(0);
       return true;
    }
 }

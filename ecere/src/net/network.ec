@@ -82,7 +82,7 @@ static class NetworkThread : Thread
       while(!network.networkTerminated)
       {
          int ns = network.ns;
-         
+
          if(ns)
          {
             struct timeval tv = { 0, 0 }; // TESTING 0 INSTEAD OF (int)(1000000 / 18.2) };
@@ -107,7 +107,7 @@ static class NetworkThread : Thread
                network.mutex.Release();
                network.selectSemaphore.Wait();
                network.mutex.Wait();
-            } 
+            }
             else
             {
                ecere::sys::Sleep(1 / 18.2f);
@@ -120,7 +120,7 @@ static class NetworkThread : Thread
             network.socketsSemaphore.Wait();
             network.mutex.Wait();
          }
-         
+
       }
       network.mutex.Release();
       return 0;

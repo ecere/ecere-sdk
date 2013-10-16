@@ -5,7 +5,7 @@ namespace gui::skins;
 
    Copyright (c) 2001-2007 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    tvision.ec - TurboVision'ish skin implementation
 ****************************************************************************/
 import "Skin"
@@ -294,7 +294,7 @@ public class TVisionSkin_Window : Window
          int corner = (style.sizable && state == normal) ? CORNER : 0;
          int border = (style.sizable && state == normal) ? BORDER : 0;
          int top    = (style.sizable && state == normal) ? TOP    : 0;
-         
+
          // Special case for having caption on resize bar
          if(!CAPTION)
             result = Box { corner, 0, w-corner-1, TOP-1 }.IsPointInside({x, y});

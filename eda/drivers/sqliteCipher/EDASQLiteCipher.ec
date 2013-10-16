@@ -37,7 +37,7 @@ static class SQLiteCipherDataSource : SQLiteDataSource
 
          // sqlite3_open(path, &db);
          // sqlite3_open_v2(path, &db, SQLITE_OPEN_READONLY /*SQLITE_OPEN_READWRITE*/ /*SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE*/, null );
-         
+
          if(sqlite3_open_v2(path, &db, (createOptions == readOnly) ? SQLITE_OPEN_READONLY :
             (SQLITE_OPEN_READWRITE | ((createOptions == create) ? SQLITE_OPEN_CREATE : 0)), null))
             // fprintf(stderr, "%s\n", s); // interesting
@@ -67,7 +67,7 @@ static class SQLiteCipherDataSource : SQLiteDataSource
                else
                   printf($"Can't open database (%s): %s -- password may be incorrect\n", path, sqlite3_errstr(rc));
             }
-         }            
+         }
          if(!result)
             sqlite3_close(db);
          delete path;

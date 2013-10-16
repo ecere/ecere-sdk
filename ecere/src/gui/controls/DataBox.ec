@@ -104,8 +104,8 @@ private:
          (type.type == normalClass || type.type == noHeadClass || data))
       {
          // IMPORTANT FIX: If keepEditor is true, we were passing editor rather than the editor's current master
-         editor = ((Window (*)(void *, void *, DataBox, void *, int, int, int, int, void*))(void *)type._vTbl[__ecereVMethodID_class_OnEdit])(type, 
-            (type.type == normalClass || type.type == noHeadClass) ? (data ? (*(void **)data) : null) : data, 
+         editor = ((Window (*)(void *, void *, DataBox, void *, int, int, int, int, void*))(void *)type._vTbl[__ecereVMethodID_class_OnEdit])(type,
+            (type.type == normalClass || type.type == noHeadClass) ? (data ? (*(void **)data) : null) : data,
             this, (keepEditor && editor) ? editor.master : this, 0, 0, clientSize.w, clientSize.h, fieldData);// null);
          if(editor)
          {

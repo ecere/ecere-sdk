@@ -44,11 +44,11 @@ private:
       this, text = $"Close", hotKey = escape, anchor = { right = 10, top = 45 }, size = { 80 };
       NotifyClicked = ButtonCloseDialog;
    };
-   
+
    EditBox lineBox
    {
       this, text = $"Line number:", anchor = { left = 120, right = 100, top = 10 }, size.h = 20, hotKey = altL;
-      
+
       void NotifyUpdate(EditBox editBox)
       {
          goTo.disabled = atoi(lineBox.contents) ? false : true;

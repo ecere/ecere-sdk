@@ -8,7 +8,7 @@ struct SamplePacket
 {
    int stringLen;
    // stringLen + 1 bytes are actually used (variable size depending on string)
-   char string[1];   
+   char string[1];
 };
 
 class SampleService : Service
@@ -40,7 +40,7 @@ class SampleSocket : Socket
       else if(servingSocket == this)
          servingSocket = null;
 
-      form.UpdateButtonStates();      
+      form.UpdateButtonStates();
    }
 
    unsigned int OnReceive(unsigned char * buffer, unsigned int count)
@@ -93,9 +93,9 @@ class SocketSample : Window
       // The Listen button is disabled if we're already listening
       btnListen.disabled = listening;
    }
-   
-   Button btnSend 
-   {      
+
+   Button btnSend
+   {
       this, text = "Send", position = { 344, 64 }, disabled = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -116,8 +116,8 @@ class SocketSample : Window
    };
    EditBox serverAddress { this, text = "Server Address", size = { 174, 19 }, position = { 8, 40 }, contents = "localhost" };
    Label lblServerAddress { this, position = { 8, 16 }, labeledWindow = serverAddress };
-   Button btnListen 
-   {      
+   Button btnListen
+   {
       this, text = "Listen", position = { 144, 104 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -135,8 +135,8 @@ class SocketSample : Window
    Label lblSentString { this, position = { 224, 16 }, labeledWindow = sentString };
    EditBox recvString { this, text = "Received String", size = { 166, 19 }, position = { 224, 104 } };
    Label label1 { this, position = { 224, 80 }, labeledWindow = recvString };
-   Button btnConnect 
-   {      
+   Button btnConnect
+   {
       this, text = "Connect", position = { 8, 72 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)

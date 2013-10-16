@@ -63,7 +63,7 @@ public:
             // SNAPDOWN(position, lineStep);
 
          if(position < 0) position = 0;
-         if(position >= range) 
+         if(position >= range)
             position = range - 1;
 
          if(thumb)
@@ -84,7 +84,7 @@ public:
    property bool snap { property_category $"Behavior" set { sbStyle.snap = value; } get { return sbStyle.snap; } };
    property int range
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          total = value + seen - 1;
@@ -95,7 +95,7 @@ public:
    // Improve this, needs to be done in 2 so updates commented out for seen
    property int seen
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          if(this)
@@ -111,7 +111,7 @@ public:
    };
    property int total
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          if(this)
@@ -186,7 +186,7 @@ private:
 
       bool NotifyPushed(Button button, int x, int y, Modifiers mods)
       {
-         action = up; 
+         action = up;
          Action(action, 0, Key { modifiers = mods });
          timer.Start();
          return true;
@@ -303,7 +303,7 @@ private:
    bool draggingThumb;
    Point pos, thumbClick;
    bool inside;
-   
+
    void OnRedraw(Surface surface)
    {
       int sbWidth = SB_WIDTH;
@@ -480,7 +480,7 @@ private:
             thumbSize = seen * size / total;
          }
          else
-            thumbSize = 0;      
+            thumbSize = 0;
 
          if(sbStyle.vertical)
          {
@@ -577,9 +577,9 @@ private:
       {
          case left:
          case up:     Action(up, 0, key); break;
-         case right: 
-         case down:   
-            Action(down, 0, key); 
+         case right:
+         case down:
+            Action(down, 0, key);
             break;
          case pageUp:   Action(pageUp, 0, key); break;
          case pageDown:  Action(pageDown, 0, key); break;

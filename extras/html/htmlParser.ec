@@ -141,7 +141,7 @@ String ParseURL(String input)
       if(!quoted && wasQuoted)
          break;
 
-      if((ch == ' ' || ch == '\t') && !quoted) 
+      if((ch == ' ' || ch == '\t') && !quoted)
       {
          if(!start) break;
       }
@@ -159,7 +159,7 @@ String ParseURL(String input)
          }
          else if(ch != '\r' && ch != '\n')
          {
-            if(c < maxSize) 
+            if(c < maxSize)
                keyWord[c++] = ch;
             start = false;
          }
@@ -185,7 +185,7 @@ static char * GetString(char * string, char * what, int count)
       if(string[sc] != ' ' && string[sc] != '\"')
          break;
    }
-   
+
    for(wc = 0; what[wc]; wc++, sc++)
    {
       if((count && sc >= count) || (string[sc] != what[wc] && tolower(string[sc]) != tolower(what[wc])))
@@ -263,7 +263,7 @@ class HTMLFile
       fontBlock.size = 12;
       fontBlock.textColor = LT_BLUE|0xFF000000;
       */
-      
+
       fontBlock.textColor = black;
       fontBlock.size = 10;
 
@@ -271,17 +271,17 @@ class HTMLFile
       fontCache.Add(fontBlock.font);*/
 
       background = white;
-      
+
       text = new char[32768*4];
 
       block.font = fontBlock.font;
       body = block;
-      
+
       // Parse entire file
       while(!f.Eof() && block)
       {
          byte ch = 0;
-         
+
          f.Getc(&ch);
 #ifdef _DEBUG
          //fwrite(&ch, 1, 1, stdout);
@@ -430,7 +430,7 @@ class HTMLFile
                            else if(!strcmpi(keyWord, "text"))
                            {
                               GetKeyWord(&string, keyWord, sizeof(keyWord));
-                              fontBlock.textColor = 
+                              fontBlock.textColor =
                                  block.textColor = 0xFF000000 | strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16);
                            }
                         }
@@ -473,8 +473,8 @@ class HTMLFile
                      else if(!strcmpi(keyWord, "p"))
                      {
                      }
-                     else if(!strcmpi(keyWord, "font") || !strcmpi(keyWord, "b") || !strcmpi(keyWord, "i") 
-                        || !strcmpi(keyWord, "strong") || !strcmpi(keyWord, "em") || 
+                     else if(!strcmpi(keyWord, "font") || !strcmpi(keyWord, "b") || !strcmpi(keyWord, "i")
+                        || !strcmpi(keyWord, "strong") || !strcmpi(keyWord, "em") ||
                         !strcmpi(keyWord, "h1") || !strcmpi(keyWord, "h2") || !strcmpi(keyWord, "h3"))
                      {
                         if((!strcmpi(keyWord, "h1") || !strcmpi(keyWord, "h2") || !strcmpi(keyWord, "h3")))
@@ -542,7 +542,7 @@ class HTMLFile
                               else if(!strcmpi(keyWord, "color"))
                               {
                                  GetKeyWord(&string, keyWord, sizeof(keyWord));
-                                 subBlock.textColor = 
+                                 subBlock.textColor =
                                     0xFF000000 | strtol((keyWord[0] == '#') ? (keyWord+1) : keyWord, null, 16);
                               }
                            }
@@ -1130,11 +1130,11 @@ class HTMLFile
                      char utf8[5];
                      if(symbol[0] == '#' && symbol[1] == 'x')
                         unicode = strtol(symbol+2, null, 16);
-                     else if(!strcmpi(symbol, "nbsp")) 
+                     else if(!strcmpi(symbol, "nbsp"))
                         unicode = ' ';
-                     else if(!strcmpi(symbol, "copy")) 
+                     else if(!strcmpi(symbol, "copy"))
                         unicode ='©';
-                     else if(!strcmpi(symbol, "raquo")) 
+                     else if(!strcmpi(symbol, "raquo"))
                         unicode = '»';
                      else if(!strcmpi(symbol, "eacute"))
                         unicode = 'é';
@@ -1209,7 +1209,7 @@ class HTMLFile
                subBlock.textLen = textLen;
                textLen = 0;
                text[0] = '\0';
-               subBlock = AddBlock(block, BR);               
+               subBlock = AddBlock(block, BR);
             }
          }
       }
@@ -1229,7 +1229,7 @@ class HTMLFile
          if(titleBlock && titleBlock.subBlocks.first && ((Block)titleBlock.subBlocks.first).type == TEXT)
          {
             Block t = titleBlock.subBlocks.first;
-            return t.text;            
+            return t.text;
          }
          return null;
       }

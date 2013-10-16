@@ -44,7 +44,7 @@ public class DropBox : CommonControl
 public:
    property bool activeStipple
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          style.noStipple = !value;
@@ -54,7 +54,7 @@ public:
    };
    property bool showButton
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          button.visible = value;
@@ -64,7 +64,7 @@ public:
    };
    property Alignment alignment
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          alignment = value;
@@ -75,7 +75,7 @@ public:
    };
    property bool noHighlight
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          if(this)
@@ -89,7 +89,7 @@ public:
    };
    property bool activeColor
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          if(this)
@@ -102,7 +102,7 @@ public:
    };
    property DataRow currentRow
    {
-      property_category $"Private" 
+      property_category $"Private"
       set
       {
          if(this)
@@ -116,7 +116,7 @@ public:
                   editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
                else
                   editBox.contents = "";
-            }                  
+            }
             Update(null);
             if(style.editText)
             {
@@ -135,7 +135,7 @@ public:
    property char * contents { property_category $"Data" set { if(editBox) editBox.contents = value; } get { return editBox ? editBox.contents : null; } };
    property bool editText
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          if(this)
@@ -153,7 +153,7 @@ public:
                   incref editBox;
                   editBox.Create();
                   button.inactive = false;
-               }      
+               }
                style.editText = true;
                tabCycle = false;
             }
@@ -176,7 +176,7 @@ public:
    property int rowHeight { property_category $"Appearance" set { listBox.rowHeight = value; } get { return listBox.rowHeight; } };
    property int maxShown
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          listBoxMaxShown = value;
@@ -236,7 +236,7 @@ public:
 
       ResizeListbox();
       // listBox.visible = true;
-      return listBox;   
+      return listBox;
    }
 
    virtual void OnCloseDropDown(Window pullDown)
@@ -330,7 +330,7 @@ public:
       {
          if(!field)
             field = DataField { alignment = alignment };
-         
+
          listBox.AddField(field);
          this.field = listBox.firstField;
          dataType = this.field.dataType;
@@ -416,7 +416,7 @@ public:
                editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
             else
                editBox.contents = "";
-         }                  
+         }
          listBox.SelectRow(currentRow ? currentRow : (style.showNone ? noneRow : null));
 
          Update(null);
@@ -475,7 +475,7 @@ private:
             if(ly + height > availHeight)
                height = ((availHeight - ly) / ROW_HEIGHT) * ROW_HEIGHT;
          }
-            
+
          if(!pulledWindow.initSize.w)
             pulledWindow.size.w = size.w;
          else
@@ -547,8 +547,8 @@ private:
                OnPosition(position.x, position.y, clientSize.w, clientSize.h);
                if(pulledWindow) pulledWindow.visible = true;
                button.checked = true;
-            }         
-            Update(null);         
+            }
+            Update(null);
             return false;
          case enter:
          case keyPadEnter:
@@ -575,7 +575,7 @@ private:
                pulledWindow = null;
                button.checked = false;
                Update(null);
-               
+
                if(!NotifyClose(master, this))
                {
                   delete this;
@@ -592,11 +592,11 @@ private:
                      editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
                   else
                      editBox.contents = "";
-               }                  
+               }
 
                NotifySelect(master, this, currentRow, key.modifiers | { closingDropDown = true });
-               
-               delete this;               
+
+               delete this;
                return false;
             }
             return false;
@@ -611,7 +611,7 @@ private:
       button.anchor = { right = 0, top = 0, bottom = 0 };
       button.size = { guiApp.textMode ? 8 : BTN_WIDTH, 0 };
    }
-   
+
    /*Timer timer
    {
       window = this, delay = 0.01;
@@ -650,8 +650,8 @@ private:
          if(currentRow)
          {
             DataDisplayFlags displayFlags { active = active, current = true, dropBox = true, selected = true, fullRow = true };
-            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)dataType._vTbl[__ecereVMethodID_class_OnDisplay])(dataType, currentRow.GetData(null), surface, 3, 
-               1+(clientSize.h - listBox.rowHeight) / 2, clientSize.w - (button.visible ? button.size.w : 0) - 3, 
+            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)dataType._vTbl[__ecereVMethodID_class_OnDisplay])(dataType, currentRow.GetData(null), surface, 3,
+               1+(clientSize.h - listBox.rowHeight) / 2, clientSize.w - (button.visible ? button.size.w : 0) - 3,
                field.userData, alignment, displayFlags);
          }
          else
@@ -676,7 +676,7 @@ private:
    {
       int rowHeight = 0;
 
-      display.FontExtent(fontObject, "W", 1, null, &rowHeight); 
+      display.FontExtent(fontObject, "W", 1, null, &rowHeight);
       rowHeight = Max(rowHeight, 16);
 
       if(!*width) *width = Max(*width, rowHeight * 100 / 16);
@@ -703,7 +703,7 @@ private:
          OnCloseDropDown(pulledWindow);
          button.checked = false;
          pulledWindow = null;
-      
+
          if(!NotifyClose(master, this))
             return false;
       }
@@ -723,7 +723,7 @@ private:
    bool OnKeyHit(Key key, unichar ch)
    {
       DataRow currentRow = this.currentRow;
-      
+
       if(!pulledWindow /*listBox.visible*/)
       {
          int c;
@@ -891,7 +891,7 @@ private:
                editBox.contents = "";
             if(active)
                editBox.SelectAll();
-         }                  
+         }
          button.Deactivate();
          return NotifySelect(master, this, currentRow, mods);
       }

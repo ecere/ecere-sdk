@@ -154,7 +154,7 @@ public:
                surface.WriteText(x+1,y+1, text,tab-text);
                surface.WriteText(surface.width - 3 - tw - 12 + 1, y + 1,tab+1,len);
                surface.SetForeground(guiApp.currentSkin.disabledFrontColor );
-               
+
                surface.TextOpacity(false);
             }
             surface.TextOpacity(false);
@@ -180,7 +180,7 @@ public:
             int c;
             bool firstLetter;
             char * tab = strchr(text, '\t');
-            
+
             // Look for an uppercase letter starting a word
             firstLetter = true;
             ch = isalpha(characters[1][hotKey.code]) ? characters[1][hotKey.code] : characters[0][hotKey.code];

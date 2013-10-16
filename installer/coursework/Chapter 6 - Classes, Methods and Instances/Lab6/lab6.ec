@@ -7,7 +7,7 @@ public:
    int difficulty;
    int damage;
    int manaCost;
-    
+
    virtual void Backfire(Creature self, Creature opponent)
    {
       self.health -= damage/4;
@@ -23,7 +23,7 @@ public:
 
 class FireBall : Spell { difficulty = 20, damage = 8; manaCost = 5; };
 class Lightning : Spell  { difficulty = 10, damage = 4; manaCost = 3; };
-class Healing : Spell 
+class Healing : Spell
 {
    difficulty = 20;
    manaCost = 5;
@@ -88,7 +88,7 @@ public:
          int howBad = 0;
          EquipmentSlot slot;
          int damage;
-         
+
          if(where < 60)
          {
             slot = body;
@@ -104,7 +104,7 @@ public:
             slot = legs;
             howBad = 1;
          }
-         else 
+         else
          {
             slot = feet;
             howBad = 1;
@@ -273,7 +273,7 @@ class RPGApp : Application
             }
             break;
          }
-         case realm:            
+         case realm:
             PrintLn("You are wandering in the realm. What would you like to do?");
             PrintLn("[F]ight bad guys   Visit the [S]hop   [R]est     St[a]ts");
             if(player.xp >= 1000)
@@ -398,7 +398,7 @@ class RPGApp : Application
                      if(slot == ring)
                         while(player.equipment[slot] && slot < ring4)
                            slot++;
-                     
+
                      if(slot == rightHand && eq.twoHands)
                      {
                         if(player.equipment[EquipmentSlot::leftHand])
@@ -413,7 +413,7 @@ class RPGApp : Application
                      }
                      else if(player.equipment[slot])
                         tradeIn1 = player.equipment[slot];
-                      
+
                      tradeIn = ((tradeIn1 ? tradeIn1.value : 0) + (tradeIn2 ? tradeIn2.value : 0)) / 2;
                      if(player.gold + tradeIn < eq.value)
                         PrintLn("You do not have enough gold!");
@@ -583,7 +583,7 @@ class RPGApp : Application
       PrintLn("gaining experience and equipment in the process. You will need to reach");
       PrintLn("at least 1000 experience points to search for the sorcerer's hideout.");
       PrintLn("At any time you can [Q]uit.");
-      while(state != end)      
+      while(state != end)
       {
          PrintStatus();
          GetCommand();

@@ -45,7 +45,7 @@ class Win32BitmapPrinterDisplay : LFBDisplay
    ~Win32BitmapPrinterDisplay()
    {
       if(memDC) DeleteDC(memDC);
-      if(memBitmap) DeleteObject(memBitmap); 
+      if(memBitmap) DeleteObject(memBitmap);
       if(palette) DeleteObject(palette);
       delete logPalette;
    }
@@ -62,7 +62,7 @@ class Win32BitmapPrinterSystem : LFBSystem
 
    ~Win32BitmapPrinterSystem()
    {
-      if(hdc)                                                                           
+      if(hdc)
          ReleaseDC(0, tmpDC);
    }
 };
@@ -85,11 +85,11 @@ class Win32BitmapPrinterBitmap : struct
 
 static PixelFormat GetColorFormat(int depth)
 {
-   if(depth == 8) 
+   if(depth == 8)
       return pixelFormat8;
-   else if(depth == 16) 
+   else if(depth == 16)
       return pixelFormat555;
-   else 
+   else
       return pixelFormat888;
 }
 
@@ -314,7 +314,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
             info->bmiHeader.biBitCount = (uint16)gdiSystem.depth;
             info->bmiHeader.biWidth = gdiDisplay.bitmap.stride;
             info->bmiHeader.biHeight = -gdiDisplay.height;
-    
+
             for(c=0; c<256; c++)
             {
                info->bmiColors[c].rgbReserved = 0;
@@ -401,8 +401,8 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    {
       Win32BitmapPrinterDisplay gdiDisplay = display.driverData;
       /*
-      BitBlt(gdiDisplay.hdc, 
-         updateBox.left,updateBox.top, 
+      BitBlt(gdiDisplay.hdc,
+         updateBox.left,updateBox.top,
          updateBox.right - updateBox.left + 1, updateBox.bottom - updateBox.top + 1,
          gdiDisplay.memDC, updateBox.left, updateBox.top, SRCCOPY);
       */
@@ -433,7 +433,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       Win32BitmapPrinterDisplay gdiDisplay = display.driverData;
       gdiDisplay.completed = false;
       EndPage(gdiDisplay.hdc);
-      StartPage(gdiDisplay.hdc);      
+      StartPage(gdiDisplay.hdc);
    }
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
@@ -504,14 +504,14 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
                surface.height = gdiDisplay.height - y + 1;
                surface.offset.x = x * gdiDisplay.width / display.width;
                surface.offset.y = y * gdiDisplay.height / display.height;
-               surface.unclippedBox = surface.box = 
+               surface.unclippedBox = surface.box =
                {
                   left = clip.left * gdiDisplay.width / display.width,
                   top = clip.top * gdiDisplay.height / display.height,
                   right = (clip.right+1) * gdiDisplay.width / display.width-1,
                   bottom = (clip.bottom+1) * gdiDisplay.height / display.height-1
                };
-         
+
                gdiSurface.rgn = CreateRectRgn(
                   surface.offset.x + surface.box.left,
                   surface.offset.y + surface.box.top,
@@ -537,7 +537,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    {
       Win32BitmapPrinterDisplay gdiDisplay = display.driverData;
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
-      HRGN clippedRgn = null; 
+      HRGN clippedRgn = null;
       if(clip != null)
       {
          Box box = clip;
@@ -545,7 +545,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
          box.Clip(gdiSurface.unclippedBox);
 
          gdiSurface.box = box;
-         surface.box = 
+         surface.box =
          {
             left = box.left * gdiDisplay.width / display.width,
             top = box.top * gdiDisplay.height / display.height,
@@ -570,7 +570,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
          }
          else
             clippedRgn = CreateRectRgn(0, 0, 0, 0);
-         
+
          if(clippedRgn)
             SelectClipRgn(gdiSurface.hdc, clippedRgn);
       }
@@ -630,11 +630,11 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       Color back = surface.background;
       surface.background = surface.foreground;
       //SetPixel(gdiSurface.hdc, x + gdiSurface.offset.x, y + gdiSurface.offset.y, gdiSurface.color);
-      
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).Area(display, surface, 
-         (int)((float)x * gdiDisplay.width / display.width), 
+
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).Area(display, surface,
+         (int)((float)x * gdiDisplay.width / display.width),
          (int)((float)y * gdiDisplay.height / display.height),
-         (int)((float)(x+1) * gdiDisplay.width / display.width)-1, 
+         (int)((float)(x+1) * gdiDisplay.width / display.width)-1,
          (int)((float)(y+1) * gdiDisplay.height / display.height)-1
          );
       surface.background = back;
@@ -663,7 +663,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
          MoveToEx(gdiSurface.hdc, x1, y1, null);
          LineTo(gdiSurface.hdc, x2, y2);
          */
-         
+
          if(x1 == x2)
          {
             ((subclass(DisplayDriver))class(LFBDisplayDriver)).DrawLine(display, surface, x1,y1,x2,y2+(int)((float)gdiDisplay.width / display.width + 0.5));
@@ -690,8 +690,8 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       /*
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).Rectangle(display, surface, 
-         ((float)x1 * gdiDisplay.width / display.width) + 0.5, 
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).Rectangle(display, surface,
+         ((float)x1 * gdiDisplay.width / display.width) + 0.5,
          ((float)y1 * gdiDisplay.height / display.height) + 0.5,
          ((float)x2 * gdiDisplay.width / display.width) + 0.5,
          ((float)y2 * gdiDisplay.height / display.height) + 0.5);
@@ -724,14 +724,14 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    {
       Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
-     
-      ((subclass(DisplayDriver))class(LFBDisplayDriver)).Area(display, surface, 
-         (int)((float)x1 * gdiDisplay.width / display.width), 
+
+      ((subclass(DisplayDriver))class(LFBDisplayDriver)).Area(display, surface,
+         (int)((float)x1 * gdiDisplay.width / display.width),
          (int)((float)y1 * gdiDisplay.height / display.height),
          (int)(((float)(x2+1) * gdiDisplay.width / display.width) + 0.5),
          (int)(((float)(y2+1) * gdiDisplay.height / display.height) + 0.5));
-      
-      /* 
+
+      /*
       x1 += gdiSurface.offset.x;
       x2 += gdiSurface.offset.x;
       y1 += gdiSurface.offset.y;
@@ -774,7 +774,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    {
       Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Filter(display, surface, src,
-         dx * gdiDisplay.width / display.width, 
+         dx * gdiDisplay.width / display.width,
          dy * gdiDisplay.height / display.height,
          sx, sy,
          (w+1) * gdiDisplay.width / display.width-1,
@@ -853,7 +853,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
       // UNICODE FIX: proper space computation
       if(width) *width = size.cx + (wordCount - realLen) * space.cx;
-      if(height) 
+      if(height)
       {
          if(realLen)
             *height = size.cy;

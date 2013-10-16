@@ -55,7 +55,7 @@ public:
             if(menu)
                menu.RemoveItem(this);
             if(value)
-               value.AddItem(this);   
+               value.AddItem(this);
          }
       }
    };
@@ -83,7 +83,7 @@ public:
       set
       {
          accelerator = value;
-        
+
          if(!manualAccelText && text)
          {
             char accelString[50] = "\t";
@@ -162,7 +162,7 @@ public:
          }
          // Should callback be called here? guess not ;)
       }
-      get { return checked; } 
+      get { return checked; }
    };
    property bool disabled { set { if(this) disabled = value; } };
    property bool checkable { set { checkable = value; } };
@@ -253,7 +253,7 @@ public class MenuPlacement : MenuItem
 {
    MenuPlacement()
    {
-      placement = true; 
+      placement = true;
    }
 
 public:
@@ -310,7 +310,7 @@ public:
          item.menu = this;
       }
    }
-      
+
    void RemoveItem(MenuItem item)
    {
       if(item.menu == this)
@@ -344,7 +344,7 @@ public:
          MenuItem menuItem { };
          ItemPtr ptr { item = menuItem };
          items.Add(ptr);
-         
+
          incref menuItem;
 
          itemCount++;
@@ -358,13 +358,13 @@ public:
          }
       }
    }
-   
+
    void AddDynamic(MenuItem addedItem, Window master, bool persistent)
    {
       if(addedItem)
       {
          ItemPtr ptr = null, oldItemPtr;
-         
+
          for(oldItemPtr = items.first; oldItemPtr; oldItemPtr = oldItemPtr.next)
          {
             if((oldItemPtr.item.subMenu || oldItemPtr.item.placement) && !strcmpTillTab(ITEM_TEXT(oldItemPtr.item), ITEM_TEXT(addedItem)))
@@ -404,11 +404,11 @@ public:
          addedItem.menu = this;
       }
    }
-   
+
    MenuItem FindItem(bool (* Window::notifySelect)(MenuItem selection, Modifiers mods), uint64 id)
    {
       ItemPtr ptr;
-      
+
       for(ptr = items.first; ptr; ptr = ptr.next)
       {
          MenuItem item = ptr.item;
@@ -437,7 +437,7 @@ public:
             ptr.item = ptr.oldItem;
             ptr.oldItem = null;
             delete ptr.item;
-         }      
+         }
          items.Delete(ptr);
       }
    }
@@ -541,7 +541,7 @@ public:
                      itemCount++;
                   }
                }
-            
+
                if(!beingMergedItem.isDivider || (previous.item && !previous.item.isDivider))
                {
                   mergeIntoItemPtr = ItemPtr { };
@@ -571,7 +571,7 @@ public:
          }
          else if(item.subMenu)
             item.subMenu.Clean(window);
-          
+
          if(ptr.inserted.deleteItem)
             delete item;
 
@@ -592,7 +592,7 @@ public:
    Menu FindMenu(char * name)
    {
       ItemPtr ptr;
-      
+
       for(ptr = items.first; ptr; ptr = ptr.next)
       {
          MenuItem item = ptr.item;
@@ -638,13 +638,13 @@ public class PopupMenu : Window
    int rw, rh;
    int totalHeight;
    Menu menu;
-   ItemPtr selected;   
+   ItemPtr selected;
    bool pressed;
    bool altDown;
    bool keyboardFocus;
    bool mouseInput;
    Time unpressedTime;
-   
+
    void (* FontExtent)(Display display, Font font, char * text, int len, int * width, int * height);
 
    FontResource boldFont { faceName = font.faceName, font.size, bold = true, window = this };
@@ -693,8 +693,8 @@ public class PopupMenu : Window
    {
       ItemPtr selected, current = this.selected;
       for(selected = (current && current.prev) ? current.prev : menu.items.last;
-            selected && 
-            (selected.item.isDivider || selected.item.placement || ITEM_DISABLED(selected.item)) && 
+            selected &&
+            (selected.item.isDivider || selected.item.placement || ITEM_DISABLED(selected.item)) &&
             selected != current;
             selected = selected.prev ? selected.prev : menu.items.last)
       {
@@ -708,8 +708,8 @@ public class PopupMenu : Window
    {
       ItemPtr selected, current = this.selected;
       for(selected = (current && current.next) ? current.next : menu.items.first;
-            selected && 
-            (selected.item.isDivider || selected.item.placement || ITEM_DISABLED(selected.item)) && 
+            selected &&
+            (selected.item.isDivider || selected.item.placement || ITEM_DISABLED(selected.item)) &&
             selected != current;
             selected = selected.next ? selected.next : menu.items.first)
       {
@@ -768,7 +768,7 @@ public class PopupMenu : Window
             Window parent = this.parent;
             Window activeClient = parent.activeClient;
             bool systemButtons = activeClient && activeClient.state == maximized;
-            
+
             keyboardFocus = true;
             pressed = true;
 
@@ -835,7 +835,7 @@ public class PopupMenu : Window
             int y = 0;
             int selectedY = 0;
             ItemPtr ptr;
-            
+
             for(ptr = menu.items.first; ptr; ptr = ptr.next)
             {
                MenuItem item = ptr.item;
@@ -843,7 +843,7 @@ public class PopupMenu : Window
                if(item.placement) continue; //&& !ptr.inserted) continue;
                if(selected == ptr)
                {
-                  
+
                   selectedY = y;
                   break;
                }
@@ -870,7 +870,7 @@ public class PopupMenu : Window
       MenuItem selection = selectionPtr.item;
       if(!ITEM_DISABLED(selection))
       {
-         Window master = this;      
+         Window master = this;
 
          if(!isMenuBar)
             master = master.master;
@@ -879,7 +879,7 @@ public class PopupMenu : Window
             master = selectionPtr.master;
          while(eClass_IsDerived(master._class, _class) && master.master)
             master = master.master;
-            
+
          if(selection.checkable)
             selection.checked = !selection.checked;
          else if(selection.radio)
@@ -906,7 +906,7 @@ public class PopupMenu : Window
          MenuItem item = ptr.item;
          if(item.subMenu)
          {
-            if(!CheckAccelerators(item.subMenu, key)) 
+            if(!CheckAccelerators(item.subMenu, key))
                return false;
          }
          else if(!item.isDivider)
@@ -926,7 +926,7 @@ public class PopupMenu : Window
       Menu menu = this.menu;
       // Mouse moved inside menu
       ItemPtr selected = null;
-      
+
       *selectedX = 0;
       *selectedY = 0;
 
@@ -949,7 +949,7 @@ public class PopupMenu : Window
                if(!helpBreak)
                {
                   ItemPtr nextPtr;
-                  
+
                   int breakX = clientSize.w - (systemButtons ? 48 : 0);
                   for(nextPtr = ptr.next; nextPtr; nextPtr = nextPtr.next)
                   {
@@ -1052,7 +1052,7 @@ public class PopupMenu : Window
       else
       {
          // Shiny gradient for menu bar
-         ColorKey keys[2] = 
+         ColorKey keys[2] =
          {
             { white, 0 },
             { popupMenuColor, 1 }
@@ -1270,7 +1270,7 @@ public class PopupMenu : Window
                if(key && menu)
                {
                   ItemPtr ptr;
-                  
+
                   for(ptr = menu.items.first; ptr; ptr = ptr.next)
                   {
                      MenuItem item = ptr.item;
@@ -1382,7 +1382,7 @@ public class PopupMenu : Window
                      if(MenuGoToNextItem())
                         Update(null);
                      result = false;
-                  }         
+                  }
                   break;
                case end:
                   if(!isMenuBar)
@@ -1391,7 +1391,7 @@ public class PopupMenu : Window
                      if(MenuGoToPrevItem())
                         Update(null);
                      result = false;
-                  }         
+                  }
                   break;
                case left:
                   if(isMenuBar)
@@ -1517,7 +1517,7 @@ public class PopupMenu : Window
                   if(key && menu)
                   {
                      //ItemPtr ptr;
-                     
+
                      if(ch >= 32 && !isMenuBar)
                         return false;
                      /*
@@ -1647,9 +1647,9 @@ public class PopupMenu : Window
 
       if(this != masterMenuBar)
       {
-         if(!*w) 
+         if(!*w)
             *w = 80;
-         if(!*h) 
+         if(!*h)
             *h = 20;
       }
       return true;
@@ -1685,7 +1685,7 @@ public class PopupMenu : Window
          else
          {
             *x = Min(*x, parent.clientSize.w - w);
-            *y = Min(*y, parent.clientSize.h - h);   
+            *y = Min(*y, parent.clientSize.h - h);
          }
          if(parent == guiApp.desktop)
          {
@@ -1723,7 +1723,7 @@ public class PopupMenu : Window
             if(this.selected)
             {
                Menu childMenu = selected.item.subMenu;
-               
+
                this.pressed = pressed;
 
                if(this.selected.item.subMenu)
@@ -1949,7 +1949,7 @@ public class PopupMenu : Window
                         break;
                      }
                }
-               if(destroy) 
+               if(destroy)
                {
                   if(MenuDestroyMasters(false))
                      return false;

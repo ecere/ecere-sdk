@@ -252,7 +252,7 @@ public class PathBox : CommonControl
          GetSystemPathBuffer(path, editBox.contents);
          if(!(path[0] == DIR_SEP && path[1] == DIR_SEP && (!path[2] || !strchr(&path[2], DIR_SEP))))
             exists = FileExists(path);
-         
+
          switch(typeExpected)
          {
             case any:
@@ -306,7 +306,7 @@ public:
             typeExpected = value;
             if(browseDialog && browseDialog.type == open && typeExpected == directory)
                browseDialog.type = selectDir;
-         }         
+         }
       }
    }
 

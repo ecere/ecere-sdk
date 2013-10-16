@@ -70,7 +70,7 @@ static bool CALLBACK EnumWindowsSetForeground(HWND hwnd, LPARAM lParam)
          if(parent) hwnd = parent; else break;
       }
       SetForegroundWindow(hwnd); //SetForegroundWindow( GetAncestor(hwnd, GA_ROOTOWNER));
-      return false;                                                                  
+      return false;
    }
    return true;
 }
@@ -97,7 +97,7 @@ static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window window)
 {
    int c;
    XFlush(xGlobalDisplay);
-   for(c = 0; c<4; c++) 
+   for(c = 0; c<4; c++)
    // while(true)
    {
       XWindowAttributes attributes = { 0 };
@@ -130,7 +130,7 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
             // printf("cant get _NET_WM_PID property\n");
             break;
          }
-      
+
          if(data)
          {
             int pid = *(int *)data;
@@ -152,7 +152,7 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
                      event.send_event = 1;
                      event.format = 32;
                      event.data.l[0] = 0;
-                     
+
                      XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
                   }
                   else
@@ -234,15 +234,15 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
 #ifdef __WIN32__
    HANDLE hProcessSnap;
    PROCESSENTRY32 pe32;
-   
+
    int childProcessId = 0;
-   
+
    hProcessSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-   
+
    if(hProcessSnap != INVALID_HANDLE_VALUE)
    {
       pe32.dwSize = sizeof(PROCESSENTRY32);
-   
+
       if(Process32First(hProcessSnap, &pe32))
       {
          do

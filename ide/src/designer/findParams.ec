@@ -16,22 +16,22 @@ static bool allocedDummyExp;
 static bool InsideIncl(Location loc, int line, int charPos)
 {
    /*
-   return (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) && 
+   return (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
           */
-   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) && 
+   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
 }
 
 static bool Inside(Location loc, int line, int charPos)
 {
-   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) && 
+   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos > charPos));
 }
 
 static bool InsideEndIncl(Location loc, int line, int charPos)
 {
-   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) && 
+   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
 }
 
@@ -110,7 +110,7 @@ Identifier FindParamsExpression(Expression exp, int line, int charPos)
       case bracketsExp:
       {
          Expression expression;
-         
+
          for(expression = exp.list->first; expression; expression = expression.next)
          {
             if(InsideIncl(&expression.loc, line, charPos))
@@ -129,7 +129,7 @@ Identifier FindParamsExpression(Expression exp, int line, int charPos)
             idResult = FindParamsExpression(exp.index.exp, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          for(expression = exp.index.index->first; expression; expression = expression.next)
          {
             if(InsideIncl(&expression.loc, line, charPos))
@@ -152,15 +152,15 @@ Identifier FindParamsExpression(Expression exp, int line, int charPos)
             if(!functionType && !instanceType)
             {
                functionType = type;
-               if(paramsInsideExp == exp.call.exp) 
+               if(paramsInsideExp == exp.call.exp)
                   paramsInsideExp = exp;
             }
             if(idResult) return idResult;
          }
-         
+
          if(exp.call.argLoc.start.line > line || (line == exp.call.argLoc.start.line && exp.call.argLoc.start.charPos >= charPos))
             arg = -1;
-         else 
+         else
             arg = 0;
 
          if(exp.call.arguments)
@@ -429,13 +429,13 @@ static Identifier FindParamsStatement(Statement stmt, int line, int charPos)
             idResult = FindParamsStatement(stmt.forStmt.init, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(stmt.forStmt.check && InsideIncl(&stmt.forStmt.check.loc, line, charPos))
          {
             idResult = FindParamsStatement(stmt.forStmt.check, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(stmt.forStmt.increment)
          {
             for(exp = stmt.forStmt.increment->first; exp; exp = exp.next)
@@ -462,7 +462,7 @@ static Identifier FindParamsStatement(Statement stmt, int line, int charPos)
          if(stmt.expressions)
          {
             Expression exp;
-            
+
             for(exp = stmt.expressions->first; exp; exp = exp.next)
             {
                if(InsideIncl(&exp.loc, line, charPos))
@@ -538,7 +538,7 @@ static Identifier FindParamsInitializer(Initializer initializer, int line, int c
       {
          Initializer init;
          Identifier idResult;
-         
+
          for(init = initializer.list->first; init; init = init.next)
          {
             if(InsideIncl(&init.loc, line, charPos))
@@ -658,7 +658,7 @@ static Identifier FindParamsSpecifier(Specifier spec, int line, int charPos)
 static Identifier FindParamsDeclaration(Declaration decl, int line, int charPos)
 {
    Identifier idResult;
-   
+
    switch(decl.type)
    {
       case structDeclaration:
@@ -704,7 +704,7 @@ static Identifier FindParamsDeclaration(Declaration decl, int line, int charPos)
                   idResult = FindParamsInitDeclarator(d, line, charPos);
                   if(idResult) return idResult;
                }
-            }   
+            }
          }
          break;
       }
@@ -721,7 +721,7 @@ static Identifier FindParamsFunction(FunctionDefinition func, int line, int char
    if(func.body && Inside(&func.body.loc, line, charPos))
    {
       Identifier idResult;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator.symbol;
       Type type = symbol.type;
@@ -877,7 +877,7 @@ static Identifier FindParamsInstance(Instantiation inst, int line, int charPos)
    }
    if(!insideParams && sym && sym.registered && InsideIncl(&inst.insideLoc, line, charPos) && insideBrackets && !insideSomething)
    {
-      if(dataMember && !method) 
+      if(dataMember && !method)
       {
          if(!dataMember.dataType)
             dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
@@ -933,7 +933,7 @@ static Identifier FindParamsClassFunction(ClassFunction func, int line, int char
    if(func.body && Inside(&func.body.loc, line, charPos))
    {
       Identifier idResult;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol ? symbol.type : null;
@@ -1095,7 +1095,7 @@ Identifier FindParamsTree(OldList ast, int line, int charPos)
       {
          switch(external.type)
          {
-            case functionExternal: 
+            case functionExternal:
                if(Inside(&external.loc, line, charPos))
                {
                   idResult = FindParamsFunction(external.function, line, charPos);
@@ -1103,7 +1103,7 @@ Identifier FindParamsTree(OldList ast, int line, int charPos)
                      return (idResult == (void *)-1) ? null : idResult;
                }
                break;
-            case declarationExternal: 
+            case declarationExternal:
                if(InsideIncl(&external.loc, line, charPos))
                {
                   idResult = FindParamsDeclaration(external.declaration, line, charPos);

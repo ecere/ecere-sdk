@@ -51,7 +51,7 @@ class ImageEntry : struct
       delete bitmap;
       delete referer;
       delete src;
-      bitmapPtrs.Free(null);     
+      bitmapPtrs.Free(null);
    }
 };
 
@@ -100,7 +100,7 @@ class ObjectThread : Thread
             RequestLink request;
 
             //((GuiApplication)__thisModule).Lock();
-            
+
             for(;!objectThreadTerminate;)
             {
                OldLink bitmapPtr;
@@ -117,11 +117,11 @@ class ObjectThread : Thread
                if(!request) break;
 
                entry = request.data;
-              
+
                strcpy(path, entry.src);
                //strcpy(referer, browserWindow.location ? browserWindow.location : "");
                strcpy(referer, entry.referer); //browserWindow.location ? browserWindow.location : "");
-            
+
                //((GuiApplication)__thisModule).Unlock();
 
                if(path && strstr(path, "http://") == path)
@@ -210,7 +210,7 @@ class ObjectThread : Thread
             objectThreadSemaphore.Wait();
          }
       }
-      objectThreadDead = true;   
+      objectThreadDead = true;
       return 0;
    }
 }
@@ -233,7 +233,7 @@ static void WriteBlock(File f, Block block)
 
    for(c = 0; c<indent; c++)
       f.Printf("   ");
-   
+
    switch(block.type)
    {
       case TEXT:
@@ -321,7 +321,7 @@ Window sharedWindow
       }
       return true;
    }
-   
+
    void OnUnloadGraphics()
    {
       ImageEntry entry;
@@ -360,7 +360,7 @@ class HTMLView : Window
             Block block = html.body;
             int textPos = 0;
             int centered = 0;
-            
+
             Surface surface = display.GetSurface(0,0,null);
             if(surface)
             {
@@ -402,11 +402,11 @@ class HTMLView : Window
          block.minW = 0;
          block.rowSpan = block.span = 1;
       }
-     
+
       for(b = block.subBlocks.first; b; b = b.next)
       {
          Clear(b);
-      }      
+      }
    }
    void ComputeSizes()
    {
@@ -419,9 +419,9 @@ class HTMLView : Window
       int centered = 0;
       Surface surface = display.GetSurface(0,0,null);
 
-      if(!initSize.w) 
+      if(!initSize.w)
          width = parent.clientSize.w;
-      if(!initSize.h) 
+      if(!initSize.h)
          height = parent.clientSize.h;
 
       if(surface)
@@ -458,7 +458,7 @@ class HTMLView : Window
          SetScrollArea(totalWidth, totalHeight, false);
          SetScrollArea(totalWidth, totalHeight, false);
       }
-      
+
       if(!initSize.w || !initSize.h)
          clientSize = Size {!initSize.w ? totalWidth : clientSize.w, !initSize.h ? totalHeight : clientSize.h };
    }
@@ -562,7 +562,7 @@ class HTMLView : Window
                objectsMutex.Wait();
                for(request = objectRequests.first; request; request = (RequestLink)request.next)
                {
-                  if(request.data == entry) 
+                  if(request.data == entry)
                      break;
                }
                if(!request)
@@ -743,7 +743,7 @@ class HTMLView : Window
             surface.font = font;
 
             PositionLine(this, surface, x - scroll.x, y - scroll.y,
-               maxW, newH, block, textPos, nextBlock, nextTextPos, 
+               maxW, newH, block, textPos, nextBlock, nextTextPos,
                left - scroll.x, right - scroll.x);
 
             if(changeLine)
@@ -800,7 +800,7 @@ class HTMLView : Window
       while(!opened)
       {
          char path[MAX_LOCATION];
-         
+
          if(this.location)
             delete this.location;
          this.location = CopyString(relocation);
@@ -1001,7 +1001,7 @@ class HTMLView : Window
             }
          }
          */
-         
+
       }
       ((GuiApplication)__thisModule.application).Unlock();
       // PrintLn("At position ", f.Tell(), " for ", fileName);
@@ -1054,7 +1054,7 @@ class HTMLView : Window
                delete f;
             }
          }
-         */         
+         */
       }
       NotifyPageOpened(master);
    }
@@ -1098,8 +1098,8 @@ class HTMLView : Window
       objectThread3.objectThreadSemaphore.Release();
       objectThread4.objectThreadSemaphore.Release();
 
-      
-      while(!objectThread1.objectThreadDead || 
+
+      while(!objectThread1.objectThreadDead ||
             !objectThread2.objectThreadDead ||
             !objectThread3.objectThreadDead ||
             !objectThread4.objectThreadDead)
@@ -1254,13 +1254,13 @@ class HTMLView : Window
          case tab:
             CycleChildren(false, false, false, true);
             return false;
-         case left: case right: 
+         case left: case right:
             horzScroll.OnKeyHit(key, character);
             break;
          case down: case up: case pageDown: case pageUp:
             vertScroll.OnKeyHit(key, character);
             break;
-      }   
+      }
       return true;
    }
 
@@ -1280,7 +1280,7 @@ class HTMLView : Window
             horzScroll.OnKeyDown(end, character);
             break;
          }
-      }   
+      }
       return true;
    }
 
@@ -1348,12 +1348,12 @@ class HTMLView : Window
 
             surface.font = font;
 
-            if(PickLine(this, surface, x - scroll.x, y - scroll.y, 
-               maxW, newH, block, textPos, nextBlock, nextTextPos, 
+            if(PickLine(this, surface, x - scroll.x, y - scroll.y,
+               maxW, newH, block, textPos, nextBlock, nextTextPos,
                left - scroll.x, right - scroll.x, pickX, pickY, pickBlock, pickTextPos))
             {
                result = true;
-               break;         
+               break;
             }
 
             if(changeLine)
@@ -1454,7 +1454,7 @@ class HTMLView : Window
       Open(newLocation, null);
       return true;
    }
-   
+
    bool OnLeftButtonUp(int x, int y, Modifiers mods)
    {
       if(clickedLink)
@@ -1484,7 +1484,7 @@ class HTMLView : Window
                int len;
                char * text;
 
-               if(location[strlen(location)-1] != '?') 
+               if(location[strlen(location)-1] != '?')
                {
                   strcat(location, "&");
                }

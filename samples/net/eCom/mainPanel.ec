@@ -46,7 +46,7 @@ class MainPanel : Window
       }
    };
    Button localHost
-   { 
+   {
       this, text = "Local Host", position = Point { 320, 30 }, size = Size { 80, 0 }, hotKey = altL;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -71,11 +71,11 @@ class MainPanel : Window
          return true;
        }
    };
-   
+
    EditBox log
    {
-      this, readOnly = true, multiLine = true, autoEmpty = true, hasVertScroll = true, hasHorzScroll = true, inactive = true, 
-      text = "Communication Log", 
+      this, readOnly = true, multiLine = true, autoEmpty = true, hasVertScroll = true, hasHorzScroll = true, inactive = true,
+      text = "Communication Log",
       anchor = Anchor { left = 10, top = 100, right = 10, bottom = 30 },
       contents = app.appName
    };
@@ -91,7 +91,7 @@ class MainPanel : Window
       {
          char * string = nameBox.contents;
          OldLink link;
-         for(link = connections.first; link; link = link.next) 
+         for(link = connections.first; link; link = link.next)
             ((Connection)link.data).SendName(string);
       }
    };
@@ -116,7 +116,7 @@ class MainPanel : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         Destroy(0); 
+         Destroy(0);
          return true;
       }
    };
@@ -161,7 +161,7 @@ class eComApp : GuiApplication
 class eComService : Service
 {
    MainPanel mainPanel;
-   
+
    port = ECOMMUNICATOR_PORT;
 
    void OnAccept()

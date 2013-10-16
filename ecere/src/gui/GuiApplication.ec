@@ -185,7 +185,7 @@ public class GuiApplication : Application
    char appName[1024];
    uint timerResolution;
 
-   Size virtualScreen;   
+   Size virtualScreen;
    Point virtualScreenPos;
 
    int64 mainThread;
@@ -193,7 +193,7 @@ public class GuiApplication : Application
    GuiApplication()
    {
       SystemCursor c;
-      
+
       mainThread = GetCurrentThreadID();
       if(!guiApp)
          guiApp = this;
@@ -396,7 +396,7 @@ public class GuiApplication : Application
    bool IsModeSwitching()
    {
       return modeSwitching;
-   }  
+   }
 
    public bool SetDesktopPosition(int x, int y, int w, int h, bool moveChildren)
    {
@@ -435,11 +435,11 @@ public class GuiApplication : Application
                {
                   child.x = desktop.x;
                   child.y = desktop.y;
-                  child.ComputeAnchors(, 
-                     A_LEFT,A_LEFT,A_OFFSET,A_OFFSET, 
+                  child.ComputeAnchors(,
+                     A_LEFT,A_LEFT,A_OFFSET,A_OFFSET,
                      &x, &y, &w, &h);
                   child.Position(, x, y, w, h, false, true, true, true, false);
-               }           
+               }
             }
          }*/
          if(desktop.display)
@@ -466,7 +466,7 @@ public class GuiApplication : Application
    }
 
    void SetAppFocus(bool state)
-   {  
+   {
       // Shouldn't be property here
       desktop.active = state;
    }
@@ -476,7 +476,7 @@ public class GuiApplication : Application
       bool result = false;
       subclass(Skin) skin;
       OldLink link;
-      
+
       for(link = class(Skin).derivatives.first; link; link = link.next)
       {
          skin = link.data;
@@ -484,7 +484,7 @@ public class GuiApplication : Application
             break;
       }
       if(!link) skin = null;
-      
+
       if(skin)
       {
          if(skin != currentSkin || !currentSkin)
@@ -506,7 +506,7 @@ public class GuiApplication : Application
                }
 
                UnapplySkin(class(Window));
-               
+
                currentSkin = skin;
 
                ApplySkin(class(Window), skin.name, null);
@@ -717,7 +717,7 @@ public:
                if(!Cycle(wait))
                   wait = false;
 
-               if(wait) 
+               if(wait)
                   Wait();
                else
                {
@@ -795,7 +795,7 @@ public:
          result |= UpdateTimers();
          result |= ProcessFileNotifications();
          */
-         
+
          result |= ProcessFileNotifications();
          result |= UpdateTimers();
          result |= interfaceDriver.ProcessInput(useProcessAll && processAll);
@@ -810,7 +810,7 @@ public:
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
       if(Desktop3DUpdateDisplay()) return;
 #endif
-      
+
       if(interfaceDriver)
       {
          if(fullScreenMode && desktop.display)
@@ -895,7 +895,7 @@ public:
 
          PauseNetworkEvents();
          network.mutex.Wait();
-         
+
    #ifdef DEBUG_SOCKETS
          if(network.connectEvent || network.networkEvent)
             Log("[P] [NProcess]\n");
@@ -1008,7 +1008,7 @@ public:
                         FD_SET(socket.s, &network.readSet);
                         FD_SET(socket.s, &network.exceptSet);
                         network.mutex.Release();
-                        
+
                         // printf("Calling OnConnect on %s\n", socket._class.name);
                         socket.OnConnect();
                         network.mutex.Wait();
@@ -1109,7 +1109,7 @@ public:
       if(skinName)
       {
          OldLink link;
-         
+
          for(link = class(Skin).derivatives.first; link; link = link.next)
          {
             skin = link.data;
@@ -1155,12 +1155,12 @@ public:
                break;
          }
          if(!link)
-            inter = null;      
+            inter = null;
       }
-   
+
       /*
       if(driverName)
-      {   
+      {
 #if defined(__WIN32__)
 #if !defined(ECERE_VANILLA)
          if(!strcmp(driverName, "Win32Console")) inter = (subclass(Interface))class(Win32ConsoleInterface); else
@@ -1173,7 +1173,7 @@ public:
       }
       */
 
-      if(interfaceDriver && (!driverName || (fbDriver && !strcmp(fbDriver, driverName))) && 
+      if(interfaceDriver && (!driverName || (fbDriver && !strcmp(fbDriver, driverName))) &&
          fullScreen == fbFullScreen &&
          (!resolution || resolution == fbResolution) &&
          (!colorDepth || colorDepth == fbColorDepth) &&
@@ -1215,7 +1215,7 @@ public:
             {
                if(!fbDriver || (driverName && strcmp(fbDriver, driverName)))
                   defaultDisplayDriver = driverName;
-      
+
                if(!skinName || !SelectSkin(skinName))
                {
                   if(!currentSkin || currentSkin.textMode != textMode ||
@@ -1223,7 +1223,7 @@ public:
                   {
                      OldLink link;
                      subclass(Skin) skin = null;
-                     
+
                      for(link = class(Skin).derivatives.first; link; link = link.next)
                      {
                         skin = link.data;
@@ -1244,7 +1244,7 @@ public:
                if(currentSkin && desktop.SetupDisplay())
                {
                   desktop.active = true;
-               
+
                   if(fullScreen)
                   {
                      desktop.display.Lock(false);
@@ -1285,7 +1285,7 @@ public:
       bool activity = false;
       FileMonitor monitor, next;
       static int reentrant = 0;
-      
+
       // Reentrant FileNotification is asking for trouble since each monitor is spawning a Modal() MessageBox
       if(reentrant) return false;
       // printf("[%d] Waiting in ProcessFileNotifications for fileMonitor Mutex %x...\n", (int)GetCurrentThreadID(), globalSystem.fileMonitorMutex);
@@ -1299,7 +1299,7 @@ public:
          incref monitor;
          if(next)
             incref next;
-         
+
          if(!monitor.reentrant && !monitor.toBeFreed)
          {
             monitor.reentrant = true;
@@ -1381,7 +1381,7 @@ public:
    {
       return interfaceDriver.GetMouseState(buttons, x, y);
    }
-   
+
    // Properties
    property char * appName
    {
@@ -1401,7 +1401,7 @@ public:
    {
       set
       {
-         SwitchMode(value, defaultDisplayDriver, resolution, 
+         SwitchMode(value, defaultDisplayDriver, resolution,
             pixelFormat, refreshRate, currentSkin ? currentSkin.name : null, true);
       }
       get { return this ? fullScreen : false; }
@@ -1410,16 +1410,16 @@ public:
    {
       set
       {
-         SwitchMode( fullScreen, value, resolution, pixelFormat, refreshRate, 
+         SwitchMode( fullScreen, value, resolution, pixelFormat, refreshRate,
             currentSkin ? currentSkin.name : null, true);
-       } 
+       }
        get { return this ? defaultDisplayDriver : null; }
    };
    property Resolution resolution
    {
       set
       {
-         SwitchMode(fullScreen, defaultDisplayDriver, value, pixelFormat, refreshRate, 
+         SwitchMode(fullScreen, defaultDisplayDriver, value, pixelFormat, refreshRate,
             currentSkin ? currentSkin.name : null, true);
       }
       get { return this ? resolution : 0; }
@@ -1428,7 +1428,7 @@ public:
    {
       set
       {
-         SwitchMode(fullScreen, defaultDisplayDriver, resolution, 
+         SwitchMode(fullScreen, defaultDisplayDriver, resolution,
             pixelFormat, refreshRate, currentSkin ? currentSkin.name : null, true);
       }
       get { return this ? pixelFormat : 0; }
@@ -1437,7 +1437,7 @@ public:
    {
       set
       {
-         SwitchMode(fullScreen, defaultDisplayDriver, resolution, 
+         SwitchMode(fullScreen, defaultDisplayDriver, resolution,
             pixelFormat, refreshRate, currentSkin ? currentSkin.name : null, true);
       }
       get { return this ? refreshRate : 0; }
@@ -1460,6 +1460,6 @@ public:
    property int numSkins { get { return 0; } };
    property uint timerResolution
    {
-      set { timerResolution = value; if(interfaceDriver) interfaceDriver.SetTimerResolution(value); } 
+      set { timerResolution = value; if(interfaceDriver) interfaceDriver.SetTimerResolution(value); }
    };
 };

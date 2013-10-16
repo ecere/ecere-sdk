@@ -58,7 +58,7 @@ public ColorAlpha * LoadPalette(char * fileName, char * type)
    int typeToTry = -1;
    Bitmap bitmap { };
 
-   if(!type) 
+   if(!type)
    {
       type = GetExtension(fileName, ext);
       strlwr(type);
@@ -83,7 +83,7 @@ public ColorAlpha * LoadPalette(char * fileName, char * type)
       }
       if(!palette)
       {
-         
+
          if(bitmap.Load(fileName, type, null))
          {
             palette = bitmap.Quantize(0, 255);
@@ -320,7 +320,7 @@ public:
          int acrossY = height / size;
 
          for(cy = 0; cy < acrossY; cy++)
-            for(cx = 0; cx < acrossX; cx++)         
+            for(cx = 0; cx < acrossX; cx++)
             {
                int x,y;
                Color in1, in2, res;
@@ -518,7 +518,7 @@ public:
       int typeToTry = -1;
 
       if(!fileName) return false;
-      if(!type) 
+      if(!type)
       {
          type = GetExtension(fileName, ext);
          strlwr(type);
@@ -553,7 +553,7 @@ public:
                   break;
                }
                delete f;
-            }         
+            }
          }
          if(typeToTry == -1) break;
       }
@@ -593,7 +593,7 @@ public:
             Bitmap grayed { };
 
             grayed.Allocate(null, width, height, 0, pixelFormat888, false);
-         
+
             for(y = 0;  y <height - 1; y++)
             {
                for(x = 0; x < width - 1; x++)
@@ -603,23 +603,23 @@ public:
                   if(/*b.a > 128 && */(b.r + b.g + b.b) < TRESHOLD)
                   {
                      // TODO: Precomp syntax error here without brackets
-                     ((ColorAlpha *)grayed.picture)[(y + 1) * grayed.stride + (x + 1)] = 
+                     ((ColorAlpha *)grayed.picture)[(y + 1) * grayed.stride + (x + 1)] =
                         ColorAlpha { b.a, white };
                   }
                }
             }
-            
+
             for(c = 0; c<size; c++)
             {
                ColorRGBA b = ((ColorRGBA *)picture)[c];
                //if(b.a > 128)
                {
-                  ((ColorAlpha *)grayed.picture)[c] = 
-                     (/*b.a > 128 && */b.r + b.g + b.b < TRESHOLD) ? 
+                  ((ColorAlpha *)grayed.picture)[c] =
+                     (/*b.a > 128 && */b.r + b.g + b.b < TRESHOLD) ?
                         ColorAlpha { b.a, { 128, 128, 128 } } : ColorAlpha { b.a, { 212, 208, 200 } };
                }
             }
-            
+
             Free();
 
             pixelFormat = grayed.pixelFormat;
@@ -651,8 +651,8 @@ public:
             Bitmap grayed { };
 
             grayed.Allocate(null, width, height, 0, pixelFormat888, false);
-         
-            
+
+
             for(y = 0;  y <height - 1; y++)
             {
                for(x = 0; x < width - 1; x++)
@@ -662,24 +662,24 @@ public:
                   if(b && (palette[b].color.r + palette[b].color.g + palette[b].color.b) < TRESHOLD)
                   {
                      // TODO: Precomp syntax error here without brackets
-                     ((ColorAlpha *)grayed.picture)[(y + 1) * grayed.stride + (x + 1)] = 
+                     ((ColorAlpha *)grayed.picture)[(y + 1) * grayed.stride + (x + 1)] =
                         ColorAlpha { 255, white };
                   }
                }
             }
-            
+
             for(c = 0; c<size; c++)
             {
                byte b = picture[c];
                if(b)
                {
-                  ((ColorAlpha *)grayed.picture)[c] = 
+                  ((ColorAlpha *)grayed.picture)[c] =
                      //(bitmap.palette[b].color) ? Color { 212, 208, 200 } : Color { 128,128,128 };
-                     (palette[b].color.r + palette[b].color.g + palette[b].color.b < TRESHOLD) ? 
+                     (palette[b].color.r + palette[b].color.g + palette[b].color.b < TRESHOLD) ?
                         ColorAlpha { 255, { 128, 128, 128 } } : ColorAlpha { 255, { 212, 208, 200 } };
                }
             }
-            
+
             Free();
 
             pixelFormat = grayed.pixelFormat;
@@ -718,9 +718,9 @@ public:
          {
             int x, y;
             Bitmap grayed { };
-            
+
             grayed.Allocate(null, width, height, 0, pixelFormat888, false);
-         
+
             for(y = 0; y<height - 1; y++)
             {
                for(x = 0; x<width - 1; x++)
@@ -788,7 +788,7 @@ public:
       char ext[MAX_EXTENSION];
       subclass(BitmapFormat) format;
 
-      if(!type) 
+      if(!type)
       {
          type = GetExtension(fileName, ext);
          strlwr(type);
@@ -905,7 +905,7 @@ public:
 
          c = 0;
          mainNode.AddNodeToColorTable(palette + start, &c);
-         
+
          {
             Bitmap newBitmap { };
             if(newBitmap.Allocate(null, width, height, 0, pixelFormat8, false))
@@ -913,12 +913,12 @@ public:
                int y, x;
                ColorAlpha * picture = (ColorAlpha *)this.picture;
                byte * newPicture = newBitmap.picture;
-            
+
                for(y = 0; y < height; y++)
                   for(x = 0; x < width; x++, picture++, newPicture++)
                   {
                      byte color;
-                     
+
                      if(transparent && start > 0 && !picture->a)
                         color = 0;
                      else

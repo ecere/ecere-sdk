@@ -226,7 +226,7 @@ class S3M
          mixer.Release();
       }
    }
-   
+
    void PlayNote(Mixer mixer, Instrument ins, uint16 note, uint16 octave, byte volume, uint16 channel)
    {
       uint32 note_st3period;
@@ -250,7 +250,7 @@ class S3M
             double freq = 14317456.0 / note_st3period / 22150/2;
             //double freq = 500.0/note_st3period;
             Voice v = voices[channel-1];
-            
+
             if(!v)
             {
                v = mixer.Play(ins.sound, vol, bal, freq);
@@ -431,7 +431,7 @@ class S3M
 
 // There are 12 half-tones in an octave, and the frequency doubles in an octave.
 define Do = 1.0;
-define Do_ = 1.0594630943592952645618252949463; // The root 12 of 2. 
+define Do_ = 1.0594630943592952645618252949463; // The root 12 of 2.
 define Re = Do_*Do_;
 define Re_ = Re*Do_;
 define Mi = Re_*Do_;
@@ -467,7 +467,7 @@ class MainWindow : Window
       //s3m.Load("forgivme.s3m");
       //s3m.Load("quiadroi.s3m");
       //s3m.Load("everyido.s3m");
-      //s3m.Load("saywords.s3m");      
+      //s3m.Load("saywords.s3m");
       //s3m.Load("keven1.s3m");
 
       instrument = s3m.instruments[0].sound;
@@ -478,7 +478,7 @@ class MainWindow : Window
    {
       delete mixer;
    }
-   
+
    Timer pbTimer
    {
       this, 0.01, true;

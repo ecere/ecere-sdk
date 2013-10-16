@@ -41,7 +41,7 @@ public struct Box
    void ClipOffset(Box against, int x, int y)
    {
       // Clip Top Left
-      //if(against) 
+      //if(against)
       {
          if(left   + x < against.left)   left   = against.left   - x;
          if(top    + y < against.top)    top    = against.top    - y;
@@ -64,7 +64,7 @@ public struct Box
    void Clip(Box against)
    {
       // Clip Top Left
-      if(against != null) 
+      if(against != null)
       {
          if(left   < against.left)   left   = against.left;
          if(top    < against.top)    top    = against.top;
@@ -95,7 +95,7 @@ public struct Box
    }
 
    property int width
-   { 
+   {
       set { right = left + value - 1; }
       get { return right - left + 1; }
    }
@@ -114,7 +114,7 @@ public class Radians : Angle
    public property Angle { };
 }
 
-public class Degrees : Angle 
+public class Degrees : Angle
 {
    public property Radians
    {

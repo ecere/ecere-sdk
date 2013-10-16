@@ -9,7 +9,7 @@ class HelloForm : Window
 
    Label label
    {
-      this, position = { 10, 10 }, font = { "Arial", 30 }, 
+      this, position = { 10, 10 }, font = { "Arial", 30 },
       text = "Hello, World!!"
    };
 };

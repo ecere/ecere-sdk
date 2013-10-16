@@ -49,7 +49,7 @@ public struct MapIterator<class KT, class V> : Iterator<V, IT = KT>
    }
    property V value
    {
-      get { return container.GetData(pointer); } 
+      get { return container.GetData(pointer); }
       set { container.SetData(pointer, value); }
    }
 };
@@ -182,7 +182,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          if(class(MT).type == structClass || class(V).type == structClass)
          {
             uint size = sizeof(class MapNode<MT, V>);
-            
+
             if(class(MT).type == structClass) size += class(MT).typeSize - sizeof(node.AVLNode::key);
             if(class(V).type == structClass) size += class(V).typeSize - sizeof(*&node.value);
             node = (MapNode<MT, V>)new0 byte[size];

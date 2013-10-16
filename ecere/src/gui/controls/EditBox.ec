@@ -103,7 +103,7 @@ class EditBoxBits
 
    bool recomputeSyntax:1;
    bool cursorFollowsView:1;
-   
+
    // bool lineNumbers:1;
    bool autoSize:1;
 };
@@ -146,7 +146,7 @@ public class OldArray
       delete ((ArrayImpl)this).array;
    }
 
-public:   
+public:
    Class type;
    property uint size
    {
@@ -154,7 +154,7 @@ public:
       {
          if(((ArrayImpl)this).array)
          {
-            if(value == size) 
+            if(value == size)
                return;
             ((ArrayImpl)this).array = renew0 ((ArrayImpl)this).array byte[type.typeSize * value];
          }
@@ -207,7 +207,7 @@ public:
    {
       actions.Free();
    }
-   
+
    void Undo()
    {
       dontRecord++;
@@ -356,7 +356,7 @@ static class DelTextAction : UndoAction
 #ifdef _DEBUG
    void Print(EditBox editBox)
    {
-      PrintLn("DelText: y1 = ", y1, "x1 = ", x1, ", y2 = ", y2, ", x2 = ", x2, ", string = ", string, ", addedSpaces = ", addedSpaces, ", placeAfter = ", placeAfter);   
+      PrintLn("DelText: y1 = ", y1, "x1 = ", x1, ", y2 = ", y2, ", x2 = ", x2, ", string = ", string, ", addedSpaces = ", addedSpaces, ", placeAfter = ", placeAfter);
    }
 #endif
    void Undo(EditBox editBox)
@@ -376,10 +376,10 @@ static class DelTextAction : UndoAction
             editBox.DelCh(editBox.line, y1, x1 - addedSpaces, editBox.line, y1, x1, false);
       }
       else
-      {  
+      {
          editBox.selY = y1;
          editBox.selX = x1;
-         { int c; editBox.selLine = editBox.lines.first; for(c = 0; c < editBox.selY && editBox.selLine; c++, editBox.selLine = editBox.selLine.next); }         
+         { int c; editBox.selLine = editBox.lines.first; for(c = 0; c < editBox.selY && editBox.selLine; c++, editBox.selLine = editBox.selLine.next); }
          //editBox.SetViewToCursor(true);
 
          if(addedSpaces)
@@ -422,7 +422,7 @@ static class ReplaceTextAction : UndoAction
 #ifdef _DEBUG
    void Print(EditBox editBox)
    {
-      PrintLn("ReplaceText: y1 = ", y1, "x1 = ", x1, ", y2 = ", y2, ", x2 = ", x2, ", y3 = ", y3, ", x3 = ", x3, ", oldString = ", oldString, ", newString = ", newString, ", addedSpaces = ", addedSpaces, ", addedTabs = ", addedTabs, ", placeAfter = ", placeAfter);   
+      PrintLn("ReplaceText: y1 = ", y1, "x1 = ", x1, ", y2 = ", y2, ", x2 = ", x2, ", y3 = ", y3, ", x3 = ", x3, ", oldString = ", oldString, ", newString = ", newString, ", addedSpaces = ", addedSpaces, ", addedTabs = ", addedTabs, ", placeAfter = ", placeAfter);
    }
 #endif
    void Undo(EditBox editBox)
@@ -481,7 +481,7 @@ static class ReplaceTextAction : UndoAction
 /*
 static class MoveTextAction : UndoAction
 {
-   int fy1, fx1, fy2, fx2; 
+   int fy1, fx1, fy2, fx2;
    int ty, tx;
    type = class(MoveTextAction);
 
@@ -530,7 +530,7 @@ private:
    {
       char * buffer;
       int newSize;
-      
+
       // Adds '\0' byte
       count = count+1;
 
@@ -592,7 +592,7 @@ public struct BufferLocation
             if(y > end.y)
                y -= end.y - start.y;
             // Location is the last touched line
-            else 
+            else
             {
                if(x >= end.x)
                {
@@ -624,7 +624,7 @@ public struct BufferLocation
                for(c = 0, line = start.line; c<numLines; c++)
                   line = line.next;
                y += numLines;
-               //x += numLines ? end.x : (end.x - start.x);            
+               //x += numLines ? end.x : (end.x - start.x);
                x += end.x - start.x;
             }
          }
@@ -735,7 +735,7 @@ public:
    property bool textVertScroll { property_category $"Behavior" set { style.vScroll = value; } get { return style.vScroll; } };
    property bool readOnly
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          style.readOnly = value;
@@ -771,7 +771,7 @@ public:
    property EditLine line { get { return this.line; } }; // TODO: Add Set   this.line = this.lines[10]
    property char * contents
    {
-      property_category $"Data" 
+      property_category $"Data"
       set
       {
          if(this)
@@ -796,7 +796,7 @@ public:
             /* Can't implement this right now because of memory leak... Need string reference counting...
             if(style.multiLine)
             {
-               
+
                EditLine line;
                int len = 0;
 
@@ -829,7 +829,7 @@ public:
          char * buffer = null;
          if(style.multiLine)
          {
-            
+
             EditLine line;
             int len = 0;
 
@@ -845,7 +845,7 @@ public:
                len += lineLen;
                if(line.next) buffer[len++] = '\n';
             }
-            buffer[len] = '\0';         
+            buffer[len] = '\0';
          }
          return buffer;
       }
@@ -887,7 +887,7 @@ private:
    int lineCount;
    // Font Space size
    Size space, large;
-   
+
    // Position of Caret (Not necessarily displayed position)
    int x,y;
    int col;
@@ -903,7 +903,7 @@ private:
    // ViewX is x offset in pixels, ViewY is y offset in lines
    int viewX, viewY;
    // viewLine is first displayed line
-   EditLine viewLine; 
+   EditLine viewLine;
 
    // start and end of area to redraw
    int startY, endY;
@@ -976,7 +976,7 @@ private:
    MenuItem itemEditPaste
    {
       editMenu, $"Paste\tCtrl+V", p;
-   
+
       bool NotifySelect(MenuItem item, Modifiers mods)
       {
          if(!(style.readOnly))
@@ -1091,7 +1091,7 @@ private:
       {
          ReplaceDialog dialog
          {
-            master = master, 
+            master = master,
             isModal = true,
             searchString = searchString,
             replaceString = replaceString,
@@ -1148,7 +1148,7 @@ private:
    EditBox()
    {
       static bool syntaxInit = false;
-      if(!syntaxInit) 
+      if(!syntaxInit)
       {
          int g,c;
          syntaxInit = true;
@@ -1186,7 +1186,7 @@ private:
       maxLineSize = MAXINT;
 
       tabSize = 3;
-      
+
       overwrite = false;
       mouseSelect = this.mouseMove = false;
       line = null;
@@ -1195,7 +1195,7 @@ private:
       col = 0;
       y = -1;
       line = selLine = null;
-      viewX = 0;   
+      viewX = 0;
       viewY = 0;
       maxLength = 0;
       maxLine = null;
@@ -1251,13 +1251,13 @@ private:
                   surface.Area(XOFFSET + *x - 1, y, XOFFSET + *x + w, y + space.h-1);
                   // WHATS UP WITH THIS...  surface.Area(XOFFSET + *x, y, XOFFSET + *x + w, y + space.h-1);
                *x += w;
-            }      
+            }
          }
          *renderStart = wc;
       }
    }
 
-   int CheckColors(EditLine line, int wc, bool selection, int selX, int editX, bool *selected, 
+   int CheckColors(EditLine line, int wc, bool selection, int selX, int editX, bool *selected,
                    Color selectionForeground, Color selectionBackground, Color textColor, Color *foreground, Color *background, bool *opacity, bool *overwrite)
    {
       bool flush = false;
@@ -1384,7 +1384,7 @@ private:
             }
             continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
          }
-         
+
          style.continuedSingleLineComment = continuedSingleLineComment;
          style.inMultiLineComment = inMultiLineComment;
          style.wasInMultiLine = wasInMultiLine;
@@ -1392,7 +1392,7 @@ private:
          style.escaped = escaped;
       }
    }
-   
+
    /*void OnDrawOverChildren(Surface surface)
    {
       if(style.lineNumbers)
@@ -1410,13 +1410,13 @@ private:
             else
                surface.SetBackground(Color{230, 230, 230});
             surface.textOpacity = true;
-            
+
             sprintf(lineText,"%5u ", currentLineNumber % 100000);
             if(currentLineNumber > this.lineCount)
                surface.WriteText(0,i*space.h+1,"      ",6);
             else
                surface.WriteText(0,i*space.h+1,lineText,6);
-            
+
             currentLineNumber++;
          }
       }
@@ -1434,7 +1434,7 @@ private:
       Color textColor;
       Box box;
       int maxW = clientSize.w;
-      
+
       Color foreground, background;
       bool opacity;
 
@@ -1459,8 +1459,8 @@ private:
       textColor = defaultTextColor;
 
       if(
-         Abs(selectionBackground.r - property::background.r) + 
-         Abs(selectionBackground.g - property::background.g) + 
+         Abs(selectionBackground.r - property::background.r) +
+         Abs(selectionBackground.g - property::background.g) +
          Abs(selectionBackground.b - property::background.b) < 92)
       {
          selectionBackground = formColor;
@@ -1488,7 +1488,7 @@ private:
          selX  = this.selX;
       }
       else
-      {  
+      {
          editX = Min(this.x,this.line.count);
          selX  = Min(this.selX,this.selLine.count);
       }
@@ -1516,7 +1516,7 @@ private:
          int start = 0;
          Color newTextColor = textColor = defaultTextColor;
          bool lineComplete = false;
-        
+
 
          // ****** SYNTAX HIGHLIGHTING ******
          bool lastWasStar = false;
@@ -1541,7 +1541,7 @@ private:
             surface.SetBackground(selected ? SELECTION_COLOR|0xFF000000 : BLACK|0xFF000000);
          }
    */
-         
+
          if(line == this.selLine && line == this.line)
          {
             end = Max(line.count, this.x);
@@ -1568,7 +1568,7 @@ private:
                y += space.h;
                lineComplete = false;
             }
-            
+
             textColor = newTextColor;
             if(!selected)
             {
@@ -1598,7 +1598,7 @@ private:
                   unichar bf = (wordLen == 1) ? line.buffer[c-1] : 0;
                   //if(ch == ' ' || ch == '\t' || (wordLen && (ch == '(' || ch == ')' || ch == ';' || ch == ':')) || (wordLen == 1 && line.buffer[c-1] == '('))
                   if(CharMatchCategories(ch, separators) || /*ch == ' ' ||*/ ch == '\t' ||
-                     (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && ch != '#' /*&& ch != '_'*/) || 
+                     (wordLen && !CharMatchCategories(ch, numbers|letters|marks|connector) && ch != '#' /*&& ch != '_'*/) ||
                      (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && bf != '#' && bf != '\t' /*&& bf != '_' && bf != ' '*/))
                      break;
                   wordLen++;
@@ -1606,7 +1606,7 @@ private:
 
                if(!wordLen)
                {
-               
+
                   for(; c<line.count; c++)
                   {
                      unichar ch = line.buffer[c];
@@ -1757,7 +1757,7 @@ private:
                               if(firstWord)
                               {
                                  inPrep = true;
-                                 newTextColor = colorScheme.preprocessorColor; 
+                                 newTextColor = colorScheme.preprocessorColor;
                               }
                            }
                            if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
@@ -1810,7 +1810,7 @@ private:
                         }
                      }
                   }
-               
+
                   // If we're not breaking, this can't be rendered as spacing anymore
                   spacing = false;
 
@@ -1925,11 +1925,11 @@ private:
             surface.Area(x + XOFFSET - 1,y,clientSize.w-1,y+this.space.h-1);
          }
          */
-         
+
          continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
 
          y+=this.space.h;
-         if(y > box.bottom) // >=clientSize.h) 
+         if(y > box.bottom) // >=clientSize.h)
             break;
       }
 
@@ -2007,7 +2007,7 @@ private:
                len = 1;
             }
             else
-               FontExtent(display, font, line.buffer + start, len, &w, null); 
+               FontExtent(display, font, line.buffer + start, len, &w, null);
          }
          else
          {
@@ -2015,7 +2015,7 @@ private:
             c++;
          }
          x += w;
-      }               
+      }
       line.length = x;
 
       if(line.length > this.maxLength)
@@ -2050,7 +2050,7 @@ private:
    {
       if(this.selY != this.y)
          DirtyAll();
-      else if(this.selX != this.x)  // commented out to erase caret: if(this.selX != this.x) 
+      else if(this.selX != this.x)  // commented out to erase caret: if(this.selX != this.x)
          DirtyLine(this.y);
    }
 
@@ -2076,12 +2076,12 @@ private:
    {
       return _DelCh(l1, y1, c1, l2, y2, c2, placeAfter, null);
    }
-   
+
    bool HasCommentOrEscape(EditLine line)
    {
       bool hadComment = strstr(line.buffer, "/*") || strstr(line.buffer, "*/");
       int c;
-      
+
       if(!hadComment)
       {
          for(c = line.count-1; c >= 0; c--)
@@ -2098,7 +2098,7 @@ private:
       }
       return hadComment;
    }
-   
+
    int _DelCh(EditLine l1, int y1, int c1, EditLine l2, int y2, int c2, bool placeAfter, int * addedSpacesPtr)
    {
       EditLine line = l1, next;
@@ -2128,7 +2128,7 @@ private:
       {
          byte ch = buffer[c1];
          if(UTF8_IS_FIRST(ch)) break;
-         c1--;         
+         c1--;
          extras++;
       }
       oldCount2 = l2.count;
@@ -2145,7 +2145,7 @@ private:
       {
          int len;
          char * string;
-         
+
          len = GetText(null, l1, y1, start, l2, y2, c2, false, false);
          string = new char[len];
          action = DelTextAction { y1 = y1, x1 = start, y2 = y2, x2 = c2, string = string, placeAfter = placeAfter };
@@ -2179,7 +2179,7 @@ private:
       else
          buffer = l2.buffer;
 
-      if(!line.AdjustBuffer(newLineCount)) 
+      if(!line.AdjustBuffer(newLineCount))
          return;
 
 #ifdef _DEBUG
@@ -2232,7 +2232,7 @@ private:
          {
             this.lineCount--;
             delete line.buffer;
-       
+
             if(line == this.viewLine)
             {
                if(this.viewLine.next)
@@ -2241,7 +2241,7 @@ private:
                   //this.viewY++;
                   style.recomputeSyntax = true;
                }
-               else 
+               else
                {
                   this.viewLine = this.viewLine.prev;
                   this.viewY--;
@@ -2258,7 +2258,7 @@ private:
                   this.x = this.line.count;
                   //this.y++;
                }
-               else 
+               else
                {
                   this.line = this.line.prev;
                   this.x = this.line.count;
@@ -2275,7 +2275,7 @@ private:
                   this.dropLine = this.dropLine.next;
                   this.dropX = this.dropLine.count;
                }
-               else 
+               else
                {
                   this.dropLine = this.dropLine.prev;
                   this.dropX = this.dropLine.count;
@@ -2291,7 +2291,7 @@ private:
                   this.selLine = this.selLine.next;
                   this.selX = this.selLine.count;
                }
-               else 
+               else
                {
                   this.selLine = this.selLine.prev;
                   this.selX = this.selLine.count;
@@ -2357,7 +2357,7 @@ private:
       bool hadComment = false;
       // Add the line here
       EditLine line = this.line;
-         
+
       // The purpose of this is solely to lock a max number of characters if no HSCROLLING is present
       if(!style.hScroll && created)
       {
@@ -2399,7 +2399,7 @@ private:
             }
             x += w;
 
-            if(x >= clientSize.w) 
+            if(x >= clientSize.w)
             {
                count = c - max;
                break;
@@ -2412,7 +2412,7 @@ private:
       {
          int addedSpaces = 0;
          int addedTabs = 0;
-         
+
          // Add blank spaces if EES_FREECARET
          if(this.x > line.count)
          {
@@ -2469,7 +2469,7 @@ private:
          {
             BufferLocation before = { this.line, this.y, this.x }, after = { this.line, this.y, this.x };
             bool hasComment;
-         
+
             memmove(line.buffer+this.x+count, line.buffer+this.x,line.count-this.x);
             CopyBytes(line.buffer + this.x + addedTabs + addedSpaces, stringLine, count);
             if(addedTabs)
@@ -2493,7 +2493,7 @@ private:
 #endif
                line.count += addedSpaces;
                if(addedSpacesPtr) *addedSpacesPtr = addedSpaces;
-            }      
+            }
             else if(addedSpacesPtr)
                *addedSpacesPtr = 0;
 #ifdef _DEBUG
@@ -2511,7 +2511,7 @@ private:
             ComputeLength(line);
             ComputeColumn();
 
-            after.x = this.x; 
+            after.x = this.x;
 
             hasComment = HasCommentOrEscape(line);
             if(!undoBuffer.insideRedo)
@@ -2643,7 +2643,7 @@ private:
       this.endY = clientSize.h-1;
       //ErrorLog("DirtyEnd %d\n", y);
    }
-        
+
    void DirtyLine(int y)
    {
       if(y >= this.viewY)
@@ -2765,7 +2765,7 @@ private:
                         len = 1;
                      }
                      else
-                        FontExtent(display, this.font, line.buffer + start, len, &w, null); 
+                        FontExtent(display, this.font, line.buffer + start, len, &w, null);
                   }
                   else
                   {
@@ -2773,7 +2773,7 @@ private:
                      c++;
                   }
                   x += w;
-               }               
+               }
             }
             if(setCaret)
                caretX = x;
@@ -2867,20 +2867,20 @@ private:
                len = 1;
             }
             else
-               FontExtent(display, font, line.buffer + start, len, &w, null); 
+               FontExtent(display, font, line.buffer + start, len, &w, null);
          }
-         else 
+         else
          {
             if(style.freeCaret && c < max)
                w = space.w;
-            else 
+            else
             {
                if(px) *px = x;
                return c;
             }
             c++;
          }
-         if(x + (((half && len == 1) ? (w / 2) : w)) >= position) 
+         if(x + (((half && len == 1) ? (w / 2) : w)) >= position)
          {
             int lastW;
             while(len > 0)
@@ -2915,7 +2915,7 @@ private:
       if(this.x < c)
          this.x = x;
       else
-      { 
+      {
          c = AdjustXPosition(line, viewX + clientSize.w - 1, false, &x, MAXINT, c);
          if(this.x > c)
             this.x = c;
@@ -2938,7 +2938,7 @@ private:
    {
       int c, numLines;
       EditLine oldLine = this.line;
-      
+
       bool selecting = this.x != this.selX || this.y != this.selY;
 
       numLines = clientSize.h / this.space.h;
@@ -3094,7 +3094,7 @@ private:
 
          popup = PopupMenu { master = this, menu = contextMenu,
    /*
-            nonClient = true, interim = false, parent = parent, 
+            nonClient = true, interim = false, parent = parent,
             position = { x + clientStart.x + parent.clientStart.x + position.x, y + cientStart.y + parent.sy + clientStart.y + position.y };
    */
             position = { x + clientStart.x + absPosition.x - guiApp.desktop.position.x, y + clientStart.y + absPosition.y - guiApp.desktop.position.y }
@@ -3161,7 +3161,7 @@ private:
          }
          ComputeColumn();
       }
-      
+
       UpdateDirty();
       UpdateCaretPosition(true);
       return true;
@@ -3173,9 +3173,9 @@ private:
 
       mouseSelect = false;
       wordSelect = false;
-      
+
       x -= XOFFSET;
-      
+
       ReleaseCapture();
       if(!style.readOnly)
       {
@@ -3280,10 +3280,10 @@ private:
       EditLine line;
       bool needScroll;
 
-      if(mods != -1 && mods.isSideEffect) 
-      { 
-         SetSelectCursor(); 
-         return true; 
+      if(mods != -1 && mods.isSideEffect)
+      {
+         SetSelectCursor();
+         return true;
       }
       if(style.noSelect) return true;
       if(wordSelect) return true;
@@ -3296,11 +3296,11 @@ private:
       {
          if(!needScroll)
             timer.Stop();
-         else 
+         else
          {
             if(needScroll)
                timer.Start();
-            if(mods != -1 && 
+            if(mods != -1 &&
                ((style.hScroll) || (style.vScroll)))
                return true;
          }
@@ -3544,7 +3544,7 @@ private:
                         if(!IS_ALUNDER(this.line.buffer[i]))
                            break;
                      }
-                     
+
                      for(; i < this.line.count; i++)
                      {
                         //Delete trailing whitespace
@@ -3562,7 +3562,7 @@ private:
                      Modified();
                   }
                }
-               else 
+               else
                {
                   if(!(style.freeCaret))
                   {
@@ -3612,7 +3612,7 @@ private:
 
                if(this.x < this.line.count)
                   stuffAfter = true;
-                  
+
                //If last character is a { indent one tab
                if(this.line.buffer[this.x - 1] == '{')
                {
@@ -3725,10 +3725,10 @@ private:
                      {
                         byte ch = line.buffer[c];
                         if(UTF8_IS_FIRST(ch)) break;
-                     } 
+                     }
 
                   }
-                  // No next word found, 
+                  // No next word found,
                   if(!found && ( this.x > 0 || (!line.count && this.x)))
                   {
                      foundAlpha = true;
@@ -3759,7 +3759,7 @@ private:
                      {
                         byte ch = buffer[x];
                         if(UTF8_IS_FIRST(ch)) break;
-                     } 
+                     }
                   }
                   else
                      x--;
@@ -3807,7 +3807,7 @@ private:
                   EditLine line, lastLine;
                   int y = this.y;
                   int lastC, lastY, lastNumBytes;
-                  
+
                   for(line = this.line; (line && !found); line = line.next, y++)
                   {
                      int start = (line == this.line) ? this.x : 0;
@@ -3839,7 +3839,7 @@ private:
                         lastY = y;
                         break;
                      }
-                  }  
+                  }
                   if(found)
                   {
                      DirtyLine(this.y);
@@ -3879,7 +3879,7 @@ private:
                            break;
                         }
                      }
-                     // No next word found, 
+                     // No next word found,
                      if(!found && (c != this.x || line != this.line))
                      {
                         found = true;
@@ -3905,7 +3905,7 @@ private:
                      {
                         byte ch = buffer[x];
                         if(UTF8_IS_FIRST(ch)) break;
-                     } 
+                     }
                   }
                   else
                      x++;
@@ -3940,7 +3940,7 @@ private:
             else
             {
                if(style.stuckCaret) break;
-               
+
                if(!shift) SelDirty();
                DirtyLine(this.y);
 
@@ -3953,7 +3953,7 @@ private:
                   this.y--;
                   this.x = AdjustXPosition(line, caretX, true, null, MAXINT, 0);
                }
-               
+
                DirtyLine(this.y);
                if(!shift) _Deselect();
                ComputeColumn();
@@ -4006,7 +4006,7 @@ private:
                            len = (nextSpace - (text + textPos));
                         else
                            len = line.count - textPos;
-                        
+
                         if(textPos < line.count)
                         {
                            display.FontExtent(font, text + textPos, len, &w, null);
@@ -4075,7 +4075,7 @@ private:
                   return false;
                }
                */
-               
+
                // PREVIOUS CODE
                /*
                if(this.line.prev)
@@ -4119,7 +4119,7 @@ private:
 
                   if(!shift) SelDirty();
                   DirtyLine(this.y);
-                  
+
                   if(style.wrap)
                   {
                      /*
@@ -4140,7 +4140,7 @@ private:
                   if(!shift) _Deselect();
                   ComputeColumn();
                   SetViewToCursor(false);
-                  
+
                   /*
                   while(!textPos || (style.freeCaret || textPos<line.count))
                   {
@@ -4163,7 +4163,7 @@ private:
                            len = (nextSpace - (text + textPos));
                         else
                            len = line.count - textPos;
-                        
+
                         if(textPos < line.count)
                         {
                            display.FontExtent(font, text + textPos, len, &w, &th);
@@ -4192,11 +4192,11 @@ private:
                                  this.x--;
                               else
                                  while(this.x > 0 && !UTF8_IS_FIRST(text[--this.x]));
-                                 
+
                               len = this.x - startPos;
                               display.FontExtent(font, text + startPos, len, &x, null);
                            }
-                           
+
                            if(!shift) _Deselect();
                            ComputeColumn();
 
@@ -4214,7 +4214,7 @@ private:
 
                         SetViewToCursor(false);
                         return false;
-                     } 
+                     }
                      else if(textPos >= line.count && line.next)
                      {
                         startPos = 0;
@@ -4298,7 +4298,7 @@ private:
                         break;
                   if(shift && (c != 0 || this.x))
                      DirtyLine(this.y);
-                  if(this.x != c) 
+                  if(this.x != c)
                      this.x = c;
                   else
                      this.x = 0;
@@ -4398,7 +4398,7 @@ private:
                               Record(action);
                            }
                            memmove(line.buffer,line.buffer+lastC,line.size-lastC);
-                           if(!line.AdjustBuffer(line.count-lastC)) 
+                           if(!line.AdjustBuffer(line.count-lastC))
                               break;
                            line.count-=lastC;
                            DirtyLine(y);
@@ -4421,7 +4421,7 @@ private:
                                  {
                                     BufferLocation before = { line, y, 0 }, after = { line, y, 1 };
 
-                                    if(!line.AdjustBuffer(line.count+1)) 
+                                    if(!line.AdjustBuffer(line.count+1))
                                        break;
 
                                     NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
@@ -4443,7 +4443,7 @@ private:
                                     BufferLocation before = { line, y, 0 }, after = { line, y, this.tabSize };
                                     NotifyCharsAdded(master, this, &before, &after, this.pasteOperation);
 
-                                    if(!line.AdjustBuffer(line.count+this.tabSize)) 
+                                    if(!line.AdjustBuffer(line.count+this.tabSize))
                                        break;
 
                                     {
@@ -4573,10 +4573,10 @@ private:
                NotifyOvrToggle(master, this, this.overwrite);
             }
             break;
-         case hotKey: 
+         case hotKey:
             break;
          default:
-            
+
             switch(key)
             {
                case ctrlA:
@@ -4587,7 +4587,7 @@ private:
                      //Save current view position
                      int tempX = this.viewX;
                      int tempY = this.viewY;
-                     
+
                      this.selX = 0;
                      this.selY = 0;
                      this.selLine = this.lines.first;
@@ -4597,10 +4597,10 @@ private:
                      ComputeColumn();
                      DirtyAll();
                      SetViewToCursor(true);
-                     
+
                      //Restore previous view position
                      SetScrollPosition(tempX, tempY * this.space.h);
-                     
+
                      UpdateDirty();
                      SetSelectCursor();
                      SelectionEnables();
@@ -4647,10 +4647,10 @@ private:
                         int i;
                         char * newline;
                         int putsize;
-                        
+
                         int indentwidth;
                         EditLine line = this.line;
-                        
+
                         //Only remove one tab if there is nothing else on the line.
                         for(i = 0; i < this.line.count; i++)
                         {
@@ -4660,13 +4660,13 @@ private:
                               return false;
                            }
                         }
-                        
+
                         //Find opening {
                         i = 1;
                         while(i && line)
                         {
                            int pos;
-                           
+
                            indentwidth = 0;
                            for(pos = line.count - 1; pos >= 0; pos--)
                            {
@@ -4685,31 +4685,31 @@ private:
                            }
                            line = line.prev;
                         }
-                        
+
                         //Place the } to get an undo:
                         PutCh(ch);
-                        
+
                         this.x = this.line.count;
                         this.selX = 0;
-                        
+
                         if(!style.useTab)
                            putsize = indentwidth;
                         else
                            putsize = indentwidth / this.tabSize + indentwidth % this.tabSize;
-                        
+
                         newline = new char[putsize+2];
                         newline[putsize] = '}';
                         newline[putsize+1] = '\0';
-                        
+
                         i = 0;
                         if(style.useTab)
                            for(; i < indentwidth / this.tabSize; i++)
                               newline[i] = '\t';
                         for(;i < putsize; i++)
                            newline[i] = ' ';
-                        
+
                         AddS(newline);
-                        
+
                         delete newline;
                      }
                      return false;
@@ -4761,7 +4761,7 @@ private:
          for(; position > this.viewY && this.viewLine.next; this.viewLine = this.viewLine.next, this.viewY++);
          FigureStartSyntaxStates(oldViewLine, false);
       }
-      
+
       if(action != setRange)
       {
          if(!this.mouseMove && style.cursorFollowsView && !SelSize()) SetCursorToViewY();
@@ -4777,8 +4777,8 @@ private:
          int numLines = clientSize.h / this.space.h;
          int y;
          if(Abs(this.viewY - oldViewY) < numLines)
-            
-         
+
+
          if(this.viewY > oldViewY)
          {
             for(y = oldViewY; y <this.viewY; y++)
@@ -4798,7 +4798,7 @@ private:
          Box box { 0,0, clientSize.w-1, YOFFSET-1 };
          Update(box);
       }
-      
+
       UpdateDirty();
    }
 
@@ -4812,11 +4812,11 @@ private:
       int addedSpaces = 0, addedTabs = 0;
 
       if(ch == '\r') return true;
-      if(style.stuckCaret /*|EES_READONLY)*/ ) 
+      if(style.stuckCaret /*|EES_READONLY)*/ )
          GoToEnd(true);
-   
+
       if(ch == '\n' && !(style.multiLine) && this.line) return false;
-      
+
       if(!undoBuffer.dontRecord)
       {
          if(selX != x || selY != y)
@@ -4896,7 +4896,7 @@ private:
                length = this.line.count - endX;
             }
          }
-         if(!line.AdjustBuffer(length)) 
+         if(!line.AdjustBuffer(length))
             return false;
          if(this.line)
          {
@@ -5079,7 +5079,7 @@ public:
 
          this.pasteOperation = true;
 
-         if(style.stuckCaret /*|EES_READONLY)*/ ) 
+         if(style.stuckCaret /*|EES_READONLY)*/ )
             GoToEnd(true);
 
          if(!undoBuffer.dontRecord)
@@ -5088,7 +5088,7 @@ public:
             if(!style.multiLine)
             {
                int i;
-               char ch; 
+               char ch;
                for(i = 0; (ch = placeString[i]); i++)
                   if(ch == '\n')
                   {
@@ -5097,7 +5097,7 @@ public:
                      break;
                   }
             }
-            
+
             if(selX != x || selY != y)
             {
                char * newString;
@@ -5130,7 +5130,7 @@ public:
                   action = AddTextAction { y1 = y, x1 = Min(this.line.count, x), string = placeString };
                else
                   action = AddTextAction { y1 = y, x1 = x, string = placeString };
-               
+
                Record(action);
             }
             else
@@ -5164,7 +5164,7 @@ public:
                count = 0;
                line = string+c+1;
                /*
-               if(string[c] == '\r' && *line == '\n') 
+               if(string[c] == '\r' && *line == '\n')
                {
                   line++;
                   c++;
@@ -5228,7 +5228,7 @@ public:
    void PutCh(unichar ch)
    {
       bool result;
-      
+
       if((ch >= 32 /*&& ch <=126*/) || ch == '\n')
       //if((ch >= 32) || ch == '\n')
       {
@@ -5303,7 +5303,7 @@ public:
             replaceAction.y3 = y;
             replaceAction.addedSpaces = addedSpaces;
             replaceAction.addedTabs = addedTabs;
-         }  
+         }
          if(addCharAction)
          {
             addCharAction.x -= addedTabs * (tabSize-1);
@@ -5500,7 +5500,7 @@ public:
          FixScrollArea();
 
          selected = selX != this.x || selY != y;
-         
+
          viewX = this.viewX;
          viewY = this.viewY;
 
@@ -5548,7 +5548,7 @@ public:
             }
          }
 
-         if(!dontScroll) 
+         if(!dontScroll)
          {
             if(style.vScroll)
             {
@@ -5571,13 +5571,13 @@ public:
                   for(;dropLine && dropLine.prev && dropY >= numLines;)
                   {
                      dropLine = dropLine.prev;
-                     dropY--;                  
+                     dropY--;
                   }
                else
                   for(;this.line && this.line.prev && this.y >= numLines;)
                   {
                      this.line = this.line.prev;
-                     y--;                  
+                     y--;
                   }
             }
 
@@ -5687,7 +5687,7 @@ public:
    {
       int c, numLines;
       EditLine line;
-      
+
       if(this.y == 0) return;
 
       numLines = clientSize.h / this.space.h;
@@ -5742,7 +5742,7 @@ public:
          //DirtyAll();
          // this.viewLine = this.viewLine.next;
          // this.viewY++;
-         
+
          SetScrollPosition(this.viewX, (this.viewY + 1) * this.space.h);
       }
    }
@@ -5786,11 +5786,11 @@ public:
       }
       nx1 = Min(x1,l1.count);
       nx2 = Min(x2,l2.count);
-      
+
       // Find Number of Bytes Needed
       size = 0;
       for(line = l1; line; line = line.next)
-      {  
+      {
          if(line == l1) start = nx1; else start = 0;
          if(line == l2) end = nx2; else end = line.count;
          size += end-start;
@@ -5908,16 +5908,16 @@ public:
 
       // Copy text
       for(line = l1; line; line = line.next)
-      {  
+      {
          if(line == l1) start = nx1; else start = 0;
          if(line == l2) end = nx2; else end = line.count;
          if(text)
          {
             CopyBytes(text, line.buffer + start, end - start);
             text += end-start;
-         } 
+         }
          numChars += end-start;
-         
+
          if(style.freeCaret && line == l2 && addSpaces)
          {
             if(l1 == l2)
@@ -5939,10 +5939,10 @@ public:
             if(text)
                *(text++) = '\r';
             numChars++;
-         } 
+         }
          if(text)
             *(text++) = '\n';
-         numChars++; 
+         numChars++;
       }
       // '\0' terminate Terminate
       if(text)
@@ -5981,7 +5981,7 @@ public:
             ClipBoard clipBoard { };
             if(clipBoard.Allocate(size+1))
             {
-               GetSel(clipBoard.memory, true);   
+               GetSel(clipBoard.memory, true);
                // Save clipboard
                clipBoard.Save();
             }
@@ -6031,7 +6031,7 @@ public:
       savedAction = undoBuffer.curAction;
 
       for(line = this.lines.first; line; line = line.next)
-      {  
+      {
          f.Write(line.buffer, line.count,1);
          if(line.next)
          {
@@ -6048,7 +6048,7 @@ public:
       if(f)
       {
          char buffer[BUFFER_SIZE];
-     
+
          for(;;)
          {
             int count = f.Read(buffer, 1, BUFFER_SIZE-1);
@@ -6079,7 +6079,7 @@ public:
       {
          char * string;
 
-         if(!line) 
+         if(!line)
          {
             if(isSearchDown)
             {
@@ -6094,7 +6094,7 @@ public:
                result = wrapped;
             }
          }
-         
+
          if(isSearchDown)
             string = SearchString(line.buffer, firstPass ? Min(this.x,line.count) : 0,text,matchCase,matchWord);
          else
@@ -6104,7 +6104,7 @@ public:
          {
             Select((void *)line,num,string - line.buffer,(void *)line,num,string - line.buffer + strlen(text));
             return result;
-         } 
+         }
          if(line == this.line && !firstPass) break;
 
          if(isSearchDown)
@@ -6135,7 +6135,7 @@ public:
          {
             Select((void *)line,y,string - line.buffer,(void *)line,y,string - line.buffer + strlen(text));
             return found;
-         } 
+         }
       }
       return notFound;
    }
@@ -6147,7 +6147,7 @@ public:
 #endif
       if(!NotifyKeyDown(master, this, key, ch))
          return false;
-      else 
+      else
       {
          switch(key)
          {
@@ -6253,7 +6253,7 @@ public:
             y++;
          }
          else
-            break;         
+            break;
       }
 
       editBox.line = editBox.selLine = line;
@@ -6357,13 +6357,13 @@ public:
       }
       return result;
    }
-   
+
    bool Puts(char * string)
    {
       EditBox editBox = this.editBox;
       BufferLocation start { editBox.line, editBox.y, editBox.x };
       BufferLocation pos;
-      
+
       numBytes = 0;
       editBox.AddS(string);
 
@@ -6400,7 +6400,7 @@ public:
          }
          return true;
       }
-      return false; 
+      return false;
    }
 
    bool Getc(char * ch)

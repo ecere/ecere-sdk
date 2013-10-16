@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-  
+
 ****************************************************************************/
 import "ecere"
 
@@ -74,7 +74,7 @@ class Fli
          f.Getc(&ch);
          put=ch;
 
-         if(!put) 
+         if(!put)
             put=256;
          f.Read(palette+skip*3,1,3*put);
 

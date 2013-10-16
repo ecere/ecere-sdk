@@ -225,7 +225,7 @@ class epj2makeApp : GuiApplication
       }
       if(!epjPath)
          valid = false;
-      
+
       if(!valid)
       {
          printf($"Syntax:\n");
@@ -270,7 +270,7 @@ class epj2makeApp : GuiApplication
                   delete settingsContainer;
 
       // TODO: Command line option to choose between the two
-      // or a command line option to not use global settings 
+      // or a command line option to not use global settings
       //defaultCompiler = MakeDefaultCompiler();
                   defaultCompiler = ideSettings.GetCompilerConfig(compiler);
       // possible TODO: use the workspace to select the active compiler

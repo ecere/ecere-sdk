@@ -181,7 +181,7 @@ public:
       current--;
       if(!current)
          driver.UnlockSystem(this);
-     
+
       mutex.Release();
    }
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
@@ -211,7 +211,7 @@ public:
          materials.AddName(material);
       else
          materials.Add(material);
-      return true;      
+      return true;
    }
 
    Material GetMaterial(char * name)

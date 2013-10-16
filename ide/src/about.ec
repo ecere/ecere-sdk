@@ -41,7 +41,7 @@ class AboutIDE : Window
          return true;
       }
    };
-   Button button 
+   Button button
    {
       this, text = $"OK", isDefault = true, size = { 80, 20 }, anchor = { right = 13, bottom = 10 };
 
@@ -57,7 +57,7 @@ class AboutIDE : Window
       background = { r = 250, g = 252, b = 255 };
       multiLine = true,
       hasVertScroll = true,
-      contents = 
+      contents =
          "Réjean Loyer\n"
          "   Most of the additional programming on the IDE\n"
          "   Initial EDA design\n"

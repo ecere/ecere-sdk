@@ -44,7 +44,7 @@ private:
       {
          return ok.NotifyClicked(this, ok, x, y, mods);
       }
-   };    
+   };
 
    Label label
    {

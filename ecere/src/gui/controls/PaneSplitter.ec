@@ -33,7 +33,7 @@ public class PaneSplitter : Window
             property::split = split;
        }
    }
-         
+
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
       sliding = true;
@@ -48,7 +48,7 @@ public class PaneSplitter : Window
          startX = position.y;
       }
       Capture();
-      
+
       return true;
    }
 
@@ -123,7 +123,7 @@ public:
    {
       set { rightPane = value; property::split = split; } get { return rightPane; }
    }
-   property Window topPane 
+   property Window topPane
    {
       set { leftPane = value; property::split = split; } get { return leftPane; }
    }
@@ -165,7 +165,7 @@ public:
    property int split
    {
       set
-      {  
+      {
          split = value;
          if(orientation == vertical)
          {
@@ -191,7 +191,7 @@ public:
 
             scale = false;
          }
-      }      
+      }
       get { return split; }
    }
 

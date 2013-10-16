@@ -37,7 +37,7 @@ Light diffuseLight
 Object specularLight
 {
    flags = { light = true; };
-   light = 
+   light =
    {
       multiplier = 1;
       diffuse = white;
@@ -67,7 +67,7 @@ class ColorSpheres : Object
                object.transform.scaling = { scaling, scaling, scaling };
                object.material = Material
                {
-                  opacity = 1, 
+                  opacity = 1,
                   diffuse = ColorRGB { (x + 1) / 2.0f, (y + 1) / 2.0f, (z + 1) / 2.0f };
                   ambient = ColorRGB { (x + 1) / 2.0f, (y + 1) / 2.0f, (z + 1) / 2.0f };
                   specular = white;
@@ -113,13 +113,13 @@ class Test3D : Window
          pitch -= (double)diffTime / 3 * pitch;
          if(yaw < 0.0001) yaw = 0;
          if(pitch < 0.0001) pitch = 0;
-                     
+
          spin.yaw = yaw * signYaw;
          spin.pitch = pitch * signPitch;
 
          temp.Multiply(orientation, thisSpin);
          orientation.Normalize(temp);
-         
+
          cube.transform.orientation = orientation;
          cube.UpdateTransform();
       }
@@ -133,12 +133,12 @@ class Test3D : Window
       cube.Create(displaySystem);
       return true;
    }
- 
+
    void OnResize(int w, int h)
    {
       camera.Setup(w, h, null);
    }
- 
+
    void OnRedraw(Surface surface)
    {
       int x, y;

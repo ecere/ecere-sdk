@@ -16,7 +16,7 @@ char GetOperation()
 {
    char operation = 0;
    PrintLn("Chose an operation to perform: +, -. q to quit.");
-   do 
+   do
    {
       char input[1024];
       gets(input);
@@ -26,7 +26,7 @@ char GetOperation()
             operation = input[0];
             break;
          default:
-            PrintLn("Invalid Operation"); 
+            PrintLn("Invalid Operation");
       }
    } while(!operation);
    return operation;
@@ -41,7 +41,7 @@ KnownColor GetOperand()
    {
       Print("Please enter a known color (black, red, green, blue, yellow, magenta, cyan or white)");
       gets(input);
-   } 
+   }
    return operand;
 }
 
@@ -63,7 +63,7 @@ class Lab5ColorsApp : Application
          KnownColor operand1, operand2;
          char operation = GetOperation();
          if(operation == 'q') break;
-         
+
          PrintLn("Enter the first operand:");
          operand1 = GetOperand();
          PrintLn("Enter the second operand:");

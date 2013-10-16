@@ -79,7 +79,7 @@ void GenerateVSSolutionFile(Project project, CompilerConfig compiler)
       f.Print(""); f.Printf("\r\n");
       f.Print("Microsoft Visual Studio Solution File, Format Version ", compiler.type.solutionFileVersionString); f.Printf("\r\n");
       f.Print("# Visual Studio ", compiler.type.yearString); f.Printf("\r\n");
-      f.Print("Project(\"{", slnGUID, "}\") = \"", projectName, "\", \"", projectName, ".", 
+      f.Print("Project(\"{", slnGUID, "}\") = \"", projectName, "\", \"", projectName, ".",
             compiler.type.projectFileExtension, "\", \"{", prjGUID, "}\"", attribSep); f.Printf("\r\n");
       f.Print("EndProject"); f.Printf("\r\n");
       f.Print("Global"); f.Printf("\r\n");
@@ -100,7 +100,7 @@ void GenerateVSSolutionFile(Project project, CompilerConfig compiler)
       f.Print("\t\tHideSolutionNode = FALSE"); f.Printf("\r\n");
       f.Print("\tEndGlobalSection"); f.Printf("\r\n");
       f.Print("EndGlobal"); f.Printf("\r\n");
-   
+
       delete f;
    }
 }
@@ -151,7 +151,7 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDept
             f.Print(attribIndent, "/>", tagLine);
          IndentPop();
          f.Print(tagIndent, "</Platforms>", tagLine);
-         
+
          f.Print(tagIndent, "<ToolFiles>", tagLine);
          f.Print(tagIndent, "</ToolFiles>", tagLine);
 
@@ -175,7 +175,7 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDept
                f.Print(attribIndent, "Filter=\"cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx\"", attribSep);
                f.Print(attribIndent, "UniqueIdentifier=\"{4FC737F1-C7A5-4376-A066-2A32D752A2FF}\"", attribSep);
                f.Print(attribIndent, ">", tagLine);
-            
+
                PrintNodes(f, project, project.topNode, namesInfo, source, false, usePrecompiledHeaders);
             IndentPop();
             f.Print(tagIndent, "</Filter>", tagLine);
@@ -186,7 +186,7 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDept
                f.Print(attribIndent, "Filter=\"h;hpp;hxx;hm;inl;inc;xsd\"", attribSep);
                f.Print(attribIndent, "UniqueIdentifier=\"{93995380-89BD-4b04-88EB-625FBE52EBFB}\"", attribSep);
                f.Print(attribIndent, ">", tagLine);
-            
+
                PrintNodes(f, project, project.topNode, namesInfo, header, false, usePrecompiledHeaders);
             IndentPop();
             f.Print(tagIndent, "</Filter>", tagLine);
@@ -197,7 +197,7 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDept
                f.Print(attribIndent, "Filter=\"rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav\"", attribSep);
                f.Print(attribIndent, "UniqueIdentifier=\"{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}\"", attribSep);
                f.Print(attribIndent, ">", tagLine);
-            
+
                PrintNodes(f, project, project.resNode, namesInfo, resource, false, usePrecompiledHeaders);
             IndentPop();
             f.Print(tagIndent, "</Filter>", tagLine);
@@ -207,10 +207,10 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDept
 
          f.Print(tagIndent, "<Globals>", tagLine);
          f.Print(tagIndent, "</Globals>", tagLine);
-      
+
       IndentPop();
       f.Print("</VisualStudioProject>", tagLine);
-   
+
       namesInfo.Free();
       delete namesInfo;
       delete f;
@@ -419,7 +419,7 @@ void PrintConfiguration(File f, Project project, CompilerConfig compiler, Projec
          f.Print(attribIndent, "GenerateDebugInformation=\"true\"", attribSep);
          f.Print(attribIndent, "SubSystem=\"1\"", attribSep);
       if(optimize)
-      {      
+      {
          f.Print(attribIndent, "OptimizeReferences=\"2\"", attribSep);
          f.Print(attribIndent, "EnableCOMDATFolding=\"2\"", attribSep);
       }
@@ -491,7 +491,7 @@ void CollectPlatformSpecificDirs(Project project, ProjectConfig config, Array<St
    Platform platform = win32;
    //for(platform = firstPlatform; platform <= lastPlatform; platform++)
    //for(platform = win32; platform <= apple; platform++)
-   
+
    //for(platform = (Platform)1; platform < Platform::enumSize; platform++)
    //{
       PlatformOptions projectPlatformOptions = null;
@@ -717,7 +717,7 @@ void PrintFile(File f, Project prj, ProjectNode node, Map<String, NameCollisionI
       IndentPush();
       f.Print(attribIndent, "RelativePath=\"", relativePath, "\"", attribSep);
       f.Print(attribIndent, ">", tagLine);
-      
+
       for(config : prj.configurations)
       {
          node.CollectPerFileAndDirOptions(config, perFilePreprocessorDefs, perFileIncludeDirs);

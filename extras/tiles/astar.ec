@@ -3,7 +3,7 @@
 
    Copyright (c) 1997-2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    astar.ec - A* Path Finding Algorithm
 ****************************************************************************/
 import "ecere"
@@ -94,7 +94,7 @@ static void AStarPropagateDown(AStar * aStar, ASNode *old)
          if(aStar->stackIndex>=aStar->stackSize)
             break;
          aStar->stack[aStar->stackIndex++] = child;
-      } 
+      }
    }
 
    while(aStar->stackIndex > 0)
@@ -173,7 +173,7 @@ static void AStarGenerateSucc(AStar * aStar, ASNode *bestNode, int positionX, in
          old->parent=bestNode;
          old->g=g;
          old->f=g+old->h;
-         AStarPropagateDown(aStar, old); 
+         AStarPropagateDown(aStar, old);
       }
    }
    else
@@ -187,7 +187,7 @@ static void AStarGenerateSucc(AStar * aStar, ASNode *bestNode, int positionX, in
       successor->position.x=positionX;
       successor->position.y=positionY;
       successor->nodeNum=tileNumS;
-      AStarInsert(aStar, successor);     
+      AStarInsert(aStar, successor);
       for(c=0;c<8;c++)
          if(!bestNode->child[c]) break;
       bestNode->child[c]=successor;

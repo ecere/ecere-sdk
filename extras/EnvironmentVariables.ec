@@ -14,29 +14,29 @@ extern char **environ;
 #if 0
 #define BUFSIZE 4096
     TCHAR chNewEnv[BUFSIZE];
-    LPTSTR lpszCurrentVariable; 
+    LPTSTR lpszCurrentVariable;
     DWORD dwFlags=0;
     TCHAR szAppName[]=TEXT("ex3.exe");
     STARTUPINFO si;
     PROCESS_INFORMATION pi;
-    BOOL fSuccess; 
-    // Copy environment strings into an environment block. 
+    BOOL fSuccess;
+    // Copy environment strings into an environment block.
     lpszCurrentVariable = (LPTSTR) chNewEnv;
     if(FAILED(StringCchCopy(lpszCurrentVariable, BUFSIZE, TEXT("MySetting=A"))))
     {
-        printf("String copy failed\n"); 
+        printf("String copy failed\n");
         return FALSE;
     }
-    lpszCurrentVariable += lstrlen(lpszCurrentVariable) + 1; 
-    if(FAILED(StringCchCopy(lpszCurrentVariable, BUFSIZE, TEXT("MyVersion=2")))) 
+    lpszCurrentVariable += lstrlen(lpszCurrentVariable) + 1;
+    if(FAILED(StringCchCopy(lpszCurrentVariable, BUFSIZE, TEXT("MyVersion=2"))))
     {
-        printf("String copy failed\n"); 
+        printf("String copy failed\n");
         return FALSE;
     }
-    // Terminate the block with a NULL byte. 
-    lpszCurrentVariable += lstrlen(lpszCurrentVariable) + 1; 
-    *lpszCurrentVariable = (TCHAR)0; 
-    // Create the child process, specifying a new environment block. 
+    // Terminate the block with a NULL byte.
+    lpszCurrentVariable += lstrlen(lpszCurrentVariable) + 1;
+    *lpszCurrentVariable = (TCHAR)0;
+    // Create the child process, specifying a new environment block.
     SecureZeroMemory(&si, sizeof(STARTUPINFO));
     si.cb = sizeof(STARTUPINFO);
 #ifdef UNICODE
@@ -44,8 +44,8 @@ extern char **environ;
 #endif
     fSuccess = CreateProcess(szAppName, NULL, NULL, NULL, TRUE, dwFlags,
         (LPVOID) chNewEnv,   // new environment block
-        NULL, &si, &pi); 
-    if(!fSuccess) 
+        NULL, &si, &pi);
+    if(!fSuccess)
     {
         printf("CreateProcess failed (%d)\n", GetLastError());
         return FALSE;
@@ -81,7 +81,7 @@ void PrintCurrentEnvironment(char * headerLine)
    env.AddCurrentEnvVars();
    if(headerLine)
       PrintLn(headerLine);
-   env.Print(); 
+   env.Print();
    env.Free();
    delete env;
 }
@@ -176,7 +176,7 @@ public class EnvironmentVariables : Map<String, String>
       percentStyleRefId = new char[percentStyleRefIdLen+1];
       sprintf(percentStyleRefId, "%%%s%%", varName);
       percentStyleRef = strstr(varValue, percentStyleRefId);
-      
+
       // TODO: Make this a loop to replace multiple instances of both dollar and percent style references
       if(dollarStyleRef)
       {
@@ -212,7 +212,7 @@ public class EnvironmentVariables : Map<String, String>
       }
       else
          this[varName] = CopyString(varValue);
-      
+
       delete dollarStyleRefId;
       delete percentStyleRefId;
       delete oldValue;

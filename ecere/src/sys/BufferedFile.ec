@@ -41,7 +41,7 @@ public class BufferedFile : File
    {
       if(handle)
       {
-         uint totalBytesRead = 0;         
+         uint totalBytesRead = 0;
          uint bufferCount = this.bufferCount;
          uint bufferPos = this.bufferPos;
          byte * fileBuffer = this.buffer + bufferPos;
@@ -125,7 +125,7 @@ public class BufferedFile : File
 
       //bufferCount = 0;
       //bufferPos = 0;
-      
+
       if(bytesToBuffer < numBytes && bufferCount >= bufferPos && numBytes < bufferSize && missing < bufferPos)
       {
          memcpy(this.buffer, this.buffer + missing, bufferPos - missing);
@@ -146,7 +146,7 @@ public class BufferedFile : File
          bytesToBuffer = Min(numBytes, bufferSize);
          memcpy(this.buffer, buffer + numBytes - bytesToBuffer, bytesToBuffer);
          bufferPos = bytesToBuffer;
-         bufferCount = bytesToBuffer;         
+         bufferCount = bytesToBuffer;
       }
       return result;
    }
@@ -200,7 +200,7 @@ public class BufferedFile : File
       switch(mode)
       {
          case start:
-            newPosition = pos;         
+            newPosition = pos;
             break;
          case current:
             newPosition += pos;
@@ -259,7 +259,7 @@ public class BufferedFile : File
    {
       return pos;
    }
-                                                                                             
+
    bool Eof()
    {
       return eof;
@@ -358,6 +358,6 @@ public BufferedFile FileOpenBuffered(char * fileName, FileOpenMode mode)
          if(!result)
             delete f;
       }
-   }  
+   }
    return result;
 }

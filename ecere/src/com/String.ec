@@ -128,14 +128,14 @@ public char * SplitDirectory(const char * string, char * part, char * rest)
       for(;(ch = string[c]) && (ch != '/' && ch != '\\'); c++)
       {
          if(len < MAX_FILENAME)
-            part[len++] = ch;  
+            part[len++] = ch;
       }
    }
 
    for(;(ch = string[c]) && (ch == '/' || ch == '\\'); c++);
    memmove(rest, string + c, strlen(string + c) + 1);
    for(c = strlen(rest); c >= 0; c--)
-      if(ch != '/' && ch != '\\') 
+      if(ch != '/' && ch != '\\')
          break;
    if(c > 0)
       rest[c] = '\0';
@@ -160,7 +160,7 @@ public char * GetLastDirectory(char * string, char * output)
 
    len = strlen(output);
    if(len > 1 && (output[len-1] == '\\' || output[len-1] == '/'))
-      output[len-1] = '\0';   
+      output[len-1] = '\0';
    return output;
 }
 
@@ -296,7 +296,7 @@ public char * PathCatSlash(char * string, char * addedPath)
          int len = 0;
          char ch;
          int count;
-      
+
          for(;(ch = addedPath[c]) && (ch == '/' || ch == '\\'); c++);
          for(;(ch = addedPath[c]) && (ch != '/' && ch != '\\'); c++)
          {
@@ -305,7 +305,7 @@ public char * PathCatSlash(char * string, char * addedPath)
                break;
             }
             if(len < MAX_FILENAME)
-               directory[len++] = ch;  
+               directory[len++] = ch;
          }
          directory[len] = '\0';
 
@@ -513,7 +513,7 @@ public char * PathCat(char * string, char * addedPath)
          int len = 0;
          char ch;
          int count;
-      
+
          for(;(ch = addedPath[c]) && (ch == '/' || ch == '\\'); c++);
          for(;(ch = addedPath[c]) && (ch != '/' && ch != '\\'); c++)
          {
@@ -522,7 +522,7 @@ public char * PathCat(char * string, char * addedPath)
                break;
             }
             if(len < MAX_FILENAME)
-               directory[len++] = ch;  
+               directory[len++] = ch;
          }
          directory[len] = '\0';
 
@@ -650,7 +650,7 @@ public char * MakePathRelative(char * path, char * to, char * destination)
       destination[0] = '\0';
       for(;toRest[0];)
       {
-         SplitDirectory(toRest, toPart, toRest);      
+         SplitDirectory(toRest, toPart, toRest);
          if(!different)
             SplitDirectory(pathRest, pathPart, pathRest);
 
@@ -775,12 +775,12 @@ public char * SearchString(char * buffer, int start, char * subStr, bool matchCa
          {
             if(matchWord)
             {
-               if(!strcompare(ptr,subStr,subLen) && 
+               if(!strcompare(ptr,subStr,subLen) &&
                   /*
-                  !IS_ALUNDER(ptr[subLen]) && 
+                  !IS_ALUNDER(ptr[subLen]) &&
                   !IS_ALUNDER(beforeChar))
                   */
-                  (!IS_ALUNDER(subStr[subLen-1]) || !IS_ALUNDER(ptr[subLen])) && 
+                  (!IS_ALUNDER(subStr[subLen-1]) || !IS_ALUNDER(ptr[subLen])) &&
                   (!IS_ALUNDER(subStr[0]) || !IS_ALUNDER(beforeChar)))
                   return ptr;
             }
@@ -790,7 +790,7 @@ public char * SearchString(char * buffer, int start, char * subStr, bool matchCa
                   return ptr;
             }
          }
-         beforeChar = ptr[0];  
+         beforeChar = ptr[0];
       }
    }
    return null;
@@ -810,9 +810,9 @@ public char * RSearchString(char * buffer, char * subStr, int maxLen, bool match
          {
             if(matchWord)
             {
-               if(!strcompare(ptr1,subStr,subLen) && 
+               if(!strcompare(ptr1,subStr,subLen) &&
                   //!IS_ALUNDER(ptr1[subLen]) && !IS_ALUNDER(*ptr2))
-                  (!IS_ALUNDER(subStr[subLen-1]) || !IS_ALUNDER(ptr1[subLen])) && 
+                  (!IS_ALUNDER(subStr[subLen-1]) || !IS_ALUNDER(ptr1[subLen])) &&
                   (!IS_ALUNDER(subStr[0]) || !IS_ALUNDER(*ptr2)))
 
                  return ptr1;
@@ -1055,7 +1055,7 @@ public bool GetString(char ** buffer, char * string, int max)
          {
             c++;
             //result = false;
-            break;            
+            break;
          }
          (*buffer)++;
       }

@@ -16,7 +16,7 @@ char GetOperation()
 {
    char operation = 0;
    PrintLn("Chose an operation to perform: +, -, *, /, m (module/length). q to quit.");
-   do 
+   do
    {
       char input[1024];
       gets(input);
@@ -26,7 +26,7 @@ char GetOperation()
             operation = input[0];
             break;
          default:
-            PrintLn("Invalid Operation"); 
+            PrintLn("Invalid Operation");
       }
    } while(!operation);
    return operation;
@@ -41,7 +41,7 @@ float GetScalar()
    {
       PrintLn("Print enter a valid numeric value");
       gets(input);
-   } 
+   }
    return scalar;
 }
 
@@ -54,7 +54,7 @@ Vector GetVector()
    {
       PrintLn("Print enter a valid 2D vector value");
       gets(input);
-   } 
+   }
    return vector;
 }
 
@@ -68,7 +68,7 @@ class Lab5VectorApp : Application
          float scalar;
          char operation = GetOperation();
          if(operation == 'q') break;
-         
+
          PrintLn("Enter the first operand:");
          vector1 = GetVector();
 
@@ -82,7 +82,7 @@ class Lab5VectorApp : Application
          }
          if(operation == '/' && scalar == 0)
             PrintLn("Cannot divide by 0");
-         else            
+         else
          {
             switch(operation)
             {

@@ -33,7 +33,7 @@ class CodeObject : struct
       int nameLen = strlen(name);
 
       Bitmap icon = bitmap ? bitmap.bitmap : editor.icons[type].bitmap;
-     
+
       textOffset = this.indent * indent + (icon ? (/*icon.width + 4*/ 20) : 0);
       if(overriden || object)
          surface.TextFont(editor.boldFont.font);
@@ -85,7 +85,7 @@ class CodeObject : struct
       {
          deleteBtn.Destroy(0);
          delete deleteBtn;
-      } 
+      }
       if(detachBtn)
       {
          detachBtn.Destroy(0);

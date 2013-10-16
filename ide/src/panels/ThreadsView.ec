@@ -18,7 +18,7 @@ class ThreadsView : Window
 
    bool moved, logging;
    FindDialog findDialog { master = this, editBox = editBox, isModal = true, autoCreate = false, text = "Find" };
-   
+
    BitmapResource bmpCursor            { ":codeMarks/cursor.png", window = this };
    BitmapResource bmpCursorError       { ":codeMarks/cursorError.png", window = this };
    BitmapResource bmpTopFrame          { ":codeMarks/topFrame.png", window = this };
@@ -94,7 +94,7 @@ class ThreadsView : Window
 
    Menu editMenu { menu, $"Edit", e };
    MenuItem item;
-   
+
    MenuItem copyItem
    {
       editMenu, $"Copy", c, ctrlC;
@@ -188,7 +188,7 @@ class ThreadsView : Window
       int boxH = clientSize.h;
       int lineNumber;
       int activeThread, hitThread, signalThread;
-      
+
       if(OnGetThreadsInfo(&activeThread, &hitThread, &signalThread))
       {
          EditLine line;

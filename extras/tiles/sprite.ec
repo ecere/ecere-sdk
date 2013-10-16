@@ -3,7 +3,7 @@
 
    Copyright (c) 1997-2005 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    sprite.ec - Bitmap Sprite System
 ****************************************************************************/
 import "ecere"
@@ -126,7 +126,7 @@ class Sprite
          dx = x+frame->xDis;
          dy = y+frame->yDis;
       }
- 
+
       if(inPal)
          frame->bitmap.paletteShades = inPal;
 

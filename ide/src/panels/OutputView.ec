@@ -39,7 +39,7 @@ class OutputView : Window
          return true;
       }
    };
-   
+
    Button debugBtn
    {
       this, inactive = true, text = "Debug", bevelOver = true, isRadio = true, bitmap = null;
@@ -52,7 +52,7 @@ class OutputView : Window
          return true;
       }
    };
-   
+
    Button findBtn
    {
       this, inactive = true, text = "Find", bevelOver = true, isRadio = true, bitmap = null;
@@ -115,7 +115,7 @@ class OutputView : Window
 
    EditBox activeBox;
    activeBox = buildBox;
-   
+
    LogBox buildBox
    {
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
@@ -125,7 +125,7 @@ class OutputView : Window
       background = outputBackground;
       foreground = outputText;
       selectionColor = selectionColor, selectionText = selectionText;
-      
+
       bool NotifyDoubleClick(EditBox editBox, EditLine line, Modifiers mods)
       {
          OnGotoError(editBox.line.text, mods.ctrl && mods.shift);
@@ -142,7 +142,7 @@ class OutputView : Window
          return true;
       }
    };
-   
+
    LogBox debugBox
    {
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
@@ -169,7 +169,7 @@ class OutputView : Window
          return true;
       }
    };
-   
+
    LogBox findBox
    {
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true;
@@ -209,7 +209,7 @@ class OutputView : Window
       selectionColor = selectionColor, selectionText = selectionText;
    };
 #endif
-   
+
    Menu editMenu { menu, $"Edit", e };
 
    MenuItem item;
@@ -342,7 +342,7 @@ class LogBox : EditBox
       if(len > 1023)
       {
          char * newStart, * start = entry;
-         
+
          while(len > 1023)
          {
             char backup[3];

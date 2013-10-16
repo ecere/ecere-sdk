@@ -41,7 +41,7 @@ class CharFlags {
    /*property char * {
       set { charsSet = value; }
    }*/
-   
+
    byte flags[256]; //flags[c] indicates whether character c is selected
    void Clear(void) {
       memset(flags, 0, sizeof(flags));

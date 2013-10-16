@@ -83,7 +83,7 @@ void RowsCountFileEdit(Archive archive, const String apath, const RowsCountFileA
       *allocatedRowsCount = 0;
       *deletedRowsCount = 0;
    }
-   
+
    switch(action)
    {
       case init: break;
@@ -156,12 +156,12 @@ static class EDBDataSource : DataSourceDriver
    /*
    Table OpenDatabasesListTable(subclass(DataDriver) driver)
    {
-      // get the table for databasesList using a temporary archive of a db with a table databases filled 
+      // get the table for databasesList using a temporary archive of a db with a table databases filled
       // with the list of edb files in data source's dirPath
-      
+
       TempFile f { };
       //ArchiveFile af = ArchiveOpen
-      
+
       return null;
    }
    */
@@ -275,7 +275,7 @@ static class EDBArchive : Archive
 {
    File f;
 };
- 
+
 static class EDBArchiveDir : ArchiveDir
 {
    EDBArchive archive;
@@ -331,7 +331,7 @@ static class DBTable : struct
                   strcat(indexName, (index.fieldIndexes[c].order == ascending) ? "+" : "-");
                }
                tf.Seek(0, start);
-               
+
                dirTable = db.archive.OpenDirectory(apath, FileStats { }, replace);
                dirTable.AddFromFile(indexName, tf, { size = tf.GetSize() }, replace, 0, null, null);
                delete dirTable;
@@ -396,7 +396,7 @@ class EDBDatabase : Database
          dbTables.Add(dbTbl);
 
          dbTbl.dir = archive.OpenDirectory(apath, null, readOnlyDir);
-      
+
          RowsCountFileEdit(archive, apath, init, &dbTbl.allocatedRowsCount, &dbTbl.deletedRowsCount, &dbTbl.rowsCountPosition);
          dbTbl.rowsCount = dbTbl.allocatedRowsCount - dbTbl.deletedRowsCount;
 
@@ -411,7 +411,7 @@ class EDBDatabase : Database
             dbTbl.rowPositionsSize = dbTbl.allocatedRowsCount;
             dbTbl.rowPositions = new0 uint[Max(1,dbTbl.rowPositionsSize)];
             position = dir.first;
-            
+
             while(true)
             {
                char fileName[MAX_FILENAME] = "";
@@ -593,7 +593,7 @@ static int IndexCompareRows(IndexBinaryTree tree, uint r1, uint r2)
    int f;
    EDBRow row1 = index.row1;
    EDBRow row2 = index.row2;
-   
+
    if(index.cache && index.cache._num == r1)
       row1 = index.cache;
    else
@@ -627,7 +627,7 @@ static int IndexCompareRows(IndexBinaryTree tree, uint r1, uint r2)
          }
          ((bool (*)())(void *)row1.GetData)(row1, field, type, (type.type == structClass) ? (void *)data1 : &data1);
          ((bool (*)())(void *)row2.GetData)(row2, field, type, (type.type == structClass) ? (void *)data2 : &data2);
-         fieldResult = order * ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+         fieldResult = order * ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
             (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &data1 : (void *)data1,
             (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &data2 : (void *)data2);
          ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data1);
@@ -653,7 +653,7 @@ static int IndexCompareRows(IndexBinaryTree tree, uint r1, uint r2)
                row2.tbl = ((EDBTable)index.fieldIndexes[f].memberTable).dbTable;
                row2.index = ((EDBTable)index.fieldIndexes[f].memberTable).index;
                row2.num = 0;
-               row2.Find(index.fieldIndexes[f].memberIdField, middle, nil, data2);               
+               row2.Find(index.fieldIndexes[f].memberIdField, middle, nil, data2);
 
                field = memberField;
                memberField = null;
@@ -706,7 +706,7 @@ static class EDBTable : Table
    {
       EDBDatabase edb = dbTable.db;
       EDBField field
-      {  
+      {
          tbl = dbTable,
          name = CopyString(name),
          type = type,
@@ -748,7 +748,7 @@ static class EDBTable : Table
    {
       return EDBRow { tbl = dbTable, index = index, num = 0 };
    }
-   
+
    bool GenerateIndex(int count, FieldIndex * fieldIndexes, bool init)
    {
       DBIndex index = null;
@@ -761,13 +761,13 @@ static class EDBTable : Table
             {
                int c;
                for(c = 0; c<count; c++)
-                  if(index.fieldIndexes[c].field != fieldIndexes[c].field || 
+                  if(index.fieldIndexes[c].field != fieldIndexes[c].field ||
                      index.fieldIndexes[c].order != fieldIndexes[c].order ||
                      index.fieldIndexes[c].memberField != fieldIndexes[c].memberField)
                      break;
                if(c == count)
                   break;
-            }         
+            }
          }
          if(!index)
          {
@@ -783,7 +783,7 @@ static class EDBTable : Table
                   for(field = dbTable.fields.first; field; field = field.next)
                      if(field == fieldIndexes[c].field)
                         break;
-                  if(!field) 
+                  if(!field)
                      return false;
                }
             }
@@ -971,7 +971,7 @@ static class EDBRow : DriverRow
    DBTable tbl;
    DBIndex index;
    BTNode node;
-   
+
    String aname;
    int _num;
 
@@ -1044,7 +1044,7 @@ static class EDBRow : DriverRow
             uint size;
             f.Read(offsets, sizeof(uint), oldNumFields);
             tf.Put(numFields);
-            
+
             tf.Write(offsets, sizeof(uint), numFields);
 
             size = f.GetSize();
@@ -1078,7 +1078,7 @@ static class EDBRow : DriverRow
             {
                buffer = renew buffer byte[size];
                f.Read(buffer, 1, size);
-               tf.Write(buffer, 1, size);               
+               tf.Write(buffer, 1, size);
             }
 
             // Update the offset of the field we're writing to
@@ -1098,7 +1098,7 @@ static class EDBRow : DriverRow
                      break;
                   }
                }
-                
+
                if(c < numFields)
                {
                   int fileSize = f.GetSize();
@@ -1151,7 +1151,7 @@ static class EDBRow : DriverRow
                BTNode n = (i == index) ? node : null;
                int c;
                for(c = 0; c<i.numFields; c++)
-                  if(i.fieldIndexes[c].field == field || 
+                  if(i.fieldIndexes[c].field == field ||
                      i.fieldIndexes[c].memberField == field ||
                      i.fieldIndexes[c].memberIdField == field)
                      break;
@@ -1174,7 +1174,7 @@ static class EDBRow : DriverRow
    {
       return !_num;
    }
-   
+
    bool Select(MoveOptions move)
    {
       EDBDatabase edb = tbl.db;
@@ -1280,7 +1280,7 @@ static class EDBRow : DriverRow
             }
             delete offsets;
          }
-         
+
          delete f;
       }
       return result;
@@ -1326,7 +1326,7 @@ static class EDBRow : DriverRow
                   {
                      this.node = node;
                      num = (uint)node.key;
-                     return true;                  
+                     return true;
                   }
                }
                else if(move == previous)
@@ -1345,7 +1345,7 @@ static class EDBRow : DriverRow
                   {
                      this.node = node;
                      num = (uint)node.key;
-                     return true;                  
+                     return true;
                   }
                }
 
@@ -1475,7 +1475,7 @@ static class EDBRow : DriverRow
                //if(data._class == type)
                {
                   result = order * ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
-                        (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &read : (void *)read, 
+                        (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &read : (void *)read,
                         (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &findData[c].value.i64 : (void *)findData[c].value.i64);
                }
                ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)read);
@@ -1527,7 +1527,7 @@ static class EDBRow : DriverRow
             {
                BTNode node = this.node, lastNode = null;
                int result;
-               
+
                if(move == next || move == nil)
                {
                   if(move == next)
@@ -1547,7 +1547,7 @@ static class EDBRow : DriverRow
                   {
                      this.node = node;
                      num = (uint)node.key;
-                     return true;                  
+                     return true;
                   }
                }
                else if(move == previous)
@@ -1566,7 +1566,7 @@ static class EDBRow : DriverRow
                   {
                      this.node = node;
                      num = (uint)node.key;
-                     return true;                  
+                     return true;
                   }
                }
 
@@ -1665,7 +1665,7 @@ static class EDBRow : DriverRow
       EDBDatabase edb = tbl.db;
       TempFile f;
       ArchiveDir dirTable;
-      
+
       RowsCountFileEdit(edb.archive, tbl.apath, reused ? reuse : add, &tbl.allocatedRowsCount, &tbl.deletedRowsCount, &tbl.rowsCountPosition);
       tbl.rowsCount = tbl.allocatedRowsCount - tbl.deletedRowsCount;
       if(reused)
@@ -1692,7 +1692,7 @@ static class EDBRow : DriverRow
       }
 
       dirTable = edb.archive.OpenDirectory(tbl.apath, FileStats { }, replace);
-      
+
       f = TempFile { };
       f.Seek(0, start);
 
@@ -1704,9 +1704,9 @@ static class EDBRow : DriverRow
       }
       dirTable.AddFromFileAtPosition(tbl.rowPositions[_num - 1], aname, f, { size = f.GetSize() }, replace, 0, null, &tbl.rowPositions[_num - 1]);
       delete f;
-      
+
       delete dirTable;
-      
+
       {
          DBIndex i;
          for(i = tbl.indexes.first; i; i = i.next)
@@ -1728,11 +1728,11 @@ static class EDBRow : DriverRow
          ArchiveDir dirTable;
          BTNode node = this.node;
          int oldNum = this._num;
-         
+
          RowsCountFileEdit(edb.archive, tbl.apath, del, &tbl.allocatedRowsCount, &tbl.deletedRowsCount, &tbl.rowsCountPosition);
          tbl.rowsCount = tbl.allocatedRowsCount - tbl.deletedRowsCount;
          tbl.rowPositions[_num - 1] = 0;
-         
+
          dirTable = edb.archive.OpenDirectory(tbl.apath, FileStats { }, replace);
          if(!aname)
          {
@@ -1742,11 +1742,11 @@ static class EDBRow : DriverRow
          }
          dirTable.Delete(aname);
          delete dirTable;
-         
+
          Select(next);
          if(!_num)
             Select(last);
-         
+
          {
             DBIndex i;
             for(i = tbl.indexes.first; i; i = i.next)
@@ -1776,7 +1776,7 @@ static class EDBRow : DriverRow
       if(tbl.allocatedRowsCount >= id && id > 0 && tbl.rowPositions[id - 1])
       {
          _num = id;
-         
+
          if(index)
             node = index.tree.FindAll(id);
          return true;

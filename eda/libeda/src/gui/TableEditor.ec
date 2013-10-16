@@ -345,7 +345,7 @@ public:
 
    //virtual bool Window::NotifyNew(AltListSection listSection, Row r);
    //virtual void Window::NotifyInitFields(AltEditSection editSection);
-   
+
    virtual DialogResult OnLeavingModifiedDocument()
    {
       DebugLn("TableEditor::OnLeavingModifiedDocument");
@@ -353,7 +353,7 @@ public:
                           contents = $"You have modified this entry. Would you like to save it before proceeding?"
                   }.Modal();
    }
-   
+
    virtual bool OnRemovalRequest()
    {
       DebugLn("TableEditor::OnRemovalRequest");
@@ -523,7 +523,7 @@ public:
       //list.NotifySelect(this, list, null, 0);
       if(table && editRow && editRow.tbl && !modifiedDocument)
       {
-         uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id? 
+         uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id?
                                // I think the 3 following comment lines apply to the old sqlite driver before many fix we done for wsms
          Row r = editRow;// { table }; // the multipurpose row is buggy with sqlite driver, you can't use the same row to do Row::Last(), Row::Next(), Row::Find(), etc...
          //Row r { editRow.tbl };                    // for example, Row::Last() here is not using the proper sqlite statement and fails to
@@ -794,7 +794,7 @@ public:
       }
       return result;
    }
-   
+
    bool SelectPrevious(bool loopAround)
    {
       bool result = NotifyClosing();
@@ -835,7 +835,7 @@ public:
       }
       return result;
    }
-   
+
    void SelectListRow(DataRow row)
    {
       // Time startTime = GetTime();
@@ -2093,7 +2093,7 @@ static WordEntry * btnodes;
 struct WordEntryBinaryTree : BinaryTree
 {
    WordEntry * entries;
-   
+
    void OnSerialize(IOChannel channel)
    {
       WordEntry node;
@@ -2111,7 +2111,7 @@ struct WordEntryBinaryTree : BinaryTree
          {
             bool isLeft = node == node.parent.left;
             node = node.parent;
-            
+
             while(node)
             {
                if(isLeft && node.right)
@@ -2139,11 +2139,11 @@ struct WordEntryBinaryTree : BinaryTree
       uint count;
       DebugLn("WordEntryBinaryTree::OnUnserialize");
       channel.Unserialize(count);
-      entries = new WordEntry[count];      
+      entries = new WordEntry[count];
       btnodes = entries;
       channel.Unserialize(root);
       this.root = (BTNode)root;
-      // count = root ? this.root.count : 0;      
+      // count = root ? this.root.count : 0;
       this.count = count;
       for(node = (WordEntry)root; node;)
       {
@@ -2161,7 +2161,7 @@ struct WordEntryBinaryTree : BinaryTree
          {
             bool isLeft = node == node.parent.left;
             node = node.parent;
-            
+
             while(node)
             {
                if(isLeft && node.right)
@@ -2188,7 +2188,7 @@ class WordEntry : struct
    WordEntry parent;
    WordEntry left, right;
    int depth;
-   
+
    IdList items;
    IdList words;
    uint id;
@@ -2248,7 +2248,7 @@ class WordEntry : struct
          // TODO: Fix typed_object issues
          entry = btnodes[id - 1] = eInstance_New(class(WordEntry));
          this = (void *)entry;
-         
+
          channel.Unserialize(string);
          channel.Unserialize(items);
          channel.Unserialize(words);

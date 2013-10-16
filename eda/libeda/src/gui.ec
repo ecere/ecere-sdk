@@ -64,7 +64,7 @@ public class CheckBool : bool
          {
             dataBox, borderStyle = 0, text = dataBox.text, anchor = { 0, 0, 0, 0 },
             // size = { 100, 22 };
-            modifyVirtualArea = false, isCheckbox = true;            
+            modifyVirtualArea = false, isCheckbox = true;
 
             bool DataBox::NotifyClicked(Button control, int x, int y, Modifiers mods)
             {
@@ -156,7 +156,7 @@ public:
                      tbl.GenerateIndex(1, indexedFields, false);
 
                      r = Row { tbl };
-                     
+
                      for(r.Find(filterField, middle, nil, filter); !r.nil; r.Next()) //while(r.Next())
                      {
                         Id id;
@@ -234,7 +234,7 @@ public:
       }
       else if((SmartKey)key == enter)
          parent.CycleChildren(true, false, false, true);
-      
+
       return DropBox::OnKeyHit(key, ch);
    }
 
@@ -330,7 +330,7 @@ public:
          dropBox.filter = filter;
       else
          dropBox.filtered = false;
-      
+
       dropBox.exclusion = exclusion;
       dropBox.showNone = showNone;
    }
@@ -475,7 +475,7 @@ public:
          if(!DataBox::SaveData())
             Refresh();
 
-         ((bool (*)())(void *)Row::SetData)(row, field, type, 
+         ((bool (*)())(void *)Row::SetData)(row, field, type,
             (type.type == noHeadClass || type.type == normalClass) ? *(void **)data : data);
       }
    }
@@ -511,7 +511,7 @@ public:
    {
       if((SmartKey)key == enter)
          parent.CycleChildren(true, false, false, true);
-      
+
       return DataBox::OnKeyHit(key, ch);
    }
 
@@ -621,7 +621,7 @@ public:
    void Save()
    {
       TableDropBox dropBox = (TableDropBox) editor;
-      
+
       if(!dropBox.currentRow && dropBox.contents[0])
       {
          Row row { dropBox.table };
@@ -669,16 +669,16 @@ public:
             if(table)
             {
                FieldIndex indexedFields[1];
-               
+
                if(!fldId) fldId = table.FindField(defaultIdField);
                if(!fldName) fldName = table.FindField(defaultNameField);
                if(!fldActive) fldActive = table.FindField(defaultActiveField);
-               
+
                indexedFields[0] = { fldId };
                table.Index(1, indexedFields);
-               
+
                editor.editRow.tbl = table;
-               
+
                RefillList();
             }
          }
@@ -690,7 +690,7 @@ public:
    {
       return MessageBox { master = this, type = yesNoCancel, text = $"List Editor", contents = $"You have modified this entry. Would you like to save it before proceeding?" }.Modal();
    }
-   
+
    bool OnClose(bool parentClosing)
    {
       if(editor && editor.modifiedDocument)
@@ -753,9 +753,9 @@ public:
          list.NotifySelect(this, list, null, 0);
          if(!editor.modifiedDocument)
          {
-            uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id? 
+            uint id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id?
             Row r { table };
-         
+
             if(r.Last())   // this will reuse ids in cases where the item(s) with the last id have been deleted
             {
                r.GetData(fldId, id);
@@ -763,7 +763,7 @@ public:
             }
             else
                id = 1;
-         
+
             editor.EditClear();
             {
                bool active = true;
@@ -798,7 +798,7 @@ public:
 
    virtual bool Window::NotifyDeleteConfirmation(ListSection listSection)
    {
-      return MessageBox {  master = this, type = yesNo, text = $"List Editor", 
+      return MessageBox {  master = this, type = yesNo, text = $"List Editor",
                            contents =  $"You are about to delete an entry.\n"
                                         "Do you wish to continue?"
                   }.Modal() == yes;
@@ -847,7 +847,7 @@ public:
    {
       this, anchor = { left = sgs * 2, top = 22 + 22 + sgs * 4, right = shadowS + sgs * 2, bottom = shadowS + sgs * 2 };
       alwaysHighLight = true;
-      
+
       bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
       {
          bool result = true;
@@ -878,7 +878,7 @@ public:
    };
 
    virtual void Window::NotifySelectListRow(ListSection listSection, uint64 id);
-   
+
    void SelectListRow(DataRow row)
    {
       // Time startTime = GetTime();
@@ -916,7 +916,7 @@ public:
          editor.disabled = !(bool)list.firstRow;
       }
    }
-   
+
    void OnResize(int width, int height)
    {
       int x = width - btnDelete.size.w - 20;
@@ -973,7 +973,7 @@ public:
    OldList editBoxes { };
 
    Window editArea { this, borderStyle = deep, tabCycle = true, anchor = { left = 8, top = 54, right = 10, bottom = 10 }, hasVertScroll = true, dontHideScroll = true };
-   
+
    ButtonStyle btnSave
    {
       this, anchor = { right = shadowS + sgs * 2, top = 24 }, hotKey = altV, text = $"Save";
@@ -1003,7 +1003,7 @@ public:
    }
 
    virtual void Window::NotifyInitFields(EditSection editSection);
-   
+
    void InitFields()
    {
       OldLink link;
@@ -1024,7 +1024,7 @@ public:
    {
       edit.listRow.string = name;
    }
-   
+
    void EditSave()
    {
       bool stringName = !strcmp(list.fldName.type.dataTypeString, "char *");

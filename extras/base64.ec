@@ -48,7 +48,7 @@ int Base64Decode(byte * input, int len, byte * decoded)
    while(c < len)
    {
       buffer = ((int)base64inv[input[c]] << 18) | ((int)base64inv[input[c+1]] << 12) | ((int)base64inv[input[c+2]] << 6) | ((int)base64inv[input[c+3]]);
-      
+
       decoded[decLen++] = (byte)((buffer & 0xFF0000) >> 16);
       if(len - c < 4)
       {

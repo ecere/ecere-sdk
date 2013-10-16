@@ -130,7 +130,7 @@ void Player_InformStartGame(Player * player)
    ruff.lastPlayed[0].kind = ruff.lastPlayed[1].kind =
    ruff.lastPlayed[2].kind = ruff.lastPlayed[3].kind = None;
    game.gameStarted = true;
-   
+
    Setup_EnableButtons(ruff.setup);
    eWindow_Update(window, null);
    eWindow_Update(ruff.scores, null);
@@ -495,4 +495,4 @@ void Player_Request4CardsAck(Player * player, int winner, int scores0, int score
       }
    }
 }
-*/         
+*/

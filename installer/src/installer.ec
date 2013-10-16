@@ -116,11 +116,11 @@ void ExtractFileFromArchive(ProgressBar progressBar, char * path, char * outputF
 
             FileGetSize(path, &dataSize);
             GetLastDirectory(outputFile, fileName);
-            
+
             ((GuiApplication)__thisModule).SignalEvent();
             //((GuiApplication)__thisModule).ProcessInput();
             //((GuiApplication)__thisModule).UpdateDisplay();
-            
+
             for(c = 0; c<dataSize && !abortInstall; c += BUFFERSIZE)
             {
                uint size = (dataSize > c + BUFFERSIZE) ? BUFFERSIZE : (dataSize - c);
@@ -218,7 +218,7 @@ struct Component
             if(requiredSize)
             {
                uint p = installProgress.progressBar.progress;
-               ExtractFileFromArchive(installProgress.progressBar, source, path); 
+               ExtractFileFromArchive(installProgress.progressBar, source, path);
             }
          }
          if(subComponents)
@@ -435,7 +435,7 @@ class Installer : Window
    Button browse
    {
       master = this, autoCreate = false, inactive = true, text = "...";
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          DataRow row = componentsBox.currentRow;
@@ -456,7 +456,7 @@ class Installer : Window
    CheckListBox componentsBox
    {
       this, size = { 460, 112 }, position = { 160, 160 }, hasHeader = true;
-      fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true, 
+      fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true,
       noDragging = true;
       rowHeight = 18;
       selectionColor = { 145, 150, 140 };
@@ -534,7 +534,7 @@ class Installer : Window
          component->requiredSize = 0;
          if(component->selected)
          {
-            component->requiredSize += component->size; 
+            component->requiredSize += component->size;
             if(component->subComponents)
                for(c = 0; component->subComponents[c].name; c++)
                   component->requiredSize += component->subComponents[c].requiredSize;
@@ -546,7 +546,7 @@ class Installer : Window
          }
          else
             row.UnsetData(reqField);
-         if(!component->parent) 
+         if(!component->parent)
          {
             totalSize += component->requiredSize;
             {
@@ -575,7 +575,7 @@ class Installer : Window
    CheckListBox optionsBox
    {
       this, size = { 460, 94 }, position = { 160, 284 };
-      fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true, 
+      fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true,
       noDragging = true;
       rowHeight = 18;
       opacity = 0;
@@ -662,7 +662,7 @@ class Installer : Window
    };
    EditBox label7
    {
-      this, opacity = 0, borderStyle = none, inactive = true, size = { 136, 53 }, position = { 14, 280 }, noSelect = true, 
+      this, opacity = 0, borderStyle = none, inactive = true, size = { 136, 53 }, position = { 14, 280 }, noSelect = true,
       multiLine = true,
       contents = $"Select icons to install, file\n"
       "associations, and system\n"
@@ -756,7 +756,7 @@ class Installer : Window
       if(component.defInstallPath)
          PathCat(path, component.defInstallPath);
       component.parent = parent;
-         
+
       row.SetData(null, CheckItem { component.name, component, (component.arch == bits32 && osIS64bit) } );
 
       if(component.defInstallPath)
@@ -807,7 +807,7 @@ class Installer : Window
 
       while(!FileExists(path) && path[0])
          StripLastDirectory(path, path);
-      
+
       if(path[0])
          GetFreeSpace(path, &avSize);
       else
@@ -843,7 +843,7 @@ class Installer : Window
       GetEnvironment("APPDATA", appData, sizeof(appData));
       GetEnvironment("HOMEDRIVE", homeDrive, sizeof(homeDrive));
       GetEnvironment("windir", winDir, sizeof(winDir));
-      
+
       componentsBox.AddField(componentField);
       componentsBox.AddField(locationField);
       componentsBox.AddField(reqField);
@@ -883,7 +883,7 @@ class Installer : Window
       }
       else
          strcpy(installDir, "C:\\Ecere SDK");
-      
+
       if(appData && appData[0])
       {
          static char defSamplesPath[MAX_LOCATION];
@@ -896,7 +896,7 @@ class Installer : Window
          PathCat(defExtrasPath, "Ecere SDK\\extras");
          additional[extras].defInstallPath = defExtrasPath;
       }
-         
+
       destBox.path = installDir;
 
       {
@@ -1036,7 +1036,7 @@ static void AddPath(char * sysPaths[200], int sysCount, char * paths[200], int *
    if(!found)
    {
       char * start;
-      if(*count) 
+      if(*count)
       {
          strcat(userPath, ";");
          start = paths[(*count)-1] + strlen(paths[(*count)-1])+1;
@@ -1125,7 +1125,7 @@ void AssociateExtension(char * extension, char * description, char *name, char *
 
    sprintf(keyName, "%s\\shell\\%s\\command", name, action);
    RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-   
+
    sprintf(keyName, path);
    strcat(keyName, " \"%L\"");
    {
@@ -1282,7 +1282,7 @@ class InstallThread : Thread
          }
 
          // Add paths
-         if(pathOptions[PathOptions::AddECEREPaths].selected 
+         if(pathOptions[PathOptions::AddECEREPaths].selected
 #ifndef NOMINGW
             || pathOptions[PathOptions::AddMinGWPaths].selected
 #endif
@@ -1302,14 +1302,14 @@ class InstallThread : Thread
             installProgress.installing.text = "Registering paths...";
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
-                        
+
             if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_QUERY_VALUE, &systemKey) == ERROR_SUCCESS)
             {
                size = sizeof(wSystemPath);
                RegQueryValueExW(systemKey, L"path", null, null, (byte *)wSystemPath, &size);
                UTF16toUTF8Buffer(wSystemPath, systemPath, sizeof(systemPath));
             }
-            
+
             RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &userKey, &status);
             if(status == REG_OPENED_EXISTING_KEY)
             {
@@ -1463,7 +1463,7 @@ class InstallThread : Thread
             installProgress.installing.text = $"Resgistering File Types...";
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
-            
+
             if(associateOptions[AssociateOptions::AssociateEPJ].selected)
             {
                AssociateExtension(".epj", "Ecere IDE Project", "epj_file", "Open", idePath);

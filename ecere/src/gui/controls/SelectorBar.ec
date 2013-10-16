@@ -22,7 +22,7 @@ static void DrawStipple(Surface surface, Size clientSize)
 
    surface.LineStipple(0x5555);
    surface.Rectangle(x1, y1, x2, y2);
-   surface.LineStipple(0);            
+   surface.LineStipple(0);
 }
 
 public class SelectorBar : Stacker
@@ -180,7 +180,7 @@ public:
             if(eClass_IsDerived(b._class, class(SelectorButton)) && b != this)
                b.checked = false;
          }
-         font = { font.faceName, font.size, bold = true }; 
+         font = { font.faceName, font.size, bold = true };
          // this should not be required: the font change should resize the control and Stacker should adapt automatically
          // why does it not?
          selector.OnResize(selector.clientSize.w, selector.clientSize.h);
@@ -239,15 +239,15 @@ public class EditableSelectorButton : SelectorButton
                   if(master && ((EditableSelectorButton)master).focusHolder)
                      ((EditableSelectorButton)master).focusHolder.Activate();
                   delete this;
-               }               
+               }
                return true;
             }
-            
+
             bool NotifyModified(EditBox editBox)
             {
                char * oldName = CopyString(text);
                char * newName = CopyString(editBox.contents);
-               
+
                if(OnRename(master, this, &oldName, &newName))
                {
                   SelectorBar selector = (SelectorBar)parent;
@@ -255,10 +255,10 @@ public class EditableSelectorButton : SelectorButton
                   if(selector)
                      selector.MakeControlVisible(this);
                }
-               
+
                delete oldName;
                delete newName;
-               
+
                //OnLeavingEdit();? //master.someControl.Activate();
                if(focusHolder)
                   focusHolder.Activate();
@@ -284,7 +284,7 @@ public class EditableSelectorButton : SelectorButton
             }
          };
          incref editBox;
-         editBox.contents = text;         
+         editBox.contents = text;
          editBox.Create();
          editBox.SetModified(false);
          editBox.SelectAll();

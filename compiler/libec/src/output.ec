@@ -77,7 +77,7 @@ static void OutputOperator(int op, File f)
 
 public void OutputTypeName(TypeName type, File f, bool typeName)
 {
-   /*if(type.typedObject) 
+   /*if(type.typedObject)
    {
       //f.Puts("Class * class, void *");
       f.Puts("class");
@@ -91,7 +91,7 @@ public void OutputTypeName(TypeName type, File f, bool typeName)
          if(spec.next) f.Puts(" ");
       }
    }
-   if(type.declarator) 
+   if(type.declarator)
    {
       f.Puts(" ");
       OutputDeclarator(type.declarator, f);
@@ -116,7 +116,7 @@ public void OutputExpression(Expression exp, File f)
                OutputSpecifier(spec, f, false);
                if(spec.next) f.Puts(" ");
             }
-            if(exp._classExp.decl) 
+            if(exp._classExp.decl)
             {
                f.Puts(" ");
                OutputDeclarator(exp._classExp.decl, f);
@@ -196,7 +196,7 @@ public void OutputExpression(Expression exp, File f)
             OutputExpression(exp.op.exp2, f);
          }
          break;
-      case extensionExpressionExp: 
+      case extensionExpressionExp:
       case bracketsExp:
       {
          Expression expression;
@@ -358,7 +358,7 @@ static void OutputStatement(Statement stmt, File f)
    }
 
 
-   if(inCompiler && outputLineNumbers && stmt.loc.start.line) 
+   if(inCompiler && outputLineNumbers && stmt.loc.start.line)
    {
       /*if(stmt.loc.start.line == 1)
          printf("bug");*/
@@ -421,7 +421,7 @@ static void OutputStatement(Statement stmt, File f)
                outputLine ++;
             }
          }
-         if(inCompiler && outputLineNumbers && stmt.loc.end.line) 
+         if(inCompiler && outputLineNumbers && stmt.loc.end.line)
          {
             /*if(stmt.loc.end.line == 1)
                printf("bug");*/
@@ -530,7 +530,7 @@ static void OutputStatement(Statement stmt, File f)
          if(stmt.forStmt.increment)
          {
             // TESTING THIS HERE FOR FOR INCREMENT
-            if(inCompiler && outputLineNumbers && stmt.loc.end.line) 
+            if(inCompiler && outputLineNumbers && stmt.loc.end.line)
             {
                /*if(stmt.loc.end.line == 1)
                   printf("bug");*/
@@ -573,7 +573,7 @@ static void OutputStatement(Statement stmt, File f)
             f.Printf("{ ");
             if(exp && exp.expType)
             {
-               
+
                char string[1024] = "";
                OldList * specs = MkList();
                Declarator decl;
@@ -587,7 +587,7 @@ static void OutputStatement(Statement stmt, File f)
                   {
                      delete specs;
                      specs = CopyList(exp.expType.templateParameter.dataType.specifiers, CopySpecifier);
-                     decl = PlugDeclarator(/*CopyDeclarator(*/exp.expType.templateParameter.dataType.decl/*)*/, 
+                     decl = PlugDeclarator(/*CopyDeclarator(*/exp.expType.templateParameter.dataType.decl/*)*/,
                         MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
                   }
                   else
@@ -612,7 +612,7 @@ static void OutputStatement(Statement stmt, File f)
          }
          if(!memoryGuard)
             f.Puts("return ");
-         else 
+         else
          {
             Expression exp = stmt.expressions ? stmt.expressions->last : null;
             if(exp && exp.expType)
@@ -691,7 +691,7 @@ static void OutputStatement(Statement stmt, File f)
       }
    }
 
-   if(inCompiler && outputLineNumbers && stmt.loc.start.line) 
+   if(inCompiler && outputLineNumbers && stmt.loc.start.line)
    {
       f.Printf("\n#line %d \"%s\"\n", outputLine+2, origName);
       outputLine += 2;
@@ -781,7 +781,7 @@ static void OutputDeclarator(Declarator decl, File f)
             if(_class && _class.registered)
             {
                f.Printf("%d", (int)eClass_GetProperty(_class.registered, "enumSize"));
-            }            
+            }
          }
          f.Puts("]");
          break;
@@ -806,7 +806,7 @@ static void OutputDeclarator(Declarator decl, File f)
       }
       case pointerDeclarator:
          if(decl.pointer.pointer) OutputPointer(decl.pointer.pointer, f);
-         if(decl.declarator) 
+         if(decl.declarator)
          {
             f.Puts(" ");
             OutputDeclarator(decl.declarator, f);
@@ -844,7 +844,7 @@ static void OutputAttrib(Attrib attr, File f)
       case __ATTRIB:    f.Puts("__attribute((");  break;
       case ATTRIB_DEP:  f.Puts("__attribute_deprecated__(("); break;
    }
-   
+
    if(attr.attribs)
    {
       Attribute attrib;
@@ -854,7 +854,7 @@ static void OutputAttrib(Attrib attr, File f)
          OutputAttribute(attrib, f);
       }
    }
-   f.Puts("))"); 
+   f.Puts("))");
 }
 
 static void OutputExtDecl(ExtDecl extDecl, File f)
@@ -1028,12 +1028,12 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
       case typeOfSpecifier:
          f.Puts("__typeof(");
          OutputExpression(spec.expression, f);
-         f.Puts(")");                  
+         f.Puts(")");
          break;
       case subClassSpecifier:
          f.Puts("subclass(");
          OutputSpecifier(spec._class, f, false);
-         f.Puts(")");                  
+         f.Puts(")");
          break;
       case templateTypeSpecifier:
          OutputIdentifier(spec.templateParameter.identifier, f);
@@ -1062,7 +1062,7 @@ static void OutputInitializer(Initializer initializer, File f)
          f.Puts("\n{\n");
          outputLine += 2;
 
-         if(inCompiler && outputLineNumbers && initializer.loc.start.line) 
+         if(inCompiler && outputLineNumbers && initializer.loc.start.line)
          {
             /*if(initializer.loc.start.line == 1)
                printf("bug");*/
@@ -1078,7 +1078,7 @@ static void OutputInitializer(Initializer initializer, File f)
          }
          f.Puts("\n}");
 
-         if(inCompiler && outputLineNumbers && initializer.loc.start.line) 
+         if(inCompiler && outputLineNumbers && initializer.loc.start.line)
          {
             /*if(initializer.loc.start.line == 1)
                printf("bug");*/
@@ -1134,7 +1134,7 @@ static void OutputDeclaration(Declaration decl, File f)
 
                   GetSourceName(name, decl.loc.start.included ? GetIncludeFileFromID(decl.loc.start.included) : null);
 
-                  if(inCompiler && outputLineNumbers && decl.loc.start.line) 
+                  if(inCompiler && outputLineNumbers && decl.loc.start.line)
                   {
                      /*if(decl.loc.start.line == 1)
                         printf("bug");*/
@@ -1165,7 +1165,7 @@ static void OutputDeclaration(Declaration decl, File f)
             {
                OutputInitDeclarator(d, f);
                if(d.next) f.Puts(", ");
-            }   
+            }
          }
          break;
       }
@@ -1188,7 +1188,7 @@ static void OutputDeclaration(Declaration decl, File f)
             {
                OutputDeclarator(d, f);
                if(d.next) f.Puts(", ");
-            }   
+            }
          }
          if(decl.extStorage)
          {
@@ -1208,7 +1208,7 @@ static void OutputDeclaration(Declaration decl, File f)
    }
    f.Puts(";\n");
    outputLine ++;
-   if(inCompiler && outputLineNumbers && decl.loc.start.line && decl.type == initDeclaration) 
+   if(inCompiler && outputLineNumbers && decl.loc.start.line && decl.type == initDeclaration)
    {
       f.Printf("\n#line %d \"%s\"\n", outputLine+2, origName);
       outputLine += 2;
@@ -1221,7 +1221,7 @@ static void OutputFunction(FunctionDefinition func, File f)
 {
    FunctionDefinition oldFunc = curFunction;
    curFunction = func;
-   if(func.specifiers) 
+   if(func.specifiers)
    {
       Specifier spec;
       for(spec = func.specifiers->first; spec; spec = spec.next)
@@ -1356,7 +1356,7 @@ static void OutputInstance(Instantiation inst, File f)
 
 static void OutputClassFunction(ClassFunction func, File f)
 {
-   if(func.specifiers) 
+   if(func.specifiers)
    {
       Specifier spec;
       for(spec = func.specifiers->first; spec; spec = spec.next)
@@ -1471,19 +1471,19 @@ public void OutputTree(OldList ast, File f)
    {
       switch(external.type)
       {
-         case functionExternal: 
-            OutputFunction(external.function, f); 
+         case functionExternal:
+            OutputFunction(external.function, f);
             f.Puts("\n");
             outputLine ++;
             break;
-         case declarationExternal: 
+         case declarationExternal:
             OutputDeclaration(external.declaration, f);
-            f.Puts("\n");   
+            f.Puts("\n");
             outputLine ++;
             break;
-         case classExternal: 
+         case classExternal:
             OutputClass(external._class, f);
-            f.Puts("\n");   
+            f.Puts("\n");
             outputLine ++;
             break;
       }

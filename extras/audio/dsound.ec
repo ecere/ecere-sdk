@@ -43,7 +43,7 @@ public void OpenMixer()
    waveFormat.wFormatTag = WAVE_FORMAT_PCM;
    waveFormat.nBlockAlign = (waveFormat.wBitsPerSample >> 3) * waveFormat.nChannels;
    waveFormat.nAvgBytesPerSec = waveFormat.nBlockAlign * waveFormat.nSamplesPerSec;
-   
+
    waveOutOpen(&hWaveOut, WAVE_MAPPER, &waveFormat, 0, 0, CALLBACK_NULL);
    mixerOpen((HMIXER *)&hmx, (uint)hWaveOut, 0, 0, MIXER_OBJECTF_HWAVEOUT);
 }
@@ -63,12 +63,12 @@ public bool AudioSetVolume(VolumeControl type, double percent)
       {
          streamingSound.volume = percent;
          result = true;
-      }      
+      }
    }
    else
    {
       MIXERLINE uMixerLine;
-            
+
       // waveOutSetVolume((HWAVEOUT)0, (uint)(percent * 0xFFFF) | ((uint)(percent * 0xFFFF) << 16));
 
       uMixerLine.cbStruct = sizeof(MIXERLINE);
@@ -77,7 +77,7 @@ public bool AudioSetVolume(VolumeControl type, double percent)
       {
          MIXERLINECONTROLS uMixerLineControls;
          MIXERCONTROL mixerControl;
-         
+
          uMixerLineControls.cbStruct = sizeof(MIXERLINECONTROLS);
          uMixerLineControls.dwLineID = uMixerLine.dwLineID;
          uMixerLineControls.dwControlID = MIXERCONTROL_CONTROLTYPE_VOLUME;
@@ -113,19 +113,19 @@ public bool AudioGetVolume(VolumeControl type, double * percent)
       {
          *percent = streamingSound.volume;
          result = true;
-      }      
+      }
    }
    else
    {
       MIXERLINE uMixerLine;
-                  
+
       uMixerLine.cbStruct = sizeof(MIXERLINE);
       uMixerLine.dwComponentType = (type == pcm) ? MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT : MIXERLINE_COMPONENTTYPE_DST_SPEAKERS;
       if(mixerGetLineInfo(hmx, &uMixerLine, MIXER_GETLINEINFOF_COMPONENTTYPE) == MMSYSERR_NOERROR)
       {
          MIXERLINECONTROLS uMixerLineControls;
          MIXERCONTROL mixerControl;
-         
+
          uMixerLineControls.cbStruct = sizeof(MIXERLINECONTROLS);
          uMixerLineControls.dwLineID = uMixerLine.dwLineID;
          uMixerLineControls.dwControlID = MIXERCONTROL_CONTROLTYPE_VOLUME;
@@ -178,7 +178,7 @@ public int OpenAudio(AudioSpec wanted, AudioSpec result)
    {
       streamingSound.volume = wanted.volume;
       dSoundThread.bDone = false;
-      
+
       //dSoundThread.Create();
       return 1;
    }
@@ -260,7 +260,7 @@ static class StreamingSound
          IDirectSoundBuffer_SetPan(apDSBuffer[0], pan);
       }
    }
-   
+
    property uint dwNumBuffers
    {
       set
@@ -282,7 +282,7 @@ static class StreamingSound
          }
       }
    }
-   
+
    ~StreamingSound()
    {
       uint i;
@@ -290,44 +290,44 @@ static class StreamingSound
       {
          if(apDSBuffer[i])
          {
-            IDirectSoundBuffer_Release( apDSBuffer[i] ); 
+            IDirectSoundBuffer_Release( apDSBuffer[i] );
             apDSBuffer[i] = 0;
          }
       }
-      
-      delete( apDSBuffer ); 
+
+      delete( apDSBuffer );
    }
-   
+
    int RestoreBuffer( IDirectSoundBuffer * pDSB, bool* pbWasRestored )
    {
       int hr;
       uint dwStatus;
-      
+
       if( pDSB == null )
          return CO_E_NOTINITIALIZED;
       if( pbWasRestored )
          *pbWasRestored = false;
-      
+
       if( FAILED( hr = IDirectSoundBuffer_GetStatus(pDSB, &dwStatus) ) )
          return 1; //DXUT_ERR( L"GetStatus", hr );
-      
+
       if( dwStatus & DSBSTATUS_BUFFERLOST )
       {
          // Since the app could have just been activated, then
-         // DirectSound may not be giving us control yet, so 
-         // the restoring the buffer may fail.  
+         // DirectSound may not be giving us control yet, so
+         // the restoring the buffer may fail.
          // If it does, sleep until DirectSound gives us control.
-         do 
+         do
          {
             hr = IDirectSoundBuffer_Restore(pDSB);
             if( hr == DSERR_BUFFERLOST )
                Sleep( 10 );
          }
          while( ( hr = IDirectSoundBuffer_Restore(pDSB) ) == DSERR_BUFFERLOST );
-         
+
          if( pbWasRestored != null )
             *pbWasRestored = true;
-         
+
          return S_OK;
       }
       else
@@ -340,75 +340,75 @@ static class StreamingSound
    {
       uint i;
       if(!apDSBuffer)
-         return null; 
-      
+         return null;
+
       for( i=0; i<dwNumBuffers; i++ )
       {
          if( apDSBuffer[i] )
-         {  
+         {
             uint dwStatus = 0;
             IDirectSoundBuffer_GetStatus(apDSBuffer[i], &dwStatus );
             if ( ( dwStatus & DSBSTATUS_PLAYING ) == 0 )
                break;
          }
       }
-      
+
       if( i != dwNumBuffers )
          return apDSBuffer[ i ];
       else
          return apDSBuffer[ rand() % dwNumBuffers ];
    }
-   
+
    IDirectSoundBuffer * GetBuffer( uint dwIndex )
    {
       if( apDSBuffer == null )
          return null;
       if( dwIndex >= dwNumBuffers )
          return null;
-      
+
       return apDSBuffer[dwIndex];
    }
-  
+
    int Play( uint dwPriority, uint dwFlags, uint lVolume, uint lFrequency, uint lPan )
    {
       int result;
       int hr;
       bool bRestored;
       //IDirectSoundBuffer * pDSB;
-      
+
       // For Streaming Sound
       dwFlags |= DSBPLAY_LOOPING;
 
       if( apDSBuffer == null )
          return CO_E_NOTINITIALIZED;
-      
+
       pDSB = GetFreeBuffer();
-      
+
       if( pDSB == null )
          return 1; //DXUT_ERR( L"GetFreeBuffer", E_FAIL );
-      
+
       // Restore the buffer if it was lost
       if( FAILED( hr = RestoreBuffer( pDSB, &bRestored ) ) )
          return 1; //DXUT_ERR( L"RestoreBuffer", hr );
-      
+
       if( bRestored )
       {
          // The buffer was restored, so we need to fill it with new data
          if( FAILED( hr = FillBufferWithSound( pDSB, false ) ) )
             return 1; //DXUT_ERR( L"FillBufferWithSound", hr );
       }
-      
+
       if( dwCreationFlags & DSBCAPS_CTRLVOLUME )
       {
          //IDirectSoundBuffer_SetVolume(pDSB, lVolume);
       }
-      
-      if( lFrequency != -1 && 
+
+      if( lFrequency != -1 &&
          (dwCreationFlags & DSBCAPS_CTRLFREQUENCY) )
       {
          IDirectSoundBuffer_SetFrequency(pDSB, lFrequency);
       }
-      
+
       if( dwCreationFlags & DSBCAPS_CTRLPAN )
       {
          //IDirectSoundBuffer_SetPan(pDSB, lPan);
@@ -423,10 +423,10 @@ static class StreamingSound
       uint i;
       if( apDSBuffer == null )
          return CO_E_NOTINITIALIZED;
-      
+
       for( i=0; i<dwNumBuffers; i++ )
          hr |= IDirectSoundBuffer_Stop(apDSBuffer[i]);
-      
+
       return hr;
    }
 
@@ -442,17 +442,17 @@ static class StreamingSound
       uint playCursor, writeCursor;
       bool bRestored;
       uint start, size;
-      
+
       static uint cursor;
       bool written = true;
       int c;
       while(written)
       {
          written = false;
-         
+
          // Figure out how much data has been played so far.  When we have played
          // past the end of the file, we will either need to start filling the
-         // buffer with silence or starting reading from the beginning of the file, 
+         // buffer with silence or starting reading from the beginning of the file,
          // depending if the user wants to loop the sound
          if(IDirectSoundBuffer_GetCurrentPosition(apDSBuffer[0], &dwCurrentPlayPos, null))
          {
@@ -478,7 +478,7 @@ static class StreamingSound
                IDirectSoundBuffer_Unlock(apDSBuffer[0], pDSLockedBuffer, dwDSLockedBufferSize, null, 0 );
                dwNextWriteOffset = 0;
             }
-            
+
             if(start > 0)
             {
                start = 0;
@@ -518,59 +518,59 @@ static class StreamingSound
          }
       return true;
    }
-   
+
    int Reset()
    {
       int hr;
       bool bRestored;
       int result;
-      
+
       if(!apDSBuffer[0])
          return 1;
-      
+
       dwLastPlayPos     = 0;
       dwPlayProgress    = 0;
       dwNextWriteOffset = 0;
       bFillNextNotificationWithSilence = false;
-      
+
       // Restore the buffer if it was lost
       if(RestoreBuffer( apDSBuffer[0], &bRestored ))
          return 1;
-      
+
       if( bRestored )
       {
          // The buffer was restored, so we need to fill it with new data
          if(FillBufferWithSound( apDSBuffer[0], false))
             return 1;
       }
-      
+
       result = IDirectSoundBuffer_SetCurrentPosition(apDSBuffer[0], 0L );
       return result;
    }
 
    int FillBufferWithSound( IDirectSoundBuffer * pDSB, bool bRepeatWavIfBufferLarger )
    {
-      int hr; 
+      int hr;
       void*   pDSLockedBuffer      = null; // Pointer to locked buffer memory
       uint   dwDSLockedBufferSize = 0;    // Size of the locked DirectSound buffer
-      uint   dwWavDataRead        = 0;    // Amount of data read from the wav file 
-      
+      uint   dwWavDataRead        = 0;    // Amount of data read from the wav file
+
       if( pDSB == null )
          return CO_E_NOTINITIALIZED;
-      
+
       // Make sure we have focus, and we didn't just switch in from
       // an app which had a DirectSound device
       if(RestoreBuffer( pDSB, null ))
          return 1;
-      
+
       // Lock the buffer down
       if(IDirectSoundBuffer_Lock(pDSB, 0, dwDSBufferSize, &pDSLockedBuffer, &dwDSLockedBufferSize, null, null, 0L ))
          return 1;
-      
+
       callback(data, pDSLockedBuffer, dwDSLockedBufferSize);
 
       dwWavDataRead = dwDSLockedBufferSize;
-      
+
       printf("Filling 16 spots\n");
       IDirectSoundBuffer_Unlock(pDSB, pDSLockedBuffer, dwDSLockedBufferSize, null, 0 );
 
@@ -582,74 +582,74 @@ static class StreamingSound
 static class CSoundManager
 {
    IDirectSound8* pDS;
-   
+
    ~CSoundManager()
    {
       if(pDS)
-         IDirectSound_Release( pDS ); 
+         IDirectSound_Release( pDS );
    }
-   
+
    int Initialize( void * hWnd )
    {
       int hr;
-      
+
       if(pDS)
       {
          IDirectSound_Release( pDS );
          pDS = null;
       }
-      
+
       // Create IDirectSound using the primary sound device
       if( FAILED( hr = DirectSoundCreate8( null, &pDS, null ) ) )
          return 1; //DXUT_ERR( L"DirectSoundCreate8", hr );
-      
-      // Set DirectSound coop level 
+
+      // Set DirectSound coop level
       if( FAILED( hr = IDirectSound_SetCooperativeLevel(pDS, hWnd, DSSCL_PRIORITY ) ) )
-         return 1; //DXUT_ERR( L"SetCooperativeLevel", hr );   
-      
+         return 1; //DXUT_ERR( L"SetCooperativeLevel", hr );
+
       return S_OK;
    }
-   
-   
+
+
    int SetPrimaryBufferFormat( uint dwPrimaryChannels, uint dwPrimaryFreq, uint dwPrimaryBitRate )
    {
       int hr;
       IDirectSoundBuffer * pDSBPrimary = null;
       DSBUFFERDESC dsbd;
       WAVEFORMATEX wfx;
-      
+
       if( pDS == null )
          return CO_E_NOTINITIALIZED;
-      
-      // Get the primary buffer 
+
+      // Get the primary buffer
       ZeroMemory( &dsbd, sizeof(DSBUFFERDESC) );
       dsbd.dwSize        = sizeof(DSBUFFERDESC);
       dsbd.dwFlags       = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME;
       dsbd.dwBufferBytes = 0;
       dsbd.lpwfxFormat   = null;
-      
+
       if( FAILED( hr = IDirectSound_CreateSoundBuffer(pDS, &dsbd, &pDSBPrimary, null ) ) )
          return 1; // DXUT_ERR( L"CreateSoundBuffer", hr );
-      
-      ZeroMemory( &wfx, sizeof(WAVEFORMATEX) ); 
-      wfx.wFormatTag      = (WORD) WAVE_FORMAT_PCM; 
-      wfx.nChannels       = (WORD) dwPrimaryChannels; 
-      wfx.nSamplesPerSec  = (uint) dwPrimaryFreq; 
-      wfx.wBitsPerSample  = (WORD) dwPrimaryBitRate; 
+
+      ZeroMemory( &wfx, sizeof(WAVEFORMATEX) );
+      wfx.wFormatTag      = (WORD) WAVE_FORMAT_PCM;
+      wfx.nChannels       = (WORD) dwPrimaryChannels;
+      wfx.nSamplesPerSec  = (uint) dwPrimaryFreq;
+      wfx.wBitsPerSample  = (WORD) dwPrimaryBitRate;
       wfx.nBlockAlign     = (WORD) (wfx.wBitsPerSample / 8 * wfx.nChannels);
       wfx.nAvgBytesPerSec = (uint) (wfx.nSamplesPerSec * wfx.nBlockAlign);
-      
+
       if( FAILED( hr = IDirectSoundBuffer_SetFormat(pDSBPrimary, &wfx) ) )
          return 1; //DXUT_ERR( L"SetFormat", hr );
-      
+
       if(pDSBPrimary)
       {
          IDirectSoundBuffer_Release( pDSBPrimary );
          pDSBPrimary = null;
-      }      
+      }
       return S_OK;
    }
-   
+
 
    bool InitStreaming(StreamingSound * ppStreamingSound, uint dwNotifyCount, uint dwNotifySize, void * hNotifyEvent,
                       void (*callback)(void * data, void * buffer, int len), void * data, int nChannels, int freq,int bits)
@@ -657,18 +657,18 @@ static class CSoundManager
       int hr;
       IDirectSoundBuffer * pDSBuffer = null;
       uint dwDSBufferSize = 0;
-      DSBPOSITIONNOTIFY * aPosNotify = null; 
+      DSBPOSITIONNOTIFY * aPosNotify = null;
       IDirectSoundNotify * pDSNotify = null;
       DSBUFFERDESC dsbd;
       uint i;
-      
+
       if(!pDS)
          return false;
       if(!ppStreamingSound || !hNotifyEvent)
          return false;
-      
+
       dwDSBufferSize = dwNotifySize * dwNotifyCount;
-      
+
       ZeroMemory( &dsbd, sizeof(DSBUFFERDESC) );
       dsbd.dwSize= sizeof(DSBUFFERDESC);
       dsbd.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME;
@@ -681,30 +681,30 @@ static class CSoundManager
       dsbd.lpwfxFormat->wBitsPerSample = (uint16)bits;
       dsbd.lpwfxFormat->nBlockAlign = dsbd.lpwfxFormat->nChannels * dsbd.lpwfxFormat->wBitsPerSample / 8;
       dsbd.lpwfxFormat->nAvgBytesPerSec = dsbd.lpwfxFormat->nSamplesPerSec * dsbd.lpwfxFormat->nBlockAlign;
-      
+
       if(IDirectSound_CreateSoundBuffer(pDS, &dsbd, &pDSBuffer, null))
       {
          delete dsbd.lpwfxFormat;
          return false;
       }
       delete dsbd.lpwfxFormat;
-      
+
       if(IDirectSoundBuffer_QueryInterface(pDSBuffer, &IID_IDirectSoundNotify, (void**)&pDSNotify))
       {
          delete aPosNotify;
          return false;
       }
-      
+
       aPosNotify = new DSBPOSITIONNOTIFY[ dwNotifyCount ];
       if( aPosNotify == null )
          return false;
-      
+
       for( i = 0; i < dwNotifyCount; i++ )
       {
          aPosNotify[i].dwOffset     = (dwNotifySize * i) + dwNotifySize - 1;
-         aPosNotify[i].hEventNotify = hNotifyEvent;             
+         aPosNotify[i].hEventNotify = hNotifyEvent;
       }
-      
+
       if(IDirectSoundNotify_SetNotificationPositions(pDSNotify, dwNotifyCount, aPosNotify ))
       {
          if(pDSNotify)
@@ -712,15 +712,15 @@ static class CSoundManager
          delete( aPosNotify );
          return false;
       }
-      
+
       if(pDSNotify)
          IDirectSoundNotify_Release(pDSNotify);
       delete aPosNotify;
-      
+
       *ppStreamingSound = StreamingSound
       {
-         dwCreationFlags = DSBCAPS_CTRLPAN|DSBCAPS_CTRLVOLUME, dwNumBuffers = 1, dwNotifySize = dwNotifySize, dwDSBufferSize = dwDSBufferSize, apDSBuffer = &pDSBuffer, 
-         
+         dwCreationFlags = DSBCAPS_CTRLPAN|DSBCAPS_CTRLVOLUME, dwNumBuffers = 1, dwNotifySize = dwNotifySize, dwDSBufferSize = dwDSBufferSize, apDSBuffer = &pDSBuffer,
+
          callback = callback, data = data
       };
       // ppStreamingSound->FillBufferWithSound( pDSBuffer, false );
@@ -749,8 +749,8 @@ static class DSoundThread : Thread
    {
       bool filled = false;
       SetPriority(timeCritical);
-      while( !bDone ) 
-      { 
+      while( !bDone )
+      {
          WaitForSingleObject(g_hNotificationEvent, INFINITE);
          if(streamingSound)
          {

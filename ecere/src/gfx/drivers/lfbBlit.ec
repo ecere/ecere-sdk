@@ -18,7 +18,7 @@ static void BLIT_##suffix(BLIT_ARGS) \
    init                                                                 \
    for(y=0; y<h; y++) { xloop; source+=addsource; dest+=adddest; }      \
 }
-   
+
 #define BLIT_INIT_DEC   \
    int x;               \
    dest += w-1;         \
@@ -29,7 +29,7 @@ static void BLIT_##suffix(BLIT_ARGS) \
    int x;               \
    adddest -= w;        \
    addsource -= w;
-   
+
 #define FLIP(copy) for(x=0; x<w; x++) { copy source++; dest--; }
 #define NOFLIP(copy) for(x=0; x<w; x++) { copy source++; dest++; }
 #define TRANSPUT(result)  if(*source) *dest=(result);
@@ -75,28 +75,28 @@ BLIT(B888F, byte, ColorAlpha,PALINIT BLIT_INIT_DEC,   FLIP(OPAQUEPUT(palette[*so
 
 static void BLIT_BRGBA(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, int w, int h)
 {
-   int y;                                                              
-   uint32 adddest = dst.stride, addsource = src.stride;               
-   byte * source = (byte *) src.picture + sy * addsource + sx;  
-   ColorRGBA * dest   = (ColorRGBA *) dst.picture + dy * adddest   + dx;  
+   int y;
+   uint32 adddest = dst.stride, addsource = src.stride;
+   byte * source = (byte *) src.picture + sy * addsource + sx;
+   ColorRGBA * dest   = (ColorRGBA *) dst.picture + dy * adddest   + dx;
    ColorAlpha * palette = src.palette;
-   int x;             
-   adddest -= w;       
+   int x;
+   adddest -= w;
    addsource -= w;
 
-   for(y=0; y<h; y++) 
-   { 
-      for(x=0; x<w; x++) 
-      { 
+   for(y=0; y<h; y++)
+   {
+      for(x=0; x<w; x++)
+      {
          ColorAlpha value = palette[*source];
          ColorRGBA color = (ColorRGBA)(value);
          *dest=color;
-         source++; 
-         dest++; 
+         source++;
+         dest++;
       }
 
-      source+=addsource; 
-      dest+=adddest; 
+      source+=addsource;
+      dest+=adddest;
    }
 }
 
@@ -115,7 +115,7 @@ BLIT(B888TF,byte, ColorAlpha,PALINIT BLIT_INIT_DEC,   FLIP(TRANSPUT(palette[*sou
 BLIT(BRGBAT, byte, ColorRGBA,PALINIT BLIT_INIT_INC, NOFLIP(TRANSPUT((ColorRGBA)(palette[*source]))))
 BLIT(BRGBATF,byte, ColorRGBA,PALINIT BLIT_INIT_DEC,   FLIP(TRANSPUT((ColorRGBA)(palette[*source]))))
 
-void (* blits_8bit_table[PixelFormat][2][2]) (BLIT_ARGS) = 
+void (* blits_8bit_table[PixelFormat][2][2]) (BLIT_ARGS) =
 {
    { { null, null }, { null, null } },
    { { BLIT_B8,   BLIT_B8F },   { BLIT_B8T,   BLIT_B8TF } },
@@ -145,7 +145,7 @@ BLIT(BI888F, byte, ColorAlpha,PALSHADEINIT PALINIT BLIT_INIT_DEC,   FLIP(TRANSPU
 BLIT(BIRGBA, byte, ColorRGBA, PALSHADEINIT PALINIT BLIT_INIT_INC, NOFLIP(TRANSPUT((ColorRGBA)(palette[SHADESRC]))))
 BLIT(BIRGBAF,byte, ColorRGBA, PALSHADEINIT PALINIT BLIT_INIT_DEC,   FLIP(TRANSPUT((ColorRGBA)(palette[SHADESRC]))))
 
-void (* shades_blit_table[PixelFormat][2]) (BLIT_ARGS) = 
+void (* shades_blit_table[PixelFormat][2]) (BLIT_ARGS) =
 {
    { null, null },
    { BLIT_BI8,  BLIT_BI8F },
@@ -441,7 +441,7 @@ FILTER(AT,  byte, byte, 1, 1, color, (byte)color)
 FILTER(AF,  byte, byte,-1, 1, color, (byte)color)
 
 void (* filters_table[PixelFormat][2][2]) (FILTER_ARGS) =
-{ 
+{
    { { null, null },              { null, null} },
    { { FILTER_8, FILTER_8F },     { FILTER_8T, FILTER_8TF } },
    { { FILTER_444, FILTER_444F }, { FILTER_444T, FILTER_444TF } },

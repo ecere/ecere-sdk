@@ -94,7 +94,7 @@ static void Server_ShuffleDeck(Card * deck)
       for(c = 0; c<NUMCARDS; c++)
       {
          int whichCut;
-         
+
          if(indexCut[0] < numCut[0] && indexCut[1] < numCut[1])
             whichCut = GetRandom(0,1);
          else if(indexCut[0] < numCut[0])
@@ -288,7 +288,7 @@ void Server_Ack4Cards(RuffGame game, Player player)
       else
       {
          for(c = 0; c<4; c++)
-            Player_InformNewRound(&game.players[c], game.round, game.rounds[game.round].shuffle, 
+            Player_InformNewRound(&game.players[c], game.round, game.rounds[game.round].shuffle,
             game.players[c].cards);
       }
    }
@@ -311,7 +311,7 @@ void Server_PlayCard(RuffGame game, Player player, int card)
       Card theCard = player.cards[card];
 
       for(c = 0; c<4; c++)
-         Player_InformCardPlayed(&game.players[c], player.id, 
+         Player_InformCardPlayed(&game.players[c], player.id,
             theCard.kind, theCard.number);
 
       game.played[player.id] = theCard;

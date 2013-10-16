@@ -34,7 +34,7 @@ class GLDemo : Window
       }
    };
 
-   void UpdateObjects(Time diffTime) 
+   void UpdateObjects(Time diffTime)
    {
       Quaternion orientation = cube.transform.orientation;
       orientation.RotateYawPitch((Degrees)diffTime * 0.5, (Degrees)diffTime * 0.5);
@@ -52,7 +52,7 @@ class GLDemo : Window
       cube.UpdateTransform();
       return true;
    }
-   
+
    void OnResize(int w, int h)
    {
       camera.Setup(w, h, null);

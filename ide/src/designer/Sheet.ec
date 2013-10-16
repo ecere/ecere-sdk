@@ -438,7 +438,7 @@ class Sheet : Window
          categorized.disabled = true;
 
          methods.Activate();
-                       
+
          // ((IDEWorkSpace)master).SheetSelected(Methods);
          return true;
       }
@@ -498,7 +498,7 @@ class Sheet : Window
       {
          CodeObject object = control.GetData(methodName);
          if(object)
-            codeEditor.AddMethod(object.method);   
+            codeEditor.AddMethod(object.method);
          return false;
       }
 
@@ -629,7 +629,7 @@ class Sheet : Window
       this, bevelOver = true, checked = true, inactive = true, position = { 0, 25 }, size = { 24, 24 };
       bitmap = { "<:ecere>elements/orderCategorized.png" };
       // isRadio = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!categorized.checked)
@@ -654,7 +654,7 @@ class Sheet : Window
             dropBox.Clear();
             dropField.userData = codeEditor;
             methodName.userData = codeEditor;
-            
+
             if(codeEditor)
                codeEditor.EnumerateObjects(this);
           }
@@ -697,9 +697,9 @@ class Sheet : Window
       else if(key == escape)
       {
          Window activeClient = ide.activeClient;
-         if(activeClient) 
+         if(activeClient)
             activeClient.Activate();
-         else 
+         else
             ide.RepositionWindows(true);
       }
       return true;
@@ -721,7 +721,7 @@ class Sheet : Window
    {
       DataRow row = dropBox.currentRow;
       ObjectInfo selected = row ? (ObjectInfo)row.tag : null;
-      
+
       //int scroll = 0;
       bool categorized = this.categorized.checked;
       bool currentRow = false;
@@ -737,7 +737,7 @@ class Sheet : Window
             char * propName;
             while(propRow && propRow.parent && !propRow.parent.isHeader)
                propRow = row.parent;
-            
+
             propName = propRow.GetData(propertyName);
             strcpy(this.selectedProp, propName);
             selectedScroll = properties.scroll.y;
@@ -780,7 +780,7 @@ class Sheet : Window
                if(propIt.isProperty)
                {
                   Property prop = eClass_FindProperty(selected.instance._class, propIt.name, GetPrivateModule());
-                  
+
                   if(prop && prop.Set && prop.Get && prop.compiled && (!prop.category || strcmpi(prop.category, $"Deprecated")))
                   {
                      bool disabled = Code_IsPropertyDisabled(selected, prop.name);
@@ -791,7 +791,7 @@ class Sheet : Window
 
                      if(!strcmp(_class.name, "DesignerBase"))
                         disabled = true;
-                     bold = !disabled && Code_IsPropertyModified(test, selected, prop);                           
+                     bold = !disabled && Code_IsPropertyModified(test, selected, prop);
 
                      if(dataType)
                      {
@@ -801,7 +801,7 @@ class Sheet : Window
                         Category category = categories.FindName(name, false);
 
                         // Hide properties like this for now..
-                        if(name && !strcmp(name, "Private")) 
+                        if(name && !strcmp(name, "Private"))
                         {
                            delete info;
                            continue;
@@ -841,7 +841,7 @@ class Sheet : Window
                         if(!dataType.noExpansion && (dataType.type == structClass || dataType.type == normalClass || dataType.type == noHeadClass || dataType.type == bitClass))
                         {
                            DataMember member;
-                           
+
                            if(clear)
                               row.collapsed = true;
 
@@ -862,7 +862,7 @@ class Sheet : Window
                                     }
                                     else
                                        subRow = row.FindRow((int64)subProp);
-                                    
+
                                     subRow.SetData(propertyName, subProp.name);
                                     subRow.SetData(propertyValue, info);
                                  }
@@ -917,7 +917,7 @@ class Sheet : Window
             if(!properties.currentRow)
             {
                bool found = false;
-               
+
                for(_class = selected.instance._class; _class; _class = _class.base)
                {
                   Property prop;
@@ -933,7 +933,7 @@ class Sheet : Window
                            row = category ? (categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop)) : null;
                            properties.currentRow = row;
                            found = true;
-                           break;                                                                                                                              
+                           break;
                         }
                      }
                   }
@@ -971,10 +971,10 @@ class Sheet : Window
       }
 
       row = (DataRow)dropBox.AddRowAfter(after);
-      
+
       row.tag = (int64)object;
 
-      codeObject = 
+      codeObject =
       {
          object = object;
          name = name;
@@ -989,7 +989,7 @@ class Sheet : Window
          codeObject.bitmap = { bitmap };
          AddResource(codeObject.bitmap);
       }
-      
+
       row.SetData(null, codeObject);
 
       if(select)
@@ -1006,7 +1006,7 @@ class Sheet : Window
       if(row)
       {
          CodeObject codeObject = row.GetData(null);
-     
+
          if(codeObject.bitmap)
             RemoveResource(codeObject.bitmap);
          dropBox.DeleteRow(row);
@@ -1045,7 +1045,7 @@ class Sheet : Window
       Property prop = propertyPtr ? propertyPtr.prop : null;
       Instance object = this.object;
       if(prop)
-      {   
+      {
          Class dataType = prop.dataTypeClass;
          if(!dataType)
             dataType = prop.dataTypeClass = eSystem_FindClass(codeEditor.privateModule, prop.dataTypeString);
@@ -1143,7 +1143,7 @@ class Sheet : Window
          else
          {
             SetPropValue(prop, object, (uint32)setValue);
-         }      
+         }
          Code_FixProperty(propertyPtr.prop, object);
 
          properties.Update(null);
@@ -1209,7 +1209,7 @@ class Sheet : Window
       ClassFunction function = (ClassFunction)selection.id;
       CodeObject object = methods.GetData(methodName);
       if(object)
-         codeEditor.AddMethod(object.method);   
+         codeEditor.AddMethod(object.method);
       return true;
    }
 
@@ -1244,14 +1244,14 @@ class Sheet : Window
    {
       DataRow row = (DataRow)button.id;
       CodeObject object = row.GetData(methodName);
-      codeEditor.AddMethod(object.method);   
+      codeEditor.AddMethod(object.method);
       return true;
    }
 
    void CreateButtons(CodeObject codeObject, int y, int h, DataRow row)
    {
       BitmapResource bitmap;
-      
+
       if(codeObject.overriden)
       {
          if(codeObject.overriden == 1)
@@ -1276,7 +1276,7 @@ class Sheet : Window
                      sprintf(title, $"Delete %s", codeObject.name);
                      if(MessageBox
                         {
-                           master = parent, type = okCancel, text = title, 
+                           master = parent, type = okCancel, text = title,
                            contents = $"Method still contains code. Are you sure you want to delete it?"
                         }.Modal() == ok)
                         confirmation = false;
@@ -1308,7 +1308,7 @@ class Sheet : Window
 
          if(codeObject.overriden == 2 || !codeObject.function.attached.count)
          {
-            codeObject.detachBtn = Button 
+            codeObject.detachBtn = Button
             {
                methods,
                master = methods.master,
@@ -1353,7 +1353,7 @@ class Sheet : Window
                   PopupMenu popupMenu;
 
                   Menu menu { };
-                  
+
                   for(compatible = object.compatible.first; compatible; compatible = compatible.next)
                   {
                      ClassFunction function = compatible.data;
@@ -1362,8 +1362,8 @@ class Sheet : Window
                   attachMethod = object.method;
 
                   popupMenu = PopupMenu
-                  { 
-                     master = this, menu = menu, 
+                  {
+                     master = this, menu = menu,
                      position =
                      {
                         button.absPosition.x - app.desktop.position.x,
@@ -1409,7 +1409,7 @@ static void CopyInstanceData(Class dataType, Instance propObject, Instance curre
    {
       DataMember member;
       for(member = _class.membersAndProperties.first; member; member = member.next)
-      {               
+      {
          Class memberType = member.dataTypeClass;
          if(!memberType)
             memberType = member.dataTypeClass = eSystem_FindClass(((Designer)GetActiveDesigner()).codeEditor.privateModule, member.dataTypeString);
@@ -1448,7 +1448,7 @@ public:
 
       surface.TextFont(font.font);
       if(disabled)
-      {  
+      {
          surface.SetBackground(Color { 170, 170, 170 });
          surface.Area(0,0, x+width-1, y+100);
       }
@@ -1458,13 +1458,13 @@ public:
          Module module = ((Designer)GetActiveDesigner()).codeEditor.privateModule;
          if(!dataType)
             dataType = prop.dataTypeClass = eSystem_FindClass(module, prop.dataTypeString);
-         
+
          if(dataType && prop.Get)
          {
             void * dataPtr, * data = null, * subData = null;
             DataValue valueData, valueSubData;
             uint64 bitValue;
-            
+
             // Get main prop
             if(dataType.type == structClass)
             {
@@ -1481,7 +1481,7 @@ public:
                else
                   dataPtr = &valueData;
             }
-            
+
             // Get sub prop
             if(this.subMember)
             {
@@ -1542,7 +1542,7 @@ public:
    {
       Window editData = null;
       Property prop = this.prop;
-      
+
       dataBox.SetData = Sheet::EditSetData;
       if(prop && prop.dataTypeString && !this.disabled)
       {
@@ -1557,7 +1557,7 @@ public:
             void * dataPtr, * data = null, * subData = null;
             DataValue valueData, valueSubData;
             uint64 bitValue;
-            
+
             // Get main prop
             if(dataType.type == structClass)
             {
@@ -1573,7 +1573,7 @@ public:
                else
                   dataPtr = &valueData;
             }
-            
+
             // Get sub prop
             if(this.subMember)
             {
@@ -1653,7 +1653,7 @@ public:
 
       if(!category1) category1 = $"Misc";
       if(!category2) category2 = $"Misc";
-      
+
       if(!prop)
       {
          // result = String::OnCompare((String)category1, (String)category2);
@@ -1726,7 +1726,7 @@ public:
          if(!mainDataType)
             mainDataType = prop.dataTypeClass = eSystem_FindClass(((Designer)GetActiveDesigner()).codeEditor.privateModule, prop.dataTypeString);
          dataType = mainDataType;
-         
+
          // Prepare main prop
          if(dataType.type == structClass)
          {
@@ -1739,7 +1739,7 @@ public:
          else if(dataType.type == normalClass || dataType.type == noHeadClass)
          {
             dataPtr = &valueData;
-            
+
             if(this.subMember || this.subProperty)
             {
                Class _class;
@@ -1750,14 +1750,14 @@ public:
          }
          else
          {
-            
+
             if(this.subMember || this.subProperty)
                GetProperty(prop, object, &valueData);
-            
+
             dataPtr = &valueData;
             propObject = &valueData;
          }
-         
+
          // Prepare sub prop
          if(this.subMember)
          {
@@ -1778,9 +1778,9 @@ public:
          {
             Property subProperty = this.subProperty;
             Class subDataType = subProperty.dataTypeClass;
-            
+
             if(!subDataType)
-               subDataType = subProperty.dataTypeClass = 
+               subDataType = subProperty.dataTypeClass =
                   eSystem_FindClass(((Designer)GetActiveDesigner()).codeEditor.privateModule, subProperty.dataTypeString);
             if(!subProperty.Get) subDataType = null;
             if(subDataType)
@@ -1820,7 +1820,7 @@ public:
                         ((void(*)(void *,byte))(void *)this.subProperty.Set)(propObject, valueSubData.uc);
                      else if(!strcmp(dataType.dataTypeString, "uint16"))
                         ((void(*)(void *,uint16))(void *)this.subProperty.Set)(propObject, valueSubData.us);
-                     else 
+                     else
                         ((void (*)(void *, uint))(void *)this.subProperty.Set)(propObject, valueSubData.ui);
                   }
                   else

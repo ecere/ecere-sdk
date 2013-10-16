@@ -15,7 +15,7 @@ public:
          SmartKey result = SmartKey { modifiers = modifiers };
          switch(code)
          {
-            case keyPadEnter: 
+            case keyPadEnter:
                return enter | result;
             case keyPadLeft: return left | result;
             case keyPadRight: return right | result;
@@ -60,7 +60,7 @@ public:
    }
 
    bool OnGetDataFromString(char * string)
-   { 
+   {
       if(((PredefinedKey)this).class::OnGetDataFromString(string))
          return true;
       else
@@ -159,7 +159,7 @@ public enum KeyCode : Key
 
    capsLock          = 0x3A,
 
-   // Function keys 1-10 
+   // Function keys 1-10
    f1                = 0x3B,
    f2                = 0x3C,
    f3                = 0x3D,
@@ -386,7 +386,7 @@ public enum PredefinedKey : Key
    ctrlPageDown = Key { pageDown, ctrl = true },
    ctrlInsert = Key { insert, ctrl = true },
    ctrlSpace = Key { space, ctrl = true },
-   
+
    shiftTab = Key { tab, shift = true },
    shiftF1 = Key { f1, shift = true },
    shiftF2 = Key { f2, shift = true },

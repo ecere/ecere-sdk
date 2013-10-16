@@ -19,7 +19,7 @@ class TabButton : Button
    {
       return true;
    }
-   
+
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
       Button::OnLeftButtonDown(x, y, mods);
@@ -130,7 +130,7 @@ class TabButton : Button
             surface.DrawLine(x+2,h-1, w-4, h-1);
             surface.PutPixel(x,h-3);
             surface.PutPixel(x+1,h-2);
-            
+
             surface.PutPixel(w-2, h - 3);
             surface.PutPixel(w-3, h - 2);
             break;
@@ -138,7 +138,7 @@ class TabButton : Button
             surface.DrawLine(x+2,0, w-4,0);
             surface.PutPixel(x, 2);
             surface.PutPixel(x+1, 1);
-            
+
             surface.PutPixel(w-2, 2);
             surface.PutPixel(w-3, 1);
             break;
@@ -146,7 +146,7 @@ class TabButton : Button
             surface.DrawLine(w-1,y+2, w-1, h-4);
             surface.PutPixel(w-3, y);
             surface.PutPixel(w-2, y+1);
-            
+
             surface.PutPixel(w - 3, h-2);
             surface.PutPixel(w - 2, h-3);
             break;
@@ -154,7 +154,7 @@ class TabButton : Button
             surface.DrawLine(0,y+2, 0, h-4);
             surface.PutPixel(2, y);
             surface.PutPixel(1, y+1);
-            
+
             surface.PutPixel(2, h-2);
             surface.PutPixel(1, h-3);
             break;
@@ -164,7 +164,7 @@ class TabButton : Button
       if(text)
          surface.TextExtent(text, strlen(text),&tw, &th);
       y = (clientSize.h - th - 1)/2 + (checked ? 0 : -2);
-      
+
       if(ellipsis)
       {
          int width = clientSize.w - 2*6;
@@ -199,7 +199,7 @@ class TabButton : Button
 
          surface.LineStipple(0x5555);
          surface.Rectangle(x1, y1, x2, y2);
-         surface.LineStipple(0);            
+         surface.LineStipple(0);
       }
    }
 }
@@ -296,7 +296,7 @@ public class TabControl : Window
             }
          }
          else
-            return true; 
+            return true;
       }
       return false;
    }
@@ -326,13 +326,13 @@ public class TabControl : Window
          {
             surface.SetForeground(gray);
             surface.Rectangle(0,1, size.w-1, CAPTION+1);
-            
+
             surface.SetForeground(white);
             surface.Rectangle(1, 1, clientSize.w-2, CAPTION-1);
 
-            surface.SetBackground(skinBackground);         
+            surface.SetBackground(skinBackground);
             surface.Area(2, 2, size.w-3, CAPTION+1);
-            
+
             surface.SetForeground((active ? skinTextColor : skinInactiveTextColor));
             surface.TextOpacity(false);
             surface.TextFont(captionFont);
@@ -340,7 +340,7 @@ public class TabControl : Window
             {
                int buttonsSize = border +
                   ((hasMaximize || hasMinimize) ? 52 : 18);
-               surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET, 
+               surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET,
                   size.w - (buttonsSize + border + 4), name, strlen(name));
             }
          }
@@ -366,15 +366,15 @@ public class TabControl : Window
       {
          surface.SetForeground(white);
          surface.Rectangle(
-            clientStart.x + 1 + (placement == left) * 80, 
-            clientStart.y + 1 + (placement == top) * 30, 
-            clientStart.x + clientSize.w - (placement == right) * 80 - 2, 
+            clientStart.x + 1 + (placement == left) * 80,
+            clientStart.y + 1 + (placement == top) * 30,
+            clientStart.x + clientSize.w - (placement == right) * 80 - 2,
             clientStart.y + clientSize.h - (placement == bottom) * 30 - 2);
          surface.SetForeground(gray);
          surface.Rectangle(
-            clientStart.x + (placement == left) * 80, 
-            clientStart.y + (placement == top) * 30, 
-            clientStart.x + clientSize.w - (placement == right) * 80 - 1, 
+            clientStart.x + (placement == left) * 80,
+            clientStart.y + (placement == top) * 30,
+            clientStart.x + clientSize.w - (placement == right) * 80 - 1,
             clientStart.y + clientSize.h - (placement == bottom) * 30 - 1);
       }
 
@@ -385,7 +385,7 @@ public class TabControl : Window
          Button button = curButton;
          int x = button.position.x;
          int y = button.position.y;
-         
+
          switch(placement)
          {
             case TabsPlacement::bottom:
@@ -409,7 +409,7 @@ public class TabControl : Window
          surface.SetForeground(white);
          switch(placement)
          {
-            case TabsPlacement::bottom:   surface.VLine(clientSize.h-32 + clientStart.y + 1, clientSize.h-28 + clientStart.y + 1, x + 1 + clientStart.x); break; 
+            case TabsPlacement::bottom:   surface.VLine(clientSize.h-32 + clientStart.y + 1, clientSize.h-28 + clientStart.y + 1, x + 1 + clientStart.x); break;
             case TabsPlacement::top:      surface.VLine(clientStart.y + 30, clientStart.y + 31, x + 1 + clientStart.x); break;
             case TabsPlacement::left:     surface.HLine(78 + clientStart.x, 81 + clientStart.x, y + 1 + clientStart.y); break;
             case TabsPlacement::right:    surface.HLine(clientStart.y + 30, clientStart.y + 31, y + 1 + clientStart.y); break;
@@ -677,7 +677,7 @@ public class TabControl : Window
             int pleft = button.anchor.left.distance, nleft = newButton ? newButton.anchor.left.distance : 0;
             int ptop = button.anchor.top.distance, ntop = newButton ? newButton.anchor.top.distance : 0;
             if(button == curButton) continue;
-            if((smartKey == left && (pleft < cleft || ptop < ctop) && (!newButton || pleft > nleft || ptop > ntop)) || 
+            if((smartKey == left && (pleft < cleft || ptop < ctop) && (!newButton || pleft > nleft || ptop > ntop)) ||
                (smartKey == right && (pleft > cleft || ptop > ctop) && (!newButton || pleft < nleft || pleft < ptop)))
                newButton = button;
          }

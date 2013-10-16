@@ -9,7 +9,7 @@ class MyApp : GuiApplication
 Camera camera
 {
    fixed,
-   position = Vector3D { 0, 0, -300 }, 
+   position = Vector3D { 0, 0, -300 },
    orientation = Euler { 0, 0, 0 },
    fov = 53;
 };
@@ -63,12 +63,12 @@ class Test3D : Window
       cube.UpdateTransform();
       return true;
    }
- 
+
    void OnResize(int w, int h)
    {
       camera.Setup(w, h, null);
    }
- 
+
    void OnRedraw(Surface surface)
    {
       surface.Clear(depthBuffer);

@@ -49,7 +49,7 @@ class ReminderWindow : Window
    }
 
    Label note { this, text = "Note", position = { 16, 160 }, anchor = { left = 10, bottom = 10 } };
-   Button remindMe 
+   Button remindMe
    {
       this, caption = "Remind Me", escape, anchor = { right = 54, bottom = 10 };
 
@@ -69,8 +69,8 @@ class ReminderWindow : Window
          return true;
       }
    };
-   Button done 
-   {      
+   Button done
+   {
       this, text = "Done", anchor = { right = 10, bottom = 10 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)

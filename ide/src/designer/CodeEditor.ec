@@ -91,7 +91,7 @@ static Array<FileType> fileTypes
    { $"Text Files", "txt", never }
 ] };
 
-static char * iconNames[] = 
+static char * iconNames[] =
 {
    "<:ecere>constructs/class.png",
    "<:ecere>constructs/data.png",
@@ -154,10 +154,10 @@ define CloseBracket = '}';
 
 enum MethodAction
 {
-   actionAddMethod = 1, 
-   actionDeleteMethod = 2, 
-   actionDetachMethod = 3, 
-   actionAttachMethod = 4, 
+   actionAddMethod = 1,
+   actionDeleteMethod = 2,
+   actionDetachMethod = 3,
+   actionAttachMethod = 4,
    actionReattachMethod = 5
 };
 
@@ -198,7 +198,7 @@ static void OutputString(File f, char * string)
          f.Puts("\\\\");
       else
          f.Putc(string[c]);
-   }                              
+   }
 }
 
 void OutputType(File f, Type type, bool outputName)
@@ -299,10 +299,10 @@ void DeleteJunkBefore(EditBoxStream f, int pos, int * position)
 {
    char ch;
    int before = 0;
-   
+
    if(position)
       f.Seek(pos - *position, current);
-                                                      
+
    // Try to delete spaces and \n before...
    f.Seek(-1, current);
    for(;f.Getc(&ch);)
@@ -354,7 +354,7 @@ void GetLocText(EditBox editBox, File f, int position, Location loc, char ** tex
    editBox.GetSelPos(&l1, &y1, &x1, &l2, &y2, &x2, false);
 
    // Cut & Paste function
-   
+
    {
       EditLine l1, l2;
       int y1,x1,y2,x2;
@@ -373,7 +373,7 @@ void GetLocText(EditBox editBox, File f, int position, Location loc, char ** tex
       *text = new char[*size+1 + (y2-y1+1) * linePad + pad]; // Add pad for tabs and new name
       editBox.GetSel(*text, false);
    }
-   
+
    editBox.SetSelPos(l1, y1, x1, l2, y2, x2);
    f.Printf(""); // Make the stream point to where the editbox is
 }
@@ -397,7 +397,7 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
       {
          void * dataForm = new0 byte[dataType.structSize];
          void * dataTest = new0 byte[dataType.structSize];
-   
+
          ((void (*)(void *, void *))(void *)prop.Get)(selected.instance, dataForm);
          ((void (*)(void *, void *))(void *)prop.Get)(test, dataTest);
 
@@ -412,10 +412,10 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
       else if(dataType && dataType._vTbl && (dataType.type == normalClass || dataType.type == noHeadClass))
       {
          void * dataForm, * dataTest;
-   
+
          dataForm = ((void *(*)(void *))(void *)prop.Get)(selected.instance);
          dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
-   
+
          if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
          {
             ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
@@ -425,10 +425,10 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
       else if(dataType && dataType._vTbl)
       {
          DataValue dataForm, dataTest;
-   
+
          GetProperty(prop, selected.instance, &dataForm);
          GetProperty(prop, test, &dataTest);
-   
+
          if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
          {
             SetProperty(prop, test, dataForm);
@@ -441,7 +441,7 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
                   SetProperty(prop, selected.instance, dataForm);
             }
             result = true;
-         }                                          
+         }
       }
    }
    return result;
@@ -452,7 +452,7 @@ bool Code_IsPropertyDisabled(ObjectInfo selected, char * name)
    bool disabled = false;
    if(selected.oClass == selected)
    {
-      ClassDef def;                  
+      ClassDef def;
       if(selected.classDefinition)
       {
          for(def = selected.classDefinition.definitions->first; def; def = def.next)
@@ -509,7 +509,7 @@ bool Code_IsPropertyDisabled(ObjectInfo selected, char * name)
 
 static bool CheckCompatibleMethod(Method method, Type type, Class regClass, bool isForm, Symbol selectedClass)
 {
-   bool result = false;   
+   bool result = false;
    bool reset = false;
    if(!method.dataType)
       method.dataType = ProcessTypeString(method.dataTypeString, false);
@@ -542,7 +542,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
          method.dataType = ProcessTypeString(method.dataTypeString, false);
 
       confirmation = false;
-     
+
       // Check if default function should be calling base class:
       if(object.instance._class._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
       {
@@ -569,7 +569,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
          else
          {
             if(stmt)
-               confirmation = true;        
+               confirmation = true;
          }
       }
       else
@@ -586,7 +586,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
          }
 
          if(!exp || exp.type != callExp || exp.call.exp.type != identifierExp)
-            confirmation = true;        
+            confirmation = true;
          else
          {
             Identifier id = exp.call.exp.identifier;
@@ -612,7 +612,7 @@ bool Code_IsFunctionEmpty(ClassFunction function, Method method, ObjectInfo obje
                      arg = arg ?arg.next : null;
                   }
                }
-            }                  
+            }
          }
       }
    }
@@ -630,8 +630,8 @@ class CodeEditor : Window
    isActiveClient = true;
    anchor = Anchor { left = 300, right = 150, top = 0, bottom = 0 };
    menu = Menu { };
-   
-   // eWindow_SetX(A_CASCADE); eWindow_SetY(A_CASCADE); 
+
+   // eWindow_SetX(A_CASCADE); eWindow_SetY(A_CASCADE);
    // eWindow_SetWidth(A_RELATIVE|80); eWindow_SetHeight(A_RELATIVE|80);
 
    SheetType sheetSelected;
@@ -648,7 +648,7 @@ class CodeEditor : Window
    OldList classes;
    bool codeModified;
    bool formModified;
-   
+
    ObjectInfo selected;
    ObjectInfo oClass;
 
@@ -676,7 +676,7 @@ class CodeEditor : Window
    bool expectingMove;
 
    BitmapResource icons[CodeObjectType];
-   
+
    FontResource boldFont { $"Tahoma", 8.25f, bold = true, window = this };
    FontResource normalFont { $"Tahoma", 8.25f, window = this };
 
@@ -708,7 +708,7 @@ class CodeEditor : Window
          ide.pos.text = temp;
       }
       if(sheet.codeEditor != this) return;
-      
+
       if(!updatingCode)
       {
          for(classItem = classes.first; classItem; classItem = classItem.next)
@@ -812,7 +812,7 @@ class CodeEditor : Window
    EditBox editBox
    {
       textVertScroll = true, multiLine = true, /*lineNumbers = ideSettings.showLineNumbers,*/
-      freeCaret = ideSettings.useFreeCaret, caretFollowsScrolling = ideSettings.caretFollowsScrolling, 
+      freeCaret = ideSettings.useFreeCaret, caretFollowsScrolling = ideSettings.caretFollowsScrolling,
       tabKey = true, smartHome = true;
       tabSelection = true, /*maxLineSize = 65536, */parent = this, hasHorzScroll = true, hasVertScroll = true;
       selectionColor = selectionColor, selectionText = selectionText,
@@ -953,7 +953,7 @@ class CodeEditor : Window
                            hide = true;
                            break;
                         }
-                        if(!isSpace) 
+                        if(!isSpace)
                            firstChar = false;
                         else if(firstChar)
                         {
@@ -1044,14 +1044,14 @@ class CodeEditor : Window
 
                      editBox.GetCaretPosition(&caret);
 
-                     
+
 
                      // Go back in the buffer until no space before
                      //yydebug = true;
                      codeModified = true;
                      EnsureUpToDate();
                      SetYydebug(false);
-                     { 
+                     {
                         EditBoxStream f { editBox = editBox };
                         oldCharPos = x1;
                         x1--;
@@ -1121,7 +1121,7 @@ class CodeEditor : Window
 
                               membersList.position = { x, y };
                            }
-         
+
                            membersLine = l1;
                            membersLoc.start.line = line - 1;
                            membersLoc.start.charPos = oldCharPos;
@@ -1161,13 +1161,13 @@ class CodeEditor : Window
                   }
                   else if(ch == ')' || ch == '}' || ch == ';')
                   {
-                     codeModified = true;               
+                     codeModified = true;
                      skipModified = true;
                      if(paramsShown)
                         InvokeParameters(false, true, false);
                      skipModified = false;
                   }
-                  else 
+                  else
                   {
                      bool back = codeModified;
                      codeModified = false;
@@ -1220,7 +1220,7 @@ class CodeEditor : Window
                   {
                      loc = &object.instCode.loc;
 
-                     if((before.y+1 < loc->start.line || (before.y+1 == loc->start.line && before.x+1 <= loc->start.charPos)) && 
+                     if((before.y+1 < loc->start.line || (before.y+1 == loc->start.line && before.x+1 <= loc->start.charPos)) &&
                         (after.y+1 > loc->end.line    || (after.y+1 == loc->end.line && after.x+1 >= loc->end.charPos)))
                      {
                         object.instCode = null;
@@ -1235,7 +1235,7 @@ class CodeEditor : Window
                if(oClass.classDefinition)
                {
                   loc = &oClass.classDefinition.loc;
-                  if((before.y+1 < loc->start.line || (before.y+1 == loc->start.line && before.x+1 <= loc->start.charPos)) && 
+                  if((before.y+1 < loc->start.line || (before.y+1 == loc->start.line && before.x+1 <= loc->start.charPos)) &&
                      (after.y+1 > loc->end.line    || (after.y+1 == loc->end.line && after.x+1 >= loc->end.charPos)))
                   {
                      oClass.classDefinition = null;
@@ -1378,7 +1378,7 @@ class CodeEditor : Window
                designer.DroppedObject(control, object, false, classObject.instance);
 
                sheet.AddObject(object, object.name, typeData /* className*/, true);
-               
+
                UpdateFormCode();
                //codeModified = true;
                EnsureUpToDate();
@@ -1410,7 +1410,7 @@ class CodeEditor : Window
                if(!node)
                {
                   char * s;
-                  s = PrintString($"The ", fileName, $" file is not part of any project.\n", 
+                  s = PrintString($"The ", fileName, $" file is not part of any project.\n",
                      $"It can't be compiled.");
                   MessageBox { type = ok, /*parent = ide, */master = ide, text = $"File not in project error", contents = s }.Modal();
                   delete s;
@@ -1504,8 +1504,8 @@ class CodeEditor : Window
       bool OnKeyDown(Key key, unichar ch)
       {
          CodeEditor editor = (CodeEditor) master;
-         if(key == escape || key == leftAlt || key == rightAlt || 
-            (key.ctrl && key.code != left && key.code != right && 
+         if(key == escape || key == leftAlt || key == rightAlt ||
+            (key.ctrl && key.code != left && key.code != right &&
              key.code != leftShift && key.code != rightShift && key.code != space))
          {
             bool result = true;
@@ -1534,7 +1534,7 @@ class CodeEditor : Window
 
             return result;
          }
-         else 
+         else
             return editor.editBox.OnKeyDown(key, ch);
          return false;
       }
@@ -1605,14 +1605,14 @@ class CodeEditor : Window
 
    Window paramsList
    {
-      master = this, 
+      master = this,
       interim = true,
       clickThrough = true,
       autoCreate = false,
       borderStyle = contour,
       cursor = null,
       background = { 255,255,225 },
-      
+
       OnKeyDown = membersList.OnKeyDown;
 
       /*bool OnActivate(bool active, Window previous, bool * goOnWithActivation, bool direct)
@@ -1691,7 +1691,7 @@ class CodeEditor : Window
                display.FontExtent(boldFont, instanceName, strlen(instanceName), &nameW, null);
             totalW = functionW + nameW;
             surface.TextFont(boldFont);
-         }   
+         }
 
          surface.WriteText(x, y, string, strlen(string));
          x += functionW + spaceW;
@@ -1710,7 +1710,7 @@ class CodeEditor : Window
 
                if(id == editor.paramsID)
                   surface.TextFont(boldFont);
-               
+
                if(methodType.methodClass)
                   surface.TextExtent(methodType.methodClass.name, strlen(methodType.methodClass.name), &tw, null);
 
@@ -1739,7 +1739,7 @@ class CodeEditor : Window
                {
                   surface.WriteText(x, y, ",", 1);
                   x += ((id ==  editor.paramsID) ? commaWB : commaW);
-               }      
+               }
 
                lineW += width;
 
@@ -1785,7 +1785,7 @@ class CodeEditor : Window
                   {
                      surface.WriteText(x, y, ",", 1);
                      x += ((id ==  editor.paramsID) ? commaWB : commaW);
-                  }      
+                  }
 
                   lineW += width;
 
@@ -1857,7 +1857,7 @@ class CodeEditor : Window
                display.FontExtent(boldFont, instanceName, strlen(instanceName), &nameW, null);
             totalW = functionW + nameW + spaceW;
          }
-            
+
          if(editor.functionType)
          {
             if(methodType)
@@ -1895,7 +1895,7 @@ class CodeEditor : Window
                   paramString[0] = 0;
                   PrintType(param, paramString, true, true);
                   display.FontExtent((id == editor.paramsID || param.kind == ellipsisType) ? boldFont : font, paramString, strlen(paramString), &width, null);
-                  if(param.next) 
+                  if(param.next)
                      width += ((id == editor.paramsID) ? commaWB : commaW);
 
                   if(!height)
@@ -2050,7 +2050,7 @@ class CodeEditor : Window
       for(oClass = (classes).first, next = oClass ? oClass.next : null; oClass; oClass = next, next = next ? (next.next) : null)
       {
          ObjectInfo object, next;
-         
+
          for(object = oClass.instances.first; object; object = next)
          {
             next = object.next;
@@ -2204,7 +2204,7 @@ class CodeEditor : Window
          }
          editBox.Save(f, false);
          modifiedDocument = false;
-         
+
          delete f;
          return true;
       }
@@ -2328,7 +2328,7 @@ class CodeEditor : Window
                }
                else
                   bmpRes = breakpointEnabled[i] ? ide.bmpBp : ide.bmpBpDisabled;
-               
+
                DrawLineMarginIcon(surface, bmpRes, breakpointLines[i], lineH, scrollY, boxH);
             }
          }
@@ -2423,7 +2423,7 @@ class CodeEditor : Window
       File f = FileOpen(filePath, read);
       if(f)
       {
-         // Added this here... 
+         // Added this here...
          fileName = filePath;
          loadingFile = true;
          updatingCode = true;
@@ -2593,7 +2593,7 @@ class CodeEditor : Window
                }
             }
          }
-         else 
+         else
             selectedPos = -1;
       }
 
@@ -2659,13 +2659,13 @@ class CodeEditor : Window
       if(this.oClass)
       {
          ObjectInfo _class, next;
-         
+
          for(_class = classes.first; _class; _class = next)
          {
             ObjectInfo object;
 
             next = _class.next;
-            
+
             for(;object = _class.instances.first;)
             {
                if(object.instance)
@@ -2768,7 +2768,7 @@ class CodeEditor : Window
       }
       if(!project)
          project = ide.project;
-         
+
       GetWorkingDir(oldWorkDir, MAX_LOCATION);
       if(project)
          ChangeWorkingDir(project.topNode.path);
@@ -2803,7 +2803,7 @@ class CodeEditor : Window
             case win32: SetSymbolsDir("obj/debug.win32"); break;
             case tux:   SetSymbolsDir("obj/debug.linux"); break;
             case apple: SetSymbolsDir("obj/debug.apple"); break;
-         }         
+         }
          SetIncludeDirs(null);
          SetSysIncludeDirs(null);
       }
@@ -2824,7 +2824,7 @@ class CodeEditor : Window
                }
             }
          }
-         
+
          if(!(strcmpi(mainModuleName, "instance.ec") && strcmpi(mainModuleName, "BinaryTree.ec") &&
             strcmpi(mainModuleName, "dataTypes.ec") && strcmpi(mainModuleName, "OldList.ec") &&
             strcmpi(mainModuleName, "String.ec") && strcmpi(mainModuleName, "BTNode.ec") &&
@@ -2848,7 +2848,7 @@ class CodeEditor : Window
 
             strcpy(symLocation, GetSymbolsDir());
             PathCat(symLocation, symFile);
-            
+
             // if(!GetEcereImported() && !GetBuildingEcereCom())
             if(!strcmp(extension, "ec") || !strcmp(extension, "eh"))
             {
@@ -2914,7 +2914,7 @@ class CodeEditor : Window
 
       SetIncludeDirs(null);
       SetSysIncludeDirs(null);
-      
+
       delete editFile;
       fileInput = null;
       SetFileInput(null);
@@ -2922,7 +2922,7 @@ class CodeEditor : Window
       if(GetAST())
       {
          ast = GetAST();
-         
+
 #ifdef _TIMINGS
          startTime = GetTime();
 #endif
@@ -2982,7 +2982,7 @@ class CodeEditor : Window
                      if(eClass_GetDesigner(regClass) && !GetBuildingEcereComModule())
                      {
                         Instance instance = eInstance_New(regClass);
-                        ObjectInfo classObject 
+                        ObjectInfo classObject
                         {
                            name = CopyString(_class._class.name);
                            instance = instance;
@@ -3025,7 +3025,7 @@ class CodeEditor : Window
                                                 FreeType(propDef.initializer.exp.destType);
                                                 propDef.initializer.exp.destType = MkClassType(propertyClass.name);
                                                 ProcessExpressionType(propDef.initializer.exp);
-                                             
+
                                                 if(propertyClass.type == structClass || propertyClass.type == noHeadClass || propertyClass.type == normalClass)
                                                 {
                                                    Expression computed = CopyExpression(propDef.initializer.exp);
@@ -3036,7 +3036,7 @@ class CodeEditor : Window
                                                       if(prop.Set)
                                                       {
                                                          if(computed.instance._class && computed.instance._class.symbol &&
-                                                            computed.instance._class.symbol.registered && 
+                                                            computed.instance._class.symbol.registered &&
                                                             eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
                                                          {
                                                             ((void (*)(void *, void *))(void *)prop.Set)(instance, computed.instance.data);
@@ -3058,7 +3058,7 @@ class CodeEditor : Window
                                                    }
                                                    else
                                                       propDef.variable = true;
-                                                   
+
                                                    FreeExpression(computed);
                                                 }
                                                 else
@@ -3096,7 +3096,7 @@ class CodeEditor : Window
                                           else
                                           {
                                              Method method = eClass_FindMethod(regClass, id.string, this.privateModule);
-                                             if(method && method.type == virtualMethod && propDef.initializer && propDef.initializer.type == expInitializer && 
+                                             if(method && method.type == virtualMethod && propDef.initializer && propDef.initializer.type == expInitializer &&
                                                 propDef.initializer.exp && propDef.initializer.exp.type == identifierExp)
                                              {
                                                 ClassDef def;
@@ -3112,7 +3112,7 @@ class CodeEditor : Window
                                                       }
                                                    }
                                                 }
-                                             }                                          
+                                             }
                                           }
                                        }
                                     }
@@ -3176,8 +3176,8 @@ class CodeEditor : Window
                                           {
                                              Instance control;
                                              object = object ? object.next : classObject.instances.first;
-                                             control = object.instance;                                             
-                                             
+                                             control = object.instance;
+
                                              if(inst.members)
                                              {
                                                 MembersInit members;
@@ -3237,7 +3237,7 @@ class CodeEditor : Window
                                                                      if(propertyClass)
                                                                      {
                                                                         ProcessExpressionType(member.initializer.exp);
-                                       
+
                                                                         if(propertyClass.type == structClass || propertyClass.type == normalClass || propertyClass.type == noHeadClass)
                                                                         {
                                                                            Expression computed;
@@ -3250,13 +3250,13 @@ class CodeEditor : Window
                                                                            if(computed)
                                                                            {
                                                                               ComputeExpression(computed);
-                                                                              
+
                                                                               if(computed.type == instanceExp && computed.isConstant && computed.isConstant)
                                                                               {
                                                                                  if(computed.instance.data)
                                                                                  {
                                                                                     if(computed.instance._class && computed.instance._class.symbol &&
-                                                                                       computed.instance._class.symbol.registered && 
+                                                                                       computed.instance._class.symbol.registered &&
                                                                                        eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
                                                                                     {
                                                                                        ((void (*)(void *, void *))(void *)prop.Set)(control, computed.instance.data);
@@ -3388,7 +3388,7 @@ class CodeEditor : Window
                                                                   else
                                                                      member.variable = true;
                                                                }
-                                                               else if(ident && member.initializer && member.initializer.type == expInitializer && member.initializer.exp && 
+                                                               else if(ident && member.initializer && member.initializer.type == expInitializer && member.initializer.exp &&
                                                                   member.initializer.exp.type == memberExp) // identifierExp
                                                                {
                                                                   Method method = eClass_FindMethod(instClass, ident.string, this.privateModule);
@@ -3417,7 +3417,7 @@ class CodeEditor : Window
                                                          break;
                                                       }
                                                    }
-                                                }                                          
+                                                }
                                              }
 
                                              designer.PostCreateObject(object.instance, object, false, classObject.instance);
@@ -3471,7 +3471,7 @@ class CodeEditor : Window
          {
             ObjectInfo check;
             int pos = 0;
-         
+
             for(check = this.oClass.instances.first; check; check = check.next)
             {
                if(check.name && !strcmp(check.name, selectedName))
@@ -3540,7 +3540,7 @@ class CodeEditor : Window
       printf("Total MkExternalImport time is %.3f seconds\n\n", externalImportTotalTime);
       printf("Total FindSymbol time is %.3f seconds\n\n", findSymbolTotalTime);
       // printf("Total Class Members Find time is %.3f seconds\n\n", GetClassFindTime());
-      
+
       printf("Whole ParseCode function took %.3f seconds\n\n", GetTime() - parseCodeStart);
 #endif
       if(inUseDebug && ide.projectView)
@@ -3570,17 +3570,17 @@ class CodeEditor : Window
                Class dataType = prop.dataTypeClass;
                if(!dataType)
                   dataType = prop.dataTypeClass = eSystem_FindClass(this.privateModule, prop.dataTypeString);
-         
+
                if(dataType)
                {
                   if(dataType.type == structClass)
                   {
                      void * dataForm = new0 byte[dataType.structSize];
                      void * dataTest = new0 byte[dataType.structSize];
-               
+
                      ((void (*)(void *, void *))(void *)prop.Get)(control, dataForm);
                      ((void (*)(void *, void *))(void *)prop.Get)(test, dataTest);
-               
+
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
                         char tempString[1024] = "";
@@ -3588,11 +3588,11 @@ class CodeEditor : Window
                         bool needClass = true;
                         if(*prev)
                            f.Printf(", ");
-                  
+
                         ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
-                  
+
                         string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
-                        
+
                         eClass_FindNextMember(_class, curClass, curMember, null, null);
                         if(*curMember != (DataMember)prop)
                            f.Printf("%s = ", prop.name);
@@ -3613,19 +3613,19 @@ class CodeEditor : Window
                   else if(dataType.type == normalClass || dataType.type == noHeadClass)
                   {
                      void * dataForm, * dataTest;
-               
+
                      dataForm = ((void *(*)(void *))(void *)prop.Get)(control);
                      dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
-               
+
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
                         char tempString[1024] = "";
                         char * string = "";
                         if(*prev)
                            f.Printf(", ");
-                  
+
                         ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
-                  
+
                         eClass_FindNextMember(_class, curClass, curMember, null, null);
                         if(*curMember != (DataMember)prop)
                            f.Printf("%s = ", prop.name);
@@ -3685,16 +3685,16 @@ class CodeEditor : Window
                   else
                   {
                      DataValue dataForm, dataTest;
-               
+
                      GetProperty(prop, control, &dataForm);
                      GetProperty(prop, test, &dataTest);
-               
+
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
                      {
                         char * string;
                         char tempString[1024] = "";
                         SetProperty(prop, test, dataForm);
-                  
+
                         if(dataType.type != bitClass)
                         {
                            bool needClass = true;
@@ -3716,7 +3716,7 @@ class CodeEditor : Window
                            }
                            else
                               string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, &dataForm, tempString, null, &needClass);
-                     
+
                            if(string && string[0])
                            {
                               if(*prev)
@@ -3772,7 +3772,7 @@ class CodeEditor : Window
       Class _class;
       bool lastIsMethod = true;
       ObjectInfo classObject = object.oClass;
-      
+
       if(inst)
       {
          if(object.deleted)
@@ -3814,7 +3814,7 @@ class CodeEditor : Window
                char ch;
                f.Seek(pos - position, current);
                while(f.Getc(&ch))
-               {  
+               {
                   if(isspace(ch))
                   {
                      f.Seek(-1, current);
@@ -3875,12 +3875,12 @@ class CodeEditor : Window
                         position--;
                         if(count > 6)
                         {
-                           toDelete += count - 6; 
+                           toDelete += count - 6;
                            count = 6;
                         }
-                        else 
+                        else
                            toAdd = 6 - count;
-                        break;                              
+                        break;
                      }
                   }
                   if(toDelete)
@@ -3905,7 +3905,7 @@ class CodeEditor : Window
 
          }
       }
-      else 
+      else
       {
          // Instance not there, create a brand new one
          DeleteJunkBefore(f, position, &position);
@@ -3957,7 +3957,7 @@ class CodeEditor : Window
          Class instClass = eSystem_FindClass(this.privateModule, inst._class.name);
 
          DeleteJunkBefore(f, position, &position);
-         
+
          // Instance already there, clear out the properties
          for(members = inst.members->first; members; members = members.next)
          {
@@ -3991,7 +3991,7 @@ class CodeEditor : Window
                            else
                            {
                               Method method = eClass_FindMethod(instClass, ident.string, this.privateModule);
-                              if(method && method.type == virtualMethod && member.initializer && member.initializer.type == expInitializer && member.initializer.exp && 
+                              if(method && method.type == virtualMethod && member.initializer && member.initializer.type == expInitializer && member.initializer.exp &&
                                  member.initializer.exp.type == memberExp /*ExpIdentifier*/)
                               {
                                  if(((this.methodAction == actionDetachMethod || this.methodAction == actionReattachMethod) && this.method == method && this.selected == object) ||
@@ -4002,7 +4002,7 @@ class CodeEditor : Window
                                     position = member.loc.end.pos;
                                     deleted = true;
                                  }
-                              }                                          
+                              }
                            }
                         }
                      }
@@ -4014,12 +4014,12 @@ class CodeEditor : Window
                         //f.Seek(member.loc.start.pos - position, current);
                         //position = member.loc.start.pos;
                         DeleteJunkBefore(f, member.loc.start.pos, &position);
-                        if(prev) f.Printf(", "); 
+                        if(prev) f.Printf(", ");
                         else if(keptMember) f.Printf(" ");
                         prev = false;
                      }
-                  } 
-               
+                  }
+
                   if(!keptMember || !members.next)
                   {
                      char ch = 0;
@@ -4051,7 +4051,7 @@ class CodeEditor : Window
 
                      f.Seek(members.loc.end.pos - position, current);
                      f.Getc(&ch);
-            
+
                      if(ch == ';')
                      {
                         f.Seek(-1, current);
@@ -4109,7 +4109,7 @@ class CodeEditor : Window
                      */
                      prev = true;
                      lastIsMethod = false;
-                     
+
                   }
                }
                else
@@ -4127,7 +4127,7 @@ class CodeEditor : Window
                   methodPresent = true;
 
                // Delete instance method here
-               if((this.methodAction == actionDeleteMethod || (this.methodAction == actionDetachMethod && this.moveAttached)) && 
+               if((this.methodAction == actionDeleteMethod || (this.methodAction == actionDetachMethod && this.moveAttached)) &&
                   members.function == function)
                {
                   if(this.moveAttached && !*text)
@@ -4146,7 +4146,7 @@ class CodeEditor : Window
 
                   DeleteJunkBefore(f, members.loc.start.pos, &position);
                   lastIsMethod = true;
-                  f.Printf("\n\n      ");               
+                  f.Printf("\n\n      ");
                }
 
                f.Seek(members.loc.end.pos - position, current);
@@ -4192,7 +4192,7 @@ class CodeEditor : Window
                   memmove(*text + movedFuncIdPos + newLen, *text + movedFuncIdPos + movedFuncIdLen, *textSize - movedFuncIdPos - movedFuncIdLen + 1);
                   *textSize += newLen - movedFuncIdLen;
                   memcpy(*text + movedFuncIdPos, method.name, newLen);
-                                          
+
                   // Second, tab right
                   {
                      int c;
@@ -4222,7 +4222,7 @@ class CodeEditor : Window
                   // ADDING METHOD HERE
                   f.Printf("\n      ");
                   OutputType(f, returnType, false);
-            
+
                   f.Printf(" ");
                   if(dataType.thisClass)
                   {
@@ -4243,7 +4243,7 @@ class CodeEditor : Window
                      if(param.next)
                         f.Printf(", ");
                   }
-                  f.Printf(")\n");                  
+                  f.Printf(")\n");
                   f.Printf("      %c\n\n", OpenBracket);
 
                   if(control._class._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
@@ -4297,15 +4297,15 @@ class CodeEditor : Window
    {
       Property propIt;
       Class regClass = eSystem_FindClass(privateModule, classObject.name);
-     
+
       if(_class.base && _class.base.type != systemClass) OutputClassProperties(_class.base, classObject, f, test);
-      
+
       for(propIt = _class.membersAndProperties.first; propIt; propIt = propIt.next)
       {
          Property prop = eClass_FindProperty(selected.instance._class, propIt.name, privateModule);
          if(prop && prop.isProperty && !prop.conversion)
          {
-            if(prop.Set && prop.Get && prop.dataTypeString && strcmp(prop.name, "name") && !Code_IsPropertyDisabled(classObject, prop.name) && 
+            if(prop.Set && prop.Get && prop.dataTypeString && strcmp(prop.name, "name") && !Code_IsPropertyDisabled(classObject, prop.name) &&
                (!prop.IsSet || prop.IsSet(classObject.instance)))
             {
                Class dataType = prop.dataTypeClass;
@@ -4320,19 +4320,19 @@ class CodeEditor : Window
 
                if(!dataType)
                   dataType = prop.dataTypeClass = eSystem_FindClass(this.privateModule, prop.dataTypeString);
-            
+
                if(dataType && dataType.type == structClass)
                {
                   void * dataForm = new0 byte[dataType.structSize];
                   void * dataTest = new0 byte[dataType.structSize];
-               
+
                   ((void (*)(void *, void *))(void *)prop.Get)(classObject.instance, dataForm);
                   ((void (*)(void *, void *))(void *)prop.Get)(test, dataTest);
 
                   if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
                      bool needClass = true;
-                     
+
                      string = ((char * (*)(void *, void *, void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, dataForm, tempString, null, &needClass);
                      ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
                      if(needClass)
@@ -4346,16 +4346,16 @@ class CodeEditor : Window
                else if(dataType && (dataType.type == normalClass || dataType.type == noHeadClass))
                {
                   void * dataForm, * dataTest;
-               
+
                   dataForm = ((void *(*)(void *))(void *)prop.Get)(classObject.instance);
                   dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
-               
+
                   if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
                      char tempString[1024] = "";
                      char * string;
                      ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
-                  
+
                      if(eClass_IsDerived(classObject.instance._class, dataType) && classObject.instance == dataForm)
                      {
                         // Shouldn't go here ...
@@ -4383,10 +4383,10 @@ class CodeEditor : Window
                else if(dataType)
                {
                   DataValue dataForm, dataTest;
-               
+
                   GetProperty(prop, classObject.instance, &dataForm);
                   GetProperty(prop, test, &dataTest);
-               
+
                   if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
                   {
                      SetProperty(prop, test, dataForm);
@@ -4424,7 +4424,7 @@ class CodeEditor : Window
                         else if(string[0])
                            f.Printf("\n   %s%s = %s;", specify ? "property::" : "", prop.name, string);
                      }
-                  }                                          
+                  }
                }
             }
          }
@@ -4447,7 +4447,7 @@ class CodeEditor : Window
          int position = 0;
          char * text = null;
          int textSize;
-         Identifier movedFuncId; 
+         Identifier movedFuncId;
          int movedFuncIdLen = 0, movedFuncIdPos = 0;
          ObjectInfo classObject;
 
@@ -4478,7 +4478,7 @@ class CodeEditor : Window
 
             // Put it in the same desktop window...
             designer.PrepareTestObject(test);
-            
+
             //f.Printf("class %s : %s\n", classObject.name, classObject.oClass.name);
             //f.Printf("%c\n\n", OpenBracket);
 
@@ -4495,7 +4495,7 @@ class CodeEditor : Window
                int back = 0;
                f.Seek(classDef.blockStart.end.pos - position, current);
                position = classDef.blockStart.end.pos;
-               
+
                for(; f.Getc(&ch); count++)
                {
                   if(!isspace(ch))
@@ -4503,15 +4503,15 @@ class CodeEditor : Window
                      f.Seek(-1, current);
                      break;
                   }
-               
+
                   if(ch == '\n')
                      back = 0;
                   else
                      back++;
                }
-            
+
                f.Seek(-count, current);
-            
+
                f.DeleteBytes(count-back);
                //f.Printf("\n");
                position += count-back;
@@ -4529,7 +4529,7 @@ class CodeEditor : Window
                      bool keptMember = false;
                      MemberInit propDef;
                      MemberInit lastKept = null;
-                     
+
                      lastIsDecl = false;
                      DeleteJunkBefore(f, def.loc.start.pos, &position);
                      f.Printf("\n   ");
@@ -4565,7 +4565,7 @@ class CodeEditor : Window
                                        position = propDef.loc.end.pos;
                                        deleted = true;
                                     }
-                                 }                                          
+                                 }
                               }
                            }
                         }
@@ -4575,14 +4575,14 @@ class CodeEditor : Window
                            lastKept = propDef;
                         }
                      }
-                  
+
                      if(!keptMember)
                      {
                         char ch = 0;
                         int count = 0;
                         f.Seek(def.loc.end.pos - position - 1, current);
                         f.Getc(&ch);
-                        
+
                         if(ch == ';')
                         {
                            f.Seek(-1, current);
@@ -4596,7 +4596,7 @@ class CodeEditor : Window
                         {
                            char ch;
                            int count = 0;
-                           
+
                            f.Seek(-1, current);
                            for(;f.Getc(&ch);)
                            {
@@ -4619,7 +4619,7 @@ class CodeEditor : Window
                         {
                            f.Seek(def.loc.end.pos - position, current);
                            position = def.loc.end.pos;
-                        }                
+                        }
                      }
                      break;
                   }
@@ -4674,7 +4674,7 @@ class CodeEditor : Window
                      f.Printf("\n\n   ");
 
                      // Delete _class methods
-                     if((methodAction == actionDeleteMethod || (moveAttached && selected != classObject)) && 
+                     if((methodAction == actionDeleteMethod || (moveAttached && selected != classObject)) &&
                         def.function == function)
                      {
                         char ch;
@@ -4709,7 +4709,7 @@ class CodeEditor : Window
                         position = function.loc.start.pos + movedFuncIdPos + movedFuncIdLen;
                      }
 
-                     if((methodAction == actionAttachMethod || methodAction == actionReattachMethod) && selected == classObject && moveAttached && 
+                     if((methodAction == actionAttachMethod || methodAction == actionReattachMethod) && selected == classObject && moveAttached &&
                         function == def.function)
                      {
                         // In case of attaching methods in the _class, simply rename the method
@@ -4731,7 +4731,7 @@ class CodeEditor : Window
                         firstObject = false;
                         lastIsDecl = true;
                      }
-                     else           
+                     else
                      {
                         f.Printf("\n   ");
                         lastIsDecl = false;
@@ -4748,7 +4748,7 @@ class CodeEditor : Window
                DeleteJunkBefore(f, position, &position);
                f.Printf("\n   %s = %s;\n", method.name, function.declarator.symbol.string);
             }
-            
+
             // ********** INSTANCES ***************
             for(; object; object = object.next)
             {
@@ -4812,7 +4812,7 @@ class CodeEditor : Window
                   f.Printf("\n\n");
                   f.Printf("   ");
                   OutputType(f, returnType, false);
-               
+
                   f.Printf(" ");
                   if(dataType.thisClass && !dataType.classObjectType)
                   {
@@ -4830,7 +4830,7 @@ class CodeEditor : Window
                      if(param.next)
                         f.Printf(", ");
                   }
-                  f.Printf(")\n");                  
+                  f.Printf(")\n");
                   f.Printf("   %c\n\n", OpenBracket);
 
                   if(test._class._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad]) // Temp Check for DefaultFunction
@@ -4895,7 +4895,7 @@ class CodeEditor : Window
       if(methodName)
       {
          ObjectInfo object = this.selected;
-         
+
          if(object && object == this.oClass)
          {
             ClassDefinition classDef = object.oClass.classDefinition;
@@ -5153,7 +5153,7 @@ class CodeEditor : Window
                   {
                      if(!testMethod.dataType)
                         testMethod.dataType = ProcessTypeString(testMethod.dataTypeString, false);
-                        
+
                      //if(CheckCompatibleMethod(method, testMethod.dataType, &regClass, false, selectedClass)) // this.selected == this.oClass, selectedClass))
                      if(CheckCompatibleMethod(method, testMethod.dataType, this.oClass.instance._class, false, selectedClass)) // this.selected == this.oClass, selectedClass))
                      //if(CheckCompatibleMethod(method, testMethod.dataType, &regClass, this.selected == this.oClass, FindClass(this.oClass.oClass.name)))
@@ -5189,7 +5189,7 @@ class CodeEditor : Window
             this.method = method;
             ModifyCode();
          }
-         UpdateFormCode();         
+         UpdateFormCode();
          GoToMethod(methodName);
       }
    }
@@ -5201,7 +5201,7 @@ class CodeEditor : Window
          methodAction = actionDeleteMethod;
          this.function = function;
          ModifyCode();
-         UpdateFormCode(); 
+         UpdateFormCode();
 
          Update(null);
       }
@@ -5243,7 +5243,7 @@ class CodeEditor : Window
          this.method = method;
          this.function = function;
          ModifyCode();
-         UpdateFormCode(); 
+         UpdateFormCode();
          Update(null);
       }
    }
@@ -5273,7 +5273,7 @@ class CodeEditor : Window
             {
                char title[1024];
                sprintf(title, $"Attach %s", function.declarator.symbol.string);
-               if(MessageBox { type = yesNo, master = parent, text = title, 
+               if(MessageBox { type = yesNo, master = parent, text = title,
                   contents = $"Method is unused. Move method inside instance?" }.Modal() == yes)
                {
                   moveAttached = true;
@@ -5285,7 +5285,7 @@ class CodeEditor : Window
          this.method = method;
          this.function = function;
          ModifyCode();
-         UpdateFormCode(); 
+         UpdateFormCode();
          Update(null);
       }
    }
@@ -5298,7 +5298,7 @@ class CodeEditor : Window
       {
          Window dialog
          {
-            hasClose = true, borderStyle = sizable, minClientSize = { 300, 55 }, 
+            hasClose = true, borderStyle = sizable, minClientSize = { 300, 55 },
             master = sheet, text = $"Name detached method", background = formColor
          };
          Button cancelButton
@@ -5344,7 +5344,7 @@ class CodeEditor : Window
                strcat(name, this.methodName);
                strcpy(this.methodName, name);
             }
-            
+
             this.moveAttached = true;
          }
 
@@ -5352,7 +5352,7 @@ class CodeEditor : Window
          this.method = method;
          this.function = function;
          ModifyCode();
-         UpdateFormCode(); 
+         UpdateFormCode();
          Update(null);
       }
    }
@@ -5372,11 +5372,11 @@ class CodeEditor : Window
          ObjectInfo check;
          sprintf(name, "%c%s%d", tolower(instance._class.name[0]), instance._class.name+1, id);
 
-         // if(strcmp(name, this.oClass.instance.name)) 
-         
+         // if(strcmp(name, this.oClass.instance.name))
+
          {
             for(check = oClass.instances.first; check; check = check.next)
-               if(!check.deleted && check.name && !strcmp(name, check.name)) 
+               if(!check.deleted && check.name && !strcmp(name, check.name))
                   break;
             if(!check)
             {
@@ -5384,7 +5384,7 @@ class CodeEditor : Window
                break;
             }
          }
-      }            
+      }
       toolBox.controlClass = null;
 
       ModifyCode();
@@ -5450,9 +5450,9 @@ class CodeEditor : Window
          ObjectInfo select = object;
 
          for(;;)
-         {            
+         {
             select = select.prev;
-            if(!select) 
+            if(!select)
             {
                if(looped) break;
                select = object.oClass.instances.last;
@@ -5536,7 +5536,7 @@ class CodeEditor : Window
                BitmapResource bitmap = null;
                if(!subMember.dataType)
                   subMember.dataType = ProcessTypeString(subMember.dataTypeString, false);
-            
+
                if(subMember.dataType && subMember.dataType.kind == classType && subMember.dataType._class)
                {
                   char * bitmapName = (char *)eClass_GetProperty(subMember.dataType._class.registered, "icon");
@@ -5630,11 +5630,11 @@ class CodeEditor : Window
                   else if(member.name && !membersList.FindString(member.name))
                   {
                      DataRow row = membersList.AddString(member.name);
-               
+
                      BitmapResource bitmap = null;
                      if(!member.dataType)
                         member.dataType = ProcessTypeString(member.dataTypeString, false);
-               
+
                      if(member.dataType && member.dataType.kind == classType && member.dataType._class)
                      {
                         char * bitmapName = (char *)eClass_GetProperty(member.dataType._class.registered, "icon");
@@ -5745,11 +5745,11 @@ class CodeEditor : Window
                else if(member.name && (!curString || strcmp(curString, member.name)))
                {
                   DataRow row = membersList.AddString(member.name);
-               
+
                   BitmapResource bitmap = null;
                   if(!member.dataType)
                      member.dataType = ProcessTypeString(member.dataTypeString, false);
-               
+
                   if(member.dataType && member.dataType.kind == classType && member.dataType._class)
                   {
                      char * bitmapName = (char *)eClass_GetProperty(member.dataType._class.registered, "icon");
@@ -5778,7 +5778,7 @@ class CodeEditor : Window
       if(type && (type.kind == classType || type.kind == structType || type.kind == unionType))
       {
          Class _class;
-         
+
          if(type.kind == classType)
          {
             if(type._class)
@@ -6055,9 +6055,9 @@ class CodeEditor : Window
       {
          DataRow row = membersList.FindSubString(string);
          if(!row)
-            listedEnums = false;      
+            listedEnums = false;
       }
-      
+
       if(!insideClass && exp && exp.destType && exp.destType.kind == functionType && GetThisClass())
       {
          ListClassMembersMatch(GetThisClass(), exp.destType);
@@ -6068,7 +6068,7 @@ class CodeEditor : Window
          Symbol symbol = null;
          {
             if(GetThisClass())
-            { 
+            {
                ListClassMembers(GetThisClass(), false);
             }
 
@@ -6090,7 +6090,7 @@ class CodeEditor : Window
                      {
                         row.icon = icons[typeEnumValue];
                      }
-                     else 
+                     else
                      {
                         BitmapResource bitmap = null;
                         if(symbol.type && symbol.type.kind == classType && symbol.type._class && symbol.type._class)
@@ -6148,7 +6148,7 @@ class CodeEditor : Window
                      {
                         row.icon = icons[typeEnumValue];
                      }
-                     else 
+                     else
                      {
                         BitmapResource bitmap = null;
                         if(data.dataType && data.dataType.kind == classType && data.dataType._class && data.dataType._class)
@@ -6215,7 +6215,7 @@ class CodeEditor : Window
          OutputType(f, returnType, false);
 
          f.Printf(" ");
-         
+
          if(dataType.thisClass && !dataType.classObjectType && (!isInstance || !insideClass || !eClass_IsDerived(insideClass, dataType.thisClass.registered)))
          {
             if(dataType.thisClass.shortName)
@@ -6236,7 +6236,7 @@ class CodeEditor : Window
                   f.Printf(", ");
             }
          }
-         f.Printf(")\n");                  
+         f.Printf(")\n");
          if(extraIndent) f.Printf("   ");
          f.Printf("   %c\n", OpenBracket);
 
@@ -6244,7 +6244,7 @@ class CodeEditor : Window
 
          f.Printf("\n");
 
-         if(!_class || 
+         if(!_class ||
             (
                (isInstance ? _class : _class.base)._vTbl[method.vid] == moduleClass._vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Module_OnLoad] ||
                (isInstance ? _class : _class.base)._vTbl[method.vid] == DummyMethod)) // Temp Check for DefaultFunction
@@ -6316,7 +6316,7 @@ class CodeEditor : Window
       }
 
       editBox.GetSelPos(&l1, &y1, &x1, &l2, &y2, &x2, false);
-      { 
+      {
          EditBoxStream f { editBox = editBox };
 
          updatingCode = true;
@@ -6347,7 +6347,7 @@ class CodeEditor : Window
          else if(!pointer)
          {
             editBox.GetSelPos(&l1, &y1, &x1, &l2, &y2, &x2, false);
-            { 
+            {
                EditBoxStream f { editBox = editBox };
                char ch = 0;
 
@@ -6612,7 +6612,7 @@ class CodeEditor : Window
                         editBox.SetSelPos(l1, y1, idStart.charPos-1, l2, y2, idStart.charPos-1);
                      editBox.GetCaretPosition(caret);
                      editBox.SetSelPos(l1, y1, x1, l2, y2, x2);
-               
+
                      membersList.master = this;
 
                      caret.y += editBox.GetCaretSize();
@@ -6659,7 +6659,7 @@ class CodeEditor : Window
                   }
                   if(row)
                      membersList.SetScrollPosition(0, row.index * membersList.rowHeight);
-               }            
+               }
             }
          }
       }
@@ -6685,7 +6685,7 @@ class CodeEditor : Window
       EnsureUpToDate();
 
       editBox.GetSelPos(&l1, &y1, &x1, &l2, &y2, &x2, false);
-      { 
+      {
          EditBoxStream f { editBox = editBox };
          char ch;
 
@@ -6720,7 +6720,7 @@ class CodeEditor : Window
          delete f;
          updatingCode = false;
       }
-      
+
       charPos = Min(charPos, l1.count + 1);
       if(!caretMove)
          FindParamsTree(ast, lineNum, charPos);
@@ -6742,7 +6742,7 @@ class CodeEditor : Window
          if(this.functionType != ::functionType || this.instanceType != ::instanceType)
             reposition = false;
 
-         if(!this.paramsShown || reposition || paramsInsideExp != functionExp || ::instanceType) // Added instanceType here, otherwise instance popups never reposition... 
+         if(!this.paramsShown || reposition || paramsInsideExp != functionExp || ::instanceType) // Added instanceType here, otherwise instance popups never reposition...
                                                                                                           // ( Dummy exp: always ends up with same memory)
          {
             editBox.GetSelPos(&l1, &y1, &x1, &l2, &y2, &x2, false);

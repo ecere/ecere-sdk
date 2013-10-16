@@ -108,7 +108,7 @@ public class DataSource
    String user;
    String pass;
    String locator;
-   
+
    ~DataSource()
    {
       delete locator;
@@ -289,7 +289,7 @@ public:
    property Field primaryKey { get { return GetPrimaryKey(); } }
    property uint fieldsCount { get { return GetFieldsCount(); } }
    property uint rowsCount { get { return GetRowsCount(); } }
-   
+
    virtual Field AddField(const String name, Class type, int length);
    virtual Field FindField(const String name);
    virtual bool GenerateIndex(int count, FieldIndex * fieldIndexes, bool init);
@@ -331,7 +331,7 @@ public:
             editable = true;
             header = fld.name;
             width = 100;
-         };         
+         };
          list.AddField(df);
       }
    }
@@ -468,7 +468,7 @@ public:
 #ifdef AUTO_DELETE
             tbl.listRows.Add(this);
 #endif
-         }         
+         }
       }
       get { return tbl; }
    }
@@ -538,7 +538,7 @@ public:
    bool SetData(Field field, typed_object data) { return (row && field) ? row.SetData(field, data) : false; }
    bool Delete() { return row ? row.Delete() : false; }
    bool SetQueryParam(int paramID, int value) { return row ? row.SetQueryParam(paramID, value) : false; }
-   bool SetQueryParam64(int paramID, int64 value) { return row ? row.SetQueryParam64(paramID, value) : false; }   
+   bool SetQueryParam64(int paramID, int64 value) { return row ? row.SetQueryParam64(paramID, value) : false; }
    bool SetQueryParamText(int paramID, char * value) { return row ? row.SetQueryParamText(paramID, value) : false; }
    bool SetQueryParamObject(int paramID, void * value, Class type) { return row ? row.SetQueryParamObject(paramID, value, type) : false; }
    // TOCHECK: Field is passed here to have sqlite type handy. The API might be nicer without

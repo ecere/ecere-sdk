@@ -91,13 +91,13 @@ public struct Date
    int year;
    Month month;
    int day;
-   
+
    char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       if(stringOutput)
       {
          if(day && year)
-            sprintf(stringOutput, "%s, %s %2d, %d", 
+            sprintf(stringOutput, "%s, %s %2d, %d",
                longDaysNames[dayOfTheWeek], longMonthsNames[month], day, year);
          else
             stringOutput[0] = 0;
@@ -118,7 +118,7 @@ public struct Date
       time.GetLocalTime();
 
       if(!strcmpi(string, "today") || !strcmpi(string, $"today") ||
-         !strcmpi(string, "now") || !strcmpi(string, $"now") || 
+         !strcmpi(string, "now") || !strcmpi(string, $"now") ||
          !strcmpi(string, "tomorrow") || !strcmpi(string, $"tomorrow") ||
          !strcmpi(string, "yesterday") || !strcmpi(string, $"yesterday"))
       {
@@ -138,7 +138,7 @@ public struct Date
          this.day = time.day;
          return true;
       }
-      
+
       if(string)
       {
          if(!string[0])
@@ -163,7 +163,7 @@ public struct Date
             }
 
             if(isAlpha)
-            {            
+            {
                Month m;
                for(m = 0; m<Month::enumSize; m++)
                   if(!strcmpi(shortMonthsNames[m], value)  || !strcmpi(longMonthsNames[m], value) ||
@@ -316,7 +316,7 @@ public struct Date
          if(dayOfTheWeek < 0)
             dayOfTheWeek += 7;
          return dayOfTheWeek;
-      }      
+      }
    }
 
    bool OnSaveEdit(DropBox dropBox, void * object)
@@ -335,7 +335,7 @@ public struct Date
          borderStyle = 0;
          hotKey = f2;
       };
-      
+
       if(day || year || month)
       {
          char tempString[MAX_F_STRING] = "";
@@ -357,7 +357,7 @@ public struct Date
          comboBox.calendar.shownMonth = (Month)now.month;
          comboBox.calendar.shownYear = now.year;
       }
-      
+
       comboBox.contents = string;
       comboBox.Create();
       if(!dataBox.active)
@@ -450,7 +450,7 @@ class DateDropBox : DropBox
       calendar.Create();
       return calendar;
    }
-      
+
    void OnCloseDropDown(Window dateEditor)
    {
       master.Update(null);
@@ -503,10 +503,10 @@ public:
    bool pressing;
    isRemote = true;
    inactive = true;
-   
+
    property Seconds delay { set { timer2.delay = value; } }
    property Seconds delay0 { set { timer.delay = value; } }
-   
+
    bool OnKeyHit(Key key, unichar ch)
    {
       if(key == hotKey)

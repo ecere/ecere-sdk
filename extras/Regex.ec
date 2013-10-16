@@ -40,7 +40,7 @@ public:
             else
                Free();
          }
-         
+
       }
       get { return regex; }
    }
@@ -129,7 +129,7 @@ public:
       {
          int c;
          int result;
-         result = regexec(&compiledRegex, string, maxMatchCount, matches, executeFlags); 
+         result = regexec(&compiledRegex, string, maxMatchCount, matches, executeFlags);
          if(result == 0) // != REG_NOMATCH
          {
             for(c = 0; c < maxMatchCount; c++)
@@ -141,7 +141,7 @@ public:
                }
             }
             if(c == maxMatchCount)
-               matchCount = maxMatchCount;      
+               matchCount = maxMatchCount;
             return string + matches[0].rm_so;
          }
          else
@@ -154,7 +154,7 @@ public:
    {
       return matches[matchPos].rm_so;
    }
-   
+
    int GetMatchEndOffset(int matchPos)
    {
       return matches[matchPos].rm_eo;
@@ -191,22 +191,22 @@ private:
       valid = result == 0;
       if(valid && !maxMatchCount)
          property::maxMatchCount = 1;
-      
+
       // TODO: handle errors?
-      // size_t regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size); 
-      // REG_BADBR      Invalid use of back reference operator. 
-      // REG_BADPAT     Invalid use of pattern operators such as group or list. 
-      // REG_BADRPT     Invalid use of repetition operators such as using '*' as the first character. 
-      // REG_EBRACE     Un-matched brace interval operators. 
-      // REG_EBRACK     Un-matched bracket list operators. 
-      // REG_ECOLLATE   Invalid collating element. 
-      // REG_ECTYPE     Unknown character class name. 
-      // REG_EEND       Non specific error. This is not defined by POSIX.2. 
-      // REG_EESCAPE    Trailing backslash. 
-      // REG_EPAREN     Un-matched parenthesis group operators. 
-      // REG_ERANGE     Invalid use of the range operator, eg. the ending point of the range occurs prior to the starting point. 
-      // REG_ESIZE      Compiled regular expression requires a pattern buffer larger than 64Kb. This is not defined by POSIX.2. 
-      // REG_ESPACE     The regex routines ran out of memory. 
+      // size_t regerror(int errcode, const regex_t *preg, char *errbuf, size_t errbuf_size);
+      // REG_BADBR      Invalid use of back reference operator.
+      // REG_BADPAT     Invalid use of pattern operators such as group or list.
+      // REG_BADRPT     Invalid use of repetition operators such as using '*' as the first character.
+      // REG_EBRACE     Un-matched brace interval operators.
+      // REG_EBRACK     Un-matched bracket list operators.
+      // REG_ECOLLATE   Invalid collating element.
+      // REG_ECTYPE     Unknown character class name.
+      // REG_EEND       Non specific error. This is not defined by POSIX.2.
+      // REG_EESCAPE    Trailing backslash.
+      // REG_EPAREN     Un-matched parenthesis group operators.
+      // REG_ERANGE     Invalid use of the range operator, eg. the ending point of the range occurs prior to the starting point.
+      // REG_ESIZE      Compiled regular expression requires a pattern buffer larger than 64Kb. This is not defined by POSIX.2.
+      // REG_ESPACE     The regex routines ran out of memory.
       // REG_ESUBREG    Invalid back reference to a subexpression.
    }
 

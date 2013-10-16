@@ -32,7 +32,7 @@ public:
                   for(lon = 0; lon < numLon; lon++)
                   {
                      Angle theta, omega, cosOmega;
-                     
+
                      theta = lon * 2 * Pi / (numLon - 1);
 
                      omega = (lat + 1) * Pi / (numLat - 1) - Pi / 2;
@@ -82,7 +82,7 @@ public:
                   pVertices[index].y = (float)  sin(omega);
                   pVertices[index].z = (float) (cos(theta) * cos(omega));
                   pNormals[index] = pVertices[index];
-                  
+
                   omega = (numLat - 2) * Pi / (numLat - 1) - Pi / 2;
                   cosOmega = cos(omega);
                   index += numLon+2;

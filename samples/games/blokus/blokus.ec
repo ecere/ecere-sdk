@@ -648,9 +648,9 @@ class Blokus : Window
          Piece * piece = &pieces[selectedPiece];
          int w = (direction & 1) ? piece->h : piece->w;
          int h = (direction & 1) ? piece->w : piece->h;
-         drag = { offset.x + mx, offset.y + my }; 
+         drag = { offset.x + mx, offset.y + my };
 
-         if(mx - squareDragged.x * squareWidth >= boardStartX - 10 && mx - squareDragged.x * squareWidth < boardStartX + ((boardSize-w)+1) * squareWidth + 10 && 
+         if(mx - squareDragged.x * squareWidth >= boardStartX - 10 && mx - squareDragged.x * squareWidth < boardStartX + ((boardSize-w)+1) * squareWidth + 10 &&
             my - squareDragged.y * squareWidth >= boardStartY - 10 && my - squareDragged.y * squareWidth < boardStartY + ((boardSize-h)+1) * squareWidth + 10)
          {
             int x, y;
@@ -758,7 +758,7 @@ class Blokus : Window
             squareDragged = { w-1-y, x };
          else
             squareDragged = { y, h-1-x };
-            
+
          offset.x -= squareDragged.x * squareWidth;
          offset.y -= squareDragged.y * squareWidth;
 
@@ -873,7 +873,7 @@ class Blokus : Window
             empty.b + lightValue * (full.b - empty.b)
          };
       }
-      
+
       surface.foreground = aqua;
       for(c = 0; c <= boardSize; c++)
       {
@@ -1010,7 +1010,7 @@ class Blokus : Window
                         drag.y + y * squareWidth,
                         colorPlayed,
                         gameStarted && gameState.colorTurn == colorPlayed && gameState.validPieces[selectedPiece]);
-                     
+
                      if(x == 0 || !PieceBlock(selectedPiece, x-1, y, direction, flip))
                      {
                         surface.foreground = white;

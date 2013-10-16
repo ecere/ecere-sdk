@@ -211,7 +211,7 @@ class IDEToolbar : ToolBar
 
    /* Edit options */
    // Cut
-   // Copy 
+   // Copy
    // Paste
    // Undo
    // Redo
@@ -420,7 +420,7 @@ class IDEWorkSpace : Window
    BitmapResource bmpTopFrameError     { ":codeMarks/topFrameError.png", window = this };
    BitmapResource bmpTopFrameHalf      { ":codeMarks/topFrameHalf.png", window = this };
    BitmapResource bmpTopFrameHalfError { ":codeMarks/topFrameHalfError.png", window = this };
-   
+
    Debugger debugger { };
 
    ProjectView projectView;
@@ -443,9 +443,9 @@ class IDEWorkSpace : Window
       {
          switch(key)
          {
-            case escape: 
+            case escape:
                if(activeBox != findBox || !ide.findInFilesDialog || !ide.findInFilesDialog.SearchAbort())
-                  ide.ShowCodeEditor(); 
+                  ide.ShowCodeEditor();
                break;
             default:
             {
@@ -565,7 +565,7 @@ class IDEWorkSpace : Window
          }
       }
    };
-   
+
    WatchesView watchesView { parent = this };
    ThreadsView threadsView
    {
@@ -648,7 +648,7 @@ class IDEWorkSpace : Window
                         gotWhatWeWant = true;
                   }
                   if(gotWhatWeWant ||
-                     MessageBox { type = yesNo, master = this, text = $"Error opening file", 
+                     MessageBox { type = yesNo, master = this, text = $"Error opening file",
                      contents = $"Open a different file?" }.Modal() == no)
                   {
                      if(!projectView && gotWhatWeWant)
@@ -783,7 +783,7 @@ class IDEWorkSpace : Window
       }
 
    MenuPlacement editMenu { menu, $"Edit", e };
-   
+
    Menu projectMenu { menu, $"Menu"."Project", p, hasMargin = true };
       MenuItem projectNewItem
       {
@@ -860,7 +860,7 @@ class IDEWorkSpace : Window
                {
                   if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add, mods.ctrl && mods.shift))
                      break;
-                  if(MessageBox { type = yesNo, master = this, text = $"Error opening project file", 
+                  if(MessageBox { type = yesNo, master = this, text = $"Error opening project file",
                         contents = $"Add a different project?" }.Modal() == no)
                   {
                      break;
@@ -1577,7 +1577,7 @@ class IDEWorkSpace : Window
       }
    };
 #endif
-   
+
    bool NotifySelectDisplayDriver(MenuItem selection, Modifiers mods)
    {
       //app.driver = app.drivers[selection.id];
@@ -1625,12 +1625,12 @@ class IDEWorkSpace : Window
       {
          this;
          fileName = fileName;
-         
+
          void NotifyDestroyed(Window window, DialogResult result)
          {
             projectView = null;
             text = titleECEREIDE;
-            
+
             AdjustMenus();
          }
       };
@@ -1690,10 +1690,10 @@ class IDEWorkSpace : Window
          bool outputVisible = expand ? false : outputView.visible;
          int topDistance = (callStackVisible || threadsVisible) ? 200 : 0;
          int bottomDistance = (outputVisible || watchesVisible || breakpointsVisible) ? 240 : 0;
-         
+
          for(child = firstChild; child; child = child.next)
          {
-            if(child._class == class(CodeEditor) || child._class == class(Designer) || 
+            if(child._class == class(CodeEditor) || child._class == class(Designer) ||
                child._class == class(Sheet) || child._class == class(ProjectView))
             {
                Anchor anchor = child.anchor;
@@ -1708,7 +1708,7 @@ class IDEWorkSpace : Window
             }
             else if(expand)
             {
-               if(child._class == class(OutputView) || child._class == class(CallStackView) || child._class == class(ThreadsView) || child._class == class(WatchesView) || 
+               if(child._class == class(OutputView) || child._class == class(CallStackView) || child._class == class(ThreadsView) || child._class == class(WatchesView) ||
                   child._class == class(BreakpointsView))
                   child.visible = false;
             }
@@ -1723,7 +1723,7 @@ class IDEWorkSpace : Window
       if(activeClient)
          activeClient.Activate();
       else if(projectView)
-      { 
+      {
          projectView.visible = true;
          projectView.Activate();
       }
@@ -2143,13 +2143,13 @@ class IDEWorkSpace : Window
    {
       if(debugger.isActive)
       {
-         if(MessageBox { type = yesNo, master = ide, 
-                           contents = $"Do you want to terminate the debugging session in progress?", 
+         if(MessageBox { type = yesNo, master = ide,
+                           contents = $"Do you want to terminate the debugging session in progress?",
                            text = title }.Modal() == no)
             return true;
          /*
-         MessageBox msg { type = yesNo, master = ide, 
-                           contents = "Do you want to terminate the debugging session in progress?", 
+         MessageBox msg { type = yesNo, master = ide,
+                           contents = "Do you want to terminate the debugging session in progress?",
                            text = title };
          if(msg.Modal() == no)
          {
@@ -2213,7 +2213,7 @@ class IDEWorkSpace : Window
                   {
                      Project project;
                      Workspace workspace = null;
-                     
+
                      if(FileExists(filePath))
                      {
                         if(!strcmp(extension, ProjectExtension))
@@ -2306,16 +2306,16 @@ class IDEWorkSpace : Window
 
                         findInFilesDialog.mode = FindInFilesMode::project;
                         findInFilesDialog.currentDirectory = ide.project.topNode.path;
-                        
+
                         {
                            char location[MAX_LOCATION];
                            StripLastDirectory(ide.project.topNode.path, location);
                            ChangeProjectFileDialogDirectory(location);
                         }
-                        
+
                         break;
                      }
-                     else 
+                     else
                      {
                         if(MessageBox { type = yesNo, master = this, text = $"Error opening project", contents = $"Open a different project?" }.Modal() == yes)
                         {
@@ -2351,7 +2351,7 @@ class IDEWorkSpace : Window
                }
                if(prj)
                {
-                  MessageBox { type = ok, parent = parent, master = this, text = $"Same Project", 
+                  MessageBox { type = ok, parent = parent, master = this, text = $"Same Project",
                         contents = $"This project is already present in workspace." }.Modal();
                }
                else
@@ -2407,8 +2407,8 @@ class IDEWorkSpace : Window
             !strcmp(extension, "jpeg") || !strcmp(extension, "png"))
       {
          if(FileExists(filePath))
-            document = PictureEdit { hasMaximize = true, hasMinimize = true, hasClose = true, borderStyle = sizable, 
-                                       hasVertScroll = true, hasHorzScroll = true, parent = this, state = state, 
+            document = PictureEdit { hasMaximize = true, hasMinimize = true, hasClose = true, borderStyle = sizable,
+                                       hasVertScroll = true, hasHorzScroll = true, parent = this, state = state,
                                        visible = visible, bitmapFile = filePath, OnClose = PictureEditOnClose/*why?--GenericDocumentOnClose*/;
                                     };
          if(!document)
@@ -2418,8 +2418,8 @@ class IDEWorkSpace : Window
       else if(!strcmp(extension, "3ds"))
       {
          if(FileExists(filePath))
-            document = ModelView { hasMaximize = true, hasMinimize = true, hasClose = true, borderStyle = sizable, 
-                                    hasVertScroll = true, hasHorzScroll = true, parent = this, state = state, 
+            document = ModelView { hasMaximize = true, hasMinimize = true, hasClose = true, borderStyle = sizable,
+                                    hasVertScroll = true, hasHorzScroll = true, parent = this, state = state,
                                     visible = visible, modelFile = filePath, OnClose = ModelViewOnClose/*why?--GenericDocumentOnClose*/
                                     };
 
@@ -2468,10 +2468,10 @@ class IDEWorkSpace : Window
                workspace.UpdateOpenedFileInfo(filePath, opened);
          }
       }
-      
+
       if(!document && createIfFails != no)
       {
-         if(createIfFails != yes && !needFileModified && 
+         if(createIfFails != yes && !needFileModified &&
                MessageBox { type = yesNo, master = this, text = filePath, contents = $"File doesn't exist. Create?" }.Modal() == yes)
             createIfFails = yes;
          if(createIfFails == yes || createIfFails == whatever)
@@ -2500,11 +2500,11 @@ class IDEWorkSpace : Window
             editor.editBox.scroll = scroll;
             editor.openedFileInfo.holdTracking = false;
          }
-         
+
          if(needFileModified)
             document.OnFileModified = OnFileModified;
          document.NotifySaved = DocumentSaved;
-         
+
          if(isProject)
             ideSettings.AddRecentProject(document.fileName);
          else
@@ -2512,7 +2512,7 @@ class IDEWorkSpace : Window
          ide.UpdateRecentMenus();
          ide.AdjustFileMenus();
          settingsContainer.Save();
-         
+
          return document;
       }
       else
@@ -2817,12 +2817,12 @@ class IDEWorkSpace : Window
             SetCurrentContext(codeEditor.globalContext);
             SetTopContext(codeEditor.globalContext);
             SetGlobalContext(codeEditor.globalContext);
-            
+
             SetDefines(&codeEditor.defines);
             SetImports(&codeEditor.imports);
 
             SetActiveDesigner(codeEditor.designer);
-            
+
             sheet.codeEditor = codeEditor;
             toolBox.codeEditor = codeEditor;
 
@@ -2929,7 +2929,7 @@ class IDEWorkSpace : Window
                   if(isCObject)
                      ChangeExtension(node.name, "c", nodeName);
                   sprintf(name, $"Compile %s", isCObject ? nodeName : node.name);
-                  projectCompileItem = 
+                  projectCompileItem =
                   {
                      copyText = true, text = name, c, ctrlF7, disabled = projectView.buildInProgress;
 
@@ -3333,29 +3333,29 @@ class IDEWorkSpace : Window
       {
          driverItems[c] = MenuItem { driversMenu, app.drivers[c], NotifySelect = NotifySelectDisplayDriver };
          driverItems[c].id = c;
-         driverItems[c].isRadio = true;         
+         driverItems[c].isRadio = true;
       }
 */
       driverItems = new MenuItem[2];
 #if defined(__unix__)
          driverItems[0] = MenuItem { driversMenu, "X", NotifySelect = NotifySelectDisplayDriver };
          driverItems[0].id = 0;
-         driverItems[0].isRadio = true;         
+         driverItems[0].isRadio = true;
 #else
          driverItems[0] = MenuItem { driversMenu, "GDI", NotifySelect = NotifySelectDisplayDriver };
          driverItems[0].id = 0;
-         driverItems[0].isRadio = true;         
+         driverItems[0].isRadio = true;
 #endif
          driverItems[1] = MenuItem { driversMenu, "OpenGL", NotifySelect = NotifySelectDisplayDriver };
          driverItems[1].id = 1;
-         driverItems[1].isRadio = true;         
+         driverItems[1].isRadio = true;
 
 /*      skinItems = new MenuItem[app.numSkins];
       for(c = 0; c < app.numSkins; c++)
       {
          skinItems[c] = MenuItem {skinsMenu, app.skins[c], NotifySelect = NotifySelectDisplaySkin };
          skinItems[c].id = c;
-         skinItems[c].isRadio = true;         
+         skinItems[c].isRadio = true;
       }
 */
       ideFileDialog.master = this;

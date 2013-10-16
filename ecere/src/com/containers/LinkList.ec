@@ -50,7 +50,7 @@ public:
       if(item)
       {
          item.link.prev = last;
-         if(item.link.prev) 
+         if(item.link.prev)
             item.link.prev.link.next = item;
          if(!first) first = item;
          last = item;
@@ -83,7 +83,7 @@ public:
                   item.link.prev.link.next = item;
                else
                   item.link.next = item;
-            }                 
+            }
          }
          if(prevItem == last) last = item;
          if(item.link.next)
@@ -101,7 +101,7 @@ public:
       {
          if(item.link.prev)
             item.link.prev.link.next = item.link.next;
-         if(item.link.next) 
+         if(item.link.next)
             item.link.next.link.prev = item.link.prev;
          if(circ && last == first)
             last = first = null;
@@ -122,18 +122,18 @@ public:
       LT prevItem = (LT)_prevItem;
       if(item)
       {
-         if(prevItem != item && (first != item || prevItem)) 
+         if(prevItem != item && (first != item || prevItem))
          {
-            if(item.link.prev) 
+            if(item.link.prev)
                item.link.prev.link.next = item.link.next;
-            if(item.link.next) 
+            if(item.link.next)
                item.link.next.link.prev = item.link.prev;
             if(item == first) first = item.link.next;
             if(item == last)  last = item.link.prev;
-      
-            if(prevItem == last) 
+
+            if(prevItem == last)
                last = item;
-         
+
             item.link.prev = prevItem ? prevItem : (circ ? last : null);
             if(prevItem)
             {
@@ -152,7 +152,7 @@ public:
                       item.link.next = item;
                }
             }
-            if(item.link.next) 
+            if(item.link.next)
                item.link.next.link.prev = item;
          }
       }

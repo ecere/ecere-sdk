@@ -12,7 +12,7 @@ enum Health
 {
    POOR,
    OK,
-   GOOD  
+   GOOD
 };
 
 struct Example

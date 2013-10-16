@@ -35,7 +35,7 @@ public:
          frame = StackFrame { };
          stack.Add(frame);
          frame.path = CopyString(startPath);
-         frame.listing = FileListing { startPath, extensions = extensions };  // there should be a sorted = true/false 
+         frame.listing = FileListing { startPath, extensions = extensions };  // there should be a sorted = true/false
       }
 
       if(iterateStartPath)
@@ -94,7 +94,7 @@ public:
    {
       return false;
    }
-   
+
    virtual bool OnFile(char * filePath)
    {
       return true;
@@ -119,7 +119,7 @@ static class IteratorThread : Thread
 {
    void Temp()
    {
-      //listing = FileListing { dir, extensions = filter.extensions };  // there should be a sorted = true/false 
+      //listing = FileListing { dir, extensions = filter.extensions };  // there should be a sorted = true/false
    }
 }
 

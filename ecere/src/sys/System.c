@@ -144,7 +144,7 @@ bool System_MakeDir(char * path)
       for(;(ch = path[c]) && (ch != '/' && ch != '\\'); c++)
       {
          if(len < MAX_FILENAME)
-            directory[len++] = ch;  
+            directory[len++] = ch;
       }
       directory[len] = '\0';
       if(locationLen > 0 &&
@@ -196,7 +196,7 @@ bool System_RemoveDir(char * path)
       for(;(ch = path[c]) && (ch != '/' && ch != '\\'); c++)
       {
          if(len < MAX_FILENAME)
-            directory[len++] = ch;  
+            directory[len++] = ch;
       }
       directory[len] = '\0';
       if(locationLen > 0 &&
@@ -261,7 +261,7 @@ char * System_GetEnvironment(char * envName, char * envValue, int max)
       __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(result, (byte *)envValue, max);
    else
       envValue[0] = 0;
-      
+
    __ecereNameSpace__ecere__com__eSystem_Delete(_wenvName);
    return envValue; //result ? envValue : null;
 #else
@@ -284,7 +284,7 @@ void System_SetEnvironment(char * envName, char * envValue)
    __ecereNameSpace__ecere__com__eSystem_Delete(_wenvValue);
 #else
    setenv(envName, envValue, 1);
-#endif   
+#endif
 }
 
 void System_UnsetEnvironment(char * envName)
@@ -295,7 +295,7 @@ void System_UnsetEnvironment(char * envName)
    __ecereNameSpace__ecere__com__eSystem_Delete(_wenvName);
 #else
    unsetenv(envName);
-#endif   
+#endif
 }
 
 bool System_Execute(char * env, char * command, va_list args)

@@ -23,13 +23,13 @@ static ColorAlpha Color_SVHA(float s, float v, float h, float a) { return Color_
 
 static ColorAlpha Color_aLbA(float A, float L, float B, float a)
 {
-   return ColorAlpha 
+   return ColorAlpha
    {
       (byte)Max(Min(a*255, 255), 0),
       ColorLab
-      { 
-         L * 100, 
-         (A * LAB_AB_RANGE) - (LAB_AB_RANGE+1)/2, 
+      {
+         L * 100,
+         (A * LAB_AB_RANGE) - (LAB_AB_RANGE+1)/2,
          (B * LAB_AB_RANGE) - (LAB_AB_RANGE+1)/2
       };
    };
@@ -64,15 +64,15 @@ class ColorPlane : Window
          fy = Min(Max(fy,0),1);
          switch((ColorPlaneType) id)
          {
-            case xyPlane: 
-               picker.x = fx; picker.y = fy; 
+            case xyPlane:
+               picker.x = fx; picker.y = fy;
                break;
             case zRamp:
-               picker.z = fy; 
+               picker.z = fy;
                picker.xyPlaneUpdate = true;
                break;
             case aRamp:
-               picker.w = fx; 
+               picker.w = fx;
                picker.xyPlaneUpdate = true;
                break;
          }
@@ -148,8 +148,8 @@ class ColorXYPlane : ColorPlane
                for(y = 0; y<256; y++)
                {
                   ColorAlpha color = ColorFunctions[picker.colorMode](
-                     (float)x / (256-1), 
-                     (float)(256-1-y) / (256-1), 
+                     (float)x / (256-1),
+                     (float)(256-1-y) / (256-1),
                      picker.z, picker.w);
 
                   surface.SetForeground(color);
@@ -161,7 +161,7 @@ class ColorXYPlane : ColorPlane
       }
 
       surface.Blit(bitmap, 0,0,0,0, clientSize.w, clientSize.h);
-      
+
       x = (int)(picker.x * (clientSize.w-1));
       y = (int)(clientSize.h-1-(picker.y * (clientSize.h-1)));
 
@@ -201,7 +201,7 @@ class ColorZRamp : ColorPlane
       for(z = 0; z<ch; z++)
       {
          ColorAlpha color = ColorFunctions[picker.colorMode](
-            picker.x, picker.y, 
+            picker.x, picker.y,
             (float)(ch-1-z) / (ch-1), picker.w);
 
          surface.SetForeground(color);
@@ -223,7 +223,7 @@ class ColorZRamp : ColorPlane
       for(a = 0; a<clientSize.w; a++)
       {
          ColorAlpha color = ColorFunctions[picker.colorMode](
-            picker.x, picker.y, 
+            picker.x, picker.y,
             picker.z, (float)a / (clientSize.w-1));
 
          surface.SetForeground(color);
@@ -250,7 +250,7 @@ public:
          Lab = rgb;
          cmyk = rgb;
          hsv = rgb;
-         
+
          UpdatePosition();
       }
       get { return argb; }
@@ -473,7 +473,7 @@ private:
          colorMode = (ColorSelectionMode)control.id;
          xyPlaneUpdate = true;
       }
-      
+
       UpdatePosition();
 
       return true;
@@ -551,7 +551,7 @@ private:
    EditBox a
    {
       this, position = { 442, 30 }, size = { 32, 20 };
-      
+
       bool NotifyModified(EditBox control)
       {
          ColorRGB rgb;
@@ -589,7 +589,7 @@ private:
    EditBox C
    {
       this, position = { 350, 150 }, size = { 32, 20 }, text = "C:", hotKey = altC;
-      
+
       bool NotifyModified(EditBox control)
       {
          ColorRGB rgb;
@@ -681,7 +681,7 @@ private:
 
       // position = { 330, 270 },
       // anchor = { right = 10, bottom = 32 };
-              
+
       bool NotifyModified(EditBox control)
       {
          ColorRGB rgb;
@@ -739,7 +739,7 @@ private:
    {
       this, isRadio = true, position = { 312, 10 }, id = ColorSelectionMode::selectH, text = "H:", hotKey = altH, checked = true;
       NotifyClicked = RadioClicked;
-   };   
+   };
 
    Button rS
    {
@@ -776,7 +776,7 @@ private:
       this, isRadio = true, position = { 312, 80 }, id = ColorSelectionMode::selectR, text = "R:", hotKey = altR;
       NotifyClicked = RadioClicked;
    };
-  
+
    Button rG
    {
       this, isRadio = true, position = { 312, 100 }, id = ColorSelectionMode::selectG, text = "G:", hotKey = altG;
@@ -871,7 +871,7 @@ private:
             surface.Area(0,0, 49, 49);
          }
       }
-   };   
+   };
 
    EditBox R
    {
@@ -900,9 +900,9 @@ private:
          aRamp.autoCreate = value;
          A.autoCreate = value;
          labelA.autoCreate = value;
-         if(value) clientSize.h = 275 + 50; else clientSize.h = 275; 
+         if(value) clientSize.h = 275 + 50; else clientSize.h = 275;
       }
-      get 
+      get
       {
          return hasAlpha;
       }

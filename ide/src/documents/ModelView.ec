@@ -23,7 +23,7 @@ class ModelView : Window
       diffuse = white, specular = white;
    }; // light.diffuse.r = light.diffuse.g = light.diffuse.b = 1; light.specular.r = light.specular.g = light.specular.b = 1;
    Window help;
-   
+
    Timer timer
    {
       userData = this, delay = 0.05;
@@ -31,12 +31,12 @@ class ModelView : Window
       {
          if(model)
             model.Animate(model.frame + 1);
-            
+
          Update(null);
          return true;
       }
    };
-   
+
    property char * modelFile
    {
       set
@@ -85,7 +85,7 @@ class ModelView : Window
    {
       //eObject_Free(model, null);
    }
-   
+
    void OnRedraw(Surface surface)
    {
       surface.SetBackground(lightBlue);
@@ -189,7 +189,7 @@ class ModelView : Window
       {
          case wheelDown: case minus: camera.position.z *= 1.1111111f; break;
          case wheelUp: case equal: camera.position.z *= 0.9f; break;
-         
+
          /*
             case minus: camera.position.z += 10; break;
             case equal: camera.position.z -= 10; break;

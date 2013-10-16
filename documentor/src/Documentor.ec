@@ -30,7 +30,7 @@ static bool editing = true;
 
 enum CodeObjectType { typeClass, typeData, typeMethod, typeEvent, typeProperty, typeNameSpace, typeDataType, typeEnumValue, typeDataPrivate, typeMethodPrivate, typePropertyPrivate };
 
-static char * iconNames[CodeObjectType] = 
+static char * iconNames[CodeObjectType] =
 {
    "<:ecere>constructs/class.png",
    "<:ecere>constructs/data.png",
@@ -192,7 +192,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                DocPrintType(type.returnType, string, false, fullName);
                strcat(string, " ");
             }
-            
+
             // DANGER: Testing This
             if(printName)
             {
@@ -270,7 +270,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                      strcat(size, arrayType.enumClass.string);
                   else if(arrayType.arraySizeExp)
                      PrintExpression(arrayType.arraySizeExp, size);
-                  //sprintf(string, "%s[%s]", baseType, size); 
+                  //sprintf(string, "%s[%s]", baseType, size);
                   strcat(size, "]");
 
                   arrayType = arrayType.arrayType;
@@ -286,10 +286,10 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                   strcpy(size, type.enumClass.string);
                else if(type.arraySizeExp)
                   PrintExpression(type.arraySizeExp, size);
-               //sprintf(string, "%s[%s]", baseType, size); 
+               //sprintf(string, "%s[%s]", baseType, size);
                strcat(string, baseType);
                strcat(string, "[");
-               strcat(string, size); 
+               strcat(string, size);
                strcat(string, "]");
                */
 
@@ -499,7 +499,7 @@ static void FigureFileName(char * fileName, Module module, DocumentationType typ
       case example: strcat(fileName, "example"); break;
       case seeAlso: strcat(fileName, "seeAlso"); break;
       case returnValue: strcat(fileName, "returnValue"); break;
-      case enumerationValue: 
+      case enumerationValue:
          strcat(fileName, "enumeration values/");
          strcat(fileName, ((NamedLink)data).name);
          break;
@@ -578,7 +578,7 @@ class APIPageNameSpace : APIPage
    {
       return module;
    }
-   
+
    NameSpace * GetNameSpace()
    {
       return nameSpace;
@@ -626,7 +626,7 @@ class APIPageNameSpace : APIPage
          strcpy(nsName, temp);
          ns = ns->parent;
       }
-      if(nsName[0]) 
+      if(nsName[0])
          f.Printf($"Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", nameSpace->parent, nsName);
 
       f.Printf("<br>");
@@ -839,7 +839,7 @@ class APIPageClass : APIPage
       f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", name);
 
       f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
-      if(nsName[0]) 
+      if(nsName[0])
          f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
 
       {
@@ -870,7 +870,7 @@ class APIPageClass : APIPage
          }
          f.Printf($"Type: %s<br>\n", classType);
       }
-      
+
       if(cl.type != systemClass && cl.base)
       {
          f.Printf($"Base Class: ");
@@ -910,7 +910,7 @@ class APIPageClass : APIPage
          if(enumeration.values.first)
          {
             NamedLink item;
-                        
+
             f.Printf($"<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n");
             f.Printf("<TABLE>\n");
 
@@ -944,7 +944,7 @@ class APIPageClass : APIPage
                }
                else
                   dataClass = base;
-               
+
                f.Printf("<TR>");
                f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", item, iconNames[typeEnumValue], item.name);
                if(dataClass.type == systemClass)
@@ -994,10 +994,10 @@ class APIPageClass : APIPage
                if(name) name += 2; else name = prop.name;
 
                f.Printf("<TR>");
-               
+
                string[0] = 0;
                DocPrintType(type, string, true, false);
-               
+
                f.Printf("<TD valign=top height=22 nowrap=1><a name=%p></a><img valign=center src=\"%s\">&nbsp;&nbsp;%s</TD>", prop, iconNames[typeDataType], string);
                if(desc)
                {
@@ -1013,9 +1013,9 @@ class APIPageClass : APIPage
                      f.Printf("<TD valign=top height=22>%s</TD>", desc);
                   delete desc;
                }
-               
+
                f.Printf("</TR>\n");
-               
+
                FreeType(type);
             }
          }
@@ -1147,7 +1147,7 @@ class APIPageClass : APIPage
                      f.Printf("<TD valign=top height=22>%s</TD>", desc);
                   delete desc;
                }
-               
+
                f.Printf("</TR><br>\n");
             }
          }
@@ -1216,7 +1216,7 @@ class APIPageClass : APIPage
             delete remarksDoc;
          }
       }
-      
+
       if(cl.type != systemClass)
       {
          bool first = true;
@@ -1376,7 +1376,7 @@ class APIPageMethod : APIPage
                   f.Printf("<TD valign=top height=22>%s&nbsp;</TD>\n", desc);
                delete desc;
             }
-            
+
             f.Printf("</TR>\n");
          }
       }
@@ -1489,7 +1489,7 @@ class APIPageMethod : APIPage
             }
             else
                f.Printf("<br>%s\n", method, seeAlsoDoc);
-            
+
             f.Printf("<br><br>\n");
             delete seeAlsoDoc;
          }
@@ -1740,7 +1740,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
    APIPage page;
 
    char fileName[MAX_LOCATION];
-   
+
    strcpy(nsName, parentName ? parentName : "");
    if(nameSpace->name)
    {
@@ -1807,7 +1807,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
    {
       for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
       {
-         if(nameSpace->functions.first)                            
+         if(nameSpace->functions.first)
          {
             BTNamedLink link;
             GlobalFunction fn;
@@ -1825,7 +1825,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
          }
       }
    }
-   
+
    if(mainNameSpace.defines.first || (comNameSpace && comNameSpace.defines.first))
    {
       for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
@@ -1886,7 +1886,7 @@ static void AddDataMemberToPage(File f, DataMember member, int indent, bool show
    }
    else
       f.Printf("<TD valign=top height=22></TD>");
-   
+
    if(member.type != normalMember)
    {
       DataMember subMember;
@@ -2107,7 +2107,7 @@ class MainForm : Window
       FreeExcludedSymbols(excludedSymbols);
       ::defines.Free(FreeModuleDefine);
       imports.Free(FreeModuleImport);
-      
+
       FreeGlobalData(globalData);
       FreeTypeData(componentsApp);
       FreeIncludeFiles();
@@ -2128,7 +2128,7 @@ class MainForm : Window
 
       if(extension[0] && strcmpi(extension, "so") && strcmpi(extension, "dll"))
          componentsApp.name = CopyString(filePath);
-      
+
       for(module = componentsApp.allModules.first; module; module = module.next)
       {
          if(module.name && (!strcmp(module.name, "ecere") || !strcmp(module.name, "ecereCOM")))
@@ -2173,7 +2173,7 @@ class MainForm : Window
          }
          else if(!view.created)
             view.Create();
-         
+
          {
             page = row.GetData(null);
             if(page && page.page)
@@ -2809,7 +2809,7 @@ class HelpView : HTMLView
                            len = (nextSpace - (text + textPos)) + 1;
                         else
                            len = textBlock.textLen - textPos;
-                        
+
                         display.FontExtent(textBlock.font.font, text + textPos, len, &w, &th);
 
                         if(x + width + w > maxW && x > 0)
@@ -2919,7 +2919,7 @@ class HelpView : HTMLView
                         len = (nextSpace - (text + textPos)) + 1;
                      else
                         len = textBlock.textLen - textPos;
-                     
+
                      display.FontExtent(textBlock.font.font, text + textPos, len, &w, &th);
 
                      if(x + width + w > maxW && x > 0)
@@ -2966,7 +2966,7 @@ class HelpView : HTMLView
                      Update(null);
                      PositionCaret(false);
                      return false;
-                  } 
+                  }
                   else if(textPos == textBlock.textLen && textBlock.next && textBlock.next.next)
                   {
                      startPos = 0;
@@ -2982,7 +2982,7 @@ class HelpView : HTMLView
                      sx = textBlock.startX;
                   }
                }
-               
+
                /*if(textBlock.next && textBlock.next.next)
                {
                   textBlock = textBlock.next.next;
@@ -3032,7 +3032,7 @@ class HelpView : HTMLView
                         break;
                      }
                   }
-                  // No next word found, 
+                  // No next word found,
                   if(!found && (c != curPosition || line != textBlock))
                   {
                      found = true;
@@ -3102,7 +3102,7 @@ class HelpView : HTMLView
                         }
                      }
                   }
-                  // No next word found, 
+                  // No next word found,
                   if(!found && curPosition > 0)
                   {
                      foundAlpha = true;
@@ -3411,7 +3411,7 @@ class HelpView : HTMLView
 
                   textBlock.text = renew textBlock.text char[textBlock.textLen + len + 1];
                   memmove(textBlock.text + curPosition + len, textBlock.text + curPosition, textBlock.textLen - curPosition + 1);
-                  
+
                   for(c = 0; c<len; c++)
                   {
                      textBlock.text[curPosition] = string[c];
@@ -3420,7 +3420,7 @@ class HelpView : HTMLView
                   }
                   selPosition = curPosition;
                   selBlock = textBlock;
-                  
+
                   {
                      //Clear(html.block);
                      //CreateForms(html.block);
@@ -3466,7 +3466,7 @@ class HelpView : HTMLView
          }
          else
             maxW = clientSize.w - 10 - sx;
-         
+
          display.FontExtent(textBlock.font.font, " ", 1, null, &th);
 
          while(textPos < textBlock.textLen)
@@ -3486,7 +3486,7 @@ class HelpView : HTMLView
                   len = (nextSpace - (text + textPos)) + 1;
                else
                   len = textBlock.textLen - textPos;
-               
+
                display.FontExtent(textBlock.font.font, text + textPos, len, &w, &th);
 
                if(x + width + w > maxW && x > 0)
@@ -3584,7 +3584,7 @@ class HelpView : HTMLView
          }
          else
             maxW = clientSize.w - 10 - sx;
-         
+
          display.FontExtent(textBlock.font.font, " ", 1, &space, &th);
          //space = space/2+2;
          space = 2;
@@ -3606,7 +3606,7 @@ class HelpView : HTMLView
                   len = (nextSpace - (text + textPos)) + 1;
                else
                   len = textBlock.textLen - textPos;
-               
+
                display.FontExtent(textBlock.font.font, text + textPos, len, &w, &th);
 
                sx = x + textBlock.startX;
@@ -3678,7 +3678,7 @@ class Documentor : GuiApplication
          if(os == win32) // if Windows OS then
          {
             char programFilesDir[MAX_LOCATION];
-            char appData[MAX_LOCATION]; 
+            char appData[MAX_LOCATION];
             char homeDrive[MAX_LOCATION];
             char winDir[MAX_LOCATION];
             GetEnvironment("APPDATA", appData, sizeof(appData));

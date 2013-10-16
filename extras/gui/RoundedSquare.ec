@@ -34,7 +34,7 @@ static byte borderData[] =
    0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
 
-static byte insideData[] = 
+static byte insideData[] =
 {
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -144,7 +144,7 @@ class RoundedBMPs
             {
                byte b = picture[y * s + x];
                byte ib = ipicture[y * s + x];
-               
+
                ((byte *)bl.picture)[(h-1-y) * s + x]        = b;
                ((byte *)br.picture)[(h-1-y) * s + (w-1-x)]  = b;
                ((byte *)tr.picture)[y * s + (w-1-x)]        = b;
@@ -152,7 +152,7 @@ class RoundedBMPs
                ((byte *)ibl.picture)[(h-1-y) * s + x]        = ib;
                ((byte *)ibr.picture)[(h-1-y) * s + (w-1-x)]  = ib;
                ((byte *)itr.picture)[y * s + (w-1-x)]        = ib;
-               
+
                /*if(x) Print(", ");
                printf("0x%02X", b);*/
             }
@@ -166,7 +166,7 @@ class RoundedBMPs
             for(x = 0; x < tl.width; x++)
             {
                byte ib = ipicture[y * s + x];
-               
+
                if(x) Print(", ");
                printf("0x%02X", ib);
             }
@@ -183,7 +183,7 @@ class RoundedBMPs
       ihorz.Grab(itl, tl.width - horz.width, 0);
       ieVert.Grab(ibr, tl.width - borderSize, 0);
       ieHorz.Grab(ibr, 0, tl.height - borderSize);
-      
+
       tl.MakeDD(displaySystem);
       bl.MakeDD(displaySystem);
       tr.MakeDD(displaySystem);
@@ -213,7 +213,7 @@ class RoundedBMPs
          surface.Tile(ivert, 0, tl.height, borderSize, size.h - 2*tl.height);
          surface.Tile(ieHorz, br.width, size.h - ieHorz.height, size.w - 2*br.width, ieHorz.height);
          surface.Tile(ieVert, size.w - ieVert.width, br.height, ieVert.width, size.h - 2*br.height);
-         
+
          surface.Blit(itl, 0,0,0,0, borderSize, tl.height);
          surface.Blit(itl, 0,0,0,0, tl.width, borderSize);
 
@@ -248,7 +248,7 @@ class RoundedBMPs
          surface.Tile(vert, 0, tl.height, borderSize, size.h - 2*tl.height);
          surface.Tile(eHorz, br.width, size.h - ieHorz.height, size.w - 2*br.width, ieHorz.height);
          surface.Tile(eVert, size.w - ieVert.width, br.height, ieVert.width, size.h - 2*br.height);
-         
+
          surface.Blit(tl, 0,0,0,0, borderSize, tl.height);
          surface.Blit(tl, 0,0,0,0, tl.width, borderSize);
 

@@ -3,7 +3,7 @@
 
    Copyright (c) 1997-2005 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    tiles.ec - Main Module
 ****************************************************************************/
 import "astar.ec"
@@ -29,7 +29,7 @@ struct TileMap
    uint16 * regions;
    uint16 * contents;
    uint16 * frames;
-   
+
    // Dimension Stuff
    int numLayers;
    Point maxDim;
@@ -42,7 +42,7 @@ struct TileMap
 
    // What's this for??
    Direction direction;
-   uint16 displaced; 
+   uint16 displaced;
    byte retries;
    Point path[256];
    bool chase;
@@ -82,7 +82,7 @@ struct TileUnit
    int pathPos;
 
    Direction direction;
-   uint16 displaced; 
+   uint16 displaced;
    byte retries;
    Point path[MAXPATH];
    bool chase;
@@ -315,7 +315,7 @@ void MapRedraw(TileMap * map, Surface surface, int vx, int vy, int vw, int vh)
 Point UnitExact(TileMap * map, TileUnit * unit)
 {
    Point exact;
-   
+
    exact.x = unit->pos.x*map->tileW*map->maxDim.x/map->dim[unit->space].x;
    exact.y = unit->pos.y*map->tileH*map->maxDim.y/map->dim[unit->space].y;
    MapForward(unit->direction,&exact,unit->displaced);
@@ -626,7 +626,7 @@ bool UnitSurround(TileMap * map,TileUnit *unit,TileUnit * target)
 
       if(!target||(target==unit))
          return false;
- 
+
       unit->chase=1;
       unit->target=target;
       UnitRemove(map, unit);
@@ -720,7 +720,7 @@ void UnitDisplay(TileMap * map, Surface surface, TileUnit * unit, int viewX, int
       surface.SetForeground(white);
 
       exact = Point{exact.x-viewX*map->tileW, exact.y-viewY*map->tileH};
-   
+
       if(!unit->space)
       {
          unit->sprite.DisplayFrame(surface,unit->seqPos,exact.x,exact.y,true,unit->filter);
@@ -743,7 +743,7 @@ void UnitDisplay(TileMap * map, Surface surface, TileUnit * unit, int viewX, int
          {
             frame += unit->direction;
             unit->sprite.DisplayFrame(surface,frame,exact.x,exact.y,false,unit->filter);
-         }         
+         }
       }
    }
 }
@@ -843,7 +843,7 @@ void UnitEnter(TileMap * map, TileUnit *unit)
 
       unit->event = Moving;
 
-      if(unit->tick<seq->frames[unit->event][unit->seqPos].wait) 
+      if(unit->tick<seq->frames[unit->event][unit->seqPos].wait)
          return;
 
       unit->displaced+=seq->frames[unit->event][unit->seqPos].walk;

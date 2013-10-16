@@ -13,7 +13,7 @@ static class PgSQLDataSource : DataSourceDriver
    {
       char r[MAX_F_STRING];
       char t[MAX_LOCATION];
-      
+
       /*
       host
       hostaddr
@@ -29,7 +29,7 @@ static class PgSQLDataSource : DataSourceDriver
       krbsrvname
       service
       */
-      
+
       r[0] = '\0';
       if(ds.host)
          sprintf(t, "host=%s ", ds.host), strcat(r, t);
@@ -86,7 +86,7 @@ static class PgSQLDataSource : DataSourceDriver
       char dbLocator[MAX_F_STRING];
       PGconn * conn;
       PgSQLDatabase db;
-      
+
       //PGconn *PQconnectStart(const char *conninfo);
       //PostgresPollingStatusType PQconnectPoll(PGconn *conn);
       //void PQreset(PGconn *conn);
@@ -197,7 +197,7 @@ class PgSQLDatabase : Database
          ExecStatusType status;
          PgSQLTable tbl { };
          tbl.res = PQexec(conn, sql);
-         //PGresult *PQexecParams(PGconn *conn, const char *command, int nParams, const Oid *paramTypes, 
+         //PGresult *PQexecParams(PGconn *conn, const char *command, int nParams, const Oid *paramTypes,
          //             const char * const *paramValues, const int *paramLengths, const int *paramFormats, int resultFormat);
          //PGresult *PQprepare(PGconn *conn, const char *stmtName, const char *query, int nParams, const Oid *paramTypes);
          //PGresult *PQexecPrepared(PGconn *conn, const char *stmtName, int nParams, const char * const *paramValues,
@@ -291,22 +291,22 @@ class PgSQLTable : Table
    {
       return res ? PQnfields(res) : 0;
    }
-   
+
    uint GetRowsCount()
    {
       return res ? PQntuples(res) : 0;
    }
-   
+
    DriverRow CreateRow()
    {
       return null;
    }
-   
+
    Field AddField(const String name, Class type, int length)
    {
       return null;
    }
-   
+
    //char *PQfname(const PGresult *res, int column_number);
    //Oid PQftable(const PGresult *res, int column_number);
    //int PQftablecol(const PGresult *res, int column_number);
@@ -321,7 +321,7 @@ class PgSQLTable : Table
    //int PQnparams(const PGresult *res);
    //Oid PQparamtype(const PGresult *res, int param_number);
    //void PQprint(FILE *fout,      /* output stream */ const PGresult *res, const PQprintOpt *po);
-   
+
    //char *PQcmdStatus(PGresult *res);
    //char *PQcmdTuples(PGresult *res);
    //Oid PQoidValue(const PGresult *res);
@@ -348,7 +348,7 @@ class PgSQLTable : Table
       }
       return null;
    }
-   
+
    bool Index(int count, FieldIndex * fieldIndexes)
    {
       return false;
@@ -359,7 +359,7 @@ static class PgSQLField : Field
 {
 public:
    PgSQLTable tbl;
-   
+
    Class type;
    int length;
 
@@ -435,7 +435,7 @@ static class PgSQLRow : DriverRow
    {
       return _num == -1;
    }
-   
+
    bool Select(MoveOptions move)
    {
       int rowsCount = tbl.GetRowsCount();

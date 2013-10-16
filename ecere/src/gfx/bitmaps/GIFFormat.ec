@@ -64,7 +64,7 @@ class GIFFormat : BitmapFormat
                   for(y = 0; y < gifFile->SHeight; y++)
                   {
                      uint x;
-                     for(x = 0; x < gifFile->SWidth; x++) 
+                     for(x = 0; x < gifFile->SWidth; x++)
                      {
                         byte index = image->RasterBits[y*gifFile->SWidth+x];
                         if(index == transparent || index >= colorCount)
@@ -118,7 +118,7 @@ class GIFFormat : BitmapFormat
    bool Save(Bitmap bitmap, char * filename, void * options)
    {
       bool result = false;
-      return result;   
+      return result;
    }
 
    ColorAlpha * LoadPalette(char * fileName, char * type)

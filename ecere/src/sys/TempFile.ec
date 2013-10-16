@@ -160,7 +160,7 @@ public class TempFile : File
          this.size += increase;
          this.buffer = renew this.buffer byte[this.size];
       }
-      return result;   
+      return result;
    }
 
    uint Tell()

@@ -237,7 +237,7 @@ private:
    {
       if(watchFor & action)
       {
-         fileNotifies.Add(FileNotify { 
+         fileNotifies.Add(FileNotify {
                monitor = this, action = action, fileName = CopyString(fileName), param = CopyString(param)
             });
          return true;
@@ -269,7 +269,7 @@ static int CompareFiles(FileEntry e1, FileEntry e2, void * data)
       return 1;
    else if(e1.attribs.isDirectory && !e2.attribs.isDirectory)
       return -1;
-   else 
+   else
       return strcmp(e1.name, e2.name);
 }
 
@@ -365,7 +365,7 @@ static class MonitorThread : Thread
                      }
                      monitor.files.Free(FileEntry::Free);
                      monitor.files = newEntries;
-                  }            
+                  }
                }
                else if(monitor.fileName)
                {
@@ -381,7 +381,7 @@ static class MonitorThread : Thread
                   {
                      fileActivity |= monitor.AddFileNotify(FileChange { deleted = true }, monitor.fileName, null);
                      monitor.exists = false;
-                  }            
+                  }
                   else if(monitor.exists)
                   {
                      FileStats stats { };
@@ -424,7 +424,7 @@ static class MonitorThread : Thread
             // printf("[%d] Releasing Mutex...\n", (int)GetCurrentThreadID());
             globalSystem.fileMonitorMutex.Release();
          }
-         
+
          // printf("[%d] Sleeping...\n", (int)GetCurrentThreadID());
          Sleep(1.0 / 18.2);
       }

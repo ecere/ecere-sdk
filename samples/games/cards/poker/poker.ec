@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    poker.ec - Poker Main Window
 ****************************************************************************/
 import "ecere"
@@ -14,16 +14,16 @@ import "bet.ec"
 enum PokerHand { nothing, onePair, twoPair, threeOfAKind, straight, flush, fullHouse, fourOfAKind, straightFlush, royalFlush };
 
 /*
-ROYAL FLUSH        0.0002 % 
-STRAIGHT FLUSH     0.0012 % 
-FOUR OF A KIND     0.0240 % 
-FULL HOUSE         0.1441 % 
-FLUSH              0.1967 % 
-STRAIGHT           0.3532 % 
-THREE OF A KIND    2.1128 % 
-TWO PAIR           4.7539 % 
-ONE PAIR          42.2569 % 
-NOTHING           50.1570 % 
+ROYAL FLUSH        0.0002 %
+STRAIGHT FLUSH     0.0012 %
+FOUR OF A KIND     0.0240 %
+FULL HOUSE         0.1441 %
+FLUSH              0.1967 %
+STRAIGHT           0.3532 %
+THREE OF A KIND    2.1128 %
+TWO PAIR           4.7539 %
+ONE PAIR          42.2569 %
+NOTHING           50.1570 %
 */
 
 enum Facing { faceDown, faceUp };
@@ -178,7 +178,7 @@ class Poker : Window
 
       if(!created) return;
 
-      if(numPlayersLeft >= 2) 
+      if(numPlayersLeft >= 2)
       {
          currentBet = 0;
          for(p = 0; p<numPlayers; p++)
@@ -209,9 +209,9 @@ class Poker : Window
             eInstance_DecRef(bet);
 
             if(!created) return;
-            
+
             //player.thisBet = 0;
-         
+
             if(player.thisBet < currentBet)
             {
                player.folded = true;
@@ -306,17 +306,17 @@ class Poker : Window
    // --- Poker Games Definitions ---
 
    /*
-   TEXAS HOLDEM - The most popular poker game in Blackhawk. A variation of 7-Card 
+   TEXAS HOLDEM - The most popular poker game in Blackhawk. A variation of 7-Card
    Stud where every player gets dealt 2 cards face down and there is a community
    board of 5 cards. Players Ise the 2 cards in their hand plus the 5 community
    cards to make the best possible 5 card hand. A dealers button moves around the
-   table each hand. The player to the left of the dealer button is dealt the 
-   first card. Also the person to the left of the button has to post a blind. 
-   There is a betting round after the players receive their first 2 cards. Then the 
-   dealer places 3 cards on the board (the flop) and there is a betting round. Then 
-   the dealer places another card on the board (the turn) and there is another 
-   betting round. Then the dealer places the final card (the river) on the board 
-   and there is a final betting round. Games may have 1 blind or 2 blinds. Games 
+   table each hand. The player to the left of the dealer button is dealt the
+   first card. Also the person to the left of the button has to post a blind.
+   There is a betting round after the players receive their first 2 cards. Then the
+   dealer places 3 cards on the board (the flop) and there is a betting round. Then
+   the dealer places another card on the board (the turn) and there is another
+   betting round. Then the dealer places the final card (the river) on the board
+   and there is a final betting round. Games may have 1 blind or 2 blinds. Games
    vary from $2-5 betting to straight $5 betting.
    */
    void TexasHoldem()
@@ -335,19 +335,19 @@ class Poker : Window
    }
 
    /*
-   OMAHA - A games similar to Texas Holdem except the players are dealt 4 cards 
+   OMAHA - A games similar to Texas Holdem except the players are dealt 4 cards
    face down. There is a board of 5 community cards and you must Ise 2 cards out
-   of your hand to make the best possible hand. The game may be played straight 
-   high or high/lowHand. There is a dealer button that moves around the table each 
-   hand and the player that has the dealers button may choose to play the game 
-   straight high or high/lowHand. The player to the left of the dealer button has 
-   to post a small blind of $1 and the person to his/her left has to post the 
-   large blind of $2. To qualify for a lowHand hand, the player must have 5 cards 
-   that are 8 or lowHander. There is a betting round after the players receive their 
-   4 cards. Then the dealer places 3 cards on the board (the flop). After the 
-   betting round, the dealer places another card on the board (the turn) and there 
-   is another betting round. Then the dealer places the last card (the river) on 
-   the board and there is a final betting round. The betting limits are Isually 
+   of your hand to make the best possible hand. The game may be played straight
+   high or high/lowHand. There is a dealer button that moves around the table each
+   hand and the player that has the dealers button may choose to play the game
+   straight high or high/lowHand. The player to the left of the dealer button has
+   to post a small blind of $1 and the person to his/her left has to post the
+   large blind of $2. To qualify for a lowHand hand, the player must have 5 cards
+   that are 8 or lowHander. There is a betting round after the players receive their
+   4 cards. Then the dealer places 3 cards on the board (the flop). After the
+   betting round, the dealer places another card on the board (the turn) and there
+   is another betting round. Then the dealer places the last card (the river) on
+   the board and there is a final betting round. The betting limits are Isually
    $2-$5.
    */
    void OmahaHoldem()
@@ -391,7 +391,7 @@ class Poker : Window
       {
          int i;
          cardBack.LoadT(":ecereCard.png",null,displaySystem);
-      
+
          for(i = 0; i < 52; i++)
          {
             bitmapCards[i] = Bitmap {};

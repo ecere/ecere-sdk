@@ -26,7 +26,7 @@ class Designer : DesignerBase
 
    void CodeAddObject(Instance instance, ObjectInfo * object)
    {
-      codeEditor.AddObject(instance, object);      
+      codeEditor.AddObject(instance, object);
    }
 
    void SheetAddObject(ObjectInfo object)
@@ -38,7 +38,7 @@ class Designer : DesignerBase
    {
       ((IDEWorkSpace)master).toolBox.AddControl(_class);
    }
-   
+
    void AddDefaultMethod(Instance instance, Instance classInstance)
    {
       Class _class = instance._class;
@@ -130,7 +130,7 @@ class Designer : DesignerBase
 
    void SelectObjectFromDesigner(ObjectInfo object)
    {
-      codeEditor.SelectObjectFromDesigner(object);      
+      codeEditor.SelectObjectFromDesigner(object);
    }
 
    borderStyle = sizable;

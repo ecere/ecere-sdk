@@ -12,10 +12,10 @@ public class Picture : CommonControl
    inactive = true;
 
 public:
-   property Color tint { set { tint = value; } };   
+   property Color tint { set { tint = value; } };
    property BitmapResource image
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          if(this)
@@ -43,7 +43,7 @@ public:
       {
          OnUnloadGraphics();
 
-         bitmapImage = value;         
+         bitmapImage = value;
 
          OnLoadGraphics();
       }
@@ -89,7 +89,7 @@ private:
          if(!bitmap)
          {
             bitmap = { };
-            
+
             if(hasHorzScroll || hasVertScroll)
                bitmap.Copy(bitmapImage);
             else if(bitmap.Allocate(null, clientSize.w, clientSize.h, 0, bitmapImage.pixelFormat, false))
@@ -146,10 +146,10 @@ private:
          else
             *w = 80;
       }
-         
+
       if(!size.h && (!anchor.top.type || !anchor.bottom.type))
       {
-         
+
          if(bitmap)
             *h = bitmap.height;
          else
@@ -178,14 +178,14 @@ private:
                if(zoomFactor < 25)
                {
                   float x = 0.5f, y = 0.5f;
-                  if(bitmap.width * zoomFactor > clientSize.w) 
+                  if(bitmap.width * zoomFactor > clientSize.w)
                      x = scroll.x / (bitmap.width * zoomFactor - clientSize.w);
-                  if(bitmap.height * zoomFactor > clientSize.h) 
+                  if(bitmap.height * zoomFactor > clientSize.h)
                      y = scroll.y / (bitmap.height * zoomFactor - clientSize.h);
 
                   zoomFactor *= 1.5;
                   SetScrollArea(
-                     (int)(bitmap.width * zoomFactor), 
+                     (int)(bitmap.width * zoomFactor),
                      (int)(bitmap.height * zoomFactor), false);
 
                   SetScrollPosition(
@@ -200,14 +200,14 @@ private:
                if(zoomFactor > 0.05)
                {
                   float x = 0.5f, y = 0.5f;
-                  if(bitmap.width * zoomFactor > clientSize.w) 
+                  if(bitmap.width * zoomFactor > clientSize.w)
                      x = scroll.x / (bitmap.width * zoomFactor - clientSize.w);
-                  if(bitmap.height * zoomFactor > clientSize.h) 
+                  if(bitmap.height * zoomFactor > clientSize.h)
                      y = scroll.y / (bitmap.height * zoomFactor - clientSize.h);
 
                   zoomFactor /= 1.5;
                   SetScrollArea(
-                     (int)(bitmap.width * zoomFactor), 
+                     (int)(bitmap.width * zoomFactor),
                      (int)(bitmap.height * zoomFactor), false);
 
                   SetScrollPosition(
@@ -234,21 +234,21 @@ private:
             int h = (int)(bitmap.height * zoomFactor);
             if(w == bitmap.width && h == bitmap.height)
             {
-               surface.Blit(bitmap, 
-                  Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2), 
+               surface.Blit(bitmap,
+                  Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
                   scroll.x,scroll.y, w, h);
             }
             else
             {
                if(filter)
-                  surface.Filter(bitmap, 
-                     Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2), 
-                     (int)(scroll.x / zoomFactor), (int)(scroll.y / zoomFactor), w, h, 
+                  surface.Filter(bitmap,
+                     Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
+                     (int)(scroll.x / zoomFactor), (int)(scroll.y / zoomFactor), w, h,
                      bitmap.width, bitmap.height);
                else
-                  surface.Stretch(bitmap, 
-                     Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2), 
-                     (int)(scroll.x / zoomFactor), (int)(scroll.y / zoomFactor), w, h, 
+                  surface.Stretch(bitmap,
+                     Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
+                     (int)(scroll.x / zoomFactor), (int)(scroll.y / zoomFactor), w, h,
                      bitmap.width, bitmap.height);
             }
          }
@@ -257,9 +257,9 @@ private:
             int w = bitmap.width;
             int h = bitmap.height;
             if(clientSize.w == bitmap.width && clientSize.h == bitmap.height)
-               surface.Blit(bitmap, 
+               surface.Blit(bitmap,
                   Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
-                  scroll.x,scroll.y, 
+                  scroll.x,scroll.y,
                   hasHorzScroll ? clientSize.w : bitmap.width, hasVertScroll ? clientSize.h : bitmap.height);
             else
             {

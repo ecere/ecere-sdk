@@ -231,7 +231,7 @@ class NewProjectDialog : Window
       parent = this, text = $"Create Form", hotKey = altF, position = { 200, 30 };
       isCheckbox = true, checked = true;
    };
-   
+
    EditBox projectName
    {
       parent = this, textHorzScroll = true, position = { 10, 30 }, size = { 160 };
@@ -395,7 +395,7 @@ class QuickProjectDialog : Window
             MessageBox { type = ok, master = this, text = tempDir, contents = $"Temporary directory does not exist." }.Modal();
             return true;
          }
-         
+
          ide.tmpPrjDir = tempDir;
 
          strcpy(filePath, tempDir);
@@ -408,7 +408,7 @@ class QuickProjectDialog : Window
          debug = ProjectConfig
          {
             name = CopyString("Debug");
-            options = 
+            options =
             {
                optimization = none;
                fastMath = false;
@@ -459,7 +459,7 @@ class QuickProjectDialog : Window
             strcpy(workspaceFile, filePath);
             ChangeExtension(workspaceFile, WorkspaceExtension, workspaceFile);
             workspace = Workspace { compiler = ideSettings.defaultCompiler, workspaceFile = workspaceFile };
-         } 
+         }
 
          workspace.projects.Add(project);
          ide.findInFilesDialog.AddProjectItem(project);
@@ -575,13 +575,13 @@ class QuickProjectDialog : Window
          return true;
       }
    };
-   
+
    Button
    {
       parent = this, position = { 240, 70 }, size = { 60 }, hotKey = escape, text = $"Cancel";
       NotifyClicked = ButtonCloseDialog;
    };
-   
+
    QuickProjectDialog()
    {
       DataRow row;

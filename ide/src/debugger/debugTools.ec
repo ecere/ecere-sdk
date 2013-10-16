@@ -4,7 +4,7 @@ static void CarryExpressionError(Expression exp, Expression expError)
 {
    Expression temp { };
 
-   // This function assumes that expError is contained within exp, 
+   // This function assumes that expError is contained within exp,
    // and therefore these types will be freed when freeing the old contents
    // of the expression we're carying into.
 
@@ -38,7 +38,7 @@ static char GetGdbFormatChar(Type type)
 //          f : Regard the bits of the value as a floating point number and print using typical floating point syntax.
    if(!type)
       return 'x';
-   
+
    switch(type.kind)
    {
       case charType:
@@ -77,7 +77,7 @@ static char GetGdbFormatChar(Type type)
 
 /*static */bool ExpressionIsError(Expression exp)
 {
-   return (exp.type == dereferenceErrorExp || exp.type == symbolErrorExp || exp.type == classMemberSymbolErrorExp || 
+   return (exp.type == dereferenceErrorExp || exp.type == symbolErrorExp || exp.type == classMemberSymbolErrorExp ||
          exp.type == structMemberSymbolErrorExp || exp.type == memoryErrorExp || exp.type == unknownErrorExp ||
          exp.type == noDebuggerErrorExp || exp.type == debugStateErrorExp);
 }
@@ -101,12 +101,12 @@ void DebugComputeExpression(Expression exp)
          Expression expNew;
          TypeKind kind = dummyType;
          Type dataType = exp.expType;
-         
+
          char temp[1024];
          uint64 address;
          bool hasAddress;
          bool isPointer = false;
-         
+
          if(dataType && dataType.kind == classType && dataType._class.registered)
          {
             Class _class = dataType._class.registered;
@@ -130,7 +130,7 @@ void DebugComputeExpression(Expression exp)
          temp[0] = '\0';
          switch(kind)
          {
-            case charType: case shortType: case intType: case int64Type: case longType: case floatType: case doubleType: 
+            case charType: case shortType: case intType: case int64Type: case longType: case floatType: case doubleType:
             case enumType:
             case arrayType:
             case structType:
@@ -531,7 +531,7 @@ void DebugComputeExpression(Expression exp)
                      {
                         exp.address = _strtoui64(exp.constant, null, 0);
                         exp.address *= size;
-                     } 
+                     }
                   }
                }
             }
@@ -550,7 +550,7 @@ void DebugComputeExpression(Expression exp)
          Expression e, n;
          //for(
          //   e = (*exp.list).first, n = e ? e.next : null;
-         //   e; 
+         //   e;
          //   e = n, n = n?(n.next) : null)
 
          for(e = exp.list->first; e; e = n)
@@ -594,15 +594,15 @@ void DebugComputeExpression(Expression exp)
 
             if(!exp.index.exp.isConstant)
                exp.isConstant = false;
-            
+
             // int r[0]
             // 4 == size = ComputeTypeSize(exp.expType);
             // 0 == size = ComputeTypeSize(exp.expType.arrayType);
             // 4 == size = ComputeTypeSize(exp.index.exp.expType);
             // 0 == size = ComputeTypeSize(exp.index.exp.expType.arrayType);
             size = ComputeTypeSize(exp.expType);
-            format = GetGdbFormatChar(exp.expType);            
-            
+            format = GetGdbFormatChar(exp.expType);
+
             for(e = exp.index.index->first; e; e = e.next)
             {
                DebugComputeExpression(e);
@@ -621,7 +621,7 @@ void DebugComputeExpression(Expression exp)
             if(!ExpressionIsError(exp))
             {
                exp.expType = Dereference(exp.index.exp.expType);
-               
+
                if(exp.index.index && exp.index.index->last && ((Expression)exp.index.index->last) && ((Expression)exp.index.index->last).expType &&
                   ((Expression)exp.index.index->last).expType.kind == intType)
                {
@@ -701,7 +701,7 @@ void DebugComputeExpression(Expression exp)
                classSym = FindClass(string);
                _class = classSym ? classSym.registered : null;
             }
-            
+
             if(memberID && _class)
             {
                /*
@@ -762,7 +762,7 @@ void DebugComputeExpression(Expression exp)
                               double value;
                               double (*Get)(double);
                               GetDouble(memberExp, &value);
-                     
+
                               if(convertTo)
                                  Get = (void *)prop.Set;
                               else
@@ -813,7 +813,7 @@ void DebugComputeExpression(Expression exp)
                                        loc = exp.loc;
                                     };
                                     exp.type = instanceExp;
-                              
+
                                     GetInt(value, &intValue);
 
                                     Set(exp.instance.data, intValue);
@@ -832,7 +832,7 @@ void DebugComputeExpression(Expression exp)
                                        loc = exp.loc;
                                     };
                                     exp.type = instanceExp;
-                              
+
                                     GetInt64(value, &intValue);
 
                                     Set(exp.instance.data, intValue);
@@ -851,7 +851,7 @@ void DebugComputeExpression(Expression exp)
                                        loc = exp.loc;
                                     };
                                     exp.type = instanceExp;
-                              
+
                                     GetDouble(value, &doubleValue);
 
                                     Set(exp.instance.data, doubleValue);
@@ -1020,7 +1020,7 @@ void DebugComputeExpression(Expression exp)
                         ExpressionType evalError = dummyExp;
                         uint64 address;
                         Expression prev = exp.prev, next = exp.next;
-                        char format; 
+                        char format;
                         int size;
                         Expression expNew;
                         TypeKind kind = dummyType;
@@ -1029,7 +1029,7 @@ void DebugComputeExpression(Expression exp)
                         if(!dataType)
                            dataType = member.dataType = ProcessTypeString(member.dataTypeString, false);
 
-                        if(dataType.kind == classType && dataType._class.registered && 
+                        if(dataType.kind == classType && dataType._class.registered &&
                               (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
                         {
                            if(dataType._class.registered.dataTypeString)
@@ -1062,15 +1062,15 @@ void DebugComputeExpression(Expression exp)
                               address = 0;
                               GetUInt64(memberExp, &address);
                               //printf("Unhandled !!\n");
-                              
+
                               //printf("memberExp.hasAddress = %d\n", memberExp.hasAddress);
                               //printf("memberExp.type = %d\n", memberExp.type);
                               //printf("_class.name = %s, _class.type = %d\n", _class.name, _class.type);
                            }
-                        
+
                            address += offset;
-                     
-                           if((dataType.kind == classType && dataType._class && 
+
+                           if((dataType.kind == classType && dataType._class &&
                                  (!dataType._class.registered || dataType._class.registered.type == normalClass || dataType._class.registered.type == noHeadClass || dataType._class.registered.type == systemClass)) ||
                               (dataType.kind != classType && dataType.kind != arrayType && dataType.kind != structType && dataType.kind != unionType))
                            {
@@ -1118,7 +1118,7 @@ void DebugComputeExpression(Expression exp)
                      }
                      //else
                      //   exp.type = ExpUnknownError;
-                     
+
                      //FreeExpContents(exp);
                      //exp.constant = PrintUInt64(value);
                      //exp.type = constantExp;
@@ -1131,18 +1131,18 @@ void DebugComputeExpression(Expression exp)
                      uint offset = 0;
                      Type memberType = exp.member.member ? FindMemberAndOffset(type, exp.member.member.string, &offset) : null;
                      if(memberType)
-                     {                        
+                     {
                         char * evaluation = null;
                         ExpressionType evalError = dummyExp;
                         uint64 address;
                         Expression prev = exp.prev, next = exp.next;
-                        char format; 
+                        char format;
                         int size = memberType.size;
                         Expression expNew;
                         Type dataType = memberType;
                         TypeKind kind = dummyType;
 
-                        if(dataType.kind == classType && dataType._class.registered && 
+                        if(dataType.kind == classType && dataType._class.registered &&
                               (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
                            dataType = dataType._class.registered.dataType;
 
@@ -1152,10 +1152,10 @@ void DebugComputeExpression(Expression exp)
                            address = memberExp.address;
                         else if(memberExp.type == constantExp)
                            GetUInt64(memberExp, &address);
-                     
+
                         address += offset;
-                  
-                        if((dataType.kind == classType && dataType._class && 
+
+                        if((dataType.kind == classType && dataType._class &&
                               (!dataType._class.registered || dataType._class.registered.type == normalClass || dataType._class.registered.type == noHeadClass || dataType._class.registered.type == systemClass)) ||
                            (dataType.kind != classType && dataType.kind != arrayType && dataType.kind != structType && dataType.kind != unionType))
                         {
@@ -1222,7 +1222,7 @@ void DebugComputeExpression(Expression exp)
          Type type = ProcessType(exp.typeName.qualifiers, exp.typeName.declarator);
          FreeExpContents(exp);
          exp.constant = PrintUInt(ComputeTypeSize(type));
-         exp.type = constantExp;         
+         exp.type = constantExp;
          FreeType(type);
          break;
       }
@@ -1246,7 +1246,7 @@ void DebugComputeExpression(Expression exp)
       case castExp:
       {
          DebugComputeExpression(exp.cast.exp);
-         
+
          if(ExpressionIsError(exp.cast.exp)) //.type == ExpSymbolError
             CarryExpressionError(exp, exp.cast.exp);
          else
@@ -1374,7 +1374,7 @@ void DebugComputeExpression(Expression exp)
                      break;
                   }
                   case doubleType:
-                  {  
+                  {
                      double value;
                      GetDouble(exp.cast.exp, &value);
                      FreeExpContents(exp);
@@ -1414,7 +1414,7 @@ void DebugComputeExpression(Expression exp)
          exp.cond.elseExp.destType = exp.destType;
          DebugComputeExpression(exp.cond.elseExp);
          break;
-      }  
+      }
       */
    }
 

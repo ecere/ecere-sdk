@@ -81,7 +81,7 @@ class OpenedFileInfo
          ide.workspace.modified = true;
       }
    }
-   
+
    void Activate()
    {
       if(trackingAllowed)
@@ -92,7 +92,7 @@ class OpenedFileInfo
          {
             files.Move(it.pointer, files.GetPrev(files.GetLast()));
             ide.workspace.modified = true;
-         } 
+         }
       }
    }
    ~OpenedFileInfo()
@@ -182,7 +182,7 @@ public:
          if(project)
          {
             projectDir = CopyString(project.topNode.path);
-            
+
             if(!project.config && activeConfig && activeConfig[0])
             {
                ProjectConfig cfg;
@@ -215,7 +215,7 @@ public:
    {
       bool bkpts = false;
       File file;
-      
+
       file = FileOpen(workspaceFile, write);
       if(file)
       {
@@ -230,16 +230,16 @@ public:
                   file.Printf("Breakpoint=0,%d,%s,%s\n", bp.line, bp.absoluteFilePath, bp.relativeFilePath);
             }
          }
-         
+
          for(wh : watches)
             file.Printf("Watch=%s\n", wh.expression);
-         
+
          for(dir : sourceDirs)
             file.Printf("SourceDir=%s\n", dir);
 
          if(debugDir && debugDir[0])
             file.Printf("DebugDir=%s\n", debugDir);
-         
+
          if(commandLineArgs && commandLineArgs[0])
             file.Printf("CommandLineArgs=%s\n", commandLineArgs);
          */
@@ -253,7 +253,7 @@ public:
          file.Printf("\nWorkspace\n");
          file.Printf("\n   Active Compiler = %s\n", compiler ? compiler : defaultCompilerName);
          file.Printf("\n   Active Bit Depth = %d\n", bitDepth);
-         
+
          if(projects.first)
          {
             file.Printf("\n   Projects\n\n");
@@ -266,7 +266,7 @@ public:
                //strcat(location, ".epj");
 
                file.Printf("    %s %s\n", "-", location);
-               
+
                if(prj.config)
                   file.Printf("         Active Configuration = %s\n", prj.config.name);
                for(cfg : prj.configurations)
@@ -278,7 +278,7 @@ public:
                }
             }
          }
-         
+
          file.Printf("\n   Execution Data\n");
          if(commandLineArgs && commandLineArgs[0])
          {
@@ -408,7 +408,7 @@ public:
                return CopyString(absolute);
          }
       }
-      
+
       return null;
    }
 
@@ -465,15 +465,15 @@ public:
       int c, numTokens;
 
       sourceDirs.Free();
-      
+
       for(s : dirs)
          sourceDirs.Add(CopyString(s));
-      
+
       DropInvalidBreakpoints(null);
 
       delete dirs;
    }
-   
+
    void RemoveProject(Project project)
    {
       Iterator<Project> it { projects };
@@ -731,14 +731,14 @@ public:
       }
       ide.breakpointsView.Update(null);
    }
-   
+
    void Free()
    {
       delete workspaceFile;
       delete workspaceDir;
       delete commandLineArgs;
       delete debugDir;
-      
+
       //project = null;
 
       projects.Free();
@@ -756,7 +756,7 @@ public:
       ide.breakpointsView.Clear();
 
       property::debugDir = "";
-      
+
       SetSourceDirs(sourceDirs);
    }
 
@@ -796,10 +796,10 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
          char buffer[65536];
          char * equal;
          int len;
-         
+
          Watch wh;
          Breakpoint bp;
-         
+
          file.GetLine(buffer, 65536 - 1);
          TrimLSpaces(buffer, buffer);
          TrimRSpaces(buffer, buffer);
@@ -850,7 +850,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                   char * strLevel = null;
                   char * strLine = null;
                   char * strFile = null;
-                  
+
                   strEnabled = equal;
                   if(strEnabled && strEnabled[0])
                   {
@@ -876,7 +876,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                      strFile[0] = '\0';
                      strFile++;
                   }
-                  if(strEnabled && strEnabled[0] && strIgnore && strIgnore[0] && 
+                  if(strEnabled && strEnabled[0] && strIgnore && strIgnore[0] &&
                         strLevel && strLevel[0] && strLine && strLine[0] && strFile && strFile[0])
                   {
                      bool enabled;
@@ -976,7 +976,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
                      }
                   }
                   PathCatSlash(absolutePath, equal);
-                     
+
                   if(state == closed || FileExists(absolutePath))
                      workspace.openedFiles.Add(OpenedFileInfo { path = CopyString(absolutePath), state = state, lineNumber = lineNumber, position = position, scroll = scroll });
                   else
@@ -1231,7 +1231,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
             item = openedFilesNotFound.first;
             if(item.next)
                strcpy(s, "s");
-            
+
             for(item = openedFilesNotFound.first; item; item = item.next)
             {
                c++;
@@ -1246,7 +1246,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
 
             sprintf(title, $"File%s not found", s);
             sprintf(msg, $"The following file%s could not be re-opened.%s", s, files);
-            
+
             MessageBox { type = ok, master = ide, contents = msg, text = title }.Modal();
 
             delete files;
@@ -1260,10 +1260,10 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
    else if(fromProjectFile)
    {
       //MessageBox { type = Ok, master = ide, contents = "Worspace load file failed", text = "Worspace Load File Error" }.Modal();
-      
+
       char projectFile[MAX_LOCATION];
       Project newProject;
-      
+
       //strcpy(projectFile, filePath);
       //ChangeExtension(projectFile, ProjectExtension, projectFile);
       newProject = LoadProject(fromProjectFile /*projectFile*/, null);
@@ -1277,7 +1277,7 @@ Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
          workspace.Save();
       }
    }
-   
+
    if(workspace)
    {
       ide.ChangeFileDialogsDirectory(workspace.workspaceDir, false);

@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    dna.ec - DNA 3D Model
 ****************************************************************************/
 public import "ecere"
@@ -136,11 +136,11 @@ public:
          uint16 indices[36] =
          {
             // up, front, down, back, right, left
-            21,20,16, 17,21,16, 
-            3,2,1, 0,3,1, 
-            18,19,23, 22,18,23, 
-            6,7,4, 5,6,4, 
-            10,14,13, 9,10,13, 
+            21,20,16, 17,21,16,
+            3,2,1, 0,3,1,
+            18,19,23, 22,18,23,
+            6,7,4, 5,6,4,
+            10,14,13, 9,10,13,
             15,11,8, 12,15,8
          };
 
@@ -180,7 +180,7 @@ public:
       PrimitiveGroup group;
       uint16 num = (uint16)(curveSegments*numCurves);
       int vertexCount = (num+1)*4;
-      
+
       if(Allocate({ vertices = true, texCoords1 = true }, vertexCount, displaySystem))
       {
          uint16 v;
@@ -377,13 +377,13 @@ public:
                char name[20];
                Vector3D pos;
 
-               // Pick texture         
+               // Pick texture
                int b1 = GetRandom(0,3);
                int b2 = 3-b1;
                Quaternion angle { 1,0,0,0 };
                Vector3D position;
                Matrix matrix;
-               
+
                // Change Rotation
                angle.Yaw(-rotation*c);
                matrix.RotationQuaternion(angle);
@@ -413,7 +413,7 @@ public:
                base.UpdateTransform();
                pos.MultMatrix(position, matrix); base.transform.position = pos;
                base.material = displaySystem.GetMaterial(names[b2]);
-               
+
                //*******************  DESOXYRIBOSE  *******************
                sprintf(name, "Desoxyribose%02d", c*2);
                desoxyribose = { }; AddName(desoxyribose, name);

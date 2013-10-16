@@ -140,7 +140,7 @@ private struct FastList
       {
          int c;
          int newSize;
-               
+
          if(size)
          {
             newSize = (size + (size >> 1));
@@ -255,10 +255,10 @@ public /*private */struct Extent : OldList //FastList
 
       temp.Copy(this);
       Empty();
-      
+
       for(extentBox = (BoxItem)temp.first; extentBox; extentBox = (BoxItem)extentBox.next)
       {
-         if(extentBox.box.left < box.right && extentBox.box.right > box.left && 
+         if(extentBox.box.left < box.right && extentBox.box.right > box.left &&
             extentBox.box.top < box.bottom && extentBox.box.bottom > box.top)
          {
             // Top box
@@ -266,7 +266,7 @@ public /*private */struct Extent : OldList //FastList
             {
                Box newBox
                {
-                  extentBox.box.left, extentBox.box.top, 
+                  extentBox.box.left, extentBox.box.top,
                   extentBox.box.right, Min(extentBox.box.bottom, box.top -1)
                };
                AddBox(newBox);
@@ -324,14 +324,14 @@ public /*private */struct Extent : OldList //FastList
       // First pass: check if this box is not already covered by one of the extent's box
       for(extentBox = (BoxItem)this.first; extentBox; extentBox = (BoxItem)extentBox.next)
       {
-         if(extentBox.box.left <= box.left && extentBox.box.right >= box.right && 
+         if(extentBox.box.left <= box.left && extentBox.box.right >= box.right &&
             extentBox.box.top <= box.top && extentBox.box.bottom >= box.bottom)
          {
             // No change
             return;
          }
       }
-        
+
       // Second pass: only keep boxes not completely covered in the new box
       for(extentBox = (BoxItem)this.first; extentBox; extentBox = next)
       {
@@ -377,7 +377,7 @@ public /*private */struct Extent : OldList //FastList
                }
             }
          }
-         
+
          // Else, add it
          if(!extentBox)
             AddBox(box);
@@ -411,7 +411,7 @@ public /*private */struct Extent : OldList //FastList
 
    void Exclusion(Extent b, Extent temp)
    {
-      BoxItem extentBox;   
+      BoxItem extentBox;
       for(extentBox = (BoxItem)b.first; extentBox; extentBox = (BoxItem)extentBox.next)
          ExcludeBox(extentBox.box, temp);
    }
@@ -436,7 +436,7 @@ private define CASCADE_SPACE = 16;
 
 private class ScrollFlags
 {
-   bool snapX:1, snapY:1, dontHide:1;   
+   bool snapX:1, snapY:1, dontHide:1;
 };
 
 public class BorderBits { public: bool contour:1, fixed:1, sizable:1, deep:1, bevel:1, thin:1; };
@@ -527,7 +527,7 @@ private:
             }
          }
       }
-      
+
       //tempExtents[0] = { /*first = -1, last = -1, free = -1*/ };
       //tempExtents[1] = { /*first = -1, last = -1, free = -1*/ };
       //tempExtents[2] = { /*first = -1, last = -1, free = -1*/ };
@@ -544,7 +544,7 @@ private:
       maxSize = Size { MAXINT, MAXINT };
       background = white;
       foreground = black;
-      
+
       //style.isActiveClient = true;
       mergeMenus = true;
       autoCreate = true;
@@ -578,7 +578,7 @@ private:
       }
 
       if(!destroyed)
-      { 
+      {
          // Prevent destructor from being called again...
          incref this;
          incref this;
@@ -695,7 +695,7 @@ private:
    {
       if(this == activeDesigner)
          return "(Desktop)";
-      else 
+      else
       {
          char * name = property::name;
          return name ? name : "";
@@ -981,7 +981,7 @@ private:
             ph = vph = box.bottom - box.top + 1;
          }
       }
-      
+
       if(!parent)
       {
          *ow = w;
@@ -1028,7 +1028,7 @@ private:
 
          if(anchor.top.type)
          {
-            SNAPUP(y, textCellH);   
+            SNAPUP(y, textCellH);
          }
          else if(anchor.bottom.type)
          {
@@ -1077,7 +1077,7 @@ private:
          pw = hiX - loX;
          ph = hiY - loY;
 
-         if(parent.sbv && !parent.sbv.style.hidden) 
+         if(parent.sbv && !parent.sbv.style.hidden)
             pw += guiApp.currentSkin.VerticalSBW();
          if(parent.sbh && !parent.sbh.style.hidden)
             ph += guiApp.currentSkin.HorizontalSBH();
@@ -1143,7 +1143,7 @@ private:
       {
          if(sizeAnchor.isClientW) w += ew;
          if(sizeAnchor.isClientH) h += eh;
-         
+
          if(anchor.left.type == offset)
             x = anchor.left.distance;
          else if(anchor.left.type == relative)
@@ -1168,8 +1168,8 @@ private:
          {
             switch(anchor.right.type)
             {
-               case relative: 
-                  ex = pw * (1.0f-anchor.right.percent); 
+               case relative:
+                  ex = pw * (1.0f-anchor.right.percent);
                   w = Max((int)(ex + 0.5) - x, 0);
                   break;
                case offset:
@@ -1195,7 +1195,7 @@ private:
       }
 
       w -= ew;
-      h -= eh; 
+      h -= eh;
 
       if(state == normal /*|| state == Hidden*/)
       {
@@ -1209,12 +1209,12 @@ private:
          w = Min(w, maxSize.w);
          h = Min(h, maxSize.h);
 
-         if((sizeAnchor.isClientW || !w || (anchor.left.type && anchor.right.type)) && reqScrollArea.h > h /*&& w*/ && sbv) 
+         if((sizeAnchor.isClientW || !w || (anchor.left.type && anchor.right.type)) && reqScrollArea.h > h /*&& w*/ && sbv)
          {
             if(w) w -= guiApp.currentSkin.VerticalSBW();
             addSbV = true;
          }
-         if((sizeAnchor.isClientH || !h ||  (anchor.top.type && anchor.bottom.type)) && reqScrollArea.w > w /*&& h*/ && sbh) 
+         if((sizeAnchor.isClientH || !h ||  (anchor.top.type && anchor.bottom.type)) && reqScrollArea.w > w /*&& h*/ && sbh)
          {
             if(h) h -= guiApp.currentSkin.HorizontalSBH();
             addSbH = true;
@@ -1226,7 +1226,7 @@ private:
             h = clientSize.h;
          }
 
-         if((addSbV)) // || reqScrollArea.h > h) && sbv) 
+         if((addSbV)) // || reqScrollArea.h > h) && sbv)
             w += guiApp.currentSkin.VerticalSBW();
          if((addSbH)) // || reqScrollArea.w > w) && sbh)
             h += guiApp.currentSkin.HorizontalSBH();
@@ -1241,7 +1241,7 @@ private:
       }
 
       w += ew;
-      h += eh; 
+      h += eh;
 
       if(guiApp.textMode)
       {
@@ -1254,9 +1254,9 @@ private:
          if(parent.numIcons) ph -= guiApp.textMode ? 16 : 24;
 
          numCascade = Min(
-            (pw - w) / CASCADE_SPACE, 
+            (pw - w) / CASCADE_SPACE,
             (ph - h) / CASCADE_SPACE);
-         
+
          if(guiApp.textMode)
          {
                int cascW, cascH;
@@ -1302,7 +1302,7 @@ private:
                if(anchor.vert.type == middleRelative)
                   y = (int)(vph * (0.5 + anchor.vert.percent) - h / 2);
                else
-                  y = vph / 2 + anchor.vert.distance - h / 2;      
+                  y = vph / 2 + anchor.vert.distance - h / 2;
             }
             else
                y = (int)(ey - h);
@@ -1348,13 +1348,13 @@ private:
          int y = caretPos.y - scroll.y;
 
          if((erase || this.caretSize) &&
-            x >= clientArea.left && x <= clientArea.right && 
+            x >= clientArea.left && x <= clientArea.right &&
             y >= clientArea.top  && y <= clientArea.bottom)
          {
             if(!erase)
             {
                guiApp.interfaceDriver.SetCaret(
-                  x + absPosition.x + clientStart.x, 
+                  x + absPosition.x + clientStart.x,
                   y + absPosition.y + clientStart.y, this.caretSize);
                guiApp.caretEnabled = true;
             }
@@ -1453,7 +1453,7 @@ private:
                //if((w > reqScrollArea.w) || (h > reqScrollArea.w))
                {
                   int stepX = sbStep.x, stepY = sbStep.y;
-                  // Needed to make snapped down position match the skin's check of client area 
+                  // Needed to make snapped down position match the skin's check of client area
                   // against realvirtual
                   if(guiApp.textMode)
                   {
@@ -1483,7 +1483,7 @@ private:
       // Automatic MDI Client Scrolling Area Adjustment
       if(parent && !parent.noAutoScrollArea)
       {
-         if(modifyArea && modifyVirtArea /*&& !anchored*/ && (parent.sbv || parent.sbh) && 
+         if(modifyArea && modifyVirtArea /*&& !anchored*/ && (parent.sbv || parent.sbh) &&
             !style.dontScrollHorz && !style.dontScrollVert && !style.nonClient)
          {
             Window parent = this.parent;
@@ -1499,12 +1499,12 @@ private:
             else if(stateAnchor.bottom.type == none && stateAnchor.top.type == none)
                h = Max(h, Max(position.y, 0) + size.h);
 
-            if((w > parent.clientSize.w && w > parent.reqScrollArea.w) || 
+            if((w > parent.clientSize.w && w > parent.reqScrollArea.w) ||
                (h > parent.clientSize.h && h > parent.reqScrollArea.h))
             {
                /*bool resize = false;
                int stepX = parent.sbStep.x, stepY = parent.sbStep.y;
-               // Needed to make snapped down position match the skin's check of client area 
+               // Needed to make snapped down position match the skin's check of client area
                // against realvirtual
                if(guiApp.textMode)
                {
@@ -1523,12 +1523,12 @@ private:
                   parent.reqScrollArea.h = h;*/
 
                  // parent.UpdateScrollBars(true, true);
-                  parent.Position(parent.position.x, parent.position.y, parent.size.w, parent.size.h, 
+                  parent.Position(parent.position.x, parent.position.y, parent.size.w, parent.size.h,
                      false, true, true, true, false, false);
                   return;
                //}
             }
-            else 
+            else
                GetRidOfVirtualArea();
          }
       }
@@ -1620,7 +1620,7 @@ private:
             {
                Window parent = this.parent;
                parent.Position(
-                  parent.position.x, parent.position.y, parent.size.w, parent.size.h, 
+                  parent.position.x, parent.position.y, parent.size.w, parent.size.h,
                   false, true, true, true, false, false);
                /*
                parent.SetScrollArea(0,0,true);
@@ -1652,16 +1652,16 @@ private:
 
       // windowResized = realResized || force;
       windowResized = size.w != w || size.h != h || force;
-     
+
       if(rootWindow != this && display && !display.flags.flipping && scrolledPos.x != MININT)
       {
          if(style.nonClient)
          {
             Box box
-            { 
-               scrolledPos.x - parent.clientStart.x + this.box.left, scrolledPos.y - parent.clientStart.y + this.box.top, 
+            {
+               scrolledPos.x - parent.clientStart.x + this.box.left, scrolledPos.y - parent.clientStart.y + this.box.top,
                scrolledPos.x - parent.clientStart.x + this.box.right,
-               scrolledPos.y - parent.clientStart.y + this.box.bottom 
+               scrolledPos.y - parent.clientStart.y + this.box.bottom
             };
             parent.Update(box);
          }
@@ -1706,7 +1706,7 @@ private:
                   int x,y,w,h;
                   for(child = children.first; child; child = child.next)
                   {
-                     if(child.created && 
+                     if(child.created &&
                      ((child.stateAnchor.left.type != offset ||
                        child.stateAnchor.top.type != offset ||
                        child.stateAnchor.right.type != none ||
@@ -1786,12 +1786,12 @@ private:
                else if(clientResized)
                   Update(clientArea);
                // --- Major Slow Down / Fix OpenGL Resizing Main Window Lag
-               
+
                /*
                if(!guiApp.fullScreenMode && !guiApp.modeSwitching && this == rootWindow)
                   UpdateDisplay();
                */
-               
+
                if(windowMoved || windowResized)
                {
                   display.Unlock();
@@ -1801,7 +1801,7 @@ private:
             {
                if(windowResized || windowMoved)
                   if(!display || display.flags.memBackBuffer)
-                     guiApp.interfaceDriver.PositionRootWindow(this, 
+                     guiApp.interfaceDriver.PositionRootWindow(this,
                         x, y, w, h, windowMoved, windowResized);
                guiApp.interfaceDriver.UpdateRootWindow(this);
             }
@@ -1973,7 +1973,7 @@ private:
             if(flag && (resizeH || resizeV) && fullThing)
             {
                Position(position.x, position.y, size.w, size.h, false, true, false, false, false, false);
-               
+
                if(!positioned)
                {
                   positioned = true;
@@ -1981,7 +1981,7 @@ private:
                   positioned = false;
                }
             }
-      
+
             if(resizeH && sbh)
                sbh.visible = sbhVisible;
             if(resizeV && sbv)
@@ -2226,7 +2226,7 @@ private:
                Update(null);
                break;
             }
-         }         
+         }
       }
    }
 
@@ -2286,7 +2286,7 @@ private:
       {
          if(!sysButtons[2])
          {
-            sysButtons[2] = 
+            sysButtons[2] =
                Button
                {
                   parent, master = this,
@@ -2304,7 +2304,7 @@ private:
                sysButtons[2].hotKey = ctrlF4;
             sysButtons[2].Create();
          }
-         
+
          sysButtons[2].symbol = 'X';
          sysButtons[2].disabled = !style.hasClose;
       }
@@ -2314,7 +2314,7 @@ private:
          SkinBitmap skin;
          unichar symbol;
          bool (* method)(Window window, Button button, int x, int y, Modifiers mods);
-         if(state == maximized) 
+         if(state == maximized)
          {
             skin = restore;
             method = RestoreButtonClicked;
@@ -2347,7 +2347,7 @@ private:
          SkinBitmap skin;
          unichar symbol;
          bool (* method)(Window window, Button button, int x, int y, Modifiers mods);
-         if (state == minimized) 
+         if (state == minimized)
          {
             skin = restore;
             method = RestoreButtonClicked;
@@ -2421,9 +2421,9 @@ private:
       }
       if(scrollBarChanged)
       {
-         SetScrollLineStep(sbStep.x, sbStep.y);   
+         SetScrollLineStep(sbStep.x, sbStep.y);
          UpdateScrollBars(true, true);
-      }   
+      }
       UpdateNonClient();
 
       if(scrollBarChanged)
@@ -2500,10 +2500,10 @@ private:
                      char name[2048], caption[2048];
                      document.FigureCaption(caption);
                      sprintf(name, "%d %s", id+1, caption);
-                     windowMenu.AddDynamic(MenuItem 
-                        { 
-                           copyText = true, text = name, hotKey = Key { k1 + id }, id = id++, 
-                           NotifySelect = MenuWindowSelectWindow 
+                     windowMenu.AddDynamic(MenuItem
+                        {
+                           copyText = true, text = name, hotKey = Key { k1 + id }, id = id++,
+                           NotifySelect = MenuWindowSelectWindow
                         }, this, false);
                   }
                   cycle = cycle.next;
@@ -2511,7 +2511,7 @@ private:
                }
             }
          }
-         
+
          if((!previous && activeClient) || !activeClient)
          {
             if(!activeClient)
@@ -2534,7 +2534,7 @@ private:
             if(item) item.disabled = false;
             item = menu.FindItem(MenuWindowWindows, 0);
             if(item) item.disabled = false;
-         }      
+         }
 
          item = menu.FindItem(MenuFileClose, 0);
          if(item) item.disabled = !activeClient || !activeClient.style.hasClose;
@@ -2572,7 +2572,7 @@ private:
          {
             char caption[2048];
             FigureCaption(caption);
-            
+
             if(post)
                ShowDecorations(captionFont.font,
                   surface,
@@ -2585,7 +2585,7 @@ private:
                   caption,
                   active, //parent.activeClient == this
                   guiApp.windowMoving == this);
-               
+
             delete surface;
          }
       }
@@ -2598,9 +2598,9 @@ private:
       if(!manageDisplay) { OnRedraw(null);return; }
       _ShowDecorations(refresh, false);
 
-      surface = Redraw(refresh);               
+      surface = Redraw(refresh);
       // Opaque background: just fill before EW_REDRAW (clear?)
-      if(surface) 
+      if(surface)
       {
          surface.SetBackground(background);
          surface.SetForeground(foreground);
@@ -2662,8 +2662,8 @@ private:
 
    void DrawOverChildren(Box refresh)
    {
-      Surface surface = Redraw(refresh);               
-      if(surface) 
+      Surface surface = Redraw(refresh);
+      if(surface)
       {
          // Default Settings
          surface.DrawingChar(' ');
@@ -2687,12 +2687,12 @@ private:
       Extent clipExtent { /*first = -1, last = -1, free = -1*/ };
 
       clipExtent.Copy(this.clipExtent);
-      
+
       for(child = children.last; child; child = child.prev)
       {
          if(!child.style.hidden && child.created && !child.is3D && child.rootWindow)
          {
-            bool opaque = child.IsOpaque(); // TODO: acess background directly 
+            bool opaque = child.IsOpaque(); // TODO: acess background directly
             int dx = child.absPosition.x - absPosition.x, dy = child.absPosition.y - absPosition.y;
 
             child.clipExtent.Copy(clipExtent);
@@ -2707,7 +2707,7 @@ private:
                Box box { child.box.left + dx, child.box.top + dy, child.box.right + dx, child.box.bottom + dy };
                clipExtent.ExcludeBox(box, rootWindow.tempExtents[0]);
             }
-            
+
          }
       }
       // ??? Only do this for overlapped window or if parent has with clip children flag
@@ -2751,7 +2751,7 @@ private:
 
                /*
                Extent childRenderArea;
-               
+
                if(backBufferUpdate != null)
                {
                   childRenderArea.Copy(backBufferUpdate);
@@ -2843,16 +2843,16 @@ private:
       {
          renderArea.Copy(backBufferUpdate);
          renderArea.Offset(-offsetX, -offsetY);
-         
+
          overRenderArea.Copy(backBufferUpdate);
          overRenderArea.Offset(-offsetX, -offsetY);
-         
-         
+
+
       }
       else
       {
          renderArea.Copy(dirtyArea);
-         
+
          overRenderArea.Copy(dirtyArea);
       }
 
@@ -2889,8 +2889,8 @@ private:
                FASTLIST_LOOP(renderArea, extentBox)
                {
       #ifdef _DEBUG
-                  printf("(%d, %d) - (%d, %d)\n", 
-                     extentBox.box.left, extentBox.box.top, 
+                  printf("(%d, %d) - (%d, %d)\n",
+                     extentBox.box.left, extentBox.box.top,
                      extentBox.box.right, extentBox.box.bottom);
       #endif
                }
@@ -2900,7 +2900,7 @@ private:
          }
       }
       */
-      
+
       // WHY WAS THIS COMMENTED ??
 
       // Add extent forced by DrawOverChildren to the dirty area, adjusting dirty extent to the window
@@ -2911,7 +2911,7 @@ private:
 
       // Intersect with the clip extent
       overRenderArea.Intersection(clipExtent, rootWindow.tempExtents[0], rootWindow.tempExtents[1], rootWindow.tempExtents[2]);
-      
+
 
       if(opaque)
       {
@@ -2964,17 +2964,17 @@ private:
          dirtyExtent.Union(renderArea);
          renderArea.Free();
       }*/
-      
-      
+
+
       {
          Extent renderArea { };
-         
+
          renderArea.Copy(overRenderArea);
          renderArea.Offset(offsetX, offsetY);
          overDirtyExtent.Union(renderArea, rootWindow.tempExtents[0]);
          renderArea.Empty();
       }
-      
+
 
       if(backBufferUpdate != null)
       {
@@ -3018,22 +3018,22 @@ private:
          foreground = (background.color.r > 128 || background.color.g > 128) ? black : white;
          */
 #endif
-            
+
 #ifdef _DEBUG
          /*if(renderArea.count)
             printf("\n\nRendering %s (%x):\n------------------------------------------\n", _class.name, this);*/
 #endif
-            
+
          for(extentBox = (BoxItem)renderArea.first; extentBox; extentBox = (BoxItem)extentBox.next)
          {
             Box box = extentBox.box;
 
 #ifdef _DEBUG
-               /*printf("(%d, %d) - (%d, %d)\n", 
-                  extentBox.box.left, extentBox.box.top, 
+               /*printf("(%d, %d) - (%d, %d)\n",
+                  extentBox.box.left, extentBox.box.top,
                   extentBox.box.right, extentBox.box.bottom);*/
 #endif
-               
+
             UpdateExtent(box);
 
             box.left += offsetX;
@@ -3083,7 +3083,7 @@ private:
    public void UpdateDisplay(void)
    {
       if(!manageDisplay) { OnRedraw(null);return; }
-      if(rootWindow && this != rootWindow) 
+      if(rootWindow && this != rootWindow)
          rootWindow.UpdateDisplay();
       else if(display)
       {
@@ -3105,7 +3105,7 @@ private:
             ComputeRenderArea(dirtyExtent, overExtent, null);
          }
          else
-            clipExtent.Free(null);                     
+            clipExtent.Free(null);
 
          dirtyExtent.Free(null);
          overExtent.Free(null);
@@ -3123,22 +3123,22 @@ private:
             Render(updateExtent);
             if(fullRender)
                updateExtent.UnionBox(this.box, tempExtents[0]);
-            
+
 #ifdef _DEBUG
             //printf("\n\nUpdate:\n------------------------------------------\n");
 #endif
-            
+
             //FASTLIST_LOOP(updateExtent, extentBox)
             for(extentBox = (BoxItem)updateExtent.first; extentBox; extentBox = (BoxItem)extentBox.next)
             {
 #ifdef _DEBUG
-               /*printf("Updating (%d, %d) - (%d, %d)\n", 
-                  extentBox.box.left, extentBox.box.top, 
+               /*printf("Updating (%d, %d) - (%d, %d)\n",
+                  extentBox.box.left, extentBox.box.top,
                   extentBox.box.right, extentBox.box.bottom);*/
 #endif
-               
+
                display.Update(extentBox.box);
-               
+
             }
             updateExtent.Free(null);
          }
@@ -3166,12 +3166,12 @@ private:
          {
             intersection.Copy(dirtyBack);
             intersection.IntersectBox(box);
-         
+
             dirtyExtent.Clear();
             overExtent.Clear();
 
             clipExtent.AddBox(box);
-         
+
             if(!rootWindow.fullRender)
             {
                ComputeClipExtents();
@@ -3259,7 +3259,7 @@ private:
                   if(child != statusBar && child.rootWindow == rootWindow)
                   {
                      Window childResult = child.GetAtPosition(x, y, clickThru, acceptDisabled, last);
-                     if(childResult) 
+                     if(childResult)
                         return childResult;
                   }
                }
@@ -3423,7 +3423,7 @@ private:
    bool AcquireInputEx(bool state)
    {
       bool result;
-      if(state) 
+      if(state)
       {
          guiApp.interfaceDriver.GetMousePosition(&guiApp.acquiredMouseX, &guiApp.acquiredMouseY);
          guiApp.interfaceDriver.SetMousePosition(clientSize.w/2 + absPosition.x, clientSize.h/2 + absPosition.y);
@@ -3486,11 +3486,11 @@ private:
                   {
                      if(guiApp.caretOwner)
                      {
-                        Box extent 
+                        Box extent
                         {
-                           guiApp.caretOwner.caretPos.x - guiApp.caretOwner.scroll.x + 1, 
+                           guiApp.caretOwner.caretPos.x - guiApp.caretOwner.scroll.x + 1,
                            guiApp.caretOwner.caretPos.y - guiApp.caretOwner.scroll.y + 1,
-                           guiApp.caretOwner.caretPos.x - guiApp.caretOwner.scroll.x + 2, 
+                           guiApp.caretOwner.caretPos.x - guiApp.caretOwner.scroll.x + 2,
                            guiApp.caretOwner.caretPos.y - guiApp.caretOwner.scroll.y + guiApp.caretOwner.caretSize - 1
                         };
                         guiApp.caretOwner.Update(extent);
@@ -3595,8 +3595,8 @@ private:
          {
             if(!active)
                StopMoving();
-            if(activateParent && 
-               (parent.activeChild != this || 
+            if(activateParent &&
+               (parent.activeChild != this ||
                (guiApp.interimWindow && !IsDescendantOf(guiApp.interimWindow))) &&
                active && _isModal &&
                parent != master && master)
@@ -3609,8 +3609,8 @@ private:
                   bool real = parent.activeChild != this;
 
                   // TEST THIS: New activateParent check here!!! CAUSED MENUS NOT GOING AWAY
-                  if(!style.inactive && /*activateParent && */guiApp.interimWindow && 
-                     !IsDescendantOf(guiApp.interimWindow) && 
+                  if(!style.inactive && /*activateParent && */guiApp.interimWindow &&
+                     !IsDescendantOf(guiApp.interimWindow) &&
                      !IsSlaveOf(guiApp.interimWindow))
                   {
                      Window interimWindow = guiApp.interimWindow;
@@ -3674,7 +3674,7 @@ private:
                         {
                            bool goOn = true;
                            result = PropagateActive(true, swap, &goOn, true);
-                           if(!result && !goOn) 
+                           if(!result && !goOn)
                            {
                               delete this;
                               return false;
@@ -3742,14 +3742,14 @@ private:
                         }
                      }
                   }
-               
+
                   if(result && real && (!style.inactive || moveInactive) && parent)
                   {
                      Window last = parent.children.last;
 
                      if(!style.stayOnTop)
                         for(; last && last.style.stayOnTop; last = last.prev);
-                     
+
                      parent.children.Move(this, last);
 
                      // Definitely don't want that:   why not?
@@ -3760,7 +3760,7 @@ private:
                   }
                }
             }
-            else 
+            else
             {
                if(!parent || style.interim || (parent.activeChild == this && !style.inactive))
                {
@@ -3817,9 +3817,9 @@ private:
       if(guiApp.windowScrolling && !consequential)
       {
          guiApp.windowScrolling.SetScrollPosition(
-            (guiApp.windowScrolling.sbh) ? 
+            (guiApp.windowScrolling.sbh) ?
                (guiApp.windowScrollingBefore.x - mouseX + guiApp.windowScrollingStart.x) : 0,
-            (guiApp.windowScrolling.sbv) ? 
+            (guiApp.windowScrolling.sbv) ?
                (guiApp.windowScrollingBefore.y - mouseY + guiApp.windowScrollingStart.y) : 0);
       }
       if(guiApp.windowMoving)
@@ -3912,7 +3912,7 @@ private:
                   h = guiApp.windowResizingBefore.h - ry;
                }
             }
-         
+
             // Position
             if(!guiApp.windowIsResizing || guiApp.resizeX)
                x = guiApp.windowMovingBefore.x + rx;
@@ -3966,7 +3966,7 @@ private:
 
             // Break the anchors for moveable/resizable windows
             // Will probably cause problem with IDE windows... Will probably need a way to specify if anchors should break
-            if(window.style.fixed) 
+            if(window.style.fixed)
             {
                if(window.state == normal)
                {
@@ -4006,7 +4006,7 @@ private:
          w = msgWindow;
          if(w) incref w;
          window = (w && !w.disabled) ? w : null;
-         
+
          if(trueWindow) incref trueWindow;
 
          if(consequential) mods->isSideEffect = true;
@@ -4031,9 +4031,9 @@ private:
             {
                Window moved = trueWindow;
                for(moved = trueWindow; moved; moved = moved.parent)
-                  if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown || ((moved.style.fixed || moved.moveable) && moved.state != maximized)) 
+                  if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown || ((moved.style.fixed || moved.moveable) && moved.state != maximized))
                      break;
-               if(moved) 
+               if(moved)
                {
                   window = moved;
                   windowDragged = true;
@@ -4056,9 +4056,9 @@ private:
             {
                Window moved = window;
                for(moved = window; moved; moved = moved.parent)
-                  if(method == OnRightButtonDown || ((moved.style.fixed || moved.moveable) && moved.state != maximized)) 
+                  if(method == OnRightButtonDown || ((moved.style.fixed || moved.moveable) && moved.state != maximized))
                      break;
-               if(moved) 
+               if(moved)
                {
                   window = moved;
                   windowDragged = true;
@@ -4092,7 +4092,7 @@ private:
                      doActivation = false;
                   */
 
-                  if((doActivation && (activateWindow.parent != guiApp.desktop || guiApp.fullScreen)) || 
+                  if((doActivation && (activateWindow.parent != guiApp.desktop || guiApp.fullScreen)) ||
                      (guiApp.interimWindow && !window.IsDescendantOf(guiApp.interimWindow)))
                   {
                      // Let the OnLeftButtonDown do the activating instead
@@ -4161,7 +4161,7 @@ private:
                   else if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown)
                   {
                      if(window.style.fixed &&
-                        (windowDragged || 
+                        (windowDragged ||
                         window.IsMouseMoving(
                            x - window.absPosition.x, y - window.absPosition.y, window.size.w, window.size.h)))
                      {
@@ -4183,8 +4183,8 @@ private:
                   }
                   else if(method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick)
                   {
-                     if(window.style.hasMaximize && 
-                        window.IsMouseMoving( 
+                     if(window.style.hasMaximize &&
+                        window.IsMouseMoving(
                            x - window.absPosition.x, y - window.absPosition.y, window.size.w, window.size.h))
                      {
                         window.SetState(
@@ -4196,7 +4196,7 @@ private:
             }
             else
                window = null;
-            if(guiApp.windowMoving) 
+            if(guiApp.windowMoving)
             {
                if(guiApp.windowMoving.parent)
                {
@@ -4233,7 +4233,7 @@ private:
 
          if(trueWindow && trueWindow.FindModal())
             delete trueWindow;
-         
+
          /*if(trueWindow)
             incref trueWindow;
          */
@@ -4357,7 +4357,7 @@ private:
          if(status && !destroyed && menuBar && state != minimized)
          {
             // Disable the ALT
-            if((SmartKey)key != alt) 
+            if((SmartKey)key != alt)
                menuBar.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown, 0, 0);
             if(menuBar.focus)
             {
@@ -4430,7 +4430,7 @@ private:
 
                         if(!guiApp.windowIsResizing || guiApp.resizeY)
                            y = (y - guiApp.windowMovingBefore.y) + guiApp.windowMovingStart.y;
-                        else                           
+                        else
                            y = (h - guiApp.windowResizingBefore.h) + guiApp.windowMovingStart.y;
 
                         guiApp.interfaceDriver.SetMousePosition(x, y);
@@ -4446,7 +4446,7 @@ private:
                      {
                         guiApp.windowMoving.StopMoving();
                         ConsequentialMouseMove(false);
-                  
+
                         status = false;
                      }
                      break;
@@ -4488,7 +4488,7 @@ private:
                   if((defaultControl.active ||
                      defaultControl.ActivateEx(true, true, false, true, null, null)) && !defaultControl.disabled)
                      defaultControl.KeyMessage(method, defaultKey, character);
-                  status = false;                       
+                  status = false;
                }
             }
          }
@@ -4541,7 +4541,7 @@ private:
                         Window cycleParent = this;
                         if(this == guiApp.interimWindow && master && !master.style.interim && !cycleParent.style.tabCycle && master.parent)
                            cycleParent = master.parent;
-                        
+
                         if(!guiApp.windowCaptured && cycleParent.style.tabCycle)
                         {
                            if(cycleParent.CycleChildren(!key.shift, false, false, true))
@@ -4553,7 +4553,7 @@ private:
                               if(cycleParent.sbh && !child.style.dontScrollHorz)
                               {
                                  if(child.scrolledPos.x < 0)
-                                    cycleParent.sbh.Action(Position, 
+                                    cycleParent.sbh.Action(Position,
                                        cycleParent.scroll.x + child.scrolledPos.x, 0);
                                  else if(child.scrolledPos.x + child.size.w > cycleParent.clientSize.w)
                                     cycleParent.sbh.Action(Position,
@@ -4562,7 +4562,7 @@ private:
                               if(cycleParent.sbv && !child.style.dontScrollVert)
                               {
                                  if(child.scrolledPos.y < 0)
-                                    cycleParent.sbv.Action(Position, 
+                                    cycleParent.sbv.Action(Position,
                                        cycleParent.scroll.y + child.scrolledPos.y, 0);
                                  else if(child.scrolledPos.y + child.size.w > window.clientSize.h)
                                     cycleParent.sbv.Action(Position,
@@ -4632,7 +4632,7 @@ private:
                               }
                            }
                         }
-                        break;            
+                        break;
                      }
                      */
                   }
@@ -4783,7 +4783,7 @@ private:
       Window child;
 
       // Setup relationship with outside world (bb root || !bb)
-      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || this == guiApp.desktop || 
+      if((!guiApp.fullScreenMode && parent == guiApp.desktop) || this == guiApp.desktop ||
          (_displayDriver && parent.dispDriver && dispDriver != parent.dispDriver))
       {
          rootWindow = this;
@@ -4861,7 +4861,7 @@ private:
       for(child = children.first; child; child = child.next)
       {
          if(child.created && !child.Setup(false))
-            result = false; 
+            result = false;
       }
       return result;
    }
@@ -4869,8 +4869,8 @@ private:
    bool SetupDisplay(void)
    {
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
-      if(is3D) return Window3D_SetupDisplay(this); else 
-#endif   
+      if(is3D) return Window3D_SetupDisplay(this); else
+#endif
       if(SetupRoot())
          return Setup(true);
       return false;
@@ -4917,7 +4917,7 @@ private:
             }
          }
       }
-      
+
       if(guiApp.fullScreenMode || this != guiApp.desktop)
       {
          SetWindowMinimum(&skinMinSize.w, &skinMinSize.h);
@@ -4956,7 +4956,7 @@ private:
                      }
                   for(cursor = guiApp.customCursors.first; cursor; cursor = cursor.next)
                   {
-                     cursor.bitmap = eBitmap_LoadT(cursor.bitmapName, null, 
+                     cursor.bitmap = eBitmap_LoadT(cursor.bitmapName, null,
                         cursor.paletteShades ? null : guiApp.desktop.display.displaySystem);
                      if(cursor.bitmap)
                         cursor.bitmap.paletteShades = cursor.paletteShades;
@@ -4973,7 +4973,7 @@ private:
             }
 
             // Load Window Graphic Resources
-            
+
             /*
             if(usedFont == setFont || usedFont == window.systemFont)
                RemoveResource(usedFont);
@@ -4983,7 +4983,7 @@ private:
 
             if(systemFont)
                RemoveResource(systemFont);
-            
+
             if(captionFont)
                RemoveResource(captionFont);
 
@@ -5035,7 +5035,7 @@ private:
                display.Unlock();
 
                //SetScrollLineStep(sbStep.x, sbStep.y);
-               
+
                if(this != guiApp.desktop)
                {
                   if(resetAnchors)
@@ -5059,22 +5059,22 @@ private:
                   switch(state)
                   {
                      case maximized:
-                     
+
                         stateAnchor = Anchor { left = 0, top = 0, right = 0, bottom = 0 };
                         stateSizeAnchor = SizeAnchor {};
                         break;
-                     
+
                      case minimized:
                      {
                         int maxIcons = parent.clientSize.w / MINIMIZED_WIDTH;
 
-                        stateAnchor = 
-                           Anchor 
+                        stateAnchor =
+                           Anchor
                            {
                               left = (iconID % maxIcons) * MINIMIZED_WIDTH,
                               bottom = (iconID / maxIcons) * (guiApp.textMode ? 16 : 24)
                            };
-                        
+
                         stateSizeAnchor = SizeAnchor { size.w = MINIMIZED_WIDTH };
                         break;
                      }
@@ -5321,7 +5321,7 @@ private:
       /* WTH is this doing here?
       while(swap && swap.activeChild)
       {
-         swap = swap.activeChild;         
+         swap = swap.activeChild;
       }
       */
       // TESTING THIS BEFORE...
@@ -5371,7 +5371,7 @@ private:
       OldLink prevOrder = null;
       Window client = null;
 
-      if(parent) stopwatching(parent, font); 
+      if(parent) stopwatching(parent, font);
 
       // if(window.modalSlave) return false;
       if(destroyed || !created)
@@ -5407,7 +5407,7 @@ private:
          guiApp.prevWindow = null;
          OnMouseLeave(0);
       }
-      if(guiApp.caretOwner == this) 
+      if(guiApp.caretOwner == this)
       {
          guiApp.interfaceDriver.SetCaret(0,0,0);
          UpdateCaret(false, true);
@@ -5447,7 +5447,7 @@ private:
                if(client == this) { client = null; break; }
                if(client && (client.style.nonClient || !client.style.isActiveClient || client.style.hidden || client.destroyed || !client.created))
                   tmpPrev = client.order.prev;
-               else 
+               else
                {
                   if(client)
                      prevOrder = tmpPrev;
@@ -5497,7 +5497,7 @@ private:
                   parent.UpdateActiveDocument(null);
                }
             }
-            else 
+            else
             {
                if(guiApp.interimWindow == this)
                {
@@ -5872,7 +5872,7 @@ private:
          {
             guiApp.desktop.mutex.Wait();
             guiApp.desktop.display.Lock(true);
-         
+
             Update(extent);
             if(guiApp.desktop.active)
             {
@@ -5892,7 +5892,7 @@ private:
                   guiApp.RestoreCursorBackground();
                }
             }
-         
+
             guiApp.desktop.display.Unlock();
             guiApp.desktop.mutex.Release();
          }
@@ -5901,7 +5901,7 @@ private:
             Window rootWindow = this.rootWindow;
             rootWindow.mutex.Wait();
             display.Lock(true);
-         
+
             Update(extent);
             if(guiApp.waiting)
                guiApp.SignalEvent();
@@ -5955,7 +5955,7 @@ private:
          isForegroundWindow = true;
          ActivateEx(active, active, false, false, null, null);
          isForegroundWindow = false;
-      }  
+      }
    }
    */
 
@@ -6025,7 +6025,7 @@ private:
          guiApp.windowMovingBefore = scrolledPos;
          guiApp.windowResizingBefore = size;
          guiApp.windowMoving.UpdateDecorations();
-         if(guiApp.windowIsResizing) 
+         if(guiApp.windowIsResizing)
             guiApp.resizeEndX = guiApp.resizeEndY = true;
 
          if(setCursorPosition)
@@ -6036,7 +6036,7 @@ private:
             guiApp.interfaceDriver.GetMousePosition(&x, &y);
             guiApp.windowMovingStart.x += x - absPosition.x;
             guiApp.windowMovingStart.y += y - absPosition.y;
-         } 
+         }
 
          if(guiApp.windowMoving)
          {
@@ -6068,7 +6068,7 @@ public:
          Window last;
          bool visible = !style.hidden;
 
-         if(style.embedded) 
+         if(style.embedded)
          {
             systemParent = parent;
             parent = guiApp.desktop;
@@ -6148,7 +6148,7 @@ public:
 
             this.visible = false;
             style.hidden = true;
-    
+
             //created = true;
             // autoCreate = true;
             wasCreated = true;
@@ -6178,7 +6178,7 @@ public:
 
                      if(style.hasMenuBar /*&& menu*/)
                      {
-                        menuBar = 
+                        menuBar =
                            PopupMenu
                            {
                               this,
@@ -6190,7 +6190,7 @@ public:
 
                      if(statusBar)
                         statusBar.Create();
-                     
+
                      // Create the system buttons
                      CreateSystemChildren();
 
@@ -6326,7 +6326,7 @@ public:
          {
             Window child;
             Box realBox;
-            
+
             // Testing this to avoid repetitve full update to take time...
             if(dirtyArea.count == 1)
             {
@@ -6351,7 +6351,7 @@ public:
                   return;
                }
             }
-            
+
             rootWindow.dirty = true;
 
             if(region != null)
@@ -6366,7 +6366,7 @@ public:
             else
                realBox = box;
 
-            if(realBox.right >= realBox.left && 
+            if(realBox.right >= realBox.left &&
                realBox.bottom >= realBox.top)
             {
                // if(!rootWindow.fullRender)
@@ -6415,7 +6415,7 @@ public:
                      childBox.top     -= window.absPosition.y - guiApp.desktop.absPosition.y;
                      childBox.right   -= window.absPosition.x - guiApp.desktop.absPosition.x;
                      childBox.bottom  -= window.absPosition.y - guiApp.desktop.absPosition.y;
-       
+
                      window.Update(childBox);
                   }
                   else
@@ -6500,7 +6500,7 @@ public:
       if(snapToStep)
       {
          int stepX = sbStep.x, stepY = sbStep.y;
-         // Needed to make snapped down position match the skin's check of client area 
+         // Needed to make snapped down position match the skin's check of client area
          // against realvirtual
          if(guiApp.textMode)
          {
@@ -6616,7 +6616,7 @@ public:
             // This has the effect of activating the window through the system...
             if(rootWindow == this)
                guiApp.interfaceDriver.SetRootWindowState(this, newState, !style.hidden);
-      
+
             SetStateEx(newState, activate);
 
             if(rootWindow == this && !rootWindow.nativeDecorations)
@@ -6647,15 +6647,15 @@ public:
                parent.UpdateScrollBars(true, true);
 
             /*
-            // Do we really need this stuff here? 
-            // Shouldn't the Activate stuff take care of it?              
+            // Do we really need this stuff here?
+            // Shouldn't the Activate stuff take care of it?
             if(parent.rootWindow == parent && style)
             {
                char caption[2048];
                parent.FigureCaption(caption);
                guiApp.interfaceDriver.SetRootWindowCaption(parent, caption);
                parent.UpdateDecorations();
-            }         
+            }
             */
 
             rootWindow.ConsequentialMouseMove(false);
@@ -6723,32 +6723,32 @@ public:
       PopupMenu windowMenu { master = this, interim = true, position = { x + 1 - guiApp.desktop.position.x, y + 1 - guiApp.desktop.position.y }, menu = menu };
       MenuItem
       {
-         menu, $"Restore", r, NotifySelect = MenuWindowRestore, 
+         menu, $"Restore", r, NotifySelect = MenuWindowRestore,
          disabled = (!style.hasMaximize && !style.hasMinimize) || state == normal, bitmap = guiApp.currentSkin.GetBitmap(restore)
       };
       MenuItem
       {
-         menu, $"Move", m, NotifySelect = MenuWindowMove, 
+         menu, $"Move", m, NotifySelect = MenuWindowMove,
          disabled = !style.fixed || state == maximized
       };
       MenuItem
       {
-         menu, $"Size", s, NotifySelect = MenuWindowSize, 
+         menu, $"Size", s, NotifySelect = MenuWindowSize,
          disabled = !style.sizable || state != normal
       };
       MenuItem
       {
-         menu, $"Minimize", n, NotifySelect = MenuWindowMinimize, 
+         menu, $"Minimize", n, NotifySelect = MenuWindowMinimize,
          disabled = !style.hasMinimize || state == minimized, bitmap = guiApp.currentSkin.GetBitmap(minimize)
       };
       MenuItem
       {
-         menu, $"Maximize", KeyCode::x, NotifySelect = MenuWindowMaximize, 
+         menu, $"Maximize", KeyCode::x, NotifySelect = MenuWindowMaximize,
          disabled = !style.hasMaximize || state == maximized, bitmap = guiApp.currentSkin.GetBitmap(maximize)
       };
       MenuItem
       {
-         menu, $"Stay On Top", t, NotifySelect = MenuWindowStayOnTop, 
+         menu, $"Stay On Top", t, NotifySelect = MenuWindowStayOnTop,
          disabled = !style.fixed, checkable = true, checked = style.stayOnTop
       };
       MenuDivider { menu };
@@ -6819,7 +6819,7 @@ public:
             }
          }
          /*
-         if(!clientOnly && child.cycle == (backward ? childrenCycle.first : childrenCycle.last) && 
+         if(!clientOnly && child.cycle == (backward ? childrenCycle.first : childrenCycle.last) &&
             parent.tabCycle && parent.CycleChildren(backward, false, false))
             return true;
          */
@@ -7084,12 +7084,12 @@ public:
          {
             Window window { };
             window.Create();
-            result = window.display.displaySystem.driver.GrabScreen(null, bitmap, clip.left, clip.top, 
+            result = window.display.displaySystem.driver.GrabScreen(null, bitmap, clip.left, clip.top,
                clip.right - clip.left + 1, clip.bottom - clip.top + 1);
             delete window;
          }
          else
-            result = display.Grab(bitmap, clip.left, clip.top, 
+            result = display.Grab(bitmap, clip.left, clip.top,
                clip.right - clip.left + 1, clip.bottom - clip.top + 1);
 
          if(bitmap.pixelFormat != pixelFormat888 && bitmap.pixelFormat != pixelFormat8)
@@ -7217,7 +7217,7 @@ public:
          return false;
       if(terminateX > 1)
          return true;
-         
+
       closing = true;
 
       if(!OnClose(parentClosing))
@@ -7367,7 +7367,7 @@ public:
                   MessageBox dialog { master = master.parent ? master : this, type = yesNoCancel, text = $"Error writing file", contents = $"Save as a different file?" };
                   DialogResult answer = dialog.Modal();
                   saving = false;
-                  if(answer != yes) 
+                  if(answer != yes)
                   {
                      result = answer;
                      break;
@@ -7576,7 +7576,7 @@ public:
       }
       document = cycle.data;
       document.Activate();
-      
+
       //if(activeChild.state == maximized)
       //  document.SetState(maximized, false, mods);
       //else if(document.state == minimized)
@@ -7788,7 +7788,7 @@ public:
    virtual void SetWindowArea(int * x, int * y, MinMaxValue * w, MinMaxValue * h, MinMaxValue * cw, MinMaxValue * ch)
    {
       *cw = *w;
-      *ch = *h;      
+      *ch = *h;
    }
    virtual void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving);
    virtual void PreShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving);
@@ -7839,7 +7839,7 @@ public:
 
             if(!master || (master == this.parent && master == guiApp.desktop))
                property::master = value;
-            
+
             if(parent)
             {
                parent.children.Remove(this);
@@ -7895,12 +7895,12 @@ public:
                if(created)
                {
                   int x = position.x, y = position.y, w = size.w, h = size.h;
-                  
+
                   int vpw, vph;
 
                   x += parent.absPosition.x - value.absPosition.x + parent.clientStart.x - value.clientStart.x;
                   y += parent.absPosition.y - value.absPosition.y + parent.clientStart.y - value.clientStart.y;
-                  
+
                   vpw = value.clientSize.w;
                   vph = value.clientSize.h;
                   if(style.nonClient)
@@ -7949,11 +7949,11 @@ public:
                   if(!style.noCycle)
                      parent.childrenCycle.Insert(
                         // Note: changed to 'null' to fix broken tab cycling in WSMS custom reports
-                        //(parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null, 
+                        //(parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null,
                         null,
                         cycle = OldLink { data = this });
                   parent.childrenOrder.Insert(
-                     (parent.activeChild && parent.activeChild.order) ? parent.activeChild.order.prev : parent.childrenOrder.last, 
+                     (parent.activeChild && parent.activeChild.order) ? parent.activeChild.order.prev : parent.childrenOrder.last,
                      order = OldLink { data = this });
                }
 
@@ -7965,7 +7965,7 @@ public:
                }
 
                // *** FONT INHERITANCE ***
-               if(!setFont && oldParent) 
+               if(!setFont && oldParent)
                   stopwatching(oldParent, font);
 
                if(systemFont)
@@ -7998,21 +7998,21 @@ public:
                         Update(null);
                      }
                   };
-               
+
                firewatchers font;
 
 
                if(value.rootWindow && value.rootWindow.display && rootWindow)
                {
-                  bool reloadGraphics = (oldParent.rootWindow == oldParent && value.rootWindow) || (!value.rootWindow && rootWindow == this) || 
+                  bool reloadGraphics = (oldParent.rootWindow == oldParent && value.rootWindow) || (!value.rootWindow && rootWindow == this) ||
                         (value.rootWindow.display && value.rootWindow.display.displaySystem != rootWindow.display.displaySystem);
-                  
+
                   if(reloadGraphics)
                      UnloadGraphics(false);
                   SetupDisplay();
                   if(reloadGraphics)
                      LoadGraphics(false, false);
-                     
+
                   /*
                   if(value.rootWindow != rootWindow)
                      DisplayModeChanged();
@@ -8200,7 +8200,7 @@ public:
             CreateSystemChildren();
          }
       }
-      get { return (BorderStyle)style.borderBits; } 
+      get { return (BorderStyle)style.borderBits; }
    };
 
    property Size minClientSize
@@ -8277,7 +8277,7 @@ public:
       }
       get { return style.hasClose; }
    };
-   
+
    property bool nonClient
    {
       property_category $"Layout"
@@ -8295,7 +8295,7 @@ public:
       property_category $"Behavior"
       set
       {
-         if(value) 
+         if(value)
          {
             // *** NEW HERE: ***
             if(!style.inactive)
@@ -8325,7 +8325,7 @@ public:
                {
                   parent.childrenCycle.Insert(
                      // Note: changed to 'null' to fix broken tab cycling in WSMS custom reports
-                     //(parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null, 
+                     //(parent.activeChild && parent.activeChild.cycle) ? parent.activeChild.cycle.prev : null,
                      null,
                      cycle = OldLink { data = this });
                }
@@ -8380,7 +8380,7 @@ public:
       set { style.tabCycle = value; }
       get { return style.tabCycle; }
    };
-     
+
    property bool isDefault
    {
       property_category $"Behavior"
@@ -8422,7 +8422,7 @@ public:
       property_category $"Window Style"
       set
       {
-         if(value) 
+         if(value)
          {
             if(!menu)
             {
@@ -8432,13 +8432,13 @@ public:
             if(created && !menuBar)
             {
                menuBar =
-                  PopupMenu 
+                  PopupMenu
                   {
                      this, menu = menu,
                      isMenuBar = true,
                      anchor = Anchor { top = 23, left = 1, right = 1 },
                      size.h = 24,
-                     inactive = true, nonClient = true                            
+                     inactive = true, nonClient = true
                   };
                menuBar.Create();
             }
@@ -8505,14 +8505,14 @@ public:
                   if(order)
                   {
                      OldLink order;
-                     for(order = (this.order == parent.childrenOrder.first) ? null : this.order.prev; 
+                     for(order = (this.order == parent.childrenOrder.first) ? null : this.order.prev;
                          order && ((Window)order.data).style.stayOnTop;
                          order = (order == parent.childrenOrder.first) ? null : order.prev);
                       last = order ? order.data : null;
                   }
                   else
                   {
-                     for(last = parent.children.last; 
+                     for(last = parent.children.last;
                          last && last.style.stayOnTop;
                          last = last.prev);
                   }
@@ -8549,9 +8549,9 @@ public:
             if(!menuBar && style.hasMenuBar && value)
             {
                menuBar = PopupMenu
-                         { 
-                            this, menu = value, isMenuBar = true, 
-                            anchor = Anchor { left = 1, top = 23, right = 1 }, size.h = 24, 
+                         {
+                            this, menu = value, isMenuBar = true,
+                            anchor = Anchor { left = 1, top = 23, right = 1 }, size.h = 24,
                             inactive = true, nonClient = true
                          };
                 menuBar.Create();
@@ -8624,7 +8624,7 @@ public:
       property_category $"Layout"
       isset
       {
-         return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) || 
+         return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) ||
                 (anchor.top.type == none || anchor.top.type == middleRelative || anchor.bottom.type == none)) &&
             sizeAnchor.isClientW != sizeAnchor.isClientH;
       }
@@ -8665,7 +8665,7 @@ public:
          bool leftRight = (anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none);
          bool topBottom = (anchor.top.type == none || anchor.top.type == middleRelative || anchor.bottom.type == none);
          bool isClient = !sizeAnchor.isClientW && !sizeAnchor.isClientH;
-         return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) || 
+         return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) ||
                 (anchor.top.type == none || anchor.top.type == middleRelative || anchor.bottom.type == none)) &&
             !sizeAnchor.isClientW && !sizeAnchor.isClientH && sizeAnchor.size.w && sizeAnchor.size.h;
       }
@@ -8697,7 +8697,7 @@ public:
       property_category $"Layout"
       isset
       {
-         return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) || 
+         return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) ||
                 (anchor.top.type == none || anchor.top.type == middleRelative || anchor.bottom.type == none)) &&
             sizeAnchor.isClientW && sizeAnchor.isClientH && sizeAnchor.size.w && sizeAnchor.size.h;
       }
@@ -8746,7 +8746,7 @@ public:
             }
             anchor = value;
 
-            if(anchor.right.type && (anchor.horz.type == middleRelative || !anchor.left.type)) 
+            if(anchor.right.type && (anchor.horz.type == middleRelative || !anchor.left.type))
             {
                anchor.left.distance = 0;
                anchor.horz.type = 0;
@@ -8764,7 +8764,7 @@ public:
                int x, y, w, h;
 
                normalAnchor = anchor;
-               
+
                // Break the anchors for moveable/resizable windows
                /*if(style.fixed ) //&& value.left.type == cascade)
                {
@@ -8943,7 +8943,7 @@ public:
                         {
                            tmpPrev = client.order.prev;
                         }
-                        else 
+                        else
                         {
                            if(client)
                               prevOrder = tmpPrev;
@@ -8983,7 +8983,7 @@ public:
                cycle = null;
                order = null;
                */
-               
+
                SetVisibility(!parent.style.hidden && (style.hidden ? false : true));
             }
 
@@ -9015,7 +9015,7 @@ public:
                   if(!(style.noCycle))
                   {
                      cycle = parent.childrenCycle.AddAfter(
-                        (parent.activeChild && parent.activeChild.cycle) ? 
+                        (parent.activeChild && parent.activeChild.cycle) ?
                            parent.activeChild.cycle.prev : null, sizeof(OldLink));
                      cycle.data = this;
                   }
@@ -9025,7 +9025,7 @@ public:
                   order.data = this;
                }
                */
-     
+
                /*
                if(true || !parent.activeChild)
                   ActivateEx(true, false, true, true, null, null);
@@ -9033,7 +9033,7 @@ public:
                if(creationActivation == activate)
                   ActivateEx(true, false, true, true, null, null);
                else if(creationActivation == flash && !object)
-                  Flash();               
+                  Flash();
 
                //SetVisibility(!parent.style.hidden && (style.hidden ? false : true));
                Update(null);
@@ -9050,7 +9050,7 @@ public:
 
       get { return (style.hidden || !setVisible) ? false : true; }
    };
-    
+
    property bool isDocument
    {
       property_category $"Document"
@@ -9074,7 +9074,7 @@ public:
          {
             if(!style.hasHorzScroll && created)
             {
-               CreateSystemChildren();         
+               CreateSystemChildren();
                Position(position.x, position.y, size.w, size.h, false, true, false, false, false, true);
             }
          }
@@ -9273,7 +9273,7 @@ public:
          SelectMouseCursor();
       }
       get { return cursor; }
-   };      
+   };
 
 //#if !defined(ECERE_VANILLA)
    property char * name
@@ -9330,7 +9330,7 @@ public:
    };
 
    // Runtime Only Properties (No Set, can display the displayable ones depending on the type?)
-                                                                                                            
+
    // Will be merged with font later
    property Font fontObject { get { return usedFont ? usedFont.font : null; } };
    property Point clientStart { get { value = clientStart; } };
@@ -9341,8 +9341,8 @@ public:
    property bool created { get { return (bool)created; } };
    property bool destroyed { get { return (bool)destroyed; } };
    property Window firstSlave { get { return slaves.first ? ((OldLink)slaves.first).data : null; } };
-   property Window firstChild { get { return children.first; } };   
-   property Window lastChild { get { return children.last; } };   
+   property Window firstChild { get { return children.first; } };
+   property Window lastChild { get { return children.last; } };
    property Window activeClient { get { return activeClient; } };
    property Window activeChild { get { return activeChild; } };
    property Display display  { get { return display ? display : ((parent && parent.rootWindow) ? parent.rootWindow.display : null); } };
@@ -9350,7 +9350,7 @@ public:
    property ScrollBar horzScroll { get { return sbh; } };
    property ScrollBar vertScroll { get { return sbv; } };
    property StatusBar statusBar { get { return statusBar; } };
-   property Window rootWindow { get { return rootWindow; } };   
+   property Window rootWindow { get { return rootWindow; } };
    property bool closing { get { return (bool)closing; } set { closing = value; } };
    property int documentID { get { return documentID; } };
    property Window previous { get { return prev; } }
@@ -9362,7 +9362,7 @@ public:
    property bool fullRender { set { fullRender = value; } get { return (bool)fullRender; } }
    property void * systemHandle { get { return windowHandle; } }
    property Button minimizeButton { get { return sysButtons[0]; } };
-   property Button maximizeButton { get { return sysButtons[1]; } };   
+   property Button maximizeButton { get { return sysButtons[1]; } };
    property Button closeButton { get { return sysButtons[2]; } };
    property BitmapResource icon
    {
@@ -9468,7 +9468,7 @@ private:
    void * windowHandle;    // System window handle
 
    DialogResult returnCode;// Return code for modal windows
-  
+
    Point sbStep;           // Scrollbar line scrolling steps
 
    Anchor stateAnchor;
@@ -9570,7 +9570,7 @@ private:
       bool nativeDecorations:1;
       bool manageDisplay:1;
       bool formDesigner:1; // True if we this is running in the form editor
-   }; 
+   };
 
    // Checks used internally for them not to take effect in FormDesigner
    property bool _isModal        { get { return !formDesigner ? style.modal : false; } }
@@ -9630,7 +9630,7 @@ public class Percentage : float
       c = strlen(string)-1;
       for( ; c >= 0; c--)
       {
-         if(string[c] != '0') 
+         if(string[c] != '0')
             last = Max(last, c);
          if(string[c] == '.')
          {
@@ -9660,7 +9660,7 @@ public void ApplySkin(Class c, char * name, void ** vTbl)
    c._vTbl = new void *[c.vTblSize];
    memcpy(c._vTbl, wc.pureVTbl, c.vTblSize * sizeof(void *));
    sc = eSystem_FindClass(c.module.application, className);
-   
+
    if(vTbl)
    {
       for(m = 0; m < c.base.vTblSize; m++)
@@ -9677,7 +9677,7 @@ public void ApplySkin(Class c, char * name, void ** vTbl)
             c._vTbl[m] = sc._vTbl[m];
       }
    }
-      
+
    for(d = c.derivatives.first; d; d = d.next)
    {
       ApplySkin(d.data, name, c._vTbl);
@@ -9930,7 +9930,7 @@ public:
    virtual void V::OnUnloadGraphics(WindowController controller);
 
 private:
-   int (** windowVTbl)();   
+   int (** windowVTbl)();
    V controlled;
    Window window;
 

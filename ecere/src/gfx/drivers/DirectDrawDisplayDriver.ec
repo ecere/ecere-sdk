@@ -64,24 +64,24 @@ class DDrawDisplay : LFBDisplay
          uint ddrawResult = IDirectDrawSurface_Lock(back, null, &backDesc, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, null);
          if(ddrawResult == DDERR_SURFACELOST) // !display.full_screen
          {
-         
+
             IDirectDrawSurface_Restore(back);
             ddrawResult = IDirectDrawSurface_Lock(back, null, &backDesc, DDLOCK_WAIT | DDLOCK_SURFACEMEMORYPTR, null);
          }
-         if(!ddrawResult) 
+         if(!ddrawResult)
          {
             bool validFormat = true;
             switch(backDesc.ddpfPixelFormat.dwRGBBitCount)
             {
                case 8: bitmap.pixelFormat = pixelFormat8; break;
                case 15: bitmap.pixelFormat = pixelFormat555; break;
-               case 16: 
+               case 16:
                   if(backDesc.ddpfPixelFormat.dwGBitMask == 0x3E0)
                      bitmap.pixelFormat = pixelFormat555;
                   else
                      bitmap.pixelFormat = pixelFormat565;
                   break;
-               case 32: 
+               case 32:
                   bitmap.pixelFormat = pixelFormat888; break;
                default:
                   validFormat = false;
@@ -210,7 +210,7 @@ class DirectDrawDisplayDriver : DisplayDriver
             for(c=0; c<256; c++)
                realPalette[c] = ColorAlpha { 255, { realPalette[c].color.b, realPalette[c].color.g, realPalette[c].color.r } };
             ReleaseDC(display.window,hdc);
-         
+
             // *** Reserved Palette Handling ***
             if(!palette)
             {
@@ -352,7 +352,7 @@ class DirectDrawDisplayDriver : DisplayDriver
             {
                ddrawDisplay.frontDesc.dwSize = ddrawDisplay.backDesc.dwSize = sizeof(DDSURFACEDESC);
 
-               if(!IDirectDraw_SetCooperativeLevel( directDraw, display.window, 
+               if(!IDirectDraw_SetCooperativeLevel( directDraw, display.window,
                   (display.displaySystem.flags.fullScreen) ? (DDSCL_EXCLUSIVE | DDSCL_FULLSCREEN) : DDSCL_NORMAL))
                {
                   ddrawDisplay.frontDesc.dwFlags = DDSD_CAPS;
@@ -463,7 +463,7 @@ class DirectDrawDisplayDriver : DisplayDriver
    #ifdef USE_GDI_FONT
       DDrawDisplay ddrawDisplay = display.driverData;
       COLORREF rgb;
-      
+
       if(ddrawDisplay.bitmap.pixelFormat == pixelFormat8)
          color = ddrawDisplay.bitmap.palette[ddrawDisplay.rgbLookup[(uint16)(Color555) color]];
       rgb = RGB(color.color.r, color.color.g, color.color.b);
@@ -550,11 +550,11 @@ class DirectDrawDisplayDriver : DisplayDriver
       {
          if(!gdiFont.font)
          {
-            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem, 
-               gdiFont.faceName, gdiFont.size, gdiFont.flags);         
+            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem,
+               gdiFont.faceName, gdiFont.size, gdiFont.flags);
          }
-         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextFont(display, surface, gdiFont.font);          
-      } 
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextFont(display, surface, gdiFont.font);
+      }
       else */
          SelectObject(ddrawDisplay.hdc, font);
    #else
@@ -643,8 +643,8 @@ class DirectDrawDisplayDriver : DisplayDriver
          GDIFont gdiFont = (GDIFont)surface.font;
          if(!gdiFont.font)
          {
-            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem, 
-               gdiFont.faceName, gdiFont.size, gdiFont.flags);         
+            gdiFont.font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(display.displaySystem,
+               gdiFont.faceName, gdiFont.size, gdiFont.flags);
          }
          if(surface.textOpacity)
          {
@@ -703,7 +703,7 @@ class DirectDrawDisplayDriver : DisplayDriver
             if(width) *width = 0;
             if(height) *height = 0;
          }
-      }      
+      }
       /*
       HDC hdc = tmpDC;
       SIZE space, size;
@@ -715,7 +715,7 @@ class DirectDrawDisplayDriver : DisplayDriver
       GetTextExtentPoint32(hdc,text,realLen,&size);
 
       if(width) *width = size.cx + (len - realLen) * space.cx;
-      if(height) 
+      if(height)
       {
          if(realLen)
             *height = size.cy;
@@ -734,7 +734,7 @@ class DirectDrawDisplayDriver : DisplayDriver
       /*if(display && display.alphaBlend)
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
       else*/
-      
+
       {
          DDrawDisplay ddrawDisplay = display ? display.driverData : null;
          HDC hdc = ddrawDisplay ? ddrawDisplay.hdc : tmpDC;
@@ -750,7 +750,7 @@ class DirectDrawDisplayDriver : DisplayDriver
 
          // UNICODE FIX: proper space computation
          if(width) *width = size.cx + (wordCount - realLen) * space.cx;
-         if(height) 
+         if(height)
          {
             if(realLen)
                *height = size.cy;
@@ -762,13 +762,13 @@ class DirectDrawDisplayDriver : DisplayDriver
       HDC hdc = ddrawDisplay.hdc;
       SIZE space, size;
       uint realLen;
-      
+
       for(realLen = 0; realLen<len && text[realLen]; realLen++);
       GetTextExtentPoint32(hdc," ",1,&space);
       GetTextExtentPoint32(hdc,text,realLen,&size);
 
       if(width) *width = size.cx + (len - realLen) * space.cx;
-      if(height) 
+      if(height)
       {
          if(realLen)
             *height = size.cy;

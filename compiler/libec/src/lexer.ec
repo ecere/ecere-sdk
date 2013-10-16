@@ -1282,9 +1282,9 @@ YY_DECL
 
 
 
-   yylloc.start = yylloc.end; 
-   type_yylloc.start = type_yylloc.end; 
-   expression_yylloc.start = expression_yylloc.end; 
+   yylloc.start = yylloc.end;
+   type_yylloc.start = type_yylloc.end;
+   expression_yylloc.start = expression_yylloc.end;
 
 
 #line 1290 "lexer.ec"
@@ -1677,14 +1677,14 @@ YY_RULE_SETUP
  */
 /*
  [__attribute__] [spaces]
-   [((] [spaces] 
+   [((] [spaces]
       [digits | letters] [spaces]
          ( [(]  [digits or letters or "]  ( [spaces] [,] [spaces] [digits or letters or "] )*  [spaces]  [)] )?
       [spaces]
       ( [,] [spaces]  [digits or letters]  [spaces]
          ( [(]  [digits or letters or "]
             ( [spaces] [,] [spaces] [digits or letters or "] )*  [spaces] [)]
-         )? [spaces] 
+         )? [spaces]
       )*
    [))]
  */
@@ -2236,19 +2236,19 @@ YY_RULE_SETUP
 case 163:
 YY_RULE_SETUP
 #line 295 "lexer.l"
-{ 
-   yylloc.end.charPos = 1; yylloc.end.line += yyleng; yylloc.start = yylloc.end; 
-   type_yylloc.end.charPos = 1; type_yylloc.end.line += yyleng; type_yylloc.start = type_yylloc.end; 
-   expression_yylloc.end.charPos = 1; expression_yylloc.end.line += yyleng; expression_yylloc.start = expression_yylloc.end; 
+{
+   yylloc.end.charPos = 1; yylloc.end.line += yyleng; yylloc.start = yylloc.end;
+   type_yylloc.end.charPos = 1; type_yylloc.end.line += yyleng; type_yylloc.start = type_yylloc.end;
+   expression_yylloc.end.charPos = 1; expression_yylloc.end.line += yyleng; expression_yylloc.start = expression_yylloc.end;
    }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
 #line 300 "lexer.l"
-{ 
-   yylloc.start.charPos++ /*= 3 - (yylloc.start.col % 3)*/; yylloc.end.charPos = yylloc.start.charPos; yylloc.start.pos = yylloc.end.pos; 
-   expression_yylloc.start.charPos++ /*= 3 - (expression_yylloc.start.col % 3)*/; expression_yylloc.end.charPos = expression_yylloc.start.charPos; expression_yylloc.start.pos = expression_yylloc.end.pos; 
-   type_yylloc.start.charPos++ /*= 3 - (type_yylloc.start.col % 3)*/; type_yylloc.end.charPos = type_yylloc.start.charPos; type_yylloc.start.pos = type_yylloc.end.pos; 
+{
+   yylloc.start.charPos++ /*= 3 - (yylloc.start.col % 3)*/; yylloc.end.charPos = yylloc.start.charPos; yylloc.start.pos = yylloc.end.pos;
+   expression_yylloc.start.charPos++ /*= 3 - (expression_yylloc.start.col % 3)*/; expression_yylloc.end.charPos = expression_yylloc.start.charPos; expression_yylloc.start.pos = expression_yylloc.end.pos;
+   type_yylloc.start.charPos++ /*= 3 - (type_yylloc.start.col % 3)*/; type_yylloc.end.charPos = type_yylloc.start.charPos; type_yylloc.start.pos = type_yylloc.end.pos;
    }
 	YY_BREAK
 case 165:
@@ -3249,13 +3249,13 @@ int preprocessor()
             if(lineNumber)
             {
                char fileName[MAX_LOCATION];
-               
+
                int inOut;
 
                fileName[0] = 0;
                GetString(&pointer, fileName, MAX_LOCATION);
                inOut = GetValue(&pointer);
-                              
+
                if(inOut == 1)
                {
                   char extension[MAX_EXTENSION];
@@ -3316,7 +3316,7 @@ int preprocessor()
          }
       }
       last = c;
-   }   
+   }
    yylloc.start = yylloc.end;
    line[count] = 0;
 

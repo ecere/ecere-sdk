@@ -29,7 +29,7 @@ void FloodFill(Surface surface, int x0, int y0, ColorAlpha newColor)
       while(stack.count > 0)
       {
          ShortPoint point = stack.Pop();
-        
+
          picture = (ColorAlpha *)bitmap.picture + (point.y * bitmap.stride) + point.x;
          if(*picture == oldColor)
          {
@@ -37,7 +37,7 @@ void FloodFill(Surface surface, int x0, int y0, ColorAlpha newColor)
             int x = point.x, sx = point.x;
             int y = point.y;
             bool upIn = false, downIn = false;
-            
+
             while(x > 0)
             {
                x--;
@@ -45,7 +45,7 @@ void FloodFill(Surface surface, int x0, int y0, ColorAlpha newColor)
                if(*picture != oldColor) break;
                sx = x;
             }
-            
+
             pic = picture = (ColorAlpha *)bitmap.picture + (y * bitmap.stride) + sx;
             pictureUp = (y > 0) ? (picture - bitmap.stride) : null;
             pictureDown = (y < bitmap.height - 1) ? (picture + bitmap.stride) : null;
@@ -100,10 +100,10 @@ class DrawingArea : Window
    hasVertScroll = true;
    hasHorzScroll = true;
    borderStyle = deep;
-      
+
    Bitmap bitmap
    {
-      
+
    };
 
    void OnRedraw(Surface surface)
@@ -224,8 +224,8 @@ class PaintWindow : Window
          delete dialog;
          return true;
       }
-     
-   }; 
+
+   };
    DrawingArea drawingArea
    {
       this,
@@ -244,8 +244,8 @@ class PaintWindow : Window
          return true;
       }
    };
-   Button fillBtn 
-   {      
+   Button fillBtn
+   {
       this, text = "Fill", position = { 24, 64 };
       toggle = true;
 
@@ -256,8 +256,8 @@ class PaintWindow : Window
          return true;
       }
    };
-   Button clearBtn 
-   {      
+   Button clearBtn
+   {
       this, text = "Clear", position = { 24, 104 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)

@@ -15,7 +15,7 @@ class MainWindow : Window
    void OnRedraw(Surface surface)
    {
       Bitmap bitmap = castleGfx.bitmap;
-      
+
       if(bitmap)
          surface.Blit(bitmap, 100, 100, 0,0, bitmap.width, bitmap.height);
    }

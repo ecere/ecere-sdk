@@ -62,7 +62,7 @@ static void LoadImports(char * fileName)
                   {
                      ClassImport _class = null;
                      FunctionImport function = null;
-                     
+
                      if(!strcmp(line, "[This]"))
                      {
                         if((mainModule = GetMainModule()))
@@ -161,7 +161,7 @@ static void LoadImports(char * fileName)
                               if(!(_class = module.classes.FindName(line, false)))
                               {
                                  _class = ClassImport { name = CopyString(line) };
-                                 module.classes.AddName(_class); 
+                                 module.classes.AddName(_class);
                               }
                            }
                         }
@@ -234,7 +234,7 @@ class ModuleInfo : struct
 static bool SeardchModuleName(Module searchIn, char * name)
 {
    SubModule subModule;
-   
+
    if(searchIn.name && !strcmp(searchIn.name, name))
       return true;
 
@@ -255,7 +255,7 @@ static void WriteMain(char * fileName)
       ModuleInfo defModule;
       bool nonInst = false, anyMethod = false, anyProp = false, anyFunction = false;
       ImportedModule importedModule;
-      
+
       GetLastDirectory(fileName, mainModuleName);
       StripExtension(mainModuleName);
       if(!projectName[0])
@@ -347,7 +347,7 @@ static void WriteMain(char * fileName)
                      else if(module.name && module.importType != staticImport && (!meth || !meth.dataType.dllExport))
                      {
                         /*char name[4096];
-                        
+
                         Type type
                         {
                            kind = TypePointer,
@@ -560,12 +560,12 @@ static void WriteMain(char * fileName)
                   char className[1024] = "";
                   FullClassNameCat(className, _class.name, true);
                   MangleClassName(className);
-            
+
                   if(_class.itself)
                      sprintf(classID, "__ecereClass_%s", className);
                   else
                      strcpy(classID, "_class");
-            
+
                   if(isDynamicLibrary && !isStaticLibrary)
                      f.Printf("   %s = eSystem_FindClass(__currentModule, \"%s\");\n", classID, _class.name);
                   else
@@ -578,7 +578,7 @@ static void WriteMain(char * fileName)
                      {
                         if(method.isVirtual || (module.name && module.importType != staticImport))
                         {
-                           f.Printf("   method = eClass_FindMethod(%s, \"%s\", module);\n", 
+                           f.Printf("   method = eClass_FindMethod(%s, \"%s\", module);\n",
                               classID, method.name);
                            if(method.isVirtual)
                               f.Printf("   if(method) __ecereVMethodID_%s_%s = method.vid;\n", className, method.name);
@@ -596,7 +596,7 @@ static void WriteMain(char * fileName)
                      // strcpy(propName, prop.name);
                      MangleClassName(propName);
 
-                     f.Printf("   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n", 
+                     f.Printf("   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n",
                         className, propName, classID, prop.name);
 
                      if(module.name && module.importType != staticImport)
@@ -972,7 +972,7 @@ static void BindDCOMClient()
 
                         // f.Printf("this.instance.%s(", method.name);
                         f.Printf("%s(", method.name);
-                        
+
                         for(param = method.dataType.params.first; param; param = param.next)
                         {
                            if(param.prev)
@@ -1002,13 +1002,13 @@ static void BindDCOMClient()
 
                         for(param = method.dataType.params.first; param; param = param.next)
                         {
-                           if(param.kind == classType && strcmp(param._class.string, "String") && param._class.registered && 
+                           if(param.kind == classType && strcmp(param._class.string, "String") && param._class.registered &&
                               (param._class.registered.type == normalClass || param._class.registered.type == noHeadClass))
                            {
                               f.Printf("            delete %s;\n", param.name);
                            }
                         }
-                        if(method.dataType.returnType.kind == classType && strcmp(method.dataType.returnType._class.string, "String") && method.dataType.returnType._class.registered && 
+                        if(method.dataType.returnType.kind == classType && strcmp(method.dataType.returnType._class.string, "String") && method.dataType.returnType._class.registered &&
                               (method.dataType.returnType._class.registered.type == normalClass || method.dataType.returnType._class.registered.type == noHeadClass))
                         {
                            f.Printf("            delete __ecereResult;\n");
@@ -1023,7 +1023,7 @@ static void BindDCOMClient()
             f.Printf("      }\n");
             f.Printf("   }\n");
             f.Printf("\n");
-         } 
+         }
 
          doVirtual = true;
          id = 0;
@@ -1139,7 +1139,7 @@ static void BindDCOMClient()
                   }
                   DeclareMethod(
                      eClass_FindMethod(
-                        eSystem_FindClass(privateModule, "ecere::net::DCOMClientObject"), "CallMethod", privateModule), 
+                        eSystem_FindClass(privateModule, "ecere::net::DCOMClientObject"), "CallMethod", privateModule),
                      "__ecereMethod___ecereNameSpace__ecere__net__DCOMClientObject_CallMethod");
 
                   f.Printf("      if(DCOMClientObject::CallMethod(%d))\n", id++);
@@ -1193,13 +1193,13 @@ static void BindDCOMClient()
                   next = (Method)_class.methods.first;
                }
             }
-            
-            if(next) 
+
+            if(next)
                f.Printf("\n");
          }
 
          f.Printf("}\n");
-         if(deriv.next) 
+         if(deriv.next)
             f.Printf("\n");
       }
    }
@@ -1360,7 +1360,7 @@ static void BindDCOMServer()
 
                      // f.Printf("this.instance.%s(", method.name);
                      f.Printf("((%s)instance).%s(", _class.fullName, method.name);
-                     
+
                      for(param = method.dataType.params.first; param; param = param.next)
                      {
                         if(param.prev)
@@ -1390,13 +1390,13 @@ static void BindDCOMServer()
 
                      for(param = method.dataType.params.first; param; param = param.next)
                      {
-                        if(param.kind == classType && strcmp(param._class.string, "String") && param._class.registered && 
+                        if(param.kind == classType && strcmp(param._class.string, "String") && param._class.registered &&
                            (param._class.registered.type == normalClass || param._class.registered.type == noHeadClass))
                         {
                            f.Printf("            delete %s;\n", param.name);
                         }
                      }
-                     if(method.dataType.returnType.kind == classType && strcmp(method.dataType.returnType._class.string, "String") && method.dataType.returnType._class.registered && 
+                     if(method.dataType.returnType.kind == classType && strcmp(method.dataType.returnType._class.string, "String") && method.dataType.returnType._class.registered &&
                            (method.dataType.returnType._class.registered.type == normalClass || method.dataType.returnType._class.registered.type == noHeadClass))
                      {
                         f.Printf("            delete __ecereResult;\n");
@@ -1427,11 +1427,11 @@ static void BindDCOMServer()
                      DeclareClass(FindClass("ecere::sys::Mutex"), "__ecereClass___ecereNameSpace__ecere__sys__Mutex");
                      DeclareMethod(
                         eClass_FindMethod(
-                           eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Wait", privateModule), 
+                           eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Wait", privateModule),
                               "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait");
                      DeclareMethod(
                         eClass_FindMethod(
-                           eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Release", privateModule), 
+                           eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Release", privateModule),
                               "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release");
                      mutexDeclared = true;
                   }
@@ -1486,7 +1486,7 @@ static void BindDCOMServer()
                               f.Printf(" = 0");
                            f.Printf(";\n\n");
                         }
-                        
+
                         f.Printf("      incref __ecereObject;\n");
                         f.Printf("      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait(__ecereObject.mutex);\n");
 
@@ -1521,7 +1521,7 @@ static void BindDCOMServer()
 
                         DeclareMethod(
                            eClass_FindMethod(
-                              eSystem_FindClass(privateModule, "ecere::net::DCOMServerObject"), "CallVirtualMethod", privateModule), 
+                              eSystem_FindClass(privateModule, "ecere::net::DCOMServerObject"), "CallVirtualMethod", privateModule),
                            "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirtualMethod");
 
                         // Check if this method needs to return anything (hasReturnValue)
@@ -1586,7 +1586,7 @@ static void BindDCOMServer()
                      }
 
                      f.Printf("   }\n");
-                     /*if(vid < _class.vTblSize) 
+                     /*if(vid < _class.vTblSize)
                         f.Printf("\n");*/
                   }
                }
@@ -1715,7 +1715,7 @@ class SymbolgenApp : Application
       }
       if(!output)
          valid = false;
-     
+
       if(!valid)
       {
          printf($"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
@@ -1727,7 +1727,7 @@ class SymbolgenApp : Application
          char symbolModule[MAX_FILENAME];
          GetExtension(output, ext);
          GetLastDirectory(output, symbolModule);
-         
+
          SetDefines(&::_defines);
          SetImports(&_imports);
          SetGlobalData(&globalData);
@@ -1811,8 +1811,8 @@ class SymbolgenApp : Application
                      GetLastDirectory(file, fileName);
 
                      module.name = CopyString(fileName);
-                     
-                     StripExtension(module.name);                     
+
+                     StripExtension(module.name);
 
                      for(importedModule = ::_defines.first; importedModule; importedModule = importedModule.next)
                      {
@@ -1986,7 +1986,7 @@ class SymbolgenApp : Application
          ::_defines.Free(FreeModuleDefine);
          _imports.Free(FreeModuleImport);
 
-         //precompDefines.Free(FreeDefinition);   
+         //precompDefines.Free(FreeDefinition);
 
          FreeTypeData(privateModule);
          FreeIncludeFiles();

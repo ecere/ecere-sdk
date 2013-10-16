@@ -73,7 +73,7 @@ public union Matrix
       double xy = quat.x*quat.y, xz = quat.x*quat.z, yz = quat.y*quat.z;
       double wx = quat.w*quat.x, wy = quat.w*quat.y, wz = quat.w*quat.z;
 
-      m[0][0] = (double) (1 - 2 * ( yy + zz )); 
+      m[0][0] = (double) (1 - 2 * ( yy + zz ));
       m[0][1] = (double) (    2 * ( xy - wz ));
       m[0][2] = (double) (    2 * ( xz + wy ));
 
@@ -131,9 +131,9 @@ public union Matrix
          double msub3[3][3];
          int di, dj;
 
-         for(di = 0; di < 3; di++) 
+         for(di = 0; di < 3; di++)
          {
-            for(dj = 0; dj < 3; dj++) 
+            for(dj = 0; dj < 3; dj++)
             {
                int si = di + ( ( di >= 0 ) ? 1 : 0 );
                int sj = dj + ( ( dj >= n ) ? 1 : 0 );
@@ -157,7 +157,7 @@ public union Matrix
          Identity();
       else
       {
-         int i, j, sign;   
+         int i, j, sign;
          for ( i = 0; i < 4; i++ )
             for ( j = 0; j < 4; j++ )
             {
@@ -167,9 +167,9 @@ public union Matrix
 
                sign = 1 - ( (i+j) % 2 ) * 2;
 
-               for(di = 0; di < 3; di++) 
+               for(di = 0; di < 3; di++)
                {
-                  for(dj = 0; dj < 3; dj++) 
+                  for(dj = 0; dj < 3; dj++)
                   {
                      int si = di + ( ( di >= i ) ? 1 : 0 );
                      int sj = dj + ( ( dj >= j ) ? 1 : 0 );

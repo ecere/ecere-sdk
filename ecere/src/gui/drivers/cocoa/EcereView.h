@@ -7,13 +7,13 @@ typedef uint32_t CocoaColor;
 @private
     // Reference to the Ecere Window class via pointer. Used for callbacks.
     EcereWindowRef _ecereWindow;
-    
+
     // Foreground and background draw color.
     CocoaColor _foreground;
     CocoaColor _background;
-    
+
     int lockCount;
-    
+
     NSOpenGLContext *_context;
     NSOpenGLPixelFormat *_pixelformat;
 }

@@ -59,7 +59,7 @@ public class Id : uint
 
          dropBox = TableDropBox
          {
-            dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 }, 
+            dataBox, borderStyle = 0, anchor = { 0, 0, 0, 0 },
             modifyVirtualArea = false, activeStipple = false;
             showNone = true;
             nameField = class_data(nameField) ? *class_data(nameField) : null;
@@ -262,14 +262,14 @@ public:
          count = 0;
       }
    }
-   
+
    bool Includes(Id id)
    {
       if(this)
       {
          int c;
          for(c = 0; c < count; c++)
-            if(ids[c] == id) 
+            if(ids[c] == id)
                return true;
       }
       return false;
@@ -349,7 +349,7 @@ public:
 
    }
    */
-   
+
    char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       stringOutput[0] = 0;
@@ -397,7 +397,7 @@ public:
             int idA = ids[c], idB = b.ids[c];
             if(idA > idB) return 1;
             else if(idA < idB) return -1;
-         }         
+         }
       }
       return 0;
    }
@@ -418,7 +418,7 @@ public:
             {
                if(row.next)
                   listBox.DeleteRow(row);
-            }            
+            }
             else
             {
                if(row == listBox.lastRow)
@@ -469,13 +469,13 @@ public:
          {
             Id id = r.GetData(null);
             if(id)
-               Add(id);         
+               Add(id);
          }
          return true;
       }
       return false;
    }
-   
+
    ~IdList()
    {
       delete ids;
@@ -490,7 +490,7 @@ static void FreeString(String string)
 public class StringList
 {
    StringBinaryTree strings
-   {  
+   {
       CompareKey = (void *)BinaryTree::CompareString;
       FreeKey = (void *)FreeString;
    };
@@ -499,7 +499,7 @@ public class StringList
    {
       strings.Free();
    }
-   
+
    bool Includes(String string)
    {
       return strings.FindString(string) != null;
@@ -533,7 +533,7 @@ public class StringList
    {
       channel.Get(strings);
    }
-   
+
    void OnUnserialize(IOChannel channel)
    {
       this = eInstance_New(class(StringList));
@@ -558,7 +558,7 @@ public class StringList
             result = strcmp((char *)nodeA.key, (char *)nodeB.key);
             if(result) return result;
          }
-      }         
+      }
       return 0;
    }
 
@@ -575,7 +575,7 @@ public class StringList
          {
             return (key == enter) ? false : ListBox::OnKeyHit(key, ch);
          }
-         
+
          bool DataBox::NotifyChanged(ListBox listBox, DataRow row)
          {
             String string = row.GetData(null);
@@ -586,7 +586,7 @@ public class StringList
                   listBox.DeleteRow(row);
                   listBox.firstChild.Activate();
                }
-            }            
+            }
             else
             {
                if(row == listBox.lastRow)
@@ -625,7 +625,7 @@ public class StringList
                   listBox.DeleteRow(row);
                   listBox.firstChild.Activate();
                }
-            }            
+            }
             else
             {
                if(row == listBox.lastRow)
@@ -644,7 +644,7 @@ public class StringList
 
       BTNode node;
       DataRow r;
-      
+
       /*
       {
          if(!this)
@@ -670,7 +670,7 @@ public class StringList
       ListBox list = (ListBox) window;
       if(list.modifiedDocument)
       {
-         
+
          DataRow r;
          if(list.activeChild)
             ((DataBox)list.activeChild).SaveData();
@@ -692,7 +692,7 @@ public class StringList
       }
       return false;
    }
-   
+
    ~StringList()
    {
       strings.Free();
@@ -716,7 +716,7 @@ public class FixedMultiLineString : String
 
          void DataBox::NotifyUpdate(EditBox editBox)
          {
-            Modified();          
+            Modified();
             modifiedDocument = true;
          }
       };
@@ -765,7 +765,7 @@ public class FixedMultiLineString : String
 
 public class CIString : String
 {
-   
+
 }
 
 public class MultiLineString : String
@@ -853,7 +853,7 @@ public struct DataList : OldList
       if(!class_data(type))
          class_data(type) = eSystem_FindClass(__thisModule.application, class_data(typeName));
       type = class_data(type);
-      
+
       this = { };
 
       while(true)
@@ -915,12 +915,12 @@ public struct DataList : OldList
          else
          {
             Class type = class_data(type);
-            result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, 
+            result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
                (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &nodeA.data : (void *)nodeA.data,
                (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &nodeB.data : (void *)nodeB.data);
             if(result) return result;
          }
-      }         
+      }
       return 0;
    }
 
@@ -937,7 +937,7 @@ public struct DataList : OldList
          {
             return (key == enter) ? false : ListBox::OnKeyHit(key, ch);
          }
-         
+
          bool DataBox::NotifyChanged(ListBox listBox, DataRow row)
          {
             Class type = ((subclass(DataList))this.type).dataType;
@@ -951,7 +951,7 @@ public struct DataList : OldList
                      listBox.DeleteRow(row);
                      listBox.firstChild.Activate();
                   }*/
-               }            
+               }
                else
                {
                   if(row == listBox.lastRow)
@@ -984,7 +984,7 @@ public struct DataList : OldList
                      listBox.DeleteRow(row);
                      listBox.firstChild.Activate();
                   }
-               }            
+               }
                else
                {
                   if(row == listBox.lastRow)
@@ -1026,7 +1026,7 @@ public struct DataList : OldList
                   listBox.scroll.y = listBox.scrollArea.h;
                   listBox.alwaysEdit = true;
                }
-            }            
+            }
             return true;
          }
 
@@ -1058,7 +1058,7 @@ public struct DataList : OldList
             Modified();
             return true;
          }
-   
+
          void OnDestroy()
          {
             Class type = firstField.dataType;
@@ -1081,7 +1081,7 @@ public struct DataList : OldList
       if(!class_data(type))
          class_data(type) = eSystem_FindClass(__thisModule.application, class_data(typeName));
       type = class_data(type);
-      
+
       list.AddField({ type, editable = true });
       for(node = first; node; node = node.next)
       {
@@ -1153,7 +1153,7 @@ public struct DataList : OldList
    }
 
    void OnFree()
-   {  
+   {
       Class type;
       OldLink node;
 

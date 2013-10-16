@@ -81,7 +81,7 @@ Block GetNextBlock(Block block)
    return block;
 }
 
-int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nextBlock, int * nextTextPos, int * centered, int * w, 
+int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nextBlock, int * nextTextPos, int * centered, int * w,
    int maxW, int maxH, uint flags, int y, OldList leftObjects, OldList rightObjects, bool * changeLine, bool computeStartY, int sy, int sx)
 {
    int h = 0;
@@ -180,7 +180,7 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
                   len = (nextSpace - (text + textPos)) + 1;
                else
                   len = block.textLen - textPos;
-               
+
                surface.TextExtent(text + textPos, len, &w, &th);
 
                if(x + width + w > maxW && x > 0)
@@ -243,7 +243,7 @@ int ComputeLine(Surface surface, Block startBlock, int startTextPos, Block * nex
                ComputeTable(surface, block, textPos, &width, &height, maxW, maxH, flags, y + sy, x + sx);
                surface.font = font;
                x += width;
-            
+
                *nextBlock = NextBlockUp(surface, block, centered, flags);
                *nextTextPos = 0;
                h = Max(h, height);
@@ -385,7 +385,7 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
             {
                surface.Bevel(false, dx, dy, bw, bh);
                if(browser.missing.bitmap)
-                  surface.Blit(browser.missing.bitmap, dx + 5, dy + 5, 0,0, 
+                  surface.Blit(browser.missing.bitmap, dx + 5, dy + 5, 0,0,
                      browser.missing.bitmap.width, browser.missing.bitmap.height);
             }
             surface.SetForeground(fg);
@@ -474,7 +474,7 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
    }
 }
 
-bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Block startBlock, int startTextPos, 
+bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Block startBlock, int startTextPos,
               Block endBlock, int endTextPos, int left, int right, int pickX, int pickY, Block* pickBlock, int * pickTextPos)
 {
    bool result = false;
@@ -583,8 +583,8 @@ bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Blo
    return result;
 }
 
-              
-void PositionLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Block startBlock, int startTextPos, 
+
+void PositionLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Block startBlock, int startTextPos,
                   Block endBlock, int endTextPos, int left, int right)
 {
    int textPos = startTextPos;
@@ -604,7 +604,7 @@ void PositionLine(HTMLView browser, Surface surface, int x, int y, int w, int h,
             {
                Window parent = block.window.parent;
                block.window.Move(
-                  x + parent.scroll.x, y + parent.scroll.y, 
+                  x + parent.scroll.x, y + parent.scroll.y,
                   block.window.size.w, block.window.size.h);
                //block.window.visible = false;
                x += block.window.size.w;

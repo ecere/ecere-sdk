@@ -40,7 +40,7 @@ public:
    {
       Size size = { 0 };
       char * string = "";
-      ColorDropBox colorDropBox 
+      ColorDropBox colorDropBox
       {
          dataBox, master = master, editText = true, //position = Point { x + 24, y }, /*clientSize.h = */size.h = h, size.w = w - 24,
          anchor = { left = 24, top = 0, right = 0, bottom = 0 },
@@ -53,7 +53,7 @@ public:
          char tempString[MAX_F_STRING];
          char * result;
          bool needClass = false;
-         tempString[0] = 0;      
+         tempString[0] = 0;
          result = OnGetString(tempString, null, &needClass);
          if(result) string = result;
       }
@@ -104,7 +104,7 @@ public:
    }
 
    bool OnGetDataFromString(char * string)
-   { 
+   {
       if(!atoi(string) && (((DefinedColor)this).class::OnGetDataFromString(string) ||
          ((SystemColor)this).class::OnGetDataFromString(string)))
          return true;
@@ -131,7 +131,7 @@ public:
       surface.Area(x - 4, y, x + 20, y + 15);
 
       surface.SetBackground(this);
-      surface.Area(x, y + 2, x+17, y+13); 
+      surface.Area(x, y + 2, x+17, y+13);
       surface.SetForeground(black);
       surface.Rectangle(x-1, y + 1, x + 18, y + 14);
    }
@@ -150,7 +150,7 @@ public struct ColorHSV
          float minV, maxV, diff,dr,dg,db;
 
          float h, s, v;
-         
+
          minV = Min(r, g);
          minV = Min(minV, b);
 
@@ -167,14 +167,14 @@ public struct ColorHSV
             db = (maxV - b)/diff;
 
             /*
-                if R=V then -- between yellow and magenta [degrees] 
-                  H=60.0*(G-B)/Delta 
-                else if G=V then -- between cyan and yellow 
-                    H=120.0+60.0*(B-R)/Delta 
-                else -- between magenta and cyan 
-                    H=240.0+60.0*(R-G)/Delta 
+                if R=V then -- between yellow and magenta [degrees]
+                  H=60.0*(G-B)/Delta
+                else if G=V then -- between cyan and yellow
+                    H=120.0+60.0*(B-R)/Delta
+                else -- between magenta and cyan
+                    H=240.0+60.0*(R-G)/Delta
             */
-            if(r == maxV) 
+            if(r == maxV)
                h = db - dg;
             else if(g == maxV)
                h = 2 + dr - db;
@@ -203,7 +203,7 @@ public struct ColorHSV
          float q = v*(1-(s*f));
          float t = v*(1-s*(1-f));
          float r,g,b;
-         switch(i) 
+         switch(i)
          {
             case 0: r = v; g = t; b = p; break;
             case 1: r = q; g = v; b = p; break;
@@ -243,7 +243,7 @@ public struct ColorLab
             float x = r * 0.412453f + g * 0.357580f + b * 0.180423f;
             float y = r * 0.212671f + g * 0.715160f + b * 0.072169f;
             float z = r * 0.019334f + g * 0.119193f + b * 0.950227f;
-            
+
             x /= 0.950456f;
             y /= 1;
             z /= 1.088754f;
@@ -266,7 +266,7 @@ public struct ColorLab
          float x,y,z,r,g,b, P;
 
          P = (l + 16)/116;
-         
+
          if(l > 903.3f * 0.008856f)
          {
             y = (l + 16) / 116;
@@ -282,17 +282,17 @@ public struct ColorLab
 
 
          x = a / 500 + P;
-         if(x > 0.206893f) 
+         if(x > 0.206893f)
             x = x*x*x;
          else
             x = (116 * x - 16) / 903.3f;
 
          z = P - this.b / 200;
-         if(z > 0.206893f) 
+         if(z > 0.206893f)
             z = z*z*z;
          else
             z = (116 * z - 16) / 903.3f;
-         
+
 
          x *= 0.950456f;
          y *= 1;
@@ -595,7 +595,7 @@ private class ColorValue : Color
    {
       // surface.WriteTextDots(alignment, x + 24, y + 1, width - 24, string, strlen(string));
       surface.SetBackground(this);
-      surface.Area(x, y + 4, x+19, y+11); 
+      surface.Area(x, y + 4, x+19, y+11);
 
       surface.SetForeground(black);
       surface.Rectangle(x-1, y + 3, x + 20, y + 12);
@@ -625,7 +625,7 @@ private class ColorValue : Color
 
    Window pullDown
    {
-      master = this, interim = true, autoCreate = false, minSize = { 204, 222 }, 
+      master = this, interim = true, autoCreate = false, minSize = { 204, 222 },
       background = formColor, borderStyle = contour|bevel;
 
       bool OnKeyDown(Key key, unichar ch)
@@ -759,7 +759,7 @@ private class ColorValue : Color
       position = Point { 136, 0 },
       isRadio = true,
       bevelOver = true,
-      inactive = true,         
+      inactive = true,
       bitmap = null;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)

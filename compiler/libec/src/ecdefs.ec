@@ -28,7 +28,7 @@ public class DBTableDef : struct
 public:
    char * name;
    Symbol symbol;
-   OldList * definitions;   
+   OldList * definitions;
    AccessMode declMode;
 }
 
@@ -74,7 +74,7 @@ public void SetMainModule(ModuleImport moduleImport) { mainModule = moduleImport
 File fileInput;
 public void SetFileInput(File file) { fileInput = file; }
 char * symbolsDir = null;
-public void SetSymbolsDir(char * s) { 
+public void SetSymbolsDir(char * s) {
    delete symbolsDir;
    symbolsDir = CopyString(s);
 } public char * GetSymbolsDir() { return symbolsDir ? symbolsDir : ""; }
@@ -190,7 +190,7 @@ public:
             if(line - 1 > end.y)
                line -= end.y - start.y;
             // Location is the last touched line
-            else 
+            else
             {
                if(charPos - 1 >= end.x)
                {
@@ -221,7 +221,7 @@ public:
             if(charPos - 1 > start.x || (charPos - 1 == start.x /*&& (numLines ? true : false)*/))
             {
                line += numLines;
-               //charPos - 1 += numLines ? end.x : (end.x - start.x);            
+               //charPos - 1 += numLines ? end.x : (end.x - start.x);
                charPos += end.x - start.x;
             }
          }
@@ -236,7 +236,7 @@ public:
 
    bool Inside(int line, int charPos)
    {
-      return (start.line < line || (start.line == line && start.charPos <= charPos)) && 
+      return (start.line < line || (start.line == line && start.charPos <= charPos)) &&
              (end.line > line || (end.line == line && end.charPos >= charPos));
    }
 };
@@ -276,7 +276,7 @@ public:
 };
 
 public enum ExpressionType
-{ 
+{
    identifierExp, instanceExp, constantExp, stringExp, opExp,
    bracketsExp, indexExp, callExp, memberExp, pointerExp, typeSizeExp,
    castExp, conditionExp, newExp, renewExp, classSizeExp,
@@ -304,7 +304,7 @@ public class TemplateParameter : struct
 public:
    TemplateParameter prev, next;
    Location loc;
-   
+
    TemplateParameterType type;
    Identifier identifier;
    union
@@ -313,7 +313,7 @@ public:
       TemplateMemberType memberType;   // For identifier
    };
    TemplateArgument defaultArgument;
-    
+
    // For type parameters
    char * dataTypeString;
    Type baseType;
@@ -331,7 +331,7 @@ public class TemplateArgument : struct
 public:
    TemplateArgument prev, next;
    Location loc;
-   
+
    Identifier name;
    TemplateParameterType type;
    union
@@ -568,7 +568,7 @@ class Pointer : struct
 
 public enum DeclaratorType
 {
-   structDeclarator, identifierDeclarator, bracketsDeclarator, arrayDeclarator, 
+   structDeclarator, identifierDeclarator, bracketsDeclarator, arrayDeclarator,
    functionDeclarator, pointerDeclarator, extendedDeclarator, extendedDeclaratorEnd
 };
 
@@ -664,7 +664,7 @@ class AsmField : struct
 };
 
 public enum StmtType { labeledStmt, caseStmt, compoundStmt,
-               expressionStmt, ifStmt, switchStmt, whileStmt, doWhileStmt, 
+               expressionStmt, ifStmt, switchStmt, whileStmt, doWhileStmt,
                forStmt, gotoStmt, continueStmt, breakStmt, returnStmt, asmStmt, badDeclarationStmt,
                fireWatchersStmt, stopWatchingStmt, watchStmt, forEachStmt
              };
@@ -699,7 +699,7 @@ public:
       {
          OldList * exp;
          Statement stmt;
-         Statement elseStmt;                  
+         Statement elseStmt;
       } ifStmt;
       struct
       {
@@ -828,7 +828,7 @@ public:
    Class _class;
    OldList attached;    // For IDE
    AccessMode declMode;
-   
+
    // COMPILING DATA
    Type type;
    Symbol propSet;
@@ -897,7 +897,7 @@ public:
 };
 
 public enum ClassDefType
-{ 
+{
    functionClassDef, defaultPropertiesClassDef, declarationClassDef, propertyClassDef,
    propertyWatchClassDef, classDesignerClassDef, classNoExpansionClassDef, classFixedClassDef,
    designerDefaultPropertyClassDef, classDataClassDef, classPropertyClassDef, classPropertyValueClassDef,
@@ -1031,7 +1031,7 @@ public:
    char * constructorName, * structName, * className, * destructorName;
 
    ModuleImport module;
-   ClassImport _import;  
+   ClassImport _import;
    Location nameLoc;
    bool isParam;
    bool isRemote;
@@ -1097,7 +1097,7 @@ public:
 
 // For the .sym file:
 public enum TypeKind
-{ 
+{
    voidType, charType, shortType, intType, int64Type, longType, floatType,
    doubleType, classType, structType, unionType, functionType, arrayType, pointerType,
    ellipsisType, enumType, methodType, vaListType, /*typedObjectType, anyObjectType, classPointerType, */ dummyType,
@@ -1183,9 +1183,9 @@ public:
 
    void OnFree()
    {
-      
+
    }
-};            
+};
 
 public struct Operand
 {
@@ -1221,14 +1221,14 @@ public:
    bool (* Mul)(Expression, Operand, Operand);
    bool (* Div)(Expression, Operand, Operand);
    bool (* Mod)(Expression, Operand, Operand);
-   
+
    // unary arithmetic
    bool (* Neg)(Expression, Operand);
-   
+
    // unary arithmetic increment and decrement
    bool (* Inc)(Expression, Operand);
    bool (* Dec)(Expression, Operand);
-   
+
    // binary arithmetic assignment
    bool (* Asign)(Expression, Operand, Operand);
    bool (* AddAsign)(Expression, Operand, Operand);
@@ -1236,7 +1236,7 @@ public:
    bool (* MulAsign)(Expression, Operand, Operand);
    bool (* DivAsign)(Expression, Operand, Operand);
    bool (* ModAsign)(Expression, Operand, Operand);
-   
+
    // binary bitwise
    bool (* BitAnd)(Expression, Operand, Operand);
    bool (* BitOr)(Expression, Operand, Operand);
@@ -1244,31 +1244,31 @@ public:
    bool (* LShift)(Expression, Operand, Operand);
    bool (* RShift)(Expression, Operand, Operand);
    bool (* BitNot)(Expression, Operand);
-   
+
    // binary bitwise assignment
    bool (* AndAsign)(Expression, Operand, Operand);
    bool (* OrAsign)(Expression, Operand, Operand);
    bool (* XorAsign)(Expression, Operand, Operand);
    bool (* LShiftAsign)(Expression, Operand, Operand);
    bool (* RShiftAsign)(Expression, Operand, Operand);
-   
+
    // unary logical negation
    bool (* Not)(Expression, Operand);
-   
+
    // binary logical equality
    bool (* Equ)(Expression, Operand, Operand);
    bool (* Nqu)(Expression, Operand, Operand);
-   
+
    // binary logical
    bool (* And)(Expression, Operand, Operand);
    bool (* Or)(Expression, Operand, Operand);
-   
+
    // binary logical relational
    bool (* Grt)(Expression, Operand, Operand);
    bool (* Sma)(Expression, Operand, Operand);
    bool (* GrtEqu)(Expression, Operand, Operand);
    bool (* SmaEqu)(Expression, Operand, Operand);
-   
+
    bool (* Cond)(Expression, Operand, Operand, Operand);
 };
 
@@ -1345,7 +1345,7 @@ void Compiler_Warning(char * format, ...)
          GetWorkingDir(string, sizeof(string));
          PathCat(string, sourceFile);
       }
-      
+
       printf(string);
 
       //printf("(%d, %d) : warning: ", yylloc.start.line, yylloc.start.charPos);

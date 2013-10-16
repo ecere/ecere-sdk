@@ -67,7 +67,7 @@ static Array<FileType> projectTypes
    { $"Ecere IDE Workspace", WorkspaceExtension }
 ] };
 
-static char * iconNames[] = 
+static char * iconNames[] =
 {
    "<:ecere>mimeTypes/file.png",                   /*genFile*/
    "<:ecere>mimeTypes/textEcereWorkspace.png",     /*ewsFile*/
@@ -116,10 +116,10 @@ class ProjectView : Window
    size = { 300 };
    anchor = Anchor { left = 0, top = 0, bottom = 0 };
    menu = Menu { };
-   
+
    //hasMinimize = true;
    saveDialog = projectFileDialog;
-   
+
    DataRow resourceRow;
    BuildState buildInProgress;
    BitmapResource icons[NodeIcons];
@@ -156,7 +156,7 @@ class ProjectView : Window
       }
       get { return workspace; }
    }
-   
+
    bool drawingInProjectSettingsDialog;
    bool drawingInProjectSettingsDialogHeader;
    ProjectSettings projectSettingsDialog;
@@ -202,7 +202,7 @@ class ProjectView : Window
          if(!active) Update(null);
          return ListBox::OnActivate(active, previous, goOnWithActivation, direct);
       }
-      
+
       bool NotifyDoubleClick(ListBox listBox, int x, int y, Modifiers mods)
       {
          // Prevent the double click from reactivating the project view (returns false if we opened something)
@@ -224,7 +224,7 @@ class ProjectView : Window
             {
                bool na = buildInProgress; // N/A - buildMenuUnavailable
                Menu pop { };
-               
+
                if(node.type == NodeTypes::project)
                {
                   MenuItem mi;
@@ -339,11 +339,11 @@ class ProjectView : Window
                   MenuItem { pop, $"Properties...", p, Key { enter, alt = true }, NotifySelect = FileProperties };
                }
 
-               popupMenu = 
+               popupMenu =
                {
                   master = this, menu = pop;
                   position = {
-                     x + clientStart.x + absPosition.x - app.desktop.position.x, 
+                     x + clientStart.x + absPosition.x - app.desktop.position.x,
                      y + clientStart.y + absPosition.y - app.desktop.position.y };
 
                   void NotifyDestroyed(Window window, DialogResult result)
@@ -377,7 +377,7 @@ class ProjectView : Window
             {
                case altEnter: case Key { keyPadEnter, alt = true }:
                {
-                  NodeProperties { parent = parent, master = this, 
+                  NodeProperties { parent = parent, master = this,
                      position = { position.x + 100, position.y + 100 }, node = node }.Create();
                   return false;
                }
@@ -457,7 +457,7 @@ class ProjectView : Window
             case Key { keyPadEnter, true, true }:  OpenSelectedNodes(true);   break;
             case enter: case keyPadEnter:          OpenSelectedNodes(false);  break;
             case del:                              RemoveSelectedNodes();     break;
-            case escape:                      
+            case escape:
             {
                Window activeClient = ide.activeClient;
                if(activeClient)
@@ -551,7 +551,7 @@ class ProjectView : Window
       ide.watchesView.Clear();
       ide.threadsView.Clear();
       ide.breakpointsView.Clear();
-      ide.outputView.ShowClearSelectTab(find); // why this? 
+      ide.outputView.ShowClearSelectTab(find); // why this?
    }
 
    bool OnSaveFile(char * fileName)
@@ -677,7 +677,7 @@ class ProjectView : Window
          char makefileName[MAX_LOCATION];
          bool exists;
          LogBox logBox = ide.outputView.buildBox;
-         
+
          strcpy(makefilePath, project.topNode.path);
          project.CatMakeFileName(makefileName, config);
          PathCatSlash(makefilePath, makefileName);
@@ -720,7 +720,7 @@ class ProjectView : Window
       }
       return false;
    }
-   
+
    bool BuildInterrim(Project prj, BuildType buildType, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint)
    {
       if(ProjectPrepareForToolchain(prj, normal, true, true, compiler, config))
@@ -1296,7 +1296,7 @@ class ProjectView : Window
       if(row)
       {
          ProjectNode node = (ProjectNode)row.tag;
-         NodeProperties { parent = parent, master = this, node = node, 
+         NodeProperties { parent = parent, master = this, node = node,
                position = { position.x + 100, position.y + 100 } }.Create();
       }
       return true;
@@ -1442,7 +1442,7 @@ class ProjectView : Window
       }
       return prj;
    }
-   
+
    void SelectNextProject(bool backwards)
    {
       DataRow row = fileList.currentRow;
@@ -1535,7 +1535,7 @@ class ProjectView : Window
                char command[MAX_LOCATION];
 
                ide.SetPath(false, compiler, config, bitDepth);
-               
+
                GetWorkingDir(oldwd, sizeof(oldwd));
                ChangeWorkingDir(project.topNode.path);
 
@@ -1553,13 +1553,13 @@ class ProjectView : Window
          }
       }
       delete compiler;
-      return result;      
+      return result;
    }
 
    void GoToError(const char * line, const bool noParsing)
    {
       char * colon;
-      
+
       while(isspace(*line)) line++;
       colon = strstr(line, ":");
 
@@ -1611,7 +1611,7 @@ class ProjectView : Window
             if(comma)
                col = atoi(comma+1);
          }
-         
+
          {
             char moduleName[MAX_LOCATION], filePath[MAX_LOCATION] = "";
             char ext[MAX_EXTENSION] = "";
@@ -1748,7 +1748,7 @@ class ProjectView : Window
                   strcpy(filePath, project.topNode.path);
                   PathCatSlash(filePath, moduleName);
                }
-      
+
                codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
                if(!codeEditor && !strcmp(ext, "c"))
                {
@@ -1825,9 +1825,9 @@ class ProjectView : Window
 
       row.SetData(null, node);
 
-      if(node.files && node.files.first && node.parent && 
-            !(!node.parent.parent && 
-               (!strcmpi(node.name, "notes") || !strcmpi(node.name, "sources") || 
+      if(node.files && node.files.first && node.parent &&
+            !(!node.parent.parent &&
+               (!strcmpi(node.name, "notes") || !strcmpi(node.name, "sources") ||
                   !strcmpi(node.name, "src") || !strcmpi(node.name, "tools"))))
          row.collapsed = true;
       else if(node.type == folder)
@@ -1867,7 +1867,7 @@ class ProjectView : Window
             for(p : ide.workspace.projects)
             {
                if(p.topNode.modified)
-               { 
+               {
                   modPrj = p;
                   break;
                }
@@ -1986,7 +1986,7 @@ class ProjectView : Window
       {
          //bool isFolder = toNode.type == folder;
          //bool isRes = toNode.isInResources;
-         
+
          FileDialog fileDialog = importFileDialog;
          fileDialog.master = parent;
          if(fileDialog.Modal() == ok)
@@ -2013,7 +2013,7 @@ class ProjectView : Window
                break;
             after = node;
          }
-         
+
          if(name && name[0])
             folderNode = parentNode.Add(prj, name, after, folder, folder, true);
          else
@@ -2038,10 +2038,10 @@ class ProjectView : Window
             Update(null);
             folderNode.row = parentNode.row.AddRowAfter(after ? after.row : null);
             folderNode.row.tag = (int64)folderNode;
-               
+
             folderNode.row.SetData(null, folderNode);
             fileList.currentRow = folderNode.row;
-            
+
             if(showProperties)
             {
                nodeProperties = NodeProperties
@@ -2085,7 +2085,7 @@ class ProjectView : Window
                addThisFile = false;
             else if(!exists)
             {
-               if(MessageBox { master = ide, type = yesNo, text = filePath, 
+               if(MessageBox { master = ide, type = yesNo, text = filePath,
                      contents = $"File doesn't exist. Create?" }.Modal() == yes)
                {
                   File f = FileOpen(filePath, write);
@@ -2096,7 +2096,7 @@ class ProjectView : Window
                   }
                   else
                   {
-                     MessageBox { master = ide, type = ok, text = filePath, 
+                     MessageBox { master = ide, type = ok, text = filePath,
                            contents = $"Couldn't create file."}.Modal();
                      addThisFile = false;
                   }
@@ -2134,7 +2134,7 @@ class ProjectView : Window
                strcat(message, s);
                strcat(message, "\n");
             }
-            MessageBox { master = ide, type = ok, text = $"Name Conflict", 
+            MessageBox { master = ide, type = ok, text = $"Name Conflict",
                   contents = message }.Modal();
             delete message;
          }
@@ -2209,7 +2209,7 @@ class ProjectView : Window
          project.ModifiedAllConfigs(true, false, false, true);
          projectNode.row = parentNode.row.AddRowAfter(after ? after.row : null);
          projectNode.row.tag =(int64)projectNode;
-            
+
          projectNode.row.SetData(null, projectNode);
          fileList.currentRow = projectNode.row;
 
@@ -2251,7 +2251,7 @@ class ProjectView : Window
          }
       }
       //visible = false;
-      return codeEditor;   
+      return codeEditor;
    }
 
    // Returns true if we opened something
@@ -2281,7 +2281,7 @@ class ProjectView : Window
    {
       OldList selection;
       OldLink item, next;
-      
+
       fileList.GetMultiSelection(selection);
 
       // Remove children of parents we're deleting

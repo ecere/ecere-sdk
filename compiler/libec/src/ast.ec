@@ -55,7 +55,7 @@ public Identifier MkIdentifier(char * string)
 {
    Identifier id { };
    int c;
-   
+
    id._class = null; // Default class...
 
    if(string)
@@ -119,7 +119,7 @@ public Identifier MkIdentifier(char * string)
                else
                   id.string = CopyString(string);
             }
-         }         
+         }
       }
       else if(gotColon)
       {
@@ -441,7 +441,7 @@ Specifier MkSpecifierExtended(ExtDecl extDecl)
 
 Specifier MkEnum(Identifier id, OldList list)
 {
-   Specifier spec 
+   Specifier spec
    {
       type = enumSpecifier;
       id = id;
@@ -798,7 +798,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
 {
    Declaration decl { type = initDeclaration, declarators = initDeclarators, specifiers = specifiers, loc = yylloc };
    bool variable = true;
-   
+
    if(specifiers != null)
    {
       bool gotType = false;
@@ -811,7 +811,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
             if(initDeclarators != null)
             {
                InitDeclarator d;
-         
+
                for(d = initDeclarators.first; d; d = d.next)
                {
                   if(GetDeclId(d.declarator).string)
@@ -863,7 +863,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
             variable = false;
             break;
          }
-         else if(spec.type == baseSpecifier && 
+         else if(spec.type == baseSpecifier &&
             (spec.specifier == STRUCT || spec.specifier == UNION))
             variable = false;
          else
@@ -930,7 +930,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                   delete id.string;
                   id.string = CopyString(name);
                }
-               
+
                // Avoid memory leaks on duplicated symbols (BinaryTree::Add Would Fail)
                symbol = (Symbol)(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.FindString(id.string);
                if(!symbol)
@@ -1360,7 +1360,7 @@ void SetClassTemplateArgs(Specifier spec, OldList templateArgs)
                   fileInput = backFileInput;
                   if(fileInput)
                   {
-                     fileInput.Seek(yylloc.start.pos, start); 
+                     fileInput.Seek(yylloc.start.pos, start);
                      resetScannerPos(&yylloc.start);
                      yychar = -2;
                   }
@@ -1453,7 +1453,7 @@ Specifier _MkSpecifierName(char * name, Symbol symbol, OldList templateArgs)
          }
       }
       else if(symbol)
-         spec.name = CopyString(symbol.string);   
+         spec.name = CopyString(symbol.string);
       else
          spec.name = CopyString(name);
       spec.symbol = symbol;
@@ -1540,7 +1540,7 @@ void ProcessClassFunctionBody(ClassFunction func, Statement body)
 
       symbol = Symbol
       {
-         
+
       };
 
       {
@@ -1642,7 +1642,7 @@ Instantiation MkInstantiationNamed(OldList specs, Expression exp, OldList member
          }
 
       FreeList(specs, FreeSpecifier);
-         
+
       if(!spec)
       {
          Compiler_Error($"Expecting class specifier\n");
@@ -1767,7 +1767,7 @@ Symbol _DeclClass(int symbolID, char * name)
       for(classContext = curContext; classContext && !classContext.classDef; classContext = classContext.parent);
       if(classContext)
       {
-         
+
       }
       */
       if(name[0] == ':' && name[1] == ':')
@@ -1810,7 +1810,7 @@ void SetupBaseSpecs(Symbol symbol, OldList baseSpecs)
       strcpy(name, ((Specifier)baseSpecs.first).name);
       tpl = strchr(name, '<');
       if(tpl) *tpl = 0;
-      
+
       baseClass = FindClass(name);
       if(baseClass && baseClass.ctx)
       {
@@ -1841,7 +1841,7 @@ void SetupBaseSpecs(Symbol symbol, OldList baseSpecs)
                   {
                      p.param = param = TemplateParameter
                      {
-                        identifier = MkIdentifier(p.name), type = p.type, 
+                        identifier = MkIdentifier(p.name), type = p.type,
                         dataTypeString = p.dataTypeString /*, dataType = { specs, decl }*/
                      };
                   }
@@ -2027,7 +2027,7 @@ TemplatedType FindTemplateTypeParameter(Context ctx, char * name)
 bool ModuleAccess(Module searchIn, Module searchFor)
 {
    SubModule subModule;
-   
+
    if(searchFor == searchIn)
       return true;
 
@@ -2052,8 +2052,8 @@ ModuleImport FindModule(Module moduleToFind)
          break;
    if(!module)
    {
-      module = ModuleImport 
-      { 
+      module = ModuleImport
+      {
          name = CopyString(moduleToFind.name), importType = moduleToFind.importType,
          importAccess = ModuleAccess(privateModule, moduleToFind) ? publicAccess : privateAccess
       };
@@ -2070,7 +2070,7 @@ static void GetFullClassNameSpace(NameSpace * ns, char * name)
    {
       GetFullClassNameSpace(ns->parent, name);
       strcat(name, ns->name);
-      strcat(name, "::");      
+      strcat(name, "::");
    }
 }
 
@@ -2154,7 +2154,7 @@ public Symbol FindClass(char * name)
          }
          */
          if(cl.shortName && !strcmp(cl.shortName, name))
-            break;            
+            break;
       }
 #ifdef _TIMINGS
       findClassIgnoreNSTotalTime += GetTime() - startTime;
@@ -2309,10 +2309,10 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             else if(spec.specifier == INT) { if(specType.kind != shortType && specType.kind != longType && !isLong) specType.kind = intType; }
             else if(spec.specifier == UINT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; specType.isSigned = false; }
             else if(spec.specifier == INT64) specType.kind = int64Type;
-            else if(spec.specifier == VALIST) 
+            else if(spec.specifier == VALIST)
                specType.kind = vaListType;
             else if(spec.specifier == SHORT) specType.kind = shortType;
-            else if(spec.specifier == LONG) 
+            else if(spec.specifier == LONG)
             {
                if(isLong || (targetBits == 64 && targetPlatform != win32))
                   specType.kind = int64Type;
@@ -2327,7 +2327,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             else if(spec.specifier == CONST)
                specType.constant = true;
             else if(spec.specifier == TYPED_OBJECT || spec.specifier == ANY_OBJECT || spec.specifier == CLASS)
-            { 
+            {
                switch(spec.specifier)
                {
                   case TYPED_OBJECT:   specType.classObjectType = typedObject;   break;
@@ -2418,7 +2418,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                specType.kind = unionType;
             if(spec.id)
             {
-               // TESTING THIS HERE... Had 0 type size 
+               // TESTING THIS HERE... Had 0 type size
                if(!spec.definitions && !isTypedef)
                {
                   Symbol symbol = spec.id.string ? FindSymbol(spec.id.string, curContext, globalContext, true, false) : null;
@@ -2509,7 +2509,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
    }
    else if(assumeEllipsis)
       specType.kind = ellipsisType;
-   return specType;     
+   return specType;
 }
 
 static Type ProcessTypeDecls(OldList specs, Declarator decl, Type parentType)
@@ -2595,7 +2595,7 @@ static Type ProcessTypeDecls(OldList specs, Declarator decl, Type parentType)
          {
             type = { refCount = 1, kind = arrayType, arraySizeExp = CopyExpression(decl.array.exp), freeExp = true, type = type, dllExport = type.dllExport, attrStdcall = type.attrStdcall };
             if(decl.array.enumClass)
-               type.enumClass = decl.array.enumClass.symbol; 
+               type.enumClass = decl.array.enumClass.symbol;
             break;
          }
          case pointerDeclarator:
@@ -2753,8 +2753,8 @@ AsmField MkAsmField(char * command, Expression expression)
 
 Statement MkAsmStmt(Specifier spec, char * statements, OldList inputFields, OldList outputFields, OldList clobberedFields)
 {
-   return { type = asmStmt, asmStmt.spec = spec, asmStmt.statements = statements, 
-      asmStmt.inputFields = inputFields, asmStmt.outputFields = outputFields, 
+   return { type = asmStmt, asmStmt.spec = spec, asmStmt.statements = statements,
+      asmStmt.inputFields = inputFields, asmStmt.outputFields = outputFields,
       asmStmt.clobberedFields = clobberedFields };
 }
 
@@ -2882,7 +2882,7 @@ Expression GetTemplateArgExpByName(char * paramName, Class curClass, TemplatePar
          char idString[32];
          char className[1024];
          Expression classExp;
-         
+
          sprintf(idString, "%d", id);
          strcpy(className, "__ecereClass_");
          FullClassNameCat(className, _class.fullName, true);
@@ -2890,11 +2890,11 @@ Expression GetTemplateArgExpByName(char * paramName, Class curClass, TemplatePar
          DeclareClass(FindClass(_class.fullName), className);
 
          argExp = MkExpIndex((/*pointer ? MkExpPointer : */MkExpMember)
-               (MkExpMember(MkExpIdentifier(MkIdentifier("this")), MkIdentifier("_class")) /*MkExpIdentifier(MkIdentifier(className))*/, 
+               (MkExpMember(MkExpIdentifier(MkIdentifier("this")), MkIdentifier("_class")) /*MkExpIdentifier(MkIdentifier(className))*/,
                MkIdentifier("templateArgs")), MkListOne(MkExpConstant(idString)));
       }
    }
-   return argExp; 
+   return argExp;
 }
 
 Expression GetTemplateArgExp(TemplateParameter param, Class curClass, bool pointer)

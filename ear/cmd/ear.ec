@@ -64,7 +64,7 @@ static void ViewArchive(char * path)
       strcat(string, "\n");
       Log(string);
    }
-   
+
    while(listing.Find())
    {
       char timeString[100]; //28]; I18n strings take up more characters
@@ -83,7 +83,7 @@ static void ViewArchive(char * path)
       strcat(string, $"\n   Modified: ");
       strcat(string, timeString);
       strcat(string, "\n");
-      
+
       if(listing.stats.attribs.isDirectory)
          ViewArchive(listing.path);
       else
@@ -250,7 +250,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
       bool doMove = false;
 
       SplitArchivePath(sourcePath, archiveName, &source);
-      
+
       GetLastDirectory(source, sourceFileName);
       StripLastDirectory(source, sourceDirectory);
 
@@ -269,7 +269,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
       {
          // If directory exists in destination directory, move files and then delete
          outputExists = FileExists(existingFilePath);
-      
+
          // If source is a directory
          if(exists.isDirectory)
          {
@@ -277,7 +277,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
             bool within = true;
             char outputPart[MAX_FILENAME], outputRest[MAX_LOCATION];
             char sourcePart[MAX_FILENAME], sourceRest[MAX_LOCATION];
-         
+
             strcpy(outputRest, outputDirectory);
             strcpy(sourceRest, source);
 
@@ -300,7 +300,7 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                {
                   ArchiveDir input;
                   FileListing listing { sourcePath };
-                  
+
                   if(!source[0])
                   {
                      ArchiveDir dir;
@@ -316,12 +316,12 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                      }
                   }
                   else if(!rootMoving)
-                     Logf($"Merging directory %s in %s with %s in %s.\n", 
-                        sourceFileName, 
+                     Logf($"Merging directory %s in %s with %s in %s.\n",
+                        sourceFileName,
                         sourceDirectory[0] ? sourceDirectory : "root",
                         sourceFileName,
                         outputDirectory[0] ? outputDirectory : "root");
-                  
+
                   while(listing.Find())
                   {
                      if(strcmp(listing.path, existingFilePath))
@@ -367,8 +367,8 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                   if(outputExists.isFile)
                      output.Delete(sourceFileName);
 
-                  Logf($"Moving file %s in directory %s to %s.\n", sourceFileName, 
-                     sourceDirectory[0] ? sourceDirectory : "root", 
+                  Logf($"Moving file %s in directory %s to %s.\n", sourceFileName,
+                     sourceDirectory[0] ? sourceDirectory : "root",
                      outputDirectory[0] ? outputDirectory : "root");
 
                   // Perform operation
@@ -404,7 +404,7 @@ class EARApp : Application
       int c;
 
       quiet = false;
-         
+
       DumpErrors(false);
       SetLoggingMode(stdOut, null);
 
@@ -412,7 +412,7 @@ class EARApp : Application
       {
          // First validate command / options
          char ch;
-        
+
          valid = true;
          for(c = 0; (ch = (char)tolower(argv[1][c])) && valid; c++)
          {
@@ -477,7 +477,7 @@ class EARApp : Application
                   numFiles = argc - 3;
                   firstFileArg = 3;
                   break;
-               case ARCHIVE_ACTION_EXTRACT: 
+               case ARCHIVE_ACTION_EXTRACT:
                   firstFileArg = 3;
                   if(extractWhere)
                      numFiles = argc - 4;
@@ -534,7 +534,7 @@ class EARApp : Application
                Logf($"Archive file is empty: %s\n", argv[2]);
                action = 0;
             }
-            else 
+            else
             {
                Archive archive = ArchiveOpen(argv[2], { false });
                if(archive)
@@ -559,7 +559,7 @@ class EARApp : Application
          switch(action)
          {
             case ARCHIVE_ACTION_VIEW:
-            {     
+            {
                if(!numFiles)
                   ViewArchive(archivePath);
                else
@@ -629,7 +629,7 @@ class EARApp : Application
                         strcpy(outputFile, DIR_SEPS);
 
                      StripLastDirectory(outputFile, directory);
-                  
+
                      MakeDir(directory);
 
                      ExtractFileFromArchive(fileName, outputFile);
@@ -670,7 +670,7 @@ class EARApp : Application
                            }
                            else
                               StripLastDirectory(argv[c], directory);
-                           
+
                            dir = archive.OpenDirectory(directory, extractWhere ? &stats : null, addMode);
                            if(dir)
                            {
@@ -752,7 +752,7 @@ class EARApp : Application
                if(archive)
                {
                   char fileName[MAX_LOCATION];
-    
+
                   for(c = firstFileArg; c<firstFileArg + numFiles; c++)
                   {
                      strcpy(fileName, archivePath);

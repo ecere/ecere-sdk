@@ -42,7 +42,7 @@ class Form1 : Window
       for (i=0; i<=d; i++)
          surface.DrawLine(0,i*h/d,i*w/d,h);
    }
-   
+
    /*void OnRedraw(Surface surface)
    {
       int i,w,h,d;
@@ -67,9 +67,9 @@ class Gadget : Window
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
-      
+
       return true;
-   }   
+   }
 };
 
 define skinBackground = Color { r = 40, g = 40, b = 40 };
@@ -92,7 +92,7 @@ class Slider : Gadget
          surface.Area(0, clientSize.h / 2 - 3, clientSize.w-1, clientSize.h/2 + 3);
          surface.SetForeground(black);
          surface.Rectangle(1, clientSize.h / 2 - 2, clientSize.w-2, clientSize.h/2 + 2);
-          
+
          surface.SetBackground(darkGray);
          surface.Area(pos - 3, 0, pos + 3, clientSize.h-1);
          surface.SetForeground(white);

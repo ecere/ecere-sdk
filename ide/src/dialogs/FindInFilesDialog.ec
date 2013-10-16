@@ -14,7 +14,7 @@ class FindInFilesDialog : Window
    tabCycle = true;
    size = { 440, 208 };
    autoCreate = false;
-   
+
 public:
    property char * searchString { set { findContent.contents = value; } get { return findContent.contents; } };
    property bool contentWholeWord { set { contentWholeWord.checked = value; } get { return contentWholeWord.checked; } };
@@ -433,7 +433,7 @@ private:
          return true;
       }
    };
-   
+
    SearchThread searchThread { findDialog = this };
    FileDialog fileDialog { master = this, type = selectDir, text = $"Select Search Location..." };
 
@@ -500,7 +500,7 @@ private:
 
       findWhere.disabled = disabled;
       subDirs.disabled = disabled;*/
-      
+
       findContent.Activate();
       return true;
    }
@@ -508,7 +508,7 @@ private:
    void SearchStart()
    {
       char text[2048];
-      
+
       searchThread.active = true;
       searchThread.project = null;
       searchThread.projectNode = null;
@@ -534,7 +534,7 @@ private:
       //searchThread.nameWholeWord = nameWholeWord.checked;
       searchThread.contentMatchCase = contentMatchCase.checked;
       searchThread.contentWholeWord = contentWholeWord.checked;
-      
+
       searchThread.filter = filters[fileFilter];
 
       strcpy(searchThread.nameCriteria, fileName.contents);
@@ -544,11 +544,11 @@ private:
       searchThread.replaceMode = replaceMode;
 
       //cancel.text = "Stop";
-      
+
       ide.outputView.ShowClearSelectTab(find);
 
       Destroy(0);
-      
+
       searchThread.Create();
    }
 
@@ -654,7 +654,7 @@ private:
       //double lastTime = GetTime();
       SearchStackFrame stack[stackSize];
       FindInFilesMode mode = this.mode;
-      
+
       EditBox replaceEdit = null;
 
       abort = false;
@@ -701,12 +701,12 @@ private:
                      project.name, filterName, substring, and, containing);
          }
       app.Unlock();
-      
+
       if(replaceMode)
       {
          replaceEdit = EditBox
          {
-            multiLine = true,textHorzScroll = true,textVertScroll = true, 
+            multiLine = true,textHorzScroll = true,textVertScroll = true,
             text = $"Replacing Editbox", size = Size { 640,480 }/*,maxLineSize = 65536*/
          };
       }
@@ -714,7 +714,7 @@ private:
       if(mode == directory)
       {
          strcpy(stack[0].path, dir);
-         stack[0].fileList = FileListing { dir, extensions = filter.extensions };  // there should be a sorted = true/false 
+         stack[0].fileList = FileListing { dir, extensions = filter.extensions };  // there should be a sorted = true/false
 
          for(frame = 0; frame >= 0 && frame < stackSize && !abort; )
          {
@@ -736,7 +736,7 @@ private:
                   {
                      MakePathRelative(stack[frame].fileList.path, dir, fileRelative);
                      relative = true;
-                     
+
                      filesSearchedCount++;
                      if(match && contentCriteria[0])
                      {
@@ -856,7 +856,7 @@ private:
                      }
                      break;
                   case file:
-                  {   
+                  {
                      bool relative = true;
                      char fileRelative[MAX_LOCATION];
                      char filePath[MAX_LOCATION];
@@ -1132,7 +1132,7 @@ private:
             // todo
             /*else
                f.Seek(-strlen(contentCriteria), current);*/
-               
+
          }
          delete f;
          if(replaceCount)

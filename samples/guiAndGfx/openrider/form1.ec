@@ -178,13 +178,13 @@ class Form1 : Window
          running_b = value;
          goItem.checked = value;
          wheelSpinner.started = value;
-         
+
          centerItem.disabled = value;
          nudgeLeftItem.disabled = value;
          nudgeRightItem.disabled = value;
          nudgeUpItem.disabled = value;
          nudgeDownItem.disabled = value;
-         
+
          if (!value)
             Update(null);
       }
@@ -196,13 +196,13 @@ class Form1 : Window
    Timer wheelSpinner {this, 0.015, started=false;
       bool DelayExpired() {
          double t = GetTime();
-         
+
          this.modifiedDocument = true;
-         
+
          //game.FrameMulti(LOGICAL_FPS/DRAWN_FPS*2);
          game.FrameMulti((uint)((t-lastFrameTime)*LOGICAL_FPS));
          lastFrameTime = t;
-         
+
          //let's center the camera on the ball
          {
             Coord2D p = game.vehicles[0].location;
@@ -244,7 +244,7 @@ class Form1 : Window
 
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            if (MessageBox {master=this, text = "OpenRider", 
+            if (MessageBox {master=this, text = "OpenRider",
                contents="Are you sure you want to clear the current track and start a new one?",
                type=yesNo}.Modal() != yes)
                return true;
@@ -278,7 +278,7 @@ class Form1 : Window
    MenuItem fileSaveAsItem { fileMenu, "Save As...", a, Key {a, ctrl = true}, NotifySelect=MenuFileSaveAs }
    MenuDivider {fileMenu};
    MenuItem exitItem {fileMenu, "Exit", x, altF4, NotifySelect = MenuFileExit };
-   
+
    Menu viewMenu {menu, "View", v};
    MenuItem centerItem {viewMenu, "Center on ball", c, tab;
       bool NotifySelect(MenuItem selection, Modifiers mods) {
@@ -308,14 +308,14 @@ class Form1 : Window
    MenuItem nudgeRightItem {viewMenu, "Right", r, right, NotifySelect = NudgeCallback, id=1}
    MenuItem nudgeUpItem {viewMenu, "Up", u, up, NotifySelect = NudgeCallback, id=2}
    MenuItem nudgeDownItem {viewMenu, "Down", d, down, NotifySelect = NudgeCallback, id=3}
-   
+
    bool NudgeCallback(MenuItem selection, Modifiers mods) {
       Camera2D *c = camera;
       double nudgeAmount = 20.0 / c->zoom;
-      
+
       if (running)
          return true;
-      
+
       if (selection.id == 0)
          c->x -= nudgeAmount;
       else if (selection.id == 1)
@@ -324,12 +324,12 @@ class Form1 : Window
          c->y -= nudgeAmount;
       else
          c->y += nudgeAmount;
-      
+
       Update(null);
-      
+
       return true;
    }
-   
+
    Menu toolMenu {menu, "Tool", t};
    MenuItem browseItem {toolMenu, "Browse", b, b, checked=false, isRadio=true, NotifySelect = MyCustomMenu};
    MenuItem pencilItem {toolMenu, "Draw", d, d, checked=true, isRadio=true, NotifySelect = MyCustomMenu};
@@ -340,7 +340,7 @@ class Form1 : Window
    MenuItem speedItem {toolMenu, "Right accelerator", r, r, checked=false, isRadio=true, NotifySelect = MyCustomMenu};
    MenuItem slowItem {toolMenu, "Left accelerator", f, f, checked=false, isRadio=true, NotifySelect = MyCustomMenu};
    MenuItem decorItem {toolMenu, "Decoration", c, c, checked=false, isRadio=true, NotifySelect = MyCustomMenu};
-   
+
    Menu controlMenu {menu, "Control", c};
    MenuItem goItem {controlMenu, "Go", g, Key {g, ctrl=true}, checked=false, checkable=true;
       bool NotifySelect(MenuItem selection, Modifiers mods)
@@ -369,7 +369,7 @@ class Form1 : Window
          drawingTool = line;
       else if (eraserItem.checked)
          drawingTool = eraser;
-      
+
       if (normalItem.checked)
          gameLineType = regular;
       else if (speedItem.checked)
@@ -429,7 +429,7 @@ class Form1 : Window
       f.Read(vn, 1, 16);
       vn[15] = 0;
       f.Get(mv);
-      
+
       if (mv > max_version_code_supported) {
          const char *vnp = *vn ? vn : "www.thedailywtf.com";
          const char *message_format = "This track was created by a newer version of OpenRider (version %s).  Continue opening it?";
@@ -474,7 +474,7 @@ class Form1 : Window
 
       for (i=0; i<ROTATION_RESOLUTION; i++)
          wheel[i] = CreateRotatedBitmap(wheel_orig, 48.0/64.0, (double)i*2*Pi/ROTATION_RESOLUTION, wheel_background);
-      
+
       for (i=0; i<ROTATION_RESOLUTION; i++)
          wheel[i].MakeDD(displaySystem);
       #else
@@ -482,7 +482,7 @@ class Form1 : Window
       for (i=0; i<ROTATION_RESOLUTION; i++)
          wheel[i] = wheel_orig;
       #endif
-      
+
       return true;
    }
 
@@ -591,7 +591,7 @@ class Form1 : Window
             Zoom(1/1.05, true);
             break;
          case wheelUp:
-            Zoom(1.05, true); 
+            Zoom(1.05, true);
             break;
          case minus:
             Zoom(1/1.25, false);
@@ -610,7 +610,7 @@ class Form1 : Window
          bool needUpdate = false;
          int x,y;
          double fx, fy;
-         
+
          GetMousePosition(&x, &y);
          fx = (double)(x-(clientSize.w>>1))/c->zoom+c->x;
          fy = (double)(y-(clientSize.h>>1))/c->zoom+c->y;
@@ -635,7 +635,7 @@ class Form1 : Window
                   needUpdate = true;
             }
          }
-         
+
          if (navigating || (drawing && drawingTool==browse)) {
             double ox = nx-(double)x;
             double oy = ny-(double)y;
@@ -645,7 +645,7 @@ class Form1 : Window
             c->y = cstarty + oy;
             needUpdate = true;
          }
-         
+
          if (needUpdate)
             Update(null);
          return true;
@@ -659,7 +659,7 @@ class Form1 : Window
       	int y= (int)((ball.location.y-c->y)*c->zoom)+(clientSize.h>>1);
          int rwidth = (int)(ball.radius*2*c->zoom);
          Bitmap w = wheel[angle2index(ball.angle)];
-         
+
          if (w) {
             x -= rwidth>>1;
             y -= rwidth>>1;
@@ -668,7 +668,7 @@ class Form1 : Window
             else
                surface.Filter(w, x,y, 0,0, rwidth,rwidth, w.width,w.height);
          }
-         
+
          #if 0
          if (!running && fabs(camera.zoom-1.0)>0.01) {
             double newradius = ball.radius*camera.zoom;
@@ -727,7 +727,7 @@ class Form1 : Window
                surface.SetForeground(red);
                break;
          }
-         
+
          DrawThickLine(x0, y0, x1, y1);
       }
    };

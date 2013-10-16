@@ -145,7 +145,7 @@ public:
          delete this;
       }
    }
-   
+
    void OnCopy(Container<T> source)
    {
       if(source)
@@ -191,7 +191,7 @@ public:
    }
 
    virtual void FreeIterator(IteratorPointer it);
-   
+
    virtual int GetCount()
    {
       int count = 0;
@@ -229,12 +229,12 @@ public:
             char * result;
 
             itemString[0] = '\0';
-            
+
             result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnGetString])(Dclass,
                ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, itemString, null, null);
             if(!first) strcat(tempString, ", ");
 
-            strcat(tempString, result);         
+            strcat(tempString, result);
             first = false;
          }
       }
@@ -266,7 +266,7 @@ public:
       {
          D data = GetData(i);
          Class Eclass = isNormalClass ? ((Instance)data)._class : Dclass;
-         ((void (*)(void *, void *, void *))(void *)Eclass._vTbl[__ecereVMethodID_class_OnSerialize])(Eclass, 
+         ((void (*)(void *, void *, void *))(void *)Eclass._vTbl[__ecereVMethodID_class_OnSerialize])(Eclass,
             ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, channel);
       }
    }

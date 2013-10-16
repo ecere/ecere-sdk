@@ -20,7 +20,7 @@ class CallStackView : Window
 
    bool moved, logging;
    FindDialog findDialog { master = this, editBox = editBox, isModal = true, autoCreate = false, text = $"Find" };
-   
+
    EditBox editBox
    {
       parent = this, freeCaret = true, autoEmpty = true, multiLine = true, readOnly = true;
@@ -70,7 +70,7 @@ class CallStackView : Window
 
    Menu editMenu { menu, $"Edit", e };
    MenuItem item;
-   
+
    MenuItem copyItem
    {
       editMenu, $"Copy", c, ctrlC;

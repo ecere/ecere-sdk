@@ -68,7 +68,7 @@ static MembersInit CopyMembersInit(MembersInit members)
 
             for(member = members.dataMembers->first; member; member = member.next)
                ListAdd(list, CopyMemberInit(member));
-            
+
          }
       }
    }
@@ -158,13 +158,13 @@ static Instantiation CopyInstantiation(Instantiation inst)
             break;
          }
          case memberExp:
-            result = MkExpMember(CopyExpression(exp.member.exp), 
+            result = MkExpMember(CopyExpression(exp.member.exp),
                CopyIdentifier(exp.member.member));
             result.member.memberType = exp.member.memberType;
             result.member.thisPtr = exp.member.thisPtr;
             break;
          case pointerExp:
-            result = MkExpPointer(CopyExpression(exp.member.exp), 
+            result = MkExpPointer(CopyExpression(exp.member.exp),
                CopyIdentifier(exp.member.member));
             break;
          case typeSizeExp:
@@ -182,7 +182,7 @@ static Instantiation CopyInstantiation(Instantiation inst)
             Expression e;
             for(e = exp.cond.exp->first; e; e = e.next)
                ListAdd(list, CopyExpression(e));
-            result = MkExpCondition(CopyExpression(exp.cond.cond), list, 
+            result = MkExpCondition(CopyExpression(exp.cond.cond), list,
                CopyExpression(exp.cond.elseExp));
             break;
          }
@@ -203,7 +203,7 @@ static Instantiation CopyInstantiation(Instantiation inst)
       result.isConstant = exp.isConstant;
       result.byReference = exp.byReference;
    }
-   
+
    return result;
 }
 
@@ -211,7 +211,7 @@ static Instantiation CopyInstantiation(Instantiation inst)
 static Statement CopyStatement(Statement stmt)
 {
    Statement result = null;
-   if(stmt) 
+   if(stmt)
    {
       switch(stmt.type)
       {
@@ -246,7 +246,7 @@ ClassDef CopyClassDef(ClassDef def)
       case functionClassDef:
          return null; //return MkClassDefFunction(CopyClassFunction(def.function));
       case defaultPropertiesClassDef:
-         return null; //return MkClassDefDefaultProperty(CopyList(def.defProperties, CopyDefaultProperty)); 
+         return null; //return MkClassDefDefaultProperty(CopyList(def.defProperties, CopyDefaultProperty));
       case declarationClassDef:
          return MkClassDefDeclaration(CopyDeclaration(def.decl));
       case propertyClassDef:
@@ -317,7 +317,7 @@ TypeName CopyTypeName(TypeName typeName)
 {
    OldList * list = null;
    TypeName copy;
-   
+
    if(typeName.qualifiers)
    {
       Specifier spec;
@@ -366,7 +366,7 @@ Declarator CopyDeclarator(Declarator declarator)
       {
          case structDeclarator:
          {
-            Declarator decl = MkStructDeclarator(CopyDeclarator(declarator.declarator), 
+            Declarator decl = MkStructDeclarator(CopyDeclarator(declarator.declarator),
                CopyExpression(declarator.structDecl.exp));
             if(declarator.structDecl.attrib)
                decl.structDecl.attrib = CopyAttrib(declarator.structDecl.attrib);
@@ -378,10 +378,10 @@ Declarator CopyDeclarator(Declarator declarator)
             return MkDeclaratorBrackets(CopyDeclarator(declarator.declarator));
          case arrayDeclarator:
             if(declarator.array.enumClass)
-               return MkDeclaratorEnumArray(CopyDeclarator(declarator.declarator), 
+               return MkDeclaratorEnumArray(CopyDeclarator(declarator.declarator),
                   CopySpecifier(declarator.array.enumClass));
             else
-               return MkDeclaratorArray(CopyDeclarator(declarator.declarator), 
+               return MkDeclaratorArray(CopyDeclarator(declarator.declarator),
                   CopyExpression(declarator.array.exp));
          case functionDeclarator:
          {

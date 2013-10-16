@@ -36,7 +36,7 @@ class BetDialog : Window
 
    EditBox edit { this, size = Size { 80, 20 }, anchor = Anchor { top = 10 }; };
 
-   bool OnPostCreate()  
+   bool OnPostCreate()
    {
       edit.Activate();
       return true;

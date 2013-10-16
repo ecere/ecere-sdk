@@ -32,7 +32,7 @@ public class Semaphore : struct
    semaphore_t semaphore;
    int count;
    Mutex mutex { };
-#else   
+#else
    sem_t semaphore;
 #endif
 

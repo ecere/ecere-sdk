@@ -14,7 +14,7 @@ class BreakpointsView : Window
    size.h = 240;
 
    bool moved, logging;
-   
+
    ListBox listBox
    {
       parent = this, resizable = true, hasHeader = true, alwaysEdit = true, collapseControl = true, size = { 206, 624 };
@@ -89,7 +89,7 @@ class BreakpointsView : Window
          }
          return true;
       }
-      
+
       bool NotifyKeyDown(ListBox listBox, DataRow row, Key key, unichar ch)
       {
          if((SmartKey)key == enter)
@@ -113,7 +113,7 @@ class BreakpointsView : Window
          return true;
       }
    };
-   
+
    // TODO: set field size based on font and i18n header string
    // TODO: save column widths to ide settings
    DataField locationField    { "char *", true , width = 220, header = $"Location" };
@@ -122,7 +122,7 @@ class BreakpointsView : Window
    DataField ignoreField      { "char *", true , width =  80, header = $"Ignore Count" };
    DataField levelField       { "char *", true , width =  74, header = $"Stack Depth" };
    DataField conditionField   { "char *", true , width = 130, header = $"Condition" };
-   
+
    BreakpointsView()
    {
       listBox.AddField(locationField);
@@ -157,7 +157,7 @@ class BreakpointsView : Window
       int lineH;
       int scrollY = listBox.scroll.y;
       int boxH = clientSize.h;
-      
+
       displaySystem.FontExtent(listBox.font.font, " ", 1, null, &lineH);
       //Window::OnRedraw(surface);
       ide.debugger.GetCallStackCursorLine(&error, &lineActive, &lineUser);
@@ -209,7 +209,7 @@ class BreakpointsView : Window
       ide.callStackView.Update(null);
       Update(null);
    }
-   
+
    void UpdateBreakpoint(DataRow row)
    {
       if(row && row.tag)
@@ -241,7 +241,7 @@ class BreakpointsView : Window
          row.SetData(breaksField, bp.breaks);
       }
    }
-   
+
    void Clear()
    {
       listBox.Clear();

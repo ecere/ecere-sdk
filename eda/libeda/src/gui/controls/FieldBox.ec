@@ -33,7 +33,7 @@ public class FieldBox : DataBox
          return result;
       }
    }
-   
+
    // DataBox has a member called editor as well?
    // would like to rename TableEditor to TableControl anyway
    public property TableEditor editor
@@ -163,9 +163,9 @@ public class FieldBox : DataBox
          if(!DataBox::SaveData())
             Refresh();
 
-         ((bool (*)())(void *)Row::SetData)(row, field, type, 
+         ((bool (*)())(void *)Row::SetData)(row, field, type,
             (type.type == noHeadClass || type.type == normalClass) ? *(void **)data : data);
-      
+
          modifiedDocument = false;
       }
    }
@@ -201,7 +201,7 @@ public class FieldBox : DataBox
    {
       if((SmartKey)key == enter)
          parent.CycleChildren(true, false, false, true);
-      
+
       return DataBox::OnKeyHit(key, ch);
    }
 

@@ -21,7 +21,7 @@ public:
    char * name;
 };
 public class OldLink : struct
-{ 
+{
 public:
    OldLink prev, next;
    void * data;
@@ -124,7 +124,7 @@ public:
 #endif
 
          link.prev = last;
-         if(link.prev) 
+         if(link.prev)
             ((Item) ((byte *)link.prev + offset)).next = item;
          if(!first) first = item;
          last = item;
@@ -211,7 +211,7 @@ public:
 
          if(link.prev)
             ((Item) ((byte *)link.prev + offset)).next = link.next;
-         if(link.next) 
+         if(link.next)
             ((Item) ((byte *)link.next + offset)).prev = link.prev;
          if(circ && last == first)
             last = first = null;
@@ -244,7 +244,7 @@ public:
          Item link = (Item) ((byte *)item + offset);
          next = link.next;
 
-         if(freeFn) 
+         if(freeFn)
             freeFn(item);
          delete item;
 
@@ -264,7 +264,7 @@ public:
          Item link = (Item) ((byte *)item + offset);
          next = link.next;
 
-         if(freeFn) 
+         if(freeFn)
             freeFn(item);
 
          // Handle list->circular linked lists
@@ -291,18 +291,18 @@ public:
          Item link = (Item) ((byte *)item + offset);
          Item prevLink = (Item) ((byte *)prevItem + offset);
 
-         if(prevItem != item && (first != item || prevItem)) 
+         if(prevItem != item && (first != item || prevItem))
          {
-            if(link.prev) 
+            if(link.prev)
                ((Item)((byte *)link.prev + offset)).next = link.next;
-            if(link.next) 
+            if(link.next)
                ((Item)((byte *)link.next + offset)).prev = link.prev;
             if(item == first) first = link.next;
             if(item == last)  last = link.prev;
-      
-            if(prevItem == last) 
+
+            if(prevItem == last)
                last = item;
-         
+
             link.prev = prevItem ? prevItem : (circ ? last : null);
             if(prevItem)
             {
@@ -321,7 +321,7 @@ public:
                       link.next = item;
                }
             }
-            if(link.next) 
+            if(link.next)
                ((Item) ((byte *)link.next + offset)).prev = item;
          }
       }
@@ -338,7 +338,7 @@ public:
       link1.next = link2.next;
       link2.prev = prev1;
       link2.next = next1;
-      
+
       if(first == tmp1)      first = item2;
       else if(first == tmp2) first = item1;
 
@@ -374,7 +374,7 @@ public:
          list2.offset = offset;
          list1.circ = circ;
          list2.circ = circ;
-         
+
          list1.first = first;
          list1.last = middle;
          list2.first = ((Item)((byte *)middle + offset)).next;

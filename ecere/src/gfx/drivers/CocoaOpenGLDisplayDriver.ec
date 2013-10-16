@@ -81,7 +81,7 @@ void *previous;
 void CocoaGlAssert()
 {
     GLenum error = glGetError();
-    
+
     if(error) {
         printf("**** glGetError():%i ****\n", error);
         exit(1);
@@ -123,7 +123,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    bool CreateDisplaySystem(DisplaySystem displaySystem)
    {
       bool result = true;
-      
+
       SystemData system = SystemData { };
       displaySystem.driverData = system;
 
@@ -142,11 +142,11 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
       DisplayData displayData = display.driverData;
       SystemData systemData = display.displaySystem.driverData;
-      
+
       displayData = display.driverData = DisplayData { };
-      
+
       CocoaOpenGLMakeCurrentContext(display.window);
-      
+
       CocoaGlAssert();
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       CocoaGlAssert();
@@ -176,7 +176,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       CocoaGlAssert();
       glDisable(GL_MULTISAMPLE_ARB);
       CocoaGlAssert();
-  
+
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
       display.ambient = Color { 50,50,50 };
 #endif
@@ -195,7 +195,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       printf("CocoaOpenGLDisplayDriver:DisplaySize(%i,%i) %s:%i\n", width, height, __FILE__, __LINE__);
 
       CocoaOpenGLMakeCurrentContext(display.window);
-      
+
       glViewport(0,0,width,height);
       CocoaGlAssert();
       glLoadIdentity();
@@ -213,7 +213,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       }
       if(displayData.flippingBuffer)
          result = true;
-         
+
       return result;
    }
 
@@ -274,7 +274,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       bool result = false;
       Bitmap mipMap { };
       int glBitmap = -1;
-      
+
       uint w = pow2i(Min(width, 1024)), h = pow2i(Min(height, 1024));
 
       printf("CocoaOpenGLDisplayDriver:AllocateBitmap %s:%i\n", __FILE__, __LINE__);
@@ -333,7 +333,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          {
             for(c=0; c<bitmap.size; c++)
             {
-               // TODO: 
+               // TODO:
                ColorAlpha color = ((ColorAlpha *)bitmap.picture)[c];
                ((ColorRGBA *)bitmap.picture)[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
             }
@@ -389,7 +389,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
                   delete mipMap;
                }
             }
-            else 
+            else
                mipMap = bitmap;
 
             if(result)
@@ -402,7 +402,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
                   result = false;
                }
             }
-            if(mipMap != bitmap) 
+            if(mipMap != bitmap)
                delete mipMap;
             if(!mipMaps) break;
          }
@@ -431,7 +431,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    void ReleaseSurface(Display display, Surface surface)
    {
       printf("CocoaOpenGLDisplayDriver:ReleaseSurface %s:%i\n", __FILE__, __LINE__);
-      
+
       glDisable(GL_SCISSOR_TEST);
       CocoaGlAssert();
       delete surface.driverData;
@@ -447,7 +447,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    bool GetSurface(Display display, Surface surface, int x,int y, Box clip)
    {
       bool result = true;
-      
+
       SurfaceData surfaceData = SurfaceData { };
       surface.driverData = surfaceData;
 
@@ -482,7 +482,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       CocoaGlAssert();
          result = true;
       }
-      
+
       return result;
    }
 
@@ -502,7 +502,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       {
          box = surface.box = surface.unclippedBox;
       }
-      
+
       box.left += surface.offset.x;
       box.top  += surface.offset.y;
       box.right+= surface.offset.x;
@@ -583,10 +583,10 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
       glColor4fv(surfaceData.foreground);
       glBegin(GL_LINES);
-      
+
       glVertex2f(x1+surface.offset.x + 0.5f, y1+surface.offset.y + 0.5f);
       glVertex2f(x2+surface.offset.x + 0.5f, y2+surface.offset.y + 0.5f);
-      
+
       glEnd();
       CocoaGlAssert();
    }
@@ -601,7 +601,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       glVertex2f(x1+surface.offset.x + 0.5f, y2+surface.offset.y + 0.5f);
       glVertex2f(x2+surface.offset.x + 0.5f, y2+surface.offset.y + 0.5f);
       glVertex2f(x2+surface.offset.x + 0.5f, y1+surface.offset.y + 0.5f);
-      
+
       glEnd();
       CocoaGlAssert();
    }
@@ -611,7 +611,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       SurfaceData surfaceData = surface.driverData;
 
       printf("CocoaOpenGLDisplayDriver:Area %s:%i\n", __FILE__, __LINE__);
-   
+
       CocoaGlAssert();
       glColor4fv(surfaceData.background);
 
@@ -638,13 +638,13 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       glClear(((type != depthBuffer) ? GL_COLOR_BUFFER_BIT : 0) |
               ((type != colorBuffer) ? GL_DEPTH_BUFFER_BIT : 0));
       CocoaGlAssert();
-      
+
       if(type != colorBuffer && !displayData.depthWrite)
       {
          glDepthMask((byte)bool::false);
       CocoaGlAssert();
       }
-      if(type != depthBuffer) 
+      if(type != depthBuffer)
       {
          glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
       CocoaGlAssert();
@@ -654,11 +654,11 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          glDepthMask((byte)bool::true);
       CocoaGlAssert();
       }
-   
+
       glClear(((type != depthBuffer) ? GL_COLOR_BUFFER_BIT : 0) |
               ((type != colorBuffer) ? GL_DEPTH_BUFFER_BIT : 0));
       CocoaGlAssert();
-      
+
       if(type != colorBuffer)
       {
          glDepthMask((byte)bool::false);
@@ -672,7 +672,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       bool result = false;
 
       printf("CocoaOpenGLDisplayDriver:ConvertBitmap %s:%i\n", __FILE__, __LINE__);
-      
+
       return result;
    }
 
@@ -680,7 +680,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    {
       printf("CocoaOpenGLDisplayDriver:Blit %s:%i\n", __FILE__, __LINE__);
       printf("--BLIT(dx:%i, dy:%i, sx:%i, sy:%i, w:%i, h:%i)\n", dx, dy, sx, sy, w, h);
- 
+
       glEnable(GL_TEXTURE_2D);
       glBindTexture(GL_TEXTURE_2D, (uint)bitmap.driverData);
       glBegin(GL_QUADS);
@@ -728,17 +728,17 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       CocoaGlAssert();
          glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
       CocoaGlAssert();
-      
+
          glTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
       CocoaGlAssert();
          glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
       CocoaGlAssert();
-      
+
          glTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
       CocoaGlAssert();
          glVertex2i(dx+w+surface.offset.x, dy-h+surface.offset.y);
       CocoaGlAssert();
-      
+
          glTexCoord2f((float)(sx) / bitmap.width, (float)(sy)/ bitmap.height);
       CocoaGlAssert();
          glVertex2i(dx+surface.offset.x, dy-h+surface.offset.y);
@@ -750,17 +750,17 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       CocoaGlAssert();
          glVertex2i(dx+surface.offset.x, dy+surface.offset.y);
       CocoaGlAssert();
-      
+
          glTexCoord2f((float)(sx+sw)/ bitmap.width, (float)(sy)/ bitmap.height);
       CocoaGlAssert();
          glVertex2i(dx+w+surface.offset.x, dy+surface.offset.y);
       CocoaGlAssert();
-      
+
          glTexCoord2f((float)(sx+sw) / bitmap.width, (float)(sy+sh)/ bitmap.height);
       CocoaGlAssert();
          glVertex2i(dx+w+surface.offset.x, dy+h+surface.offset.y);
       CocoaGlAssert();
-      
+
          glTexCoord2f((float)(sx)/ bitmap.width, (float)(sy+sh)/ bitmap.height);
       CocoaGlAssert();
          glVertex2i(dx+surface.offset.x, dy+h+surface.offset.y);
@@ -790,13 +790,13 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       {
          w = Abs(w);
          sw = Abs(sw);
-         flipX = true; 
+         flipX = true;
       }
       if(Sgn(h) != Sgn(sh))
       {
          h = Abs(h);
          sh = Abs(sh);
-         flipY = true; 
+         flipY = true;
       }
 
       s2dw=(float)w / sw;
@@ -833,7 +833,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       //Clip against the edges of the surfaceination
       if(dx<surface.box.left)
       {
-         //if(!flip) 
+         //if(!flip)
          sx+=(int)((surface.box.left-dx)*d2sw);
          sw-=(int)((surface.box.left-dx)*d2sw);
          w-=surface.box.left-dx;
@@ -910,7 +910,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       //Clip against the edges of the surfaceination
       if(dx<surface.box.left)
       {
-         //if(!flip) 
+         //if(!flip)
          sx+=surface.box.left-dx;
          w-=surface.box.left-dx;
          dx=surface.box.left;
@@ -1141,7 +1141,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          color[1] = light.diffuse.g * light.multiplier;
          color[2] = light.diffuse.b * light.multiplier;
          glLightfv(GL_LIGHT0 + id, GL_DIFFUSE, color);
-         
+
          color[0] = light.ambient.r * light.multiplier;
          color[1] = light.ambient.g * light.multiplier;
          color[2] = light.ambient.b * light.multiplier;
@@ -1150,7 +1150,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          color[1] = light.specular.g * light.multiplier;
          color[2] = light.specular.b * light.multiplier;
          glLightfv(GL_LIGHT0 + id, GL_SPECULAR,color);
-         
+
          if(lightObject)
          {
             Vector3D positionVector;
@@ -1188,7 +1188,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
             position[0] = (float)positionVector.x;
             position[1] = (float)positionVector.y;
             position[2] = (float)positionVector.z;
-            
+
             glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
       CocoaGlAssert();
 
@@ -1268,7 +1268,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          {
             float pickX = display.display3D.pickX + surface.offset.x;
             float pickY = display.height - (display.display3D.pickY + surface.offset.y) - 1;
-            Matrix pickMatrix = 
+            Matrix pickMatrix =
             {
                {
                   w / display.display3D.pickWidth, 0, 0, 0,
@@ -1397,7 +1397,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
             glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, color);
          }
       }
-      {   
+      {
          float color[4] = { material.specular.r, material.specular.g, material.specular.b, 0 };
          glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, color);
       }
@@ -1405,7 +1405,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          float color[4] = { material.emissive.r, material.emissive.g, material.emissive.b, 0 };
          glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, color);
       }
-      
+
       glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &material.power);
    }
 
@@ -1473,7 +1473,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
       if(!mesh.data)
          mesh.data = MeshData { };
-         
+
       if(mesh.data)
       {
          MeshData meshData = mesh.data;
@@ -1513,7 +1513,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       printf("CocoaOpenGLDisplayDriver: STUB! %s:%i\n", __FILE__, __LINE__);
 
       if(!flags) flags = mesh.flags;
-      
+
       if(glGenBuffersARB)
       {
          if(!(flags.vertices) || meshData.vertices)
@@ -1554,10 +1554,10 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    void FreeIndices(DisplaySystem displaySystem, IndexData indexData)
    {
       printf("CocoaOpenGLDisplayDriver: STUB! %s:%i\n", __FILE__, __LINE__);
-      
+
       if(indexData)
       {
-         if(indexData.buffer) 
+         if(indexData.buffer)
             glDeleteBuffersARB(1, &indexData.buffer);
          delete indexData.indices;
          delete indexData;
@@ -1584,7 +1584,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       if(glGenBuffersARB)
       {
          glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, indexData.buffer);
-         glBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)), 
+         glBufferDataARB( GL_ELEMENT_ARRAY_BUFFER_ARB, nIndices * (indices32bit ? sizeof(uint32) : sizeof(uint16)),
             indexData.indices, GL_STATIC_DRAW_ARB);
          glBindBufferARB( GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
       }
@@ -1593,7 +1593,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    uint16 * LockIndices(DisplaySystem displaySystem, IndexData indexData)
    {
       printf("CocoaOpenGLDisplayDriver: STUB! %s:%i\n", __FILE__, __LINE__);
-      
+
       return indexData.indices;
    }
 
@@ -1603,7 +1603,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
       /*if(display.display3D.mesh && glUnlockArraysEXT)
          glUnlockArraysEXT();*/
-      
+
       if(mesh)
       {
          DisplayData displayData = display.driverData;
@@ -1642,7 +1642,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
             {
                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
             }
-               
+
             // *** Color Stream ***
             if(mesh.colors)
             {
@@ -1699,7 +1699,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          glDrawArrays(primitiveTypes[primitive->type.primitiveType], primitive->first, primitive->nVertices);
       else
       {
-         //    *** Hoping the data won't be uploaded at all (Won't really work if another group of the mesh is using the mesh ) *** 
+         //    *** Hoping the data won't be uploaded at all (Won't really work if another group of the mesh is using the mesh ) ***
          // HACK TO SPEED THINGS UP...
          if(primitive->nIndices < (mesh.nVertices >> 2) && !primitive->type.indices32bit)
          {
@@ -1727,15 +1727,15 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
             if(!display.display3D.collectingHits && glBindBufferARB && indexData)
             {
                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, indexData.buffer);
-               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
+               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
                   primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, 0);
                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
             }
             else if(indexData)
-               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
+               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
                   primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, indexData.indices);
             else
-               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices, 
+               glDrawElements(primitiveTypes[primitive->type.primitiveType], primitive->nIndices,
                   primitive->type.indices32bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, primitive->indices);
          }
       }

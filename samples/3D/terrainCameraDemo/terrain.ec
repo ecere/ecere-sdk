@@ -36,7 +36,7 @@ static float fsqrt(float x, float y, float z)
 {
    float ix = Abs(x),iy = Abs(y), iz = Abs(z);
    float tmp;
-        
+
    if(ix < iy) { tmp = ix; ix = iy; iy = tmp; }
    if(ix < iz) { tmp = ix; ix = iz; iz = tmp; }
    if(iz > iy) { iz = iy; }
@@ -114,7 +114,7 @@ class BinTri : struct
       rightChild.rightChild = null;
 
       leftChild.tv0 = tva;
-      rightChild.tv1 = tva;   
+      rightChild.tv1 = tva;
       leftChild.tva = tvc;
       rightChild.tva = tvc;
       leftChild.tv1 = tv0;
@@ -125,7 +125,7 @@ class BinTri : struct
 
       leftChild.v0 = va;
       rightChild.v1 = va;
-      leftChild.va = vc;   
+      leftChild.va = vc;
       rightChild.va = vc;
       leftChild.v1 = v0;
       rightChild.v0 = v1;
@@ -162,7 +162,7 @@ class BinTri : struct
    }
 
    void Split(struct BinTri * stack, int * triIndex,
-              byte level, float resolutionX, float resolutionY, int positionX, int positionY, int positionZ, 
+              byte level, float resolutionX, float resolutionY, int positionX, int positionY, int positionZ,
               Elevation * heightMap, byte maxVarLevel, int detailBias, Elevation * variance, byte maxLevel)
    {
       int distance;
@@ -219,13 +219,13 @@ class BinTri : struct
       if(ix < iz) { tmp = ix; ix = iz; iz = tmp; }
       if(iz > iy) { iz = iy; }
       distance = ix + (iz>>1);
-      
+
       // *** Find the variance table index ***
       varIndex = index;
       if(level > maxVarLevel)
          varIndex >>= (level - maxVarLevel);
       varIndex--;
-   
+
       if(distance < detailBias * variance[varIndex])
       {
          // *** Split Further ***
@@ -251,7 +251,7 @@ class Patch : struct
    Elevation *leftVariance, *rightVariance;
    Elevation maxHeight, minHeight;
 
-   Elevation CalcVariance(Elevation * variance, int patchSize, int numBinTris, int numVarTris, 
+   Elevation CalcVariance(Elevation * variance, int patchSize, int numBinTris, int numVarTris,
                           int i, /*struct */Point v0, /*struct */Point va, /*struct */Point v1, /*struct */Point vc)
    {
       Elevation real, avg;
@@ -294,9 +294,9 @@ class TerrainPatch : struct
    PrimitiveGroup group;
    bool shown:1;
 
-   void Create(Mesh mesh, int wide, int patchSize, 
+   void Create(Mesh mesh, int wide, int patchSize,
                float resolutionX, float resolutionY,
-               int acrossX, int acrossY, int tilingMult, int detailMult, Bitmap * detail, 
+               int acrossX, int acrossY, int tilingMult, int detailMult, Bitmap * detail,
                bool invertX, bool invertY)
    {
       int x,y,v;
@@ -322,7 +322,7 @@ class TerrainPatch : struct
          dy = ((wide - 1 - patch.y) % pptY) * (patchSize - 1);
       else
          dy = (patch.y % pptY) * (patchSize - 1);
-         
+
       // *** Compute the Vertices ***
       for(v = 0, y = 0; y<patchSize; y++)
       {
@@ -346,14 +346,14 @@ class TerrainPatch : struct
                mesh.texCoords[v].x *= tilingMult;
                mesh.texCoords[v].y *= tilingMult;
             }
-         }  
+         }
       }
    }
 };
 
 class PatchNode : struct
 {
-   TerrainPatch patch;   
+   TerrainPatch patch;
    PatchNode child[4];
    Elevation maxHeight, minHeight;
    Vector3D block;
@@ -428,7 +428,7 @@ class PatchNode : struct
          radius = Max(dx, dy) * SQR2;
 
          child[0] = child[1] = child[2] = child[3] = null;
-      }  
+      }
       return true;
    }
 
@@ -448,7 +448,7 @@ class PatchNode : struct
          shown = camera.SphereVisible(block, radius);
          if(shown)
          {
-            if(patch) 
+            if(patch)
                patch.shown = true;
             else if(child[0])
             {
@@ -464,13 +464,13 @@ class PatchNode : struct
    void QuadClear(int patchesWide)
    {
       int x,y;
-      
+
       TerrainPatch terrainPatch;
 
       if(!shown) return;
 
       terrainPatch = patch;
-      
+
       if(terrainPatch)
       {
          struct TerrainPatch * terrainPatchPtr = (void *)terrainPatch;
@@ -519,7 +519,7 @@ class PatchNode : struct
    }
 
    void QuadSplit(TerrainMesh terrainMesh,
-                  byte maxVarLevel, byte maxLevel, float resolutionX, float resolutionY, 
+                  byte maxVarLevel, byte maxLevel, float resolutionX, float resolutionY,
                   int positionX, int positionY, int positionZ, int detailBias)
    {
       TerrainPatch patch = this.patch;
@@ -527,9 +527,9 @@ class PatchNode : struct
 
       if(patch)
       {
-         patch.leftTri.Split(terrainMesh.binTriStack, &terrainMesh.index, 0, resolutionX, resolutionY, positionX, positionY, positionZ, 
+         patch.leftTri.Split(terrainMesh.binTriStack, &terrainMesh.index, 0, resolutionX, resolutionY, positionX, positionY, positionZ,
             patch.patch.heightMap, maxVarLevel, detailBias, patch.patch.leftVariance, maxLevel);
-         patch.rightTri.Split(terrainMesh.binTriStack, &terrainMesh.index, 0, resolutionX, resolutionY, positionX, positionY, positionZ, 
+         patch.rightTri.Split(terrainMesh.binTriStack, &terrainMesh.index, 0, resolutionX, resolutionY, positionX, positionY, positionZ,
             patch.patch.heightMap, maxVarLevel, detailBias, patch.patch.rightVariance, maxLevel);
       }
       else if(child[0])
@@ -561,7 +561,7 @@ class PatchNode : struct
          }
       }
       else
-      {           
+      {
          child[0].QuadTriangles(terrainMesh);
          child[1].QuadTriangles(terrainMesh);
          child[2].QuadTriangles(terrainMesh);
@@ -577,7 +577,7 @@ class TerrainMesh : struct
    struct TerrainPatch * patches;
    PatchNode nodes { };
    int acrossX, acrossY;
-   
+
    // *** Runtime Stuff ***
    int nTriangles;
    int maxTris;
@@ -747,7 +747,7 @@ class TerrainMesh : struct
 
       nodes.QuadCheck((int)camera.cPosition.x, (int)camera.cPosition.y, (int)camera.cPosition.z, distance, camera);
       nodes.QuadClear(terrain.wide);
-      nodes.QuadSplit(this, (byte)terrain.maxVarLevel, (byte)terrain.maxLevel, 
+      nodes.QuadSplit(this, (byte)terrain.maxVarLevel, (byte)terrain.maxLevel,
          terrain.resolutionX, terrain.resolutionY,
          (int)camera.cPosition.x, (int)camera.cPosition.y, (int)camera.cPosition.z, (int)bias);
       nodes.QuadTriangles(this);
@@ -760,10 +760,10 @@ class TerrainMesh : struct
 
       object.transform.scaling = { 1, 1, 1 };
       object.UpdateTransform();
-      
+
       object.matrix.Identity();
       display.PushMatrix();
-      
+
       display.SetTransform(object.matrix, false);
       for(c = 0; c<terrain.numPatches; c++)
       {
@@ -818,7 +818,7 @@ class TerrainMesh : struct
          if((patches = new0 struct TerrainPatch[terrain.numPatches]))
          {
             result = true;
-   
+
             // *** Set up Patches ***
             for(c = 0, y = 0; y<terrain.wide; y++)
             {
@@ -841,7 +841,7 @@ class TerrainMesh : struct
                      if(patch.group)
                      {
                         patch.group.material = patch.material;
-                        patch.Create(patch.mesh, terrain.wide, terrain.patchSize, 
+                        patch.Create(patch.mesh, terrain.wide, terrain.patchSize,
                            terrain.resolutionX, terrain.resolutionY,
                            acrossX, acrossY, 0, 0, null, invertX, invertY);
                         patch.mesh.UnlockPrimitiveGroup(patch.group);
@@ -891,7 +891,7 @@ class Terrain
    {
       bool result = false;
 
-      if((1 << log2i(size - 1)) + 1 != size) 
+      if((1 << log2i(size - 1)) + 1 != size)
          Log("Invalid terrain size.\n");
       else if(1 << log2i(patchesCount) != patchesCount || ((size-1) / patchesCount) > 128)
          Log("Invalid patch size.\n");
@@ -933,7 +933,7 @@ class Terrain
             numVarTris = (1 << (maxVarLevel + 1)) - 1;
 
             result = true;
-      
+
             // *** Set up Patches ***
             for(c = 0, y = 0; y < patchesCount; y++)
             {
@@ -951,7 +951,7 @@ class Terrain
                   // *** Set up Height Map ***
                   patch.heightMap = new Elevation[numSamples];
                   if(!patch.heightMap) { result = false; break; };
-            
+
                   k = (y*(size-1)) * this.size + (x * (size-1));
                   for(h = 0, j = 0; j<size; j++)
                   {
@@ -987,10 +987,10 @@ class Terrain
                      patch.rightTri.tva = size-1;
                   }
 
-                  patch.leftTri.vc = 
+                  patch.leftTri.vc =
                   {
-                     (patch.leftTri.v0.x + patch.leftTri.v1.x) / 2, 
-                     (patch.leftTri.v0.y + patch.leftTri.v1.y) / 2 
+                     (patch.leftTri.v0.x + patch.leftTri.v1.x) / 2,
+                     (patch.leftTri.v0.y + patch.leftTri.v1.y) / 2
                   };
                   patch.leftTri.tvc = (patch.leftTri.tv0 + patch.leftTri.tv1)/2;
 
@@ -1011,7 +1011,7 @@ class Terrain
                   if(!patch.rightVariance) { result = false; break; };
 
                   // *** Compute Variance ***
-                  patch.CalcVariance(patch.leftVariance, 
+                  patch.CalcVariance(patch.leftVariance,
                      patchSize, numBinTris, numVarTris,
                      1, patch.leftTri.v0,patch.leftTri.va,
                      patch.leftTri.v1, patch.leftTri.vc);

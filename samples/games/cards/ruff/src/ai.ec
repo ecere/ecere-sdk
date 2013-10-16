@@ -79,18 +79,18 @@ int AI_ComputeBet(Player player)
         0,  0,  0,  0,  0,  0,  0,  0,
         0,  0,  0,  0,  0,  0,  0,  0,
         5,  5,  5, 10, 10, 15, 15, 15,
-       20, 20, 20, 25, 25, 25, 30, 30, 
+       20, 20, 20, 25, 25, 25, 30, 30,
        30, 35, 35, 35, 40, 40, 40, 45,
-       45, 45, 50, 50, 50, 55, 55, 55, 
+       45, 45, 50, 50, 50, 55, 55, 55,
        60, 60, 60, 65, 65, 65, 70, 70,
-       70, 75, 75, 75, 80, 80, 80, 85, 
+       70, 75, 75, 75, 80, 80, 80, 85,
        90, 95, 100
    };
    static const int kindTable[37] =
    {
       0,
       5, 5, 10, 10, 10, 15,
-      15, 15, 20, 20, 20, 25, 
+      15, 15, 20, 20, 20, 25,
       25, 25, 30, 30, 30, 35,
       35, 35, 40, 40, 40, 45,
       50, 55, 60, 65, 70, 75,
@@ -111,7 +111,7 @@ int AI_ComputeBet(Player player)
 
    for(kind=0; kind<(Kind)4; kind++)
    {
-      if(numberOfKind[kind] >= 3 && 
+      if(numberOfKind[kind] >= 3 &&
          (trump == none || high[kind] > high[trump] || (high[kind] == high[trump] && numberOfKind[kind] > numberOfKind[trump])))
          trump = kind;
    }
@@ -127,7 +127,7 @@ int AI_ComputeBet(Player player)
       case 8: kindScore = Min(kindScore, 80); break;
    }
 
-   if(trump == none || betTable[highTotal] > betTable[highTotal - high[trump]] + kindScore) 
+   if(trump == none || betTable[highTotal] > betTable[highTotal - high[trump]] + kindScore)
    {
       trump = none;
       bet = betTable[highTotal];
@@ -175,10 +175,10 @@ static bool DoesNotMakeNude(Player player, Card whichCard)
    for(c=0; c<9; c++)
    {
       Card * card = &player.cards[c];
-      if(card->kind == whichCard.kind && 
-         card->number != whichCard.number && 
-         card->number != ace && 
-         card->number != _10 && 
+      if(card->kind == whichCard.kind &&
+         card->number != whichCard.number &&
+         card->number != ace &&
+         card->number != _10 &&
          card->number != _5)
          return true;
    }
@@ -231,7 +231,7 @@ static int Discard(Player player, char * numbers, TrumpFlag trumpFlag)
             switch(trumpFlag)
             {
                case AnyCard: return c;
-               case NoTrump: 
+               case NoTrump:
                   if(trump == kindRequested || card->kind != trump)
                      return c;
                   break;
@@ -275,7 +275,7 @@ void AI_RequestCard(Player player)
    // Count the remaining trump
    if(trump != none)
    {
-      int count = 0;      
+      int count = 0;
       for(c = 0; c<9; c++)
          if(!player.left[trump][c])
             count++;
@@ -410,7 +410,7 @@ void AI_InformNewRound(Player player, int round, PlayerPosition shuffle, Card * 
    for(kind = 0; kind<4; kind++)
       for(c = 0; c<9; c++)
          player.left[kind][c] = true;
-   player.trumpLeft[0] = player.trumpLeft[1] = 
+   player.trumpLeft[0] = player.trumpLeft[1] =
    player.trumpLeft[2] = player.trumpLeft[3] = true;
 
    for(c = 0; c<9; c++)
@@ -434,7 +434,7 @@ void AI_InformCardPlayed(Player player, int who, Kind kind, Number number)
 {
    RuffGame * game = player.game;
    Round * round = &game->rounds[game->round];
-   
+
    player.left[kind][number] = false;
    // Mark this player as not having trump anymore
    if(game->played[game->start].kind == round->bet.trump &&

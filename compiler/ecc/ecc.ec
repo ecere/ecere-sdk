@@ -12,7 +12,7 @@ import "ec"
 static Context globalContext { };
 static Module privateModule;
 static ModuleImport mainModule;
-static OldList _excludedSymbols { offset = (uint)&((Symbol)0).left }; 
+static OldList _excludedSymbols { offset = (uint)&((Symbol)0).left };
 static OldList defines, imports;
 static NameSpace globalData
 {
@@ -142,7 +142,7 @@ static void TestTypes()
    count++, succeeded += TestType("void (*[10])()", null);
    count++, succeeded += TestType("void (* converters_table[10])()", null);
    count++, succeeded += TestType("int (* f[8])[10]", null);
-   
+
    count++, succeeded += TestType("int f[8][10]", null);
    count++, succeeded += TestType("int f[10]", null);
    count++, succeeded += TestType("void *", null);
@@ -163,7 +163,7 @@ static void TestTypes()
    count++, succeeded += TestType("int * const *", null);
    count++, succeeded += TestType("int * const", null);
    count++, succeeded += TestType("const int *", null);
-   
+
    count++, succeeded += TestType("char * const (* (* const bar)[5])(int)", null);
    count++, succeeded += TestType("char * const (* (* (* const bar)[5][6])(int))[2]", null);
    count++, succeeded += TestType("int * * a", null);
@@ -171,7 +171,7 @@ static void TestTypes()
    count++, succeeded += TestType("char * const (* bar)()", null);
 
    count++, succeeded += TestType("char * const (* const (* const bar)[5])(int)", null);
-   
+
    count++, succeeded += TestType("char * (* const (* bar)[5])(int)", null);
    count++, succeeded += TestType("void (* * const bar[5])()", null);
    count++, succeeded += TestType("void (* * const bar)()", null);
@@ -500,7 +500,7 @@ class CompilerApp : Application
 
 #if 0
             // TEMP: UNTIL WE CAN HAVE PER SOURCE FILE PREPROCESSOR DEFINITIONS...
-            if(GetBuildingEcereCom() && 
+            if(GetBuildingEcereCom() &&
                !(strcmpi(mainModuleName, "instance.ec") && strcmpi(mainModuleName, "BinaryTree.ec") &&
                strcmpi(mainModuleName, "dataTypes.ec") && strcmpi(mainModuleName, "OldList.ec") &&
                strcmpi(mainModuleName, "String.ec") && strcmpi(mainModuleName, "BTNode.ec") &&
@@ -510,14 +510,14 @@ class CompilerApp : Application
                strcmpi(mainModuleName, "List.ec") && strcmpi(mainModuleName, "Map.ec") &&
                strcmpi(mainModuleName, "Mutex.ec")))
                SetBuildingEcereComModule(true);
-            if(GetBuildingEcereCom() && 
+            if(GetBuildingEcereCom() &&
                !(strcmpi(mainModuleName, "instance.ec") && strcmpi(mainModuleName, "BinaryTree.ec") &&
                /*strcmpi(mainModuleName, "dataTypes.ec") && strcmpi(mainModuleName, "OldList.ec") &&*/
                /*strcmpi(mainModuleName, "String.ec") && */strcmpi(mainModuleName, "BTNode.ec") &&
                strcmpi(mainModuleName, "Mutex.ec") && strcmpi(mainModuleName, "Thread.ec")))
             //if(GetBuildingEcereCom() && !strcmpi(mainModuleName, "instance.ec"))
                SetMemoryGuard(false);
-#endif            
+#endif
 
             StripExtension(mainModuleName);
             module = ImportedModule { name = CopyString(mainModuleName), type = moduleDefinition };
@@ -550,10 +550,10 @@ class CompilerApp : Application
 
                strcpy(symLocation, GetSymbolsDir());
                PathCat(symLocation, symFile);
-               
+
                // LoadSymbols(symLocation, normalImport, true);
                LoadSymbols(symLocation, preDeclImport, false);
-               
+
                for(module = ::defines.first; module; module = next)
                {
                   next = module.next;
@@ -596,7 +596,7 @@ class CompilerApp : Application
                // For classes defined in this module...
                ComputeModuleClasses(privateModule);
 
-               
+
                // *** PASS 1 - Turn the class functions into functions               ***
                // *** Write the RegisterModule (Register classes)                    ***
                ProcessClassDefinitions();

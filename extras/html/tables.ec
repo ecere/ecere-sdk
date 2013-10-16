@@ -143,7 +143,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                      if(flags.lineW)
                      {
                         column.lineW = Max(column.lineW, cell.lineW);
-                        column.minW = Max(column.minW, cell.minW);                        
+                        column.minW = Max(column.minW, cell.minW);
                      }
                   }
 
@@ -205,7 +205,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                         {
                            column.rowSpan = cell.rowSpan;
                            sumColW += column.w;
-                           column = column.next;  
+                           column = column.next;
                         }
                         rowLineW += Max(sumColW, cell.lineW);
                      }
@@ -243,7 +243,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
          if(w < table.w)
          {
             int needed = 0;
-            
+
             // Step 1: Weights how to distribute
             for(column = table.columns.first; column; column = column.next)
             {
@@ -264,13 +264,13 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
 
                      while(columnStart && columnStart.rowSpan)
                         columnStart = columnStart.next;
-                  
+
                      for(c = 0, column = columnStart; c<cell.span && column; c++)
                      {
                         column.rowSpan = cell.rowSpan;
                         if(cell.span == 1)
                            totalW += column.w;
-                        column = column.next;  
+                        column = column.next;
                      }
                      if(cell.span == 1 && totalW < cell.lineW)
                      {
@@ -282,7 +282,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                         needed += cell.lineW - totalW;
                      }
 
-                     columnStart = column;  
+                     columnStart = column;
                   }
                   for(column = table.columns.first; column; column = column.next)
                      if(column.rowSpan) column.rowSpan--;
@@ -317,7 +317,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                         column.rowSpan = cell.rowSpan;
                         totalW += column.w;
                         sumDesires += column.desire;
-                        column = column.next;  
+                        column = column.next;
                      }
                      if(cell.span > 1 && totalW < cell.minW)
                      {
@@ -336,7 +336,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                         for(c = 0, column = columnStart; c<cell.span && column; c++)
                         {
                            totalW += column.minW;
-                           column = column.next;  
+                           column = column.next;
                         }
 
                         if(totalW < cell.minW)
@@ -348,7 +348,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                            }
                         }
                      }
-                     columnStart = column;  
+                     columnStart = column;
                   }
                   for(column = table.columns.first; column; column = column.next)
                      if(column.rowSpan) column.rowSpan--;
@@ -366,8 +366,8 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                   column.w = column.minW;
                }
             }
-            
-            
+
+
             // Repeat Step 1: Weights how to distribute
             needed = 0;
             for(column = table.columns.first; column; column = column.next)
@@ -389,13 +389,13 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
 
                      while(columnStart && columnStart.rowSpan)
                         columnStart = columnStart.next;
-                  
+
                      for(c = 0, column = columnStart; c<cell.span && column; c++)
                      {
                         column.rowSpan = cell.rowSpan;
                         if(/*cell.span == 1 && */cell.width)
                            totalW += column.w;
-                        column = column.next;  
+                        column = column.next;
                      }
                      if(/*cell.span == 1 && */totalW < cell.lineW && cell.width)
                      {
@@ -407,7 +407,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                         needed += cell.lineW - totalW;
                      }
 
-                     columnStart = column;  
+                     columnStart = column;
                   }
                   for(column = table.columns.first; column; column = column.next)
                      if(column.rowSpan) column.rowSpan--;
@@ -416,7 +416,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                else
                   row = NextBlock(surface, row, null, 0);
             }
-                        
+
             // Step 2: Do the distribution
             if(needed)
             {
@@ -459,13 +459,13 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
 
                      while(columnStart && columnStart.rowSpan)
                         columnStart = columnStart.next;
-                  
+
                      for(c = 0, column = columnStart; c<cell.span && column; c++)
                      {
                         column.rowSpan = cell.rowSpan;
                         if(/*cell.span == 1 && */!cell.width)
                            totalW += column.w;
-                        column = column.next;  
+                        column = column.next;
                      }
                      if(/*cell.span == 1 && */totalW < cell.lineW && !cell.width)
                      {
@@ -477,7 +477,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                         needed += cell.lineW - totalW;
                      }
 
-                     columnStart = column;  
+                     columnStart = column;
                   }
                   for(column = table.columns.first; column; column = column.next)
                      if(column.rowSpan) column.rowSpan--;
@@ -486,7 +486,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                else
                   row = NextBlock(surface, row, null, 0);
             }
-            
+
             // Step 2: Do the distribution
             if(needed)
             {
@@ -504,7 +504,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
             for(column = table.columns.first; column; column = column.next)
                w += column.w;
          }
-         
+
          // Repartition the rest of the space in the columns
          if(w < table.w)
          {
@@ -646,7 +646,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                               rightObjects.Delete(object);
                         }
                         cellW = Max(cellW, 0);
- 
+
                         // TRIED ADDING THIS CODE HERE...
                         {
                            int x;
@@ -818,7 +818,7 @@ static void RenderCell(HTMLView browser, Surface surface, Block cell, int cellX,
 
    cell.parent = null;
    cell.next = null;
-   
+
    /*
    if(cell.width)
       cellW = cell.width;
@@ -960,7 +960,7 @@ static void RenderRow(HTMLView browser, Surface surface, Block row, Block table,
          {
             column.rowSpan = cell.rowSpan;
             x += column.w;
-            column = column.next;  
+            column = column.next;
          }
       }
       c++;
@@ -1015,7 +1015,7 @@ void RenderTable(HTMLView browser, Surface surface, int x, int y, int w, int h, 
          row = NextBlockUp(surface, row, null, 0);
       }
       else
-         row = NextBlock(surface, row, null, 0);   
+         row = NextBlock(surface, row, null, 0);
    }
 }
 
@@ -1093,7 +1093,7 @@ static bool PickCell(HTMLView browser, Surface surface, Block cell, int cellX, i
 
       font = surface.font;
       newLineH = ComputeLine(surface, block, textPos, &nextCellBlock, &nextCellPos, &centered, &lineW, maxW, maxH, RenderFlags {}, y, &leftObjects, &rightObjects, &changeLine, false, 0, 0);
-      surface.font = font; 
+      surface.font = font;
 
       //surface.TextFont(font);
 
@@ -1170,7 +1170,7 @@ static bool PickRow(HTMLView browser, Surface surface, Block row, Block table, i
          {
             column.rowSpan = cell.rowSpan;
             x += column.w;
-            column = column.next;  
+            column = column.next;
          }
       }
       c++;
@@ -1214,7 +1214,7 @@ bool PickTable(HTMLView browser, Surface surface, int x, int y, int w, int h, in
          row = NextBlockUp(surface, row, null, 0);
       }
       else
-         row = NextBlock(surface, row, null, 0);   
+         row = NextBlock(surface, row, null, 0);
    }
    return result;
 }
@@ -1362,7 +1362,7 @@ static void PositionRow(HTMLView browser, Surface surface, Block row, Block tabl
          {
             column.rowSpan = cell.rowSpan;
             x += column.w;
-            column = column.next;  
+            column = column.next;
          }
       }
       c++;

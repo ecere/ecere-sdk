@@ -265,7 +265,7 @@ static int numFonts;
 #undef CompareString
 static BinaryTree loadedFonts
 {
-   CompareKey = (void *)BinaryTree::CompareString 
+   CompareKey = (void *)BinaryTree::CompareString
 };
 
 class FontEntry : BTNode
@@ -276,7 +276,7 @@ class FontEntry : BTNode
 
    int used;
    byte * buffer;
-   
+
    //If we don't save the FT_Stream before sacrificing it to FreeType, the garbage collector (if one is used) will destroy it prematurely
    FT_Stream stream;
    Font font;
@@ -373,7 +373,7 @@ class GlyphPack : BTNode
                // printf("\nRendering arabic in %s (%d)\n", font.faceName, key & 0xFFFFFF);
                break;
             case HB_Script_Devanagari:
-               testChar = 0x905; 
+               testChar = 0x905;
                break;
             case 60: testChar =　'あ'; break;
             case 61: testChar =　0x3400; break;
@@ -395,7 +395,7 @@ class GlyphPack : BTNode
       FT_Set_Char_Size( fontEntry.face, (int)(font.size * 64), (int)(font.size * 64), 96, 96);
       */
 
-      maxWidth = 0; 
+      maxWidth = 0;
       maxHeight = 0;
 
       for(c = 0; c < MAX_FONT_LINK_ENTRIES; c++)
@@ -405,7 +405,7 @@ class GlyphPack : BTNode
          {
             FT_Matrix matrix;
             FT_Vector pen = { 0, 0 };
-            
+
             if(font.fakeItalic)
             {
                matrix.xx = (FT_Fixed)( 1.0 * 0x10000L );
@@ -499,13 +499,13 @@ class GlyphPack : BTNode
             int glyphNo = isGlyph ? (((uint)key | c) & 0x00FFFFFF) : FT_Get_Char_Index(faces[c], (uint)key | c);
 
             FT_Load_Glyph(faces[c], glyphNo, /*FT_LOAD_DEFAULT | FT_LOAD_FORCE_AUTOHINT*/ FT_LOAD_DEFAULT /*FT_LOAD_NO_HINTING*/); // FT_LOAD_RENDER // FT_LOAD_NO_HINTING
-            
+
             FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
 
             x = sx;
             y = sy;
             //printf("%d, %d\n", maxHeight, faces[c]->size->metrics.height >> 6);
-            
+
             glyph->left = slot->bitmap_left;
             // glyph->top = ((64 + (64 - faces[c]->glyph->metrics.height & 0x3F)) >> 6) + (int)(ascender - slot->bitmap_top) + font.height - (faces[c]->size->metrics.height >> 6);
             // glyph->top = (int)(ascender - slot->bitmap_top) + 2 * (font.height - maxHeight);
@@ -519,7 +519,7 @@ class GlyphPack : BTNode
 
             //glyph->top = (int)(ascender - slot->bitmap_top); // + ((faces[c]->size->metrics.height >> 6) - (faces[0]->size->metrics.height >> 6)) + (font.height - (faces[c]->size->metrics.height >> 6));
             //glyph->top = (int)(ascender - slot->bitmap_top); // + ((faces[c]->size->metrics.height >> 6) - (faces[0]->size->metrics.height >> 6)) + (font.height - (faces[c]->size->metrics.height >> 6));
-            
+
             //glyph->top = (int)(ascender - slot->bitmap_top);// + (font.height - maxHeight);
             glyph->top = (int)(ascender - slot->bitmap_top) + (int)(font.height - (faces[c]->size->metrics.height >> 6)) / 2;
 
@@ -558,7 +558,7 @@ class GlyphPack : BTNode
                      {
                         picture[j * bitmap.stride + i] = (slot->bitmap.buffer[q + p] & bit) ? 255 : 0;
                         bit >>= 1;
-                        if(!bit) { bit = 0x80; p++; }                     
+                        if(!bit) { bit = 0x80; p++; }
                      }
                      else
                      {
@@ -589,7 +589,7 @@ class GlyphPack : BTNode
             for(c = 0; c<256; c++)
                bitmap.palette[c] = ColorAlpha { 255, { (byte)c,(byte)c,(byte)c } };
             bitmap.pixelFormat = pixelFormat8;
-            
+
             /*
             //strcpy(fileName, faceName);
             if(flags)
@@ -644,14 +644,14 @@ static uint * shaping(FontEntry entry, uint16 * string, int len, HB_Script scrip
    shaper_item.num_glyphs = shaper_item.item.length;
    shaper_item.glyphIndicesPresent = 0;
    shaper_item.initialGlyphCount = 0;
-   shaper_item.num_glyphs = 0;   
-   shaper_item.glyphs = null;   
+   shaper_item.num_glyphs = 0;
+   shaper_item.glyphs = null;
 
    while(!HB_ShapeItem(&shaper_item))
    {
       if(shaper_item.num_glyphs > maxGlyphs)
       {
-         maxGlyphs = shaper_item.num_glyphs;                                                                                                            
+         maxGlyphs = shaper_item.num_glyphs;
          glyphs = shaper_item.glyphs = renew0 glyphs HB_Glyph[maxGlyphs];
          shaper_item.attributes   = renew0 shaper_item.attributes HB_GlyphAttributes[maxGlyphs];
          shaper_item.advances     = renew0 shaper_item.advances HB_Fixed[maxGlyphs];
@@ -662,7 +662,7 @@ static uint * shaping(FontEntry entry, uint16 * string, int len, HB_Script scrip
       {
          shaper_item.glyphs = glyphs;
          shaper_item.num_glyphs = maxGlyphs;
-      } 
+      }
   }
 
    *numGlyphs = shaper_item.num_glyphs;
@@ -827,7 +827,7 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
       {
          if(!RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Fonts",0,KEY_READ,&key) ||
             !RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Fonts",0,KEY_READ,&key))
-         {  
+         {
             int value = 0;
             while(true)
             {
@@ -863,14 +863,14 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
                   strcpy(fileName, fontFileName);
                   RegCloseKey(key);
                   return 0;
-               }               
+               }
             }
             RegCloseKey(key);
             return 1;
          }
       }
    }
-   return 1;   
+   return 1;
 }
 #endif
 
@@ -911,7 +911,7 @@ public class LFBDisplayDriver : DisplayDriver
             case 2: stride = width;                    break;
          }
       }
-      bitmap.stride = stride;   
+      bitmap.stride = stride;
       bitmap.width = width;
       bitmap.height = height;
       bitmap.size = (uint32) stride * (uint32)height;
@@ -948,7 +948,7 @@ public class LFBDisplayDriver : DisplayDriver
    }
 
    bool ConvertBitmap(DisplaySystem displaySystem, Bitmap src, PixelFormat format, ColorAlpha * palette)
-   {  
+   {
       bool result = false;
       LFBSystem lfbSystem = displaySystem ? displaySystem.driverData : null;
 
@@ -961,7 +961,7 @@ public class LFBDisplayDriver : DisplayDriver
                /*
                DWORD c;
                DWORD * picture = (DWORD *)src.picture;
-               
+
                for(c = 0; c<src.size; c++, picture++)
                {
                   if(*picture & 0xFFFFFF)
@@ -1254,7 +1254,7 @@ public class LFBDisplayDriver : DisplayDriver
          case pixelFormat565:  lfbSurface.foreground = (Color565)color; break;
          case pixelFormat888:  lfbSurface.foreground = color; break;
          case pixelFormatRGBA: lfbSurface.foreground = (ColorRGBA)color; break;
-         case pixelFormatText: 
+         case pixelFormatText:
             if(display)
                lfbSurface.foreground = BestColorMatch(lfbDisplay.bitmap.palette,0,15,color) << 8;
             else
@@ -1281,7 +1281,7 @@ public class LFBDisplayDriver : DisplayDriver
          case pixelFormat565:  lfbSurface.background = (Color565)color; break;
          case pixelFormat888:  lfbSurface.background = color; break;
          case pixelFormatRGBA: lfbSurface.background = (ColorRGBA)color; break;
-         case pixelFormatText: 
+         case pixelFormatText:
             if(display)
                lfbSurface.background = BestColorMatch(lfbDisplay.bitmap.palette,0,15,color) << 12;
             else
@@ -1481,7 +1481,7 @@ public class LFBDisplayDriver : DisplayDriver
                         ((uint16 *)lfbSurface.bitmap.picture)[offset]=(uint16)color;
                      else
                      {
-                        ((uint16 *)lfbSurface.bitmap.picture)[offset] = 
+                        ((uint16 *)lfbSurface.bitmap.picture)[offset] =
                            (((uint16 *)lfbSurface.bitmap.picture)[offset] & 0xF000) | (uint16)color;
                      }
                   }
@@ -1512,7 +1512,7 @@ public class LFBDisplayDriver : DisplayDriver
                break;
          }
       }
-      else 
+      else
       {
          if(x2 >= x1)
          {
@@ -1697,14 +1697,14 @@ public class LFBDisplayDriver : DisplayDriver
    void memset_32_aligned(void *buf, int val, int dwords)
    {
             // Qword align
-            if ((int)(buf) & 4) 
+            if ((int)(buf) & 4)
             {
                     *((uint32 *)(buf)) = val;
                     buf = ((uint32 *)(buf))+1;
                     dwords--;
             }
-    
-            if (dwords > 1) 
+
+            if (dwords > 1)
             {
                     __asm {
                             cld
@@ -1724,7 +1724,7 @@ public class LFBDisplayDriver : DisplayDriver
                             emms
                     };
             }
-    
+
             // Final dword
             if (dwords & 1) *((int*)(buf)) = val;
    }*/
@@ -1816,21 +1816,21 @@ public class LFBDisplayDriver : DisplayDriver
    void memset_32(void *buf, uint32 val, uint32 dwords)
    {
       int align = 0;
-      if ((uint32)(buf) & 3) 
+      if ((uint32)(buf) & 3)
       {
          align = 4;
          dwords--;
-         
+
          if (((uint32)(buf) & 1))
          {
-            *(byte *)(buf) = (byte)(val&0xFF); 
+            *(byte *)(buf) = (byte)(val&0xFF);
             buf = ((byte *)(buf))+1;
             val = ((val& 0xFF) << 24) || ((val& 0xFFFFFF00) >> 8);
             align --;
          }
          if (((uint32)(buf) & 2))
          {
-            *(uint16 *)(buf) = (uint16)(val&0xFFFF); 
+            *(uint16 *)(buf) = (uint16)(val&0xFFFF);
             buf = ((uint16 *)(buf))+1;
             val = ((val& 0xFFFF) << 16) || ((val& 0xFFFF0000) >> 16);
             align-=2;
@@ -1841,12 +1841,12 @@ public class LFBDisplayDriver : DisplayDriver
       {
          if (align == 1)
          {
-            *(byte *)(buf) = (byte)(val&0xFF); 
+            *(byte *)(buf) = (byte)(val&0xFF);
          }
          else
          {
-            *(uint16 *)(buf) = (uint16)(val&0xFFFF); 
-            if (align & 1) *((byte *)(buf)+2) = (byte)((val>>16)&0xFF); 
+            *(uint16 *)(buf) = (uint16)(val&0xFFFF);
+            if (align & 1) *((byte *)(buf)+2) = (byte)((val>>16)&0xFF);
          }
       }
    }
@@ -1877,7 +1877,7 @@ public class LFBDisplayDriver : DisplayDriver
       {
          int w,y;
          byte * theOffset;
-         
+
          w = x2-x1+1;
          if(w<1) return;
 
@@ -1952,14 +1952,14 @@ public class LFBDisplayDriver : DisplayDriver
                               mov eax,color
                               mov edx,y
                               mov ecx,w
-                              
+
                               start:
                                  push ecx
-                                 
+
                                  rep stosd
                                  add edi,ebx
                                  pop ecx
-                                 dec edx                        
+                                 dec edx
                                  jnz start
                               pop edx
                               pop ebx
@@ -1998,7 +1998,7 @@ public class LFBDisplayDriver : DisplayDriver
                         {
                            int c;
                            for(c = 0; c < w; c++, dest++)
-                           {                              
+                           {
                               Color destColor;
                               if(pixelFormat == pixelFormat565)      { destColor = (Color)*(Color565 *)dest; }
                               else if(pixelFormat == pixelFormat555) { destColor = (Color)*(Color555 *)dest; }
@@ -2036,7 +2036,7 @@ public class LFBDisplayDriver : DisplayDriver
                         {
                            int c;
                            for(c = 0; c < w; c++, dest++)
-                           {                              
+                           {
                               int dr = dest->color.r;
                               int dg = dest->color.g;
                               int db = dest->color.b;
@@ -2352,7 +2352,7 @@ public class LFBDisplayDriver : DisplayDriver
       if(bitmap.pixelFormat != lfbDisplay.bitmap.pixelFormat || bitmap.width < w || bitmap.height < h)
       {
          bitmap.Free();
-         bitmap.Allocate(null, w,h,w, lfbDisplay.bitmap.pixelFormat, 
+         bitmap.Allocate(null, w,h,w, lfbDisplay.bitmap.pixelFormat,
             (lfbDisplay.bitmap.pixelFormat == pixelFormat8)?true:false);
       }
       if(bitmap)
@@ -2383,7 +2383,7 @@ public class LFBDisplayDriver : DisplayDriver
       {
          w = Abs(w);
          sw = Abs(sw);
-         flip = true; 
+         flip = true;
       }
 
       s2dw=(float)w / sw;
@@ -2527,7 +2527,7 @@ public class LFBDisplayDriver : DisplayDriver
       {
          w = Abs(w);
          sw = Abs(sw);
-         flip = true; 
+         flip = true;
       }
 
       s2dw=(float)w / sw;
@@ -2665,12 +2665,12 @@ public class LFBDisplayDriver : DisplayDriver
                         else if(alphaWrite)
                            dest->a = (byte)a;
                      }
-                  } 
+                  }
                   dest += adddest;
                }
             }
-            else 
-            { 
+            else
+            {
                int y;
                for (y = 0; y < h; y++)
                {
@@ -2694,7 +2694,7 @@ public class LFBDisplayDriver : DisplayDriver
                            g += pixel.color.g;
                            b += pixel.color.b;
                            numPixels++;
-                        } 
+                        }
                      a /= numPixels;
                      r /= numPixels;
                      g /= numPixels;
@@ -2720,7 +2720,7 @@ public class LFBDisplayDriver : DisplayDriver
                      }
                   }
                   dest += adddest;
-               } 
+               }
             }
          }
          else if(!src.paletteShades && src.pixelFormat == lfbSurface.bitmap.pixelFormat)
@@ -2768,7 +2768,7 @@ public class LFBDisplayDriver : DisplayDriver
                   delete fontEntry;
                }
             }
-         } 
+         }
 #endif
          delete font;
       }
@@ -2849,13 +2849,13 @@ public class LFBDisplayDriver : DisplayDriver
                FontData fontData = { { 0 } };
                LOGFONT logFont = { 0 };
                HDC hdc = GetDC(0);
-      
+
                fakeItalic = false;
-      
+
                logFont.lfCharSet = DEFAULT_CHARSET;
                strcpy(logFont.lfFaceName, faceName);
                fontData.flags = flags;
-                  
+
                EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (DWORD)&fontData, 0);
                if(!fontData.fileName[0] && flags.bold)
                {
@@ -2869,7 +2869,7 @@ public class LFBDisplayDriver : DisplayDriver
                   EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (DWORD)&fontData, 0);
                   fakeItalic = true;
                }
-      
+
                if(fontData.fileName[0])
                {
                   GetWindowsDirectory(fileName, MAX_LOCATION);
@@ -2877,7 +2877,7 @@ public class LFBDisplayDriver : DisplayDriver
                   PathCat(fileName, fontData.fileName);
                }
                ReleaseDC(0, hdc);
-            }  
+            }
    #elif !defined(ECERE_NOFONTCONFIG)
             {
                char * fileName2;
@@ -2899,7 +2899,7 @@ public class LFBDisplayDriver : DisplayDriver
 
                if(testChar)
                   FcCharSetAddChar(charSet, testChar);
-   
+
                pattern = FcPatternBuild(null,
                                //FC_SOURCE, FcTypeString, "freetype",
                                FC_FAMILY, FcTypeString, faceName,
@@ -2956,7 +2956,7 @@ public class LFBDisplayDriver : DisplayDriver
             links[0] = 0;
             if(!RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\FontLink\\SystemLink",0,KEY_READ,&key) ||
                !RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\FontLink\\SystemLink",0,KEY_READ,&key))
-            {  
+            {
                // int value = 0;
                uint32 type;
                int size = 1024;
@@ -3002,7 +3002,7 @@ public class LFBDisplayDriver : DisplayDriver
                      FT_Open_Args args = { 0 };
                      FT_Parameter param = { FT_PARAM_TAG_UNPATENTED_HINTING };
                      FT_Stream stream = new0 FT_StreamRec[1];
-                     
+
                      if(!ftLibrary)
                         FT_Init_FreeType( &ftLibrary );
 
@@ -3149,7 +3149,7 @@ public class LFBDisplayDriver : DisplayDriver
                         }
                      }
 #endif
-                     
+
                   }
                   linksPos += c;
                   while(links[linksPos] && links[linksPos] != ',') linksPos++;
@@ -3157,7 +3157,7 @@ public class LFBDisplayDriver : DisplayDriver
                }
             }
          }
-            
+
          if(!result)
             UnloadFont(displaySystem, font);
          else
@@ -3173,7 +3173,7 @@ public class LFBDisplayDriver : DisplayDriver
    }
 
 #if !defined(ECERE_NOTRUETYPE)
-   void ::ProcessString(Font font, DisplaySystem displaySystem, byte * text, int len, 
+   void ::ProcessString(Font font, DisplaySystem displaySystem, byte * text, int len,
                         void (* callback)(Surface surface, Display display, int x, int y, GlyphInfo * glyph, Bitmap bitmap),
                         Surface surface, Display display, int * x, int y)
    {
@@ -3191,7 +3191,7 @@ public class LFBDisplayDriver : DisplayDriver
          int fontEntryNum = 0;
          int glyphScript = 0;
          FontEntry curFontEntry;
-         
+
          pack.bitmap.alphaBlend = true;
 
          for(c = 0; c < len || (numGlyphs && (rightToLeft ? (glyphIndex >= 0) : (glyphIndex < numGlyphs)));)
@@ -3212,7 +3212,7 @@ public class LFBDisplayDriver : DisplayDriver
                unichar ahead = 0;
                unichar testChar = 0;
                char * testLang = null;
-               
+
                while(true)
                {
                   HB_Script script = HB_Script_Common;
@@ -3236,7 +3236,7 @@ public class LFBDisplayDriver : DisplayDriver
                            int nb;
                            unichar ahead = UTF8GetChar((char *)text + a, &nb);
                            if((ahead >= 0x590 && ahead <= 0x7C0) || (ahead >= 0xFB1D && ahead <= 0xFB4F) || (ahead >= 0xFB50 && ahead <= 0xFDFF))
-                              script = curScript;                           
+                              script = curScript;
                         }
                         else
                            script = curScript;
@@ -3285,7 +3285,7 @@ public class LFBDisplayDriver : DisplayDriver
                      if(c >= len)
                         break;
                   }
-                  else 
+                  else
                   {
                      if(!script || script > HB_ScriptCount) { c += nb; if(script > HB_ScriptCount) curScript = script; break; }
                      if(!script) { c += nb; break; }
@@ -3318,7 +3318,7 @@ public class LFBDisplayDriver : DisplayDriver
                   case HB_Script_Arabic:        testChar = 0x621; /*testLang = "ar"; */
                      //printf("Arabic ");
                      break;
-                  case HB_Script_Devanagari:    testChar = 0x905; testLang = "sa"; 
+                  case HB_Script_Devanagari:    testChar = 0x905; testLang = "sa";
                      //printf("Devanagari ");
                      break;
                   case HB_Script_Hebrew:        testChar = 0x05EA /*'ת'*/; /*testLang = "he"; */
@@ -3343,8 +3343,8 @@ public class LFBDisplayDriver : DisplayDriver
                         printf("Not found in %s\n", (char *)font.fontEntries[fontEntryNum].key);*/
                   }
                }
-               
-               if(fontEntryNum == MAX_FONT_LINK_ENTRIES) 
+
+               if(fontEntryNum == MAX_FONT_LINK_ENTRIES)
                {
 #if !defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
                   int fontID = 0;
@@ -3363,7 +3363,7 @@ public class LFBDisplayDriver : DisplayDriver
                   if(fontEntryNum == MAX_FONT_LINK_ENTRIES)
 #endif
                      continue;
-            
+
 #if !defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
                   {
                      charSet = FcCharSetCreate();
@@ -3411,16 +3411,16 @@ public class LFBDisplayDriver : DisplayDriver
                         if(file)
                         {
                            FileSize fileSize = file.GetSize();
-                           FT_Open_Args args = { 0 };                            
+                           FT_Open_Args args = { 0 };
                            FT_Parameter param = { FT_PARAM_TAG_UNPATENTED_HINTING };
                            FT_Stream stream = new0 FT_StreamRec[1];
-                           
+
                            if(!ftLibrary)
                               FT_Init_FreeType( &ftLibrary );
 
                            fontEntry = FontEntry { key = (uintptr)CopyString(fileName) };
                            fontEntry.stream = stream;
-                                                
+
                            //args.num_params = 1;
                            args.params = &param;
 
@@ -3441,7 +3441,7 @@ public class LFBDisplayDriver : DisplayDriver
                            // delete file;
                            if(fontEntry.face)
                            {
-                              fontEntry.hbFace = HB_NewFace(fontEntry.face, hb_getSFntTable);            
+                              fontEntry.hbFace = HB_NewFace(fontEntry.face, hb_getSFntTable);
                               fontEntry.hbFont.klass = &hb_fontClass;
                               fontEntry.hbFont.userData = fontEntry; //.face;
 
@@ -3463,7 +3463,7 @@ public class LFBDisplayDriver : DisplayDriver
                         fontEntry.used++;
                      }
                   }
-                  if(pattern) FcPatternDestroy(pattern);          
+                  if(pattern) FcPatternDestroy(pattern);
                   if(matched) FcPatternDestroy(matched);
                   if(charSet) FcCharSetDestroy(charSet);
 #endif
@@ -3488,7 +3488,7 @@ public class LFBDisplayDriver : DisplayDriver
 
             if(packNo != lastPack)
             {
-               if(glyphNo < 128) 
+               if(glyphNo < 128)
                   pack = font.asciiPack;
                else
                {
@@ -3548,7 +3548,7 @@ public class LFBDisplayDriver : DisplayDriver
    {
       if(displaySystem && displaySystem.flags.text && len)
       {
-         if(width) 
+         if(width)
          {
             int num = len;
             *width = num * textCellW;
@@ -3595,7 +3595,7 @@ public class LFBDisplayDriver : DisplayDriver
          x /= textCellW;
          y /= textCellH;
 
-         if(y > surface.box.bottom || y < surface.box.top) 
+         if(y > surface.box.bottom || y < surface.box.top)
             return;
          coffset += (y+surface.offset.y) * lfbSurface.bitmap.stride + x + surface.offset.x;
          for(c=0; (c<len && x < surface.box.left); c++, x++,coffset++);
@@ -3607,7 +3607,7 @@ public class LFBDisplayDriver : DisplayDriver
                *coffset = (uint16) (((*coffset)&0xF000)|lfbSurface.foreground|text[c]);
          }
       }
-      else 
+      else
       {
          lfbSurface.writingText = true;
 #if !defined(ECERE_NOTRUETYPE)
@@ -3617,7 +3617,7 @@ public class LFBDisplayDriver : DisplayDriver
          lfbSurface.writingText = false;
       }
    }
-   
+
    void TextFont(Display display, Surface surface, Font font)
    {
       LFBSurface lfbSurface = surface.driverData;

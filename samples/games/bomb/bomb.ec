@@ -36,7 +36,7 @@ class Bomb : Window
 {
    borderStyle = sizable, hasMaximize = true, hasMinimize = true, hasClose = true;
    text = "Bomb Squad", clientSize = Size { 640,400 };
-      
+
    bool fullScreen;
    char board[DIMY][DIMX];
 
@@ -81,8 +81,8 @@ class Bomb : Window
    };
    EditBox passEdit
    {
-      this, textHorzScroll = true, text = "Password", 
-      anchor = Anchor { left = 0.03, top = 0.05, right = 0.84, bottom = 0.80 }, 
+      this, textHorzScroll = true, text = "Password",
+      anchor = Anchor { left = 0.03, top = 0.05, right = 0.84, bottom = 0.80 },
       autoCreate = false
    };
    Bitmap buffer {};
@@ -227,7 +227,7 @@ class Bomb : Window
             surface.Blit(gfx[PLAYER],
                offX + player.x*mapSize.w, offY + player.y*mapSize.h,
                0,0,mapSize.w,mapSize.h);
-            
+
             surface.SetForeground(TIMEBAR);
             surface.Rectangle(0,buffer.height - 20,buffer.width-1,buffer.height-1);
             width = (int)((buffer.width - 2)*(MAXTIME-secPassed)/MAXTIME);
@@ -250,7 +250,7 @@ class Bomb : Window
       }
 
       delete surface;
-      surface2.Stretch(buffer, 0,0, 0,0, clientSize.w, clientSize.h, 
+      surface2.Stretch(buffer, 0,0, 0,0, clientSize.w, clientSize.h,
          buffer.width, buffer.height);
    }
 
@@ -284,7 +284,7 @@ class Bomb : Window
          switch(key)
          {
             case s: LoadLevel(1); break;
-            case p:    
+            case p:
                state = STATE_PASSWORD;
                passEdit.Create();
                break;
@@ -295,10 +295,10 @@ class Bomb : Window
       }
       switch(key)
       {
-         case escape: 
+         case escape:
             if(state == STATE_GAME)
                timer.Stop();
-            state = STATE_MENU; 
+            state = STATE_MENU;
             SetPalette(true);
             Update(null);
             break;

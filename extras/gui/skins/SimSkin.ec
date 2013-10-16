@@ -87,7 +87,7 @@ class SimSkin_Window : Window
             deepBottom = (((BorderBits)borderStyle).sizable && isNormal) ? bottom : border;
          }
 
-         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop, 
+         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop,
             size.w - deepBorder - deepBorder, size.h - deepBottom - deepTop);
       }
 
@@ -101,7 +101,7 @@ class SimSkin_Window : Window
             surface.SetForeground(activeBorder);
             surface.Rectangle(2, 2, size.w-3, size.h-3);
 
-            // Resizeable frame is 1 pixel thicker 
+            // Resizeable frame is 1 pixel thicker
             if(((BorderBits)borderStyle).sizable && isNormal)
                surface.Rectangle(3, 3, size.w - 4, size.h - 4);
          }
@@ -111,7 +111,7 @@ class SimSkin_Window : Window
             surface.Gradient(gradient, sizeof(gradient) / sizeof(ColorKey), GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
          else
-            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey), 
+            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey),
             GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
 
@@ -137,7 +137,7 @@ class SimSkin_Window : Window
          {
             int buttonsSize = border +
                ((hasMaximize || hasMinimize) ? 52 : 18);
-            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET, 
+            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET,
                size.w - (buttonsSize + border + 4), name, (int)strlen(name));
          }
       }
@@ -561,12 +561,12 @@ class SimSkin_Button : Button
             surface.SetForeground(Color { Min((int)c.r * 16/10, 255), Min((int)c.g * 16/10, 255), Min((int)c.b * 16/10,255) });
             surface.HLine(0 + isDefault, clientSize.w-2 - isDefault,  isDefault);
             surface.VLine(1 + isDefault, clientSize.h-2 - isDefault,  isDefault);
-            
-            
+
+
             surface.SetForeground(skinMainColor);
             surface.HLine(1 + isDefault, clientSize.w-2 - isDefault, clientSize.h-2 - isDefault);
             surface.VLine(1 + isDefault, clientSize.h-3 - isDefault, clientSize.w-2 - isDefault);
-            
+
             if(bevel)
             {
                //surface.SetForeground(skinForeground);
@@ -731,13 +731,13 @@ class SimSkin_Button : Button
                   x, y,
                   0,0,buttonBitmap.width,buttonBitmap.height);
             }
-            else 
+            else
             {
                // Push Buttons
                if(scaleBitmap)
                {
                   if(bevel || offset)
-                     surface.Stretch(buttonBitmap, 
+                     surface.Stretch(buttonBitmap,
                         1 + offset, 1 + offset,0,0,
                         clientSize.w-3,clientSize.h-3,buttonBitmap.width,buttonBitmap.height);
                   else
@@ -800,12 +800,12 @@ class SimSkin_Button : Button
             surface.TextExtent(text, (int)strlen(text),&tw, &th);
 
             if((isRadio || isCheckbox) && !bevelOver)
-               WriteCaption(surface, /*clientSize.h +*/ CAPTION_DISTANCE + 3, 
+               WriteCaption(surface, /*clientSize.h +*/ CAPTION_DISTANCE + 3,
                   (clientSize.h - th - 4)/2);
-            else 
+            else
             {
                int x, y = (clientSize.h - th - 1)/2 + offset;
-               
+
                if(ellipsis)
                {
                   int width = clientSize.w - 2*6;
@@ -898,7 +898,7 @@ class SimSkin_ScrollBar : ScrollBar
       downBtn.background = Color {  70 * 6/10, 130* 6/10, 180* 6/10 }; //skinBackground;
       downBtn.bitmap = { (direction == vertical) ? "<:ecere>elements/arrowDown.png" : "<:ecere>elements/arrowRight.png", monochrome = true };
       thumb.background = Color {  70 * 6/10, 130* 6/10, 180* 6/10 }; //skinBackground;*/
-   }   
+   }
 }
 
 /*class SimSkin_DropBox : DropBox
@@ -910,7 +910,7 @@ class SimSkin_ScrollBar : ScrollBar
       background = skinBackground;
       foreground = skinForeground;
       selectionColor = skinMainColor;
-   }   
+   }
 }*/
 
 /*class SimSkin_ListBox : ListBox
@@ -921,7 +921,7 @@ class SimSkin_ScrollBar : ScrollBar
       background = skinBackground;
       foreground = skinForeground;
       selectionColor = skinMainColor;
-   }   
+   }
 }*/
 
 public class SimSkin : Skin

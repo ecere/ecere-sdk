@@ -95,7 +95,7 @@ public:
    virtual void ::Scroll(Display, Box, int, int, Extent);
    virtual void ::Update(Display, Box);
    virtual void ::EndUpdate(Display);
-   
+
    // Allocate/free a bitmap
    virtual bool ::AllocateBitmap(DisplaySystem, Bitmap, int, int, int, PixelFormat, bool);
    virtual void ::FreeBitmap(DisplaySystem, Bitmap);
@@ -117,7 +117,7 @@ public:
 
    // Grab from the screen
    virtual bool ::GrabScreen(Display, Bitmap, int, int, unsigned int, unsigned int);
-   
+
    // Converts a bitmap format
    virtual bool ::ConvertBitmap(DisplaySystem, Bitmap, PixelFormat, ColorAlpha *);
 
@@ -207,7 +207,7 @@ public enum PixelFormat // : byte MESSES UP GuiApplication
 };
 public enum Resolution : int
 {
-   resText80x25, res320x200, res320x240, res320x400, res360x480, res400x256, res400x300, res512x256, res512x384, 
+   resText80x25, res320x200, res320x240, res320x400, res360x480, res400x256, res400x300, res512x256, res512x384,
    res640x200, res640x350, res640x400, res640x480,  res720x348, res800x600, res856x480, res960x720, res1024x768,
    res1152x864, res1280x1024, res1600x1200, res768x480
 };
@@ -327,7 +327,7 @@ struct SortPrimitive
          d = - (a * poly2.middle.x + b * poly2.middle.y + c * poly2.middle.z);
       }
 
-   	for(v = 0; v < primitive->nIndices; v++) 
+      for(v = 0; v < primitive->nIndices; v++)
       {
          double surface;
          Vector3Df * local = &mesh.vertices[primitive->indices[v]];
@@ -337,7 +337,7 @@ struct SortPrimitive
 
          surface = a * vertex.x + b * vertex.y + c * vertex.z + d;
 
-   		if(surface < EPSILON) 
+         if(surface < EPSILON)
          {
    			result = false;
             break;
@@ -366,8 +366,8 @@ struct SortPrimitive
          c*=-1;
          d = - (a * middle.x + b * middle.y + c * middle.z);
       }
-      
-   	for(v = 0; v < primitive->nIndices; v++) 
+
+      for(v = 0; v < primitive->nIndices; v++)
       {
          double surface;
          Vector3Df * local = &mesh.vertices[primitive->indices[v]];
@@ -506,7 +506,7 @@ public:
    {
       // Fix for OnLoadGraphics time alpha blended window text extent on GDI
 #if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
-      if(this && alphaBlend && pixelFormat == pixelFormat888 && 
+      if(this && alphaBlend && pixelFormat == pixelFormat888 &&
          displaySystem.driver == class(GDIDisplayDriver))
       {
          Surface s = GetSurface(0,0,null);
@@ -527,10 +527,10 @@ public:
    {
        displaySystem.driver.SetPalette(this, palette, colorMatch);
    }
-   
+
    void RestorePalette(void)
    {
-      displaySystem.driver.RestorePalette(this);  
+      displaySystem.driver.RestorePalette(this);
    }
 
    bool Lock(bool render)
@@ -542,7 +542,7 @@ public:
          Log("   ");
       Logf("Locking (%d)\n", current+1);
       */
-      
+
       // TOCHECK: Why is displaySystem null with GISDesigner?
       result = displaySystem && displaySystem.Lock();
       if(result && render)
@@ -565,7 +565,7 @@ public:
          current--;
          /*{
             int c;
-            
+
             for(c = 0; c<current; c++)
                Log("   ");
             Logf("Unlocking (%d)\n", current);
@@ -594,7 +594,7 @@ public:
       {
          if(!display3D.selection)
             displaySystem.driver.SelectMesh(this, null);
- 
+
          display3D.material = null;
          display3D.mesh = null;
       }
@@ -627,12 +627,12 @@ public:
             double r = camera.origin.x - (display3D.pickX + display3D.pickWidth/2.0f);
             double t = (display3D.pickY - display3D.pickHeight/2.0f) - camera.origin.y;
             double b = (display3D.pickY + display3D.pickHeight/2.0f) - camera.origin.y;
-            
+
             fovLeft   = atan(l / camera.focalX);
             fovRight  = atan(r / camera.focalX);
             fovTop    = atan(t / camera.focalY);
             fovBottom = atan(b / camera.focalY);
-      
+
             // --- Left ---
             quat.Yaw(fovLeft - Pi/2);
             quat.ToDirection(normal);
@@ -803,11 +803,11 @@ public:
             Matrix matrix;
             Matrix inverse, inverseTranspose;
             int c;
-         
+
             if(object.flags.viewSpace)
                matrix = object.matrix;
             else
-            {  
+            {
                Camera camera = display3D.camera;
                Matrix temp = object.matrix;
                temp.m[3][0] -= camera.cPosition.x;
@@ -835,9 +835,9 @@ public:
                sort->middle.MultMatrix(triangle->middle, matrix);
                sort->middle.z *= -1;
                // sort->plane.MultMatrix(triangle->plane, inverseTranspose);
-               sort->plane.d = plane->a * inverseTranspose.m[0][3] + 
+               sort->plane.d = plane->a * inverseTranspose.m[0][3] +
                                plane->b * inverseTranspose.m[1][3] +
-                               plane->c * inverseTranspose.m[2][3] + 
+                               plane->c * inverseTranspose.m[2][3] +
                                plane->d * inverseTranspose.m[3][3];
             }
          }
@@ -892,7 +892,7 @@ public:
             planes = object.flags.viewSpace ? display3D.viewPickingPlanes : display3D.worldPickingPlanes;
          else
             planes = object.flags.viewSpace ? camera.viewClippingPlanes : camera.worldClippingPlanes;
-         
+
          visible = object.InsideFrustum(planes);
 
          if(visible || display3D.pickingPlanes)
@@ -1176,11 +1176,11 @@ private class Display3D
 
          if(object.flags.light && !object.light.flags.off)
             display.SetLight(id++, object.light);
-         
+
          for(child = object.children.first; child; child = child.next)
          {
             id = _SetLights(display, child, id);
-         }   
+         }
       }
       return id;
    }
@@ -1195,7 +1195,7 @@ private class Display3D
       int c = 0;
       int nIndex = 1, nPoints = 1;
       int offset = 0;
-      bool result = false;      
+      bool result = false;
       Vector3D * points = this.points;
       Vector3D * newPoints = this.newPoints;
       byte * goodPoints = this.goodPoints;
@@ -1205,7 +1205,7 @@ private class Display3D
       bool i32bit = primitive.type.indices32bit;
       uint32 * indices32 = primitive.indices;
       uint16 * indices16 = primitive.indices;
-      
+
       switch(primitive.type.primitiveType)
       {
          case triangles: nIndex = 3; nPoints = 3; break;
@@ -1220,7 +1220,7 @@ private class Display3D
             points[1] = { (double)tmp.x, (double)tmp.y, (double)tmp.z };
             break;
       }
-      
+
       for(c = offset; c<nVertices; c += nIndex)
       {
          bool outside = false;
@@ -1278,14 +1278,14 @@ private class Display3D
                }
             }
 
-   	      for(p = 0; p < 6; p++) 
+            for(p = 0; p < 6; p++)
             {
                Plane * plane = &planes[p];
                int i;
                int numGoodPoints = 0;
-       
+
                memset(goodPoints, 0, n);
-   		      for(i = 0; i < n; i++) 
+               for(i = 0; i < n; i++)
                {
                   double dot = plane->normal.DotProduct(points[i]);
                   double distance = dot + plane->d;
@@ -1316,7 +1316,7 @@ private class Display3D
                      }
                      else
                      {
-                        Line edge; 
+                        Line edge;
                         int next;
 
                         if(lastGood == -1)
@@ -1474,7 +1474,7 @@ private class Display3D
             if(object.flags.viewSpace)
                matrix = object.matrix;
             else
-            {  
+            {
                Camera camera = this.camera;
                Matrix temp = object.matrix;
                temp.m[3][0] -= camera.cPosition.x;
@@ -1484,7 +1484,7 @@ private class Display3D
             }
          }
 
-   	   for(v = 0; v<primitive->nIndices; v++) 
+         for(v = 0; v<primitive->nIndices; v++)
          {
             Vector3Df * local = &mesh.vertices[primitive->indices[v]];
             Vector3Df vertex;
@@ -1516,7 +1516,7 @@ private class Display3D
 
          Logf("Triangle %d (%s):\n", c, primitive->material->name);
 
-   	   for(v = 0; v<primitive->nIndices; v++) 
+         for(v = 0; v<primitive->nIndices; v++)
          {
             Vector3Df * local = &mesh.vertices[primitive->indices[v]];
             Vector3Df vertex;
@@ -1549,7 +1549,7 @@ private class Display3D
 
          Logf("Triangle %d (%s):\n", c, primitive->material->name);
 
-   	   for(v = 0; v<primitive->nIndices; v++) 
+         for(v = 0; v<primitive->nIndices; v++)
          {
             Vector3Df * local = &mesh.vertices[primitive->indices[v]];
             Vector3Df vertex;
@@ -1572,17 +1572,17 @@ private class Display3D
       //exit(0);
 
    /*
-   If all five tests fail for a particular Q, 
-   then P might obscure Q. Now Q must be tested. 
-   First, the algorithm checks if Q has been "marked." 
-   If Q is marked, then Q was "moved around" in the list 
-   during a previous iteration of the loop. The algorithm 
-   only allows a polygon to be moved once, to avoid the possibility 
-   of infinite loops. If Q is not marked, it is tested to see 
-   if it might obscure P. If Q cannot obscure P, then Q is possibly 
-   behind P and so it is good candidate to be drawn next. 
-   Therefore, the algorithm "abandons" the current P (that is, it 
-   stops testing Q's against the current P) and moves the current 
+   If all five tests fail for a particular Q,
+   then P might obscure Q. Now Q must be tested.
+   First, the algorithm checks if Q has been "marked."
+   If Q is marked, then Q was "moved around" in the list
+   during a previous iteration of the loop. The algorithm
+   only allows a polygon to be moved once, to avoid the possibility
+   of infinite loops. If Q is not marked, it is tested to see
+   if it might obscure P. If Q cannot obscure P, then Q is possibly
+   behind P and so it is good candidate to be drawn next.
+   Therefore, the algorithm "abandons" the current P (that is, it
+   stops testing Q's against the current P) and moves the current
    Q to the end of the list to become the next P.
    */
    /*
@@ -1686,13 +1686,13 @@ private class Display3D
 
    /*
       {
-   	   for(c=0; c<nTriangles; c++) 
+         for(c=0; c<nTriangles; c++)
          {
             int b;
             SortPrimitive * poly1 = &triangles[c];
 
-            // for(b=0; b<nTriangles; b++) 
-            //for(b=c+1; b<nTriangles; b++) 
+            // for(b=0; b<nTriangles; b++)
+            //for(b=c+1; b<nTriangles; b++)
             b = c+1;
             if(b<this.nTriangles)
             {

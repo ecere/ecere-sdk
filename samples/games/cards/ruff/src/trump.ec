@@ -25,10 +25,10 @@ class Trump : Kind
 
       OnGetString(name, trumpDialog, null);
       len = strlen(name);
-      
+
       surface.TextExtent(name, len, &w, &h);
       surface.WriteText(xStart, y, name, len);
- 
+
       // Draw the current row stipple
       if(flags.selected)
       {
@@ -45,7 +45,7 @@ class Trump : Kind
          surface.Rectangle(xStart - 3, y, xStart + w + 1, y + h - 1);
          surface.LineStipple(0);
       }
- 
+
       if(icon)
       {
          surface.SetForeground(white);

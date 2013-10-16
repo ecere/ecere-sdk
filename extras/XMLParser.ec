@@ -21,7 +21,7 @@ static WordStatus GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool 
       if(!quoted && wasQuoted)
          break;
 
-      if((ch == ' ' || ch == '\t') && !quoted) 
+      if((ch == ' ' || ch == '\t') && !quoted)
       {
          if(!start) break;
       }
@@ -37,7 +37,7 @@ static WordStatus GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool 
          }
          else if(ch != '\r' && ch != '\n')
          {
-            if(c < maxSize) 
+            if(c < maxSize)
                keyWord[c++] = ch;
             start = false;
          }
@@ -89,14 +89,14 @@ class XMLParser
       int charLen = 0;
       int oldDepth = xmlDepth;
       tag[0] = 0;
-      
+
       closingTag = false;
-      
+
       // Preparse to check for completeness
       for(stringPos = 0; stringPos < count; stringPos++)
       {
          byte ch = inputString[stringPos];
-      
+
          if(commented)
          {
             if((ch == '-' && tagLen < 2) || (ch == '>' && tagLen == 2))
@@ -188,7 +188,7 @@ class XMLParser
       for(stringPos = 0; stringPos < count; stringPos++)
       {
          byte ch = inputString[stringPos];
-      
+
          if(commented)
          {
             if((ch == '-' && tagLen < 2) || (ch == '>' && tagLen == 2))
@@ -264,7 +264,7 @@ class XMLParser
             if(ch == '<' || charLen == CHARBUFSIZE - 1)
             {
                ProcessCharacterData(characterData);
-               charLen = 0;               
+               charLen = 0;
             }
             if(ch == '<')
             {

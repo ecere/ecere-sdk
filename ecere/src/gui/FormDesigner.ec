@@ -36,7 +36,7 @@ class FormDesigner : ClassDesignerBase
          if(form)
             form.visible = true;
       }
-      
+
       selected = control;
       Update(null);
       //activeDesigner.Update(null);
@@ -61,7 +61,7 @@ class FormDesigner : ClassDesignerBase
       else
       {
          // instance.parent = _class;
-      }   
+      }
    }
 
    void ::PostCreateObject(Window instance, ObjectInfo object, bool isClass, Window _class)
@@ -149,21 +149,21 @@ class FormDesigner : ClassDesignerBase
    void ::FixProperty(Property prop, Window object)
    {
       FormDesigner designer = (FormDesigner)activeDesigner.classDesigner;
-      
+
       if(!strcmp(prop.name, "parent"))
       {
          if(object.parent == guiApp.desktop)
             object.parent = designer.form;
 
          if(object.parent == designer.form)
-         {  
+         {
             ObjectInfo previous = object.object;
             while((previous = previous.prev) && ((Window)previous.instance).parent != designer.form);
             if(previous)
                object.parent.children.Move(object, (Window)previous.instance);
          }
       }
-      
+
       if(!strcmp(prop.name, "master") && !object.master)
          object.master = designer.form;
 
@@ -191,10 +191,10 @@ class FormDesigner : ClassDesignerBase
       editBox.Printf("import \"ecere\"\n\n");
       editBox.Printf("class %s : %s\n", name, inherit);
       editBox.Printf("{\n");
-      
+
       editBox.Printf("   caption = \"%s\";\n", name);
       //editBox.Printf("   background = Color { 212, 208, 200 };\n");
-      
+
       editBox.Printf("   background = formColor;\n");
       editBox.Printf("   borderStyle = sizable;\n");
       editBox.Printf("   hasMaximize = true;\n");
@@ -202,8 +202,8 @@ class FormDesigner : ClassDesignerBase
       editBox.Printf("   hasClose = true;\n");
       //editBox.Printf("   position = { 20, 20 };\n");
       editBox.Printf("   clientSize = { %d, %d };\n", w, h);
-      
-      
+
+
       //editBox.Printf("   Button ok { parent = this, position = { 100, 100 }, size = { 80, 20 } };\n");
 
       //editBox.Printf("\n   Button ok\n   {\n      parent = this;\n\n      bool NotifyClicked()\n      {\n      }\n   };\n");
@@ -256,7 +256,7 @@ class FormDesigner : ClassDesignerBase
                int h = moved.size.h;
                Box box;
                Anchor anchor = moved.anchor;
-               
+
                x = xBefore + parentBefore.absPosition.x - curParent.absPosition.x + parentBefore.clientStart.x - curParent.clientStart.x;
                y = yBefore + parentBefore.absPosition.y - curParent.absPosition.y + parentBefore.clientStart.y - curParent.clientStart.y;
 
@@ -279,9 +279,9 @@ class FormDesigner : ClassDesignerBase
                   }
                   else if(resizeX > 0)
                   {
-                     w += dx;            
+                     w += dx;
                   }
-            
+
                   if(resizeY < 0)
                   {
                      y += dy;
@@ -291,12 +291,12 @@ class FormDesigner : ClassDesignerBase
                   {
                      h += dy;
                   }
-                  if(resizeX) 
+                  if(resizeX)
                   {
                      w = Max(w, GridSnap);
                      moved.size.w = w;
                   }
-                  if(resizeY) 
+                  if(resizeY)
                   {
                      h = Max(h, GridSnap);
                      moved.size.h = h;
@@ -317,7 +317,7 @@ class FormDesigner : ClassDesignerBase
 
                      moved.parent = parent;
                      if(parent == form)
-                     {  
+                     {
                         ObjectInfo previous = moved.object;
                         while((previous = previous.prev) && ((Window)previous.instance).parent != form);
                         if(previous)
@@ -329,7 +329,7 @@ class FormDesigner : ClassDesignerBase
                   x -= x % GridSnap;
                   y -= y % GridSnap;
                }
-               
+
                activeDesigner.ModifyCode();
 
                moved.Move(x, y, w, h);
@@ -351,7 +351,7 @@ class FormDesigner : ClassDesignerBase
 
                {
                   int vpw, vph;
-                  
+
                   // Fix Anchor
                   x = moved.position.x;
                   y = moved.position.y;
@@ -388,7 +388,7 @@ class FormDesigner : ClassDesignerBase
                      //anchor.horz.type = anchor.horz.distance ? offset : 0;
                   }
                   else if(anchor.horz.type == middleRelative) anchor.horz.percent = (float) ((x + w / 2) - (vpw / 2)) / vpw;
-                  if(!anchor.top.type && !anchor.bottom.type) 
+                  if(!anchor.top.type && !anchor.bottom.type)
                   {
                      anchor.vert.distance = (y + h / 2) - (vph / 2);
                      //anchor.vert.type = anchor.vert.distance ? offset : 0;
@@ -412,7 +412,7 @@ class FormDesigner : ClassDesignerBase
                box.top -= 7;
                box.right += 7;
                box.bottom += 7;
-         
+
                Update(box);
                //activeDesigner.Update(box);
 
@@ -544,7 +544,7 @@ class FormDesigner : ClassDesignerBase
                ((control == form) ? (Window)this : form).SetMouseRangeToWindow();
             else
                ((control == form) ? (Window)this : form).SetMouseRangeToClient();
-            
+
             xClicked = x;
             yClicked = y;
 
@@ -593,7 +593,7 @@ class FormDesigner : ClassDesignerBase
 
                   activeDesigner.CodeAddObject(control, &object);
 
-                  while(!parent.name) 
+                  while(!parent.name)
                   {
                      x += parent.position.x + parent.clientStart.x;
                      y += parent.position.y + parent.clientStart.y;
@@ -616,7 +616,7 @@ class FormDesigner : ClassDesignerBase
 
                   control.Create();
                   if(parent == form)
-                  {  
+                  {
                      ObjectInfo previous = control.object;
                      while((previous = previous.prev) && ((Window)previous.instance).parent != form);
                      if(previous)
@@ -657,7 +657,7 @@ class FormDesigner : ClassDesignerBase
          window.OnSysKeyDown = ecere::gui::OnSysKey;
          window.OnSysKeyHit = ecere::gui::OnSysKey;
          window.OnSysKeyUp = ecere::gui::OnSysKey;
-            
+
          if(object != object.oClass)
          {
             window.OnActivate = Control_OnActivate;
@@ -859,7 +859,7 @@ static bool OnKeyDown(Window window, Key key, unichar ch)
          if(!confirmation)
          {
             activeDesigner.ModifyCode();
-         
+
             designer.selected.Destroy(0);
             //activeDesigner.Update(null);
             designer.Update(null);

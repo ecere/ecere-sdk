@@ -15,7 +15,7 @@ class Form1 : Window
       this, anchor = { 5,5,5,5 };
       clickThrough = true;
    };
-   
+
    Label prompt { column, font = { "Arial", 14, bold = true }, anchor = { horz = 0, top = 10 }, text = "testing" };
    EditBox query
    {

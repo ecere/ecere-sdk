@@ -147,7 +147,7 @@ class GameBall : GameVehicle {
             double dp;
             double elasticity_cur;
             bool clockcont = false; //if positive angle velocity contributes to speed toward parallel of ball velocity
-            
+
             //printf("COLLIDE! (location=(%f, %f), p = <%f, %f>)\n",location.x, location.y, soonest_line->x0-location.x,soonest_line->y0-location.y);
 
             //if (soonest.t<0.0)
@@ -156,7 +156,7 @@ class GameBall : GameVehicle {
             //   PrintLn("Negative time after subtract", soonest.t);
 
             soonest.t-=0.01; //don't fall all the way in, or we'll have multiple collisions after this
-            
+
             //compensate for the time taken to get to the collision
             location.x += velocity.x*soonest.t;
             location.y += velocity.y*soonest.t;
@@ -182,7 +182,7 @@ class GameBall : GameVehicle {
                if ((v_normal.x<0 && v_parallel.y>0) || (v_normal.x>0 && v_parallel.y<0))
                   clockcont = true;
             }
-            
+
             //we need a reference to this before v_normal gets zeroed if elasticity_cur is 0.
             v_parallel_normalized = {-v_normal.y, v_normal.x};
             v_parallel_normalized.Normalize();
@@ -194,7 +194,7 @@ class GameBall : GameVehicle {
             //elastic collision:  multiply the normal by negative elasticity
             v_normal.x *= elasticity_cur;
             v_normal.y *= elasticity_cur;
-            
+
             //an attempt at the effects of angular velocity and friction
             {
                double gs; //goal velocity squared
@@ -233,7 +233,7 @@ class GameBall : GameVehicle {
                else
                   angle_velocity = -g/radius;
             }
-            
+
             velocity.Add(v_parallel, v_normal);
 
             //at last, we'll handle speed/slow lines by simply changing the angular velocity
@@ -266,7 +266,7 @@ public:
    uint version_code; //which version of OpenRider to act like
 
    version_code = max_version_code_supported;
-   
+
    ~Game() { FreeAll(); }
    void FreeAll(void) {
       for (i:vehicles)
@@ -344,7 +344,7 @@ public:
       for (;count--;c+=2)
          lines.Add({c[0],c[1],c[2],c[3],regular,floor});
    }
-   
+
    //returns true if any lines were erased
    bool EraseAtBox(double x0, double y0, double x1, double y1) {
       uint erasures = 0;
@@ -362,7 +362,7 @@ public:
       lines.size -= erasures;
       return !!erasures;
    }
-   
+
    //used for efficiency, not for precision
    //This only checks for lines in box by looking at the bounding boxes of lines in question
    void FindLinesInBox(double x0, double y0, double x1, double y1, bool tolerance) {
@@ -395,7 +395,7 @@ public:
       }
       #undef Swap
    }
-   
+
    virtual void Instance::DrawLine(GameLine line);
    virtual void Instance::DrawBall(GameBall ball);
 }

@@ -30,7 +30,7 @@ private:
    {
       this, isCheckbox = true, text = $"Match case", position = { 10, 60 }, hotKey = altC
    };
-      
+
    Button searchUp
    {
       this, isRadio = true, text = $"Up", position = { 220, 50 }, hotKey = altU
@@ -71,7 +71,7 @@ private:
    Button cancel
    {
       this, text = $"Cancel", anchor = Anchor { right = 10, top = 45 }, size = { 80 }, hotKey = escape;
-      
+
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
          findWhat.Activate();

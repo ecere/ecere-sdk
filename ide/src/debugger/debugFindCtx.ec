@@ -9,21 +9,21 @@ static Class currentClass;
 
 static bool InsideIncl(Location loc, int line, int charPos)
 {
-   //return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) && 
+   //return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) &&
    //       (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
    return !loc.start.included && loc.start.line <= line && loc.end.line >= line;
 }
 
 static bool Inside(Location loc, int line, int charPos)
 {
-   //return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) && 
+   //return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
    //       (loc.end.line > line || (loc.end.line == line && loc.end.charPos > charPos));
    return !loc.start.included && loc.start.line < line &&  loc.end.line > line;
 }
 
 static bool InsideEndIncl(Location loc, int line, int charPos)
 {
-   //return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) && 
+   //return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
    //       (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
    return !loc.start.included && loc.start.line < line &&  loc.end.line >= line;
 }
@@ -194,7 +194,7 @@ Identifier DebugFindCtxExpression(Expression exp, int line, int charPos)
       case bracketsExp:
       {
          Expression expression;
-         
+
          for(expression = exp.list->first; expression; expression = expression.next)
          {
             if(InsideIncl(&expression.loc, line, charPos))
@@ -213,7 +213,7 @@ Identifier DebugFindCtxExpression(Expression exp, int line, int charPos)
             idResult = DebugFindCtxExpression(exp.index.exp, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          for(expression = exp.index.index->first; expression; expression = expression.next)
          {
             if(InsideIncl(&expression.loc, line, charPos))
@@ -234,10 +234,10 @@ Identifier DebugFindCtxExpression(Expression exp, int line, int charPos)
             idResult = DebugFindCtxExpression(exp.call.exp, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(exp.call.argLoc.start.line > line || (line == exp.call.argLoc.start.line && exp.call.argLoc.start.charPos >= charPos))
             arg = -1;
-         else 
+         else
             arg = 0;
 
          if(exp.call.arguments)
@@ -250,7 +250,7 @@ Identifier DebugFindCtxExpression(Expression exp, int line, int charPos)
                {
                   if(InsideIncl(&expression.loc, line, charPos))
                      idResult = DebugFindCtxExpression(expression, line, charPos);
-                  
+
                   // Break
                   break;
                }
@@ -258,7 +258,7 @@ Identifier DebugFindCtxExpression(Expression exp, int line, int charPos)
             }
 
 
-            if(idResult) 
+            if(idResult)
                return idResult;
          }
          break;
@@ -489,13 +489,13 @@ static Identifier DebugFindCtxStatement(Statement stmt, int line, int charPos)
             idResult = DebugFindCtxStatement(stmt.forStmt.init, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(stmt.forStmt.check && InsideIncl(&stmt.forStmt.check.loc, line, charPos))
          {
             idResult = DebugFindCtxStatement(stmt.forStmt.check, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(stmt.forStmt.increment)
          {
             for(exp = stmt.forStmt.increment->first; exp; exp = exp.next)
@@ -522,7 +522,7 @@ static Identifier DebugFindCtxStatement(Statement stmt, int line, int charPos)
          if(stmt.expressions)
          {
             Expression exp;
-            
+
             for(exp = stmt.expressions->first; exp; exp = exp.next)
             {
                if(InsideIncl(&exp.loc, line, charPos))
@@ -598,7 +598,7 @@ static Identifier DebugFindCtxInitializer(Initializer initializer, int line, int
       {
          Initializer init;
          Identifier idResult;
-         
+
          for(init = initializer.list->first; init; init = init.next)
          {
             if(InsideIncl(&init.loc, line, charPos))
@@ -631,7 +631,7 @@ static Identifier DebugFindCtxInitDeclarator(InitDeclarator decl, int line, int 
 static Identifier DebugFindCtxDeclaration(Declaration decl, int line, int charPos)
 {
    Identifier idResult;
-   
+
    switch(decl.type)
    {
       case structDeclaration:
@@ -658,7 +658,7 @@ static Identifier DebugFindCtxDeclaration(Declaration decl, int line, int charPo
                   if(d.type == DeclaratorStruct && d.declarator && d.declarator.type == DeclaratorIdentifier)
                      return d.declarator.identifier;
                }
-            }   
+            }
          }
          */
          break;
@@ -690,7 +690,7 @@ static Identifier DebugFindCtxDeclaration(Declaration decl, int line, int charPo
                   idResult = DebugFindCtxInitDeclarator(d, line, charPos);
                   if(idResult) return idResult;
                }
-            }   
+            }
          }
          break;
       }
@@ -707,7 +707,7 @@ static Identifier DebugFindCtxFunction(FunctionDefinition func, int line, int ch
    if(func.body && InsideIncl(&func.body.loc, line, charPos))
    {
       Identifier idResult;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator.symbol;
       Type type = symbol.type;
@@ -769,7 +769,7 @@ static Identifier DebugFindCtxInstance(Instantiation inst, int line, int charPos
       MembersInit init;
       MemberInit memberInit;
       for(init = inst.members->first; init; init = init.next)
-      {         
+      {
          if(init.loc.start.line > line || (line == init.loc.start.line && init.loc.start.charPos > charPos))
             break;
 
@@ -815,7 +815,7 @@ static Identifier DebugFindCtxInstance(Instantiation inst, int line, int charPos
       return idResult;
    SetThisClass(oldThisClass);
 
-   return (void *)-1;  // ? 
+   return (void *)-1;  // ?
 }
 
 static Identifier DebugFindCtxClassFunction(ClassFunction func, int line, int charPos)
@@ -823,7 +823,7 @@ static Identifier DebugFindCtxClassFunction(ClassFunction func, int line, int ch
    if(func.body && InsideIncl(&func.body.loc, line, charPos))
    {
       Identifier idResult;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol ? symbol.type : null;
@@ -941,7 +941,7 @@ static Identifier DebugFindCtxClassDef(ClassDef def, int line, int charPos)
             SetThisClass(currentClass);
 
             idResult = DebugFindCtxStatement(def.propertyWatch.compound, line, charPos);
-            if(idResult) 
+            if(idResult)
                return idResult;
             SetThisClass(oldThisClass);
          }
@@ -989,7 +989,7 @@ Identifier DebugFindCtxTree(OldList ast, int line, int charPos)
       {
          switch(external.type)
          {
-            case functionExternal: 
+            case functionExternal:
                if(InsideIncl(&external.loc, line, charPos))
                {
                   idResult = DebugFindCtxFunction(external.function, line, charPos);
@@ -997,7 +997,7 @@ Identifier DebugFindCtxTree(OldList ast, int line, int charPos)
                      return (idResult == (void *)-1 || idResult == (void *)-2) ? null : idResult;
                }
                break;
-            case declarationExternal: 
+            case declarationExternal:
                if(InsideIncl(&external.loc, line, charPos))
                {
                   idResult = DebugFindCtxDeclaration(external.declaration, line, charPos);
@@ -1005,7 +1005,7 @@ Identifier DebugFindCtxTree(OldList ast, int line, int charPos)
                      return (idResult == (void *)-1 || idResult == (void *)-2) ? null : idResult;
                }
                break;
-            case classExternal: 
+            case classExternal:
                if(InsideIncl(&external._class.loc, line, charPos))
                {
                   currentClass = external._class.symbol.registered;

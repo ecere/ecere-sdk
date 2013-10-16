@@ -54,13 +54,13 @@ class Connection : Window
    borderStyle = sizable, hasClose = true, hasMinimize = true, showInTaskBar = true, size = Size { 580, 600 },
    minClientSize = Size { 300, 440 }, tabCycle = true, background = activeBorder;
 
-   Button close 
-   { 
+   Button close
+   {
       this, text = "Close", size = Size { 80, 0 }, anchor = Anchor { right = 10, bottom = 5 }, hotKey = altC;
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          Destroy(0);
-         return true;         
+         return true;
       }
    };
    Label { this, text = "[=== UPLOAD ===]", position = Point { 10, 10 } };
@@ -74,27 +74,27 @@ class Connection : Window
       }
 
    };
-   Button sendBrowse 
-   { 
+   Button sendBrowse
+   {
       this, text = "Browse", size = Size { 80,20 }, anchor = Anchor { right = 100, top = 40 }, hotKey = altB;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(fileList.Modal() == ok)
          {
-            sendFile.Clear(); 
+            sendFile.Clear();
             sendFile.PutS(fileList.filePath);
          }
          return true;
       }
    };
-   Button send 
-   { 
+   Button send
+   {
       this, text = "Send", size = Size { 80, 20 }, anchor = Anchor { right = 10, top = 40 }, hotKey = altS, disabled = true;
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          char * fileName = sendFile.line.text;
-      
+
          fileSend = FileOpen(fileName, read);
          if(fileSend)
          {
@@ -119,7 +119,7 @@ class Connection : Window
 
                delete packet;
             }
-         
+
             sending.Clear();
             sending.Printf("Sending %s at", outputFile);
          }
@@ -132,7 +132,7 @@ class Connection : Window
    EditBox sending { this, textHorzScroll = true, readOnly = true, borderStyle = deep, inactive = true, size.h = 20, anchor = Anchor { left = 10, top = 70, right = 190 }, opacity = 0 };
    Label sendSpeed { this, borderStyle = deep, anchor = Anchor { right = 100, top = 70 }, size = Size { 80, 20 } };
    Button sendCancel
-   { 
+   {
       this, text = "Cancel", anchor = Anchor { right = 10, top = 70 }, size = Size { 80,20 }, disabled = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -158,13 +158,13 @@ class Connection : Window
       }
    };
    ProgressBar recvProgress { this, borderStyle = deep, inactive = true, anchor = Anchor { left = 10, top = 200, right = 10 }, size.h = 20 };
-   EditBox log 
+   EditBox log
    {
       this, readOnly = true, multiLine = true, autoEmpty = true, text = "Conversation", inactive = true, size = Size { 560, 226 }, anchor = Anchor { left = 10, top = 270, right = 10, bottom = 100 }, hasHorzScroll = true, hasVertScroll = true
    };
    Label { this, position = Point { 10, 250 }, labeledWindow = log };
-   Button clear 
-   { 
+   Button clear
+   {
       this, text = "Clear", anchor = Anchor { left = 10, bottom = 5 }, size = Size { 80, 0 }, hotKey = altR;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -174,7 +174,7 @@ class Connection : Window
       }
    };
    Button backButton
-   { 
+   {
       this, text = "Background...", anchor = Anchor { bottom = 5 }, size = Size { 100, 0 }, hotKey = altK;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -185,7 +185,7 @@ class Connection : Window
          return true;
       }
    };
-   EditBox message 
+   EditBox message
    {
       this, multiLine = true, text = "Message", size = Size { 0, 50 }, anchor = Anchor { left = 10, right = 10, bottom = 32 }, disabled = true, hasHorzScroll = true, hasVertScroll = true, size.h = 50;
 
@@ -194,7 +194,7 @@ class Connection : Window
          if((SmartKey)key == ctrlEnter)
          {
             EditLine line;
-         
+
             log.End();
             log.AddS("\n");
             log.AddS("<");
@@ -285,7 +285,7 @@ class Connection : Window
       {
          namePacket->type = Name;
          namePacket->dataSize = strlen(name);
-      
+
          CopyBytes(namePacket + 1, name, namePacket->dataSize);
 
          socket.Send(namePacket, sizeof(eComPacket) + namePacket->dataSize);
@@ -361,7 +361,7 @@ class ConnectionSocket : Socket
 
                      CopyBytes(fileName, data, packet.dataSize);
                      fileName[packet.dataSize] = '\0';
-               
+
                      if(FileExists(fileName))
                      {
                         FileGetSize(fileName, &resumePosition);
@@ -418,7 +418,7 @@ class ConnectionSocket : Socket
                      connection.incomingMessage = renew connection.incomingMessage char[connection.incomingMsgLen + packet.dataSize + 1];
                      CopyBytes(connection.incomingMessage + connection.incomingMsgLen, data, packet.dataSize);
                      connection.incomingMessage[connection.incomingMsgLen + packet.dataSize] = '\0';
-               
+
                      connection.incomingMsgLen += packet.dataSize;
 
                      if(packet.msg.over)
@@ -454,7 +454,7 @@ class ConnectionSocket : Socket
                   {
                      eComPacket ackPacket { DataAck };
                      Seconds diffTime;
-              
+
                      if(connection.abortRecv)
                         ackPacket.data.status = Abort;
                      else if(packet.dataSize)
@@ -466,7 +466,7 @@ class ConnectionSocket : Socket
                         ackPacket.data.status = packet.data.status;
 
                      connection.recvProgress.progress += packet.dataSize;
-               
+
                      diffTime = GetTime() - connection.recvTime;
                      if(diffTime)
                      {
@@ -475,7 +475,7 @@ class ConnectionSocket : Socket
                         strcat(string, "/s");
                         connection.recvSpeed.text = string;
                      }
-               
+
                      if(ackPacket.data.status)
                      {
                         connection.log.End();
@@ -520,7 +520,7 @@ class ConnectionSocket : Socket
                               connection.log.Printf("\n* Remote ran out of disk space receiving %s.", connection.sendFileName);
                               break;
                         }
-                  
+
                         connection.sendProgress.range = 0;
                         delete connection.fileSend;
 

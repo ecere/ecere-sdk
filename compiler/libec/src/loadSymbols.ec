@@ -295,7 +295,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                         for(;;)
                         {
                            char * equal;
-                           
+
                            if(!f.GetLine(line, sizeof(line))) break;
                            TrimLSpaces(line, line);
                            if(!strcmp(line, ".")) break;
@@ -352,7 +352,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                            }
                            else
                            {
-                              strcpy(name, line);                              
+                              strcpy(name, line);
                               isVirtual = false;
                               memberAccess = publicAccess;
                            }
@@ -531,7 +531,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                            if(type == TemplateParameterType::type || type == TemplateParameterType::expression)
                               delete info;
                            if(type == TemplateParameterType::type || type == TemplateParameterType::identifier)
-                              delete defaultArg.dataTypeString;                           
+                              delete defaultArg.dataTypeString;
                         }
                         if(regClass)
                            eClass_DoneAddingTemplateParameters(regClass);
@@ -555,7 +555,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                   if(!f.GetLine(line, sizeof(line))) break;
                   TrimLSpaces(line, line);
                   if(!strcmp(line, ".")) break;
-                  if(!strcmp(line, "[Value]")) 
+                  if(!strcmp(line, "[Value]"))
                   {
                      f.GetLine(line, sizeof(line));
                      TrimLSpaces(line, line);
@@ -576,7 +576,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                   if(!f.GetLine(line, sizeof(line))) break;
                   TrimLSpaces(line, line);
                   if(!strcmp(line, ".")) break;
-                  if(!strcmp(line, "[Type]")) 
+                  if(!strcmp(line, "[Type]"))
                   {
                      f.GetLine(line, sizeof(line));
                      TrimLSpaces(line, line);
@@ -597,7 +597,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                   if(!f.GetLine(line, sizeof(line))) break;
                   TrimLSpaces(line, line);
                   if(!strcmp(line, ".")) break;
-                  if(!strcmp(line, "[Type]")) 
+                  if(!strcmp(line, "[Type]"))
                   {
                      f.GetLine(line, sizeof(line));
                      TrimLSpaces(line, line);
@@ -635,7 +635,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                                  delete spaceName;
                               nameSpace = newSpace;
                               if(name[c] == ':') c++;
-                              start = c+1;         
+                              start = c+1;
                            }
                         }
                         if(c - start)
@@ -777,7 +777,7 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
                strcpy(file, name);
                StripExtension(file);
 
-               // Load an extra instance of any shared module to ensure freeing up a 
+               // Load an extra instance of any shared module to ensure freeing up a
                // module loaded in another file will not invalidate our objects.
                if(!inCompiler && !inPreCompiler && !inSymbolGen)
                {
@@ -887,7 +887,7 @@ int FindIncludeFileID(char * includeFile)
 int GetIncludeFileID(char * includeFile)
 {
    int found = FindIncludeFileID(includeFile);
-   if(found) 
+   if(found)
       return found;
 
    includes = renew includes char *[numIncludes+1];

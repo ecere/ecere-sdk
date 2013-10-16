@@ -11,7 +11,7 @@ char GetOperation()
 {
    char operation = 0;
    PrintLn("Chose an operation to perform: +, -, *, /, ^. q to quit.");
-   do 
+   do
    {
       char input[1024];
       gets(input);
@@ -21,7 +21,7 @@ char GetOperation()
             operation = input[0];
             break;
          default:
-            PrintLn("Invalid Operation"); 
+            PrintLn("Invalid Operation");
       }
    } while(!operation);
    return operation;
@@ -36,7 +36,7 @@ double GetOperand()
    {
       PrintLn("Print enter a valid numeric value");
       gets(input);
-   } 
+   }
    return operand;
 }
 
@@ -70,16 +70,16 @@ class Lab4App : Application
          double operand1, operand2;
          char operation = GetOperation();
          if(operation == 'q') break;
-         
+
          PrintLn("Enter the first operand:");
          operand1 = GetOperand();
          PrintLn("Enter the second operand:");
          operand2 = GetOperand();
          if(operation == '/' && operand2 == 0)
             PrintLn("Cannot divide by 0");
-         else            
+         else
          {
-            double result = ComputeOperation(operation, operand1, operand2);        
+            double result = ComputeOperation(operation, operand1, operand2);
             PrintLn(operand1, " ", operation, " ", operand2, " = ", result);
          }
       }

@@ -12,7 +12,7 @@ public void CopyBytes(void * dest, const void * source, uint count)
 #if !defined(ECERE_BOOTSTRAP) && (defined(__WATCOMC__) || defined(__MSC__) || defined(__BORLANDC__))
    _asm
    {
-      push esi      
+      push esi
       push edi
       push ecx
 
@@ -20,7 +20,7 @@ public void CopyBytes(void * dest, const void * source, uint count)
       mov edi,dest
       mov ecx,count
       rep movsb
-      
+
       pop ecx
       pop edi
       pop esi
@@ -88,7 +88,7 @@ public void CopyBytesBy4(void * dest, const void * source, uint count)
       mov edi,dest
       mov ecx,count
       rep movsd
-      
+
       pop ecx
       pop edi
       pop esi
@@ -154,7 +154,7 @@ public void FillBytesBy2(void * area, uint16 value, uint count)
       mov ecx,count
       mov ax,value
       rep stosw
-      
+
       pop eax
       pop ecx
       pop edi

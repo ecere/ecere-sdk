@@ -51,7 +51,7 @@ public:
    Material material;
 private:
    void * data;
-};   
+};
 
 public struct PrimitiveSingle
 {
@@ -319,10 +319,10 @@ public:
 
                if(group.type.primitiveType == triFan)
                {
-                  plane.FromPointsf(vertices[group.indices[0]], 
-                                   vertices[group.indices[c]], 
+                  plane.FromPointsf(vertices[group.indices[0]],
+                                   vertices[group.indices[c]],
                                    vertices[group.indices[c-1]]);
-                  planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z }; 
+                  planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
                   normals[group.indices[0]].Add(normals[group.indices[0]], planeNormal);
                   numShared[group.indices[0]]++;
@@ -333,10 +333,10 @@ public:
                }
                else if(group.type.primitiveType == triStrip || group.type.primitiveType == quadStrip)
                {
-                  plane.FromPointsf(vertices[group.indices[c-1-strip]], 
-                                   vertices[group.indices[c-2+strip]], 
+                  plane.FromPointsf(vertices[group.indices[c-1-strip]],
+                                   vertices[group.indices[c-2+strip]],
                                    vertices[group.indices[c]]);
-                  planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z }; 
+                  planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
                   normals[group.indices[c-1-strip]].Add(normals[group.indices[c-1-strip]], planeNormal);
                   numShared[group.indices[c-1-strip]]++;
@@ -351,10 +351,10 @@ public:
                {
                   if(group.type.vertexRange)
                   {
-                     plane.FromPointsf(vertices[c+2], 
-                                      vertices[c+1], 
+                     plane.FromPointsf(vertices[c+2],
+                                      vertices[c+1],
                                       vertices[c]);
-                     planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z }; 
+                     planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
                      for(i = c; i<c+nIndex; i++)
                      {
@@ -364,10 +364,10 @@ public:
                   }
                   else
                   {
-                     plane.FromPointsf(vertices[i32bit ? indices32[c+2] : indices16[c+2]], 
-                                      vertices[i32bit ? indices32[c+1] : indices16[c+1]], 
+                     plane.FromPointsf(vertices[i32bit ? indices32[c+2] : indices16[c+2]],
+                                      vertices[i32bit ? indices32[c+1] : indices16[c+1]],
                                       vertices[i32bit ? indices32[c] : indices16[c]]);
-                     planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z }; 
+                     planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
                      for(i = c; i<c+nIndex; i++)
                      {
@@ -387,10 +387,10 @@ public:
 
             Plane plane;
             Vector3Df planeNormal;
-            plane.FromPointsf(vertices[primitive->indices[2]], 
-                             vertices[primitive->indices[1]], 
+            plane.FromPointsf(vertices[primitive->indices[2]],
+                             vertices[primitive->indices[1]],
                              vertices[primitive->indices[0]]);
-            planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z }; 
+            planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
             if(primitive->material.flags.doubleSided && plane.d < 0)
             {

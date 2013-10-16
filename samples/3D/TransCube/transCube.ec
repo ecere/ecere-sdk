@@ -22,7 +22,7 @@ class ModelViewer : Window
    Camera camera
    {
       attachedQuaternion,
-      position = Vector3D { 0, 0, -250 }, 
+      position = Vector3D { 0, 0, -250 },
       orientation = Euler { 120, 30, 0 },
       zMin = 0.01f;
       fov = 53;

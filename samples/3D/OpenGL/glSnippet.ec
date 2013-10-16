@@ -32,7 +32,7 @@ class Snippet : Window
       float blue[] = {0.3f, 0.2f, 1, 1};
       float ambient[4] = { 0.2f, 0.2f, 0.2f };
       float power = 0;
-      float light[] = { -0.810f, -0.585f, 0.468f, 0 };     
+      float light[] = { -0.810f, -0.585f, 0.468f, 0 };
 
       Matrix view
       {

@@ -100,9 +100,9 @@ public class ToolTip : Window
          timer.Stop();
          position =
          {
-            pos.x + offset.x + tippedWindow.clientStart.x + 
+            pos.x + offset.x + tippedWindow.clientStart.x +
                tippedWindow.absPosition.x - parent.position.x;
-            pos.y + offset.y + tippedWindow.clientStart.y + 
+            pos.y + offset.y + tippedWindow.clientStart.y +
                tippedWindow.absPosition.y - parent.position.y;
          };
          Create();
@@ -325,5 +325,5 @@ public class ToolSeparator : Window
       surface.VLine(0, 23, 1);
       surface.foreground = white;
       surface.VLine(0, 23, 2);
-   } 
+   }
 }

@@ -3,7 +3,7 @@
 
    Copyright (c) 1997-2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    sequence.c - Sprite Sequence System
 ****************************************************************************/
 import "ecere"
@@ -64,9 +64,9 @@ Sequence * SequenceInit(uint16 numEvents)
 bool SequenceLoadTable(Sequence **sequences, int count, char *fileName)
 {
    bool result = false;
-   File f = FileOpen(fileName, read);   
+   File f = FileOpen(fileName, read);
    FillBytes(sequences, 0, sizeof(Sequence *) * count);
-   if(f) 
+   if(f)
    {
       int c;
       result = true;

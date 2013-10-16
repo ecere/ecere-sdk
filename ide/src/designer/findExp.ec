@@ -6,7 +6,7 @@ static Class currentClass;
 
 static bool Inside(Location loc, int line, int charPos)
 {
-   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) && 
+   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
 }
 
@@ -35,7 +35,7 @@ Expression FindExpExpression(Expression exp, int line, int charPos)
          }
          break;
       case identifierExp:
-         
+
          break;
       case instanceExp:
          if(Inside(&exp.instance.loc, line, charPos))
@@ -69,7 +69,7 @@ Expression FindExpExpression(Expression exp, int line, int charPos)
       case bracketsExp:
       {
          Expression expression;
-         
+
          for(expression = exp.list->first; expression; expression = expression.next)
          {
             if(Inside(&expression.loc, line, charPos))
@@ -88,7 +88,7 @@ Expression FindExpExpression(Expression exp, int line, int charPos)
             expResult = FindExpExpression(exp.index.exp, line, charPos);
             if(expResult) return expResult;
          }
-         
+
          for(expression = exp.index.index->first; expression; expression = expression.next)
          {
             if(Inside(&expression.loc, line, charPos))
@@ -106,7 +106,7 @@ Expression FindExpExpression(Expression exp, int line, int charPos)
             expResult = FindExpExpression(exp.call.exp, line, charPos);
             if(expResult) return expResult;
          }
-         
+
          if(exp.call.arguments)
          {
             Expression expression;
@@ -357,13 +357,13 @@ static Expression FindExpStatement(Statement stmt, int line, int charPos)
             expResult = FindExpStatement(stmt.forStmt.init, line, charPos);
             if(expResult) return expResult;
          }
-         
+
          if(stmt.forStmt.check && Inside(&stmt.forStmt.check.loc, line, charPos))
          {
             expResult = FindExpStatement(stmt.forStmt.check, line, charPos);
             if(expResult) return expResult;
          }
-         
+
          if(stmt.forStmt.increment)
          {
             for(exp = stmt.forStmt.increment->first; exp; exp = exp.next)
@@ -390,7 +390,7 @@ static Expression FindExpStatement(Statement stmt, int line, int charPos)
          if(stmt.expressions)
          {
             Expression exp;
-            
+
             for(exp = stmt.expressions->first; exp; exp = exp.next)
             {
                if(Inside(&exp.loc, line, charPos))
@@ -441,7 +441,7 @@ static Expression FindExpStatement(Statement stmt, int line, int charPos)
                }
             }
          }
-         break;   
+         break;
       }
    }
    return null;
@@ -455,7 +455,7 @@ static Expression FindExpInitializer(Initializer initializer, int line, int char
       {
          Initializer init;
          Expression expResult;
-         
+
          for(init = initializer.list->first; init; init = init.next)
          {
             if(Inside(&init.loc, line, charPos))
@@ -570,7 +570,7 @@ static Expression FindExpSpecifier(Specifier spec, int line, int charPos)
 static Expression FindExpDeclaration(Declaration decl, int line, int charPos)
 {
    Expression expResult;
-   
+
    switch(decl.type)
    {
       case structDeclaration:
@@ -616,7 +616,7 @@ static Expression FindExpDeclaration(Declaration decl, int line, int charPos)
                   expResult = FindExpInitDeclarator(d, line, charPos);
                   if(expResult) return expResult;
                }
-            }   
+            }
          }
          break;
       }
@@ -633,7 +633,7 @@ static Expression FindExpFunction(FunctionDefinition func, int line, int charPos
    if(func.body && Inside(&func.body.loc, line, charPos))
    {
       Expression result;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator.symbol;
       Type type = symbol.type;
@@ -706,7 +706,7 @@ static Expression FindExpClassFunction(ClassFunction func, int line, int charPos
    if(func.body && Inside(&func.body.loc, line, charPos))
    {
       Expression result;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol?symbol.type:null;
@@ -828,17 +828,17 @@ Expression FindExpTree(OldList ast, int line, int charPos)
          {
             switch(external.type)
             {
-               case functionExternal: 
+               case functionExternal:
                   expResult = FindExpFunction(external.function, line, charPos);
                   if(expResult)
                      return expResult;
                   break;
-               case declarationExternal: 
+               case declarationExternal:
                   expResult = FindExpDeclaration(external.declaration, line, charPos);
                   if(expResult)
                      return expResult;
                   break;
-               case classExternal: 
+               case classExternal:
                   currentClass = external._class.symbol.registered;
                   expResult = FindExpClass(external._class, line, charPos);
                   currentClass = null;

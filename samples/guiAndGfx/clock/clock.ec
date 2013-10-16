@@ -40,12 +40,12 @@ class Form1 : Window
       surface.Clear(colorBuffer);
       time.GetLocalTime();
       surface.SetForeground({ 128, darkGray });
-      surface.WriteTextf(0,0, "%02d:%02d:%02d", 
+      surface.WriteTextf(0,0, "%02d:%02d:%02d",
          time.hour, time.minute, time.second);
       surface.SetForeground({ 192, teal });
-      surface.WriteTextf(2, 2, "%02d:%02d:%02d", 
+      surface.WriteTextf(2, 2, "%02d:%02d:%02d",
          time.hour, time.minute, time.second);
-      
+
    }
 }
 

@@ -41,7 +41,7 @@ public:
          icons.Add(br);
       }
    }
-   
+
    void Unload()
    {
       icons.RemoveAll();

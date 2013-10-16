@@ -2,20 +2,20 @@
 /* A Bison parser, made by GNU Bison 2.4.2.  */
 
 /* Skeleton implementation for Bison's Yacc-like parsers in C
-   
+
       Copyright (C) 1984, 1989-1990, 2000-2006, 2009-2010 Free Software
    Foundation, Inc.
-   
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -28,7 +28,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -288,7 +288,7 @@ typedef union YYSTYPE
    TemplateParameter templateParameter;
    TemplateArgument templateArgument;
    TemplateDatatype templateDatatype;
-   
+
    DBTableEntry dbtableEntry;
    DBIndexItem dbindexItem;
    DBTableDef dbtableDef;
@@ -10495,7 +10495,7 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
+
 
 #if YYERROR_VERBOSE
 
@@ -10706,7 +10706,7 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
     }
 }
 #endif /* YYERROR_VERBOSE */
-
+
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -12909,7 +12909,7 @@ yyreduce:
 
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
-      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
 
@@ -12944,7 +12944,7 @@ yyreduce:
 
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
-      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
 
@@ -12986,7 +12986,7 @@ yyreduce:
       FreeIdentifier((yyvsp[(1) - (2)].id));
       FreeIdentifier((yyvsp[(2) - (2)].id));
 
-      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
 
@@ -12998,8 +12998,8 @@ yyreduce:
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
    #else
-      Location tmpLoc = yylloc; (yyval.specifier) = (yyvsp[(2) - (2)].id); yylloc = (yylsp[(1) - (2)]); 
-      Compiler_Error($"Not a type: %s\n", (yyvsp[(1) - (2)].id).string);      
+      Location tmpLoc = yylloc; (yyval.specifier) = (yyvsp[(2) - (2)].id); yylloc = (yylsp[(1) - (2)]);
+      Compiler_Error($"Not a type: %s\n", (yyvsp[(1) - (2)].id).string);
       yylloc = tmpLoc; (yyvsp[(2) - (2)].id).badID = (yyvsp[(1) - (2)].id);
    #endif
    ;}
@@ -13036,7 +13036,7 @@ yyreduce:
       (yyval.specifier).loc = (yyloc);
 
       (yylsp[(4) - (4)]).end.pos--;
-      fileInput.Seek((yylsp[(4) - (4)]).end.pos, start); 
+      fileInput.Seek((yylsp[(4) - (4)]).end.pos, start);
       resetScannerPos(&(yylsp[(4) - (4)]).end);
       yyclearin;
     ;}
@@ -13263,11 +13263,11 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 627 "grammar.y"
-    { 
+    {
          (yyval.memberInit) = MkMemberInitExp((yyvsp[(1) - (3)].exp), MkInitializerAssignment(MkExpDummy()));
-         (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); (yyval.memberInit).initializer.loc.start = (yyval.memberInit).initializer.loc.end = (yylsp[(2) - (3)]).end; 
+         (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); (yyval.memberInit).initializer.loc.start = (yyval.memberInit).initializer.loc.end = (yylsp[(2) - (3)]).end;
 
-         fileInput.Seek((yylsp[(2) - (3)]).end.pos, start); 
+         fileInput.Seek((yylsp[(2) - (3)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(2) - (3)]).end);
          (yyloc).start = (yylsp[(1) - (3)]).start;
@@ -13328,13 +13328,13 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 656 "grammar.y"
-    { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(2) - (3)]).end; 
-         { 
-            Initializer dummy = MkInitializerAssignment(MkExpDummy()); 
-            MemberInit memberInit = MkMemberInit(null, dummy); 
-            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(2) - (3)]).end; 
-            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(2) - (3)]).end; 
-            ListAdd((yyvsp[(1) - (3)].list), memberInit); 
+    { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(2) - (3)]).end;
+         {
+            Initializer dummy = MkInitializerAssignment(MkExpDummy());
+            MemberInit memberInit = MkMemberInit(null, dummy);
+            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(2) - (3)]).end;
+            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(2) - (3)]).end;
+            ListAdd((yyvsp[(1) - (3)].list), memberInit);
           }
           (yyval.list) = (yyvsp[(1) - (3)].list);
        ;}
@@ -13344,13 +13344,13 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 668 "grammar.y"
-    { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(2) - (3)]).end; 
-         { 
-            Initializer dummy = MkInitializerAssignment(MkExpDummy()); 
-            MemberInit memberInit = MkMemberInit(null, dummy); 
-            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(2) - (3)]).end; 
-            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(2) - (3)]).end; 
-            ListAdd((yyvsp[(1) - (3)].list), memberInit); 
+    { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(2) - (3)]).end;
+         {
+            Initializer dummy = MkInitializerAssignment(MkExpDummy());
+            MemberInit memberInit = MkMemberInit(null, dummy);
+            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(2) - (3)]).end;
+            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(2) - (3)]).end;
+            ListAdd((yyvsp[(1) - (3)].list), memberInit);
           }
           (yyval.list) = (yyvsp[(1) - (3)].list);
        ;}
@@ -13362,18 +13362,18 @@ yyreduce:
 #line 679 "grammar.y"
     {
          Initializer dummy = MkInitializerAssignment(MkExpDummy());
-         MemberInit memberInit = MkMemberInit(null, dummy); 
-         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(1) - (1)]).start; 
-         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(1) - (1)]).start; 
+         MemberInit memberInit = MkMemberInit(null, dummy);
+         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(1) - (1)]).start;
+         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(1) - (1)]).start;
 
          (yyval.list) = MkList();
-         ListAdd((yyval.list), memberInit); 
+         ListAdd((yyval.list), memberInit);
 
-         dummy = MkInitializerAssignment(MkExpDummy()); 
-         memberInit = MkMemberInit(null, dummy); 
-         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(1) - (1)]).end; 
-         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(1) - (1)]).end; 
-         ListAdd((yyval.list), memberInit); 
+         dummy = MkInitializerAssignment(MkExpDummy());
+         memberInit = MkMemberInit(null, dummy);
+         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = (yylsp[(1) - (1)]).end;
+         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = (yylsp[(1) - (1)]).end;
+         ListAdd((yyval.list), memberInit);
       ;}
     break;
 
@@ -13661,7 +13661,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 841 "grammar.y"
-    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]); 
+    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (3)].id).string), null, (yyvsp[(3) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end; FreeIdentifier((yyvsp[(1) - (3)].id)); ;}
     break;
 
@@ -13697,7 +13697,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 856 "grammar.y"
-    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]); 
+    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (3)].id).string), null, (yyvsp[(3) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (3)].id)); ;}
     break;
 
@@ -13705,7 +13705,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 859 "grammar.y"
-    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (2)]); 
+    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (2)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (2)].id).string), null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (2)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (2)].id)); ;}
     break;
 
@@ -13713,7 +13713,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 862 "grammar.y"
-    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (4)]); 
+    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (4)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (4)].id).string), null, (yyvsp[(3) - (4)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (4)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (4)].id)); ;}
     break;
 
@@ -13721,7 +13721,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 865 "grammar.y"
-    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]); 
+    { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (3)].id).string), null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (3)].id)); ;}
     break;
 
@@ -14580,10 +14580,10 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1305 "grammar.y"
-    { 
-      (yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClass(globalContext.nextID++, (yyvsp[(2) - (2)].specifier).name); 
-      (yyval.symbol).nameLoc = (yylsp[(2) - (2)]); 
-      FreeSpecifier((yyvsp[(2) - (2)].specifier)); 
+    {
+      (yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClass(globalContext.nextID++, (yyvsp[(2) - (2)].specifier).name);
+      (yyval.symbol).nameLoc = (yylsp[(2) - (2)]);
+      FreeSpecifier((yyvsp[(2) - (2)].specifier));
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    ;}
@@ -14614,11 +14614,11 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1317 "grammar.y"
-    { 
+    {
       (yyvsp[(1) - (5)].context); (yyval.symbol) = DeclClass(globalContext.nextID++, (yyvsp[(2) - (5)].specifier).name);
-      (yyval.symbol).templateParams = (yyvsp[(4) - (5)].list); 
-      (yyval.symbol).nameLoc = (yylsp[(2) - (5)]); 
-      FreeSpecifier((yyvsp[(2) - (5)].specifier)); 
+      (yyval.symbol).templateParams = (yyvsp[(4) - (5)].list);
+      (yyval.symbol).nameLoc = (yylsp[(2) - (5)]);
+      FreeSpecifier((yyvsp[(2) - (5)].specifier));
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    ;}
@@ -14644,7 +14644,7 @@ yyreduce:
 #line 1332 "grammar.y"
     {
          (yyval._class).loc = (yyloc);
-         (yyval._class) = (yyvsp[(1) - (2)]._class); 
+         (yyval._class) = (yyvsp[(1) - (2)]._class);
       ;}
     break;
 
@@ -16455,8 +16455,8 @@ yyreduce:
 
          FreeExpression((yyvsp[(1) - (2)].exp));
          FreeExpression((yyvsp[(2) - (2)].exp));
-         
-         fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+
+         fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
          resetScannerPos(&(yylsp[(1) - (2)]).start);
          yyclearin;
 
@@ -16467,7 +16467,7 @@ yyreduce:
          YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
-/*         
+/*
          YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
@@ -16484,7 +16484,7 @@ yyreduce:
       {
          (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), '<', (yyvsp[(2) - (2)].exp));
          (yyval.exp).loc = (yyloc);
-      } 
+      }
       skipErrors = false;
    ;}
     break;
@@ -16878,11 +16878,11 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2022 "grammar.y"
-    { 
-         (yyval.exp) = MkExpCondition((yyvsp[(1) - (3)].exp), MkListOne(MkExpDummy()), MkExpDummy()); 
-         (yyval.exp).loc = (yyloc); 
-         ((Expression)(yyval.exp).cond.exp->last).loc = (yylsp[(2) - (3)]); 
-         (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (3)]); 
+    {
+         (yyval.exp) = MkExpCondition((yyvsp[(1) - (3)].exp), MkListOne(MkExpDummy()), MkExpDummy());
+         (yyval.exp).loc = (yyloc);
+         ((Expression)(yyval.exp).cond.exp->last).loc = (yylsp[(2) - (3)]);
+         (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (3)]);
       ;}
     break;
 
@@ -19180,8 +19180,8 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 2783 "grammar.y"
     {
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), (yyvsp[(2) - (2)].list)); 
-         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start); 
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), (yyvsp[(2) - (2)].list));
+         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (2)]).end);
          (yyloc).start = (yylsp[(1) - (2)]).start;
@@ -19193,9 +19193,9 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2792 "grammar.y"
-    { 
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null); 
-         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start); 
+    {
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null);
+         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (2)]).end);
          (yyloc).start = (yylsp[(1) - (2)]).start;
@@ -19207,9 +19207,9 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2801 "grammar.y"
-    { 
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); 
-         fileInput.Seek((yylsp[(1) - (3)]).end.pos, start); 
+    {
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list));
+         fileInput.Seek((yylsp[(1) - (3)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (3)]).end);
          (yyloc).start = (yylsp[(1) - (3)]).start;
@@ -19221,9 +19221,9 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2810 "grammar.y"
-    { 
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), null); 
-         fileInput.Seek((yylsp[(1) - (4)]).end.pos, start); 
+    {
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), null);
+         fileInput.Seek((yylsp[(1) - (4)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (4)]).end);
          (yyloc).start = (yylsp[(1) - (4)]).start;
@@ -19273,8 +19273,8 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 2843 "grammar.y"
     {
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), (yyvsp[(2) - (2)].list)); 
-         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start); 
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), (yyvsp[(2) - (2)].list));
+         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (2)]).end);
          (yyloc).start = (yylsp[(1) - (2)]).start;
@@ -19286,9 +19286,9 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2852 "grammar.y"
-    { 
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null); 
-         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start); 
+    {
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null);
+         fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (2)]).end);
          (yyloc).start = (yylsp[(1) - (2)]).start;
@@ -19300,9 +19300,9 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2861 "grammar.y"
-    { 
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); 
-         fileInput.Seek((yylsp[(1) - (3)]).end.pos, start); 
+    {
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list));
+         fileInput.Seek((yylsp[(1) - (3)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (3)]).end);
          (yyloc).start = (yylsp[(1) - (3)]).start;
@@ -19314,9 +19314,9 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2870 "grammar.y"
-    { 
-         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), null); 
-         fileInput.Seek((yylsp[(1) - (4)]).end.pos, start); 
+    {
+         (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), null);
+         fileInput.Seek((yylsp[(1) - (4)]).end.pos, start);
          yyclearin;
          resetScannerPos(&(yylsp[(1) - (4)]).end);
          (yyloc).start = (yylsp[(1) - (4)]).start;
@@ -19890,16 +19890,16 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3092 "grammar.y"
-    { 
-         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list)); 
-         (yyval.initializer).loc = (yyloc); 
+    {
+         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list));
+         (yyval.initializer).loc = (yyloc);
 
          {
             Expression exp = MkExpDummy();
             Initializer init = MkInitializerAssignment(exp);
             init.loc = (yylsp[(3) - (4)]);
             exp.loc = (yylsp[(3) - (4)]);
-            ListAdd((yyvsp[(2) - (4)].list), init); 
+            ListAdd((yyvsp[(2) - (4)].list), init);
          }
       ;}
     break;
@@ -19929,8 +19929,8 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3111 "grammar.y"
-    { 
-         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (5)].list)); 
+    {
+         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (5)].list));
          (yyval.initializer).loc = (yyloc);
 
          {
@@ -19938,7 +19938,7 @@ yyreduce:
             Initializer init = MkInitializerAssignment(exp);
             init.loc = (yylsp[(3) - (5)]);
             exp.loc = (yylsp[(3) - (5)]);
-            ListAdd((yyvsp[(2) - (5)].list), init); 
+            ListAdd((yyvsp[(2) - (5)].list), init);
          }
       ;}
     break;
@@ -19947,8 +19947,8 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3124 "grammar.y"
-    { 
-         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (3)].list)); 
+    {
+         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (3)].list));
          (yyval.initializer).loc = (yyloc);
 
          {
@@ -19956,7 +19956,7 @@ yyreduce:
             Initializer init = MkInitializerAssignment(exp);
             init.loc = (yylsp[(3) - (3)]);
             exp.loc = (yylsp[(3) - (3)]);
-            ListAdd((yyvsp[(2) - (3)].list), init); 
+            ListAdd((yyvsp[(2) - (3)].list), init);
          }
       ;}
     break;
@@ -21512,7 +21512,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3578 "grammar.y"
-    { 
+    {
       int len1 = strlen((yyvsp[(1) - (2)].string));
       int len2 = strlen(yytext);
       (yyval.string) = new byte[len1-1 + len2-1 + 1];
@@ -21570,11 +21570,11 @@ yyreduce:
 #line 3601 "grammar.y"
     {
       bool isRemote = !strcmp((yyvsp[(2) - (3)].id).string, "remote");
-      (yyval.external) = MkExternalImport((yyvsp[(3) - (3)].string), isRemote ? remoteImport : normalImport, (declMode != defaultAccess) ? declMode : privateAccess); 
+      (yyval.external) = MkExternalImport((yyvsp[(3) - (3)].string), isRemote ? remoteImport : normalImport, (declMode != defaultAccess) ? declMode : privateAccess);
       (yyval.external).loc = (yyloc);
       FreeIdentifier((yyvsp[(2) - (3)].id));
       if(!isRemote)
-         yyerror(); 
+         yyerror();
    ;}
     break;
 
@@ -21631,7 +21631,7 @@ yyreduce:
       FreeIdentifier((yyvsp[(3) - (4)].id));
       declMode = defaultDeclMode;
       if(!isRemote)
-         yyerror();  
+         yyerror();
    ;}
     break;
 

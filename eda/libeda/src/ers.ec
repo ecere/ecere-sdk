@@ -92,7 +92,7 @@ public:
    Window inside { this };
 
    int headerHeight;
-   
+
 private:
    Orientation orientation;
 }
@@ -174,10 +174,10 @@ public:
                reportHeader.anchor = Anchor { left = 0, top = 0, right = 0 };
                reportHeader.master = destination;
                reportHeader.parent = inside;
-               
+
                pageTop += reportHeader.size.h;
                reportHeader.Create();
-            
+
             }
             /*if(report.reportFooter)
             {
@@ -195,12 +195,12 @@ public:
             pageHeader.anchor = Anchor { left = 0, top = pageTop, right = 0 };
             pageHeader.master = destination;
             pageHeader.parent = inside;
-            
+
             pageTop += pageHeader.size.h;
 
             pageHeader.Create();
          }
-         
+
          if(report.pageFooter)
          {
             pageFooter = eInstance_New(report.pageFooter);
@@ -397,19 +397,19 @@ public:
                pageFooter.anchor = Anchor { left = 0, bottom = (int)reportFooter.size.h, right = 0 };
             else
                pageFooter.anchor = Anchor { left = 0, bottom = 0, right = 0 };
-            
+
             pageFooter.Create();
          }
          if(nil && report.reportFooter)
          {
             reportFooter.Create();
          }
-         
+
          destination.EndPage(page);
 
          if(nil)
             break;
-         
+
          // still have to bump report footer if it does not fit...
       }
       pleaseWait.Destroy(0);
@@ -445,7 +445,7 @@ private:
 
       detailSize = detail.size.h;
       overlap = (insideSize - pageTop - footerHeight) - detailSize;
-      
+
       if(overlap < 0 && detail.keepTogether)
       {
          delete detail;
@@ -537,7 +537,7 @@ public class ReportPreviewArea : ReportDestination
 
    void AddPage(Page page)
    {
-      PreviewPage previewPage { this, this, page = page, orientation = page.orientation, 
+      PreviewPage previewPage { this, this, page = page, orientation = page.orientation,
                                    anchor = { top = pageCount * ((int)page.size.h + shadowS + pgs) } };
       previewPage.Create();
       page.anchor = { left = pgs, top = pgs, right = shadowS + pgs, bottom = shadowS + pgs};
@@ -546,7 +546,7 @@ public class ReportPreviewArea : ReportDestination
       page.Create();
       pageCount++;
    }
-   
+
    Report GetReport()
    {
       return report;
@@ -560,7 +560,7 @@ public class ReportPreviewArea : ReportDestination
 
 Array<FileFilter> csvFilters
 { [
-   { 
+   {
       $"Comma Separated Values Spreadsheet (*.csv)",
       "csv"
    },
@@ -573,7 +573,7 @@ public class CSVReport : ReportDestination
    hasVertScroll = true;
    dontHideScroll = true;
    background = dimGray;
-   
+
    Page lastPage;
 
    void AddPage(Page page)
@@ -589,7 +589,7 @@ public class CSVReport : ReportDestination
       pageCount++;
       page.Create();
    }
-   
+
    void PutString(File f, char * text)
    {
       char output[4096];
@@ -631,14 +631,14 @@ public class CSVReport : ReportDestination
          File f = FileOpen(saveTo.filePath, write);
          if(f)
          {
-            Detail detail, first = null;         
+            Detail detail, first = null;
             for(detail = (Detail)page.inside.firstChild; detail && detail != first; detail = (Detail)detail.next)
             {
                if(!first) first = detail;
                if(eClass_IsDerived(detail._class, class(Detail)))
                {
                   Label label, first = null;
-      
+
                   if(detail._class == report.pageFooter) continue;
                   if(detail._class == report.groupings[0].header)
                      f.Puts("\n");
@@ -675,7 +675,7 @@ public class IdFilter : struct
 public:
    Id id;
    Field field;
-   
+
    bool RowMatch(Row row)
    {
       Id value;
@@ -716,7 +716,7 @@ public:
       filters.Free();
       delete row;
    }
-   
+
    virtual bool ShouldSkip()
    {
       return false;
@@ -738,7 +738,7 @@ public:
          result = row.Next();
       if(!result)
          return false;
-      
+
       if(reverseLink)
          reverseLink.row.GetData(reverseListFieldLink, reverseIdList);
 
@@ -856,7 +856,7 @@ public:
    {
       return grouping.Advance(linkId, dontAdvance);
    }
-   
+
    virtual bool ExecuteData(Database db)
    {
       return false;

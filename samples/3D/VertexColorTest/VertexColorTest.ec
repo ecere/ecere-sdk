@@ -9,7 +9,7 @@ class MyApp : GuiApplication
 Camera camera
 {
    fixed,
-   position = Vector3D { 0, 0, -200 }, 
+   position = Vector3D { 0, 0, -200 },
    orientation = Euler { 0, 0, 0 },
    fov = 53;
 };
@@ -92,11 +92,11 @@ public:
                uint16 indices[6][4] =
                {
                   // up, front, down, back, right, left
-                  { 17,21,20,16 }, 
-                  { 0,3,2,1 }, 
-                  { 22,18,19,23 }, 
-                  { 5,6,7,4 }, 
-                  { 9,10,14,13 }, 
+                  { 17,21,20,16 },
+                  { 0,3,2,1 },
+                  { 22,18,19,23 },
+                  { 5,6,7,4 },
+                  { 9,10,14,13 },
                   { 12,15,11,8 }
                };
 
@@ -163,12 +163,12 @@ class Test3D : Window
       cube.UpdateTransform();
       return true;
    }
- 
+
    void OnResize(int w, int h)
    {
       camera.Setup(w, h, null);
    }
- 
+
    void OnRedraw(Surface surface)
    {
       surface.Clear(depthBuffer);

@@ -25,7 +25,7 @@ class ActiveCompilerDialog : Window
          return true;
       }*/
    };
-   
+
    Button cancel
    {
       this, size = { 80 }, position = { 480, 8 };

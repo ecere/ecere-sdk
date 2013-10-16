@@ -12,7 +12,7 @@ public class ReplaceDialog : Window
    background = formColor;
    minClientSize = { 432, 144 };
    text = $"Replace";
-  
+
 public:
    property EditBox editBox
    {
@@ -91,7 +91,7 @@ private:
          // If in whole file mode, the starting position is the end of the replace
          else
             editBox.GetSelPos(
-               null, &this.y, &this.x, 
+               null, &this.y, &this.x,
                null, null, null, true);
       }
 
@@ -292,8 +292,8 @@ private:
                   &line, &this.y, &this.x, true);
             // If in whole file mode, the starting position is the end of the replace
             else
-               editBox.GetSelPos( 
-                  null, &this.y, &this.x, 
+               editBox.GetSelPos(
+                  null, &this.y, &this.x,
                   null, null, null, true);
          }
 
@@ -315,7 +315,7 @@ private:
             EditBoxFindResult findResult;
 
             if(selectionOnly)
-               findResult = editBox.FindInSelection(searchString, 
+               findResult = editBox.FindInSelection(searchString,
                                wholeWord, matchCase,
                                line, this.y, this.x);
             else

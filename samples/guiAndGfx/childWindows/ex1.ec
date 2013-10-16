@@ -6,7 +6,7 @@ class Child : Window
    size = Size { 300, 200 };
    borderStyle = sizable;
    text = "Sizable";
-   
+
    Button
    {
       this, text = "Push Me", position = { 100, 20 }, size = { 80, 30 };

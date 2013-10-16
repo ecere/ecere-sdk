@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    pokerutils.c - Poker Backend Utilities
 ****************************************************************************/
 import "poker.ec"
@@ -61,7 +61,7 @@ static bool POKER_Same(int cards[5], int howMany, int what[2], int rest[3])
          what[numPairs++] = card;
       }
    }
-   if(numPairs) 
+   if(numPairs)
    {
       int d;
       qsort(what, numPairs, sizeof(int), Compare);
@@ -81,7 +81,7 @@ static bool POKER_Same(int cards[5], int howMany, int what[2], int rest[3])
 // --- External Functions ---
 
 void POKER_SortCards(int * cards, int numCards)
-{               
+{
    qsort(cards, numCards, sizeof(int), Compare);
 }
 
@@ -120,7 +120,7 @@ void POKER_ShuffleDeck(int deck[52])
       for(c = 0; c<52; c++)
       {
          int whichCut;
-         
+
          if(indexCut[0] < numCut[0] && indexCut[1] < numCut[1])
             whichCut = GetRandom(0,1);
          else if(indexCut[0] < numCut[0])

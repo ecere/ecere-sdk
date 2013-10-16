@@ -46,7 +46,7 @@ class MySocket : Socket
 
       packet.size = size;
       packet.delay = delay;
-      CopyBytes(packet.string, string, len+1);     
+      CopyBytes(packet.string, string, len+1);
       SendPacket(packet);
 
       delete packet;
@@ -105,7 +105,7 @@ class Form1 : Window
          return true;
       }
    };
-   ListBox listBox1 
+   ListBox listBox1
    {
       this, alwaysHighLight = true, text = "listBox1", hasVertScroll = true, size = Size { 172, 268 }, position = Point { 56, 72 };
 
@@ -123,7 +123,7 @@ class Form1 : Window
    void AddString(char * string)
    {
       DataRow row = null;
-      
+
       /*for(row = listBox1.firstRow; row; row = row.next)
          if(!strcmp(row.string, string))
             break;*/

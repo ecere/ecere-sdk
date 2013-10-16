@@ -58,9 +58,9 @@ public:
 };
 
 static class SocketConnectThread : Thread
-{  
+{
    Socket socket;
-   
+
    uint Main()
    {
       bool result = false;
@@ -78,7 +78,7 @@ static class SocketConnectThread : Thread
             {
                network.mutex.Wait();
                strcpy(socket.inetAddress, inet_ntoa(socket.a.sin_addr));
-               socket.inetPort = ntohs(socket.a.sin_port); 
+               socket.inetPort = ntohs(socket.a.sin_port);
                network.mutex.Release();
 
                if(socket.OnEstablishConnection((int)socket.s))
@@ -134,7 +134,7 @@ public:
             SOCKET s;
             SOCKADDR_IN a;
             int addrLen = sizeof(a);
-            
+
             value.accepted = true;
             s = accept(value.s,(SOCKADDR *)&a, &addrLen);
             if(s != -1)
@@ -154,7 +154,7 @@ public:
                address = null;
                this.a = a;
                strcpy(inetAddress, inet_ntoa(this.a.sin_addr));
-               inetPort = ntohs(a.sin_port); 
+               inetPort = ntohs(a.sin_port);
                this.s = s;
                service = value;
                connectThread = null;
@@ -164,7 +164,7 @@ public:
                network.mutex.Wait();
                FD_SET(s, &network.exceptSet);
                FD_SET(s, &network.readSet);
-               if(s >= network.ns) 
+               if(s >= network.ns)
                {
                   network.ns = (int)(s+1);
                   network.socketsSemaphore.Release();
@@ -210,7 +210,7 @@ public:
             OnReceivePacket(packet);
             delete tempBuffer;
             return 0;
-         }                   
+         }
       }
       return 0;
    }
@@ -270,7 +270,7 @@ public:
 
          if(s == network.ns - 1)
             Network_DetermineMaxSocket();
-      
+
          if(s != -1)
          {
             FD_CLR(s, &network.readSet);
@@ -319,7 +319,7 @@ public:
    #endif
             {
                //Print("~");
-            }               
+            }
 
             // This is what was making eCom jam...
             // select(s+1, null, &ws, &es, null);
@@ -399,7 +399,7 @@ public:
             FD_CLR(s, &network.writeSet);
             FD_SET(s, &network.readSet);
             FD_SET(s, &network.exceptSet);
-            if(s >= network.ns) 
+            if(s >= network.ns)
             {
                network.ns = (int)(s+1);
                network.socketsSemaphore.Release();
@@ -465,16 +465,16 @@ private:
          service = null;
          _connected = 0;
       }
-      
+
       if(s != -1) { closesocket(s); this.s = -1; }
 
       delete address;
-      delete recvBuffer; 
+      delete recvBuffer;
 
       recvBufferSize = 0;
       recvBytes = 0;
 
-      if(s != -1) 
+      if(s != -1)
       {
          FD_CLR(s, &network.readSet);
          FD_CLR(s, &network.writeSet);
@@ -530,7 +530,7 @@ private:
          _connected = -2;
 
          FD_SET(s, &network.writeSet);
-         if(s >= network.ns && !processAlone) 
+         if(s >= network.ns && !processAlone)
          {
             network.ns = (int)(s+1);
             network.socketsSemaphore.Release();
@@ -548,7 +548,7 @@ private:
             if(_connected == -1 || destroyed)
             {
                _connected = 0;
-               
+
                if(s == network.ns - 1)
                   Network_DetermineMaxSocket();
 #if 0
@@ -571,7 +571,7 @@ private:
             }
             else
                this.s = -1;
-            
+
             delete connectThread;
          }
          else
@@ -610,7 +610,7 @@ private:
             recvBuffer = renew recvBuffer byte[recvBufferSize + MAX_RECEIVE];
             recvBufferSize += MAX_RECEIVE;
          }
-           
+
          if(FD_ISSET(s, rs) && disconnectCode == (DisconnectCode)-1)
          {
             if(type == tcp /*|| _connected*/)
@@ -618,7 +618,7 @@ private:
             else
             {
                int len = sizeof(a);
-               count = (int)recvfrom(s, recvBuffer + recvBytes, 
+               count = (int)recvfrom(s, recvBuffer + recvBytes,
                   recvBufferSize - recvBytes, 0, (SOCKADDR *)&a, &len);
                strcpy(inetAddress, inet_ntoa(this.a.sin_addr));
                inetPort = ntohs((uint16)a.sin_port);

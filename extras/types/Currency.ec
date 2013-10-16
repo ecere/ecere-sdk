@@ -79,7 +79,7 @@ public class Currency : double
             number[len++] = ch;
             if(numDecimals == 2)
                break;
-         }         
+         }
       }
       number[len] = 0;
       return ((bool (*)(void *, void *, const char *))(void *)class(double)._vTbl[__ecereVMethodID_class_OnGetDataFromString])(class(double), &this, number);

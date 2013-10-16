@@ -127,7 +127,7 @@ static void ShowShadowVector3D(Camera camera, Surface surface, BallSprite sprite
 static void RotateSprite(BallSprite sprite, Degrees amount)
 {
 	if((sprite.t+=amount * ROTATESPEED)>=2*Pi)sprite.t-=2*Pi;
-   
+
 	sprite.r = (int)(1+sin(NUMPETALS*(sprite.t))*FACTOR1);
 	sprite.x = (int)(sprite.r*cos(sprite.t));
 	sprite.y = (float)(sprite.r*sin(sprite.t) - BALLHEIGHT);
@@ -141,7 +141,7 @@ static void RotateSprite(BallSprite sprite, Degrees amount)
 	sprite.y += sprite.yi * amount;
    sprite.y = Min(Max(sprite.y, CEILING), FLOORALT);
    if(Sgn(sprite.yi) == 1)
-   {  
+   {
       if(sprite.y >= FLOORALT) sprite.yi *= -1;
    }
    else
@@ -201,7 +201,7 @@ class Balls : Window
       timer.Start();
       timerStarted = true;
       lastTime = GetTime();
-      
+
       display.SetPalette(palette, true);
       return true;
    }
@@ -286,9 +286,9 @@ class Balls : Window
       float minZ, maxZ;
       // Background
       float layers[] = { 0, 0.5f, 0.51f, 0.525f, 0.55f, 0.65f, 0.8f, 1.0f };
-      ColorAlpha colors[] = 
-      { 
-         palette[16], 
+      ColorAlpha colors[] =
+      {
+         palette[16],
    #ifdef GRAYBACKGROUND
          palette[17],palette[18],palette[19], palette[20],palette[21],palette[22]
    #else
@@ -319,14 +319,14 @@ class Balls : Window
          if(sprites[c].transformed.z > maxZ) maxZ = (float)sprites[c].transformed.z;
       }
 
-   	for(z=(int)maxZ; z>=(int)minZ; z--)
-   		for(c=0; c<NUMBALLS; c++)
+      for(z=(int)maxZ; z>=(int)minZ; z--)
+         for(c=0; c<NUMBALLS; c++)
          {
-   			if((int)sprites[c].transformed.z == z) 
+            if((int)sprites[c].transformed.z == z)
                ShowSpriteVector3D(camera, surface, sprites[c]);
          }
    }
-   
+
 #ifndef ECERE_MODULE
    bool OnStateChange(WindowState state, Modifiers mods)
    {

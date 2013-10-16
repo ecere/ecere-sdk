@@ -321,7 +321,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                               MkTypeName(specs, decl), MkExpBrackets(MkListOne(member.initializer.exp))))), LEFT_OP, MkExpConstant(pos))));
                         }
                         else
-                           part = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(specs, decl), 
+                           part = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(specs, decl),
                               MkExpBrackets(MkListOne(member.initializer.exp)))));
                         // Take it out
                         member.initializer.exp = null;
@@ -504,7 +504,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                                           subMemberStackPos = _subMemberStackPos;
                                        }
                                        if(!firstID.next && curMember == dataMember)
-                                       {                                 
+                                       {
                                           memberFilled = true;
                                           break;
                                        }
@@ -636,7 +636,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                            // TODO: Set the member types for those
                            memberExp = MkExpMember(instExpCopy, id);
                            for(id = id.next; id; id = id.next)
-                              memberExp = MkExpMember(memberExp, id);                     
+                              memberExp = MkExpMember(memberExp, id);
                         }
                         else
                            memberExp = MkExpMember(instExpCopy, ident);
@@ -731,7 +731,7 @@ public void DeclareClass(Symbol classSym, char * className)
       ListAdd(specifiers, MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
 
       d = MkDeclaratorPointer(MkPointer(null, null),
-         MkDeclaratorIdentifier(MkIdentifier(className)));                           
+         MkDeclaratorIdentifier(MkIdentifier(className)));
 
       ListAdd(declarators, MkInitDeclarator(d, null));
 
@@ -805,7 +805,7 @@ static void ProcessExpression(Expression exp)
                   OldList list = { 0 };
 
                   ProcessInstMembers(inst, null, &list, false);
-               
+
                   ProcessExpression(inst.exp);
 
                   //Why was this here twice? ProcessInstMembers(inst, null, &list);
@@ -850,7 +850,7 @@ static void ProcessExpression(Expression exp)
                   Expression e;
 
                   ProcessInstMembers(inst, null, &list, false);
-               
+
                   ProcessExpression(inst.exp);
 
                   //Why was this here twice? ProcessInstMembers(inst, null, &list);
@@ -909,7 +909,7 @@ static void ProcessExpression(Expression exp)
                   exp.list = MkList();
 
                   ProcessInstMembers(inst, inst.exp, exp.list, false);
-               
+
                   ProcessExpression(inst.exp);
 
                   if(!exp.list->count)
@@ -1029,7 +1029,7 @@ static void ProcessExpression(Expression exp)
             {
                Expression newCall;
 
-               if(classSym && classSym.registered && classSym.registered.type == noHeadClass && 
+               if(classSym && classSym.registered && classSym.registered.type == noHeadClass &&
                   (classSym.registered.templateClass ? classSym.registered.templateClass.fixed : classSym.registered.fixed))
                {
                   char size[256];
@@ -1095,7 +1095,7 @@ static void ProcessExpression(Expression exp)
                      MembersInit members;
                      int tempCount = exp.tempCount;
                      OldList * expList;
-               
+
                      // Check if members use temp count...
                      for(members = inst.members->first; members; members = members.next)
                      {
@@ -1114,7 +1114,7 @@ static void ProcessExpression(Expression exp)
                      }
                      if(curDecl)
                         tempCount = Max(tempCount, declTempCount);
-               
+
                      tempCount++;
                      curExternal.function.tempCount = Max(curExternal.function.tempCount, tempCount);
                      sprintf(ecereTemp, "__ecereInstance%d", tempCount);
@@ -1122,7 +1122,7 @@ static void ProcessExpression(Expression exp)
                      exp.compound = MkCompoundStmt(null, null);
                      exp.compound.compound.context = PushContext();
                      exp.compound.compound.context.simpleID = exp.compound.compound.context.parent.simpleID;
-                     exp.compound.compound.declarations = MkListOne(QMkDeclaration(inst._class.name, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(ecereTemp)), 
+                     exp.compound.compound.declarations = MkListOne(QMkDeclaration(inst._class.name, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(ecereTemp)),
                         MkInitializerAssignment(newCall))));
                      exp.compound.compound.statements = MkListOne(MkExpressionStmt((expList = MkList())));
 
@@ -1185,7 +1185,7 @@ static void ProcessExpression(Expression exp)
          switch(exp.op.op)
          {
             // Assignment Operators
-            case '=': 
+            case '=':
                if(exp.op.exp2)
                   exp.op.exp2.usage.usageGet = true;
                if(exp.op.exp1)
@@ -1251,7 +1251,7 @@ static void ProcessExpression(Expression exp)
             case '|':
             case '^':
             case AND_OP:
-            case OR_OP:        
+            case OR_OP:
                if(exp.op.exp1)
                   exp.op.exp1.usage.usageGet = true;
                if(exp.op.exp2)
@@ -1326,16 +1326,16 @@ static void ProcessExpression(Expression exp)
                Context context = PushContext();
 
                sprintf(iteratorType, "Iterator<%s, %s >", _class.templateArgs[2].dataTypeString, _class.templateArgs[1].dataTypeString);
-      
+
                ListAdd(instMembers, MkMemberInit(null, MkInitializerAssignment(exp.index.exp)));
-               
+
                ListAdd(declarations, MkDeclarationInst(MkInstantiationNamed(MkListOne(MkSpecifierName(iteratorType)),
                   MkExpIdentifier(MkIdentifier("__internalIterator")), MkListOne(MkMembersInitList(instMembers)))));
 
                ListAdd(args, MkExpBrackets(exp.index.index));
                ListAdd(args, exp.usage.usageSet ? MkExpIdentifier(MkIdentifier("true")) : MkExpIdentifier(MkIdentifier("false")));
-               
-               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("__internalIterator")), 
+
+               ListAdd(statements, MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("__internalIterator")),
                   MkIdentifier("Index")), args))));
 
                ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(null, '&', MkExpIdentifier(MkIdentifier("__internalIterator"))))));
@@ -1428,7 +1428,7 @@ static void ProcessExpression(Expression exp)
                         revConvert = eClass_FindProperty(convertClass, _class.fullName, privateModule);
                   }
                }
-      
+
                if(prop)
                {
                   exp.member.memberType = propertyMember;
@@ -1445,7 +1445,7 @@ static void ProcessExpression(Expression exp)
                   if(!method.dataType)
                      //method.dataType = ((Symbol)method.symbol).type;
                      ProcessMethodType(method);
-                  
+
                   FreeType(exp.expType);
                   exp.expType = method.dataType;
                   if(method.dataType) method.dataType.refCount++;
@@ -1469,7 +1469,7 @@ static void ProcessExpression(Expression exp)
                   exp.expType = MkClassType(revConvert._class.fullName);
                }/*
                else
-                  printf($"Error: Couldn't find member %s in class %s\n", 
+                  printf($"Error: Couldn't find member %s in class %s\n",
                      exp.member.member.string, _class.name);*/
             }
          }
@@ -1505,7 +1505,7 @@ static void ProcessExpression(Expression exp)
       case extensionCompoundExp:
       {
          if(exp.compound.compound.statements &&
-         ((Statement)exp.compound.compound.statements->last).type == expressionStmt && 
+         ((Statement)exp.compound.compound.statements->last).type == expressionStmt &&
          ((Statement)exp.compound.compound.statements->last).expressions &&
          ((Statement)exp.compound.compound.statements->last).expressions->last)
          {
@@ -1609,7 +1609,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
          if(!ProcessBracketInst_DataMember(dataMember, inst, list))
             return false;
       }
-      else 
+      else
       {
          Class curClass = null;
          DataMember curMember = null;
@@ -1685,10 +1685,10 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                                  // *** THE IDENTIFIERS WERE BEING REUSED, CAUSING A CRASH WITH EXPRESSION TEMPLATE CODE IN pass1.ec ***
                                  // members->Add(MkMemberInit(ids, MkInitializerAssignment(MkExpConstant(ui64String))));
                                  /*member.identifiers->Remove(firstID);*/
-                                 ListAdd(partList, 
+                                 ListAdd(partList,
                                     MkMemberInit(/*member.identifiers*/identifiers, MkInitializerAssignment(member.initializer.exp)));
                               }
-                          
+
                               for(nextMembers = members; nextMembers; nextMembers = nextMembers.next)
                               {
                                  if(!nextMembers.dataMembers)
@@ -1704,7 +1704,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                                         nextMember = next, next = nextMember ? nextMember.next : null)
                                     {
                                        Identifier nextID = nextMember.identifiers->first;
-                                       if(nextMember.identifiers && 
+                                       if(nextMember.identifiers &&
                                           nextMember.identifiers->count > 1 &&
                                           !strcmp(firstID.string, nextID.string))
                                        {
@@ -1716,7 +1716,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                                  }
                               }
 
-                              member.initializer.exp = MkExpInstance(MkInstantiation(spec, null, 
+                              member.initializer.exp = MkExpInstance(MkInstantiation(spec, null,
                                  MkListOne(MkMembersInitList(partList))));
                            }
                            found = true;
@@ -1788,7 +1788,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
             if(classSym && classSym.registered && classSym.registered.type == structClass)
             {
                OldList * subList = MkList();
-               Specifier spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, classSym, null); 
+               Specifier spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, classSym, null);
                Instantiation inst = MkInstantiation(spec, null, null);
                ProcessBracketInst(inst, subList);
                FreeInstance(inst);
@@ -1815,7 +1815,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
       if(classSym && classSym.registered && classSym.registered.type == structClass)
       {
          OldList * subList = MkList();
-         Specifier spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, classSym, null); 
+         Specifier spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, classSym, null);
          Instantiation inst = MkInstantiation(spec, null, null);
          ProcessBracketInst(inst, subList);
          FreeInstance(inst);
@@ -1854,7 +1854,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                return false;
             }
          }
-         else 
+         else
          {
             MembersInit members;
             MemberInit member = null;
@@ -1894,7 +1894,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                            {
                               if(dataMember.isProperty)
                               {
-                                 if(!((Property)dataMember).Set) 
+                                 if(!((Property)dataMember).Set)
                                  {
                                     Compiler_Error($"No set defined for property %s\n", dataMember.name);
                                     continue;
@@ -1916,10 +1916,10 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                                  if(!dataMember.dataType)
                                     dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
                                  symbol = (dataMember.dataType && dataMember.dataType.kind == classType) ? dataMember.dataType._class : null;
-                                 spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, symbol, null); 
+                                 spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, symbol, null);
 
                                  member.identifiers->Remove(firstID);
-                                 ListAdd(partList, 
+                                 ListAdd(partList,
                                     MkMemberInit(member.identifiers, MkInitializerAssignment(member.initializer.exp)));
 
                                  for(nextMembers = members; nextMembers; nextMembers = nextMembers.next)
@@ -1936,7 +1936,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                                            nextMember = next, next = nextMember ? nextMember.next : null)
                                        {
                                           Identifier nextID = nextMember.identifiers->first;
-                                          if(nextMember.identifiers && 
+                                          if(nextMember.identifiers &&
                                              nextMember.identifiers->count > 1 &&
                                              !strcmp(firstID.string, nextID.string))
                                           {
@@ -1948,7 +1948,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                                     }
                                  }
 
-                                 member.initializer.exp = MkExpInstance(MkInstantiation(spec, null, 
+                                 member.initializer.exp = MkExpInstance(MkInstantiation(spec, null,
                                     MkListOne(MkMembersInitList(partList))));
 
                                  // TESTING THIS
@@ -1965,7 +1965,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                            {
                               if(dataMember.isProperty)
                               {
-                                 if(!((Property)dataMember).Set) 
+                                 if(!((Property)dataMember).Set)
                                  {
                                     Compiler_Error($"No set defined for property %s\n", dataMember.name);
                                     continue;
@@ -2023,7 +2023,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                if(classSym && classSym.registered && classSym.registered.type == structClass)
                {
                   OldList * subList = MkList();
-                  Specifier spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, classSym, null); 
+                  Specifier spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, classSym, null);
                   Instantiation inst = MkInstantiation(spec, null, null);
                   ProcessBracketInst(inst, subList);
                   FreeInstance(inst);
@@ -2097,7 +2097,7 @@ static void ProcessDeclaration(Declaration decl)
       case instDeclaration:
       {
          Instantiation inst = decl.inst;
-         
+
          if(inCompiler)
          {
             Symbol classSym = inst._class.symbol; // FindClass(inst._class.name);
@@ -2128,7 +2128,7 @@ static void ProcessDeclaration(Declaration decl)
 
                   if(classSym && classSym.registered && (classSym.registered.type == normalClass))
                   {
-                     ListAdd(createInstancesBody.compound.statements, 
+                     ListAdd(createInstancesBody.compound.statements,
                         MkExpressionStmt(MkListOne(MkExpCall(
                            MkExpIdentifier(MkIdentifier("ecere::com::eInstance_IncRef")),
                            MkListOne(CopyExpression(inst.exp))))));
@@ -2154,14 +2154,14 @@ static void ProcessDeclaration(Declaration decl)
                   CreateInstancesBody();
                }
             }
-         
+
             {
                char className[1024];
-               
+
                decl.type = initDeclaration;
                decl.specifiers = MkList();
                decl.declarators = MkList();
-      
+
                // Replace instantiation here
                if(classSym && classSym.registered && classSym.registered.type == bitClass)
                {
@@ -2209,11 +2209,11 @@ static void ProcessDeclaration(Declaration decl)
                      if(inst.fullSet)
                      {
                         ListAdd(decl.specifiers, MkSpecifierName/*MkClassName*/(inst._class.name));
-                        ListAdd(decl.declarators, 
+                        ListAdd(decl.declarators,
                            MkInitDeclarator(MkDeclaratorIdentifier(inst.exp.identifier), null));
                         inst.exp.identifier = null;
                      }
-                     else 
+                     else
                      {
                         OldList * list = MkList();
                         if(ProcessBracketInst(inst, list))
@@ -2248,7 +2248,7 @@ static void ProcessDeclaration(Declaration decl)
                {
                   Expression newCall;
 
-                  if(classSym && classSym.registered && classSym.registered.type == noHeadClass && 
+                  if(classSym && classSym.registered && classSym.registered.type == noHeadClass &&
                      (classSym.registered.templateClass ? classSym.registered.templateClass.fixed : classSym.registered.fixed))
                   {
                      char size[256];
@@ -2529,7 +2529,7 @@ public void ProcessInstantiations()
    External external;
    // Is this still needed?
    //CreateInstancesBody();
-   
+
    for(external = ast->first; external; external = external.next)
    {
       curExternal = external;
@@ -2576,7 +2576,7 @@ public void ProcessInstantiations()
                      type = MkClassTypeSymbol(_class.symbol); //regClass.fullName);
                   };
                   globalContext.symbols.Add((BTNode)thisSymbol);
-                  
+
                   for(defProperty = def.defProperties->first; defProperty; defProperty = defProperty.next)
                   {
                      //thisClass = regClass;
@@ -2598,7 +2598,7 @@ public void ProcessInstantiations()
                      type = MkClassTypeSymbol(_class.symbol); //regClass.fullName);
                   };
                   globalContext.symbols.Add((BTNode)thisSymbol);
-                  
+
                   //thisClass = regClass;
                   if(prop.setStmt)
                   {
@@ -2623,7 +2623,7 @@ public void ProcessInstantiations()
                else if(def.type == propertyWatchClassDef && def.propertyWatch)
                {
                   PropertyWatch propertyWatch = def.propertyWatch;
-        
+
                   // Add this to the context
                   Symbol thisSymbol
                   {
@@ -2631,7 +2631,7 @@ public void ProcessInstantiations()
                      type = MkClassTypeSymbol(_class.symbol); //regClass.fullName);
                   };
                   globalContext.symbols.Add((BTNode)thisSymbol);
-                  
+
                   //thisClass = regClass;
                   if(propertyWatch.compound)
                   {

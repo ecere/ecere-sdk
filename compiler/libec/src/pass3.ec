@@ -12,7 +12,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
    if(spec.type == templateTypeSpecifier)
    {
       TemplateParameter parameter = spec.templateParameter;
-      
+
       if(!param && parameter.dataTypeString)
       {
          OldList * newSpecs = MkList();
@@ -24,7 +24,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             delete newSpec;
          }
          FreeList(newSpecs, FreeSpecifier);
-         
+
          if(decl)
          {
             bool isPointer = decl.type == pointerDeclarator;
@@ -44,7 +44,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             *spec = *newSpec;
             delete newSpec;
          }
-         
+
          if(decl)
          {
             bool isPointer = decl.type == pointerDeclarator;
@@ -140,7 +140,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
                   {
                      if(!_class.dataType)
                         _class.dataType = ProcessTypeString(_class.dataTypeString, false);
-                     if(_class.dataType && _class.dataType.kind == classType) 
+                     if(_class.dataType && _class.dataType.kind == classType)
                         classSym = _class.dataType._class;
                      else
                         classSym = FindClass(_class.dataTypeString);
@@ -220,7 +220,7 @@ static void ReplaceByInstancePtr(Specifier spec, Declarator * declPtr, int type)
       else
          decl = newDecl;
       decl.type = pointerDeclarator;
-      decl.pointer.pointer = MkPointer(null, null);      
+      decl.pointer.pointer = MkPointer(null, null);
       *declPtr = decl;
    }
 }
@@ -245,7 +245,7 @@ static void InstDeclPassSpecifier(Specifier spec)
          {
             for(e = spec.list->first; e; e = e.next)
             {
-            
+
             }
          }
          break;
@@ -289,7 +289,7 @@ static void InstDeclPassSpecifier(Specifier spec)
                      spec.extDecl.s = CopyString("extern __attribute__ ((visibility(\"default\")))");
                }
             }
-            else if(!strcmp(spec.extDecl.s, "stdcall") || !strcmp(spec.extDecl.s, "_stdcall") || 
+            else if(!strcmp(spec.extDecl.s, "stdcall") || !strcmp(spec.extDecl.s, "_stdcall") ||
                !strcmp(spec.extDecl.s, "__stdcall") || !strcmp(spec.extDecl.s, "__stdcall__"))
             {
                delete spec.extDecl.s;
@@ -373,7 +373,7 @@ static void InstDeclPassDeclarator(Declarator decl)
                   decl.extended.extended.s = CopyString("extern __attribute__ ((visibility(\"default\")))");
             }
             else if(decl.extended.extended.type == extDeclString && decl.extended.extended.s &&
-               (!strcmp(decl.extended.extended.s, "stdcall") || !strcmp(decl.extended.extended.s, "_stdcall") || 
+               (!strcmp(decl.extended.extended.s, "stdcall") || !strcmp(decl.extended.extended.s, "_stdcall") ||
                !strcmp(decl.extended.extended.s, "__stdcall") || !strcmp(decl.extended.extended.s, "__stdcall__")))
             {
                delete decl.extended.extended.s;
@@ -402,7 +402,7 @@ static void InstDeclPassDeclarator(Declarator decl)
          else
          {
             Symbol classSym = (spec.type == nameSpecifier) ? spec.symbol /*FindClass(spec.name)*/ : null;
-            if(type.classObjectType && (!classSym || (classSym && classSym.registered && 
+            if(type.classObjectType && (!classSym || (classSym && classSym.registered &&
                (classSym.registered.type == enumClass || classSym.registered.type == bitClass || classSym.registered.type == unitClass))))
                ReplaceByInstancePtr(spec, &type.declarator, 2);
          }
@@ -667,7 +667,7 @@ static void InstDeclPassStatement(Statement stmt)
 
          if(!stmt.compound.isSwitch)
             curContext = stmt.compound.context;
-         
+
          if(stmt.compound.declarations)
          {
             for(decl = stmt.compound.declarations->first; decl; decl = decl.next)
@@ -819,7 +819,7 @@ public void ProcessInstanceDeclarations()
       else if(external.type == declarationExternal)
       {
          if(external.declaration)
-            InstDeclPassDeclaration(external.declaration);         
+            InstDeclPassDeclaration(external.declaration);
       }
    }
 }

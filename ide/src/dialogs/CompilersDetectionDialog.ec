@@ -18,7 +18,7 @@ class CompilersDetectionDialog : Window
    text = $"Compilers Detection";
 
    CompilerType selectedCompilerType;
-   
+
    //property Array<NamedString> compilerEnvVars
    property CompilerConfig compilerConfig
    {
@@ -63,8 +63,8 @@ class CompilersDetectionDialog : Window
                               equal[0] = '\0';
                               TrimLSpaces(var, var);
                               TrimRSpaces(var, var);
-                              if(!strcmpi(var, "VSINSTALLDIR") || !strcmpi(var, "VCINSTALLDIR") || 
-                                    !strcmpi(var, "FrameworkDir") || !strcmpi(var, "FrameworkVersion") || !strcmpi(var, "FrameworkSDKDir") || 
+                              if(!strcmpi(var, "VSINSTALLDIR") || !strcmpi(var, "VCINSTALLDIR") ||
+                                    !strcmpi(var, "FrameworkDir") || !strcmpi(var, "FrameworkVersion") || !strcmpi(var, "FrameworkSDKDir") ||
                                     !strcmpi(var, "DevEnvDir") || !strcmpi(var, "LIBPATH"))
                               {
                                  result.environmentVars.Add(NamedString { name = CopyString(var), string = CopyString(val) });
@@ -136,7 +136,7 @@ class CompilersDetectionDialog : Window
          return true;
       }
    };
-   
+
    Button
    {
       this, hotKey = escape, text = $"Cancel";

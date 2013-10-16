@@ -49,7 +49,7 @@ public class DualPipe : File
 public:
    bool Peek() { return DualPipe_Peek(dp); }
    void Terminate() { DualPipe_Terminate(dp); }
-   int GetExitCode() { return DualPipe_GetExitCode(dp); }   
+   int GetExitCode() { return DualPipe_GetExitCode(dp); }
    int GetProcessID() { return DualPipe_GetProcessID(dp); }
    void Wait() { DualPipe_Wait(dp); }
 };

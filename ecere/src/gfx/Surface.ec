@@ -28,12 +28,12 @@ public void PaletteGradient(ColorAlpha * palette, int numColors, ColorKey * keys
 
       while(nextKey && percent > nextKey->percent)
       {
-         key = nextKey; keyNum = nextKeyNum; 
-      
-         if(keyNum < numKeys - 1) 
-         { 
+         key = nextKey; keyNum = nextKeyNum;
+
+         if(keyNum < numKeys - 1)
+         {
             nextKey = key + 1;
-            nextKeyNum = keyNum + 1; 
+            nextKeyNum = keyNum + 1;
          }
          else
             break;
@@ -41,7 +41,7 @@ public void PaletteGradient(ColorAlpha * palette, int numColors, ColorKey * keys
 
       if(nextKey && nextKey->percent != key->percent)
       {
-         float scale = ease((percent - key->percent) / (nextKey->percent - key->percent), 
+         float scale = ease((percent - key->percent) / (nextKey->percent - key->percent),
             smoothness, smoothness);
          int cr = key->color.color.r;
          int cg = key->color.color.g;
@@ -84,13 +84,13 @@ public void PaletteGradient(ColorAlpha * palette, int numColors, ColorKey * keys
    }
 }
 
-float ease(float t, float a, float b) 
+float ease(float t, float a, float b)
 {
    float k;
    float s = a + b;
 
    if (s == 0.0f) return t;
-   if (s > 1.0f) 
+   if (s > 1.0f)
    {
       a /= s;
       b /= s;
@@ -160,7 +160,7 @@ public:
       get
       {
          return ((LFBSurface)driverData).bitmap;
-      }     
+      }
    }
 
    ColorAlpha GetPixel(int x, int y)
@@ -376,7 +376,7 @@ public:
          va_end(args);
       }
    }
-   
+
    void Bevel(bool inner, int x, int y, int w, int h)
    {
       ColorAlpha foreground = this.foreground;
@@ -431,7 +431,7 @@ public:
          if(boxLeft > firstPixel)
          {
             percent = (boxLeft - firstPixel) * inc;
-            firstPixel = boxLeft;            
+            firstPixel = boxLeft;
          }
          if(boxRight < lastPixel)
             lastPixel = boxRight;
@@ -442,12 +442,12 @@ public:
 
             while(nextKey && percent > nextKey->percent)
             {
-               key = nextKey; keyNum = nextKeyNum; 
-            
-               if(keyNum < numKeys - 1) 
-               { 
+               key = nextKey; keyNum = nextKeyNum;
+
+               if(keyNum < numKeys - 1)
+               {
                   nextKey = key + 1;
-                  nextKeyNum = keyNum + 1; 
+                  nextKeyNum = keyNum + 1;
                }
                else
                   break;
@@ -455,7 +455,7 @@ public:
 
             if(nextKey && nextKey->percent != key->percent)
             {
-               float scale = ease((percent - key->percent) / (nextKey->percent - key->percent), 
+               float scale = ease((percent - key->percent) / (nextKey->percent - key->percent),
                   smoothness, smoothness);
                int cr = key->color.color.r;
                int cg = key->color.color.g;

@@ -44,7 +44,7 @@ class Win32PrinterDisplay : struct
    ~Win32PrinterDisplay()
    {
       //if(memDC) DeleteDC(memDC);
-      //if(memBitmap) DeleteObject(memBitmap); 
+      //if(memBitmap) DeleteObject(memBitmap);
       if(palette) DeleteObject(palette);
       delete logPalette;
    }
@@ -84,11 +84,11 @@ class Win32PrinterBitmap : struct
 
 static PixelFormat GetColorFormat(int depth)
 {
-   if(depth == 8) 
+   if(depth == 8)
       return pixelFormat8;
-   else if(depth == 16) 
+   else if(depth == 16)
       return pixelFormat555;
-   else 
+   else
       return pixelFormat888;
 }
 
@@ -373,7 +373,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       Win32PrinterDisplay gdiDisplay = display.driverData;
       gdiDisplay.completed = false;
       EndPage(gdiDisplay.hdc);
-      StartPage(gdiDisplay.hdc);      
+      StartPage(gdiDisplay.hdc);
    }
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
@@ -438,7 +438,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
             SetBkColor(gdiSystem.bmpDC, RGB(0,0,0));
             BitBlt(gdiSystem.bmpDC, 0, 0, bitmap.width, bitmap.height, gdiSystem.tmpDC, 0, 0, SRCAND);
             SelectObject(gdiSystem.tmpDC, prevDC2);
-            SelectObject(gdiSystem.bmpDC, prevDC);            
+            SelectObject(gdiSystem.bmpDC, prevDC);
             SetTextColor(gdiSystem.bmpDC, RGB(0,0,0));
             SetBkColor(gdiSystem.bmpDC, RGB(255,255,255));
             SetBkColor(gdiSystem.tmpDC, RGB(255,255,255));
@@ -449,7 +449,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
          {
             gdiBitmap.bmp = CreateDIBitmap(gdiSystem.hdc, (LPBITMAPINFOHEADER)info, CBM_INIT, bitmap.picture, info, DIB_RGB_COLORS);
          }
-         
+
          delete bitmap.picture;
          delete info;
 
@@ -505,14 +505,14 @@ class Win32PrinterDisplayDriver : DisplayDriver
                surface.height = gdiDisplay.height - y + 1;
                surface.offset.x = x * gdiDisplay.width / display.width;
                surface.offset.y = y * gdiDisplay.height / display.height;
-               surface.unclippedBox = surface.box = 
+               surface.unclippedBox = surface.box =
                {
                   left = clip.left * gdiDisplay.width / display.width,
                   top = clip.top * gdiDisplay.height / display.height,
                   right = (clip.right+1) * gdiDisplay.width / display.width-1,
                   bottom = (clip.bottom+1) * gdiDisplay.height / display.height-1
                };
-         
+
                gdiSurface.rgn = CreateRectRgn(
                   surface.offset.x + surface.box.left,
                   surface.offset.y + surface.box.top,
@@ -540,7 +540,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
    {
       Win32PrinterDisplay gdiDisplay = display.driverData;
       Win32PrinterSurface gdiSurface = surface.driverData;
-      HRGN clippedRgn = null; 
+      HRGN clippedRgn = null;
       if(clip != null)
       {
          Box box = clip;
@@ -548,7 +548,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
          box.Clip(gdiSurface.unclippedBox);
 
          gdiSurface.box = box;
-         surface.box = 
+         surface.box =
          {
             left = box.left * gdiDisplay.width / display.width,
             top = box.top * gdiDisplay.height / display.height,
@@ -573,7 +573,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
          }
          else
             clippedRgn = CreateRectRgn(0, 0, 0, 0);
-         
+
          if(clippedRgn)
             SelectClipRgn(gdiSurface.hdc, clippedRgn);
       }
@@ -638,7 +638,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       PatBlt(gdiSurface.hdc,
          (int)((float)x * gdiDisplay.width / display.width) + surface.offset.x,
          (int)((float)y * gdiDisplay.height / display.height) + surface.offset.y,
-         (int)((float)(x+1) * gdiDisplay.width / display.width)-1 + surface.offset.x+1, 
+         (int)((float)(x+1) * gdiDisplay.width / display.width)-1 + surface.offset.x+1,
          (int)((float)(y+1) * gdiDisplay.height / display.height)-1 + surface.offset.y+1,
          PATCOPY);
       SetBkColor(gdiSurface.hdc, gdiSurface.backColor);
@@ -706,7 +706,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
    {
       Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
       Win32PrinterSurface gdiSurface = surface.driverData;
-     
+
       x1 = (int)((float)x1 * gdiDisplay.width / display.width) + surface.offset.x;
       y1 = (int)((float)y1 * gdiDisplay.height / display.height) + surface.offset.y;
       x2 = (int)(((float)(x2+1) * gdiDisplay.width / display.width) + 0.5) + surface.offset.x;
@@ -759,30 +759,30 @@ class Win32PrinterDisplayDriver : DisplayDriver
          SelectObject(gdiSystem.tmpDC, gdiBitmap.mask);
 
          SetStretchBltMode(gdiSurface.hdc, HALFTONE); //COLORONCOLOR);
-         
+
          SetBkColor(gdiSurface.hdc, 0xFFFFFF);
          SetTextColor(gdiSurface.hdc, 0);
-         StretchBlt(gdiSurface.hdc, 
-            dx * gdiDisplay.width / display.width + surface.offset.x, 
+         StretchBlt(gdiSurface.hdc,
+            dx * gdiDisplay.width / display.width + surface.offset.x,
             dy * gdiDisplay.height / display.height + surface.offset.y,
             (w) * gdiDisplay.width / display.width,
             (h) * gdiDisplay.height / display.height,
             gdiSystem.tmpDC, sx, sy,sw,sh, SRCAND);
-         StretchBlt(gdiSurface.hdc, 
-            dx * gdiDisplay.width / display.width + surface.offset.x, 
+         StretchBlt(gdiSurface.hdc,
+            dx * gdiDisplay.width / display.width + surface.offset.x,
             dy * gdiDisplay.height / display.height + surface.offset.y,
             (w) * gdiDisplay.width / display.width,
             (h) * gdiDisplay.height / display.height,
             gdiSystem.bmpDC, sx, sy,sw,sh, SRCPAINT);
          /*
-         StretchBlt(gdiSurface.hdc, 
-            dx * gdiDisplay.width / display.width + surface.offset.x, 
+         StretchBlt(gdiSurface.hdc,
+            dx * gdiDisplay.width / display.width + surface.offset.x,
             dy * gdiDisplay.height / display.height + surface.offset.y,
             (w+1) * gdiDisplay.width / display.width-1,
             (h+1) * gdiDisplay.height / display.height-1,
             gdiSystem.tmpDC, sx, sy,sw,sh, SRCAND);
-         StretchBlt(gdiSurface.hdc, 
-            dx * gdiDisplay.width / display.width + surface.offset.x, 
+         StretchBlt(gdiSurface.hdc,
+            dx * gdiDisplay.width / display.width + surface.offset.x,
             dy * gdiDisplay.height / display.height + surface.offset.y,
             (w+1) * gdiDisplay.width / display.width-1,
             (h+1) * gdiDisplay.height / display.height-1,
@@ -794,8 +794,8 @@ class Win32PrinterDisplayDriver : DisplayDriver
       {
          SetStretchBltMode(gdiSurface.hdc, HALFTONE); //COLORONCOLOR);
          SelectObject(gdiSystem.bmpDC, gdiBitmap.bmp);
-         StretchBlt(gdiSurface.hdc, 
-            dx * gdiDisplay.width / display.width + surface.offset.x, 
+         StretchBlt(gdiSurface.hdc,
+            dx * gdiDisplay.width / display.width + surface.offset.x,
             dy * gdiDisplay.height / display.height + surface.offset.y,
             (w+1) * gdiDisplay.width / display.width-1,
             (h+1) * gdiDisplay.height / display.height-1,
@@ -904,7 +904,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
           *width = size.cx + (wordCount - realLen) * space.cx;
           *width = *width * resX / GetDeviceCaps(hdc, HORZRES);
       }
-      if(height) 
+      if(height)
       {
          if(realLen)
             *height = size.cy;
@@ -913,7 +913,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
          *height = *height * resY / GetDeviceCaps(hdc, VERTRES);
       }
    }
-   
+
    void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
    {
       Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;

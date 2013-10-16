@@ -19,7 +19,7 @@ define projectOptions = "Project Options";
 define defaultTargetDir = "Default Target Directory";
 define defaultIntermediateObjDir = "Default Intermediate Objects Directory";
 
-define makeDefaultCommand = (GetRuntimePlatform() == win32) ? "mingw32-make" : 
+define makeDefaultCommand = (GetRuntimePlatform() == win32) ? "mingw32-make" :
 #ifdef __FreeBSD__
    "gmake";
 #else
@@ -95,7 +95,7 @@ class OldIDESettings : GlobalAppSettings
       recentFiles.Free();
       recentProjects.Free();
       delete docDir;
-   
+
       delete projectDefaultTargetDir;
       delete projectDefaultIntermediateObjDir;
 
@@ -106,8 +106,8 @@ class OldIDESettings : GlobalAppSettings
 
    void OnAskReloadSettings()
    {
-      /*if(MessageBox { type = YesNo, master = this, 
-            text = "Global Settings Modified Externally", 
+      /*if(MessageBox { type = YesNo, master = this,
+            text = "Global Settings Modified Externally",
             contents = "The global settings were modified by another instance.\n"
             "Would you like to reload them?" }.Modal() == Yes)*/
       {
@@ -122,7 +122,7 @@ class OldIDESettings : GlobalAppSettings
       {
          Array<String> configNames { };
          CompilerConfig compiler;
-      
+
          CompilerConfig defaultCompiler = MakeDefaultCompiler(defaultCompilerName, true);
          compilerConfigs.Free();
          compilerConfigs.Add(defaultCompiler);
@@ -188,7 +188,7 @@ class OldIDESettings : GlobalAppSettings
          GetGlobalValue("Editing", "UseFreeCaret", integer, &useFreeCaret);
          GetGlobalValue("Editing", "CaretFollowsScrolling", integer, &caretFollowsScrolling);
          GetGlobalValue("Editing", "ShowLineNumbers", integer, &showLineNumbers);
-         
+
          GetGlobalValue("Building", "NumParallelJobs", integer, &defaultCompiler.numJobs);
          {
             delete displayDriver;
@@ -243,7 +243,7 @@ class OldIDESettings : GlobalAppSettings
 
          for(compiler : compilerConfigs; compiler != compilerConfigs.firstIterator.data)
             configNames.Add(CopyString(compiler.name));
-         
+
          PutGlobalValue("Compilers", "Configs", stringList, configNames);
 
          for(compiler : compilerConfigs; compiler != compilerConfigs.firstIterator.data)
@@ -275,7 +275,7 @@ class OldIDESettings : GlobalAppSettings
          }
          configNames.Free();
          delete configNames;
-         
+
          CloseAndMonitor();
       }
       return result;

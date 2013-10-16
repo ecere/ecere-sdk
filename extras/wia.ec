@@ -97,7 +97,7 @@ class WiaDataCallback : MSCOM_IUnknown
       return MSCOM_IUnknown::QueryInterface(iid, ppvObj);
    }
 
-   virtual uint stdcall BandedDataCallback(uint lReason, uint lStatus, uint lPercentComplete, uint lOffset, uint lLength, 
+   virtual uint stdcall BandedDataCallback(uint lReason, uint lStatus, uint lPercentComplete, uint lOffset, uint lLength,
       uint lReserved, uint lResLength, byte * pbBuffer);
 };
 
@@ -114,7 +114,7 @@ class WiaDataTransfer
 class WiaPropertyStorage
 {
    IWiaPropertyStorage *pWiaPropertyStorage;
-   
+
    bool ReadLong(const PROPSPEC *pPropSpec, uint *plResult)
    {
       bool result = true;
@@ -166,7 +166,7 @@ class WiaPropertyStorage
 }
 
 class ScanningProgress : Window
-{  
+{
    autoCreate = false;
    text = "Scanning in progress. Please wait.";
    borderStyle = fixed;
@@ -182,7 +182,7 @@ class MyWiaDataCallback : WiaDataCallback
 {
    TempFile f { };
 
-   uint stdcall BandedDataCallback(uint lReason, uint lStatus, uint lPercentComplete, uint lOffset, uint lLength, 
+   uint stdcall BandedDataCallback(uint lReason, uint lStatus, uint lPercentComplete, uint lOffset, uint lLength,
       uint lReserved, uint lResLength, byte * pbBuffer)
    {
       switch(lReason)
@@ -296,7 +296,7 @@ public:
             {
                PROPSPEC specPages;
                PROPVARIANT varPages;
-                    
+
                specPages.ulKind = PRSPEC_PROPID;
                specPages.propid = WIA_DPS_PAGES;
 
@@ -304,12 +304,12 @@ public:
                varPages.lVal = ALL_PAGES;
 
                scannerProp.WriteMultiple(1, &specPages, &varPages, WIA_DPS_FIRST);
-                
+
                PropVariantClear(&varPages);
             }
          }
          delete scannerProp;
-         
+
          nextPage = true;
          while(nextPage)
          {

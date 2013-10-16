@@ -3,13 +3,13 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    player.ec - Poker Player Window
 ****************************************************************************/
 import "poker.ec"
 import "pokerUtils.ec"
 
-static char handTypes[10][20] = 
+static char handTypes[10][20] =
 {
    "NOTHING",
    "ONE PAIR",
@@ -63,7 +63,7 @@ class Player : Window
       else if(gameOver)
       {
          surface.SetForeground(red);
-         if(winner) 
+         if(winner)
             surface.WriteTextf(10, 130, "WINNER");
          surface.SetForeground(blue);
          surface.WriteTextf(80, 130, "%s", handTypes[handType]);

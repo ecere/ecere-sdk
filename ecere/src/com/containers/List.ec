@@ -56,7 +56,7 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
    void Delete(Link link)
    {
       D data = GetData(link);
-      delete data;      
+      delete data;
       Remove(link);
    }
 
@@ -66,7 +66,7 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
       while(item = first)
       {
          D data = GetData(item);
-         delete data;      
+         delete data;
          Remove(item);
       }
    }

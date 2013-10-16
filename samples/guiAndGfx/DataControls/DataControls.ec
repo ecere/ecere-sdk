@@ -21,7 +21,7 @@ class Form1 : Window
 
       listBox1.AddField( field1 );
       listBox1.AddField( field2 );
-      
+
       listBox1.currentRow = listBox1.AddRow();
       listBox1.SetData( field1, 2 );
 

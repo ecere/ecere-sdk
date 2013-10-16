@@ -13,7 +13,7 @@ default:
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit;
 private:
 
-static char * iconNames[] = 
+static char * iconNames[] =
 {
    "<:ecere>places/folder.png",
    "<:ecere>status/folderOpen.png",
@@ -54,7 +54,7 @@ public enum FileNameType     // Had to be private, since icons member of FileDia
    textFile, webFile, pictureFile, soundFile,
    archiveFile, packageFile, opticalMediaImageFile; /* these (all previous) are sort equal */
 
-   /*property char * 
+   /*property char *
    {
       set
       {
@@ -162,7 +162,7 @@ public struct FileFilter
 public enum FileForceExtension { never, always, whenNoneGiven };
 public struct FileType
 {
-   char * name, * typeExtension; 
+   char * name, * typeExtension;
    FileForceExtension forceExtension;
 };
 
@@ -189,7 +189,7 @@ public struct FileName
          indentSize = 8;
       }
       textOffset = indent * indentSize + (icon ? (icon.width + 4) : 0);
-      
+
       surface.WriteTextDots
          (alignment, x + textOffset, y + 2, width - textOffset, name, strlen(name));
       if(icon)
@@ -314,7 +314,7 @@ public:
    // Stuff currently in config moving to FileDialog:
    property char * filePath { set { strcpy(filePath, value); } get { return (char *)filePath; } };
    property char * currentDirectory
-   { 
+   {
       set
       {
          GetWorkingDir(currentDirectory, MAX_DIRECTORY);
@@ -502,7 +502,7 @@ private:
             listing.name[1] == currentDirectory[1])
          {
    #endif
-            for(c = start; currentDirectory[c]; ) 
+            for(c = start; currentDirectory[c]; )
             {
                int len = 0;
                char ch;
@@ -510,7 +510,7 @@ private:
                for(;(ch = currentDirectory[c]) && (ch != '/' && ch != '\\'); c++)
                {
                   if(len < MAX_FILENAME)
-                     tmpDir[len++] = ch;  
+                     tmpDir[len++] = ch;
                }
                for(;(ch = currentDirectory[c]) && (ch == '/' || ch == '\\'); c++);
                tmpDir[len] = '\0';
@@ -544,7 +544,7 @@ private:
       {
          if(currentDirectory[0] == '\\' && currentDirectory[1] == '\\')
          {
-            for(c = 2; currentDirectory[c]; ) 
+            for(c = 2; currentDirectory[c]; )
             {
                int len = 0;
                char ch;
@@ -552,7 +552,7 @@ private:
                for(;(ch = currentDirectory[c]) && (ch != '/' && ch != '\\'); c++)
                {
                   if(len < MAX_FILENAME)
-                     tmpDir[len++] = ch;  
+                     tmpDir[len++] = ch;
                }
                for(;(ch = currentDirectory[c]) && (ch == '/' || ch == '\\'); c++);
                tmpDir[len] = '\0';
@@ -610,10 +610,10 @@ private:
       if(sizeFilters < sizeof(FileFilter) && !fileFilter)
          listing.extensions = null;
       else if(filters && fileFilter < sizeFilters / (int)sizeof(FileFilter))
-         listing.extensions = filters[fileFilter].extensions;    
+         listing.extensions = filters[fileFilter].extensions;
       else
          listing.extensions = customFilter.extensions;
-     
+
       listBox.Clear();
 
       fileName.indent = 0;
@@ -631,7 +631,7 @@ private:
                if(listing.stats.attribs.isShare) fileName.type = share;
                if(listing.stats.attribs.isCDROM) fileName.type = cdrom;
                if(listing.stats.attribs.isRemote) fileName.type = netDrive;
-               if(listing.stats.attribs.isRemovable) 
+               if(listing.stats.attribs.isRemovable)
                {
                   if(listing.name[0] == 'A' || listing.name[0] == 'B')
                      fileName.type = floppy;
@@ -675,7 +675,7 @@ private:
    #endif
          goUp.disabled = true;
       }
-      else 
+      else
          goUp.disabled = false;
 
       ListDrives();
@@ -742,7 +742,7 @@ private:
                   strcat(*selectedFileName, name);
                }
                else
-   #endif            
+   #endif
                strcat(*selectedFileName, fileName->name);
                if(selection.count > 1) strcat(*selectedFileName, "\"");
             }
@@ -785,7 +785,7 @@ private:
       bool result = true;
       FileAttribs exists = 0;
       char * wildcardPointer = strstr(fileName, "*");
-      
+
       if(wildcardPointer)
       {
          if(style != selectDir)
@@ -800,8 +800,8 @@ private:
             while(pointer)
             {
                if(pointer[1] == '.' && pointer[2])
-                  pointer +=3; 
-               else 
+                  pointer +=3;
+               else
                   pointer ++;
                pointer = strstr(pointer, "*");
                numExtensions++;
@@ -839,7 +839,7 @@ private:
                                  extension[len++] = ch;
                            }
                            extension[len] = '\0';
-                     
+
                            if(!strcmpi(extension, compared))
                            {
                               matched = true;
@@ -880,7 +880,7 @@ private:
                char * name = new char[numExtensions * (4 + MAX_EXTENSION)];
 
                delete customFilter.extensions;
-            
+
                if(!strcmp(wildcardPointer, "*") || strstr(wildcardPointer, "*.*"))
                {
                   strcpy(name, $"All Files");
@@ -891,7 +891,7 @@ private:
                   customFilter.extensions = new char[numExtensions * (2 + MAX_EXTENSION)];
                   customFilter.extensions[0] = '\0';
                   name[0] = '\0';
-            
+
                   numExtensions = 0;
                   for(c = 0; wildcardPointer[c]; )
                   {
@@ -901,7 +901,7 @@ private:
                      for(;(ch = wildcardPointer[c]) && IS_ALUNDER(ch); c++)
                      {
                         if(len < MAX_EXTENSION)
-                           extension[len++] = ch;  
+                           extension[len++] = ch;
                      }
                      extension[len] = '\0';
 
@@ -912,7 +912,7 @@ private:
                      }
                      strcat(name, "*.");
                      strcat(name, extension);
-                     if(!extension[0]) 
+                     if(!extension[0])
                         strcat(customFilter.extensions, ".");
                      else
                         strcat(customFilter.extensions, extension);
@@ -933,7 +933,7 @@ private:
 
                delete name;
             }
-         
+
             filter.currentRow = filter.FindRow(fileFilter);
             ListFiles();
             result = true;
@@ -986,7 +986,7 @@ private:
          for(selection = selections.first; selection; selection = selection.next)
          {
             char * fileName = selection.data;
-            
+
             // For every file
             strcpy(currentFileName, currentDirectory);
             if(PathCat(currentFileName, fileName))
@@ -1043,7 +1043,7 @@ private:
 
                ListFiles();
             }
-            else 
+            else
             {
                // *** SAVING ONLY ****
                if(style == save)
@@ -1168,7 +1168,7 @@ private:
    DropBox filter
    {
       this, text = $"Filter:", anchor = { left = 96, right = 104, bottom = 16 }, hotKey = altR;
-      
+
       bool NotifySelect(DropBox control, DataRow row, Modifiers mods)
       {
          fileFilter = (int)(row ? row.tag : 0);
@@ -1214,7 +1214,7 @@ private:
          return true;
       }
    };
-      
+
    Label typeLabel
    {
       this, inactive = true, visible = false, anchor = { left = 8, bottom = 19 }, labeledWindow = type;
@@ -1323,7 +1323,7 @@ private:
          #endif
             if(indent < fileName->indent)
             {
-               for(; currentDirectory[c]; ) 
+               for(; currentDirectory[c]; )
                {
                   int len = 0;
                   char ch;
@@ -1332,7 +1332,7 @@ private:
                   for(;(ch = currentDirectory[c]) && (ch != '/' && ch != '\\'); c++)
                   {
                      if(len < MAX_FILENAME)
-                        directory[len++] = ch;  
+                        directory[len++] = ch;
                   }
                   for(;(ch = currentDirectory[c]) && (ch == '/' || ch == '\\'); c++);
                   directory[len] = '\0';
@@ -1350,7 +1350,7 @@ private:
    };
 
    DataField lookInField { dataType = "FileName", userData = this };
-   
+
    Label lookInLabel
    {
       this, position = { 10, 11 }, labeledWindow = lookIn;
@@ -1553,7 +1553,7 @@ private:
          return true;
       }
    };
-   
+
    Button cancel
    {
       parent = this, position = { 140, 60 }, size = { 60 }, hotKey = escape, text = $"Cancel";

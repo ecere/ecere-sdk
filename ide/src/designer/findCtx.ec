@@ -13,19 +13,19 @@ static bool isAfterEqual;
 
 static bool InsideIncl(Location loc, int line, int charPos)
 {
-   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) && 
+   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos <= charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
 }
 
 static bool Inside(Location loc, int line, int charPos)
 {
-   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) && 
+   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos > charPos));
 }
 
 static bool InsideEndIncl(Location loc, int line, int charPos)
 {
-   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) && 
+   return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
 }
 
@@ -197,7 +197,7 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
       case bracketsExp:
       {
          Expression expression;
-         
+
          for(expression = exp.list->first; expression; expression = expression.next)
          {
             if(InsideIncl(&expression.loc, line, charPos))
@@ -216,7 +216,7 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
             idResult = FindCtxExpression(exp.index.exp, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          for(expression = exp.index.index->first; expression; expression = expression.next)
          {
             if(InsideIncl(&expression.loc, line, charPos))
@@ -237,10 +237,10 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
             idResult = FindCtxExpression(exp.call.exp, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(exp.call.argLoc.start.line > line || (line == exp.call.argLoc.start.line && exp.call.argLoc.start.charPos >= charPos))
             arg = -1;
-         else 
+         else
             arg = 0;
 
          if(exp.call.arguments)
@@ -248,14 +248,14 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
             Expression expression;
 
             ctxInsideExp = null;
- 
+
             for(expression = exp.call.arguments->first; expression; expression = expression.next)
             {
                if(InsideIncl(&expression.loc, line, charPos) || (expression.loc.end.line > line || (line == expression.loc.end.line && expression.loc.end.charPos > charPos)))
                {
                   if(Inside(&expression.loc, line, charPos))
                      idResult = FindCtxExpression(expression, line, charPos);
-                  
+
                   // Break
                   break;
                }
@@ -279,7 +279,7 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
                   return idResult ? idResult : (void *)-1;
                }
             }
-            if(idResult) 
+            if(idResult)
                return idResult;
          }
          break;
@@ -337,10 +337,10 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
       case dummyExp:
          return (void *)-2;
    }
-   
+
    if(exp.destType && !exp.destType.truth) // && !exp.addedThis)
       return (void *)-1;
-   
+
    ctxInsideExp = oldExp;
    return null;
 }
@@ -516,13 +516,13 @@ static Identifier FindCtxStatement(Statement stmt, int line, int charPos)
             idResult = FindCtxStatement(stmt.forStmt.init, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(stmt.forStmt.check && InsideIncl(&stmt.forStmt.check.loc, line, charPos))
          {
             idResult = FindCtxStatement(stmt.forStmt.check, line, charPos);
             if(idResult) return idResult;
          }
-         
+
          if(stmt.forStmt.increment)
          {
             for(exp = stmt.forStmt.increment->first; exp; exp = exp.next)
@@ -549,7 +549,7 @@ static Identifier FindCtxStatement(Statement stmt, int line, int charPos)
          if(stmt.expressions)
          {
             Expression exp;
-            
+
             for(exp = stmt.expressions->first; exp; exp = exp.next)
             {
                if(InsideIncl(&exp.loc, line, charPos))
@@ -625,7 +625,7 @@ static Identifier FindCtxInitializer(Initializer initializer, int line, int char
       {
          Initializer init;
          Identifier idResult;
-         
+
          for(init = initializer.list->first; init; init = init.next)
          {
             if(InsideIncl(&init.loc, line, charPos))
@@ -659,7 +659,7 @@ static Identifier FindCtxInitDeclarator(InitDeclarator decl, int line, int charP
 static Identifier FindCtxDeclaration(Declaration decl, int line, int charPos)
 {
    Identifier idResult;
-   
+
    switch(decl.type)
    {
       case structDeclaration:
@@ -686,7 +686,7 @@ static Identifier FindCtxDeclaration(Declaration decl, int line, int charPos)
                   if(d.type == DeclaratorStruct && d.declarator && d.declarator.type == DeclaratorIdentifier)
                      return d.declarator.identifier;
                }
-            }   
+            }
          }
          */
          break;
@@ -718,7 +718,7 @@ static Identifier FindCtxDeclaration(Declaration decl, int line, int charPos)
                   idResult = FindCtxInitDeclarator(d, line, charPos);
                   if(idResult) return idResult;
                }
-            }   
+            }
          }
          break;
       }
@@ -735,7 +735,7 @@ static Identifier FindCtxFunction(FunctionDefinition func, int line, int charPos
    if(func.body && Inside(&func.body.loc, line, charPos))
    {
       Identifier idResult;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator.symbol;
       Type type = symbol.type;
@@ -816,7 +816,7 @@ static Identifier FindCtxInstance(Instantiation inst, int line, int charPos)
       MembersInit init;
       MemberInit memberInit;
       for(init = inst.members->first; init; init = init.next)
-      {         
+      {
          if(init.loc.start.line > line || (line == init.loc.start.line && init.loc.start.charPos > charPos))
             break;
 
@@ -938,7 +938,7 @@ static Identifier FindCtxClassFunction(ClassFunction func, int line, int charPos
    if(func.body && Inside(&func.body.loc, line, charPos))
    {
       Identifier idResult;
-      
+
       Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol ? symbol.type : null;
@@ -1139,7 +1139,7 @@ Identifier FindCtxTree(OldList ast, int line, int charPos)
       {
          switch(external.type)
          {
-            case functionExternal: 
+            case functionExternal:
                if(Inside(&external.loc, line, charPos))
                {
                   idResult = FindCtxFunction(external.function, line, charPos);
@@ -1147,7 +1147,7 @@ Identifier FindCtxTree(OldList ast, int line, int charPos)
                      return (idResult == (void *)-1 || idResult == (void *)-2) ? null : idResult;
                }
                break;
-            case declarationExternal: 
+            case declarationExternal:
                if(InsideIncl(&external.loc, line, charPos))
                {
                   idResult = FindCtxDeclaration(external.declaration, line, charPos);
@@ -1155,7 +1155,7 @@ Identifier FindCtxTree(OldList ast, int line, int charPos)
                      return (idResult == (void *)-1 || idResult == (void *)-2) ? null : idResult;
                }
                break;
-            case classExternal: 
+            case classExternal:
                if(Inside(&external._class.loc, line, charPos))
                {
                   currentClass = external._class.symbol.registered;

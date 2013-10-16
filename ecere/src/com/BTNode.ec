@@ -121,7 +121,7 @@ public:
 private:
 
    void Free(void (*FreeKey)(void * key))
-   {  
+   {
    	if (left) left.Free(FreeKey);
    	if (right) right.Free(FreeKey);
       if(FreeKey) FreeKey((void *)key);
@@ -318,13 +318,13 @@ private:
          }
       }
 
-      //if(!swap.left) 
+      //if(!swap.left)
       {
          swap.left = left;
          if(left)
             left.parent = swap;
       }
-      //if(!swap.right) 
+      //if(!swap.right)
       {
           swap.right = right;
           if (right)
@@ -368,7 +368,7 @@ private:
          return parent.Rebalance();
       else
          return null;
-   }      
+   }
 
    BTNode RemoveSwapRight()
    {
@@ -522,7 +522,7 @@ private:
 
    #define NUMSIZE   4
 
-   char * Print(char * output, TreePrintStyle tps) 
+   char * Print(char * output, TreePrintStyle tps)
    {
       switch(tps)
       {
@@ -540,7 +540,7 @@ private:
 
             if(tps == postOrder) strcatf(output, "%d ", key);
 
-      		return output;		
+            return output;
          }
          case depthOrder:
          {
@@ -561,7 +561,7 @@ private:
       return null;
    }
 
-   void PrintDepth(char * output, int wantedDepth, int curDepth, int maxDepth, bool last) 
+   void PrintDepth(char * output, int wantedDepth, int curDepth, int maxDepth, bool last)
    {
       int c;
       if(wantedDepth == curDepth)

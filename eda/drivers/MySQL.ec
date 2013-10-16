@@ -20,12 +20,12 @@ static void LogMySqlError(MYSQL * mySql, String msg)
 static void LogMySqlErrorf(MYSQL * mySql, String format, ...)
 {
    char msg[MAX_F_STRING];
-   
+
    va_list args;
    va_start(args, format);
    vsprintf(msg, format, args);
    va_end(args);
-   
+
    Logf("%s\n   MySql Error: #%d %s\n", msg, mysql_errno(mySql), mysql_error(mySql));
 }
 
@@ -86,7 +86,7 @@ static class MySqlRow : struct
 public:
    MYSQL_ROW myRow;
    unsigned long *myLengths;
-   
+
    MySqlTable dTbl;
    MySqlField dFld;
 
@@ -135,7 +135,7 @@ public:
          pszT = mysql_get_host_info(src.mySql); Logf("   Host info: %s\n", pszT);
          pszT = mysql_get_server_info(src.mySql); Logf("   Server info: %s\n", pszT);
       Log("     _____________________________________\n\n");
-      
+
       Log(" ********************************************* \n");
       Log(" *      Stats                                * \n");
       Log(" ********************************************* \n");
@@ -207,7 +207,7 @@ public:
       Log("TODO: MySql - DatabaseNameGet");
       return null;
    }
-   
+
    bool ::DatabaseNameSet(Database db, const String value)
    {
       MySqlDatabase dDb = (MySqlDatabase)db.driverData;
@@ -222,7 +222,7 @@ public:
       Table databases;
       db.driver = ds.driver;
       db.driverData = (void *)dDb;
-      
+
       databases = ds.OpenTable(null, { databasesList });
       if(databases)
       {
@@ -250,7 +250,7 @@ public:
       }
       else
          Log("Unable to detect if database exists!\n");
-      
+
       if(mysql_select_db(dDb.mySql, name) < 0)
       {
          LogMySqlErrorf(src.mySql, "Can't open the %s database!\n", db);
@@ -272,7 +272,7 @@ public:
       Log("TODO: MySql - DatabaseDelete");
       return false;
    }
-   
+
    /* -------------------------------------------------------------------------------------------------- */
    /* --- Table ---------------------------------------------------------------------------------------- */
 
@@ -281,19 +281,19 @@ public:
       MySqlTable dTbl = (MySqlTable)tbl.driverData;
       if(dTbl.myRes) mysql_free_result(dTbl.myRes);
    }
-   
+
    uint ::TableFieldsCount(Table tbl)
    {
       MySqlTable dTbl = (MySqlTable)tbl.driverData;
       return mysql_num_fields(dTbl.myRes);
    }
-   
+
    uint ::TableRowsCount(Table tbl)
    {
       MySqlTable dTbl = (MySqlTable)tbl.driverData;
       return (uint)mysql_num_rows(dTbl.myRes);
    }
-   
+
    Field ::TableField(Table tbl)
    {
       MySqlTable dTbl = (MySqlTable)tbl.driverData;
@@ -315,7 +315,7 @@ public:
       }
       return dTbl.row;
    }
-   
+
    String ::TableNameGet(Table tbl)
    {
       MySqlTable dTbl = (MySqlTable)tbl.driverData;
@@ -359,7 +359,7 @@ public:
          else if(options.type == viewRows)
             ;
       }
-      
+
       if(options.type == tableRows)
       {
          if(tables)
@@ -550,7 +550,7 @@ public:
       name[dFld.myFlds[dFld.fldsPos].org_name_length] = '\0';
       return name;
    }
-   
+
    bool ::FieldNameSet(Field fld, const String value)
    {
       MySqlField dFld = (MySqlField)fld.driverData;
@@ -572,7 +572,7 @@ public:
       }
       return dRow.fld;
    }
-   
+
    bool ::RowEnd(Row row)
    {
       MySqlRow dRow = (MySqlRow)row.driverData;
@@ -605,7 +605,7 @@ public:
          return false;
       }
       dRow.rowsPos--;
-      dRow.myRow = mysql_fetch_row(dTbl.myRes);  // this won't work at all... 
+      dRow.myRow = mysql_fetch_row(dTbl.myRes);  // this won't work at all...
       Log("TODO: MySql - FieldNameSet");
       return false;
       return true;
@@ -657,7 +657,7 @@ public:
       MySqlRow dRow = (MySqlRow)row.driverData;
       MySqlTable dTbl = dRow.dTbl;
       MySqlField dFld = dRow.dFld;
-      
+
       switch(dFld.myFlds[dFld.fldsPos].type)
       {
          case FIELD_TYPE_TINY:

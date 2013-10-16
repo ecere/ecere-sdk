@@ -419,7 +419,7 @@ class NamedStringsBox : CommonControl
    };
    DataField nameField { dataType = class(char *), editable = true, width = 120 };
    DataField stringField { dataType = class(char *), editable = true };
-   
+
    NamedStringsBox()
    {
       //DataRow row;

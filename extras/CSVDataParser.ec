@@ -42,7 +42,7 @@ public:
    {
       bool status = true;
       int c = 0;
-      
+
       for(s : strings)
       {
          Column column;

@@ -2,7 +2,7 @@ import "ecere"
 /*
 	Copyright (c) 2009  Gabriel A. Petursson
 	All rights reserved.
-	
+
 	Redistribution and use in source and binary forms, with or without
 	modification, are permitted provided that the following conditions
 	are met:
@@ -13,7 +13,7 @@ import "ecere"
 	   documentation and/or other materials provided with the distribution.
 	3. The name of the author may not be used to endorse or promote products
 	   derived from this software without specific prior written permission.
-	
+
 	THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 	IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -75,7 +75,7 @@ struct AmpheckSHA256
 {
 	uint32 h[8];
 	byte buffer[64];
-	
+
 	uint64 length;
 
    void Init()
@@ -97,7 +97,7 @@ struct AmpheckSHA256
    	{
    		uint32 wv[8];
    		uint32 w[16];
-   		
+
    		PACK_32(&data[(i << 6)     ], &w[ 0]);
    		PACK_32(&data[(i << 6) +  4], &w[ 1]);
    		PACK_32(&data[(i << 6) +  8], &w[ 2]);
@@ -114,7 +114,7 @@ struct AmpheckSHA256
    		PACK_32(&data[(i << 6) + 52], &w[13]);
    		PACK_32(&data[(i << 6) + 56], &w[14]);
    		PACK_32(&data[(i << 6) + 60], &w[15]);
-   		
+
    		wv[0] = h[0];
    		wv[1] = h[1];
    		wv[2] = h[2];
@@ -123,7 +123,7 @@ struct AmpheckSHA256
    		wv[5] = h[5];
    		wv[6] = h[6];
    		wv[7] = h[7];
-   		
+
    		SHA256_PRC(0, 1, 2, 3, 4, 5, 6, 7, w[ 0], 0x428a2f98);
    		SHA256_PRC(7, 0, 1, 2, 3, 4, 5, 6, w[ 1], 0x71374491);
    		SHA256_PRC(6, 7, 0, 1, 2, 3, 4, 5, w[ 2], 0xb5c0fbcf);
@@ -140,7 +140,7 @@ struct AmpheckSHA256
    		SHA256_PRC(3, 4, 5, 6, 7, 0, 1, 2, w[13], 0x80deb1fe);
    		SHA256_PRC(2, 3, 4, 5, 6, 7, 0, 1, w[14], 0x9bdc06a7);
    		SHA256_PRC(1, 2, 3, 4, 5, 6, 7, 0, w[15], 0xc19bf174);
-   		
+
    		SHA256_PRC(0, 1, 2, 3, 4, 5, 6, 7, SHA256_EXT( 0), 0xe49b69c1);
    		SHA256_PRC(7, 0, 1, 2, 3, 4, 5, 6, SHA256_EXT( 1), 0xefbe4786);
    		SHA256_PRC(6, 7, 0, 1, 2, 3, 4, 5, SHA256_EXT( 2), 0x0fc19dc6);
@@ -189,7 +189,7 @@ struct AmpheckSHA256
    		SHA256_PRC(3, 4, 5, 6, 7, 0, 1, 2, SHA256_EXT(13), 0xa4506ceb);
    		SHA256_PRC(2, 3, 4, 5, 6, 7, 0, 1, SHA256_EXT(14), 0xbef9a3f7);
    		SHA256_PRC(1, 2, 3, 4, 5, 6, 7, 0, SHA256_EXT(15), 0xc67178f2);
-   		
+
    		h[0] += wv[0];
    		h[1] += wv[1];
    		h[2] += wv[2];
@@ -206,7 +206,7 @@ struct AmpheckSHA256
    	if (size >= 64 - length % 64)
    	{
    		memcpy(&buffer[length % 64], data, (uint32)(64 - length % 64));
-   		
+
    		TransformData(buffer, 1);
    		//TransformData(&data[64 - length % 64], size / 64);
          TransformData(&data[64 - length % 64], (size - (64 - length % 64)) / 64);
@@ -215,14 +215,14 @@ struct AmpheckSHA256
    	{
    		memcpy(&buffer[length % 64], data, size);
    	}
-   	
+
    	length += size;
    }
 
    void Finish(byte *digest)
    {
    	AmpheckSHA256 tmp { };
-   	
+
    	tmp.h[0] = h[0];
    	tmp.h[1] = h[1];
    	tmp.h[2] = h[2];
@@ -231,10 +231,10 @@ struct AmpheckSHA256
    	tmp.h[5] = h[5];
    	tmp.h[6] = h[6];
    	tmp.h[7] = h[7];
-   	
+
    	memcpy(tmp.buffer, buffer, (uint32)(length % 64));
    	tmp.buffer[length % 64] = 0x80;
-   	
+
    	if (length % 64 < 56)
    	{
    		memset(&tmp.buffer[length % 64 + 1], 0x00, (uint32)(55 - length % 64));
@@ -243,13 +243,13 @@ struct AmpheckSHA256
    	{
    		memset(&tmp.buffer[length % 64 + 1], 0x00, (uint32)(63 - length % 64));
    		tmp.TransformData(tmp.buffer, 1);
-   		
+
    		memset(tmp.buffer, 0x00, 56);
    	}
-   	
+
    	UNPACK_64(length % 64 * 8, &tmp.buffer[56]);
    	tmp.TransformData(tmp.buffer, 1);
-   	
+
    	UNPACK_32(tmp.h[0], &digest[ 0]);
    	UNPACK_32(tmp.h[1], &digest[ 4]);
    	UNPACK_32(tmp.h[2], &digest[ 8]);

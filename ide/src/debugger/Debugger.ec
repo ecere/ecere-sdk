@@ -349,10 +349,10 @@ static int StringGetInt(char * string, int start)
 static int TokenizeList(char * string, const char seperator, Array<char *> tokens)
 {
    uint level = 0;
-   
+
    bool quoted = false, escaped = false;
    char * start = string, ch;
-   
+
    for(; (ch = *string); string++)
    {
       if(!start)
@@ -523,7 +523,7 @@ class Debugger
 
    char * targetDir;
    char * targetFile;
-   
+
    GdbExecution gdbExecution;
    DebuggerUserAction userAction;
    DebuggerState state;
@@ -535,7 +535,7 @@ class Debugger
    GdbDataStop stopItem;
    GdbDataBreakpoint bpItem;
    Frame activeFrame;
-   
+
    List<Breakpoint> sysBPs { };
    Breakpoint bpRunToCursor;
    Breakpoint intBpEntry;
@@ -841,7 +841,7 @@ class Debugger
 
       targetDir = null;
       targetFile = null;
-      
+
       _ChangeState(none);
       event = none;
       breakType = none;
@@ -849,7 +849,7 @@ class Debugger
       stopItem = null;
       bpItem = null;
       activeFrame = 0;
-      
+
       bpRunToCursor = null;
 
       delete currentCompiler;
@@ -863,7 +863,7 @@ class Debugger
       /*GdbThread gdbThread
       Timer gdbTimer*/
    }
-   
+
    Debugger()
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::constructor");
@@ -1063,7 +1063,7 @@ class Debugger
    {
       bool returnedExitCode = false;
       char verboseExitCode[128];
-      
+
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::HandleExit(", reason, ", ", code, ")");
       _ChangeState(loaded); // this state change seems to be superfluous, might be in case of gdb crash
       targetProcessId = 0;
@@ -1075,7 +1075,7 @@ class Debugger
       }
       else
          verboseExitCode[0] = '\0';
-      
+
       event = exit;
 
       // ClearBreakDisplay();
@@ -1122,7 +1122,7 @@ class Debugger
       }
       ide.Update(null);
    }
-      
+
    DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool ignoreBreakpoints)
    {
       DebuggerState result = none;
@@ -1323,7 +1323,7 @@ class Debugger
             *lineTopFrame = stopItem.frame.line;
          else
             *lineTopFrame = 0;
-         
+
          if(*lineTopFrame == *lineCursor && *lineTopFrame)
             *lineTopFrame = 0;
       }
@@ -1387,7 +1387,7 @@ class Debugger
             }
          }
       }
-      
+
       // moving code cursors is futile, on next step, stop, hit, cursors will be offset anyways
    }
 
@@ -1405,9 +1405,9 @@ class Debugger
       while(debuggerFileDialog.Modal())
       {
          strcpy(sourceDir, debuggerFileDialog.filePath);
-         if(!fstrcmp(ide.workspace.projectDir, sourceDir) && 
-                  MessageBox { type = yesNo, master = ide, 
-                              contents = $"This is the project directory.\nWould you like to try again?", 
+         if(!fstrcmp(ide.workspace.projectDir, sourceDir) &&
+                  MessageBox { type = yesNo, master = ide,
+                              contents = $"This is the project directory.\nWould you like to try again?",
                               text = $"Invalid Source Directory" }.Modal() == no)
             return false;
          else
@@ -1420,10 +1420,10 @@ class Debugger
                   break;
                }
             }
-            
-            if(srcDir && 
-                  MessageBox { type = yesNo, master = ide, 
-                              contents = $"This source directory is already specified.\nWould you like to try again?", 
+
+            if(srcDir &&
+                  MessageBox { type = yesNo, master = ide,
+                              contents = $"This source directory is already specified.\nWould you like to try again?",
                               text = $"Invalid Source Directory" }.Modal() == no)
                return false;
             else
@@ -1434,15 +1434,15 @@ class Debugger
                   strcpy(file, sourceDir);
                   PathCat(file, test);
                   result = FileExists(file);
-                  if(!result && 
-                        MessageBox { type = yesNo, master = ide, 
-                                    contents = $"Unable to locate source file.\nWould you like to try again?", 
+                  if(!result &&
+                        MessageBox { type = yesNo, master = ide,
+                                    contents = $"Unable to locate source file.\nWould you like to try again?",
                                     text = $"Invalid Source Directory" }.Modal() == no)
                         return false;
                }
                else
                   result = true;
-               
+
                if(result)
                   return true;
             }
@@ -1456,7 +1456,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::AddSourceDir(", sourceDir, ")");
       ide.workspace.sourceDirs.Add(CopyString(sourceDir));
       ide.workspace.Save();
-      
+
       if(targeted)
       {
          DebuggerState oldState = state;
@@ -1527,7 +1527,7 @@ class Debugger
                }
                if(srcDir)
                   break;
-               
+
                if(SourceDirDialog(title, directory, null, sourceDir))
                {
                   if(IsPathInsideOf(absolutePath, sourceDir))
@@ -1536,8 +1536,8 @@ class Debugger
                      MakePathRelative(absolutePath, sourceDir, relativePath);
                      break;
                   }
-                  else if(MessageBox { type = yesNo, master = ide, 
-                                 contents = $"You must provide a valid source directory in order to place a breakpoint in this file.\nWould you like to try again?", 
+                  else if(MessageBox { type = yesNo, master = ide,
+                                 contents = $"You must provide a valid source directory in order to place a breakpoint in this file.\nWould you like to try again?",
                                  text = $"Invalid Source Directory" }.Modal() == no)
                      return;
                }
@@ -1604,7 +1604,7 @@ class Debugger
       Array<char *> argumentTokens { minAllocSize = 50 };
       DebugListItem item { };
       Argument arg;
-      
+
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ParseFrame()");
       TokenizeList(string, ',', frameTokens);
       for(i = 0; i < frameTokens.count; i++)
@@ -1682,7 +1682,7 @@ class Debugger
          else
             _dpl(0, "Bad frame");
       }
-      
+
       delete frameTokens;
       delete argsTokens;
       delete argumentTokens;
@@ -1808,7 +1808,7 @@ class Debugger
          vsnprintf(string, sizeof(string), format, args);
          string[sizeof(string)-1] = 0;
          va_end(args);
-         
+
          gdbReady = false;
          ide.debugger.serialSemaphore.TryWait();
 
@@ -1832,7 +1832,7 @@ class Debugger
          app.Unlock();
          ide.debugger.serialSemaphore.Wait();
          app.Lock();
-      } 
+      }
    }
 
    bool ValidateBreakpoint(Breakpoint bp)
@@ -2357,7 +2357,7 @@ class Debugger
       }
       else
          ChangeWorkingDir(ide.workspace.projectDir);
-      
+
       ide.SetPath(true, compiler, config, bitDepth);
 
       // TODO: This pollutes the environment, but at least it works
@@ -2586,7 +2586,7 @@ class Debugger
          bp.Reset();
       if(bpRunToCursor)
          bpRunToCursor.Reset();
-      
+
       ide.outputView.debugBox.Logf($"Debugging stopped\n");
       ClearBreakDisplay();
       ide.Update(null);
@@ -2602,7 +2602,7 @@ class Debugger
             progThread.Wait();
             app.Lock();
             delete fifoFile;
-         }         
+         }
          DeleteFile(progFifoPath);
          progFifoPath[0] = '\0';
          rmdir(progFifoDir);
@@ -2644,12 +2644,12 @@ class Debugger
    bool ResolveWatch(Watch wh)
    {
       bool result = false;
-      
+
       _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::ResolveWatch()");
       wh.Reset();
 
       /*delete wh.value;
-      if(wh.type) 
+      if(wh.type)
       {
          FreeType(wh.type);
          wh.type = null;
@@ -2680,9 +2680,9 @@ class Debugger
                SetGlobalContext(codeEditor.globalContext);
                SetGlobalData(&codeEditor.globalData);
             }
-         
+
             exp = ParseExpressionString(wh.expression);
-            
+
             if(exp && !parseError)
             {
                char expString[4096];
@@ -2743,7 +2743,7 @@ class Debugger
                            long v = (long)exp.val.f;
                            sprintf(temp, "%i", v);
                            break;
-                        } 
+                        }
                         case doubleType:
                         {
                            long v = (long)exp.val.d;
@@ -2780,7 +2780,7 @@ class Debugger
                            long v = (long)exp.val.f;
                            sprintf(temp, "0x%x", v);
                            break;
-                        } 
+                        }
                         case doubleType:
                         {
                            long v = (long)exp.val.d;
@@ -2817,7 +2817,7 @@ class Debugger
                            long v = (long)exp.val.f;
                            sprintf(temp, "0o%o", v);
                            break;
-                        } 
+                        }
                         case doubleType:
                         {
                            long v = (long)exp.val.d;
@@ -2892,9 +2892,9 @@ class Debugger
                   case constantExp:
                   case stringExp:
                      // Temporary Code for displaying Strings
-                     if((exp.expType && ((exp.expType.kind == pointerType || 
-                              exp.expType.kind == arrayType) && exp.expType.type.kind == charType)) || 
-                           (wh.type && wh.type.kind == classType && wh.type._class && 
+                     if((exp.expType && ((exp.expType.kind == pointerType ||
+                              exp.expType.kind == arrayType) && exp.expType.type.kind == charType)) ||
+                           (wh.type && wh.type.kind == classType && wh.type._class &&
                               wh.type._class.registered && wh.type._class.registered.type == normalClass &&
                               !strcmp(wh.type._class.registered.name, "String")))
                      {
@@ -2924,7 +2924,7 @@ class Debugger
                            else
                               snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%08I64x " : "0x%08llx ", address);
                            value[sizeof(value)-1] = 0;
-                           
+
                            if(!address)
                               strcat(value, $"Null string");
                            else
@@ -2944,12 +2944,12 @@ class Debugger
                                  {
                                     int c;
                                     char ch;
-                                    
+
                                     for(c = 0; (ch = string[c]) && c<4096; c++)
-                                       value[len++] = ch;                                 
+                                       value[len++] = ch;
                                     value[len++] = ')';
                                     value[len++] = '\0';
-                                    
+
                                  }
                                  else
                                  {
@@ -2970,7 +2970,7 @@ class Debugger
                            wh.value = CopyString(value);
                         }
                      }
-                     else if(wh.type && wh.type.kind == classType && wh.type._class && 
+                     else if(wh.type && wh.type.kind == classType && wh.type._class &&
                               wh.type._class.registered && wh.type._class.registered.type == enumClass)
                      {
                         uint64 value = strtoul(exp.constant, null, 0);
@@ -2986,7 +2986,7 @@ class Debugger
                            wh.value = CopyString($"Invalid Enum Value");
                         result = true;
                      }
-                     else if(wh.type && (wh.type.kind == charType || (wh.type.kind == classType && wh.type._class && 
+                     else if(wh.type && (wh.type.kind == charType || (wh.type.kind == classType && wh.type._class &&
                               wh.type._class.registered && !strcmp(wh.type._class.registered.fullName, "ecere::com::unichar"))) )
                      {
                         unichar value;
@@ -3052,7 +3052,7 @@ class Debugger
                         else
                            snprintf(string, sizeof(string), "\'%s\' (%d)", charString, value);
                         string[sizeof(string)-1] = 0;
-                        
+
                         wh.value = CopyString(string);
                         result = true;
                      }
@@ -3074,7 +3074,7 @@ class Debugger
                         if(exp.member.memberType == propertyMember)
                            snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation support for \"%s\"", wh.expression);
                         else
-                           snprintf(watchmsg, sizeof(watchmsg), $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression, 
+                           snprintf(watchmsg, sizeof(watchmsg), $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression,
                                  exp.type.OnGetString(tempString, null, null));
                      }
                      break;
@@ -3084,16 +3084,16 @@ class Debugger
                snprintf(watchmsg, sizeof(watchmsg), $"Invalid expression: \"%s\"", wh.expression);
             if(exp) FreeExpression(exp);
 
-            
+
             SetPrivateModule(backupPrivateModule);
             SetCurrentContext(backupContext);
             SetTopContext(backupContext);
             SetGlobalContext(backupContext);
             SetThisClass(backupThisClass);
          }
-         //else 
+         //else
          //   wh.value = CopyString("No source file found for selected frame");
-         
+
          watchmsg[sizeof(watchmsg)-1] = 0;
          if(!wh.value)
             wh.value = CopyString(watchmsg);
@@ -3282,7 +3282,7 @@ class Debugger
             gdbTimer.Stop();
             gdbHandle.Wait();
             delete gdbHandle;
-            
+
             ide.outputView.debugBox.Logf($"Debugger Fatal Error: GDB lost\n");
             ide.outputView.debugBox.Logf($"Debugging stopped\n");
             ide.Update(null);
@@ -3301,7 +3301,7 @@ class Debugger
       DebugListItem item { };
       DebugListItem item2 { };
       bool setWaitingForPID = false;
-      
+
 #if defined(GDB_DEBUG_CONSOLE) || defined(GDB_DEBUG_GUI)
 #ifdef GDB_DEBUG_CONSOLE
       // _dpl2(_dpct, dplchan::gdbOutput, 0, output);
@@ -3338,7 +3338,7 @@ class Debugger
          if(ide.gdbDialog) ide.gdbDialog.AddOutput(output);
 #endif
 #endif
-      
+
       switch(output[0])
       {
          case '~':
@@ -4771,7 +4771,7 @@ class Breakpoint : struct
 class Watch : struct
 {
    class_no_expansion;
-   
+
    Type type;
    char * expression;
    char * value;

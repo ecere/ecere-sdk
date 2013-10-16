@@ -5,7 +5,7 @@ namespace gfx3D::meshes;
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    skybox.ec - SkyBox 3D Model
 ****************************************************************************/
 import "Display"
@@ -69,16 +69,16 @@ public:
                // up, front, down, back, right, left
                /*
                { 20,21,16,17 },
-               { 7,6,4,5 }, 
-               { 19,18,23,22 }, 
-               { 2,3,1,0 }, 
+               { 7,6,4,5 },
+               { 19,18,23,22 },
+               { 2,3,1,0 },
                { 14,10,13,9 },
                { 11,15,8,12 }
                */
                { 20,21,17,16 },
-               { 7,6,5,4 }, 
-               { 19,18,22,23 }, 
-               { 2,3,0,1 }, 
+               { 7,6,5,4 },
+               { 19,18,22,23 },
+               { 2,3,0,1 },
                { 14,10,9,13 },
                { 11,15,12,8 }
             };
@@ -139,7 +139,7 @@ public:
             Quaternion iquat;
             iquat.Inverse(camera.cOrientation);
             transform.orientation = iquat;
-         }         
+         }
 
          UpdateTransform();
          display.DrawObject(this);
@@ -158,7 +158,7 @@ private:
    {
       size = { 10000,10000,10000 };
       folder = ":skycube";
-      extension = "pcx";   
+      extension = "pcx";
    }
 
    Vector3Df size;

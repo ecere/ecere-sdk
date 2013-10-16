@@ -31,13 +31,13 @@ public struct Transform
    Vector3Df scaling;
 };
 
-/*static float ease(float t, float a, float b) 
+/*static float ease(float t, float a, float b)
 {
    float k;
    float s = a + b;
 
    if (s == 0.0f) return t;
-   if (s > 1.0f) 
+   if (s > 1.0f)
    {
       a /= s;
       b /= s;
@@ -108,18 +108,18 @@ public class FrameTrack : struct
          value = pn;
       else
       {
-         if(n == 0) 
+         if(n == 0)
          {
             kn1 = &keys[1];
             pn1 = kn1->roll;
 
-            if(numKeys == 2) 
+            if(numKeys == 2)
             {
                value = pn1 - pn;
                value *= 1.0f - kn->tension;
                return value;
             }
-            if(type.loop) 
+            if(type.loop)
             {
                kn_1 = &keys[numKeys-2];
                d1 = keys[numKeys-1].frame - kn_1->frame;
@@ -139,24 +139,24 @@ public class FrameTrack : struct
                return value;
             }
          }
-         else if(n == numKeys-1) 
+         else if(n == numKeys-1)
          {
             kn_1 = &keys[n-1];
             pn_1 = kn_1->roll;
 
-            if(numKeys == 2) 
+            if(numKeys == 2)
             {
                value = pn - pn_1;
                value *= 1.0f - kn->tension;
                return value;
             }
-            if(type.loop) 
+            if(type.loop)
             {
                kn1 = &keys[1];
                d1 = kn->frame - kn_1->frame;
                d2 = kn1->frame - keys[0].frame;
-            } 
-            else 
+            }
+            else
             {
                float bn_1;
                value = pn - pn_1;
@@ -169,8 +169,8 @@ public class FrameTrack : struct
                value *= 1.0f - kn->tension;
                return value;
             }
-         } 
-         else 
+         }
+         else
          {
             kn_1 = &keys[n-1];
             kn1 = &keys[n+1];
@@ -188,8 +188,8 @@ public class FrameTrack : struct
             {
                C = kn->continuity;
                adjust = (float)d1;
-            } 
-            else 
+            }
+            else
             {
                C = -kn->continuity;
                adjust = (float)d2;
@@ -223,18 +223,18 @@ public class FrameTrack : struct
          vector = *pn;
       else
       {
-         if(n == 0) 
+         if(n == 0)
          {
             kn1 = &keys[1];
             pn1 = &kn1->position;
 
-            if(numKeys == 2) 
+            if(numKeys == 2)
             {
                vector.Subtract(pn1, pn);
                vector.Scale(vector, 1.0f - kn->tension);
                return;
             }
-            if(type.loop) 
+            if(type.loop)
             {
                kn_1 = &keys[numKeys-2];
                d1 = keys[numKeys-1].frame - kn_1->frame;
@@ -254,24 +254,24 @@ public class FrameTrack : struct
                return;
             }
          }
-         else if(n == numKeys-1) 
+         else if(n == numKeys-1)
          {
             kn_1 = &keys[n-1];
             pn_1 = &kn_1->position;
 
-            if(numKeys == 2) 
+            if(numKeys == 2)
             {
                vector.Subtract(pn, pn_1);
                vector.Scale(vector, 1.0f - kn->tension);
                return;
             }
-            if(type.loop) 
+            if(type.loop)
             {
                kn1 = &keys[1];
                d1 = kn->frame - kn_1->frame;
                d2 = kn1->frame - keys[0].frame;
-            } 
-            else 
+            }
+            else
             {
                Vector3Df bn_1;
                vector.Subtract(pn, pn_1);
@@ -284,8 +284,8 @@ public class FrameTrack : struct
                vector.Scale(vector, 1.0f - kn->tension);
                return;
             }
-         } 
-         else 
+         }
+         else
          {
             kn_1 = &keys[n-1];
             kn1 = &keys[n+1];
@@ -303,8 +303,8 @@ public class FrameTrack : struct
             {
                C = kn->continuity;
                adjust = (float)d1;
-            } 
-            else 
+            }
+            else
             {
                C = -kn->continuity;
                adjust = (float)d2;
@@ -337,41 +337,41 @@ public class FrameTrack : struct
          quat = *qn;
       else
       {
-         if(n == 0) 
+         if(n == 0)
          {
             kn1 = &keys[1];
 
-            if (!(type.loop) || numKeys <= 2) 
+            if (!(type.loop) || numKeys <= 2)
             {
                qn1 = &kn1->orientation;
                quat.Slerp(qn, qn1, (1.0f - kn->tension)*(1.0f + kn->continuity*kn->bias)/3.0f);
                return;
-            } 
-            else 
+            }
+            else
             {
                kn_1= &keys[numKeys-2];
                d1 = keys[numKeys-1].frame - kn_1->frame;
                d2 = kn1->frame - kn->frame;
             }
-         } 
-         else if (n == numKeys-1) 
+         }
+         else if (n == numKeys-1)
          {
             kn_1 = &keys[n-1];
 
-            if (!(type.loop) || numKeys <= 2) 
+            if (!(type.loop) || numKeys <= 2)
             {
                qn_1 = &kn_1->orientation;
                quat.Slerp(qn, qn_1, (1.0f - kn->tension)*(1.0f - kn->continuity*kn->bias)/3.0f);
                return;
-            } 
-            else 
+            }
+            else
             {
                kn1 = &keys[1];
                d1 = kn->frame - kn_1->frame;
                d2 = kn1->frame - keys[0].frame;
             }
-         } 
-         else 
+         }
+         else
          {
             kn_1 = &keys[n-1];
             kn1 = &keys[n+1];
@@ -385,12 +385,12 @@ public class FrameTrack : struct
             qn_1 = &kn_1->orientation;
             qn1 = &kn1->orientation;
 
-            if (what == splineA) 
+            if (what == splineA)
             {
                f = 1.0f;
                adjust = (float)d1;
             }
-            else 
+            else
             {
                f = -1.0f;
                adjust = (float)d2;
@@ -644,7 +644,7 @@ public:
          }
 
          tracks.Free(FrameTrack::Free);
-         
+
          delete name;
       }
    }
@@ -656,7 +656,7 @@ public:
       OldLink link;
       bool result = false;
 
-      if(!type && fileName) 
+      if(!type && fileName)
       {
          type = GetExtension(fileName, ext);
          strlwr(type);
@@ -704,7 +704,7 @@ public:
             for(child = children.first; child; child = child.next)
             {
                Object result = child.Find(name);
-               if(result) 
+               if(result)
                   return result;
             }
          }
@@ -729,7 +729,7 @@ public:
       if(this)
       {
          flags.mesh = true;
-         if(!mesh) 
+         if(!mesh)
          {
             mesh = Mesh { };
             flags.ownMesh = true;
@@ -812,7 +812,7 @@ public:
                for(c = 0; c<objectMesh.nVertices; c++)
                {
                   mesh.vertices[nVertices] = objectMesh.vertices[c];
-                  
+
                   if(objectMesh.normals)
                      mesh.normals[nVertices] = objectMesh.normals[c];
                   if(objectMesh.texCoords)
@@ -848,14 +848,14 @@ public:
                }
             }
 
-            // Merge Indexed Primitive Groups 
+            // Merge Indexed Primitive Groups
             while(true)
             {
                int nIndices = 0;
                PrimitiveGroupType type;
                Material material = null;
                bool foundGroup = false;
-            
+
                // Find first group type/material to process and determine how many indices are required
                if(objectMesh)
                {
@@ -908,7 +908,7 @@ public:
                      nIndices = 0;
 
                      vertexOffset = 0;
-                     
+
                      if(objectMesh)
                      {
                         for(group = objectMesh.groups.first; group; group = group.next)
@@ -929,7 +929,7 @@ public:
                         {
                            for(group = child.mesh.groups.first; group; group = group.next)
                            {
-                              if(newGroup.material == (group.material ? group.material : child.material) && 
+                              if(newGroup.material == (group.material ? group.material : child.material) &&
                                  newGroup.type == group.type)
                               {
                                  int c;
@@ -944,12 +944,12 @@ public:
                   }
                }
                else
-                  break;                         
+                  break;
             }
 
-            // Merge Non-Indexed Primitive Groups 
+            // Merge Non-Indexed Primitive Groups
             vertexOffset = 0;
-            
+
             if(objectMesh)
             {
                for(group = objectMesh.groups.first; group; group = group.next)
@@ -988,11 +988,11 @@ public:
                   vertexOffset += child.mesh.nVertices;
                }
             }
-            
+
             // Merge Triangles
             if(objectMesh)
                nTriangles = objectMesh.nPrimitives;
-            
+
             for(child = children.first; child; child = child.next)
             {
                if(child.mesh)
@@ -1007,14 +1007,14 @@ public:
                {
                   int i;
                   PrimitiveSingle * triangle = &mesh.primitives[mesh.nPrimitives++];
-                  
+
                   mesh.AllocatePrimitive(triangle, objectMesh.primitives[c].type, objectMesh.primitives[c].nIndices);
                   triangle->material = objectMesh.primitives[c].material;
                   triangle->middle = objectMesh.primitives[c].middle;
                   triangle->plane = objectMesh.primitives[c].plane;
 
                   memcpy(triangle->indices, objectMesh.primitives[c].indices, objectMesh.primitives[c].nIndices * sizeof(uint16));
-                  
+
                   /*
                   *triangle = objectMesh.primitives[c];
                   objectMesh.primitives[c].indices = null;
@@ -1148,7 +1148,7 @@ public:
    bool IntersectsGroundPolygon(int count, Pointf * pointfs)
    {
       bool result = false;
-   
+
       Pointf * p1;
       Pointf * p2;
       double minX = wmin.x, maxX = wmax.x;
@@ -1191,7 +1191,7 @@ public:
             else
             {
                float a, b, dy, dx;
-               
+
                a = p2->y - p1->y;
                b = p1->x - p2->x;
                dy =  a;
@@ -1200,7 +1200,7 @@ public:
                if (a < 0) a = -a;
                if (b < 0) b = -b;
                if (d < 0) d = -d;
-               
+
                if(d < a * delta)
                   return true;
                else if (d < b * delta)
@@ -1208,7 +1208,7 @@ public:
                else if( ( (p1->y <= y) && (p2->y >  y) ) || ( (p1->y >  y) && (p2->y <= y) ) )
                {
                   double xdy;
-                  
+
                   xdy = (dx * (y - p1->y)) + (dy * p1->x);
                   if(dy < 0)
                   {
@@ -1347,7 +1347,7 @@ private:
       for(track = tracks.first; track; track = track.next)
       {
          unsigned int c;
-      
+
          if(track.numKeys)
          {
             unsigned int prev = 0, next = track.numKeys - 1;
@@ -1366,7 +1366,7 @@ private:
 
             switch(track.type.type)
             {
-               case position: 
+               case position:
                {
                   Vector3Df position;
                   track.Interpolate(position, prevKey->position, nextKey->position, prev, next, t);
@@ -1396,7 +1396,7 @@ private:
                // Lights
                case colorChange:
                {
-                  track.Interpolate((Vector3Df *)&light.diffuse, 
+                  track.Interpolate((Vector3Df *)&light.diffuse,
                      (Vector3Df *)&prevKey->color, (Vector3Df *)&nextKey->color, prev, next, t);
                   light.specular = light.diffuse;
                   break;
@@ -1457,12 +1457,12 @@ private:
             { wmax.x, wmax.y, wmax.z }
          };
    	   int numPlanesAllIn = 0;
-   	   for(p = 0; p < 6; p++) 
+         for(p = 0; p < 6; p++)
          {
             Plane * plane = &planes[p];
             int i;
             int numGoodPoints = 0;
-       	   for(i = 0; i < 8; ++i) 
+            for(i = 0; i < 8; ++i)
             {
                double dot = plane->normal.DotProduct(box[i]);
                double distance = dot + plane->d;

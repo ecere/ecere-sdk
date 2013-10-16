@@ -15,7 +15,7 @@ public class CalendarControl : CommonControl
    class_property(icon) = "<:ecere>controls/calendar.png";
 
 public:
-   virtual void Window::NotifyChanged(bool close);      
+   virtual void Window::NotifyChanged(bool close);
    Date dateValue;
    Month shownMonth;
    int shownYear;
@@ -34,14 +34,14 @@ private:
          dateValue.day = now.day;
          dateValue.month = now.month;
          shownYear = dateValue.year = now.year;
-         shownMonth = dateValue.month;         
+         shownMonth = dateValue.month;
       }
       return true;
    }
-   
+
    RepButton leftArrow
    {
-      this, 
+      this,
       position = { 3, 8 };
       size = { 16, 16 };
       bevel = false;
@@ -52,12 +52,12 @@ private:
       offset = false;
       text = "«";
       hotKey = pageUp;
-      
+
       bool NotifyClicked(Button button, int x, int y, ecere::gui::Modifiers mods)
       {
          shownMonth--;
          if(shownMonth < january) { shownMonth = december; shownYear--; yearBox.Refresh(); }
-         monthBox.Refresh();         
+         monthBox.Refresh();
          Update(null);
          dateBox.Activate();
          return true;
@@ -65,7 +65,7 @@ private:
    };
    RepButton rightArrow
    {
-      this, 
+      this,
       anchor = { right = 8, top = 8 };
       size = { 16, 16 };
       bevel = false;
@@ -86,7 +86,7 @@ private:
          dateBox.Activate();
          return true;
       }
-   };   
+   };
 
    DataBox monthBox
    {
@@ -126,7 +126,7 @@ private:
          }
          return true;
       }
-      
+
       bool OnPostCreate()
       {
          DataBox::OnPostCreate();
@@ -143,7 +143,7 @@ private:
             shownYear += (time.year / 100) * 100;
             if(Abs(shownYear - time.year) >= 50)
                shownYear -= 100;
-            yearBox.Refresh();           
+            yearBox.Refresh();
          }
          Update(null);
          dateBox.Activate();
@@ -208,7 +208,7 @@ private:
       {
          if(mods.left && !mods.isSideEffect)
             ((CalendarControl)master).FindDate(x, y, false, false);
-         return true;         
+         return true;
       }
       bool OnLeftButtonDown(int x, int y, Modifiers mods)
       {
@@ -252,7 +252,7 @@ private:
          surface.SetBackground(Color { 238, 238, 238 } /*whiteSmoke*/);
          surface.Area(0, Height, Width, clientSize.h);
          surface.Area(6 * Width, Height, 7*Width, clientSize.h);
-         
+
          surface.SetForeground(lightGray);
          surface.DrawLine(0, Height, clientSize.w, Height);
          surface.DrawLine(0, Height, 0, clientSize.h);
@@ -290,7 +290,7 @@ private:
                   }
                }
             }
-         }      
+         }
       }
    };
 

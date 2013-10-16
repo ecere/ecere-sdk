@@ -15,11 +15,11 @@ class ClientApp : GuiApplication
             int newsize;
             uint * indexfs = null;
             int c;
-            
+
             f.Seek(0, end);
             newsize = f.Tell();
             f.Seek(0, 0);
-            
+
             indexfs = renew indexfs byte[newsize];
             c = f.Read(indexfs, newsize, 1);
             delete f;
@@ -29,7 +29,7 @@ class ClientApp : GuiApplication
             delete f;
 
             // while(true) Sleep(1);
-         }      
+         }
          delete connection;
       }
    }

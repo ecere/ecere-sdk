@@ -22,7 +22,7 @@ class NodeProperties : Window
       anchor = { left = 10, top = 80, right = 10 };
       NotifyModified = PathNotifyModified;
    };
-   
+
    Label absolutePathLabel { parent = this, position = { 10, 110 }, labeledWindow = absolutePath };
    EditBox absolutePath
    {
@@ -30,7 +30,7 @@ class NodeProperties : Window
       position = { 10, 130 }, size = { 260 }, text = $"Absolute Path";
       anchor = { left = 10, top = 130, right = 10 };
    };
-   
+
    Label nameLabel { parent = this, position = { 10, 10 }, labeledWindow = name };
    EditBox name
    {
@@ -96,7 +96,7 @@ class NodeProperties : Window
       set
       {
          Size minSize = { 280, 260 };
-         
+
          // name              { 10,  10 }    { 10,  30 }
          // path              { 10,  60 }    { 10,  80 }
          // absolutePath      { 10, 110 }    { 10, 130 }
@@ -130,13 +130,13 @@ class NodeProperties : Window
                }
             }
 
-            // project:    - name path absolute - 
+            // project:    - name path absolute -
             // file
-            //   in res:   - name path absolute - 
-            //   not:      - name path absolute - 
+            //   in res:   - name path absolute -
+            //   not:      - name path absolute -
             // folder:     - name               -
             // resources:  - name path          -
-            
+
             {
                char * s;
                text = (s = PrintString(node.name, $" Properties"));

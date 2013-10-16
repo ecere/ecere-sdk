@@ -23,13 +23,13 @@ class WatchesView : Window
       bool NotifyChanged(ListBox listBox, DataRow row)
       {
          char * expression = row.GetData(expressionField);
-         
+
          if(expression && expression[0])
          {
             TrimLSpaces(expression, expression);
             TrimRSpaces(expression, expression);
          }
-         
+
          if(expression && expression[0])
          {
             row.SetData(valueField, null);
@@ -177,7 +177,7 @@ class WatchMultiLineString : String
             modifyVirtualArea = false,
             anchor = { 0, 0, 0, 0 };
             //position = { x + dataBox.absPosition.x, y + dataBox.absPosition.y };
-            //size = { w, h * 4 }; 
+            //size = { w, h * 4 };
             multiLine = true;
 
             bool OnKeyDown(Key key, unichar ch)
@@ -198,11 +198,11 @@ class WatchMultiLineString : String
 
             void DataBox::NotifyUpdate(EditBox editBox)
             {
-               Modified();          
+               Modified();
 
             }
          };
-         dataBox.size = { w, h * 4 + 2 }; 
+         dataBox.size = { w, h * 4 + 2 };
          if(dataBox.size.h + dataBox.position.y > dataBox.parent.clientSize.h)
             dataBox.position.y = dataBox.parent.clientSize.h - dataBox.size.h;
          if(dataBox.size.w + dataBox.position.x > dataBox.parent.clientSize.w)

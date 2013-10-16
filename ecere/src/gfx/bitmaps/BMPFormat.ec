@@ -101,7 +101,7 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
 
       if(info.bitCount == 1)
       {
-         // Bitmap      
+         // Bitmap
          byte * buffer = new byte[info.width >> 3];
          ColorAlpha * dest24=(ColorAlpha *)bitmap.picture + (flip ? 0 : (info.height-1)) * bitmap.stride;
          f.Read(buffer, 1, 8);   // TOCHECK: What are these 8 bytes?
@@ -109,7 +109,7 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
          {
             if(f.Read(buffer, 1, info.width >> 3) != info.width >> 3)
             {
-               errorReading = true; 
+               errorReading = true;
                break;
             }
             for(x = 0; x < info.width; x++)
@@ -123,7 +123,7 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
             {
                div = (byte)((info.width>>3) % 4);
                if(div)
-                  for(x=0; x<4-div; x++) 
+                  for(x=0; x<4-div; x++)
                      if(!f.Getc(null)) { errorReading = true; break; }
                if(flip)
                   dest24 += (bitmap.stride - info.width);
@@ -133,19 +133,19 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
          }
          // bitmap.height = y;
          delete buffer;
-         if(!errorReading) 
+         if(!errorReading)
             result = true;
       }
       else if(info.bitCount == 24)
       {
-         // Bitmap      
+         // Bitmap
          byte * buffer = new byte[info.width * sizeof(Color)];
          ColorAlpha * dest24=(ColorAlpha *)bitmap.picture + (flip ? 0 : (info.height-1)) * bitmap.stride;
          for(y=0; y<info.height && !errorReading; y++)
          {
             if(f.Read( buffer, 3, info.width) != info.width)
             {
-               errorReading = true; 
+               errorReading = true;
                break;
             }
             for(x = 0; x < info.width; x++)
@@ -159,7 +159,7 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
             {
                div = (byte)((info.width * 3) % 4);
                if(div)
-                  for(x=0; x<4-div; x++) 
+                  for(x=0; x<4-div; x++)
                      if(!f.Getc(null)) { errorReading = true; break; }
                if(flip)
                   dest24 += (bitmap.stride - info.width);
@@ -169,7 +169,7 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
          }
          // bitmap.height = y;
          delete buffer;
-         if(!errorReading) 
+         if(!errorReading)
             result = true;
       }
       else if(info.bitCount == 8)
@@ -227,7 +227,7 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
                               if(!f.Getc(dest256 ++))
                                  { errorReading = true; break; }
                            if(!errorReading)
-                              if(count & 0x01) 
+                              if(count & 0x01)
                                  if(!f.Getc(null))
                                     { errorReading = true; break; }
                         }
@@ -247,8 +247,8 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
                      break;
                   div = (byte)(info.width % 4);
                   if(div)
-                     for(x=0; x<4-div; x++) 
-                        if(!f.Getc(null)) 
+                     for(x=0; x<4-div; x++)
+                        if(!f.Getc(null))
                            break;
 
                   if(flip)
@@ -280,7 +280,7 @@ class MEMORYBMPFormat : BitmapFormat
       if(f.Read(info, sizeof(info), 1))
       {
          BMPHead header;
-      
+
          info.Swap();
          header.type[0] = 'B';
          header.type[1] = 'M';
@@ -301,7 +301,7 @@ class BMPFormat : BitmapFormat
    bool Load(Bitmap bitmap, File f)
    {
       bool result = false;
-      
+
       BMPHead header;
       BMPInfo info;
       // if(f.Read(&header, sizeof(header), 1) && header.type[0] == 'B' && header.type[1] == 'M' && f.Read(info, sizeof(info), 1))
@@ -322,12 +322,12 @@ class BMPFormat : BitmapFormat
       if(bitmap.pixelFormat == pixelFormat8 || bitmap.pixelFormat == pixelFormat888)
       {
          File f = FileOpen(filename, write);
-         if(f) 
+         if(f)
          {
             BMPHead header;
 
             f.buffered = true;
-         
+
             header.type[0] = 'B';
             header.type[1] = 'M';
             header.size=0;
@@ -341,7 +341,7 @@ class BMPFormat : BitmapFormat
             //if(f.Write(&header,sizeof(header),1))
             if(f.Write(&header.type, 2, 1) && f.Write(&header.size,sizeof(header) - (uint)&((BMPHead *)0)->size,1))
             {
-               BMPInfo info;  
+               BMPInfo info;
 
                info.bitCount = (bitmap.pixelFormat == pixelFormat8) ? 8 : 24;
                info.size = sizeof(BMPInfo);
@@ -370,7 +370,7 @@ class BMPFormat : BitmapFormat
                   {
                      ColorAlpha * dest24;
 
-                     // Bitmap      
+                     // Bitmap
                      dest24 = (ColorAlpha *)bitmap.picture + (info.height-1) * bitmap.stride;
                      for(y=0; y<info.height && !errorWriting; y++)
                      {
@@ -386,10 +386,10 @@ class BMPFormat : BitmapFormat
                         {
                            div = (byte)((info.width * 3) % 4);
                            if(div)
-                              for(x=0; x<4-div; x++) 
+                              for(x=0; x<4-div; x++)
                                  if(!f.Putc(0)) { errorWriting = true; break; }
                            dest24-=info.width;
-                           dest24-=bitmap.stride;         
+                           dest24-=bitmap.stride;
                         }
                      }
                      if(!errorWriting)
@@ -479,7 +479,7 @@ class BMPFormat : BitmapFormat
             delete f;
          }
       }
-      return result;   
+      return result;
    }
 
    ColorAlpha * LoadPalette(char * fileName, char * type)
@@ -528,7 +528,7 @@ class BMPFormat : BitmapFormat
             }
          }
          delete f;
-      }   
+      }
       return result;
    }
 }

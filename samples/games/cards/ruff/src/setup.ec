@@ -129,7 +129,7 @@ class ClientSocket : Socket
          Player_InformStopGame(setup.player);
          setup.player->socket = null;
       }
-      
+
       setup.connected = false;
       setup.player = null;
       setup.EnableButtons();
@@ -485,10 +485,10 @@ class Setup : Window
       strcpy(game->players[3].name, "Arnold");
       game->players[0].ruff = game->players[1].ruff =
       game->players[2].ruff = game->players[3].ruff = (Ruff)master;
-      
+
       playerNames[0] = EditBox { this, text = "Player 1", NotifyModified = PlayerNamedChanged,
          position = Point { 10,30 }, size = Size { 140 }, id = 0, hotKey = alt1 };
-      
+
       playerTypes[0] = DropBox { this, position = Point { 160,30 }, id = 0, NotifySelect = PlayerTypeSelect };
 
       playerNames[1] = EditBox { this, text = "Player 2", NotifyModified = PlayerNamedChanged,

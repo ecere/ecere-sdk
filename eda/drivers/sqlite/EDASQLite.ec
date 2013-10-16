@@ -53,7 +53,7 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, &inst2, buffer2);
 
       result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, inst1, inst2);
-     
+
       buffer1.buffer = null;
       buffer2.buffer = null;
       delete buffer1;
@@ -75,7 +75,7 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, inst2, buffer2);
 
       result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, inst1, inst2);
-     
+
       buffer1.buffer = null;
       buffer2.buffer = null;
       delete buffer1;
@@ -188,7 +188,7 @@ class SQLiteDataSource : DataSourceDriver
 
          // sqlite3_open(path, &db);
          // sqlite3_open_v2(path, &db, SQLITE_OPEN_READONLY /*SQLITE_OPEN_READWRITE*/ /*SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE*/, null );
-         
+
          if(sqlite3_open_v2(path, &db, (createOptions == readOnly) ? SQLITE_OPEN_READONLY :
             (SQLITE_OPEN_READWRITE | ((createOptions == create) ? SQLITE_OPEN_CREATE : 0)), null))
          {
@@ -210,7 +210,7 @@ class SQLiteDataSource : DataSourceDriver
                   if(sqlite3_exec(db, "INSERT INTO eda_table_fields (Table_Name, Name, Type, Length) VALUES ('lockDummy', 'lockDummy', 'lockDummy', 'lockDummy')", null, null, null))
                      success = false;
                   else
-                     sqlite3_exec(db, "DELETE FROM eda_table_fields WHERE Name = 'lockDummy'", null, null, null); 
+                     sqlite3_exec(db, "DELETE FROM eda_table_fields WHERE Name = 'lockDummy'", null, null, null);
                }
             }
             if(success)
@@ -264,7 +264,7 @@ class SQLiteDatabase : Database
 {
    sqlite3 * db;
    AVLTree<String> collations { };
-   
+
    ~SQLiteDatabase()
    {
       sqlite3_exec(db, "PRAGMA locking_mode=normal", null, null, null);
@@ -337,7 +337,7 @@ class SQLiteDatabase : Database
          sprintf(command, "SELECT sql FROM sqlite_master WHERE type='table' AND name='%s';", name);
          nCols = 0, nRows = 0;
          result = sqlite3_get_table(db, command, &t, &nRows, &nCols, null);
-         
+
          if((nCols || nRows) || options.create)
          {
             table = SQLiteTable { db = this, name = CopyString(name) };
@@ -353,7 +353,7 @@ class SQLiteDatabase : Database
                   {
                      char * sql = t[nCols * r];
                      char * bracket = strchr(sql, '(');
-                     if(bracket) 
+                     if(bracket)
                      {
                         int c = 0;
                         bracket++;
@@ -383,7 +383,7 @@ class SQLiteDatabase : Database
                            dataType[c - d - 2] = 0;
 
                            while(ch && bracket[c] == ' ') c++;
-                           
+
                            if(!strcmp(dataType, "REAL")) { sqliteType = SQLITE_FLOAT; type = class(double); }
                            else if(!strcmp(dataType, "TEXT")) { sqliteType = SQLITE_TEXT; type = class(String); }
                            else if(!strcmp(dataType, "INTEGER")) { sqliteType = SQLITE_INTEGER; type = class(int); }
@@ -408,7 +408,7 @@ class SQLiteDatabase : Database
                {
                   Table refTable = null;
                   sqlite3_stmt * statement;
-                  
+
                   sprintf(command, "SELECT Name, Type, Length FROM eda_table_fields WHERE Table_Name='%s';", name);
                   result = sqlite3_prepare_v2(db, command, -1, &statement, null);
 
@@ -424,10 +424,10 @@ class SQLiteDatabase : Database
 
                      if(type)
                      {
-                        if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") || 
-                           !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") || 
-                           !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") || 
-                           !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || 
+                        if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") ||
+                           !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") ||
+                           !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") ||
+                           !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") ||
                            !strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                            !strcmp(type.dataTypeString, "char") || !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                            sqliteType = SQLITE_INTEGER;
@@ -876,13 +876,13 @@ class SQLiteTable : Table
       Table refTable = null;
       Field idField = null;
       command[0] = 0;
-      
+
       if(FindField(fieldName)) return null;
 
-      if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") || 
-         !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") || 
-         !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") || 
-         !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || 
+      if(!strcmp(type.dataTypeString, "int") || !strcmp(type.dataTypeString, "unsigned int") ||
+         !strcmp(type.dataTypeString, "long") || !strcmp(type.dataTypeString, "long int") ||
+         !strcmp(type.dataTypeString, "uint") || !strcmp(type.dataTypeString, "uint32") ||
+         !strcmp(type.dataTypeString, "int64") || !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") ||
          !strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
          !strcmp(type.dataTypeString, "char") || !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
       {
@@ -938,7 +938,7 @@ class SQLiteTable : Table
             PrintLn($"WARNING: Table not yet created for class ", (String)type.name);
          }
       }
-      
+
       if(mustCreate)
       {
          if(sqliteType == SQLITE_BLOB)
@@ -1181,7 +1181,7 @@ class SQLiteTable : Table
       sqlite3_prepare_v2(db.db, command, -1, &setRowIDStmt, null);
 
       return SQLiteRow
-         { tbl = this, defaultStatement = statement, curStatement = statement, sysIDStatement = sysIDStmt, 
+         { tbl = this, defaultStatement = statement, curStatement = statement, sysIDStatement = sysIDStmt,
            insertStatement = insertStmt, deleteStatement = deleteStmt, selectRowIDsStmt = selectRowIDsStmt, setRowIDStmt = setRowIDStmt,
            previousStatement = prevStmt, nextStatement = nextStmt, lastStatement = lastStmt, insertIDStatement = insertIDStmt };
    }
@@ -1223,7 +1223,7 @@ class SQLiteRow : DriverRow
    // this flag is used to distinguish between a Find() and a GoToSysID() for Select(next) purposes:
    bool findSysID;
    int findBindId;
-   
+
    bool Nil()
    {
       return done;
@@ -1282,7 +1282,7 @@ class SQLiteRow : DriverRow
          case previous:
          {
             // For sysID statement, for a Find() we want to go through next/previous in order, otherwise we just go to nil
-            if((move == next && curStatement != prevFindStatement && curStatement != lastFindStatement && !stepping && (curStatement != sysIDStatement || findSysID)) || 
+            if((move == next && curStatement != prevFindStatement && curStatement != lastFindStatement && !stepping && (curStatement != sysIDStatement || findSysID)) ||
                (move == previous && (curStatement == prevFindStatement || curStatement == lastFindStatement)))
             {
                result = sqlite3_step(curStatement);
@@ -1384,7 +1384,7 @@ class SQLiteRow : DriverRow
       SerialBuffer buffer = null;
       switch(fld.sqliteType)
       {
-         case SQLITE_INTEGER: 
+         case SQLITE_INTEGER:
          {
             switch(dataType.typeSize)
             {
@@ -1813,7 +1813,7 @@ class SQLiteRow : DriverRow
 
       switch(sqlFld.sqliteType)
       {
-         case SQLITE_INTEGER: 
+         case SQLITE_INTEGER:
          {
             switch(dataType.typeSize)
             {
@@ -1885,7 +1885,7 @@ class SQLiteRow : DriverRow
             buffer.count = buffer._size;
 
             ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, buffer);
-           
+
             buffer._buffer = null;
             delete buffer;
             break;

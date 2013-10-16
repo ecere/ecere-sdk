@@ -470,7 +470,7 @@ private:
             (!postbuildCommands || !postbuildCommands.count) &&
             (!installCommands || !installCommands.count))
             return true;
-         return false;          
+         return false;
       }
    }
 }

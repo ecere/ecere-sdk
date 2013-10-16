@@ -8,7 +8,7 @@ public class ProgressBar : CommonControl
 
    background = formColor;
    borderStyle = deep;
- 
+
 public:
    property uint progress { property_category $"Data" set { position = value; Update(null); } get { return position; } };
    property uint range { property_category $"Data" set { range = value; Update(null); } get { return range; } };

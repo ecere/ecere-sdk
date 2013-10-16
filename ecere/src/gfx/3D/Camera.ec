@@ -78,7 +78,7 @@ public:
          // Compute Clipping Planes
          {
             Vector3D normal, point = {0,0,0};
-         
+
             // --- Left ---
             quat.Yaw(fovLeft - Pi/2);
             quat.ToDirection(normal);
@@ -133,7 +133,7 @@ public:
    void AdjustAngle(Quaternion angle)
    {
       cAngle = angle;
-      
+
       inverseMatrix.RotationQuaternion(angle);
       viewMatrix.Transpose(inverseMatrix);
 
@@ -196,7 +196,7 @@ public:
                      toAngle = euler;
                   }
                   else if(type == attachedQuaternion)*/
-                     toAngle.Multiply(orientation, target->orientation); 
+                     toAngle.Multiply(orientation, target->orientation);
                }
                else
                   toAngle = orientation;
@@ -239,7 +239,7 @@ public:
             }
          }
 
-         if(cAngle.w != toAngle.w || cAngle.x != toAngle.x || 
+         if(cAngle.w != toAngle.w || cAngle.x != toAngle.x ||
             cAngle.y != toAngle.y || cAngle.z != toAngle.z ||
             needUpdate)
          {
@@ -298,8 +298,8 @@ public:
          Plane * plane = &worldClippingPlanes[p];
          for(c = 0; c<numPoints; c++)
          {
-            double dot = 
-               plane->a * points[c].x + 
+            double dot =
+               plane->a * points[c].x +
                plane->b * points[c].y +
                plane->c * points[c].z;
             if(dot + plane->d > 0)
@@ -314,9 +314,9 @@ public:
          plane = &worldClippingPlanes[p+1];
          for(c = 0; c<numPoints; c++)
          {
-            double dot = 
-               plane->a * points[c].x + 
-               plane->b * points[c].y + 
+            double dot =
+               plane->a * points[c].x +
+               plane->b * points[c].y +
                plane->c * points[c].z;
             if(dot + plane->d > 0)
             {
@@ -349,14 +349,14 @@ public:
       for(c = 0; c<numPoints; c++)
          points[c] = origPoints[c];
 
-      for(p = 0; p < 6; p++) 
+      for(p = 0; p < 6; p++)
       {
          Plane * plane = &planes[p];
          int i;
          int numGoodPoints = 0;
- 
+
          memset(goodPoints, 0, n);
-	      for(i = 0; i < n; i++) 
+	      for(i = 0; i < n; i++)
          {
             double dot = plane->normal.DotProduct(points[i]);
             double distance = dot + plane->d;
@@ -371,7 +371,7 @@ public:
             outside = true;
             break;
          }
-         
+
          if(numGoodPoints < n)
          {
             // Clip the polygon
@@ -388,7 +388,7 @@ public:
                }
                else
                {
-                  Line edge; 
+                  Line edge;
                   int next;
 
                   if(lastGood == -1)
@@ -461,7 +461,7 @@ public:
          {
             euler.pitch = Min(euler.pitch, max);
             euler.pitch = Max(euler.pitch, min);
-         } 
+         }
          orientation = euler;
       }
    }
@@ -480,7 +480,7 @@ public:
          {
             euler.yaw = Min(euler.yaw, max);
             euler.yaw = Max(euler.yaw, min);
-         } 
+         }
          orientation = euler;
       }
    }
@@ -499,7 +499,7 @@ public:
          {
             euler.roll = Min(euler.roll, max);
             euler.roll = Max(euler.roll, min);
-         } 
+         }
          orientation = euler;
       }
    }
@@ -546,7 +546,7 @@ public:
          floatZ = ((((float)zMax * (float)zMin / -(float)vector.z) + (float)zMax) / ((float)zMax - (float)zMin));
          point.x += origin.x;
          point.y += origin.y;
-         return (point.x >= 0 && point.y >= 0 && 
+         return (point.x >= 0 && point.y >= 0 &&
                  point.x < width && point.y < height);
       }
       return false;

@@ -90,7 +90,7 @@ class AcovelSkin_Window : Window
             deepBottom = (((BorderBits)borderStyle).sizable && isNormal) ? bottom : border;
          }
 
-         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop, 
+         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop,
             size.w - deepBorder - deepBorder, size.h - deepBottom - deepTop);
       }
 
@@ -104,7 +104,7 @@ class AcovelSkin_Window : Window
             surface.SetForeground(activeBorder);
             surface.Rectangle(2, 2, size.w-3, size.h-3);
 
-            // Resizeable frame is 1 pixel thicker 
+            // Resizeable frame is 1 pixel thicker
             if(((BorderBits)borderStyle).sizable && isNormal)
                surface.Rectangle(3, 3, size.w - 4, size.h - 4);
          }
@@ -114,7 +114,7 @@ class AcovelSkin_Window : Window
             surface.Gradient(gradient, sizeof(gradient) / sizeof(ColorKey), GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
          else
-            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey), 
+            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey),
             GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
 
@@ -140,7 +140,7 @@ class AcovelSkin_Window : Window
          {
             int buttonsSize = border +
                ((hasMaximize || hasMinimize) ? 52 : 18);
-            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET, 
+            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET,
                size.w - (buttonsSize + border + 4), name, strlen(name));
          }
       }
@@ -521,12 +521,12 @@ class AcovelSkin_Button : Button
             surface.SetForeground(Color { Min((int)c.r * 16/10, 255), Min((int)c.g * 16/10, 255), Min((int)c.b * 16/10,255) });
             surface.HLine(0 + isDefault, clientSize.w-2 - isDefault,  isDefault);
             surface.VLine(1 + isDefault, clientSize.h-2 - isDefault,  isDefault);
-            
-            
+
+
             surface.SetForeground(selectionColor);
             surface.HLine(1 + isDefault, clientSize.w-2 - isDefault, clientSize.h-2 - isDefault);
             surface.VLine(1 + isDefault, clientSize.h-3 - isDefault, clientSize.w-2 - isDefault);
-            
+
             if(bevel)
             {
                //surface.SetForeground(skinForeground);
@@ -596,7 +596,7 @@ class AcovelSkin_ScrollBar : ScrollBar
       downBtn.background = Color {  70 * 6/10, 130* 6/10, 180* 6/10 }; //skinBackground;
       downBtn.bitmap = { "<:ecere>elements/arrowDown.png", monochrome = true };
       thumb.background = Color {  70 * 6/10, 130* 6/10, 180* 6/10 }; //skinBackground;
-   }   
+   }
 }
 
 class AcovelSkin_DropBox : DropBox
@@ -608,7 +608,7 @@ class AcovelSkin_DropBox : DropBox
       background = skinBackground;
       foreground = skinForeground;
       this.selectionColor = ::selectionColor;
-   }   
+   }
 }
 
 class AcovelSkin_ListBox : ListBox
@@ -619,7 +619,7 @@ class AcovelSkin_ListBox : ListBox
       background = skinBackground;
       foreground = skinForeground;
       this.selectionColor = ::selectionColor;
-   }   
+   }
 }
 
 public class AcovelSkin : Skin

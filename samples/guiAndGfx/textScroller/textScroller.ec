@@ -53,7 +53,7 @@ public class TextScroller : Window
       delete linesText;
       delete contents;
    }
-   
+
    property String contents
    {
       set
@@ -68,7 +68,7 @@ public class TextScroller : Window
       }
       get { return contents; }
    };
-   
+
    bool OnLoadGraphics()
    {
       int c;

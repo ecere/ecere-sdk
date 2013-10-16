@@ -151,7 +151,7 @@ class Explorer : Window
          {
             File f = FileOpen(htmlView.location, read);
             if(f)
-            {               
+            {
                if(!f.CopyTo(saveFileDialog.filePath))
                {
                   String e = PrintString("Error saving to ", saveFileDialog.filePath);
@@ -165,7 +165,7 @@ class Explorer : Window
    };
    MenuDivider { fileMenu };
    MenuItem exitItem { fileMenu, "Exit\tAlt+F4", x, NotifySelect = MenuFileExit };
-   
+
    bool PageOpened()
    {
       char caption[MAX_LOCATION];
@@ -180,7 +180,7 @@ class Explorer : Window
    }
 
    bool OnPostCreate()
-   {  
+   {
       addressBar.MakeActive();
       return true;
    }

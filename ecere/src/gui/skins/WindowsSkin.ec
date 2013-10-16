@@ -93,7 +93,7 @@ static ColorKey gradientInactive[] =
    { ColorAlpha { 255, Color { 192, 192, 192 } }, 1.00f }
 };
 */
-char * cursorsBitmaps[] = 
+char * cursorsBitmaps[] =
 {
    "<:ecere>cursors/arrow.png",
    "<:ecere>cursors/iBeam.png",
@@ -371,7 +371,7 @@ public class WindowsSkin_Window : Window
             deepBottom = (((BorderBits)borderStyle).sizable && isNormal) ? bottom : border;
          }
 
-         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop, 
+         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop,
             size.w - deepBorder - deepBorder, size.h - deepBottom - deepTop);
       }
 
@@ -384,7 +384,7 @@ public class WindowsSkin_Window : Window
             surface.SetForeground(formColor);
             surface.Rectangle(2, 2, size.w-3, size.h-3);
 
-            // Resizeable frame is 1 pixel thicker 
+            // Resizeable frame is 1 pixel thicker
             if(((BorderBits)borderStyle).sizable && isNormal)
                surface.Rectangle(3, 3, size.w - 4, size.h - 4);
          }
@@ -394,7 +394,7 @@ public class WindowsSkin_Window : Window
             surface.Gradient(gradient, sizeof(gradient) / sizeof(ColorKey), GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
          else
-            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey), 
+            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey),
             GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
 
@@ -409,7 +409,7 @@ public class WindowsSkin_Window : Window
          {
             int buttonsSize = border +
                ((hasMaximize || hasMinimize) ? (BUTTON_SIZE*3)+7 : (BUTTON_SIZE+3));
-            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET, 
+            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET,
                size.w - (buttonsSize + border + 4), name, strlen(name));
          }
       }
@@ -724,13 +724,13 @@ public class WindowsSkin_Button : Button
                   x, y,
                   0,0,buttonBitmap.width,buttonBitmap.height);
             }
-            else 
+            else
             {
                // Push Buttons
                if(scaleBitmap)
                {
                   if(bevel || offset)
-                     surface.Stretch(buttonBitmap, 
+                     surface.Stretch(buttonBitmap,
                         1 + offset, 1 + offset,0,0,
                         clientSize.w-3,clientSize.h-3,buttonBitmap.width,buttonBitmap.height);
                   else
@@ -815,10 +815,10 @@ public class WindowsSkin_Button : Button
             if((isRadio || isCheckbox) && !bevelOver)
                WriteCaption(surface, CAPTION_DISTANCE + 3, // + clientSize.h,
                   (clientSize.h - th - 4)/2);
-            else 
+            else
             {
                int x, y = (clientSize.h - th - 1)/2 + offset;
-               
+
                if(buttonStyle.bevelOver && buttonBitmap && !buttonStyle.checkBox && !buttonStyle.radio)
                {
                   if(bitmapAlignment == top)

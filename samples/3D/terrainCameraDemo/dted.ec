@@ -3,7 +3,7 @@
 
    Copyright (c) 2001-2010 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    dted.ec - DTED data loader
 ****************************************************************************/
 import "terrain"

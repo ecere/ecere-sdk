@@ -61,7 +61,7 @@ class ToolBox : Window
    {
       set
       {
-         if(value != selectedClass || 
+         if(value != selectedClass ||
             (value && value.instance && (!selectedClass.instance || selectedClass.instance._class != value.instance._class)))
          {
             Button control, next;
@@ -141,7 +141,7 @@ class ToolBox : Window
       {
          ((Designer)GetActiveDesigner()).isDragging = false;
          ReleaseCapture();
-         return rootWindow.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp, 
+         return rootWindow.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp,
             x + absPosition.x + clientStart.x, y + absPosition.y + clientStart.y, &mods, false, false);
       }
       return true;

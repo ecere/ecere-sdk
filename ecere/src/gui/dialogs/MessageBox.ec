@@ -47,7 +47,7 @@ public:
             }
          }
       }
-   }; 
+   };
 
 private:
    MessageBoxType style;

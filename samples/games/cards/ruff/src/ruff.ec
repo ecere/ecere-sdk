@@ -323,7 +323,7 @@ void Player_InformStartGame(Player player)
    ruff.lastPlayed[0].kind = ruff.lastPlayed[1].kind =
    ruff.lastPlayed[2].kind = ruff.lastPlayed[3].kind = none;
    game->gameStarted = true;
-   
+
    ruff.setup.EnableButtons();
    ruff.Update(null);
    ruff.scores.Update(null);
@@ -770,8 +770,8 @@ class Ruff : Window
 
             // The selected card
             if(selectedCard != None && player->cards[selectedCard].kind != none)
-               RUFF_DrawCard(surface, 
-                  selectedCard * 20 + player->cards[selectedCard].kind * 71, 0, 
+               RUFF_DrawCard(surface,
+                  selectedCard * 20 + player->cards[selectedCard].kind * 71, 0,
                   &player->cards[selectedCard]);
          }
 
@@ -825,7 +825,7 @@ class Ruff : Window
          surface.CenterTextf(namePos[c].x, namePos[c].y,game.players[c].name);
       }
    }
-   
+
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
       if(selectedCard != None && playedPlayer != none)
@@ -941,7 +941,7 @@ class Ruff : Window
       if(ptrCardLoad.Load(":cards.pcx",null,null))
       {
          int i;
-         cardBack.LoadT(":ecereCard.png",null,displaySystem);      
+         cardBack.LoadT(":ecereCard.png",null,displaySystem);
          for(i=0;i<52;i++)
          {
             bitmapCards[i] = Bitmap {};
@@ -949,7 +949,7 @@ class Ruff : Window
             CopyBytesBy4(bitmapCards[i].palette, ptrCardLoad.palette, 256);
             bitmapCards[i].Grab(ptrCardLoad,0,(ptrCardLoad.height/52)*i);
             bitmapCards[i].transparent = true;
-            bitmapCards[i].MakeDD(displaySystem);  
+            bitmapCards[i].MakeDD(displaySystem);
          }
       }
       delete ptrCardLoad;
@@ -972,7 +972,7 @@ class Ruff : Window
          // 5, 7, 8, 9,10,  J,  Q,  K, A
          4, 6, 7, 8, 9, 10, 11, 12, 0
       };
-      
+
       if(card != null)
          bitmap = bitmapCards[cardNo[card.number] * 4 + card.kind];
       else

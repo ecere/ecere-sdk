@@ -13,7 +13,7 @@ class ScanningTest : Window
    Bitmap scannedBitmap;
 
    WiaItem scanner;
-   
+
    ~ScanningTest()
    {
       delete scannedImage;

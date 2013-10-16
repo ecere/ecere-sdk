@@ -117,7 +117,7 @@ class ClientConnection : Socket
                   OpenPacket packet = (OpenPacket) packetHeader;
                   byte reply[4] = XDWORD(MAXDWORD);
                   int c;
-                  
+
                   Log("Open\n");
                   for(c = 0; c < MAX_HANDLES; c++)
                   {
@@ -234,6 +234,6 @@ class ServerApp : GuiApplication
             WaitEvent();
             ProcessNetworkEvents();
          }
-      } 
+      }
    }
 }

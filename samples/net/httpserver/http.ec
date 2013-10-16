@@ -85,7 +85,7 @@ class HTTPClient : Socket
       {
          if(buffer[c] == '\r' && buffer[c+1] == '\n')
             break;
-      }   
+      }
       if(c<count)
       {
          char * string = (char *)buffer;
@@ -145,7 +145,7 @@ class HTTPClient : Socket
                      {
                         f = FileOpen(indexFile, read);
                         break;
-                     }               
+                     }
                   }
                   // List contents if we didn't find an index
                   if(i == NUM_INDEX)
@@ -214,7 +214,7 @@ class HTTPApplication : GuiApplication
 
             static byte buffer[PACKETSIZE];
             int read = client.f.Read(buffer, 1, PACKETSIZE);
-            
+
             if(read)
                client.Send(buffer, read);
             if(client.f.Eof())

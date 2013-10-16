@@ -40,7 +40,7 @@ public struct BinaryTree
 
    int (*CompareKey)(BinaryTree tree, uintptr a, uintptr b);
    void (*FreeKey)(void * key);
-   
+
    void Free()
    {
       if(root)
@@ -48,7 +48,7 @@ public struct BinaryTree
       root = null;
       count = 0;
    }
-   
+
    bool Add(BTNode node)
    {
       if(!CompareKey) CompareKey = CompareInt;
@@ -123,7 +123,7 @@ public struct BinaryTree
       delete voidNode;
    }
 
-   char * Print(char * output, TreePrintStyle tps) 
+   char * Print(char * output, TreePrintStyle tps)
    {
       output[0] = 0;
       if(root) root.Print(output, tps);

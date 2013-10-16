@@ -55,7 +55,7 @@ class MainWindow : Window
    {
       player1.Join();
       player2.Join();
-      
+
       player1.NewGame();
    }
 
@@ -64,7 +64,7 @@ class MainWindow : Window
       Bitmap board = boardBmp.bitmap;
       Bitmap bmp = res.bitmap;
       int bw = (int)(board.width * scale;
-      int bh = clientSize.h;      
+      int bh = clientSize.h;
       int bx = (clientSize.w - bw) / 2;
       int by = (clientSize.h - bh) / 2;
 
@@ -82,9 +82,9 @@ class MainWindow : Window
          int x = (int)(upperLeftX + (p1.x+0.5)*spaceX + (p2.x - p1.x)/3 * c * spaceX / 4 - (smileBmp.bitmap.width*3)/2);
          int y = (int)(upperLeftY + (p1.y+0.5)*spaceY + (p2.y - p1.y)/3 * c * spaceY / 4 - (smileBmp.bitmap.height*3)/2);
          DrawBitmap(surface, smileBmp, x, y, 3);
-      }      
+      }
    }
-      
+
    void DrawStone(Surface surface, Point where, Stone color)
    {
       Bitmap stone = stoneBmps[color].bitmap;
@@ -98,7 +98,7 @@ class MainWindow : Window
       Bitmap board = boardBmp.bitmap;
       Bitmap remove = removeBmp.bitmap;
       Bitmap wStone = stoneBmps[Stone::white].bitmap;
-      
+
       int x, y;
       Stone c;
 
@@ -117,7 +117,7 @@ class MainWindow : Window
             DrawBitmap(surface, stoneBmps[c],
                drawerX - stone.width/2, topDrawer + r*wStone.height*2/3, 1);
       }
-      
+
       // Draw the stones
       for(y = 0; y < 4; y++)
       {

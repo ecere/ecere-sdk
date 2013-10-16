@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    bet.ec - Poker Bet Window
 ****************************************************************************/
 import "poker.ec"

@@ -11,7 +11,7 @@ import "ecere"
 typedef struct
 {
    int typeOfHouse;
-   
+
    union
    {
       struct straight
@@ -31,7 +31,7 @@ typedef struct
 {
    int numCards;
    int cardValues[13];
-   House houseDown[4]; 
+   House houseDown[4];
    int numHouseDown;
    bool cardLifted[13];
    bool callTag;
@@ -105,7 +105,7 @@ int CheckHouse(int cardsToCheck,int * checkIfHouse)
       {
          house++;    //possible 3or4 of a kind house
       }
-   }     
+   }
    if(straight == cardsToCheck-1)
       return 0;
    else if(house == cardsToCheck-1)
@@ -116,7 +116,7 @@ int CheckHouse(int cardsToCheck,int * checkIfHouse)
 
 int CompareInteger(int * a, int * b)
 {
-   if(*a > *b) 
+   if(*a > *b)
       return 1;
    else if(*b > *a)
       return -1;
@@ -128,7 +128,7 @@ void SortPlayerCards()
    int c;
    for(c=0;c<numOfPlayers;c++)
    {
-      qsort(player[c].cardValues,player[c].numCards,sizeof(int),CompareInteger); 
+      qsort(player[c].cardValues,player[c].numCards,sizeof(int),CompareInteger);
       //qsort(tempHouse,tempCtr,sizeof(int),CompareInteger);
    }
 }
@@ -175,7 +175,7 @@ class TongIts : Window
       Bitmap ptrCardLoad {};
       ptrCardLoad.Load(":cards.pcx",null,null);
       cardBack.LoadT(":ecereCard.png", null, displaySystem);
-      
+
       for(i=0;i<52;i++)
       {
          Bitmap bitmap { transparent = true };
@@ -195,12 +195,12 @@ class TongIts : Window
       for(i=0;i<52;i++)
          bitmapCards[i].Free();
    }
-   
+
    void GameOver()
    {
       /*
       Window gameOverBox
-      { 
+      {
          this, hasClose = true, background = LightBlue, text = "Game Over", [position.y] = A_CENTER|20, size = Size { 300, 200 }
       };
       Button { gameOverBox, text = "Close", [position.y] = A_CENTER|80, size = Size { 80,20 } };
@@ -213,7 +213,7 @@ class TongIts : Window
       int h=0,i=0,j=0,k=0,x=0;
 
       surface.Rectangle(375, 315, 495, 475);
-   
+
       if(gameOver)
       {
          surface.SetForeground(blue);
@@ -265,12 +265,12 @@ class TongIts : Window
                   h++;
                }
             }
-            
+
             if(player[j].houseDown[i].typeOfHouse == 1)
             {
                for(k=0;k<4;k++) //player[j].houseDown[i].kind.suits[k]
                {
-                  if(player[j].houseDown[i].kind.suits[k] == true)   
+                  if(player[j].houseDown[i].kind.suits[k] == true)
                   {
                      Bitmap bitmap = bitmapCards[MCARD((k),(player[j].houseDown[i].kind.number))];
                      surface.Blit(bitmap,xyPositions[j].x + OFFSETTER1 * h,xyPositions[j].y + 75,0,0, bitmap.width,bitmap.height);
@@ -354,7 +354,7 @@ class TongIts : Window
       }
       suit = KIND(discard[discardCounter-1]);
       number = NUMBER(discard[discardCounter-1]);
-      tempHouse[tempCtr++] = discard[discardCounter-1];  
+      tempHouse[tempCtr++] = discard[discardCounter-1];
       for(i=0;i<player[currentPlayer].numCards;i++)
       {
          if(player[currentPlayer].cardLifted[i])
@@ -365,7 +365,7 @@ class TongIts : Window
       if(tempCtr >= 3)
       {
          int checkResult;
-         
+
          qsort(tempHouse,tempCtr,sizeof(int),CompareInteger);
          checkResult = CheckHouse(tempCtr,tempHouse);
          switch(checkResult)
@@ -376,10 +376,10 @@ class TongIts : Window
                House * house = &player[currentPlayer].houseDown[player[currentPlayer].numHouseDown];
                house->typeOfHouse = checkResult;
                for(i=0;i<tempCtr;i++)
-               {  
+               {
                   house->kind.number = NUMBER(tempHouse[i]);
-                  house->kind.suits[KIND(tempHouse[i])] = true;  
-               }   
+                  house->kind.suits[KIND(tempHouse[i])] = true;
+               }
                player[currentPlayer].numHouseDown++;
                break;
             }
@@ -389,7 +389,7 @@ class TongIts : Window
                house->typeOfHouse = checkResult;
                house->straight.first = NUMBER(tempHouse[0]);
                house->straight.last = NUMBER(tempHouse[tempCtr-1]);
-               house->straight.suit = KIND(tempHouse[0]);  
+               house->straight.suit = KIND(tempHouse[0]);
                player[currentPlayer].numHouseDown++;
                break;
             }
@@ -408,14 +408,14 @@ class TongIts : Window
                j++;
             }
          }
-         player[currentPlayer].numCards = j;   
+         player[currentPlayer].numCards = j;
          discard[discardCounter--];
          drawButton[currentPlayer].disabled = true;
          chowButton[currentPlayer].disabled = true;
          callButton[currentPlayer].disabled = true;
          showButton[currentPlayer].disabled = false;
          dumpButton[currentPlayer].disabled = false;
-         Update(null);    
+         Update(null);
       }
      if(player[currentPlayer].numCards == 0)
      {
@@ -425,7 +425,7 @@ class TongIts : Window
   }
 
    bool DumpClicked(Button button, int x, int y, Modifiers mods)
-   {  
+   {
       MessageBox { text = button.text }.Create();
       return true;
    }
@@ -465,10 +465,10 @@ class TongIts : Window
                House * house = &player[currentPlayer].houseDown[player[currentPlayer].numHouseDown];
                house->typeOfHouse = checkResult;
                for(i=0;i<tempCtr;i++)
-               {  
+               {
                   house->kind.number = NUMBER(tempHouse[i]);
-                  house->kind.suits[KIND(tempHouse[i])] = true;  
-               }   
+                  house->kind.suits[KIND(tempHouse[i])] = true;
+               }
                player[currentPlayer].numHouseDown++;
                break;
             }
@@ -478,7 +478,7 @@ class TongIts : Window
                house->typeOfHouse = checkResult;
                house->straight.first = NUMBER(tempHouse[0]);
                house->straight.last = NUMBER(tempHouse[tempCtr-1]);
-               house->straight.suit = KIND(tempHouse[0]);  
+               house->straight.suit = KIND(tempHouse[0]);
                player[currentPlayer].numHouseDown++;
                break;
             }
@@ -497,12 +497,12 @@ class TongIts : Window
                j++;
             }
          }
-         player[currentPlayer].numCards = j;   
+         player[currentPlayer].numCards = j;
          if(player[currentPlayer].numCards == 0)
          {
             GameOver();
          }
-         Update(null);    
+         Update(null);
       }
       return true;
    }
@@ -545,8 +545,8 @@ class TongIts : Window
                width = bitmap.width;
                height = bitmap.height;
                xCursorPositionAtCard = (xyPositions[currentPlayer].x + (OFFSETTER1 * i)) - x;
-               yCursorPositionAtCard = (player[currentPlayer].cardLifted[i] ? 
-                  (xyPositions[currentPlayer].y - OFFSETTER2 - y - 20) : 
+               yCursorPositionAtCard = (player[currentPlayer].cardLifted[i] ?
+                  (xyPositions[currentPlayer].y - OFFSETTER2 - y - 20) :
                   (xyPositions[currentPlayer].y - OFFSETTER2 - y));
                flagButtonDown = true;
                OnMouseMove(x,y,mods);
@@ -564,7 +564,7 @@ class TongIts : Window
       Box boxCard = {x + xCursorPositionAtCard,y + yCursorPositionAtCard, x + xCursorPositionAtCard + width - 1, y + yCursorPositionAtCard + height - 1};
       if(flagButtonDown)
       {
-         if(boxCard.Overlap(boxDiscard))      
+         if(boxCard.Overlap(boxDiscard))
          {
             xLeftButtonUp = 400;
             yLeftButtonUp = 350;
@@ -603,8 +603,8 @@ class TongIts : Window
             for(j=0;j<numOfPlayers;j++)
             {
                Bitmap bitmap = cardBack;
-               Box boxHouseDown = 
-               { 
+               Box boxHouseDown =
+               {
                   xyPositions[j].x,xyPositions[j].y + 75,
                   0, xyPositions[j].y + 75 + bitmap.height
                };
@@ -616,7 +616,7 @@ class TongIts : Window
                         (player[j].houseDown[i].straight.last - player[j].houseDown[i].straight.first) * OFFSETTER1 - 1;
                      if(boxCard.Overlap(boxHouseDown))
                      {
-                        if(dragCard == MCARD((player[j].houseDown[i].straight.suit),(player[j].houseDown[i].straight.first)) - 4) 
+                        if(dragCard == MCARD((player[j].houseDown[i].straight.suit),(player[j].houseDown[i].straight.first)) - 4)
                         {
                            player[j].houseDown[i].straight.first --;
                            CopyBytesBy4(&player[currentPlayer].cardValues[cardToReposition],
@@ -626,7 +626,7 @@ class TongIts : Window
                            player[j].callTag = true;
                            j = numOfPlayers;
                            break;
-                           
+
                         }
                         else if(dragCard == MCARD((player[j].houseDown[i].straight.suit),(player[j].houseDown[i].straight.last )) + 4)
                         {
@@ -640,7 +640,7 @@ class TongIts : Window
                            break;
                         }
                      }
-                     boxHouseDown.left += 
+                     boxHouseDown.left +=
                         (player[j].houseDown[i].straight.last - player[j].houseDown[i].straight.first + 2) * OFFSETTER1;
                   }
                   else if(player[j].houseDown[i].typeOfHouse == 1)
@@ -677,7 +677,7 @@ class TongIts : Window
          flagButtonDown = false;
          ReleaseCapture();
          Update(null);
-      }   
+      }
       return true;
    }
 
@@ -699,7 +699,7 @@ class TongIts : Window
             Update(null);
             return false;
          }
-      
+
       }
       return true;
    }
@@ -717,7 +717,7 @@ class TongIts : Window
                xyPositions[currentPlayer].x + (OFFSETTER1 * i),
                (player[currentPlayer].cardLifted[i] ? (xyPositions[currentPlayer].y - OFFSETTER2 - 20) :(xyPositions[currentPlayer].y - OFFSETTER2)),
                bitmap.width + (xyPositions[currentPlayer].x + OFFSETTER1 * i),
-               bitmap.height + (player[currentPlayer].cardLifted[i] ? (xyPositions[currentPlayer].y - OFFSETTER2 - 20) : (xyPositions[currentPlayer].y - OFFSETTER2)) 
+               bitmap.height + (player[currentPlayer].cardLifted[i] ? (xyPositions[currentPlayer].y - OFFSETTER2 - 20) : (xyPositions[currentPlayer].y - OFFSETTER2))
                }.IsPointInside(Point{x,y}) && drawButton[currentPlayer].disabled)
 
             {
@@ -726,8 +726,8 @@ class TongIts : Window
                width = bitmap.width;
                height = bitmap.height;
                xCursorPositionAtCard = (xyPositions[currentPlayer].x + (OFFSETTER1 * i)) - x;
-               yCursorPositionAtCard = (player[currentPlayer].cardLifted[i] ? 
-                  (xyPositions[currentPlayer].y - OFFSETTER2 - y - 20) : 
+               yCursorPositionAtCard = (player[currentPlayer].cardLifted[i] ?
+                  (xyPositions[currentPlayer].y - OFFSETTER2 - y - 20) :
                   (xyPositions[currentPlayer].y - OFFSETTER2 - y));
                flagButtonDown = true;
                OnMouseMove(x,y,mods);
@@ -742,9 +742,9 @@ class TongIts : Window
    bool OnRightButtonUp(int x, int y, Modifiers mods)
    {
       Bitmap bitmap = cardBack;
-      int swapCard,dest,source,i; 
+      int swapCard,dest,source,i;
       Box boxPlayerCards={xyPositions[currentPlayer].x,xyPositions[currentPlayer].y - OFFSETTER2,
-         xyPositions[currentPlayer].x + player[currentPlayer].numCards * OFFSETTER1 + bitmap.width, 
+         xyPositions[currentPlayer].x + player[currentPlayer].numCards * OFFSETTER1 + bitmap.width,
          xyPositions[currentPlayer].y - OFFSETTER2 + bitmap.height};
       Box boxCard = {x + xCursorPositionAtCard,y + yCursorPositionAtCard, x + xCursorPositionAtCard,y + yCursorPositionAtCard + height - 1};
 
@@ -752,7 +752,7 @@ class TongIts : Window
       {
          if(boxCard.Overlap(boxPlayerCards))
          {
-            swapCard = (x  + xCursorPositionAtCard >= player[currentPlayer].numCards * 15 + xyPositions[currentPlayer].x) ? 
+            swapCard = (x  + xCursorPositionAtCard >= player[currentPlayer].numCards * 15 + xyPositions[currentPlayer].x) ?
                (player[currentPlayer].numCards-1) : ((x  + xCursorPositionAtCard - xyPositions[currentPlayer].x) / 15);
             if(cardToReposition > swapCard)
             {
@@ -769,15 +769,15 @@ class TongIts : Window
                MoveBytes(&player[currentPlayer].cardValues[dest],
                   &player[currentPlayer].cardValues[source],(swapCard - cardToReposition) * sizeof(int));
                   player[currentPlayer].cardValues[swapCard] = dragCard;
-               //player[currentPlayer].cardLifted[swapCard] = false;   
+               //player[currentPlayer].cardLifted[swapCard] = false;
             }
 
          }
-      
+
          for(i=0;i<player[currentPlayer].numCards;i++)
          {
             player[currentPlayer].cardLifted[i] = false;
-         }   
+         }
 
          flagButtonDown = false;
          ReleaseCapture();

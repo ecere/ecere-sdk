@@ -74,13 +74,13 @@ class eNodepadWindow : Window
       }
       return false;
    }
-   EditBox editBox 
+   EditBox editBox
    {
       this, font = { "Lucida Console", 10 }, anchor = { left = 0.0, top = 0.0, right = 0.0, bottom = 0.0 }, hasHorzScroll = true, hasVertScroll = true, multiLine = true;
 
       bool OnFileModified(FileChange fileChange, char * param)
       {
-         
+
          return true;
       }
 
@@ -125,14 +125,14 @@ class eNotepad : GuiApplication
    bool Init()
    {
       app = this;
-      
+
       if(argc == 2)
          strcpy(paramLocation, argv[1]); // how to check if the path is valid?
       else
          paramLocation[0] = '\0';
 
       appWindow = eNodepadWindow { };
-      
+
       return true;
    }
 }

@@ -33,7 +33,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                            Expression posExp = (d.type == structDeclarator) ? d.structDecl.posExp : null;
                            int bitSize = 0, bitPos = -1;
                            char dataTypeString[1024] = "";
-                        
+
                            if(sizeExp)
                            {
                               // Should this be processed/computed later?
@@ -95,14 +95,14 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
 
                               if(member)
                               {
-                                 dataMember = eMember_AddDataMember(member, declId.string, 
+                                 dataMember = eMember_AddDataMember(member, declId.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
                                     Compiler_Error($"Member with same name already exists %s in member %s\n", declId.string, member.name);
                               }
                               else if(regClass)
                               {
-                                 dataMember = eClass_AddDataMember(regClass, declId.string, 
+                                 dataMember = eClass_AddDataMember(regClass, declId.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
                                     Compiler_Error($"Member with same name already exists %s in class %s\n", declId.string, regClass.name);
@@ -129,7 +129,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                         if(spec.definitions && !spec.id)
                         {
                            DataMember dataMember = eMember_New((spec.type == unionSpecifier) ? unionMember : structMember, def.memberAccess);
-                           
+
                            AddDefinitions(null, dataMember, spec.definitions);
 
                            if(member)
@@ -156,14 +156,14 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
 
                               if(member)
                               {
-                                 dataMember = eMember_AddDataMember(member, id.string, 
+                                 dataMember = eMember_AddDataMember(member, id.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
                                     Compiler_Error($"Member with same name already exists %s in member %s\n", id.string, member.name);
                               }
                               else
                               {
-                                 dataMember = eClass_AddDataMember(regClass, id.string, 
+                                 dataMember = eClass_AddDataMember(regClass, id.string,
                                     typeString, 0, 0 /*ComputeTypeSize(dataType)*/, def.memberAccess);
                                  if(!dataMember)
                                     Compiler_Error($"Member with same name already exists %s in class %s\n", id.string, regClass.name);
@@ -226,7 +226,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
 
             // Register the property in the list
             // MOVED THIS UP HERE BEFORE NEXT BLOCK BECAUSE WE NULL OUT SPECIFIERS/DECLARATORS... OK?
-            
+
             char * dataTypeString = StringFromSpecDecl(propertyDef.specifiers, propertyDef.declarator);
             prop = eClass_AddProperty(regClass, propertyDef.conversion ? null : propertyDef.id.string,
                dataTypeString,
@@ -237,7 +237,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                if(inCompiler) prop.IsSet = (void *)propertyDef.issetStmt;
 
                prop.compiled = false;
-               
+
                // prop.symbol = propertyDef.symbol;
                prop.symbol = Symbol
                {
@@ -246,7 +246,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                   type = propertyDef.symbol.type;
                };
 
-               /*if(propertyDef.category) 
+               /*if(propertyDef.category)
                {
                   char temp[1024];
                   ReadString(temp, propertyDef.category);
@@ -278,7 +278,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
 
             // Register the property in the list
             // MOVED THIS UP HERE BEFORE NEXT BLOCK BECAUSE WE NULL OUT SPECIFIERS/DECLARATORS... OK?
-            
+
             char * dataTypeString = StringFromSpecDecl(propertyDef.specifiers, propertyDef.declarator);
             prop = eClass_AddClassProperty(regClass, propertyDef.id.string, dataTypeString,
                inCompiler ? propertyDef.setStmt : null, inCompiler ? propertyDef.getStmt : null);
@@ -339,12 +339,12 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                }
             }
          }
-         else if(baseType.kind == structType || baseType.kind == unionType) 
+         else if(baseType.kind == structType || baseType.kind == unionType)
          {
             classType = noHeadClass;
             baseName[0] = '\0';
          }
-         else 
+         else
             unitType = true;
          FreeType(baseType);
 
@@ -430,7 +430,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                Declarator funcDecl = GetFuncDecl(func.declarator);
                Identifier id = GetDeclId(funcDecl);
                Method method;
-                        
+
                if(func.isVirtual)
                {
                   char * typeString = StringFromSpecDecl(func.specifiers, func.declarator);
@@ -440,7 +440,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                else
                {
                   char * typeString = StringFromSpecDecl(func.specifiers, func.declarator);
-                  method = eClass_AddMethod(regClass, id.string, typeString, 
+                  method = eClass_AddMethod(regClass, id.string, typeString,
                      inCompiler ? func.declarator.symbol : null, def.memberAccess);
                   if(!method)
                      Compiler_Error($"Redefinition of method %s in class %s\n", id.string, regClass.name);
@@ -494,7 +494,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             switch(param.type)
             {
                case type:
-                  defaultArg.dataTypeString = 
+                  defaultArg.dataTypeString =
                      StringFromSpecDecl(param.defaultArgument.templateDatatype.specifiers, param.defaultArgument.templateDatatype.decl);
                   break;
                case identifier:
@@ -515,7 +515,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                            strcpy(memberString, param.defaultArgument.identifier._class.name);
                      }
                   }
-                  
+
                   if(memberString[0])
                   {
                      strcat(memberString, "::");
@@ -587,7 +587,7 @@ public void PrePreProcessClassDefinitions()
                   Specifier specifier;
                   for(specifier = declaration.specifiers->first; specifier; specifier = specifier.next)
                   {
-                     if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string && 
+                     if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string &&
                         (declaration.declMode || specifier.baseSpecs || (specifier.type == enumSpecifier && specifier.definitions)))
                      {
                         Symbol type = FindType(globalContext, specifier.id.string);
@@ -653,7 +653,7 @@ public void PrePreProcessClassDefinitions()
                      Specifier specifier;
                      for(specifier = declaration.specifiers->first; specifier; specifier = specifier.next)
                      {
-                        if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string && 
+                        if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string &&
                            (declaration.declMode || specifier.baseSpecs || (specifier.type == enumSpecifier && specifier.definitions)))
                         {
                            Symbol type = FindType(globalContext, specifier.id.string);
@@ -676,7 +676,7 @@ public void PrePreProcessClassDefinitions()
                   }
                }
             }
-         } 
+         }
       }
    }
 }

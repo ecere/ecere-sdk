@@ -81,7 +81,7 @@ void ExtractFileFromArchive(ProgressBar progressBar, char * path, char * outputF
             FileGetSize(path, &dataSize);
             GetLastDirectory(outputFile, fileName);
             progressBar.statusBar.SetText($"Extracting %s...", fileName);
-            
+
             app.UpdateDisplay();
 
             for(c = 0; c<dataSize; c += BUFFERSIZE)
@@ -239,7 +239,7 @@ class SelfExtract : Window
             row.SetData(cField, c);//(void *)stats.created.local);
          }
       }
-      
+
       while(listing.Find())
       {
          if(strcmp(listing.path, "<:>ecere"))
@@ -305,7 +305,7 @@ class SelfExtractApp : GuiApplication
 
       SetLoggingMode(stdOut, null);
       SelfExtract { text = title };
-      
+
       GuiApplication::Main();
    }
 }

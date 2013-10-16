@@ -237,12 +237,12 @@ private class HTTPConnection : SSLSocket
             pos += c;
             count -= c;
             buffer += c;
-            
+
          }
          else
             break;
       }
-      
+
       return pos;
    }
 
@@ -365,7 +365,7 @@ private:
          HTTPConnection connection = null;
          close = false;
 
-         if(fileName) 
+         if(fileName)
          {
             fileName++;
             memcpy(server, serverStart, fileName - serverStart - 1);
@@ -455,7 +455,7 @@ private:
 #endif
             };
             incref connection;      // HTTPFile reference on success
-            
+
             connection.file = this;
 
             connectionsMutex.Release();
@@ -510,7 +510,7 @@ private:
             this.connection = connection;
             this.relocation = relocation;
             //openStarted = false;
-                  
+
             totalSizeSet = false;   // HEAD will sometimes give you 0!
             strcpy(msg, askBody ? "GET /" : "HEAD /");
 
@@ -551,7 +551,7 @@ private:
             }
             strcat(msg, "\r\n");
             len = strlen(msg);
-            
+
             //::PrintLn("Releasing connectionsMutex before GET for ", name, " ", (uint64)this, " in thread ", GetCurrentThreadID());
             connectionsMutex.Release();
 
@@ -613,20 +613,20 @@ private:
                         }
                      }
                   }
-                  
+
                   connectionsMutex.Wait();
                   if(this.connection)
                   {
                      this.connection.OnReceive = null;
                      this.connection.file = null;
-                     
+
                      if(close)
                      {
                         this.connection.Disconnect(0);
                         connection = null;
                      }
                   }
-                  
+
                   status = 0;
                   delete this.connection; // This decrements the file's reference
                   this.relocation = null;
@@ -728,7 +728,7 @@ private:
          numbytes = Min(numbytes, readSize - read);
          if(totalSizeSet)
             numbytes = Min(numbytes, totalSize - position);
-         
+
          if(numbytes)
          {
             lastTime = GetTime();

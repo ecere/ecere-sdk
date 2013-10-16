@@ -5,10 +5,10 @@ static uint TokenizeList(char * string, const uint maxTokens, const char seperat
 {
    uint count = 0;
    uint level = 0;
-   
+
    bool quoted = false; //bool escaped = false;
    char * start = null;
-   
+
    for(; *string && count < maxTokens; string++)
    {
       if(!start)
@@ -143,7 +143,7 @@ static bool TokenizeListItem(char * string, TempListItem item)
 }
 
 class Output : struct
-{ 
+{
 public:
    Output prev, next;
    char * output;
@@ -156,7 +156,7 @@ public:
 }
 
 class Command : struct
-{ 
+{
 public:
    Command prev, next;
    char * command;
@@ -269,12 +269,12 @@ class GDBDialog : Window
             if(commands.first)
             {
                bool previous = ((SmartKey)key == up);
-               
+
                if(!lastCommand)
                   lastCommand = previous ? commands.last : commands.first;
                else
                   lastCommand = previous ? lastCommand.prev : lastCommand.next;
-               
+
                if(lastCommand)
                {
                   command.contents = lastCommand.command;
@@ -354,7 +354,7 @@ class GDBDialog : Window
          DataRow root, frame, row;
          TempListItem item { };
          Output out;
-         
+
          tree.Clear();
          root = tree.AddString("Output");
 
@@ -364,7 +364,7 @@ class GDBDialog : Window
             {
                t = CopyString(out.output);
                s = t;
-               
+
                switch(s[0])
                {
                   case '^':
@@ -558,12 +558,12 @@ class GDBDialog : Window
       row.AddString(string);
       delete string;
    }
-   
+
    void UpdateTreeFrame(TempListItem item, DataRow frame)
    {
       int k, l, m, frameTksCount, argsTksCount, mTksCount;
       char * frameTokens[3200], * argsTokens[3200], * mTokens[3200];
-      
+
       item.value = StripCurlies(item.value);
       frameTksCount = TokenizeList(item.value, sizeof(frameTokens) / sizeof(char *), ',', frameTokens);
       for(k = 0; k < frameTksCount; k++)
@@ -699,7 +699,7 @@ class GDBDialog : Window
       }
       return true;
    }
-   
+
    ~GDBDialog()
    {
       commands.Free(Command::Free);

@@ -3,7 +3,7 @@
 
    Copyright (c) 2001-2008 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    console.ec - Console Dialog
 ****************************************************************************/
 import "ecere"
@@ -170,7 +170,7 @@ class Console : Window
          if(version)
             surface.WriteTextf(
                clientSize.w - verLROffset.x * 768 / referenceHeight,
-               clientSize.h - verLROffset.y * 768 / referenceHeight, 
+               clientSize.h - verLROffset.y * 768 / referenceHeight,
                version);
       }
    }

@@ -7,7 +7,7 @@ class MoviesReportDetail : Detail
    font = { "Arial", 10 };
 
    keepTogether = true;
-   
+
    Label movieName      { this, anchor = { left = 4, top = 2, right = 0.60, bottom = 2 } };
    Label mediaType      { this, anchor = { left = 0.40, top = 2, right = 0.45, bottom = 2 } };
    Label dateAdded      { this, anchor = { left = 0.55, top = 2, right = 0.30, bottom = 2 } };
@@ -17,7 +17,7 @@ class MoviesReportDetail : Detail
    {
       String s;
       RowMovies row = (RowMovies)report.groupings[0].row;
-      
+
       s = row.name; movieName.text = s; delete s;
       s = PrintString(row.mediaType); mediaType.text = s; delete s;
       s = PrintString((ShortDate)row.dateAdded); dateAdded.text = s; delete s;

@@ -82,7 +82,7 @@ public enum ErrorLevel
 {
    veryFatal = 0,
    fatal = 1,
-   major = 2,   
+   major = 2,
    minor = 3
 };
 
@@ -231,7 +231,7 @@ public void Log(char * text)
          break;
       }
 #endif
-      case stdOut: 
+      case stdOut:
          fputs(text, eC_stdout());
          fflush(eC_stdout());
          break;
@@ -251,7 +251,7 @@ public void Log(char * text)
       }
       case buffer:
       case msgBox:
-         strcat(globalSystem.errorBuffer, text); 
+         strcat(globalSystem.errorBuffer, text);
          break;
    }
 }
@@ -284,12 +284,12 @@ public void LogErrorCode(ErrorCode errorCode, char * details)
    if(errorCode.level <= globalSystem.errorLevel)
    {
       if(details)
-         Logf("System Error [%d]: %s (%s).\n", 
+         Logf("System Error [%d]: %s (%s).\n",
             errorCode.level,
-            errorMessages[errorCode.code], 
+            errorMessages[errorCode.code],
             details);
       else
-         Logf("System Error [%d]: %s.\n", 
+         Logf("System Error [%d]: %s.\n",
             errorCode.level,
             errorMessages[errorCode.code]);
    }
@@ -429,7 +429,7 @@ static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
          break;
          */
    }
-   
+
    sprintf(title, "%s - Fatal Error", guiApp.appName);
 
    if(globalSystem.errorBuffer && globalSystem.errorBuffer[0])
@@ -440,7 +440,7 @@ static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
    }
    else
       MessageBox(HWND_DESKTOP, exceptionString, title, MB_OK|MB_ICONERROR);
-   
+
    return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif

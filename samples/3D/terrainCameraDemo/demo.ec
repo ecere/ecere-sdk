@@ -3,7 +3,7 @@
 
    Copyright (c) 2001-2010 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    demo.ec - Main Module
 ****************************************************************************/
 import "ecere"
@@ -249,7 +249,7 @@ class Scene : Window
    bool OnLoadGraphics()
    {
       Bitmap map { };
-      
+
       light.ambient = { 0.2f, 0.2f, 0.2f };
       light.diffuse = light.specular = white;
       light.orientation = { 1,0,0,0 };
@@ -266,7 +266,7 @@ class Scene : Window
             textures[c].Allocate(null, 256, 256, 0, map.pixelFormat, true);
             if(map.pixelFormat == pixelFormat8)
                memcpy(textures[c].palette, map.palette, 256*4);
-            textures[c].Grab(map, 
+            textures[c].Grab(map,
                      (c % across) * textures[c].width,
                      (c / across) * textures[c].height);
             textures[c].MakeMipMaps(displaySystem);
@@ -330,7 +330,7 @@ class Scene : Window
 
       if(!filled) display.fillMode = wireframe;
       terrainMesh.RenderMesh(display, null, textures);
-      if(!filled) display.fillMode = solid; 
+      if(!filled) display.fillMode = solid;
 
       display.DrawObject(dna);
       display.DrawObject(player);
@@ -339,7 +339,7 @@ class Scene : Window
 
       surface.SetForeground(black);
       //surface.WriteTextf(10,10, "Detail: %.0f, ZMax: %.02f, FPS: %.02f", detailBias, zMax, frameRate.fps);
-      
+
       frameRate.Step();
    }
 
@@ -357,16 +357,16 @@ class Scene : Window
             acquiredInput = false;
             GetMousePosition(&lastMousePosition.x, &lastMousePosition.y);
             break;
-         case a: 
+         case a:
             acquiredInput = AcquireInput(true);
             break;
-         case k0: 
-            camera.type = fixed; 
+         case k0:
+            camera.type = fixed;
             camera.position = camera.cPosition;
             camera.orientation = camera.cOrientation;
             break;
-         case k1: 
-            /*camera.type = attached; 
+         case k1:
+            /*camera.type = attached;
             camera.position = { 0, 0, -30 };
             camera.Slerp(0.1f);
             */
@@ -375,8 +375,8 @@ class Scene : Window
             camera.orientation = Euler { 180, 20, 0 };
             camera.Slerp(0.3f);
             break;
-         case k2: 
-            camera.type = lookAt; 
+         case k2:
+            camera.type = lookAt;
             camera.position = camera.cPosition; //{ 1000, -3000, 0 };
             camera.position.z -= 50;
             camera.orientation = { 1,0,0,0 };

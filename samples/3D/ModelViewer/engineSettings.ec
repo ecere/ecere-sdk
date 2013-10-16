@@ -105,7 +105,7 @@ class EngineSettings : Window
       driverBox.AddString("Direct3D 9").tag = (int)"Direct3D";
       driverBox.AddString("Direct3D 8").tag = (int)"Direct3D8";
       driverBox.currentRow = driverBox.firstRow;
-      
+
       resBox.AddString("Current");
       resBox.AddString("640x480").tag = Resolution::res640x480;
       resBox.AddString("800x600").tag = Resolution::res800x600;

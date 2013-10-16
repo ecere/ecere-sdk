@@ -16,7 +16,7 @@ import "instance"
 import "Display"
 
 default:
-WINBASEAPI HWND WINAPI GetConsoleWindow (); 
+WINBASEAPI HWND WINAPI GetConsoleWindow ();
 
 private:
 
@@ -154,7 +154,7 @@ class Win32ConsoleInterface : Interface
                   }
                   else
                   {
-                     keys[key] = (byte)bool::false;   
+                     keys[key] = (byte)bool::false;
                      guiApp.desktop.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp,keyFlags,ch);
                   }
                   break;
@@ -214,7 +214,7 @@ class Win32ConsoleInterface : Interface
                      default:
                         if(buttonState.left && !(lastButtonState.left))
                            guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown,
-                              mousePosition.x, mousePosition.y, &keyFlags, false, 
+                              mousePosition.x, mousePosition.y, &keyFlags, false,
                               (event.Event.MouseEvent.dwEventFlags == DOUBLE_CLICK) ? false : true) ;
                         else if(buttonState.middle && !(lastButtonState.middle))
                            guiApp.desktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown,
@@ -239,8 +239,8 @@ class Win32ConsoleInterface : Interface
                }
                case WINDOW_BUFFER_SIZE_EVENT:
                {
-                  COORD coord = 
-                  { 
+                  COORD coord =
+                  {
                      event.Event.WindowBufferSizeEvent.dwSize.X,
                      event.Event.WindowBufferSizeEvent.dwSize.Y
                   };
@@ -420,14 +420,14 @@ class Win32ConsoleInterface : Interface
    void SetCaret(int x, int y, int size)
    {
       COORD coords = { (short)(x / textCellW), (short)(y / textCellH) };
-      CONSOLE_CURSOR_INFO cursor = 
-      { 
-         size ? size : 99, 
+      CONSOLE_CURSOR_INFO cursor =
+      {
+         size ? size : 99,
          (size && x >= 0 && y >= 0 && x < guiApp.desktop.clientSize.w && y < guiApp.desktop.clientSize.h) ? TRUE : FALSE
       };
       SetConsoleCursorInfo(hStdout, &cursor);
       SetConsoleCursorPosition(hStdout, coords);
-   }  
+   }
 
    // --- Clipboard manipulation ---
 

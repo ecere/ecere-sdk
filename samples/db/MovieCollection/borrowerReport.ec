@@ -8,7 +8,7 @@ class BorrowerReportDetail : Detail
    font = { "Arial", 10 };
 
    keepTogether = true;
-   
+
    Label movieName      { this, anchor = { left = 44, top = 2, right = 0.30, bottom = 2 } };
    Label dateBorrowed   { this, anchor = { left = 0.5, top = 2, right = 0.20, bottom = 2 } };
 
@@ -17,7 +17,7 @@ class BorrowerReportDetail : Detail
       String s;
       BorrowerReport report = (BorrowerReport)((ReportDestination)master).GetReport();
       RowMovies row = (RowMovies)report.groupings[1].row;
-      
+
       s = row.name; movieName.text = s; delete s;
       s = PrintString((ShortDate)row.dateBorrowed); dateBorrowed.text = s; delete s;
       return true;
@@ -45,7 +45,7 @@ class BorrowerGroupHeader : Detail
    font = { "Arial", 10, bold = true };
 
    keepTogether = true;
-   
+
    Label name { this, anchor = { left = 4, top = 7, right = 0.65, bottom = 2 } };
    Label phone { this, anchor = { left = 0.4, top = 7, right = 4, bottom = 2 } };
 
@@ -72,7 +72,7 @@ class BorrowerGroupContinuation : Detail
    font = { "Arial", 10, bold = true };
 
    keepTogether = true;
-   
+
    Label name { this, anchor = { left = 4, top = 7, right = 0.65, bottom = 2 } };
 
    bool OnCreate(void)
@@ -80,7 +80,7 @@ class BorrowerGroupContinuation : Detail
       String s;
       BorrowerReport report = (BorrowerReport)((ReportDestination)master).GetReport();
       RowBorrowers row = (RowBorrowers)report.groupings[0].row;
-      
+
       s = PrintString(row.name, " (Continued)"); name.text = s; delete s;
       return true;
    }
@@ -100,7 +100,7 @@ class BorrowerGroupFooter : Detail
    font = { "Arial", 10, bold = true };
 
    keepTogether = true;
-   
+
    Label title { this, anchor = { left = 0.85, top = 9, right = 0.03, bottom = 2 }, text = "Total count:" };
    Label total { this, anchor = { left = 0.97, top = 9, right = 9, bottom = 2 } };
 
@@ -162,7 +162,7 @@ class BorrowerReport : CommonReport
       if(daysAgo)
       {
          static char reportTitle[256];
-         sprintf(reportTitle, "Movies borrowed for more than %d days", daysAgo); 
+         sprintf(reportTitle, "Movies borrowed for more than %d days", daysAgo);
          title = reportTitle;
       }
       else

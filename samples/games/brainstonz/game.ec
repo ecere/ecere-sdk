@@ -44,7 +44,7 @@ class BrainStonzGame
             stones[sy][sx] = none;
             takeOut = false;
             played = true;
-            
+
          }
       }
       else if(movesLeft && !stones[sy][sx])
@@ -53,7 +53,7 @@ class BrainStonzGame
          int symbol = symbols[sy][sx];
          if(numStones[turn] > 0)
             numStones[turn]--;
-         
+
          for(y = 0; y < 4; y++)
          {
             int x;
@@ -65,7 +65,7 @@ class BrainStonzGame
                   break;
                }
          }
-         
+
          stones[sy][sx] = turn;
 
          // Check for win
@@ -126,7 +126,7 @@ public:
       }
       return color;
    }
-    
+
    void NewGame()
    {
       game.NewGame();

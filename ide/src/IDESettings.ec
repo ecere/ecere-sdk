@@ -16,7 +16,7 @@ define defaultCompilerName = "Default";
 
 define defaultObjDirExpression = "obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)";
 
-char * settingsDirectoryNames[DirTypes] = 
+char * settingsDirectoryNames[DirTypes] =
 {
    "Include Files",
    "Library Files",
@@ -84,7 +84,7 @@ char * CopyValidateMakefilePath(char * path)
          char * tmp = copy;
          char * start = tmp;
          Array<char *> parts { };
-         
+
          for(c=0; c<len; c++)
          {
             if(tmp[c] == '$')
@@ -230,7 +230,7 @@ private:
          PathCat(defaultConfigFilePath, "App");
          PathCat(defaultConfigFilePath, "DefaultData");
          PathCat(defaultConfigFilePath, "ecereIDE.ini");
-         
+
          if(FileExists(defaultConfigFilePath))
          {
             if(!FileExists(configFilePath))
@@ -242,9 +242,9 @@ private:
             }
             PathCat(path, "Data");
             // the forced settings location will only be
-            // used if the running ide's path matches 
+            // used if the running ide's path matches
             // the PortableApps.com directory structure
-            // and the default ini file is found in 
+            // and the default ini file is found in
             // the DefaultData directory
             settingsLocation = path;
             portable = true;
@@ -319,7 +319,7 @@ private:
                delete data.displayDriver; data.displayDriver = CopyString(oldSettings.displayDriver);
                data.projectDefaultTargetDir = oldSettings.projectDefaultTargetDir;
                data.projectDefaultIntermediateObjDir = oldSettings.projectDefaultIntermediateObjDir;
-                        
+
                Save();
                result = success;
             }
@@ -412,7 +412,7 @@ public:
    bool showLineNumbers;
    bool caretFollowsScrolling;
    char * displayDriver;
-   
+
    // TODO: Classify settings
    //EditorSettings editor { };
 
@@ -480,7 +480,7 @@ private:
       recentProjects.Free();
       delete recentProjects;
       delete docDir;
-   
+
       delete projectDefaultTargetDir;
       delete projectDefaultIntermediateObjDir;
       delete compilerConfigsDir;
@@ -718,7 +718,7 @@ public enum CompilerType
    {
       get { return OnGetString(null, null, null); }
       set
-      {  
+      {
          if(value)
          {
             Platform c;

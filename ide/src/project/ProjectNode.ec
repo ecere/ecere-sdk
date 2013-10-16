@@ -35,7 +35,7 @@ bool eString_PathInsideOfMore(char * path, char * of, char * pathRest)
       strcpy(pathRest, path);
       for(; ofRest[0] && pathRest[0];)
       {
-         SplitDirectory(ofRest, ofPart, ofRest);      
+         SplitDirectory(ofRest, ofPart, ofRest);
          SplitDirectory(pathRest, pathPart, pathRest);
          if(fstrcmp(pathPart, ofPart))
             return false;
@@ -436,14 +436,14 @@ private:
    // For folders, it includes the folder it refers to. If there is a name difference between the
    // file system folder and the grouping folder of the project view, it maps to that folder.
    char * path;
-   
+
    NodeTypes type;
    NodeIcons icon;
    int indent;
    DataRow row;
 
    bool modified;
-   
+
    // This is only set for Top Nodes
    Project project;
 
@@ -644,7 +644,7 @@ private:
          while(n && n.type != project) n = n.parent;
          return n ? (*&n.project) : null;
       }
-   }   
+   }
 
    void RenameConfig(char * oldName, char * newName)
    {
@@ -675,7 +675,7 @@ private:
          {
             ProjectConfig config = c.data;
             if(!strcmp(configToDelete.name, config.name))
-            {               
+            {
                c.Remove();
                delete config;
                break;
@@ -942,7 +942,7 @@ private:
          result.b = exp;
       }
       delete exclusionInfo;
-      
+
       return result;
    }
 
@@ -990,7 +990,7 @@ private:
 
       if(options && options.excludeFromBuild)
          output[unknown] = options.excludeFromBuild;
-      
+
       if(config && config.options && config.options.excludeFromBuild)
          output[unknown] = config.options.excludeFromBuild;
 
@@ -1298,8 +1298,8 @@ private:
       {
          showConfig = false;
          projectView = ide.projectView;
-      }         
-      
+      }
+
       bmp = projectView.icons[icon].bitmap;
       xStart = /*indent * indent + */x + (bmp ? (bmp.width + 5) : 0);
 
@@ -1342,7 +1342,7 @@ private:
          }
       }
       len = strlen(label);
-      
+
       if(!bmp)
       {
          if(type == folder || type == folderOpen)
@@ -1353,15 +1353,15 @@ private:
       surface.TextOpacity(false);
       surface.TextExtent(label, len, &w, &h);
       h = Max(h, 16);
-    
+
       // Draw the current row stipple
       if(displayFlags.selected)
          //surface.Area(xStart - 1, y, xStart - 1, y + h - 1);
          //surface.Area(xStart + w - 1, y, xStart + w + 1, y + h - 1);
          surface.Area(xStart - 3, y, xStart + w + 1, y + h - 1);
-      
+
       surface.WriteTextDots(alignment, xStart, y + 2, width, label, len);
-      
+
       if(!app.textMode)
       {
          if(displayFlags.current)
@@ -1471,7 +1471,7 @@ private:
          }
       }
    }
-   
+
    int GenMakefilePrintNode(File f, Project project, GenMakefilePrintTypes printType,
       Map<String, NameCollisionInfo> namesInfo, Array<String> items,
       ProjectConfig prjConfig, bool * containsCXX)
@@ -1989,7 +1989,7 @@ private:
 
             info = namesInfo[moduleName];
             collision = info ? info.IsExtensionColliding(extension) : false;
-            
+
             ReplaceSpaces(modulePath, path);
             if(modulePath[0]) strcat(modulePath, SEPS);
 
@@ -2090,7 +2090,7 @@ private:
             if(!strcmpi(extension, "ec"))
                f.Printf("$(OBJ)%s.o: $(OBJ)%s.c\n", moduleName, moduleName);
             else
-               f.Printf("$(OBJ)%s%s%s.o: %s%s.%s\n", moduleName, 
+               f.Printf("$(OBJ)%s%s%s.o: %s%s.%s\n", moduleName,
                      collision ? "." : "", collision ? extension : "", modulePath, moduleName, extension);
             if(!strcmpi(extension, "cc") || !strcmpi(extension, "cpp") || !strcmpi(extension, "cxx"))
                f.Printf("\t$(CXX)");

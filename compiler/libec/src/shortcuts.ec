@@ -34,7 +34,7 @@ Declarator PlugDeclarator(Declarator decl, Declarator baseDecl)
       }
       if(baseDecl)
       {
-         if(base.declarator) 
+         if(base.declarator)
             FreeDeclarator(base.declarator);
          base.declarator = baseDecl;
       }
@@ -126,7 +126,7 @@ char * QMkString(char * source)
       for(i = 0; (ch = source[i]); i++)
       {
          len++;
-         if(ch == '\"' || ch == '\\') 
+         if(ch == '\"' || ch == '\\')
             len++;
       }
 

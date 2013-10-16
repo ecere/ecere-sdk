@@ -45,7 +45,7 @@ public class PictureRotate : Window
          delete image;
          AddResource(value);
          RemoveResource(image);
-         image = value;         
+         image = value;
          material.baseMap = image ? image.bitmap : null;
          material.opacity = 0.5f;
          material.flags.translucent = true;
@@ -80,7 +80,7 @@ public class PictureRotate : Window
       type = fixed;
       position = { 0, -1000, 0 };
       zMin = 0.1f,
-      orientation = Euler { 0, 90, 0 }; 
+      orientation = Euler { 0, 90, 0 };
    };
 
    bool OnLoadGraphics()
@@ -91,7 +91,7 @@ public class PictureRotate : Window
       plane.Create(displaySystem);
       //plane.transform.scaling = { 20 / 2 / 0.707, 20 /2 / 0.707f, 20 /2/ 0.707f };
       plane.transform.scaling = { 1.0f, 1.5f, 1.0f };
-      
+
       // plane.transform.scaling = { image.bitmap.width, 1.5f, image.bitmap.height };
       //plane.transform.scaling = { Max(image.bitmap.width, image.bitmap.height), 1.5f, Max(image.bitmap.width, image.bitmap.height) };
       //camera.aspectRatio = 1.0f;
@@ -129,7 +129,7 @@ public class PictureRotate : Window
          else
             *w = 80;
       }
-         
+
       if(!size.h && (!anchor.top.type || !anchor.bottom.type))
       {
          if(bitmap)
@@ -153,7 +153,7 @@ public class PictureRotate : Window
       display.DrawObject(plane);
       display.SetCamera(surface, null);
    }
-   
+
    Material material
    {
       emissive = white;

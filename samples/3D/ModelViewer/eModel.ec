@@ -29,13 +29,13 @@ class eModelApp : GuiApplication
          bool selected = false;
          if(argc > 1)
          {
-            selected = true;         
+            selected = true;
             strcpy(fileDialog.filePath, argv[1]);
          }
          else
          {
             strcpy(fileDialog.filePath, "toyota.3ds");
-            //selected = true;         
+            //selected = true;
          }
          while(selected || fileDialog.Modal() == ok)
          {
@@ -53,7 +53,7 @@ class ModelViewer : Window
    {
       attached,
       fov = 53,
-      position = { 0, 0,-100 }, 
+      position = { 0, 0,-100 },
       orientation = Euler { 0, 30, 0 },
       zMin = 0.01f;
 
@@ -82,7 +82,7 @@ class ModelViewer : Window
             model.frame++;
             // cameraObject.frame++;
          }
-            
+
          Update(null);
          return true;
       }
@@ -236,7 +236,7 @@ class ModelViewer : Window
          case g:
             fillMode = (fillMode == wireframe) ? solid : wireframe;
             break;
-         case h: 
+         case h:
             help.visible ^= true;
             break;
          case k1: case k2: case k3: case k4:
@@ -244,7 +244,7 @@ class ModelViewer : Window
             else if(key == k2)   cameraObject = model.Find("Camera02");
             else if(key == k3)   cameraObject = model.Find("Camera03");
             else if(key == k4)   cameraObject = model.Find("Camera04");
-            
+
             camera = cameraObject.camera;
             camera.Setup(clientSize.w, clientSize.h, null);
             Update(null);

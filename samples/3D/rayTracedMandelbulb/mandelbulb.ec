@@ -201,7 +201,7 @@ class RenderThread : Thread
       for(y = start; y <= end && !view3D.abort; y++)
       {
          Box box { 0, y, bitmap.width, y };
-         
+
          for(x = 0; x < bitmap.width && !view3D.abort; x++)
          {
             Vector3D v, end;
@@ -233,11 +233,11 @@ class RenderThread : Thread
             g /= count*count;
             b /= count*count;
 
-            picture[y * stride + x] = 
+            picture[y * stride + x] =
             {
-               (byte)Min(255, Max(0, a*255)), 
+               (byte)Min(255, Max(0, a*255)),
                { (byte)Min(255, Max(0, r*255)), (byte)Min(255, Max(0, g*255)), (byte)Min(255, Max(0, b*255)) }
-            };            
+            };
          }
       }
       done = true;
@@ -294,10 +294,10 @@ class RTView : BaseView3D
 
             Update(null);
             UpdateDisplay();
-            
+
             camera.Setup(bitmap.width, bitmap.height, null);
             camera.Update();
-            
+
             for(lt : scene.lights)
             {
                Light * light = lt;
@@ -332,7 +332,7 @@ class RTView : BaseView3D
                Update(null);
                UpdateDisplay();
             }
-            
+
             for(t = 0; t < numThreads; t++)
                delete threads[t];
 
@@ -354,7 +354,7 @@ class RTObject
 
    virtual void Compute();
    virtual bool Render(Line ray, ColorARGBd * color, Vector3D intersect, Vector3D vIntersect)
-   {  
+   {
       return false;
    }
 }
@@ -378,7 +378,7 @@ class RTScene
       for(o : objects)
       {
          ColorARGBd newColor;
-         
+
          // TOFIX: &ray here has different behavior?
          if(o.Render(ray, newColor, null, vIntersect) && vIntersect.z < z)
          {
@@ -437,11 +437,11 @@ class RTCube : RTObject
       uint16 indices[6][4] =
       {
          // up, front, down, back, right, left
-         { 17,21,20,16 }, 
-         { 0,3,2,1 }, 
-         { 22,18,19,23 }, 
-         { 5,6,7,4 }, 
-         { 9,10,14,13 }, 
+         { 17,21,20,16 },
+         { 0,3,2,1 },
+         { 22,18,19,23 },
+         { 5,6,7,4 },
+         { 9,10,14,13 },
          { 12,15,11,8 }
          //{ 8,11,15,12 }
       };
@@ -506,7 +506,7 @@ class RTCube : RTObject
                   }
                }
             }
-               
+
             if(visible && gotIntersect)
             {
                Vector3D v;
@@ -640,7 +640,7 @@ class RTMandelbulb : RTCube
          firstPointInside = true;
          l.delta.Scale(l.delta, -1);
       }
-      
+
       while(true)
       {
          Vector3D p
@@ -673,7 +673,7 @@ class RTMandelbulb : RTCube
                l.p0.z - l.delta.z * stopT
             };
             is = p;
-            return true;            
+            return true;
          }
          if(refine == refineCount)
          {
@@ -693,11 +693,11 @@ class RTMandelbulb : RTCube
          Vector3D rayDirection;
          Vector3D localIntersect;
          Vector3D p;
-         Line toBulb;         
+         Line toBulb;
 
          rayDirection.MultMatrix(ray.delta, inverse);
          localIntersect.MultMatrix(intersect, inverse);
-         
+
          rayDirection.Normalize(rayDirection);
          toBulb.p0 = localIntersect;
          toBulb.delta = rayDirection;
@@ -712,7 +712,7 @@ class RTMandelbulb : RTCube
                Angle phi = atan2(p.y, p.x);
                Vector3D normal { };
                int count = 0;
-               //Angle 
+               //Angle
                offset = 2 * asin(angleOffset / (2*r));
 
 
@@ -765,7 +765,7 @@ class RTMandelbulb : RTCube
 
                      toBulb2.delta = toBulb2.p0;
                      toBulb2.delta.Normalize(toBulb2.delta);
-                     
+
                      //if(WalkTowards(toBulb2, pp, ((r * safetyFactor) - r) / 2.0, 30))
                      if(WalkTowards(toBulb2, pp, (r + startOffDistance - r) / 2.0, 30, true))
                      {
@@ -781,7 +781,7 @@ class RTMandelbulb : RTCube
                   if(numFound >= 2)
                   {
                      Plane normalPlane { };
-                     
+
                      double d1 = (found[0] && found[2]) ? (distances[0] * distances[1]) : MAXDOUBLE;
                      double d2 = (found[1] && found[2]) ? (distances[1] * distances[2]) : MAXDOUBLE;
                      double d3 = (found[2] && found[3]) ? (distances[2] * distances[3]) : MAXDOUBLE;
@@ -853,7 +853,7 @@ class RTMandelbulb : RTCube
                         R.Normalize(R);
                         l = R.DotProduct(localCameraDirection);
                         if(l < 0) l = 0;
-                        
+
                         r += pow(l, material.power) * light->multiplier * light->specular.r * material.specular.r;
                         g += pow(l, material.power) * light->multiplier * light->specular.g * material.specular.g;
                         b += pow(l, material.power) * light->multiplier * light->specular.b * material.specular.b;
@@ -885,11 +885,11 @@ class MandelbulbApp : GuiApplication
       scene.lights.Add(&light2);
       //scene.lights.Add(&light3);
       //scene.objects.Add(RTCube { center = { }, size = { 100, 100, 100 } });
-      scene.objects.Add(RTMandelbulb { 
-         material.power = 16; 
-         material.ambient = blanchedAlmond; 
-         material.specular = blanchedAlmond; 
-         material.diffuse = blanchedAlmond, 
+      scene.objects.Add(RTMandelbulb {
+         material.power = 16;
+         material.ambient = blanchedAlmond;
+         material.specular = blanchedAlmond;
+         material.diffuse = blanchedAlmond,
          center = { }, orientation = Euler { yaw = 0, pitch = 220 /*-140*/ }, size = { 100, 100, 100 } });
       //scene.objects.Add(RTCube { center = { -40, 0, 0 }, orientation = Euler { 143, -138, 0 }, size = { 50, 50, 50 } });
       //scene.objects.Add(RTCube { center = {  40, 0, 0}, orientation = Euler { -145, -22, 0 }, size = { 30, 30, 30 } });

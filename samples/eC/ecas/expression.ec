@@ -87,18 +87,18 @@ bool Expression::SanitizeSingleArgument(void) {
 class FunctionList : Dictionary {
    Array<CASFunctionDefinition> f {};
    FunctionList() {
-      CASFunction i;                   
+      CASFunction i;
       for (i=0; i<CASFunction::enumSize; i++)
          array.Add(StrDup(function_string[i]));
       f.size = CASFunction::enumSize;
       f[CASFunction::sum] = {
-         
+
       };
       f[CASFunction::product] = {
-         
+
       };
       f[CASFunction::polynomial] = {
-         
+
       };
       f[CASFunction::exp] = {
          bool Expression::Sanitize()
@@ -117,31 +117,31 @@ class FunctionList : Dictionary {
       };
       f[CASFunction::ln] = {
          Sanitize = SanitizeSingleArgument;
-         
+
       };
       f[CASFunction::sin] = {
          Sanitize = SanitizeSingleArgument;
-         
+
       };
       f[CASFunction::cos] = {
          Sanitize = SanitizeSingleArgument;
-         
+
       };
       f[CASFunction::tan] = {
          Sanitize = SanitizeSingleArgument;
-         
+
       };
       f[CASFunction::arcsin] = {
          Sanitize = SanitizeSingleArgument;
-         
+
       };
       f[CASFunction::arccos] = {
          Sanitize = SanitizeSingleArgument;
-         
+
       };
       f[CASFunction::arctan] = {
          Sanitize = SanitizeSingleArgument;
-         
+
       };
    }
    //these functions check to make sure the input is a function of correct range before executing
@@ -172,7 +172,7 @@ class ExprChildWalker {
 public:
    Expression expr;
    Expression user0, user1, user2;
-   
+
    void Go(void) {
       switch (expr.ExprClass()) {
          case prefix:
@@ -307,7 +307,7 @@ public:
             break;
       }
    }
-   
+
    void Free(void) {
       ExprChildWalker w {this;
          bool On(Expression *e) {
@@ -374,7 +374,7 @@ public:
       }
       return ret;
    }
-   
+
    //collect terms in this expression separated by the binary operator op
    //e.g. separate x^2+3x+1 by plus into [x^2, 3x, 1]
    //Will separate (x^2+3x+1)/2 by plus into [(x^2+3x+1)/2]
@@ -444,14 +444,14 @@ public:
             fprintf(stderr, "BUG:  Attempted to call Unlink on non-unary node.\n");
       }
    }
-   
+
    //Note that FromString likes to toy with the string, but anything done to the string will be undone.
    bool FromString(char *str, CASDictionary dictionary) {
       ExpressionFromString(this, str, dictionary);
       return Sanitize(this, dictionary);
    }
    char *ToString(void) {
-      
+
    }
    const char *OpString(void) {
       if (type==prefix && prefix.op<PrefixOperator::enumSize)
@@ -490,7 +490,7 @@ public:
          return nullary;
    }
    void Simplify(CASDictionary dict) {
-      
+
    }
 };
 
@@ -741,7 +741,7 @@ void ExpressionFromString(Expression expr, char *str, CASDictionary dictionary) 
    char borrow;
 
    expr.Free();
-   
+
    s = str;
    e = s;
    while (*s) {

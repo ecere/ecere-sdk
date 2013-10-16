@@ -68,7 +68,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
          if(func.type) func.type.refCount++;
          ProcessFunctionBody(function, func.body);
          external = MkExternalFunction(function);
-         
+
          external.symbol = func.declarator.symbol;
          external.function._class = func._class;
       }
@@ -77,14 +77,14 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
       //symbol.id = func.id; //symid;
       symbol.id = symid;
       symbol.idCode = symidCode;
-      
+
       if(!func.dontMangle)
       {
          // Normal method
          Method method = func.declarator.symbol.method;
          func.declarator.symbol.methodExternal = external;
 
-         // DANGER: Added this one... 
+         // DANGER: Added this one...
 
          if(method && method.symbol)
             //((Symbol)method.symbol).methodExternal = external;
@@ -94,7 +94,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
          {
             Type methodDataType;
             ProcessMethodType(method);
-            
+
             methodDataType = method.dataType;
 
             // Do type checking here of type against method.dataType
@@ -213,7 +213,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
          {
             propSymbol.externalIsSet = external;
          }
-         else 
+         else
          {
             // Constructor destructor
             //symbol.type = Type { };
@@ -248,7 +248,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
       {
          globalContext /*curContext*/.symbols.Remove((BTNode)symbol);
          excludedSymbols->Add(symbol);
-         
+
          // Testing this...
          defs.Insert(after, external);
 
@@ -273,19 +273,19 @@ void CreateRegisterModuleBody()
       registerModuleBody.compound.context = Context { parent = globalContext };
 
       #if 0
-      ListAdd(registerModuleBody.compound.declarations, 
+      ListAdd(registerModuleBody.compound.declarations,
          MkDeclaration(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null) /*MkSpecifierName("ecere::com::Class")*/ /*MkStructOrUnion(SpecifierStruct, MkIdentifier("Class"), null)*/),
                        MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("class"))), null))));
       #endif
-      ListAdd(registerModuleBody.compound.declarations, 
+      ListAdd(registerModuleBody.compound.declarations,
          MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")),
                        MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), null))));
 
       specifiers = MkList();
       ListAdd(specifiers, MkSpecifier(VOID));
 
-      moduleParam = MkTypeName(MkListOne(/*MkSpecifier(VOID)*/MkSpecifierName("Module")), 
-         //MkDeclaratorPointer(MkPointer(null, null), 
+      moduleParam = MkTypeName(MkListOne(/*MkSpecifier(VOID)*/MkSpecifierName("Module")),
+         //MkDeclaratorPointer(MkPointer(null, null),
          MkDeclaratorIdentifier(MkIdentifier("module")));
 
       GetLastDirectory(outputFile, moduleName);
@@ -308,7 +308,7 @@ void CreateRegisterModuleBody()
 
    // Unregister Module
    if(!unregisterModuleBody && inCompiler)
-   {      
+   {
       char registerName[1024], moduleName[MAX_FILENAME];
       OldList * specifiers;
       Declarator declarator;
@@ -320,8 +320,8 @@ void CreateRegisterModuleBody()
       specifiers = MkList();
       ListAdd(specifiers, MkSpecifier(VOID));
 
-      moduleParam = MkTypeName(MkListOne(/*MkSpecifier(VOID)*/ MkSpecifierName("Module")), 
-         //MkDeclaratorPointer(MkPointer(null, null), 
+      moduleParam = MkTypeName(MkListOne(/*MkSpecifier(VOID)*/ MkSpecifierName("Module")),
+         //MkDeclaratorPointer(MkPointer(null, null),
          MkDeclaratorIdentifier(MkIdentifier("module")));
 
       GetLastDirectory(outputFile, moduleName);
@@ -554,13 +554,13 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
                ListAdd(list, MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null)), MkExpConstant("0"))));
                // stmt = MkIfStmt(MkListOne(MkExpOp(null, '!', MkExpIdentifier(MkIdentifier(name)))), MkExpressionStmt(list), null);
                stmt = MkIfStmt(MkListOne(MkExpOp(
-                     MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), EQ_OP, 
+                     MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), EQ_OP,
                      MkExpMember(MkExpIdentifier(MkIdentifier("__thisModule")), MkIdentifier("application")))), MkExpressionStmt(list), null);
 
                ListAdd(registerModuleBody.compound.statements, stmt);
 
                // Unregister 2nd property
-               stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=', 
+               stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=',
                   MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null)), MkExpConstant("0")))));
                ListAdd(unregisterModuleBody.compound.statements, stmt);
             }
@@ -656,7 +656,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
 
             // Declaration Mode
             ListAdd(args, MkExpIdentifier(MkIdentifier("privateAccess")));
-            
+
             stmt = MkExpressionStmt(MkListOne(
                MkExpCall(MkExpIdentifier(MkIdentifier(isMember ? "eMember_AddDataMember" : "eClass_AddDataMember")), args)));
 
@@ -716,7 +716,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
                   ListAdd(args, MkExpIdentifier(MkIdentifier("publicAccess")));
                   break;
             }
-            
+
             stmt = MkExpressionStmt(MkListOne(
                MkExpCall(MkExpIdentifier(MkIdentifier(isMember ? "eMember_AddDataMember" : "eClass_AddDataMember")), args)));
 
@@ -736,9 +736,9 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
 
             curContext = statement.compound.context;
             context = PushContext();
-            
+
             args = MkListOne(MkExpIdentifier(MkIdentifier((member.type == unionMember) ? "unionMember" : "structMember")));
-            
+
             // Declaration Mode
             switch(member.memberAccess)
             {
@@ -753,12 +753,12 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, char * classNam
                   ListAdd(args, MkExpIdentifier(MkIdentifier("publicAccess")));
                   break;
             }
-            
-            compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("DataMember")), 
-               MkListOne(MkInitDeclarator(/*MkDeclaratorPointer(MkPointer(null, null), */MkDeclaratorIdentifier(MkIdentifier(memberName))/*)*/, 
+
+            compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("DataMember")),
+               MkListOne(MkInitDeclarator(/*MkDeclaratorPointer(MkPointer(null, null), */MkDeclaratorIdentifier(MkIdentifier(memberName))/*)*/,
                   MkInitializerAssignment(MkExpCall(MkExpIdentifier(MkIdentifier("eMember_New")), args)))))), MkList());
             compound.compound.context = context;
-         
+
             args = MkList();
 
             // Class class / DataMember member
@@ -894,7 +894,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 {
    ClassDef def;
    Class regClass = symbol.registered;
-   
+
    if(regClass)
    {
       classType = regClass.type;
@@ -911,7 +911,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   refCount = 1;
                };
                e.exp.destType = destType;
-            
+
                // Set parsingType to avoid producing errors
                parsingType = true;
                ProcessExpressionType(e.exp);
@@ -941,7 +941,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                }
                else
                   // Sort of an error
-                  eEnum_AddValue(regClass, e.id.string);                        
+                  eEnum_AddValue(regClass, e.id.string);
             }
             else
                eEnum_AddValue(regClass, e.id.string);
@@ -1011,9 +1011,9 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      ListAdd(specifiers, MkSpecifier(VOID));
 
                      ast->Insert(curExternal.prev, externalDecl);
-               
-                     decl = MkDeclaration(specifiers, 
-                        MkListOne(MkInitDeclarator(MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), 
+
+                     decl = MkDeclaration(specifiers,
+                        MkListOne(MkInitDeclarator(MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)),
                            MkListOne(MkTypeName(MkListOne(MkSpecifierName(regClass.fullName)), null))), null)));
                      externalDecl.declaration = decl;
                      if(decl.symbol && !decl.symbol.methodExternal)
@@ -1025,7 +1025,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         decl.symbol.idCode = symbol.idCode;
                      }
                   }
-            
+
                   propWatch.compound = null;
                   definitions.Insert(null, MkClassDefFunction(func));
 
@@ -1152,7 +1152,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
          //ListAdd(args, class.declaredStruct ? MkExpTypeSize(MkTypeName(MkListOne(
             //MkSpecifierName(class.structName)), null)) : MkExpConstant("0"));
-      
+
          if(regClass.type == structClass || regClass.type == normalClass || regClass.type == noHeadClass)
          {
             // Check if we have a data member in this class
@@ -1207,11 +1207,11 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          if(regClass.type == normalClass || regClass.type == noHeadClass)
          {
             // Constructor
-            ListAdd(args, symbol.needConstructor ? 
+            ListAdd(args, symbol.needConstructor ?
                MkExpIdentifier(MkIdentifier(symbol.constructorName)) :
                MkExpConstant("0"));
             // Destructor
-            ListAdd(args, symbol.needDestructor ? 
+            ListAdd(args, symbol.needDestructor ?
                MkExpIdentifier(MkIdentifier(symbol.destructorName)) :
                MkExpConstant("0"));
          }
@@ -1242,7 +1242,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                ListAdd(args, MkExpIdentifier(MkIdentifier(buildingECERECOMModule ? "baseSystemAccess" : "publicAccess")));
                break;
          }
-         
+
          // Declaration Mode
          switch(inheritanceAccess)
          {
@@ -1271,7 +1271,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
          stmt = MkIfStmt(MkListOne(
                   MkExpOp(MkExpOp(
-                     MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), EQ_OP, 
+                     MkExpMember(MkExpIdentifier(MkIdentifier("module")), MkIdentifier("application")), EQ_OP,
                      MkExpMember(MkExpIdentifier(MkIdentifier("__thisModule")), MkIdentifier("application"))), AND_OP, MkExpIdentifier(MkIdentifier("class")))),
                MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(symbol.className)), '=',
             MkExpIdentifier(MkIdentifier("class"))))), null);
@@ -1305,7 +1305,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   External external = method.methodExternal;
                   OldList * args = MkList();
                   Identifier id = external.function ? GetDeclId(external.function.declarator) : null;
-               
+
                   // Class class
                   ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
                   // char * name
@@ -1547,10 +1547,10 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   {
                      char memberTypeString[132] = "TemplateMemberType::";
                      bool needClass = true;
-                     
+
                      param.memberType.OnGetString(memberTypeString + strlen(memberTypeString), null, &needClass);
-                     ListAdd(args, 
-                        MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), 
+                     ListAdd(args,
+                        MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)),
                            MkExpIdentifier(MkIdentifier(memberTypeString))));
                      break;
                   }
@@ -1564,7 +1564,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   {
                      case type:
                      {
-                        char * typeString = param.defaultArgument.templateDatatype ? 
+                        char * typeString = param.defaultArgument.templateDatatype ?
                            StringFromSpecDecl(param.defaultArgument.templateDatatype.specifiers, param.defaultArgument.templateDatatype.decl) : null;
                         char * string = QMkString(typeString);
 
@@ -1596,7 +1596,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
                         // TOFIX: UNIONS ARE BROKEN FOR ASSIGNMENTS, USING dataTypeString INSTEAD
                         // members->Add(MkMemberInit(MkListOne(MkIdentifier("memberString")), MkInitializerAssignment(MkExpString(string))));
-                        members->Add(MkMemberInit(MkListOne(MkIdentifier("dataTypeString")), MkInitializerAssignment(MkExpString(string))));                        
+                        members->Add(MkMemberInit(MkListOne(MkIdentifier("dataTypeString")), MkInitializerAssignment(MkExpString(string))));
 
                         delete string;
                         break;
@@ -1618,7 +1618,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
                         //string = QMkString(ui64String);
                         members->Add(MkMemberInit(ids, MkInitializerAssignment(MkExpConstant(ui64String))));
-                        
+
                         delete string;
                         delete ui64String;
                         break;
@@ -1635,7 +1635,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                ListAdd(registerModuleBody.compound.statements, stmt);
             }
             stmt = MkExpressionStmt(MkListOne(
-               MkExpCall(MkExpIdentifier(MkIdentifier("eClass_DoneAddingTemplateParameters")), 
+               MkExpCall(MkExpIdentifier(MkIdentifier("eClass_DoneAddingTemplateParameters")),
                   MkListOne(MkExpIdentifier(MkIdentifier("class"))))));
             ListAdd(registerModuleBody.compound.statements, stmt);
          }
@@ -1832,10 +1832,10 @@ public void ProcessClassDefinitions()
                {
                   Specifier specifier;
                   bool removeExternal = false;
-               
+
                   for(specifier = declaration.specifiers->first; specifier; specifier = specifier.next)
                   {
-                     if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string && 
+                     if((specifier.type == enumSpecifier || specifier.type == structSpecifier || specifier.type == unionSpecifier) && specifier.id && specifier.id.string &&
                         (declaration.declMode || specifier.baseSpecs || (specifier.type == enumSpecifier && specifier.definitions)))
                      {
                         Symbol symbol = FindClass(specifier.id.string);
@@ -1844,7 +1844,7 @@ public void ProcessClassDefinitions()
                            ClassType classType;
                            if(specifier.type == enumSpecifier)
                               classType = enumClass;
-                           else 
+                           else
                               classType = structClass;
 
                            removeExternal = true;
@@ -1855,7 +1855,7 @@ public void ProcessClassDefinitions()
                            ProcessClass(classType, specifier.definitions, symbol, specifier.baseSpecs, specifier.list,ast, external, declaration.declMode);
                         }
                      }
-                  }               
+                  }
                   if(inCompiler && removeExternal)
                   {
                      ast->Remove(external);

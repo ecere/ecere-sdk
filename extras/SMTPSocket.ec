@@ -21,7 +21,7 @@ class SMTPSocket : Socket
    }
    void OnDisconnect(int code)
    {
-      replied = true;      
+      replied = true;
    }
    void WaitReply()
    {
@@ -43,13 +43,13 @@ void SMTPSend(char * host, char * to, char * from, File file)
       socket.SendString("HELO localhost\r\n");
       socket.WaitReply();
       Logf("MAIL from: %s\n", from);
-      socket.Sendf("MAIL from: %s\r\n", from); 
+      socket.Sendf("MAIL from: %s\r\n", from);
       socket.WaitReply();
       Logf("RCPT To: %s\n", to);
-      socket.Sendf("RCPT To: %s\r\n", to); 
+      socket.Sendf("RCPT To: %s\r\n", to);
       socket.WaitReply();
       Log("DATA\n");
-      socket.SendString("DATA\r\n"); 
+      socket.SendString("DATA\r\n");
       socket.WaitReply();
       Log("Subject: Email test\n");
       Log("Mime-Version: 1.0;\n");
@@ -60,7 +60,7 @@ void SMTPSend(char * host, char * to, char * from, File file)
       socket.SendString("Content-Type: text/html; charset=\"ISO-8859-1\";\r\n");
       socket.SendString("Content-Transfer-Encoding: 7bit;\r\n");
       socket.SendString("\r\n");
-     
+
       file.Seek(0, start);
       while(!file.Eof())
       {
@@ -68,7 +68,7 @@ void SMTPSend(char * host, char * to, char * from, File file)
          uint read = file.Read(buffer, 1, sizeof(buffer));
          socket.Send(buffer, read);
       }
-      
+
       Log("\n.\n");
       socket.SendString("\r\n.\r\n");
       socket.WaitReply();
@@ -90,6 +90,6 @@ class MyApp : GuiApplication
          Send("mail.server.ca", "user@mail.com", "user@server.com", f);
       delete f;
       getch();
-   }   
+   }
 }
 */

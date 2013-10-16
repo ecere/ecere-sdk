@@ -85,7 +85,7 @@ public class Button : CommonControl
       buttonStyle.offset = true;
 
       // SetCursor(eInterface_GetCursor(__ecereModule->app, CUR_ARROW));
-      
+
       alignment = center;
       state = up;
       hint = false;
@@ -123,9 +123,9 @@ public class Button : CommonControl
       int isDefault = this.isDefault;
       int tw = 0, th = 0;
       int bw = 0, bh = 0;
-      
+
       if(!backColor) backColor = colors[up];
-      
+
       font = fontObject;
       surface.TextFont(font);
       if(text)
@@ -218,13 +218,13 @@ public class Button : CommonControl
                x, y,
                0,0,buttonBitmap.width,buttonBitmap.height);
          }
-         else 
+         else
          {
             // Push Buttons
             if(buttonStyle.scale)
             {
                if(buttonStyle.bevel || buttonStyle.offset)
-                  surface.Stretch(buttonBitmap, 
+                  surface.Stretch(buttonBitmap,
                      1 + offset, 1 + offset,0,0,
                      clientSize.w-3,clientSize.h-3,buttonBitmap.width,buttonBitmap.height);
                else
@@ -236,7 +236,7 @@ public class Button : CommonControl
                int x, y;
                bw = buttonBitmap.width;
                bh = buttonBitmap.height;
-               
+
                if(bitmapAlignment == left || bitmapAlignment == right)
                {
                   if(bitmapAlignment == left)
@@ -269,8 +269,8 @@ public class Button : CommonControl
       }
 
       // Shadows
-      if(buttonStyle.bevel || 
-         (buttonStyle.bevelOver && 
+      if(buttonStyle.bevel ||
+         (buttonStyle.bevelOver &&
             (state == down || state == over || checked)))
       {
          if(state == down || checked)
@@ -306,9 +306,9 @@ public class Button : CommonControl
       if(text)
       {
          if((buttonStyle.radio || buttonStyle.checkBox) && !(buttonStyle.bevelOver))
-            WriteCaption(surface, /*clientSize.h +*/ CAPTION_DISTANCE + 3, 
+            WriteCaption(surface, /*clientSize.h +*/ CAPTION_DISTANCE + 3,
                (clientSize.h - th - 4)/2);
-         else 
+         else
          {
             int x, y;
 
@@ -472,7 +472,7 @@ public class Button : CommonControl
       {
          if(symbol)
          {
-            tw = textCellW; th = textCellH;   
+            tw = textCellW; th = textCellH;
             surface.WriteTextf((clientSize.w - tw)/2 + offset, (clientSize.h - th - 2)/2 + offset.%c = symbol);
          }
       }
@@ -637,7 +637,7 @@ public class Button : CommonControl
    {
       if(!key)
       {
-         if( (!buttonStyle.stayDown || !hint) /*&&  !buttonStyle.toggle */) 
+         if( (!buttonStyle.stayDown || !hint) /*&&  !buttonStyle.toggle */)
          {
             if(!(buttonStyle.toggle) || state == over)
                state = up;
@@ -859,7 +859,7 @@ public:
    // Properties
    property bool isRadio
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          if(value)
@@ -912,7 +912,7 @@ public:
    };
    property bool isCheckbox
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          if(value)
@@ -935,7 +935,7 @@ public:
    };
    property bool bevel
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          if(value)
@@ -959,7 +959,7 @@ public:
    };
    property bool bevelOver
    {
-      property_category $"Behavior" 
+      property_category $"Behavior"
       set
       {
          if(value)
@@ -979,14 +979,14 @@ public:
    property bool toggle { property_category $"Behavior" set { buttonStyle.toggle = value; } get { return buttonStyle.toggle; } };
    property bool checked
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          if(buttonStyle.toggle)
          {
             state = value ? down : up;
          }
-         else 
+         else
          {
             if(buttonStyle.radio && value)
             {
@@ -1014,7 +1014,7 @@ public:
    property Alignment alignment { property_category $"Appearance" set { alignment = value; } get { return alignment; } };
    property BitmapResource bitmap
    {
-      property_category $"Appearance" 
+      property_category $"Appearance"
       set
       {
          AddResource(value);
@@ -1028,7 +1028,7 @@ public:
          RemoveResource(bitmaps[overChecked]);
          RemoveResource(bitmaps[downChecked]);
          RemoveResource(bitmaps[disabledChecked]);
-         
+
          bitmaps[over] = null;
          bitmaps[down] = null;
          bitmaps[disabled] = null;

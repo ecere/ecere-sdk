@@ -15,7 +15,7 @@ class Scores : Window
    isRemote = true;
    background = white;
    borderStyle = fixed, hasVertScroll = true, text = "The Scores", anchor = Anchor { horz = 0.3, vert = 0.1 }, clientSize = Size { 316,441 };
-   
+
    bool OnPostCreate()
    {
       SetScrollLineStep(1, 20);
@@ -49,7 +49,7 @@ class Scores : Window
    	int r;
    	int scores[2]={0,0};
       Ruff ruff = (Ruff)master;
-      
+
    	if(ruff.game.players)
    	{
          int scoreScroll = vertScroll.thumbPosition / 20;
@@ -101,7 +101,7 @@ class Scores : Window
    			surface.CenterTextf(37,40+r*20,"%c",ruff.game.players[shuffle].name[0]);
 
    			// Bet
-            if(r + scoreScroll < ruff.game.round || 
+            if(r + scoreScroll < ruff.game.round ||
                (r + scoreScroll == ruff.game.round && !ruff.game.betting && ruff.game.gameStarted))
             {
                int x = (round->bet.player%2) ? 188 : 162;
@@ -135,7 +135,7 @@ class Scores : Window
    			scores[0] += round->scores[0];
    			scores[1] += round->scores[1];
 
-            if(r < ruff.game.round || 
+            if(r < ruff.game.round ||
                (r == ruff.game.round && !ruff.game.betting && ruff.game.gameStarted))
             {
    			   // Winning box
@@ -150,7 +150,7 @@ class Scores : Window
    					      surface.Area(201,41+(r-scoreScroll)*20,299,59+(r-scoreScroll)*20);
                   }
                }
-   				   
+
    			   // Current Score
                ShowScore(surface,  75, 40 + (r-scoreScroll) * 20, round->scores[0], r);
                ShowScore(surface, 225, 40 + (r-scoreScroll) * 20, round->scores[1], r);

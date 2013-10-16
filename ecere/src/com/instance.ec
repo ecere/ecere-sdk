@@ -235,7 +235,7 @@ class SelfWatcher : struct
 };
 
 public enum AccessMode
-{ 
+{
    defaultAccess,
    publicAccess,
    privateAccess,
@@ -248,7 +248,7 @@ public class SubModule : struct
 public:
    SubModule prev, next;
    Module module;
-   AccessMode importMode;      
+   AccessMode importMode;
 };
 
 public enum DataMemberType { normalMember, unionMember, structMember };
@@ -329,7 +329,7 @@ public:
    {
       get { return name; }
       set
-      {  
+      {
          Class theClass = eSystem_FindClass(__thisModule, value);
          /*
          if(!theClass)
@@ -602,7 +602,7 @@ public:
    void * symbol;
 };
 
-public class EnumClassData : struct 
+public class EnumClassData : struct
 {
 public:
    class_fixed
@@ -927,7 +927,7 @@ private struct BlockPool
             {
                BlockPool * pool = &pools[c];
                printf("[%d %s (%d)]: available: %d, allocated: %d, free: %d, used: %d k, wasted: %d k, free: %d k\n", c, (&pools[c] == this) ? "*" : " ",
-                  pools[c].blockSize, pools[c].totalSize, pools[c].numBlocks, 
+                  pools[c].blockSize, pools[c].totalSize, pools[c].numBlocks,
                   pools[c].totalSize - pools[c].numBlocks, pools[c].usedSpace / 1024, ((pools[c].numBlocks * pools[c].blockSize) - pools[c].usedSpace) / 1024,
                   (pools[c].totalSize - pools[c].numBlocks) * pools[c].blockSize / 1024);
                totalAvailable += pools[c].totalSize * pools[c].blockSize;
@@ -970,8 +970,8 @@ private struct BlockPool
          last = block;
          free = block.next;
          /*if(blockSize == 28)
-            printf("Free: %x, free.part: %x, free.part.size: %d, free.part.pool: %x (this = %x), next = %x (part = %x)\n", free, free ? free.part : null, 
-               (free && free.part) ? free.part.size : 0, (free && free.part) ? free.part.pool : 0, this, 
+            printf("Free: %x, free.part: %x, free.part.size: %d, free.part.pool: %x (this = %x), next = %x (part = %x)\n", free, free ? free.part : null,
+               (free && free.part) ? free.part.size : 0, (free && free.part) ? free.part.pool : 0, this,
                (free ? free.next : 0), (free && free.next) ? free.next.part : 0);
          if(free && free.part && (free.part.size < 0 || free.part.pool == (void *)-1))
             printf("WARNING! Bad next free block!\n");*/
@@ -1001,7 +1001,7 @@ private struct BlockPool
          first = block.next;
       if(last == block)
          last = block.prev;
-      
+
       // block.prev = null;
       block.next = free;
       free = block;
@@ -1037,7 +1037,7 @@ private struct BlockPool
          };
          if(prev)
             prev.next = null;
-         
+
          TOTAL_MEM -= part.size * blockSpace;
          TOTAL_MEM -= sizeof(class MemPart);
          numParts--;
@@ -1057,7 +1057,7 @@ static uint PosFibonacci(uint number)
    uint pos;
    uint last = 1, prev = 0;
    uint current = 1;
-   
+
    for(pos=0; ; pos++)
    {
       current += prev;
@@ -1074,7 +1074,7 @@ static uint NthFibonacci(uint number)
    uint pos;
    uint last = 1, prev = 0;
    uint current = 1;
-   
+
    for(pos=0; pos <= number; pos++)
    {
       current += prev;
@@ -1089,7 +1089,7 @@ static uint NextFibonacci(uint number)
    uint pos;
    uint last = 1, prev = 0;
    uint current = 1;
-   
+
    for(pos=0; ; pos++)
    {
       current += prev;
@@ -1104,7 +1104,7 @@ static uint log1_5i(uint number)
 {
    uint pos;
    uint64 current = sizeof(void *);
-   
+
    for(pos=0; pos < NUM_POOLS; pos++)
    {
       if(current >= number)
@@ -1131,7 +1131,7 @@ static uint pow1_5i(uint number)
 {
    uint pos;
    uint64 current = sizeof(void *);
-   
+
    for(pos=0; pos < NUM_POOLS; pos++)
    {
       if(current >= number)
@@ -1140,7 +1140,7 @@ static uint pow1_5i(uint number)
       if(current == 1) current = 2;
    }
    return (uint)current;
-} 
+}
 
 // -- Math Helpers ---
 public uint log2i(uint number)
@@ -1167,14 +1167,14 @@ static void InitMemory()
    for(c = 0; c<NUM_POOLS; c++)
    {
       int expansion;
-      
+
       pools[c].blockSize = NTH_SIZE(c);
       if(pools[c].blockSize % sizeof(void *))
          pools[c].blockSize += sizeof(void *) - (pools[c].blockSize % sizeof(void *));
       pools[c].blockSpace = pools[c].blockSize;
-      pools[c].blockSpace += sizeof(class MemBlock);      
+      pools[c].blockSpace += sizeof(class MemBlock);
       // pools[c].Expand(initNumBlocks[c]);
-      
+
       expansion = (pools[c].blockSize < 128) ? 1024 : (131072 / pools[c].blockSize);
 
       if(c < 12)
@@ -1519,7 +1519,7 @@ static void * _realloc(void * pointer, unsigned int size)
          block.OutputStacks(true);
       }
    }
-   
+
    pointer = malloc(size + REDZONE * 2);
    if(!pointer)
    {
@@ -1611,7 +1611,7 @@ static void * _crealloc(void * pointer, unsigned int size)
          block.OutputStacks(true);
       }
    }
-   
+
    pointer = calloc(1, size + REDZONE * 2);
    if(!pointer)
    {
@@ -1882,7 +1882,7 @@ public void CheckMemory()
             block.OutputStacks(true);
          }
       }
-      
+
       address = (byte *)block.key;
       for(c = 0; c<REDZONE; c++)
       {
@@ -1899,7 +1899,7 @@ public void CheckMemory()
             block.OutputStacks(block.freed);
          }
       }
-            
+
       memBlocks.Delete(block);
    }
    if(leaksCount)
@@ -1966,7 +1966,7 @@ static void FixDerivativesBase(Class base, Class mod)
       dataTypeString = enumBase ? enumBase.dataTypeString : base.dataTypeString;
 
       /////////////////////
-      
+
       offsetClass = base ? (base.templateClass ? base.templateClass.sizeClass : base.sizeClass) : (type == noHeadClass ? 0 : 0 /*sizeof(class Class)*/);
       totalSizeClass = offsetClass + sizeClass;
 
@@ -1984,7 +1984,7 @@ static void FixDerivativesBase(Class base, Class mod)
          _class.typeSize = _class.structSize = _class.memberOffset + size;
       }
       else if(type == bitClass || type == enumClass || type == unitClass)
-      {  
+      {
          Class dataTypeClass = eSystem_FindClass(_class.module, dataTypeString);
          if(dataTypeClass)
             _class.typeSize = dataTypeClass.typeSize;
@@ -2099,7 +2099,7 @@ static void FixDerivativesBase(Class base, Class mod)
       }
 
       // _class.defaultAlignment = base ? base.defaultAlignment : 0;
-   
+
       if(type == normalClass || type == noHeadClass || type == structClass)
       {
          Property prop;
@@ -2179,7 +2179,7 @@ static void FixDerivativesBase(Class base, Class mod)
          }
       }
    }
-   
+
    {
       OldLink templateLink;
       for(templateLink = base.templatized.first; templateLink; templateLink = templateLink.next)
@@ -2196,7 +2196,7 @@ static void FixDerivativesBase(Class base, Class mod)
          template.sizeClass = base.sizeClass;
          template.structSize = base.structSize;
          template.vTblSize = base.vTblSize;
-         
+
          FixDerivativesBase(template, mod);
       }
    }
@@ -2264,7 +2264,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
 
    if(c - start)
    {
-      int offsetClass; 
+      int offsetClass;
       int totalSizeClass;
       BTNamedLink classLink = null;
       Class _class = null;
@@ -2274,7 +2274,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
       bool refine = false;
       Class prevBase = null;
 
-      if(base && !base.internalDecl && (base.type == noHeadClass || base.type == structClass || base.type == normalClass)) 
+      if(base && !base.internalDecl && (base.type == noHeadClass || base.type == structClass || base.type == normalClass))
       {
          // Normal classes inheriting off simple classes should become no head classes
          if(base.type == structClass && type == normalClass)
@@ -2282,7 +2282,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          else
             type = base.type;
       }
-      if(base && (type == normalClass || type == noHeadClass || type == structClass) && 
+      if(base && (type == normalClass || type == noHeadClass || type == structClass) &&
          (base.type == unitClass || base.type == bitClass || base.type == enumClass))
       {
          type = base.type;
@@ -2293,17 +2293,17 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          {
             // TO IMPROVE:
             if(base || !baseName || !baseName[0] ||
-               !strcmp(baseName, "unsigned int") || 
-               !strcmp(baseName, "uint") || 
-               !strcmp(baseName, "unsigned int64") || 
-               !strcmp(baseName, "uint64") || 
-               !strcmp(baseName, "int64") || 
-               !strcmp(baseName, "unsigned short") || 
-               !strcmp(baseName, "short") || 
-               !strcmp(baseName, "unsigned char") || 
-               !strcmp(baseName, "byte") || 
-               !strcmp(baseName, "char") || 
-               !strcmp(baseName, "uint32") || 
+               !strcmp(baseName, "unsigned int") ||
+               !strcmp(baseName, "uint") ||
+               !strcmp(baseName, "unsigned int64") ||
+               !strcmp(baseName, "uint64") ||
+               !strcmp(baseName, "int64") ||
+               !strcmp(baseName, "unsigned short") ||
+               !strcmp(baseName, "short") ||
+               !strcmp(baseName, "unsigned char") ||
+               !strcmp(baseName, "byte") ||
+               !strcmp(baseName, "char") ||
+               !strcmp(baseName, "uint32") ||
                !strcmp(baseName, "uint16"))
             {
                base = eSystem_FindClass(module, "enum");
@@ -2325,7 +2325,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
             base = eSystem_FindClass(module, "struct");
             dataTypeString = name + start;
          }
-         else 
+         else
          {
             if(type == normalClass)
                // dataTypeString = "struct Instance";
@@ -2345,17 +2345,17 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
                // DANGEROUSLY TESTING THIS... PUT IT BACK
                //if(!base)
                if(base || !baseName || !baseName[0] ||
-                  !strcmp(baseName, "unsigned int") || 
-                  !strcmp(baseName, "uint") || 
-                  !strcmp(baseName, "unsigned int64") || 
-                  !strcmp(baseName, "uint64") || 
-                  !strcmp(baseName, "int64") || 
-                  !strcmp(baseName, "unsigned short") || 
-                  !strcmp(baseName, "short") || 
-                  !strcmp(baseName, "unsigned char") || 
-                  !strcmp(baseName, "byte") || 
-                  !strcmp(baseName, "char") || 
-                  !strcmp(baseName, "uint32") || 
+                  !strcmp(baseName, "unsigned int") ||
+                  !strcmp(baseName, "uint") ||
+                  !strcmp(baseName, "unsigned int64") ||
+                  !strcmp(baseName, "uint64") ||
+                  !strcmp(baseName, "int64") ||
+                  !strcmp(baseName, "unsigned short") ||
+                  !strcmp(baseName, "short") ||
+                  !strcmp(baseName, "unsigned char") ||
+                  !strcmp(baseName, "byte") ||
+                  !strcmp(baseName, "char") ||
+                  !strcmp(baseName, "uint32") ||
                   !strcmp(baseName, "uint16"))
                {
                   if(type == normalClass && strcmp(name, "ecere::com::Instance") && strcmp(name, "enum") && strcmp(name, "struct"))
@@ -2385,7 +2385,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
 
       offsetClass = base ? base.sizeClass : (type == noHeadClass ? 0 : 0 /*sizeof(class Class)*/);
       totalSizeClass = offsetClass + sizeClass;
-   
+
       if((_class = eSystem_FindClass(module, name)))
       {
          if(!_class.internalDecl)
@@ -2417,8 +2417,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          }
          {
             NameSpace * ns = _class.nameSpace;
-            while(ns->parent && 
-               !ns->classes.first && 
+            while(ns->parent &&
+               !ns->classes.first &&
                !ns->functions.first &&
                !ns->defines.first &&
                !ns->nameSpaces.first)
@@ -2665,7 +2665,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
             _class.typeSize = _class.structSize = _class.memberOffset + size;
          }
          else if(type == bitClass || type == enumClass || type == unitClass)
-         {  
+         {
             Class dataTypeClass = eSystem_FindClass(_class.module, dataTypeString);
             if(dataTypeClass)
                _class.typeSize = dataTypeClass.typeSize;
@@ -2780,7 +2780,7 @@ static void FreeTemplateArg(Class template, ClassTemplateParameter param, int id
          delete template.templateArgs[id].memberString;
          break;
       case expression:
-         
+
          break;
    }
 }
@@ -2796,7 +2796,7 @@ static void FreeTemplateArgs(Class template)
          ClassTemplateParameter param;
          int id = 0;
          if(_class.templateClass) _class = _class.templateClass;
-         for(prevClass = _class.base; prevClass; prevClass = prevClass.base) 
+         for(prevClass = _class.base; prevClass; prevClass = prevClass.base)
          {
             if(prevClass.templateClass) prevClass = prevClass.templateClass;
             id += prevClass.templateParams.count;
@@ -2884,7 +2884,7 @@ public dllexport void eClass_Unregister(Class _class)
    delete _class._vTbl;
 
    FreeTemplates(_class);
-   
+
    FreeTemplateArgs(_class);
    delete _class.templateArgs;
 
@@ -2943,7 +2943,7 @@ public dllexport void eClass_Unregister(Class _class)
    _class.delayedCPValues.Free(null);
 
    _class.selfWatchers.Free(null);
-   
+
    if(_class.base)
    {
       // Class base = _class.base.templateClass ? _class.base.templateClass : _class.base;
@@ -2970,7 +2970,7 @@ public dllexport void eClass_Unregister(Class _class)
 
    delete _class.name;
    delete _class.fullName;
-   
+
    delete _class.dataTypeString;
 
    delete _class.data;
@@ -2986,7 +2986,7 @@ public dllexport void eClass_Unregister(Class _class)
             delete param.defaultArg.memberString;
             break;
          case expression:
-            
+
             break;
       }
       if(param.type != identifier) delete param.dataTypeString;
@@ -3104,9 +3104,9 @@ public int64 _strtoi64(char * string, char ** endString, int base)
    {
       if(ch >= '0' && ch <= '9')
          ch -= '0';
-      else if(ch >= 'a' && ch <= 'z') 
-         ch -= ('a' - 10); 
-      else if(ch >= 'A' && ch <= 'Z') 
+      else if(ch >= 'a' && ch <= 'z')
+         ch -= ('a' - 10);
+      else if(ch >= 'A' && ch <= 'Z')
          ch -= ('A'- 10);
       else
       {
@@ -3159,9 +3159,9 @@ public uint64 _strtoui64(char * string, char ** endString, int base)
    {
       if(ch >= '0' && ch <= '9')
          ch -= '0';
-      else if(ch >= 'a' && ch <= 'z') 
-         ch -= ('a' - 10); 
-      else if(ch >= 'A' && ch <= 'Z') 
+      else if(ch >= 'a' && ch <= 'z')
+         ch -= ('a' - 10);
+      else if(ch >= 'A' && ch <= 'Z')
          ch -= ('A' - 10);
       else
       {
@@ -3196,7 +3196,7 @@ public dllexport Class eSystem_FindClass(Module module, char * name)
 
       link = SearchModule(module, name, &((NameSpace *)0)->classes, true);
       if(link) return link.data;
-      
+
       {
          char noTemplateName[1024];
          char * templateParams = strchr(name, '<');
@@ -3264,7 +3264,7 @@ static void CopyTemplateArg(ClassTemplateParameter param, ClassTemplateArgument 
          arg.dataTypeString = CopyString(arg.dataTypeString);
          break;
       case expression:
-         
+
          break;
       case identifier:
          arg.memberString = CopyString(arg.memberString);
@@ -3287,7 +3287,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
       if(sClass.templateClass) sClass = sClass.templateClass;
       numParams += sClass.templateParams.count;
    }
-   
+
    if(templatedClass.templateArgs)
       FreeTemplateArgs(templatedClass);
    delete templatedClass.templateArgs;
@@ -3314,11 +3314,11 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
            CopyTemplateArg(param, templatedClass.templateArgs[id++]);
       }*/
    }
-   
+
    if(templatedClass.base && templatedClass.base.templateArgs && _class == templatedClass)
    {
       Class sClass;
-      memcpy(templatedClass.templateArgs, templatedClass.base.templateArgs, 
+      memcpy(templatedClass.templateArgs, templatedClass.base.templateArgs,
          sizeof(ClassTemplateArgument) * (numParams - templatedClass.templateParams.count));
       for(sClass = templatedClass.base; sClass; sClass = sClass.base)
       {
@@ -3336,7 +3336,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
             CopyTemplateArg(param, templatedClass.templateArgs[id++]);
       }
    }
-   
+
    while(nextParamStart)
    {
       char * paramStart = nextParamStart;
@@ -3344,7 +3344,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
       int level = 0;
       while(*paramStart == ' ') paramStart++;
       paramEnd = paramStart;
-      while((ch = *paramEnd, ch && (level > 0 || (ch != '>' && ch != ',')))) 
+      while((ch = *paramEnd, ch && (level > 0 || (ch != '>' && ch != ','))))
       {
          if(ch == '<') level++;
          if(ch == '>') level--;
@@ -3368,11 +3368,11 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
          {
             char * end = equal - 1;
             char ident[1024];
-            
+
             while(*end == ' ') end--;
             strncpy(ident, paramStart, end + 1 - paramStart);
             ident[end + 1 - paramStart] = 0;
-            
+
             for(sClass = _class; sClass; sClass = sClass.base)
             {
                if(sClass.templateClass) sClass = sClass.templateClass;
@@ -3417,7 +3417,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                      curParam = param;
                      break;
                   }
-                  if(curParam) 
+                  if(curParam)
                   {
                      Class nextClass;
                      for(nextClass = sClass.base; nextClass; nextClass = nextClass.base)
@@ -3448,7 +3448,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                         {
                            curParamID += nextClass.templateParams.count;
                            break;
-                        } 
+                        }
                      break;
                   }
                }
@@ -3460,7 +3460,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
          {
             ClassTemplateArgument argument { };
             char value[1024];
-            if(equal) 
+            if(equal)
             {
                equal++;
                while(*equal == ' ') equal++;
@@ -3488,7 +3488,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                   if(!expClass) expClass = eSystem_FindClass(_class.module.application, curParam.dataTypeString);
                   if(expClass)
                   {
-                     //if(expClass.type == 
+                     //if(expClass.type ==
                      ((bool (*)(void *, void *, const char *))(void *)expClass._vTbl[__ecereVMethodID_class_OnGetDataFromString])(expClass, &argument.expression, value);
                   }
                   // Expression should be pre simplified here
@@ -3546,7 +3546,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                      argument.expression.i = (int)strtol(value, null, 0);
                   }
                   break;
-               } 
+               }
                case identifier:
                   argument.memberString = CopyString(value);
                   break;
@@ -3579,9 +3579,9 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
             if(param.type == type && param.defaultArg.dataTypeString)
             {
                templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module, param.defaultArg.dataTypeString);
-               if(!templatedClass.templateArgs[curParamID].dataTypeClass) 
+               if(!templatedClass.templateArgs[curParamID].dataTypeClass)
                   templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module.application, param.defaultArg.dataTypeString);
-               if(!templatedClass.templateArgs[curParamID].dataTypeClass) 
+               if(!templatedClass.templateArgs[curParamID].dataTypeClass)
                   templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(findModule, param.defaultArg.dataTypeString);
             }
          }
@@ -3613,7 +3613,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                      Class cClass = null;
                      int paramCount = 0;
                      int lastParam = -1;
-                     
+
                      char templateString[1024];
                      sprintf(templateString, "%s<", expClass.templateClass.fullName);
                      for(cClass = expClass; cClass; cClass = cClass.base)
@@ -3730,7 +3730,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                   }
                }
             }
-            c--;                        
+            c--;
          }
       }
    }
@@ -3743,8 +3743,8 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
          Class nextClass;
          ClassTemplateParameter param;
          if(sClass.templateClass) sClass = sClass.templateClass;
-         
-         for(nextClass = sClass.base; nextClass; nextClass = nextClass.base) 
+
+         for(nextClass = sClass.base; nextClass; nextClass = nextClass.base)
          {
             if(nextClass.templateClass) nextClass = nextClass.templateClass;
             curParamID += nextClass.templateParams.count;
@@ -3785,7 +3785,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                Class dClass;
                int p = numParams - 1;
                for(dClass = _class; dClass; dClass = dClass.base)
-               {                              
+               {
                   if(dClass.templateClass) dClass = dClass.templateClass;
                   for(cParam = dClass.templateParams.last; cParam; cParam = cParam.prev, p--)
                   {
@@ -3838,7 +3838,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
 
                   memcpy(className, memberString, colon - memberString);
                   className[colon - memberString] = '\0';
-                  
+
                   for(sClass = _class; sClass; sClass = sClass.base)
                   {
                      ClassTemplateParameter cParam;
@@ -3846,7 +3846,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                      int id = 0;
 
                      if(sClass.templateClass) sClass = sClass.templateClass;
-                     for(nextClass = sClass.base; nextClass; nextClass = nextClass.base) 
+                     for(nextClass = sClass.base; nextClass; nextClass = nextClass.base)
                      {
                         if(nextClass.templateClass) nextClass = nextClass.templateClass;
                         id += nextClass.templateParams.count;
@@ -3858,7 +3858,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                            strcpy(className, templatedClass.templateArgs[id].dataTypeString);
                         }
                         id++;
-                     }                  
+                     }
                   }
                   memberClass = eSystem_FindClass(templatedClass.module, className);
                   // TESTING: Added this here...
@@ -3918,7 +3918,7 @@ public dllexport bool eClass_IsDerived(Class _class, Class from)
                   ClassTemplateParameter param;
                   Class nextClass;
                   int p = 0;
-                  for(nextClass = sClass.base; nextClass; nextClass = nextClass.base) p += nextClass.templateParams.count;               
+                  for(nextClass = sClass.base; nextClass; nextClass = nextClass.base) p += nextClass.templateParams.count;
                   for(param = sClass.templateParams.first; param; param = param.next, p++)
                   {
                      ClassTemplateArgument * arg = &_class.templateArgs[p];
@@ -4240,7 +4240,7 @@ static void SetDelayedCPValues(Class _class, ClassProperty _property)
 
 public dllexport ClassProperty eClass_AddClassProperty(Class _class, char * name, char * dataType, void * setStmt, void * getStmt)
 {
-   if(name && !_class.classProperties.FindString(name)) 
+   if(name && !_class.classProperties.FindString(name))
    {
       ClassProperty _property
       {
@@ -4396,7 +4396,7 @@ public dllexport void * eInstance_New(Class _class)
    Instance instance = null;
    if(_class)
    {
-      // instance = _malloc(_class.size);   
+      // instance = _malloc(_class.size);
 #ifdef MEMINFO
 
 #undef malloc
@@ -4513,13 +4513,13 @@ public dllexport void eInstance_Evolve(Instance * instancePtr, Class _class)
          for(nameSpace = (NameSpace *)app.systemNameSpace.nameSpaces.first; nameSpace; nameSpace = (NameSpace *)((BTNode)nameSpace).next)
             nameSpace->parent = &app.systemNameSpace;
          // --------------------------------------------------
-         
+
          for(_class = app.classes.first; _class; _class = _class.next)
          {
             OldLink templateLink;
             _class.module = (Module) app;
             for(templateLink = _class.templatized.first; templateLink; templateLink = templateLink.next)
-            {  
+            {
                Class template = templateLink.data;
                template.module = _class.module;
             }
@@ -4609,14 +4609,14 @@ public dllexport void eInstance_Delete(Instance instance)
                   OldList * watchers = (OldList *)((byte *)instance + _property.watcherOffset);
                   Watcher watcher, next;
                   for(watcher = watchers->first; watcher; watcher = next)
-                  {  
+                  {
                      next = watcher.next;
                      watchers->Delete(watcher);
                   }
                }
             }
          }*/
-         
+
 
          base = _class.base;
          if(base && (base.type == systemClass || base.isInstanceClass)) base = null;
@@ -4865,7 +4865,7 @@ public dllexport DataMember eClass_FindDataMemberAndId(Class _class, char * name
 public dllexport void eClass_FindNextMember(Class _class, Class * curClass, DataMember * curMember, DataMember * subMemberStack, int * subMemberStackPos)
 {
    // THIS CODE WILL FIND NEXT MEMBER... (PUBLIC MEMBERS ONLY)
-   if(*curMember) 
+   if(*curMember)
    {
       *curMember = (*curMember).next;
 
@@ -4902,7 +4902,7 @@ public dllexport void eClass_FindNextMember(Class _class, Class * curClass, Data
 
             *curMember = (*curMember).members.first;
             while(*curMember && ((*curMember).memberAccess == privateAccess))
-               *curMember = (*curMember).next;                     
+               *curMember = (*curMember).next;
          }
       }
    }
@@ -4952,7 +4952,7 @@ public dllexport void eClass_FindNextMember(Class _class, Class * curClass, Data
 
                *curMember = (*curMember).members.first;
                while(*curMember && (*curMember).memberAccess == privateAccess)
-                  *curMember = (*curMember).next;                     
+                  *curMember = (*curMember).next;
             }
          }
       }
@@ -4973,7 +4973,7 @@ public dllexport void eInstance_SetMethod(Instance instance, char * name, void *
             {
                instance._vTbl = _malloc(sizeof(void *) * instance._class.vTblSize);
                memcpy(instance._vTbl, instance._class._vTbl,
-                  sizeof(int(*)()) * instance._class.vTblSize);               
+                  sizeof(int(*)()) * instance._class.vTblSize);
             }
             instance._vTbl[method.vid] = function ? function : DefaultFunction;
          }
@@ -5019,7 +5019,7 @@ static void FixOffsets(Class _class)
    OldLink deriv;
    _class.structSize += _class.base.structSize - _class.offset;
 
-   _class.offset = _class.base.structSize;   
+   _class.offset = _class.base.structSize;
 
    for(deriv = _class.derivatives.first; deriv; deriv = deriv.next)
       FixOffsets(deriv.data);
@@ -5037,7 +5037,7 @@ public dllexport DataMember eClass_AddDataMember(Class _class, char * name, char
 {
    if(_class && name)
    {
-      if(!_class.members.FindString(name)) 
+      if(!_class.members.FindString(name))
       {
          DataMember dataMember;
 
@@ -5048,7 +5048,7 @@ public dllexport DataMember eClass_AddDataMember(Class _class, char * name, char
             if(_class.memberOffset % alignment)
                _class.memberOffset += alignment - (_class.memberOffset % alignment);
          }
-         
+
          dataMember = DataMember {
             name = CopyString(name);
             dataTypeString = CopyString(type);
@@ -5071,7 +5071,7 @@ public dllexport DataMember eClass_AddDataMember(Class _class, char * name, char
 
 public dllexport DataMember eMember_AddDataMember(DataMember member, char * name, char * type, unsigned int size, unsigned int alignment, AccessMode declMode)
 {
-   if(name && !member.membersAlpha.FindString(name)) 
+   if(name && !member.membersAlpha.FindString(name))
    {
       DataMember dataMember;
 
@@ -5115,7 +5115,7 @@ static void SetMemberClass(DataMember member, Class _class)
    DataMember dataMember;
    member._class = _class;
    for(dataMember = member.members.first; dataMember; dataMember = dataMember.next)
-      SetMemberClass(dataMember, _class);      
+      SetMemberClass(dataMember, _class);
 }
 
 public dllexport bool eMember_AddMember(DataMember addTo, DataMember dataMember)
@@ -5184,7 +5184,7 @@ public dllexport bool eClass_AddMember(Class _class, DataMember dataMember)
 
 public dllexport BitMember eClass_AddBitMember(Class _class, char * name, char * type, int bitSize, int bitPos, AccessMode declMode)
 {
-   if(_class && name && !_class.members.FindString(name)) 
+   if(_class && name && !_class.members.FindString(name))
    {
       uint64 mask = 0;
       int c;
@@ -5273,7 +5273,7 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
    if(ensureCOM && !strcmp(name, "ecere") && module)
    {
       name = !strcmp(module.name, "ecereCOM") ? "ecere" : "ecereCOM";
-      if((!Load && !strcmp(module.name, "ecereCOM")) || 
+      if((!Load && !strcmp(module.name, "ecereCOM")) ||
          (Load && (!__thisModule || !__thisModule.name || !strcmp(__thisModule.name, "ecereCOM")) && Load != COM_LOAD_FUNCTION))
       {
          Module module;
@@ -5392,9 +5392,9 @@ public dllexport void eEnum_AddFixedValue(Class _class, char * string, int value
    {
       EnumClassData data = (EnumClassData)_class.data;
       NamedLink item;
-      
+
       for(item = data.values.first; item; item = item.next)
-         if(!strcmp(item.name, string)) 
+         if(!strcmp(item.name, string))
             break;
       if(!item)
       {
@@ -5413,7 +5413,7 @@ public dllexport int eEnum_AddValue(Class _class, char * string)
       int value = ((int) data.largest) + 1;
       NamedLink item;
       for(item = data.values.first; item; item = item.next)
-         if(!strcmp(item.name, string)) 
+         if(!strcmp(item.name, string))
             break;
       if(!item)
       {
@@ -5504,7 +5504,7 @@ static void Module_Destructor(Module module)
       while((handle = module.modules.last))  // STARTING WITH LAST SO THAT ecereCOM IS UNLOADED LAST...
       {
          Module depModule = handle.module;
-         if(depModule == ourWorld) 
+         if(depModule == ourWorld)
          {
             module.modules.Remove(handle);
             ourHandle = handle;
@@ -5513,7 +5513,7 @@ static void Module_Destructor(Module module)
          {
             module.modules.Delete(handle);
             delete depModule;
-         }         
+         }
       }
       if(ourHandle)
       {
@@ -5639,7 +5639,7 @@ default dllexport char * strupr(char *string)
 public dllexport DefinedExpression eSystem_RegisterDefine(char * name, char * value, Module module, AccessMode declMode)
 {
    NameSpace * nameSpace = null;
-   
+
    int start = 0, c;
 
    nameSpace = (declMode == publicAccess) ? &module.publicNameSpace : &module.privateNameSpace;
@@ -5673,7 +5673,7 @@ public dllexport DefinedExpression eSystem_RegisterDefine(char * name, char * va
                delete spaceName;
             nameSpace = newSpace;
             if(name[c] == ':') c++;
-            start = c+1;         
+            start = c+1;
          }
       }
    }
@@ -5732,7 +5732,7 @@ public dllexport GlobalFunction eSystem_RegisterFunction(char * name, char * typ
                delete spaceName;
             nameSpace = newSpace;
             if(name[c] == ':') c++;
-            start = c+1;         
+            start = c+1;
          }
       }
    }
@@ -5892,7 +5892,7 @@ public dllexport void eProperty_SelfWatch(Class _class, char * name, void (*call
    if(_class)
    {
       Property _property = eClass_FindProperty(_class, name, _class.module);
-      
+
       if(!_property)
          _property = eClass_AddProperty(_class, name, null, null, null, baseSystemAccess /*privateAccess*/);
       _class.selfWatchers.Add(SelfWatcher { _property = _property, callback = callback });
@@ -6031,7 +6031,7 @@ static void LoadCOM(Module module)
    enumClass = eSystem_RegisterClass(normalClass, "enum", null, 0, force64Bits ? 40 : sizeof(class EnumClassData), null, null, module, baseSystemAccess, publicAccess);
    eClass_AddClassProperty(enumClass, "enumSize", "int", null, GetEnumSize).constant = true;
    enumClass.type = systemClass;
-   
+
    delete enumClass.dataTypeString;
    enumClass.dataTypeString = CopyString(/*"unsigned int"*/"int");
 
@@ -6079,7 +6079,7 @@ static void LoadCOM(Module module)
    moduleClass.count++;
    if(inCompiler && force32Bits)
       moduleClass.structSize = 12 + 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4*16) + (16 + 4 + 4 + 4*16);
-   
+
    // Create Application class
    applicationClass = eSystem_RegisterClass(normalClass, "ecere::com::Application", "Module", force64Bits ? (8+8+4+4 + 32 + 8 + 176) : sizeof(struct Application), 0, null, (void *)Application_Destructor, module, baseSystemAccess, publicAccess);
    if(inCompiler && force32Bits)
@@ -6250,7 +6250,7 @@ public dllexport ClassTemplateParameter eClass_AddTemplateParameter(Class _class
          type = type;
          (type == identifier) ? info : CopyString(info);
       };
-      if(defaultArg != null) 
+      if(defaultArg != null)
       {
          param.defaultArg = defaultArg;
          CopyTemplateArg(param, param.defaultArg);
@@ -6339,7 +6339,7 @@ public dllexport void eClass_DoneAddingTemplateParameters(Class base)
                }
             }
          }
-      }      
+      }
 
       //ComputeClassParameters(base, null, null);
 
@@ -6385,7 +6385,7 @@ public enum Platform
    {
       get { return OnGetString(null, null, null); }
       set
-      {  
+      {
          if(value)
          {
             Platform c;
@@ -6409,7 +6409,7 @@ public enum Platform
          tempString[0] = '\0';
       return null;
    }
-   
+
    bool OnGetDataFromString(char * string)
    {
       this = string;
@@ -6466,22 +6466,22 @@ public:
 
    // FIX THIS WITH PUBLIC:
    property ClassDesignerBase classDesigner
-   { 
+   {
       get { return classDesigner; }
       set { classDesigner = value; }
    };
    property char * objectClass
-   { 
+   {
       get { return objectClass; }
       set { objectClass = value; }
    };
    property bool isDragging
-   { 
+   {
       get { return isDragging; }
       set { isDragging = value; }
    };
 }
- 
+
 public class ClassDesignerBase : Window
 {
 public:
@@ -6573,9 +6573,9 @@ public bool UTF8Validate(char * source)
          }
          if(i < numBytes) return false;
 
-         if(codePoint > 0x10FFFF || (codePoint >= 0xD800 && codePoint <= 0xDFFF) || 
-           (codePoint < 0x80 && numBytes > 1) || 
-           (codePoint < 0x800 && numBytes > 2) || 
+         if(codePoint > 0x10FFFF || (codePoint >= 0xD800 && codePoint <= 0xDFFF) ||
+           (codePoint < 0x80 && numBytes > 1) ||
+           (codePoint < 0x800 && numBytes > 2) ||
            (codePoint < 0x10000 && numBytes > 3))
             return false;
       }
@@ -6645,12 +6645,12 @@ public char * UTF16toUTF8(uint16 * source)
          continue;
       }
       if(invert) { u16 = ((u16 & 0xFF00) >> 8) | ((u16 & 0x00FF) << 8); }
-      
+
       if(u16 < 0xD800 || u16 > 0xDBFF)
-         ch = (unichar)u16;         
+         ch = (unichar)u16;
       else
          ch = ((unichar)u16 << 10) + source[c++] + SURROGATE_OFFSET;
-                  
+
       if(ch < 0x80)
       {
          dest[d++] = (char)ch;
@@ -6688,7 +6688,7 @@ public int UTF16toUTF8Buffer(uint16 * source, byte * dest, int max)
    {
       unichar ch;
       if(u16 < 0xD800 || u16 > 0xDBFF)
-         ch = (unichar)u16;         
+         ch = (unichar)u16;
       else
          ch = ((unichar)u16 << 10) + source[c++] + SURROGATE_OFFSET;
 
@@ -6765,10 +6765,10 @@ public unichar UTF8GetChar(char * string, int * numBytes)
       }
    }
 
-   if(i < nb || 
-      ch > 0x10FFFF || (ch >= 0xD800 && ch <= 0xDFFF) || 
-     (ch < 0x80 && nb > 1) || 
-     (ch < 0x800 && nb > 2) || 
+   if(i < nb ||
+      ch > 0x10FFFF || (ch >= 0xD800 && ch <= 0xDFFF) ||
+     (ch < 0x80 && nb > 1) ||
+     (ch < 0x800 && nb > 2) ||
      (ch < 0x10000 && nb > 3))
    {
       ch = 0;
@@ -6830,7 +6830,7 @@ public int UTF8toUTF16Buffer(char * source, uint16 * dest, int max)
       dest[d] = 0;
       return d;
    }
-   return 0;   
+   return 0;
 }
 
 public int UTF32toUTF8Len(unichar * source, int count, byte * dest, int max)

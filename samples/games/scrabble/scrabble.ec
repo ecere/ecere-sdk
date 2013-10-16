@@ -136,7 +136,7 @@ class DefineBlank : Window
       for(c = 0; c<Letters::blank; c++)
       {
          list.AddRow().SetData(field, c);
-      }         
+      }
    }
 }
 
@@ -212,7 +212,7 @@ class Scrabble : Window
          char ch = (char)a + 'A';
          surface.SetForeground(blank ? gray : black);
          surface.TextFont(letterFont.font);
-         surface.WriteText(x + 5, y, &ch, 1); 
+         surface.WriteText(x + 5, y, &ch, 1);
 
          if(!blank)
          {
@@ -276,7 +276,7 @@ class Scrabble : Window
 
          if(boardLetters[cy][cx] == empty)
          {
-            surface.Area(x + 2, y + 2, x + TileSize - 1, y + TileSize - 1); 
+            surface.Area(x + 2, y + 2, x + TileSize - 1, y + TileSize - 1);
             surface.SetForeground(black);
             if(cx == 7 && cy == 7)
             {
@@ -307,8 +307,8 @@ class Scrabble : Window
       else if(boardLetters[cy][cx] == empty)
       {
          surface.SetBackground(burlyWood);
-         surface.Area(x + 2, y + 2, x + TileSize - 1, y + TileSize - 1); 
-      }         
+         surface.Area(x + 2, y + 2, x + TileSize - 1, y + TileSize - 1);
+      }
    }
 
    void OnRedraw(Surface surface)
@@ -321,7 +321,7 @@ class Scrabble : Window
          surface.HLine(BoardX, BoardX + TileSize * 15, BoardY + y * TileSize);
          surface.HLine(BoardX, BoardX + TileSize * 15, BoardY + y * TileSize+1);
       }
-      
+
       for(x = 0; x<16; x++)
       {
          surface.VLine(BoardY + 0, BoardY + TileSize * 15, BoardX + x * TileSize);
@@ -332,7 +332,7 @@ class Scrabble : Window
          {
             DrawSquare(surface, x, y);
          }
-      
+
       for(c = 0; c<numLetters; c++)
       {
          if(dragging && c == dragLetter)
@@ -361,7 +361,7 @@ class Scrabble : Window
       // Picking Letters on the board
       if(gameStarted && turn == playerID)
       {
-         if(mx > BoardX && mx < BoardX + TileSize * 15 && 
+         if(mx > BoardX && mx < BoardX + TileSize * 15 &&
             my > BoardY && my < BoardY + TileSize * 15)
          {
             int x = (mx - BoardX) / TileSize;
@@ -375,7 +375,7 @@ class Scrabble : Window
                blankValues[y][x] = empty;
                numLetters++;
                dragging = true;
-               
+
                dragY = my;
                dragPos = -1;
                Capture();
@@ -428,7 +428,7 @@ class Scrabble : Window
 
          numLetters++;
          dragging = true;
-         
+
          dragY = my;
          dragPos = -1;
          Capture();
@@ -455,7 +455,7 @@ class Scrabble : Window
       else if(posA > posB)
          return 1;
       else
-         return 0;      
+         return 0;
    }
 
    bool OnMouseMove(int mx, int my, Modifiers mods)
@@ -479,7 +479,7 @@ class Scrabble : Window
 
          for(c = 0; c<numLetters; c++)
             ordered[c] = c;
-         
+
          if(y < TileSize && y > -TileSize && moveX + TileSize >= 0 && moveX <= TrayWidth)
          {
             qsort(ordered, numLetters, sizeof(int), ComparePositions);
@@ -504,7 +504,7 @@ class Scrabble : Window
                   memmove(ordered + dragPos + 1, ordered + dragPos, (pos - dragPos) * sizeof(int));
                   ordered[dragPos] = dragLetter;
                }
-               
+
                ordered[dragPos] = dragLetter;
                ordered[pos] = oldValue;
             }
@@ -524,11 +524,11 @@ class Scrabble : Window
                if(out && c != numLetters)
                   collision = true;
             }
-            
+
             if(moveX >= lastX || collision)
             {
                int end;
-               
+
                for(c = 0; c<numLetters; c++)
                {
                   if(ordered[c] == dragLetter)
@@ -537,7 +537,7 @@ class Scrabble : Window
                      break;
                   }
                }
-                  
+
                end = moveX + TileSize;
 
                for(; c < numLetters; c++)
@@ -551,7 +551,7 @@ class Scrabble : Window
                   }
                   end = ((ordered[c] == dragLetter) ? moveX : positions[ordered[c]]) + TileSize;
                }
-               
+
                // RIGHT LIMIT
                end = TrayWidth;
                for(c = numLetters-1; c>= 0; c--)
@@ -621,7 +621,7 @@ class Scrabble : Window
          // Dropping On the board
          if(gameStarted && turn == playerID)
          {
-            if(mx > BoardX && mx < BoardX + TileSize * 15 && 
+            if(mx > BoardX && mx < BoardX + TileSize * 15 &&
                my > BoardY && my < BoardY + TileSize * 15)
             {
                x = (mx - BoardX) / TileSize;
@@ -643,7 +643,7 @@ class Scrabble : Window
       int end;
       int ordered[7];
       int c;
-      
+
       for(c = 0; c<numLetters; c++)
          ordered[c] = c;
       qsort(ordered, numLetters, sizeof(int), ComparePositions);
@@ -656,7 +656,7 @@ class Scrabble : Window
             positions[ordered[c]] = end;
          end = positions[ordered[c]] + TileSize;
       }
-      
+
       // RIGHT LIMIT
       end = TrayWidth;
       for(c = numLetters-1; c>= 0; c--)
@@ -673,7 +673,7 @@ class Scrabble : Window
       {
          dragging = false;
          ReleaseCapture();
-        
+
          if(my > ThrowHeight)
          {
             throwLetters[numThrowLetters++] = letters[dragLetter];
@@ -687,7 +687,7 @@ class Scrabble : Window
          // Dropping Letters on the board
          if(gameStarted && turn == playerID)
          {
-            if(mx > BoardX && mx < BoardX + TileSize * 15 && 
+            if(mx > BoardX && mx < BoardX + TileSize * 15 &&
                my > BoardY && my < BoardY + TileSize * 15)
             {
                int x = (mx - BoardX) / TileSize;
@@ -721,13 +721,13 @@ class Scrabble : Window
    }
 
    DataField scoreFields[MaxPlayers];
-   
-   Button playBtn 
+
+   Button playBtn
    {
       this, text = "Play", bevel = false, position = { 520, 540 };
       font = { "Arial", 20, true };
       opacity = 0; drawBehind = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!numThrowLetters && gameStarted && turn == playerID)
@@ -786,7 +786,7 @@ class Scrabble : Window
       this, text = "Throw / Pass", bevel = false, position = { 430, 622 };
       font = { "Arial", 20, true };
       opacity = 0; drawBehind = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          bool placed = false;
@@ -820,7 +820,7 @@ class Scrabble : Window
       this, text = "Connect", bevel = false, position = { 520, 122 };
       font = { "Arial", 20, true };
       opacity = 0; drawBehind = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!server)
@@ -885,13 +885,13 @@ class Scrabble : Window
                      int y = move.tiles[c].y;
                      scrabble.boardLetters[y][x] = move.tiles[c].letter;
                      scrabble.blankValues[y][x] = move.tiles[c].blankValue;
-                  }                              
+                  }
                   scrabble.playerScores[move.player] += move.score;
                   scrabble.scores.AddRow().SetData(scrabble.scoreFields[move.player], scrabble.playerScores[move.player]);
 
                   scrabble.Update(null);
                   memcpy(scrabble.lastBoard, scrabble.boardLetters, sizeof(scrabble.lastBoard));
-                  
+
                   do
                   {
                      scrabble.turn++;
@@ -917,7 +917,7 @@ class Scrabble : Window
       this, text = "Start", bevel = false, position = { 520, 222 };
       font = { "Arial", 20, true };
       opacity = 0; drawBehind = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(scrabbleGame)
@@ -930,7 +930,7 @@ class Scrabble : Window
       this, text = "Host (Français)", bevel = false, position = { 520, 322 };
       font = { "Arial", 16, true };
       opacity = 0; drawBehind = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!scrabbleGame || !scrabbleGame.gameStarted)
@@ -953,7 +953,7 @@ class Scrabble : Window
       this, text = "Host (English)", bevel = false, position = { 520, 362 };
       font = { "Arial", 16, true };
       opacity = 0; drawBehind = true;
-      
+
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!scrabbleGame || !scrabbleGame.gameStarted)

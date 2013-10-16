@@ -3,7 +3,7 @@ public import "ecere"
 #define BORDER       5 //4
 #define TOP          3
 #define BOTTOM       (4 + 2)
-#define CORNER       (BORDER * 2 + 6) 
+#define CORNER       (BORDER * 2 + 6)
 #define CAPTION      22 // 20
 #define DEAD_BORDER  0 //3
 #define MIN_WIDTH    68
@@ -120,18 +120,18 @@ static void Button::ThumbOnRedraw(Surface surface)
    int w = 14;// * sizeW / 14;
    int sideH = 10; // * sizeW / 14;
    int middleH = size.h - 2 * (sideH + y);
-   
+
    surface.Stretch(left.bitmap, x, y, 0,0, w, sideH, left.bitmap.width, left.bitmap.height);
    surface.HTile(middle.bitmap, x, y + sideH, w, middleH);
    surface.Stretch(right.bitmap, x, y + sideH + middleH, 0,0, w, sideH, right.bitmap.width, right.bitmap.height);
-   
+
    /*
    surface.Filter(left.bitmap, x, y, 0,0, w, sideH, left.bitmap.width, left.bitmap.height);
    surface.FilterVTile(middle.bitmap, x, y + sideH, w, middleH);
    surface.Filter(right.bitmap, x, y + sideH + middleH, 0,0, w, sideH, right.bitmap.width, right.bitmap.height);
    */
 }
-   
+
 static bool Button::ThumbIsInside(int x, int y)
 {
    return (x >= 0 && y >= 0 && x < size.w && y < size.h);
@@ -199,7 +199,7 @@ public class MySkin_ScrollBar : ScrollBar
       }
       return true;
    }
-   
+
    void OnRedraw(Surface surface)
    {
       surface.VTile(bmpScrollVert.bitmap, 0, 0, clientSize.w, clientSize.h);
@@ -283,7 +283,7 @@ public class MySkin_Button : Button
    }
 
    void OnRedraw(Surface surface)
-   {  
+   {
       if(bitmap)
       {
          ((void (*)(Window, Surface))(void *)PUREVTBL(Button)[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw])(this, surface);
@@ -310,7 +310,7 @@ public class MySkin_Button : Button
          surface.Filter(left.bitmap, x, y, 0,0, sideW, h, left.bitmap.width, left.bitmap.height);
          surface.FilterHTile(middle.bitmap, x + sideW, y, middleW, h);
          surface.Filter(right.bitmap, x + sideW + middleW, y, 0,0, sideW, h, left.bitmap.width, left.bitmap.height);
-         
+
 
          surface.CenterTextf(clientSize.w/2 + offset, (clientSize.h - textH * 1.1) / 2 + offset, text);
       }
@@ -318,7 +318,7 @@ public class MySkin_Button : Button
 }
 
 
-char * cursorsBitmaps[] = 
+char * cursorsBitmaps[] =
 {
    "<:ecere>cursors/arrow.png",
    "<:ecere>cursors/iBeam.png",
@@ -572,7 +572,7 @@ public class MySkin_Window : Window
             deepBottom = (((BorderBits)borderStyle).fixed /*sizable*/ && isNormal) ? bottom : border;
          }
 
-         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop, 
+         surface.Bevel(((BorderBits)borderStyle).bevel ? false : true, deepBorder, deepTop,
             size.w - deepBorder - deepBorder, size.h - deepBottom - deepTop);
       }
 
@@ -584,7 +584,7 @@ public class MySkin_Window : Window
          surface.SetForeground(activeBorder);
          surface.Rectangle(2, 2, size.w-3, size.h-3);
 
-         // Resizeable frame is 1 pixel thicker 
+         // Resizeable frame is 1 pixel thicker
          if(((BorderBits)borderStyle).sizable && isNormal)
             surface.Rectangle(3, 3, size.w - 4, size.h - 4);
 
@@ -594,7 +594,7 @@ public class MySkin_Window : Window
             surface.Gradient(gradient, sizeof(gradient) / sizeof(ColorKey), GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
          else
-            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey), 
+            surface.Gradient(gradientInactive, sizeof(gradientInactive) / sizeof(ColorKey),
             GRADIENT_SMOOTHNESS, GRADIENT_DIRECTION,
                border, top, size.w - border - 1, top + CAPTION - 2);
          */
@@ -608,7 +608,7 @@ public class MySkin_Window : Window
          // surface.blend = rootWindow != this;
 
          surface.Blit(bmpTopLeftBorder.bitmap, 0, 0, 0, 0, bmpTopLeftBorder.bitmap.width, bmpTopLeftBorder.bitmap.height);
-         surface.Stretch(bmpTopBorder.bitmap, bmpTopLeftBorder.bitmap.width, 0, 0, 0, size.w - 2 * bmpTopLeftBorder.bitmap.width, bmpTopBorder.bitmap.height, 
+         surface.Stretch(bmpTopBorder.bitmap, bmpTopLeftBorder.bitmap.width, 0, 0, 0, size.w - 2 * bmpTopLeftBorder.bitmap.width, bmpTopBorder.bitmap.height,
             bmpTopBorder.bitmap.width, bmpTopBorder.bitmap.height);
          surface.Blit(bmpTopRightBorder.bitmap, size.w - bmpTopRightBorder.bitmap.width, 0, 0, 0, bmpTopRightBorder.bitmap.width, bmpTopRightBorder.bitmap.height);
 
@@ -616,7 +616,7 @@ public class MySkin_Window : Window
          surface.Stretch(bmpRightBorder.bitmap, size.w-9, 27, 0, 0, bmpRightBorder.bitmap.width, size.h - 27 - 9, bmpLeftBorder.bitmap.width, bmpLeftBorder.bitmap.height);
 
          surface.Blit(bmpBottomLeftBorder.bitmap, 0, size.h - 9, 0, 0, bmpBottomLeftBorder.bitmap.width, bmpBottomLeftBorder.bitmap.height);
-         surface.Stretch(bmpBottomBorder.bitmap, bmpBottomLeftBorder.bitmap.width, size.h - 9, 0, 0, size.w - 2 * bmpBottomLeftBorder.bitmap.width, bmpBottomBorder.bitmap.height, 
+         surface.Stretch(bmpBottomBorder.bitmap, bmpBottomLeftBorder.bitmap.width, size.h - 9, 0, 0, size.w - 2 * bmpBottomLeftBorder.bitmap.width, bmpBottomBorder.bitmap.height,
             bmpBottomBorder.bitmap.width, bmpBottomBorder.bitmap.height);
          surface.Blit(bmpBottomRightBorder.bitmap, size.w - bmpBottomRightBorder.bitmap.width, size.h - 9, 0, 0, bmpBottomRightBorder.bitmap.width, bmpBottomRightBorder.bitmap.height);
          //surface.alphaWrite = DontWrite;
@@ -635,7 +635,7 @@ public class MySkin_Window : Window
          {
             int buttonsSize = border +
                ((hasMaximize || hasMinimize) ? 60 : 26);
-            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET, 
+            surface.WriteTextDots(left, border + NAME_OFFSETX, top + NAME_OFFSET,
                size.w - (buttonsSize + border + NAME_OFFSETX /*4*/), name, strlen(name));
          }
       }

@@ -28,7 +28,7 @@ class Dragon : WorldObject { res = dragonGfx; }
 class Mage : WorldObject { res = mageGfx; }
 class Archer : WorldObject { res = archerGfx; }
 class Castle : WorldObject { res = castleGfx; }
- 
+
 Array<WorldObject> objects
 { [
    Castle { 180, 150 },

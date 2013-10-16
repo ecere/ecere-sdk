@@ -175,7 +175,7 @@ static class SoundThread : Thread
 
    uint Main()
    {
-      while(!done) 
+      while(!done)
       {
          if(paused)
          {
@@ -188,7 +188,7 @@ static class SoundThread : Thread
             double m = volume / (1 + Abs(balance * 2 - 1));
             double ll = (2 - (2 * Max(balance, 0.5)))* m;
             double lr = (-2 * Min(balance, 0.5) + 1) * m;
-            double rl = (2 * Max(balance, 0.5) - 1)  * m; 
+            double rl = (2 * Max(balance, 0.5) - 1)  * m;
             double rr = (2 * Min(balance, 0.5))      * m;
             // printf("Volume: %f, m : %f, Left: (%f, %f), Right: (%f, %f) \n", volume, m, ll, lr, rl, rr);
 

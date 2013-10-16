@@ -82,7 +82,7 @@ class PNGFormat : BitmapFormat
                png_read_info(png_ptr, info_ptr);
                channels = png_get_channels(png_ptr, info_ptr);
                if(channels == 3 || channels == 4 || channels == 1 || channels == 2)
-               {            
+               {
                   png_get_IHDR(png_ptr, info_ptr, &width, &height, &bit_depth, &color_type,
                       &interlace_type, null, null);
                   numPasses = png_set_interlace_handling(png_ptr);
@@ -261,7 +261,7 @@ class PNGFormat : BitmapFormat
       if(bitmap)
       {
          File f = FileOpen(filename, write);
-         if(f) 
+         if(f)
          {
             png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, null, null, null);
             if(png_ptr)

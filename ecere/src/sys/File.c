@@ -111,11 +111,11 @@ static BOOL CALLBACK EnumThreadWindowsProc(HWND hwnd, LPARAM lParam)
 {
    DWORD pid;
    if(IsWindowVisible(hwnd) && GetWindowThreadProcessId(hwnd, &pid) && pid == GetCurrentProcessId())
-   {      
+   {
       *(void **)lParam = hwnd;
       return FALSE;
    }
-   return TRUE;   
+   return TRUE;
 }
 bool WinReviveNetworkResource(uint16 * _wfileName)
 {
@@ -147,7 +147,7 @@ bool WinReviveNetworkResource(uint16 * _wfileName)
    if(!windowHandle)
    {
       EnumWindows(EnumThreadWindowsProc, (LPARAM)&windowHandle);
-      
+
    }
    if(WNetAddConnection3(windowHandle, &nr, null, null, CONNECT_INTERACTIVE|CONNECT_PROMPT) == NO_ERROR)
       result = true;
@@ -189,7 +189,7 @@ bool FILE_Lock(FILE * input, FILE * output, FileLock type, uint64 start, uint64 
             (uint)(length ? ((length & 0xFFFFFFFF00000000LL) >> 32) : 0xFFFFFFFF),
             &overlapped) != 0;
       else
-         return LockFileEx(hFile, ((type == exclusive) ? LOCKFILE_EXCLUSIVE_LOCK : 0) | (wait ? 0 : LOCKFILE_FAIL_IMMEDIATELY), 0, 
+         return LockFileEx(hFile, ((type == exclusive) ? LOCKFILE_EXCLUSIVE_LOCK : 0) | (wait ? 0 : LOCKFILE_FAIL_IMMEDIATELY), 0,
             (uint)(length ? (length & 0xFFFFFFFF) : 0xFFFFFFFF),
             (uint)(length ? ((length & 0xFFFFFFFF00000000LL) >> 32) : 0xFFFFFFFF),
             &overlapped) != 0;
@@ -205,7 +205,7 @@ bool FILE_Lock(FILE * input, FILE * output, FileLock type, uint64 start, uint64 
 
       fd = fileno(output ? output : input);
       return fcntl(fd, wait ? F_SETLKW : F_SETLK, &fl) != -1;
-#endif      
+#endif
    }
 }
 
@@ -348,7 +348,7 @@ bool FILE_FileGetStats(char * fileName, FileStats * stats)
             stats->accessed = Win32FileTimeToTimeStamp(&a);
             stats->modified = Win32FileTimeToTimeStamp(&m);
 #endif
-            
+
             CloseHandle(hFile);
          }
       }
@@ -419,7 +419,7 @@ void FILE_FileFixCase(char * file)
       }
       // Copy Entire Computer to new path
       else if(file[0] == '/'  && !file[1])
-   
+
       {
          parent[0] = '/';
          parent[1] = '\0';
@@ -436,7 +436,7 @@ void FILE_FileFixCase(char * file)
          for(;(ch = file[c]) && (ch != '/' && ch != '\\'); c++)
          {
             if(len < MAX_FILENAME)
-               directory[len++] = ch;  
+               directory[len++] = ch;
          }
          directory[len] = '\0';
 

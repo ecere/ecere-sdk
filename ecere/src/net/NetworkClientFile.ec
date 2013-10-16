@@ -99,7 +99,7 @@ static class Request : struct
             }
             memcpy(file.buffer + file.bufferCount, buffer + overlap, bytesToRead);
             file.bufferCount += bytesToRead;
-         }      
+         }
 
          // Request some more data!
          if(file.bufferCount < BUFFER_SIZE)
@@ -219,7 +219,7 @@ public class NetworkClientFile : File
       switch(mode)
       {
          case start:
-            newPosition = pos;         
+            newPosition = pos;
             break;
          case current:
             newPosition += pos;
@@ -260,7 +260,7 @@ public class NetworkClientFile : File
    {
       return position;
    }
-                                                                                             
+
    bool Eof()
    {
       return false;
@@ -292,7 +292,7 @@ public class NetworkClientFile : File
       OldList blocks { };
       Request request;
       NetDataBlock block { };
-      
+
       blocks.Add(block);
 
       // Initialize block to what we need
@@ -305,7 +305,7 @@ public class NetworkClientFile : File
             (request.CallBack == Request::ReadResultCallback || request.CallBack == Request::ReadCallback))
          {
             // If this request overlap with the entire block of data we need
-            if(*start + *size >= request.readStart && 
+            if(*start + *size >= request.readStart &&
                *start + *size < request.readStart + request.readSize)
             {
                NetDataBlock next;
@@ -313,11 +313,11 @@ public class NetworkClientFile : File
                {
                   next = block.next;
                   // If this block overlap with this request
-                  if(request.readStart                     < block.end && 
+                  if(request.readStart                     < block.end &&
                      request.readStart + request.readSize >= block.start)
                   {
                      // We have all this block, get rid of it
-                     if(request.readStart <= block.start && 
+                     if(request.readStart <= block.start &&
                         request.readStart + request.readSize > block.end)
                         blocks.Delete(block);
                      // We're missing data at the end of this block
@@ -421,7 +421,7 @@ public:
       request.semaphore.Wait();
       delete request.semaphore;
       delete request;
-      
+
       if(!f.handle)
          delete f;
       return f;
@@ -447,7 +447,7 @@ private:
 
       mutex.Wait();
       while((request = requests.first))
-      {      
+      {
          uint numBytes = request.numBytes;
          if(count - bytesProcessed < numBytes)
             break;

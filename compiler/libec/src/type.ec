@@ -2,20 +2,20 @@
 /* A Bison parser, made by GNU Bison 2.4.2.  */
 
 /* Skeleton implementation for Bison's Yacc-like parsers in C
-   
+
       Copyright (C) 1984, 1989-1990, 2000-2006, 2009-2010 Free Software
    Foundation, Inc.
-   
+
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
    the Free Software Foundation, either version 3 of the License, or
    (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    GNU General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
@@ -28,7 +28,7 @@
    special exception, which will cause the skeleton and the resulting
    Bison output files to be licensed under the GNU General Public
    License without this special exception.
-   
+
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
@@ -3450,7 +3450,7 @@ int yydebug;
 # define YYMAXDEPTH 10000
 #endif
 
-
+
 
 #if YYERROR_VERBOSE
 
@@ -3661,7 +3661,7 @@ yysyntax_error (char *yyresult, int yystate, int yychar)
     }
 }
 #endif /* YYERROR_VERBOSE */
-
+
 
 /*-----------------------------------------------.
 | Release the memory associated to this symbol.  |
@@ -4978,10 +4978,10 @@ yyreduce:
     {
       (yyval.specifier) = null;
       DeclClass(0, (yyvsp[(1) - (2)].id).string);
-      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
-      
+
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
       YYPOPSTACK(1);
@@ -5015,7 +5015,7 @@ yyreduce:
 
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
-      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
 
@@ -5036,7 +5036,7 @@ yyreduce:
 #line 278 "type.y"
     {
       DeclClass(0, (yyvsp[(1) - (2)].id).string);
-      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       parseTypeError = 0;
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
@@ -5066,7 +5066,7 @@ yyreduce:
     {
    #ifdef PRECOMPILER
       DeclClass(0, (yyvsp[(1) - (2)].id).string);
-      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start); 
+      fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
 
@@ -5081,8 +5081,8 @@ yyreduce:
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
    #else
-      Location tmpLoc = yylloc; (yyval.specifier) = (yyvsp[(2) - (2)].id); yylloc = (yylsp[(1) - (2)]); 
-      Compiler_Error($"Not a type: %s\n", (yyvsp[(1) - (2)].id).string);      
+      Location tmpLoc = yylloc; (yyval.specifier) = (yyvsp[(2) - (2)].id); yylloc = (yylsp[(1) - (2)]);
+      Compiler_Error($"Not a type: %s\n", (yyvsp[(1) - (2)].id).string);
       yylloc = tmpLoc; (yyvsp[(2) - (2)].id).badID = (yyvsp[(1) - (2)].id); // FreeIdentifier($1);
    #endif
    ;}
@@ -5112,7 +5112,7 @@ yyreduce:
       (yyval.specifier).loc = (yyloc);
 
       (yylsp[(4) - (4)]).end.pos--;
-      fileInput.Seek((yylsp[(4) - (4)]).end.pos, start); 
+      fileInput.Seek((yylsp[(4) - (4)]).end.pos, start);
       resetScannerPos(&(yylsp[(4) - (4)]).end);
       yyclearin;
     ;}
@@ -6953,7 +6953,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 934 "type.y"
     {
-      (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument); 
+      (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument);
       if((yyvsp[(1) - (3)].templateDatatype).specifiers && (yyvsp[(1) - (3)].templateDatatype).specifiers->first)
       {
          Specifier spec = (yyvsp[(1) - (3)].templateDatatype).specifiers->first;
@@ -6970,7 +6970,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 958 "type.y"
     {
-      (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument); 
+      (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument);
       if((yyvsp[(1) - (3)].templateDatatype).specifiers && (yyvsp[(1) - (3)].templateDatatype).specifiers->first)
       {
          Specifier spec = (yyvsp[(1) - (3)].templateDatatype).specifiers->first;
@@ -7861,16 +7861,16 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1349 "type.y"
-    { 
-         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list)); 
-         (yyval.initializer).loc = (yyloc); 
+    {
+         (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list));
+         (yyval.initializer).loc = (yyloc);
 
          {
             Expression exp = MkExpDummy();
             Initializer init = MkInitializerAssignment(exp);
             init.loc = (yylsp[(3) - (4)]);
             exp.loc = (yylsp[(3) - (4)]);
-            ListAdd((yyvsp[(2) - (4)].list), init); 
+            ListAdd((yyvsp[(2) - (4)].list), init);
          }
       ;}
     break;
@@ -7991,11 +7991,11 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1437 "type.y"
-    { 
-      (yyval.stmt) = MkCompoundStmt(null, null); 
-      (yyval.stmt).compound.context = PushContext(); 
+    {
+      (yyval.stmt) = MkCompoundStmt(null, null);
+      (yyval.stmt).compound.context = PushContext();
       PopContext((yyval.stmt).compound.context);
-      (yyval.stmt).loc = (yyloc); 
+      (yyval.stmt).loc = (yyloc);
    ;}
     break;
 

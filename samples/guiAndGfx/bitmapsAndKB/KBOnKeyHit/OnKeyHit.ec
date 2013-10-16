@@ -26,7 +26,7 @@ class WorldObject
             surface.foreground = white;
             surface.Rectangle(x-2, y-2, x + bmp.width+1, y + bmp.height+1);
          }
-      }      
+      }
    }
 
 public:
@@ -49,7 +49,7 @@ Array<WorldObject> objects
    Dragon { 320, 50 }
 ] };
 
-WorldObject selected;   
+WorldObject selected;
 
 class MainWindow : Window
 {

@@ -48,16 +48,16 @@ class Replace : Window
          int entriesReplaced;
          EditBox replaceEdit
          {
-            multiLine = true,textHorzScroll = true,textVertScroll = true, 
+            multiLine = true,textHorzScroll = true,textVertScroll = true,
             text = "Replacing Editbox", size = Size { 640,480 },maxLineSize = 65536
          };
-            
+
          log.Clear();
-         
+
          app.UpdateDisplay();
 
          entriesReplaced =
-            ReplaceInDirectory(directory.contents, findWhat.contents, replaceWith.contents, 
+            ReplaceInDirectory(directory.contents, findWhat.contents, replaceWith.contents,
                matchCase.checked, wholeWord.checked, recurse.checked, replaceEdit, log);
          log.Printf("SEARCH & REPLACE COMPLETED: %d ENTRIES REPLACED.\n", entriesReplaced);
 
@@ -73,7 +73,7 @@ class Replace : Window
       this, noCaret = true, multiLine = true, autoEmpty = true, textHorzScroll = true, hasVertScroll = true, anchor = Anchor { left = 420, top = 30, right = 10, bottom = 10 }
    };
 
-   int ReplaceInDirectory(char * directory, char * findWhat, char * replaceWith, 
+   int ReplaceInDirectory(char * directory, char * findWhat, char * replaceWith,
                             bool matchCase, bool wholeWord, bool recurse, EditBox edit, EditBox log)
    {
       FileListing listing { directory, "htm, html, css, ec" };
@@ -102,7 +102,7 @@ class Replace : Window
                delete f;
 
                for(entriesReplaced = 0;
-                   edit.Find(findWhat, wholeWord, matchCase, true) == found; 
+                   edit.Find(findWhat, wholeWord, matchCase, true) == found;
                    entriesReplaced++)
                   edit.PutS(replaceWith);
                if(entriesReplaced)

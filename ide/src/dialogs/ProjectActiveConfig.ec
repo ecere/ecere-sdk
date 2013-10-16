@@ -50,7 +50,7 @@ class ProjectActiveConfig : Window
          return true;
       }
    };
-   
+
    Button cancel
    {
       this, size = { 80 }, position = { 480, 8 };
@@ -64,5 +64,5 @@ class ProjectActiveConfig : Window
       this, position = { 160, 8 }, size = { 220 };
       text = $"Active Configuration", hotKey = altA;
    };
-   
+
 }

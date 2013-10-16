@@ -23,7 +23,7 @@ static void JPEG_ExitHandler(j_common_ptr cinfo)
 typedef struct
 {
    struct jpeg_source_mgr pub;
-   
+
    File infile;
    byte * buffer;
    boolean startOfFile;
@@ -46,24 +46,24 @@ static boolean JPEG_FillInputBuffer (j_decompress_ptr cinfo)
       if(src->startOfFile)
          ERREXIT(cinfo, JERR_INPUT_EMPTY);
       WARNMS(cinfo, JWRN_JPEG_EOF);
-      
+
       src->buffer[0] = (byte) 0xFF;
       src->buffer[1] = (byte) JPEG_EOI;
       nbytes = 2;
    }
-   
+
    src->pub.next_input_byte = src->buffer;
    src->pub.bytes_in_buffer = nbytes;
    src->startOfFile = FALSE;
-   
+
    return TRUE;
 }
 
 static void JPEG_SkipInputData (j_decompress_ptr cinfo, long num_bytes)
 {
    SourceManager * src = (SourceManager *) cinfo->src;
-   
-   if (num_bytes > 0) 
+
+   if (num_bytes > 0)
    {
       while (num_bytes > (long) src->pub.bytes_in_buffer)
       {
@@ -77,13 +77,13 @@ static void JPEG_SkipInputData (j_decompress_ptr cinfo, long num_bytes)
 
 static void JPEG_TermSource(j_decompress_ptr cinfo)
 {
-   
+
 }
 
 static void JPEG_SetSource(j_decompress_ptr cinfo, File infile)
 {
    SourceManager * src;
-   
+
    if (!cinfo->src)
    {
       cinfo->src = (struct jpeg_source_mgr *)
@@ -94,7 +94,7 @@ static void JPEG_SetSource(j_decompress_ptr cinfo, File infile)
          (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
          INPUT_BUF_SIZE * sizeof(byte));
    }
-   
+
    src = (SourceManager *) cinfo->src;
    src->pub.init_source = JPEG_InitSource;
    src->pub.fill_input_buffer = JPEG_FillInputBuffer;
@@ -110,7 +110,7 @@ static void JPEG_SetSource(j_decompress_ptr cinfo, File infile)
 typedef struct
 {
    struct jpeg_destination_mgr pub;
-   
+
    File outfile;
    byte * buffer;
 } DestinationManager;
@@ -120,11 +120,11 @@ typedef struct
 static void JPEG_InitDestination(j_compress_ptr cinfo)
 {
    DestinationManager * dest = (DestinationManager * ) cinfo->dest;
-   
+
    dest->buffer = (byte *)
       (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
 				  OUTPUT_BUF_SIZE * sizeof(byte));
-   
+
    dest->pub.next_output_byte = dest->buffer;
    dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
 }
@@ -132,14 +132,14 @@ static void JPEG_InitDestination(j_compress_ptr cinfo)
 static boolean JPEG_EmptyOutputBuffer(j_compress_ptr cinfo)
 {
    DestinationManager * dest = (DestinationManager *) cinfo->dest;
-   
+
    if (dest->outfile.Write(dest->buffer, sizeof(byte), OUTPUT_BUF_SIZE) !=
       (uint) OUTPUT_BUF_SIZE)
       ERREXIT(cinfo, JERR_FILE_WRITE);
-   
+
    dest->pub.next_output_byte = dest->buffer;
    dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
-   
+
    return TRUE;
 }
 
@@ -147,7 +147,7 @@ static void JPEG_TermDestination(j_compress_ptr cinfo)
 {
    DestinationManager * dest = (DestinationManager *) cinfo->dest;
    uint datacount = (uint)(OUTPUT_BUF_SIZE - dest->pub.free_in_buffer);
-   
+
    if (datacount > 0)
    {
       if (dest->outfile.Write(dest->buffer, sizeof(byte), datacount) != datacount)
@@ -162,14 +162,14 @@ static void JPEG_TermDestination(j_compress_ptr cinfo)
 static void JPEG_SetDestination(j_compress_ptr cinfo, File outfile)
 {
    DestinationManager * dest;
-   
-   if(!cinfo->dest) 
+
+   if(!cinfo->dest)
    {
       cinfo->dest = (struct jpeg_destination_mgr *)
          (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_PERMANENT,
          sizeof(DestinationManager));
    }
-   
+
    dest = (DestinationManager *) cinfo->dest;
    dest->pub.init_destination = JPEG_InitDestination;
    dest->pub.empty_output_buffer = JPEG_EmptyOutputBuffer;
@@ -208,7 +208,7 @@ class JPGFormat : BitmapFormat
             jpeg_start_decompress(&cinfo);
             buffer = (*cinfo.mem->alloc_sarray) ((j_common_ptr) &cinfo, JPOOL_IMAGE, cinfo.output_width * cinfo.output_components, 1);
 
-            for(picture = (ColorAlpha *)bitmap.picture; cinfo.output_scanline < cinfo.output_height; picture += bitmap.stride) 
+            for(picture = (ColorAlpha *)bitmap.picture; cinfo.output_scanline < cinfo.output_height; picture += bitmap.stride)
             {
                int c;
                jpeg_read_scanlines(&cinfo, buffer, 1);
@@ -238,7 +238,7 @@ class JPGFormat : BitmapFormat
       if(bitmap.pixelFormat == pixelFormat888)
       {
          File f = FileOpen(filename, write);
-         if(f) 
+         if(f)
          {
             struct jpeg_compress_struct cinfo;
             struct jpeg_error_mgr jerr;
@@ -257,7 +257,7 @@ class JPGFormat : BitmapFormat
             cinfo.in_color_space = JCS_RGB;
 
             jpeg_set_defaults(&cinfo);
-     
+
             jpeg_set_quality(&cinfo, 100, TRUE);
 
             jpeg_start_compress(&cinfo, TRUE);
@@ -291,9 +291,9 @@ class JPGFormat : BitmapFormat
 
             delete f;
             result = true;
-         }      
+         }
       }
-      return result;   
+      return result;
    }
 
    ColorAlpha * LoadPalette(char * fileName, char * type)

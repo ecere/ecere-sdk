@@ -56,7 +56,7 @@ public class SSLSocket : Socket
          sbio = null;
       }
       if(ssl)
-      { 
+      {
          //SSL_free(ssl);
          ssl = null;
       }
@@ -64,7 +64,7 @@ public class SSLSocket : Socket
       {
          SSL_CTX_free(ctx);
          ctx = null;
-      } 
+      }
    }
 
    int ReceiveData(unsigned char * buffer, int count, unsigned int flags)
@@ -94,7 +94,7 @@ public class SSLSocket : Socket
       ssl = SSL_new(ctx);
       sbio = BIO_new_socket(s, BIO_NOCLOSE);
       SSL_set_bio(ssl,sbio,sbio);
-      
+
       result = SSL_connect(ssl) > 0;
 
       /*
@@ -102,9 +102,9 @@ public class SSLSocket : Socket
       {
          if(!(SSL_CTX_use_certificate_chain_file(ctx, "client.pem")))
             printf("Can't read certificate file");
-         
+
          SSL_CTX_set_default_passwd_cb(ctx, password_cb);
-         
+
          if(!(SSL_CTX_use_PrivateKey_file(ctx, "client.pem", SSL_FILETYPE_PEM)))
             printf("Can't read key file");
 

@@ -70,7 +70,7 @@ static bool Window3D_Setup(Window window, bool positionChildren)
    for(child = window.children.first; child; child = child.next)
    {
       if(!Window3D_Setup(child, false))
-         result = false; 
+         result = false;
    }
    return result;
 }
@@ -226,12 +226,12 @@ public bool Desktop3DUpdateDisplay()
                }
             }
          }
-      
+
          // Comment out fullScreen check here and dirty = true up there for ITV update
          if(/*!fullScreenWindow && */(virtualDesktopDirty || virtualDesktop.dirty))
          {
             if(virtualDesktopDirty)
-               virtualDesktop.Update(null);         
+               virtualDesktop.Update(null);
             virtualDesktop.UpdateDisplay();
             virtualDesktopDirty = false;
          }
@@ -292,7 +292,7 @@ static void _SetMouseRange(Window window, Box box)
    }
 }
 
-public void Desktop3DInitialize(Window window, 
+public void Desktop3DInitialize(Window window,
                                             void * (* setup)(Window window, int w, int h),
                                             void (* update)(Window window, Box box))
 {

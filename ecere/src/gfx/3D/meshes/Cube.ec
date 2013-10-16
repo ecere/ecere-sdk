@@ -5,7 +5,7 @@ namespace gfx3D::meshes;
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    cube.ec - Translucent Cube 3D Model
 ****************************************************************************/
 import "Display"
@@ -65,11 +65,11 @@ public:
                uint16 indices[6][4] =
                {
                   // up, front, down, back, right, left
-                  { 17,21,20,16 }, 
-                  { 0,3,2,1 }, 
-                  { 22,18,19,23 }, 
-                  { 5,6,7,4 }, 
-                  { 9,10,14,13 }, 
+                  { 17,21,20,16 },
+                  { 0,3,2,1 },
+                  { 22,18,19,23 },
+                  { 5,6,7,4 },
+                  { 9,10,14,13 },
                   { 12,15,11,8 }
                };
 

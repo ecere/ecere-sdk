@@ -154,7 +154,7 @@ public:
          array = renew array T[count];
 
       // TOFIX: Precomp fails on (BuiltInContainer *)
-      if((source._class == class(BuiltInContainer) && ((struct BuiltInContainer *)source)->type.type != structClass ) || 
+      if((source._class == class(BuiltInContainer) && ((struct BuiltInContainer *)source)->type.type != structClass ) ||
          eClass_IsDerived(source._class, class(Array)))
       {
          memcpy(array, ((Array)source).array, count * Tsize);
@@ -189,6 +189,6 @@ public:
    {
       T data = *(T*)item;
       delete data;
-      Remove(item);      
+      Remove(item);
    }
 };
