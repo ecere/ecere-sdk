@@ -26,7 +26,7 @@ class ScanningTest : Window
       if(scannedImage)
       {
          char s[20];
-         sprintf(s, "File://%08X", scannedImage);
+         sprintf(s, "File://%p", scannedImage);
          imagePreview.image = { s };
       }
       else
@@ -83,7 +83,7 @@ class ScanningTest : Window
                scannedImage = TempFile { };
                scannedBitmap = i;
 
-               sprintf(s, "File://%08X", scannedImage);  // 'File://' lets you use a File pointer as a file name
+               sprintf(s, "File://%p", scannedImage);  // 'File://' lets you use a File pointer as a file name
                i.Save(s, "bmp", null);
 
                // Take it out of the list because we free the other images (if any), but keep this one in 'scannedBitmap'
