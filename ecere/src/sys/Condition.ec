@@ -4,7 +4,7 @@ import "Semaphore"
 import "ecere"
 #endif
 
-class Condition : struct
+public class Condition : struct
 {
    char * name;
    Mutex lock { };
