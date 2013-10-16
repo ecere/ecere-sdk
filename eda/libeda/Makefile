@@ -50,6 +50,7 @@ SONAME =
 endif
 
 _ECSOURCES = \
+	src/DirFilesDataSource.ec \
 	src/EDB.ec \
 	src/MemoryEDB.ec \
 	src/gui/controls/FieldBox.ec \
@@ -154,6 +155,9 @@ endif
 
 # SYMBOL RULES
 
+$(OBJ)DirFilesDataSource.sym: src/DirFilesDataSource.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/DirFilesDataSource.ec -o $(OBJ)DirFilesDataSource.sym
+
 $(OBJ)EDB.sym: src/EDB.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/EDB.ec -o $(OBJ)EDB.sym
 
@@ -180,6 +184,9 @@ $(OBJ)idList.sym: src/idList.ec
 
 # C OBJECT RULES
 
+$(OBJ)DirFilesDataSource.c: src/DirFilesDataSource.ec $(OBJ)DirFilesDataSource.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/DirFilesDataSource.ec -o $(OBJ)DirFilesDataSource.c -symbols $(OBJ)
+
 $(OBJ)EDB.c: src/EDB.ec $(OBJ)EDB.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/EDB.ec -o $(OBJ)EDB.c -symbols $(OBJ)
 
@@ -205,6 +212,9 @@ $(OBJ)idList.c: src/idList.ec $(OBJ)idList.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/idList.ec -o $(OBJ)idList.c -symbols $(OBJ)
 
 # OBJECT RULES
+
+$(OBJ)DirFilesDataSource.o: $(OBJ)DirFilesDataSource.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)DirFilesDataSource.c -o $(OBJ)DirFilesDataSource.o
 
 $(OBJ)EDB.o: $(OBJ)EDB.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)EDB.c -o $(OBJ)EDB.o

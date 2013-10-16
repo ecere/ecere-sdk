@@ -45,6 +45,11 @@ public class DataSourceDriver
       get { return class_data(name); }
    }
 
+   class_data char * databaseFileExtension;
+   class_property char * databaseFileExtension { set { class_data(databaseFileExtension) = value; } get { return class_data(databaseFileExtension); } }
+   class_data char * tableFileExtension;
+   class_property char * tableFileExtension { set { class_data(tableFileExtension) = value; } get { return class_data(tableFileExtension); } }
+
 public:
    virtual String BuildLocator(DataSource ds);
    virtual uint GetDatabasesCount();
@@ -53,6 +58,7 @@ public:
    virtual bool RenameDatabase(const String name, const String rename);
    virtual bool DeleteDatabase(const String name);
    virtual Database OpenDatabase(const String name, CreateOptions create, DataSource ds);
+   virtual Array<String> GetDatabases() { return null; } // TODO: make this Container<Database> GetDatabases(); // if supported, filled with ready to open Databases
 
    ~DataSourceDriver()
    {
@@ -171,6 +177,7 @@ public:
    }
 
    property uint databasesCount { get { return ds.GetDatabasesCount(); } }
+   property Array<String> databases { get { return ds.GetDatabases(); } } // TODO: make this Container<Database> databases { ... }
    bool Connect()
    {
       if(!locator && ds)
@@ -204,6 +211,7 @@ public class Database
    DataSourceDriver ds;
    OldList listTbl { offset = (uint)&((Table)0).prev };
    public virtual String GetName();
+   public virtual Array<String> GetTables(); // TODO: make this Container<Table> GetTables(); // if supported, filled with ready to open Tables
 
    ~Database()
    {
@@ -229,6 +237,7 @@ public:
    property String name { get { return GetName(); } }
    property uint tablesCount { get { return ObjectsCount(table); } }
    property uint viewsCount { get { return ObjectsCount(view); } }
+   property Array<String> tables { get { return GetTables(); } }
 
    virtual uint ObjectsCount(ObjectType type);
    virtual bool RenameObject(ObjectType type, const String name, const String rename);
@@ -289,10 +298,13 @@ public:
    property Field primaryKey { get { return GetPrimaryKey(); } }
    property uint fieldsCount { get { return GetFieldsCount(); } }
    property uint rowsCount { get { return GetRowsCount(); } }
+   property Container<Field> fields { get { return GetFields(); } }
 
    virtual Field AddField(const String name, Class type, int length);
    virtual Field FindField(const String name);
    virtual bool GenerateIndex(int count, FieldIndex * fieldIndexes, bool init);
+   virtual Container<Field> GetFields();
+
    bool Index(int count, FieldIndex * fieldIndexes)
    {
       return GenerateIndex(count, fieldIndexes, true);

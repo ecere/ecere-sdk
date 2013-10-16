@@ -107,6 +107,7 @@
             {
                "Folder" : "drivers",
                "Files" : [
+                  "src/DirFilesDataSource.ec",
                   "src/EDB.ec",
                   "src/MemoryEDB.ec"
                ]

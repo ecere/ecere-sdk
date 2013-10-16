@@ -1,4 +1,5 @@
 import "EDA.ec"
+import "DirFilesDataSource"
 
 public class EDBIndexOptions
 {
@@ -107,112 +108,10 @@ void RowsCountFileEdit(Archive archive, const String apath, const RowsCountFileA
    }
 }
 
-static class EDBDataSource : DataSourceDriver
+static class EDBDataSource : DirFilesDataSourceDriver
 {
    class_property(name) = "EDB";
-
-   String path;
-   //OldList listDatabases;
-   uint databasesCount;
-
-   String BuildLocator(DataSource ds)
-   {
-      return CopyString(ds.host);
-   }
-
-   uint GetDatabasesCount()
-   {
-      return databasesCount;
-   }
-
-   ~EDBDataSource()
-   {
-      delete path;
-   }
-
-   bool Connect(const String locator)
-   {
-      delete path;
-      path = CopyString(locator);
-      // TODO, use user name and password for local security?
-      // TODO, open ds in read or write mode
-      if(FileExists(path))
-      {
-         int n = 0;
-         FileListing listing { path, "edb" };
-         databasesCount = 0;
-         while(listing.Find())
-            databasesCount++;
-         return true;
-      }
-      return false;
-   }
-
-   void Status()
-   {
-      Log($"Status: Feeling groovy!\n");
-   }
-
-   /*
-   Table OpenDatabasesListTable(subclass(DataDriver) driver)
-   {
-      // get the table for databasesList using a temporary archive of a db with a table databases filled
-      // with the list of edb files in data source's dirPath
-
-      TempFile f { };
-      //ArchiveFile af = ArchiveOpen
-
-      return null;
-   }
-   */
-
-   bool RenameDatabase(const String name, const String rename)
-   {
-      if(name && rename && path && FileExists(path))
-      {
-         String path;
-         path = MakeDatabasePath(name);
-         if(FileExists(path))
-         {
-            bool renamed;
-            String repath;
-            repath = MakeDatabasePath(rename);
-            renamed = RenameFile(path, repath);
-            delete path;
-            delete repath;
-            return renamed;
-         }
-         delete path;
-      }
-      return false;
-   }
-
-   bool DeleteDatabase(const String name)
-   {
-      if(path && FileExists(path))
-      {
-         bool deleted;
-         String path = MakeDatabasePath(name);
-         deleted = DeleteFile(path);  // delete file seems to return true even if the file does not exist
-         databasesCount--;
-         delete path;
-         return deleted;
-      }
-      return false;
-   }
-
-   String MakeDatabasePath(const String name)
-   {
-      if(name)
-      {
-         char build[MAX_LOCATION];
-         strcpy(build, path ? path : "");
-         PathCat(build, name);
-         ChangeExtension(build, "edb", build);
-         return CopyString(build);
-      }
-      return null;
-   }
+   class_property(databaseFileExtension) = "edb";
 
    Database OpenDatabase(const String name, CreateOptions createOptions, DataSource ds)
    {
@@ -237,7 +136,7 @@ static class EDBDataSource : DataSourceDriver
          {
             archive = ArchiveOpen(path, { true, true, true });
             if(archive)
-               databasesCount++;
+               databases.Add(name);
          }
          if(archive)
          {
@@ -362,6 +261,7 @@ class EDBDatabase : Database
    Archive archive;
    OldList dbTables;
    uint tablesCountPosition;
+   Array<String> tables { };
 
    property uint bufferSize { set { archive.bufferSize = value; } }
    property uint bufferRead { set { archive.bufferRead = value; } }
@@ -376,6 +276,33 @@ class EDBDatabase : Database
    String GetName()
    {
       return path;   // TOFIX
+   }
+
+   Array<String> GetTables()
+   {
+      Table t = OpenTable(null, { tablesList });
+      tables.Free();
+      if(t)
+      {
+         Row r { t };
+         Field tableName = t.FindField("Name");
+         if(tableName)
+         {
+            while(r.Next())
+            {
+               String s = null;
+               r.GetData(tableName, s);
+               tables.Add(s);
+            }
+         }
+         else
+            Log($"EDB: Error getting Name field from tables list table!\n");
+         delete r;
+         delete t;
+      }
+      else
+         Log($"EDB: Error getting tables list table!\n");
+      return tables;
    }
 
    DBTable GetDBTable(char * apath, OpenOptions options)

@@ -90,93 +90,10 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
 
 public class SQLiteStaticLink { }   // Until .imp generation is fixed
 
-class SQLiteDataSource : DataSourceDriver
+class SQLiteDataSource : DirFilesDataSourceDriver
 {
    class_property(name) = "SQLite";
-   String path;
-   OldList listDatabases;
-   uint databasesCount;
-
-   String BuildLocator(DataSource ds)
-   {
-      return CopyString(ds.host);
-   }
-
-   uint GetDatabasesCount()
-   {
-      return databasesCount;
-   }
-
-   ~SQLiteDataSource()
-   {
-      delete path;
-   }
-
-   bool Connect(const String locator)
-   {
-      delete path;
-      path = CopyString(locator);
-      // TODO, use user name and password for local security?
-      // TODO, open ds in read or write mode
-      if(FileExists(path))
-      {
-         int n = 0;
-         FileListing listing { path, "sqlite" };
-         databasesCount = 0;
-         while(listing.Find())
-            databasesCount++;
-         return true;
-      }
-      return false;
-   }
-
-   bool RenameDatabase(const String name, const String rename)
-   {
-      if(name && rename && path && FileExists(path))
-      {
-         String path;
-         path = MakeDatabasePath(name);
-         if(FileExists(path))
-         {
-            bool renamed;
-            String repath;
-            repath = MakeDatabasePath(rename);
-            renamed = RenameFile(path, repath);
-            delete path;
-            delete repath;
-            return renamed;
-         }
-         delete path;
-      }
-      return false;
-   }
-
-   bool DeleteDatabase(const String name)
-   {
-      if(path && FileExists(path))
-      {
-         bool deleted;
-         String path = MakeDatabasePath(name);
-         deleted = DeleteFile(path);  // delete file seems to return true even if the file does not exist
-         databasesCount--;
-         delete path;
-         return deleted;
-      }
-      return false;
-   }
-
-   virtual String MakeDatabasePath(const String name)
-   {
-      if(name)
-      {
-         char build[MAX_LOCATION];
-         strcpy(build, path ? path : "");
-         PathCat(build, name);
-         ChangeExtension(build, "sqlite", build);
-         return CopyString(build);
-      }
-      return null;
-   }
+   class_property(databaseFileExtension) = "sqlite";
 
    Database OpenDatabase(const String name, CreateOptions createOptions, DataSource ds)
    {
@@ -304,7 +221,7 @@ class SQLiteDatabase : Database
          field = { tbl = table, name = CopyString("Name"), type = class(String), num = -1, sqliteType = SQLITE_TEXT };
          LinkTable(table);
          incref field;
-         table.fields.Add(field);
+         table._fields.Add(field);
       }
       else if(options.type == fieldsList)
       {
@@ -315,13 +232,13 @@ class SQLiteDatabase : Database
          LinkTable(table);
          field = { tbl = table, name = CopyString("Name"), type = class(String), num = -1, sqliteType = SQLITE_TEXT };
          incref field;
-         table.fields.Add(field);
+         table._fields.Add(field);
          field = { tbl = table, name = CopyString("Type"), type = class(Class), num = 0, sqliteType = SQLITE_TEXT };
          incref field;
-         table.fields.Add(field);
+         table._fields.Add(field);
          field = { tbl = table, name = CopyString("Length"), type = class(int), num = 1, sqliteType = SQLITE_INTEGER };
          incref field;
-         table.fields.Add(field);
+         table._fields.Add(field);
       }
       else if(options.type == tableRows)
       {
@@ -394,9 +311,9 @@ class SQLiteDatabase : Database
                            result = sqlite3_exec(db, command, null, null, null);
 
                            {
-                              SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, num = table.fields.count, sqliteType = sqliteType };
+                              SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, num = table._fields.count, sqliteType = sqliteType };
                               incref field;
-                              table.fields.Add(field);
+                              table._fields.Add(field);
                            }
 
                            if(!ch || ch == ')') break;
@@ -448,13 +365,13 @@ class SQLiteDatabase : Database
 
                      {
                         Table * fTable = (Table *)eClass_GetProperty(type, "table");
-                        SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, length = length, num = table.fields.count, sqliteType = sqliteType };
+                        SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, length = length, num = table._fields.count, sqliteType = sqliteType };
                         incref field;
                         if(fTable) refTable = *fTable;
                         if(!table.primaryKey && refTable && !strcmp(refTable.name, table.name))
                            table.primaryKey = field;
 
-                        table.fields.Add(field);
+                        table._fields.Add(field);
                      }
                   }
                   sqlite3_finalize(statement);
@@ -859,7 +776,7 @@ class SQLiteTable : Table
    char * name;
    bool mustCreate;
    SQLiteDatabase db;
-   LinkList<SQLiteField> fields { };
+   LinkList<SQLiteField> _fields { };
    char * specialStatement;
    SQLiteField primaryKey;
    FieldIndex * indexFields;
@@ -990,9 +907,9 @@ class SQLiteTable : Table
          fieldName, type.name, length);
       result = sqlite3_exec(db.db, command, null, null, null);
 
-      field = { name = CopyString(fieldName), type = type, num = fields.count, sqliteType = sqliteType };
+      field = { name = CopyString(fieldName), type = type, num = _fields.count, sqliteType = sqliteType };
       incref field;
-      fields.Add(field);
+      _fields.Add(field);
       if(!primaryKey && refTable == this)
          primaryKey = field;
       return (Field)field;
@@ -1000,7 +917,7 @@ class SQLiteTable : Table
 
    Field FindField(const String name)
    {
-      for(f : fields; !strcmp(f.name, name))
+      for(f : _fields; !strcmp(f.name, name))
       {
          if(!primaryKey)
          {
@@ -1072,7 +989,7 @@ class SQLiteTable : Table
 
    Field GetFirstField()
    {
-      return fields.first;
+      return _fields.first;
    }
 
    Field GetPrimaryKey()
@@ -1082,7 +999,7 @@ class SQLiteTable : Table
 
    uint GetFieldsCount()
    {
-      return fields.count;
+      return _fields.count;
    }
 
    uint GetRowsCount()
@@ -1128,6 +1045,11 @@ class SQLiteTable : Table
          }
          return true;
       }
+   }
+
+   Container<Field> GetFields()
+   {
+      return (Container<Field>)_fields;
    }
 
    DriverRow CreateRow()
@@ -1191,7 +1113,7 @@ class SQLiteTable : Table
       delete name;
       delete specialStatement;
       delete indexFields;
-      fields.Free();
+      _fields.Free();
    }
 }
 
@@ -2015,7 +1937,7 @@ class SQLiteRow : DriverRow
 
    /*char * GetExtraColumn(int paramID)
    {
-      SQLiteField lastFld = tbl.fields.last;
+      SQLiteField lastFld = tbl._fields.last;
       return sqlite3_column_text(curStatement, lastFld.num + 1 + paramID);
    }*/
    char * GetColumn(int paramID)

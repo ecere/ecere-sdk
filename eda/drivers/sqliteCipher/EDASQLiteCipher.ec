@@ -13,19 +13,7 @@ import "EDASQLite.ec"
 static class SQLiteCipherDataSource : SQLiteDataSource
 {
    class_property(name) = "SQLiteCipher";
-
-   String MakeDatabasePath(const String name)
-   {
-      if(name)
-      {
-         char build[MAX_LOCATION];
-         strcpy(build, path ? path : "");
-         PathCat(build, name);
-         ChangeExtension(build, "sqlcipher", build);
-         return CopyString(build);
-      }
-      return null;
-   }
+   class_property(databaseFileExtension) = "sqlcipher";
 
    Database OpenDatabase(const String name, CreateOptions createOptions, DataSource ds)
    {
