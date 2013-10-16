@@ -1226,7 +1226,7 @@ private:
       lines.Free(EditLine::Free);
    }
 
-   void FlushBuffer(Surface surface, EditLine line, int wc, int * renderStart, int * x, int y, int numSpaces, Box box)
+   void FlushBuffer(Surface surface, EditLine line, int wc, int * renderStart, int * x, int y, int numSpaces, bool drawSpaces, Box box)
    {
       int count = wc - *renderStart;
       if(count)
@@ -1247,7 +1247,7 @@ private:
             else
             {
                w = numSpaces; // * space.w;
-               if(*x + w + XOFFSET > 0 && surface.GetTextOpacity())
+               if(*x + w + XOFFSET > 0 && (drawSpaces || surface.GetTextOpacity()))
                   surface.Area(XOFFSET + *x - 1, y, XOFFSET + *x + w, y + space.h-1);
                   // WHATS UP WITH THIS...  surface.Area(XOFFSET + *x, y, XOFFSET + *x + w, y + space.h-1);
                *x += w;
@@ -1520,6 +1520,7 @@ private:
 
          // ****** SYNTAX HIGHLIGHTING ******
          bool lastWasStar = false;
+         bool trailingSpace = false;
          bool firstWord = true;
          if(!escaped) inPrep = false;
          inSingleLineComment = continuedSingleLineComment;
@@ -1602,6 +1603,7 @@ private:
                      (bf && !CharMatchCategories(bf, numbers|letters|separators|marks|connector) && bf != '#' && bf != '\t' /*&& bf != '_' && bf != ' '*/))
                      break;
                   wordLen++;
+                  trailingSpace = false;
                }
 
                if(!wordLen)
@@ -1613,6 +1615,8 @@ private:
                      if(ch == '\t' || ch == ' ')
                      {
                         cantHaveWords = true;
+                        if(ch == ' ' && c == line.count-1)
+                           trailingSpace = true;
                         if(bufferLen)
                            break;
                      }
@@ -1846,6 +1850,7 @@ private:
             {
                int renderStart = start;
                bool flush = false;
+               bool flagTrailingSpace = false;
                int numSpaces = 0;
                int wc;
 
@@ -1862,7 +1867,9 @@ private:
 
                   if(flush)
                   {
-                     FlushBuffer(surface, line, wc, &renderStart, &x, y, numSpaces, box);
+                     flagTrailingSpace = numSpaces && trailingSpace && style.syntax && start + bufferLen == line.count && line != this.line;
+                     if(flagTrailingSpace) surface.SetBackground(red);
+                     FlushBuffer(surface, line, wc, &renderStart, &x, y, numSpaces, flagTrailingSpace, box);
                      if(overWrite == true)
                      {
                         overWriteX = x;
@@ -1890,7 +1897,9 @@ private:
                      }
                   }
                }
-               FlushBuffer(surface, line, wc, &renderStart, &x, y, numSpaces, box);
+               flagTrailingSpace = numSpaces && trailingSpace && style.syntax && start + bufferLen == line.count && line != this.line;
+               if(flagTrailingSpace) surface.SetBackground(red);
+               FlushBuffer(surface, line, wc, &renderStart, &x, y, numSpaces, flagTrailingSpace, box);
                start += bufferLen;
             }
          }
@@ -6032,6 +6041,20 @@ public:
 
       for(line = this.lines.first; line; line = line.next)
       {
+         if(style.syntax && line.count && isspace(line.buffer[line.count-1]))
+         {
+            int c = 0;
+            for(c=line.count-2; c>=-1; c--)
+            {
+               if(c == -1 || !isspace(line.buffer[c]))
+               {
+                  c++;
+                  line.buffer[c] = '\0';
+                  line.count -= (line.count - c);
+                  break;
+               }
+            }
+         }
          f.Write(line.buffer, line.count,1);
          if(line.next)
          {
