@@ -34,7 +34,7 @@ class AboutIDE : Window
       occ = strpbrk(shortVersion, "-+( ");
       if(occ) *occ = '\0';
       message = PrintString(
-            "Ecere Software Development Kit ", strcmp(shortVersion, "unknown") ? "v" : "", shortVersion, " \"Ryōan-ji\"" X64STRING "\n"
+            "Ecere Software Development Kit (MOD) ", strcmp(shortVersion, "unknown") ? "v" : "", shortVersion, " \"Ryōan-ji\"" X64STRING "\n"
             "Build " REPOSITORY_VERSION "\n"
             "Copyright © 2005-2016 Ecere Corporation\n"
             "Copyright © 1996-2016 Jérôme Jacovella-St-Louis");
