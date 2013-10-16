@@ -13,6 +13,13 @@ public class Condition : struct
    Semaphore waitSem { };
    Semaphore waitDone { };
 
+public:
+   property char * name
+   {
+      set { name = value; }
+      get { return name; }
+   }
+
    void Signal()
    {
       lock.Wait();
