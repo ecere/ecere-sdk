@@ -472,6 +472,7 @@ public:
       {
          subclass(BitmapFormat) format = null;
          int typeToTry = -1;
+         uintsize pos = file.Tell();
 
          if(type)
             format = FindFormat(type);
@@ -481,7 +482,7 @@ public:
 
          for(; typeToTry < NUM_TYPES_TO_TRY; typeToTry++)
          {
-            file.Seek(0, start);
+            file.Seek(pos, start);
             if(typeToTry >= 0)
                format = FindFormat(typesToTry[typeToTry]);
 
