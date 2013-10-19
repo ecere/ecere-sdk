@@ -581,7 +581,69 @@ struct ClassImport;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
 
-struct Symbol;
+struct Symbol
+{
+char *  string;
+struct Symbol * parent;
+struct Symbol * left;
+struct Symbol * right;
+int depth;
+struct Type * type;
+union
+{
+struct __ecereNameSpace__ecere__com__Method * method;
+struct __ecereNameSpace__ecere__com__Property * _property;
+struct __ecereNameSpace__ecere__com__Class * registered;
+} __attribute__ ((gcc_struct));
+int id;
+int idCode;
+union
+{
+struct
+{
+struct External * pointerExternal;
+struct External * structExternal;
+} __attribute__ ((gcc_struct));
+struct
+{
+struct External * externalGet;
+struct External * externalSet;
+struct External * externalPtr;
+struct External * externalIsSet;
+} __attribute__ ((gcc_struct));
+struct
+{
+struct External * methodExternal;
+struct External * methodCodeExternal;
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+unsigned int imported;
+unsigned int declaredStructSym;
+struct __ecereNameSpace__ecere__com__Class * _class;
+unsigned int declaredStruct;
+unsigned int needConstructor;
+unsigned int needDestructor;
+char *  constructorName;
+char *  structName;
+char *  className;
+char *  destructorName;
+struct ModuleImport * module;
+struct ClassImport * _import;
+struct Location nameLoc;
+unsigned int isParam;
+unsigned int isRemote;
+unsigned int isStruct;
+unsigned int fireWatchersDone;
+int declaring;
+unsigned int classData;
+unsigned int isStatic;
+char *  shortName;
+struct __ecereNameSpace__ecere__sys__OldList *  templateParams;
+struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
+struct Context * ctx;
+int isIterator;
+struct Expression * propCategory;
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
 
@@ -907,6 +969,8 @@ return MkMembersInitList(list);
 
 extern struct Instantiation * MkInstantiation(struct Specifier * _class, struct Expression * exp, struct __ecereNameSpace__ecere__sys__OldList * members);
 
+extern struct Symbol * FindClass(char *  name);
+
 static struct Instantiation * CopyInstantiation(struct Instantiation * inst)
 {
 struct Instantiation * copy;
@@ -920,6 +984,17 @@ ListAdd(list, CopyMembersInit(member));
 }
 copy = MkInstantiation(CopySpecifier(inst->_class), CopyExpression(inst->exp), list);
 copy->data = inst->data;
+if(inst->data)
+{
+struct Symbol * classSym = FindClass(inst->_class->name);
+struct __ecereNameSpace__ecere__com__Class * _class = classSym ? classSym->registered : (((void *)0));
+
+if(_class)
+{
+if(_class->type == 0)
+((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)copy->data))->_refCount++;
+}
+}
 copy->loc = inst->loc;
 copy->isConstant = inst->isConstant;
 return copy;

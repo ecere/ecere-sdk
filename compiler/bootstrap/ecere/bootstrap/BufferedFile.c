@@ -323,11 +323,17 @@ struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSp
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
 void __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_CloseInput(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
 
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
@@ -336,7 +342,11 @@ void __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_CloseOutput(struct
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
 
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle);
 }
 
 extern void *  memcpy(void * , const void * , size_t size);
@@ -402,8 +412,16 @@ read = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferSize;
 bufferPos = 0;
 bufferCount = 0;
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos + totalBytesRead - bufferPos + bufferCount, 0);
-read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + bufferCount, 1, read);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos + totalBytesRead - bufferPos + bufferCount, 0);
+read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + bufferCount, 1, read);
 fileBuffer = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + bufferPos;
 bufferCount += read;
 if(!read)
@@ -434,8 +452,16 @@ unsigned int numBytes;
 unsigned int bytesToBuffer;
 unsigned int missing;
 
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos, 0);
-result = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, buffer, size, count);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos, 0);
+result = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, buffer, size, count);
 numBytes = result * size;
 bytesToBuffer = (__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferSize > __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos) ? (__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferSize - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos) : 0;
 missing = numBytes - bytesToBuffer;
@@ -487,8 +513,16 @@ return 0x1;
 else
 {
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos = 0;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos, 0);
-__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer, 1, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferSize);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos, 0);
+__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer, 1, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferSize);
 if(!__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->eof = 0x1;
@@ -503,7 +537,11 @@ return 0x0;
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Putc(struct __ecereNameSpace__ecere__com__Instance * this, char ch)
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
-int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, &ch, 1, 1);
+int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__BufferedFile->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, &ch, 1, 1);
 
 return written != 0;
 }
@@ -514,7 +552,11 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Puts(struc
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
 int len = strlen(string);
-int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, string, 1, len);
+int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__BufferedFile->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, string, 1, len);
 
 return written == len;
 }
@@ -557,8 +599,16 @@ __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos = 0;
 }
 else
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos + __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, 0);
-read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, 1, read);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos + __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, 0);
+read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, 1, read);
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos += newPosition - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos;
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount += read;
 }
@@ -611,7 +661,11 @@ unsigned int __simpleStruct0;
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
 unsigned int bytesAhead = (unsigned int)(size - (__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos - __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferPos));
 
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned int size))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, size);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned int size))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Truncate])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, size);
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferCount, (__simpleStruct0 < bytesAhead) ? __simpleStruct0 : bytesAhead);
 __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->fileSize = (__simpleStruct1 = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->fileSize, (__simpleStruct1 < size) ? __simpleStruct1 : size);
 return 0x1;
@@ -623,7 +677,11 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Lock(struc
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
 
-return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int type, uint64 start, uint64 length, unsigned int wait))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, type, start, length, wait);
+return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int type, uint64 start, uint64 length, unsigned int wait))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, type, start, length, wait);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
@@ -632,7 +690,11 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Unlock(str
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
 
-return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 start, uint64 length, unsigned int wait))__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, start, length, wait);
+return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 start, uint64 length, unsigned int wait))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, start, length, wait);
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -721,7 +783,11 @@ __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(__ecTemp1);
 })))
 {
 __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f), 0x1);
-((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + structSize_File)))->fileSize = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f)->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f));
+((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + structSize_File)))->fileSize = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f);
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f));
 result = f;
 }
 if(!result)

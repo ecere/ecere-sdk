@@ -983,6 +983,8 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
 
 int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  a, char *  b);
@@ -1309,7 +1311,11 @@ ReadDataMembers(regClass, (((void *)0)), f);
 }
 else if(!strcmp(line, "[Template Parameters]"))
 {
-while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
+while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
 {
 char name[1024];
 int type = 0;
@@ -1678,6 +1684,8 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct _
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
@@ -1752,7 +1760,11 @@ struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__
 if(firstModule)
 {
 list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_);
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(firstModule));
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(firstModule));
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
 {
@@ -1777,7 +1789,11 @@ if(loadedModule)
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)loadedModule + structSize_Instance)))->importType = importType;
 module->dllOnly = 0x0;
 if(list)
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(loadedModule));
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(loadedModule));
 }
 }
 }

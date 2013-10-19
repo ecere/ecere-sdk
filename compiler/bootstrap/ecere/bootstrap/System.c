@@ -523,6 +523,8 @@ extern char *  strcat(char * , const char * );
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
 void __ecereNameSpace__ecere__sys__Log(char * text)
@@ -544,7 +546,11 @@ struct __ecereNameSpace__ecere__com__Instance * f;
 
 if((f = __ecereNameSpace__ecere__sys__FileOpen(__ecereNameSpace__ecere__sys__globalSystem.logFile, 3)))
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, text);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, text);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
 break;

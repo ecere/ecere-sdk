@@ -2886,6 +2886,8 @@ extern struct Expression * MkExpDBTable(char *  table);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
 int yyparse(void)
 {
 int yystate;
@@ -3089,7 +3091,11 @@ _DeclClass(0, name);
 else
 _DeclClass(0, yyvsp[(1) - (2)].id->string);
 FreeIdentifier(yyvsp[(1) - (2)].id);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
 resetScannerPos(&(yylsp[(1) - (2)]).start);
 (yychar = (-2));
 (yyvsp -= (1), yyssp -= (1), yylsp -= (1));
@@ -3125,7 +3131,11 @@ _DeclClass(0, name);
 else
 _DeclClass(0, yyvsp[(1) - (2)].id->string);
 FreeIdentifier(yyvsp[(1) - (2)].id);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
 resetScannerPos(&(yylsp[(1) - (2)]).start);
 (yychar = (-2));
 (yyvsp -= (1), yyssp -= (1), yylsp -= (1));
@@ -3167,7 +3177,11 @@ else
 _DeclClass(0, yyvsp[(1) - (2)].id->string);
 FreeIdentifier(yyvsp[(1) - (2)].id);
 FreeIdentifier(yyvsp[(2) - (2)].id);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
 resetScannerPos(&(yylsp[(1) - (2)]).start);
 (yychar = (-2));
 (yyvsp -= (1), yyssp -= (1), yylsp -= (1));
@@ -3214,7 +3228,11 @@ yyval.specifier = yyvsp[(1) - (4)].specifier;
 SetClassTemplateArgs(yyval.specifier, yyvsp[(3) - (4)].list);
 yyval.specifier->loc = (yyloc);
 (yylsp[(4) - (4)]).end.pos--;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(4) - (4)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(4) - (4)]).end.pos, 0);
 resetScannerPos(&(yylsp[(4) - (4)]).end);
 (yychar = (-2));
 ;
@@ -3483,7 +3501,11 @@ yyval.memberInit = MkMemberInitExp(yyvsp[(1) - (3)].exp, MkInitializerAssignment
 yyval.memberInit->loc = (yyloc);
 yyval.memberInit->realLoc = (yyloc);
 yyval.memberInit->initializer->loc.start = yyval.memberInit->initializer->loc.end = (yylsp[(2) - (3)]).end;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(2) - (3)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(2) - (3)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(2) - (3)]).end);
 (yyloc.start = (yylsp[(1) - (3)]).start);
@@ -6958,7 +6980,11 @@ _DeclClass(0, yyvsp[(1) - (2)].exp->identifier->string);
 skipErrors = 0x0;
 FreeExpression(yyvsp[(1) - (2)].exp);
 FreeExpression(yyvsp[(2) - (2)].exp);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).start.pos, 0);
 resetScannerPos(&(yylsp[(1) - (2)]).start);
 (yychar = (-2));
 (yyvsp -= (1), yyssp -= (1), yylsp -= (1));
@@ -9697,7 +9723,11 @@ break;
 case 907:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (2)].declarator, yyvsp[(2) - (2)].list);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (2)]).end);
 (yyloc.start = (yylsp[(1) - (2)]).start);
@@ -9708,7 +9738,11 @@ break;
 case 908:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (2)].declarator, (((void *)0)));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (2)]).end);
 (yyloc.start = (yylsp[(1) - (2)]).start);
@@ -9719,7 +9753,11 @@ break;
 case 909:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (3)].declarator, yyvsp[(2) - (3)].list);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (3)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (3)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (3)]).end);
 (yyloc.start = (yylsp[(1) - (3)]).start);
@@ -9730,7 +9768,11 @@ break;
 case 910:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (4)].declarator, (((void *)0)));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (4)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (4)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (4)]).end);
 (yyloc.start = (yylsp[(1) - (4)]).start);
@@ -9773,7 +9815,11 @@ break;
 case 919:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (2)].declarator, yyvsp[(2) - (2)].list);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (2)]).end);
 (yyloc.start = (yylsp[(1) - (2)]).start);
@@ -9784,7 +9830,11 @@ break;
 case 920:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (2)].declarator, (((void *)0)));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (2)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (2)]).end);
 (yyloc.start = (yylsp[(1) - (2)]).start);
@@ -9795,7 +9845,11 @@ break;
 case 921:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (3)].declarator, yyvsp[(2) - (3)].list);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (3)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (3)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (3)]).end);
 (yyloc.start = (yylsp[(1) - (3)]).start);
@@ -9806,7 +9860,11 @@ break;
 case 922:
 {
 yyval.declarator = MkDeclaratorFunction(yyvsp[(1) - (4)].declarator, (((void *)0)));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (4)]).end.pos, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, (yylsp[(1) - (4)]).end.pos, 0);
 (yychar = (-2));
 resetScannerPos(&(yylsp[(1) - (4)]).end);
 (yyloc.start = (yylsp[(1) - (4)]).start);

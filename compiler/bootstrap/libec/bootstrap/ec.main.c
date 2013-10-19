@@ -529,9 +529,13 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___;
 
@@ -566,6 +570,8 @@ struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ec
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BinaryTree;
 
 struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
@@ -806,8 +812,10 @@ __ecereClass___ecereNameSpace__ecere__com__Iterator = __ecereNameSpace__ecere__c
 __ecereProp___ecereNameSpace__ecere__com__Iterator_data = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__com__Iterator, "data", module);
 __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::IteratorPointer");
 __ecereClass___ecereNameSpace__ecere__com__LinkList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList");
+__ecereClass___ecereNameSpace__ecere__com__List = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List");
 __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<Location>");
 __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ecere::com::Module>");
+__ecereClass___ecereNameSpace__ecere__com__Map = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map");
 __ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_Location___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<ContextStringPair, ecere::com::List<Location> >");
 __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, ecere::com::List<ecere::com::Module> >");
 __ecereClass___ecereNameSpace__ecere__com__MapIterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::MapIterator");
@@ -825,26 +833,26 @@ __ecereClass___ecereNameSpace__ecere__sys__BTNode = __ecereNameSpace__ecere__com
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_next = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__sys__BTNode, "next", module);
 __ecereClass___ecereNameSpace__ecere__sys__BinaryTree = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::BinaryTree");
 __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass___ecereNameSpace__ecere__sys__BinaryTree, "first", module);
-_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::File");
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Eof", module);
+__ecereClass___ecereNameSpace__ecere__sys__File = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::File");
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Eof", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "GetSize", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "GetSize", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Putc", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Putc", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Puts", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Puts", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Read", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Read", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Seek", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Seek", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Write", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Write", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write = method->vid;
 __ecereClass___ecereNameSpace__ecere__sys__Item = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::Item");

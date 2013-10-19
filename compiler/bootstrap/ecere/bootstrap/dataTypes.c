@@ -2040,14 +2040,22 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
 
 void __ecereNameSpace__ecere__com__Byte_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, data, 1);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, data, 1);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData;
 
 void __ecereNameSpace__ecere__com__Byte_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, data, 1) != 1)
+if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, data, 1) != 1)
 *data = (unsigned char)0;
 }
 
@@ -2060,7 +2068,11 @@ unsigned char bytes[4];
 (bytes)[2] = (unsigned char)(((*data) >> 8) & 0xFF);
 (bytes)[3] = (unsigned char)((*data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
 }
 
 void __ecereNameSpace__ecere__com__IntPtr32_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, int data, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -2072,14 +2084,22 @@ unsigned char bytes[4];
 (bytes)[2] = (unsigned char)(((data) >> 8) & 0xFF);
 (bytes)[3] = (unsigned char)((data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
 }
 
 void __ecereNameSpace__ecere__com__Int_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, int * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[4];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 4) == 4)
+if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 4) == 4)
 *data = (unsigned int)(((bytes)[0] << (unsigned char)24) | ((bytes)[1] << (unsigned char)16) | ((bytes)[2] << (unsigned char)8) | (bytes)[3]);
 else
 *data = 0;
@@ -2118,7 +2138,11 @@ unsigned char bytes[8];
 (bytes)[6] = (unsigned char)(((*data) >> 8) & 0xFF);
 (bytes)[7] = (unsigned char)((*data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
 }
 
 static void __ecereNameSpace__ecere__com__IntPtr64_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, long long data, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -2134,14 +2158,22 @@ unsigned char bytes[8];
 (bytes)[6] = (unsigned char)(((data) >> 8) & 0xFF);
 (bytes)[7] = (unsigned char)((data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
 }
 
 void __ecereNameSpace__ecere__com__Int64_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, long long * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[8];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 8) == 8)
+if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 8) == 8)
 *data = (((uint64)(bytes)[0] << 56) | ((uint64)(bytes)[1] << 48) | ((uint64)(bytes)[2] << 40) | ((uint64)(bytes)[3] << 32) | ((uint64)(bytes)[4] << 24) | ((bytes)[5] << (unsigned char)16) | ((bytes)[6] << (unsigned char)8) | (bytes)[7]);
 else
 *data = 0;
@@ -2154,14 +2186,22 @@ unsigned char bytes[2];
 (bytes)[0] = (unsigned char)(((*data) >> (unsigned short)8) & (unsigned short)0xFF);
 (bytes)[1] = (unsigned char)(((*data)) & (unsigned short)0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 2);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 2);
 }
 
 void __ecereNameSpace__ecere__com__Word_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned short * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[2];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 2) == 2)
+if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 2) == 2)
 *data = (unsigned short)(((bytes)[0] << (unsigned char)8) | (bytes)[1]);
 else
 *data = (unsigned short)0;
@@ -2442,14 +2482,22 @@ unsigned char bytes[4];
 (bytes)[2] = (unsigned char)(((*(unsigned int *)data) >> 8) & 0xFF);
 (bytes)[3] = (unsigned char)((*(unsigned int *)data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 4);
 }
 
 static void __ecereNameSpace__ecere__com__Float_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, float * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[4];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 4) == 4)
+if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 4) == 4)
 *(unsigned int *)data = (unsigned int)(((bytes)[0] << (unsigned char)24) | ((bytes)[1] << (unsigned char)16) | ((bytes)[2] << (unsigned char)8) | (bytes)[3]);
 else
 *data = 0;
@@ -2541,14 +2589,22 @@ unsigned char bytes[8];
 (bytes)[6] = (unsigned char)(((*(uint64 *)data) >> 8) & 0xFF);
 (bytes)[7] = (unsigned char)((*(uint64 *)data) & 0xFF);
 ;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, bytes, 8);
 }
 
 static void __ecereNameSpace__ecere__com__Double_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * _class, double * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 unsigned char bytes[8];
 
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 8) == 8)
+if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, bytes, 8) == 8)
 *(uint64 *)data = (((uint64)(bytes)[0] << 56) | ((uint64)(bytes)[1] << 48) | ((uint64)(bytes)[2] << 40) | ((uint64)(bytes)[3] << 32) | ((uint64)(bytes)[4] << 24) | ((bytes)[5] << (unsigned char)16) | ((bytes)[6] << (unsigned char)8) | (bytes)[7]);
 else
 *data = 0;
@@ -2581,7 +2637,11 @@ void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize(struct
 {
 int len = this ? strlen(this->string) : 0;
 
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, this ? this->string : "", len + 1);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, this ? this->string : "", len + 1);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -2591,7 +2651,11 @@ if(this)
 int c;
 unsigned int size;
 
-for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*this).string[c], 1) && (*this).string[c]; c++)
+for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*this).string[c], 1) && (*this).string[c]; c++)
 ;
 (*this).string[c++] = '\0';
 }
@@ -2684,7 +2748,11 @@ static void __ecereNameSpace__ecere__com__String_OnSerialize(struct __ecereNameS
 {
 int len = string ? strlen(string) : 0;
 
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, string ? string : "", len + 1);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, string ? string : "", len + 1);
 }
 
 extern unsigned int __ecereNameSpace__ecere__sys__UTF8Validate(char *  source);
@@ -2699,7 +2767,11 @@ int c;
 unsigned int size = 64;
 
 *string = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (size));
-for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))channel->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*string)[c], 1) && (*string)[c]; c++)
+for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*string)[c], 1) && (*string)[c]; c++)
 {
 if(c == size - 1)
 {

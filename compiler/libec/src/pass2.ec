@@ -1704,59 +1704,74 @@ static void ProcessExpression(Expression exp)
 
                {
                   Type type = memberExp ? memberExp.member.exp.expType : null;
-                  Class regClass = (type && type.kind == classType && type._class) ? type._class.registered : null; 
-                  // *** Added !_class here
-                  if(!exp.call.exp.expType.methodClass && (!memberExp || !_class) && type && type.classObjectType)
+                  Class regClass = (type && type.kind == classType && type._class) ? type._class.registered : null;
+                  char className[1024];
+                  bool useInstance = false;
+
+                  if(!exp.call.exp.expType.methodClass && !_class && type && type.classObjectType)
+                     strcpy(className, "class");
+                  else
                   {
-                     if(regClass && regClass.type == normalClass && strcmp(regClass.dataTypeString, "char *"))
-                     {
-                        // TOCHECK: Added this if statement here for File::OnSerialize to be calling the instance's own Seek function,
-                        // as opposed to the File class vTbl one
-                        exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
-                           MkExpIndex(MkExpPointer(MkExpBrackets(MkListOne(CopyExpression(memberExp.member.exp))), MkIdentifier("_vTbl")),
-                           MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
-                     }
-                     else
-                     {
-                        exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
-                           MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("_vTbl")),
-                           MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
-                     }
-                  }
-                  else if(memberExp && !_class && exp.call.exp.expType._class &&
+                     Class cl = _class;
+                     // TESTING: Moved this here...
+                     if(!cl && argClass && strcmp(argClass.fullName, "class"))
+                        cl = argClass;
+                     if(!cl)
+                        cl = regClass;
+                     if(!cl)
+                        // TODO: Unhandled case here, what should happen?
+                        cl = class(int);
+
+                     // To avoid declaring classes templatized after this class template (e.g. public struct Iterator<class T, class IT = int> { Container<T, IT> container; } )
+                     if(cl.templateClass && !_class && exp.call.exp.expType._class && !exp.call.exp.expType.methodClass &&
                         (type.kind == subClassType || (regClass && regClass.type == normalClass && strcmp(regClass.dataTypeString, "char *"))))
+                        cl = cl.templateClass;
+
+                     // Need the class itself here...
+                     strcpy(className, "__ecereClass_");
+                     FullClassNameCat(className, cl.fullName, true);
+                     MangleClassName(className);
+
+                     if(!cl.symbol)
+                        cl.symbol = FindClass(cl.fullName);
+
+                     DeclareClass(cl.symbol, className);
+                  }
+
+                  if(type && type.kind == subClassType && !_class && !exp.call.exp.expType.methodClass && memberExp)
                   {
                      exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
                         MkExpIndex(MkExpPointer(CopyExpression(memberExp.member.exp), MkIdentifier("_vTbl")),
                         MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
                   }
-                  else 
+                  else if(_class || exp.call.exp.expType.methodClass || !memberExp ||
+                         !regClass || regClass.type != normalClass || !strcmp(regClass.dataTypeString, "char *"))
                   {
-                     char className[1024];
-
-                     // TESTING: Moved this here...
-                     if(!_class && argClass && strcmp(argClass.fullName, "class"))
-                        _class = argClass;
-
-                     if(!_class)
-                     {
-                        // TODO: Unhandled case here, what should happen?
-                        _class = class(int);
-                     }
-
-                     // Need the class itself here...
-                     strcpy(className, "__ecereClass_");
-                     FullClassNameCat(className, _class.fullName, true);
-                     MangleClassName(className);
-
-                     if(!_class.symbol)
-                        _class.symbol = FindClass(_class.fullName);
-
-                     DeclareClass(_class.symbol, className);
-
                      exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
                         MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")),
                         MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+                  }
+                  else
+                  {
+                     // TOCHECK: Added this if statement here for File::OnSerialize to be calling the instance's own Seek function,
+                     // as opposed to the File class vTbl one
+
+                     // ({ Instance __internal_ClassInst = e; __internal_ClassInst ? __internal_ClassInst._vTbl : __ecereClass_...; })
+                     Expression c;
+                     Context context = PushContext();
+                     c = MkExpExtensionCompound(MkCompoundStmt(
+                           MkListOne(MkDeclaration(
+                              MkListOne(MkSpecifierName("Instance")),
+                              MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
+                                 MkInitializerAssignment(CopyExpression(memberExp.member.exp)))))),
+                           MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
+                              MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
+                              MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))),
+                              MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+                     c.compound.compound.context = context;
+                     PopContext(context);
+                     exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
+                        MkExpIndex(c, MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
                   }
                }
             }
@@ -1819,6 +1834,7 @@ static void ProcessExpression(Expression exp)
                   if(typedObject && memberExp.member.exp && memberExp.member.exp.expType)
                   {
                      bool changeReference = false;
+                     Expression memberExpMemberExp = CopyExpression(memberExp.member.exp);
 
                      // Patched so that class isn't considered SYSTEM...
                      if(argClass && (argClass.type == enumClass || argClass.type == unitClass || argClass.type == bitClass || argClass.type == systemClass) && strcmp(argClass.fullName, "class") && 
@@ -1887,29 +1903,57 @@ static void ProcessExpression(Expression exp)
                      else
                         exp.call.arguments->Insert(null, memberExp.member.exp);
 
-                     //if(memberExp.member.exp && memberExp.member.exp.type == identifierExp && !strcmp(memberExp.member.exp.identifier.string, "this") && FindSymbol("class", curContext, topContext, false))
-                     if(memberExp.member.exp && memberExp.member.exp.expType && memberExp.member.exp.expType.classObjectType == ClassObjectType::typedObject)
                      {
-                        exp.call.arguments->Insert(null, MkExpIdentifier(MkIdentifier("class")));
-                     }
-                     else
-                     {
-                        if(memberExp && !argClass)
-                           exp.call.arguments->Insert(null, MkExpPointer(CopyExpression(memberExp.member.exp), MkIdentifier("_class")));
-                        else
-                        {
-                           char className[1024];
+                        char className[1024];
+                        Type type = memberExp.member.exp ? memberExp.member.exp.expType : null;
+                        Class regClass = (type && type.kind == classType && type._class) ? type._class.registered : null;
+                        Class cl = argClass ? argClass : regClass;
+                        className[0] = 0;
+
+                        if(memberExp.member.exp && memberExp.member.exp.expType && memberExp.member.exp.expType.classObjectType == ClassObjectType::typedObject)
+                           strcpy(className, "class");
+                        else if(cl)
+                        {                           
                            // Need the class itself here...
                            strcpy(className, "__ecereClass_");
-                           FullClassNameCat(className, argClass.fullName, true);
+                           FullClassNameCat(className, cl.fullName, true);
                            MangleClassName(className);
 
-                           if(!argClass.symbol)
-                              argClass.symbol = FindClass(argClass.fullName);
-                           DeclareClass(argClass.symbol, className);
-                           exp.call.arguments->Insert(null, MkExpIdentifier(MkIdentifier(className)));
+                           if(!cl.symbol)
+                              cl.symbol = FindClass(cl.fullName);
+                           DeclareClass(cl.symbol, className);
+                        }
+
+                        if(className[0])
+                        {
+                           if(memberExp && cl && cl.type == normalClass && (!type || type.byReference == false) && strcmp(cl.dataTypeString, "char *"))
+                           {
+                              // ({ Instance __internal_ClassInst = e; __internal_ClassInst ? __internal_ClassInst._class : __ecereClass_...; })
+                              Expression c;
+                              Context context = PushContext();
+                              c = MkExpExtensionCompound(MkCompoundStmt(
+                                    MkListOne(MkDeclaration(
+                                       MkListOne(MkSpecifierName("Instance")),
+                                       MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
+                                          MkInitializerAssignment(memberExpMemberExp))))),
+                                    MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
+                                       MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
+                                       MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))),
+                                       MkExpIdentifier(MkIdentifier(className))))))));
+                              c.compound.compound.context = context;
+                              PopContext(context);
+
+                              exp.call.arguments->Insert(null, c);
+
+                              memberExpMemberExp = null; // We used this
+                           }
+                           else
+                              exp.call.arguments->Insert(null, MkExpIdentifier(MkIdentifier(className)));
                         }
                      }
+
+                     if(memberExpMemberExp)
+                        FreeExpression(memberExpMemberExp);
                   }
                   else
                      exp.call.arguments->Insert(null, memberExp.member.exp);
@@ -2174,30 +2218,44 @@ static void ProcessExpression(Expression exp)
                            _class = eSystem_FindClass(privateModule, "String");
                         if(!_class) _class = eSystem_FindClass(privateModule, "int");
 
-                        if(_class.type == normalClass && destType.byReference == false && strcmp(_class.dataTypeString, "char *"))
+                        if(!strcmp(_class.name, "class"))
                         {
-                           exp.call.arguments->Insert(e.prev, MkExpPointer(CopyExpression(e), MkIdentifier("_class")));
+                           // Already inside a typed_object function, pass the class through
+                           strcpy(className, "class");
                         }
                         else
                         {
-                           if(!strcmp(_class.name, "class"))
-                           {
-                              // Already inside a typed_object function, pass the class through
-                              strcpy(className, "class");
-                           }
-                           else
-                           {
-                              strcpy(className, "__ecereClass_");
-                              FullClassNameCat(className, _class.fullName, true);
-                              MangleClassName(className);
+                           strcpy(className, "__ecereClass_");
+                           FullClassNameCat(className, _class.fullName, true);
+                           MangleClassName(className);
 
-                              if(!_class.symbol)
-                                 _class.symbol = FindClass(_class.fullName);
+                           if(!_class.symbol)
+                              _class.symbol = FindClass(_class.fullName);
 
-                              DeclareClass(_class.symbol, className);
-                           }
-                           exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
+                           DeclareClass(_class.symbol, className);
                         }
+
+                        if(_class.type == normalClass && destType.byReference == false && strcmp(_class.dataTypeString, "char *"))
+                        {
+                           // ({ Instance __internal_ClassInst = e; __internal_ClassInst ? __internal_ClassInst._class : __ecereClass_...; })
+                           Expression c;
+                           Context context = PushContext();
+                           c = MkExpExtensionCompound(MkCompoundStmt(
+                                 MkListOne(MkDeclaration(
+                                    MkListOne(MkSpecifierName("Instance")),
+                                    MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), 
+                                       MkInitializerAssignment(CopyExpression(e)))))),
+                                 MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
+                                    MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
+                                    MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))),
+                                    MkExpIdentifier(MkIdentifier(className))))))));
+                           c.compound.compound.context = context;
+                           PopContext(context);
+
+                           exp.call.arguments->Insert(e.prev, c);
+                        }
+                        else
+                           exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
                      }
                   }
                }

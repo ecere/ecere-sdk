@@ -926,6 +926,8 @@ extern void __ecereNameSpace__ecere__com__eInstance_Delete(struct __ecereNameSpa
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
@@ -957,8 +959,16 @@ __ecereNameSpace__ecere__sys__StripExtension(projectName);
 FixModuleName(mainModuleName);
 if(targetPlatform == 1 && !isConsole && !isStaticLibrary && !isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "typedef void * HINSTANCE;\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "#define WINAPI __stdcall\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "typedef void * HINSTANCE;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "#define WINAPI __stdcall\n");
 }
 for(importedModule = _defines.first; importedModule; importedModule = importedModule->next)
 {
@@ -970,10 +980,22 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "static ", importedMo
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\"%s\"\n", importedModule->name);
 }
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "default:\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "static Module __currentModule;\n\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "default:\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "static Module __currentModule;\n\n");
 if(!isStaticLibrary)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "Module __thisModule;\n\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "Module __thisModule;\n\n");
 BindDCOMServer();
 BindDCOMClient();
 if(dcomSymbols)
@@ -1078,15 +1100,31 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void __ecereDestroyM
 if(dcomSymbols)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))dcomSymbols->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(dcomSymbols, 0, 0);
-while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))dcomSymbols->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(dcomSymbols))
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = dcomSymbols;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(dcomSymbols, 0, 0);
+while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = dcomSymbols;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(dcomSymbols))
 {
 char buffer[4096];
-int read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))dcomSymbols->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(dcomSymbols, buffer, 1, sizeof buffer);
+int read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = dcomSymbols;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(dcomSymbols, buffer, 1, sizeof buffer);
 
 if(!read)
 break;
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(f, buffer, 1, read);
+((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(f, buffer, 1, read);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
@@ -1097,47 +1135,127 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\nbool __ecereDll_Lo
 else if(isDynamicLibrary)
 {
 if(targetPlatform == 1)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __stdcall __ecereDll_Load(Module module)\n{\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __stdcall __ecereDll_Load(Module module)\n{\n");
 else
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __ecereDll_Load(Module module)\n{\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __ecereDll_Load(Module module)\n{\n");
 }
 else if(targetPlatform == 1 && !isConsole)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\nint WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char * cmdLine, int show)\n{\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\nint WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, char * cmdLine, int show)\n{\n");
 }
 else
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\nint main(int _argc, char * _argv[])\n{\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\nint main(int _argc, char * _argv[])\n{\n");
 if(!isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   int exitCode;\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Module module;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   int exitCode;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Module module;\n");
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Class _class;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Class _class;\n");
 if(anyMethod)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Method method;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Method method;\n");
 if(anyProp)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Property _property;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   Property _property;\n");
 if(anyFunction)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   GlobalFunction function;\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   GlobalFunction function;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n");
 if(disabledPooling)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   eSystem_SetPoolingDisabled(true);\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   eSystem_SetPoolingDisabled(true);\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n");
 }
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(!__currentModule)\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __currentModule = module;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(!__currentModule)\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __currentModule = module;\n");
 if(!isStaticLibrary)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __thisModule = module;\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __thisModule = module;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n\n");
 }
 else if(targetPlatform == 1 && !isConsole)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, 0, null);\n\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, 0, null);\n\n");
 else
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   __thisModule = __currentModule = module = __ecere_COM_Initialize(1, _argc, (void *)_argv);\n\n");
 if(_imports.count)
 {
 for(module = _imports.first; module; module = module->next)
@@ -1173,8 +1291,16 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereRegisterMo
 }
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
 }
 for(module = _imports.first; module; module = module->next)
 {
@@ -1272,7 +1398,11 @@ if(i18n)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      LoadTranslatedStrings(module, \"%s\");\n", projectName);
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
 }
 if(!isDynamicLibrary && thisAppClass)
 {
@@ -1282,8 +1412,16 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __thisModule = __
 }
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
 }
 if(modules.count)
 {
@@ -1302,7 +1440,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
 }
 if(!isDynamicLibrary && thisAppClass)
 {
@@ -1310,8 +1452,16 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   ((void(*)(void *)
 }
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   return true;\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "}\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   return true;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "}\n");
 if(isStaticLibrary)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\nbool __ecereDll_Unload_%s(Module module)\n{\n", projectName);
@@ -1319,15 +1469,31 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\nbool __ecereDll_Un
 else
 {
 if(targetPlatform == 1)
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __stdcall __ecereDll_Unload(Module module)\n{\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __stdcall __ecereDll_Unload(Module module)\n{\n");
 else
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __ecereDll_Unload(Module module)\n{\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\ndllexport bool __ecereDll_Unload(Module module)\n{\n");
 }
 }
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
 }
 {
 unsigned int destroyI18n = 0x0;
@@ -1357,7 +1523,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereDestroyMod
 }
 if(isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   }\n");
 if(isDynamicLibrary)
 {
 }
@@ -1373,21 +1543,49 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereUnregister
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __currentModule = (void *)0;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__currentModule == module)\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __currentModule = (void *)0;\n");
 if(!isStaticLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__thisModule == module)\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __thisModule = (void *)0;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   if(__thisModule == module)\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "      __thisModule = (void *)0;\n");
 }
 }
 if(!isDynamicLibrary)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n   _class = eSystem_FindClass(__currentModule, \"ecere::com::Application\");\n   exitCode = ((ecere::com::Application)__currentModule).exitCode;\n   delete __currentModule;\n   return exitCode;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n   _class = eSystem_FindClass(__currentModule, \"ecere::com::Application\");\n   exitCode = ((ecere::com::Application)__currentModule).exitCode;\n   delete __currentModule;\n   return exitCode;\n");
 }
 else
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   return true;\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "}\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   return true;\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "}\n");
 __ecereNameSpace__ecere__com__eInstance_Delete(f);
 }
 }
@@ -1649,7 +1847,11 @@ if(param->kind == 8 && !strcmp(param->_class->string, "String"))
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "(StaticString)");
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, param->name);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, param->name);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
@@ -1983,7 +2185,11 @@ if(param->kind == 8 && !strcmp(param->_class->string, "String"))
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "(StaticString)");
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, param->name);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, param->name);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
@@ -2330,6 +2536,8 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
 
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
@@ -2355,6 +2563,8 @@ int count;
 uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereNameSpace__ecere__sys__OldList * this, void (*  freeFn)(void * ));
 
@@ -2549,7 +2759,11 @@ static char line[65536];
 struct __ecereNameSpace__ecere__com__Instance * comments = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_String_);
 char * msgid = (((void *)0)), * msgstr = (((void *)0)), * msgctxt = (((void *)0));
 
-while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))f->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
+while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
 {
 if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
 {
@@ -2558,7 +2772,11 @@ int len;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(line[0] == '#')
 {
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))comments->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(comments, (uint64)(__ecereNameSpace__ecere__sys__CopyString(line)));
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = comments;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(comments, (uint64)(__ecereNameSpace__ecere__sys__CopyString(line)));
 }
 else if(strstr(line, "msgid \"") == line)
 {
@@ -2616,9 +2834,17 @@ struct __ecereNameSpace__ecere__com__Iterator s =
 };
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it))->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)), __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it));
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)), __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
 }
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))comments->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll])(comments);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = comments;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll])(comments);
 }
 (__ecereNameSpace__ecere__com__eSystem_Delete(msgid), msgid = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(msgctxt), msgctxt = 0);
@@ -2626,7 +2852,11 @@ while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
 }
 }
 }
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))comments->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(comments);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = comments;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(comments);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(comments), comments = 0);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
@@ -2652,18 +2882,66 @@ __ecereNameSpace__ecere__sys__ChangeExtension(potFileName, "pot", potFileName);
 potFile = __ecereNameSpace__ecere__sys__FileOpen(potFileName, 2);
 if(potFile)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgid \"\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgstr \"\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Project-Id-Version: \\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"POT-Creation-Date: \\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"PO-Revision-Date: \\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Last-Translator: \\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Language-Team: \\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"MIME-Version: 1.0\\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Content-Type: text/plain; charset=iso-8859-1\\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Content-Transfer-Encoding: 8bit\\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"X-Poedit-Basepath: ../\\n\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgid \"\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgstr \"\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Project-Id-Version: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"POT-Creation-Date: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"PO-Revision-Date: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Last-Translator: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Language-Team: \\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"MIME-Version: 1.0\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Content-Type: text/plain; charset=iso-8859-1\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"Content-Transfer-Encoding: 8bit\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"X-Poedit-Basepath: ../\\n\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
 {
 struct __ecereNameSpace__ecere__com__MapIterator i = (i.container = (void *)0, i.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&i, (intlStrings)), i);
 
@@ -2681,25 +2959,73 @@ struct __ecereNameSpace__ecere__com__Iterator s =
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(potFile, __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
 }
 }
 if(pair.context)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgctxt \"");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.context);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgctxt \"");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.context);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgid \"");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.string);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgstr \"");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.string);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))potFile->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgid \"");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.string);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "msgstr \"");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, pair.string);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\"\n");
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(potFile, "\n");
 }
 }
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))intlStrings->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(intlStrings);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = intlStrings;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(intlStrings);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(intlStrings), intlStrings = 0);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(potFile), potFile = 0);
 }

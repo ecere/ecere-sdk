@@ -479,6 +479,8 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Container;
+
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext;
@@ -489,7 +491,11 @@ void __ecereMethod___ecereNameSpace__ecere__com__Array_Copy(struct __ecereNameSp
 {
 struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + structSize_Instance) : 0);
 
-__ecerePointer___ecereNameSpace__ecere__com__Array->count = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *))source->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount])(source);
+__ecerePointer___ecereNameSpace__ecere__com__Array->count = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount])(source);
 if(__ecerePointer___ecereNameSpace__ecere__com__Array->count > __ecerePointer___ecereNameSpace__ecere__com__Array->minAllocSize)
 __ecerePointer___ecereNameSpace__ecere__com__Array->array = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__com__Array->array, ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 0 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 5) ? sizeof(void *) : ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize) * (__ecerePointer___ecereNameSpace__ecere__com__Array->count));
 if((((struct __ecereNameSpace__ecere__com__Instance *)(char *)source)->_class == __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer && (*((struct __ecereNameSpace__ecere__com__BuiltInContainer *)source)).type->type != 1) || __ecereNameSpace__ecere__com__eClass_IsDerived(((struct __ecereNameSpace__ecere__com__Instance *)(char *)source)->_class, __ecereClass___ecereNameSpace__ecere__com__Array))
@@ -501,9 +507,21 @@ else
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 int c;
 
-for(c = 0, i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))source->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(source); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))source->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(source, i), c++)
+for(c = 0, i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(source); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(source, i), c++)
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))source->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(source, i);
+uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(source, i);
 
 (memcpy((char *)__ecerePointer___ecereNameSpace__ecere__com__Array->array + ((c) * ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 0 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 5) ? sizeof(void * ) : ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize)), (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 1) ? data : ((char *)&data + __ENDIAN_PAD((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass->type == 1 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass->type == 0 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass->type == 5) ? sizeof(void *) : ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass->typeSize)), (((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 0 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 5) ? sizeof(void *) : ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize));
 }
@@ -536,10 +554,14 @@ struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ec
 uint64 data = ((((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 1) ? ((uint64)(uint64 * )item) : (((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 0 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 5) ? (uint64)*((void **)(uint64 * )item) : ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize == 1) ? *((unsigned char *)(uint64 * )item) : ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize == 2) ? *((unsigned short *)(uint64 * )item) : ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize == 4) ? *((unsigned int *)(uint64 * )item) : *((uint64 *)item)))))));
 
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass, data), data = 0);
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Array->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (* )(void * ), void (* )(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 

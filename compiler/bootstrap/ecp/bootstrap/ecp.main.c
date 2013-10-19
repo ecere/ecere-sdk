@@ -508,6 +508,10 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BinaryTree;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__DualPipe;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
@@ -670,21 +674,21 @@ __ecereClass___ecereNameSpace__ecere__com__Property = __ecereNameSpace__ecere__c
 __ecereClass___ecereNameSpace__ecere__com__SerialBuffer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::SerialBuffer");
 __ecereClass___ecereNameSpace__ecere__sys__BTNode = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::BTNode");
 __ecereClass___ecereNameSpace__ecere__sys__BinaryTree = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::BinaryTree");
-_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::DualPipe");
-_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::File");
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Eof", module);
+__ecereClass___ecereNameSpace__ecere__sys__DualPipe = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::DualPipe");
+__ecereClass___ecereNameSpace__ecere__sys__File = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::File");
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Eof", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Puts", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Puts", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Read", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Read", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Seek", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Seek", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek = method->vid;
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Write", module);
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Write", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write = method->vid;
 __ecereClass___ecereNameSpace__ecere__sys__NamedLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink");

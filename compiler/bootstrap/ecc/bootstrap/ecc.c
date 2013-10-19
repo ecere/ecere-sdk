@@ -849,6 +849,8 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(struct 
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__DualPipe;
+
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
@@ -1114,16 +1116,32 @@ __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(mainModuleName
 });
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&defines, module);
 resetScanner();
-while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))cppOutput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(cppOutput))
+while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = cppOutput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__DualPipe->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(cppOutput))
 {
 char junk[4096];
-int count = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))cppOutput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(cppOutput, junk, 1, 4096);
+int count = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = cppOutput;
 
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(fileInput, junk, 1, count);
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__DualPipe->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(cppOutput, junk, 1, 4096);
+
+((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__TempFile->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(fileInput, junk, 1, count);
 }
 exitCode = __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode(cppOutput);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(cppOutput), cppOutput = 0);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, 0, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__TempFile->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, 0, 0);
 {
 char symFile[274];
 char symLocation[797];

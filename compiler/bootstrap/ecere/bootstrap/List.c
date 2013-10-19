@@ -359,7 +359,11 @@ int count;
 
 struct __ecereNameSpace__ecere__com__Link * __ecereMethod___ecereNameSpace__ecere__com__List_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 value)
 {
-return (struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, ((struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + structSize_Instance)))->last), value);
+return (struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, ((struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 24)))->last), value);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
@@ -378,10 +382,18 @@ int __ecereVMethodID_class_OnFree;
 
 void __ecereMethod___ecereNameSpace__ecere__com__List_Delete(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Link * link)
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, link);
+uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, link);
 
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass, data), data = 0);
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, link);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, link);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__List_Free(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -390,10 +402,18 @@ void * item;
 
 while(item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + structSize_Instance)))->first)
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, item);
+uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, item);
 
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].dataTypeClass, data), data = 0);
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))this->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
 }
 }
 

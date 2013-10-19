@@ -465,6 +465,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ListItem;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__String_;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__String___;
@@ -954,6 +956,7 @@ __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = __ecereNameSpace__e
 __ecereClass___ecereNameSpace__ecere__com__LinkElement = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkElement");
 __ecereClass___ecereNameSpace__ecere__com__LinkList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList");
 __ecereClass___ecereNameSpace__ecere__com__ListItem = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ListItem");
+__ecereClass___ecereNameSpace__ecere__com__Map = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map");
 __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__String_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, String>");
 __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__String___ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map<String, ecere::com::Map<String, String> >");
 __ecereClass___ecereNameSpace__ecere__com__MapIterator = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::MapIterator");

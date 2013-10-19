@@ -1564,6 +1564,8 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+
 struct Expression * MkExpIntlString(char * string, char * context)
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
@@ -1614,7 +1616,11 @@ else
 (__ecereNameSpace__ecere__com__eSystem_Delete(pair.string), pair.string = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(pair.context), pair.context = 0);
 }
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (&yylloc));
+((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (&yylloc));
 }
 ListAdd(list, QMkExpId("__thisModule"));
 ListAdd(list, MkExpString(string));
@@ -4829,6 +4835,8 @@ extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpa
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
+
 void OutputIntlStrings()
 {
 if(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + structSize_Instance)))->count)
@@ -4872,7 +4880,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "msgstr \"%s\"\n\n", 
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))intlStrings->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(intlStrings);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = intlStrings;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(intlStrings);
 }
 }
 

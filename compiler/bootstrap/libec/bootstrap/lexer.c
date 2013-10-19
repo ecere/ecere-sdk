@@ -1906,6 +1906,8 @@ yy_fatal_error("fatal flex scanner internal error--no action found");
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
 static int yy_get_next_buffer()
 {
 register char * dest = (*yy_current_buffer).yy_ch_buf;
@@ -1959,7 +1961,11 @@ num_to_read = (*yy_current_buffer).yy_buf_size - number_to_move - 1;
 }
 if(num_to_read > 8192)
 num_to_read = 8192;
-yy_n_chars = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))fileInput->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(fileInput, (&(*yy_current_buffer).yy_ch_buf[number_to_move]), 1, num_to_read);
+yy_n_chars = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(fileInput, (&(*yy_current_buffer).yy_ch_buf[number_to_move]), 1, num_to_read);
 (*yy_current_buffer).yy_n_chars = yy_n_chars;
 }
 if(yy_n_chars == 0)

@@ -2625,39 +2625,47 @@ argClass = classSym->registered;
 {
 struct Type * type = memberExp ? memberExp->member.exp->expType : (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * regClass = (type && type->kind == 8 && type->_class) ? type->_class->registered : (((void *)0));
+char className[1024];
+unsigned int useInstance = 0x0;
 
-if(!exp->call.exp->expType->methodClass && (!memberExp || !_class) && type && type->classObjectType)
-{
-if(regClass && regClass->type == 0 && strcmp(regClass->dataTypeString, "char *"))
-{
-exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpBrackets(MkListOne(CopyExpression(memberExp->member.exp))), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
-}
+if(!exp->call.exp->expType->methodClass && !_class && type && type->classObjectType)
+strcpy(className, "class");
 else
 {
-exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+struct __ecereNameSpace__ecere__com__Class * cl = _class;
+
+if(!cl && argClass && strcmp(argClass->fullName, "class"))
+cl = argClass;
+if(!cl)
+cl = regClass;
+if(!cl)
+cl = __ecereClass_int;
+if(cl->templateClass && !_class && exp->call.exp->expType->_class && !exp->call.exp->expType->methodClass && (type->kind == 19 || (regClass && regClass->type == 0 && strcmp(regClass->dataTypeString, "char *"))))
+cl = cl->templateClass;
+strcpy(className, "__ecereClass_");
+FullClassNameCat(className, cl->fullName, 0x1);
+MangleClassName(className);
+if(!cl->symbol)
+cl->symbol = FindClass(cl->fullName);
+DeclareClass(cl->symbol, className);
 }
-}
-else if(memberExp && !_class && exp->call.exp->expType->_class && (type->kind == 19 || (regClass && regClass->type == 0 && strcmp(regClass->dataTypeString, "char *"))))
+if(type && type->kind == 19 && !_class && !exp->call.exp->expType->methodClass && memberExp)
 {
 exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(CopyExpression(memberExp->member.exp), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
 }
+else if(_class || exp->call.exp->expType->methodClass || !memberExp || !regClass || regClass->type != 0 || !strcmp(regClass->dataTypeString, "char *"))
+{
+exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+}
 else
 {
-char className[1024];
+struct Expression * c;
+struct Context * context = PushContext();
 
-if(!_class && argClass && strcmp(argClass->fullName, "class"))
-_class = argClass;
-if(!_class)
-{
-_class = __ecereClass_int;
-}
-strcpy(className, "__ecereClass_");
-FullClassNameCat(className, _class->fullName, 0x1);
-MangleClassName(className);
-if(!_class->symbol)
-_class->symbol = FindClass(_class->fullName);
-DeclareClass(_class->symbol, className);
-exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(memberExp->member.exp)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))), MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+c->compound->compound.context = context;
+PopContext(context);
+exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(c, MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
 }
 }
 }
@@ -2686,6 +2694,7 @@ exp->call.arguments = MkList();
 if(typedObject && memberExp->member.exp && memberExp->member.exp->expType)
 {
 unsigned int changeReference = 0x0;
+struct Expression * memberExpMemberExp = CopyExpression(memberExp->member.exp);
 
 if(argClass && (argClass->type == 4 || argClass->type == 3 || argClass->type == 2 || argClass->type == 1000) && strcmp(argClass->fullName, "class") && strcmp(argClass->fullName, "uintptr") && strcmp(argClass->fullName, "intptr"))
 changeReference = 0x1;
@@ -2746,27 +2755,43 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.argument
 }
 else
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), memberExp->member.exp);
-if(memberExp->member.exp && memberExp->member.exp->expType && memberExp->member.exp->expType->classObjectType == 2)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), MkExpIdentifier(MkIdentifier("class")));
-}
-else
-{
-if(memberExp && !argClass)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), MkExpPointer(CopyExpression(memberExp->member.exp), MkIdentifier("_class")));
-else
 {
 char className[1024];
+struct Type * type = memberExp->member.exp ? memberExp->member.exp->expType : (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * regClass = (type && type->kind == 8 && type->_class) ? type->_class->registered : (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * cl = argClass ? argClass : regClass;
 
+className[0] = (char)0;
+if(memberExp->member.exp && memberExp->member.exp->expType && memberExp->member.exp->expType->classObjectType == 2)
+strcpy(className, "class");
+else if(cl)
+{
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, argClass->fullName, 0x1);
+FullClassNameCat(className, cl->fullName, 0x1);
 MangleClassName(className);
-if(!argClass->symbol)
-argClass->symbol = FindClass(argClass->fullName);
-DeclareClass(argClass->symbol, className);
+if(!cl->symbol)
+cl->symbol = FindClass(cl->fullName);
+DeclareClass(cl->symbol, className);
+}
+if(className[0])
+{
+if(memberExp && cl && cl->type == 0 && (!type || type->byReference == 0x0) && strcmp(cl->dataTypeString, "char *"))
+{
+struct Expression * c;
+struct Context * context = PushContext();
+
+c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(memberExpMemberExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))), MkExpIdentifier(MkIdentifier(className))))))));
+c->compound->compound.context = context;
+PopContext(context);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), c);
+memberExpMemberExp = (((void *)0));
+}
+else
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), MkExpIdentifier(MkIdentifier(className)));
 }
 }
+if(memberExpMemberExp)
+FreeExpression(memberExpMemberExp);
 }
 else
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), memberExp->member.exp);
@@ -2984,12 +3009,6 @@ if(!_class && type->kind == 13 && type->type && type->type->kind == 1)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "String");
 if(!_class)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "int");
-if(_class->type == 0 && destType->byReference == 0x0 && strcmp(_class->dataTypeString, "char *"))
-{
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, MkExpPointer(CopyExpression(e), MkIdentifier("_class")));
-}
-else
-{
 if(!strcmp(_class->name, "class"))
 {
 strcpy(className, "class");
@@ -3003,8 +3022,18 @@ if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
 }
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, MkExpIdentifier(MkIdentifier(className)));
+if(_class->type == 0 && destType->byReference == 0x0 && strcmp(_class->dataTypeString, "char *"))
+{
+struct Expression * c;
+struct Context * context = PushContext();
+
+c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(e)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))), MkExpIdentifier(MkIdentifier(className))))))));
+c->compound->compound.context = context;
+PopContext(context);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, c);
 }
+else
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, MkExpIdentifier(MkIdentifier(className)));
 }
 }
 }

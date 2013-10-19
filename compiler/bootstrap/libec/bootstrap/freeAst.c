@@ -1482,7 +1482,10 @@ FreeIdentifier(exp->identifier);
 break;
 case 1:
 if(exp->instance)
+{
 FreeInstance(exp->instance);
+exp->instance = (((void *)0));
+}
 break;
 case 3:
 (__ecereNameSpace__ecere__com__eSystem_Delete(exp->string), exp->string = 0);
@@ -2419,6 +2422,8 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
 
 struct __ecereNameSpace__ecere__com__LinkList
@@ -2431,6 +2436,8 @@ int count;
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
 
 void FreeModuleData(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -2530,7 +2537,11 @@ while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&it))
 {
 if(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)) == (uint64)(module))
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, it.pointer);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, it.pointer);
 found = 0x1;
 break;
 }
@@ -2549,8 +2560,20 @@ __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, 
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
 }));
 
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))list->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(list));
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))loadedModules->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(loadedModules, mapIt.pointer);
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(list));
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = loadedModules;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(loadedModules, mapIt.pointer);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(list), list = 0);
 __ecereNameSpace__ecere__com__eModule_Unload(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, mod);
 }

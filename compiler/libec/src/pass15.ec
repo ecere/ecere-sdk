@@ -8870,7 +8870,7 @@ void ProcessExpressionType(Expression exp)
                   if(e)
                   {
                      // Allow manually passing a class for typed object
-                     if(type.kind == classType && (functionType && functionType.thisClass) && functionType.classObjectType == typedObject)
+                     if(e.next && type.kind == classType && (functionType && functionType.thisClass) && functionType.classObjectType == typedObject)
                         e = e.next;
                      e.destType = type;
                      e = e.next;
