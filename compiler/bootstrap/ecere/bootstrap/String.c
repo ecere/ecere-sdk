@@ -30,6 +30,16 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1490,7 +1500,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintBigSize
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SearchString", "char * ecere::sys::SearchString(char * buffer, int start, char * subStr, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__SearchString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RSearchString", "char * ecere::sys::RSearchString(char * buffer, char * subStr, int maxLen, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__RSearchString, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::BackSlashEscaping", "bool", 0, 0, 0, 0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + 24)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + 24)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "forArgsPassing", 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Tokenize", "int ecere::sys::Tokenize(char * string, int maxTokens, char * tokens[], ecere::sys::BackSlashEscaping esc)", __ecereNameSpace__ecere__sys__Tokenize, module, 4);

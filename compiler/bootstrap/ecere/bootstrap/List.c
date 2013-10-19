@@ -363,7 +363,7 @@ return (struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__e
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, ((struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 24)))->last), value);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, ((struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + structSize_Instance)))->last), value);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;

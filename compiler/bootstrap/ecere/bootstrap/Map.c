@@ -543,7 +543,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__Map_Free(struct __ecereNameSpac
 {
 struct __ecereNameSpace__ecere__com__MapNode * node;
 
-while(node = ((struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 24)))->root))
+while(node = ((struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + structSize_Instance)))->root))
 {
 struct __ecereNameSpace__ecere__com__MapNode * n = node;
 
