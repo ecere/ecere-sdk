@@ -99,7 +99,7 @@ class EditBoxBits
    bool noCaret:1, noSelect:1, tabKey:1, useTab:1, tabSel:1, allCaps:1, syntax:1, wrap:1;
 
    // Syntax States
-   bool inMultiLineComment:1, inPrep:1, escaped:1, continuedSingleLineComment:1;
+   bool inMultiLineComment:1, inPrep:1, escaped:1, continuedSingleLineComment:1, wasInMultiLine:1;
 
    bool recomputeSyntax:1;
    bool cursorFollowsView:1;
@@ -1294,6 +1294,7 @@ private:
       if(style.syntax)
       {
          bool inMultiLineComment = reset ? false : style.inMultiLineComment;
+         bool wasInMultiLine = reset ? false : style.wasInMultiLine;
          bool inString = false;
          bool inQuotes = false;
          bool inPrep = reset ? false : style.inPrep;
@@ -1322,8 +1323,10 @@ private:
             {
                bool wasEscaped = escaped;
                bool backLastWasStar = lastWasStar;
+               bool backWasInMultiLine = wasInMultiLine;
                escaped = false;
                lastWasStar = false;
+               wasInMultiLine = inMultiLineComment;
                if(ch == '/')
                {
                   if(!inSingleLineComment && !inMultiLineComment && !inQuotes && !inString)
@@ -1342,7 +1345,7 @@ private:
                }
                else if(ch == '*')
                {
-                  if(!c || text[c-1] != '/') lastWasStar = true;
+                  if(backWasInMultiLine) lastWasStar = true;
                }
                else if(ch == '\"' && !inSingleLineComment && !inMultiLineComment && !inQuotes)
                {
@@ -1384,6 +1387,7 @@ private:
          
          style.continuedSingleLineComment = continuedSingleLineComment;
          style.inMultiLineComment = inMultiLineComment;
+         style.wasInMultiLine = wasInMultiLine;
          style.inPrep = inPrep;
          style.escaped = escaped;
       }
@@ -1447,6 +1451,7 @@ private:
       bool inSingleLineComment = false;
       bool escaped = style.escaped;
       bool continuedSingleLineComment = style.continuedSingleLineComment;
+      bool wasInMultiLine = false;
       // ****** ************* ******
 
       if(!isEnabled)
@@ -1643,12 +1648,15 @@ private:
                      bool backInQuotes = inQuotes;
                      bool backInPrep = inPrep;
                      bool backInSingleLineComment = inSingleLineComment;
+                     bool backWasInMultiLine = wasInMultiLine;
 
                      char * word = line.buffer + c - wordLen;
                      int g,ccc;
                      bool wasEscaped = escaped;
                      escaped = false;
                      lastWasStar = false;
+
+                     wasInMultiLine = inMultiLineComment;
 
                      // Determine Syntax Highlighting
                      newTextColor = defaultTextColor;
@@ -1690,7 +1698,7 @@ private:
                         }
                         else if(wordLen == 1 && word[0] == '*')
                         {
-                           if(c < 2 || word[-1] != '/')
+                           if(backWasInMultiLine)
                               lastWasStar = true;
                         }
                         else if(!inSingleLineComment && !inMultiLineComment && !inQuotes && wordLen == 1 && word[0] == '\"')
@@ -1786,6 +1794,7 @@ private:
                               inQuotes = backInQuotes;
                               inPrep = backInPrep;
                               inSingleLineComment = backInSingleLineComment;
+                              wasInMultiLine = backWasInMultiLine;
                               break;
                            }
                            else
