@@ -40,18 +40,21 @@ class PCXFormat : BitmapFormat
       PCXHead header;
       if(f.Read(&header,sizeof(header),1))
       {
-         switch(header.colorPlanes)
+         if(header.xMax > header.xMin && header.yMax > header.yMin)
          {
-            case 1:
-               result = bitmap.Allocate(null,
-                  header.xMax-header.xMin+1,header.yMax-header.yMin+1,
-                  header.xMax-header.xMin+1, pixelFormat8, true);
-               break;
-            case 3:
-               result = bitmap.Allocate(null,
-                  header.xMax-header.xMin+1,header.yMax-header.yMin+1,
-                  header.xMax-header.xMin+1, pixelFormat888, false);
-               break;
+            switch(header.colorPlanes)
+            {
+               case 1:
+                  result = bitmap.Allocate(null,
+                     header.xMax-header.xMin+1,header.yMax-header.yMin+1,
+                     header.xMax-header.xMin+1, pixelFormat8, true);
+                  break;
+               case 3:
+                  result = bitmap.Allocate(null,
+                     header.xMax-header.xMin+1,header.yMax-header.yMin+1,
+                     header.xMax-header.xMin+1, pixelFormat888, false);
+                  break;
+            }
          }
          if(result)
          {
