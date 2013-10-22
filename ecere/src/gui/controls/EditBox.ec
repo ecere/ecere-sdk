@@ -1828,9 +1828,13 @@ private:
                      }*/
                      if(x + viewX + w > maxW)
                      {
-                        c -= wordLen;
-                        lineComplete = true;                        
-                        break;
+                        // Avoid an endless loop until we fix wrapping
+                        if(c - wordLen > start)
+                        {
+                           c -= wordLen;
+                           lineComplete = true;
+                           break;
+                        }
                      }
                   }
                }
