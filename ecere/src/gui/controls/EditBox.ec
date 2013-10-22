@@ -2551,7 +2551,7 @@ private:
          this.x = this.line.count;
          ComputeColumn();
          if(deselect)
-            Deselect();
+            _Deselect();
       }
    }
 
@@ -2568,7 +2568,7 @@ private:
          this.x = 0;
          this.col = 0;
          if(deselect)
-            Deselect();
+            _Deselect();
       }
    }
 
@@ -3156,10 +3156,7 @@ private:
             this.y = y;
             this.line = line;
             DirtyLine(this.y);
-            this.selLine = this.line;
-            this.selX = this.x;
-            this.selY = this.y;
-            //Deselect();
+            _Deselect();
          }
          ComputeColumn();
       }
@@ -3255,7 +3252,7 @@ private:
                this.line = line;
                ComputeColumn();
                DirtyLine(this.y);
-               Deselect();
+               _Deselect();
                UpdateDirty();
             }
          }
@@ -3777,7 +3774,7 @@ private:
                }
                ComputeColumn();
             }
-            if(!shift) Deselect();
+            if(!shift) _Deselect();
             SetViewToCursor(true);
             //break;
             return false;
@@ -3927,7 +3924,7 @@ private:
                   }
                }
             }
-            if(!shift) Deselect();
+            if(!shift) _Deselect();
             SetViewToCursor(true);
             // break;
             return false;
@@ -3957,7 +3954,7 @@ private:
                }
                
                DirtyLine(this.y);
-               if(!shift) Deselect();
+               if(!shift) _Deselect();
                ComputeColumn();
                SetViewToCursor(false);
 
@@ -4043,7 +4040,7 @@ private:
                            }
 
                            DirtyLine(this.y);
-                           if(!shift) Deselect();
+                           if(!shift) _Deselect();
                            ComputeColumn();
                            SetViewToCursor(false);
                            return false;
@@ -4061,7 +4058,7 @@ private:
                            this.x = line.count;
 
                         DirtyLine(this.y);
-                        if(!shift) Deselect();
+                        if(!shift) _Deselect();
                         ComputeColumn();
                         SetViewToCursor(false);
                         return false;
@@ -4071,7 +4068,7 @@ private:
                   } while(textPos < line.count);
 
                   DirtyLine(this.y);
-                  if(!shift) Deselect();
+                  if(!shift) _Deselect();
                   ComputeColumn();
                   SetViewToCursor(false);
                   return false;
@@ -4090,7 +4087,7 @@ private:
 
                   DirtyLine(this.y);
                   this.x = x;
-                  if(!shift) Deselect();
+                  if(!shift) _Deselect();
 
                   ComputeColumn();
 
@@ -4138,10 +4135,9 @@ private:
                      this.x = AdjustXPosition(line, caretX, true, null, MAXINT, 0);
                   }
 
-                  if(!shift) Deselect();
+                  DirtyLine(this.y);
+                  if(!shift) _Deselect();
                   ComputeColumn();
-                  if(this.selX != this.x || this.selY != this.y)
-                     DirtyLine(this.y);
                   SetViewToCursor(false);
                   
                   /*
@@ -4200,7 +4196,7 @@ private:
                               display.FontExtent(font, text + startPos, len, &x, null);
                            }
                            
-                           if(!shift) Deselect();
+                           if(!shift) _Deselect();
                            ComputeColumn();
 
                            SetViewToCursor(false);
@@ -4212,7 +4208,7 @@ private:
                         this.x = line.count;
 
                         DirtyLine(this.y);
-                        if(!shift) Deselect();
+                        if(!shift) _Deselect();
                         ComputeColumn();
 
                         SetViewToCursor(false);
@@ -4242,7 +4238,7 @@ private:
                      this.x = Min(this.x, line.count);
                      //int x = AdjustXPosition(this.line, this.line.next, true, null, MAXINT, 0);
                      this.y++;
-                     if(!shift) Deselect();
+                     if(!shift) _Deselect();
                      ComputeColumn();
 
                      if(this.selX != this.x || this.selY != this.y)
@@ -4261,7 +4257,7 @@ private:
                   DirtyLine(this.y);
                   this.y++;
                   this.x = x;
-                  if(!shift) Deselect();
+                  if(!shift) _Deselect();
                   ComputeColumn();
 
                   if(this.selX != this.x || this.selY != this.y)
@@ -4314,7 +4310,7 @@ private:
                }
                ComputeColumn();
             }
-            if(!shift) Deselect();
+            if(!shift) _Deselect();
             SetViewToCursor(true);
             //break;
             return false;
@@ -4338,7 +4334,7 @@ private:
                   DirtyLine(this.y);
                ComputeColumn();
             }
-            if(!shift) Deselect();
+            if(!shift) _Deselect();
             SetViewToCursor(true);
             //break;
             return false;
@@ -4520,7 +4516,7 @@ private:
                {
                   PageDown();
                   DirtyAll();
-                  if(!shift) Deselect();
+                  if(!shift) _Deselect();
                   SetCursorToViewX();
                   SetCursorToViewY();
                }
@@ -4546,7 +4542,7 @@ private:
                {
                   PageUp();
                   DirtyAll();
-                  if(!shift) Deselect();
+                  if(!shift) _Deselect();
                   SetCursorToViewX();
                   SetCursorToViewY();
                }
@@ -5445,7 +5441,7 @@ public:
                DirtyLine(c);
             this.y = c;
             this.line = line;
-            Deselect();
+            _Deselect();
             SetViewToCursor(true);
             return true;
          }
@@ -5478,7 +5474,7 @@ public:
          this.y = y;
          this.line = line;
          ComputeColumn();
-         Deselect();
+         _Deselect();
          SetViewToCursor(true);
          return true;
       }
@@ -5959,12 +5955,17 @@ public:
       GetText(text, line, y, x, selLine, selY, selX, addCr, true);
    }
 
+   private void _Deselect()   // This assumes marking lines as dirty is handled by the caller
+   {
+      selLine = line;
+      selX = x;
+      selY = y;
+   }
+
    void Deselect()
    {
       SelDirty();
-      this.selLine = this.line;
-      this.selX = this.x;
-      this.selY = this.y;
+      _Deselect();
    }
 
    // CLIPBOARD
