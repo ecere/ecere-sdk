@@ -1451,7 +1451,7 @@ private:
       bool inSingleLineComment = false;
       bool escaped = style.escaped;
       bool continuedSingleLineComment = style.continuedSingleLineComment;
-      bool wasInMultiLine = false;
+      bool wasInMultiLine = style.wasInMultiLine;
       // ****** ************* ******
 
       if(!isEnabled)
