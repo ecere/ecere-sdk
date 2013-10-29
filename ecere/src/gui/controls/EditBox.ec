@@ -1732,6 +1732,7 @@ private:
                         {
                            char * dot = strchr(word, '.');
                            char * s = null;
+                           if(dot && dot > word + wordLen) dot = null;
                            if(dot)
                               strtod((dot == word + wordLen) ? (dot+1) : word, &s);
                            else
