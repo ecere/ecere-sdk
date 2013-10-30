@@ -7,7 +7,10 @@
          "GDB_DEBUG_GUI"
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "ide"
+      "TargetFileName" : "ide",
+      "Libraries" : [
+         "ecere"
+      ]
    },
    "Platforms" : [
       {
@@ -48,9 +51,6 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "Libraries" : [
-               "ecere"
-            ],
             "Console" : true,
             "FastMath" : false
          }
@@ -61,9 +61,6 @@
             "Warnings" : "None",
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
-            "Libraries" : [
-               "ecere"
-            ],
             "LibraryDirs" : [
                "../obj/$(PLATFORM)/bin",
                "../obj/$(PLATFORM)/lib"
@@ -103,9 +100,6 @@
             "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "_DEBUG"
-            ],
-            "Libraries" : [
-               "ecere"
             ],
             "Console" : true,
             "FastMath" : false
