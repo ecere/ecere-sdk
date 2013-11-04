@@ -531,6 +531,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
@@ -658,6 +660,10 @@ void __ecereUnregisterModule_pass0(struct __ecereNameSpace__ecere__com__Instance
 void __ecereRegisterModule_pass1(struct __ecereNameSpace__ecere__com__Instance * module);
 
 void __ecereUnregisterModule_pass1(struct __ecereNameSpace__ecere__com__Instance * module);
+
+void __ecereCreateModuleInstances_pass1();
+
+void __ecereDestroyModuleInstances_pass1();
 
 void __ecereRegisterModule_pass15(struct __ecereNameSpace__ecere__com__Instance * module);
 
@@ -813,6 +819,7 @@ __ecereProp___ecereNameSpace__ecere__com__Iterator_data = _property = __ecereNam
 __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::IteratorPointer");
 __ecereClass___ecereNameSpace__ecere__com__LinkList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::LinkList");
 __ecereClass___ecereNameSpace__ecere__com__List = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List");
+__ecereClass___ecereNameSpace__ecere__com__List_TPL_ClassPropertyValue_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ClassPropertyValue>");
 __ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<Location>");
 __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::List<ecere::com::Module>");
 __ecereClass___ecereNameSpace__ecere__com__Map = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Map");
@@ -867,6 +874,7 @@ if(__currentModule == module)
 {
 __ecereCreateModuleInstances_ast();
 __ecereCreateModuleInstances_loadSymbols();
+__ecereCreateModuleInstances_pass1();
 }
 return 0x1;
 }
@@ -879,6 +887,7 @@ if(__currentModule == module)
 {
 __ecereDestroyModuleInstances_ast();
 __ecereDestroyModuleInstances_loadSymbols();
+__ecereDestroyModuleInstances_pass1();
 __ecereNameSpace__ecere__UnloadTranslatedStrings(__currentModule);
 }
 __ecereUnregisterModule_ast(module);

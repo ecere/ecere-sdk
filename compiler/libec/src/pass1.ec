@@ -1689,23 +1689,29 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                }
                else if(def.type == classPropertyValueClassDef)
                {
-                  OldList * args = MkList();
-                  ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
-                  ListAdd(args, MkExpString(QMkString(def.id.string)));
-                  ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), def.initializer.exp));
-
+                  classPropValues.Add(ClassPropertyValue { regClass = regClass, id = def.id, exp = def.initializer.exp });
+                  def.id = null;
                   def.initializer.exp = null;
-
-                  stmt = MkExpressionStmt(MkListOne(
-                     MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty")), args)));
-
-                  ListAdd(registerModuleBody.compound.statements, stmt);
                }
             }
          }
       }
    }
 }
+
+class ClassPropertyValue
+{
+   Class regClass;
+   Identifier id;
+   Expression exp;
+
+   ~ClassPropertyValue()
+   {
+      FreeIdentifier(id);
+   }
+};
+
+static List<ClassPropertyValue> classPropValues { };
 
 public void ProcessClassDefinitions()
 {
@@ -1915,5 +1921,29 @@ public void ProcessClassDefinitions()
             }
          }
       }
+
+      // Set the class properties at the very end
+      for(v : classPropValues)
+      {
+         OldList * findClassArgs = MkList();
+         OldList * args = MkList();
+         Statement compoundStmt;
+
+         ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
+         ListAdd(findClassArgs, MkExpString(QMkString(v.regClass.name)));
+
+         ListAdd(args, MkExpIdentifier(MkIdentifier("_class")));
+         ListAdd(args, MkExpString(QMkString(v.id.string)));
+         ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), v.exp));
+         compoundStmt = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")),
+                       MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("_class")),
+                        MkInitializerAssignment(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eSystem_FindClass")), findClassArgs)))))),
+            MkListOne(MkExpressionStmt(MkListOne(
+               MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty")), args)))));
+         compoundStmt.compound.context = Context { parent = registerModuleBody.compound.context };
+         ListAdd(registerModuleBody.compound.statements, compoundStmt);
+      }
+
+      classPropValues.Free();
    }
 }
