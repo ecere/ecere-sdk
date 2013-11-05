@@ -325,9 +325,9 @@ public char * PathCatSlash(char * string, char * addedPath)
                if(strLen > -1)
                {
                   // Go back one directory
-                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--);
-                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch != '/' && ch != '\\' && ch != ':'); strLen--);
-                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--);
+                  for(;strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--);
+                  for(;strLen > -1 && (ch = fileName[strLen]) && (ch != '/' && ch != '\\' && ch != ':'); strLen--);
+                  for(;strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--);
 
                   if(isURL)
                   {
@@ -544,9 +544,9 @@ public char * PathCat(char * string, char * addedPath)
                   bool separator = false;
 
                   // Go back one directory
-                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--);
-                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch != '/' && ch != '\\' && ch != ':'); strLen--);
-                  for(;(ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--) separator = true;
+                  for(;strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--);
+                  for(;strLen > -1 && (ch = fileName[strLen]) && (ch != '/' && ch != '\\' && ch != ':'); strLen--);
+                  for(;strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--) separator = true;
 
                   if(isURL)
                   {
