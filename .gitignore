@@ -6,6 +6,8 @@
 *.sym
 *.main.ec
 *.bowl
+*.mk
+*.cf
 linkobjects.lst
 
 # Intermediate dirs
@@ -45,6 +47,8 @@ dat/
 
 # Logs and databases
 *.log
+*.edb
+*.dbf
 *.sql
 *.sqlite
 *.sqlcipher
