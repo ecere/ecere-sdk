@@ -24,4 +24,11 @@ public struct ShortDate : Date
          stringOutput[0] = 0;
       return stringOutput;
    }
+
+   bool SameDay(ShortDate b)
+   {
+      if(year == b.year && month == b.month && day == b.day)
+         return true;
+      return false;
+   }
 };
