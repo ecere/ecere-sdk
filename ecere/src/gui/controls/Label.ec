@@ -98,7 +98,7 @@ private:
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
-      if(window && window.visible && window.created)
+      if(window && window.visible && window.created && !window.disabled)
          window.Activate();
       return isGroupBox;
    }
