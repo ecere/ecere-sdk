@@ -109,9 +109,11 @@ public class PathBox : CommonControl
    borderStyle = deep;
    clientSize = { 64, 18 };
 
-   watch(background) { editBox.background = background; };
-   watch(foreground) { editBox.foreground = foreground; };
-   watch(opacity)    { editBox.opacity    = opacity; };
+   watch(background)     { editBox.background = background; };
+   watch(foreground)     { editBox.foreground = foreground; };
+   watch(selectionColor) { editBox.selectionColor = selectionColor; };
+   watch(selectionText)  { editBox.selectionText = selectionText; };
+   watch(opacity)        { editBox.opacity = opacity; };
 
 #if defined(__WIN32__)
    PathBox()
@@ -382,8 +384,11 @@ public:
    virtual bool OnPrepareBrowseDir(char ** directory);
    virtual bool OnBrowsedDir(char ** directory);
 
-   watch(foreground) { list.foreground = foreground; };
-   watch(background) { list.background = background; };
+   watch(foreground)     { list.foreground = foreground; };
+   watch(background)     { list.background = background; };
+   //watch(selectionColor) { list.selectionColor = selectionColor; };
+   //watch(selectionText)  { list.selectionText = selectionText; };
+   watch(opacity)        { list.opacity = opacity; };
 
    property Array<String> strings
    {

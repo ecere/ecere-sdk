@@ -24,22 +24,11 @@ public class DropBox : CommonControl
 
    class_property(icon) = "<:ecere>controls/dropBox.png";
 
-   watch(foreground)
-   {
-      listBox.foreground = foreground;
-   };
-   watch(background)
-   {
-      listBox.background = background;
-   };
-   watch(selectionColor)
-   {
-      listBox.selectionColor = selectionColor;
-   };
-   watch(selectionText)
-   {
-      listBox.selectionText = selectionText;
-   };
+   watch(foreground)     { listBox.foreground = foreground;         if(editBox) editBox.foreground = foreground; };
+   watch(background)     { listBox.background = background;         if(editBox) editBox.background = background; };
+   watch(selectionColor) { listBox.selectionColor = selectionColor; if(editBox) editBox.selectionColor = selectionColor; };
+   watch(selectionText)  { listBox.selectionText = selectionText;   if(editBox) editBox.selectionText = selectionText; };
+   watch(opacity)        { listBox.opacity = opacity;               if(editBox) editBox.opacity = opacity; };
 
 public:
    property bool activeStipple
@@ -149,6 +138,10 @@ public:
                      this, textHorzScroll = true, borderStyle = 0;
                      anchor = Anchor { left = 0, top = 0, right = BTN_WIDTH, bottom = 0 };
                      // visible = false, modifyVirtualArea = false;
+                     foreground = foreground;
+                     background = background;
+                     selectionColor = selectionColor;
+                     selectionText = selectionText;
                   };
                   incref editBox;
                   editBox.Create();

@@ -96,6 +96,12 @@ public:
 private:
    bool inAutoSize;
 
+   watch(background)     { if(editor) editor.background = background; };
+   watch(foreground)     { if(editor) editor.foreground = foreground; };
+   //watch(selectionColor) { if(editor) editor.selectionColor = selectionColor; };
+   //watch(selectionText)  { if(editor) editor.selectionText = selectionText; };
+   watch(opacity)        { if(editor) editor.opacity = opacity; };
+
    bool OnPostCreate()
    {
       // Right now for read-only DataBoxes the only reason we'd want to create an editor is for autoSize purposes, when using the default EditBox editor that supports it.
