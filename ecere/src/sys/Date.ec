@@ -410,7 +410,7 @@ class DateDropBox : DropBox
          return true;
       }
 
-      void NotifyChanged(bool close)
+      void NotifyChanged(CalendarControl calendarControl, bool close)
       {
          incref this;
          if(dateModified)

@@ -515,7 +515,7 @@ public:
       return DataBox::OnKeyHit(key, ch);
    }
 
-   bool Window::NotifyChanged(bool closingDropDown)
+   bool Window::NotifyChanged(DataBox dataBox, bool closingDropDown)
    {
       modifiedDocument = true;
       return true;
@@ -833,7 +833,7 @@ public:
       }
    };
 
-   bool FilterNotifyChanged(bool closeDropDown)
+   bool FilterNotifyChanged(DataBox dataBox, bool closeDropDown)
    {
       editor.EditClear();
       RefillList();

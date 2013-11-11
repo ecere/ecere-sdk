@@ -54,7 +54,7 @@ public:
          }
       }
       if(created)
-         NotifyChanged(master, closingDropDown);
+         NotifyChanged(master, this, closingDropDown);
       //editor.Activate();
    }
 
@@ -63,7 +63,7 @@ public:
       if(editor && ((bool (*)(void *, void *, Window, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSaveEdit])(type, data, editor, null))
       {
          Refresh();
-         NotifyChanged(master, false);
+         NotifyChanged(master, this, false);
          // Refresh();
          return true;
       }
@@ -90,7 +90,7 @@ public:
    }
 
    virtual bool Window::NotifyModified();
-   virtual bool Window::NotifyChanged(bool closingDropDown);
+   virtual bool Window::NotifyChanged(DataBox dataBox, bool closingDropDown);
    virtual void OnConfigure(Window editor);
 
 private:

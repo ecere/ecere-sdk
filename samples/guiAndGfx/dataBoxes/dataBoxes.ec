@@ -18,7 +18,7 @@ class ColorFun : Window
    {
       this, size = { 116, 20 }, position = { 176, 104 }; data = &color; type = class(Color);
 
-      bool NotifyChanged(bool closingDropDown)
+      bool NotifyChanged(DataBox dataBox, bool closingDropDown)
       {
          background = color;
          return true;

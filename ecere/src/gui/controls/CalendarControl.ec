@@ -15,7 +15,7 @@ public class CalendarControl : CommonControl
    class_property(icon) = "<:ecere>controls/calendar.png";
 
 public:
-   virtual void Window::NotifyChanged(bool close);
+   virtual void Window::NotifyChanged(CalendarControl calendarControl, bool close);
    Date dateValue;
    Month shownMonth;
    int shownYear;
@@ -103,7 +103,7 @@ private:
          return true;
       }
 
-      bool NotifyChanged(bool closingDropDown)
+      bool NotifyChanged(DataBox dataBox, bool closingDropDown)
       {
          Update(null);
          if(closingDropDown)
@@ -134,7 +134,7 @@ private:
          return true;
       }
 
-      bool NotifyChanged(bool closingDropDown)
+      bool NotifyChanged(DataBox dataBox, bool closingDropDown)
       {
          if(shownYear < 100)
          {
@@ -185,7 +185,7 @@ private:
                monthBox.Refresh();
                yearBox.Refresh();
 
-               NotifyChanged(master, closeCalendar);
+               NotifyChanged(master, this, closeCalendar);
                return;
             }
             if(++day.day > monthLengths[ISLEAP(day.year)][day.month])
@@ -334,7 +334,7 @@ private:
                }
                shownMonth = dateValue.month;
                shownYear = dateValue.year;
-               NotifyChanged(master, false);
+               NotifyChanged(master, this, false);
 
                monthBox.Refresh();
                yearBox.Refresh();

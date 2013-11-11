@@ -2093,7 +2093,7 @@ private:
                   background = dataBoxBackground;
                   foreground = dataBoxForeground;
 
-                  bool NotifyChanged(bool closingDropDown)
+                  bool NotifyChanged(DataBox dataBox, bool closingDropDown)
                   {
                      DataRow row = null;
                      DataField field = null;

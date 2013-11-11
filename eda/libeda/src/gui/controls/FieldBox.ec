@@ -205,7 +205,7 @@ public class FieldBox : DataBox
       return DataBox::OnKeyHit(key, ch);
    }
 
-   bool Window::NotifyChanged(bool closingDropDown)
+   bool Window::NotifyChanged(DataBox dataBox, bool closingDropDown)
    {
       // This gets called on the master and is unaware of the change being user input or internally set
       modifiedDocument = true;

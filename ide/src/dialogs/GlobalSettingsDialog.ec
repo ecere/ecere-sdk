@@ -913,7 +913,7 @@ class CompilerOptionsTab : CompilersSubTab
          return true;
       }
 
-      bool NotifyChanged(bool closingDropDown)
+      bool NotifyChanged(DataBox dataBox, bool closingDropDown)
       {
          CompilerConfig compiler = loadedCompiler;
          if(compiler)

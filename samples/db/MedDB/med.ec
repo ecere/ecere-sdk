@@ -30,7 +30,7 @@ public:
    double amount;
    Unit unit;
 
-   bool Window::NotifyChanged(bool closed)
+   bool Window::NotifyChanged(DataBox dataBox, bool closed)
    {
       master.master.modifiedDocument = true;
       return true;
