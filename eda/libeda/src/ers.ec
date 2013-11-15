@@ -5,6 +5,8 @@ define margin = 36;
 
 public enum Orientation { portrait, landscape };
 
+public enum PageFormat { custom, letter, legal, ledger };
+
 public enum RenderAction { addPage, closePage, levelStart, levelFinish, groupStart, groupFinish, actualRows };
 
 static class PleaseWait : Window
@@ -30,24 +32,48 @@ public class ReportTitle : Window
    Label { this, foreground = black, anchor = { top = 4 }, labeledWindow = this };
 }
 
+static define dpi = 100;
 class PreviewPage : Window
 {
    background = dimGray;
-   //size = { 850 + shadowS + pgs * 2, 1100 + shadowS + pgs * 2 };
 
-   public property Orientation orientation
+   public property Page page
    {
       set
       {
-         if(value == portrait)
-            size = { 850 + shadowS + pgs * 2, 1100 + shadowS + pgs * 2 };
-         else if(value == landscape)
-            size = { 1100 + shadowS + pgs * 2, 850 + shadowS + pgs * 2 };
-         orientation = value;
+         page = value;
+         if(page && page.report)
+         {
+            switch(page.report.pageFormat)
+            {
+               case letter:
+                  if(page.report.orientation == landscape)
+                     size = { 11*dpi + shadowS + pgs * 2, 8.5*dpi + shadowS + pgs * 2 };
+                  else
+                     size = { 8.5*dpi + shadowS + pgs * 2, 11*dpi + shadowS + pgs * 2 };
+                  break;
+               case legal:
+                  if(page.report.orientation == landscape)
+                     size = { 14*dpi + shadowS + pgs * 2, 8.5*dpi + shadowS + pgs * 2 };
+                  else
+                     size = { 8.5*dpi + shadowS + pgs * 2, 14*dpi + shadowS + pgs * 2 };
+                  break;
+               case ledger:
+                  if(page.report.orientation == landscape)
+                     size = { 17*dpi + shadowS + pgs * 2, 11*dpi + shadowS + pgs * 2 };
+                  else
+                     size = { 11*dpi + shadowS + pgs * 2, 17*dpi + shadowS + pgs * 2 };
+                  break;
+               case custom:
+                  if(page.report.orientation == landscape && page.report.pageSize.w > page.report.pageSize.h)
+                     size = { page.report.pageSize.w + shadowS + pgs * 2, page.report.pageSize.h + shadowS + pgs * 2 };
+                  else
+                     size = { page.report.pageSize.h + shadowS + pgs * 2, page.report.pageSize.w + shadowS + pgs * 2 };
+                  break;
+            }
+         }
       }
    }
-   Orientation orientation;
-
    Page page;
 
    void OnRedraw(Surface surface)
@@ -71,22 +97,18 @@ public class Page : Window
    background = white;
 
 public:
-   property Orientation orientation
+   property Report report
    {
       set
       {
-         if(value == portrait)
+         report = value;
+         if(report)
          {
-            size = { 850, 1100 };
-            inside.size = { 850, 1100 };
+            size = report.pageSize;
+            inside.size = report.pageSize;
          }
-         else if(value == landscape)
-         {
-            size = { 1100, 850 };
-            inside.size = { 1100, 850 };
-         }
-         orientation = value;
       }
+      get { return report; }
    }
 
    Window inside { this };
@@ -94,7 +116,7 @@ public:
    int headerHeight;
 
 private:
-   Orientation orientation;
+   Report report;
 }
 
 public class ReportRender
@@ -156,13 +178,14 @@ public:
          ((GuiApplication)__thisModule.application).ProcessInput(true);
          pleaseWait.UpdateDisplay();
       }
-      for(pageNumber = 1; true; pageNumber++)
+      for(pageNumber = 1; ; pageNumber++)
       {
          Detail lastDetail = null;
-         page = Page { orientation = report.orientation };
+         page = Page { report = report };
          destination.AddPage(page);
          inside = page.inside;
-         inside.anchor = report.insideMarginAnchor;
+         inside.anchor = Anchor { left = report.insideMarginAnchor.left.distance, top = report.insideMarginAnchor.top.distance,
+                                  right = report.insideMarginAnchor.right.distance, bottom = report.insideMarginAnchor.bottom.distance };
          insideSize = inside.size.h;
 
          pageTop = 0;
@@ -472,7 +495,7 @@ private:
 public class ReportDestination : Window
 {
 public:
-   Report report;
+   public property Report report { watchable set { report = value; } get { return report; } }
 
    virtual void EndPage(Page page)
    {
@@ -483,6 +506,7 @@ public:
    virtual void AddPage(Page page);
    virtual Report GetReport() { return null; }
 private:
+   Report report;
    int pageCount;
 
    List<PreviewPage> pages { };
@@ -500,6 +524,11 @@ public class PrintedReport : ReportDestination
       if(report)
          SetPrintingDocumentName(report.title);
       return ReportDestination::OnCreate();
+   }
+
+   watch(report)
+   {
+      size = report.pageSize;
    }
 
    void AddPage(Page page)
@@ -537,8 +566,7 @@ public class ReportPreviewArea : ReportDestination
 
    void AddPage(Page page)
    {
-      PreviewPage previewPage { this, this, page = page, orientation = page.orientation,
-                                   anchor = { top = pageCount * ((int)page.size.h + shadowS + pgs) } };
+      PreviewPage previewPage { this, this, page = page, anchor = { top = pageCount * ((int)page.size.h + shadowS + pgs) } };
       previewPage.Create();
       page.anchor = { left = pgs, top = pgs, right = shadowS + pgs, bottom = shadowS + pgs};
       page.master = previewPage;
@@ -826,7 +854,10 @@ public:
 public class Report
 {
 public:
-   Orientation orientation;
+   public property Orientation orientation { set { orientation = value; UpdateSize(); } get { return orientation; } }
+   public property PageFormat pageFormat { set { pageFormat = value; UpdateSize(); } get { return pageFormat; } }
+
+   Size pageSize;
    Anchor insideMarginAnchor;
 
    Array<Grouping> groupings { };
@@ -873,6 +904,40 @@ public:
             return groupings[0].row.nil;
          return true;
       }
+   }
+
+private:
+   Orientation orientation;
+   PageFormat pageFormat;
+
+   void UpdateSize()
+   {
+      switch(pageFormat)
+      {
+         case letter:
+            if(orientation == landscape)
+               pageSize = { 11*dpi, 8.5*dpi };
+            else
+               pageSize = { 8.5*dpi, 11*dpi };
+            break;
+         case legal:
+            if(orientation == landscape)
+               pageSize = { 14*dpi, 8.5*dpi };
+            else
+               pageSize = { 8.5*dpi, 14*dpi };
+            break;
+         case ledger:
+            if(orientation == landscape)
+               pageSize = { 17*dpi, 11*dpi };
+            else
+               pageSize = { 11*dpi, 17*dpi };
+            break;
+      }
+   }
+
+   Report()
+   {
+      property::pageFormat = letter;
    }
 
    ~Report()

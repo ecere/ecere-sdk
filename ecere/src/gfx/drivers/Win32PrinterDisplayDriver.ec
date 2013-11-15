@@ -92,6 +92,8 @@ static PixelFormat GetColorFormat(int depth)
       return pixelFormat888;
 }
 
+static define dpi = 100;
+static define inchToMillimeter = 0.039370;
 class Win32PrinterDisplayDriver : DisplayDriver
 {
    class_property(name) = "Win32Printer";
@@ -256,7 +258,23 @@ class Win32PrinterDisplayDriver : DisplayDriver
                size = DocumentProperties(null, hPrinter, szDevice, null, null, 0);
                devMode = (DEVMODE *)new0 byte[size];
                DocumentProperties(null, hPrinter, szDevice, devMode, null, DM_OUT_BUFFER);
+               devMode->dmFields |= DM_ORIENTATION | DM_PAPERSIZE;
                devMode->dmOrientation = (width > height) ? DMORIENT_LANDSCAPE : DMORIENT_PORTRAIT;
+               if(height == (int)(8.5*dpi) && width == 11*dpi)
+                  devMode->dmPaperSize = DMPAPER_LETTER;
+               else if(height == (int)(8.5*dpi) && width == 14*dpi)
+                  devMode->dmPaperSize = DMPAPER_LEGAL;
+               else if(height == 11*dpi && width == 17*dpi)
+                  devMode->dmPaperSize = DMPAPER_11X17;
+               else
+               {
+                  short w = (short)((double)width * 10 / dpi / inchToMillimeter);
+                  short h = (short)((double)height * 10 / dpi / inchToMillimeter);
+                  devMode->dmPaperSize = DMPAPER_USER;
+                  devMode->dmFields |= DM_PAPERWIDTH | DM_PAPERLENGTH;
+                  devMode->dmPaperLength = w > h ? w : h;
+                  devMode->dmPaperWidth = w < h ? w : h;
+               }
                DocumentProperties(null, hPrinter, szDevice, devMode, devMode, DM_IN_BUFFER|DM_OUT_BUFFER);
                gdiSystem.hdc = CreateDC(szDriver, szDevice, szOutput, devMode);
                delete devMode;
