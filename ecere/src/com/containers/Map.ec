@@ -245,8 +245,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       IteratorPointer i;
       Class Kclass = class(MT);
       Class Dclass = class(V);
-      bool kIsNormalClass = Kclass.type == normalClass;
-      bool dIsNormalClass = Dclass.type == normalClass;
+      bool kIsNormalClass = (Kclass.type == normalClass) && Kclass.structSize;
+      bool dIsNormalClass = (Dclass.type == normalClass) && Dclass.structSize;
 
       channel.Put(count);
       for(i = GetFirst(); i; i = GetNext(i))

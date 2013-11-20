@@ -259,7 +259,7 @@ public:
       uint count = GetCount();
       IteratorPointer i;
       Class Dclass = class(D);
-      bool isNormalClass = Dclass.type == normalClass;
+      bool isNormalClass = (Dclass.type == normalClass) && Dclass.structSize;
 
       channel.Put(count);
       for(i = GetFirst(); i; i = GetNext(i))
