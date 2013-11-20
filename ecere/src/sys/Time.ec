@@ -653,6 +653,19 @@ public struct DateTime
          return 0;
       }
    };
+   property Date
+   {
+      set
+      {
+         year = value.year;
+         month = value.month;
+         day = value.day;
+         hour = 0;
+         minute = 0;
+         second = 0;
+      }
+      get { return Date { year, month, day }; }
+   }
 
    char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
