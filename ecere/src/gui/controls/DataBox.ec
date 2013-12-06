@@ -106,13 +106,20 @@ private:
    {
       // Right now for read-only DataBoxes the only reason we'd want to create an editor is for autoSize purposes, when using the default EditBox editor that supports it.
       // ( A tweak for enum classes is in typeEdit.ec, as the base class editor invokes it )
-      if(type && (!readOnly || (autoSize && type._vTbl[__ecereVMethodID_class_OnEdit] == class(Instance)._vTbl[__ecereVMethodID_class_OnEdit])) &&
+      if(type/* && (!readOnly || (autoSize && type._vTbl[__ecereVMethodID_class_OnEdit] == class(Instance)._vTbl[__ecereVMethodID_class_OnEdit]))*/ &&
          (type.type == normalClass || type.type == noHeadClass || data))
       {
          // IMPORTANT FIX: If keepEditor is true, we were passing editor rather than the editor's current master
          editor = ((Window (*)(void *, void *, DataBox, void *, int, int, int, int, void*))(void *)type._vTbl[__ecereVMethodID_class_OnEdit])(type,
             (type.type == normalClass || type.type == noHeadClass) ? (data ? (*(void **)data) : null) : data,
             this, (keepEditor && editor) ? editor.master : this, 0, 0, clientSize.w, clientSize.h, fieldData);// null);
+         if(editor && readOnly && !eClass_IsDerived(editor._class, class(EditBox)) &&
+               !(autoSize && type._vTbl[__ecereVMethodID_class_OnEdit] == class(Instance)._vTbl[__ecereVMethodID_class_OnEdit]))
+         {
+            editor.Destroy(0);
+            editor = null;
+            return true;
+         }
          if(editor)
          {
             // editor.anchor = { 0, 0, 0, 0 };
