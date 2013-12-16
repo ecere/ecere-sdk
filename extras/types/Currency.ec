@@ -68,10 +68,10 @@ public class Currency : double
       int len = 0;
       bool gotDot = false;
       int numDecimals = 0;
-      for(c = 0; (ch = string[c]) && !isdigit(ch) && ch != '.'; c++);
-      for(; (ch = string[c]) && (isdigit(ch) || ch == '.' || ch == ',' || ch == ' '); c++)
+      for(c = 0; (ch = string[c]) && !isdigit(ch) && ch != '.' && ch != '-'; c++);
+      for(; (ch = string[c]) && (isdigit(ch) || ch == '.' || ch == ',' || ch == ' ' || ch == '-'); c++)
       {
-         if(ch != ',' && ch != ' ')
+         if(ch != ',' && ch != ' ' && !(len && ch == '-'))
          {
             if(ch == '.') gotDot = true;
             else if(gotDot)
