@@ -31,4 +31,11 @@ public struct ShortDate : Date
          return true;
       return false;
    }
+
+   ShortDate ::Today()
+   {
+      DateTime time { };
+      time.GetLocalTime();
+      return ShortDate { year = time.year, month = time.month, day = time.day };
+   }
 };
