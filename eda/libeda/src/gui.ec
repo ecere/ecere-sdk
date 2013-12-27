@@ -427,28 +427,25 @@ public:
 
    void Clear()
    {
-      if(visible)
+      if(data)
+         SetData(null, false);
+
+      if(type && (type.type == noHeadClass || type.type == normalClass))
       {
-         if(data)
-            SetData(null, false);
-
-         if(type && (type.type == noHeadClass || type.type == normalClass))
-         {
-            if(eClass_IsDerived(type, class(String)))
-               dataHolder = (int64)CopyString("");
-            else
-               dataHolder = (int64)eInstance_New(type);
-            data = (void *)&dataHolder;
-         }
-
-         if(created)
-            Refresh();
+         if(eClass_IsDerived(type, class(String)))
+            dataHolder = (int64)CopyString("");
+         else
+            dataHolder = (int64)eInstance_New(type);
+         data = (void *)&dataHolder;
       }
+
+      if(created)
+         Refresh();
    }
 
    void Load()
    {
-      if(visible && field && row)
+      if(field && row)
       {
          SetData(null, false);
          master.modifiedDocument = false;
@@ -472,7 +469,7 @@ public:
    virtual void Save()
    {
       bool result;
-      if(visible && field && row)
+      if(field && row)
       {
          Class type = field.type;
          if(!DataBox::SaveData())
@@ -485,7 +482,7 @@ public:
 
    void Init()
    {
-      if(visible && created)
+      if(created)
          Refresh();
    }
 
