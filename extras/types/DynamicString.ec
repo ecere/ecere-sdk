@@ -1,8 +1,12 @@
+#ifdef ECERE_STATIC
+public import static "ecere"
+#endif
+
 #include <stdarg.h>
 
 extern int isblank(int c);
 
-class DynamicString : Array<char>
+public class DynamicString : Array<char>
 {
    minAllocSize = 1024;
 
@@ -25,6 +29,16 @@ class DynamicString : Array<char>
          return s;
       }
       get { return array; }
+   }
+
+   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   {
+      return array;
+   }
+
+   bool OnGetDataFromString(char * string)
+   {
+      this = (DynamicString)string;
    }
 
    void concat(String s)
