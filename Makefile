@@ -763,3 +763,6 @@ troubleshoot:
 	@$(call echo,PREFIXLIBDIR=$(PREFIXLIBDIR))
 	@$(call echo,ARCH=$(ARCH))
 	@$(call echo,ARCH_FLAGS=$(ARCH_FLAGS))
+	@$(call echo,GIT_REPOSITORY=$(GIT_REPOSITORY))
+	@$(call echo,DIR_VER=$(DIR_VER))
+	@$(call echo,REPOSITORY_VER=$(REPOSITORY_VER))

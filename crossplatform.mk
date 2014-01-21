@@ -241,6 +241,31 @@ else
    rmdirq = $(if $(1),-rmdir $(1))
 endif
 
+# potential common use variables
+numbers := 0 1 2 3 4 5 6 7 8 9
+
+# potential common use functions
+reverselist = $(if $(1),$(call reverselist,$(strip $(wordlist 2,$(words $(1)),$(1))))) $(firstword $(1))
+dirlistfromlocation = $(strip $(subst $(slash),$(space),$(subst $(backslash),$(space),$(1))))
+spacenumbers = $(subst 0,$(space)0$(space),$(subst 1,$(space)1$(space),$(subst 2,$(space)2$(space),$(subst 3,$(space)3$(space),$(subst 4,$(space)4$(space),$(subst 5,$(space)5$(space),$(subst 6,$(space)6$(space),$(subst 7,$(space)7$(space),$(subst 8,$(space)8$(space),$(subst 9,$(space)9$(space),$(1)))))))))))
+hasnumbers = $(if $(filter $(numbers),$(call spacenumbers,$(1))),$(1),)
+isanumber = $(if $(filter-out $(numbers),$(call spacenumbers,$(1))),,$(1))
+
+# location version utility functions (lv_*)
+lv_issimplever = $(if $(call isanumber,$(firstword $(call spacenumbers,$(subst .,,$(1))))),$(1),)
+lv_isversionver = $(if $(call lv_issimplever,$(1:v%=%)),$(1),$(if $(call lv_issimplever,$(1:ver%=%)),$(1),$(if $(call lv_issimplever,$(1:version%=%)),$(1),)))
+lv_isreleasever = $(if $(call lv_issimplever,$(1:r%=%)),$(1),$(if $(call lv_issimplever,$(1:rel%=%)),$(1),$(if $(call lv_issimplever,$(1:release%=%)),$(1),)))
+lv_isbuildver = $(if $(call lv_issimplever,$(1:b%=%)),$(1),$(if $(call lv_issimplever,$(1:bld%=%)),$(1),$(if $(call lv_issimplever,$(1:build%=%)),$(1),)))
+lv_iscomplexver = $(if $(call lv_isversionver,$(1)),$(1),$(if $(call lv_isreleasever,$(1)),$(1),$(if $(call lv_isbuildver,$(1)),$(1),)))
+lv_isver = $(if $(call lv_issimplever,$(1)),$(1),$(if $(call lv_iscomplexver,$(1)),$(1),))
+lv_possibleverorver = $(if $(findstring -,$(1)),$(if $(call hasnumbers,$(1)),$(1),),$(if $(call lv_isver,$(1)),$(1),))
+lv_termslistfromdir = $(strip $(subst -,$(space),$(1)))
+lv_verfromtermlist = $(if $(1)$(2),$(if $(1),$(1)$(if $(2),-,),)$(call lv_verfromtermlist,$(firstword $(2)),$(wordlist 2,$(words $(2)),$(2))),)
+lv_termwalker = $(if $(firstword $(1)),$(if $(call lv_isver,$(firstword $(1))),$(call lv_verfromtermlist,,$(1)),$(call lv_termwalker,$(wordlist 2,$(words $(1)),$(1)))),)
+lv_version = $(if $(call lv_possibleverorver,$(1)),$(call lv_termwalker,$(call lv_termslistfromdir,$(1))),)
+lv_dirwalker = $(if $(firstword $(1)),$(if $(call lv_version,$(firstword $(1))),$(call lv_version,$(firstword $(1))),$(call lv_dirwalker,$(wordlist 2,$(words $(1)),$(1)))),)
+locationversion = $(call shwspace,$(call lv_dirwalker,$(call reverselist,$(subst $(space)$(space),$(space),$(call dirlistfromlocation,$(call hidspace,$(1)))))))
+
 # SOURCE CODE REPOSITORY VERSION
 ifndef REPOSITORY_VER
    # TODO: support other VCS
@@ -248,8 +273,8 @@ ifndef REPOSITORY_VER
       ifndef GIT
          GIT := git
       endif
-      ifeq ($(shell $(GIT) --version),)
-         export GIT_REPOSITORY := $(GIT)NotAvailable
+      ifeq ($(shell $(GIT) --version $(nullerror)),)
+         export GIT_NA := $(GIT)NotAvailable
       else
          ifneq ($(shell $(GIT) log -n 1 --format="%%%%" $(nullerror)),)
             export GIT_REPOSITORY := yes
@@ -258,12 +283,13 @@ ifndef REPOSITORY_VER
       endif
    endif
    ifndef REPOSITORY_VER
-      ifdef GIT_REPOSITORY
-         export REPOSITORY_VER := $(GIT_REPOSITORY)
+      DIR_VER := $(call locationversion,$(CURDIR))
+      ifneq ($(DIR_VER),)
+         export REPOSITORY_VER := $(DIR_VER)
       endif
-      ifndef REPOSITORY_VER
-         export REPOSITORY_VER := unknown
-      endif
+   endif
+   ifndef REPOSITORY_VER
+      export REPOSITORY_VER := unknown
    endif
 endif
 
