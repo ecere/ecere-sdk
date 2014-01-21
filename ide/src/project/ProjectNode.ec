@@ -1404,7 +1404,7 @@ private:
       return result;
    }
 
-   bool ContainsFilesWithExtension(char * extension)
+   bool ContainsFilesWithExtension(char * extension, ProjectConfig prjConfig)
    {
       if(type == file)
       {
@@ -1415,10 +1415,14 @@ private:
       }
       else if(files)
       {
-         bool needed = false;
          for(child : files)
-            if(child.ContainsFilesWithExtension(extension))
-               return true;
+         {
+            if(child.type != resources && (child.type == folder || !prjConfig || !child.GetIsExcluded(prjConfig)))
+            {
+               if(child.ContainsFilesWithExtension(extension, prjConfig))
+                  return true;
+            }
+         }
       }
       return false;
    }
@@ -1698,19 +1702,7 @@ private:
       }
       if(files)
       {
-         bool needed = false;
-         if(ContainsFilesWithExtension("ec"))
-         {
-            for(child : files)
-            {
-               if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               {
-                  needed = true;
-                  break;
-               }
-            }
-         }
-         if(needed)
+         if(ContainsFilesWithExtension("ec", prjConfig))
          {
             for(child : files)
             {
@@ -1774,19 +1766,7 @@ private:
       }
       if(files)
       {
-         bool needed = false;
-         if(ContainsFilesWithExtension("ec"))
-         {
-            for(child : files)
-            {
-               if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               {
-                  needed = true;
-                  break;
-               }
-            }
-         }
-         if(needed)
+         if(ContainsFilesWithExtension("ec", prjConfig))
          {
             for(child : files)
             {
@@ -1930,19 +1910,7 @@ private:
       }
       if(files)
       {
-         bool needed = false;
-         if(ContainsFilesWithExtension("ec"))
-         {
-            for(child : files)
-            {
-               if(child.type != resources && (child.type == folder || !child.GetIsExcluded(prjConfig)))
-               {
-                  needed = true;
-                  break;
-               }
-            }
-         }
-         if(needed)
+         if(ContainsFilesWithExtension("ec", prjConfig))
          {
             for(child : files)
             {
@@ -2494,7 +2462,7 @@ private:
             output.concat("\"");
          }
       }
-      else if(type == project && ContainsFilesWithExtension("ec"))
+      else if(type == project && ContainsFilesWithExtension("ec", prjConfig))
       {
          Project prj = property::project;
 

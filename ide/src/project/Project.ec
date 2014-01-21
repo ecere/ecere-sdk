@@ -2391,7 +2391,7 @@ private:
       return result;
    }
 
-   bool GenerateCompilerCf(CompilerConfig compiler)
+   bool GenerateCompilerCf(CompilerConfig compiler, bool eC)
    {
       bool result = false;
       char path[MAX_LOCATION];
@@ -2457,9 +2457,18 @@ private:
             f.Printf("CPP := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cppCommand);
             f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.ccCommand);
             f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
-            f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
-            f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
-            f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
+            if(eC)
+            {
+               f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
+               f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
+               f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
+            }
+            else
+            {
+               f.Printf("ECP := %s\n", compiler.ecpCommand);
+               f.Printf("ECC := %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
+               f.Printf("ECS := %s$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
+            }
             f.Printf("EAR := %s\n", compiler.earCommand);
 
             f.Puts("AS := $(GCC_PREFIX)as\n");
@@ -3158,9 +3167,11 @@ private:
          f.Puts("objdir:\n");
          if(!relObjDir)
             f.Puts("\t$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))\n");
-
+         if(numCObjects)
+         {
             f.Puts("\t$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)\n");
             f.Puts("\t$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))\n");
+         }
          //f.Puts("# PRE-BUILD COMMANDS\n");
          if(options && options.prebuildCommands)
          {

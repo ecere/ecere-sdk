@@ -241,7 +241,7 @@ class ProjectView : Window
                      mi = ide.projectInstallItem;
                      MenuItem { pop, $"Install"            , t         , NotifySelect = ProjectInstall    , bitmap = mi.bitmap }.disabled = na;
                   }
-                  if(showDebuggingMenuItems && node.ContainsFilesWithExtension("ec"))
+                  if(showDebuggingMenuItems && node.ContainsFilesWithExtension("ec", node.project.config))
                   {
                      MenuDivider { pop };
                      MenuItem { pop, $"Debug Generate Symbols", l, NotifySelect = FileDebugGenerateSymbols }.disabled = na;
@@ -650,7 +650,8 @@ class ProjectView : Window
 
    bool ProjectPrepareCompiler(Project project, CompilerConfig compiler, bool silent)
    {
-      if((!project.GenerateCrossPlatformMk(app.includeFile) || !project.GenerateCompilerCf(compiler)) && !silent)
+      if((!project.GenerateCrossPlatformMk(app.includeFile) ||
+            !project.GenerateCompilerCf(compiler, project.topNode.ContainsFilesWithExtension("ec", project.config))) && !silent)
          ide.outputView.buildBox.Logf($"Error generating compiler configuration (Is the project/config directory writable?)\n");
       return true;
    }
