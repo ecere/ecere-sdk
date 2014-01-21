@@ -2390,27 +2390,33 @@ class CodeEditor : Window
             EnsureUpToDate();
          }
 
+         maxLineNumberLength = 0;
          UpdateMarginSize();
       }
    };
 
    bool UpdateMarginSize()
    {
-      static int lineCount = -1;
-      if(editBox.numLines != lineCount)
+      if(ideSettings.showLineNumbers)
       {
+         int numLen = Max(4, nofdigits(editBox.numLines));
          int digitWidth;
-         lineCount = editBox.numLines;
-         if(nofdigits(lineCount) != maxLineNumberLength)
+         maxLineNumberLength = numLen;
+         display.FontExtent(font.font, "0", 1, &digitWidth, null);
+         editBox.anchor = Anchor
          {
-            maxLineNumberLength = nofdigits(lineCount);
-            display.FontExtent(font.font, "0", 1, &digitWidth, null);
-            editBox.anchor = Anchor
-            {
-               left = editBox.syntaxHighlighting * 20 + (ideSettings.showLineNumbers ? ((maxLineNumberLength+2) * digitWidth) : 0),
-               right = 0, top = 0, bottom = 0
-            };
-         }
+            left = editBox.syntaxHighlighting * 20 + ideSettings.showLineNumbers * (maxLineNumberLength+2) * digitWidth,
+            right = 0, top = 0, bottom = 0
+         };
+      }
+      else
+      {
+         maxLineNumberLength = 0;
+         editBox.anchor = Anchor
+         {
+            left = editBox.syntaxHighlighting * 20,
+            right = 0, top = 0, bottom = 0
+         };
       }
       return true;
    }
