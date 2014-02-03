@@ -1,7 +1,7 @@
 #ifdef ECERE_STATIC
-import static "ecere"
+public import static "ecere"
 #else
-import "ecere"
+public import "ecere"
 #endif
 
 class CheckListBoxButton : Button
