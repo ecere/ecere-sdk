@@ -307,12 +307,12 @@ from wherever you obtained them.
          "Options" : {
             "Optimization" : "Size",
             "PreprocessorDefinitions" : [
-               "BUILDING_ECERE_COM",
                "ECERE_STATIC",
                "ECERE_NOBLENDING",
                "ECERE_NO3D",
                "ECERE_NODINPUT",
-               "ECERE_NOTRUETYPE"
+               "ECERE_NOTRUETYPE",
+               "ECERE_NOSSL"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecerePACS",
@@ -413,7 +413,8 @@ from wherever you obtained them.
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_NOFONTCONFIG",
-               "HIGH_DPI"
+               "HIGH_DPI",
+               "ECERE_NOSSL"
             ],
             "IncludeDirs" : [
                "../deps/jpeg-6b",
@@ -1995,6 +1996,18 @@ from wherever you obtained them.
                      "Configurations" : [
                         {
                            "Name" : "WSMS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "PACS",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
+                        },
+                        {
+                           "Name" : "Android",
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
