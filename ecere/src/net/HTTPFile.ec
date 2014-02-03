@@ -287,6 +287,8 @@ private class HTTPConnection : SSLSocket
                if(!file.chunkSize)
                {
                   file.connection.file = null;
+                  if(file.close)
+                     file.connection.Disconnect(0);
                   delete file.connection; // This decrements the file's reference
                }
             }
@@ -791,17 +793,17 @@ private:
 
    bool Seek(int pos, FileSeekMode mode)
    {
-      if(mode == start && bufferPos == 0 && pos <= bufferCount & pos >= 0)
+      if(mode == start && bufferPos == 0 && pos <= bufferCount && pos >= 0)
       {
          bufferPos = pos;
          return true;
       }
-      else if(mode == current && bufferPos == 0 && (position + pos) <= bufferCount & (position + pos) >= 0)
+      else if(mode == current && bufferPos == 0 && (position + pos) <= bufferCount && (position + pos) >= 0)
       {
          bufferPos = position + pos;
          return true;
       }
-      else if(mode == end && totalSizeSet && bufferPos == 0 && bufferCount == totalSize && (totalSize - pos) <= bufferCount & (totalSize - pos) >= 0)
+      else if(mode == end && totalSizeSet && bufferPos == 0 && bufferCount == totalSize && (totalSize - pos) <= bufferCount && (totalSize - pos) >= 0)
       {
          bufferPos = totalSize - pos;
          return true;
