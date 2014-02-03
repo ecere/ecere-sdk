@@ -71,7 +71,7 @@ default:
    TemplateParameter templateParameter;
    TemplateArgument templateArgument;
    TemplateDatatype templateDatatype;
-   
+
    DBTableEntry dbtableEntry;
    DBIndexItem dbindexItem;
    DBTableDef dbtableDef;
@@ -96,7 +96,7 @@ default:
             relational_expression_error equality_expression_error and_expression_error
             exclusive_or_expression_error inclusive_or_expression_error logical_and_expression_error
             logical_or_expression_error conditional_expression_error assignment_expression_error
-            simple_primary_expression 
+            simple_primary_expression
             simple_postfix_expression simple_postfix_expression_error
             common_unary_expression common_unary_expression_error
             simple_unary_expression simple_unary_expression_error
@@ -135,7 +135,7 @@ default:
 %type <initializer> initializer initializer_error initializer_condition initializer_condition_error
 %type <initDeclarator> init_declarator init_declarator_error
 %type <typeName> type_name guess_type_name parameter_declaration parameter_declaration_error
-%type <stmt> statement labeled_statement labeled_statement_error compound_statement compound_statement_error expression_statement 
+%type <stmt> statement labeled_statement labeled_statement_error compound_statement compound_statement_error expression_statement
              selection_statement selection_statement_error iteration_statement jump_statement jump_statement_error compound_inside compound_inside_error
              iteration_statement_error statement_error asm_statement
              stopwatching watch_definition firewatchers
@@ -147,10 +147,10 @@ default:
 %type <instance> instantiation_named instantiation_named_error instantiation_unnamed instantiation_unnamed_error guess_instantiation_named guess_instantiation_named_error external_guess_instantiation_named
                  instantiation_anon instantiation_anon_error
 %type <memberInit> data_member_initialization data_member_initialization_error default_property default_property_error
-%type <classFunction> class_function_definition class_function_definition_error class_function_definition_start 
+%type <classFunction> class_function_definition class_function_definition_error class_function_definition_start
                      class_function_definition_start_error virtual_class_function_definition_start virtual_class_function_definition_start_error
-                     constructor_function_definition_start destructor_function_definition_start 
-%type <classFunction> instance_class_function_definition instance_class_function_definition_error instance_class_function_definition_start instance_class_function_definition_start_error 
+                     constructor_function_definition_start destructor_function_definition_start
+%type <classFunction> instance_class_function_definition instance_class_function_definition_error instance_class_function_definition_start instance_class_function_definition_start_error
 %type <_class> class class_error class_head
 %type <classDef> struct_declaration struct_declaration_error
 %type <string> string_literal base_strict_type_name attribute_word
@@ -193,7 +193,7 @@ default:
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 %token ALIGNOF ATTRIB_DEP __ATTRIB
 
-%destructor { FreeIdentifier($$); } identifier 
+%destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
 %destructor { FreeExpression($$); } primary_expression primary_expression_error postfix_expression unary_expression cast_expression
                                     multiplicative_expression additive_expression shift_expression
@@ -221,7 +221,7 @@ default:
 %destructor { FreeInitializer($$); } initializer initializer_error initializer_condition initializer_condition_error
 %destructor { FreeInitDeclarator($$); } init_declarator init_declarator_error
 %destructor { FreeTypeName($$); } type_name guess_type_name parameter_declaration parameter_declaration_error
-%destructor { FreeStatement($$); }  statement labeled_statement labeled_statement_error compound_statement compound_statement_error expression_statement 
+%destructor { FreeStatement($$); }  statement labeled_statement labeled_statement_error compound_statement compound_statement_error expression_statement
                                     selection_statement selection_statement_error iteration_statement jump_statement jump_statement_error compound_inside compound_inside_error
                                     iteration_statement_error statement_error
 
@@ -233,10 +233,10 @@ default:
 
 %destructor { FreeMemberInit($$); } data_member_initialization data_member_initialization_error default_property default_property_error
 
-%destructor { FreeClassFunction($$); } class_function_definition class_function_definition_error class_function_definition_start 
+%destructor { FreeClassFunction($$); } class_function_definition class_function_definition_error class_function_definition_start
                                        class_function_definition_start_error virtual_class_function_definition_start virtual_class_function_definition_start_error
-                                       constructor_function_definition_start destructor_function_definition_start 
-                                       instance_class_function_definition instance_class_function_definition_error instance_class_function_definition_start instance_class_function_definition_start_error 
+                                       constructor_function_definition_start destructor_function_definition_start
+                                       instance_class_function_definition instance_class_function_definition_error instance_class_function_definition_start instance_class_function_definition_start_error
 %destructor { Context ctx = curContext; PopContext(ctx); FreeContext(ctx); delete ctx; } class_entry
 %destructor { Context ctx = curContext; PopContext(ctx); FreeContext(ctx); delete ctx; } class_decl
 %destructor { FreeClass($$); } class class_error class_head
@@ -244,20 +244,20 @@ default:
 %destructor { delete $$; } string_literal attribute_word base_strict_type_name
 %destructor { FreeProperty($$); } property
 
-%destructor { FreeList($$, FreeExpression); }  argument_expression_list expression expression_error argument_expression_list_error 
-%destructor { FreeList($$, FreeEnumerator); }  enumerator_list 
+%destructor { FreeList($$, FreeExpression); }  argument_expression_list expression expression_error argument_expression_list_error
+%destructor { FreeList($$, FreeEnumerator); }  enumerator_list
 %destructor { FreeList($$, FreeSpecifier); }   type_qualifier_list specifier_qualifier_list declaration_specifiers inheritance_specifiers _inheritance_specifiers external_guess_declaration_specifiers external_guess_declaration_specifiers_error
                                                guess_declaration_specifiers guess_specifier_qualifier_list
 %destructor { FreeList($$, FreeDeclarator); }  struct_declarator_list
-%destructor { FreeList($$, FreeDeclaration); } declaration_list declaration_list_error 
+%destructor { FreeList($$, FreeDeclaration); } declaration_list declaration_list_error
 %destructor { FreeList($$, FreeInitializer); } initializer_list
-%destructor { FreeList($$, FreeInitDeclarator); } init_declarator_list init_declarator_list_error 
-%destructor { FreeList($$, FreeTypeName); } parameter_list parameter_list_error parameter_type_list parameter_type_list_error identifier_list identifier_list_error 
+%destructor { FreeList($$, FreeInitDeclarator); } init_declarator_list init_declarator_list_error
+%destructor { FreeList($$, FreeTypeName); } parameter_list parameter_list_error parameter_type_list parameter_type_list_error identifier_list identifier_list_error
 %destructor { FreeList($$, FreeStatement); } statement_list statement_list_error
 %destructor { if($$ != ast) FreeList($$, FreeExternal); } translation_unit translation_unit_error
 %destructor { FreeList($$, FreeClassDef); } struct_declaration_list struct_declaration_list_error
 %destructor { FreeList($$, FreeMemberInit); } default_property_list default_property_list_error data_member_initialization_list data_member_initialization_list_coloned data_member_initialization_list_error
-%destructor { FreeList($$, FreeMembersInit); } members_initialization_list members_initialization_list_coloned members_initialization_list_error  
+%destructor { FreeList($$, FreeMembersInit); } members_initialization_list members_initialization_list_coloned members_initialization_list_error
 %destructor { PopContext($$); FreeContext($$); delete $$; } compound_start
 %destructor { FreeTemplateParameter($$); } template_parameter template_type_parameter template_identifier_parameter template_expression_parameter
 %destructor { FreeTemplateArgument($$); } template_argument template_type_argument template_identifier_argument template_expression_argument
@@ -292,7 +292,7 @@ guess_type:
 
       FreeIdentifier($1);
 
-      fileInput.Seek(@1.start.pos, start); 
+      fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
 
@@ -322,7 +322,7 @@ guess_type:
 
       FreeIdentifier($1);
 
-      fileInput.Seek(@1.start.pos, start); 
+      fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
 
@@ -348,7 +348,7 @@ guess_type:
       }
       else
          _DeclClass(0, $1.string);
-      fileInput.Seek(@1.start.pos, start); 
+      fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
 
@@ -381,7 +381,7 @@ type:
       FreeIdentifier($1);
       FreeIdentifier($2);
 
-      fileInput.Seek(@1.start.pos, start); 
+      fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
 
@@ -393,8 +393,8 @@ type:
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
    #else
-      Location tmpLoc = yylloc; $$ = $2; yylloc = @1; 
-      Compiler_Error($"Not a type: %s\n", $1.string);      
+      Location tmpLoc = yylloc; $$ = $2; yylloc = @1;
+      Compiler_Error($"Not a type: %s\n", $1.string);
       yylloc = tmpLoc; $2.badID = $1;
    #endif
    }
@@ -413,7 +413,7 @@ type:
       }
       else
          _DeclClass(0, $1.string);
-      fileInput.Seek(@1.start.pos, start); 
+      fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
 
@@ -444,7 +444,7 @@ type:
       FreeIdentifier($1);
       FreeIdentifier($2);
 
-      fileInput.Seek(@1.start.pos, start); 
+      fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
 
@@ -456,8 +456,8 @@ type:
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
    #else
-      Location tmpLoc = yylloc; $$ = $2; yylloc = @1; 
-      Compiler_Error($"Not a type: %s\n", $1.string);      
+      Location tmpLoc = yylloc; $$ = $2; yylloc = @1;
+      Compiler_Error($"Not a type: %s\n", $1.string);
       yylloc = tmpLoc; $2.badID = $1;
    #endif
    }*/
@@ -473,21 +473,21 @@ base_strict_type_name:
 strict_type:
      base_strict_type
     | base_strict_type '<' template_arguments_list '>' { $$ = $1; SetClassTemplateArgs($$, $3); $$.loc = @$; }
-    | base_strict_type '<' template_arguments_list RIGHT_OP 
+    | base_strict_type '<' template_arguments_list RIGHT_OP
     {
       $$ = $1;
       SetClassTemplateArgs($$, $3);
       $$.loc = @$;
 
       @4.end.pos--;
-      fileInput.Seek(@4.end.pos, start); 
+      fileInput.Seek(@4.end.pos, start);
       resetScannerPos(&@4.end);
       yyclearin;
     }
-    
+
 /*    | identifier '<' template_arguments_list '>' */
       /*| identifier '<' error
-      { 
+      {
          // if($1._class && !$1._class.name)
          if($1._class)
          {
@@ -501,8 +501,8 @@ strict_type:
             _DeclClass(0, $1.string);
 
          yyerrok;
-         
-         fileInput.Seek(@1.start.pos, start); 
+
+         fileInput.Seek(@1.start.pos, start);
          resetScannerPos(&@1.start);
          yyclearin;
 
@@ -571,9 +571,21 @@ class_function_definition:
 	| destructor_function_definition_start compound_statement
       { ProcessClassFunctionBody($1, $2); $$.loc = @$; }
 
-   // TESTING TIHS
+   // TESTING THIS
    | class_function_definition_start ';'
       { ProcessClassFunctionBody($1, null); $$.loc = @$; }
+
+   // Added this to fix attrib not working after function pointer declarations
+   | class_function_definition_start attrib ';'
+      {
+         if($1.declarator)
+         {
+            $1.declarator = MkStructDeclarator($1.declarator, null);
+            $1.declarator.structDecl.attrib = $2;
+         }
+         ProcessClassFunctionBody($1, null);
+         $$.loc = @$;
+      }
   	;
 
 class_function_definition_error:
@@ -595,7 +607,7 @@ instance_class_function_definition_start:
       { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
    |  declaration_specifiers declarator_nofunction_type_ok
       { $$ = MkClassFunction($1, null, MkDeclaratorFunction($2, null), null); $$.loc = @$; $$.id = ++globalContext.nextID; }
-      ; 
+      ;
 
 instance_class_function_definition_start_error:
    declaration_specifiers declarator_function_error_type_ok
@@ -623,17 +635,17 @@ data_member_initialization:
 
 data_member_initialization_error:
      postfix_expression '=' initializer_condition_error { $$ = MkMemberInitExp($1, $3); $$.loc = @$; $$.realLoc = @$; $$.initializer.loc.start = @2.end;}
-   | postfix_expression '=' error 
-      { 
+   | postfix_expression '=' error
+      {
          $$ = MkMemberInitExp($1, MkInitializerAssignment(MkExpDummy()));
-         $$.loc = @$; $$.realLoc = @$; $$.initializer.loc.start = $$.initializer.loc.end = @2.end; 
+         $$.loc = @$; $$.realLoc = @$; $$.initializer.loc.start = $$.initializer.loc.end = @2.end;
 
-         fileInput.Seek(@2.end.pos, start); 
+         fileInput.Seek(@2.end.pos, start);
          yyclearin;
          resetScannerPos(&@2.end);
          @$.start = @1.start;
          @$.end = @2.end;
-      } 
+      }
    | initializer_condition_error { $$ = MkMemberInit(null, $1); $$.loc = @$; $$.realLoc = @$;}
    ;
 
@@ -653,43 +665,43 @@ data_member_initialization_list_error:
       { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); $$ = $1; }
 
    | data_member_initialization_list ',' error
-      { ((MemberInit)$1->last).loc.end = @2.end; 
-         { 
-            Initializer dummy = MkInitializerAssignment(MkExpDummy()); 
-            MemberInit memberInit = MkMemberInit(null, dummy); 
-            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @2.end; 
-            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @2.end; 
-            ListAdd($1, memberInit); 
+      { ((MemberInit)$1->last).loc.end = @2.end;
+         {
+            Initializer dummy = MkInitializerAssignment(MkExpDummy());
+            MemberInit memberInit = MkMemberInit(null, dummy);
+            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @2.end;
+            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @2.end;
+            ListAdd($1, memberInit);
           }
           $$ = $1;
        }
    |
    data_member_initialization_list_error ',' error
-      { ((MemberInit)$1->last).loc.end = @2.end; 
-         { 
-            Initializer dummy = MkInitializerAssignment(MkExpDummy()); 
-            MemberInit memberInit = MkMemberInit(null, dummy); 
-            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @2.end; 
-            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @2.end; 
-            ListAdd($1, memberInit); 
+      { ((MemberInit)$1->last).loc.end = @2.end;
+         {
+            Initializer dummy = MkInitializerAssignment(MkExpDummy());
+            MemberInit memberInit = MkMemberInit(null, dummy);
+            memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @2.end;
+            memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @2.end;
+            ListAdd($1, memberInit);
           }
           $$ = $1;
        }
        |   ','
       {
          Initializer dummy = MkInitializerAssignment(MkExpDummy());
-         MemberInit memberInit = MkMemberInit(null, dummy); 
-         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @1.start; 
-         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @1.start; 
+         MemberInit memberInit = MkMemberInit(null, dummy);
+         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @1.start;
+         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @1.start;
 
          $$ = MkList();
-         ListAdd($$, memberInit); 
+         ListAdd($$, memberInit);
 
-         dummy = MkInitializerAssignment(MkExpDummy()); 
-         memberInit = MkMemberInit(null, dummy); 
-         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @1.end; 
-         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @1.end; 
-         ListAdd($$, memberInit); 
+         dummy = MkInitializerAssignment(MkExpDummy());
+         memberInit = MkMemberInit(null, dummy);
+         memberInit.realLoc.start = memberInit.loc.start = dummy.loc.start = @1.end;
+         memberInit.realLoc.end = memberInit.loc.end = dummy.loc.end = @1.end;
+         ListAdd($$, memberInit);
       }
    ;
 
@@ -713,7 +725,7 @@ members_initialization_list_coloned:
    ;
 
 members_initialization_list:
-     members_initialization_list_coloned 
+     members_initialization_list_coloned
    | data_member_initialization_list                                       { $$ = MkList(); ListAdd($$, MkMembersInitList($1)); ((MembersInit)$$->last).loc = @1; }
    | members_initialization_list_coloned data_member_initialization_list   { ListAdd($1, MkMembersInitList($2));   ((MembersInit)$$->last).loc = @2; }
    | members_initialization_list_error data_member_initialization_list     { ListAdd($1, MkMembersInitList($2));   ((MembersInit)$$->last).loc = @2; }
@@ -741,9 +753,9 @@ instantiation_named_error:
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   declaration_specifiers identifier '{' members_initialization_list error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   declaration_specifiers identifier '{' members_initialization_list 
+|   declaration_specifiers identifier '{' members_initialization_list
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   declaration_specifiers identifier '{' 
+|   declaration_specifiers identifier '{'
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   declaration_specifiers identifier '{' error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -764,9 +776,9 @@ instantiation_named_error:
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   declaration_specifiers identifier '{' members_initialization_list error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   declaration_specifiers identifier '{' members_initialization_list 
+|   declaration_specifiers identifier '{' members_initialization_list
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   declaration_specifiers identifier '{' 
+|   declaration_specifiers identifier '{'
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   declaration_specifiers identifier '{' error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -786,9 +798,9 @@ guess_instantiation_named_error:
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   guess_declaration_specifiers identifier '{' members_initialization_list error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   guess_declaration_specifiers identifier '{' members_initialization_list 
+|   guess_declaration_specifiers identifier '{' members_initialization_list
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   guess_declaration_specifiers identifier '{' 
+|   guess_declaration_specifiers identifier '{'
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   guess_declaration_specifiers identifier '{' error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -809,9 +821,9 @@ guess_instantiation_named_error:
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   guess_declaration_specifiers identifier '{' members_initialization_list error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4); $$.exp.loc = @2; $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   guess_declaration_specifiers identifier '{' members_initialization_list 
+|   guess_declaration_specifiers identifier '{' members_initialization_list
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), $4);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @4.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
-|   guess_declaration_specifiers identifier '{' 
+|   guess_declaration_specifiers identifier '{'
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |   guess_declaration_specifiers identifier '{' error
       { $$ = MkInstantiationNamed($1, MkExpIdentifier($2), null);$$.exp.loc = @2;  $$.loc = @$; $$.nameLoc = @2; $$.insideLoc.start = @3.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -838,12 +850,12 @@ instantiation_unnamed_error:
      strict_type '{' members_initialization_list
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
 |    identifier '{' members_initialization_list
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end; FreeIdentifier($1); }
 
 |    strict_type '{' members_initialization_list_error
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
-|    strict_type '{' 
+|    strict_type '{'
       { $$ = MkInstantiation($1, null, null);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @2.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
 |    strict_type '{' members_initialization_list error
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -853,47 +865,47 @@ instantiation_unnamed_error:
    // Undeclared class
 
 |    identifier '{' members_initialization_list_error
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
-|    identifier '{' 
-      { Location tmpLoc = yylloc; yylloc = @1; 
+|    identifier '{'
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, null);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @2.end;  $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
 |    identifier '{' members_initialization_list error
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
 |    identifier '{' error
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, null);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @2.end; $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
    ;
 
 /*
 instantiation_unnamed:
-     strict_type '{' members_initialization_list '}' 
+     strict_type '{' members_initialization_list '}'
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start; }
-   | strict_type '{' members_initialization_list error '}' 
+   | strict_type '{' members_initialization_list error '}'
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @5.start; }
-   | strict_type '{' members_initialization_list_error '}' 
+   | strict_type '{' members_initialization_list_error '}'
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start; }
-   | strict_type '{' '}' 
+   | strict_type '{' '}'
       { $$ = MkInstantiation($1, null, MkList());  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.start;}
    | strict_type '{' error '}'
       { $$ = MkInstantiation($1, null, MkList());  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start;}
 
    // Undeclared class
-   | identifier '{' members_initialization_list '}' 
-      { Location tmpLoc = yylloc; yylloc = @1; 
+   | identifier '{' members_initialization_list '}'
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start; FreeIdentifier($1); }
-   | identifier '{' members_initialization_list_error '}' 
-      { Location tmpLoc = yylloc; yylloc = @1; 
+   | identifier '{' members_initialization_list_error '}'
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start; FreeIdentifier($1); }
-   | identifier '{' members_initialization_list error '}' 
-      { yyloc = @1; 
+   | identifier '{' members_initialization_list error '}'
+      { yyloc = @1;
       $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @5.start; FreeIdentifier($1); }
-   | identifier '{' '}' 
-      { Location tmpLoc = yylloc; yylloc = @1; 
+   | identifier '{' '}'
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, MkList());  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.start; FreeIdentifier($1);}
    | identifier '{' error '}'
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, MkList());  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start; FreeIdentifier($1); }
    ;
 
@@ -901,7 +913,7 @@ instantiation_unnamed:
 instantiation_unnamed_error:
      strict_type '{' members_initialization_list_error
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
-|    strict_type '{' 
+|    strict_type '{'
       { $$ = MkInstantiation($1, null, null);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @2.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
 |    strict_type '{' members_initialization_list error
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -911,16 +923,16 @@ instantiation_unnamed_error:
    // Undeclared class
 
 |    identifier '{' members_initialization_list_error
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
-|    identifier '{' 
-      { Location tmpLoc = yylloc; yylloc = @1; 
+|    identifier '{'
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, null);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @2.end;  $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
 |    identifier '{' members_initialization_list error
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.end;  $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
 |    identifier '{' error
-      { Location tmpLoc = yylloc; yylloc = @1; 
+      { Location tmpLoc = yylloc; yylloc = @1;
       yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, null);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @2.end; $$.loc.end.charPos++; $$.loc.end.pos++; FreeIdentifier($1); }
    ;
 */
@@ -939,7 +951,7 @@ instantiation_anon_error:
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @2.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
 |    '{' error
       { $$ = MkInstantiation(null, null, null);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @1.end; $$.loc.end.charPos++; $$.loc.end.pos++;  }
-|    '{' 
+|    '{'
       { $$ = MkInstantiation(null, null, null);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @1.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
 |    '{' members_initialization_list
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @2.end; $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -947,13 +959,13 @@ instantiation_anon_error:
 
 /*
 instantiation_anon:
-     '{' members_initialization_list '}' 
+     '{' members_initialization_list '}'
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @3.start; }
-   | '{' members_initialization_list error '}' 
+   | '{' members_initialization_list error '}'
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @4.start; }
-   | '{' members_initialization_list_error '}' 
+   | '{' members_initialization_list_error '}'
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @3.start; }
-   | '{' '}' 
+   | '{' '}'
       { $$ = MkInstantiation(null, null, MkList());  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @2.start;}
    | '{' error '}'
       { $$ = MkInstantiation(null, null, MkList());  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @3.start;}
@@ -962,7 +974,7 @@ instantiation_anon:
 instantiation_anon_error:
      '{' members_initialization_list_error
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @2.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
-|    '{' 
+|    '{'
       { $$ = MkInstantiation(null, null, null);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @1.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
 |    '{' members_initialization_list error
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @2.end;  $$.loc.end.charPos++; $$.loc.end.pos++; }
@@ -990,13 +1002,13 @@ default_property_list:
 default_property_list_error:
       default_property_error      { $$ = MkList(); ListAdd($$, $1); ((MemberInit)$$->last).loc = @$; }
    | default_property_list ',' default_property_error      { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); $$ = $1; }
-   | default_property_list_error ',' default_property_error      { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); $$ = $1; } 
-   | default_property_list error   
+   | default_property_list_error ',' default_property_error      { ((MemberInit)$1->last).loc.end = @3.start; ListAdd($1, $3); $$ = $1; }
+   | default_property_list error
    ;
 
 property_start:
      PROPERTY property_specifiers identifier '{'
-      { $$ = MkProperty($2, null, $3, null, null); $$.loc = @$; } 
+      { $$ = MkProperty($2, null, $3, null, null); $$.loc = @$; }
 
    | PROPERTY property_specifiers abstract_declarator identifier '{'
       { $$ = MkProperty($2, $3, $4, null, null); $$.loc = @$; }
@@ -1015,9 +1027,9 @@ property_body:
      property_start
    | property_body SETPROP compound_statement
       { $1.setStmt = $3; }
-   | property_body GETPROP compound_statement 	
+   | property_body GETPROP compound_statement
       { $1.getStmt = $3; }
-   | property_body ISPROPSET compound_statement 	
+   | property_body ISPROPSET compound_statement
       { $1.issetStmt = $3; }
    | property_body WATCHABLE
       { $1.isWatchable = true; }
@@ -1031,7 +1043,7 @@ property:
 
 class_property_start:
      CLASS_PROPERTY property_specifiers identifier '{'
-      { $$ = MkProperty($2, null, $3, null, null); $$.loc = @$; } 
+      { $$ = MkProperty($2, null, $3, null, null); $$.loc = @$; }
 
    | CLASS_PROPERTY property_specifiers abstract_declarator identifier '{'
       { $$ = MkProperty($2, $3, $4, null, null); $$.loc = @$; }
@@ -1050,7 +1062,7 @@ class_property_body:
      class_property_start
    | class_property_body SETPROP compound_statement
       { $1.setStmt = $3; }
-   | class_property_body GETPROP compound_statement 	
+   | class_property_body GETPROP compound_statement
       { $1.getStmt = $3; }
 	;
 
@@ -1250,7 +1262,7 @@ template_argument:
    | identifier '=' template_type_argument         { $$ = $3; $$.name = $1; $$.loc = @$; }
    /*| template_datatype '=' template_expression_argument
    {
-      $$ = $3; 
+      $$ = $3;
       if($1.specifiers && $1.specifiers->first)
       {
          Specifier spec = $1.specifiers->first;
@@ -1262,7 +1274,7 @@ template_argument:
    }
    | template_datatype '=' template_identifier_argument
    {
-      $$ = $3; 
+      $$ = $3;
       if($1.specifiers && $1.specifiers->first)
       {
          Specifier spec = $1.specifiers->first;
@@ -1274,7 +1286,7 @@ template_argument:
    }
    | template_datatype '=' template_type_argument
    {
-      $$ = $3; 
+      $$ = $3;
       if($1.specifiers && $1.specifiers->first)
       {
          Specifier spec = $1.specifiers->first;
@@ -1301,11 +1313,11 @@ class_entry:
 
 class_decl:
      class_entry identifier { $1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | class_entry base_strict_type 
-   { 
-      $1; $$ = DeclClass(globalContext.nextID++, $2.name); 
-      $$.nameLoc = @2; 
-      FreeSpecifier($2); 
+   | class_entry base_strict_type
+   {
+      $1; $$ = DeclClass(globalContext.nextID++, $2.name);
+      $$.nameLoc = @2;
+      FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
@@ -1313,12 +1325,12 @@ class_decl:
    | identifier class_entry base_strict_type { $2; $$ = DeclClass(globalContext.nextID++, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
 
    | class_entry identifier '<' template_parameters_list '>' { $1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | class_entry base_strict_type '<' template_parameters_list '>' 
-   { 
+   | class_entry base_strict_type '<' template_parameters_list '>'
+   {
       $1; $$ = DeclClass(globalContext.nextID++, $2.name);
-      $$.templateParams = $4; 
-      $$.nameLoc = @2; 
-      FreeSpecifier($2); 
+      $$.templateParams = $4;
+      $$.nameLoc = @2;
+      FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
@@ -1330,7 +1342,7 @@ class:
      class_error '}'
       {
          $$.loc = @$;
-         $$ = $1; 
+         $$ = $1;
       }
 
    // Added this for unit classes...
@@ -1376,13 +1388,13 @@ class_head:
    ;
 
 class_error:
-	 class_decl '{' struct_declaration_list_error 
+	 class_decl '{' struct_declaration_list_error
       {
          $$ = MkClass($1, null, $3); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2; $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
-	| class_head '{' struct_declaration_list_error 
+	| class_head '{' struct_declaration_list_error
       {
          $$ = $1; $$.definitions = $3; $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
          POP_DEFAULT_ACCESS
@@ -1463,7 +1475,7 @@ simple_primary_expression:
    | CLASS '(' declaration_specifiers abstract_declarator ')' { $$ = MkExpClass($3, $4); $$.loc = @$; }
    | CLASS '(' identifier ')' { $$ = MkExpClass(MkListOne(MkSpecifierName($3.string)), null); FreeIdentifier($3); $$.loc = @$; }
    | VAARG '(' assignment_expression ',' type_name ')' { $$ = MkExpVaArg($3, $5); $$.loc = @$; }
-   
+
    | CLASS_DATA '(' identifier ')' { $$ = MkExpClassData($3); $$.loc = @$; }
    | database_open
    | dbfield
@@ -1737,14 +1749,14 @@ assignment_operator:
 	| OR_ASSIGN             { $$ = OR_ASSIGN; }
 	;
 
-expression: 
+expression:
    assignment_expression                 { $$ = MkList(); ListAdd($$, $1); }
 	| expression ',' assignment_expression  { $$ = $1; ListAdd($1, $3); }
    | expression_error ',' assignment_expression  { $$ = $1; ListAdd($1, $3); }
    | expression_error  ')'
 	;
 
-expression_anon_inst: 
+expression_anon_inst:
      anon_instantiation_expression                 { $$ = MkList(); ListAdd($$, $1); }
    | expression ',' anon_instantiation_expression  { $$ = $1; ListAdd($1, $3); }
 	| expression_error ',' anon_instantiation_expression  { $$ = $1; ListAdd($1, $3); }
@@ -1759,15 +1771,15 @@ postfix_expression_error:
    | postfix_expression PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
    | postfix_expression_error PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
 
-   | postfix_expression '(' argument_expression_list { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;} 
-	| postfix_expression '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;} 
+   | postfix_expression '(' argument_expression_list { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
+	| postfix_expression '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
    /* Useless rules due to conflicts
    | postfix_expression '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end;$$.loc = @$; $$.call.argLoc.end.charPos++;}
    | postfix_expression '(' error { $$ = MkExpCall($1, MkList() ); @$.end = yylloc.start; $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = yylloc.start; }
    */
    | postfix_expression '.' error                   { $$ = MkExpMember($1, null); $$.loc = @$; }
 
-	| postfix_expression_error '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.call.argLoc.end.charPos++;} 
+	| postfix_expression_error '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.call.argLoc.end.charPos++;}
    /* Useless rules due to conflicts
    | postfix_expression_error '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end; $$.call.argLoc.end.charPos++;}
    | postfix_expression_error '(' error { $$ = MkExpCall($1, MkList() ); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @2.end; $$.call.argLoc.end.charPos++;}
@@ -1783,8 +1795,8 @@ simple_postfix_expression_error:
    | simple_postfix_expression PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
    | simple_postfix_expression_error PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
 
-   | simple_postfix_expression '(' argument_expression_list { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;} 
-	| simple_postfix_expression '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;} 
+   | simple_postfix_expression '(' argument_expression_list { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
+	| simple_postfix_expression '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
    /* Useless rules due to conflicts
    | simple_postfix_expression '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end;$$.loc = @$; $$.call.argLoc.end.charPos++;}
    | simple_postfix_expression '(' error { $$ = MkExpCall($1, MkList() ); @$.end = yylloc.start; $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = yylloc.start; }
@@ -1830,7 +1842,7 @@ cast_expression_error:
 	| '(' type_name ')' cast_expression_error    { $$ = MkExpCast($2, $4); $$.loc = @$; }
 	;
 
-multiplicative_expression_error: 
+multiplicative_expression_error:
      cast_expression_error
 	| multiplicative_expression '*' cast_expression_error { $$ = MkExpOp($1, '*', $3); $$.loc = @$; }
 	| multiplicative_expression '/' cast_expression_error { $$ = MkExpOp($1, '/', $3); $$.loc = @$; }
@@ -1889,8 +1901,8 @@ relational_expression_error:
 
          FreeExpression($1);
          FreeExpression($2);
-         
-         fileInput.Seek(@1.start.pos, start); 
+
+         fileInput.Seek(@1.start.pos, start);
          resetScannerPos(&@1.start);
          yyclearin;
 
@@ -1901,7 +1913,7 @@ relational_expression_error:
          YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
-/*         
+/*
          YYPOPSTACK(1);
          yystate = *yyssp;
          YY_STACK_PRINT (yyss, yyssp);
@@ -1918,7 +1930,7 @@ relational_expression_error:
       {
          $$ = MkExpOp($1, '<', $2);
          $$.loc = @$;
-      } 
+      }
       skipErrors = false;
    }
 	| relational_expression '>' shift_expression_error    { $$ = MkExpOp($1, '>', $3); $$.loc = @$; }
@@ -2017,12 +2029,12 @@ conditional_expression_error:
 	| logical_or_expression_error '?' expression_anon_inst ':' anon_instantiation_expression_error { $$ = MkExpCondition($1, $3, $5); $$.loc = @$; }
    | logical_or_expression_error '?' expression_anon_inst_error ':' anon_instantiation_expression_error { $$ = MkExpCondition($1, $3, $5); $$.loc = @$; }
 
-	| logical_or_expression '?' ':' 
-      { 
-         $$ = MkExpCondition($1, MkListOne(MkExpDummy()), MkExpDummy()); 
-         $$.loc = @$; 
-         ((Expression)$$.cond.exp->last).loc = @2; 
-         $$.cond.elseExp.loc = @3; 
+	| logical_or_expression '?' ':'
+      {
+         $$ = MkExpCondition($1, MkListOne(MkExpDummy()), MkExpDummy());
+         $$.loc = @$;
+         ((Expression)$$.cond.exp->last).loc = @2;
+         $$.cond.elseExp.loc = @3;
       }
    | logical_or_expression_error '?' ':'
       {
@@ -2053,14 +2065,14 @@ assignment_expression_error:
    | unary_expression_error assignment_operator anon_instantiation_expression_error   { $$ = MkExpOp($1, $2, $3); $$.loc = @$; }
 	;
 
-expression_error: 
+expression_error:
      assignment_expression_error                 { $$ = MkList(); ListAdd($$, $1); }
    | assignment_expression error                 { $$ = MkList(); ListAdd($$, $1); }
    | expression ',' assignment_expression_error  { $$ = $1; ListAdd($1, $3); }
 	| expression_error ',' assignment_expression_error  { $$ = $1; ListAdd($1, $3); }
    /* Useless rules due to conflicts
-   | expression ',' error 
-   | expression_error ',' error 
+   | expression ',' error
+   | expression_error ',' error
    | expression error
    */
    | expression expression                      { $$ = $1; FreeList($2, FreeExpression); }
@@ -2068,7 +2080,7 @@ expression_error:
    | expression expression_error                { $$ = $1; FreeList($2, FreeExpression); }
    ;
 
-expression_anon_inst_error: 
+expression_anon_inst_error:
      anon_instantiation_expression_error                 { $$ = MkList(); ListAdd($$, $1); }
    | anon_instantiation_expression error                 { $$ = MkList(); ListAdd($$, $1); }
    | expression ',' anon_instantiation_expression_error  { $$ = $1; ListAdd($1, $3); }
@@ -2200,7 +2212,7 @@ type_qualifier_list:
 	;
 
 type_specifier:
-	  VOID            { $$ = MkSpecifier(VOID); }  
+	  VOID            { $$ = MkSpecifier(VOID); }
 	| CHAR            { $$ = MkSpecifier(CHAR); }
 	| SHORT           { $$ = MkSpecifier(SHORT); }
 	| INT             { $$ = MkSpecifier(INT); }
@@ -2225,7 +2237,7 @@ type_specifier:
 	;
 
 strict_type_specifier:
-	  VOID            { $$ = MkSpecifier(VOID); }  
+	  VOID            { $$ = MkSpecifier(VOID); }
 	| CHAR            { $$ = MkSpecifier(CHAR); }
 	| SHORT           { $$ = MkSpecifier(SHORT); }
 	| INT             { $$ = MkSpecifier(INT); }
@@ -2253,7 +2265,7 @@ struct_declarator:
 	  declarator_nofunction_type_ok
       { $$ = MkStructDeclarator($1, null); $$.loc = @$; }
 	| declarator_nofunction_type_ok attrib
-      { $$ = MkStructDeclarator($1, null); $$.structDecl.attrib = $2; $$.loc = @$; }  
+      { $$ = MkStructDeclarator($1, null); $$.structDecl.attrib = $2; $$.loc = @$; }
 	| ':' constant_expression
       { $$ = MkStructDeclarator(null, $2);  $$.loc = @$; }
 	| declarator_nofunction_type_ok ':' constant_expression
@@ -2278,7 +2290,7 @@ struct_declarator_list:
 	;
 
 struct_entry:
-     struct_or_union identifier 
+     struct_or_union identifier
       {
          $$ = MkStructOrUnion($1, $2, null);
          $$.addNameSpace = true;
@@ -2290,7 +2302,7 @@ struct_entry:
          $$.ctx = PushContext();
          FreeSpecifier($2);
       }
-   | struct_or_union ext_decl identifier 
+   | struct_or_union ext_decl identifier
       {
          $$ = MkStructOrUnion($1, $3, null);
          $$.extDeclStruct = $2;
@@ -2340,7 +2352,7 @@ struct_decl:
            ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext.nextID++, $1.id.string);
         }
      }
-   | struct_entry '<' template_parameters_list '>' 
+   | struct_entry '<' template_parameters_list '>'
    {
       Symbol symbol = ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext.nextID++, $1.id.string);
       $$ = $1;
@@ -2505,7 +2517,7 @@ _inheritance_specifiers:
    | _inheritance_specifiers type_qualifier            { $$ = $1; ListAdd($1, $2); }
    | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
    | _inheritance_specifiers strict_type_specifier            { $$ = $1; ListAdd($1, $2); }
-   | identifier                                       
+   | identifier
       { _DeclClass(0, $1.string); $$ = MkListOne(MkSpecifierName($1.string)); FreeIdentifier($1); }
 	| _inheritance_specifiers identifier                { $$ = $1; _DeclClass(0, $2.string); ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
 
@@ -2780,35 +2792,35 @@ direct_declarator_function:
 direct_declarator_function_error:
    direct_declarator_function_start identifier_list_error
       {
-         $$ = MkDeclaratorFunction($1, $2); 
-         fileInput.Seek(@1.end.pos, start); 
+         $$ = MkDeclaratorFunction($1, $2);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
          @$.end = @1.end;
       }
    | direct_declarator_function_start error
-      { 
-         $$ = MkDeclaratorFunction($1, null); 
-         fileInput.Seek(@1.end.pos, start); 
+      {
+         $$ = MkDeclaratorFunction($1, null);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
          @$.end = @1.end;
       }
    | direct_declarator_function_start parameter_list '('
-      { 
-         $$ = MkDeclaratorFunction($1, $2); 
-         fileInput.Seek(@1.end.pos, start); 
+      {
+         $$ = MkDeclaratorFunction($1, $2);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
          @$.end = @1.end;
       }
    | direct_declarator_function_start guess_declaration_specifiers identifier '('
-      { 
-         $$ = MkDeclaratorFunction($1, null); 
-         fileInput.Seek(@1.end.pos, start); 
+      {
+         $$ = MkDeclaratorFunction($1, null);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
@@ -2840,35 +2852,35 @@ direct_declarator_function_type_ok:
 direct_declarator_function_error_type_ok:
    direct_declarator_function_start_type_ok identifier_list_error
       {
-         $$ = MkDeclaratorFunction($1, $2); 
-         fileInput.Seek(@1.end.pos, start); 
+         $$ = MkDeclaratorFunction($1, $2);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
          @$.end = @1.end;
       }
    | direct_declarator_function_start_type_ok error
-      { 
-         $$ = MkDeclaratorFunction($1, null); 
-         fileInput.Seek(@1.end.pos, start); 
+      {
+         $$ = MkDeclaratorFunction($1, null);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
          @$.end = @1.end;
       }
    | direct_declarator_function_start_type_ok parameter_list '('
-      { 
-         $$ = MkDeclaratorFunction($1, $2); 
-         fileInput.Seek(@1.end.pos, start); 
+      {
+         $$ = MkDeclaratorFunction($1, $2);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
          @$.end = @1.end;
       }
    | direct_declarator_function_start_type_ok guess_declaration_specifiers identifier '('
-      { 
-         $$ = MkDeclaratorFunction($1, null); 
-         fileInput.Seek(@1.end.pos, start); 
+      {
+         $$ = MkDeclaratorFunction($1, null);
+         fileInput.Seek(@1.end.pos, start);
          yyclearin;
          resetScannerPos(&@1.end);
          @$.start = @1.start;
@@ -2900,8 +2912,8 @@ asm_start:
          delete $<string>4;
          delete $<string>6;
          $<string>$ = CopyString(temp);
-      } 
-   ;  
+      }
+   ;
 
 ext_decl:
      EXT_DECL { $$ = MkExtDeclString(CopyString(yytext)); }
@@ -3034,9 +3046,9 @@ declarator:
    | ext_decl pointer direct_declarator
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
    | declarator ext_decl
-      { $$ = MkDeclaratorExtendedEnd($2, $1); }  
+      { $$ = MkDeclaratorExtendedEnd($2, $1); }
    | declarator_nofunction_type_ok ext_decl
-      { $$ = MkDeclaratorExtendedEnd($2, $1); }  
+      { $$ = MkDeclaratorExtendedEnd($2, $1); }
    ;
 
 declarator_type_ok:
@@ -3046,7 +3058,7 @@ declarator_type_ok:
   | ext_decl pointer direct_declarator_type_ok
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
    | declarator_type_ok ext_decl
-      { $$ = MkDeclaratorExtendedEnd($2, $1); }  
+      { $$ = MkDeclaratorExtendedEnd($2, $1); }
    ;
 
 declarator_function:
@@ -3087,17 +3099,17 @@ declarator_nofunction_type_ok:
 initializer:
 	  assignment_expression          { $$ = MkInitializerAssignment($1); $$.loc = @$; }
 	| '{' initializer_list '}'       { $$ = MkInitializerList($2); $$.loc = @$; }
-	| '{' initializer_list ',' '}'   
-      { 
-         $$ = MkInitializerList($2); 
-         $$.loc = @$; 
+	| '{' initializer_list ',' '}'
+      {
+         $$ = MkInitializerList($2);
+         $$.loc = @$;
 
          {
             Expression exp = MkExpDummy();
             Initializer init = MkInitializerAssignment(exp);
             init.loc = @3;
             exp.loc = @3;
-            ListAdd($2, init); 
+            ListAdd($2, init);
          }
       }
 	;
@@ -3106,9 +3118,9 @@ initializer_error:
      assignment_expression_error    { $$ = MkInitializerAssignment($1); $$.loc = @$; }
 	| '{' initializer_list '}' error      { $$ = MkInitializerList($2); $$.loc = @$; }
    | '{' initializer_list                 { $$ = MkInitializerList($2); $$.loc = @$; }
-	| '{' initializer_list ',' '}' error  
-      { 
-         $$ = MkInitializerList($2); 
+	| '{' initializer_list ',' '}' error
+      {
+         $$ = MkInitializerList($2);
          $$.loc = @$;
 
          {
@@ -3116,12 +3128,12 @@ initializer_error:
             Initializer init = MkInitializerAssignment(exp);
             init.loc = @3;
             exp.loc = @3;
-            ListAdd($2, init); 
+            ListAdd($2, init);
          }
       }
 	| '{' initializer_list ','
-      { 
-         $$ = MkInitializerList($2); 
+      {
+         $$ = MkInitializerList($2);
          $$.loc = @$;
 
          {
@@ -3129,7 +3141,7 @@ initializer_error:
             Initializer init = MkInitializerAssignment(exp);
             init.loc = @3;
             exp.loc = @3;
-            ListAdd($2, init); 
+            ListAdd($2, init);
          }
       }
 	;
@@ -3219,13 +3231,13 @@ parameter_declaration:
    | CLASS
       { $$ = MkTypeName(MkListOne(MkSpecifier(CLASS)), null); }
 /*
-   | TYPED_OBJECT                                            
+   | TYPED_OBJECT
       { $$ = MkTypeName(MkListOne(MkSpecifier(TYPED_OBJECT)), null); }
    | TYPED_OBJECT '&'
       { $$ = MkTypeName(MkListOne(MkSpecifier(TYPED_OBJECT)), MkDeclaratorPointer(MkPointer(null,null), null)); }
-   | TYPED_OBJECT declarator                                           
+   | TYPED_OBJECT declarator
       { $$ = MkTypeName(MkListOne(MkSpecifier(TYPED_OBJECT)), $2);  }
-   | TYPED_OBJECT '&' declarator                                       
+   | TYPED_OBJECT '&' declarator
       { $$ = MkTypeName(MkListOne(MkSpecifier(TYPED_OBJECT)), MkDeclaratorPointer(MkPointer(null,null), $3)); }
    | ANY_OBJECT
       { $$ = MkTypeName(MkListOne(MkSpecifier(ANY_OBJECT)), null); }
@@ -3263,7 +3275,7 @@ parameter_list_error:
 	| identifier_list ',' parameter_declaration_error   { $$ = $1; ListAdd($1, $3); }
    | identifier_list_error ',' parameter_declaration_error   { $$ = $1; ListAdd($1, $3); }
    | identifier_list_error error ',' parameter_declaration_error   { $$ = $1; ListAdd($1, $4); }
-	;   
+	;
 
 parameter_type_list:
 	  parameter_list
@@ -3274,7 +3286,7 @@ parameter_type_list:
    | error ',' ELLIPSIS                { $$ = MkList(); ListAdd($$, MkTypeName(null, null)); }
 	;
 
-parameter_type_list_error: 
+parameter_type_list_error:
     parameter_list_error
    | parameter_list ',' error                { $$ = $1; ListAdd($1, null); }
    | parameter_list_error error
@@ -3298,12 +3310,12 @@ statement:
 	;
 
 statement_error:
-	labeled_statement_error          { $$ = $1; Compiler_Error($"syntax error\n"); } 
-   | iteration_statement_error      { $$ = $1; Compiler_Error($"syntax error\n"); } 
-   | compound_statement_error       { $$ = $1; Compiler_Error($"syntax error\n"); } 
-	| selection_statement_error      { $$ = $1; Compiler_Error($"syntax error\n"); } 
-   | jump_statement_error           { $$ = $1; Compiler_Error($"syntax error\n"); } 
-	| jump_statement error           { $$ = $1; Compiler_Error($"syntax error\n"); } 
+	labeled_statement_error          { $$ = $1; Compiler_Error($"syntax error\n"); }
+   | iteration_statement_error      { $$ = $1; Compiler_Error($"syntax error\n"); }
+   | compound_statement_error       { $$ = $1; Compiler_Error($"syntax error\n"); }
+	| selection_statement_error      { $$ = $1; Compiler_Error($"syntax error\n"); }
+   | jump_statement_error           { $$ = $1; Compiler_Error($"syntax error\n"); }
+	| jump_statement error           { $$ = $1; Compiler_Error($"syntax error\n"); }
    | expression_error { $$ = MkExpressionStmt($1); Compiler_Error($"syntax error\n"); $$.loc = @1; }
    ;
 
@@ -3323,7 +3335,7 @@ asm_statement:
    | ASM type_qualifier '(' string_literal ':' asm_field_list ')' ';'                                       { $$ = MkAsmStmt($2, $4, $6, null, null); $$.loc = @$; }
    | ASM type_qualifier '(' string_literal ':' asm_field_list ':' asm_field_list ')' ';'                    { $$ = MkAsmStmt($2, $4, $6, $8, null); $$.loc = @$; }
    | ASM type_qualifier '(' string_literal ':' asm_field_list ':' asm_field_list ':' asm_field_list ')' ';' { $$ = MkAsmStmt($2, $4, $6, $8, $10); $$.loc = @$; }
-   
+
    | ASM type_qualifier '(' string_literal IDENTIFIER asm_field_list ')' ';'                                { $$ = MkAsmStmt($2, $4, null, $6, null); $$.loc = @$; }
    | ASM type_qualifier '(' string_literal IDENTIFIER asm_field_list ':' asm_field_list ')' ';'             { $$ = MkAsmStmt($2, $4, null, $6, $8); $$.loc = @$; }
    | ASM type_qualifier '(' string_literal ':' asm_field_list IDENTIFIER asm_field_list ')' ';'             { $$ = MkAsmStmt($2, $4, $6, null, $8); $$.loc = @$; }
@@ -3440,17 +3452,17 @@ compound_inside_error:
    ;
 
 compound_start:
-    '{' { $<context>$ = PushContext(); } 
+    '{' { $<context>$ = PushContext(); }
     ;
 
-compound_statement: 
+compound_statement:
    compound_statement_error '}'     { $$ = $1; $$.loc = @$; }
 	;
 
-compound_statement_error: 
+compound_statement_error:
 	  compound_start compound_inside_error
       { $$ = $2; $$.compound.context = $<context>1; PopContext($<context>1); $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; }
-   | 	compound_start 
+   | 	compound_start
       { $$ = MkCompoundStmt(null, null); $$.compound.context = $<context>1; PopContext($<context>1); $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; }
 
 	| compound_start compound_inside
@@ -3556,7 +3568,7 @@ function_definition:
 	| external_guess_declaration_specifiers declarator_function compound_statement
        { $$ = MkFunction($1, $2, null); ProcessFunctionBody($$, $3); $$.loc = @$; }
 	| external_guess_declaration_specifiers declarator_function_type_ok declaration_list compound_statement      { $$ = MkFunction($1, $2, $3); ProcessFunctionBody($$, $4); $$.loc = @$; }
-	| external_guess_declaration_specifiers declarator_function_type_ok compound_statement                       
+	| external_guess_declaration_specifiers declarator_function_type_ok compound_statement
        { $$ = MkFunction($1, $2, null); ProcessFunctionBody($$, $3); $$.loc = @$; }
 
 	| declarator_function declaration_list compound_statement                             { $$ = MkFunction(null, $1, $2); ProcessFunctionBody($$, $3); $$.loc = @$; }
@@ -3573,8 +3585,8 @@ function_definition_error:
 
 string_literal:
    STRING_LITERAL { $$ = CopyString(yytext); }
-   | string_literal STRING_LITERAL 
-   { 
+   | string_literal STRING_LITERAL
+   {
       int len1 = strlen($1);
       int len2 = strlen(yytext);
       $$ = new byte[len1-1 + len2-1 + 1];
@@ -3586,7 +3598,7 @@ string_literal:
 
 external_declaration:
 	  function_definition { $$ = MkExternalFunction($1); $$.loc = @$; $1.declMode = declMode; declMode = defaultDeclMode; }
-   | class               
+   | class
       { $$ = MkExternalClass($1);  $$.loc = @$; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
 
    | external_guess_declaration_specifiers class
@@ -3599,17 +3611,17 @@ external_declaration:
    | IMPORT identifier string_literal
    {
       bool isRemote = !strcmp($2.string, "remote");
-      $$ = MkExternalImport($3, isRemote ? remoteImport : normalImport, (declMode != defaultAccess) ? declMode : privateAccess); 
+      $$ = MkExternalImport($3, isRemote ? remoteImport : normalImport, (declMode != defaultAccess) ? declMode : privateAccess);
       $$.loc = @$;
       FreeIdentifier($2);
       if(!isRemote)
-         yyerror(); 
+         yyerror();
    }
-   
+
    | ';' { $$ = null; }
 
 	| declaration_mode function_definition { $$ = MkExternalFunction($2); $$.loc = @$; $2.declMode = $1; declMode = defaultDeclMode; }
-   | declaration_mode class               
+   | declaration_mode class
       { $$ = MkExternalClass($2);  $$.loc = @$; $2.declMode = ($1 != defaultAccess) ? $1 : privateAccess; declMode = defaultDeclMode; }
 	| declaration_mode external_guess_declaration         { $$ = MkExternalDeclaration($2); $$.loc = @$; $2.declMode = $1; declMode = defaultDeclMode; }
    | declaration_mode IMPORT string_literal { $$ = MkExternalImport($3, normalImport, ($1 != defaultAccess) ? $1 : privateAccess);  $$.loc = @$; declMode = defaultDeclMode; }
@@ -3622,7 +3634,7 @@ external_declaration:
       FreeIdentifier($3);
       declMode = defaultDeclMode;
       if(!isRemote)
-         yyerror();  
+         yyerror();
    }
    | declaration_mode ':' { defaultDeclMode = $1; $$ = null; }
    | STATIC ':' { defaultDeclMode = staticAccess; $$ = null; }
@@ -3663,7 +3675,7 @@ translation_unit_error:
 translation_unit:
 	  external_declaration                    { $$ = MkList(); ListAdd($$, $1); ast = $$; }
 	| translation_unit external_declaration   { $$ = $1; ListAdd($1, $2); }
-   | translation_unit_error class  
+   | translation_unit_error class
       { External _class = MkExternalClass($2); $$ = $1; ListAdd($1, _class); _class.loc = @2;  $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
    | translation_unit_error declaration_mode class
       { External _class = MkExternalClass($3); $$ = $1; ListAdd($1, _class); _class.loc = @3;  $3.declMode = ($2 != defaultAccess) ? $2 : privateAccess; declMode = defaultDeclMode; }
@@ -3709,7 +3721,7 @@ dbfield_definition_list:
    ;
 
 database_open:
-   DATABASE_OPEN '(' assignment_expression ',' assignment_expression ')'     { $$ = MkExpDBOpen($3, $5); }      
+   DATABASE_OPEN '(' assignment_expression ',' assignment_expression ')'     { $$ = MkExpDBOpen($3, $5); }
    ;
 
 dbfield:
