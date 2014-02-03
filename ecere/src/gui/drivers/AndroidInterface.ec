@@ -574,6 +574,20 @@ class AndroidInterface : Interface
 
       if(androidActivity.ident < 0)
          androidActivity.ident = (LooperID)ALooper_pollAll(0, null, &androidActivity.events, (void**)&androidActivity.source);
+
+      if(gotInit && androidActivity.window)
+      {
+         int w = ANativeWindow_getWidth(androidActivity.window);
+         int h = ANativeWindow_getHeight(androidActivity.window);
+         if(desktopW != w || desktopH != h)
+         {
+            guiApp.SetDesktopPosition(0, 0, w, h, true);
+            desktopW = w;
+            desktopH = h;
+            guiApp.desktop.Update(null);
+         }
+      }
+
       while(androidActivity.ident >= 0)
       {
          AndroidPollSource source = androidActivity.source;
@@ -594,18 +608,6 @@ class AndroidInterface : Interface
             }
          }
          */
-         if(gotInit && androidActivity.window)
-         {
-            int w = ANativeWindow_getWidth(androidActivity.window);
-            int h = ANativeWindow_getHeight(androidActivity.window);
-            if(desktopW != w || desktopH != h)
-            {
-               guiApp.SetDesktopPosition(0, 0, w, h, true);
-               desktopW = w;
-               desktopH = h;
-               guiApp.desktop.Update(null);
-            }
-         }
 
          eventAvailable = true;
          if(androidActivity.destroyRequested)
