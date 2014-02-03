@@ -46,7 +46,7 @@ class TrackXMLParser : XMLParser
 {
    Track object;
 
-   void ProcessKeyword(char * word)
+   void ProcessKeyword(char * keyWord)
    {
       if(!strcmpi(keyWord, "object"))
       {
@@ -55,9 +55,9 @@ class TrackXMLParser : XMLParser
          char * desc = null;
          while(GetWord())
          {
-            if(!strcmpi(word, "id"))        { GetWord(); id = CopyString(word); }
-            else if(!strcmpi(word, "type")) { GetWord(); type = (ObjectType)atoi(word); }
-            else if(!strcmpi(word, "desc")) { GetWord(); desc = CopyString(word); }
+            if(!strcmpi(keyWord, "id"))        { GetWord(); id = CopyString(keyWord); }
+            else if(!strcmpi(keyWord, "type")) { GetWord(); type = (ObjectType)atoi(keyWord); }
+            else if(!strcmpi(keyWord, "desc")) { GetWord(); desc = CopyString(keyWord); }
          }
          for(object : tracks)
          {
@@ -83,13 +83,54 @@ class TrackXMLParser : XMLParser
          Vector3Df position { };
          while(GetWord())
          {
-            if(!strcmpi(word, "x"))          { GetWord(); position.x = atof(word); }
-            else if(!strcmpi(word, "y"))     { GetWord(); position.y = atof(word); }
-            else if(!strcmpi(word, "z"))     { GetWord(); position.z = atof(word); }
-            else if(!strcmpi(word, "speed")) { GetWord(); object.speed = atof(word); }
-            else if(!strcmpi(word, "dir"))   { GetWord(); object.direction = atof(word); }
+            if(!strcmpi(keyWord, "x"))          { GetWord(); position.x = atof(keyWord); }
+            else if(!strcmpi(keyWord, "y"))     { GetWord(); position.y = atof(keyWord); }
+            else if(!strcmpi(keyWord, "z"))     { GetWord(); position.z = atof(keyWord); }
+            else if(!strcmpi(keyWord, "speed")) { GetWord(); object.speed = atof(keyWord); }
+            else if(!strcmpi(keyWord, "dir"))   { GetWord(); object.direction = atof(keyWord); }
          }
          object.position = position;
       }
    }
 };
+
+enum MyTag
+{
+   none,
+   myTag1,
+   myTag2,
+   myTag3
+};
+
+class MyParser : XMLParser
+{
+   MyTag tag;
+
+   void ProcessCharacterData(char * data)
+   {
+      switch(tag)
+      {
+         case myTag1: PrintLn("myTag1: ", data); break;
+         case myTag2: PrintLn("myTag2: ", data); break;
+         case myTag3: PrintLn("myTag3: ", data); break;
+      }
+   }
+
+   void ProcessKeyword(char * keyWord)
+   {
+      NamedLink nl;
+      EnumClassData tagData = class(MyTag).data;
+      for(nl = tagData.values.first; nl; nl = nl.next)
+      {
+         if(!strcmpi(keyWord, nl.name))
+         {
+            MyTag curTag = (MyTag)nl.data;
+            if(openingTag)
+               tag = curTag;
+            else
+               tag = none;
+            break;
+         }
+      }
+   }
+}
