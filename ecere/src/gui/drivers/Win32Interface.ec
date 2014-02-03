@@ -389,19 +389,25 @@ class Win32Interface : Interface
          code = key;
       }
 
-      if(key != leftShift && key != rightShift && ::GetKeyState(VK_SHIFT) & 0x80000)
-         code.shift = true;
-      if(key != leftControl && key != rightControl && ::GetKeyState(VK_CONTROL) & 0x80000 && !frenchShift)
-         code.ctrl = true;
-      if(key != leftAlt && key != rightAlt && ::GetKeyState(VK_MENU) & 0x80000 && !frenchShift)
-         code.alt = true;
-
       if(msg == WM_MOUSEWHEEL)
       {
+         if(::GetAsyncKeyState(VK_SHIFT) & 0x80000)
+         code.ctrl = true;
+         if(::GetAsyncKeyState(VK_CONTROL) & 0x80000)
+            code.ctrl = true;
+         if(::GetAsyncKeyState(VK_MENU) & 0x80000)
+         code.alt = true;
+
          result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, 0);
       }
       else
       {
+         if(key != leftShift && key != rightShift && ::GetKeyState(VK_SHIFT) & 0x80000)
+            code.shift = true;
+         if(key != leftControl && key != rightControl && ::GetKeyState(VK_CONTROL) & 0x80000 && !frenchShift)
+            code.ctrl = true;
+         if(key != leftAlt && key != rightAlt && ::GetKeyState(VK_MENU) & 0x80000 && !frenchShift)
+            code.alt = true;
          /*
          byte ch = Interface::TranslateKeykey, code.shift);
          if(::GetKeyState(VK_CAPITAL))
