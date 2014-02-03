@@ -2622,8 +2622,19 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          // For cross-bitness-compiling
          if(crossBits)
          {
+            // The GNOSIS runtime will use 'offset' to point to the object during compile executation
+            // Need to rethink through our cross-bitness compiling to have a distinct 'offset' (e.g. runtimeOffset)
+            // used by the runtime library vs. 'offset' used by the compiler to hardcode compilation results (or avoid those altogether)
+            if(!strcmp(name, "GNOSISSystem") ||
+               !strcmp(name, "LineStyle") ||
+               !strcmp(name, "FillStyle") ||
+               !strcmp(name, "FontObject") ||
+               !strcmp(name, "SymbolStyle"))
+            {
+               _class.offset = force32Bits ? 24 : 12;
+            }
             // Ideally, the running library should be aware of the struct size of both 32 and 64 bit, since the compiler has no knowledge whatsoever of private members
-            if(strstr(name, "ecere::sys::EARHeader") ||
+            else if(strstr(name, "ecere::sys::EARHeader") ||
                strstr(name, "AnchorValue") ||
                !strcmp(name, "ecere::com::CustomAVLTree") ||
                !strcmp(name, "ecere::com::Array") ||
@@ -2739,6 +2750,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          }
 
          FixDerivativesBase(_class, _class);
+
          return _class;
       }
    }
