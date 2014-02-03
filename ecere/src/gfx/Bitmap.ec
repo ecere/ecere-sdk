@@ -735,6 +735,8 @@ public:
             Free();
 
             pixelFormat = grayed.pixelFormat;
+            size = grayed.size;
+            sizeBytes = grayed.sizeBytes;
             stride = grayed.stride;
             picture = grayed.picture;
             grayed.picture = null;
