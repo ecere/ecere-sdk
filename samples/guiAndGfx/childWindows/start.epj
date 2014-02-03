@@ -36,6 +36,6 @@
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "data/SoapBubbles.bmp"
+      "res/SoapBubbles.bmp"
    ]
 }
