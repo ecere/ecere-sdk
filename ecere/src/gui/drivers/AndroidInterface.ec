@@ -327,7 +327,7 @@ private:
          savedStateSize = 0;
    }
 
-   void Create()
+   public void Create()
    {
       int msgpipe[2];
       if(pipe(msgpipe))
