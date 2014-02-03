@@ -514,7 +514,7 @@ WiaItem GetScanner(bool alwaysAsk)
       Window window = ((GuiApplication)__thisModule.application).desktop.activeChild;
       if(window) window = window.rootWindow;
       if(!IWiaDevMgr_SelectDeviceDlg(devMan.pWiaDevMgr, window ? window.systemHandle : 0,
-         StiDeviceTypeDefault, alwaysAsk ? WIA_SELECT_DEVICE_NODEFAULT : 0, 0, &pItemRoot))
+         StiDeviceTypeScanner /*StiDeviceTypeDefault*/, alwaysAsk ? WIA_SELECT_DEVICE_NODEFAULT : 0, 0, &pItemRoot))
       {
          result = { pWiaItem = pItemRoot };
       }
