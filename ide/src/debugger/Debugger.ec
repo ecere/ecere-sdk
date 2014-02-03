@@ -170,55 +170,26 @@ public char * StripQuotes2(char * string, char * output)
 // String Escape Copy
 static void strescpy(char * d, char * s)
 {
-   int j, k;
-   j = k = 0;
-   while(s[j])
+   int j = 0, k = 0;
+   char ch;
+   while((ch = s[j]))
    {
-      switch(s[j])
+      switch(ch)
       {
-         case '\n':
-            d[k] = '\\';
-            d[++k] = 'n';
-            break;
-         case '\t':
-            d[k] = '\\';
-            d[++k] = 't';
-            break;
-         case '\a':
-            d[k] = '\\';
-            d[++k] = 'a';
-            break;
-         case '\b':
-            d[k] = '\\';
-            d[++k] = 'b';
-            break;
-         case '\f':
-            d[k] = '\\';
-            d[++k] = 'f';
-            break;
-         case '\r':
-            d[k] = '\\';
-            d[++k] = 'r';
-            break;
-         case '\v':
-            d[k] = '\\';
-            d[++k] = 'v';
-            break;
-         case '\\':
-            d[k] = '\\';
-            d[++k] = '\\';
-            break;
-         case '\"':
-            d[k] = '\\';
-            d[++k] = '\"';
-            break;
-         default:
-            d[k] = s[j];
+         case '\n': d[k] = '\\'; d[++k] = 'n'; break;
+         case '\t': d[k] = '\\'; d[++k] = 't'; break;
+         case '\a': d[k] = '\\'; d[++k] = 'a'; break;
+         case '\b': d[k] = '\\'; d[++k] = 'b'; break;
+         case '\f': d[k] = '\\'; d[++k] = 'f'; break;
+         case '\r': d[k] = '\\'; d[++k] = 'r'; break;
+         case '\v': d[k] = '\\'; d[++k] = 'v'; break;
+         case '\\': d[k] = '\\'; d[++k] = '\\'; break;
+         case '\"': d[k] = '\\'; d[++k] = '\"'; break;
+         default: d[k] = s[j];
       }
-      ++j;
-      ++k;
+      j++, k++;
    }
-   d[k] = s[j];
+   d[k] = '\0';
 }
 
 static char * CopyUnescapedSystemPath(char * p)
@@ -255,54 +226,33 @@ static char * CopyUnescapedString(char * s)
 
 static void struscpy(char * d, char * s)
 {
-   int j, k;
-   j = k = 0;
-   while(s[j])
+   int j = 0, k = 0;
+   char ch;
+   while((ch = s[j]))
    {
-      switch(s[j])
+      switch(ch)
       {
          case '\\':
             switch(s[++j])
             {
-               case 'n':
-                  d[k] = '\n';
-                  break;
-               case 't':
-                  d[k] = '\t';
-                  break;
-               case 'a':
-                  d[k] = '\a';
-                  break;
-               case 'b':
-                  d[k] = '\b';
-                  break;
-               case 'f':
-                  d[k] = '\f';
-                  break;
-               case 'r':
-                  d[k] = '\r';
-                  break;
-               case 'v':
-                  d[k] = '\v';
-                  break;
-               case '\\':
-                  d[k] = '\\';
-                  break;
-               case '\"':
-                  d[k] = '\"';
-                  break;
-               default:
-                  d[k] = '\\';
-                  d[++k] = s[j];
+               case 'n': d[k] = '\n'; break;
+               case 't': d[k] = '\t'; break;
+               case 'a': d[k] = '\a'; break;
+               case 'b': d[k] = '\b'; break;
+               case 'f': d[k] = '\f'; break;
+               case 'r': d[k] = '\r'; break;
+               case 'v': d[k] = '\v'; break;
+               case '\\': d[k] = '\\'; break;
+               case '\"': d[k] = '\"'; break;
+               default: d[k] = '\\'; d[++k] = s[j];
             }
             break;
          default:
             d[k] = s[j];
       }
-      ++j;
-      ++k;
+      j++, k++;
    }
-   d[k] = s[j];
+   d[k] = '\0';
 }
 
 static char * StripBrackets(char * string)
