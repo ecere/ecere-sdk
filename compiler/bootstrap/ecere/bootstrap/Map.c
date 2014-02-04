@@ -733,8 +733,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 struct __ecereNameSpace__ecere__com__Class * Kclass = class->templateArgs[5].dataTypeClass;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[6].dataTypeClass;
-unsigned int kIsNormalClass = Kclass->type == 0;
-unsigned int dIsNormalClass = Dclass->type == 0;
+unsigned int kIsNormalClass = (Kclass->type == 0) && Kclass->structSize;
+unsigned int dIsNormalClass = (Dclass->type == 0) && Dclass->structSize;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(channel, __ecereClass_uint, &count);
 for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({

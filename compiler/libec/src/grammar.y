@@ -192,6 +192,7 @@ default:
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 %token ALIGNOF ATTRIB_DEP __ATTRIB
+%token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -2100,6 +2101,7 @@ storage_class_specifier:
 	| STATIC        { $$ = MkSpecifier(STATIC); }
 	| AUTO          { $$ = MkSpecifier(AUTO); }
 	| REGISTER      { $$ = MkSpecifier(REGISTER); }
+   | RESTRICT      { $$ = MkSpecifier(RESTRICT); }
 	;
 
 external_storage_class_specifier:
@@ -2108,6 +2110,7 @@ external_storage_class_specifier:
 	| STATIC        { $$ = MkSpecifier(STATIC); declMode = staticAccess; }
 	| AUTO          { $$ = MkSpecifier(AUTO); }
 	| REGISTER      { $$ = MkSpecifier(REGISTER); }
+   | RESTRICT      { $$ = MkSpecifier(RESTRICT); }
 	;
 
 enumerator:
@@ -2235,6 +2238,10 @@ type_specifier:
    | THISCLASS       { $$ = MkSpecifier(THISCLASS); }
    | TYPED_OBJECT    { $$ = MkSpecifier(TYPED_OBJECT); }
    | ANY_OBJECT      { $$ = MkSpecifier(ANY_OBJECT); }
+   | _BOOL           { $$ = MkSpecifier(_BOOL); }
+   | BOOL            { $$ = MkSpecifier(BOOL); }
+   | _COMPLEX        { $$ = MkSpecifier(_COMPLEX); }
+   | _IMAGINARY      { $$ = MkSpecifier(_IMAGINARY); }
 	;
 
 strict_type_specifier:
@@ -2254,6 +2261,10 @@ strict_type_specifier:
 	| struct_or_union_specifier_nocompound
 	| enum_specifier_nocompound
 	| strict_type
+   | _BOOL           { $$ = MkSpecifier(_BOOL); }
+   | BOOL            { $$ = MkSpecifier(BOOL); }
+   | _COMPLEX        { $$ = MkSpecifier(_COMPLEX); }
+   | _IMAGINARY      { $$ = MkSpecifier(_IMAGINARY); }
    | TYPEOF '(' assignment_expression ')' { $$ = MkSpecifierTypeOf($3); }
    | SUBCLASS '(' type ')'                { $$ = MkSpecifierSubClass($3); }
    | SUBCLASS '(' identifier ')'          { _DeclClass(0, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
@@ -3393,10 +3404,10 @@ member_access:
    ;
 
 declaration:
-	  declaration_specifiers ';'                       { $$ = MkDeclaration($1, null); $$.loc = @$; }
-	| declaration_specifiers init_declarator_list ';'  { $$ = MkDeclaration($1, $2); $$.loc = @$; }
-   | instantiation_named ';'                          { $$ = MkDeclarationInst($1); $$.loc = @$; }
-   | declaration_error ';'                            { $$ = $1; }
+	  declaration_specifiers ';'                       { $$ = MkDeclaration($1, null); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+	| declaration_specifiers init_declarator_list ';'  { $$ = MkDeclaration($1, $2); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+   | instantiation_named ';'                          { $$ = MkDeclarationInst($1); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+   | declaration_error ';'                            { $$ = $1; if(declMode == defaultAccess) declMode = defaultDeclMode; }
 	;
 
 external_guess_declaration:
@@ -3414,12 +3425,12 @@ external_guess_declaration_error:
 	;
 
 declaration_error:
-     declaration_specifiers error                       { $$ = MkDeclaration($1, null); $$.loc = @$; }
-   | declaration_error error {}
+     declaration_specifiers error                       { $$ = MkDeclaration($1, null); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+   | declaration_error error                            { if(declMode == defaultAccess) declMode = defaultDeclMode;  }
 
-   | instantiation_named_error error                   { $$ = MkDeclarationInst($1); $$.loc = @$; }
-   | instantiation_named error                         { $$ = MkDeclarationInst($1); $$.loc = @$; }
-   | declaration_specifiers init_declarator_list_error  { $$ = MkDeclaration($1, $2); $$.loc = @$; }
+   | instantiation_named_error error                   { $$ = MkDeclarationInst($1); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+   | instantiation_named error                         { $$ = MkDeclarationInst($1); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+   | declaration_specifiers init_declarator_list_error  { $$ = MkDeclaration($1, $2); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
    ;
 
 declaration_list:

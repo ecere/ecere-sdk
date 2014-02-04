@@ -2796,6 +2796,11 @@ struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(_
 
 __ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("size_t"), __ecereInstance1->type = ProcessTypeString("uintsize", 0x0), __ecereInstance1;
 }));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("_Bool"), __ecereInstance1->type = ProcessTypeString("bool", 0x0), __ecereInstance1;
+}));
 {
 char * outputFilePath = GetOutputFile();
 

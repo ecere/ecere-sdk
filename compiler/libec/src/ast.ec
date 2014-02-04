@@ -421,7 +421,12 @@ Expression MkExpVaArg(Expression exp, TypeName type)
 
 Specifier MkSpecifier(int specifier)
 {
-   return { type = baseSpecifier, specifier = specifier };
+   if(specifier == _BOOL && (declMode != defaultAccess && defaultDeclMode != defaultAccess))
+      return MkSpecifierName("bool");
+   else if(specifier == _BOOL || specifier == BOOL)
+      return { type = baseSpecifier, specifier = specifier };
+   else
+      return { type = baseSpecifier, specifier = specifier };
 }
 
 Specifier MkSpecifierTypeOf(Expression expression)
@@ -2307,6 +2312,8 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             else if(spec.specifier == VOID) specType.kind = voidType;
             else if(spec.specifier == CHAR) specType.kind = charType;
             else if(spec.specifier == INT) { if(specType.kind != shortType && specType.kind != longType && !isLong) specType.kind = intType; }
+            else if(spec.specifier == _BOOL || spec.specifier == BOOL)
+               specType.kind = _BoolType;
             else if(spec.specifier == UINT) { if(specType.kind != shortType && specType.kind != longType) specType.kind = intType; specType.isSigned = false; }
             else if(spec.specifier == INT64) specType.kind = int64Type;
             else if(spec.specifier == VALIST)

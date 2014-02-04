@@ -1101,7 +1101,7 @@ public enum TypeKind
    voidType, charType, shortType, intType, int64Type, longType, floatType,
    doubleType, classType, structType, unionType, functionType, arrayType, pointerType,
    ellipsisType, enumType, methodType, vaListType, /*typedObjectType, anyObjectType, classPointerType, */ dummyType,
-   subClassType, templateType, thisClassType, intPtrType, intSizeType
+   subClassType, templateType, thisClassType, intPtrType, intSizeType, _BoolType
 };
 
 public class Type : struct
@@ -1171,6 +1171,8 @@ public:
    bool attrStdcall:1;
    bool declaredWithStruct:1;
    bool typedByReference:1;      // Originally typed by reference, regardless of class type
+   // TODO: Add _Complex & _Imaginary support
+   // bool complex:1, imaginary:1;
 
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {

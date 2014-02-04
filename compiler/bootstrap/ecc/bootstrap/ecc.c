@@ -644,8 +644,6 @@ extern int strcmp(const char * , const char * );
 
 extern size_t strlen(const char * );
 
-extern char *  strcpy(char * , const char * );
-
 extern char *  PassArg(char *  output, const char *  input);
 
 extern void SetBuildingEcereCom(unsigned int b);
@@ -669,6 +667,8 @@ extern void SetDefaultNameSpace(char *  s);
 extern void SetStrictNameSpaces(unsigned int b);
 
 extern void SetOutputLineNumbers(unsigned int value);
+
+extern char *  strcpy(char * , const char * );
 
 extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, char *  addedPath);
 
@@ -1061,6 +1061,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
 
 __ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("byte"), __ecereInstance1->type = ProcessTypeString("unsigned char", 0x0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("_Bool"), __ecereInstance1->type = ProcessTypeString("bool", 0x0), __ecereInstance1;
 }));
 if(buildingBootStrap)
 {

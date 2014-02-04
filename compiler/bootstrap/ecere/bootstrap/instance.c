@@ -1826,7 +1826,11 @@ if(type == 0 || type == 5)
 _class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : structSize_Instance));
 if(crossBits)
 {
-if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::com::Array") || !strcmp(name, "ecere::gui::Window") || !strcmp(name, "ecere::sys::Mutex"))
+if(!strcmp(name, "GNOSISSystem") || !strcmp(name, "LineStyle") || !strcmp(name, "FillStyle") || !strcmp(name, "FontObject") || !strcmp(name, "SymbolStyle"))
+{
+_class->offset = force32Bits ? 24 : 12;
+}
+else if(strstr(name, "ecere::sys::EARHeader") || strstr(name, "AnchorValue") || !strcmp(name, "ecere::com::CustomAVLTree") || !strcmp(name, "ecere::com::Array") || !strcmp(name, "ecere::gui::Window") || !strcmp(name, "ecere::sys::Mutex"))
 ;
 else
 {

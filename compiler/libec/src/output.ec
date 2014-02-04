@@ -911,6 +911,19 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
             case CHAR:
                f.Puts("char");
                break;
+            case _BOOL:
+            case BOOL:
+               f.Puts("_Bool");
+               break;
+            case _COMPLEX:
+               f.Puts("_Complex");
+               break;
+            case _IMAGINARY:
+               f.Puts("_Imaginary");
+               break;
+            case RESTRICT:
+               f.Puts("restrict");
+               break;
             case SHORT:
                f.Puts("short");
                break;

@@ -588,11 +588,11 @@ int strLen = strlen(fileName) - 1;
 
 if(strLen > -1)
 {
-for(; (ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--)
+for(; strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--)
 ;
-for(; (ch = fileName[strLen]) && strLen > -1 && (ch != '/' && ch != '\\' && ch != ':'); strLen--)
+for(; strLen > -1 && (ch = fileName[strLen]) && (ch != '/' && ch != '\\' && ch != ':'); strLen--)
 ;
-for(; (ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--)
+for(; strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--)
 ;
 if(isURL)
 {
@@ -799,11 +799,11 @@ if(strLen > -1)
 {
 unsigned int separator = 0x0;
 
-for(; (ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--)
+for(; strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--)
 ;
-for(; (ch = fileName[strLen]) && strLen > -1 && (ch != '/' && ch != '\\' && ch != ':'); strLen--)
+for(; strLen > -1 && (ch = fileName[strLen]) && (ch != '/' && ch != '\\' && ch != ':'); strLen--)
 ;
-for(; (ch = fileName[strLen]) && strLen > -1 && (ch == '/' || ch == '\\'); strLen--)
+for(; strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--)
 separator = 0x1;
 if(isURL)
 {

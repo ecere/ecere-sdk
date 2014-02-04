@@ -819,7 +819,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount])(this);
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].dataTypeClass;
-unsigned int isNormalClass = Dclass->type == 0;
+unsigned int isNormalClass = (Dclass->type == 0) && Dclass->structSize;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(channel, __ecereClass_uint, &count);
 for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({

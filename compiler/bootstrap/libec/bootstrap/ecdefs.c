@@ -2786,6 +2786,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "templateType", 20);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClassType", 21);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intPtrType", 22);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intSizeType", 23);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_BoolType", 24);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Type", 0, sizeof(struct Type), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Type = class;

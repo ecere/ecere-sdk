@@ -953,7 +953,7 @@ unsigned long long int strtoull(const char * nptr, char ** endptr, int base);
 
 enum yytokentype
 {
-IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363, ALIGNOF = 364, ATTRIB_DEP = 365, __ATTRIB = 366
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363, ALIGNOF = 364, ATTRIB_DEP = 365, __ATTRIB = 366, BOOL = 367, _BOOL = 368, _COMPLEX = 369, _IMAGINARY = 370, RESTRICT = 371
 };
 
 typedef union YYSTYPE
@@ -1278,6 +1278,7 @@ if(type1->kind == type2->kind)
 {
 switch(type1->kind)
 {
+case 24:
 case 1:
 case 2:
 case 3:
@@ -1675,7 +1676,7 @@ else if(op2.kind == 2)
 *value2 = (int)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (int)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (int)op2.uc;
 else if(op2.kind == 6)
 *value2 = (int)op2.f;
@@ -1714,7 +1715,7 @@ else if(op2.kind == 2)
 *value2 = (unsigned int)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (unsigned int)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (unsigned int)op2.uc;
 else if(op2.kind == 6)
 *value2 = (unsigned int)op2.f;
@@ -1753,7 +1754,7 @@ else if(op2.kind == 2)
 *value2 = (long long)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (long long)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (long long)op2.uc;
 else if(op2.kind == 6)
 *value2 = (long long)op2.f;
@@ -1792,7 +1793,7 @@ else if(op2.kind == 2)
 *value2 = (uint64)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (uint64)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (uint64)op2.uc;
 else if(op2.kind == 6)
 *value2 = (uint64)op2.f;
@@ -1831,7 +1832,7 @@ else if(op2.kind == 2)
 *value2 = (intptr_t)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (intptr_t)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (intptr_t)op2.uc;
 else if(op2.kind == 6)
 *value2 = (intptr_t)op2.f;
@@ -1870,7 +1871,7 @@ else if(op2.kind == 2)
 *value2 = (uintptr_t)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (uintptr_t)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (uintptr_t)op2.uc;
 else if(op2.kind == 6)
 *value2 = (uintptr_t)op2.f;
@@ -1909,7 +1910,7 @@ else if(op2.kind == 2)
 *value2 = (ssize_t)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (ssize_t)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (ssize_t)op2.uc;
 else if(op2.kind == 6)
 *value2 = (ssize_t)op2.f;
@@ -1948,7 +1949,7 @@ else if(op2.kind == 2)
 *value2 = (size_t)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (size_t)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (size_t)op2.uc;
 else if(op2.kind == 6)
 *value2 = (size_t)op2.f;
@@ -1987,7 +1988,7 @@ else if(op2.kind == 2)
 *value2 = (short)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (short)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (short)op2.uc;
 else if(op2.kind == 6)
 *value2 = (short)op2.f;
@@ -2026,7 +2027,7 @@ else if(op2.kind == 2)
 *value2 = op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (unsigned short)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (unsigned short)op2.uc;
 else if(op2.kind == 6)
 *value2 = (unsigned short)op2.f;
@@ -2065,7 +2066,7 @@ else if(op2.kind == 2)
 *value2 = (char)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (char)op2.uc;
 else if(op2.kind == 6)
 *value2 = (char)op2.f;
@@ -2104,7 +2105,7 @@ else if(op2.kind == 2)
 *value2 = (unsigned char)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (unsigned char)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = op2.uc;
 else if(op2.kind == 6)
 *value2 = (unsigned char)op2.f;
@@ -2143,7 +2144,7 @@ else if(op2.kind == 2)
 *value2 = (float)(float)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (float)(float)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (float)(float)op2.uc;
 else if(op2.kind == 6)
 *value2 = (float)op2.f;
@@ -2182,7 +2183,7 @@ else if(op2.kind == 2)
 *value2 = (double)(double)op2.us;
 else if(op2.kind == 1 && op2.type->isSigned)
 *value2 = (double)(double)op2.c;
-else if(op2.kind == 1)
+else if(op2.kind == 24 || op2.kind == 1)
 *value2 = (double)(double)op2.uc;
 else if(op2.kind == 6)
 *value2 = (double)op2.f;
@@ -2583,6 +2584,9 @@ if(!size && type && !type->computing)
 type->computing = 0x1;
 switch(type->kind)
 {
+case 24:
+type->alignment = size = sizeof(char);
+break;
 case 1:
 type->alignment = size = sizeof(char);
 break;
@@ -4842,19 +4846,19 @@ else if(dest->kind == source->kind && (dest->kind != 9 && dest->kind != 10 && de
 return 0x1;
 else if(dest->kind == 7 && source->kind == 6)
 return 0x1;
-else if(dest->kind == 2 && source->kind == 1)
+else if(dest->kind == 2 && (source->kind == 1 || source->kind == 24))
 return 0x1;
-else if(dest->kind == 3 && (source->kind == 2 || source->kind == 1 || source->kind == 23))
+else if(dest->kind == 3 && (source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 23))
 return 0x1;
-else if(dest->kind == 4 && (source->kind == 2 || source->kind == 1 || source->kind == 3 || source->kind == 22 || source->kind == 23))
+else if(dest->kind == 4 && (source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 3 || source->kind == 22 || source->kind == 23))
 return 0x1;
-else if(dest->kind == 22 && (source->kind == 2 || source->kind == 1 || source->kind == 3 || source->kind == 23 || source->kind == 4))
+else if(dest->kind == 22 && (source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 3 || source->kind == 23 || source->kind == 4))
 return 0x1;
-else if(dest->kind == 23 && (source->kind == 2 || source->kind == 1 || source->kind == 3 || source->kind == 4 || source->kind == 22))
+else if(dest->kind == 23 && (source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 3 || source->kind == 4 || source->kind == 22))
 return 0x1;
-else if(source->kind == 15 && (dest->kind == 3 || dest->kind == 2 || dest->kind == 1 || dest->kind == 5 || dest->kind == 4 || dest->kind == 22 || dest->kind == 23))
+else if(source->kind == 15 && (dest->kind == 3 || dest->kind == 2 || dest->kind == 1 || source->kind == 24 || dest->kind == 5 || dest->kind == 4 || dest->kind == 22 || dest->kind == 23))
 return 0x1;
-else if(dest->kind == 15 && (source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 5 || source->kind == 4 || source->kind == 22 || source->kind == 23))
+else if(dest->kind == 15 && (source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 5 || source->kind == 4 || source->kind == 22 || source->kind == 23))
 return 0x1;
 else if((dest->kind == 11 || (dest->kind == 13 && dest->type->kind == 11) || dest->kind == 16) && ((source->kind == 11 || (source->kind == 13 && source->type->kind == 11) || source->kind == 16)))
 {
@@ -5433,36 +5437,36 @@ FreeType(dest);
 dest = _class->dataType;
 dest->refCount++;
 }
-if(dest->kind == 7 && (source->kind == 7 || source->kind == 6 || dest->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1))
+if(dest->kind == 7 && (source->kind == 7 || source->kind == 6 || dest->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 24))
 {
 specs = MkListOne(MkSpecifier(DOUBLE));
 }
-else if(dest->kind == 6 && (source->kind == 6 || dest->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 7))
+else if(dest->kind == 6 && (source->kind == 6 || dest->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 7))
 {
 specs = MkListOne(MkSpecifier(FLOAT));
 }
-else if(dest->kind == 4 && (source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 6 || source->kind == 7))
+else if(dest->kind == 4 && (source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(INT64));
 }
-else if(dest->kind == 3 && (source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 6 || source->kind == 7))
+else if(dest->kind == 3 && (source->kind == 3 || source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(INT));
 }
-else if(dest->kind == 2 && (source->kind == 2 || source->kind == 1 || source->kind == 3 || source->kind == 6 || source->kind == 7))
+else if(dest->kind == 2 && (source->kind == 2 || source->kind == 1 || source->kind == 24 || source->kind == 3 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(SHORT));
 }
-else if(dest->kind == 1 && (source->kind == 1 || source->kind == 2 || source->kind == 3 || source->kind == 6 || source->kind == 7))
+else if(dest->kind == 1 && (source->kind == 1 || source->kind == 24 || source->kind == 2 || source->kind == 3 || source->kind == 6 || source->kind == 7))
 {
 specs = MkList();
 if(!dest->isSigned)
@@ -5482,43 +5486,48 @@ sourceExp->expType = backupSourceExpType;
 return 0x0;
 }
 }
-else if(dest->kind == 7 && (source->kind == 7 || source->kind == 6 || source->kind == 4 || source->kind == 3 || source->kind == 15 || source->kind == 2 || source->kind == 1))
+else if(dest->kind == 7 && (source->kind == 7 || source->kind == 6 || source->kind == 4 || source->kind == 3 || source->kind == 15 || source->kind == 2 || source->kind == 24 || source->kind == 1))
 {
 specs = MkListOne(MkSpecifier(DOUBLE));
 }
-else if(dest->kind == 6 && (source->kind == 6 || source->kind == 15 || source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1))
+else if(dest->kind == 6 && (source->kind == 6 || source->kind == 15 || source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 24 || source->kind == 1))
 {
 specs = MkListOne(MkSpecifier(FLOAT));
 }
-else if(dest->kind == 1 && (source->kind == 1 || source->kind == 15 || source->kind == 2 || source->kind == 3) && (dest->isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
+else if(dest->kind == 24 && (source->kind == 24 || source->kind == 1 || source->kind == 15 || source->kind == 2 || source->kind == 3) && (value == 1 || value == 0))
+{
+specs = MkList();
+ListAdd(specs, MkSpecifier(BOOL));
+}
+else if(dest->kind == 1 && (source->kind == 24 || source->kind == 1 || source->kind == 15 || source->kind == 2 || source->kind == 3) && (dest->isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(CHAR));
 }
-else if(dest->kind == 2 && (source->kind == 15 || source->kind == 1 || source->kind == 2 || (source->kind == 3 && (dest->isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
+else if(dest->kind == 2 && (source->kind == 15 || source->kind == 24 || source->kind == 1 || source->kind == 2 || (source->kind == 3 && (dest->isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(SHORT));
 }
-else if(dest->kind == 3 && (source->kind == 15 || source->kind == 2 || source->kind == 1 || source->kind == 3))
+else if(dest->kind == 3 && (source->kind == 15 || source->kind == 2 || source->kind == 24 || source->kind == 1 || source->kind == 3))
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(INT));
 }
-else if(dest->kind == 4 && (source->kind == 15 || source->kind == 2 || source->kind == 1 || source->kind == 3 || source->kind == 4))
+else if(dest->kind == 4 && (source->kind == 15 || source->kind == 2 || source->kind == 24 || source->kind == 1 || source->kind == 3 || source->kind == 4))
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(INT64));
 }
-else if(dest->kind == 15 && (source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 1))
+else if(dest->kind == 15 && (source->kind == 4 || source->kind == 3 || source->kind == 2 || source->kind == 24 || source->kind == 1))
 {
 specs = MkListOne(MkEnum(MkIdentifier(dest->enumName), (((void *)0))));
 }
@@ -9454,6 +9463,7 @@ if(exp->isConstant && exp->type == 2)
 {
 switch(op.kind)
 {
+case 24:
 case 1:
 {
 if(exp->constant[0] == '\'')
@@ -10169,6 +10179,7 @@ type = type->_class->registered->dataType;
 }
 switch(type->kind)
 {
+case 24:
 case 1:
 if(type->isSigned)
 bits |= ((char)part << bitMember->pos);
@@ -10903,6 +10914,7 @@ type = _class->dataType;
 }
 switch(type->kind)
 {
+case 24:
 case 1:
 if(type->isSigned)
 {
@@ -11529,6 +11541,9 @@ break;
 case 1:
 ListAdd(specs, MkSpecifier(CHAR));
 break;
+case 24:
+ListAdd(specs, MkSpecifier(_BOOL));
+break;
 case 2:
 ListAdd(specs, MkSpecifier(SHORT));
 break;
@@ -11604,6 +11619,9 @@ strcat(string, type->isSigned ? "intsize" : "uintsize");
 break;
 case 1:
 strcat(string, type->isSigned ? "char" : "byte");
+break;
+case 24:
+strcat(string, "_Bool");
 break;
 case 2:
 strcat(string, type->isSigned ? "short" : "uint16");
@@ -14157,7 +14175,7 @@ type = ProcessTemplateParameterType(type->templateParameter);
 }
 if(type && (type->kind == 20))
 ;
-else if(type && (type->kind == 8 || type->kind == 19 || type->kind == 3 || type->kind == 15 || type->kind == 4 || type->kind == 2 || type->kind == 5 || type->kind == 1 || type->kind == 22 || type->kind == 23 || type->kind == 6 || type->kind == 7 || (type->kind == 13 && type->type->kind == 1)))
+else if(type && (type->kind == 8 || type->kind == 19 || type->kind == 3 || type->kind == 15 || type->kind == 4 || type->kind == 2 || type->kind == 5 || type->kind == 1 || type->kind == 24 || type->kind == 22 || type->kind == 23 || type->kind == 6 || type->kind == 7 || (type->kind == 13 && type->type->kind == 1)))
 {
 struct Identifier * id = exp->member.member;
 int typeKind = type->kind;

@@ -88,6 +88,7 @@ bool NeedCast(Type type1, Type type2)
    {
       switch(type1.kind)
       {
+         case _BoolType:
          case charType:
          case shortType:
          case intType:
@@ -327,7 +328,7 @@ public char * PrintDouble(double result)
       else if(op2.kind == shortType && op2.type.isSigned) *value2 = (t) op2.s;   \
       else if(op2.kind == shortType) *value2 = (t) op2.us;                        \
       else if(op2.kind == charType && op2.type.isSigned) *value2 = (t) op2.c;    \
-      else if(op2.kind == charType) *value2 = (t) op2.uc;                         \
+      else if(op2.kind == _BoolType || op2.kind == charType) *value2 = (t) op2.uc; \
       else if(op2.kind == floatType) *value2 = (t) op2.f;                         \
       else if(op2.kind == doubleType) *value2 = (t) op2.d;                        \
       else if(op2.kind == pointerType) *value2 = (t) op2.ui64;                    \
@@ -684,6 +685,7 @@ public int ComputeTypeSize(Type type)
       type.computing = true;
       switch(type.kind)
       {
+         case _BoolType: type.alignment = size = sizeof(char); break;   // Assuming 1 byte _Bool
          case charType: type.alignment = size = sizeof(char); break;
          case intType: type.alignment = size = sizeof(int); break;
          case int64Type: type.alignment = size = sizeof(int64); break;
@@ -3129,21 +3131,21 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       // RECENTLY ADDED THESE
       else if(dest.kind == doubleType && source.kind == floatType)
          return true;
-      else if(dest.kind == shortType && source.kind == charType)
+      else if(dest.kind == shortType && (source.kind == charType || source.kind == _BoolType))
          return true;
-      else if(dest.kind == intType && (source.kind == shortType || source.kind == charType || source.kind == intSizeType /* Exception here for size_t */))
+      else if(dest.kind == intType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intSizeType /* Exception here for size_t */))
          return true;
-      else if(dest.kind == int64Type && (source.kind == shortType || source.kind == charType || source.kind == intType || source.kind == intPtrType || source.kind == intSizeType))
+      else if(dest.kind == int64Type && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intType || source.kind == intPtrType || source.kind == intSizeType))
          return true;
-      else if(dest.kind == intPtrType && (source.kind == shortType || source.kind == charType || source.kind == intType || source.kind == intSizeType || source.kind == int64Type))
+      else if(dest.kind == intPtrType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intType || source.kind == intSizeType || source.kind == int64Type))
          return true;
-      else if(dest.kind == intSizeType && (source.kind == shortType || source.kind == charType || source.kind == intType || source.kind == int64Type || source.kind == intPtrType))
+      else if(dest.kind == intSizeType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intType || source.kind == int64Type || source.kind == intPtrType))
          return true;
       else if(source.kind == enumType &&
-         (dest.kind == intType || dest.kind == shortType || dest.kind == charType || dest.kind == longType || dest.kind == int64Type || dest.kind == intPtrType || dest.kind == intSizeType))
+         (dest.kind == intType || dest.kind == shortType || dest.kind == charType || source.kind == _BoolType || dest.kind == longType || dest.kind == int64Type || dest.kind == intPtrType || dest.kind == intSizeType))
           return true;
       else if(dest.kind == enumType &&
-         (source.kind == intType || source.kind == shortType || source.kind == charType || source.kind == longType || source.kind == int64Type || source.kind == intPtrType || source.kind == intSizeType))
+         (source.kind == intType || source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == longType || source.kind == int64Type || source.kind == intPtrType || source.kind == intSizeType))
           return true;
       else if((dest.kind == functionType || (dest.kind == pointerType && dest.type.kind == functionType) || dest.kind == methodType) &&
               ((source.kind == functionType || (source.kind == pointerType && source.type.kind == functionType) || source.kind == methodType)))
@@ -3752,38 +3754,38 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          // Accept lower precision types for units, since we want to keep the unit type
          if(dest.kind == doubleType &&
             (source.kind == doubleType || source.kind == floatType || dest.kind == int64Type || source.kind == intType || source.kind == shortType ||
-             source.kind == charType))
+             source.kind == charType || source.kind == _BoolType))
          {
             specs = MkListOne(MkSpecifier(DOUBLE));
          }
          else if(dest.kind == floatType &&
             (source.kind == floatType || dest.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == charType ||
-            source.kind == doubleType))
+            source.kind == _BoolType || source.kind == doubleType))
          {
             specs = MkListOne(MkSpecifier(FLOAT));
          }
          else if(dest.kind == int64Type && (source.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == charType ||
-            source.kind == floatType || source.kind == doubleType))
+            source.kind == _BoolType || source.kind == floatType || source.kind == doubleType))
          {
             specs = MkList();
             if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
             ListAdd(specs, MkSpecifier(INT64));
          }
          else if(dest.kind == intType && (source.kind == intType || source.kind == shortType || source.kind == charType ||
-            source.kind == floatType || source.kind == doubleType))
+            source.kind == _BoolType || source.kind == floatType || source.kind == doubleType))
          {
             specs = MkList();
             if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
             ListAdd(specs, MkSpecifier(INT));
          }
-         else if(dest.kind == shortType && (source.kind == shortType || source.kind == charType || source.kind == intType ||
+         else if(dest.kind == shortType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intType ||
             source.kind == floatType || source.kind == doubleType))
          {
             specs = MkList();
             if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
             ListAdd(specs, MkSpecifier(SHORT));
          }
-         else if(dest.kind == charType && (source.kind == charType || source.kind == shortType || source.kind == intType ||
+         else if(dest.kind == charType && (source.kind == charType || source.kind == _BoolType || source.kind == shortType || source.kind == intType ||
             source.kind == floatType || source.kind == doubleType))
          {
             specs = MkList();
@@ -3805,43 +3807,49 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       }
       else if(dest.kind == doubleType &&
          (source.kind == doubleType || source.kind == floatType || source.kind == int64Type || source.kind == intType || source.kind == enumType || source.kind == shortType ||
-          source.kind == charType))
+          source.kind == _BoolType || source.kind == charType))
       {
          specs = MkListOne(MkSpecifier(DOUBLE));
       }
       else if(dest.kind == floatType &&
-         (source.kind == floatType || source.kind == enumType || source.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == charType))
+         (source.kind == floatType || source.kind == enumType || source.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == _BoolType || source.kind == charType))
       {
          specs = MkListOne(MkSpecifier(FLOAT));
       }
-      else if(dest.kind == charType && (source.kind == charType || source.kind == enumType || source.kind == shortType || source.kind == intType) &&
+      else if(dest.kind == _BoolType && (source.kind == _BoolType || source.kind == charType || source.kind == enumType || source.kind == shortType || source.kind == intType) &&
+         (value == 1 || value == 0))
+      {
+         specs = MkList();
+         ListAdd(specs, MkSpecifier(BOOL));
+      }
+      else if(dest.kind == charType && (source.kind == _BoolType || source.kind == charType || source.kind == enumType || source.kind == shortType || source.kind == intType) &&
          (dest.isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
       {
          specs = MkList();
          if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
          ListAdd(specs, MkSpecifier(CHAR));
       }
-      else if(dest.kind == shortType && (source.kind == enumType || source.kind == charType || source.kind == shortType ||
+      else if(dest.kind == shortType && (source.kind == enumType || source.kind == _BoolType || source.kind == charType || source.kind == shortType ||
          (source.kind == intType && (dest.isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
       {
          specs = MkList();
          if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
          ListAdd(specs, MkSpecifier(SHORT));
       }
-      else if(dest.kind == intType && (source.kind == enumType || source.kind == shortType || source.kind == charType || source.kind == intType))
+      else if(dest.kind == intType && (source.kind == enumType || source.kind == shortType || source.kind == _BoolType || source.kind == charType || source.kind == intType))
       {
          specs = MkList();
          if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
          ListAdd(specs, MkSpecifier(INT));
       }
-      else if(dest.kind == int64Type && (source.kind == enumType || source.kind == shortType || source.kind == charType || source.kind == intType || source.kind == int64Type))
+      else if(dest.kind == int64Type && (source.kind == enumType || source.kind == shortType || source.kind == _BoolType || source.kind == charType || source.kind == intType || source.kind == int64Type))
       {
          specs = MkList();
          if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
          ListAdd(specs, MkSpecifier(INT64));
       }
       else if(dest.kind == enumType &&
-         (source.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == charType))
+         (source.kind == int64Type || source.kind == intType || source.kind == shortType || source.kind == _BoolType || source.kind == charType))
       {
          specs = MkListOne(MkEnum(MkIdentifier(dest.enumName), null));
       }
@@ -4181,6 +4189,7 @@ public Operand GetOperand(Expression exp)
       {
          switch(op.kind)
          {
+            case _BoolType:
             case charType:
             {
                if(exp.constant[0] == '\'')
@@ -4897,6 +4906,7 @@ void ComputeInstantiation(Expression exp)
 
                               switch(type.kind)
                               {
+                                 case _BoolType:
                                  case charType:
                                     if(type.isSigned)
                                        bits |= ((char)part << bitMember.pos);
@@ -5798,6 +5808,7 @@ void ComputeExpression(Expression exp)
 
             switch(type.kind)
             {
+               case _BoolType:
                case charType:
                   if(type.isSigned)
                   {
@@ -6411,6 +6422,7 @@ static void GetTypeSpecs(Type type, OldList * specs)
       case doubleType: ListAdd(specs, MkSpecifier(DOUBLE)); break;
       case floatType: ListAdd(specs, MkSpecifier(FLOAT)); break;
       case charType: ListAdd(specs, MkSpecifier(CHAR)); break;
+      case _BoolType: ListAdd(specs, MkSpecifier(_BOOL)); break;
       case shortType: ListAdd(specs, MkSpecifier(SHORT)); break;
       case int64Type: ListAdd(specs, MkSpecifier(INT64)); break;
       case intPtrType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intptr" : "uintptr")); break;
@@ -6467,6 +6479,7 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
          case intPtrType:  strcat(string, type.isSigned ? "intptr" : "uintptr"); break;
          case intSizeType:  strcat(string, type.isSigned ? "intsize" : "uintsize"); break;
          case charType: strcat(string, type.isSigned ? "char" : "byte"); break;
+         case _BoolType: strcat(string, "_Bool"); break;
          case shortType: strcat(string, type.isSigned ? "short" : "uint16"); break;
          case floatType: strcat(string, "float"); break;
          case doubleType: strcat(string, "double"); break;
@@ -9300,7 +9313,7 @@ void ProcessExpressionType(Expression exp)
          // TODO: *** This seems to be where we should add method support for all basic types ***
          if(type && (type.kind == templateType));
          else if(type && (type.kind == classType || type.kind == subClassType || type.kind == intType || type.kind == enumType ||
-                          type.kind == int64Type || type.kind == shortType || type.kind == longType || type.kind == charType ||
+                          type.kind == int64Type || type.kind == shortType || type.kind == longType || type.kind == charType || type.kind == _BoolType ||
                           type.kind == intPtrType || type.kind == intSizeType || type.kind == floatType || type.kind == doubleType ||
                           (type.kind == pointerType && type.type.kind == charType)))
          {
@@ -10408,7 +10421,7 @@ void ProcessExpressionType(Expression exp)
    if(!notByReference && exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered &&
       exp.expType._class.registered.type == noHeadClass && (!exp.destType ||
          (exp.destType.kind != intType && exp.destType.kind != int64Type && exp.destType.kind != intPtrType && exp.destType.kind != intSizeType &&
-          exp.destType.kind != longType && exp.destType.kind != shortType && exp.destType.kind != charType)))
+          exp.destType.kind != longType && exp.destType.kind != shortType && exp.destType.kind != charType && exp.destType.kind != _BoolType)))
    {
       exp.byReference = true;
    }

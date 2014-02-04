@@ -83,32 +83,32 @@ default:
             anon_instantiation_expression
 
 %type <list> argument_expression_list expression enumerator_list
-             struct_declarator_list struct_declaration_list 
+             struct_declarator_list struct_declaration_list
              declaration_specifiers identifier_list initializer_list init_declarator_list
-             parameter_list parameter_type_list declaration_list statement_list 
+             parameter_list parameter_type_list declaration_list statement_list
              members_initialization_list members_initialization_list_coloned data_member_initialization_list data_member_initialization_list_coloned
              specifier_qualifier_list
              type_qualifier_list property_specifiers
              renew_specifiers
              default_property_list attribs_list
-             
+
 
 %type <specifier> storage_class_specifier enum_specifier_compound enum_specifier_nocompound type_qualifier type_specifier strict_type_specifier
                   struct_or_union_specifier_compound struct_or_union_specifier_nocompound type strict_type
 %type <enumerator> enumerator
 %type <declarator> declarator direct_declarator direct_abstract_declarator abstract_declarator
-                   struct_declarator direct_declarator_function direct_declarator_function_start declarator_function direct_declarator_nofunction 
+                   struct_declarator direct_declarator_function direct_declarator_function_start declarator_function direct_declarator_nofunction
                    direct_abstract_declarator_noarray abstract_declarator_noarray
-                   
+
 %type <pointer> pointer
 %type <initializer> initializer initializer_condition
-%type <initDeclarator> init_declarator 
+%type <initDeclarator> init_declarator
 %type <typeName> type_name parameter_declaration
-%type <stmt> statement labeled_statement compound_statement expression_statement 
+%type <stmt> statement labeled_statement compound_statement expression_statement
              selection_statement iteration_statement jump_statement compound_inside
 
 %type <declaration> declaration
-%type <classDef> struct_declaration 
+%type <classDef> struct_declaration
 %type <string> string_literal attribute_word
 %type <extDecl> ext_decl
 %type <attrib> attrib
@@ -117,10 +117,10 @@ default:
 %type <instance> instantiation_named instantiation_unnamed instantiation_anon
 /* %type <membersInit>  members_initialization */
 %type <memberInit> data_member_initialization default_property
-%type <classFunction> class_function_definition class_function_definition_start 
-                     virtual_class_function_definition_start 
-                     constructor_function_definition_start destructor_function_definition_start 
-%type <classFunction> instance_class_function_definition instance_class_function_definition_start 
+%type <classFunction> class_function_definition class_function_definition_start
+                     virtual_class_function_definition_start
+                     constructor_function_definition_start destructor_function_definition_start
+%type <classFunction> instance_class_function_definition instance_class_function_definition_start
 %type <prop> property
 
 %type <context> compound_start
@@ -148,8 +148,9 @@ default:
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 %token ALIGNOF ATTRIB_DEP __ATTRIB
+%token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT
 
-%destructor { FreeIdentifier($$); } identifier 
+%destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
 %destructor { FreeExpression($$); } primary_expression postfix_expression unary_expression cast_expression
                                     multiplicative_expression additive_expression shift_expression
@@ -167,7 +168,7 @@ default:
 %destructor { FreeInitializer($$); } initializer initializer_condition
 %destructor { FreeInitDeclarator($$); } init_declarator
 %destructor { FreeTypeName($$); } type_name parameter_declaration
-%destructor { FreeStatement($$); }  statement labeled_statement compound_statement expression_statement 
+%destructor { FreeStatement($$); }  statement labeled_statement compound_statement expression_statement
                                     selection_statement iteration_statement jump_statement compound_inside
 
 %destructor { FreeDeclaration($$); } declaration
@@ -176,22 +177,22 @@ default:
 
 %destructor { FreeMemberInit($$); } data_member_initialization default_property
 
-%destructor { FreeClassFunction($$); } class_function_definition class_function_definition_start 
+%destructor { FreeClassFunction($$); } class_function_definition class_function_definition_start
                                        virtual_class_function_definition_start
-                                       constructor_function_definition_start destructor_function_definition_start 
-                                       instance_class_function_definition instance_class_function_definition_start 
+                                       constructor_function_definition_start destructor_function_definition_start
+                                       instance_class_function_definition instance_class_function_definition_start
 %destructor { FreeClassDef($$); } struct_declaration
 %destructor { delete $$; } string_literal attribute_word
 %destructor { FreeProperty($$); } property
 
-%destructor { FreeList($$, FreeExpression); }  argument_expression_list expression 
-%destructor { FreeList($$, FreeEnumerator); }  enumerator_list 
+%destructor { FreeList($$, FreeExpression); }  argument_expression_list expression
+%destructor { FreeList($$, FreeEnumerator); }  enumerator_list
 %destructor { FreeList($$, FreeSpecifier); }   type_qualifier_list specifier_qualifier_list declaration_specifiers
 %destructor { FreeList($$, FreeDeclarator); }  struct_declarator_list
-%destructor { FreeList($$, FreeDeclaration); } declaration_list 
+%destructor { FreeList($$, FreeDeclaration); } declaration_list
 %destructor { FreeList($$, FreeInitializer); } initializer_list
-%destructor { FreeList($$, FreeInitDeclarator); } init_declarator_list 
-%destructor { FreeList($$, FreeTypeName); } parameter_list parameter_type_list identifier_list 
+%destructor { FreeList($$, FreeInitDeclarator); } init_declarator_list
+%destructor { FreeList($$, FreeTypeName); } parameter_list parameter_type_list identifier_list
 %destructor { FreeList($$, FreeStatement); } statement_list
 %destructor { FreeList($$, FreeClassDef); } struct_declaration_list
 %destructor { FreeList($$, FreeMemberInit); } default_property_list data_member_initialization_list data_member_initialization_list_coloned
@@ -493,18 +494,18 @@ _attrib:
  ;
 
 
-attribute_word: 
-     IDENTIFIER   { $$  = CopyString(yytext); } 
-   | TYPE_NAME    { $$  = CopyString(yytext); } 
-   | EXT_STORAGE  { $$  = CopyString(yytext); } 
-   | EXT_DECL     { $$  = CopyString(yytext); } 
+attribute_word:
+     IDENTIFIER   { $$  = CopyString(yytext); }
+   | TYPE_NAME    { $$  = CopyString(yytext); }
+   | EXT_STORAGE  { $$  = CopyString(yytext); }
+   | EXT_DECL     { $$  = CopyString(yytext); }
    | CONST        { $$  = CopyString(yytext); }
    ;
 
 attribute:
      attribute_word  { $$ = MkAttribute($1, null); $$.loc = @$; }
    | attribute_word '(' expression ')'  { $$ = MkAttribute($1, MkExpBrackets($3)); $$.loc = @$; }
-   ;   
+   ;
 
 attribs_list:
      attribute { $$ = MkListOne($1); }
@@ -515,7 +516,7 @@ attribs_list:
 attrib:
      _attrib '(' '(' attribs_list ')' ')' { $$ = MkAttrib($<i>1, $4); $$.loc = @$; }
    | _attrib '(' '('              ')' ')'  { $$ = MkAttrib($<i>1, null); $$.loc = @$; }
-   ;   
+   ;
 
 type_qualifier:
 	  CONST        { $$ = MkSpecifier(CONST); }
@@ -529,7 +530,7 @@ type:
    {
    #ifdef PRECOMPILER
       DeclClass(0, $1.string);
-      fileInput.Seek(@1.start.pos, start); 
+      fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
 
@@ -541,8 +542,8 @@ type:
       YY_STACK_PRINT (yyss, yyssp);
       goto yysetstate;
    #else
-      Location tmpLoc = yylloc; $$ = $2; yylloc = @1; 
-      Compiler_Error($"Not a type: %s\n", $1.string);      
+      Location tmpLoc = yylloc; $$ = $2; yylloc = @1;
+      Compiler_Error($"Not a type: %s\n", $1.string);
       yylloc = tmpLoc; $2.badID = $1; // FreeIdentifier($1);
    #endif
    }*/
@@ -553,7 +554,7 @@ strict_type:
    ;
 
 type_specifier:
-	  VOID            { $$ = MkSpecifier(VOID); }  
+	  VOID            { $$ = MkSpecifier(VOID); }
 	| CHAR            { $$ = MkSpecifier(CHAR); }
 	| SHORT           { $$ = MkSpecifier(SHORT); }
 	| INT             { $$ = MkSpecifier(INT); }
@@ -566,6 +567,8 @@ type_specifier:
 	| SIGNED          { $$ = MkSpecifier(SIGNED); }
 	| UNSIGNED        { $$ = MkSpecifier(UNSIGNED); }
    | EXTENSION       { $$ = MkSpecifier(EXTENSION); }
+   | _BOOL           { $$ = MkSpecifier(_BOOL); }
+   | BOOL            { $$ = MkSpecifier(BOOL); }
 	| struct_or_union_specifier_nocompound
 	| enum_specifier_nocompound
 	| type
@@ -574,7 +577,7 @@ type_specifier:
 	;
 
 strict_type_specifier:
-	  VOID            { $$ = MkSpecifier(VOID); }  
+	  VOID            { $$ = MkSpecifier(VOID); }
 	| CHAR            { $$ = MkSpecifier(CHAR); }
 	| SHORT           { $$ = MkSpecifier(SHORT); }
 	| INT             { $$ = MkSpecifier(INT); }
@@ -586,6 +589,8 @@ strict_type_specifier:
 	| DOUBLE          { $$ = MkSpecifier(DOUBLE); }
 	| SIGNED          { $$ = MkSpecifier(SIGNED); }
 	| UNSIGNED        { $$ = MkSpecifier(UNSIGNED); }
+   | _BOOL           { $$ = MkSpecifier(_BOOL); }
+   | BOOL            { $$ = MkSpecifier(BOOL); }
 	| struct_or_union_specifier_nocompound
 	| enum_specifier_nocompound
 	| strict_type
@@ -641,44 +646,44 @@ default_property_list:
    ;
 
 property:
-   PROPERTY property_specifiers identifier '{' SETPROP compound_statement GETPROP compound_statement '}'  
-      { $$ = MkProperty($2, null, $3, $6, $8); $$.loc = @$; } 
-   | PROPERTY property_specifiers identifier '{' GETPROP compound_statement SETPROP compound_statement '}'  
+   PROPERTY property_specifiers identifier '{' SETPROP compound_statement GETPROP compound_statement '}'
+      { $$ = MkProperty($2, null, $3, $6, $8); $$.loc = @$; }
+   | PROPERTY property_specifiers identifier '{' GETPROP compound_statement SETPROP compound_statement '}'
       { $$ = MkProperty($2, null, $3, $8, $6); $$.loc = @$; }
-   | PROPERTY property_specifiers identifier '{' SETPROP compound_statement '}'  
+   | PROPERTY property_specifiers identifier '{' SETPROP compound_statement '}'
       { $$ = MkProperty($2, null, $3, $6, null); $$.loc = @$; }
    | PROPERTY property_specifiers identifier '{' GETPROP compound_statement '}'
       { $$ = MkProperty($2, null, $3, null, $6); $$.loc = @$; }
    | PROPERTY property_specifiers identifier '{' '}'
       { $$ = MkProperty($2, null, $3, null, null); $$.loc = @$; }
 
-   | PROPERTY property_specifiers abstract_declarator identifier '{' SETPROP compound_statement GETPROP compound_statement '}'  
+   | PROPERTY property_specifiers abstract_declarator identifier '{' SETPROP compound_statement GETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, $4, $7, $9); $$.loc = @$; }
-   | PROPERTY property_specifiers abstract_declarator identifier '{' GETPROP compound_statement SETPROP compound_statement '}'  
+   | PROPERTY property_specifiers abstract_declarator identifier '{' GETPROP compound_statement SETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, $4, $9, $7); $$.loc = @$; }
-   | PROPERTY property_specifiers abstract_declarator identifier '{' SETPROP compound_statement '}'  
+   | PROPERTY property_specifiers abstract_declarator identifier '{' SETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, $4, $7, null); $$.loc = @$; }
    | PROPERTY property_specifiers abstract_declarator identifier '{' GETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, $4, null, $7); $$.loc = @$; }
    | PROPERTY property_specifiers abstract_declarator identifier '{' '}'
       { $$ = MkProperty($2, $3, $4, null, null); $$.loc = @$; }
 
-   | PROPERTY property_specifiers '{' SETPROP compound_statement GETPROP compound_statement '}'  
+   | PROPERTY property_specifiers '{' SETPROP compound_statement GETPROP compound_statement '}'
       { $$ = MkProperty($2, null, null, $5, $7); $$.loc = @$; }
-   | PROPERTY property_specifiers '{' GETPROP compound_statement SETPROP compound_statement '}'  
+   | PROPERTY property_specifiers '{' GETPROP compound_statement SETPROP compound_statement '}'
       { $$ = MkProperty($2, null, null, $7, $5); $$.loc = @$; }
-   | PROPERTY property_specifiers '{' SETPROP compound_statement '}'  
+   | PROPERTY property_specifiers '{' SETPROP compound_statement '}'
       { $$ = MkProperty($2, null, null, $5, null); $$.loc = @$; }
    | PROPERTY property_specifiers '{' GETPROP compound_statement '}'
       { $$ = MkProperty($2, null, null, null, $5); $$.loc = @$; }
    | PROPERTY property_specifiers '{' '}'
       { $$ = MkProperty($2, null, null, null, null); $$.loc = @$; }
 
-   | PROPERTY property_specifiers abstract_declarator '{' SETPROP compound_statement GETPROP compound_statement '}'  
+   | PROPERTY property_specifiers abstract_declarator '{' SETPROP compound_statement GETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, null, $6, $8); $$.loc = @$; }
-   | PROPERTY property_specifiers abstract_declarator '{' GETPROP compound_statement SETPROP compound_statement '}'  
+   | PROPERTY property_specifiers abstract_declarator '{' GETPROP compound_statement SETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, null, $8, $6); $$.loc = @$; }
-   | PROPERTY property_specifiers abstract_declarator '{' SETPROP compound_statement '}'  
+   | PROPERTY property_specifiers abstract_declarator '{' SETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, null, $6, null); $$.loc = @$; }
    | PROPERTY property_specifiers abstract_declarator '{' GETPROP compound_statement '}'
       { $$ = MkProperty($2, $3, null, null, $6); $$.loc = @$; }
@@ -706,9 +711,9 @@ struct_declarator_list:
 
 struct_declarator:
 	  declarator
-      { $$ = MkStructDeclarator($1, null); $$.loc = @$; }  
+      { $$ = MkStructDeclarator($1, null); $$.loc = @$; }
 	| declarator attrib
-      { $$ = MkStructDeclarator($1, null); $$.structDecl.attrib = $2; $$.loc = @$; }  
+      { $$ = MkStructDeclarator($1, null); $$.structDecl.attrib = $2; $$.loc = @$; }
 	| ':' constant_expression
       { $$ = MkStructDeclarator(null, $2);  $$.loc = @$; }
 	| declarator ':' constant_expression
@@ -723,7 +728,7 @@ enum_specifier_nocompound:
    ;
 
 enum_specifier_compound:
-	  ENUM '{' enumerator_list '}'               
+	  ENUM '{' enumerator_list '}'
       { $$ = MkEnum(null, $3); }
 	| ENUM identifier '{' enumerator_list '}'    { $$ = MkEnum($2, $4); if(declMode) DeclClass(globalContext.nextID++, $2.string); }
    | ENUM identifier '{' enumerator_list ';' struct_declaration_list '}'    { $$ = MkEnum($2, $4); $$.definitions = $6; if(declMode) DeclClass(globalContext.nextID++, $2.string); }
@@ -809,14 +814,14 @@ abstract_declarator:
 	| direct_abstract_declarator
 	| pointer direct_abstract_declarator
       { $$ = MkDeclaratorPointer($1, $2); }
-   
+
    | ext_decl pointer
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, null)); }
 	| ext_decl direct_abstract_declarator
       { $$ = MkDeclaratorExtended($1, $2); }
 	| ext_decl pointer direct_abstract_declarator
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
-      
+
 	;
 
 direct_abstract_declarator:
@@ -850,7 +855,7 @@ declarator:
       { $$ = MkDeclaratorPointer($1, $2); }
    | ext_decl pointer direct_declarator
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
-   
+
    ;
 
 direct_declarator_nofunction:
@@ -858,7 +863,7 @@ direct_declarator_nofunction:
       { $$ = MkDeclaratorIdentifier($1); }
 	| '(' declarator ')'
       { $$ = MkDeclaratorBrackets($2); }
-	| direct_declarator_nofunction '[' constant_expression ']' 
+	| direct_declarator_nofunction '[' constant_expression ']'
       { $$ = MkDeclaratorArray($1, $3); }
 	| direct_declarator_nofunction '[' ']'
       { $$ = MkDeclaratorArray($1, null); }
@@ -870,14 +875,14 @@ declarator_function:
      direct_declarator_function
 	| pointer direct_declarator_function
       { $$ = MkDeclaratorPointer($1, $2); }
-     
+
    | ext_decl direct_declarator_function
       { $$ = MkDeclaratorExtended($1, $2); }
 	| ext_decl pointer direct_declarator_function
       { $$ = MkDeclaratorExtended($1, MkDeclaratorPointer($2, $3)); }
 	| pointer ext_decl direct_declarator_function
-      { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }      
-     
+      { $$ = MkDeclaratorPointer($1, MkDeclaratorExtended($2, $3)); }
+
    ;
 
 direct_declarator:
@@ -894,7 +899,7 @@ direct_declarator_function_start:
    ;
 
 direct_declarator_function:
-	  direct_declarator_function_start parameter_type_list ')' 
+	  direct_declarator_function_start parameter_type_list ')'
       { $$ = MkDeclaratorFunction($1, $2); }
 	| direct_declarator_function_start identifier_list ')'
       { $$ = MkDeclaratorFunction($1, $2); }
@@ -915,7 +920,7 @@ pointer:
 	;
 
 parameter_type_list:
-	  parameter_list                 
+	  parameter_list
 	| parameter_list ',' ELLIPSIS { $$ = $1; ListAdd($1, MkTypeName(null, null)); }
 	;
 
@@ -951,16 +956,16 @@ initializer:
 	| '{' initializer_list '}'
       { $$ = MkInitializerList($2); $$.loc = @$; }
 	| '{' initializer_list ',' '}'
-      { 
-         $$ = MkInitializerList($2); 
-         $$.loc = @$; 
+      {
+         $$ = MkInitializerList($2);
+         $$.loc = @$;
 
          {
             Expression exp = MkExpDummy();
             Initializer init = MkInitializerAssignment(exp);
             init.loc = @3;
             exp.loc = @3;
-            ListAdd($2, init); 
+            ListAdd($2, init);
          }
       }
 	;
@@ -971,17 +976,17 @@ initializer_condition:
       { $$ = MkInitializerAssignment($1); $$.loc = @$; }
 /*
 	| '{' initializer_list '}'       { $$ = MkInitializerList($2); $$.loc = @$; }
-	| '{' initializer_list ',' '}'   
-      { 
-         $$ = MkInitializerList($2); 
-         $$.loc = @$; 
+	| '{' initializer_list ',' '}'
+      {
+         $$ = MkInitializerList($2);
+         $$.loc = @$;
 
          {
             Expression exp = MkExpDummy();
             Initializer init = MkInitializerAssignment(exp);
             init.loc = @3;
             exp.loc = @3;
-            ListAdd($2, init); 
+            ListAdd($2, init);
          }
       }
 */
@@ -1032,19 +1037,19 @@ compound_inside:
    ;
 
 compound_start:
-    '{' { $<context>$ = PushContext(); } 
+    '{' { $<context>$ = PushContext(); }
     ;
 
 compound_statement:
    '{' '}'
-   { 
-      $$ = MkCompoundStmt(null, null); 
-      $$.compound.context = PushContext(); 
+   {
+      $$ = MkCompoundStmt(null, null);
+      $$.compound.context = PushContext();
       PopContext($$.compound.context);
-      $$.loc = @$; 
+      $$.loc = @$;
    }
 
-	| compound_start compound_inside '}' 
+	| compound_start compound_inside '}'
       { $$ = $2; $$.compound.context = $<context>1; PopContext($<context>1); $$.loc = @$; }
 	;
 
@@ -1090,20 +1095,20 @@ instantiation_named:
    ;
 
 instantiation_unnamed:
-     type '{' members_initialization_list '}' 
+     type '{' members_initialization_list '}'
       { $$ = MkInstantiation($1, null, $3);  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start; }
-   | type '{' '}' 
+   | type '{' '}'
       { $$ = MkInstantiation($1, null, MkList());  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.start;}
-   | identifier '{' members_initialization_list '}' 
+   | identifier '{' members_initialization_list '}'
       { Location tmpLoc = yylloc; yylloc = @1; yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, $3);$$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @4.start; FreeIdentifier($1); }
-   | identifier '{' '}' 
+   | identifier '{' '}'
       { Location tmpLoc = yylloc; yylloc = @1; yylloc = tmpLoc;  $$ = MkInstantiation(MkSpecifierName($1.string), null, MkList());  $$.loc = @$; $$.insideLoc.start = @2.end; $$.insideLoc.end = @3.start; FreeIdentifier($1); }
    ;
 
 instantiation_anon:
-     '{' members_initialization_list '}' 
+     '{' members_initialization_list '}'
       { $$ = MkInstantiation(null, null, $2);  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @3.start; }
-   | '{' '}' 
+   | '{' '}'
       { $$ = MkInstantiation(null, null, MkList());  $$.loc = @$; $$.insideLoc.start = @1.end; $$.insideLoc.end = @2.start;}
    ;
 
@@ -1148,7 +1153,7 @@ instance_class_function_definition_start:
    // Guess here conflicts with an expression...
      declaration_specifiers declarator_function
       { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
-      ; 
+      ;
 
 instance_class_function_definition:
 	  instance_class_function_definition_start compound_statement
@@ -1182,7 +1187,7 @@ members_initialization_list_coloned:
    ;
 
 members_initialization_list:
-     members_initialization_list_coloned 
+     members_initialization_list_coloned
    | data_member_initialization_list                                       { $$ = MkList(); ListAdd($$, MkMembersInitList($1)); ((MembersInit)$$->last).loc = @1; }
    | members_initialization_list_coloned data_member_initialization_list   { ListAdd($1, MkMembersInitList($2));   ((MembersInit)$$->last).loc = @2; }
    ;

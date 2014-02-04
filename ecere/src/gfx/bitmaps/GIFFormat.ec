@@ -1,8 +1,6 @@
 namespace gfx::bitmaps;
 
-#define bool _bool
 #include "gif_lib.h"
-#undef bool
 
 import "Display"
 

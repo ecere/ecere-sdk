@@ -2,8 +2,8 @@ D         [0-9]
 L         [a-zA-Z_]
 H         [a-fA-F0-9]
 E         [Ee][+-]?{D}+
-FS         (f|F|l|L)
-IS         (u|U|l|L)*
+FS         (f|F|l|L|i|j)*
+IS         (u|U|l|L|i|j)*
 IDENT    {L}({L}|{D})*
 
 %{
@@ -60,9 +60,9 @@ default:
 %%
 
 %{
-   yylloc.start = yylloc.end; 
-   type_yylloc.start = type_yylloc.end; 
-   expression_yylloc.start = expression_yylloc.end; 
+   yylloc.start = yylloc.end;
+   type_yylloc.start = type_yylloc.end;
+   expression_yylloc.start = expression_yylloc.end;
 %}
 
 "#"                  { preprocessor(); }
@@ -129,6 +129,11 @@ default:
 "int64"              { return(INT64); }
 "__builtin_va_list"  { return(VALIST); }
 "__builtin_va_arg"   { return(VAARG); }
+"Bool"               { return(BOOL); }
+"_Bool"              { return(_BOOL); }
+"_Complex"           { return(_COMPLEX); }
+"_Imaginary"         { return(_IMAGINARY); }
+"restrict"           { return(RESTRICT); }
 
  /* "__attribute__".?"(("({D}|{L})*"))" { return(EXT_ATTRIB); } */
 
@@ -141,14 +146,14 @@ default:
  */
  /*
  [__attribute__] [spaces]
-   [((] [spaces] 
+   [((] [spaces]
       [digits | letters] [spaces]
          ( [(]  [digits or letters or "]  ( [spaces] [,] [spaces] [digits or letters or "] )*  [spaces]  [)] )?
       [spaces]
       ( [,] [spaces]  [digits or letters]  [spaces]
          ( [(]  [digits or letters or "]
             ( [spaces] [,] [spaces] [digits or letters or "] )*  [spaces] [)]
-         )? [spaces] 
+         )? [spaces]
       )*
    [))]
  */
@@ -202,7 +207,7 @@ default:
 "dbfield"                  { return(DBFIELD); }
 "dbindex"                  { return(DBINDEX); }
 "database_open"            { return(DATABASE_OPEN); }
-      
+
 ("::"|(({IDENT}"&"?"::")*)){IDENT}?    { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }  // ("::"|(({IDENT}"::")*)){IDENT}  { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }
 
 0[xX]{H}+{IS}?          { return(CONSTANT); }
@@ -292,15 +297,15 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
 
 
 [ \v\f]   { yylloc.start = yylloc.end; type_yylloc.start = type_yylloc.end; expression_yylloc.start = expression_yylloc.end;}
-[\n+]    { 
-   yylloc.end.charPos = 1; yylloc.end.line += yyleng; yylloc.start = yylloc.end; 
-   type_yylloc.end.charPos = 1; type_yylloc.end.line += yyleng; type_yylloc.start = type_yylloc.end; 
-   expression_yylloc.end.charPos = 1; expression_yylloc.end.line += yyleng; expression_yylloc.start = expression_yylloc.end; 
+[\n+]    {
+   yylloc.end.charPos = 1; yylloc.end.line += yyleng; yylloc.start = yylloc.end;
+   type_yylloc.end.charPos = 1; type_yylloc.end.line += yyleng; type_yylloc.start = type_yylloc.end;
+   expression_yylloc.end.charPos = 1; expression_yylloc.end.line += yyleng; expression_yylloc.start = expression_yylloc.end;
    }
-[\t]     { 
-   yylloc.start.charPos++ /*= 3 - (yylloc.start.col % 3)*/; yylloc.end.charPos = yylloc.start.charPos; yylloc.start.pos = yylloc.end.pos; 
-   expression_yylloc.start.charPos++ /*= 3 - (expression_yylloc.start.col % 3)*/; expression_yylloc.end.charPos = expression_yylloc.start.charPos; expression_yylloc.start.pos = expression_yylloc.end.pos; 
-   type_yylloc.start.charPos++ /*= 3 - (type_yylloc.start.col % 3)*/; type_yylloc.end.charPos = type_yylloc.start.charPos; type_yylloc.start.pos = type_yylloc.end.pos; 
+[\t]     {
+   yylloc.start.charPos++ /*= 3 - (yylloc.start.col % 3)*/; yylloc.end.charPos = yylloc.start.charPos; yylloc.start.pos = yylloc.end.pos;
+   expression_yylloc.start.charPos++ /*= 3 - (expression_yylloc.start.col % 3)*/; expression_yylloc.end.charPos = expression_yylloc.start.charPos; expression_yylloc.start.pos = expression_yylloc.end.pos;
+   type_yylloc.start.charPos++ /*= 3 - (type_yylloc.start.col % 3)*/; type_yylloc.end.charPos = type_yylloc.start.charPos; type_yylloc.start.pos = type_yylloc.end.pos;
    }
 
 .         { yylloc.start = yylloc.end; expression_yylloc.start = expression_yylloc.end;  type_yylloc.start = type_yylloc.end; }
@@ -408,13 +413,13 @@ int preprocessor()
             if(lineNumber)
             {
                char fileName[MAX_LOCATION];
-               
+
                int inOut;
 
                fileName[0] = 0;
                GetString(&pointer, fileName, MAX_LOCATION);
                inOut = GetValue(&pointer);
-                              
+
                if(inOut == 1)
                {
                   char extension[MAX_EXTENSION];
@@ -475,7 +480,7 @@ int preprocessor()
          }
       }
       last = c;
-   }   
+   }
    yylloc.start = yylloc.end;
    line[count] = 0;
 
