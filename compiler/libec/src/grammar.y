@@ -1483,6 +1483,7 @@ simple_primary_expression:
    | dbtable
 
    | '[' argument_expression_list /*expression*/ ']' { $$ = MkExpArray($2); $$.loc = @$; }
+   | '[' ']' { $$ = MkExpArray(null); $$.loc = @$; }
    ;
 
 anon_instantiation_expression:
