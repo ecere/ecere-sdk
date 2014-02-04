@@ -1954,7 +1954,16 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ":\n");
 outputLine++;
+if(stmt->labeled.stmt)
+{
+if(stmt->labeled.stmt->type == 14)
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "; ");
 OutputStatement(stmt->labeled.stmt, f);
+}
 break;
 case 1:
 if(stmt->caseStmt.exp)
@@ -1982,7 +1991,15 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 outputLine++;
 }
 if(stmt->caseStmt.stmt)
+{
+if(stmt->caseStmt.stmt->type == 14)
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "; ");
 OutputStatement(stmt->caseStmt.stmt, f);
+}
 break;
 case 2:
 {

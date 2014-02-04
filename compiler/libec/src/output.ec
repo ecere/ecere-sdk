@@ -375,7 +375,11 @@ static void OutputStatement(Statement stmt, File f)
          OutputIdentifier(stmt.labeled.id, f);
          f.Puts(":\n");
          outputLine ++;
-         OutputStatement(stmt.labeled.stmt, f);
+         if(stmt.labeled.stmt)
+         {
+            if(stmt.labeled.stmt.type == badDeclarationStmt) f.Puts("; ");
+            OutputStatement(stmt.labeled.stmt, f);
+         }
          break;
       case caseStmt:
          if(stmt.caseStmt.exp)
@@ -391,7 +395,10 @@ static void OutputStatement(Statement stmt, File f)
             outputLine ++;
          }
          if(stmt.caseStmt.stmt)
+         {
+            if(stmt.caseStmt.stmt.type == badDeclarationStmt) f.Puts("; ");
             OutputStatement(stmt.caseStmt.stmt, f);
+         }
          break;
       case compoundStmt:
       {
