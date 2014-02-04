@@ -11,7 +11,7 @@ namespace gfx::drivers;
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_TRUETYPE_TABLES_H
-#include <freetype/ttunpat.h>
+#include FT_UNPATENTED_HINTING_H
 #define property  _property
 #include "harfbuzz.h"
 #undef property
