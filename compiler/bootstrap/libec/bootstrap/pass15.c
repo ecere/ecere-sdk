@@ -16001,9 +16001,41 @@ sprintf(iteratorType, "Iterator<%s, %s >", _class->templateArgs[2].dataTypeStrin
 stmt->compound.declarations = MkListOne(MkDeclarationInst(MkInstantiationNamed(MkListOne(MkSpecifierName(iteratorType)), MkExpIdentifier(id), MkListOne(MkMembersInitList(MkListOne(MkMemberInit(isMap ? MkListOne(MkIdentifier("map")) : (((void *)0)), MkInitializerAssignment(MkExpBrackets(exp)))))))));
 }
 symbol = FindSymbol(id->string, curContext, curContext, 0x0, 0x0);
-if(block && block->type == 2 && block->compound.context)
+if(block)
 {
+switch(block->type)
+{
+case 2:
+if(block->compound.context)
 block->compound.context->parent = stmt->compound.context;
+break;
+case 4:
+if(block->ifStmt.stmt && block->ifStmt.stmt->type == 2 && block->ifStmt.stmt->compound.context)
+block->ifStmt.stmt->compound.context->parent = stmt->compound.context;
+if(block->ifStmt.elseStmt && block->ifStmt.elseStmt->type == 2 && block->ifStmt.elseStmt->compound.context)
+block->ifStmt.elseStmt->compound.context->parent = stmt->compound.context;
+break;
+case 5:
+if(block->switchStmt.stmt && block->switchStmt.stmt->type == 2 && block->switchStmt.stmt->compound.context)
+block->switchStmt.stmt->compound.context->parent = stmt->compound.context;
+break;
+case 6:
+if(block->whileStmt.stmt && block->whileStmt.stmt->type == 2 && block->whileStmt.stmt->compound.context)
+block->whileStmt.stmt->compound.context->parent = stmt->compound.context;
+break;
+case 7:
+if(block->doWhile.stmt && block->doWhile.stmt->type == 2 && block->doWhile.stmt->compound.context)
+block->doWhile.stmt->compound.context->parent = stmt->compound.context;
+break;
+case 8:
+if(block->forStmt.stmt && block->forStmt.stmt->type == 2 && block->forStmt.stmt->compound.context)
+block->forStmt.stmt->compound.context->parent = stmt->compound.context;
+break;
+case 18:
+if(block->forEachStmt.stmt && block->forEachStmt.stmt->type == 2 && block->forEachStmt.stmt->compound.context)
+block->forEachStmt.stmt->compound.context->parent = stmt->compound.context;
+break;
+}
 }
 if(filter)
 {

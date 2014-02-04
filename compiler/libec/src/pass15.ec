@@ -11331,9 +11331,56 @@ static void ProcessStatement(Statement stmt)
             }
             symbol = FindSymbol(id.string, curContext, curContext, false, false);
 
-            if(block && block.type == compoundStmt && block.compound.context)
+            if(block)
             {
-               block.compound.context.parent = stmt.compound.context;
+               // Reparent sub-contexts in this statement
+               switch(block.type)
+               {
+                  case compoundStmt:
+                     if(block.compound.context)
+                        block.compound.context.parent = stmt.compound.context;
+                     break;
+                  case ifStmt:
+                     if(block.ifStmt.stmt && block.ifStmt.stmt.type == compoundStmt && block.ifStmt.stmt.compound.context)
+                        block.ifStmt.stmt.compound.context.parent = stmt.compound.context;
+                     if(block.ifStmt.elseStmt && block.ifStmt.elseStmt.type == compoundStmt && block.ifStmt.elseStmt.compound.context)
+                        block.ifStmt.elseStmt.compound.context.parent = stmt.compound.context;
+                     break;
+                  case switchStmt:
+                     if(block.switchStmt.stmt && block.switchStmt.stmt.type == compoundStmt && block.switchStmt.stmt.compound.context)
+                        block.switchStmt.stmt.compound.context.parent = stmt.compound.context;
+                     break;
+                  case whileStmt:
+                     if(block.whileStmt.stmt && block.whileStmt.stmt.type == compoundStmt && block.whileStmt.stmt.compound.context)
+                        block.whileStmt.stmt.compound.context.parent = stmt.compound.context;
+                     break;
+                  case doWhileStmt:
+                     if(block.doWhile.stmt && block.doWhile.stmt.type == compoundStmt && block.doWhile.stmt.compound.context)
+                        block.doWhile.stmt.compound.context.parent = stmt.compound.context;
+                     break;
+                  case forStmt:
+                     if(block.forStmt.stmt && block.forStmt.stmt.type == compoundStmt && block.forStmt.stmt.compound.context)
+                        block.forStmt.stmt.compound.context.parent = stmt.compound.context;
+                     break;
+                  case forEachStmt:
+                     if(block.forEachStmt.stmt && block.forEachStmt.stmt.type == compoundStmt && block.forEachStmt.stmt.compound.context)
+                        block.forEachStmt.stmt.compound.context.parent = stmt.compound.context;
+                     break;
+                  /* Only handle those with compound blocks for now... (Potential limitation on compound statements within expressions)
+                  case labeledStmt:
+                  case caseStmt
+                  case expressionStmt:
+                  case gotoStmt:
+                  case continueStmt:
+                  case breakStmt
+                  case returnStmt:
+                  case asmStmt:
+                  case badDeclarationStmt:
+                  case fireWatchersStmt:
+                  case stopWatchingStmt:
+                  case watchStmt:
+                  */
+               }
             }
             if(filter)
             {
