@@ -2240,19 +2240,36 @@ static void ProcessExpression(Expression exp)
                            // ({ Instance __internal_ClassInst = e; __internal_ClassInst ? __internal_ClassInst._class : __ecereClass_...; })
                            Expression c;
                            Context context = PushContext();
-                           c = MkExpExtensionCompound(MkCompoundStmt(
-                                 MkListOne(MkDeclaration(
-                                    MkListOne(MkSpecifierName("Instance")),
-                                    MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
-                                       MkInitializerAssignment(CopyExpression(e)))))),
-                                 MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
-                                    MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
-                                    MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))),
-                                    MkExpIdentifier(MkIdentifier(className))))))));
-                           c.compound.compound.context = context;
-                           PopContext(context);
 
-                           exp.call.arguments->Insert(e.prev, c);
+                           // Work around to avoid repeating the BuiltInContainer just to get the type
+                           // (a bit messy since we already transformed our expression to an extensionInitializerExp in earlier pass)
+                           if(_class.templateClass && !strcmp(_class.templateClass.name, "Container") &&
+                              e.list && e.list->first &&
+                              ((Expression)e.list->first).type == castExp &&
+                              ((Expression)e.list->first).cast.exp &&
+                              ((Expression)e.list->first).cast.exp.type == opExp &&
+                              ((Expression)e.list->first).cast.exp.op.op == '&' &&
+                              ((Expression)e.list->first).cast.exp.op.exp2 &&
+                              ((Expression)e.list->first).cast.exp.op.exp2.type == extensionInitializerExp)
+                           {
+                              exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
+                           }
+                           else
+                           {
+                              c = MkExpExtensionCompound(MkCompoundStmt(
+                                    MkListOne(MkDeclaration(
+                                       MkListOne(MkSpecifierName("Instance")),
+                                       MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
+                                          MkInitializerAssignment(CopyExpression(e)))))),
+                                    MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
+                                       MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
+                                       MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))),
+                                       MkExpIdentifier(MkIdentifier(className))))))));
+                              c.compound.compound.context = context;
+                              PopContext(context);
+
+                              exp.call.arguments->Insert(e.prev, c);
+                           }
                         }
                         else
                            exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));

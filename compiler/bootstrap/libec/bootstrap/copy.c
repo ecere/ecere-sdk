@@ -1038,6 +1038,8 @@ extern struct Expression * MkExpExtensionCompound(struct Statement * compound);
 
 static struct Statement * CopyStatement(struct Statement * stmt);
 
+extern struct Expression * MkExpExtensionInitializer(struct TypeName * typeName, struct Initializer * initializer);
+
 struct Expression * CopyExpression(struct Expression * exp)
 {
 struct Expression * result = (((void *)0));
@@ -1128,6 +1130,9 @@ result = MkExpVaArg(CopyExpression(exp->vaArg.exp), CopyTypeName(exp->vaArg.type
 break;
 case 25:
 result = MkExpExtensionCompound(CopyStatement(exp->compound));
+break;
+case 35:
+result = MkExpExtensionInitializer(CopyTypeName(exp->initializer.typeName), CopyInitializer(exp->initializer.initializer));
 break;
 }
 if(result)

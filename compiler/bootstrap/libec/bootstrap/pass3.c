@@ -1606,6 +1606,7 @@ static void InstDeclPassInitializer(struct Initializer * init)
 switch(init->type)
 {
 case 0:
+if(init->exp)
 InstDeclPassExpression(init->exp);
 break;
 case 1:

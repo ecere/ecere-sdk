@@ -557,7 +557,8 @@ static void InstDeclPassInitializer(Initializer init)
    switch(init.type)
    {
       case expInitializer:
-         InstDeclPassExpression(init.exp);
+         if(init.exp)
+            InstDeclPassExpression(init.exp);
          break;
       case listInitializer:
       {

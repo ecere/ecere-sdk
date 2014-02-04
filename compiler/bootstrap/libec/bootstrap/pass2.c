@@ -3027,10 +3027,17 @@ if(_class->type == 0 && destType->byReference == 0x0 && strcmp(_class->dataTypeS
 struct Expression * c;
 struct Context * context = PushContext();
 
+if(_class->templateClass && !strcmp(_class->templateClass->name, "Container") && e->list && (*e->list).first && ((struct Expression *)(*e->list).first)->type == 11 && ((struct Expression *)(*e->list).first)->cast.exp && ((struct Expression *)(*e->list).first)->cast.exp->type == 4 && ((struct Expression *)(*e->list).first)->cast.exp->op.op == '&' && ((struct Expression *)(*e->list).first)->cast.exp->op.exp2 && ((struct Expression *)(*e->list).first)->cast.exp->op.exp2->type == 35)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, MkExpIdentifier(MkIdentifier(className)));
+}
+else
+{
 c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(e)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))), MkExpIdentifier(MkIdentifier(className))))))));
 c->compound->compound.context = context;
 PopContext(context);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, c);
+}
 }
 else
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, MkExpIdentifier(MkIdentifier(className)));

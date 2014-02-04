@@ -12704,7 +12704,7 @@ struct Type * __ecereInstance2 = __ecereNameSpace__ecere__com__eInstance_New(__e
 __ecereInstance2->refCount = 1, __ecereInstance2->kind = 13, __ecereInstance2->type = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
-__ecereInstance1->refCount = 1, __ecereInstance1->kind = 1, __ecereInstance1->constant = 0x1, __ecereInstance1;
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 1, __ecereInstance1->constant = 0x1, __ecereInstance1->isSigned = 0x1, __ecereInstance1;
 }), __ecereInstance2;
 });
 break;

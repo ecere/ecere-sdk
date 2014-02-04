@@ -7614,6 +7614,7 @@ void ProcessExpressionType(Expression exp)
                refCount = 1;
                kind = charType;
                constant = true;
+               isSigned = true;
             }
          };
          break;
