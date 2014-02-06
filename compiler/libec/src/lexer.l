@@ -2,8 +2,8 @@ D         [0-9]
 L         [a-zA-Z_]
 H         [a-fA-F0-9]
 E         [Ee][+-]?{D}+
-FS         (f|F|l|L|i|j)*
-IS         (u|U|l|L|i|j)*
+FS         (f|F|l|L|i|I|j|J)*
+IS         (u|U|l|L|i|I|j|J)*
 IDENT    {L}({L}|{D})*
 
 %{

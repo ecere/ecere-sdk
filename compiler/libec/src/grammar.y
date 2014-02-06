@@ -96,7 +96,7 @@ default:
             relational_expression_error equality_expression_error and_expression_error
             exclusive_or_expression_error inclusive_or_expression_error logical_and_expression_error
             logical_or_expression_error conditional_expression_error assignment_expression_error
-            simple_primary_expression
+            simple_primary_expression constant
             simple_postfix_expression simple_postfix_expression_error
             common_unary_expression common_unary_expression_error
             simple_unary_expression simple_unary_expression_error
@@ -1446,6 +1446,10 @@ i18n_string:
    | '$' string_literal '.' string_literal     { $$ = MkExpIntlString($4, $2); delete $2; delete $4; $$.loc = @$; }
    ;
 
+constant:
+   CONSTANT { $$ = MkExpConstant(yytext); $$.loc = @$; }
+   ;
+
 simple_primary_expression:
 	  identifier         { $$ = MkExpIdentifier($1); $$.loc = @$; }
    | instantiation_unnamed      { $$ = MkExpInstance($1); $$.loc = @$; }
@@ -1453,7 +1457,20 @@ simple_primary_expression:
    | EXTENSION '(' expression ')'    { $$ = MkExpExtensionExpression($3); $$.loc = @$; }
    | EXTENSION '(' type_name ')' initializer     { $$ = MkExpExtensionInitializer($3, $5); $$.loc = @$; }
    | EXTENSION '(' type_name ')' '(' type_name ')' initializer     { $$ = MkExpExtensionInitializer($3, MkInitializerAssignment(MkExpExtensionInitializer($6, $8))); $$.loc = @$; }
-	| CONSTANT           { $$ = MkExpConstant(yytext); $$.loc = @$; }
+   | constant identifier
+   {
+      char * constant = $1.constant;
+      int len = strlen(constant);
+      if(constant[len-1] == '.')
+      {
+         constant[len-1] = 0;
+         $$ = MkExpMember($1, $2);
+         $$.loc = @$;
+      }
+      else
+         yyerror();
+   }
+	| constant { $$ = $1; }
    | i18n_string
    | '(' ')' { Expression exp = MkExpDummy(); exp.loc.start = @1.end; exp.loc.end = @2.start; $$ = MkExpBrackets(MkListOne(exp)); $$.loc = @$; yyerror(); }
    | NEWOP new_specifiers abstract_declarator_noarray '[' constant_expression ']' { $$ = MkExpNew(MkTypeName($2,$3), $5); $$.loc = @$; }

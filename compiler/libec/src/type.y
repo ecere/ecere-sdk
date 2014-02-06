@@ -441,6 +441,19 @@ postfix_expression:
 	| postfix_expression '(' ')'                          { $$ = MkExpCall($1, MkList()); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; }
 	| postfix_expression '(' argument_expression_list ')' { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end; $$.loc = @$; }
 	| postfix_expression '.' identifier                   { $$ = MkExpMember($1, $3); $$.loc = @$; }
+   | postfix_expression identifier
+   {
+      char * constant = $1.type == constantExp ? $1.constant : null;
+      int len = constant ? strlen(constant) : 0;
+      if(constant && constant[len-1] == '.')
+      {
+         constant[len-1] = 0;
+         $$ = MkExpMember($1, $2);
+         $$.loc = @$;
+      }
+      else
+         yyerror();
+   }
 	| postfix_expression PTR_OP identifier                { $$ = MkExpPointer($1, $3); $$.loc = @$; }
 	| postfix_expression INC_OP                           { $$ = MkExpOp($1, INC_OP, null); $$.loc = @$; }
 	| postfix_expression DEC_OP                           { $$ = MkExpOp($1, DEC_OP, null); $$.loc = @$; }
@@ -457,6 +470,19 @@ simple_postfix_expression:
 	| simple_postfix_expression '(' ')'                          { $$ = MkExpCall($1, MkList()); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; }
 	| simple_postfix_expression '(' argument_expression_list ')' { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end; $$.loc = @$; }
 	| simple_postfix_expression '.' identifier                   { $$ = MkExpMember($1, $3); $$.loc = @$; }
+   | simple_postfix_expression identifier
+   {
+      char * constant = $1.type == constantExp ? $1.constant : null;
+      int len = constant ? strlen(constant) : 0;
+      if(constant && constant[len-1] == '.')
+      {
+         constant[len-1] = 0;
+         $$ = MkExpMember($1, $2);
+         $$.loc = @$;
+      }
+      else
+         yyerror();
+   }
 	| simple_postfix_expression PTR_OP identifier                { $$ = MkExpPointer($1, $3); $$.loc = @$; }
 	| simple_postfix_expression INC_OP                           { $$ = MkExpOp($1, INC_OP, null); $$.loc = @$; }
 	| simple_postfix_expression DEC_OP                           { $$ = MkExpOp($1, DEC_OP, null); $$.loc = @$; }
