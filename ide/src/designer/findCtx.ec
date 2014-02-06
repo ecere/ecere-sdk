@@ -253,7 +253,7 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
             {
                if(InsideIncl(&expression.loc, line, charPos) || (expression.loc.end.line > line || (line == expression.loc.end.line && expression.loc.end.charPos > charPos)))
                {
-                  if(Inside(&expression.loc, line, charPos))
+                  if(InsideIncl(&expression.loc, line, charPos))
                      idResult = FindCtxExpression(expression, line, charPos);
 
                   // Break
