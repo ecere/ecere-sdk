@@ -25,8 +25,8 @@ class AboutIDE : Window
       this, font = { $"Tahoma", 8.25f, bold = true }, borderStyle = none, background = white, readOnly = true, noCaret = true, multiLine = true, autoSize = true, position = { 13, 128 };
       contents =
             "Ecere Software Development Kit v" REPOSITORY_VERSION " \"Ryōan-ji\"" X64STRING "\n"
-            "Copyright © 2005-2013 Ecere Corporation\n"
-            "Copyright © 1996-2013 Jérôme Jacovella-St-Louis";
+            "Copyright © 2005-2014 Ecere Corporation\n"
+            "Copyright © 1996-2014 Jérôme Jacovella-St-Louis";
    };
 
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 174 } };
