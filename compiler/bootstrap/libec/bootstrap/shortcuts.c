@@ -625,6 +625,8 @@ extern size_t strlen(const char * );
 
 extern int declMode;
 
+extern int structDeclMode;
+
 extern void resetScanner();
 
 extern struct Declarator * MkStructDeclarator(struct Declarator * declarator, struct Expression * exp);
@@ -675,7 +677,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 echoOn = 0x0;
 parseTypeError = 0x0;
 parsedType = (((void *)0));
-declMode = (int)0;
+declMode = structDeclMode = 0;
 resetScanner();
 {
 unsigned int oldParsingType = parsingType;
@@ -684,7 +686,7 @@ parsingType = 0x1;
 type_yyparse();
 parsingType = oldParsingType;
 }
-declMode = 2;
+declMode = structDeclMode = 2;
 type_yydebug = 0x0;
 (__ecereNameSpace__ecere__com__eInstance_DecRef(fileInput), fileInput = 0);
 if(parsedType)

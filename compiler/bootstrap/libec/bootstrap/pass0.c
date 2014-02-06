@@ -1631,6 +1631,8 @@ extern void FreeExternal(struct External * external);
 
 extern int declMode;
 
+extern int structDeclMode;
+
 extern char *  strstr(const char * , const char * );
 
 extern char *  sourceFile;
@@ -1967,7 +1969,7 @@ struct External * external;
 
 strcpy(classDataStructName, "__ecereClassData_");
 FullClassNameCat(classDataStructName, symbol->string, 0x0);
-declMode = 0;
+declMode = structDeclMode = 0;
 ListAdd(specs, MkStructOrUnion(3, MkIdentifier(classDataStructName), classDataList));
 external = MkExternalDeclaration(MkDeclaration(specs, (((void *)0))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, external);

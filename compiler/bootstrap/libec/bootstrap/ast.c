@@ -1216,9 +1216,11 @@ strictNameSpaces = b;
 
 int declMode = 2;
 
+int structDeclMode = 2;
+
 void SetDeclMode(int accessMode)
 {
-declMode = accessMode;
+structDeclMode = declMode = accessMode;
 }
 
 int defaultDeclMode = 2;
@@ -1892,9 +1894,9 @@ struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ec
 struct Specifier * spec = (spec = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), spec->type = type, spec->id = id, spec);
 
 if(id && FindType(curContext, id->string))
-declMode = 0;
+structDeclMode = 0;
 spec->definitions = definitions;
-if(definitions && id && !declMode)
+if(definitions && id && structDeclMode == 0)
 {
 struct __ecereNameSpace__ecere__sys__OldList specs = 
 {
@@ -2895,7 +2897,7 @@ struct Specifier * spec;
 for(spec = (*function->specifiers).first; spec; spec = spec->next)
 if(spec->type == 0 && spec->specifier == STATIC)
 {
-declMode = 3;
+structDeclMode = declMode = 3;
 break;
 }
 }
@@ -2936,12 +2938,12 @@ struct Specifier * spec;
 for(spec = (*declaration->specifiers).first; spec; spec = spec->next)
 if(spec->type == 0 && spec->specifier == TYPEDEF)
 {
-declMode = 0;
+structDeclMode = declMode = 0;
 break;
 }
 else if(spec->type == 0 && spec->specifier == STATIC)
 {
-declMode = 3;
+structDeclMode = declMode = 3;
 break;
 }
 }

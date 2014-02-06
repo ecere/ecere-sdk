@@ -184,7 +184,7 @@ public Declarator SpecDeclFromString(char * string, OldList * specs, Declarator 
    echoOn = false;
    parseTypeError = false;
    parsedType = null;
-   declMode = 0;
+   declMode = structDeclMode = defaultAccess;
    resetScanner();
    {
       bool oldParsingType = parsingType;
@@ -192,7 +192,7 @@ public Declarator SpecDeclFromString(char * string, OldList * specs, Declarator 
       type_yyparse();
       parsingType = oldParsingType;
    }
-   declMode = privateAccess;
+   declMode = structDeclMode = privateAccess;
 
    type_yydebug = false;
 

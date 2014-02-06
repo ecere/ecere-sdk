@@ -274,7 +274,7 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
       while(include_stack_ptr && !fileStack[include_stack_ptr-1])
       {
          --include_stack_ptr;
-         defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+         defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
       }
 
       if ( --include_stack_ptr < 0 )
@@ -291,7 +291,7 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
          type_yylloc = locStack[include_stack_ptr];
          expression_yylloc = locStack[include_stack_ptr];
          yy_switch_to_buffer(include_stack[include_stack_ptr] );
-         defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+         defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
       }
    }
 
@@ -428,7 +428,7 @@ int preprocessor()
 
                   GetExtension(fileName, extension);
                   if(!strcmp(extension, "c") || !strcmp(extension, "h"))
-                     declMode = defaultDeclMode = defaultAccess;
+                     declMode = defaultDeclMode = structDeclMode = defaultAccess;
 
                   fileStack[include_stack_ptr] = null;
                   include_stack_ptr++;
@@ -436,7 +436,7 @@ int preprocessor()
                else if(inOut == 2)
                {
                   include_stack_ptr--;
-                  defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+                  defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
                }
 
                yylloc.end.charPos = 1;
@@ -540,7 +540,7 @@ int preprocessor()
 
             GetExtension(includeFile, extension);
             if(!strcmp(extension, "c") || !strcmp(extension, "h"))
-               declMode = defaultDeclMode = defaultAccess;
+               declMode = defaultDeclMode = structDeclMode = defaultAccess;
 
             fileInput = file;
             yy_switch_to_buffer( yy_create_buffer( fileInput, YY_BUF_SIZE ) );
@@ -675,7 +675,7 @@ void popLexer(LexerBackup backup)
    memcpy(declModeStack, backup.declModeStack, sizeof(declModeStack));
    include_stack_ptr = backup.include_stack_ptr;
    defaultDeclMode = backup.defaultDeclMode;
-   declMode = backup.declMode;
+   declMode = structDeclMode = backup.declMode;
 
    // yy_switch_to_buffer(backup.buffer);
    yy_current_buffer = backup.buffer;

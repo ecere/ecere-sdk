@@ -2105,9 +2105,9 @@ storage_class_specifier:
 	;
 
 external_storage_class_specifier:
-	  TYPEDEF       { $$ = MkSpecifier(TYPEDEF); declMode = defaultAccess; }
+	  TYPEDEF       { $$ = MkSpecifier(TYPEDEF); structDeclMode = declMode = defaultAccess; }
 	| EXTERN        { $$ = MkSpecifier(EXTERN); }
-	| STATIC        { $$ = MkSpecifier(STATIC); declMode = staticAccess; }
+	| STATIC        { $$ = MkSpecifier(STATIC); structDeclMode = declMode = staticAccess; }
 	| AUTO          { $$ = MkSpecifier(AUTO); }
 	| REGISTER      { $$ = MkSpecifier(REGISTER); }
    | RESTRICT      { $$ = MkSpecifier(RESTRICT); }
@@ -3393,9 +3393,9 @@ labeled_statement_error:
 	;
 
 declaration_mode:
-     PUBLIC    { $$ = declMode = publicAccess; }
-   | PRIVATE   { $$ = declMode = privateAccess; }
-   | DEFAULT   { $$ = declMode = defaultAccess; }
+     PUBLIC    { $$ = structDeclMode = declMode = publicAccess; }
+   | PRIVATE   { $$ = structDeclMode = declMode = privateAccess; }
+   | DEFAULT   { $$ = structDeclMode = declMode = defaultAccess; }
    ;
 
 member_access:
@@ -3404,10 +3404,10 @@ member_access:
    ;
 
 declaration:
-	  declaration_specifiers ';'                       { $$ = MkDeclaration($1, null); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
-	| declaration_specifiers init_declarator_list ';'  { $$ = MkDeclaration($1, $2); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
-   | instantiation_named ';'                          { $$ = MkDeclarationInst($1); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
-   | declaration_error ';'                            { $$ = $1; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+	  declaration_specifiers ';'                       { $$ = MkDeclaration($1, null); $$.loc = @$; structDeclMode = defaultDeclMode; }
+	| declaration_specifiers init_declarator_list ';'  { $$ = MkDeclaration($1, $2); $$.loc = @$; structDeclMode = defaultDeclMode; }
+   | instantiation_named ';'                          { $$ = MkDeclarationInst($1); $$.loc = @$; structDeclMode = defaultDeclMode; }
+   | declaration_error ';'                            { $$ = $1; structDeclMode = defaultDeclMode; }
 	;
 
 external_guess_declaration:
@@ -3417,7 +3417,7 @@ external_guess_declaration:
 
    | external_guess_instantiation_named ';'                          { $$ = MkDeclarationInst($1); $$.loc = @$; }
    | DEFINE identifier '=' conditional_expression ';' { $$ = MkDeclarationDefine($2, $4); $$.loc = @$; }
-   | STATIC DEFINE identifier '=' conditional_expression ';' { declMode = staticAccess; $$ = MkDeclarationDefine($3, $5); $$.loc = @$; }
+   | STATIC DEFINE identifier '=' conditional_expression ';' { structDeclMode = declMode = staticAccess; $$ = MkDeclarationDefine($3, $5); $$.loc = @$; }
 	;
 
 external_guess_declaration_error:
@@ -3425,12 +3425,12 @@ external_guess_declaration_error:
 	;
 
 declaration_error:
-     declaration_specifiers error                       { $$ = MkDeclaration($1, null); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
-   | declaration_error error                            { if(declMode == defaultAccess) declMode = defaultDeclMode;  }
+     declaration_specifiers error                       { $$ = MkDeclaration($1, null); $$.loc = @$; structDeclMode = defaultDeclMode; }
+   | declaration_error error                            { structDeclMode = defaultDeclMode;  }
 
-   | instantiation_named_error error                   { $$ = MkDeclarationInst($1); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
-   | instantiation_named error                         { $$ = MkDeclarationInst($1); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
-   | declaration_specifiers init_declarator_list_error  { $$ = MkDeclaration($1, $2); $$.loc = @$; if(declMode == defaultAccess) declMode = defaultDeclMode; }
+   | instantiation_named_error error                   { $$ = MkDeclarationInst($1); $$.loc = @$; structDeclMode = defaultDeclMode; }
+   | instantiation_named error                         { $$ = MkDeclarationInst($1); $$.loc = @$; structDeclMode = defaultDeclMode; }
+   | declaration_specifiers init_declarator_list_error  { $$ = MkDeclaration($1, $2); $$.loc = @$; structDeclMode = defaultDeclMode; }
    ;
 
 declaration_list:
@@ -3621,15 +3621,15 @@ string_literal:
    ;
 
 external_declaration:
-	  function_definition { $$ = MkExternalFunction($1); $$.loc = @$; $1.declMode = declMode; declMode = defaultDeclMode; }
+	  function_definition { $$ = MkExternalFunction($1); $$.loc = @$; $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
    | class
-      { $$ = MkExternalClass($1);  $$.loc = @$; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
+      { $$ = MkExternalClass($1);  $$.loc = @$; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
 
    | external_guess_declaration_specifiers class
-      { $$ = MkExternalClass($2);  $$.loc = @$; $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; FreeList($1, FreeSpecifier); }
+      { $$ = MkExternalClass($2);  $$.loc = @$; $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; FreeList($1, FreeSpecifier); }
 
 	| external_guess_declaration
-      { $$ = MkExternalDeclaration($1);  $$.loc = @$; $1.declMode = declMode; declMode = defaultDeclMode; }
+      { $$ = MkExternalDeclaration($1);  $$.loc = @$; $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
    | IMPORT string_literal { $$ = MkExternalImport($2, normalImport, (declMode != defaultAccess) ? declMode : privateAccess);  $$.loc = @$; }
    | IMPORT STATIC string_literal { $$ = MkExternalImport($3, staticImport, (declMode != defaultAccess) ? declMode : privateAccess);  $$.loc = @$; }
    | IMPORT identifier string_literal
@@ -3644,19 +3644,19 @@ external_declaration:
 
    | ';' { $$ = null; }
 
-	| declaration_mode function_definition { $$ = MkExternalFunction($2); $$.loc = @$; $2.declMode = $1; declMode = defaultDeclMode; }
+	| declaration_mode function_definition { $$ = MkExternalFunction($2); $$.loc = @$; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
    | declaration_mode class
-      { $$ = MkExternalClass($2);  $$.loc = @$; $2.declMode = ($1 != defaultAccess) ? $1 : privateAccess; declMode = defaultDeclMode; }
-	| declaration_mode external_guess_declaration         { $$ = MkExternalDeclaration($2); $$.loc = @$; $2.declMode = $1; declMode = defaultDeclMode; }
-   | declaration_mode IMPORT string_literal { $$ = MkExternalImport($3, normalImport, ($1 != defaultAccess) ? $1 : privateAccess);  $$.loc = @$; declMode = defaultDeclMode; }
-   | declaration_mode IMPORT STATIC string_literal { $$ = MkExternalImport($4, staticImport, ($1 != defaultAccess) ? $1 : privateAccess);  $$.loc = @$; declMode = defaultDeclMode; }
+      { $$ = MkExternalClass($2);  $$.loc = @$; $2.declMode = ($1 != defaultAccess) ? $1 : privateAccess; structDeclMode = declMode = defaultDeclMode; }
+	| declaration_mode external_guess_declaration         { $$ = MkExternalDeclaration($2); $$.loc = @$; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode IMPORT string_literal { $$ = MkExternalImport($3, normalImport, ($1 != defaultAccess) ? $1 : privateAccess);  $$.loc = @$; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode IMPORT STATIC string_literal { $$ = MkExternalImport($4, staticImport, ($1 != defaultAccess) ? $1 : privateAccess);  $$.loc = @$; structDeclMode = declMode = defaultDeclMode; }
    | declaration_mode IMPORT identifier string_literal
    {
       bool isRemote = !strcmp($3.string, "remote");
       $$ = MkExternalImport($4, isRemote ? remoteImport : normalImport, ($1 != defaultAccess) ? $1 : privateAccess);
       $$.loc = @$;
       FreeIdentifier($3);
-      declMode = defaultDeclMode;
+      structDeclMode = declMode = defaultDeclMode;
       if(!isRemote)
          yyerror();
    }
@@ -3664,28 +3664,28 @@ external_declaration:
    | STATIC ':' { defaultDeclMode = staticAccess; $$ = null; }
    | NAMESPACE identifier { $$ = MkExternalNameSpace($2); $$.loc = @$; }
    | NAMESPACE strict_type { $$ = MkExternalNameSpace(MkIdentifier($2.name)); FreeSpecifier($2); $$.loc = @$; }
-   | dbtable_definition { $$ = MkExternalDBTable($1); $$.loc = @$;  $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
-   | declaration_mode  dbtable_definition { $$ = MkExternalDBTable($2); $$.loc = @$;  $2.declMode = ($1 != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
+   | dbtable_definition { $$ = MkExternalDBTable($1); $$.loc = @$;  $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode  dbtable_definition { $$ = MkExternalDBTable($2); $$.loc = @$;  $2.declMode = ($1 != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
    ;
 
 external_declaration_error:
-     class_error               { $$ = MkExternalClass($1);  $$.loc = $1.loc; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
+     class_error               { $$ = MkExternalClass($1);  $$.loc = $1.loc; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
    | external_guess_declaration_specifiers class_error
    {
       FreeList($1, FreeSpecifier);
       $$ = MkExternalClass($2);
       $$.loc = $2.loc;
       $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess;
-      declMode = defaultDeclMode;
+      structDeclMode = declMode = defaultDeclMode;
    }
-   | function_definition_error { $$ = MkExternalFunction($1); $$.loc = $1.loc;  $1.declMode = declMode; declMode = defaultDeclMode; }
+   | function_definition_error { $$ = MkExternalFunction($1); $$.loc = $1.loc;  $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
 
-   | declaration_mode class_error               { $$ = MkExternalClass($2);  $$.loc = $2.loc; $2.declMode = ($1 != defaultAccess) ? $1 : privateAccess; declMode = defaultDeclMode; }
-   | declaration_mode function_definition_error { $$ = MkExternalFunction($2); $$.loc = $2.loc; $2.declMode = $1; declMode = defaultDeclMode; }
+   | declaration_mode class_error               { $$ = MkExternalClass($2);  $$.loc = $2.loc; $2.declMode = ($1 != defaultAccess) ? $1 : privateAccess; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode function_definition_error { $$ = MkExternalFunction($2); $$.loc = $2.loc; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
 
 	| external_guess_declaration_error
-      { $$ = MkExternalDeclaration($1);  $$.loc = @$; $1.declMode = declMode; declMode = defaultDeclMode; }
-   | declaration_mode external_guess_declaration_error         { $$ = MkExternalDeclaration($2); $$.loc = @$; $2.declMode = $1; declMode = defaultDeclMode; }
+      { $$ = MkExternalDeclaration($1);  $$.loc = @$; $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode external_guess_declaration_error         { $$ = MkExternalDeclaration($2); $$.loc = @$; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
    ;
 
 translation_unit_error:
@@ -3700,9 +3700,9 @@ translation_unit:
 	  external_declaration                    { $$ = MkList(); ListAdd($$, $1); ast = $$; }
 	| translation_unit external_declaration   { $$ = $1; ListAdd($1, $2); }
    | translation_unit_error class
-      { External _class = MkExternalClass($2); $$ = $1; ListAdd($1, _class); _class.loc = @2;  $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; }
+      { External _class = MkExternalClass($2); $$ = $1; ListAdd($1, _class); _class.loc = @2;  $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
    | translation_unit_error declaration_mode class
-      { External _class = MkExternalClass($3); $$ = $1; ListAdd($1, _class); _class.loc = @3;  $3.declMode = ($2 != defaultAccess) ? $2 : privateAccess; declMode = defaultDeclMode; }
+      { External _class = MkExternalClass($3); $$ = $1; ListAdd($1, _class); _class.loc = @3;  $3.declMode = ($2 != defaultAccess) ? $2 : privateAccess; structDeclMode = declMode = defaultDeclMode; }
 	;
 
 thefile:

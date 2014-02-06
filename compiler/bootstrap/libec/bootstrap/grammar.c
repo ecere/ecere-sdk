@@ -2746,6 +2746,8 @@ extern struct Expression * MkExpCondition(struct Expression * cond, struct __ece
 
 extern struct Specifier * MkSpecifier(int specifier);
 
+extern int structDeclMode;
+
 extern int declMode;
 
 extern struct Enumerator * MkEnumerator(struct Identifier * id, struct Expression * exp);
@@ -2822,6 +2824,8 @@ extern void Compiler_Warning(char *  format, ...);
 
 extern struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators);
 
+extern int defaultDeclMode;
+
 extern struct Declaration * MkDeclarationInst(struct Instantiation * inst);
 
 extern struct Declaration * MkDeclarationDefine(struct Identifier * id, struct Expression * exp);
@@ -2855,8 +2859,6 @@ extern void ProcessFunctionBody(struct FunctionDefinition * func, struct Stateme
 extern void *  memcpy(void * , const void * , size_t size);
 
 extern struct External * MkExternalFunction(struct FunctionDefinition * function);
-
-extern int defaultDeclMode;
 
 extern struct External * MkExternalClass(struct ClassDefinition * _class);
 
@@ -7607,7 +7609,7 @@ break;
 case 623:
 {
 yyval.specifier = MkSpecifier(TYPEDEF);
-declMode = 0;
+structDeclMode = declMode = 0;
 ;
 }
 break;
@@ -7620,7 +7622,7 @@ break;
 case 625:
 {
 yyval.specifier = MkSpecifier(STATIC);
-declMode = 3;
+structDeclMode = declMode = 3;
 ;
 }
 break;
@@ -11355,19 +11357,19 @@ yyval.stmt->loc = (yyloc);
 break;
 case 1156:
 {
-yyval.declMode = declMode = 1;
+yyval.declMode = structDeclMode = declMode = 1;
 ;
 }
 break;
 case 1157:
 {
-yyval.declMode = declMode = 2;
+yyval.declMode = structDeclMode = declMode = 2;
 ;
 }
 break;
 case 1158:
 {
-yyval.declMode = declMode = 0;
+yyval.declMode = structDeclMode = declMode = 0;
 ;
 }
 break;
@@ -11387,6 +11389,7 @@ case 1161:
 {
 yyval.declaration = MkDeclaration(yyvsp[(1) - (2)].list, (((void *)0)));
 yyval.declaration->loc = (yyloc);
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
@@ -11394,6 +11397,7 @@ case 1162:
 {
 yyval.declaration = MkDeclaration(yyvsp[(1) - (3)].list, yyvsp[(2) - (3)].list);
 yyval.declaration->loc = (yyloc);
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
@@ -11401,12 +11405,14 @@ case 1163:
 {
 yyval.declaration = MkDeclarationInst(yyvsp[(1) - (2)].instance);
 yyval.declaration->loc = (yyloc);
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
 case 1164:
 {
 yyval.declaration = yyvsp[(1) - (2)].declaration;
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
@@ -11447,7 +11453,7 @@ yyval.declaration->loc = (yyloc);
 break;
 case 1170:
 {
-declMode = 3;
+structDeclMode = declMode = 3;
 yyval.declaration = MkDeclarationDefine(yyvsp[(3) - (6)].id, yyvsp[(5) - (6)].exp);
 yyval.declaration->loc = (yyloc);
 ;
@@ -11465,11 +11471,13 @@ case 1172:
 {
 yyval.declaration = MkDeclaration(yyvsp[(1) - (2)].list, (((void *)0)));
 yyval.declaration->loc = (yyloc);
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
 case 1173:
 {
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
@@ -11477,6 +11485,7 @@ case 1174:
 {
 yyval.declaration = MkDeclarationInst(yyvsp[(1) - (2)].instance);
 yyval.declaration->loc = (yyloc);
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
@@ -11484,6 +11493,7 @@ case 1175:
 {
 yyval.declaration = MkDeclarationInst(yyvsp[(1) - (2)].instance);
 yyval.declaration->loc = (yyloc);
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
@@ -11491,6 +11501,7 @@ case 1176:
 {
 yyval.declaration = MkDeclaration(yyvsp[(1) - (2)].list, yyvsp[(2) - (2)].list);
 yyval.declaration->loc = (yyloc);
+structDeclMode = defaultDeclMode;
 ;
 }
 break;
@@ -12226,7 +12237,7 @@ case 1275:
 yyval.external = MkExternalFunction(yyvsp[(1) - (1)].function);
 yyval.external->loc = (yyloc);
 yyvsp[(1) - (1)].function->declMode = declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12235,7 +12246,7 @@ case 1276:
 yyval.external = MkExternalClass(yyvsp[(1) - (1)]._class);
 yyval.external->loc = (yyloc);
 yyvsp[(1) - (1)]._class->declMode = (declMode != 0) ? declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12244,7 +12255,7 @@ case 1277:
 yyval.external = MkExternalClass(yyvsp[(2) - (2)]._class);
 yyval.external->loc = (yyloc);
 yyvsp[(2) - (2)]._class->declMode = (declMode != 0) ? declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 FreeList(yyvsp[(1) - (2)].list, FreeSpecifier);
 ;
 }
@@ -12254,7 +12265,7 @@ case 1278:
 yyval.external = MkExternalDeclaration(yyvsp[(1) - (1)].declaration);
 yyval.external->loc = (yyloc);
 yyvsp[(1) - (1)].declaration->declMode = declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12295,7 +12306,7 @@ case 1283:
 yyval.external = MkExternalFunction(yyvsp[(2) - (2)].function);
 yyval.external->loc = (yyloc);
 yyvsp[(2) - (2)].function->declMode = yyvsp[(1) - (2)].declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12304,7 +12315,7 @@ case 1284:
 yyval.external = MkExternalClass(yyvsp[(2) - (2)]._class);
 yyval.external->loc = (yyloc);
 yyvsp[(2) - (2)]._class->declMode = (yyvsp[(1) - (2)].declMode != 0) ? yyvsp[(1) - (2)].declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12313,7 +12324,7 @@ case 1285:
 yyval.external = MkExternalDeclaration(yyvsp[(2) - (2)].declaration);
 yyval.external->loc = (yyloc);
 yyvsp[(2) - (2)].declaration->declMode = yyvsp[(1) - (2)].declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12321,7 +12332,7 @@ case 1286:
 {
 yyval.external = MkExternalImport(yyvsp[(3) - (3)].string, 0, (yyvsp[(1) - (3)].declMode != 0) ? yyvsp[(1) - (3)].declMode : 2);
 yyval.external->loc = (yyloc);
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12329,7 +12340,7 @@ case 1287:
 {
 yyval.external = MkExternalImport(yyvsp[(4) - (4)].string, 1, (yyvsp[(1) - (4)].declMode != 0) ? yyvsp[(1) - (4)].declMode : 2);
 yyval.external->loc = (yyloc);
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12340,7 +12351,7 @@ unsigned int isRemote = !strcmp(yyvsp[(3) - (4)].id->string, "remote");
 yyval.external = MkExternalImport(yyvsp[(4) - (4)].string, isRemote ? 2 : 0, (yyvsp[(1) - (4)].declMode != 0) ? yyvsp[(1) - (4)].declMode : 2);
 yyval.external->loc = (yyloc);
 FreeIdentifier(yyvsp[(3) - (4)].id);
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 if(!isRemote)
 yyerror();
 ;
@@ -12380,7 +12391,7 @@ case 1293:
 yyval.external = MkExternalDBTable(yyvsp[(1) - (1)].dbtableDef);
 yyval.external->loc = (yyloc);
 yyvsp[(1) - (1)].dbtableDef->declMode = (declMode != 0) ? declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12389,7 +12400,7 @@ case 1294:
 yyval.external = MkExternalDBTable(yyvsp[(2) - (2)].dbtableDef);
 yyval.external->loc = (yyloc);
 yyvsp[(2) - (2)].dbtableDef->declMode = (yyvsp[(1) - (2)].declMode != 0) ? declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12398,7 +12409,7 @@ case 1295:
 yyval.external = MkExternalClass(yyvsp[(1) - (1)]._class);
 yyval.external->loc = yyvsp[(1) - (1)]._class->loc;
 yyvsp[(1) - (1)]._class->declMode = (declMode != 0) ? declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12408,7 +12419,7 @@ FreeList(yyvsp[(1) - (2)].list, FreeSpecifier);
 yyval.external = MkExternalClass(yyvsp[(2) - (2)]._class);
 yyval.external->loc = yyvsp[(2) - (2)]._class->loc;
 yyvsp[(2) - (2)]._class->declMode = (declMode != 0) ? declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12417,7 +12428,7 @@ case 1297:
 yyval.external = MkExternalFunction(yyvsp[(1) - (1)].function);
 yyval.external->loc = yyvsp[(1) - (1)].function->loc;
 yyvsp[(1) - (1)].function->declMode = declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12426,7 +12437,7 @@ case 1298:
 yyval.external = MkExternalClass(yyvsp[(2) - (2)]._class);
 yyval.external->loc = yyvsp[(2) - (2)]._class->loc;
 yyvsp[(2) - (2)]._class->declMode = (yyvsp[(1) - (2)].declMode != 0) ? yyvsp[(1) - (2)].declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12435,7 +12446,7 @@ case 1299:
 yyval.external = MkExternalFunction(yyvsp[(2) - (2)].function);
 yyval.external->loc = yyvsp[(2) - (2)].function->loc;
 yyvsp[(2) - (2)].function->declMode = yyvsp[(1) - (2)].declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12444,7 +12455,7 @@ case 1300:
 yyval.external = MkExternalDeclaration(yyvsp[(1) - (1)].declaration);
 yyval.external->loc = (yyloc);
 yyvsp[(1) - (1)].declaration->declMode = declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12453,7 +12464,7 @@ case 1301:
 yyval.external = MkExternalDeclaration(yyvsp[(2) - (2)].declaration);
 yyval.external->loc = (yyloc);
 yyvsp[(2) - (2)].declaration->declMode = yyvsp[(1) - (2)].declMode;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12502,7 +12513,7 @@ yyval.list = yyvsp[(1) - (2)].list;
 ListAdd(yyvsp[(1) - (2)].list, _class);
 _class->loc = (yylsp[(2) - (2)]);
 yyvsp[(2) - (2)]._class->declMode = (declMode != 0) ? declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;
@@ -12514,7 +12525,7 @@ yyval.list = yyvsp[(1) - (3)].list;
 ListAdd(yyvsp[(1) - (3)].list, _class);
 _class->loc = (yylsp[(3) - (3)]);
 yyvsp[(3) - (3)]._class->declMode = (yyvsp[(2) - (3)].declMode != 0) ? yyvsp[(2) - (3)].declMode : 2;
-declMode = defaultDeclMode;
+structDeclMode = declMode = defaultDeclMode;
 ;
 }
 break;

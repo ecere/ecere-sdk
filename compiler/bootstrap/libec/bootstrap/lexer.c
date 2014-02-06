@@ -723,6 +723,8 @@ extern int defaultDeclMode;
 
 extern int declMode;
 
+extern int structDeclMode;
+
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
 int yylex(void)
@@ -1795,7 +1797,7 @@ case 173LL:
 while(include_stack_ptr && !fileStack[include_stack_ptr - 1])
 {
 --include_stack_ptr;
-defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
 }
 if(--include_stack_ptr < 0)
 {
@@ -1811,7 +1813,7 @@ yylloc = locStack[include_stack_ptr];
 type_yylloc = locStack[include_stack_ptr];
 expression_yylloc = locStack[include_stack_ptr];
 yy_switch_to_buffer(include_stack[include_stack_ptr]);
-defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
 }
 }
 break;
@@ -2425,14 +2427,14 @@ char extension[17];
 defaultDeclMode = declModeStack[include_stack_ptr] = declMode;
 __ecereNameSpace__ecere__sys__GetExtension(fileName, extension);
 if(!strcmp(extension, "c") || !strcmp(extension, "h"))
-declMode = defaultDeclMode = 0;
+declMode = defaultDeclMode = structDeclMode = 0;
 fileStack[include_stack_ptr] = (((void *)0));
 include_stack_ptr++;
 }
 else if(inOut == 2)
 {
 include_stack_ptr--;
-defaultDeclMode = declMode = declModeStack[include_stack_ptr];
+defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
 }
 yylloc.end.charPos = 1;
 yylloc.end.line = lineNumber;
@@ -2518,7 +2520,7 @@ yylloc.start.pos = yylloc.end.pos = 0;
 yylloc.start.included = yylloc.end.included = GetIncludeFileID(includeFile);
 __ecereNameSpace__ecere__sys__GetExtension(includeFile, extension);
 if(!strcmp(extension, "c") || !strcmp(extension, "h"))
-declMode = defaultDeclMode = 0;
+declMode = defaultDeclMode = structDeclMode = 0;
 fileInput = file;
 yy_switch_to_buffer(yy_create_buffer(fileInput, 16384));
 yy_start = 1 + 2 * (0);
@@ -2645,7 +2647,7 @@ memcpy(locStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBac
 memcpy(declModeStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declModeStack, sizeof declModeStack);
 include_stack_ptr = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack_ptr;
 defaultDeclMode = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->defaultDeclMode;
-declMode = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declMode;
+declMode = structDeclMode = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declMode;
 yy_current_buffer = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->buffer;
 yy_n_chars = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_n_chars;
 yytext = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yytext;

@@ -17632,7 +17632,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2108 "grammar.y"
-    { (yyval.specifier) = MkSpecifier(TYPEDEF); declMode = defaultAccess; ;}
+    { (yyval.specifier) = MkSpecifier(TYPEDEF); structDeclMode = declMode = defaultAccess; ;}
     break;
 
   case 624:
@@ -17646,7 +17646,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2110 "grammar.y"
-    { (yyval.specifier) = MkSpecifier(STATIC); declMode = staticAccess; ;}
+    { (yyval.specifier) = MkSpecifier(STATIC); structDeclMode = declMode = staticAccess; ;}
     break;
 
   case 626:
@@ -21401,21 +21401,21 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3396 "grammar.y"
-    { (yyval.declMode) = declMode = publicAccess; ;}
+    { (yyval.declMode) = structDeclMode = declMode = publicAccess; ;}
     break;
 
   case 1157:
 
 /* Line 1464 of yacc.c  */
 #line 3397 "grammar.y"
-    { (yyval.declMode) = declMode = privateAccess; ;}
+    { (yyval.declMode) = structDeclMode = declMode = privateAccess; ;}
     break;
 
   case 1158:
 
 /* Line 1464 of yacc.c  */
 #line 3398 "grammar.y"
-    { (yyval.declMode) = declMode = defaultAccess; ;}
+    { (yyval.declMode) = structDeclMode = declMode = defaultAccess; ;}
     break;
 
   case 1159:
@@ -21436,28 +21436,28 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3407 "grammar.y"
-    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1162:
 
 /* Line 1464 of yacc.c  */
 #line 3408 "grammar.y"
-    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].list)); (yyval.declaration).loc = (yyloc); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].list)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1163:
 
 /* Line 1464 of yacc.c  */
 #line 3409 "grammar.y"
-    { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1164:
 
 /* Line 1464 of yacc.c  */
 #line 3410 "grammar.y"
-    { (yyval.declaration) = (yyvsp[(1) - (2)].declaration); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = (yyvsp[(1) - (2)].declaration); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1165:
@@ -21499,7 +21499,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3420 "grammar.y"
-    { declMode = staticAccess; (yyval.declaration) = MkDeclarationDefine((yyvsp[(3) - (6)].id), (yyvsp[(5) - (6)].exp)); (yyval.declaration).loc = (yyloc); ;}
+    { structDeclMode = declMode = staticAccess; (yyval.declaration) = MkDeclarationDefine((yyvsp[(3) - (6)].id), (yyvsp[(5) - (6)].exp)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 1171:
@@ -21513,35 +21513,35 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3428 "grammar.y"
-    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1173:
 
 /* Line 1464 of yacc.c  */
 #line 3429 "grammar.y"
-    { if(declMode == defaultAccess) declMode = defaultDeclMode;  ;}
+    { structDeclMode = defaultDeclMode;  ;}
     break;
 
   case 1174:
 
 /* Line 1464 of yacc.c  */
 #line 3431 "grammar.y"
-    { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1175:
 
 /* Line 1464 of yacc.c  */
 #line 3432 "grammar.y"
-    { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1176:
 
 /* Line 1464 of yacc.c  */
 #line 3433 "grammar.y"
-    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); (yyval.declaration).loc = (yyloc); if(declMode == defaultAccess) declMode = defaultDeclMode; ;}
+    { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1177:
@@ -22234,28 +22234,28 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3624 "grammar.y"
-    { (yyval.external) = MkExternalFunction((yyvsp[(1) - (1)].function)); (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].function).declMode = declMode; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalFunction((yyvsp[(1) - (1)].function)); (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].function).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1276:
 
 /* Line 1464 of yacc.c  */
 #line 3626 "grammar.y"
-    { (yyval.external) = MkExternalClass((yyvsp[(1) - (1)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalClass((yyvsp[(1) - (1)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1277:
 
 /* Line 1464 of yacc.c  */
 #line 3629 "grammar.y"
-    { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; FreeList((yyvsp[(1) - (2)].list), FreeSpecifier); ;}
+    { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; FreeList((yyvsp[(1) - (2)].list), FreeSpecifier); ;}
     break;
 
   case 1278:
 
 /* Line 1464 of yacc.c  */
 #line 3632 "grammar.y"
-    { (yyval.external) = MkExternalDeclaration((yyvsp[(1) - (1)].declaration));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].declaration).declMode = declMode; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalDeclaration((yyvsp[(1) - (1)].declaration));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].declaration).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1279:
@@ -22297,35 +22297,35 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3647 "grammar.y"
-    { (yyval.external) = MkExternalFunction((yyvsp[(2) - (2)].function)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].function).declMode = (yyvsp[(1) - (2)].declMode); declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalFunction((yyvsp[(2) - (2)].function)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].function).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1284:
 
 /* Line 1464 of yacc.c  */
 #line 3649 "grammar.y"
-    { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)]._class).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? (yyvsp[(1) - (2)].declMode) : privateAccess; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)]._class).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? (yyvsp[(1) - (2)].declMode) : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1285:
 
 /* Line 1464 of yacc.c  */
 #line 3650 "grammar.y"
-    { (yyval.external) = MkExternalDeclaration((yyvsp[(2) - (2)].declaration)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].declaration).declMode = (yyvsp[(1) - (2)].declMode); declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalDeclaration((yyvsp[(2) - (2)].declaration)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].declaration).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1286:
 
 /* Line 1464 of yacc.c  */
 #line 3651 "grammar.y"
-    { (yyval.external) = MkExternalImport((yyvsp[(3) - (3)].string), normalImport, ((yyvsp[(1) - (3)].declMode) != defaultAccess) ? (yyvsp[(1) - (3)].declMode) : privateAccess);  (yyval.external).loc = (yyloc); declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalImport((yyvsp[(3) - (3)].string), normalImport, ((yyvsp[(1) - (3)].declMode) != defaultAccess) ? (yyvsp[(1) - (3)].declMode) : privateAccess);  (yyval.external).loc = (yyloc); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1287:
 
 /* Line 1464 of yacc.c  */
 #line 3652 "grammar.y"
-    { (yyval.external) = MkExternalImport((yyvsp[(4) - (4)].string), staticImport, ((yyvsp[(1) - (4)].declMode) != defaultAccess) ? (yyvsp[(1) - (4)].declMode) : privateAccess);  (yyval.external).loc = (yyloc); declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalImport((yyvsp[(4) - (4)].string), staticImport, ((yyvsp[(1) - (4)].declMode) != defaultAccess) ? (yyvsp[(1) - (4)].declMode) : privateAccess);  (yyval.external).loc = (yyloc); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1288:
@@ -22337,7 +22337,7 @@ yyreduce:
       (yyval.external) = MkExternalImport((yyvsp[(4) - (4)].string), isRemote ? remoteImport : normalImport, ((yyvsp[(1) - (4)].declMode) != defaultAccess) ? (yyvsp[(1) - (4)].declMode) : privateAccess);
       (yyval.external).loc = (yyloc);
       FreeIdentifier((yyvsp[(3) - (4)].id));
-      declMode = defaultDeclMode;
+      structDeclMode = declMode = defaultDeclMode;
       if(!isRemote)
          yyerror();
    ;}
@@ -22375,21 +22375,21 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3667 "grammar.y"
-    { (yyval.external) = MkExternalDBTable((yyvsp[(1) - (1)].dbtableDef)); (yyval.external).loc = (yyloc);  (yyvsp[(1) - (1)].dbtableDef).declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalDBTable((yyvsp[(1) - (1)].dbtableDef)); (yyval.external).loc = (yyloc);  (yyvsp[(1) - (1)].dbtableDef).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1294:
 
 /* Line 1464 of yacc.c  */
 #line 3668 "grammar.y"
-    { (yyval.external) = MkExternalDBTable((yyvsp[(2) - (2)].dbtableDef)); (yyval.external).loc = (yyloc);  (yyvsp[(2) - (2)].dbtableDef).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalDBTable((yyvsp[(2) - (2)].dbtableDef)); (yyval.external).loc = (yyloc);  (yyvsp[(2) - (2)].dbtableDef).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1295:
 
 /* Line 1464 of yacc.c  */
 #line 3672 "grammar.y"
-    { (yyval.external) = MkExternalClass((yyvsp[(1) - (1)]._class));  (yyval.external).loc = (yyvsp[(1) - (1)]._class).loc; (yyvsp[(1) - (1)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalClass((yyvsp[(1) - (1)]._class));  (yyval.external).loc = (yyvsp[(1) - (1)]._class).loc; (yyvsp[(1) - (1)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1296:
@@ -22401,7 +22401,7 @@ yyreduce:
       (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));
       (yyval.external).loc = (yyvsp[(2) - (2)]._class).loc;
       (yyvsp[(2) - (2)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess;
-      declMode = defaultDeclMode;
+      structDeclMode = declMode = defaultDeclMode;
    ;}
     break;
 
@@ -22409,35 +22409,35 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3681 "grammar.y"
-    { (yyval.external) = MkExternalFunction((yyvsp[(1) - (1)].function)); (yyval.external).loc = (yyvsp[(1) - (1)].function).loc;  (yyvsp[(1) - (1)].function).declMode = declMode; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalFunction((yyvsp[(1) - (1)].function)); (yyval.external).loc = (yyvsp[(1) - (1)].function).loc;  (yyvsp[(1) - (1)].function).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1298:
 
 /* Line 1464 of yacc.c  */
 #line 3683 "grammar.y"
-    { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyvsp[(2) - (2)]._class).loc; (yyvsp[(2) - (2)]._class).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? (yyvsp[(1) - (2)].declMode) : privateAccess; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyvsp[(2) - (2)]._class).loc; (yyvsp[(2) - (2)]._class).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? (yyvsp[(1) - (2)].declMode) : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1299:
 
 /* Line 1464 of yacc.c  */
 #line 3684 "grammar.y"
-    { (yyval.external) = MkExternalFunction((yyvsp[(2) - (2)].function)); (yyval.external).loc = (yyvsp[(2) - (2)].function).loc; (yyvsp[(2) - (2)].function).declMode = (yyvsp[(1) - (2)].declMode); declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalFunction((yyvsp[(2) - (2)].function)); (yyval.external).loc = (yyvsp[(2) - (2)].function).loc; (yyvsp[(2) - (2)].function).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1300:
 
 /* Line 1464 of yacc.c  */
 #line 3687 "grammar.y"
-    { (yyval.external) = MkExternalDeclaration((yyvsp[(1) - (1)].declaration));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].declaration).declMode = declMode; declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalDeclaration((yyvsp[(1) - (1)].declaration));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].declaration).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1301:
 
 /* Line 1464 of yacc.c  */
 #line 3688 "grammar.y"
-    { (yyval.external) = MkExternalDeclaration((yyvsp[(2) - (2)].declaration)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].declaration).declMode = (yyvsp[(1) - (2)].declMode); declMode = defaultDeclMode; ;}
+    { (yyval.external) = MkExternalDeclaration((yyvsp[(2) - (2)].declaration)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].declaration).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1302:
@@ -22479,14 +22479,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3703 "grammar.y"
-    { External _class = MkExternalClass((yyvsp[(2) - (2)]._class)); (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), _class); _class.loc = (yylsp[(2) - (2)]);  (yyvsp[(2) - (2)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; declMode = defaultDeclMode; ;}
+    { External _class = MkExternalClass((yyvsp[(2) - (2)]._class)); (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), _class); _class.loc = (yylsp[(2) - (2)]);  (yyvsp[(2) - (2)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1310:
 
 /* Line 1464 of yacc.c  */
 #line 3705 "grammar.y"
-    { External _class = MkExternalClass((yyvsp[(3) - (3)]._class)); (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), _class); _class.loc = (yylsp[(3) - (3)]);  (yyvsp[(3) - (3)]._class).declMode = ((yyvsp[(2) - (3)].declMode) != defaultAccess) ? (yyvsp[(2) - (3)].declMode) : privateAccess; declMode = defaultDeclMode; ;}
+    { External _class = MkExternalClass((yyvsp[(3) - (3)]._class)); (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), _class); _class.loc = (yylsp[(3) - (3)]);  (yyvsp[(3) - (3)]._class).declMode = ((yyvsp[(2) - (3)].declMode) != defaultAccess) ? (yyvsp[(2) - (3)].declMode) : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1313:

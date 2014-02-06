@@ -793,7 +793,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          strcpy(classDataStructName, "__ecereClassData_");
          FullClassNameCat(classDataStructName, symbol.string, false);
 
-         declMode = defaultAccess;
+         declMode = structDeclMode = defaultAccess;
          ListAdd(specs, MkStructOrUnion(structSpecifier, MkIdentifier(classDataStructName), classDataList));
          external = MkExternalDeclaration(MkDeclaration(specs, null));
          defs.Insert(after, external);

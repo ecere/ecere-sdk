@@ -12,7 +12,9 @@ bool strictNameSpaces;
 public void SetStrictNameSpaces(bool b) { strictNameSpaces = b; }
 
 AccessMode declMode = privateAccess;
-public void SetDeclMode(AccessMode accessMode) { declMode = accessMode; }
+AccessMode structDeclMode = privateAccess;
+
+public void SetDeclMode(AccessMode accessMode) { structDeclMode = declMode = accessMode; }
 AccessMode defaultDeclMode = privateAccess;
 public void SetDefaultDeclMode(AccessMode accessMode) { defaultDeclMode = accessMode; }
 
@@ -487,9 +489,9 @@ Specifier MkStructOrUnion(SpecifierType type, Identifier id, OldList definitions
 {
    Specifier spec { type = type, id = id };
    if(id && FindType(curContext, id.string))
-      declMode = defaultAccess;
+      structDeclMode = defaultAccess;
    spec.definitions = definitions;
-   if(definitions && id && !declMode)
+   if(definitions && id && structDeclMode == defaultAccess)
    {
       OldList specs { };
       Symbol symbol;
@@ -1259,7 +1261,7 @@ External MkExternalFunction(FunctionDefinition function)
       for(spec = function.specifiers->first; spec; spec = spec.next)
          if(spec.type == baseSpecifier && spec.specifier == STATIC)
          {
-            declMode = staticAccess;
+            structDeclMode = declMode = staticAccess;
             break;
          }
    }
@@ -1304,12 +1306,12 @@ External MkExternalDeclaration(Declaration declaration)
       for(spec = declaration.specifiers->first; spec; spec = spec.next)
          if(spec.type == baseSpecifier && spec.specifier == TYPEDEF)
          {
-            declMode = defaultAccess;
+            structDeclMode = declMode = defaultAccess;
             break;
          }
          else if(spec.type == baseSpecifier && spec.specifier == STATIC)
          {
-            declMode = staticAccess;
+            structDeclMode = declMode = staticAccess;
             break;
          }
    }
