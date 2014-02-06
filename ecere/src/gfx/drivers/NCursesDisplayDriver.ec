@@ -6,11 +6,7 @@ import "instance"
 
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__DOS__)
 
-#define bool CursesBool
-
 #include <curses.h>
-
-#undef bool
 
 import "Display"
 
@@ -431,7 +427,7 @@ class NCursesDisplayDriver : DisplayDriver
    {
       CursesDisplay cursesDisplay = display.driverData;
       curs_set(false);
-      leaveok(stdscr, (_Bool)true);
+      leaveok(stdscr, true);
       refresh();
       if(updateBox == null)
       {

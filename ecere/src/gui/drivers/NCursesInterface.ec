@@ -10,21 +10,13 @@ import "instance"
 
 // #define DEBUG_THREADS
 
-#define bool CursesBool
-#define uint _uint
-
 #include <curses.h>
-
-#undef bool
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 import "Interface"
-
-#undef uint
 
 static class Message : struct
 {
@@ -358,10 +350,10 @@ class NCursesInterface : Interface
 
       printf( "\033(U\017");
       fflush(stdout);
-      intrflush(stdscr, (_Bool)false);
+      intrflush(stdscr, false);
       nonl();
       curs_set(false);
-      keypad(stdscr, (_Bool)true);
+      keypad(stdscr, true);
    #ifdef NCURSES_VERSION
       ESCDELAY = 0;
       mousemask(REPORT_MOUSE_POSITION |
@@ -370,13 +362,13 @@ class NCursesInterface : Interface
                 BUTTON3_PRESSED | BUTTON3_RELEASED | BUTTON3_DOUBLE_CLICKED, null);
       mouseinterval(0);
    #endif
-      idlok(stdscr, (_Bool)false);
-      idcok(stdscr, (_Bool)false);
-      clearok(stdscr, (_Bool)false);
-      scrollok(stdscr, (_Bool)false);
+      idlok(stdscr, false);
+      idcok(stdscr, false);
+      clearok(stdscr, false);
+      scrollok(stdscr, false);
       cbreak();
       caretVisible = false;
-      leaveok(stdscr, (_Bool)true);
+      leaveok(stdscr, true);
       timeout(0);
       noecho();
 
@@ -441,7 +433,7 @@ class NCursesInterface : Interface
          messages.Free(null);
       else if(caretVisible)
       {
-         leaveok(stdscr, (_Bool)false);
+         leaveok(stdscr, false);
          move(caretY,caretX);
          refresh();
          curs_set(true);
