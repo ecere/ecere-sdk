@@ -1385,11 +1385,21 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 
 static void OutputStatement(struct Statement * stmt, struct __ecereNameSpace__ecere__com__Instance * f);
 
+extern unsigned int inCompiler;
+
+extern unsigned int outputLineNumbers;
+
+static void GetSourceName(char *  name, const char *  src);
+
+extern char *  GetIncludeFileFromID(int id);
+
 static void OutputInstance(struct Instantiation * inst, struct __ecereNameSpace__ecere__com__Instance * f);
 
 extern int printf(char * , ...);
 
 static void OutputInitializer(struct Initializer * initializer, struct __ecereNameSpace__ecere__com__Instance * f);
+
+int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
 
 void OutputExpression(struct Expression * exp, struct __ecereNameSpace__ecere__com__Instance * f)
 {
@@ -1443,6 +1453,14 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
+if(inCompiler && outputLineNumbers && exp->loc.end.line)
+{
+char name[274] = "";
+
+GetSourceName(name, exp->loc.end.included ? GetIncludeFileFromID(exp->loc.end.included) : (((void *)0)));
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n#line %d \"%s\"\n", exp->loc.end.line, name);
+outputLine += 2;
+}
 break;
 case 13:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -1887,13 +1905,7 @@ __ecereNameSpace__ecere__sys__PathCat(name, sourceFile);
 __ecereNameSpace__ecere__sys__ChangeCh(name, '\\', '/');
 }
 
-extern unsigned int inCompiler;
-
-extern char *  GetIncludeFileFromID(int id);
-
 extern char *  outputFile;
-
-extern unsigned int outputLineNumbers;
 
 static void OutputDeclaration(struct Declaration * decl, struct __ecereNameSpace__ecere__com__Instance * f);
 
@@ -1922,8 +1934,6 @@ extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList
 extern void InstDeclPassTypeName(struct TypeName * type, unsigned int param);
 
 extern void FreeTypeName(struct TypeName * typeName);
-
-int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
 
 static void OutputStatement(struct Statement * stmt, struct __ecereNameSpace__ecere__com__Instance * f)
 {

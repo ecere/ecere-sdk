@@ -2663,6 +2663,7 @@ struct Expression * c;
 struct Context * context = PushContext();
 
 c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(memberExp->member.exp)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))), MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+c->loc = exp->loc;
 c->compound->compound.context = context;
 PopContext(context);
 exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(c, MkListOne(MkExpIdentifier(MkIdentifier(name)))))));

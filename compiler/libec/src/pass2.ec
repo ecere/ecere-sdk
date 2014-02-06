@@ -1768,6 +1768,7 @@ static void ProcessExpression(Expression exp)
                               MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
                               MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))),
                               MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+                     c.loc = exp.loc;
                      c.compound.compound.context = context;
                      PopContext(context);
                      exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,

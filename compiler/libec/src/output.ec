@@ -128,6 +128,13 @@ public void OutputExpression(Expression exp, File f)
          f.Puts("__extension__ (");
          OutputStatement(exp.compound, f);
          f.Puts(")");
+         if(inCompiler && outputLineNumbers && exp.loc.end.line)
+         {
+            char name[MAX_FILENAME] = "";
+            GetSourceName(name, exp.loc.end.included ? GetIncludeFileFromID(exp.loc.end.included) : null);
+            f.Printf("\n#line %d \"%s\"\n", exp.loc.end.line, name);
+            outputLine += 2;
+         }
          break;
       case newExp:
          f.Puts("new ");
