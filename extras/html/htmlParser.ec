@@ -1134,6 +1134,8 @@ class HTMLFile
                         unicode = ' ';
                      else if(!strcmpi(symbol, "copy"))
                         unicode ='©';
+                     else if(!strcmpi(symbol, "reg"))
+                        unicode = '®';
                      else if(!strcmpi(symbol, "raquo"))
                         unicode = '»';
                      else if(!strcmpi(symbol, "eacute"))
@@ -1148,6 +1150,20 @@ class HTMLFile
                         unicode = 'â';
                      else if(!strcmpi(symbol, "ocirc"))
                         unicode = 'ô';
+                     else if(!strcmpi(symbol, "lt"))
+                        unicode = '<';
+                     else if(!strcmpi(symbol, "gt"))
+                        unicode = '>';
+                     else if(!strcmpi(symbol, "amp"))
+                        unicode = '&';
+                     else if(!strcmpi(symbol, "euro"))
+                        unicode = '€';
+                     else if(!strcmpi(symbol, "yen"))
+                        unicode = '¥';
+                     else if(!strcmpi(symbol, "pound"))
+                        unicode = '£';
+                     else if(!strcmpi(symbol, "cent"))
+                        unicode = '¢';
                      if(unicode)
                      {
                         int len = UTF32toUTF8Len(&unicode, 1, utf8, 5);

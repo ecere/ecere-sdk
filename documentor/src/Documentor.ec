@@ -54,6 +54,57 @@ IDESettingsContainer settingsContainer
    dataOwner = &settings;
 };
 
+void GetTemplateString(Class c, char * templateString)
+{
+   Module m = c.module.application;
+   char * n = c.name;
+   char * lt = strchr(n, '<');
+   char * s;
+   char ch;
+   char curName[256];
+   int len = 0;
+
+   memcpy(templateString, n, lt-n);
+   templateString[lt-n] = 0;
+   strcat(templateString, "</a>");
+
+   for(s = lt; (ch = *s); s++)
+   {
+      if(ch == '<' || ch == '>' || ch == ',')
+      {
+         if(len)
+         {
+            Class pc;
+            char * d = templateString + strlen(templateString);
+            curName[len] = 0;
+            pc = eSystem_FindClass(m, curName);
+            if(pc)
+               sprintf(d, "<a href=\"api://%p\" style=\"text-decoration: none;\">%s</a>", pc, pc.name);
+            else
+               strcat(d, curName);
+         }
+         if(ch == '<')
+            strcat(templateString, "&lt;");
+         else if(ch == '>')
+            strcat(templateString, "&gt;");
+         else
+            strcat(templateString, ", ");
+         len = 0;
+      }
+      else if(ch == '=')
+      {
+         curName[len++] = ' ';
+         curName[len++] = ch;
+         curName[len++] = ' ';
+         curName[0] = 0;
+         strcat(templateString, curName);
+         len = 0;
+      }
+      else if(ch != ' ')
+         curName[len++] = ch;
+   }
+}
+
 // WARNING : This function expects a null terminated string since it recursively concatenate...
 static void _PrintType(Type type, char * string, bool printName, bool printFunction, bool fullName)
 {
@@ -71,11 +122,19 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                   if(type._class.registered)
                   {
                      char hex[20];
-                     sprintf(hex, "%p", type._class.registered);
+                     char * s = type._class.registered.name;
+                     sprintf(hex, "%p", type._class.registered.templateClass ? type._class.registered.templateClass : type._class.registered);
                      strcat(string, "<a href=\"api://");
                      strcat(string, hex);
                      strcat(string, "\" style=\"text-decoration: none;\">");
-                     strcat(string, type._class.registered.name);
+                     if(strchr(s, '<'))
+                     {
+                        char n[1024];
+                        GetTemplateString(type._class.registered, n);
+                        strcat(string, n);
+                     }
+                     else
+                        strcat(string, type._class.registered.name);
                      strcat(string, "</a>");
                   }
                   else
