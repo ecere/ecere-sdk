@@ -123,6 +123,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) res/documentorIcon.png ""
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../ide/res/actions/docOpen.png "actions"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/documentor.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/documentor.mo "locale/es_ES/LC_MESSAGES"
 else

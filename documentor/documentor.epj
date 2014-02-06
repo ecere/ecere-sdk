@@ -113,6 +113,12 @@
             }
          ]
       },
+      {
+         "Folder" : "actions",
+         "Files" : [
+            "../ide/res/actions/docOpen.png"
+         ]
+      },
       "res/documentorIcon.png"
    ]
 }

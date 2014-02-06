@@ -360,7 +360,7 @@ void AddComponents(Module module, bool isDll)
    {
       row = mainForm.browser.AddRow();
       row.SetData(null, APIPageNameSpace { name = "ecereCOM", nameSpace = &module.application.systemNameSpace });
-      row.tag = (int)null;
+      row.tag = (int64)null;
       AddNameSpace(row, null, module.application.systemNameSpace, null, "", !isDll);
    }
 
@@ -375,7 +375,7 @@ void AddComponents(Module module, bool isDll)
    {
       row = mainForm.browser.AddRow();
       row.SetData(null, APIPageNameSpace { name = module.name, module = module, nameSpace = &module.publicNameSpace });
-      row.tag = (int)module;
+      row.tag = (int64)module;
       AddNameSpace(row, module, module.publicNameSpace, null /*module.application.systemNameSpace*/, "", !isDll);
       if(!isDll)
          AddNameSpace(row, module, module.privateNameSpace, null /*module.application.systemNameSpace*/, "", !isDll);
@@ -465,6 +465,11 @@ static void FigureFileName(char * fileName, Module module, DocumentationType typ
       ns = ns->parent;
    }
    sprintf(docFile, "%s.eCdoc", (!module || !module.name || !strcmp(nsName, "namespaces/ecere/namespaces/com")) ? "ecereCOM" : module.name);
+   if(strchr(docFile, DIR_SEP))
+   {
+      GetLastDirectory(docFile, temp);
+      strcpy(docFile, temp);
+   }
 
    sprintf(fileName, "<%s/%s>", settings.docDir, docFile); // Note that in the ecereIDE.ini file, there can be no quotes around the path, and there needs to be the final backslash. Otherwise this does not work.
    strcat(fileName, nsName);
@@ -1753,7 +1758,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
    {
       row = parentRow.AddRow();
       row.SetData(null, (page = APIPageNameSpace { nameSpace->name, module = module, nameSpace = nameSpace, showPrivate = showPrivate }));
-      row.tag = (int)nameSpace;
+      row.tag = (int64)nameSpace;
       row.icon = mainForm.icons[typeNameSpace];
    }
    else
@@ -1819,7 +1824,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                   char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
                   DataRow fnRow;
                   if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
-                  fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int)fn;
+                  fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int64)fn;
                }
             }
          }
@@ -1842,7 +1847,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                   char * name = ( name = RSearchString(def.name, "::", strlen(def.name), false, false), name ? name + 2 : def.name);
                   DataRow defRow;
                   if(!definesRow) { definesRow = row.AddRow(); definesRow.SetData(null, APIPage { $"Definitions", page = page }); definesRow.collapsed = true; definesRow.icon = mainForm.icons[typeData]; definesRow.tag = 3; };
-                  defRow = definesRow.AddRow(); defRow.SetData(null, APIPage { name, page = page }); defRow.icon = mainForm.icons[typeData]; defRow.tag = (int)def;
+                  defRow = definesRow.AddRow(); defRow.SetData(null, APIPage { name, page = page }); defRow.icon = mainForm.icons[typeData]; defRow.tag = (int64)def;
                }
             }
          }
@@ -1907,14 +1912,14 @@ static void AddDataMember(DataRow parentRow, APIPage page, DataMember member)
    if(member.type == normalMember)
    {
       row = parentRow.AddRow(); row.SetData(null, APIPage { member.name, page = page }); row.icon = mainForm.icons[typeData];
-      row.tag = (int)member;
+      row.tag = (int64)member;
    }
    else
    {
       DataMember m;
       row = parentRow.AddRow(); row.SetData(null, APIPage { (member.type == unionMember) ? "(union)" : "(struct)", page });
       row.icon = mainForm.icons[typeData];
-      row.tag = (int)member;
+      row.tag = (int64)member;
 
       for(m = member.members.first; m; m = m.next)
       {
@@ -1939,7 +1944,7 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
 
    row = parentRow.AddRow();
    row.SetData(null, (page = APIPageClass { cl.name, cl = cl, showPrivate = showPrivate }));
-   row.tag = (int)cl;
+   row.tag = (int64)cl;
    row.collapsed = true;
    row.icon = (cl.type == enumClass || cl.type == unitClass || cl.type == systemClass) ? mainForm.icons[typeDataType] : mainForm.icons[typeClass];
 
@@ -1959,20 +1964,20 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
                {
                   if(!eventsRow) { eventsRow = row.AddRow(); eventsRow.SetData(null, APIPage { $"Events", page = page }); eventsRow.collapsed = true; eventsRow.icon = mainForm.icons[typeEvent];  eventsRow.tag = 4; }
                   mRow = eventsRow.AddRow(); mRow.SetData(null, APIPageMethod { method.name, method = method }); mRow.icon = mainForm.icons[typeEvent];
-                  mRow.tag = (int)method;
+                  mRow.tag = (int64)method;
                }
                else
                {
                   if(!virtualsRow) { virtualsRow = row.AddRow(); virtualsRow.SetData(null, APIPage { $"Virtual Methods", page = page }); virtualsRow.collapsed = true; virtualsRow.icon = mainForm.icons[typeMethod]; virtualsRow.tag = 4; }
                   mRow = virtualsRow.AddRow(); mRow.SetData(null, APIPageMethod { method.name, method = method }); mRow.icon = mainForm.icons[typeMethod];
-                  mRow.tag = (int)method;
+                  mRow.tag = (int64)method;
                }
             }
             else
             {
                if(!methodsRow) { methodsRow = row.AddRow(); methodsRow.SetData(null, APIPage { $"Methods", page = page }); methodsRow.collapsed = true; methodsRow.icon = mainForm.icons[typeMethod]; methodsRow.tag = 5; }
                mRow = methodsRow.AddRow(); mRow.SetData(null, APIPageMethod { method.name, method = method }); mRow.icon = mainForm.icons[typeMethod];
-               mRow.tag = (int)method;
+               mRow.tag = (int64)method;
             }
          }
       }
@@ -1991,7 +1996,7 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
                DataRow mRow;
                if(!propertiesRow) { propertiesRow = row.AddRow(); propertiesRow.SetData(null, APIPage { $"Properties", page = page }); propertiesRow.collapsed = true; propertiesRow.icon = mainForm.icons[typeProperty]; propertiesRow.tag = 6; }
                mRow = propertiesRow.AddRow(); mRow.SetData(null, APIPage { prop.name, page }); mRow.icon = mainForm.icons[typeProperty];
-               mRow.tag = (int)prop;
+               mRow.tag = (int64)prop;
             }
             else
             {
@@ -2012,7 +2017,7 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
          name = RSearchString(prop.name, "::", strlen(prop.name), true, false);
          if(name) name += 2; else name = prop.name;
          mRow = conversionsRow.AddRow(); mRow.SetData(null, APIPage { name, page = page }); mRow.icon = mainForm.icons[typeDataType];
-         mRow.tag = (int)prop;
+         mRow.tag = (int64)prop;
       }
    }
    if(cl.type == enumClass)
@@ -2024,8 +2029,90 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
          DataRow mRow;
          if(!enumRow) { enumRow = row.AddRow(); enumRow.SetData(null, APIPage { $"Enumeration Values", page = page }); enumRow.collapsed = true; enumRow.icon = mainForm.icons[typeEnumValue]; enumRow.tag = 8; }
          mRow = enumRow.AddRow(); mRow.SetData(null, APIPage { item.name, page = page }); mRow.icon = mainForm.icons[typeEnumValue];
-         mRow.tag = (int)item;
+         mRow.tag = (int64)item;
       }
+   }
+}
+
+class AddressBar : Window
+{
+   background = activeBorder;
+   tabCycle = true;
+   Button open
+   {
+      this, bevelOver = true, inactive = true, anchor = Anchor { left = 0, top = 0, bottom = 0 }, size = Size { 24 }, bitmap = { ":actions/docOpen.png" };
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         MainForm mainForm = (MainForm)parent;
+         FileDialog fileDialog = mainForm.fileDialog;
+         if(fileDialog.Modal() == ok)
+            mainForm.OpenModule(fileDialog.filePath);
+         return true;
+      }
+   };
+   Button back
+   {
+      this, bevelOver = true, inactive = true, anchor = Anchor { left = 28, top = 0, bottom = 0 }, size = Size { 24 }, hotKey = altLeft, bitmap = { "<:ecere>actions/goPrevious.png" };
+      disabled = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         ((MainForm)parent).Back();
+         return true;
+      }
+   };
+   Button forward
+   {
+      this, bevelOver = true, inactive = true, anchor = Anchor { left = 52, top = 0, bottom = 0 }, size = Size { 24 }, hotKey = altRight, bitmap = { "<:ecere>actions/goNext.png" };
+      disabled = true;
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         ((MainForm)parent).Forward();
+         return true;
+      }
+   };
+   Button home
+   {
+      this, bevelOver = true, inactive = true, anchor = Anchor { left = 80, top = 0, bottom = 0 }, size = Size { 24 }, hotKey = ctrlH, bitmap = { "<:ecere>actions/goHome.png" };
+
+      bool NotifyClicked(Button button, int x, int y, Modifiers mods)
+      {
+         ((MainForm)parent).Home();
+         return true;
+      }
+   };
+   /* TODO: Search (#143/#441)
+      When there's something in the search box, list matching sections, the exact match first,instead of the Hierarchy in the ListBox.
+      Update this in the NotifyUpdate. Enter goes to the exact match.
+
+   Label { this, anchor = Anchor { left = (124+12) }, labeledWindow = search };
+
+   EditBox search
+   {
+      this, text = "Search:", anchor = Anchor { left = (16+48+124), right = 60, top = 0, bottom = 0 }, hotKey = altD;
+
+      bool NotifyKeyDown(EditBox editBox, Key key, unichar ch)
+      {
+         if(!disabled && (SmartKey)key == enter)
+            ((MainForm)parent).Go(editBox.contents);
+         return true;
+      }
+
+      void NotifyUpdate(EditBox editBox)
+      {
+         String location = ((MainForm)parent).view.location;
+         disabled = !strcmp(location ? location : "", editBox.contents);
+      }
+   };
+   */
+
+   bool OnKeyHit(Key key, unichar ch)
+   {
+      if(key == escape)
+         ((MainForm)parent).view.MakeActive();
+      return true;
    }
 }
 
@@ -2099,9 +2186,12 @@ class MainForm : Window
 
    void OpenModule(char * filePath)
    {
+      char moduleName[MAX_LOCATION];
       char extension[MAX_EXTENSION];
       Module module = null;
       static char symbolsDir[MAX_LOCATION];
+
+      history.size = 0;
 
       FreeContext(globalContext);
       FreeExcludedSymbols(excludedSymbols);
@@ -2138,20 +2228,36 @@ class MainForm : Window
          eModule_LoadStrict(componentsApp, "ecereCOM", publicAccess /*privateAccess*/);
       AddComponents(componentsApp, false);
 
+      // lib prefix and extension get removed by ImportModule
+      if(extension[0])
+      {
+         char name[MAX_FILENAME];
+         GetLastDirectory(filePath, name);
+         StripLastDirectory(filePath, moduleName);
+         StripExtension(name);
+         if((!strcmpi(extension, "so") || !strcmpi(extension, "dylib")) && strstr(name, "lib") == name)
+            memmove(name, name + 3, strlen(name)-3);
+         PathCat(moduleName, name);
+      }
+      else
+         strcpy(moduleName, filePath);
+
       for(module = componentsApp.allModules.first; module; module = module.next)
       {
-         if(module.name && (!strcmp(module.name, filePath)))
+         if(module.name && (!strcmp(module.name, moduleName)))
             break;
       }
       if(!module) module = componentsApp;
-      mainForm.browser.SelectRow(mainForm.browser.FindSubRow((int)module));
+      homeModule = module;
+      mainForm.browser.SelectRow(mainForm.browser.FindSubRow((int64)module));
 
       SetSymbolsDir(null);
    }
 
+   AddressBar addressBar { this, borderStyle = bevel, anchor = Anchor { top = 0, left = 0, right = 0 }, size.h = 26, hotKey = altD };
    ListBox browser
    {
-      this, anchor = { left = 0, top = 0, bottom = 0 }, borderStyle = 0, background = aliceBlue;
+      this, anchor = { left = 0, top = 26, bottom = 0 }, borderStyle = 0, background = aliceBlue;
       treeBranches = true; collapseControl = true; fullRowSelect = false; rootCollapseButton = true;
       hotKey = alt0;
 
@@ -2165,6 +2271,22 @@ class MainForm : Window
          if(page != view.page)
          {
             Window activeChild = this.activeChild;
+
+            // Back / Forward Support
+            if(row && !dontRecordHistory)
+            {
+               if(history.count > historyPos+1)
+                  history.count = historyPos+1;
+               historyPos = history.count-1;
+               addressBar.back.disabled = (historyPos == 0);
+               addressBar.forward.disabled = (historyPos >= history.count-1);
+
+               history.Add((Instance)(uint64)row.tag);
+               historyPos = history.count-1;
+
+               addressBar.back.disabled = (historyPos == 0);
+               addressBar.forward.disabled = (historyPos >= history.count-1);
+            }
 
             view.Destroy(0);
             if(page)
@@ -2206,12 +2328,12 @@ class MainForm : Window
    };
    HelpView view
    {
-      this, anchor = { top = 0, bottom = 0, right = 0 };
+      this, anchor = { top = 26, bottom = 0, right = 0 };
       hotKey = escape;
    };
    PaneSplitter slider
    {
-      this, leftPane = browser, rightPane = view, split = 300 /*scaleSplit = 0.3 */
+      this, anchor.top = 26, leftPane = browser, rightPane = view, split = 300 /*scaleSplit = 0.3 */
    };
 
    bool OnClose(bool parentClosing)
@@ -2235,6 +2357,50 @@ class MainForm : Window
          mainForm.browser.scroll = { 0, index * rowHeight - height / 2 };
       }
       return true;
+   }
+
+   Array<Instance> history { };
+   int historyPos;
+   bool dontRecordHistory;
+   Module homeModule;
+
+   bool Forward()
+   {
+      if(historyPos < history.count-1)
+      {
+         char location[64];
+         historyPos++;
+         addressBar.back.disabled = (historyPos == 0);
+         addressBar.forward.disabled = (historyPos >= history.count-1);
+         sprintf(location, "api://%p", history[historyPos]);
+         dontRecordHistory = true;
+         view.OnOpen(location);
+         dontRecordHistory = false;
+         return true;
+      }
+      return false;
+   }
+
+   bool Back()
+   {
+      if(historyPos > 0)
+      {
+         char location[64];
+         historyPos--;
+         addressBar.back.disabled = (historyPos == 0);
+         addressBar.forward.disabled = (historyPos >= history.count-1);
+         sprintf(location, "api://%p", history[historyPos]);
+         dontRecordHistory = true;
+         view.OnOpen(location);
+         dontRecordHistory = false;
+         return true;
+      }
+      return false;
+   }
+
+   void Home()
+   {
+      mainForm.browser.SelectRow(mainForm.browser.FindSubRow((int64)homeModule));
    }
 };
 
@@ -2285,6 +2451,12 @@ class HelpView : HTMLView
             NameSpace * ns = page ? page.GetNameSpace() : null;
 
             sprintf(docFile, "%s/%s.eCdoc", settings.docDir, (!module || !module.name || (ns && ns->name && !strcmp(ns->name, "namespaces/ecere/namespaces/com"))) ? "ecereCOM" : module.name);
+            if(strchr(docFile, DIR_SEP))
+            {
+               char temp[MAX_LOCATION];
+               GetLastDirectory(docFile, temp);
+               strcpy(docFile, temp);
+            }
 
             if(FileExists(docFile))
             {
@@ -3713,8 +3885,8 @@ class Documentor : GuiApplication
          Module module = eModule_Load(componentsApp, "ecere" /*argv[1]*/, privateAccess);
          DataRow row;
          AddComponents(module, true);
-         mainForm.browser.currentRow = row = mainForm.browser.FindSubRow((int)module);
-         // mainForm.browser.currentRow = row = mainForm.browser.FindSubRow((int)eSystem_FindClass(componentsApp, "Window"));
+         mainForm.browser.currentRow = row = mainForm.browser.FindSubRow((int64)module);
+         // mainForm.browser.currentRow = row = mainForm.browser.FindSubRow((int64)eSystem_FindClass(componentsApp, "Window"));
          while((row = row.parent))
             row.collapsed = false;
       #endif
