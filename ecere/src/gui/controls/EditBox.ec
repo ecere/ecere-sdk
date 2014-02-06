@@ -1735,22 +1735,62 @@ private:
                         else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
                         {
                            char * dot = strchr(word, '.');
+                           char * exponent = strchr(word, 'E');
+                           bool isReal;
                            char * s = null;
                            if(dot && dot > word + wordLen) dot = null;
-                           if(dot)
-                              strtod((dot == word + wordLen) ? (dot+1) : word, &s);
+                           isReal = dot || exponent;
+                           if(isReal)
+                              strtod(word, &s);
                            else
                               strtol(word, &s, 0);
                            if(s && s != word)
                            {
-                              if((dot && *s == 'f' && !isalnum(s[1]) && s[1] != '_') || (!isalpha(*s) && *s != '_'))
+                              // Check suffixes
+                              char ch;
+                              int i;
+                              int gotF = 0, gotL = 0, gotU = 0, gotI = 0;
+                              bool valid = true;
+
+                              for(i = 0; valid && i < 5 && (ch = s[i]) && (isalnum(ch) || ch == '_'); i++)
                               {
-                                 int newWordLen = s + ((*s == 'f') ? 1 : 0) - word;
+                                 switch(ch)
+                                 {
+                                    case 'f': case 'F': gotF++; if(gotF > 1 || !isReal) valid = false; break;
+                                    case 'l': case 'L':
+                                       gotL++;
+                                       if(gotL > 2 || isReal || (gotL == 2 && (s[i-1] != ch)))
+                                       valid = false;
+                                       break;
+                                    case 'u': case 'U': gotU++; if(gotU > 1 || isReal) valid = false; break;
+                                    case 'i': case 'I': case 'j': case 'J': gotI++; if(gotI > 1) valid = false; break;
+                                    default: valid = false;
+                                 }
+                              }
+
+                              // Don't highlight numbers with too many decimal points
+                              if(s[0] == '.' && isdigit(s[1]))
+                              {
+                                 int newWordLen;
+                                 while(s[0] == '.' && isdigit(s[1]))
+                                 {
+                                    int newWordLen = s - word;
+                                    c += newWordLen - wordLen;
+                                    wordLen = newWordLen;
+                                    strtod(s, &s);
+                                 }
+                                 newWordLen = s - word;
+                                 c += newWordLen - wordLen;
+                                 wordLen = newWordLen;
+                              }
+                              else if(valid)
+                              {
+                                 int newWordLen = s + i - word;
                                  newTextColor = colorScheme.numberColor;
                                  c += newWordLen - wordLen;
                                  wordLen = newWordLen;
                               }
-                              else if(dot && dot > word && (isalpha(dot[1]) || dot[1] == '_'))
+                              else if(dot && dot > word)
                                  newTextColor = colorScheme.numberColor;
                            }
                         }
