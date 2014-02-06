@@ -8,6 +8,7 @@ public class IteratorPointer : struct;
 default:
 extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnFree;
+extern int __ecereVMethodID_class_OnGetString;
 private:
 
 public struct BuiltInContainer
@@ -106,4 +107,31 @@ public:
    }
 
    virtual void Delete(IteratorPointer it) { }
+
+   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   {
+      if(this)
+      {
+         Class Dclass = type;
+         char itemString[4096];
+         bool first = true;
+         byte * data = this.data;
+         int i;
+         tempString[0] = '\0';
+         for(i = 0; i < count; i++)
+         {
+            char * result;
+            itemString[0] = '\0';
+            result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnGetString])(
+               Dclass, (type.type == normalClass || type.type == noHeadClass) ? *(void **)data : data, itemString, null, null);
+            if(!first) strcat(tempString, ", ");
+            strcat(tempString, result);
+            first = false;
+            data += Dclass.typeSize;
+         }
+      }
+      else
+         tempString[0] = 0;
+      return tempString;
+   }
 };

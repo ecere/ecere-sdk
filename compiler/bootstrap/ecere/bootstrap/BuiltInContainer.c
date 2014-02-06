@@ -275,6 +275,8 @@ extern int __ecereVMethodID_class_OnCompare;
 
 extern int __ecereVMethodID_class_OnFree;
 
+extern int __ecereVMethodID_class_OnGetString;
+
 static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer___ecereNameSpace__ecere__com__Container, * __ecerePropM___ecereNameSpace__ecere__com__BuiltInContainer___ecereNameSpace__ecere__com__Container;
 
 struct __ecereNameSpace__ecere__com__BuiltInContainer
@@ -402,6 +404,37 @@ void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete(struct 
 {
 }
 
+extern char *  strcat(char * , const char * );
+
+char * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__BuiltInContainer * this, char * tempString, void * fieldData, unsigned int * needClass)
+{
+if(this)
+{
+struct __ecereNameSpace__ecere__com__Class * Dclass = this->type;
+char itemString[4096];
+unsigned int first = 0x1;
+unsigned char * data = this->data;
+int i;
+
+tempString[0] = '\0';
+for(i = 0; i < this->count; i++)
+{
+char * result;
+
+itemString[0] = '\0';
+result = ((char * (*)(void *, void *, char *, void *, unsigned int *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnGetString])(Dclass, (this->type->type == 0 || this->type->type == 5) ? *(void **)data : data, itemString, (((void *)0)), (((void *)0)));
+if(!first)
+strcat(tempString, ", ");
+strcat(tempString, result);
+first = 0x0;
+data += Dclass->typeSize;
+}
+}
+else
+tempString[0] = (char)0;
+return tempString;
+}
+
 int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetLast;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev;
@@ -470,6 +503,8 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
+
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  dataType, void *  setStmt, void *  getStmt, int declMode);
@@ -486,6 +521,7 @@ __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::BuiltInContainer", 0, sizeof(struct __ecereNameSpace__ecere__com__BuiltInContainer), 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer = class;
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_OnGetString, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetFirst", "ecere::com::IteratorPointer GetFirst()", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetLast", "ecere::com::IteratorPointer GetLast()", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetLast, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetPrev", "ecere::com::IteratorPointer GetPrev(ecere::com::IteratorPointer pointer)", __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev, 1);
