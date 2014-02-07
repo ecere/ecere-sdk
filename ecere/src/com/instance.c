@@ -458,8 +458,8 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
          FreeLibrary(library);
    }
 #elif defined(__unix__) || defined(__APPLE__)
-   if(libLocation)
-      strcpy(fileName, libLocation);
+   if(libLocation || strchr(name, '/'))
+      strcpy(fileName, libLocation ? libLocation : "");
    else
       strcpy(fileName, "lib");
    strcat(fileName, name);
@@ -505,7 +505,10 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
          dlclose(library);
    }
 #elif defined(__APPLE__)
-   strcpy(fileName, "lib");
+   if(libLocation || strchr(name, '/'))
+      strcpy(fileName, libLocation ? libLocation : "");
+   else
+      strcpy(fileName, "lib");
    strcat(fileName, name);
    GetExtension(fileName, extension);
    if(!extension[0])

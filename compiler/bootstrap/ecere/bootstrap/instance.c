@@ -4358,6 +4358,14 @@ return bitMember;
 return (((void *)0));
 }
 
+extern char *  __ecereNameSpace__ecere__sys__GetLastDirectory(char *  string, char *  output);
+
+extern char *  __ecereNameSpace__ecere__sys__GetExtension(char *  string, char *  output);
+
+extern unsigned int __ecereNameSpace__ecere__sys__StripExtension(char *  string);
+
+extern int strcasecmp(const char * , const char * );
+
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__Module_Load(struct __ecereNameSpace__ecere__com__Instance * fromModule, char * name, int importAccess, unsigned int ensureCOM)
 {
 unsigned int (stdcall * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
@@ -4397,7 +4405,22 @@ if(Load)
 module = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com__eInstance_New(__ecereNameSpace__ecere__com__eSystem_FindClass(fromModule, "Module"));
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + structSize_Instance)))->application;
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->library = library;
-((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name = __ecereNameSpace__ecere__sys__CopyString(name);
+{
+char moduleName[274];
+char ext[17];
+
+__ecereNameSpace__ecere__sys__GetLastDirectory(name, moduleName);
+__ecereNameSpace__ecere__sys__GetExtension(moduleName, ext);
+__ecereNameSpace__ecere__sys__StripExtension(moduleName);
+if((!(strcasecmp)(ext, "dylib") || !(strcasecmp)(ext, "so")) && strstr(moduleName, "lib") == moduleName)
+{
+int len = strlen(moduleName) - 3;
+
+memmove(moduleName, moduleName + 3, len);
+moduleName[len] = (char)0;
+}
+((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name = __ecereNameSpace__ecere__sys__CopyString(moduleName);
+}
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->Unload = Unload;
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->origImportType = 0;
 if(!Load(module))

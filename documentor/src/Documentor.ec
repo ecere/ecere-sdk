@@ -4,6 +4,8 @@ import "HTMLView"
 import "IDESettings"
 import "SettingsDialog"
 
+uint64 strtoull(const char * nptr, char ** endptr, int base);
+
 static Context globalContext { };
 static OldList defines { };
 static OldList imports { };
@@ -654,7 +656,7 @@ class APIPageNameSpace : APIPage
       char nsName[1024], temp[1024];
       NameSpace * ns;
       BTNamedLink link;
-      uint tag;
+      int64 tag;
 
       nsName[0] = 0;
       ns = nameSpace;
@@ -671,12 +673,12 @@ class APIPageNameSpace : APIPage
       if(nsName[0])
       {
          f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", nsName );
-         tag = (uint)nameSpace;
+         tag = (int64)nameSpace;
          f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
       else
       {
-         tag = (uint)((!module || !module.name || !strcmp(nsName, "ecere::com") ? null : module));
+         tag = (int64)(!module || !module.name || !strcmp(nsName, "ecere::com") ? null : module);
          f.Printf($"<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n", (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
 
@@ -2275,7 +2277,7 @@ class MainForm : Window
 
       ImportModule(filePath, normalImport, publicAccess, false);
 
-      if(extension[0] && strcmpi(extension, "so") && strcmpi(extension, "dll"))
+      if(extension[0] && strcmpi(extension, "so") && strcmpi(extension, "dll") && strcmpi(extension, "dylib"))
          componentsApp.name = CopyString(filePath);
 
       for(module = componentsApp.allModules.first; module; module = module.next)
@@ -2287,19 +2289,18 @@ class MainForm : Window
          eModule_LoadStrict(componentsApp, "ecereCOM", publicAccess /*privateAccess*/);
       AddComponents(componentsApp, false);
 
-      // lib prefix and extension get removed by ImportModule
+      GetLastDirectory(filePath, moduleName);
+      // Extension, path and lib prefix get removed in Module::name
       if(extension[0])
       {
-         char name[MAX_FILENAME];
-         GetLastDirectory(filePath, name);
-         StripLastDirectory(filePath, moduleName);
-         StripExtension(name);
-         if((!strcmpi(extension, "so") || !strcmpi(extension, "dylib")) && strstr(name, "lib") == name)
-            memmove(name, name + 3, strlen(name)-3);
-         PathCat(moduleName, name);
+         StripExtension(moduleName);
+         if((!strcmpi(extension, "so") || !strcmpi(extension, "dylib")) && strstr(moduleName, "lib") == moduleName)
+         {
+            int len = strlen(moduleName) - 3;
+            memmove(moduleName, moduleName + 3, len);
+            moduleName[len] = 0;
+         }
       }
-      else
-         strcpy(moduleName, filePath);
 
       for(module = componentsApp.allModules.first; module; module = module.next)
       {
@@ -2510,13 +2511,6 @@ class HelpView : HTMLView
             NameSpace * ns = page ? page.GetNameSpace() : null;
 
             sprintf(docFile, "%s/%s.eCdoc", settings.docDir, (!module || !module.name || (ns && ns->name && !strcmp(ns->name, "namespaces/ecere/namespaces/com"))) ? "ecereCOM" : module.name);
-            if(strchr(docFile, DIR_SEP))
-            {
-               char temp[MAX_LOCATION];
-               GetLastDirectory(docFile, temp);
-               strcpy(docFile, temp);
-            }
-
             if(FileExists(docFile))
             {
                archive = ArchiveOpen(docFile, { true } );
@@ -2735,7 +2729,7 @@ class HelpView : HTMLView
    {
       if(!strncmp(href, "api://", 6))
       {
-         int tag = (uint)strtoul(href + 6, null, 16);
+         int64 tag = (int64)strtoull(href + 6, null, 16);
          DataRow row = mainForm.browser.FindSubRow(tag);
          if(row)
          {

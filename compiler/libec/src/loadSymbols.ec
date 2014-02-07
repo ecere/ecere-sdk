@@ -716,10 +716,10 @@ Map<String, List<Module> > loadedModules { };
 public void ImportModule(char * name, ImportType importType, AccessMode importAccess, bool loadDllOnly)
 {
    ImportedModule module = null;
-   char moduleName[MAX_FILENAME];
+   char moduleName[MAX_LOCATION];
 
-   strncpy(moduleName, name, MAX_FILENAME-1);
-   moduleName[MAX_FILENAME-1] = 0;
+   strncpy(moduleName, name, MAX_LOCATION-1);
+   moduleName[MAX_LOCATION-1] = 0;
    StripExtension(moduleName);
 
    for(module = defines->first; module; module = module.next)
@@ -740,7 +740,7 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
       PathCat(symFile, name);
       ChangeExtension(symFile, "sym", symFile);
 
-      if(!strcmp(ext, "dll") || !strcmp(ext, "dll") || !ext[0])
+      if(!strcmp(ext, "dll") || !strcmp(ext, "so") || !strcmp(ext, "dylib") || !ext[0])
       {
          if(importType != comCheckImport)
          {
@@ -772,24 +772,25 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
             {
                bool skipLoad = false;
                List<Module> list = null;
-
-               char file[MAX_FILENAME];
+               /*
+               char file[MAX_LOCATION];
                strcpy(file, name);
                StripExtension(file);
+               */
 
                // Load an extra instance of any shared module to ensure freeing up a
                // module loaded in another file will not invalidate our objects.
                if(!inCompiler && !inPreCompiler && !inSymbolGen)
                {
                   MapIterator<String, List<Module> > it { map = loadedModules };
-                  if(!it.Index(file, false))
+                  if(!it.Index(name /*file*/, false))
                   {
-                     Module firstModule = eModule_LoadStrict(__thisModule.application, file, importAccess);
+                     Module firstModule = eModule_LoadStrict(__thisModule.application, name /*file*/, importAccess);
                      if(firstModule)
                      {
                         list = { };
                         list.Add(firstModule);
-                        loadedModules[file] = list;
+                        loadedModules[name /*file*/] = list;
                      }
                      else
                         skipLoad = true;
@@ -800,7 +801,7 @@ public void ImportModule(char * name, ImportType importType, AccessMode importAc
 
                if(!skipLoad)
                {
-                  loadedModule = eModule_LoadStrict(privateModule, file, importAccess);
+                  loadedModule = eModule_LoadStrict(privateModule, name /*file*/, importAccess);
                   if(loadedModule)
                   {
                      loadedModule.importType = importType;

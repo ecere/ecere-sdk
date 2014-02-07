@@ -5270,7 +5270,20 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
          module = (Module)eInstance_New(eSystem_FindClass(fromModule, "Module"));
          module.application = fromModule.application;
          module.library = library;
-         module.name = CopyString(name);
+         {
+            char moduleName[MAX_FILENAME];
+            char ext[MAX_EXTENSION];
+            GetLastDirectory(name, moduleName);
+            GetExtension(moduleName, ext);
+            StripExtension(moduleName);
+            if((!strcmpi(ext, "dylib") || !strcmpi(ext, "so")) && strstr(moduleName, "lib") == moduleName)
+            {
+               int len = strlen(moduleName) - 3;
+               memmove(moduleName, moduleName + 3, len);
+               moduleName[len] = 0;
+            }
+            module.name = CopyString(moduleName);
+         }
          module.Unload = Unload;
          module.origImportType = normalImport;
 

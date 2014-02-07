@@ -1697,10 +1697,10 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 void ImportModule(char * name, int importType, int importAccess, unsigned int loadDllOnly)
 {
 struct ImportedModule * module = (((void *)0));
-char moduleName[274];
+char moduleName[797];
 
-strncpy(moduleName, name, (274) - 1);
-moduleName[(274) - 1] = (char)0;
+strncpy(moduleName, name, (797) - 1);
+moduleName[(797) - 1] = (char)0;
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
 for(module = (*defines).first; module; module = module->next)
 {
@@ -1718,7 +1718,7 @@ __ecereNameSpace__ecere__sys__GetExtension(name, ext);
 strcpy(symFile, symbolsDir ? symbolsDir : "");
 __ecereNameSpace__ecere__sys__PathCat(symFile, name);
 __ecereNameSpace__ecere__sys__ChangeExtension(symFile, "sym", symFile);
-if(!strcmp(ext, "dll") || !strcmp(ext, "dll") || !ext[0])
+if(!strcmp(ext, "dll") || !strcmp(ext, "so") || !strcmp(ext, "dylib") || !ext[0])
 {
 if(importType != 4)
 {
@@ -1745,17 +1745,14 @@ if(ext[0] || !__ecereNameSpace__ecere__sys__FileExists(symFile))
 {
 unsigned int skipLoad = 0x0;
 struct __ecereNameSpace__ecere__com__Instance * list = (((void *)0));
-char file[274];
 
-strcpy(file, name);
-__ecereNameSpace__ecere__sys__StripExtension(file);
 if(!inCompiler && !inPreCompiler && !inSymbolGen)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, loadedModules), it);
 
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(file), 0x0))
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(name), 0x0))
 {
-struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, file, importAccess);
+struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name, importAccess);
 
 if(firstModule)
 {
@@ -1771,7 +1768,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 loadedModules, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(file))), 0x1);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(name))), 0x1);
 __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, list);
 });
 }
@@ -1783,7 +1780,7 @@ list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereName
 }
 if(!skipLoad)
 {
-loadedModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(privateModule, file, importAccess);
+loadedModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(privateModule, name, importAccess);
 if(loadedModule)
 {
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)loadedModule + structSize_Instance)))->importType = importType;
