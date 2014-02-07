@@ -262,7 +262,11 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
    }
    return childProcessId;
 #elif defined(__linux__)
+   char exeFileTruncated[16];
    FileListing listing { "/proc/" };
+   // Names is limited to 15 characters in /proc/pid/status
+   strncpy(exeFileTruncated, exeFile, 15);
+   exeFileTruncated[15] = 0;
    while(listing.Find())
    {
       if(listing.stats.attribs.isDirectory)
@@ -283,8 +287,8 @@ int Process_GetChildExeProcessId(const int parentProcessId, const char * exeFile
                {
                   if(!strncmp(buffer, "Name:", 5))
                   {
-                     char * string = strstr(buffer + 6, exeFile);
-                     if(!string || strcmp(string, exeFile))
+                     char * string = strstr(buffer + 6, exeFileTruncated);
+                     if(!string || strcmp(string, exeFileTruncated))
                         break;
                      found = true;
                   }
