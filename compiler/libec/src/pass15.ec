@@ -4004,6 +4004,8 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 #define OPERATOR_ALL(macro, o, name) \
    macro(o, Int##name, i, int, PrintInt) \
    macro(o, UInt##name, ui, unsigned int, PrintUInt) \
+   macro(o, Int64##name, i, int, PrintInt64) \
+   macro(o, UInt64##name, ui, unsigned int, PrintUInt64) \
    macro(o, Short##name, s, short, PrintShort) \
    macro(o, UShort##name, us, unsigned short, PrintUShort) \
    macro(o, Char##name, c, char, PrintChar) \
@@ -4014,6 +4016,8 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 #define OPERATOR_INTTYPES(macro, o, name) \
    macro(o, Int##name, i, int, PrintInt) \
    macro(o, UInt##name, ui, unsigned int, PrintUInt) \
+   macro(o, Int64##name, i, int, PrintInt64) \
+   macro(o, UInt64##name, ui, unsigned int, PrintUInt64) \
    macro(o, Short##name, s, short, PrintShort) \
    macro(o, UShort##name, us, unsigned short, PrintUShort) \
    macro(o, Char##name, c, char, PrintChar) \
@@ -4110,6 +4114,8 @@ OPERATOR_ALL(TERTIARY, ?, Cond)
 
 OPERATOR_TABLE_ALL(int, Int)
 OPERATOR_TABLE_ALL(uint, UInt)
+OPERATOR_TABLE_ALL(int64, Int64)
+OPERATOR_TABLE_ALL(uint64, UInt64)
 OPERATOR_TABLE_ALL(short, Short)
 OPERATOR_TABLE_ALL(ushort, UShort)
 OPERATOR_TABLE_INTTYPES(float, Float)
@@ -4243,33 +4249,33 @@ public Operand GetOperand(Expression exp)
                   op.ui64 = (uint64)_strtoui64(exp.constant, null, 0);
                   op.ops = uintOps;
                }
-               op.kind = intType;
+               op.kind = int64Type;
                break;
             case intPtrType:
                if(type.isSigned)
                {
                   op.i64 = (int64)_strtoi64(exp.constant, null, 0);
-                  op.ops = intOps;
+                  op.ops = int64Ops;
                }
                else
                {
                   op.ui64 = (uint64)_strtoui64(exp.constant, null, 0);
-                  op.ops = uintOps;
+                  op.ops = uint64Ops;
                }
-               op.kind = intType;
+               op.kind = int64Type;
                break;
             case intSizeType:
                if(type.isSigned)
                {
                   op.i64 = (int64)_strtoi64(exp.constant, null, 0);
-                  op.ops = intOps;
+                  op.ops = int64Ops;
                }
                else
                {
                   op.ui64 = (uint64)_strtoui64(exp.constant, null, 0);
-                  op.ops = uintOps;
+                  op.ops = uint64Ops;
                }
-               op.kind = intType;
+               op.kind = int64Type;
                break;
             case floatType:
                op.f = (float)strtod(exp.constant, null);
@@ -7556,6 +7562,7 @@ void ProcessExpressionType(Expression exp)
       {
          if(!exp.expType)
          {
+            char * constant = exp.constant;
             Type type
             {
                refCount = 1;
@@ -7563,14 +7570,14 @@ void ProcessExpressionType(Expression exp)
             };
             exp.expType = type;
 
-            if(exp.constant[0] == '\'')
+            if(constant[0] == '\'')
             {
-               if((int)((byte *)exp.constant)[1] > 127)
+               if((int)((byte *)constant)[1] > 127)
                {
                   int nb;
-                  unichar ch = UTF8GetChar(exp.constant + 1, &nb);
-                  if(nb < 2) ch = exp.constant[1];
-                  delete exp.constant;
+                  unichar ch = UTF8GetChar(constant + 1, &nb);
+                  if(nb < 2) ch = constant[1];
+                  delete constant;
                   exp.constant = PrintUInt(ch);
                   // type.kind = (ch > 0xFFFF) ? intType : shortType;
                   type.kind = classType; //(ch > 0xFFFF) ? intType : shortType;
@@ -7584,26 +7591,58 @@ void ProcessExpressionType(Expression exp)
                   type.isSigned = true;
                }
             }
-            else if(strchr(exp.constant, '.'))
-            {
-               char ch = exp.constant[strlen(exp.constant)-1];
-               if(ch == 'f')
-                  type.kind = floatType;
-               else
-                  type.kind = doubleType;
-               type.isSigned = true;
-            }
             else
             {
-               if(exp.constant[0] == '0' && exp.constant[1])
-                  type.isSigned = false;
-               else if(strchr(exp.constant, 'L') || strchr(exp.constant, 'l'))
-                  type.isSigned = false;
-               else if(strtoll(exp.constant, null, 0) > MAXINT)
-                  type.isSigned = false;
+               char * dot = strchr(constant, '.');
+               bool isHex = (constant[0] == '0' && (constant[1] == 'x' || constant[1] == 'X'));
+               char * exponent;
+               if(isHex)
+               {
+                  exponent = strchr(constant, 'p');
+                  if(!exponent) exponent = strchr(constant, 'P');
+               }
                else
+               {
+                  exponent = strchr(constant, 'e');
+                  if(!exponent) exponent = strchr(constant, 'E');
+               }
+
+               if(dot || exponent)
+               {
+                  if(strchr(constant, 'f') || strchr(constant, 'F'))
+                     type.kind = floatType;
+                  else
+                     type.kind = doubleType;
                   type.isSigned = true;
-               type.kind = intType;
+               }
+               else
+               {
+                  bool isSigned = constant[0] == '-';
+                  int64 i64 = strtoll(constant, null, 0);
+                  uint64 ui64 = strtoull(constant, null, 0);
+                  bool is64Bit = false;
+                  if(isSigned)
+                  {
+                     if(i64 < MININT)
+                        is64Bit = true;
+                  }
+                  else
+                  {
+                     if(ui64 > MAXINT)
+                     {
+                        if(ui64 > MAXDWORD)
+                        {
+                           is64Bit = true;
+                           if(ui64 <= MAXINT64 && (constant[0] != '0' || !constant[1]))
+                              isSigned = true;
+                        }
+                     }
+                     else if(constant[0] != '0' || !constant[1])
+                        isSigned = true;
+                  }
+                  type.kind = is64Bit ? int64Type : intType;
+                  type.isSigned = isSigned;
+               }
             }
             exp.isConstant = true;
             if(exp.destType && exp.destType.kind == doubleType)

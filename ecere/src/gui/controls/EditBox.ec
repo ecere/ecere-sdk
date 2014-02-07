@@ -1735,13 +1735,24 @@ private:
                         else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
                         {
                            char * dot = strchr(word, '.');
-                           char * exponent = strchr(word, 'E');
+                           bool isHex = (word[0] == '0' && (word[1] == 'x' || word[1] == 'X'));
+                           char * exponent;
                            bool isReal;
                            char * s = null;
+                           if(isHex)
+                           {
+                              exponent = strchr(word, 'p');
+                              if(!exponent) exponent = strchr(word, 'P');
+                           }
+                           else
+                           {
+                              exponent = strchr(word, 'e');
+                              if(!exponent) exponent = strchr(word, 'E');
+                           }
                            if(dot && dot > word + wordLen) dot = null;
                            isReal = dot || exponent;
                            if(isReal)
-                              strtod(word, &s);
+                              strtod(word, &s);      // strtod() seems to break on hex floats (e.g. 0x23e3p12, 0x1.fp3)
                            else
                               strtol(word, &s, 0);
                            if(s && s != word)

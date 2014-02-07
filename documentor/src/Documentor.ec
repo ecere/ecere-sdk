@@ -4,8 +4,6 @@ import "HTMLView"
 import "IDESettings"
 import "SettingsDialog"
 
-uint64 strtoull(const char * nptr, char ** endptr, int base);
-
 static Context globalContext { };
 static OldList defines { };
 static OldList imports { };

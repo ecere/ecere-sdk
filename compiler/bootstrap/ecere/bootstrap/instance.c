@@ -5389,6 +5389,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("islower", "int islower(i
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isupper", "int isupper(int c)", isupper, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoul", "unsigned long strtoul(const char * nptr, char ** endptr, int base)", strtoul, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoll", "int64 strtoll(const char * nptr, char ** endptr, int base)", strtoul, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoull", "uint64 strtoull(const char * nptr, char ** endptr, int base)", strtoul, module, 4);
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char * argv[])

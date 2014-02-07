@@ -5666,6 +5666,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Add(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i + value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Add(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui + value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortAdd(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -5777,6 +5807,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui - value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64Sub(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i - value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Sub(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui - value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5906,6 +5966,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Mul(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i * value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Mul(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui * value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortMul(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -6017,6 +6107,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(value2 ? (op1->ui / value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64Div(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(value2 ? (op1->i / value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Div(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(value2 ? (op1->ui / value2) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -6146,6 +6266,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Mod(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(value2 ? (op1->i % value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Mod(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(value2 ? (op1->ui % value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortMod(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -6223,6 +6373,32 @@ static unsigned int UIntNeg(struct Expression * exp, struct Operand * op1)
 {
 exp->type = 2;
 exp->string = PrintUInt((unsigned int)(-op1->ui));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64Neg(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintInt64((-op1->i));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Neg(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintUInt64((unsigned int)(-op1->ui));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -6336,6 +6512,32 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Inc(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintInt64((++op1->i));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Inc(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintUInt64((++op1->ui));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortInc(struct Expression * exp, struct Operand * op1)
 {
 exp->type = 2;
@@ -6431,6 +6633,32 @@ static unsigned int UIntDec(struct Expression * exp, struct Operand * op1)
 {
 exp->type = 2;
 exp->string = PrintUInt((--op1->ui));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64Dec(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintInt64((--op1->i));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Dec(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintUInt64((--op1->ui));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -6539,6 +6767,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui = value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64Asign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i = value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Asign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui = value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -6668,6 +6926,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64AddAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i += value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64AddAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui += value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortAddAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -6779,6 +7067,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui -= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64SubAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i -= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64SubAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui -= value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -6908,6 +7226,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64MulAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i *= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64MulAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui *= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortMulAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -7019,6 +7367,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(value2 ? (op1->ui /= value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64DivAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(value2 ? (op1->i /= value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64DivAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(value2 ? (op1->ui /= value2) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7148,6 +7526,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64ModAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(value2 ? (op1->i %= value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64ModAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(value2 ? (op1->ui %= value2) : 0);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortModAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -7229,6 +7637,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui & value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64BitAnd(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i & value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64BitAnd(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui & value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7328,6 +7766,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64BitOr(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i | value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64BitOr(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui | value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortBitOr(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -7409,6 +7877,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui ^ value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64BitXor(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i ^ value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64BitXor(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui ^ value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7508,6 +8006,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64LShift(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i << value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64LShift(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui << value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortLShift(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -7589,6 +8117,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui >> value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64RShift(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i >> value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64RShift(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui >> value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7684,6 +8242,32 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64BitNot(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintInt64((~op1->i));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64BitNot(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintUInt64((unsigned int)(~op1->ui));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortBitNot(struct Expression * exp, struct Operand * op1)
 {
 exp->type = 2;
@@ -7757,6 +8341,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui &= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64AndAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i &= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64AndAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui &= value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7856,6 +8470,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64OrAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i |= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64OrAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui |= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortOrAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -7937,6 +8581,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui ^= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64XorAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i ^= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64XorAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui ^= value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -8036,6 +8710,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64LShiftAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i <<= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64LShiftAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui <<= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortLShiftAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -8117,6 +8821,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui >>= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64RShiftAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i >>= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64RShiftAsign(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui >>= value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -8212,6 +8946,32 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Not(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintInt64((int)(!op1->i));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Not(struct Expression * exp, struct Operand * op1)
+{
+exp->type = 2;
+exp->string = PrintUInt64((unsigned int)(!op1->ui));
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortNot(struct Expression * exp, struct Operand * op1)
 {
 exp->type = 2;
@@ -8285,6 +9045,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui == value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64Equ(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i == value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Equ(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui == value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -8414,6 +9204,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Nqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i != value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Nqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui != value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortNqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -8525,6 +9345,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui && value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64And(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i && value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64And(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui && value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -8654,6 +9504,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Or(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i || value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Or(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui || value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortOr(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -8765,6 +9645,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui > value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64Grt(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i > value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Grt(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui > value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -8894,6 +9804,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Sma(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i < value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Sma(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui < value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortSma(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -9005,6 +9945,36 @@ unsigned int value2 = op2->ui;
 
 exp->type = 2;
 exp->string = PrintUInt(op1->ui >= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int Int64GrtEqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i >= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64GrtEqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui >= value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -9134,6 +10104,36 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64SmaEqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+int value2 = op2->i;
+
+exp->type = 2;
+exp->string = PrintInt64(op1->i <= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64SmaEqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
+{
+unsigned int value2 = op2->ui;
+
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui <= value2);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortSmaEqu(struct Expression * exp, struct Operand * op1, struct Operand * op2)
 {
 short value2 = op2->s;
@@ -9250,6 +10250,32 @@ op1->type->refCount++;
 return 0x1;
 }
 
+static unsigned int Int64Cond(struct Expression * exp, struct Operand * op1, struct Operand * op2, struct Operand * op3)
+{
+exp->type = 2;
+exp->string = PrintInt64(op1->i ? op2->i : op3->i);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
+static unsigned int UInt64Cond(struct Expression * exp, struct Operand * op1, struct Operand * op2, struct Operand * op3)
+{
+exp->type = 2;
+exp->string = PrintUInt64(op1->ui ? op2->ui : op3->ui);
+if(!exp->expType)
+{
+exp->expType = op1->type;
+if(op1->type)
+op1->type->refCount++;
+}
+return 0x1;
+}
+
 static unsigned int ShortCond(struct Expression * exp, struct Operand * op1, struct Operand * op2, struct Operand * op3)
 {
 exp->type = 2;
@@ -9336,6 +10362,16 @@ IntAdd, IntSub, IntMul, IntDiv, IntMod, IntNeg, IntInc, IntDec, IntAsign, IntAdd
 struct OpTable uintOps = 
 {
 UIntAdd, UIntSub, UIntMul, UIntDiv, UIntMod, UIntNeg, UIntInc, UIntDec, UIntAsign, UIntAddAsign, UIntSubAsign, UIntMulAsign, UIntDivAsign, UIntModAsign, UIntBitAnd, UIntBitOr, UIntBitXor, UIntLShift, UIntRShift, UIntBitNot, UIntAndAsign, UIntOrAsign, UIntXorAsign, UIntLShiftAsign, UIntRShiftAsign, UIntNot, UIntEqu, UIntNqu, UIntAnd, UIntOr, UIntGrt, UIntSma, UIntGrtEqu, UIntSmaEqu, UIntCond
+};
+
+struct OpTable int64Ops = 
+{
+Int64Add, Int64Sub, Int64Mul, Int64Div, Int64Mod, Int64Neg, Int64Inc, Int64Dec, Int64Asign, Int64AddAsign, Int64SubAsign, Int64MulAsign, Int64DivAsign, Int64ModAsign, Int64BitAnd, Int64BitOr, Int64BitXor, Int64LShift, Int64RShift, Int64BitNot, Int64AndAsign, Int64OrAsign, Int64XorAsign, Int64LShiftAsign, Int64RShiftAsign, Int64Not, Int64Equ, Int64Nqu, Int64And, Int64Or, Int64Grt, Int64Sma, Int64GrtEqu, Int64SmaEqu, Int64Cond
+};
+
+struct OpTable uint64Ops = 
+{
+UInt64Add, UInt64Sub, UInt64Mul, UInt64Div, UInt64Mod, UInt64Neg, UInt64Inc, UInt64Dec, UInt64Asign, UInt64AddAsign, UInt64SubAsign, UInt64MulAsign, UInt64DivAsign, UInt64ModAsign, UInt64BitAnd, UInt64BitOr, UInt64BitXor, UInt64LShift, UInt64RShift, UInt64BitNot, UInt64AndAsign, UInt64OrAsign, UInt64XorAsign, UInt64LShiftAsign, UInt64RShiftAsign, UInt64Not, UInt64Equ, UInt64Nqu, UInt64And, UInt64Or, UInt64Grt, UInt64Sma, UInt64GrtEqu, UInt64SmaEqu, UInt64Cond
 };
 
 struct OpTable shortOps = 
@@ -9517,33 +10553,33 @@ else
 op.ui64 = __ecereNameSpace__ecere__com___strtoui64(exp->constant, (((void *)0)), 0);
 op.ops = uintOps;
 }
-op.kind = 3;
+op.kind = 4;
 break;
 case 22:
 if(type->isSigned)
 {
 op.i64 = __ecereNameSpace__ecere__com___strtoi64(exp->constant, (((void *)0)), 0);
-op.ops = intOps;
+op.ops = int64Ops;
 }
 else
 {
 op.ui64 = __ecereNameSpace__ecere__com___strtoui64(exp->constant, (((void *)0)), 0);
-op.ops = uintOps;
+op.ops = uint64Ops;
 }
-op.kind = 3;
+op.kind = 4;
 break;
 case 23:
 if(type->isSigned)
 {
 op.i64 = __ecereNameSpace__ecere__com___strtoi64(exp->constant, (((void *)0)), 0);
-op.ops = intOps;
+op.ops = int64Ops;
 }
 else
 {
 op.ui64 = __ecereNameSpace__ecere__com___strtoui64(exp->constant, (((void *)0)), 0);
-op.ops = uintOps;
+op.ops = uint64Ops;
 }
-op.kind = 3;
+op.kind = 4;
 break;
 case 6:
 op.f = (float)strtod(exp->constant, (((void *)0)));
@@ -12657,19 +13693,20 @@ case 2:
 {
 if(!exp->expType)
 {
+char * constant = exp->constant;
 struct Type * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), type->refCount = 1, type->constant = 0x1, type);
 
 exp->expType = type;
-if(exp->constant[0] == '\'')
+if(constant[0] == '\'')
 {
-if((int)((unsigned char *)exp->constant)[1] > 127)
+if((int)((unsigned char *)constant)[1] > 127)
 {
 int nb;
-unsigned int ch = __ecereNameSpace__ecere__sys__UTF8GetChar(exp->constant + 1, &nb);
+unsigned int ch = __ecereNameSpace__ecere__sys__UTF8GetChar(constant + 1, &nb);
 
 if(nb < 2)
-ch = exp->constant[1];
-(__ecereNameSpace__ecere__com__eSystem_Delete(exp->constant), exp->constant = 0);
+ch = constant[1];
+(__ecereNameSpace__ecere__com__eSystem_Delete(constant), constant = 0);
 exp->constant = PrintUInt(ch);
 type->kind = 8;
 type->_class = FindClass("unichar");
@@ -12681,11 +13718,27 @@ type->kind = 1;
 type->isSigned = 0x1;
 }
 }
-else if(strchr(exp->constant, '.'))
+else
 {
-char ch = exp->constant[strlen(exp->constant) - 1];
+char * dot = strchr(constant, '.');
+unsigned int isHex = (constant[0] == '0' && (constant[1] == 'x' || constant[1] == 'X'));
+char * exponent;
 
-if(ch == 'f')
+if(isHex)
+{
+exponent = strchr(constant, 'p');
+if(!exponent)
+exponent = strchr(constant, 'P');
+}
+else
+{
+exponent = strchr(constant, 'e');
+if(!exponent)
+exponent = strchr(constant, 'E');
+}
+if(dot || exponent)
+{
+if(strchr(constant, 'f') || strchr(constant, 'F'))
 type->kind = 6;
 else
 type->kind = 7;
@@ -12693,15 +13746,33 @@ type->isSigned = 0x1;
 }
 else
 {
-if(exp->constant[0] == '0' && exp->constant[1])
-type->isSigned = 0x0;
-else if(strchr(exp->constant, 'L') || strchr(exp->constant, 'l'))
-type->isSigned = 0x0;
-else if(strtoll(exp->constant, (((void *)0)), 0) > (((int)0x7fffffff)))
-type->isSigned = 0x0;
+unsigned int isSigned = constant[0] == '-';
+long long i64 = strtoll(constant, (((void *)0)), 0);
+uint64 ui64 = strtoull(constant, (((void *)0)), 0);
+unsigned int is64Bit = 0x0;
+
+if(isSigned)
+{
+if(i64 < (((int)0x80000000)))
+is64Bit = 0x1;
+}
 else
-type->isSigned = 0x1;
-type->kind = 3;
+{
+if(ui64 > (((int)0x7fffffff)))
+{
+if(ui64 > (0xffffffff))
+{
+is64Bit = 0x1;
+if(ui64 <= (((long long)0x7fffffffffffffffLL)) && (constant[0] != '0' || !constant[1]))
+isSigned = 0x1;
+}
+}
+else if(constant[0] != '0' || !constant[1])
+isSigned = 0x1;
+}
+type->kind = is64Bit ? 4 : 3;
+type->isSigned = isSigned;
+}
 }
 exp->isConstant = 0x1;
 if(exp->destType && exp->destType->kind == 7)

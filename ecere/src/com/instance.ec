@@ -6210,6 +6210,8 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("isupper", "int isupper(int c)", isupper, module, baseSystemAccess);
    eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, baseSystemAccess);
    eSystem_RegisterFunction("strtoul", "unsigned long strtoul(const char * nptr, char ** endptr, int base)", strtoul, module, baseSystemAccess);
+   eSystem_RegisterFunction("strtoll", "int64 strtoll(const char * nptr, char ** endptr, int base)", strtoul, module, baseSystemAccess);
+   eSystem_RegisterFunction("strtoull", "uint64 strtoull(const char * nptr, char ** endptr, int base)", strtoul, module, baseSystemAccess);
 
 }
 

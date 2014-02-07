@@ -130,6 +130,7 @@ void DebugComputeExpression(Expression exp)
          temp[0] = '\0';
          switch(kind)
          {
+            case intPtrType: case intSizeType: case _BoolType:
             case charType: case shortType: case intType: case int64Type: case longType: case floatType: case doubleType:
             case enumType:
             case arrayType:
@@ -197,6 +198,9 @@ void DebugComputeExpression(Expression exp)
             case shortType:
             case intType:
             case longType:
+            case intPtrType:
+            case intSizeType:
+            case _BoolType:
             case int64Type:
             case floatType:
             case doubleType:
