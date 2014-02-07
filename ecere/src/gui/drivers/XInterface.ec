@@ -2216,6 +2216,25 @@ class XInterface : Interface
                   Atom protocols[2] = { atoms[wm_delete_window], atoms[wm_take_focus] };
                   XSetWMProtocols(xGlobalDisplay, windowHandle, protocols, 2);
                }
+
+               // Set Normal hints for minimum/maximum size
+               if(window.minSize.w || window.minSize.h || window.maxSize.w < MAXINT || window.maxSize.h < MAXINT)
+               {
+                  XSizeHints hints = { 0 };
+                  if(window.minSize.w || window.minSize.h)
+                  {
+                     hints.min_width = window.minSize.w;
+                     hints.min_height = window.minSize.h;
+                     hints.flags |= PMinSize;
+                  }
+                  if(window.maxSize.w < MAXINT || window.minSize.h < MAXINT)
+                  {
+                     hints.max_width = window.maxSize.w;
+                     hints.max_height = window.maxSize.h;
+                     hints.flags |= PMaxSize;
+                  }
+                  XSetWMNormalHints(xGlobalDisplay, windowHandle, &hints);
+               }
             }
          }
       }
