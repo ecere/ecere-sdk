@@ -1858,7 +1858,7 @@ class XInterface : Interface
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
-                  if(window.nativeDecorations)
+                  if(atomsSupported[_net_wm_state]) //window.nativeDecorations)
                   {
                      int format;
                      unsigned long len, fill;
