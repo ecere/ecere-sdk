@@ -16,22 +16,38 @@ class AboutIDE : Window
 {
    borderStyle = sizable;
    hasClose = true;
-   minClientSize = { 548, 440 };
+   minClientSize = { 452, 440 };
    text = $"About the Ecere SDK";
    tabCycle = true;
 
-   EditBox
+   EditBox versionCopyright
    {
       this, font = { $"Tahoma", 8.25f, bold = true }, borderStyle = none, background = white, readOnly = true, noCaret = true, multiLine = true, autoSize = true, position = { 13, 128 };
-      contents =
-            "Ecere Software Development Kit v" REPOSITORY_VERSION " \"Ryōan-ji\"" X64STRING "\n"
-            "Copyright © 2005-2014 Ecere Corporation\n"
-            "Copyright © 1996-2014 Jérôme Jacovella-St-Louis";
    };
 
-   Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 174 } };
-   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 220, 174 } };
-   Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 194 } };
+   bool OnPostCreate()
+   {
+      char * longVersion = CopyString(REPOSITORY_VERSION);
+      char * shortVersion;
+      char * tokens[16];
+      char * message;
+      uint count;
+      StripQuotes(longVersion, longVersion);
+      count = TokenizeWith(longVersion, sizeof(tokens)/sizeof(tokens[0]), tokens, "-+", false);
+      shortVersion = count ? tokens[0] : longVersion;
+      message = PrintString(
+            "Ecere Software Development Kit v", shortVersion, " \"Ryōan-ji\"" X64STRING "\n"
+            "Build " REPOSITORY_VERSION "\n"
+            "Copyright © 2005-2014 Ecere Corporation\n"
+            "Copyright © 1996-2014 Jérôme Jacovella-St-Louis");
+      versionCopyright.contents = message;
+      delete message;
+      delete longVersion;
+   }
+
+   Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 194 } };
+   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 220, 194 } };
+   Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 214 } };
    Button licensingBtn
    {
       this, anchor = { left = 40, bottom = 10 }; hotKey = altL; text = "Software Licenses";
@@ -53,7 +69,7 @@ class AboutIDE : Window
    };
    EditBox credits
    {
-      this, borderStyle = none, noCaret = true, readOnly = true, anchor = { left = 16, top = 222, bottom = 48, right = 16 },
+      this, borderStyle = none, noCaret = true, readOnly = true, anchor = { left = 16, top = 242, bottom = 48, right = 16 },
       background = { r = 250, g = 252, b = 255 };
       multiLine = true,
       hasVertScroll = true,
