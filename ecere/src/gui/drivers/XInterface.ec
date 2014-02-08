@@ -95,6 +95,8 @@ static int joystickFD[4];
 static X11Window activeWindow;
 static X11Cursor systemCursors[SystemCursor];
 
+static enum NETWMStateAction { remove = 0, add = 1, toggle = 2 };
+
 static enum AtomIdents
 {
    clipboard, multiple, targets, utf8_string, wm_delete_window, wm_hints, wm_name, wm_protocols, wm_state, wm_take_focus, wm_transient_for,
@@ -173,6 +175,70 @@ int xSystemDepth;
 PixelFormat xSystemPixelFormat;
 Visual * xSystemVisual;
 bool xSharedMemory;
+
+static void SetNETWMState(X11Window windowHandle, bool throughRoot, NETWMStateAction action, Atom atom1, Atom atom2)
+{
+   if(atomsSupported[_net_wm_state])
+   {
+      int format;
+      unsigned long count, fill;
+      Atom type;
+      char * data = null;
+      uint state = WithdrawnState;
+
+      /*if(XGetWindowProperty(xGlobalDisplay, windowHandle, atoms[wm_state], 0, 3, False,
+                 atoms[wm_state], &type, &format, &count, &fill, &data) == Success && count)
+      {
+         state = *(uint *)data;
+         XFree(data);
+      } */
+      if(!throughRoot) //state == WithdrawnState)
+      {
+         // We need to handle modifying these ourselves for withdrawn windows...
+         if(action == add)
+         {
+            Atom values[2] = { atom1, atom2 };
+            XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_state], XA_ATOM,
+               32, PropModeAppend, (byte *)values, atom2 ? 2 : 1);
+         }
+         else if(XGetWindowProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_state], 0, 32, False,
+             XA_ATOM, &type, &format, &count, &fill, &data) == Success)
+         {
+            Atom * values = (Atom *) data;
+            int i;
+            for (i = 0; i < count; i++)
+            {
+               if(values[i] == atom1 || (atom2 && values[i] == atom2))
+               {
+                  if(i < count - 1)
+                     memmove(values + i, values + i + 1, sizeof(Atom) * (count - i - 1));
+                  count--;
+                  i--;
+               }
+            }
+            XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_state], XA_ATOM, 32, PropModeReplace, (byte *)values, (int)count);
+            XFree(data);
+         }
+      }
+      else
+      {
+         XClientMessageEvent event = { 0 };
+         event.type = ClientMessage;
+         event.message_type = atoms[_net_wm_state];
+         event.display = xGlobalDisplay;
+         event.serial = 0;
+         event.window = windowHandle;
+         event.send_event = 1;
+         event.format = 32;
+         event.data.l[0] = action;
+         event.data.l[1] = atom1;
+         event.data.l[2] = atom2;
+         XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
+            SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+      }
+   }
+
+}
 
 static Time timeStamp;
 
@@ -2347,10 +2413,7 @@ class XInterface : Interface
                //printf("Done.\n");
                //XChangeProperty(xGlobalDisplay, windowHandle, atoms[wm_transient_for], XA_WINDOW, 32, PropModeReplace, (unsigned char*)&parentWindow, 1);
                if(window.isModal)
-               {
-                  Atom hints[1] = { atoms[_net_wm_state_modal] };
-                  XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_state], XA_ATOM, 32, PropModeReplace, (unsigned char*)&hints, 1);
-               }
+                  SetNETWMState(windowHandle, false, add, atoms[_net_wm_state_modal], 0);
             }
 
             {
@@ -2669,28 +2732,13 @@ class XInterface : Interface
             if(state == minimized && atomsSupported[_net_wm_state])
             {
                uint iconic = IconicState;
-               /*
-               XChangeProperty(xGlobalDisplay, window.windowHandle, atoms[_net_wm_state], XA_ATOM, 32,
-                  PropModeReplace, (unsigned char*)&atoms[_net_wm_state_hidden], 1);
-               */
+
+               // SetNETWMState(window.windowHandle, true, add, atoms[_net_wm_state_hidden], null);
                /*
                XChangeProperty(xGlobalDisplay, window.windowHandle, atoms[wm_state], XA_CARDINAL, 32,
                   PropModeReplace, &iconic, 1);
                */
 
-               /*
-               XClientMessageEvent event = { 0 };
-               event.type = ClientMessage;
-               event.message_type = atoms[_net_wm_state];
-               event.display = xGlobalDisplay;
-               event.serial = 0;
-               event.window = window.windowHandle;
-               event.send_event = 1;
-               event.format = 32;
-               event.data.l[0] = 2; // 1;
-               event.data.l[1] = atoms[_net_wm_state_hidden];
-               XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, &event);
-               */
                /*
                XClientMessageEvent event = { 0 };
                event.type = ClientMessage;
@@ -2740,19 +2788,8 @@ class XInterface : Interface
                if(atomsSupported[_net_wm_state])
                {
                   // Maximize / Restore the window
-                  XClientMessageEvent event = { 0 };
-                  event.type = ClientMessage;
-                  event.message_type = atoms[_net_wm_state];
-                  event.display = xGlobalDisplay;
-                  event.serial = 0;
-                  event.window = (X11Window)window.windowHandle;
-                  event.send_event = 1;
-                  event.format = 32;
-                  event.data.l[0] = (state == maximized) ? 1 : 0;
-                  event.data.l[1] = atoms[_net_wm_state_maximized_vert];
-                  event.data.l[2] = atoms[_net_wm_state_maximized_horz];
-                  XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
-                     SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+                  SetNETWMState((X11Window)window.windowHandle, true, state == maximized ? add: remove,
+                     atoms[_net_wm_state_maximized_vert], atoms[_net_wm_state_maximized_horz]);
                   if(state == maximized)
                   {
                      // Prevent the code in ConfigureNotify to think the window has been unmaximized
@@ -2771,18 +2808,8 @@ class XInterface : Interface
 
    void FlashRootWindow(Window window)
    {
-      XClientMessageEvent event = { 0 };
       // printf("Attempting to flash root window\n");
-      event.type = ClientMessage;
-      event.message_type = atoms[_net_wm_state];
-      event.display = xGlobalDisplay;
-      event.serial = 0;
-      event.window = (X11Window)window.windowHandle;
-      event.send_event = 1;
-      event.format = 32;
-      event.data.l[0] = 1;
-      event.data.l[1] = atoms[_net_wm_state_demands_attention];
-      XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+      SetNETWMState((X11Window)window.windowHandle, true, add, atoms[_net_wm_state_demands_attention], 0);
    }
 
    void ActivateRootWindow(Window window)
