@@ -148,6 +148,7 @@ RESOURCES1 = \
 	$(RES)actions/stepOut.png \
 	$(RES)actions/stepOver.png \
 	$(RES)actions/stopDebug.png \
+	$(RES)actions/stepOverSkipBreak.png \
 	$(RES)codeMarks/breakpoint.png \
 	$(RES)codeMarks/breakpointDisabled.png \
 	$(RES)codeMarks/breakpointHalf.png \
@@ -167,10 +168,10 @@ RESOURCES1 = \
 	../extras/res/licenses/tango.COPYING \
 	../extras/res/licenses/zlib.README \
 	../extras/res/licenses/sqlite.LICENSE \
-	../extras/res/licenses/jpg.LICENSE \
-	../extras/res/licenses/ungif.LICENSE \
-	../extras/res/licenses/freetype.LICENSE
+	../extras/res/licenses/jpg.LICENSE
 RESOURCES2 = \
+	../extras/res/licenses/ungif.LICENSE \
+	../extras/res/licenses/freetype.LICENSE \
 	../extras/res/licenses/harfbuzz.LICENSE \
 	../extras/res/licenses/upx.LICENSE \
 	../extras/res/licenses/gpl.LICENSE \
@@ -260,7 +261,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) res/ecere.jpg res/ecereBack.jpg res/icon.png ../crossplatform.mk ""
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)actions/attach.png $(RES)actions/delete.png $(RES)actions/detach.png $(RES)actions/docNew.png $(RES)actions/editCopy.png $(RES)actions/editDelete.png $(RES)actions/delete2.png $(RES)actions/build.png $(RES)actions/clean.png $(RES)actions/debug.png "actions"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)actions/docOpen.png $(RES)actions/docSave.png $(RES)actions/docSaveAll.png $(RES)actions/pause.png $(RES)actions/projAdd.png $(RES)actions/projNew.png $(RES)actions/projOpen.png $(RES)actions/rebuild.png $(RES)actions/regMakefile.png $(RES)actions/relink.png "actions"
-	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)actions/restart.png $(RES)actions/run.png $(RES)actions/skipBreaks.png $(RES)actions/stepInto.png $(RES)actions/stepOut.png $(RES)actions/stepOver.png $(RES)actions/stopDebug.png "actions"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)actions/restart.png $(RES)actions/run.png $(RES)actions/skipBreaks.png $(RES)actions/stepInto.png $(RES)actions/stepOut.png $(RES)actions/stepOver.png $(RES)actions/stopDebug.png $(RES)actions/stepOverSkipBreak.png "actions"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)others/mousePointer.png "others"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/software-update-available.png "status"

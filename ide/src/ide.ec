@@ -1195,6 +1195,7 @@ class IDEWorkSpace : Window
       MenuItem debugSkipStepOverItem
       {
          debugMenu, $"Step Over Skipping Breakpoints", e, shiftF10, disabled = true;
+         bitmap = { ":actions/stepOverSkipBreak.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             if(projectView) projectView.DebugStepOver(true);
