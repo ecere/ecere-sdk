@@ -87,7 +87,7 @@ public:
    virtual void ::SetMouseCapture(Window window);
 
    // --- Mouse cursor ---
-   virtual void ::SetMouseCursor(SystemCursor cursor);
+   virtual void ::SetMouseCursor(Window window, SystemCursor cursor);
 
    // --- Caret manipulation ---
    virtual void ::SetCaret(int caretX, int caretY, int size);

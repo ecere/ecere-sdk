@@ -40,6 +40,7 @@ default:
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
 #include <X11/keysym.h>
+#include <X11/cursorfont.h>
 #include <fcntl.h>
 #if !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
 #include <GL/glx.h>
@@ -92,6 +93,7 @@ static bool gotAnXEvent = false;
 static XEvent xEvent;
 static int joystickFD[4];
 static X11Window activeWindow;
+static X11Cursor systemCursors[SystemCursor];
 
 static enum AtomIdents
 {
@@ -1069,6 +1071,16 @@ class XInterface : Interface
       joystickFD[2] = open("/dev/js2", O_RDONLY);
       joystickFD[3] = open("/dev/js3", O_RDONLY);
 
+      systemCursors[iBeam]    = XCreateFontCursor(xGlobalDisplay, XC_xterm);
+      systemCursors[cross]    = XCreateFontCursor(xGlobalDisplay, XC_tcross);
+      systemCursors[moving]   = XCreateFontCursor(xGlobalDisplay, XC_fleur);
+      systemCursors[sizeNESW] = XCreateFontCursor(xGlobalDisplay, XC_bottom_left_corner);
+      systemCursors[sizeNS]   = XCreateFontCursor(xGlobalDisplay, XC_sb_v_double_arrow);
+      systemCursors[sizeNWSE] = XCreateFontCursor(xGlobalDisplay, XC_bottom_right_corner);
+      systemCursors[sizeWE]   = XCreateFontCursor(xGlobalDisplay, XC_sb_h_double_arrow);
+      systemCursors[hand]     = XCreateFontCursor(xGlobalDisplay, XC_hand2);
+      systemCursors[arrow]    = XCreateFontCursor(xGlobalDisplay, XC_left_ptr);
+
       if(xGlobalDisplay)
       {
          XWindowAttributes attributes = { 0 };
@@ -1252,6 +1264,16 @@ class XInterface : Interface
       timerThread.Wait();
       delete timerThread;
       hiResTimer.Stop();
+
+      XFreeCursor(xGlobalDisplay, systemCursors[iBeam]);
+      XFreeCursor(xGlobalDisplay, systemCursors[cross]);
+      XFreeCursor(xGlobalDisplay, systemCursors[moving]);
+      XFreeCursor(xGlobalDisplay, systemCursors[sizeNESW]);
+      XFreeCursor(xGlobalDisplay, systemCursors[sizeNS]);
+      XFreeCursor(xGlobalDisplay, systemCursors[sizeNWSE]);
+      XFreeCursor(xGlobalDisplay, systemCursors[sizeWE]);
+      XFreeCursor(xGlobalDisplay, systemCursors[hand]);
+      XFreeCursor(xGlobalDisplay, systemCursors[arrow]);
 
       //XPutBackEvent(xGlobalDisplay, &e);
       // xThread.Wait();
@@ -2757,14 +2779,10 @@ class XInterface : Interface
 
    // -- Mouse cursor ---
 
-   void SetMouseCursor(int cursor)
+   void SetMouseCursor(Window window, int cursor)
    {
-      //*XLockDisplay(xGlobalDisplay);
-      if(cursor == -1)
-      {
-         XDefineCursor(xGlobalDisplay, (X11Window) guiApp.desktop.windowHandle, nullCursor);
-      }
-      //*XUnlockDisplay(xGlobalDisplay);
+      XDefineCursor(xGlobalDisplay, (X11Window) window.rootWindow.windowHandle,
+         cursor == -1 ? (X11Cursor)0 : systemCursors[(SystemCursor)cursor]);
    }
 
    // --- Caret ---

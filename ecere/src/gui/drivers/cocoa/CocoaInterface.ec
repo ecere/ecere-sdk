@@ -202,7 +202,7 @@ class CocoaInterface : Interface
 
     // -- Mouse cursor ---
 
-    void SetMouseCursor(int cursor)
+    void SetMouseCursor(Window window, int cursor)
     {
         // TODO:
         printf("STUB! %s:%i\n", __FILE__, __LINE__);

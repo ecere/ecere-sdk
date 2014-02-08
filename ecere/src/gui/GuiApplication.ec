@@ -303,16 +303,16 @@ public class GuiApplication : Application
    }
 
    // --- Mouse-based window movement ---
-   void SetCurrentCursor(Cursor cursor)
+   void SetCurrentCursor(Window window, Cursor cursor)
    {
       currentCursor = cursor;
       if(cursor)
       {
          if(fullScreenMode && cursor.bitmap)
-            interfaceDriver.SetMouseCursor((SystemCursor)-1);
+            interfaceDriver.SetMouseCursor(window ? window : desktop, (SystemCursor)-1);
          else
          {
-            interfaceDriver.SetMouseCursor(cursor.systemCursor);
+            interfaceDriver.SetMouseCursor(window ? window : desktop, cursor.systemCursor);
             cursorBackground.Free();
          }
       }

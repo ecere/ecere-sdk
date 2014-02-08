@@ -410,7 +410,7 @@ class Win32ConsoleInterface : Interface
 
    // -- Mouse cursor ---
 
-   void SetMouseCursor(int cursor)
+   void SetMouseCursor(Window window, int cursor)
    {
 
    }

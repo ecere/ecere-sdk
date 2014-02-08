@@ -2233,7 +2233,7 @@ private:
    Window GetParentMenuBar()
    {
       Window menuBarParent;
-      for(menuBarParent = this; menuBarParent; menuBarParent = menuBarParent.parent)
+      for(menuBarParent = this ? parent : null; menuBarParent; menuBarParent = menuBarParent.parent)
       {
          if(menuBarParent.menuBar) return menuBarParent.menuBar;
          if(menuBarParent && !menuBarParent.isActiveClient)
@@ -3357,7 +3357,7 @@ private:
       mouseWindow = rootWindow ? rootWindow.GetAtPosition(x,y, true, false, null) : null;
 
       if((guiApp.windowMoving && !guiApp.windowIsResizing) || guiApp.windowScrolling)
-         guiApp.SetCurrentCursor(guiApp.systemCursors[moving]);
+         guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[moving]);
       else if(mouseWindow)
       {
          modalWindow = mouseWindow.FindModal();
@@ -3370,30 +3370,31 @@ private:
             rx = guiApp.resizeX;
             ry = guiApp.resizeY;
             if((rex && rey) || (rx && ry))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeNWSE]);
+               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeNWSE]);
             else if((rex && ry) || (rx && rey))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeNESW]);
+               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeNESW]);
             else if((ry || rey) && (!rx && !rex))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeNS]);
+               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeNS]);
             else if((rx || rex) && (!ry && !rey))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeWE]);
+               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeWE]);
          }
          else if(!modalWindow && !guiApp.windowCaptured &&
             mouseWindow.IsMouseResizing(x, y, mouseWindow.size.w, mouseWindow.size.h,
                &rx, &ry, &rex, &rey))
          {
             if((rex && rey) || (rx && ry))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeNWSE]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeNWSE]);
             else if((rex && ry) || (rx && rey))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeNESW]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeNESW]);
             else if((ry || rey) && (!rx && !rex))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeNS]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeNS]);
             else if((rx || rex) && (!ry && !rey))
-               guiApp.SetCurrentCursor(guiApp.systemCursors[sizeWE]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeWE]);
          }
          else if(!guiApp.windowCaptured && !modalWindow && !guiApp.interimWindow)
          {
-            if(!mouseWindow.clientArea.IsPointInside({x - mouseWindow.clientStart.x, y - mouseWindow.clientStart.y}))
+            if(!mouseWindow.clientArea.IsPointInside({x - mouseWindow.clientStart.x, y - mouseWindow.clientStart.y}) &&
+               mouseWindow.rootWindow != mouseWindow)
                cursorWindow = mouseWindow.parent;
             else
                cursorWindow = mouseWindow;
@@ -3402,19 +3403,19 @@ private:
             cursorWindow = guiApp.windowCaptured;
          if(cursorWindow)
          {
-            for(; !cursorWindow.cursor && !cursorWindow.style.nonClient; cursorWindow = cursorWindow.parent);
-            guiApp.SetCurrentCursor(cursorWindow.cursor ? cursorWindow.cursor : guiApp.systemCursors[arrow]);
+            for(; !cursorWindow.cursor && !cursorWindow.style.nonClient && cursorWindow.rootWindow != cursorWindow; cursorWindow = cursorWindow.parent);
+            guiApp.SetCurrentCursor(cursorWindow, cursorWindow.cursor ? cursorWindow.cursor : guiApp.systemCursors[arrow]);
          }
          else if(modalWindow)
          {
-            guiApp.SetCurrentCursor(guiApp.systemCursors[arrow]);
+            guiApp.SetCurrentCursor(null, guiApp.systemCursors[arrow]);
          }
          else if(guiApp.interimWindow)
          {
             if(guiApp.interimWindow.cursor)
-               guiApp.SetCurrentCursor(guiApp.interimWindow.cursor);
+               guiApp.SetCurrentCursor(guiApp.interimWindow, guiApp.interimWindow.cursor);
             else
-               guiApp.SetCurrentCursor(mouseWindow.cursor ? mouseWindow.cursor : guiApp.systemCursors[arrow]);
+               guiApp.SetCurrentCursor(mouseWindow, mouseWindow.cursor ? mouseWindow.cursor : guiApp.systemCursors[arrow]);
          }
       }
    }
@@ -3434,7 +3435,7 @@ private:
       if(state && result)
       {
          SetMouseRangeToClient();
-         guiApp.interfaceDriver.SetMouseCursor((SystemCursor)-1);
+         guiApp.interfaceDriver.SetMouseCursor(guiApp.acquiredWindow, (SystemCursor)-1);
       }
       else
       {

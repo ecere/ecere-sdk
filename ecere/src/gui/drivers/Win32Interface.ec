@@ -1625,7 +1625,7 @@ class Win32Interface : Interface
 
    // -- Mouse cursor ---
 
-   void SetMouseCursor(SystemCursor cursor)
+   void SetMouseCursor(Window window, SystemCursor cursor)
    {
       if(lastCursor != cursor)
       {

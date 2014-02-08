@@ -779,7 +779,7 @@ class AndroidInterface : Interface
 
    // -- Mouse cursor ---
 
-   void SetMouseCursor(int cursor)
+   void SetMouseCursor(Window window, int cursor)
    {
       if(cursor == -1)
       {
