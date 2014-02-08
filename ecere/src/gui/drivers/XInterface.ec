@@ -1871,15 +1871,29 @@ class XInterface : Interface
                         if(maxVert && maxHorz)
                         {
                            if(window.state != maximized)
+                           {
                               *&window.state = maximized;
+                              if(!window.nativeDecorations)
+                                 window.CreateSystemChildren();
+                           }
                         }
                         else if(isMinimized)
                         {
                            if(window.state != minimized)
+                           {
                               *&window.state = minimized;
+                              if(!window.nativeDecorations)
+                                 window.CreateSystemChildren();
+                           }
                         }
                         else if(window.state != normal)
+                        {
+                           if(window.state == maximized)
+                              unmaximized = true;
                            *&window.state = normal;
+                           if(!window.nativeDecorations)
+                              window.CreateSystemChildren();
+                        }
                      }
                   }
                   {
