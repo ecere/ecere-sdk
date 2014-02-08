@@ -2630,33 +2630,35 @@ class XInterface : Interface
             }
             else
             {
-               if(!window.nativeDecorations || (!((XWindowData)window.windowData).gotFrameExtents && window.state == maximized)) //((XWindowData)window.windowData).gotFrameExtents && (!window.nativeDecorations || window.state == state))
+               if(!atomsSupported[_net_wm_state] || !window.nativeDecorations || (!((XWindowData)window.windowData).gotFrameExtents && window.state == maximized)) //((XWindowData)window.windowData).gotFrameExtents && (!window.nativeDecorations || window.state == state))
                {
-                  int x = window.position.x;
-                  int y = window.position.y;
-                  int w = window.size.w;
-                  int h = window.size.h;
-
-                  if(window.nativeDecorations)
-                  {
-                     XWindowData windowData = window.windowData;
-                     x -= windowData.decor.left;
-                     y -= windowData.decor.top;
-
-                     w -= windowData.decor.left + windowData.decor.right;
-                     h -= windowData.decor.top + windowData.decor.bottom;
-                  }
-                  x += desktopX;
-                  y += desktopY;
-
                   // With native decorations, we do it the first time
                   // or the WM (Gnome) is sticking it to the top/right!
-                  XMoveResizeWindow(xGlobalDisplay,
-                     (X11Window)window.windowHandle,
-                     x, y, w, h);
+                  {
+                     int x = window.position.x;
+                     int y = window.position.y;
+                     int w = window.size.w;
+                     int h = window.size.h;
+
+                     if(window.nativeDecorations)
+                     {
+                        XWindowData windowData = window.windowData;
+                        x -= windowData.decor.left;
+                        y -= windowData.decor.top;
+
+                        w -= windowData.decor.left + windowData.decor.right;
+                        h -= windowData.decor.top + windowData.decor.bottom;
+                     }
+                     x += desktopX;
+                     y += desktopY;
+
+                     XMoveResizeWindow(xGlobalDisplay,
+                        (X11Window)window.windowHandle,
+                        x, y, w, h);
+                  }
                   UpdateRootWindow(window);
                }
-               if(window.nativeDecorations)
+               if(atomsSupported[_net_wm_state])
                {
                   // Maximize / Restore the window
                   XClientMessageEvent event = { 0 };
