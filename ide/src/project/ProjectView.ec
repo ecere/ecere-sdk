@@ -2041,11 +2041,28 @@ class ProjectView : Window
    {
       if(toNode)
       {
-         //bool isFolder = toNode.type == folder;
-         //bool isRes = toNode.isInResources;
-
+         char path[MAX_LOCATION];
+         char currentDir[MAX_LOCATION];
+         ProjectNode node = toNode;
          FileDialog fileDialog = importFileDialog;
          fileDialog.master = parent;
+         while(node)
+         {
+            node.GetFullFilePath(path);
+            while(path[0])
+            {
+               StripLastDirectory(path, path);
+               if(FileExists(path).isDirectory) break;
+            }
+            if(path[0] || node == toNode.project.topNode)
+               node = null;
+            else
+               node = toNode.project.topNode;
+         }
+         MakeSystemPath(path);
+         StripLastDirectory(path, currentDir);
+         fileDialog.currentDirectory = currentDir[0] ? currentDir : path;
+         fileDialog.filePath = path;
          if(fileDialog.Modal() == ok)
          {
             ImportFolderFSI fsi { projectView = this };
