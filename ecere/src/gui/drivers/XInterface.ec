@@ -1042,11 +1042,23 @@ static bool GetFrameExtents(Window window, bool update)
                XInterface::UpdateRootWindow(window);
             }
          }
+         result = true;
       }
       XFree(data);
-      result = true;
    }
    return result;
+}
+
+static bool WaitForFrameExtents(Window window)
+{
+   int attempts = 0;
+   //XFlush(xGlobalDisplay);
+   while(attempts++ < 10)
+   {
+      if(GetFrameExtents(window, false)) return true;
+      Sleep(1.0 / RESOLUTION);
+   }
+   return false;
 }
 
 /****************************************************************************
@@ -1842,6 +1854,7 @@ class XInterface : Interface
                case ConfigureNotify:
                {
                   XConfigureEvent * event = (XConfigureEvent *) thisEvent;
+                  bool unmaximized = false;
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
@@ -1897,36 +1910,48 @@ class XInterface : Interface
                      }
                   }
                   {
-                     int x = event->x;
-                     int y = event->y;
-                     int w = event->width, h = event->height;
-
-                     //if(event->send_event)
+                     int x, y, w, h;
+                     if(unmaximized)
                      {
-                        X11Window rootChild;
-                        int rootX, rootY;
-                        XTranslateCoordinates(xGlobalDisplay, event->window,
-                           RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0,
-                           &rootX, &rootY, &rootChild);
-                        x = rootX;
-                        y = rootY;
+                        // Ensure we set the normal size anchor when un-maximizing
+                        if(window.nativeDecorations && RequestFrameExtents(window))
+                           WaitForFrameExtents(window);
+                        x = window.position.x, y = window.position.y, w = window.size.w, h = window.size.h;
+                        window.ComputeAnchors(window.normalAnchor, window.normalSizeAnchor, &x, &y, &w, &h);
                      }
-
-                     x -= desktopX;
-                     y -= desktopY;
-
-                     if(window.nativeDecorations && window.state != maximized)
+                     else
                      {
-                        x -= windowData.decor.left;
-                        y -= windowData.decor.top;
-                        w += windowData.decor.left + windowData.decor.right;
-                        h += windowData.decor.top + windowData.decor.bottom;
-                        /*
-                        x -= window.clientStart.x;
-                        y -= window.clientStart.y - (window.hasMenuBar ? skinMenuHeight : 0);
-                        w += window.size.w - window.clientSize.w;
-                        h += window.size.h - window.clientSize.h;
-                        */
+                        x = event->x;
+                        y = event->y;
+                        w = event->width, h = event->height;
+
+                        //if(event->send_event)
+                        {
+                           X11Window rootChild;
+                           int rootX, rootY;
+                           XTranslateCoordinates(xGlobalDisplay, event->window,
+                              RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0,
+                              &rootX, &rootY, &rootChild);
+                           x = rootX;
+                           y = rootY;
+                        }
+
+                        x -= desktopX;
+                        y -= desktopY;
+
+                        if(window.nativeDecorations && window.state != maximized)
+                        {
+                           x -= windowData.decor.left;
+                           y -= windowData.decor.top;
+                           w += windowData.decor.left + windowData.decor.right;
+                           h += windowData.decor.top + windowData.decor.bottom;
+                           /*
+                           x -= window.clientStart.x;
+                           y -= window.clientStart.y - (window.hasMenuBar ? skinMenuHeight : 0);
+                           w += window.size.w - window.clientSize.w;
+                           h += window.size.h - window.clientSize.h;
+                           */
+                        }
                      }
 
                      // Break the anchors for moveable/resizable windows
@@ -1937,7 +1962,15 @@ class XInterface : Interface
                         window.anchored = false;
                      }
 
-                     window.Position(x, y, w, h, true, true, true, true, false, false);
+                     // Break the anchors for moveable/resizable windows
+                     if(window.style.fixed && window.state == normal)
+                     {
+                        window.normalAnchor = Anchor { left = x, top = y };
+                        window.normalSizeAnchor = SizeAnchor { { w, h } };
+                        window.anchored = false;
+                     }
+
+                     window.Position(x, y, w, h, true, true, true, true, false, unmaximized);
                   }
                   break;
                }
@@ -2531,7 +2564,17 @@ class XInterface : Interface
             // Was commenting this out was part of #700/#795 fix, but this causes jumping of e.g. About box after getting frame extents PropertyNotify
 
                // && window.state != maximized -- required for Cinnamon on Mint 14/15
-            if(!windowData.gotFrameExtents && window.state != maximized) return;
+            if(!windowData.gotFrameExtents && window.state != maximized)
+            {
+               if(WaitForFrameExtents(window))
+               {
+                  x += windowData.decor.left;
+                  y += windowData.decor.top ;
+
+                  w += windowData.decor.left + windowData.decor.right;
+                  h += windowData.decor.top  + windowData.decor.bottom;
+               }
+            }
 
             x -= windowData.decor.left;
             y -= windowData.decor.top;
@@ -2540,22 +2583,25 @@ class XInterface : Interface
             h -= windowData.decor.top + windowData.decor.bottom;
 
             // Tweak for first unmaximize on Unity on Ubuntu 11.10
-            if(window.state == maximized && (desktopX + w > desktopW || desktopY + h > desktopH))
+            /*if(window.state == maximized && (desktopX + w > desktopW || desktopY + h > desktopH))
             {
                w -= 40;
                h -= 40;
-            }
+            }*/
          }
 
          x += desktopX;
          y += desktopY;
 
-         if(move && resize)
-            XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y, w, h);
-         else if(move)
-            XMoveWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y);
-         else if(resize)
-            XResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, w, h);
+         if(!atomsSupported[_net_wm_state] || window.state != maximized)
+         {
+            if(move && resize)
+               XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y, w, h);
+            else if(move)
+               XMoveWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y);
+            else if(resize)
+               XResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, w, h);
+         }
 #if defined(__APPLE__)
 //         if(window.created && !visible)
   //          XUnmapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
@@ -2657,10 +2703,11 @@ class XInterface : Interface
             }
             else
             {
-               if(!atomsSupported[_net_wm_state] || !window.nativeDecorations || (!((XWindowData)window.windowData).gotFrameExtents && window.state == maximized)) //((XWindowData)window.windowData).gotFrameExtents && (!window.nativeDecorations || window.state == state))
+               //((XWindowData)window.windowData).gotFrameExtents && (!window.nativeDecorations || window.state == state))
+               if(!atomsSupported[_net_wm_state] || (!((XWindowData)window.windowData).gotFrameExtents && window.state == maximized))
                {
-                  // With native decorations, we do it the first time
-                  // or the WM (Gnome) is sticking it to the top/right!
+                  // Running this block avoids the initial IDE maximized->unmaximized flicker
+                  //if(window.state != maximized || !atomsSupported[_net_wm_state] || window.nativeDecorations)
                   {
                      int x = window.position.x;
                      int y = window.position.y;
@@ -2701,6 +2748,13 @@ class XInterface : Interface
                   event.data.l[2] = atoms[_net_wm_state_maximized_horz];
                   XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
                      SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+                  if(state == maximized)
+                  {
+                     // Prevent the code in ConfigureNotify to think the window has been unmaximized
+                     // if the Window Manager hasn't set the hints yet.
+                     XFlush(xGlobalDisplay);
+                     Sleep(0.01);
+                  }
                }
             }
          }
