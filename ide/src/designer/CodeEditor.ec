@@ -1407,9 +1407,7 @@ class CodeEditor : Window
          {
             if(ide.projectView)
             {
-               ProjectNode node = ide.projectView.GetNodeFromWindow(this, null, true, false);
-               if(!node)
-                  node = ide.projectView.GetNodeFromWindow(this, null, true, true);
+               ProjectNode node = ide.projectView.GetNodeForCompilationFromWindow(this, false, null, null);
                if(!node)
                {
                   char * s;
@@ -2093,7 +2091,7 @@ class CodeEditor : Window
          ProjectView projectView = ide.projectView;
          if(projectView)
          {
-            ProjectNode node = projectView.GetNodeFromWindow(this, null, false, false);
+            ProjectNode node = projectView.GetNodeFromWindow(this, null, true, false, null);
             if(node && node.modified)
             {
                node.modified = false;

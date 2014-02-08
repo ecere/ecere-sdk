@@ -2920,8 +2920,8 @@ class IDEWorkSpace : Window
             if(projectView && projectView.project)
             {
                bool isCObject = false;
-               ProjectNode node = projectView.GetNodeFromWindow(client, null, false, false);
-               if(!node && (node = projectView.GetNodeFromWindow(client, null, false, true)))
+               ProjectNode node = projectView.GetNodeFromWindow(client, null, true, false, null);
+               if(!node && (node = projectView.GetNodeFromWindow(client, null, true, true, null)))
                   isCObject = true;
                if(node)
                {
@@ -2938,26 +2938,21 @@ class IDEWorkSpace : Window
                      {
                         if(projectView)
                         {
-                           bool result = false;
                            bool isCObject = false;
-                           ProjectNode node = null;
-                           for(p : ide.workspace.projects)
-                           {
-                              node = projectView.GetNodeFromWindow(activeClient, p, true, false);
-                              if(node) break;
-                           }
-                           if(!node && (node = projectView.GetNodeFromWindow(activeClient, null, true, true)))
-                              isCObject = true;
+                           bool isExcluded = false;
+                           ProjectNode node = projectView.GetNodeForCompilationFromWindow(activeClient, true, &isExcluded, &isCObject);
                            if(node)
                            {
-                              List<ProjectNode> nodes { };
-                              nodes.Add(node);
-                              projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, isCObject ? cObject : normal);
-                              delete nodes;
-                              result = true;
+                              if(isExcluded)
+                                 ide.outputView.buildBox.Logf($"%s %s is excluded from current build configuration.\n", isCObject ? "Object file" : "File", node.name);
+                              else
+                              {
+                                 List<ProjectNode> nodes { };
+                                 nodes.Add(node);
+                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, isCObject ? cObject : normal);
+                                 delete nodes;
+                              }
                            }
-                           if(!result && node)
-                              ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                         }
                         return true;
                      }
