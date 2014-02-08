@@ -104,10 +104,11 @@ static enum AtomIdents
    _net_wm_window_type_desktop, _net_wm_window_type_dialog, _net_wm_window_type_dock, _net_wm_window_type_dropdown_menu,
    _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash,
    _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, _net_frame_extents, _net_request_frame_extents,
-   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_modal, app_selection
+   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_modal, app_selection, _net_supported
 };
 
 static Atom atoms[AtomIdents];
+static bool atomsSupported[AtomIdents];
 
 static const char *atomNames[AtomIdents] = {
    "CLIPBOARD", //clipboard
@@ -149,7 +150,8 @@ static const char *atomNames[AtomIdents] = {
    "_NET_WM_STATE_MAXIMIZED_VERT", // _net_wm_state_maximized_vert
    "_NET_WM_STATE_MAXIMIZED_HORZ", // _net_wm_state_maximized_horz
    "_NET_WM_STATE_MODAL", // _net_wm_state_modal
-   "APP_SELECTION"
+   "APP_SELECTION",
+   "_NET_SUPPORTED"
 };
 /*
 _NET_WM_STATE_STICKY, ATOM
@@ -250,7 +252,7 @@ static void RepositionDesktop(bool updateChildren)
    h = XDisplayHeight(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
    x_root = XRootWindowOfScreen(x_screen);
 
-   if(atoms[_net_number_of_desktops] != None)
+   if(atomsSupported[_net_number_of_desktops])
    {
       if(XGetWindowProperty(xGlobalDisplay, x_root, atoms[_net_number_of_desktops], 0, 1, False,
                             XA_CARDINAL, &type, &format, &len, &fill,
@@ -271,7 +273,7 @@ static void RepositionDesktop(bool updateChildren)
       }
    }
 
-   if(atoms[_net_current_desktop] != None)
+   if(atomsSupported[_net_current_desktop])
    {
       if(XGetWindowProperty(xGlobalDisplay, x_root, atoms[_net_current_desktop], 0, 1, False,
                             XA_CARDINAL, &type, &format, &len, &fill,
@@ -289,7 +291,7 @@ static void RepositionDesktop(bool updateChildren)
          //printf("_NET_CURRENT_DESKTOP is %d\n", current);
       }
    }
-   if(atoms[_net_workarea] != None)
+   if(atomsSupported[_net_workarea])
    {
       long *workareas;
 
@@ -1158,6 +1160,33 @@ class XInterface : Interface
 
             XInternAtoms(xGlobalDisplay, (char**)atomNames, AtomIdents::enumSize, False, atoms);
 
+            // Check which atoms are supported by the WM
+            {
+               int format;
+               unsigned long count, fill;
+               Atom type;
+               Atom * data;
+
+               if(XGetWindowProperty(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), atoms[_net_supported],
+                  0, 10000, False, XA_ATOM, &type, &format, &count, &fill, (void *)&data) == Success)
+               {
+                  int i;
+                  for (i = 0; i < count; i++)
+                  {
+                     AtomIdents j;
+                     for(j = 0; j < AtomIdents::enumSize; j++)
+                     {
+                        if(atoms[j] == data[i])
+                        {
+                           atomsSupported[j] = true;
+                           break;
+                        }
+                     }
+                  }
+                  XFree(data);
+               }
+            }
+
             {
                Atom protocols[2] = { atoms[wm_delete_window], atoms[wm_take_focus] };
 
@@ -1165,7 +1194,7 @@ class XInterface : Interface
             }
 
             /*
-            if(atoms[_net_workarea] == None)
+            if(atomsSupported[_net_workarea])
                printf("Warning: _NET_WORKAREA extension not supported\n");
             */
 
@@ -1852,7 +1881,7 @@ class XInterface : Interface
                            {
                               XRaiseWindow(xGlobalDisplay, (X11Window)modalRoot.windowHandle);
                               WaitForViewableWindow(modalRoot);
-                              if(atoms[_net_active_window])
+                              if(atomsSupported[_net_active_window])
                               {
                                  XClientMessageEvent event = { 0 };
                                  event.type = ClientMessage;
@@ -2049,7 +2078,10 @@ class XInterface : Interface
       XIC ic = null;
       unsigned long mask = EVENT_MASK;
 
-      attributes.override_redirect = window.interim ? True : False;
+      // Old WM (e.g. TWM), use built-in decorations
+      if(!atomsSupported[_net_wm_state])
+         window.nativeDecorations = false;
+      attributes.override_redirect = (window.interim || (!atomsSupported[_net_wm_state] && !window.nativeDecorations)) ? True : False;
       attributes.event_mask = EVENT_MASK;
       //printf("%s\n", guiApp.defaultDisplayDriver);
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
@@ -2327,7 +2359,9 @@ class XInterface : Interface
             XChangeProperty(xGlobalDisplay, windowHandle, atoms[_motif_wm_hints], atoms[_motif_wm_hints], 32,
                PropModeReplace, (unsigned char*)&hints, 5);
          }
-         if(atoms[_net_wm_pid] != None)
+
+         // *** We set this for ourselves, so don't check atomsSupported !!! ***
+         if(atoms[_net_wm_pid])
          {
             int pid = getpid();
             // printf("Setting _NET_WM_PID to %d\n", pid);
@@ -2432,7 +2466,7 @@ class XInterface : Interface
          bool visible = window.visible;
          if(window.visible && window.created)
             XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-         if(window.state == minimized) return;
+         if(window.state == minimized && atomsSupported[_net_wm_state]) return;
 
          if(window.nativeDecorations)
          {
@@ -2510,9 +2544,11 @@ class XInterface : Interface
       }
    }
 
-
    void SetRootWindowState(Window window, WindowState state, bool visible)
    {
+      // Old WM (e.g. TWM), use built-in decorations
+      if(!atomsSupported[_net_wm_state])
+         window.nativeDecorations = false;
       if(!window.parent || !window.parent.display)
       {
          //Logf("Set root window state %d %s\n", state, window.name);
@@ -2523,7 +2559,7 @@ class XInterface : Interface
             if(window.creationActivation == activate && state != minimized)
                ActivateRootWindow(window);
 
-            if(state == minimized)
+            if(state == minimized && atomsSupported[_net_wm_state])
             {
                uint iconic = IconicState;
                /*
@@ -2642,7 +2678,7 @@ class XInterface : Interface
             XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
             XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
             WaitForViewableWindow(window);
-            if(atoms[_net_active_window])
+            if(atomsSupported[_net_active_window])
             {
                XClientMessageEvent event = { 0 };
                event.type = ClientMessage;
