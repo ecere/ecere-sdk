@@ -956,6 +956,32 @@ static void WaitForViewableWindow(Window window)
    }
 }
 
+static bool RequestFrameExtents(Window window)
+{
+   if(window.nativeDecorations && frameExtentSupported != broken)
+   {
+      // Request decoration frame extents
+      XClientMessageEvent event = { 0 };
+      event.type = ClientMessage;
+      event.message_type = atoms[_net_request_frame_extents];
+      event.display = xGlobalDisplay;
+      event.serial = 0;
+      event.window = (X11Window)window.windowHandle;
+      event.send_event = 1;
+      window.windowHandle = (void *)window.windowHandle;
+      event.format = 32;
+
+      if(frameExtentSupported == unknown && !frameExtentRequest)
+      {
+         frameExtentRequest = GetTime();
+         frameExtentWindow = (X11Window)window.windowHandle;
+      }
+
+      XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
+         SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+   }
+}
+
 static bool GetFrameExtents(Window window, bool update)
 {
    XWindowData windowData = window.windowData;
@@ -2423,29 +2449,7 @@ class XInterface : Interface
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
 
-      if(window.nativeDecorations && frameExtentSupported != broken)
-      {
-         // Request decoration frame extents
-         XClientMessageEvent event = { 0 };
-         event.type = ClientMessage;
-         event.message_type = atoms[_net_request_frame_extents];
-         event.display = xGlobalDisplay;
-         event.serial = 0;
-         event.window = (X11Window)windowHandle;
-         event.send_event = 1;
-         window.windowHandle = (void *)windowHandle;
-         event.format = 32;
-
-         if(frameExtentSupported == unknown && !frameExtentRequest)
-         {
-            frameExtentRequest = GetTime();
-            frameExtentWindow = windowHandle;
-         }
-
-         XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
-            SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
-      }
-      else
+      if(!window.nativeDecorations || !RequestFrameExtents(window))
          ((XWindowData)window.windowData).gotFrameExtents = true;
       return (void *)windowHandle;
    }
