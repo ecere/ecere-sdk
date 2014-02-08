@@ -1928,6 +1928,15 @@ class XInterface : Interface
                         h += window.size.h - window.clientSize.h;
                         */
                      }
+
+                     // Break the anchors for moveable/resizable windows
+                     if(window.style.fixed && window.state == normal)
+                     {
+                        window.normalAnchor = Anchor { left = x, top = y };
+                        window.normalSizeAnchor = SizeAnchor { { w, h } };
+                        window.anchored = false;
+                     }
+
                      window.Position(x, y, w, h, true, true, true, true, false, false);
                   }
                   break;
