@@ -2227,21 +2227,21 @@ class BuilderTab : Tab
    Label labelPrebuildCommands { prebuildCommands.editor, labeledWindow = prebuildCommands, position = { 0, 6 }; };
    StringsArrayOptionBox prebuildCommands
    {
-      this, size = { 290, 100 }, anchor = { left = 8, top = 8, right = 8, bottom = 0.66 };
+      this, size = { 290, 92 }, anchor = { left = 8, top = 8, right = 8, bottom = 200 };
       text = $"Pre-build Commands", hotKey = altE, option = OPTION(prebuildCommands);
    };
 
    Label labelPostbuildCommands { postbuildCommands.editor, labeledWindow = postbuildCommands, position = { 0, 6 }; };
    StringsArrayOptionBox postbuildCommands
    {
-      this, size = { 290 }, anchor = { left = 8, top = 0.33, right = 8, bottom = 0.33 };
+      this, size = { 290, 92 }, anchor = { left = 8, top = 100, right = 8, bottom = 100 };
       text = $"Post-build Commands", hotKey = altT, option = OPTION(postbuildCommands);
    };
 
    Label labelInstallCommands { installCommands.editor, labeledWindow = installCommands, position = { 0, 6 }; };
    StringsArrayOptionBox installCommands
    {
-      this, size = { 290 }, anchor = { left = 8, top = 0.66, right = 8, bottom = 8 };
+      this, size = { 290, 92 }, anchor = { left = 8, top = 200, right = 8, bottom = 8 };
       text = $"Install Commands", hotKey = altT, option = OPTION(installCommands);
    };
 
@@ -2259,5 +2259,13 @@ class BuilderTab : Tab
          control.Deactivate();
          control.Activate();
       }
+   }
+
+   void OnResize(int width, int height)
+   {
+      int h = (height - 8 * 4) / 3;
+      prebuildCommands.anchor = { left = 8, top = 8, right = 8, bottom = h * 2 + 8 * 3 };
+      postbuildCommands.anchor = { left = 8, top = h + 8 * 2, right = 8, bottom = h + 8 * 2 };
+      installCommands.anchor = { left = 8, top = h * 2 + 8 * 3, right = 8, bottom = 8 };
    }
 }
