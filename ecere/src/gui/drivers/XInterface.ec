@@ -2218,6 +2218,9 @@ class XInterface : Interface
          else
          {
             X11Window parentWindow = (X11Window)null;
+            int x = window.position.x, y = window.position.y;
+            int w = window.state == normal ? Max(1, window.size.w) : Max(1, window.normalSizeAnchor.size.w);
+            int h = window.state == normal ? Max(1, window.size.h) : Max(1, window.normalSizeAnchor.size.h);
 
             if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop && (window._isModal || window.style.interim))
             {
@@ -2232,7 +2235,8 @@ class XInterface : Interface
                parentWindow = (X11Window)null;
 
             windowHandle = XCreateWindow(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay),
-               0,0,1,1,0, depth, InputOutput, visual ? visual : CopyFromParent,
+               x, y, w, h,
+               0, depth, InputOutput, visual ? visual : CopyFromParent,
                CWEventMask | CWOverrideRedirect | (visual ? (CWColormap | CWBorderPixel) : 0), &attributes);
 
             if(parentWindow && (window.interim || window.isModal))
@@ -2274,13 +2278,15 @@ class XInterface : Interface
                }
 
                // Set Normal hints for minimum/maximum size
-               if(window.minSize.w || window.minSize.h || window.maxSize.w < MAXINT || window.maxSize.h < MAXINT)
+               if(true) //window.minSize.w || window.minSize.h || window.maxSize.w < MAXINT || window.maxSize.h < MAXINT)
                {
                   XSizeHints hints = { 0 };
+                  MinMaxValue mw, mh;
+                  window.SetWindowMinimum(&mw, &mh);
                   if(window.minSize.w || window.minSize.h)
                   {
-                     hints.min_width = window.minSize.w;
-                     hints.min_height = window.minSize.h;
+                     hints.min_width = Max(window.minSize.w, mw);
+                     hints.min_height = Max(window.minSize.h, mh);
                      hints.flags |= PMinSize;
                   }
                   if(window.maxSize.w < MAXINT || window.minSize.h < MAXINT)
@@ -2289,6 +2295,14 @@ class XInterface : Interface
                      hints.max_height = window.maxSize.h;
                      hints.flags |= PMaxSize;
                   }
+                  hints.x = x;
+                  hints.y = y;
+                  hints.flags |= PPosition;
+
+                  hints.width = w;
+                  hints.height = h;
+                  hints.flags |= PSize;
+
                   XSetWMNormalHints(xGlobalDisplay, windowHandle, &hints);
                }
             }
