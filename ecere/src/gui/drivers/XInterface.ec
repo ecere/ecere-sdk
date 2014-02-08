@@ -2313,9 +2313,14 @@ class XInterface : Interface
          else
          {
             X11Window parentWindow = (X11Window)null;
-            int x = window.position.x, y = window.position.y;
+            int x = window.position.x + desktopX, y = window.position.y + desktopY;
             int w = window.state == normal ? Max(1, window.size.w) : Max(1, window.normalSizeAnchor.size.w);
             int h = window.state == normal ? Max(1, window.size.h) : Max(1, window.normalSizeAnchor.size.h);
+            if(!window.nativeDecorations && window.state != normal)
+            {
+               w += window.size.w - window.clientSize.w;
+               h += window.size.h - window.clientSize.h;
+            }
 
             if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop && (window._isModal || window.style.interim))
             {
