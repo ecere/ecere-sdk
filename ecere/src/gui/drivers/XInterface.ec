@@ -895,7 +895,9 @@ static int MyXErrorHandler(X11Display * display, XErrorEvent * event)
    char buffer[1024];
    if(xGlobalDisplay)
       XGetErrorText(xGlobalDisplay, event->error_code, buffer, sizeof(buffer));
+#ifdef _DEBUG
    Logf("X Error: %s\n", buffer);
+#endif
    return 0;
 }
 
