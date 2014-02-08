@@ -956,6 +956,73 @@ static void WaitForViewableWindow(Window window)
    }
 }
 
+static bool GetFrameExtents(Window window, bool update)
+{
+   XWindowData windowData = window.windowData;
+   bool result = false;
+   int format;
+   unsigned long len, fill;
+   Atom type;
+   char * data = null;
+
+   if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.windowHandle,
+      atoms[_net_frame_extents], 0, 4,
+       False, XA_CARDINAL, &type, &format, &len,
+       &fill, &data) == Success && data)
+   {
+      long *extents = (long *)data;
+      bool change = extents[0] != windowData.decor.left ||
+                    extents[1] != windowData.decor.right ||
+                    extents[2] != windowData.decor.top ||
+                    extents[3] != windowData.decor.bottom;
+
+      bool hadFrameExtents = windowData.gotFrameExtents;
+      Box oldDecor = windowData.decor;
+
+      frameExtentSupported = working;
+      frameExtentWindow = 0;
+      frameExtentRequest = 0;
+
+      if(!hadFrameExtents || extents[0] || extents[1] || extents[2] || extents[3])
+      {
+         windowData.decor =
+         {
+            left = (int)extents[0], right  = (int)extents[1],
+            top  = (int)extents[2], bottom = (int)extents[3]
+         };
+         windowData.gotFrameExtents = true;
+         if(update && change && ((Window)window).clientSize.w > 0)
+         {
+            int x = window.position.x, y = window.position.y, w = window.size.w, h = window.size.h;
+            if(!hadFrameExtents && window.state != maximized)
+            {
+               window.ComputeAnchors(
+                  window.normalAnchor,
+                  window.normalSizeAnchor,
+                  &x, &y, &w, &h);
+            }
+            else
+            {
+               x += windowData.decor.left - oldDecor.left;
+               y += windowData.decor.top - oldDecor.top;
+
+               w += windowData.decor.left - oldDecor.left + windowData.decor.right - oldDecor.right;
+               h += windowData.decor.top - oldDecor.top   + windowData.decor.bottom - oldDecor.bottom;
+            }
+
+            if(window.state != maximized)
+            {
+               window.Position(x, y, w, h, true, true, true, true, false, !hadFrameExtents && window.state != maximized);
+               XInterface::UpdateRootWindow(window);
+            }
+         }
+      }
+      XFree(data);
+      result = true;
+   }
+   return result;
+}
+
 /****************************************************************************
    /// DRIVER IMPLEMENTATION /////////////
 ****************************************************************************/
@@ -1746,7 +1813,6 @@ class XInterface : Interface
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
-                  // TODO: Support _NET_REQUEST_FRAME_EXTENTS message / _NET_FRAME_EXTENTS property for decoration size awareness
                   if(window.nativeDecorations)
                   {
                      int format;
@@ -1937,66 +2003,7 @@ class XInterface : Interface
                   if(event->atom == atoms[_net_frame_extents] &&
                     event->state == PropertyNewValue && windowData)
                   {
-                     int format;
-                     unsigned long len, fill;
-                     Atom type;
-                     char * data = null;
-
-                     if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.windowHandle,
-                        atoms[_net_frame_extents], 0, 4,
-                         False, XA_CARDINAL, &type, &format, &len,
-                         &fill, &data) == Success && data)
-                     {
-                        long *extents = (long *)data;
-                        bool change = extents[0] != windowData.decor.left ||
-                                      extents[1] != windowData.decor.right ||
-                                      extents[2] != windowData.decor.top ||
-                                      extents[3] != windowData.decor.bottom;
-
-                        bool hadFrameExtents = windowData.gotFrameExtents;
-                        Box oldDecor = windowData.decor;
-
-                        frameExtentSupported = working;
-                        frameExtentWindow = 0;
-                        frameExtentRequest = 0;
-
-                        if(!hadFrameExtents || extents[0] || extents[1] || extents[2] || extents[3])
-                        {
-                           windowData.decor =
-                           {
-                              left = (int)extents[0], right  = (int)extents[1],
-                              top  = (int)extents[2], bottom = (int)extents[3]
-                           };
-                           windowData.gotFrameExtents = true;
-                           if(change && ((Window)window).clientSize.w > 0)
-                           {
-                              int x = window.position.x, y = window.position.y, w = window.size.w, h = window.size.h;
-                              if(!hadFrameExtents && window.state != maximized)
-                              {
-                                 window.ComputeAnchors(
-                                    window.normalAnchor,
-                                    window.normalSizeAnchor,
-                                    &x, &y, &w, &h);
-                              }
-                              else
-                              {
-                                 x += windowData.decor.left - oldDecor.left;
-                                 y += windowData.decor.top - oldDecor.top;
-
-                                 w += windowData.decor.left - oldDecor.left + windowData.decor.right - oldDecor.right;
-                                 h += windowData.decor.top - oldDecor.top   + windowData.decor.bottom - oldDecor.bottom;
-                              }
-
-                              if(window.state != maximized)
-                              {
-                                 window.Position(x, y, w, h, true, true, true, true, false, !hadFrameExtents && window.state != maximized);
-                                 UpdateRootWindow(window);
-                              }
-                           }
-                        }
-                        XFree(data);
-                     }
-                     else
+                     if(!GetFrameExtents(window, true))
                         windowData.gotFrameExtents = true; // Unsupported?
                   }
                   break;
