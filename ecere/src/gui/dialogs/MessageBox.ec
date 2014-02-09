@@ -127,6 +127,8 @@ private:
 
    bool OnResizing(int *w, int *h)
    {
+      if(!totalHeight)
+         OnLoadGraphics();
       if(style == yesNoCancel)
          *w = Max(*w, Max(totalWidth, 208) + 24);
       else
@@ -150,6 +152,12 @@ private:
    bool OnLoadGraphics()
    {
       MsgLine line;
+      // This is to set minimum client size on X11
+      // Ideally OnLoadGraphics/OnResizing could be called prior to root window creation...
+      Display display = this.display;
+      Font fontObject = this.fontObject;
+      if(!display) display = master.display;
+      if(!fontObject) fontObject = master.fontObject;
 
       totalHeight = 0;
       for(line = lines.first; line; line = line.next)

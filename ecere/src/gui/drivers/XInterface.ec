@@ -2408,6 +2408,18 @@ class XInterface : Interface
             int x = window.position.x + desktopX, y = window.position.y + desktopY;
             int w = window.state == normal ? Max(1, window.size.w) : Max(1, window.normalSizeAnchor.size.w);
             int h = window.state == normal ? Max(1, window.size.h) : Max(1, window.normalSizeAnchor.size.h);
+            MinMaxValue smw = 0, smh = 0;
+            MinMaxValue minW = window.minSize.w, minH = window.minSize.h;
+            window.OnResizing((int *)&minW, (int *)&minH);
+
+            // To fix jumping message boxes on Cinnamon:
+            if(window.state == normal && (minW > window.minSize.w || minH > window.minSize.w))
+               window.ComputeAnchors(window.normalAnchor, window.normalSizeAnchor, &x, &y, &w, &h);
+
+            window.SetWindowMinimum(&smw, &smh);
+            minW = Max(minW, smw);
+            minH = Max(minH, smh);
+
             if(!window.nativeDecorations && window.state != normal)
             {
                w += window.size.w - window.clientSize.w;
@@ -2467,17 +2479,13 @@ class XInterface : Interface
                }
 
                // Set Normal hints for minimum/maximum size
-               if(true) //window.minSize.w || window.minSize.h || window.maxSize.w < MAXINT || window.maxSize.h < MAXINT)
+               if(true)
                {
                   XSizeHints hints = { 0 };
-                  MinMaxValue mw, mh;
-                  window.SetWindowMinimum(&mw, &mh);
-                  if(window.minSize.w || window.minSize.h)
-                  {
-                     hints.min_width = Max(window.minSize.w, mw);
-                     hints.min_height = Max(window.minSize.h, mh);
-                     hints.flags |= PMinSize;
-                  }
+                  hints.min_width = minW;
+                  hints.min_height = minH;
+                  hints.flags |= PMinSize;
+
                   if(window.maxSize.w < MAXINT || window.minSize.h < MAXINT)
                   {
                      hints.max_width = window.maxSize.w;
