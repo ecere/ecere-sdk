@@ -1191,7 +1191,7 @@ static void SigIntHandler(int value)
    }
    /*
    struct shmid_ds info;
-	int maxid = shmctl (0, SHM_INFO, &info);
+   int maxid = shmctl (0, SHM_INFO, &info);
    int pid = getpgrp();
    int thisPid = getpid();
    //if(thisPid == pid)
@@ -1200,11 +1200,11 @@ static void SigIntHandler(int value)
       if(maxid >= 0)
       {
          int id;
-	      for(id = 0; id <= maxid; id++)
+         for(id = 0; id <= maxid; id++)
          {
-	         struct shmid_ds shmseg;
+            struct shmid_ds shmseg;
             int shmid;
-		      if((shmid = shmctl(id, SHM_STAT, &shmseg)) >= 0)
+            if((shmid = shmctl(id, SHM_STAT, &shmseg)) >= 0)
             {
                if(shmseg.shm_cpid == pid || shmseg.shm_cpid == thisPid)
                {
@@ -1241,7 +1241,7 @@ class XInterface : Interface
       xGlobalDisplay = XOpenDisplay(null);
       frameExtentSupported = unknown;
 
-   	joystickFD[0] = open("/dev/js0", O_RDONLY);
+      joystickFD[0] = open("/dev/js0", O_RDONLY);
       joystickFD[1] = open("/dev/js1", O_RDONLY);
       joystickFD[2] = open("/dev/js2", O_RDONLY);
       joystickFD[3] = open("/dev/js3", O_RDONLY);
@@ -1745,9 +1745,9 @@ class XInterface : Interface
                }
                case SelectionRequest:
                {
-   	            XSelectionRequestEvent *req = (XSelectionRequestEvent *) thisEvent;
-   	            XEvent respond;
-   		         if(req->target == atoms[targets] && clipBoardData)
+                  XSelectionRequestEvent *req = (XSelectionRequestEvent *) thisEvent;
+                  XEvent respond;
+                  if(req->target == atoms[targets] && clipBoardData)
                   {
                      Atom * supportedTargets = new Atom[4];
                      supportedTargets[0] = atoms[targets];
@@ -1755,27 +1755,27 @@ class XInterface : Interface
                      supportedTargets[2] = XA_STRING;
                      supportedTargets[3] = atoms[utf8_string];
                      XChangeProperty(xGlobalDisplay,req->requestor, req->_property,
-   				         XA_ATOM,32,PropModeReplace, (byte *) supportedTargets, 4*sizeof(Atom));
+                        XA_ATOM,32,PropModeReplace, (byte *) supportedTargets, 4*sizeof(Atom));
                      respond.xselection._property = req->_property;
                      delete supportedTargets;
                   }
                   else if((req->target == XA_STRING || req->target == atoms[utf8_string]) && clipBoardData)
-   		         {
+                  {
                      Atom _property = (req->_property == None) ? req->target : req->_property;
-   			         XChangeProperty(xGlobalDisplay,req->requestor, _property,
-   				         req->target/*req->_property*/,8,PropModeReplace, (byte *) clipBoardData, strlen(clipBoardData));
-   			         respond.xselection._property = _property;
-   		         }
+                     XChangeProperty(xGlobalDisplay,req->requestor, _property,
+                        req->target/*req->_property*/,8,PropModeReplace, (byte *) clipBoardData, strlen(clipBoardData));
+                     respond.xselection._property = _property;
+                  }
                   else
-   			         respond.xselection._property = None;
+                     respond.xselection._property = None;
 
                   respond.xselection.type = SelectionNotify;
-   		         respond.xselection.display = req->display;
-   		         respond.xselection.requestor = req->requestor;
-   		         respond.xselection.selection =req->selection;
-   		         respond.xselection.target = req->target;
-   		         respond.xselection.time = CurrentTime;
-   		         XSendEvent(xGlobalDisplay, req->requestor,0,0,&respond);
+                  respond.xselection.display = req->display;
+                  respond.xselection.requestor = req->requestor;
+                  respond.xselection.selection =req->selection;
+                  respond.xselection.target = req->target;
+                  respond.xselection.time = CurrentTime;
+                  XSendEvent(xGlobalDisplay, req->requestor,0,0,&respond);
                   break;
                }
                case SelectionClear:
@@ -2508,8 +2508,8 @@ class XInterface : Interface
       }
       if(ic)
       {
-	      XGetICValues(ic, XNFilterEvents, &mask, NULL);
-	      mask |= EVENT_MASK;
+         XGetICValues(ic, XNFilterEvents, &mask, NULL);
+         mask |= EVENT_MASK;
       }
       /*
       XSelectInput(xGlobalDisplay, windowHandle, mask);
@@ -2993,7 +2993,7 @@ class XInterface : Interface
       if(clipBoardData)
       {
          delete clipBoardData;
-      	XSetSelectionOwner(xGlobalDisplay, atoms[clipboard], None, CurrentTime);
+         XSetSelectionOwner(xGlobalDisplay, atoms[clipboard], None, CurrentTime);
       }
       //*XUnlockDisplay(xGlobalDisplay);
    }
@@ -3181,8 +3181,8 @@ class XInterface : Interface
             else
                memcpy(icon + 2, bitmap.picture, bitmap.width * bitmap.height * sizeof(uint32));
             XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[_net_wm_icon],
-   			  XA_CARDINAL,32,PropModeReplace, (byte *)icon, 2+bitmap.width*bitmap.height);
-           delete icon;
+              XA_CARDINAL,32,PropModeReplace, (byte *)icon, 2+bitmap.width*bitmap.height);
+            delete icon;
          }
          delete bitmap;
       }
