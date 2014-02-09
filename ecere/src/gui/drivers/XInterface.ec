@@ -1999,13 +1999,14 @@ class XInterface : Interface
                      }
                   }
                   {
+                     bool offset = false;
                      int x, y, w, h;
                      if(unmaximized)
                      {
-                        // Ensure we set the normal size anchor when un-maximizing
                         if(window.nativeDecorations && RequestFrameExtents(window))
                            WaitForFrameExtents(window);
-                        x = window.position.x, y = window.position.y, w = window.size.w, h = window.size.h;
+
+                        // Ensure we set the normal size anchor when un-maximizing
                         window.ComputeAnchors(window.normalAnchor, window.normalSizeAnchor, &x, &y, &w, &h);
                      }
                      else
@@ -2021,8 +2022,12 @@ class XInterface : Interface
                            XTranslateCoordinates(xGlobalDisplay, event->window,
                               RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0,
                               &rootX, &rootY, &rootChild);
-                           x = rootX;
-                           y = rootY;
+                           if(x != rootX || y != rootY)
+                           {
+                              x = rootX;
+                              y = rootY;
+                              offset = true;
+                           }
                         }
 
                         x -= desktopX;
@@ -2034,6 +2039,7 @@ class XInterface : Interface
                            y -= windowData.decor.top;
                            w += windowData.decor.left + windowData.decor.right;
                            h += windowData.decor.top + windowData.decor.bottom;
+
                            /*
                            x -= window.clientStart.x;
                            y -= window.clientStart.y - (window.hasMenuBar ? skinMenuHeight : 0);
@@ -2043,23 +2049,20 @@ class XInterface : Interface
                         }
                      }
 
-                     // Break the anchors for moveable/resizable windows
-                     if(window.style.fixed && window.state == normal)
-                     {
-                        window.normalAnchor = Anchor { left = x, top = y };
-                        window.normalSizeAnchor = SizeAnchor { { w, h } };
-                        window.anchored = false;
-                     }
-
-                     // Break the anchors for moveable/resizable windows
-                     if(window.style.fixed && window.state == normal)
-                     {
-                        window.normalAnchor = Anchor { left = x, top = y };
-                        window.normalSizeAnchor = SizeAnchor { { w, h } };
-                        window.anchored = false;
-                     }
-
                      window.Position(x, y, w, h, true, true, true, true, false, unmaximized);
+
+                     // Break the anchors for moveable/resizable windows
+                     // Avoid doing this if the translation wasn't in sync as it will cause the window to move around
+                     if(!unmaximized && !offset && window.style.fixed && window.state == normal)
+                     {
+                        window.normalAnchor = Anchor
+                        {
+                           left = x + windowData.decor.left,
+                           top = y + windowData.decor.top
+                        };
+                        window.normalSizeAnchor =
+                           SizeAnchor { { window.clientSize.w, window.clientSize.h }, isClientW = true, isClientH = true };
+                     }
                   }
                   break;
                }
