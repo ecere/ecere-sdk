@@ -258,7 +258,7 @@ public class DataRow
    bool skipCheck;
 #endif
 public:
-   property int64 tag { set { tag = value; } get { return tag; } };
+   property int64 tag { set { if(this) tag = value; } get { return this ? tag : 0; } };
    property DataRow previous { get { return prev; } };
    property DataRow next { get { return next; } };
    property int index { get { return (this && (!parent || parent.IsExpanded())) ? index : -1; } };
@@ -268,12 +268,12 @@ public:
       get { return GetData(listBox.fields.first); }
    };
    property bool isHeader { set { header = value; } get { return this ? header : false; } };
-   property BitmapResource icon { set { icon = value; } get { return icon; } };
+   property BitmapResource icon { set { if(this) icon = value; } get { return this ? icon : null; } };
    property bool collapsed
    {
       set
       {
-         if(collapsed != value)
+         if(this && collapsed != value)
          {
             collapsed = value;
             if(parent.IsExpanded())
@@ -321,7 +321,7 @@ public:
             }
          }
 #ifdef _DEBUG
-         if(!skipCheck)
+         if(this && !skipCheck)
             listBox.CheckConsistency();
 #endif
       }
@@ -964,7 +964,7 @@ public class ListBox : CommonControl
 public:
    // Properties
    property bool freeSelect { property_category $"Behavior" set { style.freeSelect = value; } get { return style.freeSelect; } };
-   property DataRow currentRow { property_category $"Private" /*"Behavior"*/ set { SetCurrentRow(value, false); } get { return currentRow; } };
+   property DataRow currentRow { property_category $"Private" /*"Behavior"*/ set { if(this) SetCurrentRow(value, false); } get { return this ? currentRow : null; } };
    property DataField currentField
    {
       get { return currentField; }
@@ -997,7 +997,7 @@ public:
             OnApplyGraphics();
          }
       }
-      get { return rowHeight; }
+      get { return this ? rowHeight : 0; }
    };
    property Seconds typingTimeout
    {
@@ -1967,7 +1967,7 @@ private:
 
    void SetCurrentRow(DataRow row, bool notify)
    {
-      if(currentRow != row || (currentRow && currentRow.selectedFlag == unselected))
+      if(this && (currentRow != row || (currentRow && currentRow.selectedFlag == unselected)))
       {
          int headerSize = ((style.header) ? rowHeight : 0);
          int height = clientSize.h + 1 - headerSize;

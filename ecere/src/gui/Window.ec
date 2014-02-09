@@ -8721,7 +8721,7 @@ public:
             if(parent && parent.created && !nonClient) parent.OnChildResized(this, x, y, w, h);
          }
       }
-      get { value = clientSize; }
+      get { value = this ? clientSize : { 0, 0 }; }
    };
 
    property Size initSize { get { value = sizeAnchor.size; } };
@@ -9173,7 +9173,7 @@ public:
    property Point scroll
    {
       property_category $"Behavior"
-      set { SetScrollPosition(value.x, value.y); }
+      set { if(this) SetScrollPosition(value.x, value.y); }
       get { value = scroll; }
    };
 
@@ -9336,7 +9336,7 @@ public:
    property Font fontObject { get { return usedFont ? usedFont.font : null; } };
    property Point clientStart { get { value = clientStart; } };
    property Point absPosition { get { value = absPosition; } };
-   property Anchor normalAnchor { get {value = normalAnchor; } };
+   property Anchor normalAnchor { get { value = normalAnchor; } };
    // property Size normalSizeAnchor { get { value = normalSizeAnchor; } };
    property bool active { get { return (bool)active; } };
    property bool created { get { return (bool)created; } };
