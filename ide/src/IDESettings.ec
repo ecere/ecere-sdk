@@ -941,6 +941,20 @@ public:
       get { return excludeLibs; }
       isset { return excludeLibs.count != 0; }
    }
+   property Array<String> eCcompilerFlags
+   {
+      set
+      {
+         eCcompilerFlags.Free();
+         if(value)
+         {
+            delete eCcompilerFlags;
+            eCcompilerFlags = value;
+         }
+      }
+      get { return eCcompilerFlags; }
+      isset { return eCcompilerFlags.count != 0; }
+   }
    property Array<String> compilerFlags
    {
       set
@@ -978,6 +992,7 @@ private:
    Array<NamedString> environmentVars { };
    Array<String> prepDirectives { };
    Array<String> excludeLibs { };
+   Array<String> eCcompilerFlags { };
    Array<String> compilerFlags { };
    Array<String> linkerFlags { };
    char * name;
@@ -1021,6 +1036,7 @@ private:
       if(prepDirectives) { prepDirectives.Free(); }
       if(excludeLibs) { excludeLibs.Free(); }
       if(compilerFlags) { compilerFlags.Free(); }
+      if(eCcompilerFlags) { eCcompilerFlags.Free(); }
       if(linkerFlags) { linkerFlags.Free(); }
    }
    CompilerConfig Copy()
@@ -1055,6 +1071,7 @@ private:
       for(s : prepDirectives) copy.prepDirectives.Add(CopyString(s));
       for(s : excludeLibs) copy.excludeLibs.Add(CopyString(s));
       for(s : compilerFlags) copy.compilerFlags.Add(CopyString(s));
+      for(s : eCcompilerFlags) copy.eCcompilerFlags.Add(CopyString(s));
       for(s : linkerFlags) copy.linkerFlags.Add(CopyString(s));
 
       incref copy;

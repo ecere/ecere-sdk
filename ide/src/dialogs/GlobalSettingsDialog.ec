@@ -967,7 +967,7 @@ class CompilerOptionsTab : CompilersSubTab
    EditBox distccHosts
    {
       this, text = $"distcc hosts", hotKey = altH;
-      position = { 88, 92 }, size = { 300 };
+      position = { 88, 92 }, size = { 300, 22 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -982,11 +982,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
-   Label lblPrepDefs { this, position = { 8, 124 }, labeledWindow = prepDefs };
+   Label lblPrepDefs { this, position = { 8, 126 }, labeledWindow = prepDefs };
    StringListBox prepDefs
    {
-      this, text = $"Preprocessor directives:", hotKey = altP;
-      position = { 148, 124 }, size = { 300 };
+      this, text = $"Preprocessor directives", hotKey = altP;
+      position = { 148, 124 }, size = { 300, 22 }, anchor = { left = 148, top = 124, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1001,11 +1001,30 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
-   Label lblCompilerFlags { this, position = { 8, 152 }, labeledWindow = compilerFlags };
+   Label leCcompilerFlags { this, position = { 8, 156 }, labeledWindow = eCcompilerFlags };
+   StringListBox eCcompilerFlags
+   {
+      this, text = $"Additional eC compiler flags", hotKey = altG;
+      position = { 148, 154 }, size = { 300, 22 }, anchor = { left = 148, top = 154, right = 8 };
+
+      bool NotifyModified(EditBox editBox)
+      {
+         if(loadedCompiler)
+         {
+            CompilerConfig compiler = loadedCompiler;
+            compiler.eCcompilerFlags = ((StringListBox)editBox).strings;
+            modifiedDocument = true;
+            compilersTab.modifiedDocument = true;
+         }
+         return true;
+      }
+   }
+
+   Label lblCompilerFlags { this, position = { 8, 186 }, labeledWindow = compilerFlags };
    StringListBox compilerFlags
    {
-      this, text = $"Additional compiler flags:", hotKey = altL;
-      position = { 148, 152 }, size = { 300 };
+      this, text = $"Additional compiler flags", hotKey = altR;
+      position = { 148, 184 }, size = { 300, 22 }, anchor = { left = 148, top = 184, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1020,11 +1039,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
-   Label lblLinkerFlags { this, position = { 8, 180 }, labeledWindow = linkerFlags };
+   Label lblLinkerFlags { this, position = { 8, 216 }, labeledWindow = linkerFlags };
    StringListBox linkerFlags
    {
-      this, text = $"Additional linker flags:", hotKey = altL;
-      position = { 148, 180 }, size = { 300 };
+      this, text = $"Additional linker flags", hotKey = altL;
+      position = { 148, 214 }, size = { 300, 22 }, anchor = { left = 148, top = 214, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1039,11 +1058,11 @@ class CompilerOptionsTab : CompilersSubTab
       }
    }
 
-   Label lblExcludedLibraries { this, position = { 8, 208 }, labeledWindow = excludedLibraries };
+   Label lblExcludedLibraries { this, position = { 8, 246 }, labeledWindow = excludedLibraries };
    StringListBox excludedLibraries
    {
-      this, text = $"Libraries to exclude:", hotKey = altX;
-      position = { 148, 208 }, size = { 300 };
+      this, text = $"Libraries to exclude", hotKey = altX;
+      position = { 148, 244 }, size = { 300, 22 }, anchor = { left = 148, top = 244, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1085,6 +1104,7 @@ class CompilerOptionsTab : CompilersSubTab
          distccHosts.contents = compiler.distccHosts;
          prepDefs.strings = compiler.prepDirectives;
          excludedLibraries.strings = compiler.excludeLibs;
+         eCcompilerFlags.strings = compiler.eCcompilerFlags;
          compilerFlags.strings = compiler.compilerFlags;
          linkerFlags.strings = compiler.linkerFlags;
 

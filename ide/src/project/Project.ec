@@ -2553,6 +2553,12 @@ private:
                   f.Puts(l);
                }
             }
+            if(compiler.eCcompilerFlags && compiler.eCcompilerFlags.count)
+            {
+               f.Puts("\nECFLAGS +=");
+               OutputFlags(f, any, compiler.eCcompilerFlags, inPlace);
+               f.Puts("\n");
+            }
             if(compiler.compilerFlags && compiler.compilerFlags.count)
             {
                f.Puts("\nCFLAGS +=");
