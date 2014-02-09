@@ -1532,10 +1532,33 @@ class XInterface : Interface
                case KeyPress:
                {
                   XKeyEvent * event = (XKeyEvent *) thisEvent;
+                  incref window;
+                  if(!window.active)
+                  {
+                     Window modalRoot = window.FindModal();
+                     XWindowData windowData;
+
+                     activeWindow = (X11Window)window.windowHandle;
+
+                     if(!window.parent || window != window.parent.activeChild)
+                     {
+                        if(modalRoot)
+                           modalRoot.ExternalActivate(true, true, window, null);
+                        else
+                           window.ExternalActivate(true, true, window, null); // lastActive);
+                        windowData = modalRoot ? modalRoot.windowData : window.windowData;
+                        if(windowData && windowData.ic)
+                        {
+                           // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, 0);
+                           XSetICFocus(windowData.ic);
+                        }
+                     }
+                  }
                   //*XUnlockDisplay(xGlobalDisplay);
                   ProcessKeyMessage(window, event->keycode, (event->keycode == lastKeyCode) ? 2 : 0, event);
                   //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
                   lastKeyCode = event->keycode;
+                  delete window;
                   break;
                }
                case KeyRelease:
