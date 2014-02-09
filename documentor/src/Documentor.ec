@@ -2182,7 +2182,6 @@ class MainForm : Window
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
-   nativeDecorations = true;
    icon = { ":documentorIcon.png" };
    text = $"API Documentation Browser";
 

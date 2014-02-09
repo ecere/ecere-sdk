@@ -10,7 +10,7 @@ class SettingsDialog : Window
    hasMinimize = true;
    hasClose = true;
    tabCycle = true;
-   size = { 436, 120 };
+   clientSize = { 436, 92 };
    anchor = { horz = -83, vert = -104 };
 
    Label docLabel { this, text = $"Documentation Path:", anchor = { left = 16, top = 16 }, labeledWindow = pathEditBox };
