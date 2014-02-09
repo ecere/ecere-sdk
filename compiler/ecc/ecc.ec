@@ -374,6 +374,16 @@ class CompilerApp : Application
                else
                   valid = false;
             }
+            else if(!strcmp(arg+1, "fno-diagnostics-show-caret"))
+            {
+               char * buf;
+               int size = cppOptionsLen + 1 + strlen(arg) * 2 + 1;
+               cppOptions = renew cppOptions char[size];
+               buf = cppOptions + cppOptionsLen;
+               *buf++ = ' ';
+               PassArg(buf, arg);
+               cppOptionsLen = cppOptionsLen + 1 + strlen(buf);
+            }
             else if(!strcmp(arg+1, "symbols"))
             {
                if(c + 1 < argc)

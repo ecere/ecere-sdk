@@ -1834,8 +1834,25 @@ class ProjectView : Window
                               break;
                         }
                      }
-                     if(!codeEditor && !strchr(moduleName, '/') && !strchr(moduleName, '\\'))
+                     if(!codeEditor && (strchr(moduleName, '/') || strchr(moduleName, '\\')))
                      {
+                        for(prj : ide.workspace.projects)
+                        {
+                           ProjectNode node;
+                           if((node = prj.topNode.FindWithPath(moduleName, false)))
+                           {
+                              strcpy(filePath, prj.topNode.path);
+                              PathCatSlash(filePath, node.path);
+                              PathCatSlash(filePath, node.name);
+                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
+                              if(codeEditor)
+                                 break;
+                           }
+                        }
+                     }
+                     if(!codeEditor)
+                     {
+                        GetLastDirectory(moduleName, moduleName);
                         for(prj : ide.workspace.projects)
                         {
                            ProjectNode node;

@@ -2118,9 +2118,11 @@ private:
       }
       else
       {
+         GccVersionInfo ccVersion = GetGccVersionInfo(compiler, compiler.ccCommand);
+         GccVersionInfo cxxVersion = GetGccVersionInfo(compiler, compiler.cxxCommand);
          char cfDir[MAX_LOCATION];
          GetIDECompilerConfigsDir(cfDir, true, true);
-         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s %s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
+         sprintf(command, "%s%s %sCF_DIR=\"%s\"%s%s%s%s%s%s COMPILER=%s %s%s%s-j%d %s%s%s -C \"%s\"%s -f \"%s\"",
 #if defined(__WIN32__)
                "",
 #else
@@ -2135,7 +2137,10 @@ private:
                bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                ide.workspace.useValgrind ? " DISABLED_POOLING=1" : "",
                /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" :*/ "",
-               compilerName, eC_Debug ? "--always-make " : "", numJobs,
+               compilerName, eC_Debug ? "--always-make " : "",
+               ccVersion == post4_8 ? "GCC_CC_FLAGS=-fno-diagnostics-show-caret " : "",
+               cxxVersion == post4_8 ? "GCC_CXX_FLAGS=-fno-diagnostics-show-caret " : "",
+               numJobs,
                (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
                (compiler.distccEnabled && !eC_Debug) ? "DISTCC=y " : "",
                (String)makeTargets, topNode.path, (justPrint || eC_Debug) ? " -n" : "", makeFilePath);
@@ -2455,12 +2460,12 @@ private:
 
             //f.Printf("SHELL := %s\n", "sh"/*compiler.shellCommand*/); // is this really needed?
             f.Printf("CPP := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cppCommand);
-            f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.ccCommand);
-            f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)\n", compiler.cxxCommand);
+            f.Printf("CC := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ccCommand);
+            f.Printf("CXX := $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)%s$(_SYSROOT)$(if $(GCC_CXX_FLAGS),$(space)$(GCC_CXX_FLAGS),)\n", compiler.cxxCommand);
             if(eC)
             {
-               f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)\n", compiler.ecpCommand);
-               f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)\n", compiler.eccCommand);
+               f.Printf("ECP := $(if $(ECP_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecp/ecp.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.ecpCommand);
+               f.Printf("ECC := $(if $(ECC_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecc/ecc.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)\n", compiler.eccCommand);
                f.Printf("ECS := $(if $(ECS_DEBUG),ide -debug-start \"$(ECERE_SDK_SRC)/compiler/ecs/ecs.epj\" -debug-work-dir \"${CURDIR}\" -@,%s)$(if $(CROSS_TARGET), -t $(TARGET_PLATFORM),)$(if $(OUTPUT_POT), -outputpot,)$(if $(DISABLED_POOLING), -disabled-pooling,)\n", compiler.ecsCommand);
             }
             else
@@ -4581,3 +4586,60 @@ Project LoadProject(char * filePath, char * activeConfigName)
    }
    return project;
 }
+
+static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, String compilerCommand)
+{
+   GccVersionInfo result = unknown;
+   if(compiler.ccCommand)
+   {
+      char command[MAX_F_STRING*4];
+      DualPipe f;
+      sprintf(command, "%s%s --version", compiler.gccPrefix ? compiler.gccPrefix : "", compilerCommand);
+      if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
+      {
+         bool firstLine = true;
+         while(!f.eof)
+         {
+            char line[1024];
+            char * tokens[128];
+            if(f.GetLine(line,sizeof(line)))
+            {
+               if(firstLine)
+               {
+                  uint count = Tokenize(line, sizeof(tokens)/sizeof(tokens[0]), tokens,false);
+                  if(count)
+                     result = GccVersionInfo::GetVersionInfo(tokens[count-1]);
+                  firstLine = false;
+               }
+            }
+         }
+         delete f;
+      }
+   }
+   return result;
+}
+
+static enum GccVersionInfo
+{
+   unknown, pre4_8, post4_8;
+
+   GccVersionInfo ::GetVersionInfo(char * version)
+   {
+      GccVersionInfo result = unknown;
+      int ver;
+      char * s = CopyString(version);
+      char * tokens[16];
+      uint count = TokenizeWith(s, sizeof(tokens)/sizeof(tokens[0]), tokens, ".", false);
+      ver = count > 1 ? atoi(tokens[1]) : 0;
+      ver += count ? atoi(tokens[0]) * 1000 : 0;
+      if(ver > 0)
+      {
+         if(ver < 4008)
+            result = pre4_8;
+         else
+            result = post4_8;
+      }
+      delete s;
+      return result;
+   }
+};
