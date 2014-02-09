@@ -2703,6 +2703,16 @@ class XInterface : Interface
                XMoveWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y);
             else if(resize)
                XResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, w, h);
+
+            // Reset min/max for fixed size windows on WMs not looking at MWM_FUNC_RESIZE (e.g. Cinnamon)
+            if(window.style.fixed && !window.style.sizable)
+            {
+               XSizeHints hints = { 0 };
+               hints.min_width = hints.max_width = w;
+               hints.min_height = hints.max_height = h;
+               hints.flags |= PMinSize|PMaxSize|PPosition|PSize;
+               XSetWMNormalHints(xGlobalDisplay, (X11Window)window.windowHandle, &hints);
+            }
          }
 #if defined(__APPLE__)
 //         if(window.created && !visible)
