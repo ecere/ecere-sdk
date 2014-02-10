@@ -17,6 +17,7 @@ class AboutIDE : Window
    borderStyle = sizable;
    hasClose = true;
    minClientSize = { 462, 450 };
+   maxClientSize = { 462, 1200 };
    text = $"About the Ecere SDK";
    tabCycle = true;
 
@@ -212,7 +213,7 @@ class AboutIDE : Window
    //Label { this, text = "Max Maton", position = { 192, 204 } };
    Picture picture
    {
-      this, size = { 318, 94 }, anchor = { top = 11 }, image = { ":ecere.jpg" };
+      this, size = { 318, 94 }, anchor = { left = 40, top = 11 }, image = { ":ecere.jpg" };
       cursor = ((GuiApplication)__thisModule).GetCursor(hand);
 
       bool OnLeftButtonDown(int x, int y, Modifiers mods)
