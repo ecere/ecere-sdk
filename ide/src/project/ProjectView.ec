@@ -1757,7 +1757,7 @@ class ProjectView : Window
                else
                {
                   char ext[MAX_EXTENSION];
-                  GetExtension(fileName, ext);
+                  GetExtension(moduleName, ext);
                   {
                      DotMain dotMain = DotMain::FromFileName(moduleName);
                      IntermediateFileType type = IntermediateFileType::FromExtension(ext);

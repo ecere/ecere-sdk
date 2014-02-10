@@ -1,3 +1,4 @@
+#ifndef ECERE_NOSSL
 #define byte _byte
 #define int64 _int64
 #define uint _uint
@@ -144,3 +145,4 @@ public class SSLSocket : Socket
          SSL_CTX_free(ctx);
    }
 }
+#endif
