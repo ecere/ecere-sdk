@@ -808,6 +808,7 @@ class CodeEditor : Window
                node.modified = modifiedDocument;
             projectView.Update(null);
          }
+         delete nodes;
       }
    };
 

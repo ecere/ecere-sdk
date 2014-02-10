@@ -347,11 +347,9 @@ static bool TokenizeListItem(char * string, DebugListItem item)
       *equal = '\0';
       equal++;
       item.value = equal;
-      equal = null;
       return true;
    }
-   else
-      return false;
+   return false;
 }
 
 static bool CheckCommandAvailable(const char * command)
@@ -380,6 +378,7 @@ static bool CheckCommandAvailable(const char * command)
                if(fl.stats.attribs.isFile && !fstrcmp(fl.name, name))
                {
                   available = true;
+                  fl.Stop();
                   break;
                }
             }
@@ -557,6 +556,7 @@ class Debugger
                   if(bp)
                      _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "gdb stopped by a breakpoint: ", bp.type, "(", s=bp.CopyLocationString(false), ")"); delete s;
                }
+               delete bpReport;
             }
 #endif
          }
@@ -796,8 +796,8 @@ class Debugger
       event = none;
       breakType = none;
 
-      stopItem = null;
-      bpItem = null;
+      delete stopItem;
+      delete bpItem;
       activeFrame = 0;
 
       bpRunToCursor = null;
@@ -1727,6 +1727,8 @@ class Debugger
                _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "breakpoint member (", item.name, "=", item.value, ") is unheard of");
          }
       }
+      delete bpTokens;
+      delete item;
       return bp;
    }
 
@@ -1929,6 +1931,7 @@ class Debugger
                   if(bp.bp)
                      _dpl(0, "problem");
 #endif
+                  delete bp.bp;
                   bp.bp = GdbDataBreakpoint { };
                }
             }
@@ -1943,6 +1946,7 @@ class Debugger
       {
          GdbCommand(false, "-break-delete %s", bp.bp.number);
          bp.inserted = false;
+         delete bp.bp;
          bp.bp = { };
       }
    }
@@ -2005,6 +2009,7 @@ class Debugger
                bpItem.multipleBPs.Free();
                delete bpItem.multipleBPs;
             }
+            delete bp.bp;
             bp.bp = bpItem;
             bpItem = null;
             bp.inserted = (bp.bp && bp.bp.number && strcmp(bp.bp.number, "0"));
@@ -3365,6 +3370,7 @@ class Debugger
                      if(bpItem)
                         _dpl(0, "problem");
 #endif
+                     delete bpItem;
                      bpItem = ParseBreakpoint(item.value, outTokens);
                      //breakType = bpValidation;
                   }
@@ -3928,6 +3934,7 @@ class Debugger
             DirExpression targetDirExp = prj.GetTargetDir(currentCompiler, prj.config, bitDepth);
             strcpy(prjTargetPath, prj.topNode.path);
             PathCat(prjTargetPath, targetDirExp.dir);
+            delete targetDirExp;
             prjTargetFile[0] = '\0';
             prj.CatTargetFileName(prjTargetFile, currentCompiler, prj.config);
             PathCat(prjTargetPath, prjTargetFile);
@@ -4537,6 +4544,8 @@ class GdbDataBreakpoint : struct
       delete at;
       if(multipleBPs) multipleBPs.Free();
       delete multipleBPs;
+      delete number;
+      delete fullname;
    }
 
    ~GdbDataBreakpoint()
