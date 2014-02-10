@@ -527,7 +527,7 @@ class Debugger
             this.stopItem = null;
 #ifdef _DEBUG_INST
             {
-               char * s;
+               char * s = null;
                DynamicString bpReport { };
 
                for(bp : sysBPs; bp.inserted)
@@ -554,7 +554,10 @@ class Debugger
                   bool isInternal;
                   Breakpoint bp = GetBreakpointById(stopItem.bkptno, &isInternal);
                   if(bp)
-                     _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "gdb stopped by a breakpoint: ", bp.type, "(", s=bp.CopyLocationString(false), ")"); delete s;
+                  {
+                     _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "gdb stopped by a breakpoint: ", bp.type, "(", s=bp.CopyLocationString(false), ")");
+                     delete s;
+                  }
                }
                delete bpReport;
             }
@@ -660,7 +663,7 @@ class Debugger
 
          if(curEvent == signal)
          {
-            char * s;
+            char * s = null;
             signalOn = true;
             ide.outputView.debugBox.Logf($"Signal received: %s - %s\n", stopItem.name, stopItem.meaning);
             ide.outputView.debugBox.Logf("    %s:%d\n", (s = CopySystemPath(stopItem.frame.file)), stopItem.frame.line);
@@ -935,7 +938,7 @@ class Debugger
                frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
             if(!frame.absoluteFile && askForLocation && frame.file)
             {
-               char * s;
+               char * s = null;
                char title[MAX_LOCATION];
                snprintf(title, sizeof(title), $"Provide source file location for %s", (s = CopySystemPath(frame.file)));
                title[sizeof(title)-1] = 0;
@@ -1941,7 +1944,7 @@ class Debugger
 
    void UnsetBreakpoint(Breakpoint bp)
    {
-      char * s; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::UnsetBreakpoint(", s=bp.CopyLocationString(false), ") -- ", bp.type); delete s;
+      char * s = null; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::UnsetBreakpoint(", s=bp.CopyLocationString(false), ") -- ", bp.type); delete s;
       if(symbols && bp.inserted)
       {
          GdbCommand(false, "-break-delete %s", bp.bp.number);
@@ -1953,7 +1956,7 @@ class Debugger
 
    bool SetBreakpoint(Breakpoint bp, bool removePath)
    {
-      char * s; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::SetBreakpoint(", s=bp.CopyLocationString(false), ", ", removePath ? "**** removePath(true) ****" : "", ") -- ", bp.type); delete s;
+      char * s = null; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::SetBreakpoint(", s=bp.CopyLocationString(false), ", ", removePath ? "**** removePath(true) ****" : "", ") -- ", bp.type); delete s;
       breakpointError = false;
       if(symbols && bp.enabled && (!bp.project || bp.project.GetTargetType(bp.project.config) == staticLibrary || bp.project == ide.project || projectsLibraryLoaded[bp.project.name]))
       {
@@ -3404,7 +3407,7 @@ class Debugger
                                  _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "unexpected frame file and from members present");
                               if(frame.file)
                               {
-                                 char * s;
+                                 char * s = null;
                                  if(activeFrameLevel == -1)
                                  {
                                     if(ide.projectView.IsModuleInProject(frame.file));
@@ -3438,7 +3441,7 @@ class Debugger
 
                                  if(frame.from)
                                  {
-                                    char * s;
+                                    char * s = null;
                                     ide.callStackView.Logf($"inside %s, %s\n", frame.func, (s = CopySystemPath(frame.from)));
                                     delete s;
                                  }
@@ -3631,7 +3634,7 @@ class Debugger
 #ifdef _DEBUG
                         if(strlen(item.value) < MAX_F_STRING)
                         {
-                           char * s;
+                           char * s = null;
                            ide.outputView.debugBox.Logf("GDB: %s\n", (s = CopyUnescapedString(item.value)));
                            delete s;
                         }
@@ -3878,7 +3881,7 @@ class Debugger
                   content++;
                if(content)
                {
-                  char * s;
+                  char * s = null;
                   ide.outputView.debugBox.LogRaw((s = CopyUnescapedString(content)));
                   delete s;
                   ide.Update(null);
