@@ -3808,6 +3808,7 @@ class Debugger
             {
                if(waitingForPID)
                {
+                  Time startTime = GetTime();
                   char exeFile[MAX_LOCATION];
                   int oldProcessID = targetProcessId;
                   GetLastDirectory(targetFile, exeFile);
@@ -3815,8 +3816,12 @@ class Debugger
                   while(!targetProcessId/*true*/)
                   {
                      targetProcessId = Process_GetChildExeProcessId(gdbProcessId, exeFile);
-                     if(targetProcessId || gdbHandle.Peek()) break;
+                     if(targetProcessId) break;
+                     // Can't break on Peek(), GDB is giving us =library and other info before the process is listed in /proc
+                     // if(gdbHandle.Peek()) break;
                      Sleep(0.01);
+                     if(gdbHandle.Peek() && GetTime() - startTime > 2.5)  // Give the process 2.5 seconds to show up in /proc
+                        break;
                   }
 
                   if(targetProcessId)
