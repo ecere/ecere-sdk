@@ -554,7 +554,7 @@ class GDIDisplayDriver : DisplayDriver
 
          surface.box = box;
 
-         if(box.right > box.left && box.bottom > box.top)
+         if(box.right >= box.left && box.bottom >= box.top)
          {
             box.left += surface.offset.x;
             box.top  += surface.offset.y;
