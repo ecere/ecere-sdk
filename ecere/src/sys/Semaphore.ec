@@ -63,10 +63,11 @@ public class Semaphore : struct
    }
 
 public:
-   void TryWait(void)
+   bool TryWait(void)
    {
+      bool result;
 #if defined(__WIN32__)
-      WaitForSingleObject(handle, 0);
+      result = WaitForSingleObject(handle, 0) != WAIT_TIMEOUT;
 #elif defined(__APPLE__)
       bool wait = false;
       mutex.Wait();
@@ -74,13 +75,15 @@ public:
       {
          count--;
          wait = true;
+         result = true;
       }
       mutex.Release();
       if(wait)
          semaphore_wait(semaphore);
 #else
-      sem_trywait(&semaphore);
+      result = sem_trywait(&semaphore) != EAGAIN;
 #endif
+      return result;
    }
 
    void Wait(void)

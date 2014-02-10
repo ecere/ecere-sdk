@@ -585,7 +585,7 @@ class Debugger
             case selectFrame:
             {
                breakType = none;
-               GdbCommand(false, "-stack-select-frame %d", activeFrameLevel);
+               GdbCommand(0, false, "-stack-select-frame %d", activeFrameLevel);
                for(activeFrame = stackFrames.first; activeFrame; activeFrame = activeFrame.next)
                   if(activeFrame.level == activeFrameLevel)
                      break;
@@ -593,7 +593,7 @@ class Debugger
             }
             //case bpValidation:
             //   breakType = none;
-            //   GdbCommand(false, "-break-info %s", bpItem.number);
+            //   GdbCommand(0, false, "-break-info %s", bpItem.number);
             //   break;
          }
 
@@ -709,7 +709,7 @@ class Debugger
          {
             GdbGetStack();
             activeThread = stopItem.threadid;
-            GdbCommand(false, "-thread-list-ids");
+            GdbCommand(0, false, "-thread-list-ids");
             InternalSelectFrame(activeFrameLevel);
             GoToStackFrameLine(activeFrameLevel, true, false);
             EvaluateWatches();
@@ -976,7 +976,7 @@ class Debugger
          {
             activeFrameLevel = -1;
             ide.callStackView.Clear();
-            GdbCommand(false, "-thread-select %d", thread);
+            GdbCommand(0, false, "-thread-select %d", thread);
             GdbGetStack();
             InternalSelectFrame(activeFrameLevel);
             GoToStackFrameLine(activeFrameLevel, true, false);
@@ -1006,7 +1006,7 @@ class Debugger
    {
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::InternalSelectFrame(", frame, ")");
       activeFrameLevel = frame;  // there is no active frame number in the gdb reply
-      GdbCommand(false, "-stack-select-frame %d", activeFrameLevel);
+      GdbCommand(0, false, "-stack-select-frame %d", activeFrameLevel);
       for(activeFrame = stackFrames.first; activeFrame; activeFrame = activeFrame.next)
          if(activeFrame.level == activeFrameLevel)
             break;
@@ -1420,7 +1420,7 @@ class Debugger
                   GdbDebugBreak(true);
             case stopped:
             case loaded:
-               GdbCommand(false, "-environment-directory \"%s\"", sourceDir);
+               GdbCommand(0, false, "-environment-directory \"%s\"", sourceDir);
                break;
          }
          if(oldState == running)
@@ -1752,10 +1752,12 @@ class Debugger
       ide.RepositionWindows(true);
    }
 
-   void ::GdbCommand(bool focus, char * format, ...)
+   bool ::GdbCommand(Time timeOut, bool focus, char * format, ...)
    {
+      bool result = false;
       if(gdbHandle)
       {
+         Time startTime;
          // TODO: Improve this limit
          static char string[MAX_F_STRING*4];
          va_list args;
@@ -1785,9 +1787,34 @@ class Debugger
             Process_ShowWindows(targetProcessId);
 
          app.Unlock();
-         ide.debugger.serialSemaphore.Wait();
+
+         if(timeOut)
+         {
+            startTime = GetTime();
+            while(true)
+            {
+               if(ide.debugger.serialSemaphore.TryWait())
+               {
+                  result = true;
+                  break;
+               }
+               else
+               {
+                  if(GetTime() - startTime > timeOut)
+                     break;
+                  Sleep(0.01);
+               }
+            }
+         }
+         else
+         {
+            ide.debugger.serialSemaphore.Wait();
+            result = true;
+         }
+
          app.Lock();
       }
+      return result;
    }
 
    bool ValidateBreakpoint(Breakpoint bp)
@@ -1947,7 +1974,7 @@ class Debugger
       char * s = null; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::UnsetBreakpoint(", s=bp.CopyLocationString(false), ") -- ", bp.type); delete s;
       if(symbols && bp.inserted)
       {
-         GdbCommand(false, "-break-delete %s", bp.bp.number);
+         GdbCommand(0, false, "-break-delete %s", bp.bp.number);
          bp.inserted = false;
          delete bp.bp;
          bp.bp = { };
@@ -1962,11 +1989,11 @@ class Debugger
       {
          sentBreakInsert = true;
          if(bp.address)
-            GdbCommand(false, "-break-insert *%s", bp.address);
+            GdbCommand(0, false, "-break-insert *%s", bp.address);
          else
          {
             char * location = bp.CopyLocationString(removePath);
-            GdbCommand(false, "-break-insert %s", location);
+            GdbCommand(0, false, "-break-insert %s", location);
             delete location;
          }
          if(!breakpointError)
@@ -1988,7 +2015,7 @@ class Debugger
                   {
                      if(n.enabled)
                      {
-                        GdbCommand(false, "-break-disable %s", n.number);
+                        GdbCommand(0, false, "-break-disable %s", n.number);
                         n.enabled = false;
                      }
                      else
@@ -2036,17 +2063,17 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbGetStack()");
       activeFrame = null;
       stackFrames.Free(Frame::Free);
-      GdbCommand(false, "-stack-info-depth");
+      GdbCommand(0, false, "-stack-info-depth");
       if(!frameCount)
-         GdbCommand(false, "-stack-info-depth 192");
+         GdbCommand(0, false, "-stack-info-depth 192");
       if(frameCount && frameCount <= 192)
-         GdbCommand(false, "-stack-list-frames 0 %d", Min(frameCount-1, 191));
+         GdbCommand(0, false, "-stack-list-frames 0 %d", Min(frameCount-1, 191));
       else
       {
-         GdbCommand(false, "-stack-list-frames 0 %d", Min(frameCount-1, 95));
-         GdbCommand(false, "-stack-list-frames %d %d", Max(frameCount - 96, 96), frameCount - 1);
+         GdbCommand(0, false, "-stack-list-frames 0 %d", Min(frameCount-1, 95));
+         GdbCommand(0, false, "-stack-list-frames %d %d", Max(frameCount - 96, 96), frameCount - 1);
       }
-      GdbCommand(false, "");
+      GdbCommand(0, false, "");
    }
 
    bool GdbTargetSet()
@@ -2056,7 +2083,7 @@ class Debugger
       {
          char escaped[MAX_LOCATION];
          strescpy(escaped, targetFile);
-         GdbCommand(false, "file \"%s\"", escaped); //GDB/MI Missing Implementation in 5.1.1 but we now have -file-exec-and-symbols / -file-exec-file / -file-symbol-file
+         GdbCommand(0, false, "file \"%s\"", escaped); //GDB/MI Missing Implementation in 5.1.1 but we now have -file-exec-and-symbols / -file-exec-file / -file-symbol-file
 
          if(!symbols)
             return true;
@@ -2064,15 +2091,15 @@ class Debugger
          if(usingValgrind)
          {
             const char *vgdbCommand = "/usr/bin/vgdb"; // TODO: vgdb command config option
-            //GdbCommand(false, "-target-select remote | %s --pid=%d", "vgdb", targetProcessId);
+            //GdbCommand(0, false, "-target-select remote | %s --pid=%d", "vgdb", targetProcessId);
             printf("target remote | %s --pid=%d\n", vgdbCommand, targetProcessId);
-            GdbCommand(false, "target remote | %s --pid=%d", vgdbCommand, targetProcessId); // TODO: vgdb command config option
+            GdbCommand(0, false, "target remote | %s --pid=%d", vgdbCommand, targetProcessId); // TODO: vgdb command config option
          }
          else
-            GdbCommand(false, "info target"); //GDB/MI Missing Implementation -file-list-symbol-files and -file-list-exec-sections
+            GdbCommand(0, false, "info target"); //GDB/MI Missing Implementation -file-list-symbol-files and -file-list-exec-sections
 
          /*for(prj : ide.workspace.projects; prj != ide.workspace.projects.firstIterator.data)
-            GdbCommand(false, "-environment-directory \"%s\"", prj.topNode.path);*/
+            GdbCommand(0, false, "-environment-directory \"%s\"", prj.topNode.path);*/
 
          for(dir : ide.workspace.sourceDirs; dir && dir[0])
          {
@@ -2086,7 +2113,7 @@ class Debugger
               }
            }
            if(!interference && dir[0])
-              GdbCommand(false, "-environment-directory \"%s\"", dir);
+              GdbCommand(0, false, "-environment-directory \"%s\"", dir);
          }
 
          targeted = true;
@@ -2099,7 +2126,7 @@ class Debugger
       if(targeted)
       {
          BreakpointsDeleteAll();
-         GdbCommand(false, "file");  //GDB/MI Missing Implementation -target-detach
+         GdbCommand(0, false, "file");  //GDB/MI Missing Implementation -target-detach
          targeted = false;
          symbols = true;
       }
@@ -2115,7 +2142,7 @@ class Debugger
 
          if(ide) ide.Update(null);
          app.Unlock();
-         if(Process_Break(targetProcessId))  //GdbCommand(false, "-exec-interrupt");
+         if(Process_Break(targetProcessId))  //GdbCommand(0, false, "-exec-interrupt");
             serialSemaphore.Wait();
          else
          {
@@ -2138,8 +2165,8 @@ class Debugger
       ShowDebuggerViews();
       if(usingValgrind)
          GdbExecContinue(true);
-      else
-         GdbCommand(true, "-exec-run");
+      else if(!GdbCommand(3, true, "-exec-run"))
+         gdbExecution = none;
    }
 
    void GdbExecContinue(bool focus)
@@ -2147,7 +2174,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecContinue()");
       gdbExecution = run;
       GdbExecCommon();
-      GdbCommand(focus, "-exec-continue");
+      GdbCommand(0, focus, "-exec-continue");
    }
 
    void GdbExecNext()
@@ -2155,7 +2182,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecNext()");
       gdbExecution = next;
       GdbExecCommon();
-      GdbCommand(true, "-exec-next");
+      GdbCommand(0, true, "-exec-next");
    }
 
    void GdbExecUntil(char * absoluteFilePath, int lineNumber)
@@ -2167,10 +2194,10 @@ class Debugger
       if(absoluteFilePath)
       {
          WorkspaceGetRelativePath(absoluteFilePath, relativeFilePath, null);
-         GdbCommand(true, "-exec-until %s:%d", relativeFilePath, lineNumber);
+         GdbCommand(0, true, "-exec-until %s:%d", relativeFilePath, lineNumber);
       }
       else
-         GdbCommand(true, "-exec-until");
+         GdbCommand(0, true, "-exec-until");
    }
 
    void GdbExecAdvance(char * absoluteFilePathOrLocation, int lineNumber)
@@ -2182,10 +2209,10 @@ class Debugger
       if(lineNumber)
       {
          WorkspaceGetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null);
-         GdbCommand(true, "advance %s:%d", relativeFilePath, lineNumber); // should use -exec-advance -- GDB/MI implementation missing
+         GdbCommand(0, true, "advance %s:%d", relativeFilePath, lineNumber); // should use -exec-advance -- GDB/MI implementation missing
       }
       else
-         GdbCommand(true, "advance %s", absoluteFilePathOrLocation); // should use -exec-advance -- GDB/MI implementation missing
+         GdbCommand(0, true, "advance %s", absoluteFilePathOrLocation); // should use -exec-advance -- GDB/MI implementation missing
    }
 
    void GdbExecStep()
@@ -2193,7 +2220,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecStep()");
       gdbExecution = step;
       GdbExecCommon();
-      GdbCommand(true, "-exec-step");
+      GdbCommand(0, true, "-exec-step");
    }
 
    void GdbExecFinish()
@@ -2201,7 +2228,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecFinish()");
       gdbExecution = finish;
       GdbExecCommon();
-      GdbCommand(true, "-exec-finish");
+      GdbCommand(0, true, "-exec-finish");
    }
 
    void GdbExecCommon()
@@ -2222,7 +2249,7 @@ class Debugger
                GdbDebugBreak(true);
          case stopped:
          case loaded:
-            GdbCommand(false, command);
+            GdbCommand(0, false, command);
             break;
       }
       if(oldState == running)
@@ -2254,7 +2281,7 @@ class Debugger
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbAbortExec()");
       sentKill = true;
-      GdbCommand(false, "-interpreter-exec console \"kill\""); // should use -exec-abort -- GDB/MI implementation incomplete
+      GdbCommand(0, false, "-interpreter-exec console \"kill\""); // should use -exec-abort -- GDB/MI implementation incomplete
       return true;
    }
 
@@ -2426,13 +2453,13 @@ class Debugger
          serialSemaphore.Wait();
          app.Lock();
 
-         GdbCommand(false, "-gdb-set verbose off");
-         //GdbCommand(false, "-gdb-set exec-done-display on");
-         GdbCommand(false, "-gdb-set step-mode off");
-         GdbCommand(false, "-gdb-set unwindonsignal on");
-         //GdbCommand(false, "-gdb-set shell on");
-         GdbCommand(false, "set print elements 992");
-         GdbCommand(false, "-gdb-set backtrace limit 100000");
+         GdbCommand(0, false, "-gdb-set verbose off");
+         //GdbCommand(0, false, "-gdb-set exec-done-display on");
+         GdbCommand(0, false, "-gdb-set step-mode off");
+         GdbCommand(0, false, "-gdb-set unwindonsignal on");
+         //GdbCommand(0, false, "-gdb-set shell on");
+         GdbCommand(0, false, "set print elements 992");
+         GdbCommand(0, false, "-gdb-set backtrace limit 100000");
 
          if(!GdbTargetSet())
          {
@@ -2467,20 +2494,20 @@ class Debugger
 #endif
 
 #if defined(__WIN32__)
-         GdbCommand(false, "-gdb-set new-console on");
+         GdbCommand(0, false, "-gdb-set new-console on");
 #endif
 
 #if defined(__unix__)
          if(!usingValgrind)
-            GdbCommand(false, "-inferior-tty-set %s", progFifoPath);
+            GdbCommand(0, false, "-inferior-tty-set %s", progFifoPath);
 #endif
 
          if(!usingValgrind)
-            GdbCommand(false, "-gdb-set args %s", ide.workspace.commandLineArgs ? ide.workspace.commandLineArgs : "");
+            GdbCommand(0, false, "-gdb-set args %s", ide.workspace.commandLineArgs ? ide.workspace.commandLineArgs : "");
          /*
          for(e : ide.workspace.environmentVars)
          {
-            GdbCommand(false, "set environment %s=%s", e.name, e.string);
+            GdbCommand(0, false, "set environment %s=%s", e.name, e.string);
          }
          */
       }
@@ -2501,7 +2528,7 @@ class Debugger
       if(gdbHandle && gdbProcessId)
       {
          gdbTimer.Stop();
-         GdbCommand(false, "-gdb-exit");
+         GdbCommand(0, false, "-gdb-exit");
 
          if(gdbThread)
          {
@@ -3076,7 +3103,7 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::GdbEvaluateExpression(", expression, ")");
       eval.active = true;
       eval.error = none;
-      GdbCommand(false, "-data-evaluate-expression \"%s\"", expression);
+      GdbCommand(0, false, "-data-evaluate-expression \"%s\"", expression);
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbEvaluateExpression\n");
       return eval.result;
@@ -3092,11 +3119,11 @@ class Debugger
       if(!size)
          _dpl(0, "GdbReadMemoryString called with size = 0!");
 #endif
-      // GdbCommand(false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
+      // GdbCommand(0, false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
       if(GetRuntimePlatform() == win32)
-         GdbCommand(false, "-data-read-memory 0x%016I64x %c, %d, %d, %d", address, format, size, rows, cols);
+         GdbCommand(0, false, "-data-read-memory 0x%016I64x %c, %d, %d, %d", address, format, size, rows, cols);
       else
-         GdbCommand(false, "-data-read-memory 0x%016llx %c, %d, %d, %d", address, format, size, rows, cols);
+         GdbCommand(0, false, "-data-read-memory 0x%016llx %c, %d, %d, %d", address, format, size, rows, cols);
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbReadMemoryString\n");
       return eval.result;
@@ -3107,11 +3134,11 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbReadMemory(", address, ")");
       eval.active = true;
       eval.error = none;
-      //GdbCommand(false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
+      //GdbCommand(0, false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
       if(GetRuntimePlatform() == win32)
-         GdbCommand(false, "-data-read-memory 0x%016I64x %c, 1, 1, %d", address, 'u', bytes);
+         GdbCommand(0, false, "-data-read-memory 0x%016I64x %c, 1, 1, %d", address, 'u', bytes);
       else
-         GdbCommand(false, "-data-read-memory 0x%016llx %c, 1, 1, %d", address, 'u', bytes);
+         GdbCommand(0, false, "-data-read-memory 0x%016llx %c, 1, 1, %d", address, 'u', bytes);
 #ifdef _DEBUG
       if(!bytes)
          _dpl(0, "GdbReadMemory called with bytes = 0!");
