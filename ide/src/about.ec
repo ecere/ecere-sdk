@@ -16,7 +16,7 @@ class AboutIDE : Window
 {
    borderStyle = sizable;
    hasClose = true;
-   minClientSize = { 452, 440 };
+   minClientSize = { 462, 440 };
    text = $"About the Ecere SDK";
    tabCycle = true;
 
