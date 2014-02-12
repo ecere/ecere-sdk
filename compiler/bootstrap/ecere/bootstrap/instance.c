@@ -5219,8 +5219,6 @@ extern int rename(const char *  oldpath, const char *  newpath);
 
 extern char *  strncat(char * , const char * , size_t n);
 
-extern int strcasecmp(const char * , const char * );
-
 extern int strncasecmp(const char * , const char * , size_t n);
 
 extern int strncmp(const char * , const char * , size_t n);
