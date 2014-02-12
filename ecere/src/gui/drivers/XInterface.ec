@@ -2000,7 +2000,7 @@ class XInterface : Interface
                   {
                      bool offset = false;
                      int x, y, w, h;
-                     if(unmaximized)
+                     if(unmaximized && window.nativeDecorations)
                      {
                         if(window.nativeDecorations && RequestFrameExtents((X11Window)window.windowHandle))
                            WaitForFrameExtents(window);
@@ -2021,11 +2021,13 @@ class XInterface : Interface
                            XTranslateCoordinates(xGlobalDisplay, event->window,
                               RootWindow(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 0, 0,
                               &rootX, &rootY, &rootChild);
+
                            if(x != rootX || y != rootY)
                            {
+                              /*if(event->send_event)
+                                 offset = true;*/
                               x = rootX;
                               y = rootY;
-                              offset = true;
                            }
                         }
 
