@@ -240,7 +240,7 @@ static void SetNETWMState(X11Window windowHandle, bool throughRoot, NETWMStateAc
 
 }
 
-static Time timeStamp;
+static X11Time timeStamp;
 
 class XWindowData : struct
 {
@@ -1535,6 +1535,7 @@ class XInterface : Interface
                {
                   XKeyEvent * event = (XKeyEvent *) thisEvent;
                   incref window;
+                  timeStamp = event->time;
                   if(!window.active)
                   {
                      Window modalRoot = window.FindModal();
@@ -1568,6 +1569,7 @@ class XInterface : Interface
                   XKeyEvent * event = (XKeyEvent *) thisEvent;
                   XEvent nextEvent;
                   lastKeyCode = 0;
+                  timeStamp = event->time;
                   if(!autoRepeatDetectable && XCheckIfEvent(xGlobalDisplay, (XEvent *)&nextEvent, EventChecker, (void *)KeyPress))
                   {
                      if(im && XFilterEvent(&nextEvent, None))
@@ -1608,7 +1610,7 @@ class XInterface : Interface
                   uint button, buttonDouble, whichButton;
                   uint buttonMask;
                   int x = event->x_root, y = event->y_root;
-
+                  timeStamp = event->time;
                   if(event->button == Button1)
                   {
                      // Force a raise on click here to deal with confused active state preventing to bring the window up
@@ -1703,6 +1705,7 @@ class XInterface : Interface
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonUp;
                      buttonMask = Button2Mask;
                   }
+                  timeStamp = event->time;
                   if(!(event->state & buttonMask)) break;
                   if(event->state & ShiftMask)     keyFlags.shift = true;
                   if(event->state & ControlMask)   keyFlags.ctrl = true;
@@ -1734,6 +1737,7 @@ class XInterface : Interface
                   // if(event->time - lastTime > 15)
                   {
                      Modifiers keyFlags = 0;
+                     timeStamp = event->time;
                      // int x = event->x_root, y = event->y_root;
 
                      if(event->state & ShiftMask)     keyFlags.shift = true;
@@ -2084,7 +2088,7 @@ class XInterface : Interface
                      bool laterFocus;
                      activeWindow = (X11Window)window.windowHandle;
 
-                     timeStamp = (int)event->data.l[1];
+                     timeStamp = (X11Time)event->data.l[1];
 
                      windowData = window.windowData;
                      laterFocus = windowData.laterFocus;
@@ -2141,10 +2145,10 @@ class XInterface : Interface
                                  event.window = (X11Window)modalRoot.windowHandle;
                                  event.send_event = 1;
                                  event.format = 32;
-                                 event.data.l[0] = 0;
+                                 event.data.l[0] = /*0*/ 1;
+                                 event.data.l[1] = timeStamp;
+                                 event.data.l[2] = activeWindow;
                                  /*
-                                 event.data.l[0] = 1;
-                                 event.data.l[1] = atoms[_net_wm_user_time];
                                  event.data.l[2] = activeWindow; //guiApp.desktop.activeChild.windowHandle;
                                  */
 #ifdef _DEBUG
@@ -2152,7 +2156,7 @@ class XInterface : Interface
 #endif
 
                                  XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
-                                 XSetInputFocus(xGlobalDisplay, (X11Window)modalRoot.windowHandle, RevertToPointerRoot, (uint)timeStamp);
+                                 XSetInputFocus(xGlobalDisplay, (X11Window)modalRoot.windowHandle, RevertToPointerRoot, timeStamp);
 
                                  //XFlush(xGlobalDisplay);
                                  //printf("Done.\n");
@@ -2160,7 +2164,7 @@ class XInterface : Interface
                            }
                            else
                            {
-                              XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, (uint)timeStamp);
+                              XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, timeStamp);
                               window.ExternalActivate(true, true, window, null); // lastActive);
                               if(windowData && windowData.ic)
                               {
@@ -2878,14 +2882,9 @@ class XInterface : Interface
                event.window = (X11Window)window.windowHandle;
                event.send_event = 1;
                event.format = 32;
-               event.data.l[0] = 0;
-
-               //event.data.l[0] = 2;
-               //event.data.l[1] = timeStamp;
-
-
-               //event.data.l[1] = atoms[_net_wm_user_time];
-               //event.data.l[2] = activeWindow; //guiApp.desktop.activeChild.windowHandle;
+               event.data.l[0] = /*0*/ 1;
+               event.data.l[1] = timeStamp;
+               event.data.l[2] = activeWindow; //guiApp.desktop.activeChild.windowHandle;
 
 #ifdef _DEBUG
                //printf("(ActivateRootWindow) Setting _NET_ACTIVE_WINDOW for %s (%x)\n", window._class.name, window);
