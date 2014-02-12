@@ -683,6 +683,7 @@ public:
          {
             int terminated = 0;
             incref desktop;
+            ProcessInput(true);
             while(desktop && interfaceDriver)
             {
                bool wait;

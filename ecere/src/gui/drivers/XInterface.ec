@@ -1240,6 +1240,7 @@ class XInterface : Interface
 #endif
       xTerminate = false;
       xGlobalDisplay = XOpenDisplay(null);
+      // XSynchronize(xGlobalDisplay, True);
       frameExtentSupported = unknown;
 
       joystickFD[0] = open("/dev/js0", O_RDONLY);
