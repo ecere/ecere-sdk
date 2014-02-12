@@ -2943,7 +2943,7 @@ class XInterface : Interface
       {
          if(!window.parent || !window.parent.display)
          {
-            XMoveResizeWindow(xGlobalDisplay, confineWindow, box.left + desktopX, box.top + desktopY,
+            XMoveResizeWindow(xGlobalDisplay, confineWindow, box.left /*+ desktopX*/, box.top /*+ desktopY*/,
                box.right - box.left + 1, box.bottom - box.top + 1);
 
             if(!restrictedWindow)
