@@ -3357,7 +3357,7 @@ private:
       mouseWindow = rootWindow ? rootWindow.GetAtPosition(x,y, true, false, null) : null;
 
       if((guiApp.windowMoving && !guiApp.windowIsResizing) || guiApp.windowScrolling)
-         guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[moving]);
+         guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[moving]);
       else if(mouseWindow)
       {
          modalWindow = mouseWindow.FindModal();
@@ -3370,13 +3370,13 @@ private:
             rx = guiApp.resizeX;
             ry = guiApp.resizeY;
             if((rex && rey) || (rx && ry))
-               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeNWSE]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeNWSE]);
             else if((rex && ry) || (rx && rey))
-               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeNESW]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeNESW]);
             else if((ry || rey) && (!rx && !rex))
-               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeNS]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeNS]);
             else if((rx || rex) && (!ry && !rey))
-               guiApp.SetCurrentCursor(guiApp.windowMoving, guiApp.systemCursors[sizeWE]);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[sizeWE]);
          }
          else if(!modalWindow && !guiApp.windowCaptured &&
             mouseWindow.IsMouseResizing(x, y, mouseWindow.size.w, mouseWindow.size.h,
@@ -3404,16 +3404,16 @@ private:
          if(cursorWindow)
          {
             for(; !cursorWindow.cursor && !cursorWindow.style.nonClient && cursorWindow.rootWindow != cursorWindow; cursorWindow = cursorWindow.parent);
-            guiApp.SetCurrentCursor(cursorWindow, cursorWindow.cursor ? cursorWindow.cursor : guiApp.systemCursors[arrow]);
+            guiApp.SetCurrentCursor(mouseWindow, cursorWindow.cursor ? cursorWindow.cursor : guiApp.systemCursors[arrow]);
          }
          else if(modalWindow)
          {
-            guiApp.SetCurrentCursor(null, guiApp.systemCursors[arrow]);
+            guiApp.SetCurrentCursor(mouseWindow, guiApp.systemCursors[arrow]);
          }
          else if(guiApp.interimWindow)
          {
             if(guiApp.interimWindow.cursor)
-               guiApp.SetCurrentCursor(guiApp.interimWindow, guiApp.interimWindow.cursor);
+               guiApp.SetCurrentCursor(mouseWindow, guiApp.interimWindow.cursor);
             else
                guiApp.SetCurrentCursor(mouseWindow, mouseWindow.cursor ? mouseWindow.cursor : guiApp.systemCursors[arrow]);
          }
