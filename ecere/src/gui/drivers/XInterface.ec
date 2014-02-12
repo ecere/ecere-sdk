@@ -1045,7 +1045,9 @@ static bool RequestFrameExtents(Window window)
 
       XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
          SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
+      return true;
    }
+   return false;
 }
 
 static bool GetFrameExtents(Window window, bool update)
