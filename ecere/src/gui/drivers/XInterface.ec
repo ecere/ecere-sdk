@@ -1022,9 +1022,9 @@ static void WaitForViewableWindow(Window window)
    }
 }
 
-static bool RequestFrameExtents(Window window)
+static bool RequestFrameExtents(X11Window windowHandle)
 {
-   if(window.nativeDecorations && frameExtentSupported != broken)
+   if(frameExtentSupported != broken)
    {
       // Request decoration frame extents
       XClientMessageEvent event = { 0 };
@@ -1032,15 +1032,14 @@ static bool RequestFrameExtents(Window window)
       event.message_type = atoms[_net_request_frame_extents];
       event.display = xGlobalDisplay;
       event.serial = 0;
-      event.window = (X11Window)window.windowHandle;
+      event.window = windowHandle;
       event.send_event = 1;
-      window.windowHandle = (void *)window.windowHandle;
       event.format = 32;
 
       if(frameExtentSupported == unknown && !frameExtentRequest)
       {
          frameExtentRequest = GetTime();
-         frameExtentWindow = (X11Window)window.windowHandle;
+         frameExtentWindow = windowHandle;
       }
 
       XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false,
@@ -2009,7 +2008,7 @@ class XInterface : Interface
                      int x, y, w, h;
                      if(unmaximized)
                      {
-                        if(window.nativeDecorations && RequestFrameExtents(window))
+                        if(window.nativeDecorations && RequestFrameExtents((X11Window)window.windowHandle))
                            WaitForFrameExtents(window);
 
                         // Ensure we set the normal size anchor when un-maximizing
@@ -2613,8 +2612,9 @@ class XInterface : Interface
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
 
-      if(!window.nativeDecorations || !RequestFrameExtents(window))
+      if(!window.nativeDecorations || !RequestFrameExtents(windowHandle))
          ((XWindowData)window.windowData).gotFrameExtents = true;
+
       return (void *)windowHandle;
    }
 
