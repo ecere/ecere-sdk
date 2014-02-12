@@ -7802,7 +7802,7 @@ public:
       return false;
    }
    virtual void UpdateNonClient();
-   virtual void SetBox(Box box);    // This isn't used anywhere at this time
+   virtual void SetBox(Box box);    // This is used in the MySkin skin
    virtual bool IsInside(int x, int y)
    {
       return box.IsPointInside({x, y});
