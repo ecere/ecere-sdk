@@ -248,7 +248,6 @@ public class FileDialog : Window
    borderStyle = sizable;
    tabCycle = true;
    autoCreate = false;
-   nativeDecorations = true;
    minClientSize = { 500, 300 };
 
 public:

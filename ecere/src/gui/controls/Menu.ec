@@ -1706,8 +1706,11 @@ public class PopupMenu : Window
    bool OnMouseMove(int mx, int my, Modifiers mods)
    {
       int selectedX, selectedY;
+      ItemPtr selected;
 
-      ItemPtr selected = FindSelected(mx, my, &selectedX, &selectedY);
+      if(mods.isSideEffect) return true;
+
+      selected = FindSelected(mx, my, &selectedX, &selectedY);
 
       if((!mods.isSideEffect || !this.selected) && (/*selected && */
          selected != this.selected && (!selected || !ITEM_DISABLED(selected.item)) && (selected || !keyboardFocus)))
