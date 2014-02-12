@@ -2454,18 +2454,32 @@ class XInterface : Interface
             }
 
             {
-               Atom hints[2] =
-               {
-                  parentWindow ? atoms[_net_wm_window_type_menu] : atoms[_net_wm_window_type_normal],
-                  parentWindow ? atoms[_net_wm_window_type_popup_menu] : 0
-               };
-#if defined(__APPLE__) || defined(__FreeBSD__)
-               // Don't set this on non-interim windows for OS X...
+               Atom hints[4];
+               int count;
                if(parentWindow && window.interim)
-#endif
+               {
+                  hints[0] = atoms[_net_wm_window_type_dropdown_menu];
+                  hints[1] = atoms[_net_wm_window_type_popup_menu];
+                  hints[2] = atoms[_net_wm_window_type_menu];
+                  count = 3;
+               }
+               else if(parentWindow)
+               {
+                  hints[0] = atoms[_net_wm_window_type_normal];
 
-                  XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_window_type], XA_ATOM, 32,
-                     PropModeReplace, (unsigned char*)&hints, parentWindow ? 2 : 1);
+                  // Some WMs won't show a close button if dialog is set
+                  // Additionally, this casues jumping of all dialog windows on Cinnamon
+                  //hints[0] = atoms[_net_wm_window_type_dialog];
+                  count = 1;
+               }
+               else
+               {
+                  hints[0] = atoms[_net_wm_window_type_normal];
+                  count = 1;
+               };
+               XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_window_type], XA_ATOM, 32,
+                  PropModeReplace, (unsigned char*)&hints, count);
+
                {
                   XWMHints xwmHints;
                   xwmHints.flags = InputHint;
