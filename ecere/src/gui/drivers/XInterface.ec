@@ -1615,10 +1615,8 @@ class XInterface : Interface
                   {
                      // Force a raise on click here to deal with confused active state preventing to bring the window up
                      if(!atomsSupported[_net_active_window] && !window.isRemote)
-                     {
                         XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-                        XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, CurrentTime);
-                     }
+                     XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, CurrentTime);
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown;
                      buttonDouble = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick;
                      whichButton = 0;
