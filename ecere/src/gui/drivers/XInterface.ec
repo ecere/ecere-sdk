@@ -2724,10 +2724,11 @@ class XInterface : Interface
             if(window.style.fixed && !window.style.sizable)
             {
                XSizeHints hints = { 0 };
+               long supplied;
+               XGetWMNormalHints(xGlobalDisplay, (X11Window)window.windowHandle, &hints, &supplied);
                hints.min_width = hints.max_width = w;
                hints.min_height = hints.max_height = h;
                hints.flags |= PMinSize|PMaxSize;
-
                XSetWMNormalHints(xGlobalDisplay, (X11Window)window.windowHandle, &hints);
             }
          }
