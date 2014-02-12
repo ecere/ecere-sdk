@@ -1943,6 +1943,7 @@ class XInterface : Interface
                {
                   XConfigureEvent * event = (XConfigureEvent *) thisEvent;
                   bool unmaximized = false;
+                  if(!window.visible) break;
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
