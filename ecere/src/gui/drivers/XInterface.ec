@@ -2494,7 +2494,6 @@ class XInterface : Interface
                }
 
                // Set Normal hints for minimum/maximum size
-               if(true)
                {
                   XSizeHints hints = { 0 };
                   hints.min_width = minW;
@@ -2726,14 +2725,11 @@ class XInterface : Interface
                XSizeHints hints = { 0 };
                hints.min_width = hints.max_width = w;
                hints.min_height = hints.max_height = h;
-               hints.flags |= PMinSize|PMaxSize|PPosition|PSize;
+               hints.flags |= PMinSize|PMaxSize;
+
                XSetWMNormalHints(xGlobalDisplay, (X11Window)window.windowHandle, &hints);
             }
          }
-#if defined(__APPLE__)
-//         if(window.created && !visible)
-  //          XUnmapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-#endif
       }
    }
 
