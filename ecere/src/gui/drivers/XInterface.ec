@@ -1758,15 +1758,10 @@ class XInterface : Interface
                {
                   XExposeEvent * event = (XExposeEvent *) thisEvent;
                   Box box;
-                  box.left = event->x - window.clientStart.x;
-                  box.top = event->y - window.clientStart.y;
+                  box.left = event->x;
+                  box.top = event->y;
                   box.right = box.left + event->width - 1;
                   box.bottom = box.top + event->height - 1;
-                  window.Update(box);
-                  box.left   += window.clientStart.x;
-                  box.top    += window.clientStart.y;
-                  box.right  += window.clientStart.x;
-                  box.bottom += window.clientStart.y;
                   window.UpdateDirty(box);
                   break;
                }
