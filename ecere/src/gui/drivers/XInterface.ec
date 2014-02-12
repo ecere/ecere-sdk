@@ -3007,8 +3007,9 @@ class XInterface : Interface
 
    void SetMouseCursor(Window window, int cursor)
    {
-      XDefineCursor(xGlobalDisplay, (X11Window) window.rootWindow.windowHandle,
-         cursor == -1 ? (X11Cursor)0 : systemCursors[(SystemCursor)cursor]);
+      if(window.rootWindow.windowHandle)
+         XDefineCursor(xGlobalDisplay, (X11Window) window.rootWindow.windowHandle,
+            cursor == -1 ? (X11Cursor)0 : systemCursors[(SystemCursor)cursor]);
    }
 
    // --- Caret ---
