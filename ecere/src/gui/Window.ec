@@ -3458,6 +3458,15 @@ private:
          if(rootWindow == this)
             Log(active ? "active\n" : "inactive\n");
          */
+         if(active && requireRemaximize)
+         {
+            if(state == maximized)
+            {
+               property::state = normal;
+               property::state = maximized;
+            }
+            requireRemaximize = false;
+         }
 
          // Testing this here...
          if(!parent || parent == guiApp.desktop || parent.active)
@@ -9571,6 +9580,7 @@ private:
       bool nativeDecorations:1;
       bool manageDisplay:1;
       bool formDesigner:1; // True if we this is running in the form editor
+      bool requireRemaximize:1;
    };
 
    // Checks used internally for them not to take effect in FormDesigner

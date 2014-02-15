@@ -411,12 +411,26 @@ public class GuiApplication : Application
 
          // Maximized native decorations windows suffer when we drag the dock around, so remaximize them
          // It's a little jumpy, but oh well.
+
+         // Made this Windows only as it was causing occasional wrong stacking of windows in X11/Cinnamon
+         // when switching debugged app from full-screen
+
          for(child = desktop.children.first; child; child = child.next)
          {
             if(child.nativeDecorations && child.rootWindow == child && child.state == maximized)
             {
+#if defined(__WIN32__)
                child.state = normal;
                child.state = maximized;
+#else
+               if(child.active)
+               {
+                  child.state = normal;
+                  child.state = maximized;
+               }
+               else
+                  child.requireRemaximize = true;
+#endif
             }
          }
          /*for(child = desktop.children.first; child; child = child.next)
