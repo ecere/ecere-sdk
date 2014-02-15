@@ -61,6 +61,8 @@ private:
       Clear();
    }
 
+   FontResource boldFont { font.faceName, font.size, true, window = this };
+
    bool OnLoadGraphics()
    {
       StatusField field;
@@ -106,9 +108,15 @@ private:
          }
          if(field.text)
          {
-            Box clip { x, 2, x + field.width - 1, statusBarHeight-1 };
+            Box clip { x, 2, x + field.width - 1, statusBarHeight-3 };
             int tw;
             surface.Clip(clip);
+            if(field.backColor)
+            {
+               surface.SetBackground(field.backColor);
+               surface.Clear(colorBuffer);
+            }
+            surface.font = field.bold ? boldFont.font : fontObject;
             surface.TextExtent(field.text, strlen(field.text), &tw, null);
             surface.WriteTextf(x + (field.width - tw) / 2, 2, field.text);
             surface.Clip(null);
@@ -168,6 +176,26 @@ public:
             if(_statusBar)
                _statusBar.Update(null);
          }
+      }
+   }
+   property ColorAlpha backColor
+   {
+      set
+      {
+         if(this)
+         {
+            backColor = value;
+            colorSet = true;
+            if(_statusBar)
+               _statusBar.Update(null);
+         }
+      }
+   }
+   property bool bold
+   {
+      set
+      {
+         if(this) this.bold = value;
       }
    }
 
@@ -237,6 +265,8 @@ private:
    char * text;
    int width;
    Color color;
+   ColorAlpha backColor;
    StatusBar _statusBar;
    bool colorSet;
+   bool bold;
 };

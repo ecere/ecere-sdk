@@ -856,7 +856,7 @@ class CodeEditor : Window
 
       void NotifyOvrToggle(EditBox editBox, bool overwrite)
       {
-         ide.ovr.color = overwrite ? black : Color { 128, 128, 128 };
+         ide.UpdateStateLight(ide.ovr, overwrite);
       }
 
       void NotifyUpdate(EditBox editBox)

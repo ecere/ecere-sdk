@@ -2549,10 +2549,17 @@ class IDEWorkSpace : Window
    }
    */
 
+   void UpdateStateLight(StatusField fld, bool on)
+   {
+      fld.color = on ? lime : Color { 128,128,128 };
+      fld.backColor = on ? dimGray : 0;
+      fld.bold = on;
+   }
+
    bool OnActivate(bool active, Window swap, bool * goOnWithActivation, bool direct)
    {
-      caps.color = app.GetKeyState(capsState) ? black : Color { 128,128,128 };
-      num.color = app.GetKeyState(numState) ? black : Color { 128,128,128 };
+      UpdateStateLight(caps, app.GetKeyState(capsState));
+      UpdateStateLight(num, app.GetKeyState(numState));
       return true;
    }
 
@@ -2560,15 +2567,19 @@ class IDEWorkSpace : Window
    {
       switch(key)
       {
-         case b:
-            projectView.Update(null);
-            break;
-         case capsLock:
-            caps.color = app.GetKeyState(capsState) ? black : Color { 128,128,128 };
-            break;
-         case numLock:
-            num.color = app.GetKeyState(numState) ? black : Color { 128,128,128 };
-            break;
+         case b: projectView.Update(null); break;
+         case capsLock: UpdateStateLight(caps, app.GetKeyState(capsState)); break;
+         case numLock:  UpdateStateLight(num, app.GetKeyState(numState)); break;
+      }
+      return true;
+   }
+
+   bool OnKeyUp(Key key, unichar ch)
+   {
+      switch(key)
+      {
+         case capsLock: UpdateStateLight(caps, app.GetKeyState(capsState)); break;
+         case numLock:  UpdateStateLight(num, app.GetKeyState(numState)); break;
       }
       return true;
    }
@@ -2906,14 +2917,17 @@ class IDEWorkSpace : Window
 
             statusBar.AddField(pos);
 
-            caps = { width = 40, text = $"CAPS", color = app.GetKeyState(capsState) ? black : Color { 128, 128, 128 } };
+            caps = { width = 40, text = $"CAPS" };
             statusBar.AddField(caps);
+            UpdateStateLight(caps, app.GetKeyState(capsState));
 
-            ovr = { width = 30, text = $"OVR", color = (editBox && editBox.overwrite) ? black : Color { 128, 128, 128 } };
+            ovr = { width = 36, text = $"OVR" };
             statusBar.AddField(ovr);
+            UpdateStateLight(ovr, (editBox && editBox.overwrite));
 
-            num = { width = 30, text = $"NUM", color = app.GetKeyState(numState) ? black : Color { 128, 128, 128 } };
+            num = { width = 36, text = $"NUM" };
             statusBar.AddField(num);
+            UpdateStateLight(num, app.GetKeyState(numState));
 
             //statusBar.text = "Ready";
 
