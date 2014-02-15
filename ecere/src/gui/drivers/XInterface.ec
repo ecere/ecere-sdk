@@ -100,6 +100,11 @@ static int joystickFD[4];
 static X11Window activeWindow;
 static X11Cursor systemCursors[SystemCursor];
 
+static Window acquiredInputWindow;
+static Point acquireStart;
+static Point lastMouse;
+static MouseButtons buttonsState;
+
 static enum NETWMStateAction { remove = 0, add = 1, toggle = 2 };
 
 static enum AtomIdents
@@ -1659,6 +1664,7 @@ class XInterface : Interface
                      whichButton = 0;
                      buttonMask = Button1Mask;
                      keyFlags.left = true;
+                     buttonsState.left = true;
                   }
                   else if(event->button == Button3)
                   {
@@ -1667,6 +1673,7 @@ class XInterface : Interface
                      whichButton = 2;
                      buttonMask = Button3Mask;
                      keyFlags.right = true;
+                     buttonsState.right = true;
                   }
                   else
                   {
@@ -1675,6 +1682,7 @@ class XInterface : Interface
                      whichButton = 1;
                      buttonMask = Button2Mask;
                      keyFlags.middle = true;
+                     buttonsState.middle = true;
                   }
                   if(event->state & buttonMask)
                      break;
@@ -1729,16 +1737,19 @@ class XInterface : Interface
                   {
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp;
                      buttonMask = Button1Mask;
+                     buttonsState.left = false;
                   }
                   else if(event->button == Button3)
                   {
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp;
                      buttonMask = Button3Mask;
+                     buttonsState.right = false;
                   }
                   else
                   {
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonUp;
                      buttonMask = Button2Mask;
+                     buttonsState.middle = false;
                   }
                   timeStamp = event->time;
                   if(!(event->state & buttonMask)) break;
@@ -1783,6 +1794,11 @@ class XInterface : Interface
                      if(event->state & Button3Mask)   keyFlags.right = true;
                      //*XUnlockDisplay(xGlobalDisplay);
                      incref window;
+                     if(window == acquiredInputWindow)
+                     {
+                        lastMouse.x = event->x_root;
+                        lastMouse.y = event->y_root;
+                     }
                      window.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove,
                         event->x_root, event->y_root, &keyFlags, false, false);
                      delete window;
@@ -1844,6 +1860,8 @@ class XInterface : Interface
                }
                case FocusIn:
                {
+                  lastMouse = acquireStart;
+
                   guiApp.SetAppFocus(true);
 
                   if(fullScreenMode)
@@ -2192,6 +2210,7 @@ class XInterface : Interface
                         }
                      }
 
+                     lastMouse = acquireStart;
                      modalRoot = window.FindModal();
                      windowData = modalRoot ? modalRoot.windowData : window.windowData;
                      if(windowData)
@@ -2748,6 +2767,8 @@ class XInterface : Interface
    void DestroyRootWindow(Window window)
    {
       XEvent event;
+      if(window == acquiredInputWindow)
+         delete acquiredInputWindow;
 
       XDeleteContext(xGlobalDisplay, (XID)window, windowContext);
       XSaveContext(xGlobalDisplay, (X11Window)window.windowHandle, windowContext, null);
@@ -3158,7 +3179,7 @@ class XInterface : Interface
    {
       if(window.rootWindow.windowHandle)
          XDefineCursor(xGlobalDisplay, (X11Window) window.rootWindow.windowHandle,
-            cursor == -1 ? nullCursor : systemCursors[(SystemCursor)cursor]);
+            (acquiredInputWindow || cursor == -1) ? nullCursor : systemCursors[(SystemCursor)cursor]);
    }
 
    // --- Caret ---
@@ -3307,14 +3328,36 @@ class XInterface : Interface
 
    bool AcquireInput(Window window, bool state)
    {
-      return false;
+      if(state && window)
+      {
+         GetMousePosition(&acquireStart.x, &acquireStart.y);
+         lastMouse = acquireStart;
+         acquiredInputWindow = window;
+         incref acquiredInputWindow;
+      }
+      else if(acquiredInputWindow)
+         delete acquiredInputWindow;
+      return true;
    }
 
    bool GetMouseState(MouseButtons * buttons, int * x, int * y)
    {
       bool result = false;
-      if(x) *x = 0;
-      if(y) *y = 0;
+      if(acquiredInputWindow && guiApp.desktop.active)
+      {
+         if(x) *x = lastMouse.x - acquireStart.x;
+         if(y) *y = lastMouse.y - acquireStart.y;
+         *buttons = buttonsState;
+         SetMousePosition(acquireStart.x, acquireStart.y);
+         lastMouse = acquireStart;
+         result = true;
+      }
+      else
+      {
+         if(x) *x = 0;
+         if(y) *y = 0;
+         if(buttons) *buttons = 0;
+      }
       return result;
    }
 
