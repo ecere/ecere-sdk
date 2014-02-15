@@ -33,6 +33,10 @@ default:
 #define Time      X11Time
 #define KeyCode   X11KeyCode
 #define Picture   X11Picture
+#define Bool      X11Bool
+
+#define _XTYPEDEF_BOOL
+typedef int X11Bool;
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
@@ -48,6 +52,7 @@ default:
 #include <X11/extensions/Xrender.h>
 #include <X11/extensions/XShm.h>
 
+#undef Bool
 #undef Picture
 #undef Window
 #undef Cursor
@@ -862,12 +867,12 @@ static uint E_CALL XEventThread(void * data)
 }
 */
 
-static Bool EventChecker(void *display, XEvent *event, char * data)
+static X11Bool EventChecker(void *display, XEvent *event, char * data)
 {
    return (!data || (event->type == (int) data)) && event->type != NoExpose && event->type != GraphicsExpose;
 }
 
-static Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, char * data)
+static X11Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, char * data)
 {
    return (!data || (event->window == (X11Window) data)) && event->type == ConfigureNotify;
 }
