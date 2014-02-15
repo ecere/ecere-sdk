@@ -2083,7 +2083,7 @@ class XInterface : Interface
                      Window modalRoot;
                      XWindowData windowData;
                      bool laterFocus;
-                     activeWindow = (X11Window)window.windowHandle;
+                     //activeWindow = (X11Window)window.windowHandle;
 
                      timeStamp = (X11Time)event->data.l[1];
 
@@ -2154,6 +2154,7 @@ class XInterface : Interface
 
                                  XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
                                  XSetInputFocus(xGlobalDisplay, (X11Window)modalRoot.windowHandle, RevertToPointerRoot, timeStamp);
+                                 activeWindow = (X11Window)window.windowHandle;
 
                                  //XFlush(xGlobalDisplay);
                                  //printf("Done.\n");
@@ -2162,6 +2163,7 @@ class XInterface : Interface
                            else
                            {
                               XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToPointerRoot, timeStamp);
+                              activeWindow = (X11Window)window.windowHandle;
                               window.ExternalActivate(true, true, window, null); // lastActive);
                               if(windowData && windowData.ic)
                               {
