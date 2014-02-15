@@ -4873,6 +4873,9 @@ private:
       {
          if(child.created && !child.Setup(false))
             result = false;
+
+         if(guiApp.modeSwitching && guiApp.fullScreen && child.rootWindow == child)
+            child.UpdateCaption();
       }
       return result;
    }
@@ -6271,6 +6274,8 @@ public:
 
                      parent.OnChildAddedOrRemoved(this, false);
 
+                     if(rootWindow == this && visible)   // So that X11 windows don't show as 'unknown'
+                        UpdateCaption();
                      // Real set state & activate for proper display & activation
                      property::visible = visible;
                      //  SetState(state & 0x00000003, true, 0);
