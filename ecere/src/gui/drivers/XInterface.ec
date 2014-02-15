@@ -3080,7 +3080,7 @@ class XInterface : Interface
 
    void SetMousePosition(int x, int y)
    {
-
+      XWarpPointer(xGlobalDisplay, None, DefaultRootWindow(xGlobalDisplay), 0, 0, 0, 0, x, y);
    }
 
    void SetMouseRange(Window window, Box box)
