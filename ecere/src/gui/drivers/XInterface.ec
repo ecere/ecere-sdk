@@ -105,6 +105,8 @@ static Point acquireStart;
 static Point lastMouse;
 static MouseButtons buttonsState;
 
+static bool keyStates[KeyCode];
+
 static enum NETWMStateAction { remove = 0, add = 1, toggle = 2 };
 
 static enum AtomIdents
@@ -117,7 +119,7 @@ static enum AtomIdents
    _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash,
    _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, _net_frame_extents, _net_request_frame_extents,
    _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_modal, app_selection, _net_supported,
-   _net_wm_state_skip_taskbar, _net_wm_state_fullscreen, _net_wm_state_above
+   _net_wm_state_skip_taskbar, _net_wm_state_fullscreen, _net_wm_state_above, capsLock, numLock, scrollLock
 };
 
 static Atom atoms[AtomIdents];
@@ -167,7 +169,10 @@ static const char *atomNames[AtomIdents] = {
    "_NET_SUPPORTED",
    "_NET_WM_STATE_SKIP_TASKBAR",
    "_NET_WM_STATE_FULLSCREEN",
-   "_NET_WM_STATE_ABOVE"
+   "_NET_WM_STATE_ABOVE",
+   "Caps Lock",
+   "Num Lock",
+   "Scroll Lock",
 };
 /*
 _NET_WM_STATE_STICKY, ATOM
@@ -841,6 +846,8 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    if(release == 1)
    {
       int numBytes;
+
+      if(code < KeyCode::enumSize) keyStates[code] = false;
       if(windowData && windowData.ic) ch = buflength ? UTF8GetChar(buf, &numBytes) : 0;
       if(ch == 127) ch = 0;
       // printf("Release! %d %d %d\n", keysym, code, ch);
@@ -851,6 +858,8 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
       int c;
       if(release == 0)
       {
+         if(code < KeyCode::enumSize) keyStates[code] = true;
+
          if(windowData.ic && buflength)
          {
             for(c = 0; c<buflength;)
@@ -2120,13 +2129,6 @@ class XInterface : Interface
                            y -= windowData.decor.top;
                            w += windowData.decor.left + windowData.decor.right;
                            h += windowData.decor.top + windowData.decor.bottom;
-
-                           /*
-                           x -= window.clientStart.x;
-                           y -= window.clientStart.y - (window.hasMenuBar ? skinMenuHeight : 0);
-                           w += window.size.w - window.clientSize.w;
-                           h += window.size.h - window.clientSize.h;
-                           */
                         }
                      }
 
@@ -3383,8 +3385,24 @@ class XInterface : Interface
 
    bool GetKeyState(Key key)
    {
-      int keyState = 0;
-      return keyState;
+      if(key == capsState || key == numState || key == scrollState)
+      {
+         Atom atom = None;
+         X11Bool state = 0;
+         int idx = 0;
+         switch(key)
+         {
+            case capsState:    atom = atoms[capsLock];   idx = 0; break;
+            case numState:     atom = atoms[numLock];    idx = 1; break;
+            case scrollState:  atom = atoms[scrollLock]; idx = 2; break;
+         }
+         /*XkbGetIndicatorState(xGlobalDisplay, XkbUseCoreKbd, &state);
+         state = (state & (1 << idx)) ? 1 : 0;*/
+         XkbGetNamedIndicator(xGlobalDisplay, /*XkbUseCoreKbd,*/ atom, &idx, &state, NULL, NULL);
+         return (bool)state;
+      }
+      else
+         return keyStates[key.code];
    }
 
    void SetTimerResolution(uint hertz)
