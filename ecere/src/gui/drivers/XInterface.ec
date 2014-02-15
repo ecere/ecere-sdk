@@ -1369,12 +1369,6 @@ class XInterface : Interface
                }
             }
 
-            {
-               Atom protocols[2] = { atoms[wm_delete_window], atoms[wm_take_focus] };
-
-               XSetWMProtocols(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), protocols, 2);
-            }
-
             /*
             if(atomsSupported[_net_workarea])
                printf("Warning: _NET_WORKAREA extension not supported\n");
@@ -2399,6 +2393,17 @@ class XInterface : Interface
          windowHandle = XCreateWindow(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay),
             0,0,guiApp.desktop.size.w,guiApp.desktop.size.h,0, depth, InputOutput, visual ? visual : CopyFromParent,
             CWEventMask | (visual ? (CWColormap | CWBorderPixel) : 0)/*| CWOverrideRedirect*/, &attributes);
+
+         {
+            XWMHints xwmHints;
+            xwmHints.flags = InputHint;
+            xwmHints.input = 0;
+            XSetWMHints(xGlobalDisplay, windowHandle, &xwmHints);
+         }
+         {
+            Atom protocols[2] = { atoms[wm_delete_window], atoms[wm_take_focus] };
+            XSetWMProtocols(xGlobalDisplay, windowHandle, protocols, 2);
+         }
       }
       /*
          Unsupported for now...
@@ -2606,16 +2611,12 @@ class XInterface : Interface
          }
       }
 
-      /*
       {
-         Atom protocolsAtom = XInternAtom(xGlobalDisplay, "WM_PROTOCOLS", False);
-         if ( protocolsAtom != None )
-         {
-            MWM_Hints hints = { MWM_HINTS_DECORATIONS|MWM_HINTS_FUNCTIONS, 0, 0, 0, 0 };
-            XChangeProperty(xGlobalDisplay, windowHandle, atoms[_motif_wm_hints], atoms[_motif_wm_hints], 32,
-               PropModeReplace, (unsigned char*)&hints, sizeof(hints)/4);
-         }
-      }*/
+         XWMHints wmHints = { 0 };
+         wmHints.input = True;
+         XSetWMHints(xGlobalDisplay, windowHandle, &wmHints);
+      }
+
       // XFlush(xGlobalDisplay);
       window.windowData = XWindowData { visualInfo, ic };
 
