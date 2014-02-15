@@ -3040,7 +3040,7 @@ class XInterface : Interface
    {
       if(window.rootWindow.windowHandle)
          XDefineCursor(xGlobalDisplay, (X11Window) window.rootWindow.windowHandle,
-            cursor == -1 ? (X11Cursor)0 : systemCursors[(SystemCursor)cursor]);
+            cursor == -1 ? nullCursor : systemCursors[(SystemCursor)cursor]);
    }
 
    // --- Caret ---
