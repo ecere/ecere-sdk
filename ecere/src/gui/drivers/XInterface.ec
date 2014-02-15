@@ -1915,18 +1915,6 @@ class XInterface : Interface
                }
                case FocusOut:
                {
-                  if((X11Window)window.windowHandle == activeWindow)
-                     guiApp.SetAppFocus(false);
-
-                  if(fullScreenMode)
-                  {
-                     SetNETWMState((X11Window)window.windowHandle, true, remove, atoms[_net_wm_state_fullscreen], 0);
-                     XUngrabKeyboard(xGlobalDisplay, CurrentTime);
-                     // -- This XIconifyWindow causes trouble on Gnome Classic
-                     XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
-                     break;
-                  }
-
 #ifdef _DEBUG
                   //printf("Processing a FocusOut Event for %s (%x)\n", window._class.name, window);
 #endif
@@ -1935,6 +1923,18 @@ class XInterface : Interface
                   {
                      break;
                   }
+
+                  if((X11Window)window.windowHandle == activeWindow)
+                     guiApp.SetAppFocus(false);
+
+                  if(fullScreenMode)
+                  {
+                     SetNETWMState((X11Window)window.windowHandle, true, remove, atoms[_net_wm_state_fullscreen], 0);
+                     XUngrabKeyboard(xGlobalDisplay, CurrentTime);
+                     XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
+                     break;
+                  }
+
                   if(thisEvent->window == activeWindow)
                      activeWindow = (X11Window)null;
 #if 0
