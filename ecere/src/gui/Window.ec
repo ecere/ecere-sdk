@@ -2233,6 +2233,7 @@ private:
    Window GetParentMenuBar()
    {
       Window menuBarParent;
+      if(formDesigner) return null;
       for(menuBarParent = this ? parent : null; menuBarParent; menuBarParent = menuBarParent.parent)
       {
          if(menuBarParent.menuBar) return menuBarParent.menuBar;
