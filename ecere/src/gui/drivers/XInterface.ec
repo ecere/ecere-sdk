@@ -111,7 +111,8 @@ static enum AtomIdents
    _net_wm_window_type_desktop, _net_wm_window_type_dialog, _net_wm_window_type_dock, _net_wm_window_type_dropdown_menu,
    _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash,
    _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, _net_frame_extents, _net_request_frame_extents,
-   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_modal, app_selection, _net_supported
+   _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_modal, app_selection, _net_supported,
+   _net_wm_state_skip_taskbar
 };
 
 static Atom atoms[AtomIdents];
@@ -158,14 +159,14 @@ static const char *atomNames[AtomIdents] = {
    "_NET_WM_STATE_MAXIMIZED_HORZ", // _net_wm_state_maximized_horz
    "_NET_WM_STATE_MODAL", // _net_wm_state_modal
    "APP_SELECTION",
-   "_NET_SUPPORTED"
+   "_NET_SUPPORTED",
+   "_NET_WM_STATE_SKIP_TASKBAR"
 };
 /*
 _NET_WM_STATE_STICKY, ATOM
 _NET_WM_STATE_MAXIMIZED_VERT, ATOM
 _NET_WM_STATE_MAXIMIZED_HORZ, ATOM
 _NET_WM_STATE_SHADED, ATOM
-_NET_WM_STATE_SKIP_TASKBAR, ATOM
 _NET_WM_STATE_SKIP_PAGER, ATOM
 _NET_WM_STATE_HIDDEN, ATOM
 _NET_WM_STATE_FULLSCREEN, ATOM
@@ -2474,6 +2475,7 @@ class XInterface : Interface
                else if(parentWindow)
                {
                   hints[0] = atoms[_net_wm_window_type_normal];
+                  SetNETWMState(windowHandle, false, add, atoms[_net_wm_state_skip_taskbar], 0);
 
                   // Some WMs won't show a close button if dialog is set
                   // Additionally, this casues jumping of all dialog windows on Cinnamon
