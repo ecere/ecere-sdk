@@ -1808,6 +1808,8 @@ class XInterface : Interface
                }
                case FocusIn:
                {
+                  guiApp.SetAppFocus(true);
+
                   if(activeWindow != (X11Window)window.windowHandle)
                   {
                      XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
@@ -1840,6 +1842,9 @@ class XInterface : Interface
                }
                case FocusOut:
                {
+                  if((X11Window)window.windowHandle == activeWindow)
+                     guiApp.SetAppFocus(false);
+
 #ifdef _DEBUG
                   //printf("Processing a FocusOut Event for %s (%x)\n", window._class.name, window);
 #endif
@@ -2154,6 +2159,7 @@ class XInterface : Interface
 
                                  XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
                                  XSetInputFocus(xGlobalDisplay, (X11Window)modalRoot.windowHandle, RevertToParent, timeStamp);
+                                 guiApp.SetAppFocus(true);
                                  activeWindow = (X11Window)window.windowHandle;
 
                                  //XFlush(xGlobalDisplay);
@@ -2163,6 +2169,7 @@ class XInterface : Interface
                            else
                            {
                               XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToParent, timeStamp);
+                              guiApp.SetAppFocus(true);
                               activeWindow = (X11Window)window.windowHandle;
                               window.ExternalActivate(true, true, window, null); // lastActive);
                               if(windowData && windowData.ic)
