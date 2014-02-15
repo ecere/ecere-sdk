@@ -112,7 +112,7 @@ static enum AtomIdents
    _net_wm_window_type_menu, _net_wm_window_type_normal, _net_wm_window_type_popup_menu, _net_wm_window_type_splash,
    _net_wm_window_type_toolbar, _net_wm_window_type_utility, _net_workarea, _net_frame_extents, _net_request_frame_extents,
    _net_wm_state_maximized_vert, _net_wm_state_maximized_horz, _net_wm_state_modal, app_selection, _net_supported,
-   _net_wm_state_skip_taskbar
+   _net_wm_state_skip_taskbar, _net_wm_state_fullscreen, _net_wm_state_above
 };
 
 static Atom atoms[AtomIdents];
@@ -160,19 +160,15 @@ static const char *atomNames[AtomIdents] = {
    "_NET_WM_STATE_MODAL", // _net_wm_state_modal
    "APP_SELECTION",
    "_NET_SUPPORTED",
-   "_NET_WM_STATE_SKIP_TASKBAR"
+   "_NET_WM_STATE_SKIP_TASKBAR",
+   "_NET_WM_STATE_FULLSCREEN",
+   "_NET_WM_STATE_ABOVE"
 };
 /*
 _NET_WM_STATE_STICKY, ATOM
-_NET_WM_STATE_MAXIMIZED_VERT, ATOM
-_NET_WM_STATE_MAXIMIZED_HORZ, ATOM
 _NET_WM_STATE_SHADED, ATOM
 _NET_WM_STATE_SKIP_PAGER, ATOM
-_NET_WM_STATE_HIDDEN, ATOM
-_NET_WM_STATE_FULLSCREEN, ATOM
-_NET_WM_STATE_ABOVE, ATOM
 _NET_WM_STATE_BELOW, ATOM
-_NET_WM_STATE_DEMANDS_ATTENTION, ATOM
 */
 
 static bool autoRepeatDetectable;
@@ -404,11 +400,39 @@ static void RepositionDesktop(bool updateChildren)
 
    if(desktopX != x || desktopY != y || desktopW != w || desktopH != h)
    {
-      guiApp.SetDesktopPosition(x, y, w, h, updateChildren);
-      desktopX = x;
-      desktopY = y;
-      desktopW = w;
-      desktopH = h;
+      bool skip = false;
+      // Don't change the desktop area if another fullscreen application is running
+      // (Attemps to solve the debugging IDE being re-activated while switching debugged app between fullscreen/windowed on Cinnamon)
+      if(XGetWindowProperty(xGlobalDisplay, x_root, atoms[_net_active_window], 0, 32,
+                            False, AnyPropertyType, &type, &format, &len,
+                            &fill, &data) == Success && data)
+      {
+         X11Window active = *(long *)data;
+         XFree(data);
+         if(XGetWindowProperty(xGlobalDisplay, active, atoms[_net_wm_state], 0, 32, False,
+             XA_ATOM, &type, &format, &len, &fill, &data) == Success)
+         {
+            Atom * values = (Atom *) data;
+            int i;
+            for (i = 0; i < len; i++)
+            {
+               if(values[i] == atoms[_net_wm_state_fullscreen])
+               {
+                  skip = true;
+                  break;
+               }
+            }
+            XFree(data);
+         }
+      }
+      if(w && h && !skip)
+      {
+         guiApp.SetDesktopPosition(x, y, w, h, updateChildren);
+         desktopX = x;
+         desktopY = y;
+         desktopW = w;
+         desktopH = h;
+      }
    }
 }
 
@@ -786,7 +810,16 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    if(key != leftControl && key != rightControl && event->state & ControlMask)
       code.ctrl = true;
    if(key != leftAlt && key != rightAlt && event->state & Mod1Mask)
+   {
+      if(fullScreenMode && key == tab)
+      {
+         XUngrabKeyboard(xGlobalDisplay, CurrentTime);
+         guiApp.SetAppFocus(false);
+         SetNETWMState((X11Window)window.windowHandle, true, remove, atoms[_net_wm_state_fullscreen], 0);
+         XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
+      }
       code.alt = true;
+   }
 
 #ifdef __APPLE__
    if(key != leftAlt && key != rightAlt && event->state & (1<<13))
@@ -1615,9 +1648,12 @@ class XInterface : Interface
                   if(event->button == Button1)
                   {
                      // Force a raise on click here to deal with confused active state preventing to bring the window up
-                     if(!atomsSupported[_net_active_window] && !window.isRemote)
-                        XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-                     XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToParent, CurrentTime);
+                     if(!fullScreenMode)
+                     {
+                        if(!atomsSupported[_net_active_window] && !window.isRemote)
+                           XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+                        XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToParent, CurrentTime);
+                     }
                      button = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown;
                      buttonDouble = __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick;
                      whichButton = 0;
@@ -1810,6 +1846,16 @@ class XInterface : Interface
                {
                   guiApp.SetAppFocus(true);
 
+                  if(fullScreenMode)
+                  {
+                     XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+                     SetNETWMState((X11Window)window.windowHandle, true, add, atoms[_net_wm_state_fullscreen], 0);
+                     XGrabKeyboard(xGlobalDisplay, (X11Window)window.windowHandle, False,  GrabModeAsync, GrabModeAsync, CurrentTime);
+                        (xGlobalDisplay, (X11Window)window.windowHandle, RevertToParent, timeStamp);
+                     XInterface::UpdateRootWindow(window);
+                     break;
+                  }
+
                   if(activeWindow != (X11Window)window.windowHandle)
                   {
                      XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
@@ -1844,6 +1890,15 @@ class XInterface : Interface
                {
                   if((X11Window)window.windowHandle == activeWindow)
                      guiApp.SetAppFocus(false);
+
+                  if(fullScreenMode)
+                  {
+                     SetNETWMState((X11Window)window.windowHandle, true, remove, atoms[_net_wm_state_fullscreen], 0);
+                     XUngrabKeyboard(xGlobalDisplay, CurrentTime);
+                     // -- This XIconifyWindow causes trouble on Gnome Classic
+                     XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
+                     break;
+                  }
 
 #ifdef _DEBUG
                   //printf("Processing a FocusOut Event for %s (%x)\n", window._class.name, window);
@@ -1924,7 +1979,7 @@ class XInterface : Interface
 #endif
                   {
                      XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
-                     if(window != window.parent.activeChild && window != guiApp.interimWindow) break;
+                     if(window.parent && window != window.parent.activeChild && window != guiApp.interimWindow) break;
                      incref window;
 
 #ifdef _DEBUG
@@ -1949,7 +2004,7 @@ class XInterface : Interface
                {
                   XConfigureEvent * event = (XConfigureEvent *) thisEvent;
                   bool unmaximized = false;
-                  if(!window.visible) break;
+                  if(!window.visible || fullScreenMode) break;
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
@@ -2088,6 +2143,16 @@ class XInterface : Interface
                      Window modalRoot;
                      XWindowData windowData;
                      bool laterFocus;
+
+                     if(fullScreenMode)
+                     {
+                        XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+                        XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToParent, timeStamp);
+                        XGrabKeyboard(xGlobalDisplay, (X11Window)window.windowHandle, False,  GrabModeAsync, GrabModeAsync, CurrentTime);
+                        guiApp.SetAppFocus(true);
+                        break;
+                     }
+
                      //activeWindow = (X11Window)window.windowHandle;
 
                      timeStamp = (X11Time)event->data.l[1];
@@ -2111,7 +2176,7 @@ class XInterface : Interface
                            XFocusChangeEvent *event = (XFocusChangeEvent *) &checkEvent;
                            Window window;
                            XFindContext(xGlobalDisplay, event->window, windowContext, (XPointer *) &window);
-                           if(window != window.parent.activeChild) break;
+                           if(window.parent && window != window.parent.activeChild) break;
                            incref window;
 
       #ifdef _DEBUG
@@ -2192,7 +2257,7 @@ class XInterface : Interface
                {
                   XWindowData windowData = window.windowData;
                   XPropertyEvent * event = (XPropertyEvent *) thisEvent;
-                  if(event->atom == atoms[_net_frame_extents] &&
+                  if(!fullScreenMode && event->atom == atoms[_net_frame_extents] &&
                     event->state == PropertyNewValue && windowData)
                   {
                      if(!GetFrameExtents(window, true))
@@ -2399,9 +2464,39 @@ class XInterface : Interface
 
       if(fullScreenMode)
       {
-         windowHandle = XCreateWindow(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay),
-            0,0,guiApp.desktop.size.w,guiApp.desktop.size.h,0, depth, InputOutput, visual ? visual : CopyFromParent,
-            CWEventMask | (visual ? (CWColormap | CWBorderPixel) : 0)/*| CWOverrideRedirect*/, &attributes);
+         windowHandle = XCreateWindow(xGlobalDisplay,
+               DefaultRootWindow(xGlobalDisplay),
+               0,0,
+               XDisplayWidth(xGlobalDisplay, DefaultScreen(xGlobalDisplay)),
+               XDisplayHeight(xGlobalDisplay, DefaultScreen(xGlobalDisplay)),
+               0, depth, InputOutput, visual ? visual : CopyFromParent,
+               CWEventMask | (visual ? (CWColormap | CWBorderPixel) : 0) | CWOverrideRedirect,
+               &attributes);
+
+         {
+            XSizeHints hints = { 0 };
+            XSetWMNormalHints(xGlobalDisplay, windowHandle, &hints);
+         }
+
+         {
+            String caption = window.caption;
+            XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_name],
+               atoms[utf8_string], 8, PropModeReplace, (byte *)window.caption, caption ? strlen(caption) : 0);
+            XChangeProperty(xGlobalDisplay, windowHandle, atoms[wm_name],
+               atoms[utf8_string], 8, PropModeReplace, (byte *)window.caption, caption ? strlen(caption) : 0);
+         }
+
+         SetNETWMState((X11Window)windowHandle, false, add, atoms[_net_wm_state_fullscreen], 0);
+         //SetNETWMState((X11Window)windowHandle, false, add, atoms[_net_wm_state_above], 0);
+         {
+            Atom hints[4];
+            int count;
+
+            hints[0] = atoms[_net_wm_window_type_normal];
+            count = 1;
+            XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_window_type], XA_ATOM, 32,
+               PropModeReplace, (unsigned char*)&hints, count);
+         }
 
          {
             XWMHints xwmHints;
@@ -2600,10 +2695,10 @@ class XInterface : Interface
             {
                (window.nativeDecorations ? 0 : MWM_HINTS_DECORATIONS)|MWM_HINTS_FUNCTIONS,
                (window.hasClose ? MWM_FUNC_CLOSE : 0) |
-               (window.hasMaximize ? MWM_FUNC_MAXIMIZE : 0) |
-               (window.hasMinimize ? MWM_FUNC_MINIMIZE : 0) |
-               ((window.moveable || ((BorderBits)window.borderStyle).fixed) ? MWM_FUNC_MOVE : 0) |
-               (((BorderBits)window.borderStyle).sizable ? MWM_FUNC_RESIZE : 0),
+               (fullScreenMode || window.hasMaximize ? MWM_FUNC_MAXIMIZE : 0) |
+               (fullScreenMode || window.hasMinimize ? MWM_FUNC_MINIMIZE : 0) |
+               ((fullScreenMode || window.moveable || ((BorderBits)window.borderStyle).fixed) ? MWM_FUNC_MOVE : 0) |
+               (fullScreenMode || ((BorderBits)window.borderStyle).sizable ? MWM_FUNC_RESIZE : 0),
                 0, 0, 0
             };
             XChangeProperty(xGlobalDisplay, windowHandle, atoms[_motif_wm_hints], atoms[_motif_wm_hints], 32,
@@ -2640,9 +2735,13 @@ class XInterface : Interface
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
 
-      if(!window.nativeDecorations || !RequestFrameExtents(windowHandle))
+      if(!fullScreenMode && !window.nativeDecorations || !RequestFrameExtents(windowHandle))
          ((XWindowData)window.windowData).gotFrameExtents = true;
-
+      if(fullScreenMode)
+      {
+         XMapWindow(xGlobalDisplay, windowHandle);
+         XGrabKeyboard(xGlobalDisplay, windowHandle, False,  GrabModeAsync, GrabModeAsync, CurrentTime);
+      }
       return (void *)windowHandle;
    }
 
@@ -2729,7 +2828,7 @@ class XInterface : Interface
          x += desktopX;
          y += desktopY;
 
-         if(!atomsSupported[_net_wm_state] || window.state != maximized)
+         if(!fullScreenMode && (!atomsSupported[_net_wm_state] || window.state != maximized))
          {
             if(move && resize)
                XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y, w, h);
@@ -2810,6 +2909,17 @@ class XInterface : Interface
                   ActivateRootWindow(window);
             }
 
+            if(fullScreenMode && state != minimized)
+            {
+               int w = XDisplayWidth(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
+               int h = XDisplayHeight(xGlobalDisplay, DefaultScreen(xGlobalDisplay));
+               SetNETWMState((X11Window)window.windowHandle, true, add, atoms[_net_wm_state_fullscreen], 0);
+               XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, 0, 0, w, h);
+
+               guiApp.SetDesktopPosition(0, 0, w, h, true);
+               window.Position(0, 0, w, h, true, true, true, true, false, false);
+            }
+
             if(state == minimized && atomsSupported[_net_wm_state])
             {
                uint iconic = IconicState;
@@ -2833,9 +2943,10 @@ class XInterface : Interface
                */
 
                // printf("Attempting to minimize %s\n", window._class.name);
-               XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
+               if(!fullScreenMode)
+                  XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
             }
-            else
+            else if(!fullScreenMode)
             {
                //((XWindowData)window.windowData).gotFrameExtents && (!window.nativeDecorations || window.state == state))
                if(!atomsSupported[_net_wm_state] || (!((XWindowData)window.windowData).gotFrameExtents && window.state == maximized))
@@ -2869,7 +2980,7 @@ class XInterface : Interface
                if(atomsSupported[_net_wm_state])
                {
                   // Maximize / Restore the window
-                  SetNETWMState((X11Window)window.windowHandle, true, state == maximized ? add: remove,
+                  SetNETWMState((X11Window)window.windowHandle, true, state == maximized ? add : remove,
                      atoms[_net_wm_state_maximized_vert], atoms[_net_wm_state_maximized_horz]);
                   if(state == maximized)
                   {
