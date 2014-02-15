@@ -257,6 +257,7 @@ public:
    // Decorations Size
    Box decor;
    bool gotFrameExtents;
+   bool currentlyVisible;
 };
 
 bool XGetBorderWidths(Window window, Box box)
@@ -2786,13 +2787,18 @@ class XInterface : Interface
          window.nativeDecorations = false;
       if(!window.parent || !window.parent.display)
       {
+         XWindowData windowData = window.windowData;
          //Logf("Set root window state %d %s\n", state, window.name);
          if(visible)
          {
-            XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-            WaitForViewableWindow(window);
-            if(window.creationActivation == activate && state != minimized)
-               ActivateRootWindow(window);
+            if(!windowData.currentlyVisible)
+            {
+               XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+               windowData.currentlyVisible = true;
+               WaitForViewableWindow(window);
+               if(window.creationActivation == activate && state != minimized)
+                  ActivateRootWindow(window);
+            }
 
             if(state == minimized && atomsSupported[_net_wm_state])
             {
@@ -2866,7 +2872,10 @@ class XInterface : Interface
             }
          }
          else
+         {
             XUnmapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+            windowData.currentlyVisible = false;
+         }
          //XFlush(xGlobalDisplay);
       }
    }
@@ -2883,10 +2892,15 @@ class XInterface : Interface
       {
          if(!window.style.hidden && window.created)
          {
+            XWindowData windowData = window.windowData;
             //printf("Activate root window %s\n", window._class.name);
+            if(!windowData.currentlyVisible)
+            {
+               XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+               WaitForViewableWindow(window);
+               windowData.currentlyVisible = true;
+            }
             XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-            XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-            WaitForViewableWindow(window);
             if(atomsSupported[_net_active_window])
             {
                XClientMessageEvent event = { 0 };
