@@ -1276,6 +1276,61 @@ static void SigIntHandler(int value)
       guiApp.desktop.Destroy(0);*/
 }
 
+static void X11UpdateState(Window window, bool * unmaximized)
+{
+   if(atomsSupported[_net_wm_state]) //window.nativeDecorations)
+   {
+      int format;
+      unsigned long len, fill;
+      Atom type;
+      char * data = null;
+      if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
+             XA_ATOM, &type, &format, &len, &fill, &data) == Success)
+      {
+         bool maxVert = false, maxHorz = false, isMinimized = false;
+         Atom * hints = (Atom *)data;
+         int c;
+         for(c = 0; c < len && hints[c]; c++)
+         {
+            if(hints[c] == atoms[_net_wm_state_maximized_vert])
+               maxVert = true;
+            else if(hints[c] == atoms[_net_wm_state_maximized_horz])
+               maxHorz = true;
+            else if(hints[c] == atoms[_net_wm_state_hidden])
+               isMinimized = true;
+         }
+         XFree(data);
+
+         if(maxVert && maxHorz)
+         {
+            if(window.state != maximized)
+            {
+               *&window.state = maximized;
+               if(!window.nativeDecorations)
+                  window.CreateSystemChildren();
+            }
+         }
+         else if(isMinimized)
+         {
+            if(window.state != minimized)
+            {
+               *&window.state = minimized;
+               if(!window.nativeDecorations)
+                  window.CreateSystemChildren();
+            }
+         }
+         else if(window.state != normal)
+         {
+            if(unmaximized && window.state == maximized)
+               *unmaximized = true;
+            *&window.state = normal;
+            if(!window.nativeDecorations)
+               window.CreateSystemChildren();
+         }
+      }
+   }
+}
+
 class XInterface : Interface
 {
    class_property(name) = "X";
@@ -1873,6 +1928,8 @@ class XInterface : Interface
 
                   guiApp.SetAppFocus(true);
 
+                  X11UpdateState(window, null);
+
                   if(fullScreenMode)
                   {
                      XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
@@ -2035,57 +2092,7 @@ class XInterface : Interface
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
-                  if(atomsSupported[_net_wm_state]) //window.nativeDecorations)
-                  {
-                     int format;
-                     unsigned long len, fill;
-                     Atom type;
-                     char * data = null;
-                     if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
-                            XA_ATOM, &type, &format, &len, &fill, &data) == Success)
-                     {
-                        bool maxVert = false, maxHorz = false, isMinimized = false;
-                        Atom * hints = (Atom *)data;
-                        int c;
-                        for(c = 0; c < len && hints[c]; c++)
-                        {
-                           if(hints[c] == atoms[_net_wm_state_maximized_vert])
-                              maxVert = true;
-                           else if(hints[c] == atoms[_net_wm_state_maximized_horz])
-                              maxHorz = true;
-                           else if(hints[c] == atoms[_net_wm_state_hidden])
-                              isMinimized = true;
-                        }
-                        XFree(data);
-
-                        if(maxVert && maxHorz)
-                        {
-                           if(window.state != maximized)
-                           {
-                              *&window.state = maximized;
-                              if(!window.nativeDecorations)
-                                 window.CreateSystemChildren();
-                           }
-                        }
-                        else if(isMinimized)
-                        {
-                           if(window.state != minimized)
-                           {
-                              *&window.state = minimized;
-                              if(!window.nativeDecorations)
-                                 window.CreateSystemChildren();
-                           }
-                        }
-                        else if(window.state != normal)
-                        {
-                           if(window.state == maximized)
-                              unmaximized = true;
-                           *&window.state = normal;
-                           if(!window.nativeDecorations)
-                              window.CreateSystemChildren();
-                        }
-                     }
-                  }
+                  X11UpdateState(window, &unmaximized);
                   {
                      bool offset = false;
                      int x, y, w, h;
