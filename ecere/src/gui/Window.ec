@@ -5324,7 +5324,7 @@ private:
       if(interimWindow && interimWindow.master)
          interimMaster = interimWindow.master.rootWindow;
 
-      if(active && state == minimized) // && (!window.nativeDecorations || window.rootWindow != window)
+      if(active && state == minimized && window.parent) // && (!window.nativeDecorations || window.rootWindow != window)
          // SetState(normal, false, 0);
          SetState(lastState, false, 0);
 
@@ -5802,7 +5802,7 @@ private:
 
          Position(x, y, w, h, true, true, true, true, false, true);
 
-         if(!style.inactive && !style.interim && this == parent.activeClient)
+         if(!style.inactive && !style.interim && parent && this == parent.activeClient)
             parent.UpdateActiveDocument(null);
       }
 
