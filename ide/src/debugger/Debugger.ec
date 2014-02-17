@@ -2538,19 +2538,18 @@ class Debugger
          }
          if(vgLogThread)
          {
+            vgLogFile.CloseInput();
             app.Unlock();
             vgLogThread.Wait();
             app.Lock();
          }
+         delete vgLogFile;
          if(vgTargetThread)
          {
             app.Unlock();
             vgTargetThread.Wait();
             app.Lock();
          }
-
-         if(vgLogFile)
-            delete vgLogFile;
          if(gdbHandle)
          {
             gdbHandle.Wait();
@@ -3241,7 +3240,7 @@ class Debugger
 
    void ValgrindTargetThreadExit()
    {
-      ide.outputView.debugBox.Logf("ValgrindTargetThreadExit\n");
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ValgrindTargetThreadExit()");
       if(vgTargetHandle)
       {
          vgTargetHandle.Wait();
@@ -3259,8 +3258,7 @@ class Debugger
          targetProcessId = 0;
          ClearBreakDisplay();
 
-         if(vgLogFile)
-            delete vgLogFile;
+         delete vgLogFile;
          if(gdbHandle)
          {
             serialSemaphore.Release();
@@ -4098,11 +4096,12 @@ class ValgrindLogThread : Thread
       app.Lock();
       while(debugger.state != terminated && vgLogFile)
       {
-         int result;
+         int result = 0;
          app.Unlock();
-         result = vgLogFile.Read(output, 1, sizeof(output));
+         if(vgLogFile)
+            result = vgLogFile.Read(output, 1, sizeof(output));
          app.Lock();
-         if(debugger.state == terminated || !vgLogFile/* || vgLogFile.Eof()*/)
+         if(debugger.state == terminated || !vgLogFile) // || vgLogFile.Eof()
             break;
          if(result)
          {
@@ -4117,8 +4116,6 @@ class ValgrindLogThread : Thread
                   dynamicBuffer.size += c - start;
                   memcpy(&dynamicBuffer[pos], output + start, c - start);
                   if(dynamicBuffer.count && dynamicBuffer[dynamicBuffer.count - 1] != '\r')
-                  // COMMENTED OUT DUE TO ISSUE #135, FIXED
-                  //if(dynamicBuffer.array[dynamicBuffer.count - 1] != '\r')
                      dynamicBuffer.size++;
                   dynamicBuffer[dynamicBuffer.count - 1] = '\0';
 #ifdef _DEBUG
@@ -4127,45 +4124,40 @@ class ValgrindLogThread : Thread
                   if(strstr(&dynamicBuffer[0], "vgdb me"))
                      debugger.serialSemaphore.Release();
                   {
-                     char * msg = strstr(&dynamicBuffer[0], "==");
-                     if(msg)
-                        msg = strstr(msg+2, "== ");
-                     if(msg)
+                     char * s = strstr(&dynamicBuffer[0], "==");
+                     if(s)
+                        s = strstr(s+2, "== ");
+                     if(s)
                      {
-                        msg += 3;
-                        switch(msg[0])
+                        s += 3;
+                        switch(s[0])
                         {
                            case '(':
-                              msg = strstr(msg, "(action ");
-                              if(msg)
-                              {
-                                 msg += 8;
-                                 if(!strstr(msg, "at startup) vgdb me ...") || !strstr(msg, "on error) vgdb me ..."))
-                                    msg = null;
-                              }
+                              if(!strstr(s, "vgdb me ..."))   //==21690== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+                                 s = null;
                               break;
                            case 'T':
-                              if(!strstr(msg, "TO DEBUG THIS PROCESS USING GDB: start GDB like this"))
-                                 msg = null;
+                              if(!strstr(s, "TO DEBUG THIS PROCESS USING GDB: start GDB like this"))
+                                 s = null;
                               break;
                            case 'a':
-                              if(!strstr(msg, "and then give GDB the following command"))
-                                 msg = null;
+                              if(!strstr(s, "and then give GDB the following command"))
+                                 s = null;
                               break;
                            case ' ':
-                              if(!strstr(msg, "/path/to/gdb") && !strstr(msg, "target remote | /usr/lib/valgrind/../../bin/vgdb --pid="))
-                                 msg = null;
+                              if(!strstr(s, "/path/to/gdb") && !strstr(s, "target remote | /usr/lib/valgrind/../../bin/vgdb --pid="))
+                                 s = null;
                               break;
                            case '-':
-                              if(!strstr(msg, "--pid is optional if only one valgrind process is running"))
-                                 msg = null;
+                              if(!strstr(s, "--pid is optional if only one valgrind process is running"))
+                                 s = null;
                               break;
                            default:
-                              msg = null;
+                              s = null;
                               break;
                         }
                      }
-                     if(!msg)
+                     if(!s)
                         ide.outputView.debugBox.Logf("%s\n", &dynamicBuffer[0]);
                   }
                   dynamicBuffer.size = 0;
@@ -4190,7 +4182,7 @@ class ValgrindLogThread : Thread
          }
       }
       delete dynamicBuffer;
-      ide.outputView.debugBox.Logf("ValgrindLogThreadExit\n");
+      _dpl2(_dpct, dplchan::debuggerCall, 0, "ValgrindLogThreadExit");
       //if(oldValgrindHandle == vgLogFile)
          debugger.GdbThreadExit/*ValgrindLogThreadExit*/();
       delete oldValgrindHandle;
