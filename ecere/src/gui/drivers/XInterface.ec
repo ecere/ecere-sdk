@@ -827,6 +827,8 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
          guiApp.SetAppFocus(false);
          SetNETWMState((X11Window)window.windowHandle, true, remove, atoms[_net_wm_state_fullscreen], 0);
          XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
+         if(acquiredInputWindow)
+            XInterface::SetMousePosition(guiApp.acquiredMouseX, guiApp.acquiredMouseY);
       }
       code.alt = true;
    }
@@ -1932,6 +1934,12 @@ class XInterface : Interface
 
                   if(fullScreenMode)
                   {
+                     if(acquiredInputWindow)
+                     {
+                        GetMousePosition(&guiApp.acquiredMouseX, &guiApp.acquiredMouseY);
+                        lastMouse = { window.size.w/2, window.size.h/2 };
+                        SetMousePosition(lastMouse.x, lastMouse.y);
+                     }
                      XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
                      SetNETWMState((X11Window)window.windowHandle, true, add, atoms[_net_wm_state_fullscreen], 0);
                      XGrabKeyboard(xGlobalDisplay, (X11Window)window.windowHandle, False,  GrabModeAsync, GrabModeAsync, CurrentTime);
@@ -1981,14 +1989,14 @@ class XInterface : Interface
                      break;
                   }
 
-                  if((X11Window)window.windowHandle == activeWindow)
+                  if(fullScreenMode || (X11Window)window.windowHandle == activeWindow)
                      guiApp.SetAppFocus(false);
 
                   if(fullScreenMode)
                   {
-                     SetNETWMState((X11Window)window.windowHandle, true, remove, atoms[_net_wm_state_fullscreen], 0);
-                     XUngrabKeyboard(xGlobalDisplay, CurrentTime);
-                     XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
+                     //XUngrabKeyboard(xGlobalDisplay, CurrentTime);
+                     //SetNETWMState((X11Window)window.windowHandle, true, remove, atoms[_net_wm_state_fullscreen], 0);
+                     //XIconifyWindow(xGlobalDisplay, (X11Window)window.windowHandle, DefaultScreen(xGlobalDisplay));
                      break;
                   }
 
