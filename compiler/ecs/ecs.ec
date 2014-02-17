@@ -1760,17 +1760,41 @@ class SymbolgenApp : Application
             for(c = 1; c<argc; c++)
             {
                char * file = argv[c];
+               File f = null;
+               char line[16384];
+               int count = 0;
+               char * tokens[512];
                if(file[0] == '-')
                {
                   if(!strcmp(file, "-c"))
                      c++;
                }
+               else if(file[0] == '@')
+                  f = FileOpen(&file[1], read);
                else
                {
-                  char ext[MAX_EXTENSION];
-                  GetExtension(file,ext);
-                  if(!strcmp(ext, "imp"))
-                     LoadImports(file);
+                  count = 1;
+                  tokens[0] = file;
+               }
+               while(count || f)
+               {
+                  int c;
+                  if(f)
+                  {
+                     while(!count && f.GetLine(line, sizeof(line)))
+                        count = Tokenize(line, sizeof(tokens)/sizeof(tokens[0]), tokens, forArgsPassing);
+                     if(!count)
+                        delete f;
+                  }
+                  for(c = 0; c < count; c++)
+                  {
+                     char ext[MAX_EXTENSION];
+                     file = tokens[c];
+                     GetExtension(file, ext);
+                     if(!strcmp(ext, "imp"))
+                        LoadImports(file);
+                  }
+                  count = 0;
                }
             }
 
@@ -1788,129 +1812,155 @@ class SymbolgenApp : Application
             for(c = 1; c<argc; c++)
             {
                char * file = argv[c];
+               File f = null;
+               char line[16384];
+               int count = 0;
+               char * tokens[512];
                if(file[0] == '-')
                {
                   // Don't even know what it does here?
                   if(!strcmp(file, "-c"))
                      c++;
                }
+               else if(file[0] == '@')
+                  f = FileOpen(&file[1], read);
                else
                {
-                  char ext[MAX_EXTENSION];
-                  char moduleName[MAX_LOCATION];
+                  count = 1;
+                  tokens[0] = file;
+               }
 
-                  GetExtension(file,ext);
-
-                  GetLastDirectory(file, moduleName);
-                  StripExtension(moduleName);
-                  strcat(moduleName, ".ec");
-
-                  if(fstrcmp(moduleName, symbolModule) && (!strcmp(ext, "sym") || !strcmp(ext, "ec")))
+               while(count || f)
+               {
+                  int c;
+                  if(f)
                   {
-                     ImportedModule importedModule;
-                     ModuleInfo module { };
-                     char fileName[MAX_FILENAME];
-                     ::modules.Add(module);
+                     while(!count && f.GetLine(line, sizeof(line)))
+                        count = Tokenize(line, sizeof(tokens)/sizeof(tokens[0]), tokens, forArgsPassing);
+                     if(!count)
+                        delete f;
+                  }
+                  for(c = 0; c < count; c++)
+                  {
+                     char ext[MAX_EXTENSION];
+                     char moduleName[MAX_LOCATION];
 
-                     GetLastDirectory(file, fileName);
+                     file = tokens[c];
 
-                     module.name = CopyString(fileName);
+                     GetExtension(file, ext);
 
-                     StripExtension(module.name);
+                     GetLastDirectory(file, moduleName);
+                     StripExtension(moduleName);
+                     strcat(moduleName, ".ec");
 
-                     for(importedModule = ::_defines.first; importedModule; importedModule = importedModule.next)
+                     if(fstrcmp(moduleName, symbolModule) && (!strcmp(ext, "sym") || !strcmp(ext, "ec")))
                      {
-                        if(importedModule.type == moduleDefinition && !strcmpi(importedModule.name, module.name) && !(importedModule.importType == remoteImport))
-                           break;
-                     }
+                        ImportedModule importedModule;
+                        ModuleInfo module { };
+                        char fileName[MAX_FILENAME];
+                        ::modules.Add(module);
 
-                     if(importedModule)
-                        module.globalInstance = importedModule.globalInstance;
-                     else
-                     {
-                        importedModule = ImportedModule
+                        GetLastDirectory(file, fileName);
+
+                        module.name = CopyString(fileName);
+
+                        StripExtension(module.name);
+
+                        for(importedModule = ::_defines.first; importedModule; importedModule = importedModule.next)
                         {
-                           name = CopyString(module.name),
-                           type = moduleDefinition,
-                           importType = normalImport
-                        };
-                        ::_defines.AddName(importedModule);
+                           if(importedModule.type == moduleDefinition && !strcmpi(importedModule.name, module.name) && !(importedModule.importType == remoteImport))
+                              break;
+                        }
 
-                        module.globalInstance = LoadSymbols(file, normalImport, false);
-                        CheckDataRedefinitions();
-                     }
-
-                     // I18n code
-                     {
-                        File f;
-                        ChangeExtension(file, "bowl", fileName);
-                        f = FileOpen(fileName, read);
-                        if(f)
+                        if(importedModule)
+                           module.globalInstance = importedModule.globalInstance;
+                        else
                         {
-                           static char line[65536];
-                           List<String> comments { };
-                           String msgid = null, msgstr = null, msgctxt = null;
-                           while(!f.Eof())
+                           importedModule = ImportedModule
                            {
-                              if(f.GetLine(line, sizeof(line)))
+                              name = CopyString(module.name),
+                              type = moduleDefinition,
+                              importType = normalImport
+                           };
+                           ::_defines.AddName(importedModule);
+
+                           module.globalInstance = LoadSymbols(file, normalImport, false);
+                           CheckDataRedefinitions();
+                        }
+
+                        // I18n code
+                        {
+                           File f;
+                           ChangeExtension(file, "bowl", fileName);
+                           f = FileOpen(fileName, read);
+                           if(f)
+                           {
+                              static char line[65536];
+                              List<String> comments { };
+                              String msgid = null, msgstr = null, msgctxt = null;
+                              while(!f.Eof())
                               {
-                                 int len;
-                                 TrimLSpaces(line, line);
-                                 if(line[0] == '#')
+                                 if(f.GetLine(line, sizeof(line)))
                                  {
-                                    comments.Add(CopyString(line));
-                                 }
-                                 else if(strstr(line, "msgid \"") == line)
-                                 {
-                                    delete msgid;
-                                    msgid = CopyString(line + 7);
-                                    len = strlen(msgid);
-                                    if(len) msgid[len-1] = 0;
-                                 }
-                                 else if(strstr(line, "msgctxt \"") == line)
-                                 {
-                                    delete msgctxt;
-                                    msgctxt = CopyString(line + 9);
-                                    len = strlen(msgctxt);
-                                    if(len) msgctxt[len-1] = 0;
-                                 }
-                                 else if(strstr(line, "msgstr \"") == line)
-                                 {
-                                    delete msgstr;
-                                    msgstr = CopyString(line + 8);
-                                    len = strlen(msgstr);
-                                    if(len) msgstr[len-1] = 0;
-                                 }
-
-                                 if(msgid && msgstr)
-                                 {
-                                    ContextStringPair pair { msgid, msgctxt };
-                                    i18n = true;
-                                    if(!it.Index(pair, false))
+                                    int len;
+                                    TrimLSpaces(line, line);
+                                    if(line[0] == '#')
                                     {
-                                       msgid = null; msgctxt = null;
-                                       intlStrings[pair] = comments;
-                                       comments = { };
+                                       comments.Add(CopyString(line));
                                     }
-                                    else
+                                    else if(strstr(line, "msgid \"") == line)
                                     {
-                                       for(s : comments)
-                                          it.data.Add(s);
-                                       comments.RemoveAll();
+                                       delete msgid;
+                                       msgid = CopyString(line + 7);
+                                       len = strlen(msgid);
+                                       if(len) msgid[len-1] = 0;
+                                    }
+                                    else if(strstr(line, "msgctxt \"") == line)
+                                    {
+                                       delete msgctxt;
+                                       msgctxt = CopyString(line + 9);
+                                       len = strlen(msgctxt);
+                                       if(len) msgctxt[len-1] = 0;
+                                    }
+                                    else if(strstr(line, "msgstr \"") == line)
+                                    {
+                                       delete msgstr;
+                                       msgstr = CopyString(line + 8);
+                                       len = strlen(msgstr);
+                                       if(len) msgstr[len-1] = 0;
                                     }
 
-                                    delete msgid;
-                                    delete msgctxt;
-                                    delete msgstr;
+                                    if(msgid && msgstr)
+                                    {
+                                       ContextStringPair pair { msgid, msgctxt };
+                                       i18n = true;
+                                       if(!it.Index(pair, false))
+                                       {
+                                          msgid = null; msgctxt = null;
+                                          intlStrings[pair] = comments;
+                                          comments = { };
+                                       }
+                                       else
+                                       {
+                                          for(s : comments)
+                                             it.data.Add(s);
+                                          comments.RemoveAll();
+                                       }
+
+                                       delete msgid;
+                                       delete msgctxt;
+                                       delete msgstr;
+                                    }
                                  }
                               }
+                              comments.Free();
+                              delete comments;
+                              delete f;
                            }
-                           comments.Free();
-                           delete comments;
-                           delete f;
                         }
                      }
                   }
+                  count = 0;
                }
             }
 

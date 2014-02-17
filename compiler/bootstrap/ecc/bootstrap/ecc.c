@@ -644,6 +644,8 @@ extern int strcmp(const char * , const char * );
 
 extern size_t strlen(const char * );
 
+extern char *  strcpy(char * , const char * );
+
 extern char *  PassArg(char *  output, const char *  input);
 
 extern void SetBuildingEcereCom(unsigned int b);
@@ -667,8 +669,6 @@ extern void SetDefaultNameSpace(char *  s);
 extern void SetStrictNameSpaces(unsigned int b);
 
 extern void SetOutputLineNumbers(unsigned int value);
-
-extern char *  strcpy(char * , const char * );
 
 extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, char *  addedPath);
 
@@ -892,6 +892,10 @@ strcpy(cppOptions + cppOptionsLen + 1, arg);
 cppOptionsLen = newLen;
 targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
 }
+else if(!strcmp(arg + 1, "t32") || !strcmp(arg + 1, "t64"))
+{
+targetBits = !strcmp(arg + 1, "t32") ? 32 : 64;
+}
 else if(arg[1] == 'D' || arg[1] == 'I')
 {
 char * buf;
@@ -964,6 +968,17 @@ cppOptionsLen = buf - cppOptions;
 }
 else
 valid = 0x0;
+}
+else if(!strcmp(arg + 1, "fno-diagnostics-show-caret"))
+{
+char * buf;
+int size = cppOptionsLen + 1 + strlen(arg) * 2 + 1;
+
+cppOptions = __ecereNameSpace__ecere__com__eSystem_Renew(cppOptions, sizeof(char) * (size));
+buf = cppOptions + cppOptionsLen;
+*buf++ = ' ';
+PassArg(buf, arg);
+cppOptionsLen = cppOptionsLen + 1 + strlen(buf);
 }
 else if(!strcmp(arg + 1, "symbols"))
 {
@@ -1061,11 +1076,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
 
 __ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("byte"), __ecereInstance1->type = ProcessTypeString("unsigned char", 0x0), __ecereInstance1;
-}));
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
-struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
-
-__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("_Bool"), __ecereInstance1->type = ProcessTypeString("bool", 0x0), __ecereInstance1;
 }));
 if(buildingBootStrap)
 {

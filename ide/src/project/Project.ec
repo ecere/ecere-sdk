@@ -604,15 +604,15 @@ int OutputFileList(File f, char * name, Array<String> list, Map<String, int> var
    return numOfBreaks;
 }
 
-void OutputLinkObjectActions(File f, char * name, int parts)
+void OutputFileListActions(File f, char * name, int parts, char * fileName)
 {
    if(parts > 1)
    {
       int c;
       for(c=0; c<parts; c++)
-         f.Printf("\t@$(call echo,$(%s%d)) >> $(OBJ)linkobjects.lst\n", name, c+1);
+         f.Printf("\t@$(call echo,$(%s%d)) >> %s\n", name, c+1, fileName);
    } else if(parts) {
-      f.Printf("\t@$(call echo,$(%s)) >> $(OBJ)linkobjects.lst\n", name);
+      f.Printf("\t@$(call echo,$(%s)) >> %s\n", name, fileName);
    }
 }
 
@@ -2165,7 +2165,7 @@ private:
                      {
                         if(justPrint)
                            ide.outputView.buildBox.Logf("%s\n", line);
-                        if(!error && !found && strstr(line, "echo ") == line)
+                        if(!error && !found && strstr(line, "echo ") == line && strstr(line, "ECERE_SDK_SRC"))
                         {
                            strcpy(command, line+5);
                            error = true;
@@ -3243,8 +3243,12 @@ private:
          {
             // Main Module (Linking) for ECERE C modules
             f.Puts("$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)\n");
+            f.Printf("\t@$(call rmq,$(OBJ)symbols.lst)\n");
+            f.Printf("\t@$(call touch,$(OBJ)symbols.lst)\n");
+            OutputFileListActions(f, "SYMBOLS", eCsourcesParts, "$(OBJ)symbols.lst");
+            OutputFileListActions(f, "IMPORTS", eCsourcesParts, "$(OBJ)symbols.lst");
             // use of objDirExpNoSpaces used instead of $(OBJ) to prevent problematic joining of arguments in ecs
-            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols %s -o $(call quote_path,$@)\n",
+            f.Printf("\t$(ECS)%s $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols %s -o $(call quote_path,$@)\n",
                GetConsole(config) ? " -console" : "", objDirExpNoSpaces);
             f.Puts("\n");
             // Main Module (Linking) for ECERE C modules
@@ -3269,24 +3273,24 @@ private:
          f.Printf("$(TARGET): $(SOURCES)%s $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir%s\n",
                rcSourcesParts ? " $(RCSOURCES)" : "", sameOrRelObjTargetDirs ? "" : " targetdir");
 
-         f.Printf("\t@$(call rmq,$(OBJ)linkobjects.lst)\n");
-         f.Printf("\t@$(call touch,$(OBJ)linkobjects.lst)\n");
-         OutputLinkObjectActions(f, "_OBJECTS", objectsParts);
+         f.Printf("\t@$(call rmq,$(OBJ)objects.lst)\n");
+         f.Printf("\t@$(call touch,$(OBJ)objects.lst)\n");
+         OutputFileListActions(f, "_OBJECTS", objectsParts, "$(OBJ)objects.lst");
          if(rcSourcesParts)
          {
             f.Puts("ifdef WINDOWS_TARGET\n");
-            OutputLinkObjectActions(f, "RCOBJECTS", rcSourcesParts);
+            OutputFileListActions(f, "RCOBJECTS", rcSourcesParts, "$(OBJ)objects.lst");
             f.Puts("endif\n");
          }
          if(numCObjects)
          {
-            f.Printf("\t@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)linkobjects.lst\n");
-            OutputLinkObjectActions(f, "ECOBJECTS", eCsourcesParts);
+            f.Printf("\t@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst\n");
+            OutputFileListActions(f, "ECOBJECTS", eCsourcesParts, "$(OBJ)objects.lst");
          }
 
          f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
 
-         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)linkobjects.lst $(LIBS) %s-o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC", containsCXX ? "-lstdc++ " : "");
+         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) %s-o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC", containsCXX ? "-lstdc++ " : "");
          if(!GetDebug(config))
          {
             f.Puts("ifndef NOSTRIP\n");
@@ -3309,7 +3313,7 @@ private:
          if(resNode.files && resNode.files.count && !noResources)
             resNode.GenMakefileAddResources(f, resNode.path, config);
          f.Puts("else\n");
-         f.Puts("\t$(AR) rcs $(TARGET) @$(OBJ)linkobjects.lst $(LIBS)\n");
+         f.Puts("\t$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)\n");
          f.Puts("endif\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
@@ -3458,9 +3462,13 @@ private:
             GenMakefilePrintMainObjectRule(f, config);
 
          f.Printf("cleantarget: objdir%s\n", sameOrRelObjTargetDirs ? "" : " targetdir");
-         f.Puts("\t$(call rmq,$(TARGET))\n");
          if(numCObjects)
+         {
             f.Printf("\t$(call rmq,%s)\n", "$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S)");
+            f.Printf("\t$(call rmq,$(OBJ)symbols.lst)\n");
+         }
+         f.Printf("\t$(call rmq,$(OBJ)objects.lst)\n");
+         f.Puts("\t$(call rmq,$(TARGET))\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
          f.Puts("ifdef LINUX_HOST\n");
@@ -3473,7 +3481,6 @@ private:
          f.Puts("\n");
 
          f.Puts("clean: cleantarget\n");
-         f.Printf("\t$(call rmq,$(OBJ)linkobjects.lst)\n");
          OutputCleanActions(f, "OBJECTS", objectsParts);
          if(rcSourcesParts)
          {

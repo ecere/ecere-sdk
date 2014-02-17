@@ -517,7 +517,15 @@ objdir:
 	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
 
 $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
-	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) $(SYMBOLS) $(IMPORTS) -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
+	@$(call rmq,$(OBJ)symbols.lst)
+	@$(call touch,$(OBJ)symbols.lst)
+	@$(call echo,$(SYMBOLS1)) >> $(OBJ)symbols.lst
+	@$(call echo,$(SYMBOLS2)) >> $(OBJ)symbols.lst
+	@$(call echo,$(SYMBOLS3)) >> $(OBJ)symbols.lst
+	@$(call echo,$(IMPORTS1)) >> $(OBJ)symbols.lst
+	@$(call echo,$(IMPORTS2)) >> $(OBJ)symbols.lst
+	@$(call echo,$(IMPORTS3)) >> $(OBJ)symbols.lst
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -547,8 +555,15 @@ endif
 endif
 
 $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+	@$(call rmq,$(OBJ)objects.lst)
+	@$(call touch,$(OBJ)objects.lst)
+	@$(call echo,$(_OBJECTS)) >> $(OBJ)objects.lst
+	@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst
+	@$(call echo,$(ECOBJECTS1)) >> $(OBJ)objects.lst
+	@$(call echo,$(ECOBJECTS2)) >> $(OBJ)objects.lst
+	@$(call echo,$(ECOBJECTS3)) >> $(OBJ)objects.lst
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
+	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -577,7 +592,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/pt_BR/LC_MESSAGES/ecere.mo "locale/pt_BR/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/ecere.mo "locale/ru_RU/LC_MESSAGES"
 else
-	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
 endif
 	$(call mkdirq,../$(SODESTDIR))
 	$(call cpq,$(TARGET),../$(SODESTDIR))
@@ -1905,6 +1920,9 @@ cleaneceretarget: objdir
 	$(call rmq,$(TARGET))
 
 cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
 	$(call rmq,$(TARGET))
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
@@ -1919,7 +1937,6 @@ endif
 
 clean: cleantarget
 	$(call rmq,$(_OBJECTS))
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS1))
 	$(call rmq,$(ECOBJECTS2))
 	$(call rmq,$(ECOBJECTS3))

@@ -2451,6 +2451,8 @@ struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 } __attribute__ ((gcc_struct));
 
+extern int __ecereNameSpace__ecere__sys__Tokenize(char *  string, int maxTokens, char *  tokens[], unsigned int esc);
+
 extern int strcasecmp(const char * , const char * );
 
 extern unsigned int LoadSymbols(char *  fileName, int importType, unsigned int loadDllOnly);
@@ -2588,6 +2590,10 @@ if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
 {
 targetBits = !strcmp(arg + 1, "m32") ? 32 : 64;
 }
+else if(!strcmp(arg + 1, "t32") || !strcmp(arg + 1, "t64"))
+{
+targetBits = !strcmp(arg + 1, "t32") ? 32 : 64;
+}
 else if(!strcmp(arg + 1, "o"))
 {
 if(!output && c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
@@ -2677,29 +2683,44 @@ struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0,
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {
 char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
+struct __ecereNameSpace__ecere__com__Instance * f = (((void *)0));
+char line[16384];
+int count = 0;
+char * tokens[512];
 
 if(file[0] == '-')
 {
 if(!strcmp(file, "-c"))
 c++;
 }
+else if(file[0] == '@')
+f = __ecereNameSpace__ecere__sys__FileOpen(&file[1], 1);
 else
+{
+count = 1;
+tokens[0] = file;
+}
+while(count || f)
+{
+int c;
+
+if(f)
+{
+while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof tokens / sizeof tokens[0], tokens, 0x2);
+if(!count)
+(__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
+}
+for(c = 0; c < count; c++)
 {
 char ext[17];
 
+file = tokens[c];
 __ecereNameSpace__ecere__sys__GetExtension(file, ext);
 if(!strcmp(ext, "imp"))
 LoadImports(file);
 }
-}
-for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
-{
-char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
-
-if(file[0] == '-')
-{
-if(!strcmp(file, "-c"))
-c++;
+count = 0;
 }
 }
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
@@ -2711,11 +2732,44 @@ if(file[0] == '-')
 if(!strcmp(file, "-c"))
 c++;
 }
+}
+for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
+{
+char * file = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c];
+struct __ecereNameSpace__ecere__com__Instance * f = (((void *)0));
+char line[16384];
+int count = 0;
+char * tokens[512];
+
+if(file[0] == '-')
+{
+if(!strcmp(file, "-c"))
+c++;
+}
+else if(file[0] == '@')
+f = __ecereNameSpace__ecere__sys__FileOpen(&file[1], 1);
 else
+{
+count = 1;
+tokens[0] = file;
+}
+while(count || f)
+{
+int c;
+
+if(f)
+{
+while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof tokens / sizeof tokens[0], tokens, 0x2);
+if(!count)
+(__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
+}
+for(c = 0; c < count; c++)
 {
 char ext[17];
 char moduleName[797];
 
+file = tokens[c];
 __ecereNameSpace__ecere__sys__GetExtension(file, ext);
 __ecereNameSpace__ecere__sys__GetLastDirectory(file, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
@@ -2862,6 +2916,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 }
 }
 }
+}
+count = 0;
 }
 }
 ComputeModuleClasses(privateModule);
