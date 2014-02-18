@@ -392,11 +392,11 @@ class Win32Interface : Interface
       if(msg == WM_MOUSEWHEEL)
       {
          if(::GetAsyncKeyState(VK_SHIFT) & 0x80000)
-         code.ctrl = true;
+            code.shift = true;
          if(::GetAsyncKeyState(VK_CONTROL) & 0x80000)
             code.ctrl = true;
          if(::GetAsyncKeyState(VK_MENU) & 0x80000)
-         code.alt = true;
+            code.alt = true;
 
          result = window.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit, code, 0);
       }
