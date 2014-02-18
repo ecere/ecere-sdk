@@ -3300,7 +3300,7 @@ private:
          // TESTING THIS FOR DROPBOX...
          if(!rootWindow || !rootWindow.style.interim)
          {
-            for(check2 = check; check2.activeChild; check2 = check2.activeChild)
+            for(check2 = check; check2 /*.activeChild*/; check2 = check2.activeChild)
             {
                if(check2.modalSlave && check2.modalSlave.created)
                {
