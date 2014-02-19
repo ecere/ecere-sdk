@@ -928,6 +928,19 @@ static X11Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, cha
    return (!data || (event->window == (X11Window) data)) && event->type == ConfigureNotify;
 }
 
+static X11Bool FocusInChecker(void *display, XFocusChangeEvent *event, char * data)
+{
+   X11Bool result = False;
+   if(event->type == FocusIn)
+   {
+      Window window = null;
+      XFindContext(xGlobalDisplay, event->window, windowContext, (XPointer *) &window);
+      if(window)
+         result = True;
+   }
+   return result;
+}
+
 static enum FrameExtentSupport { unknown, working, broken };
 
 static FrameExtentSupport frameExtentSupported;
@@ -1341,7 +1354,7 @@ class XInterface : Interface
    bool Initialize()
    {
       setlocale(LC_ALL, "en_US.UTF-8");
-      XInitThreads();
+      // XInitThreads();
       XSupportsLocale();
       XSetLocaleModifiers("");
       XSetErrorHandler(MyXErrorHandler);
@@ -1984,10 +1997,20 @@ class XInterface : Interface
                   //printf("Processing a FocusOut Event for %s (%x)\n", window._class.name, window);
 #endif
 
+                  /*
                   if(XCheckTypedWindowEvent(xGlobalDisplay, thisEvent->window, FocusIn, (XEvent *)thisEvent))
                   {
                      break;
                   }
+                  */
+
+                  if(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)FocusInChecker, null))
+                  {
+                     if(!fullScreenMode)
+                        XPutBackEvent(xGlobalDisplay, (XEvent *)thisEvent);
+                     break;
+                  }
+
 
                   if(fullScreenMode || (X11Window)window.windowHandle == activeWindow)
                      guiApp.SetAppFocus(false);
@@ -2774,7 +2797,7 @@ class XInterface : Interface
       if(fullScreenMode || !window.nativeDecorations || !RequestFrameExtents(windowHandle))
          ((XWindowData)window.windowData).gotFrameExtents = true;
 
-      window.windowHandle = windowHandle;
+      window.windowHandle = (void *)windowHandle;
       if(window.state != maximized)
          WaitForFrameExtents(window, true);
 
