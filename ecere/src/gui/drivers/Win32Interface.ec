@@ -1772,6 +1772,15 @@ class Win32Interface : Interface
 
       if(x)*x = dims.lX;
       if(y)*y = dims.lY;
+      if(dims.lZ)
+      {
+#ifdef _WIN64
+         Window window = (Window)GetWindowLongPtr(acquiredWindow, GWLP_USERDATA);
+#else
+         Window window = (Window)GetWindowLong(acquiredWindow, GWL_USERDATA);
+#endif
+         ProcessKeyMessage(window, WM_MOUSEWHEEL, ((uint16)(short)dims.lZ) << 16, 0, 0);
+      }
       if(buttons)
       {
          *buttons = MouseButtons {
