@@ -1172,13 +1172,13 @@ static bool GetFrameExtents(Window window, bool update)
    return result;
 }
 
-static bool WaitForFrameExtents(Window window)
+static bool WaitForFrameExtents(Window window, bool update)
 {
    int attempts = 0;
    //XFlush(xGlobalDisplay);
-   while(attempts++ < 10)
+   while(attempts++ < 40)
    {
-      if(GetFrameExtents(window, false)) return true;
+      if(GetFrameExtents(window, update)) return true;
       Sleep(1.0 / RESOLUTION);
    }
    return false;
@@ -2107,7 +2107,7 @@ class XInterface : Interface
                      if(unmaximized && window.nativeDecorations)
                      {
                         if(window.nativeDecorations && RequestFrameExtents((X11Window)window.windowHandle))
-                           WaitForFrameExtents(window);
+                           WaitForFrameExtents(window, false);
 
                         // Ensure we set the normal size anchor when un-maximizing
                         window.ComputeAnchors(window.normalAnchor, window.normalSizeAnchor, &x, &y, &w, &h);
@@ -2771,8 +2771,15 @@ class XInterface : Interface
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
 
-      if(!fullScreenMode && !window.nativeDecorations || !RequestFrameExtents(windowHandle))
+      if(fullScreenMode || !window.nativeDecorations || !RequestFrameExtents(windowHandle))
          ((XWindowData)window.windowData).gotFrameExtents = true;
+
+      window.windowHandle = windowHandle;
+      if(window.state != maximized)
+         WaitForFrameExtents(window, true);
+
+      //GetFrameExtents(window, true);
+
       if(fullScreenMode)
       {
          XMapWindow(xGlobalDisplay, windowHandle);
@@ -2839,7 +2846,7 @@ class XInterface : Interface
                // && window.state != maximized -- required for Cinnamon on Mint 14/15
             if(!windowData.gotFrameExtents && window.state != maximized)
             {
-               if(WaitForFrameExtents(window))
+               if(WaitForFrameExtents(window, false))
                {
                   x += windowData.decor.left;
                   y += windowData.decor.top ;
