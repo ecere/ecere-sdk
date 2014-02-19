@@ -634,7 +634,7 @@ public:
             children.Remove(child);
             child.Free(displaySystem);
          }
-         if(flags.ownMesh)
+         if(flags.ownMesh && mesh)
          {
             DisplaySystem meshDisplaySystem = mesh.displaySystem;
             mesh.Free(0);
@@ -1071,7 +1071,7 @@ public:
 
             mesh.Unlock(flags);
          }
-         if(freeMesh)
+         if(freeMesh && objectMesh)
          {
             if(objectMesh.displaySystem)
                objectMesh.displaySystem.RemoveMesh(objectMesh);

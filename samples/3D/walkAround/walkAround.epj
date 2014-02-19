@@ -1,0 +1,41 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "walkAround",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "walkAround",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "walkAround.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "../terrainCameraDemo/res/texture1.pcx",
+      "../ModelViewer/models/dolphin.3ds"
+   ]
+}
