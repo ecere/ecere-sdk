@@ -109,7 +109,6 @@ class WalkAroundForm : Window
    Array<Material> materials { size = 8 };
    Array<int> map { size = width * height };
    Array<int> elv { size = width * height };
-   Array<Color> colors { [ black, red, green, blue, cyan, magenta, white, gray, orange, yellow, brown, aquamarine, goldenrod ] };
    Array<Cube> cubes { };
 
    Material sideMat { opacity = 0.5f, diffuse = teal, ambient = teal, flags = { doubleSided = true, translucent = true } };
@@ -290,9 +289,13 @@ class WalkAroundForm : Window
                state = normal;
                anchor = { };
                clientSize = { 632, 438 };
-               position = position;
             }
             app.fullScreen = fullScreen;
+            if(fullScreen)
+               ; // app.resolution = res640x480;
+            else
+               position = position;
+
             AcquireInput(acquiredInput);
             break;
          }
