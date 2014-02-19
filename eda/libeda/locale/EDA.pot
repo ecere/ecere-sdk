@@ -14,25 +14,25 @@ msgstr ""
 msgid "(Click to add a new %s...)"
 msgstr "(Click to add a new %s...)"
 
-#: ./src/ers.ec:567
+#: ./src/ers.ec:595
 msgid "All files"
 msgstr "All files"
 
-#: ./src/ers.ec:28
+#: ./src/ers.ec:30
 #: ./src/gui.ec:20
 #: ./src/gui.ec:31
 msgid "Arial"
 msgstr "Arial"
 
-#: ./src/ers.ec:564
+#: ./src/ers.ec:592
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "Comma Separated Values Spreadsheet (*.csv)"
 
-#: ./src/EDB.ec:253
+#: ./src/EDB.ec:152
 msgid "Database file (%s) could not be created.\n"
 msgstr "Database file (%s) could not be created.\n"
 
-#: ./src/EDB.ec:255
+#: ./src/EDB.ec:154
 msgid "Database file (%s) could not be opened.\n"
 msgstr "Database file (%s) could not be opened.\n"
 
@@ -40,19 +40,27 @@ msgstr "Database file (%s) could not be opened.\n"
 msgid "Delete"
 msgstr "Delete"
 
+#: ./src/EDB.ec:299
+msgid "EDB: Error getting Name field from tables list table!\n"
+msgstr "EDB: Error getting Name field from tables list table!\n"
+
+#: ./src/EDB.ec:304
+msgid "EDB: Error getting tables list table!\n"
+msgstr "EDB: Error getting tables list table!\n"
+
 #: ./src/gui.ec:946
 msgid "Entry"
 msgstr "Entry"
 
-#: ./src/EDB.ec:936
+#: ./src/EDB.ec:863
 msgid "Error reading field"
 msgstr "Error reading field"
 
-#: ./src/ers.ec:620
+#: ./src/ers.ec:648
 msgid "Export as Spreadsheet (CSV)"
 msgstr "Export as Spreadsheet (CSV)"
 
-#: ./src/EDB.ec:234
+#: ./src/EDB.ec:133
 msgid "Invalid, corrupted or in use (%s) database file.\n"
 msgstr "Invalid, corrupted or in use (%s) database file.\n"
 
@@ -74,7 +82,7 @@ msgstr "New"
 msgid "New|id="
 msgstr "New|id="
 
-#: ./src/ers.ec:15
+#: ./src/ers.ec:17
 msgid "Please wait while the report is being generated..."
 msgstr "Please wait while the report is being generated..."
 
@@ -86,25 +94,25 @@ msgstr "Revert"
 msgid "Save"
 msgstr "Save"
 
-#: ./src/EDB.ec:153
+#: ./src/DirFilesDataSource.ec:111
 msgid "Status: Feeling groovy!\n"
 msgstr "Status: Feeling groovy!\n"
 
-#: ./src/EDB.ec:548
+#: ./src/EDB.ec:475
 msgid "Table (%s) does not exist.\n"
 msgstr "Table (%s) does not exist.\n"
 
-#: ./src/gui/TableEditor.ec:338
-#: ./src/gui/TableEditor.ec:346
+#: ./src/gui/TableEditor.ec:352
+#: ./src/gui/TableEditor.ec:360
 msgid "Table Editor"
 msgstr "Table Editor"
 
-#: ./src/EDB.ec:557
+#: ./src/EDB.ec:484
 msgid "Unable to detect if table exists!\n"
 msgstr "Unable to detect if table exists!\n"
 
-#: ./src/gui/TableEditor.ec:892
-#: ./src/gui/TableEditor.ec:911
+#: ./src/gui/TableEditor.ec:934
+#: ./src/gui/TableEditor.ec:953
 msgid "WordList match cannot be found in database."
 msgstr "WordList match cannot be found in database."
 
@@ -112,11 +120,11 @@ msgstr "WordList match cannot be found in database."
 msgid "You are about to delete an entry.\nDo you wish to continue?"
 msgstr "You are about to delete an entry.\nDo you wish to continue?"
 
-#: ./src/gui/TableEditor.ec:349
+#: ./src/gui/TableEditor.ec:363
 msgid "You are about to permanently remove an entry.\nDo you wish to continue?"
 msgstr "You are about to permanently remove an entry.\nDo you wish to continue?"
 
-#: ./src/gui/TableEditor.ec:340
+#: ./src/gui/TableEditor.ec:354
 #: ./src/gui.ec:691
 msgid "You have modified this entry. Would you like to save it before proceeding?"
 msgstr "You have modified this entry. Would you like to save it before proceeding?"
