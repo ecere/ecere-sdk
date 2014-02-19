@@ -1542,9 +1542,19 @@ class Win32Interface : Interface
          {
             case maximized:
             case normal:
-               ShowWindow(window.windowHandle, ((window.active || window.creationActivation == activate) && !externalDisplayChange) ?
-                  ((window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL) : SW_SHOWNOACTIVATE);
+            {
+               if((window.active || window.creationActivation == activate) && !externalDisplayChange)
+                  ShowWindow(window.windowHandle, (window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL);
+               else
+               {
+                  WINDOWPLACEMENT plc = { 0 };
+                  GetWindowPlacement(window.windowHandle, &plc);
+                  plc.showCmd = (window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL;
+                  ShowWindow(window.windowHandle, SW_SHOWNOACTIVATE);
+                  SetWindowPlacement(window.windowHandle, &plc);
+               }
                break;
+            }
             case minimized:
                ShowWindow(window.windowHandle, SW_MINIMIZE);
                break;

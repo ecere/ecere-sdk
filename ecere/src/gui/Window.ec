@@ -4832,7 +4832,8 @@ private:
          subclass(DisplayDriver) dDriver = (dispDriver && !formDesigner) ? dispDriver : GetDisplayDriver(guiApp.defaultDisplayDriver);
          DisplaySystem displaySystem = dDriver ? dDriver.displaySystem : null;
 
-         windowHandle = dDriver.printer ? null : guiApp.interfaceDriver.CreateRootWindow(this);
+         if(!windowHandle)
+            windowHandle = dDriver.printer ? null : guiApp.interfaceDriver.CreateRootWindow(this);
 
          // This was here, is it really needed?
          //guiApp.interfaceDriver.ActivateRootWindow(this);
