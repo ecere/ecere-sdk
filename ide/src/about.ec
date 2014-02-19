@@ -82,7 +82,7 @@ class AboutIDE : Window
          "Niraj Kulkarni\n"
          "   EditBox fixes\n"
          "\n"
-         "Juan Sánchez\n"
+         "Juan Sánchez Rangel\n"
          "   Oracle EDA driver\n"
          "   Spanish translation\n"
          "   Finally getting us an IDE toolbar!\n"

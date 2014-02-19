@@ -313,7 +313,7 @@ class IDEToolbar : ToolBar
 
    DropBox activeBitDepth
    {
-      this, toolTip = $"Active Bit Depth", size = { 60 }, disabled = true;
+      this, toolTip = $"Active Bit Length", size = { 60 }, disabled = true;
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
          if(ide.workspace && ide.projectView && row)
