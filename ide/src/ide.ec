@@ -3697,7 +3697,7 @@ IDEMainFrame ideMainFrame { };
 
 define app = ((IDEApp)__thisModule);
 #ifdef _DEBUG
-define titleECEREIDE = $"ECERE IDE (Debug)";
+define titleECEREIDE = $"Ecere IDE (Debug)";
 #else
-define titleECEREIDE = $"ECERE IDE";
+define titleECEREIDE = $"Ecere IDE";
 #endif
