@@ -1125,13 +1125,13 @@ class IDEWorkSpace : Window
          }
       Menu debugValgrindRedzoneSizeItem { debugMenu, $"Valgrind Redzone Size", z };
          MenuItem debugValgrindRSDefaultItem { debugValgrindRedzoneSizeItem, $"Default", f, id =  -1, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect, checked = true; }
-         MenuItem debugValgrindRS0Item       { debugValgrindRedzoneSizeItem, $"0"      , f, id =   0, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS16Item      { debugValgrindRedzoneSizeItem, $"16"     , f, id =  16, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS32Item      { debugValgrindRedzoneSizeItem, $"32"     , f, id =  32, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS64Item      { debugValgrindRedzoneSizeItem, $"64"     , f, id =  64, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS128Item     { debugValgrindRedzoneSizeItem, $"128"    , f, id = 128, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS256Item     { debugValgrindRedzoneSizeItem, $"256"    , f, id = 256, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS512Item     { debugValgrindRedzoneSizeItem, $"512"    , f, id = 512, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS0Item       { debugValgrindRedzoneSizeItem, "0"      , f, id =   0, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS16Item      { debugValgrindRedzoneSizeItem, "16"     , f, id =  16, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS32Item      { debugValgrindRedzoneSizeItem, "32"     , f, id =  32, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS64Item      { debugValgrindRedzoneSizeItem, "64"     , f, id =  64, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS128Item     { debugValgrindRedzoneSizeItem, "128"    , f, id = 128, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS256Item     { debugValgrindRedzoneSizeItem, "256"    , f, id = 256, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRS512Item     { debugValgrindRedzoneSizeItem, "512"    , f, id = 512, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
          bool ValgrindRSSelect(MenuItem selection, Modifiers mods)
          {
             if(ide.workspace)
