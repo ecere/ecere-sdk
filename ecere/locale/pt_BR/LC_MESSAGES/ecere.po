@@ -1,0 +1,791 @@
+# Brazilian Portuguese translation for ecere
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-20 03:42+0000\n"
+"PO-Revision-Date: 2014-02-19 23:17-0500\n"
+"Last-Translator: Luis Felipe Righi Flores <freedoomerhobo@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: pt_BR\n"
+
+#: src/gui/dialogs/ReplaceDialog.ec:158 src/gui/dialogs/ReplaceDialog.ec:355
+msgid "%d occurences found, %d replaced"
+msgstr "%d ocorrências encontradas, %d substituídas"
+
+#: src/gui/dialogs/FileDialog.ec:885
+msgid "All Files"
+msgstr "Todos os Arquivos"
+
+#: src/gui/dialogs/FileDialog.ec:350 src/gui/dialogs/FileDialog.ec:428
+msgid "All files"
+msgstr "Todos os arquivos"
+
+#: src/gui/controls/Menu.ec:95
+msgid "Alt+"
+msgstr "Alt+"
+
+#: src/gui/controls/Button.ec:983 src/gui/controls/Button.ec:1014
+#: src/gui/controls/Button.ec:1018 src/gui/controls/Button.ec:1059
+#: src/gui/controls/Button.ec:1061 src/gui/controls/Button.ec:1062
+#: src/gui/controls/Button.ec:1067 src/gui/controls/DropBox.ec:37
+#: src/gui/controls/DropBox.ec:47 src/gui/controls/DropBox.ec:57
+#: src/gui/controls/DropBox.ec:68 src/gui/controls/DropBox.ec:82
+#: src/gui/controls/DropBox.ec:169 src/gui/controls/EditBox.ec:759
+#: src/gui/controls/Label.ec:47 src/gui/controls/ListBox.ec:984
+#: src/gui/controls/ListBox.ec:1017 src/gui/controls/ListBox.ec:1018
+#: src/gui/controls/ListBox.ec:1022 src/gui/controls/ListBox.ec:1050
+#: src/gui/controls/ListBox.ec:1051 src/gui/controls/ListBox.ec:1052
+#: src/gui/controls/ListBox.ec:1053 src/gui/controls/Picture.ec:19
+#: src/gui/controls/Picture.ec:39 src/gui/controls/ScrollBar.ec:82
+#: src/gui/Window.ec:8112 src/gui/Window.ec:8159 src/gui/Window.ec:8176
+#: src/gui/Window.ec:8187 src/gui/Window.ec:8200 src/gui/Window.ec:8585
+#: src/gui/Window.ec:9287 src/gui/Window.ec:9609
+msgid "Appearance"
+msgstr "Aparência"
+
+#: src/sys/Date.ec:42
+msgid "Apr"
+msgstr "Abr"
+
+#: src/sys/Date.ec:33
+msgid "April"
+msgstr "Abril"
+
+#: src/gui/dialogs/FileDialog.ec:1187
+msgid "As Type:"
+msgstr "Do Tipo:"
+
+#: src/sys/Date.ec:42
+msgid "Aug"
+msgstr "Ago"
+
+#: src/sys/Date.ec:33
+msgid "August"
+msgstr "Agosto"
+
+#: src/gui/controls/Button.ec:863 src/gui/controls/Button.ec:916
+#: src/gui/controls/Button.ec:939 src/gui/controls/Button.ec:963
+#: src/gui/controls/Button.ec:979 src/gui/controls/Button.ec:1058
+#: src/gui/controls/Button.ec:1060 src/gui/controls/Button.ec:1063
+#: src/gui/controls/Button.ec:1064 src/gui/controls/DropBox.ec:128
+#: src/gui/controls/DropBox.ec:168 src/gui/controls/DropBox.ec:173
+#: src/gui/controls/EditBox.ec:734 src/gui/controls/EditBox.ec:735
+#: src/gui/controls/EditBox.ec:739 src/gui/controls/EditBox.ec:748
+#: src/gui/controls/EditBox.ec:749 src/gui/controls/EditBox.ec:750
+#: src/gui/controls/EditBox.ec:751 src/gui/controls/EditBox.ec:752
+#: src/gui/controls/EditBox.ec:753 src/gui/controls/EditBox.ec:754
+#: src/gui/controls/EditBox.ec:755 src/gui/controls/EditBox.ec:756
+#: src/gui/controls/EditBox.ec:757 src/gui/controls/EditBox.ec:758
+#: src/gui/controls/EditBox.ec:760 src/gui/controls/EditBox.ec:761
+#: src/gui/controls/EditBox.ec:762 src/gui/controls/Label.ec:18
+#: src/gui/controls/ListBox.ec:966 src/gui/controls/ListBox.ec:1005
+#: src/gui/controls/ListBox.ec:1013 src/gui/controls/ListBox.ec:1014
+#: src/gui/controls/ListBox.ec:1015 src/gui/controls/ListBox.ec:1016
+#: src/gui/controls/ListBox.ec:1048 src/gui/controls/ListBox.ec:1049
+#: src/gui/controls/ListBox.ec:1054 src/gui/controls/ListBox.ec:1055
+#: src/gui/controls/ListBox.ec:1059 src/gui/controls/ScrollBar.ec:84
+#: src/gui/controls/ScrollBar.ec:88 src/gui/controls/ScrollBar.ec:99
+#: src/gui/controls/ScrollBar.ec:115 src/gui/controls/ScrollBar.ec:127
+#: src/gui/controls/ScrollBar.ec:128 src/gui/controls/ScrollBar.ec:129
+#: src/gui/Window.ec:8068 src/gui/Window.ec:8131 src/gui/Window.ec:8313
+#: src/gui/Window.ec:8362 src/gui/Window.ec:8369 src/gui/Window.ec:8376
+#: src/gui/Window.ec:8383 src/gui/Window.ec:8390 src/gui/Window.ec:8397
+#: src/gui/Window.ec:8404 src/gui/Window.ec:8860 src/gui/Window.ec:8887
+#: src/gui/Window.ec:8894 src/gui/Window.ec:9138 src/gui/Window.ec:9158
+#: src/gui/Window.ec:9164 src/gui/Window.ec:9171 src/gui/Window.ec:9181
+#: src/gui/Window.ec:9192 src/gui/Window.ec:9199 src/gui/Window.ec:9207
+#: src/gui/Window.ec:9280 src/gui/Window.ec:9313 src/gui/Window.ec:9329
+msgid "Behavior"
+msgstr "Comportamento"
+
+#: src/gui/dialogs/ColorPicker.ec:730 src/gui/dialogs/FileDialog.ec:1262
+#: src/gui/dialogs/FileDialog.ec:1558 src/gui/dialogs/FindDialog.ec:73
+#: src/gui/dialogs/MessageBox.ec:88 src/gui/dialogs/MessageBox.ec:107
+#: src/gui/dialogs/ReplaceDialog.ec:374 src/gui/dialogs/WindowList.ec:35
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/gui/dialogs/GoToDialog.ec:44 src/gui/Window.ec:6774
+msgid "Close"
+msgstr "Fechar"
+
+#: src/gui/FormDesigner.ec:840
+msgid "Control contains code. Delete anyways?"
+msgstr "Controle contém código. Deletar mesmo assim?"
+
+#: src/gui/FormDesigner.ec:856
+msgid "Control contains other controls. Delete control and children?"
+msgstr "Controle contém outros controles. Deletar o controle e seus filhos?"
+
+#: src/gui/controls/EditBox.ec:968 src/gui/controls/EditBox.ec:3149
+msgid "Copy\tCtrl+C"
+msgstr "Copiar\tCtrl+C"
+
+#: src/sys/System.ec:118
+msgid "Couldn't write to file"
+msgstr "Não foi possível escrever ao arquivo"
+
+#: src/gui/dialogs/FileDialog.ec:1495
+msgid "Create Directory"
+msgstr "Criar Diretório"
+
+#: src/gui/dialogs/FileDialog.ec:1548 src/gui/dialogs/FileDialog.ec:1551
+msgid "Create Directory Error"
+msgstr "Erro ao Criar Diretório"
+
+#: src/gui/dialogs/FileDialog.ec:1077
+msgid "Create directory?"
+msgstr "Criar diretório?"
+
+#: src/gui/controls/Menu.ec:94
+msgid "Ctrl+"
+msgstr "Ctrl+"
+
+#: src/gfx/Color.ec:699
+msgid "Custom"
+msgstr "Personalizado"
+
+#: src/gui/controls/EditBox.ec:957 src/gui/controls/EditBox.ec:3148
+msgid "Cut\tCtrl+X"
+msgstr "Cortar\tCtrl+X"
+
+#: src/gui/controls/DropBox.ec:124 src/gui/controls/EditBox.ec:775
+#: src/gui/controls/ProgressBar.ec:13 src/gui/controls/ProgressBar.ec:14
+#: src/gui/Window.ec:9242
+msgid "Data"
+msgstr "Dados"
+
+#: src/sys/Date.ec:43
+msgid "Dec"
+msgstr "Dez"
+
+#: src/sys/Date.ec:34
+msgid "December"
+msgstr "Dezembro"
+
+#: src/gfx/Color.ec:736
+msgid "Defined"
+msgstr "Definido"
+
+#: src/gui/controls/EditBox.ec:989 src/gui/controls/EditBox.ec:3151
+msgid "Delete\tDel"
+msgstr "Deletar\tDel"
+
+#: src/gui/FormDesigner.ec:856
+msgid "Deleting control with children"
+msgstr "Deletando controle com filhos"
+
+#: src/gui/FormDesigner.ec:840
+msgid "Deleting control with code"
+msgstr "Deletando controle com código"
+
+#: src/gui/Window.ec:9432
+msgid "Deprecated"
+msgstr ""
+
+#: src/gui/Window.ec:9299
+msgid "Design"
+msgstr "Desenho"
+
+#: src/gui/dialogs/FindDialog.ec:46
+msgid "Direction"
+msgstr "Direção"
+
+#: src/gui/dialogs/FileDialog.ec:1548
+msgid "Directory already exists."
+msgstr "Diretório já existe."
+
+#: src/gui/dialogs/FileDialog.ec:1077
+msgid "Directory doesn't exist"
+msgstr "Diretório não existe"
+
+#: src/gui/dialogs/FileDialog.ec:309
+msgid "Directory:"
+msgstr "Diretório:"
+
+#: src/gui/Window.ec:9074 src/gui/Window.ec:9214 src/gui/Window.ec:9249
+msgid "Document"
+msgstr "Documento"
+
+#: src/gui/dialogs/FindDialog.ec:41
+msgid "Down"
+msgstr "Abaixo"
+
+#: src/gui/GuiApplication.ec:105
+msgid "Driver/Mode switch failed"
+msgstr ""
+
+#: src/gui/GuiApplication.ec:201
+msgid "ECERE Application"
+msgstr "Aplicação ECERE"
+
+#: src/gui/controls/EditBox.ec:954
+msgid "Edit"
+msgstr "Editar"
+
+#: src/gui/dialogs/FileDialog.ec:4
+msgid "Entire Computer"
+msgstr "Computador Inteiro"
+
+#: src/gui/GuiApplication.ec:1293
+msgid "Error falling back to previous video mode.\n"
+msgstr "Erro retrocedendo ao modo de vídeo anterior.\n"
+
+#: src/gui/Window.ec:7336 src/gui/Window.ec:7384
+msgid "Error writing file"
+msgstr "Erro escrevendo arquivo"
+
+#: src/sys/File.ec:318
+msgctxt "Export"
+msgid "Exp"
+msgstr ""
+
+#: src/gui/controls/CalendarControl.ec:10
+msgctxt "Friday"
+msgid "F"
+msgstr "S"
+
+#: src/sys/Date.ec:42
+msgid "Feb"
+msgstr "Fev"
+
+#: src/sys/Date.ec:33
+msgid "February"
+msgstr "Fevereiro"
+
+#: src/gui/dialogs/FileDialog.ec:1064
+msgid "File Already Exists"
+msgstr "Arquivo Já Existe"
+
+#: src/gui/dialogs/FileDialog.ec:309 src/gui/dialogs/FileDialog.ec:1447
+msgid "File Name:"
+msgstr "Nome do Arquivo:"
+
+#: src/sys/System.ec:116
+msgid "File not found"
+msgstr "Arquivo não encontrado"
+
+#: src/gui/dialogs/FileDialog.ec:1169
+msgid "Filter:"
+msgstr "Filtro:"
+
+#: src/gui/dialogs/FindDialog.ec:7 src/gui/dialogs/FindDialog.ec:61
+msgid "Find"
+msgstr "Encontrar"
+
+#: src/gui/dialogs/FindDialog.ec:51 src/gui/dialogs/ReplaceDialog.ec:252
+msgid "Find Next"
+msgstr "Encontrar Próximo"
+
+#: src/gui/controls/EditBox.ec:1048
+msgid "Find Next\tF3"
+msgstr "Encontrar Próximo\tF3"
+
+#: src/gui/controls/EditBox.ec:1035
+msgid "Find Previous\tShift-F3"
+msgstr "Encontrar Anterior\tShift-F3"
+
+#: src/gui/dialogs/FindDialog.ec:85 src/gui/dialogs/ReplaceDialog.ec:379
+msgid "Find what:"
+msgstr "Encontrar o que:"
+
+#: src/gui/controls/EditBox.ec:1061
+msgid "Find...\tCtrl+F"
+msgstr "Encontrar...\tCtrl+F"
+
+#: src/sys/Date.ec:38
+msgid "Fri"
+msgstr "Sex"
+
+#: src/sys/Date.ec:29
+msgid "Friday"
+msgstr "Sexta"
+
+#: src/gui/controls/EditBox.ec:690 src/gui/dialogs/GoToDialog.ec:29
+#: src/gui/dialogs/GoToDialog.ec:35
+msgid "Go To"
+msgstr "Ir Para"
+
+#: src/gui/dialogs/GoToDialog.ec:7
+msgid "Go To Line..."
+msgstr "Ir Para a Linha..."
+
+#: src/gui/controls/EditBox.ec:1122
+msgid "Go To...\tCtrl+G"
+msgstr "Ir Para...\tCtrl+G"
+
+#: src/gui/GuiApplication.ec:101
+msgid "Graphics driver not supported by any user interface system"
+msgstr ""
+
+#: src/sys/System.ec:114
+msgid "Identic string identifier already exists"
+msgstr ""
+
+#: src/gfx/BitmapResource.ec:14
+msgid "Image"
+msgstr "Imagem"
+
+#: src/gfx/BitmapResource.ec:8
+msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+msgstr "Arquivos de Imagem (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+
+#: src/sys/File.ec:294
+msgctxt "Import"
+msgid "Imp"
+msgstr ""
+
+#: src/sys/System.ec:113
+msgid "Inexistant string identifier specified"
+msgstr ""
+
+#: src/gui/controls/EditBox.ec:1135
+msgid "Insert Tabs"
+msgstr "Inserir Tabs"
+
+#: src/sys/Date.ec:42
+msgid "Jan"
+msgstr "Jan"
+
+#: src/sys/Date.ec:33
+msgid "January"
+msgstr "Janeiro"
+
+#: src/sys/Date.ec:42
+msgid "Jul"
+msgstr "Jul"
+
+#: src/sys/Date.ec:33
+msgid "July"
+msgstr "Julho"
+
+#: src/sys/Date.ec:42
+msgid "Jun"
+msgstr "Jun"
+
+#: src/sys/Date.ec:33
+msgid "June"
+msgstr "Junho"
+
+#: src/gui/Window.ec:7842 src/gui/Window.ec:8226 src/gui/Window.ec:8233
+#: src/gui/Window.ec:8301 src/gui/Window.ec:8642 src/gui/Window.ec:8678
+#: src/gui/Window.ec:8715 src/gui/Window.ec:8748 src/gui/Window.ec:8815
+#: src/gui/Window.ec:9345
+msgid "Layout"
+msgstr "Disposição"
+
+#: src/gui/dialogs/GoToDialog.ec:50
+msgid "Line number:"
+msgstr "Número da linha:"
+
+#: src/gui/dialogs/FileDialog.ec:1273
+msgid "Look in:"
+msgstr "Procurar em:"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Monday"
+msgid "M"
+msgstr "S"
+
+#: src/sys/Date.ec:42
+msgid "Mar"
+msgstr "Mar"
+
+#: src/sys/Date.ec:33
+msgid "March"
+msgstr "Março"
+
+#: src/gui/dialogs/FindDialog.ec:31 src/gui/dialogs/ReplaceDialog.ec:229
+msgid "Match case"
+msgstr ""
+
+#: src/gui/Window.ec:6763
+msgid "Maximize"
+msgstr "Maximizar"
+
+#: src/sys/Date.ec:33
+msgctxt "LongMonthNames"
+msgid "May"
+msgstr "Maio"
+
+#: src/sys/Date.ec:42
+msgctxt "ShortMonthNames"
+msgid "May"
+msgstr "Mai"
+
+#: src/sys/System.ec:112
+msgid "Memory allocation failed"
+msgstr "Falha na alocação de memória"
+
+#: src/gui/dialogs/FileDialog.ec:5
+msgid "Microsoft Windows Network"
+msgstr "Microsoft Windows Network"
+
+#: src/gui/Window.ec:6758
+msgid "Minimize"
+msgstr "Minimizar"
+
+#: src/sys/Date.ec:38
+msgid "Mon"
+msgstr "Seg"
+
+#: src/sys/Date.ec:29
+msgid "Monday"
+msgstr "Segunda"
+
+#: src/gui/Window.ec:6748
+msgid "Move"
+msgstr "Mover"
+
+#: src/gui/dialogs/FileDialog.ec:1408 src/gui/dialogs/FileDialog.ec:1565
+msgid "Name"
+msgstr "Nome"
+
+#: src/gui/dialogs/FileDialog.ec:1566
+msgid "New Directory"
+msgstr "Novo Diretório"
+
+#: src/gui/dialogs/MessageBox.ec:75 src/gui/dialogs/MessageBox.ec:101
+msgid "No"
+msgstr "Não"
+
+#: src/sys/System.ec:111 src/gui/GuiApplication.ec:100
+msgid "No error"
+msgstr "Nenhum erro"
+
+#: src/gui/dialogs/GoToDialog.ec:35
+msgid "No such line."
+msgstr ""
+
+#: src/sys/Date.ec:42
+msgid "Nov"
+msgstr "Nov"
+
+#: src/sys/Date.ec:33
+msgid "November"
+msgstr "Novembro"
+
+#: src/gui/dialogs/ColorPicker.ec:721 src/gui/dialogs/FileDialog.ec:294
+#: src/gui/dialogs/FileDialog.ec:1225 src/gui/dialogs/FileDialog.ec:1534
+#: src/gui/dialogs/MessageBox.ec:94 src/gui/dialogs/MessageBox.ec:120
+#: src/gui/dialogs/WindowList.ec:24
+msgid "OK"
+msgstr "OK"
+
+#: src/sys/Date.ec:42
+msgid "Oct"
+msgstr "Out"
+
+#: src/sys/Date.ec:33
+msgid "October"
+msgstr "Outubro"
+
+#: src/gui/dialogs/FileDialog.ec:1255
+msgid "Open"
+msgstr "Abrir"
+
+#: src/gui/controls/EditBox.ec:978 src/gui/controls/EditBox.ec:3150
+msgid "Paste\tCtrl+V"
+msgstr "Colar\tCtrl+V"
+
+#: src/gui/dialogs/FileDialog.ec:1551
+msgid "Please enter a name."
+msgstr "Por favor insira um nome."
+
+#: src/gui/controls/DropBox.ec:95 src/gui/controls/ListBox.ec:967
+msgid "Private"
+msgstr "Privado"
+
+#: src/gui/controls/EditBox.ec:1023
+msgid "Redo\tCtrl+Y"
+msgstr "Redo\tCtrl+Y"
+
+#: src/gui/dialogs/ReplaceDialog.ec:14 src/gui/dialogs/ReplaceDialog.ec:258
+msgid "Replace"
+msgstr "Substituir"
+
+#: src/gui/dialogs/ReplaceDialog.ec:264
+msgid "Replace All"
+msgstr "Substituir Todos"
+
+#: src/gui/dialogs/ReplaceDialog.ec:247
+msgid "Replace In"
+msgstr "Substituir Em"
+
+#: src/gui/dialogs/FileDialog.ec:1064
+msgid "Replace existing file?"
+msgstr "Substituir o arquivo existente?"
+
+#: src/gui/dialogs/ReplaceDialog.ec:213
+msgid "Replace with:"
+msgstr "Substituir com:"
+
+#: src/gui/controls/EditBox.ec:1088
+msgid "Replace...\tCtrl+R"
+msgstr "Substituir...\tCtrl+R"
+
+#: src/gui/Window.ec:6743
+msgid "Restore"
+msgstr "Restaurar"
+
+#: src/gui/controls/CalendarControl.ec:11
+msgctxt "Saturday"
+msgid "S"
+msgstr "S"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Sunday"
+msgid "S"
+msgstr "D"
+
+#: src/sys/Date.ec:39
+msgid "Sat"
+msgstr "Sáb"
+
+#: src/sys/Date.ec:30
+msgid "Saturday"
+msgstr "Sábado"
+
+#: src/gui/Window.ec:7366
+msgid "Save As"
+msgstr "Salvar Como"
+
+#: src/gui/controls/Picture.ec:72
+msgid "Save As..."
+msgstr "Salvar Como..."
+
+#: src/gui/Window.ec:7336 src/gui/Window.ec:7384
+msgid "Save as a different file?"
+msgstr "Salvar como um arquivo diferente?"
+
+#: src/gui/Window.ec:7249
+msgid "Save changes to %s?"
+msgstr "Salvas mudanças para %s?"
+
+#: src/gui/Window.ec:7251
+msgid "Save changes to Untitled %d?"
+msgstr "Salvar mudanças para Sem Título %d?"
+
+#: src/gui/controls/Picture.ec:71
+msgid "Save\tCtrl+S"
+msgstr "Salvar\tCtrl+S"
+
+#: src/gui/dialogs/ReplaceDialog.ec:159 src/gui/dialogs/ReplaceDialog.ec:162
+#: src/gui/dialogs/ReplaceDialog.ec:346 src/gui/dialogs/ReplaceDialog.ec:356
+msgid "Search Finished"
+msgstr "Pesquisa Acabada"
+
+#: src/gui/dialogs/FindDialog.ec:61 src/gui/dialogs/ReplaceDialog.ec:162
+#: src/gui/dialogs/ReplaceDialog.ec:346
+msgid "Search string not found."
+msgstr ""
+
+#: src/gui/dialogs/FileDialog.ec:276
+msgid "Select"
+msgstr "Selecionar"
+
+#: src/gui/controls/EditBox.ec:1001 src/gui/controls/EditBox.ec:3153
+msgid "Select All\tCtrl+A"
+msgstr "Selecionar Tudo\tCtrl+A"
+
+#: src/gfx/Color.ec:691
+msgid "Select Color"
+msgstr "Selecionar Cor"
+
+#: src/sys/File.ec:212
+msgid "Select File"
+msgstr "Selecionar Arquivo"
+
+#: src/gfx/BitmapResource.ec:17
+msgid "Select Image"
+msgstr "Selecionar Imagem"
+
+#: src/gui/dialogs/WindowList.ec:41
+msgid "Select a Window to Activate..."
+msgstr "Selecione uma Janela para Ativar..."
+
+#: src/gui/dialogs/ColorPicker.ec:240
+msgid "Select a color..."
+msgstr "Selecione uma cor..."
+
+#: src/gui/controls/PathBox.ec:42 src/gui/dialogs/FileDialog.ec:245
+msgid "Select a file..."
+msgstr "Selecione um arquivo..."
+
+#: src/gui/controls/PathBox.ec:84
+msgid "Select a folder..."
+msgstr "Selecione uma pasta..."
+
+#: src/gui/controls/PathBox.ec:367
+msgid "Select directory"
+msgstr "Selecione diretório"
+
+#: src/gui/dialogs/ReplaceDialog.ec:235
+msgid "Selection"
+msgstr "Seleção"
+
+#: src/sys/Date.ec:42
+msgid "Sep"
+msgstr "Set"
+
+#: src/sys/Date.ec:33
+msgid "September"
+msgstr "Setembro"
+
+#: src/sys/System.ec:115
+msgid "Shared library loading failed"
+msgstr ""
+
+#: src/gui/controls/Menu.ec:96
+msgid "Shift+"
+msgstr "Shift+"
+
+#: src/gui/dialogs/FileDialog.ec:1410 src/gui/Window.ec:6753
+msgid "Size"
+msgstr "Tamanho"
+
+#: src/gui/Window.ec:6768
+msgid "Stay On Top"
+msgstr "Ficar No Topo"
+
+#: src/sys/Date.ec:38
+msgid "Sun"
+msgstr "Dom"
+
+#: src/sys/Date.ec:29
+msgid "Sunday"
+msgstr "Domingo"
+
+#: src/gfx/Color.ec:756
+msgid "System"
+msgstr "Sistema"
+
+#: src/gui/controls/CalendarControl.ec:10
+msgctxt "Thursday"
+msgid "T"
+msgstr "T"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Tuesday"
+msgid "T"
+msgstr "Q"
+
+#: src/gui/skins/TVisionSkin.ec:37 src/gui/skins/TVisionSkin.ec:43
+#: src/gui/skins/WindowsSkin.ec:142 src/gui/skins/WindowsSkin.ec:151
+msgid "Tahoma"
+msgstr "Tahoma"
+
+#: src/sys/Date.ec:38
+msgid "Thu"
+msgstr "Qui"
+
+#: src/sys/Date.ec:29
+msgid "Thursday"
+msgstr "Quinta"
+
+#: src/sys/Date.ec:38
+msgid "Tue"
+msgstr "Ter"
+
+#: src/sys/Date.ec:29
+msgid "Tuesday"
+msgstr "Terça"
+
+#: src/gui/dialogs/FileDialog.ec:1409
+msgid "Type"
+msgstr "Tipo"
+
+#: src/gui/controls/EditBox.ec:1012
+msgid "Undo\tCtrl+Z"
+msgstr "Desfazer\tCtrl+Z"
+
+#: src/gui/dialogs/FindDialog.ec:36
+msgid "Up"
+msgstr "Acima"
+
+#: src/gui/controls/CalendarControl.ec:50
+#: src/gui/controls/CalendarControl.ec:75
+#: src/gui/controls/CalendarControl.ec:96
+#: src/gui/controls/CalendarControl.ec:117
+msgid "Verdana"
+msgstr "Verdana"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Wednesday"
+msgid "W"
+msgstr "Q"
+
+#: src/sys/Date.ec:38
+msgid "Wed"
+msgstr "Qua"
+
+#: src/sys/Date.ec:29
+msgid "Wednesday"
+msgstr "Quarta"
+
+#: src/gui/dialogs/ReplaceDialog.ec:241
+msgid "Whole File"
+msgstr "Todo o Arquivo"
+
+#: src/gui/dialogs/FindDialog.ec:26 src/gui/dialogs/ReplaceDialog.ec:223
+msgid "Whole word only"
+msgstr "Palavra inteira apenas"
+
+#: src/gui/Window.ec:8240 src/gui/Window.ec:8261 src/gui/Window.ec:8282
+#: src/gui/Window.ec:8433 src/gui/Window.ec:8440 src/gui/Window.ec:8476
+#: src/gui/Window.ec:8497 src/gui/Window.ec:8550 src/gui/Window.ec:9081
+#: src/gui/Window.ec:9088 src/gui/Window.ec:9113 src/gui/Window.ec:9273
+msgid "Window Style"
+msgstr "Estilo da Janela"
+
+#: src/gui/GuiApplication.ec:102
+msgid "Window creation failed"
+msgstr "Criação da janela falhou"
+
+#: src/gui/GuiApplication.ec:103
+msgid "Window graphics loading failed"
+msgstr "Carregamento dos gráficos da janela falhou"
+
+#: src/gui/dialogs/WindowList.ec:9
+msgid "Windows"
+msgstr "Janelas"
+
+#: src/gui/dialogs/MessageBox.ec:81 src/gui/dialogs/MessageBox.ec:113
+msgid "Yes"
+msgstr "Sim"
+
+#: src/sys/System.ec:355
+msgid ""
+"\n"
+"\n"
+"Would you like to view the error log?"
+msgstr ""
+"\n"
+"\n"
+"Você gostaria de ver as mensagens de erro?"
+
+#: src/sys/Date.ec:121 src/sys/Time.ec:790
+msgid "now"
+msgstr "agora"
+
+#: src/sys/Date.ec:120 src/sys/Time.ec:789
+msgid "today"
+msgstr "hoje"
+
+#: src/sys/Date.ec:122 src/sys/Date.ec:126 src/sys/Time.ec:792
+msgid "tomorrow"
+msgstr "amanhã"
+
+#: src/sys/Date.ec:123 src/sys/Date.ec:131 src/sys/Time.ec:799
+msgid "yesterday"
+msgstr "ontem"

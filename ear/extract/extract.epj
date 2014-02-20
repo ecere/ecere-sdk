@@ -232,6 +232,28 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "he",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "extract.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "extract.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

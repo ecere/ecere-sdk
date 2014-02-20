@@ -114,7 +114,35 @@
             {
                "Folder" : "es_ES",
                "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecp.mo"
+                     ]
+                  },
                   "locale/es_ES/LC_MESSAGES/ecp.mo"
+               ]
+            },
+            {
+               "Folder" : "he",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecp.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecp.mo"
+                     ]
+                  }
                ]
             }
          ]

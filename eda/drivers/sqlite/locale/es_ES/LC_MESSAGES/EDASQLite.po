@@ -7,33 +7,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-02-20 13:01+0000\n"
-"PO-Revision-Date: 2012-02-21 17:48+0900\n"
-"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"POT-Creation-Date: 2014-02-19 02:49+0000\n"
+"PO-Revision-Date: 2014-02-20 00:29-0500\n"
+"Last-Translator: Jerome St-Louis <jerstlouis@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-21 08:32+0000\n"
-"X-Generator: Launchpad (build 14838)\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: es_ES\n"
 
-#: .\EDASQLite.ec:443
+#: EDASQLite.ec:393
 msgid "BEGIN FAILED!"
 msgstr "¡ERROR EN INICIO DE TRANSACCIÓN!"
 
-#: .\EDASQLite.ec:454
+#: EDASQLite.ec:404
 msgid "COMMIT FAILED!"
 msgstr "¡ERROR EN FIN DE TRANSACCION!"
 
-#: .\EDASQLite.ec:188
+#: EDASQLite.ec:113
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite: Imposible abrir la base de datos (%s): %s\n"
 
-#: .\EDASQLite.ec:595
+#: EDASQLite.ec:894
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "AVISO: ALTER TABLE NO FUNCIONA CON PRIMARY KEY PARA "
 
-#: .\EDASQLite.ec:556
+#: EDASQLite.ec:855
 msgid "WARNING: Table not yet created for class "
 msgstr "AVISO: La tabla aún no se ha creado para la clase "
-

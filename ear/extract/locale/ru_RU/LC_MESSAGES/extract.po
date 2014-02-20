@@ -1,0 +1,91 @@
+# Russian translation for ecere
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-08-13 19:31+0000\n"
+"PO-Revision-Date: 2014-02-20 00:44-0500\n"
+"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: ru_RU\n"
+
+#: extract.ec:142
+msgid "Browse..."
+msgstr "Обзор..."
+
+#: extract.ec:186
+msgid "Created"
+msgstr "Создан"
+
+#: extract.ec:177
+msgid "Done."
+msgstr "Готово."
+
+#: extract.ec:297
+msgid "ECERE Archive - %s"
+msgstr "Архив ECERE - %s"
+
+#: extract.ec:303
+msgid "ECERE Self-Extractable Archive"
+msgstr "Самоизвлекающий архив ECERE"
+
+#: extract.ec:152
+msgid "Exit"
+msgstr "Выход"
+
+#: extract.ec:155
+msgid "Extract"
+msgstr "Извлечь"
+
+#: extract.ec:138
+msgid "Extract to"
+msgstr "Извлечь в"
+
+#: extract.ec:83
+msgid "Extracting %s..."
+msgstr "Идет извлечение %s..."
+
+#: extract.ec:160
+msgid "Extracting Files..."
+msgstr "Извлечение файлов..."
+
+#: extract.ec:177
+msgid "Extraction Completed"
+msgstr "Извлечение завершено"
+
+#: extract.ec:183
+msgid "File"
+msgstr "Файл"
+
+#: extract.ec:207
+msgid "Hide Files"
+msgstr "Скрыть файлы"
+
+#: extract.ec:185
+msgid "Modified"
+msgstr "Изменено"
+
+#: extract.ec:187
+msgid "Select extraction directory"
+msgstr "Выбор папки извлечения"
+
+#: extract.ec:184
+msgid "Size"
+msgstr "Размер"
+
+#: extract.ec:120
+msgid "Use paths from archive..."
+msgstr "Использовать папки с архива..."
+
+#: extract.ec:117 extract.ec:195
+msgid "View Files"
+msgstr "Показать файлы"

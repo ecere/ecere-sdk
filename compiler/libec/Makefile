@@ -101,7 +101,8 @@ SOURCES = $(ECSOURCES) \
 
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/ec.mo \
-	locale/es_ES/LC_MESSAGES/ec.mo
+	locale/es_ES/LC_MESSAGES/ec.mo \
+	locale/mr_MR/LC_MESSAGES/ec.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -157,6 +158,7 @@ ifndef NOSTRIP
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ec.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ec.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/mr_MR/LC_MESSAGES/ec.mo "locale/mr_MR/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

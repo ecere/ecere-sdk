@@ -74,7 +74,9 @@ SOURCES = $(ECSOURCES) \
 
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/EDASQLite.mo \
-	locale/es_ES/LC_MESSAGES/EDASQLite.mo
+	locale/es_ES/LC_MESSAGES/EDASQLite.mo \
+	locale/he/LC_MESSAGES/EDASQLite.mo \
+	locale/ru_RU/LC_MESSAGES/EDASQLite.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -169,6 +171,8 @@ ifndef NOSTRIP
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLite.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/EDASQLite.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/EDASQLite.mo "locale/he/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/EDASQLite.mo "locale/ru_RU/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

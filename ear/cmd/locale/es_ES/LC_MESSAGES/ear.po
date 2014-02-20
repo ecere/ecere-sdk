@@ -7,169 +7,190 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-02-20 13:01+0000\n"
-"PO-Revision-Date: 2012-02-21 17:57+0900\n"
-"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"POT-Creation-Date: 2012-08-13 19:31+0000\n"
+"PO-Revision-Date: 2014-02-20 00:42-0500\n"
+"Last-Translator: Juan Sánchez <aldeacity@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-21 08:32+0000\n"
-"X-Generator: Launchpad (build 14838)\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: es_ES\n"
 
-#: .\ear.ec:24
+#: ear.ec:24
 msgid "   a  (Add)          <archive> <files...>\n"
 msgstr "   a  (Añadir)          <archivo> <ficheros...>\n"
 
-#: .\ear.ec:30
+#: ear.ec:30
 msgid "   c  (Clear)        <archive>\n"
 msgstr "   c  (Limpiar)        <archivo>\n"
 
-#: .\ear.ec:29
+#: ear.ec:29
 msgid "   d  (Delete)       <archive> <files...>\n"
 msgstr "   d  (Eliminar)       <archivo> <ficheros...>\n"
 
-#: .\ear.ec:22
+#: ear.ec:22
 msgid "   e  (Extract)      <archive> <files...>\n"
 msgstr "   e  (Extraer)      <archivo> <ficheros...>\n"
 
-#: .\ear.ec:18
+#: ear.ec:18
 msgid "   eAR <command> <archive> <parameters>\n"
 msgstr "   eAR <comando> <archivo> <parámetros>\n"
 
-#: .\ear.ec:27
+#: ear.ec:27
 msgid "   m  (Move)         <archive> <files...> <to>\n"
 msgstr "   m  (Mover)         <archivo> <ficheros...> <a>\n"
 
-#: .\ear.ec:28
+#: ear.ec:28
 msgid "   n  (Rename)       <archive> <file> <new name>\n"
 msgstr "   n  (Renombrar)       <archivo> <fichero> <nuevo nombre>\n"
 
-#: .\ear.ec:25
+#: ear.ec:25
 msgid "   r  (Refresh)      <archive> <files...>\n"
 msgstr "   r  (Refrescar)      <archivo> <ficheros...>\n"
 
-#: .\ear.ec:31
+#: ear.ec:31
 msgid "   s  (Self Extract) <archive> <self-extractable> (With a: overwrite)\n"
-msgstr "   s  (Auto-extraer) <archivo> <self-extractable> (Con a: sobreescribir)\n"
+msgstr ""
+"   s  (Auto-extraer) <archivo> <self-extractable> (Con a: sobreescribir)\n"
 
-#: .\ear.ec:26
+#: ear.ec:26
 msgid "   u  (Update)       <archive> <files...>\n"
 msgstr "   u  (Actualizar)       <archivo> <ficheros...>\n"
 
-#: .\ear.ec:20
+#: ear.ec:20
 msgid "   v  (View)         <archive> [files...]\n"
 msgstr "   v  (Ver)         <archivo> [ficheros...]\n"
 
-#: .\ear.ec:21
+#: ear.ec:21
 msgid "   x  (Extract All)  <archive> [where]\n"
 msgstr "   x  (Extraer todo)  <archivo> [dónde]\n"
 
-#: .\ear.ec:34
+#: ear.ec:34
 msgid "(aru)    0  No Compression\n"
 msgstr "(aru)    0  Sin compresión\n"
 
-#: .\ear.ec:35
-msgid "(aru)    1 ... 9  (Fastest Compression ... Best Compression (default = 9))\n"
-msgstr "(aru)    1 ... 9  (Compresión rápida ... Mejor compresión (por defecto = 9))\n"
+#: ear.ec:35
+msgid ""
+"(aru)    1 ... 9  (Fastest Compression ... Best Compression (default = 9))\n"
+msgstr ""
+"(aru)    1 ... 9  (Compresión rápida ... Mejor compresión (por defecto = "
+"9))\n"
 
-#: .\ear.ec:33
-msgid "(aru)    f  Treat <files> as folders to pack at the root of the archive\n"
-msgstr "(aru)    f  Tratar <ficheros> como carpetas a empaquetar en la raíz del archivo\n"
+#: ear.ec:33
+msgid ""
+"(aru)    f  Treat <files> as folders to pack at the root of the archive\n"
+msgstr ""
+"(aru)    f  Tratar <ficheros> como carpetas a empaquetar en la raíz del "
+"archivo\n"
 
-#: .\ear.ec:36
+#: ear.ec:36
 msgid "(earu)   w  Specify an output directory after <files>\n"
-msgstr "(earu)   w  Especificar un directorio de salida después de <ficheros>\n"
+msgstr ""
+"(earu)   w  Especificar un directorio de salida después de <ficheros>\n"
 
-#: .\ear.ec:37
+#: ear.ec:37
 msgid "(xearu)  q  Quiet mode\n"
 msgstr "(xearu)  q  Modo silencioso\n"
 
-#: .\ear.ec:342
+#: ear.ec:342
 msgid "A file with the same name already exists (%s).\n"
 msgstr "Ya existe un fichero con el mismo nombre (%s).\n"
 
-#: .\ear.ec:352
+#: ear.ec:352
 msgid "A folder with the same name already exists (%s).\n"
 msgstr "Ya existe una carpeta con el mismo nombre (%s).\n"
 
-#: .\ear.ec:216
+#: ear.ec:216
 msgid "Adding %s..."
 msgstr "Añadiendo %s..."
 
-#: .\ear.ec:696
+#: ear.ec:711
 msgid "Archive cleared: %s.\n"
 msgstr "Archivo limpiado: %s.\n"
 
-#: .\ear.ec:534
+#: ear.ec:534
 msgid "Archive file is empty: %s\n"
 msgstr "El fichero del archivo está vacío: %s\n"
 
-#: .\ear.ec:529
+#: ear.ec:529
 msgid "Archive file not found: %s\n"
 msgstr "Fichero de archivo no encontrado: %s\n"
 
-#: .\ear.ec:348
+#: ear.ec:348
 msgid "Can't move directory %s inside itself.\n"
 msgstr "Imposible mover el directorio %s dentro de él mismo.\n"
 
-#: .\ear.ec:723
+#: ear.ec:738
 msgid "Deleting file %s in directory %s.\n"
 msgstr "Eliminando fichero %s en el directorio %s.\n"
 
-#: .\ear.ec:812
+#: ear.ec:827
 msgid "Drive letters and %s only valid at root.\n"
 msgstr "Las letras de unidad y %s sólo son válidas en la raíz.\n"
 
-#: .\ear.ec:160
+#: ear.ec:160
 msgid "Extracting %s...\n"
 msgstr "Extrayendo %s...\n"
 
-#: .\ear.ec:19
+#: ear.ec:19
 msgid "Extraction Commands:\n"
 msgstr "Comandos de extracción:\n"
 
-#: .\ear.ec:585
+#: ear.ec:680
+msgid "Failed to add %s to archive!\n"
+msgstr "¡Error al añadir %s al archivo!\n"
+
+#: ear.ec:698
+msgid "Failed to open archive %s for writing!\n"
+msgstr "¡Error al abrir el archivo %s para escritura!\n"
+
+#: ear.ec:689
+msgid "Failed to open the internal directory of archive %s!\n"
+msgstr "¡Error al abrir el directorio interno del archivo %s!\n"
+
+#: ear.ec:585
 msgid "File Not Found: %s\n"
 msgstr "Fichero no encontrado: %s\n"
 
-#: .\ear.ec:384
+#: ear.ec:384
 msgid "File is already in directory \"%s\".\n"
 msgstr "El fichero ya se encuentra en el directorio \"%s\".\n"
 
-#: .\ear.ec:544
+#: ear.ec:544
 msgid "File is not a valid ECERE archive: %s\n"
 msgstr "El fichero no es un archivo ECERE válido: %s\n"
 
-#: .\ear.ec:17
+#: ear.ec:17
 msgid "General Syntax:\n"
 msgstr "Sintaxis general:\n"
 
-#: .\ear.ec:319
+#: ear.ec:319
 msgid "Merging directory %s in %s with %s in %s.\n"
 msgstr "Combinando el directorio %s en %s con %s en %s.\n"
 
-#: .\ear.ec:23
+#: ear.ec:23
 msgid "Modification Commands:\n"
 msgstr "Comandos de modificación:\n"
 
-#: .\ear.ec:370
+#: ear.ec:370
 msgid "Moving file %s in directory %s to %s.\n"
 msgstr "Moviendo el fichero %s desde el directorio %s a %s.\n"
 
-#: .\ear.ec:307
+#: ear.ec:307
 msgid "Moving files in root to %s.\n"
 msgstr "Moviendo ficheros desde la raíz a %s.\n"
 
-#: .\ear.ec:815
+#: ear.ec:830
 msgid "New name contains directory structure.\n"
 msgstr "El nuevo nombre contiene estructura de directorio.\n"
 
-#: .\ear.ec:32
+#: ear.ec:32
 msgid "Options:\n"
 msgstr "Opciones:\n"
 
-#: .\ear.ec:231
+#: ear.ec:231
 msgid ""
 "Out of disk space.\n"
 "Error: Ran out of disk space while archiving%s%s.\n"
@@ -177,19 +198,18 @@ msgstr ""
 "Sin espacio en disco.\n"
 "Error: Sin espacio en disco mientras se archivaba%s%s.\n"
 
-#: .\ear.ec:779
+#: ear.ec:794
 msgid "Renaming %s in directory %s to %s.\n"
 msgstr "Renombrando %s en el directorio %s como %s.\n"
 
-#: .\ear.ec:227
+#: ear.ec:227
 msgid "Skipped%s%s.\n"
 msgstr "Omitido%s%s.\n"
 
-#: .\ear.ec:83
+#: ear.ec:83
 msgid ""
 "\n"
 "   Modified: "
 msgstr ""
 "\n"
 "   Modificado: "
-

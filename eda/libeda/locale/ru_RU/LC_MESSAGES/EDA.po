@@ -1,0 +1,148 @@
+# Russian translation for ecere
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-19 02:48+0000\n"
+"PO-Revision-Date: 2014-02-20 00:28-0500\n"
+"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: ru_RU\n"
+
+#: src/idList.ec:230
+msgid "(Click to add a new %s...)"
+msgstr "(Нажмите для добавление нового %s... )"
+
+#: src/ers.ec:595
+msgid "All files"
+msgstr "Все файлы"
+
+#: src/ers.ec:30 src/gui.ec:20 src/gui.ec:31
+msgid "Arial"
+msgstr "Arial"
+
+#: src/ers.ec:592
+msgid "Comma Separated Values Spreadsheet (*.csv)"
+msgstr "Comma Separated Values Spreadsheet (*.csv)"
+
+#: src/EDB.ec:152
+msgid "Database file (%s) could not be created.\n"
+msgstr "Файл базы данных (%s) не мог быть созданым.\n"
+
+#: src/EDB.ec:154
+msgid "Database file (%s) could not be opened.\n"
+msgstr "Файл базы данных (%s) не мог быть открыт.\n"
+
+#: src/gui.ec:812
+msgid "Delete"
+msgstr "Удаление"
+
+#: src/EDB.ec:299
+msgid "EDB: Error getting Name field from tables list table!\n"
+msgstr ""
+
+#: src/EDB.ec:304
+msgid "EDB: Error getting tables list table!\n"
+msgstr ""
+
+#: src/gui.ec:946
+msgid "Entry"
+msgstr "Ввод"
+
+#: src/EDB.ec:863
+msgid "Error reading field"
+msgstr "Ошыбка чтение ввода"
+
+#: src/ers.ec:648
+msgid "Export as Spreadsheet (CSV)"
+msgstr "Экспортиаование таблицей (CSV)"
+
+#: src/EDB.ec:133
+msgid "Invalid, corrupted or in use (%s) database file.\n"
+msgstr "Неверный, поврежденный или используемый (%s) файл базы данных.\n"
+
+#: src/gui.ec:649
+msgid "List"
+msgstr "Список"
+
+#: src/gui.ec:691 src/gui.ec:801
+msgid "List Editor"
+msgstr "Редактор Списков"
+
+#: src/gui/TableEditor.ec:25 src/gui.ec:749
+msgid "New"
+msgstr "Новый"
+
+#: src/gui/TableEditor.ec:24
+msgid "New|id="
+msgstr "Новый|id="
+
+#: src/ers.ec:17
+msgid "Please wait while the report is being generated..."
+msgstr "Подождите пожалуйста пака рапарт создаетса."
+
+#: src/gui.ec:990
+msgid "Revert"
+msgstr "Откатить"
+
+#: src/gui.ec:979
+msgid "Save"
+msgstr "Сохранить"
+
+#: src/DirFilesDataSource.ec:111
+msgid "Status: Feeling groovy!\n"
+msgstr "Статус: Захватуещие чувство!\n"
+
+#: src/EDB.ec:475
+msgid "Table (%s) does not exist.\n"
+msgstr "Таблица (%s) не соществует.\n"
+
+#: src/gui/TableEditor.ec:352 src/gui/TableEditor.ec:360
+msgid "Table Editor"
+msgstr "Редактор Таблиц"
+
+#: src/EDB.ec:484
+msgid "Unable to detect if table exists!\n"
+msgstr "Невозможно выявить существование таблицы!\n"
+
+#: src/gui/TableEditor.ec:934 src/gui/TableEditor.ec:953
+msgid "WordList match cannot be found in database."
+msgstr "Подходящие WordList не может быть найденым в базе данных."
+
+#: src/gui.ec:804
+msgid ""
+"You are about to delete an entry.\n"
+"Do you wish to continue?"
+msgstr ""
+"Вы удаляете ввод.\n"
+"Продолжить?"
+
+#: src/gui/TableEditor.ec:363
+msgid ""
+"You are about to permanently remove an entry.\n"
+"Do you wish to continue?"
+msgstr ""
+"Вы удаляете ввод пермаментно.\n"
+"Продолжить?"
+
+#: src/gui/TableEditor.ec:354 src/gui.ec:691
+msgid ""
+"You have modified this entry. Would you like to save it before proceeding?"
+msgstr "Вы изменили этот ввод. Сохранить лр эго перед продолжением?"
+
+#: src/gui.ec:780 src/gui.ec:786
+msgid "[New]"
+msgstr "[Новый]"
+
+#: src/idList.ec:230
+msgid "item"
+msgstr "элемент"

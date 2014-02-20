@@ -1,0 +1,793 @@
+# Russian translation for ecere
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-20 03:42+0000\n"
+"PO-Revision-Date: 2014-02-19 23:17-0500\n"
+"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: ru_RU\n"
+
+#: src/gui/dialogs/ReplaceDialog.ec:158 src/gui/dialogs/ReplaceDialog.ec:355
+msgid "%d occurences found, %d replaced"
+msgstr "%d случйев найдено, %d заменено"
+
+#: src/gui/dialogs/FileDialog.ec:885
+msgid "All Files"
+msgstr "Все файлы"
+
+#: src/gui/dialogs/FileDialog.ec:350 src/gui/dialogs/FileDialog.ec:428
+msgid "All files"
+msgstr "Все файлы"
+
+#: src/gui/controls/Menu.ec:95
+msgid "Alt+"
+msgstr "Alt+"
+
+#: src/gui/controls/Button.ec:983 src/gui/controls/Button.ec:1014
+#: src/gui/controls/Button.ec:1018 src/gui/controls/Button.ec:1059
+#: src/gui/controls/Button.ec:1061 src/gui/controls/Button.ec:1062
+#: src/gui/controls/Button.ec:1067 src/gui/controls/DropBox.ec:37
+#: src/gui/controls/DropBox.ec:47 src/gui/controls/DropBox.ec:57
+#: src/gui/controls/DropBox.ec:68 src/gui/controls/DropBox.ec:82
+#: src/gui/controls/DropBox.ec:169 src/gui/controls/EditBox.ec:759
+#: src/gui/controls/Label.ec:47 src/gui/controls/ListBox.ec:984
+#: src/gui/controls/ListBox.ec:1017 src/gui/controls/ListBox.ec:1018
+#: src/gui/controls/ListBox.ec:1022 src/gui/controls/ListBox.ec:1050
+#: src/gui/controls/ListBox.ec:1051 src/gui/controls/ListBox.ec:1052
+#: src/gui/controls/ListBox.ec:1053 src/gui/controls/Picture.ec:19
+#: src/gui/controls/Picture.ec:39 src/gui/controls/ScrollBar.ec:82
+#: src/gui/Window.ec:8112 src/gui/Window.ec:8159 src/gui/Window.ec:8176
+#: src/gui/Window.ec:8187 src/gui/Window.ec:8200 src/gui/Window.ec:8585
+#: src/gui/Window.ec:9287 src/gui/Window.ec:9609
+msgid "Appearance"
+msgstr "Оформление"
+
+#: src/sys/Date.ec:42
+msgid "Apr"
+msgstr "Апр"
+
+#: src/sys/Date.ec:33
+msgid "April"
+msgstr "Апрель"
+
+#: src/gui/dialogs/FileDialog.ec:1187
+msgid "As Type:"
+msgstr "Как Тип:"
+
+#: src/sys/Date.ec:42
+msgid "Aug"
+msgstr "Авг"
+
+#: src/sys/Date.ec:33
+msgid "August"
+msgstr "Август"
+
+#: src/gui/controls/Button.ec:863 src/gui/controls/Button.ec:916
+#: src/gui/controls/Button.ec:939 src/gui/controls/Button.ec:963
+#: src/gui/controls/Button.ec:979 src/gui/controls/Button.ec:1058
+#: src/gui/controls/Button.ec:1060 src/gui/controls/Button.ec:1063
+#: src/gui/controls/Button.ec:1064 src/gui/controls/DropBox.ec:128
+#: src/gui/controls/DropBox.ec:168 src/gui/controls/DropBox.ec:173
+#: src/gui/controls/EditBox.ec:734 src/gui/controls/EditBox.ec:735
+#: src/gui/controls/EditBox.ec:739 src/gui/controls/EditBox.ec:748
+#: src/gui/controls/EditBox.ec:749 src/gui/controls/EditBox.ec:750
+#: src/gui/controls/EditBox.ec:751 src/gui/controls/EditBox.ec:752
+#: src/gui/controls/EditBox.ec:753 src/gui/controls/EditBox.ec:754
+#: src/gui/controls/EditBox.ec:755 src/gui/controls/EditBox.ec:756
+#: src/gui/controls/EditBox.ec:757 src/gui/controls/EditBox.ec:758
+#: src/gui/controls/EditBox.ec:760 src/gui/controls/EditBox.ec:761
+#: src/gui/controls/EditBox.ec:762 src/gui/controls/Label.ec:18
+#: src/gui/controls/ListBox.ec:966 src/gui/controls/ListBox.ec:1005
+#: src/gui/controls/ListBox.ec:1013 src/gui/controls/ListBox.ec:1014
+#: src/gui/controls/ListBox.ec:1015 src/gui/controls/ListBox.ec:1016
+#: src/gui/controls/ListBox.ec:1048 src/gui/controls/ListBox.ec:1049
+#: src/gui/controls/ListBox.ec:1054 src/gui/controls/ListBox.ec:1055
+#: src/gui/controls/ListBox.ec:1059 src/gui/controls/ScrollBar.ec:84
+#: src/gui/controls/ScrollBar.ec:88 src/gui/controls/ScrollBar.ec:99
+#: src/gui/controls/ScrollBar.ec:115 src/gui/controls/ScrollBar.ec:127
+#: src/gui/controls/ScrollBar.ec:128 src/gui/controls/ScrollBar.ec:129
+#: src/gui/Window.ec:8068 src/gui/Window.ec:8131 src/gui/Window.ec:8313
+#: src/gui/Window.ec:8362 src/gui/Window.ec:8369 src/gui/Window.ec:8376
+#: src/gui/Window.ec:8383 src/gui/Window.ec:8390 src/gui/Window.ec:8397
+#: src/gui/Window.ec:8404 src/gui/Window.ec:8860 src/gui/Window.ec:8887
+#: src/gui/Window.ec:8894 src/gui/Window.ec:9138 src/gui/Window.ec:9158
+#: src/gui/Window.ec:9164 src/gui/Window.ec:9171 src/gui/Window.ec:9181
+#: src/gui/Window.ec:9192 src/gui/Window.ec:9199 src/gui/Window.ec:9207
+#: src/gui/Window.ec:9280 src/gui/Window.ec:9313 src/gui/Window.ec:9329
+msgid "Behavior"
+msgstr "Поведение"
+
+#: src/gui/dialogs/ColorPicker.ec:730 src/gui/dialogs/FileDialog.ec:1262
+#: src/gui/dialogs/FileDialog.ec:1558 src/gui/dialogs/FindDialog.ec:73
+#: src/gui/dialogs/MessageBox.ec:88 src/gui/dialogs/MessageBox.ec:107
+#: src/gui/dialogs/ReplaceDialog.ec:374 src/gui/dialogs/WindowList.ec:35
+msgid "Cancel"
+msgstr "Отмена"
+
+#: src/gui/dialogs/GoToDialog.ec:44 src/gui/Window.ec:6774
+msgid "Close"
+msgstr "Закрыть"
+
+#: src/gui/FormDesigner.ec:840
+msgid "Control contains code. Delete anyways?"
+msgstr "Контроль содержит код. Все равно удалить?"
+
+#: src/gui/FormDesigner.ec:856
+msgid "Control contains other controls. Delete control and children?"
+msgstr "Контроль содержитдругих контролей. Удалить контроль и его детьей?"
+
+#: src/gui/controls/EditBox.ec:968 src/gui/controls/EditBox.ec:3149
+msgid "Copy\tCtrl+C"
+msgstr "Копировать\tCtrl+C"
+
+#: src/sys/System.ec:118
+msgid "Couldn't write to file"
+msgstr "Не получилось писать в файл"
+
+#: src/gui/dialogs/FileDialog.ec:1495
+msgid "Create Directory"
+msgstr "Создать Папку"
+
+#: src/gui/dialogs/FileDialog.ec:1548 src/gui/dialogs/FileDialog.ec:1551
+msgid "Create Directory Error"
+msgstr "Ошибка создания папки"
+
+#: src/gui/dialogs/FileDialog.ec:1077
+msgid "Create directory?"
+msgstr "Создать папку?"
+
+#: src/gui/controls/Menu.ec:94
+msgid "Ctrl+"
+msgstr "Ctrl+"
+
+#: src/gfx/Color.ec:699
+msgid "Custom"
+msgstr "Пользовательский"
+
+#: src/gui/controls/EditBox.ec:957 src/gui/controls/EditBox.ec:3148
+msgid "Cut\tCtrl+X"
+msgstr "Вырезать\tCtrl+X"
+
+#: src/gui/controls/DropBox.ec:124 src/gui/controls/EditBox.ec:775
+#: src/gui/controls/ProgressBar.ec:13 src/gui/controls/ProgressBar.ec:14
+#: src/gui/Window.ec:9242
+msgid "Data"
+msgstr "Данные"
+
+#: src/sys/Date.ec:43
+msgid "Dec"
+msgstr "Дек"
+
+#: src/sys/Date.ec:34
+msgid "December"
+msgstr "Декабрь"
+
+#: src/gfx/Color.ec:736
+msgid "Defined"
+msgstr "Определено"
+
+#: src/gui/controls/EditBox.ec:989 src/gui/controls/EditBox.ec:3151
+msgid "Delete\tDel"
+msgstr "Удалить\tDel"
+
+#: src/gui/FormDesigner.ec:856
+msgid "Deleting control with children"
+msgstr "Удаление контроля с детьми"
+
+#: src/gui/FormDesigner.ec:840
+msgid "Deleting control with code"
+msgstr "Удаление контроля с кодам"
+
+#: src/gui/Window.ec:9432
+msgid "Deprecated"
+msgstr "Устаревший"
+
+#: src/gui/Window.ec:9299
+msgid "Design"
+msgstr "Дизайн"
+
+#: src/gui/dialogs/FindDialog.ec:46
+msgid "Direction"
+msgstr "Направление"
+
+#: src/gui/dialogs/FileDialog.ec:1548
+msgid "Directory already exists."
+msgstr "Папка уже существует."
+
+#: src/gui/dialogs/FileDialog.ec:1077
+msgid "Directory doesn't exist"
+msgstr "Папка не существует"
+
+#: src/gui/dialogs/FileDialog.ec:309
+msgid "Directory:"
+msgstr "Папка:"
+
+#: src/gui/Window.ec:9074 src/gui/Window.ec:9214 src/gui/Window.ec:9249
+msgid "Document"
+msgstr "Документ"
+
+#: src/gui/dialogs/FindDialog.ec:41
+msgid "Down"
+msgstr "Вниз"
+
+#: src/gui/GuiApplication.ec:105
+msgid "Driver/Mode switch failed"
+msgstr "Перемена Driver/Mode Неудачна"
+
+#: src/gui/GuiApplication.ec:201
+msgid "ECERE Application"
+msgstr "Апликация ECERE"
+
+#: src/gui/controls/EditBox.ec:954
+msgid "Edit"
+msgstr "Редактирование"
+
+#: src/gui/dialogs/FileDialog.ec:4
+msgid "Entire Computer"
+msgstr "Весь Компютер"
+
+#: src/gui/GuiApplication.ec:1293
+msgid "Error falling back to previous video mode.\n"
+msgstr "Ошибка отката на предsдущий режим видео\n"
+
+#: src/gui/Window.ec:7336 src/gui/Window.ec:7384
+msgid "Error writing file"
+msgstr "Ошибка записи файла"
+
+#: src/sys/File.ec:318
+msgctxt "Export"
+msgid "Exp"
+msgstr "Эксп"
+
+#: src/gui/controls/CalendarControl.ec:10
+msgctxt "Friday"
+msgid "F"
+msgstr "ПТ"
+
+#: src/sys/Date.ec:42
+msgid "Feb"
+msgstr "Фев"
+
+#: src/sys/Date.ec:33
+msgid "February"
+msgstr "Февраль"
+
+#: src/gui/dialogs/FileDialog.ec:1064
+msgid "File Already Exists"
+msgstr "Файл Уже Существует"
+
+#: src/gui/dialogs/FileDialog.ec:309 src/gui/dialogs/FileDialog.ec:1447
+msgid "File Name:"
+msgstr "Имя Файла:"
+
+#: src/sys/System.ec:116
+msgid "File not found"
+msgstr "Файл не найден"
+
+#: src/gui/dialogs/FileDialog.ec:1169
+msgid "Filter:"
+msgstr "Фильтр:"
+
+#: src/gui/dialogs/FindDialog.ec:7 src/gui/dialogs/FindDialog.ec:61
+msgid "Find"
+msgstr "Найти"
+
+#: src/gui/dialogs/FindDialog.ec:51 src/gui/dialogs/ReplaceDialog.ec:252
+msgid "Find Next"
+msgstr "Найти Cледующее"
+
+#: src/gui/controls/EditBox.ec:1048
+msgid "Find Next\tF3"
+msgstr "Найти Cледующее\tF3"
+
+#: src/gui/controls/EditBox.ec:1035
+msgid "Find Previous\tShift-F3"
+msgstr "Найти предыдущее\tShift-F3"
+
+#: src/gui/dialogs/FindDialog.ec:85 src/gui/dialogs/ReplaceDialog.ec:379
+msgid "Find what:"
+msgstr "Найти что:"
+
+#: src/gui/controls/EditBox.ec:1061
+msgid "Find...\tCtrl+F"
+msgstr "Найти...\tCtrl+F"
+
+#: src/sys/Date.ec:38
+msgid "Fri"
+msgstr "Пят"
+
+#: src/sys/Date.ec:29
+msgid "Friday"
+msgstr "Пятница"
+
+#: src/gui/controls/EditBox.ec:690 src/gui/dialogs/GoToDialog.ec:29
+#: src/gui/dialogs/GoToDialog.ec:35
+msgid "Go To"
+msgstr "Перейти К"
+
+#: src/gui/dialogs/GoToDialog.ec:7
+msgid "Go To Line..."
+msgstr "Перейти К Линии..."
+
+#: src/gui/controls/EditBox.ec:1122
+msgid "Go To...\tCtrl+G"
+msgstr "Перейти К...\tCtrl+G"
+
+#: src/gui/GuiApplication.ec:101
+msgid "Graphics driver not supported by any user interface system"
+msgstr ""
+"Графический Драйвер не поддерживаетса ни одниой системой пользовательского "
+"интерфейса"
+
+#: src/sys/System.ec:114
+msgid "Identic string identifier already exists"
+msgstr "схожий идентификатор строки уже существует"
+
+#: src/gfx/BitmapResource.ec:14
+msgid "Image"
+msgstr "Изображение"
+
+#: src/gfx/BitmapResource.ec:8
+msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+msgstr "Файли Изображений (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
+
+#: src/sys/File.ec:294
+msgctxt "Import"
+msgid "Imp"
+msgstr "Имп"
+
+#: src/sys/System.ec:113
+msgid "Inexistant string identifier specified"
+msgstr "указан не существующий идентификатор строки"
+
+#: src/gui/controls/EditBox.ec:1135
+msgid "Insert Tabs"
+msgstr "Вставка Tab-ов"
+
+#: src/sys/Date.ec:42
+msgid "Jan"
+msgstr "Янв"
+
+#: src/sys/Date.ec:33
+msgid "January"
+msgstr "Январь"
+
+#: src/sys/Date.ec:42
+msgid "Jul"
+msgstr "Июл"
+
+#: src/sys/Date.ec:33
+msgid "July"
+msgstr "Июль"
+
+#: src/sys/Date.ec:42
+msgid "Jun"
+msgstr "Июн"
+
+#: src/sys/Date.ec:33
+msgid "June"
+msgstr "Июнь"
+
+#: src/gui/Window.ec:7842 src/gui/Window.ec:8226 src/gui/Window.ec:8233
+#: src/gui/Window.ec:8301 src/gui/Window.ec:8642 src/gui/Window.ec:8678
+#: src/gui/Window.ec:8715 src/gui/Window.ec:8748 src/gui/Window.ec:8815
+#: src/gui/Window.ec:9345
+msgid "Layout"
+msgstr "Расположение"
+
+#: src/gui/dialogs/GoToDialog.ec:50
+msgid "Line number:"
+msgstr "Номер строки:"
+
+#: src/gui/dialogs/FileDialog.ec:1273
+msgid "Look in:"
+msgstr "Искать в:"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Monday"
+msgid "M"
+msgstr "ПН"
+
+#: src/sys/Date.ec:42
+msgid "Mar"
+msgstr "Мар"
+
+#: src/sys/Date.ec:33
+msgid "March"
+msgstr "Март"
+
+#: src/gui/dialogs/FindDialog.ec:31 src/gui/dialogs/ReplaceDialog.ec:229
+msgid "Match case"
+msgstr "Учитывать регистр"
+
+#: src/gui/Window.ec:6763
+msgid "Maximize"
+msgstr "Развернуть"
+
+#: src/sys/Date.ec:33
+msgctxt "LongMonthNames"
+msgid "May"
+msgstr "Май"
+
+#: src/sys/Date.ec:42
+msgctxt "ShortMonthNames"
+msgid "May"
+msgstr "Май"
+
+#: src/sys/System.ec:112
+msgid "Memory allocation failed"
+msgstr "Не удалось выделить память"
+
+#: src/gui/dialogs/FileDialog.ec:5
+msgid "Microsoft Windows Network"
+msgstr "Microsoft Windows Network"
+
+#: src/gui/Window.ec:6758
+msgid "Minimize"
+msgstr "Свернуть"
+
+#: src/sys/Date.ec:38
+msgid "Mon"
+msgstr "Пн"
+
+#: src/sys/Date.ec:29
+msgid "Monday"
+msgstr "Понедельник"
+
+#: src/gui/Window.ec:6748
+msgid "Move"
+msgstr "Перемещение"
+
+#: src/gui/dialogs/FileDialog.ec:1408 src/gui/dialogs/FileDialog.ec:1565
+msgid "Name"
+msgstr "Имя"
+
+#: src/gui/dialogs/FileDialog.ec:1566
+msgid "New Directory"
+msgstr "Новая Папка"
+
+#: src/gui/dialogs/MessageBox.ec:75 src/gui/dialogs/MessageBox.ec:101
+msgid "No"
+msgstr "Нет"
+
+#: src/sys/System.ec:111 src/gui/GuiApplication.ec:100
+msgid "No error"
+msgstr "Нет ошибок"
+
+#: src/gui/dialogs/GoToDialog.ec:35
+msgid "No such line."
+msgstr "Нет такой линии"
+
+#: src/sys/Date.ec:42
+msgid "Nov"
+msgstr "Ноя"
+
+#: src/sys/Date.ec:33
+msgid "November"
+msgstr "Ноябрь"
+
+#: src/gui/dialogs/ColorPicker.ec:721 src/gui/dialogs/FileDialog.ec:294
+#: src/gui/dialogs/FileDialog.ec:1225 src/gui/dialogs/FileDialog.ec:1534
+#: src/gui/dialogs/MessageBox.ec:94 src/gui/dialogs/MessageBox.ec:120
+#: src/gui/dialogs/WindowList.ec:24
+msgid "OK"
+msgstr "ОК"
+
+#: src/sys/Date.ec:42
+msgid "Oct"
+msgstr "Окт"
+
+#: src/sys/Date.ec:33
+msgid "October"
+msgstr "Октябрь"
+
+#: src/gui/dialogs/FileDialog.ec:1255
+msgid "Open"
+msgstr "Открыть"
+
+#: src/gui/controls/EditBox.ec:978 src/gui/controls/EditBox.ec:3150
+msgid "Paste\tCtrl+V"
+msgstr "Вставить\tCtrl+V"
+
+#: src/gui/dialogs/FileDialog.ec:1551
+msgid "Please enter a name."
+msgstr "Пожалуйста введите имя"
+
+#: src/gui/controls/DropBox.ec:95 src/gui/controls/ListBox.ec:967
+msgid "Private"
+msgstr "Личное"
+
+#: src/gui/controls/EditBox.ec:1023
+msgid "Redo\tCtrl+Y"
+msgstr "Пересделать\tCtrl+Y"
+
+#: src/gui/dialogs/ReplaceDialog.ec:14 src/gui/dialogs/ReplaceDialog.ec:258
+msgid "Replace"
+msgstr "Заменить"
+
+#: src/gui/dialogs/ReplaceDialog.ec:264
+msgid "Replace All"
+msgstr "Заменить Все"
+
+#: src/gui/dialogs/ReplaceDialog.ec:247
+msgid "Replace In"
+msgstr "Заменить В"
+
+#: src/gui/dialogs/FileDialog.ec:1064
+msgid "Replace existing file?"
+msgstr "Заменить существующий файл?"
+
+#: src/gui/dialogs/ReplaceDialog.ec:213
+msgid "Replace with:"
+msgstr "Заменить на:"
+
+#: src/gui/controls/EditBox.ec:1088
+msgid "Replace...\tCtrl+R"
+msgstr "Заменить...\tCtrl+R"
+
+#: src/gui/Window.ec:6743
+msgid "Restore"
+msgstr "Восстановить"
+
+#: src/gui/controls/CalendarControl.ec:11
+msgctxt "Saturday"
+msgid "S"
+msgstr "СБ"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Sunday"
+msgid "S"
+msgstr "ВЕ"
+
+#: src/sys/Date.ec:39
+msgid "Sat"
+msgstr "Суб"
+
+#: src/sys/Date.ec:30
+msgid "Saturday"
+msgstr "Суббота"
+
+#: src/gui/Window.ec:7366
+msgid "Save As"
+msgstr "Сохранить как"
+
+#: src/gui/controls/Picture.ec:72
+msgid "Save As..."
+msgstr "Сохранить Как..."
+
+#: src/gui/Window.ec:7336 src/gui/Window.ec:7384
+msgid "Save as a different file?"
+msgstr "Сохранить как другой файл?"
+
+#: src/gui/Window.ec:7249
+msgid "Save changes to %s?"
+msgstr "Сохранить изменения в %s?"
+
+#: src/gui/Window.ec:7251
+msgid "Save changes to Untitled %d?"
+msgstr "Сохранить изменения в Untitled %d?"
+
+#: src/gui/controls/Picture.ec:71
+msgid "Save\tCtrl+S"
+msgstr "Сохранить\tCtrl+S"
+
+#: src/gui/dialogs/ReplaceDialog.ec:159 src/gui/dialogs/ReplaceDialog.ec:162
+#: src/gui/dialogs/ReplaceDialog.ec:346 src/gui/dialogs/ReplaceDialog.ec:356
+msgid "Search Finished"
+msgstr "Поиск Завершён"
+
+#: src/gui/dialogs/FindDialog.ec:61 src/gui/dialogs/ReplaceDialog.ec:162
+#: src/gui/dialogs/ReplaceDialog.ec:346
+msgid "Search string not found."
+msgstr "Запрашиваемая строка не найдена."
+
+#: src/gui/dialogs/FileDialog.ec:276
+msgid "Select"
+msgstr "Выбор"
+
+#: src/gui/controls/EditBox.ec:1001 src/gui/controls/EditBox.ec:3153
+msgid "Select All\tCtrl+A"
+msgstr "Выбрать Всё\tCtrl+A"
+
+#: src/gfx/Color.ec:691
+msgid "Select Color"
+msgstr "Выбор Цвета"
+
+#: src/sys/File.ec:212
+msgid "Select File"
+msgstr "Выбор файла"
+
+#: src/gfx/BitmapResource.ec:17
+msgid "Select Image"
+msgstr "Выбор Изображения"
+
+#: src/gui/dialogs/WindowList.ec:41
+msgid "Select a Window to Activate..."
+msgstr "Выберите Окно для Активации..."
+
+#: src/gui/dialogs/ColorPicker.ec:240
+msgid "Select a color..."
+msgstr "Выберите цвет..."
+
+#: src/gui/controls/PathBox.ec:42 src/gui/dialogs/FileDialog.ec:245
+msgid "Select a file..."
+msgstr "Выберите файл..."
+
+#: src/gui/controls/PathBox.ec:84
+msgid "Select a folder..."
+msgstr "Выберите папку..."
+
+#: src/gui/controls/PathBox.ec:367
+msgid "Select directory"
+msgstr "Выбор папки"
+
+#: src/gui/dialogs/ReplaceDialog.ec:235
+msgid "Selection"
+msgstr "Выбор"
+
+#: src/sys/Date.ec:42
+msgid "Sep"
+msgstr "Сен"
+
+#: src/sys/Date.ec:33
+msgid "September"
+msgstr "Сентябрь"
+
+#: src/sys/System.ec:115
+msgid "Shared library loading failed"
+msgstr "Загрузка коллективной брблиотеки неудачна"
+
+#: src/gui/controls/Menu.ec:96
+msgid "Shift+"
+msgstr "Shift+"
+
+#: src/gui/dialogs/FileDialog.ec:1410 src/gui/Window.ec:6753
+msgid "Size"
+msgstr "Размер"
+
+#: src/gui/Window.ec:6768
+msgid "Stay On Top"
+msgstr "Оставаться Cверху"
+
+#: src/sys/Date.ec:38
+msgid "Sun"
+msgstr "Вс"
+
+#: src/sys/Date.ec:29
+msgid "Sunday"
+msgstr "Воскресенье"
+
+#: src/gfx/Color.ec:756
+msgid "System"
+msgstr "Система"
+
+#: src/gui/controls/CalendarControl.ec:10
+msgctxt "Thursday"
+msgid "T"
+msgstr "ЧГ"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Tuesday"
+msgid "T"
+msgstr "ВТ"
+
+#: src/gui/skins/TVisionSkin.ec:37 src/gui/skins/TVisionSkin.ec:43
+#: src/gui/skins/WindowsSkin.ec:142 src/gui/skins/WindowsSkin.ec:151
+msgid "Tahoma"
+msgstr "Tahoma"
+
+#: src/sys/Date.ec:38
+msgid "Thu"
+msgstr "Чтв"
+
+#: src/sys/Date.ec:29
+msgid "Thursday"
+msgstr "Четверг"
+
+#: src/sys/Date.ec:38
+msgid "Tue"
+msgstr "Вт"
+
+#: src/sys/Date.ec:29
+msgid "Tuesday"
+msgstr "Вторник"
+
+#: src/gui/dialogs/FileDialog.ec:1409
+msgid "Type"
+msgstr "Тип"
+
+#: src/gui/controls/EditBox.ec:1012
+msgid "Undo\tCtrl+Z"
+msgstr "Откат\tCtrl+Z"
+
+#: src/gui/dialogs/FindDialog.ec:36
+msgid "Up"
+msgstr "Вверх"
+
+#: src/gui/controls/CalendarControl.ec:50
+#: src/gui/controls/CalendarControl.ec:75
+#: src/gui/controls/CalendarControl.ec:96
+#: src/gui/controls/CalendarControl.ec:117
+msgid "Verdana"
+msgstr "Verdana"
+
+#: src/gui/controls/CalendarControl.ec:9
+msgctxt "Wednesday"
+msgid "W"
+msgstr "СР"
+
+#: src/sys/Date.ec:38
+msgid "Wed"
+msgstr "Ср"
+
+#: src/sys/Date.ec:29
+msgid "Wednesday"
+msgstr "Среда"
+
+#: src/gui/dialogs/ReplaceDialog.ec:241
+msgid "Whole File"
+msgstr "Весь Файл"
+
+#: src/gui/dialogs/FindDialog.ec:26 src/gui/dialogs/ReplaceDialog.ec:223
+msgid "Whole word only"
+msgstr "Только полное слово"
+
+#: src/gui/Window.ec:8240 src/gui/Window.ec:8261 src/gui/Window.ec:8282
+#: src/gui/Window.ec:8433 src/gui/Window.ec:8440 src/gui/Window.ec:8476
+#: src/gui/Window.ec:8497 src/gui/Window.ec:8550 src/gui/Window.ec:9081
+#: src/gui/Window.ec:9088 src/gui/Window.ec:9113 src/gui/Window.ec:9273
+msgid "Window Style"
+msgstr "Стиль Окна"
+
+#: src/gui/GuiApplication.ec:102
+msgid "Window creation failed"
+msgstr "Создание окна неудачно"
+
+#: src/gui/GuiApplication.ec:103
+msgid "Window graphics loading failed"
+msgstr "Загрузка графики окнф неудачна"
+
+#: src/gui/dialogs/WindowList.ec:9
+msgid "Windows"
+msgstr "Окна"
+
+#: src/gui/dialogs/MessageBox.ec:81 src/gui/dialogs/MessageBox.ec:113
+msgid "Yes"
+msgstr "Да"
+
+#: src/sys/System.ec:355
+msgid ""
+"\n"
+"\n"
+"Would you like to view the error log?"
+msgstr ""
+"\n"
+"\n"
+"Хотите посмотреть журнал ошибок?"
+
+#: src/sys/Date.ec:121 src/sys/Time.ec:790
+msgid "now"
+msgstr "сейчас"
+
+#: src/sys/Date.ec:120 src/sys/Time.ec:789
+msgid "today"
+msgstr "сегодня"
+
+#: src/sys/Date.ec:122 src/sys/Date.ec:126 src/sys/Time.ec:792
+msgid "tomorrow"
+msgstr "завтра"
+
+#: src/sys/Date.ec:123 src/sys/Date.ec:131 src/sys/Time.ec:799
+msgid "yesterday"
+msgstr "вчера"

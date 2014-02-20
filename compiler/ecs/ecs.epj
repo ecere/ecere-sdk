@@ -107,6 +107,28 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "he",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecs.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecs.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

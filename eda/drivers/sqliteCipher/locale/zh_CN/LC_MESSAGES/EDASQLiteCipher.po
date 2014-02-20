@@ -7,192 +7,50 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-19 19:00+0900\n"
-"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"POT-Creation-Date: 2013-04-15 06:34+0000\n"
+"PO-Revision-Date: 2014-02-20 00:30-0500\n"
+"Last-Translator: 彭海杰 <Peng.Haijie@gmail.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
 "X-Poedit-Basepath: ..\\..\\..\\\n"
+"Language: zh_CN\n"
 
-#: .\..\sqlite\EDASQLite.ec:443
+#: ../sqlite/EDASQLite.ec:474
 msgid "BEGIN FAILED!"
 msgstr "BEGIN失败!"
 
-#: .\..\sqlite\EDASQLite.ec:454
+#: ../sqlite/EDASQLite.ec:485
 msgid "COMMIT FAILED!"
 msgstr "COMMIT失败!"
 
-#: .\EDASQLiteCipher.ec:45
+#: EDASQLiteCipher.ec:68
+msgid "Can't open database (%s): %s -- password may be incorrect\n"
+msgstr "不能打开数据库(%s): %s -- 密码可能有错\n"
+
+#: EDASQLiteCipher.ec:44
 msgid "Can't open database (%s): %s\n"
 msgstr "不能打开数据库(%s): %s\n"
 
-#: .\..\sqlite\EDASQLite.ec:188
+#: ../sqlite/EDASQLite.ec:196
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite:不能打开数据库(%s): %s\n"
 
-#: .\EDASQLiteCipher.ec:61
-msgid "EDASQLiteCipher: incorrect password!"
-msgstr "EDASQLiteCipher: 错误密码!"
+#: EDASQLiteCipher.ec:56
+msgid ""
+"EDASQLiteCipher: database (%s) format not recognized, disabling "
+"cipher_use_hmac to support version 1.1.x databases\n"
+msgstr ""
+"EDASQLiteCipher: 不识别的数据库格式(%s)，禁用cipher_use_hmac以支持版本1.1.x数"
+"据库\n"
 
-#: .\EDASQLiteCipher.ec:57
-msgid "EDASQLiteCipher: password is correct, database has been initialized"
-msgstr "EDASQLiteCipher: 密码正确, 数据库已经初始化"
-
-#: .\..\sqlite\EDASQLite.ec:595
+#: ../sqlite/EDASQLite.ec:971
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 
-#: .\..\sqlite\EDASQLite.ec:556
+#: ../sqlite/EDASQLite.ec:932
 msgid "WARNING: Table not yet created for class "
-msgstr "警告:类表没有创建"
-
-#~ msgid "   Client info: %s\n"
-#~ msgstr "   客户端信息: %s\n"
-
-#~ msgid "   Host info: %s\n"
-#~ msgstr "   主机信息: %s\n"
-
-#~ msgid "   Server info: %s\n"
-#~ msgstr "   服务器信息: %s\n"
-
-#~ msgid " *      MySql Status Info                    * \n"
-#~ msgstr " *      MySql状态信息                    * \n"
-
-#~ msgid " *      Stats                                * \n"
-#~ msgstr " *      统计                                * \n"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "   MySql Error: #%d %s\n"
-#~ msgstr ""
-#~ "%s\n"
-#~ "   MySql 错误: #%d %s\n"
-
-#~ msgid "(Click to add a new %s...)"
-#~ msgstr "(点击增加新项%s...)"
-
-#~ msgid "All files"
-#~ msgstr "所有文件(*.*)"
-
-#~ msgid "Can't connect to the mysql server on port %d !\n"
-#~ msgstr "不能连接mysql服务器，端口%d !\n"
-
-#~ msgid "Can't initialize mysql socket"
-#~ msgstr "不能初始化mysql socket"
-
-#~ msgid "Can't open the %s database!\n"
-#~ msgstr "不能打开数据库%s!\n"
-
-#~ msgid "Comma Separated Values Spreadsheet (*.csv)"
-#~ msgstr "CSV(逗号分隔) (*.csv)"
-
-#~ msgid "Connection to database failed: %s"
-#~ msgstr "连接数据库失败: %s"
-
-#~ msgid "Couldn't execute %s on the server!"
-#~ msgstr "数据库不能执行%s!"
-
-#~ msgid ""
-#~ "Couldn't execute DDL statement on the server!\n"
-#~ "   %s"
-#~ msgstr ""
-#~ "服务器上不能执行DDL声明!\n"
-#~ "   %s"
-
-#~ msgid "Database (%s) does not exist.\n"
-#~ msgstr "数据库(%s)不存在.\n"
-
-#~ msgid "Database file (%s) could not be created.\n"
-#~ msgstr "数据库文件(%s)不能被创建.\n"
-
-#~ msgid "Database file (%s) could not be opened.\n"
-#~ msgstr "数据库文件(%s)不能被打开.\n"
-
-#~ msgid "Delete"
-#~ msgstr "删除(D)"
-
-#~ msgid "Entry"
-#~ msgstr "条目"
-
-#~ msgid "Error reading field"
-#~ msgstr "读字段错误"
-
-#~ msgid "Export as Spreadsheet (CSV)"
-#~ msgstr "导出数据表(CSV)"
-
-#~ msgid "Invalid, corrupted or in use (%s) database file.\n"
-#~ msgstr "无效的, 滥用数据库文件 (%s).\n"
-
-#~ msgid "List"
-#~ msgstr "列表"
-
-#~ msgid "List Editor"
-#~ msgstr "列表编辑器"
-
-#~ msgid "Listing fields for table %s failed!"
-#~ msgstr "显示表%s的列字段失败!"
-
-#~ msgid "New"
-#~ msgstr "新建(N)"
-
-#~ msgid "Open table failed: %s"
-#~ msgstr "打开表失败: %s"
-
-#~ msgid "Please wait while the report is being generated..."
-#~ msgstr "请等待：报表正在生成..."
-
-#~ msgid "Problem"
-#~ msgstr "问题"
-
-#~ msgid "Revert"
-#~ msgstr "恢复(V)"
-
-#~ msgid "Save"
-#~ msgstr "保存(S)"
-
-#~ msgid "Status: Feeling groovy!\n"
-#~ msgstr "状态: 感觉非常好!\n"
-
-#~ msgid "Table (%s) does not exist.\n"
-#~ msgstr "表(%s)不存在.\n"
-
-#~ msgid "Table Editor"
-#~ msgstr "表编辑器"
-
-#~ msgid "Test"
-#~ msgstr "测试"
-
-#~ msgid "Unable to detect if database exists!\n"
-#~ msgstr "未能找到数据库!\n"
-
-#~ msgid "Unable to detect if table exists!\n"
-#~ msgstr "未能找到表!\n"
-
-#~ msgid "WARNING: field not yet created for class "
-#~ msgstr "警告:类字段没有创建 "
-
-#~ msgid "WordList match cannot be found in database."
-#~ msgstr "在数据库中WordList不能找到."
-
-#~ msgid ""
-#~ "You are about to delete an entry.\n"
-#~ "Do you wish to continue?"
-#~ msgstr ""
-#~ "你要删除一个条目.\n"
-#~ "继续吗?"
-
-#~ msgid ""
-#~ "You are about to permanently remove an entry.\n"
-#~ "Do you wish to continue?"
-#~ msgstr ""
-#~ "你要永久删除一个条目.\n"
-#~ "继续吗?"
-
-#~ msgid ""
-#~ "You have modified this entry. Would you like to save it before proceeding?"
-#~ msgstr "条目已经修改.你要保存它吗?"
-
-#~ msgid "[New]"
-#~ msgstr "[新的]"
+msgstr "警告:类表没有创建 "

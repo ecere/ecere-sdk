@@ -160,6 +160,28 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "he",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "EDASQLite.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "EDASQLite.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

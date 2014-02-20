@@ -157,6 +157,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "mr_MR",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ec.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

@@ -7,168 +7,186 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-20 03:19+0900\n"
-"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"POT-Creation-Date: 2012-08-13 19:31+0000\n"
+"PO-Revision-Date: 2014-02-20 00:42-0500\n"
+"Last-Translator: 彭海杰 <Peng.Haijie@gmail.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
 "X-Poedit-Basepath: ..\\..\\..\\\n"
+"Language: zh_CN\n"
 
-#: .\ear.ec:24
+#: ear.ec:24
 msgid "   a  (Add)          <archive> <files...>\n"
 msgstr "   a  (添加)          <存档文件> <文件...>\n"
 
-#: .\ear.ec:30
+#: ear.ec:30
 msgid "   c  (Clear)        <archive>\n"
 msgstr "   c  (清除)        <存档文件>\n"
 
-#: .\ear.ec:29
+#: ear.ec:29
 msgid "   d  (Delete)       <archive> <files...>\n"
 msgstr "   d  (删除)       <存档文件> <文件...>\n"
 
-#: .\ear.ec:22
+#: ear.ec:22
 msgid "   e  (Extract)      <archive> <files...>\n"
 msgstr "   e  (解压缩)      <存档文件> <files...>\n"
 
-#: .\ear.ec:18
+#: ear.ec:18
 msgid "   eAR <command> <archive> <parameters>\n"
 msgstr "   eAR <命令> <存档文件> <参数>\n"
 
-#: .\ear.ec:27
+#: ear.ec:27
 msgid "   m  (Move)         <archive> <files...> <to>\n"
 msgstr "   m  (移动)         <存档文件> <文件...> <to>\n"
 
-#: .\ear.ec:28
+#: ear.ec:28
 msgid "   n  (Rename)       <archive> <file> <new name>\n"
 msgstr "   n  (重命名)       <存档文件> <文件> <新名称>\n"
 
-#: .\ear.ec:25
+#: ear.ec:25
 msgid "   r  (Refresh)      <archive> <files...>\n"
 msgstr "   r  (刷新)      <存档文件> <文件...>\n"
 
-#: .\ear.ec:31
+#: ear.ec:31
 msgid "   s  (Self Extract) <archive> <self-extractable> (With a: overwrite)\n"
 msgstr "   s  (自解压) <存档文件> <可自解压> (参数 a：覆盖)\n"
 
-#: .\ear.ec:26
+#: ear.ec:26
 msgid "   u  (Update)       <archive> <files...>\n"
 msgstr "   u  (更新)       <存档文件> <files...>\n"
 
-#: .\ear.ec:20
+#: ear.ec:20
 msgid "   v  (View)         <archive> [files...]\n"
 msgstr "   v  (查看)         <存档文件> [文件...]\n"
 
-#: .\ear.ec:21
+#: ear.ec:21
 msgid "   x  (Extract All)  <archive> [where]\n"
 msgstr "   x  (全部解压缩l)  <存档文件> [条件]\n"
 
-#: .\ear.ec:34
+#: ear.ec:34
 msgid "(aru)    0  No Compression\n"
 msgstr "(aru)    0  不压缩\n"
 
-#: .\ear.ec:35
-msgid "(aru)    1 ... 9  (Fastest Compression ... Best Compression (default = 9))\n"
+#: ear.ec:35
+msgid ""
+"(aru)    1 ... 9  (Fastest Compression ... Best Compression (default = 9))\n"
 msgstr "(aru)    1 ... 9  (最快压缩 ... 最小压缩 (默认 = 9))\n"
 
-#: .\ear.ec:33
-msgid "(aru)    f  Treat <files> as folders to pack at the root of the archive\n"
-msgstr "(aru)    f  Treat <files> as folders to pack at the root of the archive\n"
+#: ear.ec:33
+msgid ""
+"(aru)    f  Treat <files> as folders to pack at the root of the archive\n"
+msgstr ""
+"(aru)    f  Treat <files> as folders to pack at the root of the archive\n"
 
-#: .\ear.ec:36
+#: ear.ec:36
 msgid "(earu)   w  Specify an output directory after <files>\n"
 msgstr "(earu)   w  详细显示输出目录在<文件>之后\n"
 
-#: .\ear.ec:37
+#: ear.ec:37
 msgid "(xearu)  q  Quiet mode\n"
 msgstr "(xearu)  q  安静模式\n"
 
-#: .\ear.ec:342
+#: ear.ec:342
 msgid "A file with the same name already exists (%s).\n"
 msgstr "同名文件已经存在(%s).\n"
 
-#: .\ear.ec:352
+#: ear.ec:352
 msgid "A folder with the same name already exists (%s).\n"
 msgstr "同名文件夹已经存在(%s).\n"
 
-#: .\ear.ec:216
+#: ear.ec:216
 msgid "Adding %s..."
 msgstr "正在添加%s..."
 
-#: .\ear.ec:696
+#: ear.ec:711
 msgid "Archive cleared: %s.\n"
 msgstr "存档已清除：%s.\n"
 
-#: .\ear.ec:534
+#: ear.ec:534
 msgid "Archive file is empty: %s\n"
 msgstr "存档是空存档：%s\n"
 
-#: .\ear.ec:529
+#: ear.ec:529
 msgid "Archive file not found: %s\n"
 msgstr "存档没有找到：%s\n"
 
-#: .\ear.ec:348
+#: ear.ec:348
 msgid "Can't move directory %s inside itself.\n"
 msgstr "不能移动目录%s本身.\n"
 
-#: .\ear.ec:723
+#: ear.ec:738
 msgid "Deleting file %s in directory %s.\n"
 msgstr "正在删除%s文件，在目录%s中.\n"
 
-#: .\ear.ec:812
+#: ear.ec:827
 msgid "Drive letters and %s only valid at root.\n"
 msgstr "Drive letters and %s only valid at root.\n"
 
-#: .\ear.ec:160
+#: ear.ec:160
 msgid "Extracting %s...\n"
 msgstr "正在解压缩%s...\n"
 
-#: .\ear.ec:19
+#: ear.ec:19
 msgid "Extraction Commands:\n"
 msgstr "解压缩命令：\n"
 
-#: .\ear.ec:585
+#: ear.ec:680
+msgid "Failed to add %s to archive!\n"
+msgstr "添加%s到压缩文档时失败!\n"
+
+#: ear.ec:698
+msgid "Failed to open archive %s for writing!\n"
+msgstr "打开压缩文档%s写时失败!\n"
+
+#: ear.ec:689
+msgid "Failed to open the internal directory of archive %s!\n"
+msgstr "打开压缩文档内部目录%s出错\n"
+
+#: ear.ec:585
 msgid "File Not Found: %s\n"
 msgstr "文件不存在：%s\n"
 
-#: .\ear.ec:384
+#: ear.ec:384
 msgid "File is already in directory \"%s\".\n"
 msgstr "文件已经在目录“%s”中存在.\n"
 
-#: .\ear.ec:544
+#: ear.ec:544
 msgid "File is not a valid ECERE archive: %s\n"
 msgstr "文件是非法ECERE存档：%s\n"
 
-#: .\ear.ec:17
+#: ear.ec:17
 msgid "General Syntax:\n"
 msgstr "一般语法：\n"
 
-#: .\ear.ec:319
+#: ear.ec:319
 msgid "Merging directory %s in %s with %s in %s.\n"
 msgstr "合并目录从文件%s目录%s到输出%s文件%s目录.\n"
 
-#: .\ear.ec:23
+#: ear.ec:23
 msgid "Modification Commands:\n"
 msgstr "修改命令：\n"
 
-#: .\ear.ec:370
+#: ear.ec:370
 msgid "Moving file %s in directory %s to %s.\n"
 msgstr "Moving file %s in directory %s to %s.\n"
 
-#: .\ear.ec:307
+#: ear.ec:307
 msgid "Moving files in root to %s.\n"
 msgstr "移动文件从根目录到%s.\n"
 
-#: .\ear.ec:815
+#: ear.ec:830
 msgid "New name contains directory structure.\n"
 msgstr "新名称包括目录结构.\n"
 
-#: .\ear.ec:32
+#: ear.ec:32
 msgid "Options:\n"
 msgstr "选项：\n"
 
-#: .\ear.ec:231
+#: ear.ec:231
 msgid ""
 "Out of disk space.\n"
 "Error: Ran out of disk space while archiving%s%s.\n"
@@ -176,88 +194,18 @@ msgstr ""
 "磁盘空间不足.\n"
 "错误：磁盘空间不足，当解压缩文件%s%s时.\n"
 
-#: .\ear.ec:779
+#: ear.ec:794
 msgid "Renaming %s in directory %s to %s.\n"
 msgstr "正在改名从原存档名%s目录%s到新存档名%s.\n"
 
-#: .\ear.ec:227
+#: ear.ec:227
 msgid "Skipped%s%s.\n"
 msgstr "已跳过%s%s.\n"
 
-#: .\ear.ec:83
+#: ear.ec:83
 msgid ""
 "\n"
 "   Modified: "
 msgstr ""
 "\n"
 "   已修改： "
-
-#~ msgid "Browse..."
-#~ msgstr "浏览..."
-
-#~ msgid ""
-#~ "Copyright (c) 2003 Jerome Jacovella-St-Louis\n"
-#~ "\n"
-#~ msgstr ""
-#~ "版权(c)2003 Jerome Jacovella-St-Louis\n"
-#~ "\n"
-
-#~ msgid "Created"
-#~ msgstr "已创建"
-
-#~ msgid "Done."
-#~ msgstr "完成."
-
-#~ msgid "ECERE Archive - %s"
-#~ msgstr "ECERE存档 - %s"
-
-#~ msgid "ECERE Archiver v0.1\n"
-#~ msgstr "ECERE存档v0.1\n"
-
-#~ msgid "ECERE Self-Extractable Archive"
-#~ msgstr "ECERE自解压缩存档"
-
-#~ msgid "Exit"
-#~ msgstr "退出"
-
-#~ msgid "Extract"
-#~ msgstr "解压缩"
-
-#~ msgid "Extract to"
-#~ msgstr "解压缩到"
-
-#~ msgid "Extracting %s..."
-#~ msgstr "正在解压缩 %s..."
-
-#~ msgid "Extracting Files..."
-#~ msgstr "正在解压缩文件..."
-
-#~ msgid "Extraction Completed"
-#~ msgstr "完全压缩"
-
-#~ msgid "File"
-#~ msgstr "文件"
-
-#~ msgid "FileSize"
-#~ msgstr "文件大小"
-
-#~ msgid "Hide Files"
-#~ msgstr "隐藏文件"
-
-#~ msgid "Modified"
-#~ msgstr "已修改"
-
-#~ msgid "Select extraction directory"
-#~ msgstr "选择解压目录"
-
-#~ msgid "Size"
-#~ msgstr "大小"
-
-#~ msgid "TimeStamp"
-#~ msgstr "时间戳"
-
-#~ msgid "Use paths from archive..."
-#~ msgstr "使用存档路径..."
-
-#~ msgid "View Files"
-#~ msgstr "查看文件"

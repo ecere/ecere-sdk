@@ -1,0 +1,39 @@
+# Russian translation for ecere
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-19 02:49+0000\n"
+"PO-Revision-Date: 2014-02-20 00:30-0500\n"
+"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: ru_RU\n"
+
+#: EDASQLite.ec:393
+msgid "BEGIN FAILED!"
+msgstr "НАЧАЛО НЕУДАЧНО!"
+
+#: EDASQLite.ec:404
+msgid "COMMIT FAILED!"
+msgstr "ФИКСИРОВАНИЕ НЕУДАЧНО!"
+
+#: EDASQLite.ec:113
+msgid "EDASQLite: Can't open database (%s): %s\n"
+msgstr "EDASQLite: Не получилось открыть базу данных\n"
+
+#: EDASQLite.ec:894
+msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
+msgstr "ВНИМАНИЕ: АЛЬТЕР-ТАБЛИЦА НЕ РАБОТАЕТ С ПЕРВИЧНЫМ КЛЮЧЕМ ДЛЯ "
+
+#: EDASQLite.ec:855
+msgid "WARNING: Table not yet created for class "
+msgstr "ВНИМАНИЕ: Таблица еще не созданна для класса "

@@ -136,6 +136,28 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "he",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "EDASQLiteCipher.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "EDASQLiteCipher.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

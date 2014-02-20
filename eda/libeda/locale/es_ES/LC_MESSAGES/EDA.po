@@ -7,106 +7,120 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2012-02-20 13:28+0000\n"
-"PO-Revision-Date: 2012-02-21 17:44+0900\n"
-"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"POT-Creation-Date: 2014-02-19 02:48+0000\n"
+"PO-Revision-Date: 2014-02-20 00:27-0500\n"
+"Last-Translator: Juan Sánchez <aldeacity@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2012-02-21 08:32+0000\n"
-"X-Generator: Launchpad (build 14838)\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: es_ES\n"
 
-#: .\src\ers.ec:537
+#: src/idList.ec:230
+msgid "(Click to add a new %s...)"
+msgstr "(Haga click para añadir un nuevo %s...)"
+
+#: src/ers.ec:595
 msgid "All files"
 msgstr "Todos los archivos"
 
-#: .\src\ers.ec:28
-#: .\src\gui.ec:19
-#: .\src\gui.ec:29
+#: src/ers.ec:30 src/gui.ec:20 src/gui.ec:31
 msgid "Arial"
 msgstr "Arial"
 
-#: .\src\ers.ec:534
+#: src/ers.ec:592
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "Hola de cálculo de valores separados por coma (*.csv)"
 
-#: .\src\EDB.ec:253
+#: src/EDB.ec:152
 msgid "Database file (%s) could not be created.\n"
 msgstr "No se pudo crear el archivo de base de datos (%s).\n"
 
-#: .\src\EDB.ec:255
+#: src/EDB.ec:154
 msgid "Database file (%s) could not be opened.\n"
 msgstr "No se pudo abrir el archivo de base de datos (%s).\n"
 
-#: .\src\gui.ec:788
+#: src/gui.ec:812
 msgid "Delete"
 msgstr "Eliminar"
 
-#: .\src\gui.ec:919
+#: src/EDB.ec:299
+msgid "EDB: Error getting Name field from tables list table!\n"
+msgstr ""
+"EDB: ¡Error al obtener Nombre del Campo de la tabla de lista de tablas!\n"
+
+#: src/EDB.ec:304
+msgid "EDB: Error getting tables list table!\n"
+msgstr "EDB: ¡Error al obtener la tabla de lista de tablas!\n"
+
+#: src/gui.ec:946
 msgid "Entry"
 msgstr "Entrada"
 
-#: .\src\EDB.ec:935
+#: src/EDB.ec:863
 msgid "Error reading field"
 msgstr "Error al leer el campo"
 
-#: .\src\ers.ec:590
+#: src/ers.ec:648
 msgid "Export as Spreadsheet (CSV)"
 msgstr "Exportar como hoja de cálculo (CSV)"
 
-#: .\src\EDB.ec:234
+#: src/EDB.ec:133
 msgid "Invalid, corrupted or in use (%s) database file.\n"
 msgstr "Archivo de base de datos no válido, corrupto o en uso (%s).\n"
 
-#: .\src\gui.ec:622
+#: src/gui.ec:649
 msgid "List"
 msgstr "Lista"
 
-#: .\src\gui.ec:667
-#: .\src\gui.ec:777
+#: src/gui.ec:691 src/gui.ec:801
 msgid "List Editor"
 msgstr "Editor de lista"
 
-#: .\src\gui.ec:725
+#: src/gui/TableEditor.ec:25 src/gui.ec:749
 msgid "New"
 msgstr "Nuevo"
 
-#: .\src\ers.ec:15
+#: src/gui/TableEditor.ec:24
+msgid "New|id="
+msgstr "New|id="
+
+#: src/ers.ec:17
 msgid "Please wait while the report is being generated..."
 msgstr "Por favor, espere mientras se genera el informe..."
 
-#: .\src\gui.ec:963
+#: src/gui.ec:990
 msgid "Revert"
 msgstr "Deshacer"
 
-#: .\src\gui.ec:952
+#: src/gui.ec:979
 msgid "Save"
 msgstr "Guardar"
 
-#: .\src\EDB.ec:153
+#: src/DirFilesDataSource.ec:111
 msgid "Status: Feeling groovy!\n"
 msgstr "Estado: ¡Feeling groovy!\n"
 
-#: .\src\EDB.ec:548
+#: src/EDB.ec:475
 msgid "Table (%s) does not exist.\n"
 msgstr "La tabla (%s) no existe.\n"
 
-#: .\src\gui\TableEditor.ec:120
-#: .\src\gui\TableEditor.ec:127
+#: src/gui/TableEditor.ec:352 src/gui/TableEditor.ec:360
 msgid "Table Editor"
 msgstr "Editor de tablas"
 
-#: .\src\EDB.ec:557
+#: src/EDB.ec:484
 msgid "Unable to detect if table exists!\n"
 msgstr "¡Imposible detectar si la tabla existe!\n"
 
-#: .\src\gui\TableEditor.ec:198
-#: .\src\gui\TableEditor.ec:215
+#: src/gui/TableEditor.ec:934 src/gui/TableEditor.ec:953
 msgid "WordList match cannot be found in database."
-msgstr "No se pueden encontrar coincidencias para el WordList en la base de datos."
+msgstr ""
+"No se pueden encontrar coincidencias para el WordList en la base de datos."
 
-#: .\src\gui.ec:780
+#: src/gui.ec:804
 msgid ""
 "You are about to delete an entry.\n"
 "Do you wish to continue?"
@@ -114,7 +128,7 @@ msgstr ""
 "Se dispone a eliminar una entrada.\n"
 "¿Desea continuar?"
 
-#: .\src\gui\TableEditor.ec:130
+#: src/gui/TableEditor.ec:363
 msgid ""
 "You are about to permanently remove an entry.\n"
 "Do you wish to continue?"
@@ -122,16 +136,15 @@ msgstr ""
 "Se dispone a eliminar permanentemente una entrada.\n"
 "¿Desea continuar?"
 
-#: .\src\gui\TableEditor.ec:122
-#: .\src\gui.ec:667
-msgid "You have modified this entry. Would you like to save it before proceeding?"
+#: src/gui/TableEditor.ec:354 src/gui.ec:691
+msgid ""
+"You have modified this entry. Would you like to save it before proceeding?"
 msgstr "Ha modificado esta entrada. ¿Le gustaría guardarla antes de proceder?"
 
-#: .\src\gui.ec:756
+#: src/gui.ec:780 src/gui.ec:786
 msgid "[New]"
 msgstr "[Nuevo]"
 
-#: .\src\idList.ec:183
+#: src/idList.ec:230
 msgid "item"
 msgstr "elemento"
-

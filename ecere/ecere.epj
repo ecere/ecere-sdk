@@ -2403,6 +2403,61 @@ from wherever you obtained them.
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "hu_HU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/hu_HU/LC_MESSAGES/ecere.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "mr_MR",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/mr_MR/LC_MESSAGES/ecere.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "nl_NL",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/nl_NL/LC_MESSAGES/ecere.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "pt_BR",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/pt_BR/LC_MESSAGES/ecere.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/ru_RU/LC_MESSAGES/ecere.mo"
+                     ]
+                  }
+               ]
             }
          ],
          "Configurations" : [

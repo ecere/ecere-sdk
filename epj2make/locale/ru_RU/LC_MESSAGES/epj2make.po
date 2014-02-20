@@ -1,0 +1,164 @@
+# Russian translation for ecere
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-19 02:50+0000\n"
+"PO-Revision-Date: 2014-02-20 01:16-0500\n"
+"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: ru_RU\n"
+
+#: epj2make.ec:236
+msgid "         [-cc <c compiler>]\n"
+msgstr "         [-cc <компайлер С>]\n"
+
+#: epj2make.ec:235
+msgid "         [-cpp <c preprocessor>]\n"
+msgstr "         [-cpp <предпроцессор С>]\n"
+
+#: epj2make.ec:247
+msgid "         [-d <intermediate objects directory>]\n"
+msgstr "         [-d <папка промежуточных объектов>]\n"
+
+#: epj2make.ec:240
+msgid "         [-ear <Ecere Archiver>]\n"
+msgstr "         [-ear <Архиватор Ecere>]\n"
+
+#: epj2make.ec:238
+msgid "         [-ecc <eC compiler>]\n"
+msgstr "         [-cc <компайлер eC>]\n"
+
+#: epj2make.ec:237
+msgid "         [-ecp <eC preprocessor>]\n"
+msgstr "         [-ecp <предпроцессор eC>]\n"
+
+#: epj2make.ec:239
+msgid "         [-ecs <eC symbol generator>]\n"
+msgstr "         [-ecs <генератор символов eC>]\n"
+
+#: epj2make.ec:242
+msgid "         [-i <include dir[;inc dir[...]]>]\n"
+msgstr "         [-i <папка включения[;inc dir[...]]>]\n"
+
+#: epj2make.ec:248
+msgid "         [-includemk <crossplatform.mk path>]\n"
+msgstr "         [-includemk <папка crossplatform.mk>]\n"
+
+#: epj2make.ec:243
+msgid "         [-l <library dir[;lib dir[...]]>]\n"
+msgstr "         [-l <папка библиотеки[;lib dir[...]]>]\n"
+
+#: epj2make.ec:234
+msgid "         [-make <make tool>]\n"
+msgstr "         [-make <инструмент make>]\n"
+
+#: epj2make.ec:245
+msgid "         [-noglobalsettings]\n"
+msgstr "         [-noglobalsettings]\n"
+
+#: epj2make.ec:246
+msgid "         [-noresources]\n"
+msgstr "         [-noresources]\n"
+
+#: epj2make.ec:241
+msgid "      directories:\n"
+msgstr "      директории:\n"
+
+#: epj2make.ec:244
+msgid "      options:\n"
+msgstr "      опции:\n"
+
+#: epj2make.ec:233
+msgid "      toolchain:\n"
+msgstr "      цепь инструментов:\n"
+
+#: epj2make.ec:232
+msgid ""
+"   epj2make [-t <target platform>] [-c <configuration>] [toolchain] "
+"[directories] [options] [-o <output>] <input>\n"
+msgstr ""
+"   epj2make [-t <целевая платформа>] [-c <конфргурация>] [цепь инструментов] "
+"[опции] [-o <результат>] <результат>\n"
+
+#: ../ide/src/project/ProjectNode.ec:2436
+msgid " instead\n"
+msgstr ""
+
+#: ../ide/src/project/ProjectNode.ec:2442
+msgid " to compile instead of "
+msgstr ""
+
+#: ../ide/src/project/ProjectNode.ec:2436
+msgid "Compiling source file "
+msgstr ""
+
+#: epj2make.ec:382
+msgid "Error: Input file (%s) does not exist.\n"
+msgstr "Ошибка: Введенный файл (%s) не существует.\n"
+
+#: epj2make.ec:318
+msgid "Error: Project configuration (%s) was not found.\n"
+msgstr "Ошибка: Настройка проэкта (%s) не найдена.\n"
+
+#: epj2make.ec:378
+msgid "Error: Unable to open project file (%s) due to unknown error.\n"
+msgstr ""
+"Ошибка: Не удалось открыть проектовый файл (%s) из-за неивсестной ошибки.\n"
+
+#: ../ide/src/IDESettings.ec:699
+msgid "GNU Compiler Collection (GCC) / GNU Make"
+msgstr "GNU Compiler Collection (GCC) / GNU Make"
+
+#: ../ide/src/IDESettings.ec:702
+msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
+msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
+
+#: ../ide/src/IDESettings.ec:703
+msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
+msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
+
+#: ../ide/src/IDESettings.ec:705
+msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
+msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
+
+#: ../ide/src/project/ProjectNode.ec:2429
+msgid "No compilation required for header file "
+msgstr ""
+
+#: epj2make.ec:334
+msgid "Notice: Project configuration (%s) will be used.\n"
+msgstr "Уведомление: Настройки проэкта (%s) будут использованы.\n"
+
+#: ../ide/src/IDESettings.ec:701
+msgid "Portable C Compiler / GNU Make"
+msgstr "Portable C Compiler / GNU Make"
+
+#: epj2make.ec:231
+msgid "Syntax:\n"
+msgstr "Формат:\n"
+
+#: ../ide/src/IDESettings.ec:700
+msgid "Tiny C Compiler / GNU Make"
+msgstr "Tiny C Compiler / GNU Make"
+
+#: ../ide/src/project/ProjectNode.ec:2442
+msgid "Unable to locate source file "
+msgstr ""
+
+#: ../ide/src/project/ProjectNode.ec:2442
+msgid "\n"
+msgstr ""
+
+#: epj2make.ec:210
+msgid "invalid option: %s\n"
+msgstr "Неверная опция: %s\n"

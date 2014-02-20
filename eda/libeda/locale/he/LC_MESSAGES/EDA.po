@@ -1,0 +1,148 @@
+# Hebrew translation for ecere
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-19 02:48+0000\n"
+"PO-Revision-Date: 2014-02-20 00:27-0500\n"
+"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: he\n"
+
+#: src/idList.ec:230
+msgid "(Click to add a new %s...)"
+msgstr "(לחץ להוספת קבצים חדשים %s...)"
+
+#: src/ers.ec:595
+msgid "All files"
+msgstr "כל הקבצים"
+
+#: src/ers.ec:30 src/gui.ec:20 src/gui.ec:31
+msgid "Arial"
+msgstr "Arial"
+
+#: src/ers.ec:592
+msgid "Comma Separated Values Spreadsheet (*.csv)"
+msgstr "Comma Separated Values Spreadsheet (*.csv)"
+
+#: src/EDB.ec:152
+msgid "Database file (%s) could not be created.\n"
+msgstr "קובץ מסד הנתונים (%s) לא ניתן ליצירה.\n"
+
+#: src/EDB.ec:154
+msgid "Database file (%s) could not be opened.\n"
+msgstr "קובץ מסד הנתונים (%s) לא ניתן לפתיחה.\n"
+
+#: src/gui.ec:812
+msgid "Delete"
+msgstr "מחק"
+
+#: src/EDB.ec:299
+msgid "EDB: Error getting Name field from tables list table!\n"
+msgstr ""
+
+#: src/EDB.ec:304
+msgid "EDB: Error getting tables list table!\n"
+msgstr ""
+
+#: src/gui.ec:946
+msgid "Entry"
+msgstr "רשומה"
+
+#: src/EDB.ec:863
+msgid "Error reading field"
+msgstr "שגיאה בקריאת הרשומה"
+
+#: src/ers.ec:648
+msgid "Export as Spreadsheet (CSV)"
+msgstr "שמור כגיליון נתונים (CSV)"
+
+#: src/EDB.ec:133
+msgid "Invalid, corrupted or in use (%s) database file.\n"
+msgstr "קובץ מסד נתונים (%s) פסול,  פגום או בשימוש.\n"
+
+#: src/gui.ec:649
+msgid "List"
+msgstr "רשימה"
+
+#: src/gui.ec:691 src/gui.ec:801
+msgid "List Editor"
+msgstr "עורך רשימות"
+
+#: src/gui/TableEditor.ec:25 src/gui.ec:749
+msgid "New"
+msgstr "חדש"
+
+#: src/gui/TableEditor.ec:24
+msgid "New|id="
+msgstr "חדש|id="
+
+#: src/ers.ec:17
+msgid "Please wait while the report is being generated..."
+msgstr "חכה בבקשה בזמן שהדוח נוצר..."
+
+#: src/gui.ec:990
+msgid "Revert"
+msgstr "שחזור"
+
+#: src/gui.ec:979
+msgid "Save"
+msgstr "שמור"
+
+#: src/DirFilesDataSource.ec:111
+msgid "Status: Feeling groovy!\n"
+msgstr "מצב: מרגיש קצבי!\n"
+
+#: src/EDB.ec:475
+msgid "Table (%s) does not exist.\n"
+msgstr "הטבלה (%s) איננה קיימת.\n"
+
+#: src/gui/TableEditor.ec:352 src/gui/TableEditor.ec:360
+msgid "Table Editor"
+msgstr "עורך טבלאות"
+
+#: src/EDB.ec:484
+msgid "Unable to detect if table exists!\n"
+msgstr "לא ניתן להבחין האם הטבלה קיימת!\n"
+
+#: src/gui/TableEditor.ec:934 src/gui/TableEditor.ec:953
+msgid "WordList match cannot be found in database."
+msgstr "התאמה ל WordList לא נמצאה במסד הנתונים."
+
+#: src/gui.ec:804
+msgid ""
+"You are about to delete an entry.\n"
+"Do you wish to continue?"
+msgstr ""
+"אתה מוחק רשומה.\n"
+"המשך?"
+
+#: src/gui/TableEditor.ec:363
+msgid ""
+"You are about to permanently remove an entry.\n"
+"Do you wish to continue?"
+msgstr ""
+"אתה מוחק רשומה באופן קבוע.\n"
+"המשך?"
+
+#: src/gui/TableEditor.ec:354 src/gui.ec:691
+msgid ""
+"You have modified this entry. Would you like to save it before proceeding?"
+msgstr "אתה שיניתה את הרשומה הזו. האם ברצונך לשמור אותה תרם המשכתה?"
+
+#: src/gui.ec:780 src/gui.ec:786
+msgid "[New]"
+msgstr "[חדש]"
+
+#: src/idList.ec:230
+msgid "item"
+msgstr "פריט"

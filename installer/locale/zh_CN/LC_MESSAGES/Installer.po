@@ -1,0 +1,213 @@
+# Chinese (Simplified) translation for ecere
+# Copyright (c) 2012 Rosetta Contributors and Canonical Ltd 2012
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-08-13 19:31+0000\n"
+"PO-Revision-Date: 2014-02-20 01:19-0500\n"
+"Last-Translator: 彭海杰 <Peng.Haijie@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: zh_CN\n"
+
+#: src/installer.ec:711
+msgid " Destination Folder"
+msgstr " 目标文件夹"
+
+#: src/installer.ec:806
+msgid "Avail. Space"
+msgstr "可用空间"
+
+#: src/installer.ec:665
+msgid ""
+"By installing the Ecere SDK, you agree to "
+"the                                         ."
+msgstr "安装Ecere SDK即意味着你同意"
+
+#: src/installer.ec:707 src/installer.ec:1041
+msgid "Cancel"
+msgstr "取消"
+
+#: src/installer.ec:802
+msgid "Choose Components, Locations and Install Options"
+msgstr "选择组件,位置及安装选项"
+
+#: src/installer.ec:789
+msgid ""
+"Choose in which folder to install the ECERE SDK, which features\n"
+"of the SDK to install, as well as where to install program icons."
+msgstr "选择在哪个文件夹里来安装ECERE SDK的哪些特性，以及把程序图标安在哪里"
+
+#: src/installer.ec:1224
+msgid "Close"
+msgstr "关闭"
+
+#: src/installer.ec:803
+msgid "Component"
+msgstr "组件"
+
+#: src/installer.ec:1248
+msgid "Configuring ECERE IDE..."
+msgstr "配置ECERE集成开发环境"
+
+#: src/installer.ec:804
+msgid "Destination Folder"
+msgstr "目标文件夹"
+
+#: src/installer.ec:4
+msgid "Ecere SDK v0.44 -- built on March 13, 2012 "
+msgstr "Ecere SDK v0.44 --编译于2012年3 月13日 "
+
+#: src/installer.ec:543 src/installer.ec:1021
+msgid "Ecere Software Development Kit Setup - v0.44 \"RyÅan-ji\""
+msgstr "Ecere软件开发套件安装 - v0.44 \"RyÅan-ji\""
+
+#: src/installer.ec:1559
+msgid "Finish"
+msgstr "完成"
+
+#: ../ide/src/IDESettings.ec:624
+msgid "GNU Compiler Collection (GCC) / GNU Make"
+msgstr "GNU 编译器套件 (GCC) / GNU Make"
+
+#: ../ide/src/licensing.ec:153
+msgid "I agree"
+msgstr "我同意"
+
+#: ../ide/src/licensing.ec:140
+msgid "I don't agree"
+msgstr "我不同意"
+
+#: src/installer.ec:696 src/installer.ec:1035
+msgid "Install"
+msgstr "安装"
+
+#: src/installer.ec:1229
+msgid "Installation Cancelled"
+msgstr "安装已取消"
+
+#: src/installer.ec:1228
+msgid "Installation Cancelled."
+msgstr "安装已取消"
+
+#: src/installer.ec:1563
+msgid "Installation Complete"
+msgstr "安装完成"
+
+#: src/installer.ec:1562
+msgid "Installation Complete."
+msgstr "安装结束"
+
+#: src/installer.ec:330
+msgid "Installing %s..."
+msgstr "正在安装 %s..."
+
+#: src/installer.ec:1471
+msgid "Installing Desktop Icon..."
+msgstr "正在安装桌面图标..."
+
+#: src/installer.ec:1490
+msgid "Installing Quicklaunch Icon..."
+msgstr "正在安装快速启动图标..."
+
+#: src/installer.ec:1387
+msgid "Installing Start Menu Icons..."
+msgstr "正在安装启动菜单图标..."
+
+#: src/installer.ec:1067
+msgid "Installing the ECERE SDK"
+msgstr "正在安装ECERE SDK"
+
+#: ../ide/src/IDESettings.ec:627
+msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
+msgstr "Microsoft Visual Studio 2005 (8.0)编译器"
+
+#: ../ide/src/IDESettings.ec:628
+msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
+msgstr "Microsoft Visual Studio 2008 (9.0)编译器"
+
+#: ../ide/src/IDESettings.ec:630
+msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
+msgstr "Microsoft Visual Studio 2010 (10.0)编译器"
+
+#: src/installer.ec:1054
+msgid ""
+"Please wait while the Ecere Software Development Kit is being installed."
+msgstr "Ecere软件开发套装正在安装，请等待."
+
+#: ../ide/src/IDESettings.ec:626
+msgid "Portable C Compiler / GNU Make"
+msgstr "可移植C编译器/GNU Make"
+
+#: src/installer.ec:1317
+msgid "Registering uninstaller..."
+msgstr "正在注册卸载程序..."
+
+#: src/installer.ec:805
+msgid "Req. Space"
+msgstr "所需空间"
+
+#: src/installer.ec:1511
+msgid "Resgistering File Types..."
+msgstr "正在注册文件类型..."
+
+#: src/installer.ec:557
+msgid "Select a new location"
+msgstr "选择一个新位置"
+
+#: src/installer.ec:774
+msgid ""
+"Select icons to install, file\n"
+"associations, and system\n"
+"environment modifications:"
+msgstr "选择安装一些图标,文件关联以及修改系统环境:"
+
+#: src/installer.ec:753
+msgid ""
+"Select the default root\n"
+"folder where to install\n"
+"all components:"
+msgstr "选择安装全部组件到默认超级用户文件夹"
+
+#: src/installer.ec:766
+msgid ""
+"Select the optional\n"
+"components you wish\n"
+"to install:\n"
+"\n"
+"You may customize the\n"
+"install location for each\n"
+"of them, or use the default\n"
+"based on the main\n"
+"destination folder."
+msgstr ""
+"选择你想安装的可选组件：\n"
+"您可以定制每个组件的安装路径，或者就使用默认的主文件夹"
+
+#: src/installer.ec:778
+msgid "Space Required: "
+msgstr "需要的空间: "
+
+#: src/installer.ec:1564
+msgid "Thank you for using the Ecere SDK."
+msgstr "感谢您使用Ecere SDK."
+
+#: src/installer.ec:1230
+msgid "The installation was not completed."
+msgstr "安装未完成."
+
+#: ../ide/src/IDESettings.ec:625
+msgid "Tiny C Compiler / GNU Make"
+msgstr "Tiny C 编译器 / GNU Make"
+
+#: src/installer.ec:670
+msgid "terms and conditions"
+msgstr "术语和条款"

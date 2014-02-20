@@ -1,894 +1,766 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: \n"
-"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-20 03:42+0000\n"
+"PO-Revision-Date: 2014-02-19 23:15-0500\n"
+"Last-Translator: 彭海杰 <Peng.Haijie@gmail.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
 "X-Poedit-Basepath: ..\\..\\..\n"
+"Language: zh_CN\n"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:158
-#: .\src\gui\dialogs\ReplaceDialog.ec:350
+#: src/gui/dialogs/ReplaceDialog.ec:158 src/gui/dialogs/ReplaceDialog.ec:355
 msgid "%d occurences found, %d replaced"
 msgstr "找到%d个匹配项, %d已替换"
 
-#: .\src\gui\dialogs\FileDialog.ec:886
+#: src/gui/dialogs/FileDialog.ec:885
 msgid "All Files"
 msgstr "所有文件"
 
-#: .\src\gui\dialogs\FileDialog.ec:351
-#: .\src\gui\dialogs\FileDialog.ec:429
+#: src/gui/dialogs/FileDialog.ec:350 src/gui/dialogs/FileDialog.ec:428
 msgid "All files"
 msgstr "所有文件"
 
-#: .\src\gui\controls\Menu.ec:95
-#, fuzzy
+#: src/gui/controls/Menu.ec:95
 msgid "Alt+"
 msgstr "Alt+"
 
-#: .\src\gui\controls\Button.ec:976
-#: .\src\gui\controls\Button.ec:1007
-#: .\src\gui\controls\Button.ec:1011
-#: .\src\gui\controls\Button.ec:1052
-#: .\src\gui\controls\Button.ec:1054
-#: .\src\gui\controls\Button.ec:1055
-#: .\src\gui\controls\Button.ec:1060
-#: .\src\gui\controls\DropBox.ec:40
-#: .\src\gui\controls\DropBox.ec:50
-#: .\src\gui\controls\DropBox.ec:60
-#: .\src\gui\controls\DropBox.ec:71
-#: .\src\gui\controls\DropBox.ec:85
-#: .\src\gui\controls\DropBox.ec:168
-#: .\src\gui\controls\EditBox.ec:741
-#: .\src\gui\controls\Label.ec:47
-#: .\src\gui\controls\ListBox.ec:907
-#: .\src\gui\controls\ListBox.ec:940
-#: .\src\gui\controls\ListBox.ec:941
-#: .\src\gui\controls\ListBox.ec:945
-#: .\src\gui\controls\ListBox.ec:972
-#: .\src\gui\controls\ListBox.ec:973
-#: .\src\gui\controls\ListBox.ec:974
-#: .\src\gui\controls\ListBox.ec:975
-#: .\src\gui\controls\Picture.ec:19
-#: .\src\gui\controls\Picture.ec:39
-#: .\src\gui\controls\ScrollBar.ec:82
-#: .\src\gui\Window.ec:7918
-#: .\src\gui\Window.ec:7965
-#: .\src\gui\Window.ec:7982
-#: .\src\gui\Window.ec:7993
-#: .\src\gui\Window.ec:8006
-#: .\src\gui\Window.ec:8388
-#: .\src\gui\Window.ec:9086
-#: .\src\gui\Window.ec:9373
+#: src/gui/controls/Button.ec:983 src/gui/controls/Button.ec:1014
+#: src/gui/controls/Button.ec:1018 src/gui/controls/Button.ec:1059
+#: src/gui/controls/Button.ec:1061 src/gui/controls/Button.ec:1062
+#: src/gui/controls/Button.ec:1067 src/gui/controls/DropBox.ec:37
+#: src/gui/controls/DropBox.ec:47 src/gui/controls/DropBox.ec:57
+#: src/gui/controls/DropBox.ec:68 src/gui/controls/DropBox.ec:82
+#: src/gui/controls/DropBox.ec:169 src/gui/controls/EditBox.ec:759
+#: src/gui/controls/Label.ec:47 src/gui/controls/ListBox.ec:984
+#: src/gui/controls/ListBox.ec:1017 src/gui/controls/ListBox.ec:1018
+#: src/gui/controls/ListBox.ec:1022 src/gui/controls/ListBox.ec:1050
+#: src/gui/controls/ListBox.ec:1051 src/gui/controls/ListBox.ec:1052
+#: src/gui/controls/ListBox.ec:1053 src/gui/controls/Picture.ec:19
+#: src/gui/controls/Picture.ec:39 src/gui/controls/ScrollBar.ec:82
+#: src/gui/Window.ec:8112 src/gui/Window.ec:8159 src/gui/Window.ec:8176
+#: src/gui/Window.ec:8187 src/gui/Window.ec:8200 src/gui/Window.ec:8585
+#: src/gui/Window.ec:9287 src/gui/Window.ec:9609
 msgid "Appearance"
 msgstr "外观"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Apr"
 msgstr "四月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "April"
 msgstr "四月"
 
-#: .\src\gui\dialogs\FileDialog.ec:1188
+#: src/gui/dialogs/FileDialog.ec:1187
 msgid "As Type:"
 msgstr "类型(T):"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Aug"
 msgstr "八月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "August"
 msgstr "八月"
 
-#: .\src\gui\controls\Button.ec:856
-#: .\src\gui\controls\Button.ec:909
-#: .\src\gui\controls\Button.ec:932
-#: .\src\gui\controls\Button.ec:956
-#: .\src\gui\controls\Button.ec:972
-#: .\src\gui\controls\Button.ec:1051
-#: .\src\gui\controls\Button.ec:1053
-#: .\src\gui\controls\Button.ec:1056
-#: .\src\gui\controls\Button.ec:1057
-#: .\src\gui\controls\DropBox.ec:131
-#: .\src\gui\controls\DropBox.ec:167
-#: .\src\gui\controls\DropBox.ec:172
-#: .\src\gui\controls\EditBox.ec:716
-#: .\src\gui\controls\EditBox.ec:717
-#: .\src\gui\controls\EditBox.ec:721
-#: .\src\gui\controls\EditBox.ec:730
-#: .\src\gui\controls\EditBox.ec:731
-#: .\src\gui\controls\EditBox.ec:732
-#: .\src\gui\controls\EditBox.ec:733
-#: .\src\gui\controls\EditBox.ec:734
-#: .\src\gui\controls\EditBox.ec:735
-#: .\src\gui\controls\EditBox.ec:736
-#: .\src\gui\controls\EditBox.ec:737
-#: .\src\gui\controls\EditBox.ec:738
-#: .\src\gui\controls\EditBox.ec:739
-#: .\src\gui\controls\EditBox.ec:740
-#: .\src\gui\controls\EditBox.ec:742
-#: .\src\gui\controls\EditBox.ec:743
-#: .\src\gui\controls\EditBox.ec:744
-#: .\src\gui\controls\Label.ec:18
-#: .\src\gui\controls\ListBox.ec:889
-#: .\src\gui\controls\ListBox.ec:928
-#: .\src\gui\controls\ListBox.ec:936
-#: .\src\gui\controls\ListBox.ec:937
-#: .\src\gui\controls\ListBox.ec:938
-#: .\src\gui\controls\ListBox.ec:939
-#: .\src\gui\controls\ListBox.ec:970
-#: .\src\gui\controls\ListBox.ec:971
-#: .\src\gui\controls\ListBox.ec:976
-#: .\src\gui\controls\ListBox.ec:977
-#: .\src\gui\controls\ListBox.ec:981
-#: .\src\gui\controls\ScrollBar.ec:84
-#: .\src\gui\controls\ScrollBar.ec:88
-#: .\src\gui\controls\ScrollBar.ec:99
-#: .\src\gui\controls\ScrollBar.ec:115
-#: .\src\gui\controls\ScrollBar.ec:127
-#: .\src\gui\controls\ScrollBar.ec:128
-#: .\src\gui\controls\ScrollBar.ec:129
-#: .\src\gui\Window.ec:7874
-#: .\src\gui\Window.ec:7937
-#: .\src\gui\Window.ec:8118
-#: .\src\gui\Window.ec:8165
-#: .\src\gui\Window.ec:8172
-#: .\src\gui\Window.ec:8179
-#: .\src\gui\Window.ec:8186
-#: .\src\gui\Window.ec:8193
-#: .\src\gui\Window.ec:8200
-#: .\src\gui\Window.ec:8207
-#: .\src\gui\Window.ec:8662
-#: .\src\gui\Window.ec:8689
-#: .\src\gui\Window.ec:8696
-#: .\src\gui\Window.ec:8940
-#: .\src\gui\Window.ec:8960
-#: .\src\gui\Window.ec:8966
-#: .\src\gui\Window.ec:8973
-#: .\src\gui\Window.ec:8983
-#: .\src\gui\Window.ec:8994
-#: .\src\gui\Window.ec:9006
-#: .\src\gui\Window.ec:9079
-#: .\src\gui\Window.ec:9112
-#: .\src\gui\Window.ec:9128
+#: src/gui/controls/Button.ec:863 src/gui/controls/Button.ec:916
+#: src/gui/controls/Button.ec:939 src/gui/controls/Button.ec:963
+#: src/gui/controls/Button.ec:979 src/gui/controls/Button.ec:1058
+#: src/gui/controls/Button.ec:1060 src/gui/controls/Button.ec:1063
+#: src/gui/controls/Button.ec:1064 src/gui/controls/DropBox.ec:128
+#: src/gui/controls/DropBox.ec:168 src/gui/controls/DropBox.ec:173
+#: src/gui/controls/EditBox.ec:734 src/gui/controls/EditBox.ec:735
+#: src/gui/controls/EditBox.ec:739 src/gui/controls/EditBox.ec:748
+#: src/gui/controls/EditBox.ec:749 src/gui/controls/EditBox.ec:750
+#: src/gui/controls/EditBox.ec:751 src/gui/controls/EditBox.ec:752
+#: src/gui/controls/EditBox.ec:753 src/gui/controls/EditBox.ec:754
+#: src/gui/controls/EditBox.ec:755 src/gui/controls/EditBox.ec:756
+#: src/gui/controls/EditBox.ec:757 src/gui/controls/EditBox.ec:758
+#: src/gui/controls/EditBox.ec:760 src/gui/controls/EditBox.ec:761
+#: src/gui/controls/EditBox.ec:762 src/gui/controls/Label.ec:18
+#: src/gui/controls/ListBox.ec:966 src/gui/controls/ListBox.ec:1005
+#: src/gui/controls/ListBox.ec:1013 src/gui/controls/ListBox.ec:1014
+#: src/gui/controls/ListBox.ec:1015 src/gui/controls/ListBox.ec:1016
+#: src/gui/controls/ListBox.ec:1048 src/gui/controls/ListBox.ec:1049
+#: src/gui/controls/ListBox.ec:1054 src/gui/controls/ListBox.ec:1055
+#: src/gui/controls/ListBox.ec:1059 src/gui/controls/ScrollBar.ec:84
+#: src/gui/controls/ScrollBar.ec:88 src/gui/controls/ScrollBar.ec:99
+#: src/gui/controls/ScrollBar.ec:115 src/gui/controls/ScrollBar.ec:127
+#: src/gui/controls/ScrollBar.ec:128 src/gui/controls/ScrollBar.ec:129
+#: src/gui/Window.ec:8068 src/gui/Window.ec:8131 src/gui/Window.ec:8313
+#: src/gui/Window.ec:8362 src/gui/Window.ec:8369 src/gui/Window.ec:8376
+#: src/gui/Window.ec:8383 src/gui/Window.ec:8390 src/gui/Window.ec:8397
+#: src/gui/Window.ec:8404 src/gui/Window.ec:8860 src/gui/Window.ec:8887
+#: src/gui/Window.ec:8894 src/gui/Window.ec:9138 src/gui/Window.ec:9158
+#: src/gui/Window.ec:9164 src/gui/Window.ec:9171 src/gui/Window.ec:9181
+#: src/gui/Window.ec:9192 src/gui/Window.ec:9199 src/gui/Window.ec:9207
+#: src/gui/Window.ec:9280 src/gui/Window.ec:9313 src/gui/Window.ec:9329
 msgid "Behavior"
 msgstr "行为"
 
-#: .\src\gui\dialogs\ColorPicker.ec:730
-#: .\src\gui\dialogs\FileDialog.ec:1263
-#: .\src\gui\dialogs\FileDialog.ec:1559
-#: .\src\gui\dialogs\FindDialog.ec:73
-#: .\src\gui\dialogs\MessageBox.ec:88
-#: .\src\gui\dialogs\MessageBox.ec:107
-#: .\src\gui\dialogs\ReplaceDialog.ec:364
-#: .\src\gui\dialogs\WindowList.ec:35
-#, fuzzy
+#: src/gui/dialogs/ColorPicker.ec:730 src/gui/dialogs/FileDialog.ec:1262
+#: src/gui/dialogs/FileDialog.ec:1558 src/gui/dialogs/FindDialog.ec:73
+#: src/gui/dialogs/MessageBox.ec:88 src/gui/dialogs/MessageBox.ec:107
+#: src/gui/dialogs/ReplaceDialog.ec:374 src/gui/dialogs/WindowList.ec:35
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "取消"
 
-#: .\src\gui\dialogs\GoToDialog.ec:44
-#: .\src\gui\Window.ec:6614
+#: src/gui/dialogs/GoToDialog.ec:44 src/gui/Window.ec:6774
 msgid "Close"
 msgstr "关闭(C)"
 
-#: .\src\gui\FormDesigner.ec:833
-#, fuzzy
+#: src/gui/FormDesigner.ec:840
 msgid "Control contains code. Delete anyways?"
-msgstr "Control contains code. Delete anyways?"
+msgstr "控件包含代码.仍然删除?"
 
-#: .\src\gui\FormDesigner.ec:849
-#, fuzzy
+#: src/gui/FormDesigner.ec:856
 msgid "Control contains other controls. Delete control and children?"
-msgstr "Control contains other controls. Delete control and children?"
+msgstr "该控件包含其他控件.删除该控件以及包含的控件?"
 
-#: .\src\gui\controls\EditBox.ec:948
-#: .\src\gui\controls\EditBox.ec:3064
+#: src/gui/controls/EditBox.ec:968 src/gui/controls/EditBox.ec:3149
 msgid "Copy\tCtrl+C"
 msgstr "复制(C)\tCtrl+C"
 
-#: .\src\sys\System.ec:111
+#: src/sys/System.ec:118
 msgid "Couldn't write to file"
 msgstr "无法写入文件"
 
-#: .\src\gui\dialogs\FileDialog.ec:1496
+#: src/gui/dialogs/FileDialog.ec:1495
 msgid "Create Directory"
 msgstr "创建目录"
 
-#: .\src\gui\dialogs\FileDialog.ec:1549
-#: .\src\gui\dialogs\FileDialog.ec:1552
+#: src/gui/dialogs/FileDialog.ec:1548 src/gui/dialogs/FileDialog.ec:1551
 msgid "Create Directory Error"
 msgstr "创建目录错误"
 
-#: .\src\gui\dialogs\FileDialog.ec:1078
+#: src/gui/dialogs/FileDialog.ec:1077
 msgid "Create directory?"
 msgstr "创建目录吗?"
 
-#: .\src\gui\controls\Menu.ec:94
-#, fuzzy
+#: src/gui/controls/Menu.ec:94
 msgid "Ctrl+"
 msgstr "Ctrl+"
 
-#: .\src\gfx\Color.ec:698
-#, fuzzy
+#: src/gfx/Color.ec:699
 msgid "Custom"
-msgstr "Custom"
+msgstr "自定义"
 
-#: .\src\gui\controls\EditBox.ec:937
-#: .\src\gui\controls\EditBox.ec:3063
+#: src/gui/controls/EditBox.ec:957 src/gui/controls/EditBox.ec:3148
 msgid "Cut\tCtrl+X"
 msgstr "剪切(X)\tCtrl+X"
 
-#: .\src\gui\controls\DropBox.ec:127
-#: .\src\gui\controls\EditBox.ec:757
-#: .\src\gui\controls\ProgressBar.ec:13
-#: .\src\gui\controls\ProgressBar.ec:14
-#: .\src\gui\Window.ec:9041
+#: src/gui/controls/DropBox.ec:124 src/gui/controls/EditBox.ec:775
+#: src/gui/controls/ProgressBar.ec:13 src/gui/controls/ProgressBar.ec:14
+#: src/gui/Window.ec:9242
 msgid "Data"
 msgstr "数据"
 
-#: .\src\sys\Date.ec:43
+#: src/sys/Date.ec:43
 msgid "Dec"
 msgstr "十二月"
 
-#: .\src\sys\Date.ec:34
+#: src/sys/Date.ec:34
 msgid "December"
 msgstr "十二月"
 
-#: .\src\gfx\Color.ec:735
-#, fuzzy
+#: src/gfx/Color.ec:736
 msgid "Defined"
-msgstr "Defined"
+msgstr "已定义"
 
-#: .\src\gui\controls\EditBox.ec:969
-#: .\src\gui\controls\EditBox.ec:3066
+#: src/gui/controls/EditBox.ec:989 src/gui/controls/EditBox.ec:3151
 msgid "Delete\tDel"
 msgstr "删除(D)\tDel"
 
-#: .\src\gui\FormDesigner.ec:849
-#, fuzzy
+#: src/gui/FormDesigner.ec:856
 msgid "Deleting control with children"
-msgstr "Deleting control with children"
+msgstr "正在删除包含子控件的控件"
 
-#: .\src\gui\FormDesigner.ec:833
-#, fuzzy
+#: src/gui/FormDesigner.ec:840
 msgid "Deleting control with code"
-msgstr "Deleting control with code"
+msgstr "正在删除包含代码的控件"
 
-#: .\src\gui\Window.ec:9098
+#: src/gui/Window.ec:9432
+msgid "Deprecated"
+msgstr "已过时的"
+
+#: src/gui/Window.ec:9299
 msgid "Design"
 msgstr "设计"
 
-#: .\src\gui\dialogs\FindDialog.ec:46
+#: src/gui/dialogs/FindDialog.ec:46
 msgid "Direction"
 msgstr "方向"
 
-#: .\src\gui\dialogs\FileDialog.ec:1549
+#: src/gui/dialogs/FileDialog.ec:1548
 msgid "Directory already exists."
 msgstr "目录已存在."
 
-#: .\src\gui\dialogs\FileDialog.ec:1078
+#: src/gui/dialogs/FileDialog.ec:1077
 msgid "Directory doesn't exist"
 msgstr "目录不存在"
 
-#: .\src\gui\dialogs\FileDialog.ec:310
+#: src/gui/dialogs/FileDialog.ec:309
 msgid "Directory:"
 msgstr "目录:"
 
-#: .\src\gui\Window.ec:8876
-#: .\src\gui\Window.ec:9013
-#: .\src\gui\Window.ec:9048
+#: src/gui/Window.ec:9074 src/gui/Window.ec:9214 src/gui/Window.ec:9249
 msgid "Document"
 msgstr "文档"
 
-#: .\src\gui\dialogs\FindDialog.ec:41
+#: src/gui/dialogs/FindDialog.ec:41
 msgid "Down"
 msgstr "向下(D)"
 
-#: .\src\gui\GuiApplication.ec:96
+#: src/gui/GuiApplication.ec:105
 msgid "Driver/Mode switch failed"
 msgstr "驱动/模式切换失败"
 
-#: .\src\gui\GuiApplication.ec:192
-#, fuzzy
+#: src/gui/GuiApplication.ec:201
 msgid "ECERE Application"
-msgstr "ECERE Application"
+msgstr "ECERE 应用程序"
 
-#: .\src\gui\controls\EditBox.ec:934
+#: src/gui/controls/EditBox.ec:954
 msgid "Edit"
 msgstr "编辑(E)"
 
-#: .\src\gui\dialogs\FileDialog.ec:4
+#: src/gui/dialogs/FileDialog.ec:4
 msgid "Entire Computer"
 msgstr "我的电脑"
 
-#: .\src\gui\GuiApplication.ec:1241
+#: src/gui/GuiApplication.ec:1293
 msgid "Error falling back to previous video mode.\n"
 msgstr "切换回先前的视频模式出现致命错误.\n"
 
-#: .\src\gui\Window.ec:7161
-#: .\src\gui\Window.ec:7209
+#: src/gui/Window.ec:7336 src/gui/Window.ec:7384
 msgid "Error writing file"
 msgstr "写入文件错误"
 
-#: .\src\sys\File.ec:272
-#, fuzzy
+#: src/sys/File.ec:318
+msgctxt "Export"
 msgid "Exp"
-msgstr "Exp"
+msgstr "导出"
 
-#: .\src\gui\controls\CalendarControl.ec:10
+#: src/gui/controls/CalendarControl.ec:10
 msgctxt "Friday"
 msgid "F"
 msgstr "五"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Feb"
 msgstr "二月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "February"
 msgstr "二月"
 
-#: .\src\gui\dialogs\FileDialog.ec:1065
+#: src/gui/dialogs/FileDialog.ec:1064
 msgid "File Already Exists"
 msgstr "文件已存在"
 
-#: .\src\gui\dialogs\FileDialog.ec:310
-#: .\src\gui\dialogs\FileDialog.ec:1448
+#: src/gui/dialogs/FileDialog.ec:309 src/gui/dialogs/FileDialog.ec:1447
 msgid "File Name:"
 msgstr "文件名:"
 
-#: .\src\sys\System.ec:109
+#: src/sys/System.ec:116
 msgid "File not found"
 msgstr "文件未找到"
 
-#: .\src\gui\dialogs\FileDialog.ec:1170
+#: src/gui/dialogs/FileDialog.ec:1169
 msgid "Filter:"
 msgstr "过滤器(R):"
 
-#: .\src\gui\dialogs\FindDialog.ec:7
-#: .\src\gui\dialogs\FindDialog.ec:61
+#: src/gui/dialogs/FindDialog.ec:7 src/gui/dialogs/FindDialog.ec:61
 msgid "Find"
 msgstr "查找"
 
-#: .\src\gui\dialogs\FindDialog.ec:51
-#: .\src\gui\dialogs\ReplaceDialog.ec:252
+#: src/gui/dialogs/FindDialog.ec:51 src/gui/dialogs/ReplaceDialog.ec:252
 msgid "Find Next"
 msgstr "查找下一个(F)"
 
-#: .\src\gui\controls\EditBox.ec:1028
+#: src/gui/controls/EditBox.ec:1048
 msgid "Find Next\tF3"
 msgstr "查找下一个(N)\tF3"
 
-#: .\src\gui\controls\EditBox.ec:1015
+#: src/gui/controls/EditBox.ec:1035
 msgid "Find Previous\tShift-F3"
 msgstr "查找上一个(E)\tShift-F3"
 
-#: .\src\gui\dialogs\FindDialog.ec:85
-#: .\src\gui\dialogs\ReplaceDialog.ec:369
+#: src/gui/dialogs/FindDialog.ec:85 src/gui/dialogs/ReplaceDialog.ec:379
 msgid "Find what:"
 msgstr "查找内容(N):"
 
-#: .\src\gui\controls\EditBox.ec:1041
+#: src/gui/controls/EditBox.ec:1061
 msgid "Find...\tCtrl+F"
 msgstr "查找(F)...\tCtrl+F"
 
-#: .\src\sys\Date.ec:38
+#: src/sys/Date.ec:38
 msgid "Fri"
 msgstr "星期五"
 
-#: .\src\sys\Date.ec:29
+#: src/sys/Date.ec:29
 msgid "Friday"
 msgstr "星期五"
 
-#: .\src\gui\controls\EditBox.ec:672
-#: .\src\gui\dialogs\GoToDialog.ec:29
-#: .\src\gui\dialogs\GoToDialog.ec:35
+#: src/gui/controls/EditBox.ec:690 src/gui/dialogs/GoToDialog.ec:29
+#: src/gui/dialogs/GoToDialog.ec:35
 msgid "Go To"
 msgstr "跳至"
 
-#: .\src\gui\dialogs\GoToDialog.ec:7
+#: src/gui/dialogs/GoToDialog.ec:7
 msgid "Go To Line..."
 msgstr "跳至行..."
 
-#: .\src\gui\controls\EditBox.ec:1102
+#: src/gui/controls/EditBox.ec:1122
 msgid "Go To...\tCtrl+G"
 msgstr "跳至(G)...\tCtrl+G"
 
-#: .\src\gui\GuiApplication.ec:92
+#: src/gui/GuiApplication.ec:101
 msgid "Graphics driver not supported by any user interface system"
 msgstr "图形驱动不支持任何用户界面"
 
-#: .\src\sys\System.ec:107
+#: src/sys/System.ec:114
 msgid "Identic string identifier already exists"
 msgstr "已存在相同的字符串标识符"
 
-#: .\src\gfx\BitmapResource.ec:14
+#: src/gfx/BitmapResource.ec:14
 msgid "Image"
 msgstr "图片"
 
-#: .\src\gfx\BitmapResource.ec:8
+#: src/gfx/BitmapResource.ec:8
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "图片文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 
-#: .\src\sys\File.ec:248
-#, fuzzy
+#: src/sys/File.ec:294
+msgctxt "Import"
 msgid "Imp"
-msgstr "Imp"
+msgstr "导入"
 
-#: .\src\sys\System.ec:106
+#: src/sys/System.ec:113
 msgid "Inexistant string identifier specified"
 msgstr "不存在指定的字符串标识符"
 
-#: .\src\gui\controls\EditBox.ec:1115
+#: src/gui/controls/EditBox.ec:1135
 msgid "Insert Tabs"
 msgstr "插入制表符(I)"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Jan"
 msgstr "一月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "January"
 msgstr "一月"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Jul"
 msgstr "七月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "July"
 msgstr "七月"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Jun"
 msgstr "六月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "June"
 msgstr "六月"
 
-#: .\src\gui\Window.ec:7661
-#: .\src\gui\Window.ec:8031
-#: .\src\gui\Window.ec:8038
-#: .\src\gui\Window.ec:8106
-#: .\src\gui\Window.ec:8445
-#: .\src\gui\Window.ec:8481
-#: .\src\gui\Window.ec:8518
-#: .\src\gui\Window.ec:8550
-#: .\src\gui\Window.ec:8617
-#: .\src\gui\Window.ec:9144
+#: src/gui/Window.ec:7842 src/gui/Window.ec:8226 src/gui/Window.ec:8233
+#: src/gui/Window.ec:8301 src/gui/Window.ec:8642 src/gui/Window.ec:8678
+#: src/gui/Window.ec:8715 src/gui/Window.ec:8748 src/gui/Window.ec:8815
+#: src/gui/Window.ec:9345
 msgid "Layout"
 msgstr "布局"
 
-#: .\src\gui\dialogs\GoToDialog.ec:50
+#: src/gui/dialogs/GoToDialog.ec:50
 msgid "Line number:"
 msgstr "行号:"
 
-#: .\src\gui\dialogs\FileDialog.ec:1274
+#: src/gui/dialogs/FileDialog.ec:1273
 msgid "Look in:"
 msgstr "浏览(L):"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: src/gui/controls/CalendarControl.ec:9
 msgctxt "Monday"
 msgid "M"
 msgstr "一"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Mar"
 msgstr "三月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "March"
 msgstr "三月"
 
-#: .\src\gui\dialogs\FindDialog.ec:31
-#: .\src\gui\dialogs\ReplaceDialog.ec:229
+#: src/gui/dialogs/FindDialog.ec:31 src/gui/dialogs/ReplaceDialog.ec:229
 msgid "Match case"
 msgstr "区分大小写(C)"
 
-#: .\src\gui\Window.ec:6603
+#: src/gui/Window.ec:6763
 msgid "Maximize"
 msgstr "最大化(X)"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgctxt "LongMonthNames"
 msgid "May"
 msgstr "五月"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgctxt "ShortMonthNames"
 msgid "May"
 msgstr "五月"
 
-#: .\src\sys\System.ec:105
+#: src/sys/System.ec:112
 msgid "Memory allocation failed"
 msgstr "内存分配失败"
 
-#: .\src\gui\dialogs\FileDialog.ec:5
-#, fuzzy
+#: src/gui/dialogs/FileDialog.ec:5
 msgid "Microsoft Windows Network"
-msgstr "Microsoft Windows Network"
+msgstr "Microsoft Windows 网络连接"
 
-#: .\src\gui\Window.ec:6598
+#: src/gui/Window.ec:6758
 msgid "Minimize"
 msgstr "最小化(N)"
 
-#: .\src\sys\Date.ec:38
+#: src/sys/Date.ec:38
 msgid "Mon"
 msgstr "星期一"
 
-#: .\src\sys\Date.ec:29
+#: src/sys/Date.ec:29
 msgid "Monday"
 msgstr "星期一"
 
-#: .\src\gui\Window.ec:6588
+#: src/gui/Window.ec:6748
 msgid "Move"
 msgstr "移动(M)"
 
-#: .\src\gui\dialogs\FileDialog.ec:1409
-#: .\src\gui\dialogs\FileDialog.ec:1566
+#: src/gui/dialogs/FileDialog.ec:1408 src/gui/dialogs/FileDialog.ec:1565
 msgid "Name"
 msgstr "名称"
 
-#: .\src\gui\dialogs\FileDialog.ec:1567
+#: src/gui/dialogs/FileDialog.ec:1566
 msgid "New Directory"
 msgstr "新建文件夹"
 
-#: .\src\gui\dialogs\MessageBox.ec:75
-#: .\src\gui\dialogs\MessageBox.ec:101
+#: src/gui/dialogs/MessageBox.ec:75 src/gui/dialogs/MessageBox.ec:101
 msgid "No"
 msgstr "否(N)"
 
-#: .\src\sys\System.ec:104
-#: .\src\gui\GuiApplication.ec:91
+#: src/sys/System.ec:111 src/gui/GuiApplication.ec:100
 msgid "No error"
 msgstr "没有错误"
 
-#: .\src\gui\dialogs\GoToDialog.ec:35
+#: src/gui/dialogs/GoToDialog.ec:35
 msgid "No such line."
 msgstr "没有这行."
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Nov"
 msgstr "十一月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "November"
 msgstr "十一月"
 
-#: .\src\gui\dialogs\ColorPicker.ec:721
-#: .\src\gui\dialogs\FileDialog.ec:295
-#: .\src\gui\dialogs\FileDialog.ec:1226
-#: .\src\gui\dialogs\FileDialog.ec:1535
-#: .\src\gui\dialogs\MessageBox.ec:94
-#: .\src\gui\dialogs\MessageBox.ec:120
-#: .\src\gui\dialogs\WindowList.ec:24
-#, fuzzy
+#: src/gui/dialogs/ColorPicker.ec:721 src/gui/dialogs/FileDialog.ec:294
+#: src/gui/dialogs/FileDialog.ec:1225 src/gui/dialogs/FileDialog.ec:1534
+#: src/gui/dialogs/MessageBox.ec:94 src/gui/dialogs/MessageBox.ec:120
+#: src/gui/dialogs/WindowList.ec:24
 msgid "OK"
-msgstr "OK"
+msgstr "确定"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Oct"
 msgstr "十月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "October"
 msgstr "十月"
 
-#: .\src\gui\dialogs\FileDialog.ec:1256
+#: src/gui/dialogs/FileDialog.ec:1255
 msgid "Open"
 msgstr "打开(O)"
 
-#: .\src\gui\controls\EditBox.ec:958
-#: .\src\gui\controls\EditBox.ec:3065
+#: src/gui/controls/EditBox.ec:978 src/gui/controls/EditBox.ec:3150
 msgid "Paste\tCtrl+V"
 msgstr "粘贴(P)\tCtrl+V"
 
-#: .\src\gui\dialogs\FileDialog.ec:1552
+#: src/gui/dialogs/FileDialog.ec:1551
 msgid "Please enter a name."
 msgstr "请输入名称."
 
-#: .\src\gui\controls\DropBox.ec:98
-#: .\src\gui\controls\ListBox.ec:890
-#, fuzzy
+#: src/gui/controls/DropBox.ec:95 src/gui/controls/ListBox.ec:967
 msgid "Private"
-msgstr "Private"
+msgstr "私有"
 
-#: .\src\gui\controls\EditBox.ec:1003
+#: src/gui/controls/EditBox.ec:1023
 msgid "Redo\tCtrl+Y"
 msgstr "重做(Y)\tCtrl+Y"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:14
-#: .\src\gui\dialogs\ReplaceDialog.ec:258
+#: src/gui/dialogs/ReplaceDialog.ec:14 src/gui/dialogs/ReplaceDialog.ec:258
 msgid "Replace"
 msgstr "替换"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:264
+#: src/gui/dialogs/ReplaceDialog.ec:264
 msgid "Replace All"
 msgstr "替换全部(A)"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:247
+#: src/gui/dialogs/ReplaceDialog.ec:247
 msgid "Replace In"
 msgstr "替换"
 
-#: .\src\gui\dialogs\FileDialog.ec:1065
+#: src/gui/dialogs/FileDialog.ec:1064
 msgid "Replace existing file?"
 msgstr "替换已存在文件吗?"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:213
+#: src/gui/dialogs/ReplaceDialog.ec:213
 msgid "Replace with:"
 msgstr "替换为(P):"
 
-#: .\src\gui\controls\EditBox.ec:1068
+#: src/gui/controls/EditBox.ec:1088
 msgid "Replace...\tCtrl+R"
 msgstr "替换(R)...\tCtrl+R"
 
-#: .\src\gui\Window.ec:6583
+#: src/gui/Window.ec:6743
 msgid "Restore"
 msgstr "恢复(R)"
 
-#: .\src\gui\controls\CalendarControl.ec:11
+#: src/gui/controls/CalendarControl.ec:11
 msgctxt "Saturday"
 msgid "S"
 msgstr "六"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: src/gui/controls/CalendarControl.ec:9
 msgctxt "Sunday"
 msgid "S"
 msgstr "日"
 
-#: .\src\sys\Date.ec:39
+#: src/sys/Date.ec:39
 msgid "Sat"
 msgstr "星期六"
 
-#: .\src\sys\Date.ec:30
+#: src/sys/Date.ec:30
 msgid "Saturday"
 msgstr "星期六"
 
-#: .\src\gui\Window.ec:7191
+#: src/gui/Window.ec:7366
 msgid "Save As"
 msgstr "另存为"
 
-#: .\src\gui\controls\Picture.ec:72
-#, fuzzy
+#: src/gui/controls/Picture.ec:72
 msgid "Save As..."
-msgstr "Save As..."
+msgstr "另存为..."
 
-#: .\src\gui\Window.ec:7161
-#: .\src\gui\Window.ec:7209
+#: src/gui/Window.ec:7336 src/gui/Window.ec:7384
 msgid "Save as a different file?"
 msgstr "保存至另外一个文件?"
 
-#: .\src\gui\Window.ec:7077
+#: src/gui/Window.ec:7249
 msgid "Save changes to %s?"
 msgstr "保存更改至%s?"
 
-#: .\src\gui\Window.ec:7079
+#: src/gui/Window.ec:7251
 msgid "Save changes to Untitled %d?"
 msgstr "保存更改至%d?"
 
-#: .\src\gui\controls\Picture.ec:71
-#, fuzzy
+#: src/gui/controls/Picture.ec:71
 msgid "Save\tCtrl+S"
-msgstr "Save\tCtrl+S"
+msgstr "保存\tCtrl+S"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:159
-#: .\src\gui\dialogs\ReplaceDialog.ec:162
-#: .\src\gui\dialogs\ReplaceDialog.ec:341
-#: .\src\gui\dialogs\ReplaceDialog.ec:351
+#: src/gui/dialogs/ReplaceDialog.ec:159 src/gui/dialogs/ReplaceDialog.ec:162
+#: src/gui/dialogs/ReplaceDialog.ec:346 src/gui/dialogs/ReplaceDialog.ec:356
 msgid "Search Finished"
 msgstr "搜索完成"
 
-#: .\src\gui\dialogs\FindDialog.ec:61
-#: .\src\gui\dialogs\ReplaceDialog.ec:162
-#: .\src\gui\dialogs\ReplaceDialog.ec:341
+#: src/gui/dialogs/FindDialog.ec:61 src/gui/dialogs/ReplaceDialog.ec:162
+#: src/gui/dialogs/ReplaceDialog.ec:346
 msgid "Search string not found."
 msgstr "搜索字符串未找到."
 
-#: .\src\gui\dialogs\FileDialog.ec:277
+#: src/gui/dialogs/FileDialog.ec:276
 msgid "Select"
 msgstr "选择"
 
-#: .\src\gui\controls\EditBox.ec:981
-#: .\src\gui\controls\EditBox.ec:3068
+#: src/gui/controls/EditBox.ec:1001 src/gui/controls/EditBox.ec:3153
 msgid "Select All\tCtrl+A"
 msgstr "全选(A)\tCtrl+A"
 
-#: .\src\gfx\Color.ec:690
-#, fuzzy
+#: src/gfx/Color.ec:691
 msgid "Select Color"
-msgstr "Select Color"
+msgstr "选择颜色"
 
-#: .\src\sys\File.ec:166
-#, fuzzy
+#: src/sys/File.ec:212
 msgid "Select File"
-msgstr "Select File"
+msgstr "选择文件"
 
-#: .\src\gfx\BitmapResource.ec:17
+#: src/gfx/BitmapResource.ec:17
 msgid "Select Image"
 msgstr "选择图片"
 
-#: .\src\gui\dialogs\WindowList.ec:41
+#: src/gui/dialogs/WindowList.ec:41
 msgid "Select a Window to Activate..."
 msgstr "选择一个激活窗口..."
 
-#: .\src\gui\dialogs\ColorPicker.ec:240
+#: src/gui/dialogs/ColorPicker.ec:240
 msgid "Select a color..."
 msgstr "选择一个颜色..."
 
-#: .\src\gui\controls\PathBox.ec:20
-#: .\src\gui\dialogs\FileDialog.ec:245
+#: src/gui/controls/PathBox.ec:42 src/gui/dialogs/FileDialog.ec:245
 msgid "Select a file..."
 msgstr "选择一个文件..."
 
-#: .\src\gui\controls\PathBox.ec:52
-#, fuzzy
+#: src/gui/controls/PathBox.ec:84
 msgid "Select a folder..."
-msgstr "选择一个文件..."
+msgstr "选择文件夹..."
 
-#: .\src\gui\controls\PathBox.ec:316
-#, fuzzy
+#: src/gui/controls/PathBox.ec:367
 msgid "Select directory"
-msgstr "创建目录吗?"
+msgstr "选择目录"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:235
+#: src/gui/dialogs/ReplaceDialog.ec:235
 msgid "Selection"
 msgstr "已选中内容(S)"
 
-#: .\src\sys\Date.ec:42
+#: src/sys/Date.ec:42
 msgid "Sep"
 msgstr "九月"
 
-#: .\src\sys\Date.ec:33
+#: src/sys/Date.ec:33
 msgid "September"
 msgstr "九月"
 
-#: .\src\sys\System.ec:108
+#: src/sys/System.ec:115
 msgid "Shared library loading failed"
 msgstr "共享库加载失败"
 
-#: .\src\gui\controls\Menu.ec:96
-#, fuzzy
+#: src/gui/controls/Menu.ec:96
 msgid "Shift+"
 msgstr "Shift+"
 
-#: .\src\gui\dialogs\FileDialog.ec:1411
-#: .\src\gui\Window.ec:6593
+#: src/gui/dialogs/FileDialog.ec:1410 src/gui/Window.ec:6753
 msgid "Size"
 msgstr "大小(S)"
 
-#: .\src\gui\Window.ec:6608
+#: src/gui/Window.ec:6768
 msgid "Stay On Top"
 msgstr "置顶(T)"
 
-#: .\src\sys\Date.ec:38
+#: src/sys/Date.ec:38
 msgid "Sun"
 msgstr "星期日"
 
-#: .\src\sys\Date.ec:29
+#: src/sys/Date.ec:29
 msgid "Sunday"
 msgstr "星期日"
 
-#: .\src\gfx\Color.ec:755
-#, fuzzy
+#: src/gfx/Color.ec:756
 msgid "System"
-msgstr "System"
+msgstr "系统"
 
-#: .\src\gui\controls\CalendarControl.ec:10
+#: src/gui/controls/CalendarControl.ec:10
 msgctxt "Thursday"
 msgid "T"
 msgstr "四"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: src/gui/controls/CalendarControl.ec:9
 msgctxt "Tuesday"
 msgid "T"
 msgstr "二"
 
-#: .\src\gui\skins\TVisionSkin.ec:37
-#: .\src\gui\skins\TVisionSkin.ec:43
-#: .\src\gui\skins\WindowsSkin.ec:125
-#: .\src\gui\skins\WindowsSkin.ec:130
-#, fuzzy
+#: src/gui/skins/TVisionSkin.ec:37 src/gui/skins/TVisionSkin.ec:43
+#: src/gui/skins/WindowsSkin.ec:142 src/gui/skins/WindowsSkin.ec:151
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: .\src\sys\Date.ec:38
+#: src/sys/Date.ec:38
 msgid "Thu"
 msgstr "星期四"
 
-#: .\src\sys\Date.ec:29
+#: src/sys/Date.ec:29
 msgid "Thursday"
 msgstr "星期四"
 
-#: .\src\sys\Date.ec:38
+#: src/sys/Date.ec:38
 msgid "Tue"
 msgstr "星期二"
 
-#: .\src\sys\Date.ec:29
+#: src/sys/Date.ec:29
 msgid "Tuesday"
 msgstr "星期二"
 
-#: .\src\gui\dialogs\FileDialog.ec:1410
+#: src/gui/dialogs/FileDialog.ec:1409
 msgid "Type"
 msgstr "类型"
 
-#: .\src\gui\controls\EditBox.ec:992
+#: src/gui/controls/EditBox.ec:1012
 msgid "Undo\tCtrl+Z"
 msgstr "撤销(U)\tCtrl+Z"
 
-#: .\src\gui\dialogs\FindDialog.ec:36
+#: src/gui/dialogs/FindDialog.ec:36
 msgid "Up"
 msgstr "向上(U)"
 
-#: .\src\gui\controls\CalendarControl.ec:50
-#: .\src\gui\controls\CalendarControl.ec:75
-#: .\src\gui\controls\CalendarControl.ec:96
-#: .\src\gui\controls\CalendarControl.ec:117
-#, fuzzy
+#: src/gui/controls/CalendarControl.ec:50
+#: src/gui/controls/CalendarControl.ec:75
+#: src/gui/controls/CalendarControl.ec:96
+#: src/gui/controls/CalendarControl.ec:117
 msgid "Verdana"
 msgstr "Verdana"
 
-#: .\src\gui\controls\CalendarControl.ec:9
+#: src/gui/controls/CalendarControl.ec:9
 msgctxt "Wednesday"
 msgid "W"
 msgstr "三"
 
-#: .\src\sys\Date.ec:38
+#: src/sys/Date.ec:38
 msgid "Wed"
 msgstr "星期三"
 
-#: .\src\sys\Date.ec:29
+#: src/sys/Date.ec:29
 msgid "Wednesday"
 msgstr "星期三"
 
-#: .\src\gui\dialogs\ReplaceDialog.ec:241
+#: src/gui/dialogs/ReplaceDialog.ec:241
 msgid "Whole File"
 msgstr "整个文件(H)"
 
-#: .\src\gui\dialogs\FindDialog.ec:26
-#: .\src\gui\dialogs\ReplaceDialog.ec:223
+#: src/gui/dialogs/FindDialog.ec:26 src/gui/dialogs/ReplaceDialog.ec:223
 msgid "Whole word only"
 msgstr "全字匹配(W)"
 
-#: .\src\gui\Window.ec:8045
-#: .\src\gui\Window.ec:8066
-#: .\src\gui\Window.ec:8087
-#: .\src\gui\Window.ec:8236
-#: .\src\gui\Window.ec:8243
-#: .\src\gui\Window.ec:8279
-#: .\src\gui\Window.ec:8300
-#: .\src\gui\Window.ec:8353
-#: .\src\gui\Window.ec:8883
-#: .\src\gui\Window.ec:8890
-#: .\src\gui\Window.ec:8915
-#: .\src\gui\Window.ec:9072
+#: src/gui/Window.ec:8240 src/gui/Window.ec:8261 src/gui/Window.ec:8282
+#: src/gui/Window.ec:8433 src/gui/Window.ec:8440 src/gui/Window.ec:8476
+#: src/gui/Window.ec:8497 src/gui/Window.ec:8550 src/gui/Window.ec:9081
+#: src/gui/Window.ec:9088 src/gui/Window.ec:9113 src/gui/Window.ec:9273
 msgid "Window Style"
 msgstr "窗体样式"
 
-#: .\src\gui\GuiApplication.ec:93
+#: src/gui/GuiApplication.ec:102
 msgid "Window creation failed"
 msgstr "窗体创建失败"
 
-#: .\src\gui\GuiApplication.ec:94
+#: src/gui/GuiApplication.ec:103
 msgid "Window graphics loading failed"
 msgstr "窗体图像加载失败"
 
-#: .\src\gui\dialogs\WindowList.ec:9
+#: src/gui/dialogs/WindowList.ec:9
 msgid "Windows"
 msgstr "窗口"
 
-#: .\src\gui\dialogs\MessageBox.ec:81
-#: .\src\gui\dialogs\MessageBox.ec:113
+#: src/gui/dialogs/MessageBox.ec:81 src/gui/dialogs/MessageBox.ec:113
 msgid "Yes"
 msgstr "是(Y)"
 
-#: .\src\sys\System.ec:427
+#: src/sys/System.ec:355
 msgid ""
 "\n"
 "\n"
@@ -898,118 +770,18 @@ msgstr ""
 "\n"
 "你想查看错误日志吗?"
 
-#: .\src\sys\Date.ec:121
-#: .\src\sys\Time.ec:781
+#: src/sys/Date.ec:121 src/sys/Time.ec:790
 msgid "now"
 msgstr "现在"
 
-#: .\src\sys\Date.ec:120
-#: .\src\sys\Time.ec:780
+#: src/sys/Date.ec:120 src/sys/Time.ec:789
 msgid "today"
 msgstr "今日"
 
-#: .\src\sys\Date.ec:122
-#: .\src\sys\Date.ec:126
-#: .\src\sys\Time.ec:783
+#: src/sys/Date.ec:122 src/sys/Date.ec:126 src/sys/Time.ec:792
 msgid "tomorrow"
 msgstr "明天"
 
-#: .\src\sys\Date.ec:123
-#: .\src\sys\Date.ec:131
-#: .\src\sys\Time.ec:790
+#: src/sys/Date.ec:123 src/sys/Date.ec:131 src/sys/Time.ec:799
 msgid "yesterday"
 msgstr "昨天"
-
-#, fuzzy
-#~ msgid "error: Redefinition of class %s\n"
-#~ msgstr "error: Redefinition of class %s\n"
-
-#~ msgid " - Logging Errors...\n"
-#~ msgstr " - 写日志错...\n"
-
-#~ msgid "%s - Error Log"
-#~ msgstr "%s -错误日志"
-
-#~ msgid "%s - Fatal Error"
-#~ msgstr "%s -致命错误"
-
-#~ msgid "Access Violation Reading from 0x%08X"
-#~ msgstr "无权读取0x%08X"
-
-#~ msgid "Access Violation Writing to 0x%08X"
-#~ msgstr "无权写入0x%08X"
-
-#~ msgid "Array Bounds Exceeded"
-#~ msgstr "超出数组范围"
-
-#~ msgid "Breakpoint Encountered"
-#~ msgstr "遇到断点"
-
-#~ msgid "Data Type Misalignment"
-#~ msgstr "数据类型不一致"
-
-#~ msgid "Error %d creating a thread\n"
-#~ msgstr "创建线程时发生错误%d\n"
-
-#~ msgid "FileName"
-#~ msgstr "文件名(F):"
-
-#~ msgid "FileSize"
-#~ msgstr "大小"
-
-#~ msgid "Floating-Point Denormal Operand"
-#~ msgstr "浮点型非正规操作数"
-
-#~ msgid "Floating-Point Divide by Zero"
-#~ msgstr "浮点型除以零法"
-
-#~ msgid "Floating-Point Inexact Result"
-#~ msgstr "浮点型不精确结果"
-
-#~ msgid "Floating-Point Invalid Operation"
-#~ msgstr "浮点型无效操作"
-
-#~ msgid "Floating-Point Overflow"
-#~ msgstr "浮点型溢出"
-
-#~ msgid "Floating-Point Stack Check"
-#~ msgstr "浮点型栈检查"
-
-#~ msgid "Floating-Point Underflow"
-#~ msgstr "浮点型下溢"
-
-#~ msgid "Illegal Instruction"
-#~ msgstr "非法指令"
-
-#~ msgid "In Page Error"
-#~ msgstr "页面错误"
-
-#~ msgid "Inserting item already in list\n"
-#~ msgstr "插入项已存在\n"
-
-#~ msgid "Integer Divide by Zero"
-#~ msgstr "整数除以零"
-
-#~ msgid "Integer Overflow"
-#~ msgstr "整型溢出"
-
-#~ msgid "Invalid Disposition"
-#~ msgstr "无效处理"
-
-#~ msgid "Non Continuable Exception"
-#~ msgstr "非可连续异常"
-
-#~ msgid "Removing item not found in list\n"
-#~ msgstr "删除项在列表中未找到\n"
-
-#~ msgid "Single Step Exception"
-#~ msgstr "单步异常"
-
-#~ msgid "System Error [%d]: %s (%s).\n"
-#~ msgstr "系统错误 [%d]: %s (%s).\n"
-
-#~ msgid "System Error [%d]: %s.\n"
-#~ msgstr "系统错误[%d]: %s.\n"
-
-#~ msgid "Unallowed Instruction"
-#~ msgstr "指令不允许"

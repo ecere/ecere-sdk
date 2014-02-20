@@ -352,6 +352,39 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "pt_BR",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/pt_BR/LC_MESSAGES/ide.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/ru_RU/LC_MESSAGES/ide.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "vi_VI",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "locale/vi_VI/LC_MESSAGES/ide.mo"
+                     ]
+                  }
+               ]
             }
          ]
       },

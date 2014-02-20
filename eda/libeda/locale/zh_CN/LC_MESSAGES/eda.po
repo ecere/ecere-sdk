@@ -7,106 +7,119 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2012-02-19 19:00+0900\n"
-"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"POT-Creation-Date: 2014-02-19 02:48+0000\n"
+"PO-Revision-Date: 2014-02-20 00:28-0500\n"
+"Last-Translator: 彭海杰 <Peng.Haijie@gmail.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
 "X-Poedit-Basepath: ..\\..\\..\n"
+"Language: zh_CN\n"
 
-#: .\src\ers.ec:537
+#: src/idList.ec:230
+msgid "(Click to add a new %s...)"
+msgstr "(点击开始添加一个新 %s...)"
+
+#: src/ers.ec:595
 msgid "All files"
 msgstr "所有文件(*.*)"
 
-#: .\src\ers.ec:28
-#: .\src\gui.ec:19
-#: .\src\gui.ec:29
-#, fuzzy
+#: src/ers.ec:30 src/gui.ec:20 src/gui.ec:31
 msgid "Arial"
 msgstr "Arial"
 
-#: .\src\ers.ec:534
+#: src/ers.ec:592
 msgid "Comma Separated Values Spreadsheet (*.csv)"
 msgstr "CSV(逗号分隔) (*.csv)"
 
-#: .\src\EDB.ec:253
+#: src/EDB.ec:152
 msgid "Database file (%s) could not be created.\n"
 msgstr "数据库文件(%s)不能被创建.\n"
 
-#: .\src\EDB.ec:255
+#: src/EDB.ec:154
 msgid "Database file (%s) could not be opened.\n"
 msgstr "数据库文件(%s)不能被打开.\n"
 
-#: .\src\gui.ec:788
+#: src/gui.ec:812
 msgid "Delete"
 msgstr "删除(D)"
 
-#: .\src\gui.ec:919
+#: src/EDB.ec:299
+msgid "EDB: Error getting Name field from tables list table!\n"
+msgstr ""
+
+#: src/EDB.ec:304
+msgid "EDB: Error getting tables list table!\n"
+msgstr ""
+
+#: src/gui.ec:946
 msgid "Entry"
 msgstr "条目"
 
-#: .\src\EDB.ec:935
+#: src/EDB.ec:863
 msgid "Error reading field"
 msgstr "读字段错误"
 
-#: .\src\ers.ec:590
+#: src/ers.ec:648
 msgid "Export as Spreadsheet (CSV)"
 msgstr "导出数据表(CSV)"
 
-#: .\src\EDB.ec:234
+#: src/EDB.ec:133
 msgid "Invalid, corrupted or in use (%s) database file.\n"
 msgstr "无效的, 滥用数据库文件 (%s).\n"
 
-#: .\src\gui.ec:622
+#: src/gui.ec:649
 msgid "List"
 msgstr "列表"
 
-#: .\src\gui.ec:667
-#: .\src\gui.ec:777
+#: src/gui.ec:691 src/gui.ec:801
 msgid "List Editor"
 msgstr "列表编辑器"
 
-#: .\src\gui.ec:725
+#: src/gui/TableEditor.ec:25 src/gui.ec:749
 msgid "New"
 msgstr "新建(N)"
 
-#: .\src\ers.ec:15
+#: src/gui/TableEditor.ec:24
+msgid "New|id="
+msgstr "新建|id="
+
+#: src/ers.ec:17
 msgid "Please wait while the report is being generated..."
 msgstr "请等待：报表正在生成..."
 
-#: .\src\gui.ec:963
+#: src/gui.ec:990
 msgid "Revert"
 msgstr "恢复(V)"
 
-#: .\src\gui.ec:952
+#: src/gui.ec:979
 msgid "Save"
 msgstr "保存(S)"
 
-#: .\src\EDB.ec:153
+#: src/DirFilesDataSource.ec:111
 msgid "Status: Feeling groovy!\n"
 msgstr "状态: 感觉非常好!\n"
 
-#: .\src\EDB.ec:548
+#: src/EDB.ec:475
 msgid "Table (%s) does not exist.\n"
 msgstr "表(%s)不存在.\n"
 
-#: .\src\gui\TableEditor.ec:120
-#: .\src\gui\TableEditor.ec:127
+#: src/gui/TableEditor.ec:352 src/gui/TableEditor.ec:360
 msgid "Table Editor"
 msgstr "表编辑器"
 
-#: .\src\EDB.ec:557
+#: src/EDB.ec:484
 msgid "Unable to detect if table exists!\n"
 msgstr "未能找到表!\n"
 
-#: .\src\gui\TableEditor.ec:198
-#: .\src\gui\TableEditor.ec:215
+#: src/gui/TableEditor.ec:934 src/gui/TableEditor.ec:953
 msgid "WordList match cannot be found in database."
 msgstr "在数据库中WordList不能找到."
 
-#: .\src\gui.ec:780
+#: src/gui.ec:804
 msgid ""
 "You are about to delete an entry.\n"
 "Do you wish to continue?"
@@ -114,7 +127,7 @@ msgstr ""
 "你要删除一个条目.\n"
 "继续吗?"
 
-#: .\src\gui\TableEditor.ec:130
+#: src/gui/TableEditor.ec:363
 msgid ""
 "You are about to permanently remove an entry.\n"
 "Do you wish to continue?"
@@ -122,105 +135,15 @@ msgstr ""
 "你要永久删除一个条目.\n"
 "继续吗?"
 
-#: .\src\gui\TableEditor.ec:122
-#: .\src\gui.ec:667
-msgid "You have modified this entry. Would you like to save it before proceeding?"
+#: src/gui/TableEditor.ec:354 src/gui.ec:691
+msgid ""
+"You have modified this entry. Would you like to save it before proceeding?"
 msgstr "条目已经修改.你要保存它吗?"
 
-#: .\src\gui.ec:756
+#: src/gui.ec:780 src/gui.ec:786
 msgid "[New]"
 msgstr "[新的]"
 
-#: .\src\idList.ec:183
-#, fuzzy
+#: src/idList.ec:230
 msgid "item"
-msgstr "item"
-
-#~ msgid "   Client info: %s\n"
-#~ msgstr "   客户端信息: %s\n"
-
-#~ msgid "   Host info: %s\n"
-#~ msgstr "   主机信息: %s\n"
-
-#~ msgid "   Server info: %s\n"
-#~ msgstr "   服务器信息: %s\n"
-
-#~ msgid " *      MySql Status Info                    * \n"
-#~ msgstr " *      MySql状态信息                    * \n"
-
-#~ msgid " *      Stats                                * \n"
-#~ msgstr " *      统计                                * \n"
-
-#~ msgid ""
-#~ "%s\n"
-#~ "   MySql Error: #%d %s\n"
-#~ msgstr ""
-#~ "%s\n"
-#~ "   MySql 错误: #%d %s\n"
-
-#~ msgid "(Click to add a new %s...)"
-#~ msgstr "(点击增加新项%s...)"
-
-#~ msgid "BEGIN FAILED!"
-#~ msgstr "BEGIN失败!"
-
-#~ msgid "COMMIT FAILED!"
-#~ msgstr "COMMIT失败!"
-
-#~ msgid "Can't connect to the mysql server on port %d !\n"
-#~ msgstr "不能连接mysql服务器，端口%d !\n"
-
-#~ msgid "Can't initialize mysql socket"
-#~ msgstr "不能初始化mysql socket"
-
-#~ msgid "Can't open database (%s): %s\n"
-#~ msgstr "不能打开数据库(%s): %s\n"
-
-#~ msgid "Can't open the %s database!\n"
-#~ msgstr "不能打开数据库%s!\n"
-
-#~ msgid "Connection to database failed: %s"
-#~ msgstr "连接数据库失败: %s"
-
-#~ msgid "Couldn't execute %s on the server!"
-#~ msgstr "数据库不能执行%s!"
-
-#~ msgid ""
-#~ "Couldn't execute DDL statement on the server!\n"
-#~ "   %s"
-#~ msgstr ""
-#~ "服务器上不能执行DDL声明!\n"
-#~ "   %s"
-
-#~ msgid "Database (%s) does not exist.\n"
-#~ msgstr "数据库(%s)不存在.\n"
-
-#~ msgid "EDASQLite: Can't open database (%s): %s\n"
-#~ msgstr "EDASQLite:不能打开数据库(%s): %s\n"
-
-#~ msgid "EDASQLiteCipher: incorrect password!"
-#~ msgstr "EDASQLiteCipher: 错误密码!"
-
-#~ msgid "EDASQLiteCipher: password is correct, database has been initialized"
-#~ msgstr "EDASQLiteCipher: 密码正确, 数据库已经初始化"
-
-#~ msgid "Listing fields for table %s failed!"
-#~ msgstr "显示表%s的列字段失败!"
-
-#~ msgid "Open table failed: %s"
-#~ msgstr "打开表失败: %s"
-
-#~ msgid "Problem"
-#~ msgstr "问题"
-
-#~ msgid "Test"
-#~ msgstr "测试"
-
-#~ msgid "Unable to detect if database exists!\n"
-#~ msgstr "未能找到数据库!\n"
-
-#~ msgid "WARNING: Table not yet created for class "
-#~ msgstr "警告:类表没有创建"
-
-#~ msgid "WARNING: field not yet created for class "
-#~ msgstr "警告:类字段没有创建 "
+msgstr "条目"

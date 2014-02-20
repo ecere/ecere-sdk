@@ -69,6 +69,17 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ear.mo"
+                     ]
+                  }
+               ]
             }
          ]
       },

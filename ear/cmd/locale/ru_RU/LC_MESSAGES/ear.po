@@ -1,0 +1,212 @@
+# Russian translation for ecere
+# Copyright (c) 2013 Rosetta Contributors and Canonical Ltd 2013
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2012-08-13 19:31+0000\n"
+"PO-Revision-Date: 2014-02-20 00:43-0500\n"
+"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: ru_RU\n"
+
+#: ear.ec:24
+msgid "   a  (Add)          <archive> <files...>\n"
+msgstr "   a  (Add)          <архив> <файлы...>\n"
+
+#: ear.ec:30
+msgid "   c  (Clear)        <archive>\n"
+msgstr "   c  (Clear)        <архив>\n"
+
+#: ear.ec:29
+msgid "   d  (Delete)       <archive> <files...>\n"
+msgstr "   d  (Delete)       <архив> <файлы...>\n"
+
+#: ear.ec:22
+msgid "   e  (Extract)      <archive> <files...>\n"
+msgstr "   e  (Extract)      <архив> <файлы...>\n"
+
+#: ear.ec:18
+msgid "   eAR <command> <archive> <parameters>\n"
+msgstr "   eAR <команда> <архив> <параметр>\n"
+
+#: ear.ec:27
+msgid "   m  (Move)         <archive> <files...> <to>\n"
+msgstr "   m  (Move)         <архив> <файлы...> <куда>\n"
+
+#: ear.ec:28
+msgid "   n  (Rename)       <archive> <file> <new name>\n"
+msgstr "   n  (Rename)       <архив> <файл> <новое имя>\n"
+
+#: ear.ec:25
+msgid "   r  (Refresh)      <archive> <files...>\n"
+msgstr "   r  (Refresh)      <архив> <файлы...>\n"
+
+#: ear.ec:31
+msgid "   s  (Self Extract) <archive> <self-extractable> (With a: overwrite)\n"
+msgstr "   s  (Self Extract) <архив> <самораспакующий> (С a: overwrite)\n"
+
+#: ear.ec:26
+msgid "   u  (Update)       <archive> <files...>\n"
+msgstr "   u  (Update)       <архив> <файлы...>\n"
+
+#: ear.ec:20
+msgid "   v  (View)         <archive> [files...]\n"
+msgstr "   v  (View)         <архив> [файлы...]\n"
+
+#: ear.ec:21
+msgid "   x  (Extract All)  <archive> [where]\n"
+msgstr "   x  (Extract All)  <архив> [куда]\n"
+
+#: ear.ec:34
+msgid "(aru)    0  No Compression\n"
+msgstr "(aru)    0  No Compression\n"
+
+#: ear.ec:35
+msgid ""
+"(aru)    1 ... 9  (Fastest Compression ... Best Compression (default = 9))\n"
+msgstr ""
+"(aru)    1 ... 9  (Быстрейшое Сжатие ... Лутшое Сжатие (по умолчанию = 9))\n"
+
+#: ear.ec:33
+msgid ""
+"(aru)    f  Treat <files> as folders to pack at the root of the archive\n"
+msgstr ""
+"(aru)    f  Относитса к <Файлы> как к папкам для пакирования в источник "
+"архива\n"
+
+#: ear.ec:36
+msgid "(earu)   w  Specify an output directory after <files>\n"
+msgstr "(earu)   w  Указания папки продукции после <файлы>\n"
+
+#: ear.ec:37
+msgid "(xearu)  q  Quiet mode\n"
+msgstr "(xearu)  q  Тихий режим\n"
+
+#: ear.ec:342
+msgid "A file with the same name already exists (%s).\n"
+msgstr "Файл с схожим именем уже существует (%s).\n"
+
+#: ear.ec:352
+msgid "A folder with the same name already exists (%s).\n"
+msgstr "Папка с схожим именем уже существует (%s).\n"
+
+#: ear.ec:216
+msgid "Adding %s..."
+msgstr "Добавляетса %s..."
+
+#: ear.ec:711
+msgid "Archive cleared: %s.\n"
+msgstr "Архив отчистен: %s.\n"
+
+#: ear.ec:534
+msgid "Archive file is empty: %s\n"
+msgstr "Файл архива пуст: %s\n"
+
+#: ear.ec:529
+msgid "Archive file not found: %s\n"
+msgstr "Файл архива не найден: %s\n"
+
+#: ear.ec:348
+msgid "Can't move directory %s inside itself.\n"
+msgstr "Невозможно переместить папку %s внутрь себя.\n"
+
+#: ear.ec:738
+msgid "Deleting file %s in directory %s.\n"
+msgstr "Удаляетса файл %s в папке %s.\n"
+
+#: ear.ec:827
+msgid "Drive letters and %s only valid at root.\n"
+msgstr "Буквы приводов и %s годные только в корнье.\n"
+
+#: ear.ec:160
+msgid "Extracting %s...\n"
+msgstr "Иввлечение %s...\n"
+
+#: ear.ec:19
+msgid "Extraction Commands:\n"
+msgstr "Команды Извлечения:\n"
+
+#: ear.ec:680
+msgid "Failed to add %s to archive!\n"
+msgstr "Не получилось добавить %s в архив!\n"
+
+#: ear.ec:698
+msgid "Failed to open archive %s for writing!\n"
+msgstr "Не получилось открыть архив %s для писания!\n"
+
+#: ear.ec:689
+msgid "Failed to open the internal directory of archive %s!\n"
+msgstr "Не получилось открыть внутреннию папку архива %s!\n"
+
+#: ear.ec:585
+msgid "File Not Found: %s\n"
+msgstr "Файл Не Найден: %s\n"
+
+#: ear.ec:384
+msgid "File is already in directory \"%s\".\n"
+msgstr "Файл уже в папке \"%s\".\n"
+
+#: ear.ec:544
+msgid "File is not a valid ECERE archive: %s\n"
+msgstr "Файл не законный архив ECERE: %s\n"
+
+#: ear.ec:17
+msgid "General Syntax:\n"
+msgstr "Генеральный Формат:\n"
+
+#: ear.ec:319
+msgid "Merging directory %s in %s with %s in %s.\n"
+msgstr "Слияние папки %s в %s с %s в %s.\n"
+
+#: ear.ec:23
+msgid "Modification Commands:\n"
+msgstr "Команды Модификации:\n"
+
+#: ear.ec:370
+msgid "Moving file %s in directory %s to %s.\n"
+msgstr "Перемесчение файла %s в папку %s в %s.\n"
+
+#: ear.ec:307
+msgid "Moving files in root to %s.\n"
+msgstr "Перемесчение файлов в корнье в %s.\n"
+
+#: ear.ec:830
+msgid "New name contains directory structure.\n"
+msgstr "Новое имя содержит форму папки.\n"
+
+#: ear.ec:32
+msgid "Options:\n"
+msgstr "Настройки:\n"
+
+#: ear.ec:231
+msgid ""
+"Out of disk space.\n"
+"Error: Ran out of disk space while archiving%s%s.\n"
+msgstr ""
+"Закончилось место на диске.\n"
+"Ошибка: Закончилось место на диске при архивации%s%s.\n"
+
+#: ear.ec:794
+msgid "Renaming %s in directory %s to %s.\n"
+msgstr "Переименование %s в папке %s на %s.\n"
+
+#: ear.ec:227
+msgid "Skipped%s%s.\n"
+msgstr "Пропуск%s%s.\n"
+
+#: ear.ec:83
+msgid ""
+"\n"
+"   Modified: "
+msgstr ""
+"\n"
+"   Измененные: "

@@ -118,6 +118,39 @@
                      ]
                   }
                ]
+            },
+            {
+               "Folder" : "he",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecc.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecc.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "vi_VI",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "ecc.mo"
+                     ]
+                  }
+               ]
             }
          ]
       }

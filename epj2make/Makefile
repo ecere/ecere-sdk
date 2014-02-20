@@ -72,6 +72,8 @@ SOURCES = $(ECSOURCES)
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/epj2make.mo \
 	locale/es_ES/LC_MESSAGES/epj2make.mo \
+	locale/he/LC_MESSAGES/epj2make.mo \
+	locale/ru_RU/LC_MESSAGES/epj2make.mo \
 	../crossplatform.mk
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -131,6 +133,8 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../crossplatform.mk ""
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/epj2make.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/epj2make.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/epj2make.mo "locale/he/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/epj2make.mo "locale/ru_RU/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

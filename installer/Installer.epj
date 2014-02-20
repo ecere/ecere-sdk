@@ -14897,6 +14897,44 @@
             }
          ]
       },
+      {
+         "Folder" : "locale",
+         "Files" : [
+            {
+               "Folder" : "es_ES",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "Installer.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "ru_RU",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "Installer.mo"
+                     ]
+                  }
+               ]
+            },
+            {
+               "Folder" : "zh_CN",
+               "Files" : [
+                  {
+                     "Folder" : "LC_MESSAGES",
+                     "Files" : [
+                        "Installer.mo"
+                     ]
+                  }
+               ]
+            }
+         ]
+      },
       "../ide/res/icon.png",
       "ecere.png",
       "ryoanji.png",

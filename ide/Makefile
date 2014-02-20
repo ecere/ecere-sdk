@@ -163,13 +163,16 @@ RESOURCES1 = \
 	$(RES)status/software-update-available.png \
 	locale/zh_CN/LC_MESSAGES/ide.mo \
 	locale/es_ES/LC_MESSAGES/ide.mo \
+	locale/pt_BR/LC_MESSAGES/ide.mo \
+	locale/ru_RU/LC_MESSAGES/ide.mo \
+	locale/vi_VI/LC_MESSAGES/ide.mo \
 	../LICENSE \
 	../extras/res/licenses/png.LICENSE \
 	../extras/res/licenses/tango.COPYING \
-	../extras/res/licenses/zlib.README \
-	../extras/res/licenses/sqlite.LICENSE \
-	../extras/res/licenses/jpg.LICENSE
+	../extras/res/licenses/zlib.README
 RESOURCES2 = \
+	../extras/res/licenses/sqlite.LICENSE \
+	../extras/res/licenses/jpg.LICENSE \
 	../extras/res/licenses/ungif.LICENSE \
 	../extras/res/licenses/freetype.LICENSE \
 	../extras/res/licenses/harfbuzz.LICENSE \
@@ -267,6 +270,9 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/software-update-available.png "status"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ide.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/pt_BR/LC_MESSAGES/ide.mo "locale/pt_BR/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/ide.mo "locale/ru_RU/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/vi_VI/LC_MESSAGES/ide.mo "locale/vi_VI/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/gpl.LICENSE "licenses"
 else
