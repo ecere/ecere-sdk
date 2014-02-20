@@ -4090,12 +4090,13 @@ class ValgrindLogThread : Thread
    unsigned int Main()
    {
       static char output[4096];
+      bool lastLineEmpty = true;
       Array<char> dynamicBuffer { minAllocSize = 4096 };
       File oldValgrindHandle = vgLogFile;
       incref oldValgrindHandle;
 
       app.Lock();
-      while(debugger.state != terminated && vgLogFile)
+      while(debugger.state != terminated && vgLogFile && vgLogFile.input)
       {
          int result = 0;
          app.Unlock();
@@ -4122,7 +4123,7 @@ class ValgrindLogThread : Thread
 #ifdef _DEBUG
                   // printf("%s\n", dynamicBuffer.array);
 #endif
-                  if(strstr(&dynamicBuffer[0], "vgdb me"))
+                  if(strstr(&dynamicBuffer[0], "vgdb me ..."))
                      debugger.serialSemaphore.Release();
                   {
                      char * s = strstr(&dynamicBuffer[0], "==");
@@ -4131,32 +4132,67 @@ class ValgrindLogThread : Thread
                      if(s)
                      {
                         s += 3;
+                        if(s[0] == '\0' && !lastLineEmpty)
+                        {
+                           s = null;
+                           lastLineEmpty = true;
+                           dynamicBuffer[0] = '\0';
+                        }
+                     }
+                     if(s)
+                     {
+                        char * t = s;
                         switch(s[0])
                         {
                            case '(':
-                              if(!strstr(s, "vgdb me ..."))   //==21690== Using Valgrind-3.7.0 and LibVEX; rerun with -h for copyright info
+                              if(strstr(s, "vgdb me ..."))
+                              {
+                                 if(strstr(s, "(action on error) vgdb me ..."))
+                                    ide.outputView.debugBox.Logf($"...breaked on Valgrind error (F5 to resume)\n");
+                                 s[0] = '\0';
+                              }
+                              else
                                  s = null;
                               break;
                            case 'T':
-                              if(!strstr(s, "TO DEBUG THIS PROCESS USING GDB: start GDB like this"))
+                              if(strstr(s, "TO DEBUG THIS PROCESS USING GDB: start GDB like this"))
+                                 s[0] = '\0';
+                              else
                                  s = null;
                               break;
                            case 'a':
-                              if(!strstr(s, "and then give GDB the following command"))
+                              if(strstr(s, "and then give GDB the following command"))
+                                 s[0] = '\0';
+                              else
                                  s = null;
                               break;
                            case ' ':
-                              if(!strstr(s, "/path/to/gdb") && !strstr(s, "target remote | /usr/lib/valgrind/../../bin/vgdb --pid="))
+                              if(strstr(s, "/path/to/gdb") || strstr(s, "target remote | /usr/lib/valgrind/../../bin/vgdb --pid="))
+                                 s[0] = '\0';
+                              else
                                  s = null;
                               break;
                            case '-':
-                              if(!strstr(s, "--pid is optional if only one valgrind process is running"))
+                              if(strstr(s, "--pid is optional if only one valgrind process is running"))
+                                 s[0] = '\0';
+                              else
                                  s = null;
+                              break;
+                           case 'U':
+                              if((s = strstr(s, "; rerun with -h for copyright info")))
+                              {
+                                 s[0] = '\0';
+                                 s = null;
+                              }
+                              break;
+                           case '\0':
                               break;
                            default:
                               s = null;
                               break;
                         }
+                        if(lastLineEmpty && t[0] != '\0')
+                           lastLineEmpty = false;
                      }
                      if(!s)
                         ide.outputView.debugBox.Logf("%s\n", &dynamicBuffer[0]);
