@@ -2583,11 +2583,24 @@ class OpenGLDisplayDriver : DisplayDriver
       glEnd();
    }
 
-   void DrawLine(Display display, Surface surface, int x1, int y1, int x2, int y2)
+   void DrawLine(Display display, Surface surface, int _x1, int _y1, int _x2, int _y2)
    {
       OGLSurface oglSurface = surface.driverData;
-      if(x1 == x2) { y2++; y1--; }
-      else if(y1 == y2) { x2++; x1--; }
+      float x1 = _x1, x2 = _x2, y1 = _y1, y2 = _y2;
+      if(_x1 == _x2)
+      {
+         if(_y2 >= _y1)
+            y2 += 1;
+         else
+            y1 += 1;
+      }
+      else if(_y1 == _y2)
+      {
+         if(_x2 >= _x1)
+            x2 += 1;
+         else
+            x1 += 1;
+      }
       x1 += surface.offset.x;
       y1 += surface.offset.y;
       x2 += surface.offset.x;
