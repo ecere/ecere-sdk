@@ -75,7 +75,7 @@ SOURCES = $(ECSOURCES) \
 
 RESOURCES = \
 	locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo \
-	locale/es_ES/EDASQLiteCipher.mo \
+	locale/es_ES/LC_MESSAGES/EDASQLiteCipher.mo \
 	locale/he/LC_MESSAGES/EDASQLiteCipher.mo \
 	locale/ru_RU/LC_MESSAGES/EDASQLiteCipher.mo
 
@@ -179,7 +179,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/EDASQLiteCipher.mo "locale/es_ES/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/EDASQLiteCipher.mo "locale/es_ES/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/EDASQLiteCipher.mo "locale/he/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/EDASQLiteCipher.mo "locale/ru_RU/LC_MESSAGES"
 else
