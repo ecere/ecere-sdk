@@ -1,3 +1,13 @@
+ecere-sdk (0.44.09.9-1) unstable; urgency=low
+
+   * 64 bit fixes
+   * IDE fixes
+   * X11 GUI driver fixes
+   * eC Compiler fixes
+   * HTTP fixes
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Thu, 20 Feb 2014 17:37:00 -0500
+
 ecere-sdk (0.44.09-1) unstable; urgency=low
 
    * Debugger fixes
