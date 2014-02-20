@@ -1009,7 +1009,9 @@ class ScrabbleApp : GuiApplication
 
    void Terminate()
    {
+      Unlock();
       scrabbleService.Stop();
+      Lock();
       delete scrabbleGame;
    }
 }
