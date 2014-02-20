@@ -1801,7 +1801,7 @@ private:
                                  c += newWordLen - wordLen;
                                  wordLen = newWordLen;
                               }
-                              else if(dot && dot > word)
+                              else if(dot && dot > word && dot < s)
                                  newTextColor = colorScheme.numberColor;
                            }
                         }
