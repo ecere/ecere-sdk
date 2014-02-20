@@ -3101,7 +3101,10 @@ class XInterface : Interface
                event.send_event = 1;
                event.format = 32;
                event.data.l[0] = /*0*/ 1;
-               event.data.l[1] = timeStamp;
+               // WMs will complain about using CurrentTime here, but when ActivateRootWindow() is called we really need to take over,
+               // otherwise a debugged application stays on top of the IDE when we hit a breakpoint (there was no user interaction with the IDE,
+               // but it really should be activated)
+               event.data.l[1] = CurrentTime; //timeStamp;
                event.data.l[2] = activeWindow; //guiApp.desktop.activeChild.windowHandle;
 
 #ifdef _DEBUG
