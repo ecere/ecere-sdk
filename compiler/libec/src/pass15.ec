@@ -11012,10 +11012,8 @@ static void ProcessStatement(Statement stmt)
             Context prevContext = curContext;
 
             if(!stmt.compound.isSwitch)
-            {
                curCompound = stmt;
-               curContext = stmt.compound.context;
-            }
+            curContext = stmt.compound.context;
 
             if(stmt.compound.declarations)
             {

@@ -16769,10 +16769,8 @@ struct Statement * prevCompound = curCompound;
 struct Context * prevContext = curContext;
 
 if(!stmt->compound.isSwitch)
-{
 curCompound = stmt;
 curContext = stmt->compound.context;
-}
 if(stmt->compound.declarations)
 {
 for(decl = (*stmt->compound.declarations).first; decl; decl = decl->next)
