@@ -591,6 +591,15 @@ public class WindowsSkin_Window : Window
             sysButtons[2].visible = true;
          }
       }
+      else
+      {
+         if(sysButtons[0])
+            sysButtons[0].visible = false;
+         if(sysButtons[1])
+            sysButtons[1].visible = false;
+         if(sysButtons[2])
+            sysButtons[2].visible = false;
+      }
    }
 }
 
