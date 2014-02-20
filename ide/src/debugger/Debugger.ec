@@ -2536,9 +2536,10 @@ class Debugger
             gdbThread.Wait();
             app.Lock();
          }
-         if(vgLogThread)
-         {
+         if(vgLogFile)
             vgLogFile.CloseInput();
+         if(vgLogThread.created)
+         {
             app.Unlock();
             vgLogThread.Wait();
             app.Lock();
