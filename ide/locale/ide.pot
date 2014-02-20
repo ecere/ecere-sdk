@@ -562,11 +562,6 @@ msgstr "Condition"
 msgid "Configurations: "
 msgstr "Configurations: "
 
-#: ./src/designer/CodeEditor.ec:38
-#: ./src/designer/CodeEditor.ec:39
-msgid "Consolas"
-msgstr "Consolas"
-
 #: ./src/ProjectSettings.ec:2183
 msgid "Console Application"
 msgstr "Console Application"
@@ -584,6 +579,11 @@ msgstr "Couldn't create file."
 #: ./src/debugger/Debugger.ec:2953
 msgid "Couldn't read memory"
 msgstr "Couldn't read memory"
+
+#: ./src/designer/CodeEditor.ec:35
+#: ./src/designer/CodeEditor.ec:36
+msgid "Courier New"
+msgstr "Courier New"
 
 #: ./src/dialogs/NewProjectDialog.ec:231
 msgid "Create Form"
@@ -854,8 +854,8 @@ msgid "Error: Struct member not found for \"%s\""
 msgstr "Error: Struct member not found for \"%s\""
 
 #: ./src/dialogs/FindInFilesDialog.ec:813
-msgid "Error: abborting search!\n"
-msgstr "Error: abborting search!\n"
+msgid "Error: aborting search!\n"
+msgstr "Error: aborting search!\n"
 
 #: ./src/debugger/Debugger.ec:3062
 msgid "Evaluation failed for \"%s\" of type \"%s\""
@@ -2174,14 +2174,6 @@ msgstr "Use ccache"
 #: ./src/dialogs/GlobalSettingsDialog.ec:949
 msgid "Use distcc"
 msgstr "Use distcc"
-
-#: ./src/debugger/Debugger.ec:4193
-msgid "ValgrindLogThreadExit\n"
-msgstr "ValgrindLogThreadExit\n"
-
-#: ./src/debugger/Debugger.ec:3244
-msgid "ValgrindTargetThreadExit\n"
-msgstr "ValgrindTargetThreadExit\n"
 
 #: ./src/panels/WatchesView.ec:86
 msgid "Value"

@@ -3241,7 +3241,7 @@ class Debugger
 
    void ValgrindTargetThreadExit()
    {
-      ide.outputView.debugBox.Logf($"ValgrindTargetThreadExit\n");
+      ide.outputView.debugBox.Logf("ValgrindTargetThreadExit\n");
       if(vgTargetHandle)
       {
          vgTargetHandle.Wait();
@@ -4190,7 +4190,7 @@ class ValgrindLogThread : Thread
          }
       }
       delete dynamicBuffer;
-      ide.outputView.debugBox.Logf($"ValgrindLogThreadExit\n");
+      ide.outputView.debugBox.Logf("ValgrindLogThreadExit\n");
       //if(oldValgrindHandle == vgLogFile)
          debugger.GdbThreadExit/*ValgrindLogThreadExit*/();
       delete oldValgrindHandle;

@@ -810,7 +810,7 @@ private:
                      for( ; frame >= 0 ; frame--)
                         stack[frame].fileList.Stop();
                      app.Lock();
-                        ide.outputView.findBox.Logf($"Error: abborting search!\n");
+                        ide.outputView.findBox.Logf($"Error: aborting search!\n");
                      app.Unlock();
                   }
                }
