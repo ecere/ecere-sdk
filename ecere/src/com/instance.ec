@@ -47,10 +47,6 @@ static uint memoryErrorsCount = 0;
 
 default:
 #define property _property
-#define bool _bool
-#define uint _uint
-#define true _true
-#define false _false
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -68,10 +64,6 @@ default const char * AndroidInterface_GetLibLocation();
 #endif
 
 #undef property
-#undef bool
-#undef uint
-#undef true
-#undef false
 
 #undef CompareString
 
@@ -3709,7 +3701,7 @@ static void ComputeClassParameters(Class templatedClass, char * templateParams, 
                         }
                      }
                      {
-                        int len = strlen(templateString);
+                        int len = (int)strlen(templateString);
                         if(templateString[len-1] == '>') templateString[len++] = ' ';
                         templateString[len++] = '>';
                         templateString[len++] = '\0';
@@ -5278,7 +5270,7 @@ static Module Module_Load(Module fromModule, char * name, AccessMode importAcces
             StripExtension(moduleName);
             if((!strcmpi(ext, "dylib") || !strcmpi(ext, "so")) && strstr(moduleName, "lib") == moduleName)
             {
-               int len = strlen(moduleName) - 3;
+               int len = (int)strlen(moduleName) - 3;
                memmove(moduleName, moduleName + 3, len);
                moduleName[len] = 0;
             }
@@ -5703,7 +5695,7 @@ public dllexport DefinedExpression eSystem_RegisterDefine(char * name, char * va
       }
    }
    else
-      c = strlen(name);
+      c = (int)strlen(name);
 
    if(c - start && !nameSpace->defines.FindString(name + start))
    {
@@ -5762,7 +5754,7 @@ public dllexport GlobalFunction eSystem_RegisterFunction(char * name, char * typ
       }
    }
    else
-      c = strlen(name);
+      c = (int)strlen(name);
 
    if(c - start && !nameSpace->functions.FindString(name + start))
    {
@@ -6167,6 +6159,9 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("strncat", "char * strncat(char *, const char *, uintsize n)", strncat, module, baseSystemAccess);
    eSystem_RegisterFunction("strchr", "char * strchr(const char *, int)", strchr, module, baseSystemAccess);
    eSystem_RegisterFunction("strstr", "char * strstr(const char *, const char *)", strstr, module, baseSystemAccess);
+   eSystem_RegisterFunction("strspn", "uintsize strspn(const char *, const char *)", strspn, module, baseSystemAccess);
+   eSystem_RegisterFunction("strcspn", "uintsize strcspn(const char *, const char *)", strcspn, module, baseSystemAccess);
+   eSystem_RegisterFunction("strpbrk", "char * strpbrk(const char *, const char *)", strpbrk, module, baseSystemAccess);
 
    eSystem_RegisterDefine("fstrcmp", "(GetRuntimePlatform() == win32) ? strcmpi : strcmp", module, baseSystemAccess);
 
@@ -6902,7 +6897,7 @@ public uint16 * UTF8toUTF16(char * source, int * wordCount)
 {
    if(source)
    {
-      int len = strlen(source);
+      int len = (int)strlen(source);
       uint16 * dest = new uint16[len + 1];
       int c;
       int d = 0;

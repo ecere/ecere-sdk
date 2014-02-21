@@ -5219,6 +5219,12 @@ extern int rename(const char *  oldpath, const char *  newpath);
 
 extern char *  strncat(char * , const char * , size_t n);
 
+extern size_t strspn(const char * , const char * );
+
+extern size_t strcspn(const char * , const char * );
+
+extern char *  strpbrk(const char * , const char * );
+
 extern int strncasecmp(const char * , const char * , size_t n);
 
 extern int strncmp(const char * , const char * , size_t n);
@@ -5360,6 +5366,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcat", "char * strcat(
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncat", "char * strncat(char *, const char *, uintsize n)", strncat, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strchr", "char * strchr(const char *, int)", strchr, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strstr", "char * strstr(const char *, const char *)", strstr, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strspn", "uintsize strspn(const char *, const char *)", strspn, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcspn", "uintsize strcspn(const char *, const char *)", strcspn, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strpbrk", "char * strpbrk(const char *, const char *)", strpbrk, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("fstrcmp", "(GetRuntimePlatform() == win32) ? strcmpi : strcmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("strcmpi", "strcasecmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("strnicmp", "strncasecmp", module, 4);
