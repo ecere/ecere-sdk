@@ -27,14 +27,12 @@ class AboutIDE : Window
 
    bool OnPostCreate()
    {
-      char * longVersion = CopyString(REPOSITORY_VERSION);
-      char * shortVersion;
-      char * tokens[16];
+      char * shortVersion = CopyString(REPOSITORY_VERSION);
       char * message;
-      uint count;
-      StripQuotes(longVersion, longVersion);
-      count = TokenizeWith(longVersion, sizeof(tokens)/sizeof(tokens[0]), tokens, "-+", false);
-      shortVersion = count ? tokens[0] : longVersion;
+      char * occ;
+      StripQuotes(shortVersion, shortVersion);
+      occ = strpbrk(shortVersion, "-+( ");
+      if(occ) *occ = '\0';
       message = PrintString(
             "Ecere Software Development Kit v", shortVersion, " \"Ryōan-ji\"" X64STRING "\n"
             "Build " REPOSITORY_VERSION "\n"
@@ -42,7 +40,7 @@ class AboutIDE : Window
             "Copyright © 1996-2014 Jérôme Jacovella-St-Louis");
       versionCopyright.contents = message;
       delete message;
-      delete longVersion;
+      delete shortVersion;
    }
 
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 194 } };
