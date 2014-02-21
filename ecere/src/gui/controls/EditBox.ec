@@ -99,7 +99,7 @@ class EditBoxBits
    bool noCaret:1, noSelect:1, tabKey:1, useTab:1, tabSel:1, allCaps:1, syntax:1, wrap:1;
 
    // Syntax States
-   bool inMultiLineComment:1, inPrep:1, escaped:1, continuedSingleLineComment:1, wasInMultiLine:1;
+   bool inMultiLineComment:1, inPrep:1, escaped:1, continuedSingleLineComment:1, wasInMultiLine:1, continuedString:1, continuedQuotes:1;
 
    bool recomputeSyntax:1;
    bool cursorFollowsView:1;
@@ -1301,6 +1301,8 @@ private:
          bool inSingleLineComment = false;
          bool escaped = reset ? false : style.escaped;
          bool continuedSingleLineComment = reset ? false : style.continuedSingleLineComment;
+         bool continuedString = reset ? false : style.continuedString;
+         bool continuedQuotes = reset ? false : style.continuedQuotes;
 
          EditLine line = reset ? lines.first : firstLine;
          // int maxBackUp = 1000, c;
@@ -1315,8 +1317,8 @@ private:
             if(!escaped) inPrep = false;
             inSingleLineComment = continuedSingleLineComment;
             escaped = false;
-            inString = false;
-            inQuotes = false;
+            inString = continuedString;
+            inQuotes = continuedQuotes;
 
             firstWord = true;
             for(c = 0; (ch = text[c]); c++)
@@ -1382,10 +1384,23 @@ private:
                else if(ch != ' ' && ch != '\t')
                   firstWord = false;
             }
-            continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
+            if(line.count && line.text[line.count - 1] == '\\')
+            {
+               continuedSingleLineComment = inSingleLineComment;
+               continuedString = inString;
+               continuedQuotes = inQuotes;
+            }
+            else
+            {
+               continuedSingleLineComment = false;
+               continuedString = false;
+               continuedQuotes = false;
+            }
          }
 
          style.continuedSingleLineComment = continuedSingleLineComment;
+         style.continuedString = continuedString;
+         style.continuedQuotes = continuedQuotes;
          style.inMultiLineComment = inMultiLineComment;
          style.wasInMultiLine = wasInMultiLine;
          style.inPrep = inPrep;
@@ -1451,6 +1466,8 @@ private:
       bool inSingleLineComment = false;
       bool escaped = style.escaped;
       bool continuedSingleLineComment = style.continuedSingleLineComment;
+      bool continuedString = style.continuedString;
+      bool continuedQuotes = style.continuedQuotes;
       bool wasInMultiLine = style.wasInMultiLine;
       // ****** ************* ******
 
@@ -1525,8 +1542,8 @@ private:
          if(!escaped) inPrep = false;
          inSingleLineComment = continuedSingleLineComment;
          escaped = false;
-         inString = false;
-         inQuotes = false;
+         inString = continuedString;
+         inQuotes = continuedQuotes;
          // *********************************
 
    /*   === DEBUGGING TOOL FOR MAXLINE ===
@@ -1985,8 +2002,18 @@ private:
             surface.Area(x + XOFFSET - 1,y,clientSize.w-1,y+this.space.h-1);
          }
          */
-
-         continuedSingleLineComment = inSingleLineComment && (line.count && line.text[line.count - 1] == '\\');
+         if(line.count && line.text[line.count - 1] == '\\')
+         {
+            continuedSingleLineComment = inSingleLineComment;
+            continuedString = inString;
+            continuedQuotes = inQuotes;
+         }
+         else
+         {
+            continuedSingleLineComment = false;
+            continuedString = false;
+            continuedQuotes = false;
+         }
 
          y+=this.space.h;
          if(y > box.bottom) // >=clientSize.h)
