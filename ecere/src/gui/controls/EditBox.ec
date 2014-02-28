@@ -3251,7 +3251,9 @@ private:
 
       UpdateDirty();
       UpdateCaretPosition(true);
-      return true;
+      // Return false because DataBoxes automatically set EditBox editor's clickThrough to true for MouseMove events
+      // ( for tool tips -- see 95ee4962c4c7bc3fe0a04aa6a4f98cacada40884)
+      return false;
    }
 
    bool OnLeftButtonUp(int x, int y, Modifiers mods)
@@ -3358,7 +3360,9 @@ private:
          }
       }
       mouseMove = false;
-      return true;
+      // Return false because DataBoxes automatically set EditBox editor's clickThrough to true for MouseMove events
+      // ( for tool tips -- see 95ee4962c4c7bc3fe0a04aa6a4f98cacada40884)
+      return false;
    }
 
    bool OnMouseMove(int mx, int my, Modifiers mods)
