@@ -638,7 +638,7 @@ static char * keyWords1[] =
 {
    // C
    "return","break","continue","default","switch","case","if","else","for","while", "do","long","short",
-   "void", "char","int","float","double","unsigned","static", "extern", "struct", "union", "typedef","enum",
+   "void", "char","int","float","double","signed","unsigned","static", "extern", "struct", "union", "typedef","enum",
    "const",   "sizeof",
    "#include", "#define", "#pragma", "#if", "#else", "#elif", "#ifdef", "#ifndef", "#endif", "#undef", "#line",
    "__attribute__", "__stdcall", "_stdcall",
