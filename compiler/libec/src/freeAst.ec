@@ -600,6 +600,8 @@ void FreeAsmField(AsmField field)
 {
    if(field.expression)
       FreeExpression(field.expression);
+   if(field.symbolic)
+      FreeIdentifier(field.symbolic);
    delete field.command;
    delete field;
 }

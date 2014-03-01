@@ -661,6 +661,7 @@ class AsmField : struct
    Location loc;
    char * command;
    Expression expression;
+   Identifier symbolic;
 };
 
 public enum StmtType { labeledStmt, caseStmt, compoundStmt,

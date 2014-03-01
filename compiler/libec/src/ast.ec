@@ -2755,9 +2755,9 @@ public Type MkClassType(char * name)
    return null;
 }
 
-AsmField MkAsmField(char * command, Expression expression)
+AsmField MkAsmField(char * command, Expression expression, Identifier symbolic)
 {
-   return { command = command, expression = expression };
+   return { command = command, expression = expression, symbolic = symbolic };
 }
 
 Statement MkAsmStmt(Specifier spec, char * statements, OldList inputFields, OldList outputFields, OldList clobberedFields)

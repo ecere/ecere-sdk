@@ -328,6 +328,12 @@ public void OutputExpression(Expression exp, File f)
 
 static void OutputAsmField(AsmField field, File f)
 {
+   if(field.symbolic)
+   {
+      f.Puts("[");
+      OutputIdentifier(field.symbolic, f);
+      f.Puts("]");
+   }
    f.Puts(field.command);
    if(field.expression)
    {

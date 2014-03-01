@@ -1035,6 +1035,7 @@ struct AsmField * next;
 struct Location loc;
 char *  command;
 struct Expression * expression;
+struct Identifier * symbolic;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
@@ -4563,12 +4564,12 @@ return type;
 return (((void *)0));
 }
 
-struct AsmField * MkAsmField(char * command, struct Expression * expression)
+struct AsmField * MkAsmField(char * command, struct Expression * expression, struct Identifier * symbolic)
 {
 return __extension__ ({
 struct AsmField * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_AsmField);
 
-__ecereInstance1->command = command, __ecereInstance1->expression = expression, __ecereInstance1;
+__ecereInstance1->command = command, __ecereInstance1->expression = expression, __ecereInstance1->symbolic = symbolic, __ecereInstance1;
 });
 }
 
@@ -5097,7 +5098,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessType", "Type Proc
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessTypeString", "Type ProcessTypeString(char * string, bool staticMethod)", ProcessTypeString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassTypeSymbol", "Type MkClassTypeSymbol(Symbol symbol)", MkClassTypeSymbol, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassType", "Type MkClassType(char * name)", MkClassType, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkAsmField", "AsmField MkAsmField(char * command, Expression expression)", MkAsmField, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkAsmField", "AsmField MkAsmField(char * command, Expression expression, Identifier symbolic)", MkAsmField, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkAsmStmt", "Statement MkAsmStmt(Specifier spec, char * statements, ecere::sys::OldList inputFields, ecere::sys::OldList outputFields, ecere::sys::OldList clobberedFields)", MkAsmStmt, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefPropertyWatch", "ClassDef MkClassDefPropertyWatch(PropertyWatch watcher)", MkClassDefPropertyWatch, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkFireWatchersStmt", "Statement MkFireWatchersStmt(Expression object, ecere::sys::OldList watches)", MkFireWatchersStmt, module, 2);

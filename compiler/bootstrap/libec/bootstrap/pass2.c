@@ -948,6 +948,7 @@ struct AsmField * next;
 struct Location loc;
 char *  command;
 struct Expression * expression;
+struct Identifier * symbolic;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;

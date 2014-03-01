@@ -3349,8 +3349,9 @@ statement_error:
    ;
 
 asm_field:
-     string_literal { $$ = MkAsmField($1, null); $$.loc = @1; }
-   | string_literal '(' assignment_expression ')' { $$ = MkAsmField($1, $3); $$.loc = @$; }
+     string_literal { $$ = MkAsmField($1, null, null); $$.loc = @1; }
+   | string_literal '(' assignment_expression ')' { $$ = MkAsmField($1, $3, null); $$.loc = @$; }
+   | '[' identifier ']' string_literal '(' assignment_expression ')' { $$ = MkAsmField($4, $6, $2); $$.loc = @$; }
    ;
 
 asm_field_list:

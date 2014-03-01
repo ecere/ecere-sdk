@@ -1719,12 +1719,15 @@ struct AsmField * next;
 struct Location loc;
 char *  command;
 struct Expression * expression;
+struct Identifier * symbolic;
 } __attribute__ ((gcc_struct));
 
 void FreeAsmField(struct AsmField * field)
 {
 if(field->expression)
 FreeExpression(field->expression);
+if(field->symbolic)
+FreeIdentifier(field->symbolic);
 (__ecereNameSpace__ecere__com__eSystem_Delete(field->command), field->command = 0);
 ((field ? (__ecereClass_AsmField->Destructor ? __ecereClass_AsmField->Destructor(field) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(field)) : 0), field = 0);
 }
