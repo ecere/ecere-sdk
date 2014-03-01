@@ -1774,23 +1774,33 @@ int GetNumWarnings()
 return numWarnings;
 }
 
+extern char *  __ecereNameSpace__ecere__sys__GetLastDirectory(char *  string, char *  output);
+
+extern int strcmp(const char * , const char * );
+
 void Compiler_Warning(char * format, ...)
 {
 if(inCompiler)
 {
 va_list args;
 char string[10000];
+char fileName[274];
 
 if(yylloc.start.included)
 {
+char * include = GetIncludeFileFromID(yylloc.start.included);
+
 __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
-__ecereNameSpace__ecere__sys__PathCat(string, GetIncludeFileFromID(yylloc.start.included));
+__ecereNameSpace__ecere__sys__PathCat(string, include);
 }
 else
 {
 __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
 __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 }
+__ecereNameSpace__ecere__sys__GetLastDirectory(string, fileName);
+if(!strcmp(fileName, "intrin-impl.h"))
+return ;
 printf(string);
 printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, ":%d:%d: warning: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
@@ -1821,8 +1831,6 @@ int targetPlatform;
 extern char *  getenv(const char *  name);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
-
-extern int strcmp(const char * , const char * );
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __ecereNameSpace__ecere__com__Instance * this, char *  s, int max);
 

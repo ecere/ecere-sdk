@@ -1337,17 +1337,23 @@ void Compiler_Warning(char * format, ...)
    {
       va_list args;
       char string[10000];
+      char fileName[MAX_FILENAME];
 
       if(yylloc.start.included)
       {
+         String include = GetIncludeFileFromID(yylloc.start.included);
          GetWorkingDir(string, sizeof(string));
-         PathCat(string, GetIncludeFileFromID(yylloc.start.included));
+         PathCat(string, include);
       }
       else
       {
          GetWorkingDir(string, sizeof(string));
          PathCat(string, sourceFile);
       }
+
+      // Skip these warnings from MinGW-w64 GCC 4.8 in intrin-impl.h
+      GetLastDirectory(string, fileName);
+      if(!strcmp(fileName, "intrin-impl.h")) return;
 
       printf(string);
 
