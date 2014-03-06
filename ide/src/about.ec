@@ -16,7 +16,7 @@ class AboutIDE : Window
 {
    borderStyle = sizable;
    hasClose = true;
-   minClientSize = { 462, 440 };
+   minClientSize = { 462, 450 };
    text = $"About the Ecere SDK";
    tabCycle = true;
 
@@ -44,8 +44,10 @@ class AboutIDE : Window
    }
 
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 194 } };
-   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 220, 194 } };
-   Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 214 } };
+   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 240, 194 } };
+   Label { this, text = $"Developer (IDE, build system, EDA)", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 214 } };
+   Label { this, text = "Réjean Loyer", position = { 240, 214 } };
+   Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 234 } };
    Button licensingBtn
    {
       this, anchor = { left = 40, bottom = 10 }; hotKey = altL; text = "Software Licenses";
@@ -67,16 +69,11 @@ class AboutIDE : Window
    };
    EditBox credits
    {
-      this, borderStyle = none, noCaret = true, readOnly = true, anchor = { left = 16, top = 242, bottom = 48, right = 16 },
+      this, borderStyle = none, noCaret = true, readOnly = true, anchor = { left = 16, top = 252, bottom = 38, right = 16 },
       background = { r = 250, g = 252, b = 255 };
       multiLine = true,
       hasVertScroll = true,
       contents =
-         "Réjean Loyer\n"
-         "   Most of the additional programming on the IDE\n"
-         "   Initial EDA design\n"
-         "   Cross-platform and cross-compiler Makefile build system\n"
-         "\n"
          "Niraj Kulkarni\n"
          "   EditBox fixes\n"
          "\n"
