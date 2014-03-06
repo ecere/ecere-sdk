@@ -135,6 +135,20 @@ ifdef ARCH
 
 endif
 
+# On Windows/32 bit systems, pass -m32 as TDM-GCC packaged with the installer produces 64 bit executables by default
+# Disable this if your compiler does not accept -m32
+ifndef ARCH
+ ifeq "$(HOST_PLATFORM)" "win32"
+  ifeq "$(TARGET_PLATFORM)" "win32"
+   ifndef ProgramFiles(x86)
+    ARCH := x32
+    TARGET_ARCH := i386
+    ARCH_FLAGS := -m32
+   endif
+  endif
+ endif
+endif
+
 # DEBUG SUFFIX
 ifdef DEBUG
 DEBUG_SUFFIX := .debug

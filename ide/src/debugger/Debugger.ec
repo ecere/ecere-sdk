@@ -2414,10 +2414,17 @@ class Debugger
 
       if(result)
       {
-         strcpy(command,
-            (compiler.targetPlatform == win32 && bitDepth == 64) ? "x86_64-w64-mingw32-gdb" :
-            (compiler.targetPlatform == win32 && bitDepth == 32) ? "i686-w64-mingw32-gdb" :
-            "gdb");
+         if(compiler.targetPlatform == win32)
+         {
+            strcpy(command,
+#if !((defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__))
+               1 ||
+#endif
+               bitDepth == 32 ? "i686-w64-mingw32-gdb" : "gdb");  // x86_64-w64-mingw32-gdb
+         }
+         else
+            // We really should have a box to select GDB in the compiler/toolchain options
+            strcpy(command, "gdb");
          if(!CheckCommandAvailable(command))
          {
             ide.outputView.debugBox.Logf($"Debugger Fatal Error: Command %s for GDB is not available.\n", command);
