@@ -41,7 +41,12 @@
             "../../../extras/res/licenses/png.LICENSE",
             "../../../extras/res/licenses/tango.COPYING",
             "../../../extras/res/licenses/zlib.README",
-            "myapp.LICENSE"
+            "../../../extras/res/licenses/freetype.LICENSE",
+            "../../../extras/res/licenses/harfbuzz.LICENSE",
+            "../../../extras/res/licenses/jpg.LICENSE",
+            "../../../extras/res/licenses/MinGW-w64.LICENSE",
+            "../../../extras/res/licenses/ungif.LICENSE",
+            "./myapp.LICENSE"
          ]
       }
    ]

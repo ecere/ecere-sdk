@@ -1,7 +1,7 @@
 #ifdef NOMINGW
-static define buildString = $"Ecere SDK v0.44.08 (Without MinGW) -- built on August 9, 2013 ";
+static define buildString = $"Ecere SDK v0.44.10 (Without MinGW) -- built on March 2nd, 2014 ";
 #else
-static define buildString = $"Ecere SDK v0.44.08 -- built on August 9, 2013 ";
+static define buildString = $"Ecere SDK v0.44.10 -- built on March 2nd, 2014 ";
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -322,7 +322,6 @@ Component documentation[DocumentationID] =
    { "GDB Docs",           "tdm/doc/gdb",          "tdm",          null, false, false, minGWIncluded, none },
    { "Make Docs",          "tdm/doc/make",         "tdm",          null, false, false, minGWIncluded, none },
    { "Binutils Docs",      "tdm/doc/binutils",     "tdm",          null, false, false, minGWIncluded, none },
-   { "MinGW Docs",         "tdm/doc/mingwrt",      "tdm",          null, false, false, minGWIncluded, none },
    { "gnurx Docs",         "tdm/doc/gnurx",        "tdm",          null, false, false, minGWIncluded, none },
    { "UPX Docs",           "upx/doc",              "upx/doc",  null, false, false, minGWIncluded, none },
    { null }
@@ -416,7 +415,7 @@ bool osIS64bit;
 
 class Installer : Window
 {
-   text = $"Ecere Software Development Kit Setup - v0.44.08 \"Ryōan-ji\" 64 Bit Edition";
+   text = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;
@@ -945,7 +944,7 @@ class Installer : Window
 
 class InstallProgress : Window
 {
-   text = $"Ecere Software Development Kit Setup - v0.44.08 \"Ryōan-ji\" 64 Bit Edition";
+   text = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;

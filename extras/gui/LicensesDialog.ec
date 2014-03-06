@@ -39,7 +39,7 @@ class LicensesDialog : Window
    background = formColor;
    hasClose = true;
    borderStyle = sizable;
-   size = { 700, 400 };
+   size = { 800, 400 };
    nativeDecorations = true;
 
    TabControl tabControl
@@ -60,8 +60,15 @@ class LicensesDialog : Window
    };
    LicenseTab ecereTab { tabControl = tabControl, text = "Ecere SDK", sourceFile = ":licenses/ecere.LICENSE" };
    LicenseTab pngTab { tabControl = tabControl, text = "libpng", sourceFile = ":licenses/png.LICENSE" };
+   LicenseTab jpgTab { tabControl = tabControl, text = "libjpg", sourceFile = ":licenses/jpg.LICENSE" };
+   LicenseTab giflibTab { tabControl = tabControl, text = "ungif", sourceFile = ":licenses/ungif.LICENSE" };
+   LicenseTab freetypeTab { tabControl = tabControl, text = "FreeType", sourceFile = ":licenses/freetype.LICENSE" };
+   LicenseTab harfbuzzTab { tabControl = tabControl, text = "HarfBuzz", sourceFile = ":licenses/harfbuzz.LICENSE" };
    LicenseTab zlibTab { tabControl = tabControl, text = "zlib", sourceFile = ":licenses/zlib.README" };
    LicenseTab tango { tabControl = tabControl, text = "TangoIcons", sourceFile = ":licenses/tango.COPYING" };
+#if defined(__WIN32__)
+   LicenseTab mingwW64 { tabControl = tabControl, text = "MinGW-w64", sourceFile = ":licenses/MinGW-w64.LICENSE" };
+#endif
    Button ok
    {
       this;

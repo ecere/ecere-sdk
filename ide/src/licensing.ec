@@ -39,7 +39,7 @@ class LicensesForm : Window
    background = formColor;
    borderStyle = sizable;
    hasClose = true;
-   clientSize = { 818, 556 };
+   minClientSize = { 940, 556 };
 
    TabControl tabControl
    {
@@ -105,6 +105,12 @@ class LicensesForm : Window
       sourceFile = ":licenses/sqlite.LICENSE";
       tabControl = tabControl;
    };
+   LicenseTab ffiTab
+   {
+      caption = "libffi";
+      sourceFile = ":licenses/ffi.LICENSE";
+      tabControl = tabControl;
+   };
    LicenseTab tango
    {
       caption = "Tango Icons";
@@ -117,12 +123,20 @@ class LicensesForm : Window
       sourceFile = ":licenses/upx.LICENSE";
       tabControl = tabControl;
    };
-   LicenseTab gplTab
+#if defined(__WIN32__)
+   LicenseTab gccTab
    {
       caption = "GCC, GDB";
-      sourceFile = ":licenses/gpl.LICENSE";
+      sourceFile = ":licenses/tdm-gcc.LICENSE";
       tabControl = tabControl;
    };
+   LicenseTab w64Tab
+   {
+      caption = "MinGW-w64";
+      sourceFile = ":licenses/MinGW-w64.LICENSE";
+      tabControl = tabControl;
+   };
+#endif
 /*   Button ok
    {
       this;

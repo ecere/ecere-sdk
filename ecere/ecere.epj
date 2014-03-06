@@ -2011,6 +2011,12 @@ from wherever you obtained them.
                            "Options" : {
                               "ExcludeFromBuild" : true
                            }
+                        },
+                        {
+                           "Name" : "Installer",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
                         }
                      ]
                   }

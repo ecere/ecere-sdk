@@ -1,4 +1,4 @@
-Ecere SDK v0.44 - www.ecere.com
+Ecere SDK v0.44.10 - www.ecere.com
 
 The Ecere SDK is Free Open Source Software. It is provided with NO WARRANTY 
 expressed or implied to the extent permitted by law.
@@ -19,8 +19,8 @@ The Ecere SDK is distributed under the New BSD license:
 
 ================================================================================
 
-   Copyright (c) 1996-2012, Jerome Jacovella-St-Louis
-   Copyright (c) 2005-2012, Ecere Corporation
+   Copyright (c) 1996-2014, Jerome Jacovella-St-Louis
+   Copyright (c) 2005-2014, Ecere Corporation
 
    All rights reserved.
 
@@ -54,10 +54,22 @@ This software makes use of other software components whose licenses may also
 apply, which are found in their respective source directories (most under
 deps/).
 
-Among them: zlib, libpng, libjpeg, giflib, harfbuzz, freetype, tango icons
+Among them: zlib, libPNG, libJPEG, giflib or libungif, HarfBuzz, FreeType,
+   Tango icons
 
-The IDE also communicates with GCC for compiling (MinGW on Windows), GDB for 
-debugging, and UPX for optionally compressing executables. Each of these have 
-their own license which can be found in their respective documentation folder 
-if distributed along with the SDK (in the case of the Windows version) or
-from wherever you obtained them.
+For EDA: SQLite (EDASQLite), libffi
+
+On Windows, applications built statically with the MinGW-w64 runtime should
+include the MinGW-w64 runtime license in their application.
+   See ecere-sdk/extras/res/licenses/MinGW-w64.LICENSE or
+       Program Files/Ecere SDK/tdm/licenses/COPYING.MinGW-w64-runtime.txt
+
+The Ecere IDE also communicates with GCC for compiling
+(MinGW/MinGW-w64 on Windows), GDB for debugging, and UPX for optionally
+compressing executables.
+
+Each of these have their own license, which can be found from wherever you
+obtained them or under:
+   Program Files/Ecere SDK/tdm/licenses/  and
+   Program Files/Ecere SDK/upx/doc/
+if distributed with the Ecere SDK Windows installer.

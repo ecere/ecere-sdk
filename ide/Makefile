@@ -177,7 +177,9 @@ RESOURCES2 = \
 	../extras/res/licenses/freetype.LICENSE \
 	../extras/res/licenses/harfbuzz.LICENSE \
 	../extras/res/licenses/upx.LICENSE \
-	../extras/res/licenses/gpl.LICENSE \
+	../extras/res/licenses/MinGW-w64.LICENSE \
+	../extras/res/licenses/tdm-gcc.LICENSE \
+	../extras/res/licenses/ffi.LICENSE \
 	res/ecere.jpg \
 	res/ecereBack.jpg \
 	res/icon.png \
@@ -274,7 +276,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/ide.mo "locale/ru_RU/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/vi_VI/LC_MESSAGES/ide.mo "locale/vi_VI/LC_MESSAGES"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/gpl.LICENSE "licenses"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/MinGW-w64.LICENSE ../extras/res/licenses/tdm-gcc.LICENSE ../extras/res/licenses/ffi.LICENSE "licenses"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
