@@ -190,7 +190,7 @@ struct Component
       if(this != null && parent)
          parent->GetFullPath(path, is32bit || (arch == bits32 && osIS64bit));
       else
-         strcpy(path, (is32bit || (arch == bits32 && osIS64bit)) ? installDir32 : installDir);
+         strcpy(path, (this && (is32bit || (arch == bits32 && osIS64bit))) ? installDir32 : installDir);
 
       if(this != null)
          PathCat(path, installPath);
@@ -272,7 +272,7 @@ Component samples[] =
 public enum CoreSDKID
 {
    ide, ide32, runtime, runtime32, ec, ec32,
-   gcc, gdb, gdb32, mingw, binutils, make,
+   gcc, gdb, mingw, binutils, make,
    none
 };
 
@@ -285,8 +285,7 @@ Component coreSDK[CoreSDKID] =
    { "eC Compiler",     "ecere-sdk/compiler",            "bin",      null, true,  true, true, bits64 },
    { "eC Compiler",     "ecere-sdk32/compiler",            "bin",      null, true,  true, true, bits32 },
    { "GNU C Compiler",  "tdm/gcc/core",   "tdm", null, true, true, minGWIncluded, none },
-   { "GNU Debugger",    "tdm/gdb",        "tdm", null, true, true, minGWIncluded, bits64 },
-   { "GNU Debugger",    "tdm/gdb32",      "tdm", null, true, true, minGWIncluded, bits32 },
+   { "GNU Debugger",    "tdm/gdb",        "tdm", null, true, true, minGWIncluded, none },
    { "MinGW-w64 Runtime",   "tdm/mingwrt",    "tdm", null, true, true, minGWIncluded, none },
    { "Binary Utils",    "tdm/binutils",   "tdm", null, true, true, minGWIncluded, none },
    { "GNU Make",        "tdm/make",       "tdm", null, true, true, minGWIncluded, none },
@@ -1249,6 +1248,10 @@ class InstallThread : Thread
       ComponentID c;
       ((GuiApplication)__thisModule).Lock();
       installProgress.progressBar.range = totalSize;
+
+      if(!osIS64bit)
+         strcpy(installDir32, installDir);
+
       for(c = 0; components[c].name && !abortInstall; c++)
          components[c].Install(installDir, installDir32);
       if(abortInstall)

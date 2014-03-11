@@ -14,8 +14,7 @@
          "winmm",
          "mpr",
          "z",
-         "imm32",
-         "../ide/obj/resources.o"
+         "imm32"
       ]
    },
    "Configurations" : [
@@ -28,13 +27,13 @@
             ],
             "Libraries" : [
                "ecereInstaller",
-               "png",
                "ole32",
                "uuid",
                "winmm",
                "mpr",
                "z",
-               "imm32"
+               "imm32",
+               "png"
             ],
             "LibraryDirs" : [
                "../ecere/obj/installer.$(PLATFORM)$(ARCH_SUFFIX)"
@@ -10150,17 +10149,7 @@
                   {
                      "Folder" : "bin",
                      "Files" : [
-                        "tdm/gdb64/gdb.exe"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "gdb32",
-               "Files" : [
-                  {
-                     "Folder" : "bin",
-                     "Files" : [
+                        "tdm/gdb64/gdb.exe",
                         "tdm/gdb32/i686-w64-mingw32-gdb.exe"
                      ]
                   }
@@ -11547,7 +11536,7 @@
                   {
                      "Folder" : "include",
                      "Files" : [
-                        "tdm/libgnurx-2.5.1-32/include/regex.h"
+                        "tdm/libgnurx-2.7/include/regex.h"
                      ]
                   }
                ]
