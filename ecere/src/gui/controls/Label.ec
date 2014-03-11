@@ -32,7 +32,7 @@ public:
          {
             watch(value)
             {
-               text { SetInitSize(initSize); }
+               caption { SetInitSize(initSize); }
                disabled { Update(null); }
             };
          }
