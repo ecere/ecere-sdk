@@ -251,23 +251,23 @@ define minGWIncluded = true;
 define minGWIncluded = false;
 #endif
 
-Component samples[] =
-{
+Array<Component> samples
+{ [
    { "Ecere Chess",     "samples/chess",     "chess",       null, false, true, true, none },
    { "Ecere Fractals",  "samples/fractals",  "fractals",    null, false, true, true, none },
    { "3D",              "samples/3D",        "3D",          null, false, true, true, none },
    { "Android",         "samples/android",   "android",          null, false, true, true, none },
-   { "Audio",           "samples/audio",     "audio",       null, false, true, true, none },
-   { "Database",        "samples/db",        "db",          null, false, true, true, none },
+   { $"Audio",           "samples/audio",     "audio",       null, false, true, true, none },
+   { $"Database",        "samples/db",        "db",          null, false, true, true, none },
    { "eC",              "samples/eC",        "eC",          null, false, true, true, none },
-   { "Games",           "samples/games",     "games",       null, false, true, true, none },
-   { "GUI & Graphics",  "samples/guiAndGfx", "guiAndGfx",   null, false, true, true, none },
-   { "Miscellaneous",   "samples/misc",      "misc",        null, false, true, true, none },
-   { "Networking",      "samples/net",       "net",         null, false, true, true, none },
-   { "WIA Scanning",    "samples/scanning",  "scanning",    null, false, true, true, none },
-   { "Threading",       "samples/threads",   "threads",     null, false, true, true, none }
+   { $"Games",           "samples/games",     "games",       null, false, true, true, none },
+   { $"GUI & Graphics",  "samples/guiAndGfx", "guiAndGfx",   null, false, true, true, none },
+   { $"Miscellaneous",   "samples/misc",      "misc",        null, false, true, true, none },
+   { $"Networking",      "samples/net",       "net",         null, false, true, true, none },
+   { $"WIA Scanning",    "samples/scanning",  "scanning",    null, false, true, true, none },
+   { $"Threading",       "samples/threads",   "threads",     null, false, true, true, none },
    { null }
-};
+] };
 
 public enum CoreSDKID
 {
@@ -276,39 +276,39 @@ public enum CoreSDKID
    none
 };
 
-Component coreSDK[CoreSDKID] =
-{
+Array<Component> coreSDK
+{ [
    { "Ecere IDE",       "ecere-sdk/ide",                 "bin",      null, true,  true, true, bits64 },
    { "Ecere IDE",       "ecere-sdk32/ide",                 "bin",      null, true,  true, true, bits32 },
-   { "Runtime Library", "ecere-sdk/ecere.dll",           "bin",      null, true,  true, true, bits64 },
-   { "Runtime Library", "ecere-sdk32/ecere.dll",           "bin",      null, true,  true, true, bits32 },
-   { "eC Compiler",     "ecere-sdk/compiler",            "bin",      null, true,  true, true, bits64 },
-   { "eC Compiler",     "ecere-sdk32/compiler",            "bin",      null, true,  true, true, bits32 },
-   { "GNU C Compiler",  "tdm/gcc/core",   "tdm", null, true, true, minGWIncluded, none },
-   { "GNU Debugger",    "tdm/gdb",        "tdm", null, true, true, minGWIncluded, none },
-   { "MinGW-w64 Runtime",   "tdm/mingwrt",    "tdm", null, true, true, minGWIncluded, none },
-   { "Binary Utils",    "tdm/binutils",   "tdm", null, true, true, minGWIncluded, none },
-   { "GNU Make",        "tdm/make",       "tdm", null, true, true, minGWIncluded, none },
+   { $"Runtime Library", "ecere-sdk/ecere.dll",           "bin",      null, true,  true, true, bits64 },
+   { $"Runtime Library", "ecere-sdk32/ecere.dll",           "bin",      null, true,  true, true, bits32 },
+   { $"eC Compiler",     "ecere-sdk/compiler",            "bin",      null, true,  true, true, bits64 },
+   { $"eC Compiler",     "ecere-sdk32/compiler",            "bin",      null, true,  true, true, bits32 },
+   { $"GNU C Compiler",  "tdm/gcc/core",   "tdm", null, true, true, minGWIncluded, none },
+   { $"GNU Debugger",    "tdm/gdb",        "tdm", null, true, true, minGWIncluded, none },
+   { $"MinGW-w64 Runtime",   "tdm/mingwrt",    "tdm", null, true, true, minGWIncluded, none },
+   { $"Binary Utils",    "tdm/binutils",   "tdm", null, true, true, minGWIncluded, none },
+   { $"GNU Make",        "tdm/make",       "tdm", null, true, true, minGWIncluded, none },
    { null }
-};
+] };
 
 public enum AdditionalID
 {
    eda, eda32, vanilla, vanilla32, extras, upx, gnurx, gnurx32, /*pthreads, */cpp, /*w32api, gcci18n, gdbi18n, makei18n, binutilsi18n, */none
 };
 
-Component additional[AdditionalID] =
-{
-   { "Data Access",     "ecere-sdk/eda",                 "bin",      null, false, true, true, bits64 },
-   { "Data Access",     "ecere-sdk32/eda",               "bin",      null, false, true, true, bits32 },
-   { "Ecere Vanilla",   "ecere-sdk/libecereVanilla.a",   "lib",      null, false, true, true, bits64 },
-   { "Ecere Vanilla",   "ecere-sdk32/libecereVanilla.a", "lib",      null, false, true, true, bits32 },
-   { "Ecere Extras",    "extras",                        "extras",   null, false, true, true, none },
+Array<Component> additional
+{ [
+   { $"Data Access",     "ecere-sdk/eda",                 "bin",      null, false, true, true, bits64 },
+   { $"Data Access",     "ecere-sdk32/eda",               "bin",      null, false, true, true, bits32 },
+   { $"Ecere Vanilla",   "ecere-sdk/libecereVanilla.a",   "lib",      null, false, true, true, bits64 },
+   { $"Ecere Vanilla",   "ecere-sdk32/libecereVanilla.a", "lib",      null, false, true, true, bits32 },
+   { $"Ecere Extras",    "extras",                        "extras",   null, false, true, true, none },
    { "UPX",             "upx/bin",                       "upx/bin",      null, false, true, true, none },
-   { "GNU Regexp",      "tdm/gnurx",                     "tdm",    null, false, true, true, bits64 },
-   { "GNU Regexp",      "tdm/gnurx32",                   "tdm",    null, false, true, true, bits32 },
+   { $"GNU Regexp",      "tdm/gnurx",                     "tdm",    null, false, true, true, bits64 },
+   { $"GNU Regexp",      "tdm/gnurx32",                   "tdm",    null, false, true, true, bits32 },
 //   { "pthreads",        "tdm/pthreads",                   "mingw",    null, false, true, minGWIncluded, none },
-   { "C++ Compiler",    "tdm/gcc/c++",                   "tdm",    null, false, true, minGWIncluded, none },
+   { $"C++ Compiler",    "tdm/gcc/c++",                   "tdm",    null, false, true, minGWIncluded, none },
 //   { "Win32 APIs",      "mingw/w32api",                  "mingw",    null, false, true, minGWIncluded, none },
 /*   { "GCC I18n",        "mingw/locale/gcc",              "tdm",    null, false, false, minGWIncluded, none },
    { "GDB I18n",        "mingw/locale/gdb",              "tdm",    null, false, false, minGWIncluded, none },
@@ -316,7 +316,7 @@ Component additional[AdditionalID] =
    { "Binutils I18n",   "mingw/locale/binutils",         "tdm",    null, false, false, minGWIncluded, none },
 */
    { null }
-};
+] };
 
 public enum DocumentationID
 {
@@ -325,21 +325,21 @@ public enum DocumentationID
    none
 };
 
-Component documentation[DocumentationID] =
-{
-   { "Ecere Book",         "ecere-sdk/book",       "doc",            null, false, true, true, none },
-   { "API Reference",      "ecere-sdk/doc",        "doc",            null, false, true, true, none },
-   { "Ecere Tutorials",    "ecere-sdk/tutorials",  "doc",            null, false, true, true, none },
-   { "Ecere Coursework",   "ecere-sdk/coursework", "doc",            null, false, true, true, none },
-   { "GCC Docs",           "tdm/doc/gcc",          "tdm",          null, false, false, minGWIncluded, none },
-   { "G++ Docs",           "tdm/doc/g++",          "tdm",          null, false, false, minGWIncluded, none },
-   { "GDB Docs",           "tdm/doc/gdb",          "tdm",          null, false, false, minGWIncluded, none },
-   { "Make Docs",          "tdm/doc/make",         "tdm",          null, false, false, minGWIncluded, none },
-   { "Binutils Docs",      "tdm/doc/binutils",     "tdm",          null, false, false, minGWIncluded, none },
-   { "gnurx Docs",         "tdm/doc/gnurx",        "tdm",          null, false, false, minGWIncluded, none },
-   { "UPX Docs",           "upx/doc",              "upx/doc",  null, false, false, minGWIncluded, none },
+Array<Component> documentation
+{ [
+   { $"Ecere Book",         "ecere-sdk/book",       "doc",            null, false, true, true, none },
+   { $"API Reference",      "ecere-sdk/doc",        "doc",            null, false, true, true, none },
+   { $"Ecere Tutorials",    "ecere-sdk/tutorials",  "doc",            null, false, true, true, none },
+   { $"Ecere Coursework",   "ecere-sdk/coursework", "doc",            null, false, true, true, none },
+   { $"GCC Docs",           "tdm/doc/gcc",          "tdm",          null, false, false, minGWIncluded, none },
+   { $"G++ Docs",           "tdm/doc/g++",          "tdm",          null, false, false, minGWIncluded, none },
+   { $"GDB Docs",           "tdm/doc/gdb",          "tdm",          null, false, false, minGWIncluded, none },
+   { $"Make Docs",          "tdm/doc/make",         "tdm",          null, false, false, minGWIncluded, none },
+   { $"Binutils Docs",      "tdm/doc/binutils",     "tdm",          null, false, false, minGWIncluded, none },
+   { $"gnurx Docs",         "tdm/doc/gnurx",        "tdm",          null, false, false, minGWIncluded, none },
+   { $"UPX Docs",           "upx/doc",              "upx/doc",  null, false, false, minGWIncluded, none },
    { null }
-};
+] };
 
 public enum ComponentID
 {
@@ -350,14 +350,14 @@ public enum ComponentID
    none
 };
 
-Component components[ComponentID] =
-{
-   { "Core SDK Files", null, null, coreSDK, true, true, true, none },
-   { "Additional Support", null, null, additional, false, true, true, none },
-   { "Documentation", null /*"doc"*/, null /*"doc"*/, documentation, false, true, true, none },
-   { "Samples", null, "samples", samples, false, true, true, none },
+Array<Component> components
+{ [
+   { $"Core SDK Files", null, null, coreSDK.array, true, true, true, none },
+   { $"Additional Support", null, null, additional.array, false, true, true, none },
+   { $"Documentation", null /*"doc"*/, null /*"doc"*/, documentation.array, false, true, true, none },
+   { $"Samples", null, "samples", samples.array, false, true, true, none },
    { null }
-};
+] };
 FileSize totalSize;
 FileSize totalInstalled;
 
@@ -381,29 +381,29 @@ enum AssociateOptions
    AssociateIMG
 };
 
-InstallOption associateOptions[] =
-{
-   { "Associate with Ecere Project Files (*.epj)", null, true },
-   { "Associate with eC Files (*.ec, *.eh)", null, true },
-   { "Associate with C files (*.c, *.h)", null, false },
-   { "Associate with C++ Files (*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)", null, false },
-   { "Associate with text files (*.txt)", null, false },
-   { "Associate with 3D Studio Model Files (*.3ds)", null, true },
-   { "Associate with Image Files (*.png, *.jpg, *.pcx, *.bmp, *.gif)", null, false },
+Array<InstallOption> associateOptions
+{ [
+   { $"Associate with Ecere Project Files (*.epj)", null, true },
+   { $"Associate with eC Files (*.ec, *.eh)", null, true },
+   { $"Associate with C files (*.c, *.h)", null, false },
+   { $"Associate with C++ Files (*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)", null, false },
+   { $"Associate with text files (*.txt)", null, false },
+   { $"Associate with 3D Studio Model Files (*.3ds)", null, true },
+   { $"Associate with Image Files (*.png, *.jpg, *.pcx, *.bmp, *.gif)", null, false },
    { null }
-};
+] };
 
 enum PathOptions
 {
    AddECEREPaths, AddMinGWPaths
 };
 
-InstallOption pathOptions[] =
-{
-   { "Add Ecere binaries location to the user environment path", null, true, true },
-   { "Add MinGW to the user environment path", null, true, minGWIncluded }
+Array<InstallOption> pathOptions
+{ [
+   { $"Add Ecere binaries location to the user environment path", null, true, true },
+   { $"Add MinGW to the user environment path", null, true, minGWIncluded },
    { null }
-};
+] };
 
 enum IconOptions
 {
@@ -412,16 +412,16 @@ enum IconOptions
    QuickLaunchIcon = 3
 };
 
-InstallOption options[] =
-{
-   { "Install for All Users", null, true, true },
-   { "Start Menu Group", null, true, true },
-   { "Desktop Icon", null, true, true },
-   { "Quicklaunch Icon", null, true, true },
-   { "Associate the Ecere IDE with Supported File Types", associateOptions, true, true },
-   { "Add binaries location to the user environment paths", pathOptions, true, minGWIncluded },
+Array<InstallOption> options
+{ [
+   { $"Install for All Users", null, true, true },
+   { $"Start Menu Group", null, true, true },
+   { $"Desktop Icon", null, true, true },
+   { $"Quicklaunch Icon", null, true, true },
+   { $"Associate the Ecere IDE with Supported File Types", associateOptions.array, true, true },
+   { $"Add binaries location to the user environment paths", pathOptions.array, true, minGWIncluded },
    { null }
-};
+] };
 
 char sourceDir[MAX_LOCATION] = ":";
 char installDir[MAX_LOCATION];
@@ -611,48 +611,48 @@ class Installer : Window
             if(options[5].row)
                ((CheckItem *)options[5].row.GetData(optionField))->name = options[5].name;
 
-            pathOptions[AddECEREPaths].name = options[0].selected ? $"Add Ecere binaries location to the system environment path" : $"Add Ecere binaries location to the user environment path";
-            if(pathOptions[AddECEREPaths].row)
-               ((CheckItem *)pathOptions[AddECEREPaths].row.GetData(optionField))->name = pathOptions[AddECEREPaths].name;
+            pathOptions[PathOptions::AddECEREPaths].name = options[0].selected ? $"Add Ecere binaries location to the system environment path" : $"Add Ecere binaries location to the user environment path";
+            if(pathOptions[PathOptions::AddECEREPaths].row)
+               ((CheckItem *)pathOptions[PathOptions::AddECEREPaths].row.GetData(optionField))->name = pathOptions[PathOptions::AddECEREPaths].name;
 
-            pathOptions[AddMinGWPaths].name = options[0].selected ? $"Add TDM-GCC/MinGW-w64 to the system environment path" : $"Add TDM-GCC/MinGW-w64 to the user environment path";
-            if(pathOptions[AddMinGWPaths].row)
-               ((CheckItem *)pathOptions[AddMinGWPaths].row.GetData(optionField))->name = pathOptions[AddMinGWPaths].name;
+            pathOptions[PathOptions::AddMinGWPaths].name = options[0].selected ? $"Add TDM-GCC/MinGW-w64 to the system environment path" : $"Add TDM-GCC/MinGW-w64 to the user environment path";
+            if(pathOptions[PathOptions::AddMinGWPaths].row)
+               ((CheckItem *)pathOptions[PathOptions::AddMinGWPaths].row.GetData(optionField))->name = pathOptions[PathOptions::AddMinGWPaths].name;
 
             GetEnvironment(options[0].selected ? "ALLUSERSPROFILE" : "APPDATA", appData, sizeof(appData));
             if(appData && appData[0])
             {
                char defPath[MAX_LOCATION];
 
-               char * s = components[samples].installPath;
+               char * s = components[ComponentID::samples].installPath;
                strcpy(defPath, installDir);
-               PathCat(defPath, components[samples].defInstallPath);
+               PathCat(defPath, components[ComponentID::samples].defInstallPath);
                ChangeCh(defPath, '/', DIR_SEP);
-               if(!strcmp(defPath, components[samples].installPath))
+               if(!strcmp(defPath, components[ComponentID::samples].installPath))
                {
                   static char defSamplesPath[MAX_LOCATION];
                   strcpy(defSamplesPath, appData);
                   PathCat(defSamplesPath, "Ecere SDK\\Samples");
-                  components[samples].defInstallPath = defSamplesPath;
+                  components[ComponentID::samples].defInstallPath = defSamplesPath;
 
-                  strcpy(components[samples].installPath, components[samples].defInstallPath);
-                  ChangeCh(components[samples].installPath, '/', DIR_SEP);
-                  components[samples].row.SetData(locationField, components[samples].installPath);
+                  strcpy(components[ComponentID::samples].installPath, components[ComponentID::samples].defInstallPath);
+                  ChangeCh(components[ComponentID::samples].installPath, '/', DIR_SEP);
+                  components[ComponentID::samples].row.SetData(locationField, components[ComponentID::samples].installPath);
                }
 
                strcpy(defPath, installDir);
-               PathCat(defPath, additional[extras].defInstallPath);
+               PathCat(defPath, additional[AdditionalID::extras].defInstallPath);
                ChangeCh(defPath, '/', DIR_SEP);
-               if(!strcmp(additional[extras].installPath, additional[extras].installPath))
+               if(!strcmp(additional[AdditionalID::extras].installPath, additional[AdditionalID::extras].installPath))
                {
                   static char defExtrasPath[MAX_LOCATION];
                   strcpy(defExtrasPath, appData);
                   PathCat(defExtrasPath, "Ecere SDK\\extras");
-                  additional[extras].defInstallPath = defExtrasPath;
+                  additional[AdditionalID::extras].defInstallPath = defExtrasPath;
 
-                  strcpy(additional[extras].installPath, additional[extras].defInstallPath);
-                  ChangeCh(additional[extras].installPath, '/', DIR_SEP);
-                  additional[extras].row.SetData(locationField, additional[extras].installPath);
+                  strcpy(additional[AdditionalID::extras].installPath, additional[AdditionalID::extras].defInstallPath);
+                  ChangeCh(additional[AdditionalID::extras].installPath, '/', DIR_SEP);
+                  additional[AdditionalID::extras].row.SetData(locationField, additional[AdditionalID::extras].installPath);
                }
             }
          }
@@ -984,11 +984,11 @@ class Installer : Window
          static char defExtrasPath[MAX_LOCATION];
          strcpy(defSamplesPath, appData);
          PathCat(defSamplesPath, "Ecere SDK\\Samples");
-         components[samples].defInstallPath = defSamplesPath;
+         components[ComponentID::samples].defInstallPath = defSamplesPath;
 
          strcpy(defExtrasPath, appData);
          PathCat(defExtrasPath, "Ecere SDK\\extras");
-         additional[extras].defInstallPath = defExtrasPath;
+         additional[AdditionalID::extras].defInstallPath = defExtrasPath;
       }
 
       destBox.path = installDir;
@@ -1343,8 +1343,8 @@ class InstallThread : Thread
          {
             char path[MAX_LOCATION] = "";
 
-            if(components[samples].selected)
-               components[samples].GetFullPath(path, false);
+            if(components[ComponentID::samples].selected)
+               components[ComponentID::samples].GetFullPath(path, false);
             // IDE will now default to HOME for the default project/files locations
 
             if(!settings.ideProjectFileDialogLocation[0])
@@ -1352,9 +1352,9 @@ class InstallThread : Thread
             if(!settings.ideFileDialogLocation[0])
                settings.ideFileDialogLocation = path;
 
-            if(documentation[apiRef].selected)
+            if(documentation[DocumentationID::apiRef].selected)
             {
-               documentation[apiRef].GetFullPath(path, false);
+               documentation[DocumentationID::apiRef].GetFullPath(path, false);
                if(!settings.docDir[0])
                   settings.docDir = path;
             }
@@ -1492,24 +1492,24 @@ class InstallThread : Thread
                strcpy(destPath, startMenuPath);
                PathCat(destPath, "Ecere SDK\\Ecere IDE.lnk");
                CreateLink(idePath, destPath, null); //"Ecere IDE");
-               if(components[samples].selected)
+               if(components[ComponentID::samples].selected)
                {
                   char samplesPath[MAX_LOCATION] = "";
-                  components[samples].GetFullPath(samplesPath, false);
+                  components[ComponentID::samples].GetFullPath(samplesPath, false);
 
                   strcpy(destPath, startMenuPath);
                   PathCat(destPath, "Ecere SDK\\Sample Projects.lnk");
                   CreateLink(samplesPath, destPath, null);//"Sample Projects");
                }
-               if(components[documentation].selected && documentation[ecereBook].selected)
+               if(components[ComponentID::documentation].selected && documentation[DocumentationID::ecereBook].selected)
                {
                   char docPath[MAX_LOCATION] = "";
-                  documentation[ecereBook].GetFullPath(docPath, false);
+                  documentation[DocumentationID::ecereBook].GetFullPath(docPath, false);
                   PathCat(docPath, "Ecere Tao of Programming [work in progress].pdf");
 
                   {
                      char tao[MAX_LOCATION] ;
-                     documentation[ecereBook].GetFullPath(tao, false);
+                     documentation[DocumentationID::ecereBook].GetFullPath(tao, false);
                      PathCat(tao, "tao.pdf");
                      RenameFile(tao, docPath);
                   }
