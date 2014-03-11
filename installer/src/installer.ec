@@ -19,6 +19,21 @@ import "createLink"
 import "licensing"
 import "CheckListBox"
 
+static bool IsAdministrator()
+{
+   bool b;
+   SID_IDENTIFIER_AUTHORITY NtAuthority = { SECURITY_NT_AUTHORITY };
+   PSID AdministratorsGroup;
+   b = AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &AdministratorsGroup);
+   if(b)
+   {
+      if(!CheckTokenMembership(NULL, AdministratorsGroup, &b))
+         b = FALSE;
+       FreeSid(AdministratorsGroup);
+   }
+   return b;
+}
+
 struct CheckItem
 {
    char * name;
@@ -393,13 +408,14 @@ InstallOption pathOptions[] =
 
 enum IconOptions
 {
-   StartMenuIcon,
-   DesktopIcon,
-   QuickLaunchIcon
+   StartMenuIcon = 1,
+   DesktopIcon = 2,
+   QuickLaunchIcon = 3
 };
 
 InstallOption options[] =
 {
+   { "Install for All Users", null, true, true },
    { "Start Menu Group", null, true, true },
    { "Desktop Icon", null, true, true },
    { "Quicklaunch Icon", null, true, true },
@@ -421,7 +437,7 @@ class Installer : Window
    hasMinimize = true;
    hasClose = true;
    tabCycle = true;
-   clientSize = { 636, 456 };
+   clientSize = { 636, 476 };
    // clientSize = { 796, 576 };
    icon = { ":icon.png" };
 
@@ -483,7 +499,10 @@ class Installer : Window
          if(newPath)
          {
             PathCat(fullPath, newPath);
-            MakePathRelative(fullPath, path, relative);
+            if(IsPathInsideOf(fullPath, path))
+               MakePathRelative(fullPath, path, relative);
+            else
+               strcpy(relative, fullPath);
          }
          listBox.SetData(locationField, relative);
          strcpy(component->installPath, relative);
@@ -556,12 +575,12 @@ class Installer : Window
          }
       }
    };
-   Label agreementLbl { parent = this, text = $"By installing the Ecere SDK, you agree to the                                         .", font = { "Tahoma", 8.25f }, anchor = Anchor { left = 24, top = 424 } };
+   Label agreementLbl { parent = this, text = $"By installing the Ecere SDK, you agree to the                                         .", font = { "Tahoma", 8.25f }, anchor = Anchor { left = 24, top = 444 } };
    Button licenseButton
    {
       this, inactive = true, offset = false, bevel = false, foreground = blue, font = { "Tahoma", 8.25f, underline = true, bold = true },
       // text = $"terms and conditions", anchor = Anchor { left = 241, top = 421 };
-      text = $"terms and conditions", anchor = Anchor { left = 237, top = 421 };
+      text = $"terms and conditions", anchor = Anchor { left = 237, top = 441 };
       cursor = ((GuiApplication)__thisModule).GetCursor(hand);
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -573,7 +592,7 @@ class Installer : Window
    };
    CheckListBox optionsBox
    {
-      this, size = { 460, 94 }, position = { 160, 284 };
+      this, size = { 460, 114 }, position = { 160, 284 };
       fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true,
       noDragging = true;
       rowHeight = 18;
@@ -584,11 +603,65 @@ class Installer : Window
          CheckItem * item = row.GetData(optionField);
          InstallOption * option = item->data;
          option->selected = listBox.IsChecked(row);
+         // Update default samples/extras path whether we're installing for All Users or not
+         if(option == &options[0])
+         {
+            char appData[MAX_LOCATION];
+
+            options[5].name = options[0].selected ? $"Add binaries location to the system environment paths" : $"Add binaries location to the user environment paths";
+            if(options[5].row)
+               ((CheckItem *)options[5].row.GetData(optionField))->name = options[5].name;
+
+            pathOptions[AddECEREPaths].name = options[0].selected ? $"Add Ecere binaries location to the system environment path" : $"Add Ecere binaries location to the user environment path";
+            if(pathOptions[AddECEREPaths].row)
+               ((CheckItem *)pathOptions[AddECEREPaths].row.GetData(optionField))->name = pathOptions[AddECEREPaths].name;
+
+            pathOptions[AddMinGWPaths].name = options[0].selected ? $"Add TDM-GCC/MinGW-w64 to the system environment path" : $"Add TDM-GCC/MinGW-w64 to the user environment path";
+            if(pathOptions[AddMinGWPaths].row)
+               ((CheckItem *)pathOptions[AddMinGWPaths].row.GetData(optionField))->name = pathOptions[AddMinGWPaths].name;
+
+            GetEnvironment(options[0].selected ? "ALLUSERSPROFILE" : "APPDATA", appData, sizeof(appData));
+            if(appData && appData[0])
+            {
+               char defPath[MAX_LOCATION];
+
+               char * s = components[samples].installPath;
+               strcpy(defPath, installDir);
+               PathCat(defPath, components[samples].defInstallPath);
+               ChangeCh(defPath, '/', DIR_SEP);
+               if(!strcmp(defPath, components[samples].installPath))
+               {
+                  static char defSamplesPath[MAX_LOCATION];
+                  strcpy(defSamplesPath, appData);
+                  PathCat(defSamplesPath, "Ecere SDK\\Samples");
+                  components[samples].defInstallPath = defSamplesPath;
+
+                  strcpy(components[samples].installPath, components[samples].defInstallPath);
+                  ChangeCh(components[samples].installPath, '/', DIR_SEP);
+                  components[samples].row.SetData(locationField, components[samples].installPath);
+               }
+
+               strcpy(defPath, installDir);
+               PathCat(defPath, additional[extras].defInstallPath);
+               ChangeCh(defPath, '/', DIR_SEP);
+               if(!strcmp(additional[extras].installPath, additional[extras].installPath))
+               {
+                  static char defExtrasPath[MAX_LOCATION];
+                  strcpy(defExtrasPath, appData);
+                  PathCat(defExtrasPath, "Ecere SDK\\extras");
+                  additional[extras].defInstallPath = defExtrasPath;
+
+                  strcpy(additional[extras].installPath, additional[extras].defInstallPath);
+                  ChangeCh(additional[extras].installPath, '/', DIR_SEP);
+                  additional[extras].row.SetData(locationField, additional[extras].installPath);
+               }
+            }
+         }
       }
    };
    Button install
    {
-      parent = this, text = $"Install", isDefault = true, size = { 75, 23 }, position = { 432, 416 };
+      parent = this, text = $"Install", isDefault = true, size = { 75, 23 }, position = { 432, 436 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -599,7 +672,7 @@ class Installer : Window
          return true;
       }
    };
-   Button button3 { parent = this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 416 }, NotifyClicked = ButtonCloseDialog };
+   Button button3 { parent = this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 436 }, NotifyClicked = ButtonCloseDialog };
    Label label1 { labeledWindow = destBox, tabCycle = true, isGroupBox = true, parent = this, inactive = false, size = Size { 458, 50 }, anchor = Anchor { left = 160, top = 96 } };
    PathBox destBox
    {
@@ -682,7 +755,7 @@ class Installer : Window
       contents = $"Choose in which folder to install the Ecere SDK, which features\n"
          "of the SDK to install, as well as where to install program icons."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 392 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Label label2 { parent = this, text = buildString, position = { 16, 412 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
    Picture picture1
    {
       image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, text = "picture1", anchor = Anchor { left = 16, top = 4 };
@@ -838,10 +911,20 @@ class Installer : Window
       char appData[MAX_LOCATION];
       char homeDrive[MAX_LOCATION];
       char winDir[MAX_LOCATION];
+      char * x86 = null;
 
-      GetEnvironment("APPDATA", appData, sizeof(appData));
+      bool isAdministrator = IsAdministrator();
+
+      if(!isAdministrator)
+      {
+         options[0].available = false;
+         options[0].selected = false;
+      }
+
       GetEnvironment("HOMEDRIVE", homeDrive, sizeof(homeDrive));
       GetEnvironment("windir", winDir, sizeof(winDir));
+
+      GetEnvironment(options[0].selected ? "ALLUSERSPROFILE" : "APPDATA", appData, sizeof(appData));
 
       componentsBox.AddField(componentField);
       componentsBox.AddField(locationField);
@@ -850,15 +933,20 @@ class Installer : Window
 
       optionsBox.AddField(optionField);
 
+      programFilesDir[0] = 0;
       if(GetEnvironment("ProgramFiles", programFilesDir, MAX_LOCATION))
       {
-         char * x86 = strstr(programFilesDir, " (x86)");
+         x86 = strstr(programFilesDir, " (x86)");
+         if(x86)
+            osIS64bit = true;
+      }
+
+      if(isAdministrator && programFilesDir[0])
+      {
          if(x86)
          {
             strcpy(installDir32, programFilesDir);
             PathCat(installDir32, "Ecere SDK");
-            osIS64bit = true;
-
             *x86 = 0;
             strcpy(installDir, programFilesDir);
             PathCat(installDir, "Ecere SDK");
@@ -874,14 +962,22 @@ class Installer : Window
       {
          strcpy(installDir, homeDrive);
          PathCat(installDir, "Ecere SDK");
+         strcpy(installDir32, installDir);
+         strcat(installDir32, " (32)");
       }
       else if(winDir && winDir[0])
       {
          strcpy(installDir, winDir);
          PathCat(installDir, "..\\Ecere SDK");
+         strcpy(installDir32, installDir);
+         strcat(installDir32, " (32)");
       }
       else
+      {
          strcpy(installDir, "C:\\Ecere SDK");
+         strcpy(installDir32, installDir);
+         strcat(installDir32, " (32)");
+      }
 
       if(appData && appData[0])
       {
@@ -917,7 +1013,10 @@ class Installer : Window
          totalSpaceValue.text = sizeString;
       }
       for(c = 0; options[c].name; c++)
-         AddOption(options[c], null);
+      {
+         if(options[c].available)
+            AddOption(options[c], null);
+      }
    }
 
    bool OnCreate()
@@ -930,9 +1029,9 @@ class Installer : Window
    {
       int tw = label2.size.w;
       surface.SetForeground(Color { 128, 128, 128 });
-      surface.HLine(label2.position.x + tw + 6, 620, 400);
+      surface.HLine(label2.position.x + tw + 6, 620, 420);
       surface.SetForeground(white);
-      surface.HLine(label2.position.x + tw + 6, 621, 401);
+      surface.HLine(label2.position.x + tw + 6, 621, 421);
       surface.PutPixel(621, 400);
    }
 
@@ -951,7 +1050,7 @@ class InstallProgress : Window
    hasClose = true;
    tabCycle = true;
    // size = Size { 640, 480 };
-   clientSize = { 636, 456 };
+   clientSize = { 636, 476 };
    //clientSize = { 796, 576 };
    icon = { ":icon.png" };
 
@@ -960,13 +1059,13 @@ class InstallProgress : Window
    ProgressBar progressBar { parent = this, size = Size { 588, 24 }, anchor = Anchor { left = 24, top = 184 } };
    Button finish
    {
-      parent = this, text = $"Install", disabled = true, isDefault = true, size = Size { 75, 23 }, anchor = Anchor { left = 432, top = 416 };
+      parent = this, text = $"Install", disabled = true, isDefault = true, size = Size { 75, 23 }, anchor = Anchor { left = 432, top = 436 };
 
       NotifyClicked = ButtonCloseDialog
    };
    Button cancel
    {
-      this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 416 };
+      this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 436 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -980,7 +1079,7 @@ class InstallProgress : Window
       multiLine = true, parent = label3, opacity = 0, borderStyle = none, size = Size { 350, 35 }, anchor = Anchor { horz = 111, vert = 13 },
       contents = $"Please wait while the Ecere Software Development Kit is being installed."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 392 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Label label2 { parent = this, text = buildString, position = { 16, 412 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
    Picture picture1
    {
       image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, anchor = Anchor { left = 16, top = 4 };
@@ -998,9 +1097,9 @@ class InstallProgress : Window
    {
       int tw = label2.size.w;
       surface.SetForeground(Color { 128, 128, 128 });
-      surface.HLine(label2.position.x + tw + 6, 620, 400);
+      surface.HLine(label2.position.x + tw + 6, 620, 420);
       surface.SetForeground(white);
-      surface.HLine(label2.position.x + tw + 6, 621, 401);
+      surface.HLine(label2.position.x + tw + 6, 621, 421);
       surface.PutPixel(621, 400);
    }
 
@@ -1055,11 +1154,19 @@ static void AddPath(char * sysPaths[200], int sysCount, char * paths[200], int *
 void ModifyPath(char * systemPath, char * userPath)
 {
    char oldPath[8192], * paths[200], * sysPaths[200];
-   int count, sysCount;
+   int count, sysCount = 0;
 
-   strcpy(oldPath, userPath);
-   count = TokenizeWith(oldPath, sizeof(paths) / sizeof(char *), paths, ";", false);
-   sysCount = TokenizeWith(systemPath, sizeof(sysPaths) / sizeof(char *), sysPaths, ";", false);
+   if(userPath)
+   {
+      strcpy(oldPath, userPath);
+      count = TokenizeWith(oldPath, sizeof(paths) / sizeof(char *), paths, ";", false);
+      sysCount = TokenizeWith(systemPath, sizeof(sysPaths) / sizeof(char *), sysPaths, ";", false);
+   }
+   else
+   {
+      strcpy(oldPath, systemPath);
+      count = TokenizeWith(oldPath, sizeof(paths) / sizeof(char *), paths, ";", false);
+   }
 
    {
       CoreSDKID c;
@@ -1078,7 +1185,7 @@ void ModifyPath(char * systemPath, char * userPath)
          }
          else if(!pathOptions[PathOptions::AddECEREPaths].selected) continue;
 
-         AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath, path);
+         AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath ? userPath : systemPath, path);
       }
    }
    {
@@ -1094,7 +1201,7 @@ void ModifyPath(char * systemPath, char * userPath)
          additional[c].GetFullPath(path, false);
          if(c != eda && c != eda32 && c != upx)
             PathCat(path, "bin");
-         AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath, path);
+         AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath ? userPath : systemPath, path);
       }
    }
 }
@@ -1169,6 +1276,7 @@ class InstallThread : Thread
             driver = "JSON";
             dataOwner = &settings;
             dataClass = class(IDESettings);
+            allUsers = options[0].selected;
          };
          CompilerConfig compiler;
          installProgress.installing.text = $"Configuring Ecere IDE...";
@@ -1301,31 +1409,47 @@ class InstallThread : Thread
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
 
-            if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_QUERY_VALUE, &systemKey) == ERROR_SUCCESS)
+            if(options[0].selected)
             {
-               size = sizeof(wSystemPath);
-               RegQueryValueExW(systemKey, L"path", null, null, (byte *)wSystemPath, &size);
-               UTF16toUTF8Buffer(wSystemPath, systemPath, sizeof(systemPath));
-            }
+               if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_ALL_ACCESS, &systemKey) == ERROR_SUCCESS)
+               {
+                  size = sizeof(wSystemPath);
+                  RegQueryValueExW(systemKey, L"path", null, null, (byte *)wSystemPath, &size);
+                  UTF16toUTF8Buffer(wSystemPath, systemPath, sizeof(systemPath));
+                  ModifyPath(systemPath, null);
 
-            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &userKey, &status);
-            if(status == REG_OPENED_EXISTING_KEY)
+                  UTF8toUTF16Buffer(systemPath, wSystemPath, sizeof(wSystemPath) / sizeof(uint16));
+                  RegSetValueExW(systemKey, L"path", 0, REG_EXPAND_SZ, (byte *)wSystemPath, (uint)(wcslen(wSystemPath)+1) * 2);
+                  RegCloseKey(systemKey);
+               }
+            }
+            else
             {
-               size = sizeof(wUserPath);
-               RegQueryValueExW(userKey, L"path", null, null, (byte *)wUserPath, &size);
-               UTF16toUTF8Buffer(wUserPath, userPath, sizeof(userPath));
-            }
-            ModifyPath(systemPath, userPath);
-            UTF8toUTF16Buffer(userPath, wUserPath, sizeof(wUserPath) / sizeof(uint16));
-            RegSetValueExW(userKey, L"path", 0, REG_EXPAND_SZ, (byte *)wUserPath, (uint)(wcslen(wUserPath)+1) * 2);
-            RegCloseKey(userKey);
-            RegCloseKey(systemKey);
+               if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_QUERY_VALUE, &systemKey) == ERROR_SUCCESS)
+               {
+                  size = sizeof(wSystemPath);
+                  RegQueryValueExW(systemKey, L"path", null, null, (byte *)wSystemPath, &size);
+                  UTF16toUTF8Buffer(wSystemPath, systemPath, sizeof(systemPath));
+                  RegCloseKey(systemKey);
+               }
 
-            SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (int)"Environment", SMTO_NORMAL, 1000, NULL);
+               RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &userKey, &status);
+               if(status == REG_OPENED_EXISTING_KEY)
+               {
+                  size = sizeof(wUserPath);
+                  RegQueryValueExW(userKey, L"path", null, null, (byte *)wUserPath, &size);
+                  UTF16toUTF8Buffer(wUserPath, userPath, sizeof(userPath));
+               }
+               ModifyPath(systemPath, userPath);
+               UTF8toUTF16Buffer(userPath, wUserPath, sizeof(wUserPath) / sizeof(uint16));
+               RegSetValueExW(userKey, L"path", 0, REG_EXPAND_SZ, (byte *)wUserPath, (uint)(wcslen(wUserPath)+1) * 2);
+               RegCloseKey(userKey);
+            }
+            SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 1000, NULL);
          }
 
          // Install Program Group Icons
-         GetEnvironment("USERPROFILE", userProfile, sizeof(userProfile));
+         GetEnvironment(options[0].selected ? "ALLUSERSPROFILE" : "USERPROFILE", userProfile, sizeof(userProfile));
 
          if(options[IconOptions::StartMenuIcon].selected)
          {
@@ -1340,12 +1464,13 @@ class InstallThread : Thread
 
             strcpy(destPath, userProfile);
 
-            if(RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_ALL_ACCESS, &key) == ERROR_SUCCESS)
+            if(RegOpenKeyEx(options[0].selected ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER,
+               "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS)
             {
                uint16 wStartMenuPath[2048];
                uint size = sizeof(wStartMenuPath);
                // RegQueryValueEx(key, "Start Menu", null, null, startMenuPath, &size);
-               RegQueryValueExW(key, L"Programs", null, null, (byte *)wStartMenuPath, &size);
+               RegQueryValueExW(key, options[0].selected ? L"Common Programs" : L"Programs", null, null, (byte *)wStartMenuPath, &size);
                UTF16toUTF8Buffer(wStartMenuPath, startMenuPath, sizeof(startMenuPath));
                RegCloseKey(key);
             }
@@ -1399,11 +1524,12 @@ class InstallThread : Thread
             HKEY key;
             char desktopPath[MAX_LOCATION];
 
-            if(RegOpenKeyEx(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_ALL_ACCESS, &key) == ERROR_SUCCESS)
+            if(RegOpenKeyEx(options[0].selected ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER,
+               "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS)
             {
                uint16 wDesktopPath[MAX_LOCATION];
                uint size = sizeof(wDesktopPath);
-               RegQueryValueExW(key, L"Desktop", null, null, (byte *)wDesktopPath, &size);
+               RegQueryValueExW(key, options[0].selected ? L"Common Desktop" : L"Desktop", null, null, (byte *)wDesktopPath, &size);
                UTF16toUTF8Buffer(wDesktopPath, desktopPath, sizeof(desktopPath));
                RegCloseKey(key);
             }
@@ -1431,10 +1557,19 @@ class InstallThread : Thread
          {
             char appData[MAX_LOCATION];
             GetEnvironment("APPDATA", appData, sizeof(appData));
-
             if(appData[0])
             {
                char destPath[MAX_LOCATION];
+
+               if(appData[0] && options[0].selected)
+               {
+                  char dir[MAX_FILENAME];
+                  GetLastDirectory(appData, dir);
+                  if(!strcmpi(dir, "Roaming"))
+                     PathCat(appData, "../../../Default/AppData/Roaming");
+                  else
+                     PathCat(appData, "../Default");
+               }
 
                ((GuiApplication)__thisModule).Lock();
                installProgress.installing.text = $"Installing Quicklaunch Icon...";
@@ -1443,8 +1578,16 @@ class InstallThread : Thread
 
                strcpy(destPath, appData);
                PathCat(destPath, "Microsoft\\Internet Explorer\\Quick Launch\\Ecere IDE.lnk");
+               CreateLink(idePath, destPath, null);
 
-               CreateLink(idePath, destPath, null);//"Ecere IDE");
+               // Set it up on the dock for Windows 7 -- not working
+               /*
+               StripLastDirectory(destPath, destPath);
+               PathCat(destPath, "User Pinned\\TaskBar");
+               MakeDir(destPath);
+               PathCat(destPath, "Ecere IDE.lnk");
+               CreateLink(idePath, destPath, null);
+               */
             }
          }
 
