@@ -3638,6 +3638,46 @@ class IDEApp : GuiApplication
       }
       */
 
+      // Default to home directory if no directory yet set up
+      if(!ideSettings.ideProjectFileDialogLocation[0])
+      {
+         bool found = false;
+         char location[MAX_LOCATION];
+         char * home = getenv("HOME");
+         char * homeDrive = getenv("HOMEDRIVE");
+         char * homePath = getenv("HOMEPATH");
+         char * userProfile = getenv("USERPROFILE");
+         char * systemDrive = getenv("SystemDrive");
+         if(home && FileExists(home).isDirectory)
+         {
+            strcpy(location, home);
+            found = true;
+         }
+         if(!found && homeDrive && homePath)
+         {
+            strcpy(location, homeDrive);
+            PathCat(location, homePath);
+            if(FileExists(location).isDirectory)
+               found = true;
+         }
+         if(!found && FileExists(userProfile).isDirectory)
+         {
+            strcpy(location, userProfile);
+            found = true;
+         }
+         if(!found && FileExists(systemDrive).isDirectory)
+         {
+            strcpy(location, systemDrive);
+            found = true;
+         }
+         if(found)
+         {
+            ideSettings.ideProjectFileDialogLocation = location;
+            if(!ideSettings.ideFileDialogLocation[0])
+               ideSettings.ideFileDialogLocation = location;
+         }
+      }
+
       if(!LoadIncludeFile())
          PrintLn("error: unable to load :crossplatform.mk file inside ide binary.");
 

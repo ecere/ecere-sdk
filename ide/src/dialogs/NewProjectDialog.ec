@@ -293,7 +293,7 @@ class NewProjectDialog : Window
       //replacing this: NotifyUpdate = EditBoxUpdate;
       okBtn.disabled = !(text[0] && projectName.contents[0]);
 
-      GetWorkingDir(location, sizeof(location) - 1);
+      strcpy(location, ideSettings.ideProjectFileDialogLocation);
       PathCatSlash(location, text);
 
       GetLastDirectory(path, lastPart);
@@ -316,10 +316,7 @@ class NewProjectDialog : Window
    {
       char location[MAX_LOCATION];
 
-      if(ideSettings.ideProjectFileDialogLocation)
-         strcpy(location, ideSettings.ideProjectFileDialogLocation);
-      else
-         GetWorkingDir(location, sizeof(location) - 1);
+      strcpy(location, ideSettings.ideProjectFileDialogLocation);
 
       locationEditBox.path = location;
       strcpy(path, location);

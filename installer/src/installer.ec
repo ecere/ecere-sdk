@@ -1234,8 +1234,7 @@ class InstallThread : Thread
 
             if(components[samples].selected)
                components[samples].GetFullPath(path, false);
-            else
-               components[coreSDK].GetFullPath(path, false);
+            // IDE will now default to HOME for the default project/files locations
 
             if(!settings.ideProjectFileDialogLocation[0])
                settings.ideProjectFileDialogLocation = path;
