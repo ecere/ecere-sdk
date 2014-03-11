@@ -44,9 +44,9 @@ class AboutIDE : Window
    }
 
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 194 } };
-   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 240, 194 } };
+   Label { this, text = "Jérôme Jacovella-St-Louis", position = { 250, 194 } };
    Label { this, text = $"Developer (IDE, build system, EDA)", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 214 } };
-   Label { this, text = "Réjean Loyer", position = { 240, 214 } };
+   Label { this, text = "Réjean Loyer", position = { 250, 214 } };
    Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 234 } };
    Button licensingBtn
    {
