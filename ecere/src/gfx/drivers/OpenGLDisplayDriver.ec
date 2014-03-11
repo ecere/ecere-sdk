@@ -2259,7 +2259,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    bool AllocateBitmap(DisplaySystem displaySystem, Bitmap bitmap, int width, int height, int stride, PixelFormat format, bool allocatePalette)
    {
-      OGLSystem oglSystem = displaySystem.data;
+      OGLSystem oglSystem = displaySystem.driverData;
       bool result = false;
       Bitmap mipMap { };
       int glBitmap = -1;
