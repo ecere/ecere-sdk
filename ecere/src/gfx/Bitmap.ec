@@ -516,16 +516,17 @@ public:
       char ext[MAX_EXTENSION];
       subclass(BitmapFormat) format;
       int typeToTry = -1;
+      char * guessedType = type;
 
       if(!fileName) return false;
-      if(!type)
+      if(!guessedType)
       {
-         type = GetExtension(fileName, ext);
-         strlwr(type);
+         guessedType = GetExtension(fileName, ext);
+         strlwr(guessedType);
       }
 
-      if(type)
-         format = FindFormat(type);
+      if(guessedType)
+         format = FindFormat(guessedType);
       if(!format)
          typeToTry = 0;
 
@@ -555,7 +556,11 @@ public:
                delete f;
             }
          }
-         if(typeToTry == -1) break;
+         if(typeToTry == -1)
+         {
+            if(type) break;
+            typeToTry = 0;
+         }
       }
 
       if(!result)
