@@ -99,6 +99,11 @@ public:
       set { allowDefaultLocations = value; }
       get { return allowDefaultLocations; }
    };
+   property bool allUsers
+   {
+      set { allUsers = value; }
+      get { return allUsers; }
+   };
 
    property String driver
    {
@@ -121,6 +126,7 @@ private:
    char * settingsLocation;
    char * settingsFilePath;
    bool allowDefaultLocations;
+   bool allUsers;
 
    FileMonitor settingsMonitor
    {
@@ -268,6 +274,22 @@ private:
       strcat(path, extension);
       return path;
    }
+
+   char * PrepareAllUsersPath()
+   {
+      char * allUsers = getenv("ALLUSERSPROFILE");
+      char * path = null;
+      if(allUsers)
+      {
+         char * extension = GetExtension();
+         path = new char[strlen(allUsers) + strlen(settingsName) + strlen(extension) + 32];
+         strcpy(path, allUsers);
+         PathCat(path, settingsName);
+         strcat(path, ".");
+         strcat(path, extension);
+      }
+      return path;
+   }
 #else
    char * PrepareEtcPath()
    {
@@ -345,17 +367,26 @@ public:
                   FileOpenTryRead();
                if(f)
                   portable = true;
+               if(!allUsers)
+               {
 #if defined(__WIN32__)
-               if(!f && (settingsFilePath = PrepareHomePath(true)))
-                  FileOpenTryRead();
+                  if(!f && (settingsFilePath = PrepareHomePath(true)))
+                     FileOpenTryRead();
 #endif
-               if(!f && (settingsFilePath = PrepareHomePath(false)))
-                  FileOpenTryRead();
+                  if(!f && (settingsFilePath = PrepareHomePath(false)))
+                     FileOpenTryRead();
+               }
 #if defined(__WIN32__)
-               if(!f && (settingsFilePath = PrepareUserProfilePath()))
+               if(!allUsers)
+               {
+                  if(!f && (settingsFilePath = PrepareUserProfilePath()))
+                     FileOpenTryRead();
+                  if(!f && (settingsFilePath = PrepareHomeDrivePath()))
+                     FileOpenTryRead();
+               }
+               if(!f && (settingsFilePath = PrepareAllUsersPath()))
                   FileOpenTryRead();
-               if(!f && (settingsFilePath = PrepareHomeDrivePath()))
-                  FileOpenTryRead();
+
                if(!f && (settingsFilePath = PrepareSystemPath()))
                   FileOpenTryRead();
 #else
@@ -410,23 +441,32 @@ public:
                // never try to write a new portable configuration file?
                //if(!f && (settingsFilePath = PreparePortablePath()))
                //   FileOpenTryWrite();
-#if !defined(__WIN32__)
+#if defined(__WIN32__)
+               if(!f && (settingsFilePath = PrepareAllUsersPath()))
+                  FileOpenTryWrite();
+#else
                if(!f && (settingsFilePath = PrepareEtcPath()))
                   FileOpenTryWrite();
 #endif
-               if(!f && (settingsFilePath = PrepareHomePath(
+               if(!allUsers)
+               {
+                  if(!f && (settingsFilePath = PrepareHomePath(
 #if defined(__WIN32__)
-                  true
+                     true
 #else
-                  false
+                     false
 #endif
                      )))
-                  FileOpenTryWrite();
+                     FileOpenTryWrite();
+               }
 #if defined(__WIN32__)
-               if(!f && (settingsFilePath = PrepareUserProfilePath()))
-                  FileOpenTryWrite();
-               if(!f && (settingsFilePath = PrepareHomeDrivePath()))
-                  FileOpenTryWrite();
+               if(!allUsers)
+               {
+                  if(!f && (settingsFilePath = PrepareUserProfilePath()))
+                     FileOpenTryWrite();
+                  if(!f && (settingsFilePath = PrepareHomeDrivePath()))
+                     FileOpenTryWrite();
+               }
                if(!f && (settingsFilePath = PrepareSystemPath()))
                   FileOpenTryWrite();
 #endif
