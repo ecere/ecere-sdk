@@ -35,7 +35,7 @@ class LicenseTab : Tab
 
 class LicensesForm : Window
 {
-   caption = "License Agreements";
+   caption = $"License Agreements";
    background = formColor;
    borderStyle = sizable;
    hasClose = true;
@@ -50,12 +50,12 @@ class LicensesForm : Window
    Label label1
    {
       this, anchor = { top = 16 }, font = { "Tahoma", 10, true };
-      caption = "This program is based on these free open source software components.";
+      caption = $"This program is based on these free open source software components.";
    };
    Label label2
    {
       this, anchor = { top = 32 }, font = { "Tahoma", 10, true };
-      caption = "By using it you agree to the terms and conditions of their individual licenses.";
+      caption = $"By using it you agree to the terms and conditions of their individual licenses.";
    };
    LicenseTab ecereTab
    {
