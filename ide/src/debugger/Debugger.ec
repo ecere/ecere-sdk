@@ -2294,6 +2294,7 @@ class Debugger
       Project project = ide.project;
       DirExpression targetDirExp = project.GetTargetDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
+      Map<String, String> envBackup { };
 
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbInit()");
       if(currentCompiler != compiler)
@@ -2351,6 +2352,8 @@ class Debugger
       // gdb set environment commands don't seem to take effect
       for(e : ide.workspace.environmentVars)
       {
+         // Backing up the environment variables until we use DualPipeOpenEnv()
+         envBackup[e.name] = CopyString(getenv(e.name));
          SetEnvironment(e.name, e.string);
       }
 
@@ -2520,6 +2523,13 @@ class Debugger
       }
 
       ChangeWorkingDir(oldDirectory);
+
+      for(e : envBackup)
+      {
+         SetEnvironment(&e, e);
+      }
+      envBackup.Free();
+      delete envBackup;
 
       delete pathBackup;
 
