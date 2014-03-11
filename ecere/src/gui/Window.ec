@@ -3491,7 +3491,7 @@ private:
                this.active = active;
                if(acquiredInput)
                   AcquireInputEx(active);
-               if(active)
+               if(active && isEnabled)
                {
                   if(caretSize)
                   {
@@ -6955,7 +6955,7 @@ public:
          caretPos.x = x;
          caretPos.y = y;
          caretSize = size;
-         if(active && !style.interim)
+         if(active && !style.interim && isEnabled)
          {
             if(visible || !guiApp.caretOwner)
                guiApp.caretOwner = size ? this : null;
