@@ -1421,7 +1421,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 
 ===========
-WinPTHreads
+winpthreads
 ===========
 
 Copyright (c) 2011 mingw-w64 project
