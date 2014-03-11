@@ -185,7 +185,7 @@ msgid "Control contains other controls. Delete control and children?"
 msgstr "Control contains other controls. Delete control and children?"
 
 #: ./src/gui/controls/EditBox.ec:968
-#: ./src/gui/controls/EditBox.ec:3149
+#: ./src/gui/controls/EditBox.ec:3176
 msgid "Copy\tCtrl+C"
 msgstr "Copy\tCtrl+C"
 
@@ -215,7 +215,7 @@ msgid "Custom"
 msgstr "Custom"
 
 #: ./src/gui/controls/EditBox.ec:957
-#: ./src/gui/controls/EditBox.ec:3148
+#: ./src/gui/controls/EditBox.ec:3175
 msgid "Cut\tCtrl+X"
 msgstr "Cut\tCtrl+X"
 
@@ -240,7 +240,7 @@ msgid "Defined"
 msgstr "Defined"
 
 #: ./src/gui/controls/EditBox.ec:989
-#: ./src/gui/controls/EditBox.ec:3151
+#: ./src/gui/controls/EditBox.ec:3178
 msgid "Delete\tDel"
 msgstr "Delete\tDel"
 
@@ -579,7 +579,7 @@ msgid "Open"
 msgstr "Open"
 
 #: ./src/gui/controls/EditBox.ec:978
-#: ./src/gui/controls/EditBox.ec:3150
+#: ./src/gui/controls/EditBox.ec:3177
 msgid "Paste\tCtrl+V"
 msgstr "Paste\tCtrl+V"
 
@@ -686,7 +686,7 @@ msgid "Select"
 msgstr "Select"
 
 #: ./src/gui/controls/EditBox.ec:1001
-#: ./src/gui/controls/EditBox.ec:3153
+#: ./src/gui/controls/EditBox.ec:3180
 msgid "Select All\tCtrl+A"
 msgstr "Select All\tCtrl+A"
 
