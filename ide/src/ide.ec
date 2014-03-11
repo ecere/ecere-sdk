@@ -2737,6 +2737,7 @@ class IDEWorkSpace : Window
       {
          char ext[MAX_EXTENSION];
          GetExtension(path, ext);
+         strlwr(ext);
          if(!strcmp(ext, "mp3") || !strcmp(ext, "flac") || !strcmp(ext, "ogg") || !strcmp(ext, "avi") || !strcmp(ext, "mkv"))
             ShellOpen(path);
          else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
