@@ -3881,4 +3881,18 @@ public void UseSingleGLContext(bool useSingle)
    useSingleGLContext = useSingle;
 }
 
+default dllexport void * __attribute__((stdcall)) IS_GLGetContext(DisplaySystem displaySystem)
+{
+   void * context = null;
+   if(displaySystem)
+   {
+      OGLSystem system = displaySystem.driverData;
+#if defined(__WIN32__)
+      return system.glrc;
+#else
+      return system.glContext;
+#endif
+   }
+}
+
 #endif
