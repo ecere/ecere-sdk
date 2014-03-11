@@ -74,6 +74,9 @@ class AboutIDE : Window
       multiLine = true,
       hasVertScroll = true,
       contents =
+         "Wikipedia User:Cquest for Ryoan-ji picture in Sakura season\n"
+         "   http://en.wikipedia.org/wiki/File:Kyoto-Ryoan-Ji_MG_4512.jpg\n"
+         "\n"
          "Niraj Kulkarni\n"
          "   EditBox fixes\n"
          "\n"
