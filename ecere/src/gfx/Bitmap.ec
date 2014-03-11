@@ -284,7 +284,7 @@ public:
 
    Surface GetSurface(int x, int y, Box clip)
    {
-      Surface result;
+      Surface result = null;
       Surface surface { };
       if(surface)
       {
