@@ -607,8 +607,8 @@ class IDEWorkSpace : Window
    };
    BreakpointsView breakpointsView { parent = this };
 
-   ToolBox toolBox { parent = this };
-   Sheet sheet { parent = this };
+   ToolBox toolBox { parent = this, visible = false };
+   Sheet sheet { parent = this, visible = false };
 
    char * tmpPrjDir;
    property char * tmpPrjDir { set { delete tmpPrjDir; if(value) tmpPrjDir = CopyString(value); } get { return tmpPrjDir; } };
@@ -620,7 +620,10 @@ class IDEWorkSpace : Window
          bitmap = { ":actions/docNew.png" };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
-            Window document = (Window)NewCodeEditor(this, normal, false);
+            Window currentDoc = activeClient;
+            bool maximizeDoc = ((currentDoc && currentDoc.state == maximized) || (!currentDoc && !projectView));
+            Window document = (Window)NewCodeEditor(this, maximizeDoc ? maximized : normal, false);
+            RepositionWindows(false);
             document.NotifySaved = DocumentSaved;
             return true;
          }
@@ -644,7 +647,7 @@ class IDEWorkSpace : Window
 
                   for(c = 0; c < numSelections; c++)
                   {
-                     if(OpenFile(multiFilePaths[c], normal, true, fileTypes[ideFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift))
+                     if(OpenFile(multiFilePaths[c], false, true, fileTypes[ideFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift))
                         gotWhatWeWant = true;
                   }
                   if(gotWhatWeWant ||
@@ -750,7 +753,7 @@ class IDEWorkSpace : Window
                }
                else
                {
-                  OpenFile(file, normal, true, isProjectFile ? "txt" : null, no, normal, mods.ctrl && mods.shift);
+                  OpenFile(file, false, true, isProjectFile ? "txt" : null, no, normal, mods.ctrl && mods.shift);
                   ide.RepositionWindows(false);
                }
                break;
@@ -774,7 +777,7 @@ class IDEWorkSpace : Window
                   delete command;
                }
                else
-                  OpenFile(file, normal, true, null, no, normal, mods.ctrl && mods.shift);
+                  OpenFile(file, false, true, null, no, normal, mods.ctrl && mods.shift);
                break;
             }
             id++;
@@ -827,7 +830,7 @@ class IDEWorkSpace : Window
             ideProjectFileDialog.text = openProjectFileDialogTitle;
             if(ideProjectFileDialog.Modal() == ok)
             {
-               OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift);
+               OpenFile(ideProjectFileDialog.filePath, false, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, normal, mods.ctrl && mods.shift);
                //ChangeProjectFileDialogDirectory(ideProjectFileDialog.currentDirectory);
             }
             return true;
@@ -858,7 +861,7 @@ class IDEWorkSpace : Window
             {
                if(ideProjectFileDialog.Modal() == ok)
                {
-                  if(OpenFile(ideProjectFileDialog.filePath, normal, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add, mods.ctrl && mods.shift))
+                  if(OpenFile(ideProjectFileDialog.filePath, false, true, projectTypes[ideProjectFileDialog.fileType].typeExtension, no, add, mods.ctrl && mods.shift))
                      break;
                   if(MessageBox { type = yesNo, master = this, text = $"Error opening project file",
                         contents = $"Add a different project?" }.Modal() == no)
@@ -1670,6 +1673,9 @@ class IDEWorkSpace : Window
             findInFilesDialog.SearchStop();
             findInFilesDialog.currentDirectory = workingDir;
          }
+         sheet.visible = false;
+         toolBox.visible = false;
+         outputView.visible = false;
          ideMainFrame.text = titleECEREIDE;
          ide.AdjustMenus();
          return true;
@@ -1702,7 +1708,7 @@ class IDEWorkSpace : Window
                anchor.bottom = bottomDistance;
                if(child._class == class(CodeEditor) || child._class == class(Designer))
                {
-                  anchor.left = 300;
+                  anchor.left = (sheet.visible || (projectView && projectView.visible)) ? 300 : 0;
                   anchor.right = toolBoxVisible ? 150 : 0;
                }
                child.anchor = anchor;
@@ -1760,7 +1766,7 @@ class IDEWorkSpace : Window
 
          this.modifiedDocument = false;
          this.Destroy(0);
-         this = ide.OpenFile(fileName, normal, true, null, no, normal, noParsing);
+         this = ide.OpenFile(fileName, false, true, null, no, normal, noParsing);
          if(this)
          {
             this.anchor = anchor;
@@ -2164,7 +2170,7 @@ class IDEWorkSpace : Window
       return false;
    }
 
-   Window OpenFile(char * origFilePath, WindowState state, bool visible, char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod, bool noParsing)
+   Window OpenFile(char * origFilePath, bool dontMaximize, bool visible, char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod, bool noParsing)
    {
       char extension[MAX_EXTENSION] = "";
       Window document = null;
@@ -2172,7 +2178,8 @@ class IDEWorkSpace : Window
       bool needFileModified = true;
       char winFilePath[MAX_LOCATION];
       char * filePath = strstr(origFilePath, "http://") == origFilePath ? strcpy(winFilePath, origFilePath) : GetSystemPathBuffer(winFilePath, origFilePath);
-
+      Window currentDoc = activeClient;
+      bool maximizeDoc = !dontMaximize && ((currentDoc && currentDoc.state == maximized) || (!currentDoc && !projectView));
       if(!type)
       {
          GetExtension(filePath, extension);
@@ -2237,6 +2244,10 @@ class IDEWorkSpace : Window
                         CreateProjectView(workspace, filePath);
                         document = projectView;
 
+                        toolBox.visible = true;
+                        sheet.visible = true;
+                        projectView.MakeActive();
+
                         workspace.ParseLoadedBreakpoints();
                         workspace.DropInvalidBreakpoints(null);
                         workspace.Save();
@@ -2267,7 +2278,7 @@ class IDEWorkSpace : Window
                         {
                            if(ofi.state != closed)
                            {
-                              Window file = OpenFile(ofi.path, normal, true, null, no, normal, noParsing);
+                              Window file = OpenFile(ofi.path, false, true, null, no, normal, noParsing);
                               if(file)
                               {
                                  char fileName[MAX_LOCATION];
@@ -2477,7 +2488,7 @@ class IDEWorkSpace : Window
             createIfFails = yes;
          if(createIfFails == yes || createIfFails == whatever)
          {
-            document = (Window)NewCodeEditor(this, state, true);
+            document = (Window)NewCodeEditor(this, maximizeDoc ? maximized : normal, true);
             if(document)
                document.fileName = filePath;
          }
@@ -2505,6 +2516,8 @@ class IDEWorkSpace : Window
          if(needFileModified)
             document.OnFileModified = OnFileModified;
          document.NotifySaved = DocumentSaved;
+         if(maximizeDoc && document.hasMaximize)
+            document.state = maximized;
 
          if(isProject)
             ideSettings.AddRecentProject(document.fileName);
@@ -2748,7 +2761,7 @@ class IDEWorkSpace : Window
          }
          else
          {
-            CodeEditor codeEditor = (CodeEditor)OpenFile(path, normal, true, ext, no, normal, false);
+            CodeEditor codeEditor = (CodeEditor)OpenFile(path, false, true, ext, no, normal, false);
             if(codeEditor && line)
             {
                EditBox editBox = codeEditor.editBox;
@@ -2894,6 +2907,12 @@ class IDEWorkSpace : Window
          }
          else
          {
+            if(!client && !projectView && sheet.visible)
+            {
+               if(sheet)
+                  sheet.visible = false;
+               toolBox.visible = false;
+            }
             if(sheet)
                sheet.codeEditor = null;
             toolBox.codeEditor = null;
@@ -3093,10 +3112,10 @@ class IDEWorkSpace : Window
                   break;
                }
                else
-                  ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, openAsText ? "txt" : null, yes, normal, false);
+                  ide.OpenFile(fullPath, app.argc > 2, true, openAsText ? "txt" : null, yes, normal, false);
             }
             else if(strstr(fullPath, "http://") == fullPath)
-               ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, openAsText ? "txt" : null, yes, normal, false);
+               ide.OpenFile(fullPath, app.argc > 2, true, openAsText ? "txt" : null, yes, normal, false);
          }
       }
       if(passThrough && projectView && projectView.project && workspace)
@@ -3634,7 +3653,7 @@ class IDEApp : GuiApplication
          char fullPath[MAX_LOCATION];
          GetWorkingDir(fullPath, MAX_LOCATION);
          PathCat(fullPath, app.argv[c]);
-         ide.OpenFile(fullPath, (app.argc == 2) * maximized, true, null, yes, normal, false);
+         ide.OpenFile(fullPath, app.argc > 2, true, null, yes, normal, false);
       }
       */
 
@@ -3681,6 +3700,9 @@ class IDEApp : GuiApplication
       if(!LoadIncludeFile())
          PrintLn("error: unable to load :crossplatform.mk file inside ide binary.");
 
+      ideMainFrame.Create();
+      if(app.argc > 2)
+         ide.MenuWindowTileVert(null, 0);
       return true;
    }
 

@@ -1806,12 +1806,12 @@ class ProjectView : Window
                   PathCatSlash(filePath, moduleName);
                }
 
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
+               codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                if(!codeEditor && !strcmp(ext, "c"))
                {
                   char ecName[MAX_LOCATION];
                   ChangeExtension(filePath, "ec", ecName);
-                  codeEditor = (CodeEditor)ide.OpenFile(ecName, normal, true, null, no, normal, noParsing);
+                  codeEditor = (CodeEditor)ide.OpenFile(ecName, false, true, null, no, normal, noParsing);
                }
                if(!codeEditor)
                {
@@ -1829,7 +1829,7 @@ class ProjectView : Window
                            strcpy(filePath, prj.topNode.path);
                            PathCatSlash(filePath, node.path);
                            PathCatSlash(filePath, node.name);
-                           codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
+                           codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                            if(codeEditor)
                               break;
                         }
@@ -1844,7 +1844,7 @@ class ProjectView : Window
                               strcpy(filePath, prj.topNode.path);
                               PathCatSlash(filePath, node.path);
                               PathCatSlash(filePath, node.name);
-                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
+                              codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                               if(codeEditor)
                                  break;
                            }
@@ -1861,7 +1861,7 @@ class ProjectView : Window
                               strcpy(filePath, prj.topNode.path);
                               PathCatSlash(filePath, node.path);
                               PathCatSlash(filePath, node.name);
-                              codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, true, null, no, normal, noParsing);
+                              codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                               if(codeEditor)
                                  break;
                            }
@@ -1884,7 +1884,7 @@ class ProjectView : Window
    {
       char filePath[MAX_LOCATION];
       node.GetFullFilePath(filePath);
-      return ide.OpenFile(filePath, normal, true/*false Why was it opening hidden?*/, null, something, normal, noParsing) ? true : false;
+      return ide.OpenFile(filePath, false, true/*false Why was it opening hidden?*/, null, something, normal, noParsing) ? true : false;
    }
 
    void AddNode(ProjectNode node, DataRow addTo)
@@ -2315,7 +2315,7 @@ class ProjectView : Window
             subclass(ClassDesignerBase) designerClass = eClass_GetDesigner(baseClass);
             if(designerClass)
             {
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal, false);
+               codeEditor = (CodeEditor)ide.OpenFile(filePath, false, false, null, whatever, normal, false);
                strcpy(name, projectNode.name);
                sprintf(name, "%s%d", upper, c);
                if(className)
@@ -2331,7 +2331,7 @@ class ProjectView : Window
          }
          else // TODO: fix no symbols generated when ommiting {} for following else
          {
-            codeEditor = (CodeEditor)ide.OpenFile(filePath, normal, false, null, whatever, normal, false);
+            codeEditor = (CodeEditor)ide.OpenFile(filePath, false, false, null, whatever, normal, false);
          }
          ide.sheet.visible = true;
          ide.sheet.Activate();

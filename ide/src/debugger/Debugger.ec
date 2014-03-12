@@ -901,7 +901,7 @@ class Debugger
       codloc = CodeLocation::ParseCodeLocation(location);
       if(codloc)
       {
-         CodeEditor editor = (CodeEditor)ide.OpenFile(codloc.absoluteFile, normal, true, null, no, normal, false);
+         CodeEditor editor = (CodeEditor)ide.OpenFile(codloc.absoluteFile, false, true, null, no, normal, false);
          if(editor)
          {
             EditBox editBox = editor.editBox;
@@ -933,7 +933,7 @@ class Debugger
                ide.callStackView.Show();
 
             if(frame.absoluteFile)
-               editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal, false);
+               editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, false, true, null, no, normal, false);
             if(!editor && frame.file)
                frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
             if(!frame.absoluteFile && askForLocation && frame.file)
@@ -950,7 +950,7 @@ class Debugger
                }
             }
             if(!editor && frame.absoluteFile)
-               editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, normal, true, null, no, normal, false);
+               editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, false, true, null, no, normal, false);
             if(editor)
                ide.RepositionWindows(false);
             ide.Update(null);
@@ -2621,7 +2621,7 @@ class Debugger
 
       if(!codeEditor && goodFrame)
       {
-         codeEditor = (CodeEditor)ide.OpenFile(activeFrame.absoluteFile, normal, false, null, no, normal, false);
+         codeEditor = (CodeEditor)ide.OpenFile(activeFrame.absoluteFile, false, false, null, no, normal, false);
          if(codeEditor)
          {
             codeEditor.inUseDebug = true;
