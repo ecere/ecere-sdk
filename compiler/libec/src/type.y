@@ -158,7 +158,7 @@ default:
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 %token ALIGNOF ATTRIB_DEP __ATTRIB
-%token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT
+%token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT THREAD
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -802,6 +802,7 @@ storage_class_specifier:
 	| STATIC        { $$ = MkSpecifier(STATIC); }
 	| AUTO          { $$ = MkSpecifier(AUTO); }
 	| REGISTER      { $$ = MkSpecifier(REGISTER); }
+   | THREAD        { $$ = MkSpecifier(THREAD); }
 	;
 
 ext_decl:

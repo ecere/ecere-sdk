@@ -908,6 +908,9 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
             case REGISTER:
                f.Puts("register");
                break;
+            case THREAD:
+               f.Puts("__thread");
+               break;
 
             // Qualifier
             case CONST:

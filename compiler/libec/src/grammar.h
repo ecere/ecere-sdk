@@ -151,7 +151,8 @@
      _BOOL = 368,
      _COMPLEX = 369,
      _IMAGINARY = 370,
-     RESTRICT = 371
+     RESTRICT = 371,
+     THREAD = 372
    };
 #endif
 
@@ -208,7 +209,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 212 "grammar.h"
+#line 213 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

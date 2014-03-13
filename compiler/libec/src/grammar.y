@@ -192,7 +192,7 @@ default:
 %token NEW0OP RENEW0 VAARG
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 %token ALIGNOF ATTRIB_DEP __ATTRIB
-%token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT
+%token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT THREAD
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -2116,6 +2116,7 @@ storage_class_specifier:
 	  TYPEDEF       { $$ = MkSpecifier(TYPEDEF); }
 	| EXTERN        { $$ = MkSpecifier(EXTERN); }
 	| STATIC        { $$ = MkSpecifier(STATIC); }
+	| THREAD        { $$ = MkSpecifier(THREAD); }
 	| AUTO          { $$ = MkSpecifier(AUTO); }
 	| REGISTER      { $$ = MkSpecifier(REGISTER); }
    | RESTRICT      { $$ = MkSpecifier(RESTRICT); }
@@ -2125,6 +2126,7 @@ external_storage_class_specifier:
 	  TYPEDEF       { $$ = MkSpecifier(TYPEDEF); structDeclMode = declMode = defaultAccess; }
 	| EXTERN        { $$ = MkSpecifier(EXTERN); }
 	| STATIC        { $$ = MkSpecifier(STATIC); structDeclMode = declMode = staticAccess; }
+   | THREAD        { $$ = MkSpecifier(THREAD); }
 	| AUTO          { $$ = MkSpecifier(AUTO); }
 	| REGISTER      { $$ = MkSpecifier(REGISTER); }
    | RESTRICT      { $$ = MkSpecifier(RESTRICT); }

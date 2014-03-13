@@ -100,6 +100,7 @@ default:
 "sizeof"             { return(SIZEOF); }
 "__alignof__"        { return(ALIGNOF); }
 "static"             { return(STATIC); }
+"__thread"           { return(THREAD); }
 "struct"             { return(STRUCT); }
 "switch"             { return(SWITCH); }
 "typedef"            { return(TYPEDEF); }
