@@ -934,7 +934,16 @@ static X11Bool FocusInChecker(void *display, XFocusChangeEvent *event, char * da
    if(event->type == FocusIn)
    {
       Window window = null;
-      XFindContext(xGlobalDisplay, event->window, windowContext, (XPointer *) &window);
+      // --- This deadlocks and I think Xorg should fix this.
+      // XFindContext(xGlobalDisplay, event->window, windowContext, (XPointer *) &window);
+      if((X11Window)guiApp.desktop.windowHandle == event->window)
+         window = guiApp.desktop;
+      else
+      {
+         for(window = guiApp.desktop.firstChild; window; window = window.next)
+            if((X11Window)window.windowHandle == event->window)
+               break;
+      }
       if(window)
          result = True;
    }
@@ -1354,7 +1363,7 @@ class XInterface : Interface
    bool Initialize()
    {
       setlocale(LC_ALL, "en_US.UTF-8");
-      // XInitThreads();
+      XInitThreads();
       XSupportsLocale();
       XSetLocaleModifiers("");
       XSetErrorHandler(MyXErrorHandler);
@@ -1364,6 +1373,12 @@ class XInterface : Interface
 #endif
       xTerminate = false;
       xGlobalDisplay = XOpenDisplay(null);
+
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+      if(xGlobalDisplay)
+         XLockDisplay(xGlobalDisplay);
+#endif
+
       // XSynchronize(xGlobalDisplay, True);
       frameExtentSupported = unknown;
 

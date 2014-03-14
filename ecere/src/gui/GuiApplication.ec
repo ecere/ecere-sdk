@@ -568,10 +568,10 @@ public class GuiApplication : Application
          errorLevel = 2;
 
          lockMutex.Wait();
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
+/*#if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__)
          if(xGlobalDisplay)
             XLockDisplay(xGlobalDisplay);
-#endif
+#endif*/
 
          // Setup Desktop
          if(!desktop)
