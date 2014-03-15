@@ -485,7 +485,6 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    Key code;
    unichar ch = 0;
    KeySym keysym = NoSymbol;
-   Status status;
    int buflength = 0;
    static long bufsize = 16;
    static char *buf = NULL;
@@ -527,13 +526,21 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
 
    if(!buf)
       buf = malloc((uint)bufsize);
-   if(windowData && windowData.ic)
+
+   // TOCHECK: X*LookupString man page says we shouldn't invoke it for non KeyPress events
+   if(windowData && windowData.ic) // && event->type == KeyPress)
    {
-      buflength = XmbLookupString(windowData.ic, event, buf, (int)bufsize, &keysym, &status);
-      if (status == XBufferOverflow)
+      Status status;
+#ifdef X_HAVE_UTF8_STRING
+   #define LookupString Xutf8LookupString
+#else
+   #define LookupString XmbLookupString
+#endif
+      buflength = LookupString(windowData.ic, event, buf, (int)bufsize, &keysym, &status);
+      if(status == XBufferOverflow)
       {
          buf = realloc(buf, (uint)(bufsize = buflength));
-         buflength = XmbLookupString(windowData.ic, event, buf, (int)bufsize, &keysym, &status);
+         buflength = LookupString(windowData.ic, event, buf, (int)bufsize, &keysym, &status);
       }
       if(status != XLookupKeySym && status != XLookupBoth && release == 1)
          keysym = XLookupKeysym(event, 0);
