@@ -171,6 +171,7 @@ class NewProjectDialog : Window
          StripLastDirectory(newWorkingDir, newWorkingDir);
          ide.ChangeProjectFileDialogDirectory(newWorkingDir);
       }
+      ide.toolBox.visible = true;
 
       if(createFormOption)
       {
@@ -517,6 +518,8 @@ class QuickProjectDialog : Window
                }
             }
          }
+
+         ide.toolBox.visible = true;
 
          if(project.topNode.modified)
          {
