@@ -58,7 +58,11 @@ public class Thread
    uint returnCode;
    bool started;
 
+#if defined(__WIN32__)
    uint ThreadCallBack()
+#else
+   void * ThreadCallBack()
+#endif
    {
       uint returnCode = this.returnCode = Main();
       started = false;
@@ -72,7 +76,11 @@ public class Thread
 
 #endif
       delete this;
+#if defined(__WIN32__)
       return returnCode;
+#else
+      return (void *)returnCode;
+#endif
    }
 
 public:
@@ -97,7 +105,7 @@ public:
             /*pthread_attr_t attr;
             pthread_attr_init(&attr);
             pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);*/  // Default attribute ???
-            error = pthread_create(&id, null /*&attr*/, (void *)ThreadCallBack, this);
+            error = pthread_create(&id, null /*&attr*/, ThreadCallBack, this);
             if(error)
                printf("Error %d creating a thread\n", error);
           }
