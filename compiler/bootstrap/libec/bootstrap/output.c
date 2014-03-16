@@ -2337,7 +2337,7 @@ if(inCompiler && memoryGuard)
 struct Expression * exp = stmt->expressions ? (*stmt->expressions).last : (((void *)0));
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "{ ");
-if(exp && exp->expType)
+if(exp && exp->expType && exp->expType->kind != 0)
 {
 char string[1024] = "";
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -2382,7 +2382,7 @@ else
 {
 struct Expression * exp = stmt->expressions ? (*stmt->expressions).last : (((void *)0));
 
-if(exp && exp->expType)
+if(exp && exp->expType && exp->expType->kind != 0)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__ecereReturnVal = ");
 }
 if(stmt->expressions)
@@ -2408,7 +2408,7 @@ if(inCompiler && memoryGuard)
 struct Expression * exp = stmt->expressions ? (struct Expression *)(*stmt->expressions).last : (((void *)0));
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " __ecereNameSpace__ecere__com__MemoryGuard_PopLoc();");
-if(exp && exp->expType)
+if(exp && exp->expType && exp->expType->kind != 0)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "return __ecereReturnVal;");
 else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "return;");

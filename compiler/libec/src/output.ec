@@ -591,9 +591,8 @@ static void OutputStatement(Statement stmt, File f)
          {
             Expression exp = stmt.expressions ? stmt.expressions->last : null;
             f.Printf("{ ");
-            if(exp && exp.expType)
+            if(exp && exp.expType && exp.expType.kind != voidType)
             {
-
                char string[1024] = "";
                OldList * specs = MkList();
                Declarator decl;
@@ -635,7 +634,7 @@ static void OutputStatement(Statement stmt, File f)
          else
          {
             Expression exp = stmt.expressions ? stmt.expressions->last : null;
-            if(exp && exp.expType)
+            if(exp && exp.expType && exp.expType.kind != voidType)
                f.Printf("__ecereReturnVal = ");
          }
 
@@ -653,7 +652,7 @@ static void OutputStatement(Statement stmt, File f)
          {
             Expression exp = stmt.expressions ? (Expression)stmt.expressions->last : null;
             f.Printf(" __ecereNameSpace__ecere__com__MemoryGuard_PopLoc();");
-            if(exp && exp.expType)
+            if(exp && exp.expType && exp.expType.kind != voidType)
                f.Printf("return __ecereReturnVal;");
             else
                f.Printf("return;");
