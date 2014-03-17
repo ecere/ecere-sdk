@@ -676,11 +676,16 @@ public class Button : CommonControl
 
    bool OnResizing(int *width, int *height)
    {
+      // Checking *width/*height for zero does not work with minClientSize being set
+      Size initSize = this.initSize;
+      if(this.anchor.left.type != none && this.anchor.right.type != none) initSize.w = 1;
+      if(this.anchor.top.type != none && this.anchor.bottom.type != none) initSize.h = 1;
+
       if(buttonStyle.checkBox || buttonStyle.radio || buttonStyle.bevelOver)
       {
          Bitmap bitmap0 = bitmaps[0] ? bitmaps[0].bitmap : null;
-         if(!*width && bitmap0) *width = bitmap0.width;
-         if(!*height && bitmap0) *height = bitmap0.height;
+         if(!initSize.w /**width*/ && bitmap0) *width = Max(*width, bitmap0.width);
+         if(!initSize.h /**height*/ && bitmap0) *height = Max(*height, bitmap0.height);
 
          *height = Max(*height, captionHeight + 2);
          if(text)
@@ -701,23 +706,23 @@ public class Button : CommonControl
       {
          if(!caption && bitmap && bitmap.bitmap)
          {
-            if(!*width)
-               *width = bitmap.bitmap.width;
-            if(!*height)
-               *height = bitmap.bitmap.height;
+            if(!initSize.w /**width*/)
+               *width = Max(*width, bitmap.bitmap.width);
+            if(!initSize.h /**height*/)
+               *height = Max(*height, bitmap.bitmap.height);
          }
          else if(guiApp.textMode && buttonStyle.bevel)
          {
-            if(!*width)
+            if(!initSize.w /**width*/)
                *width = Max(*width, captionWidth + 8);
-            if(!*height)
+            if(!initSize.h /**height*/)
                *height = Max(*height, captionHeight + 16);
          }
          else
          {
-            if(!*width)
+            if(!initSize.w /**width*/)
                *width = Max(*width, captionWidth + /*4*/12);
-            if(!*height)
+            if(!initSize.h /**height*/)
                *height = Max(*height, captionHeight + /*6*/ 8);
          }
       }

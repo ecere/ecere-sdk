@@ -384,6 +384,7 @@ private:
                SNAPUP(thumbPos, textCellH);
             }
 
+            thumb.SetInitSize({ size.w,thumbSize });
             thumb.Move(0,thumbPos, size.w,thumbSize);
          }
          else
@@ -399,6 +400,7 @@ private:
                SNAPUP(thumbPos, textCellW);
             }
 
+            thumb.SetInitSize({ thumbSize, size.h });
             thumb.Move(thumbPos, 0, thumbSize, size.h);
          }
       }
@@ -431,6 +433,7 @@ private:
          upBtn.size.h = SB_HEIGHT;
          upBtn.anchor = Anchor { left = 0, right = 0, top = 0 };
 
+         thumb.SetInitSize({ Max(clientSize.w, sbWidth), thumbSize });
          thumb.Move(0,0, Max(clientSize.w, sbWidth), thumbSize);
       }
       else
@@ -441,6 +444,7 @@ private:
          upBtn.size.w = SB_HEIGHT;
          upBtn.anchor = Anchor { left = 0, top = 0, bottom = 0 };
 
+         thumb.SetInitSize({ thumbSize, Max(clientSize.h, SB_HEIGHT) });
          thumb.Move(0,0, thumbSize, Max(clientSize.h, SB_HEIGHT));
       }
 
