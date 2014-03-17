@@ -1022,6 +1022,7 @@ public class PopupMenu : Window
       bool systemButtons = activeClient && activeClient.state == maximized;
       int bitmapOffset = 0;
       bool hasBitmap = false;
+      bool isRadio = false;
 
       surface.TextFont(fontObject);
       surface.TextExtent(" ", 1, null, &height);
@@ -1040,12 +1041,23 @@ public class PopupMenu : Window
                   break;
                }
             }
+
+            for(ptr = menu.items.first; ptr; ptr = ptr.next)
+            {
+               if(ptr.item.radio)
+               {
+                  isRadio = true;
+                  break;
+               }
+            }
          }
 
          if(guiApp.textMode)
             bitmapOffset = 16;
          else
             bitmapOffset = hasMargin ? 27 : (hasBitmap ? 18 : 12);
+         if(hasBitmap && isRadio)
+            bitmapOffset += 18;
       }
       else if(guiApp.textMode)
          bitmapOffset = 8;
@@ -1150,7 +1162,7 @@ public class PopupMenu : Window
                   {
                      Bitmap icon = bitmap.bitmap;
                      if(icon)
-                        surface.Blit(icon, x + hasMargin ? 5 : 3, y + (rh - icon.height)/2, 0,0, icon.width, icon.height);
+                        surface.Blit(icon, x + (isRadio ? 18 : 0) + (hasMargin ? 5 : 3), y + (rh - icon.height)/2, 0,0, icon.width, icon.height);
                   }
 
                   if(item.bold)
@@ -1595,6 +1607,8 @@ public class PopupMenu : Window
                   if(strstr(ITEM_TEXT(item), "\t"))
                      width += 8;
                }
+               if(item.bitmap && item.radio)
+                  width += 20;
                if(item.subMenu) width += 20;
                if(!guiApp.textMode)
                   height += 6;
