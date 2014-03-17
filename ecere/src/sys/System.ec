@@ -49,7 +49,7 @@ bool System_ChangeWorkingDir(char * buf);
 char * System_GetEnvironment(char * envName, char * envValue, int max);
 void System_SetEnvironment(char * envName, char * envValue);
 void System_UnsetEnvironment(char * envName);
-bool System_Execute(char * env, char * command, va_list args);
+bool System_Execute(char * env, char * command, va_list args, bool wait);
 bool System_ShellOpen(char * fileName, va_list args);
 void System_GetFreeSpace(char * path, FileSize64 * size);
 
@@ -177,7 +177,17 @@ public bool Execute(char * command, ...)
    bool result;
    va_list args;
    va_start(args, command);
-   result = System_Execute(null, command, args);
+   result = System_Execute(null, command, args, false);
+   va_end(args);
+   return result;
+}
+
+public bool ExecuteWait(char * command, ...)
+{
+   bool result;
+   va_list args;
+   va_start(args, command);
+   result = System_Execute(null, command, args, true);
    va_end(args);
    return result;
 }
@@ -187,7 +197,7 @@ public bool ExecuteEnv(char * env, char * command, ...)
    bool result;
    va_list args;
    va_start(args, command);
-   result = System_Execute(env, command, args);
+   result = System_Execute(env, command, args, false);
    va_end(args);
    return result;
 }

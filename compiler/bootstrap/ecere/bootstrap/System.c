@@ -352,7 +352,7 @@ void System_SetEnvironment(char * envName, char * envValue);
 
 void System_UnsetEnvironment(char * envName);
 
-unsigned int System_Execute(char * env, char * command, va_list args);
+unsigned int System_Execute(char * env, char * command, va_list args, unsigned int wait);
 
 unsigned int System_ShellOpen(char * fileName, va_list args);
 
@@ -451,7 +451,18 @@ unsigned int result;
 va_list args;
 
 __builtin_va_start(args, command);
-result = System_Execute((((void *)0)), command, args);
+result = System_Execute((((void *)0)), command, args, 0x0);
+__builtin_va_end(args);
+return result;
+}
+
+unsigned int __ecereNameSpace__ecere__sys__ExecuteWait(char * command, ...)
+{
+unsigned int result;
+va_list args;
+
+__builtin_va_start(args, command);
+result = System_Execute((((void *)0)), command, args, 0x1);
 __builtin_va_end(args);
 return result;
 }
@@ -462,7 +473,7 @@ unsigned int result;
 va_list args;
 
 __builtin_va_start(args, command);
-result = System_Execute(env, command, args);
+result = System_Execute(env, command, args, 0x0);
 __builtin_va_end(args);
 return result;
 }
@@ -747,6 +758,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetEnvironme
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SetEnvironment", "void ecere::sys::SetEnvironment(char * envName, char * envValue)", __ecereNameSpace__ecere__sys__SetEnvironment, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UnsetEnvironment", "void ecere::sys::UnsetEnvironment(char * envName)", __ecereNameSpace__ecere__sys__UnsetEnvironment, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Execute", "bool ecere::sys::Execute(char * command, ...)", __ecereNameSpace__ecere__sys__Execute, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ExecuteWait", "bool ecere::sys::ExecuteWait(char * command, ...)", __ecereNameSpace__ecere__sys__ExecuteWait, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ExecuteEnv", "bool ecere::sys::ExecuteEnv(char * env, char * command, ...)", __ecereNameSpace__ecere__sys__ExecuteEnv, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ShellOpen", "bool ecere::sys::ShellOpen(char * fileName, ...)", __ecereNameSpace__ecere__sys__ShellOpen, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetFreeSpace", "void ecere::sys::GetFreeSpace(char * path, FileSize64 * size)", __ecereNameSpace__ecere__sys__GetFreeSpace, module, 1);

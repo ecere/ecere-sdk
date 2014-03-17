@@ -298,7 +298,7 @@ void System_UnsetEnvironment(char * envName)
 #endif
 }
 
-bool System_Execute(char * env, char * command, va_list args)
+bool System_Execute(char * env, char * command, va_list args, bool wait)
 {
    bool result = false;
    char commandLine[MAX_F_STRING*4];
@@ -307,7 +307,7 @@ bool System_Execute(char * env, char * command, va_list args)
 
 #ifndef __WIN32__
    {
-      strcat(commandLine, "&");
+      if(!wait) strcat(commandLine, "&");
       system(commandLine);
    }
 #else
@@ -320,7 +320,14 @@ bool System_Execute(char * env, char * command, va_list args)
       si.cb = sizeof(STARTUPINFO);
       // if(CreateProcess(null, _wcommandLine, null, null, TRUE, 0, env, null, &si, &pi))
       if(CreateProcess(null, _wcommandLine, null, null, TRUE, CREATE_NEW_CONSOLE, env, null, &si, &pi))
+      {
+         if(wait)
+            WaitForSingleObject(pi.hProcess, INFINITE);
+
+         CloseHandle(pi.hProcess);
+         CloseHandle(pi.hThread);
          result = true;
+      }
       __ecereNameSpace__ecere__com__eSystem_Delete(_wcommandLine);
    }
 #endif
