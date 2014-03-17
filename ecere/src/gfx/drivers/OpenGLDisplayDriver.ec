@@ -3893,6 +3893,7 @@ default dllexport void * __attribute__((stdcall)) IS_GLGetContext(DisplaySystem 
       return system.glContext;
 #endif
    }
+   return null;
 }
 
 #endif
