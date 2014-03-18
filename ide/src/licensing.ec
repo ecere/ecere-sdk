@@ -151,7 +151,7 @@ class LicensesForm : Window
    {
       this;
       caption = $"I don't agree";
-      size = { 100, 22 };
+      minClientSize = { 100, 20 };
       anchor = { bottom = 10, right = 14 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -166,7 +166,7 @@ class LicensesForm : Window
       caption = $"I agree";
       font = { "Verdana", 10, bold = true };
       isDefault = true;
-      size = { 80, 23 };
+      minClientSize = { 80, 21 };
       anchor = { bottom = 10 };
       NotifyClicked = ButtonCloseDialog;
    };

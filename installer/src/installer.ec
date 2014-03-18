@@ -1,7 +1,7 @@
 #ifdef NOMINGW
-static define buildString = $"Ecere SDK v0.44.10 (Without MinGW) -- built on March 2nd, 2014 ";
+static define buildString = $"Ecere SDK v0.44.10 (Without MinGW) -- built on March 9th, 2014 ";
 #else
-static define buildString = $"Ecere SDK v0.44.10 -- built on March 2nd, 2014 ";
+static define buildString = $"Ecere SDK v0.44.10 -- built on March 9th, 2014 ";
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -18,6 +18,8 @@ import "IDESettings"
 import "createLink"
 import "licensing"
 import "CheckListBox"
+
+static LanguageOption dummy; // TOFIX
 
 static bool IsAdministrator()
 {
@@ -430,15 +432,17 @@ bool osIS64bit;
 
 class Installer : Window
 {
-   text = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
-   background = activeBorder;
+   background = formColor;
    borderStyle = fixed;
    hasMinimize = true;
    hasClose = true;
    tabCycle = true;
    clientSize = { 636, 476 };
-   // clientSize = { 796, 576 };
    icon = { ":icon.png" };
+   text = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
+
+   // clientSize = { 796, 576 };
+   bool loaded;
 
    Picture back { image = BitmapResource { ":ryoanji.png" }, parent = this, position = { 0, 0 } };
    FileDialog fileDialog
@@ -574,12 +578,12 @@ class Installer : Window
          }
       }
    };
-   Label agreementLbl { parent = this, text = $"By installing the Ecere SDK, you agree to the                                         .", font = { "Tahoma", 8.25f }, anchor = Anchor { left = 24, top = 444 } };
+   Label agreementLbl { parent = this, text = $"By installing the Ecere SDK, you agree to the", font = { "Tahoma", 8.25f }, anchor = Anchor { right = 399, top = 448 } };
    Button licenseButton
    {
       this, inactive = true, offset = false, bevel = false, foreground = blue, font = { "Tahoma", 8.25f, underline = true, bold = true },
       // text = $"terms and conditions", anchor = Anchor { left = 241, top = 421 };
-      text = $"terms and conditions", anchor = Anchor { left = 237, top = 441 };
+      text = $"terms and conditions", anchor = Anchor { left = 235, top = 445 };
       cursor = ((GuiApplication)__thisModule).GetCursor(hand);
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -589,6 +593,7 @@ class Installer : Window
          return true;
       }
    };
+   Label dotLbl { parent = this, text = ".", font = { "Tahoma", 8.25f }, anchor = Anchor { left = 372, top = 448 } };
    CheckListBox optionsBox
    {
       this, size = { 460, 114 }, position = { 160, 284 };
@@ -660,7 +665,7 @@ class Installer : Window
    };
    Button install
    {
-      parent = this, text = $"Install", isDefault = true, size = { 75, 23 }, position = { 432, 436 };
+      parent = this, text = $"Install", isDefault = true, size = { 75, 23 }, position = { 432, 440 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -671,7 +676,39 @@ class Installer : Window
          return true;
       }
    };
-   Button button3 { parent = this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 436 }, NotifyClicked = ButtonCloseDialog };
+   Button button3 { parent = this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 440 }, NotifyClicked = ButtonCloseDialog };
+   DropBox languageBox
+   {
+      this, position = { 14, 374 }, size = { 142, 0 }, caption = "Language:";
+
+      bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
+      {
+         LanguageOption * option = row.GetData(null);
+         // If the language is already set, we need to override it
+         {
+            IDESettings settings = null;
+            IDESettingsContainer settingsContainer
+            {
+               driver = "JSON";
+               dataOwner = &settings;
+               dataClass = class(IDESettings);
+               allUsers = options[0].selected;
+            };
+            settingsContainer.Load();
+            if(settings.language)
+            {
+               settings.language = option->code;
+               settingsContainer.Save();
+            }
+            delete settingsContainer;
+            delete settings;
+         }
+         ((GuiApplication)__thisModule.application).desktop.Destroy(0);
+         LanguageRestart(option->code, __thisModule.application, null, null, null, null, false);
+         return true;
+      }
+   };
+   Label lblLanguageBox { this, position = { 14, 354 }, labeledWindow = languageBox };
    Label label1 { labeledWindow = destBox, tabCycle = true, isGroupBox = true, parent = this, inactive = false, size = Size { 458, 50 }, anchor = Anchor { left = 160, top = 96 } };
    PathBox destBox
    {
@@ -733,7 +770,7 @@ class Installer : Window
    };
    EditBox label7
    {
-      this, opacity = 0, borderStyle = none, inactive = true, size = { 136, 53 }, position = { 14, 280 }, noSelect = true,
+      this, opacity = 0, borderStyle = none, inactive = true, size = { 136, 83 }, position = { 14, 280 }, noSelect = true,
       multiLine = true,
       contents = $"Select icons to install, file\n"
       "associations, and system\n"
@@ -741,20 +778,18 @@ class Installer : Window
    };
    Label totalSpaceLabel
    {
-      this, position = { 18, 352 }, text = $"Space Required: "
+      this, anchor = { right = 72, top = 404 }, text = $"Space Required: "
    };
    Label totalSpaceValue
    {
-      this, position = { 100, 352 }, text = "0 mb"
+      this, anchor = { right = 14, top = 404 }, text = "0 mb"
    };
    EditBox editBox1
    {
-      inactive = true, noSelect = true,
-      multiLine = true, parent = label3, text = "editBox1", opacity = 0, borderStyle = none, size = Size { 350, 35 }, anchor = Anchor { horz = 111, vert = 13 },
-      contents = $"Choose in which folder to install the Ecere SDK, which features\n"
+      label3, caption = "editBox1", opacity = 0, borderStyle = none, inactive = true, size = { 350, 35 }, position = { 256, 40 }, multiLine = true, noSelect = true, contents = $"Choose in which folder to install the Ecere SDK, which features\n"
          "of the SDK to install, as well as where to install program icons."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 412 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Label label2 { parent = this, text = buildString, position = { 16, 422 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
    Picture picture1
    {
       image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, text = "picture1", anchor = Anchor { left = 16, top = 4 };
@@ -766,12 +801,14 @@ class Installer : Window
          return true;
       }
    };
-   Label label4 { parent = label3, text = $"Choose Components, Locations and Install Options", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
+   Label label4 { label3, font = { "Tahoma", 8.25f, bold = true }, /*size = { 326, 16 }, */position = { 248, 24 }, text = $"Choose Components, Locations and Install Options" };
    DataField componentField { "CheckItem", width = 160, header = $"Component" };
    DataField locationField { "char *", width = 108, header = $"Destination Folder", editable = true };
    DataField reqField { "FileSize", width = 70, header = $"Req. Space", alignment = right };
    DataField avField { "FileSize64", width = 70, header = $"Avail. Space", alignment = right };
    DataField optionField { "CheckItem" };
+
+   DataField languageField { class(LanguageOption) };
 
    void SetAvailableSpace(Component component, char * parentPath)
    {
@@ -920,6 +957,33 @@ class Installer : Window
          options[0].selected = false;
       }
 
+      // If the SDK is already installed, use currently selected language
+      {
+         IDESettings settings = null;
+         IDESettingsContainer settingsContainer
+         {
+            driver = "JSON";
+            dataOwner = &settings;
+            dataClass = class(IDESettings);
+            allUsers = options[0].selected;
+         };
+
+         settingsContainer.Load();
+
+         if(settings.language)
+         {
+            String language = GetLanguageString();
+            if(settings.language.OnCompare(language))
+            {
+               // Relaunch the installer with previously selected language
+               LanguageRestart(settings.language, __thisModule.application, null, null, null, null, false);
+               return false;
+            }
+         }
+         delete settingsContainer;
+         delete settings;
+      }
+
       GetEnvironment("HOMEDRIVE", homeDrive, sizeof(homeDrive));
       GetEnvironment("windir", winDir, sizeof(winDir));
 
@@ -931,6 +995,8 @@ class Installer : Window
       componentsBox.AddField(avField);
 
       optionsBox.AddField(optionField);
+
+      languageBox.AddField(languageField);
 
       programFilesDir[0] = 0;
       if(GetEnvironment("ProgramFiles", programFilesDir, MAX_LOCATION))
@@ -1018,8 +1084,43 @@ class Installer : Window
       }
    }
 
+   void OnDestroy()
+   {
+      for(l : languages)
+         delete l.res;
+   }
+
+   bool OnPostCreate()
+   {
+      dotLbl.position.x = licenseButton.position.x + licenseButton.size.w - 4;
+      return true;
+   }
+
    bool OnCreate()
    {
+      // Constructor happens before Languages is instantiated...
+      for(l : languages)
+      {
+         l.res = { l.bitmap, window = this };
+         incref l.res;
+      }
+
+      if(!loaded)
+      {
+         String language = GetLanguageString();
+         for(l : languages)
+         {
+            LanguageOption option = l;
+            DataRow row = languageBox.AddRow();
+            row.SetData(null, option); // TOFIX: l used directly here
+            if(!language.OnCompare(l.code))
+               languageBox.currentRow = row;
+         }
+         if(!languageBox.currentRow)
+            languageBox.currentRow = languageBox.firstRow;
+         loaded = true;
+      }
+
       destBox.Activate();
       return true;
    }
@@ -1028,12 +1129,11 @@ class Installer : Window
    {
       int tw = label2.size.w;
       surface.SetForeground(Color { 128, 128, 128 });
-      surface.HLine(label2.position.x + tw + 6, 620, 420);
+      surface.HLine(label2.position.x + tw + 6, 620, 430);
       surface.SetForeground(white);
-      surface.HLine(label2.position.x + tw + 6, 621, 421);
+      surface.HLine(label2.position.x + tw + 6, 621, 431);
       surface.PutPixel(621, 400);
    }
-
    Label label3
    {
       parent = this, opacity = 0, borderStyle = deep, size = Size { 644, 93 }, anchor = Anchor { left = -8, top = -8 };
@@ -1058,13 +1158,13 @@ class InstallProgress : Window
    ProgressBar progressBar { parent = this, size = Size { 588, 24 }, anchor = Anchor { left = 24, top = 184 } };
    Button finish
    {
-      parent = this, text = $"Install", disabled = true, isDefault = true, size = Size { 75, 23 }, anchor = Anchor { left = 432, top = 436 };
+      parent = this, text = $"Install", disabled = true, isDefault = true, size = Size { 75, 23 }, anchor = Anchor { left = 432, top = 440 };
 
       NotifyClicked = ButtonCloseDialog
    };
    Button cancel
    {
-      this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 436 };
+      this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 440 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -1078,7 +1178,7 @@ class InstallProgress : Window
       multiLine = true, parent = label3, opacity = 0, borderStyle = none, size = Size { 350, 35 }, anchor = Anchor { horz = 111, vert = 13 },
       contents = $"Please wait while the Ecere Software Development Kit is being installed."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 412 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Label label2 { parent = this, text = buildString, position = { 16, 422 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
    Picture picture1
    {
       image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, anchor = Anchor { left = 16, top = 4 };
@@ -1096,9 +1196,9 @@ class InstallProgress : Window
    {
       int tw = label2.size.w;
       surface.SetForeground(Color { 128, 128, 128 });
-      surface.HLine(label2.position.x + tw + 6, 620, 420);
+      surface.HLine(label2.position.x + tw + 6, 620, 430);
       surface.SetForeground(white);
-      surface.HLine(label2.position.x + tw + 6, 621, 421);
+      surface.HLine(label2.position.x + tw + 6, 621, 431);
       surface.PutPixel(621, 400);
    }
 
@@ -1359,6 +1459,8 @@ class InstallThread : Thread
                   settings.docDir = path;
             }
          }
+
+         settings.language = GetLanguageString();
 
          settingsContainer.Save();
          delete settingsContainer;

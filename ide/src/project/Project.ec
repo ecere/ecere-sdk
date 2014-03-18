@@ -414,30 +414,6 @@ define ProjectExtension = "epj";
 define stringInFileIncludedFrom = "In file included from ";
 define stringFrom =               "                 from ";
 
-// This function cannot accept same pointer for source and output
-// todo: rename ReplaceSpaces to EscapeSpaceAndSpecialChars or something
-void ReplaceSpaces(char * output, char * source)
-{
-   int c, dc;
-   char ch, pch = 0;
-
-   for(c = 0, dc = 0; (ch = source[c]); c++, dc++)
-   {
-      if(ch == ' ') output[dc++] = '\\';
-      if(ch == '\"') output[dc++] = '\\';
-      if(ch == '&') output[dc++] = '\\';
-      if(pch != '$')
-      {
-         if(ch == '(' || ch == ')') output[dc++] = '\\';
-         pch = ch;
-      }
-      else if(ch == ')')
-         pch = 0;
-      output[dc] = ch;
-   }
-   output[dc] = '\0';
-}
-
 // chars refused for project name: windowsFileNameCharsNotAllowed + " &,."
 
 //define gnuMakeCharsNeedEscaping = "$%";

@@ -404,7 +404,7 @@ class IDEWorkSpace : Window
    menu = Menu {  };
    IDEToolbar toolBar;
 
-   MenuItem * driverItems, * skinItems;
+   MenuItem * driverItems, * skinItems, * languageItems;
    StatusField pos { width = 150 };
    StatusField ovr, caps, num;
    DualPipe documentor;
@@ -1414,7 +1414,7 @@ class IDEWorkSpace : Window
       MenuDivider { viewMenu };
       MenuItem viewColorPicker
       {
-         viewMenu, $"Color Picker...", l, Key { c, ctrl = true , shift = true };
+         viewMenu, $"Color Picker...", c, Key { c, ctrl = true , shift = true };
          bool NotifySelect(MenuItem selection, Modifiers mods)
          {
             ColorPicker colorPicker { master = this };
@@ -1438,6 +1438,11 @@ class IDEWorkSpace : Window
       };
       */
       Menu driversMenu { viewMenu, $"Graphics Driver", v };
+
+      MenuDivider { viewMenu };
+
+      Menu languageMenu { viewMenu, $"Language", l };
+
       //Menu skinsMenu { viewMenu, "GUI Skins", k };
    Menu windowMenu { menu, $"Window", w };
       MenuItem { windowMenu, $"Close All", l, NotifySelect = MenuWindowCloseAll };
@@ -3112,10 +3117,10 @@ class IDEWorkSpace : Window
                   break;
                }
                else
-                  ide.OpenFile(fullPath, app.argc > 2, true, openAsText ? "txt" : null, yes, normal, false);
+                  ide.OpenFile(fullPath, app.argFilesCount > 1, true, openAsText ? "txt" : null, yes, normal, false);
             }
             else if(strstr(fullPath, "http://") == fullPath)
-               ide.OpenFile(fullPath, app.argc > 2, true, openAsText ? "txt" : null, yes, normal, false);
+               ide.OpenFile(fullPath, app.argFilesCount > 1, true, openAsText ? "txt" : null, yes, normal, false);
          }
       }
       if(passThrough && projectView && projectView.project && workspace)
@@ -3620,6 +3625,7 @@ class IDEApp : GuiApplication
    //skin = "TVision";
 
    TempFile includeFile { };
+   int argFilesCount;
 
    bool Init()
    {
@@ -3628,7 +3634,38 @@ class IDEApp : GuiApplication
       //SetLoggingMode(debug, null);
 
       settingsContainer.Load();
-      if(argc > 1 && !strcmpi(GetExtension(argv[1], ext), "3ds"))
+      {
+         String language = GetLanguageString();
+         if(ideSettings.language.OnCompare(language))
+         {
+            LanguageRestart(ideSettings.language, app, null, null, null, null, true);
+            return false;
+         }
+      }
+
+      // First count files arg to decide whether to maximize
+      {
+         bool passThrough = false, debugWorkDir = false;
+         int c;
+         argFilesCount = 0;
+         for(c = 1; c<app.argc; c++)
+         {
+            if(passThrough);
+            else if(debugWorkDir)
+               debugWorkDir = false;
+            else if(!strcmp(app.argv[c], "-t"));
+            else if(!strcmp(app.argv[c], "-no-parsing"));
+            else if(!strcmp(app.argv[c], "-debug-start"));
+            else if(!strcmp(app.argv[c], "-debug-work-dir"))
+               debugWorkDir = true;
+            else if(!strcmp(app.argv[c], "-@"))
+               passThrough = true;
+            else
+               argFilesCount++;
+         }
+      }
+
+      if(app.argFilesCount > 1 && !strcmpi(GetExtension(argv[1], ext), "3ds"))
       {
          app.driver = "OpenGL";
          ide.driverItems[1].checked = true;
@@ -3653,9 +3690,19 @@ class IDEApp : GuiApplication
          char fullPath[MAX_LOCATION];
          GetWorkingDir(fullPath, MAX_LOCATION);
          PathCat(fullPath, app.argv[c]);
-         ide.OpenFile(fullPath, app.argc > 2, true, null, yes, normal, false);
+         ide.OpenFile(fullPath, app.argFilesCount > 1, true, null, yes, normal, false);
       }
       */
+
+      // Default to language specified by environment if no language selected
+      if(!ideSettings.language)
+      {
+         String language = GetLanguageString();
+         if(language)
+            ideSettings.language = language;
+         else
+            ideSettings.language = "";
+      }
 
       // Default to home directory if no directory yet set up
       if(!ideSettings.ideProjectFileDialogLocation[0])
@@ -3700,8 +3747,62 @@ class IDEApp : GuiApplication
       if(!LoadIncludeFile())
          PrintLn("error: unable to load :crossplatform.mk file inside ide binary.");
 
+      // Create language menu
+      {
+         String language = ideSettings.language;
+         int i = 0;
+
+         ide.languageItems = new MenuItem[languages.count];
+         for(l : languages)
+         {
+            ide.languageItems[i] =
+            {
+               ide.languageMenu, l.name;
+               bitmap = { l.bitmap };
+               id = i;
+               isRadio = true;
+
+               bool Window::NotifySelect(MenuItem selection, Modifiers mods)
+               {
+                  if(!LanguageRestart(languages[(int)selection.id].code, app, ideSettings, settingsContainer, ide, ide.projectView, false))
+                  {
+                     // Re-select previous selected language if aborted
+                     String language = ideSettings.language;
+                     int i = 0;
+                     for(l : languages)
+                     {
+                        if(((!language || !language[0]) && i == 0) ||
+                           (language && !strcmpi(l.code, language)))
+                        {
+                           ide.languageItems[i].checked = true;
+                           break;
+                        }
+                        i++;
+                     }
+                  }
+                  return true;
+               }
+            };
+            if(((!language || !language[0]) && i == 0) ||
+               (language && !strcmpi(l.code, language)))
+               ide.languageItems[i].checked = true;
+            i++;
+         }
+         MenuDivider { ide.languageMenu };
+         MenuItem
+         {
+            ide.languageMenu, $"Help Translate";
+
+            bool Window::NotifySelect(MenuItem selection, Modifiers mods)
+            {
+               ShellOpen("http://translations.launchpad.net/ecere");
+               return true;
+            }
+         };
+      }
+
       ideMainFrame.Create();
-      if(app.argc > 2)
+      if(app.argFilesCount > 1)
          ide.MenuWindowTileVert(null, 0);
       return true;
    }

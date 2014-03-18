@@ -1,7 +1,7 @@
 #ifdef ECERE_STATIC
-import static "ecere"
+public import static "ecere"
 #else
-import "ecere"
+public import "ecere"
 #endif
 
 import "StringsBox"
@@ -22,6 +22,31 @@ char * settingsDirectoryNames[DirTypes] =
    "Library Files",
    "Executable Files"
 };
+
+// This function cannot accept same pointer for source and output
+// todo: rename ReplaceSpaces to EscapeSpaceAndSpecialChars or something
+void ReplaceSpaces(char * output, char * source)
+{
+   int c, dc;
+   char ch, pch = 0;
+
+   for(c = 0, dc = 0; (ch = source[c]); c++, dc++)
+   {
+      if(ch == ' ') output[dc++] = '\\';
+      if(ch == '\"') output[dc++] = '\\';
+      if(ch == '&') output[dc++] = '\\';
+      if(pch != '$')
+      {
+         if(ch == '(' || ch == ')') output[dc++] = '\\';
+         pch = ch;
+      }
+      else if(ch == ')')
+         pch = 0;
+      output[dc] = ch;
+   }
+   output[dc] = '\0';
+}
+
 
 enum GlobalSettingsChange { none, editorSettings, projectOptions, compilerSettings };
 
@@ -443,6 +468,17 @@ public:
       isset { return defaultCompiler && defaultCompiler[0]; }
    }
 
+   property String language
+   {
+      set
+      {
+         delete language;
+         language = CopyString(value);
+      }
+      get { return language; }
+      isset { return language != null; }
+   }
+
 private:
    char * docDir;
    char * ideFileDialogLocation;
@@ -451,6 +487,7 @@ private:
    char * projectDefaultIntermediateObjDir;
    char * compilerConfigsDir;
    char * defaultCompiler;
+   String language;
 
    CompilerConfig GetCompilerConfig(String compilerName)
    {
@@ -1077,4 +1114,205 @@ private:
       incref copy;
       return copy;
    }
+}
+
+struct LanguageOption
+{
+   String name;
+   String bitmap;
+   String code;
+   BitmapResource res;
+
+   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   {
+      return name;
+   }
+
+   void OnDisplay(Surface surface, int x, int y, int width, void * data, Alignment alignment, DataDisplayFlags flags)
+   {
+      Bitmap icon = res ? res.bitmap : null;
+      int w = 8 + 16;
+      if(icon)
+         surface.Blit(icon, x + (16 - icon.width) / 2,y+2,0,0, icon.width, icon.height);
+      class::OnDisplay(surface, x + w, y, width - w, null, alignment, flags);
+   }
+};
+
+Array<LanguageOption> languages
+{ [
+   { "English",            ":countryCode/gb.png", "" },
+   { "汉语",                ":countryCode/cn.png", "zh_CN" },
+   { "Español",            ":countryCode/es.png", "es_ES" },
+   { "Русский (43%)",      ":countryCode/ru.png", "ru_RU" },
+   { "Português (28%)",    ":countryCode/pt.png", "pt_BR" },
+   { "Nederlandse (13%)",  ":countryCode/nl.png", "nl_NL" },
+   { "Tiếng Việt (12%)",   ":countryCode/vn.png", "vi_VI" },
+   { "मराठी (10%)",          ":countryCode/in.png", "mr_MR" },
+   { "Hebrew (8%)",        ":countryCode/il.png", "he_HE" },
+   { "Magyar (8%)",        ":countryCode/hu.png", "hu_HU" }
+] };
+
+String GetLanguageString()
+{
+   String language = getenv("LANGUAGE");
+   if(!language) language = getenv("LC_ALL");
+   if(!language) language = getenv("LC_MESSAGES");
+   if(!language) language = getenv("LANG");
+   if(!language) language = "";
+   return language;
+}
+
+bool LanguageRestart(char * code, Application app, IDESettings settings, IDESettingsContainer settingsContainer, Window ide, Window projectView, bool wait)
+{
+   bool restart = true;
+   String command = null;
+   int arg0Len = strlen(app.argv[0]);
+   int len = arg0Len;
+   int j;
+   char ch;
+
+   if(ide)
+   {
+      Window w;
+
+      if(projectView)
+      {
+         Window w;
+         for(w = ide.firstChild; w; w = w.next)
+         {
+            if(w.isActiveClient && w.isDocument)
+            {
+               if(!w.CloseConfirmation(true))
+               {
+                  restart = false;
+                  break;
+               }
+            }
+         }
+         if(restart)
+         {
+            if(!projectView.CloseConfirmation(true))
+               restart = false;
+            if(projectView.fileName)
+            {
+               char * name = projectView.fileName;
+               if(name)
+               {
+                  for(j = 0; (ch = name[j]); j++)
+                     len += (ch == ' ' || ch == '\"' || ch == '&' || ch == '$' || ch == '(' || ch == ')') ? 2 : 1;
+               }
+            }
+
+            command = new char[len + 1];
+
+            strcpy(command, app.argv[0]);
+            len = arg0Len;
+            if(projectView.fileName)
+            {
+               strcat(command, " ");
+               len++;
+               ReplaceSpaces(command + len, projectView.fileName);
+            }
+         }
+         if(restart)
+         {
+            for(w = ide.firstChild; w; w = w.next)
+               if(w.isActiveClient && w.isDocument)
+                  w.modifiedDocument = false;
+            projectView.modifiedDocument = false;
+         }
+      }
+      else
+      {
+         for(w = ide.firstChild; w; w = w.next)
+         {
+            if(w.isActiveClient && w.isDocument)
+            {
+               if(!w.CloseConfirmation(true))
+               {
+                  restart = false;
+                  break;
+               }
+               if(w.fileName)
+               {
+                  char * name = w.fileName;
+                  len++;
+                  for(j = 0; (ch = name[j]); j++)
+                     len += (ch == ' ' || ch == '\"' || ch == '&' || ch == '$' || ch == '(' || ch == ')') ? 2 : 1;
+               }
+            }
+         }
+
+         if(restart)
+         {
+            command = new char[len + 1];
+            strcpy(command, app.argv[0]);
+            len = arg0Len;
+
+            for(w = ide.firstChild; w; w = w.next)
+            {
+               if(w.isActiveClient && w.isDocument)
+               {
+                  char * name = w.fileName;
+                  if(name)
+                  {
+                     strcat(command, " ");
+                     len++;
+                     ReplaceSpaces(command + len, name);
+                     len = strlen(command);
+                  }
+               }
+            }
+         }
+         if(restart)
+         {
+            for(w = ide.firstChild; w; w = w.next)
+               if(w.isActiveClient && w.isDocument)
+                  w.modifiedDocument = false;
+         }
+      }
+      if(restart)
+      {
+         settings.language = code;
+         settingsContainer.Save();
+         if(eClass_IsDerived(app._class, class(GuiApplication)))
+         {
+            GuiApplication guiApp = (GuiApplication)app;
+            guiApp.desktop.Destroy(0);
+         }
+      }
+   }
+   else
+   {
+      int i;
+      for(i = 1; i < app.argc; i++)
+      {
+         char * arg = app.argv[i];
+         len++;
+         for(j = 0; (ch = arg[j]); j++)
+            len += (ch == ' ' || ch == '\"' || ch == '&' || ch == '$' || ch == '(' || ch == ')') ? 2 : 1;
+      }
+
+      command = new char[len + 1];
+      strcpy(command, app.argv[0]);
+      len = arg0Len;
+      for(i = 1; i < app.argc; i++)
+      {
+         strcat(command, " ");
+         len++;
+         ReplaceSpaces(command + len, app.argv[i]);
+         len = strlen(command);
+      }
+   }
+
+   if(restart)
+   {
+      SetEnvironment("LANGUAGE", code);
+      if(wait)
+         ExecuteWait(command);
+      else
+         Execute(command);
+   }
+   delete command;
+   return restart;
 }
