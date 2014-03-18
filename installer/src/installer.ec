@@ -475,6 +475,8 @@ class Installer : Window
    {
       this, size = { 460, 112 }, position = { 160, 160 }, hasHeader = true;
       fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true,
+      hasHorzScroll = true;
+      resizable = true,
       noDragging = true;
       rowHeight = 18;
       selectionColor = { 145, 150, 140 };
