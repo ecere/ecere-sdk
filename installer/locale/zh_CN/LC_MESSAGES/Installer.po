@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-03-16 21:41-0500\n"
+"PO-Revision-Date: 2014-03-17 23:14-0500\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "Language: zh_CN\n"
@@ -24,75 +24,75 @@ msgstr " 目标文件夹"
 
 #: src/installer.ec:387
 msgid "API Reference"
-msgstr ""
+msgstr "API参考手册"
 
 #: src/installer.ec:673
 msgid "Add Ecere binaries location to the system environment path"
-msgstr ""
+msgstr "添加Ecere执行程序位置到系统环境路径"
 
 #: src/installer.ec:459 src/installer.ec:673
 msgid "Add Ecere binaries location to the user environment path"
-msgstr ""
+msgstr "添加Ecere执行程序位置到用户环境路径"
 
 #: src/installer.ec:460
 msgid "Add MinGW to the user environment path"
-msgstr ""
+msgstr "添加MinGW到用户环境路径"
 
 #: src/installer.ec:677
 msgid "Add TDM-GCC/MinGW-w64 to the system environment path"
-msgstr ""
+msgstr "添加TDM-GCC/MinGW-w64到系统环境路径"
 
 #: src/installer.ec:677
 msgid "Add TDM-GCC/MinGW-w64 to the user environment path"
-msgstr ""
+msgstr "添加TDM-GCC/MinGW-w64到用户环境路径"
 
 #: src/installer.ec:669
 msgid "Add binaries location to the system environment paths"
-msgstr ""
+msgstr "添加执行程序位置到系统环境目录"
 
 #: src/installer.ec:478 src/installer.ec:669
 msgid "Add binaries location to the user environment paths"
-msgstr ""
+msgstr "添加执行程序位置到用户环境目录"
 
 #: src/installer.ec:412
 msgid "Additional Support"
-msgstr ""
+msgstr "附加支持"
 
 #: src/installer.ec:477
 msgid "Associate the Ecere IDE with Supported File Types"
-msgstr ""
+msgstr "关联Ecere IDE支持的文件类型"
 
 #: src/installer.ec:447
 msgid "Associate with 3D Studio Model Files (*.3ds)"
-msgstr ""
+msgstr "关联3D Studio模型文件(*.3ds)"
 
 #: src/installer.ec:444
 msgid "Associate with C files (*.c, *.h)"
-msgstr ""
+msgstr "关联C文件(*.c, *.h)"
 
 #: src/installer.ec:445
 msgid "Associate with C++ Files (*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)"
-msgstr ""
+msgstr "关联C++文件(*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)"
 
 #: src/installer.ec:442
 msgid "Associate with Ecere Project Files (*.epj)"
-msgstr ""
+msgstr "关联Ecere项目文件(*.epj)"
 
 #: src/installer.ec:448
 msgid "Associate with Image Files (*.png, *.jpg, *.pcx, *.bmp, *.gif)"
-msgstr ""
+msgstr "关联图像文件(*.png, *.jpg, *.pcx, *.bmp, *.gif)"
 
 #: src/installer.ec:443
 msgid "Associate with eC Files (*.ec, *.eh)"
-msgstr ""
+msgstr "关联eC文件 (*.ec, *.eh)"
 
 #: src/installer.ec:446
 msgid "Associate with text files (*.txt)"
-msgstr ""
+msgstr "关联文本文件(*.txt)"
 
 #: src/installer.ec:316
 msgid "Audio"
-msgstr ""
+msgstr "音频"
 
 #: src/installer.ec:861
 msgid "Avail. Space"
@@ -100,11 +100,11 @@ msgstr "可用空间"
 
 #: src/installer.ec:346
 msgid "Binary Utils"
-msgstr ""
+msgstr "二进制程序工具"
 
 #: src/installer.ec:394
 msgid "Binutils Docs"
-msgstr ""
+msgstr "二进制程序工具文档"
 
 #: src/installer.ec:635
 msgid "By installing the Ecere SDK, you agree to the"
@@ -114,11 +114,11 @@ msgstr "安装Ecere SDK即意味着你同意"
 msgid ""
 "By using it you agree to the terms and conditions of their individual "
 "licenses."
-msgstr ""
+msgstr "使用它即表示同意每个licenses的条款和条件."
 
 #: src/installer.ec:367
 msgid "C++ Compiler"
-msgstr ""
+msgstr "C++ 编译器"
 
 #: src/installer.ec:733 src/installer.ec:1220
 msgid "Cancel"
@@ -150,19 +150,19 @@ msgstr "配置#Ecere集成开发环境"
 
 #: src/installer.ec:411
 msgid "Core SDK Files"
-msgstr ""
+msgstr "核心SDK文件集"
 
 #: src/installer.ec:358 src/installer.ec:359
 msgid "Data Access"
-msgstr ""
+msgstr "数据存取"
 
 #: src/installer.ec:317
 msgid "Database"
-msgstr ""
+msgstr "数据库"
 
 #: src/installer.ec:475
 msgid "Desktop Icon"
-msgstr "正在安装桌面图标..."
+msgstr "桌面图标"
 
 #: src/installer.ec:859
 msgid "Destination Folder"
@@ -170,23 +170,23 @@ msgstr "目标文件夹"
 
 #: src/installer.ec:413
 msgid "Documentation"
-msgstr ""
+msgstr "文档"
 
 #: src/installer.ec:386
 msgid "Ecere Book"
-msgstr ""
+msgstr "Ecere书籍"
 
 #: src/installer.ec:389
 msgid "Ecere Coursework"
-msgstr ""
+msgstr "Ecere课程"
 
 #: src/installer.ec:362
 msgid "Ecere Extras"
-msgstr ""
+msgstr "Ecere扩展"
 
 #: src/installer.ec:4
 msgid "Ecere SDK v0.44.10 -- built on March 9th, 2014 "
-msgstr "Ecere SDK v0.44.10 --编译于2014年3 月16日 "
+msgstr "Ecere SDK v0.44.10 -- 编译于2014年3 月16日 "
 
 #: src/installer.ec:496 src/installer.ec:1198
 msgid ""
@@ -195,11 +195,11 @@ msgstr "Ecere软件开发套件安装 - v0.44.10 \"Ryōan-ji\" 64 Bit Edition"
 
 #: src/installer.ec:388
 msgid "Ecere Tutorials"
-msgstr ""
+msgstr "Ecere教程"
 
 #: src/installer.ec:360 src/installer.ec:361
 msgid "Ecere Vanilla"
-msgstr ""
+msgstr "Ecere Vanilla"
 
 #: src/installer.ec:1810
 msgid "Finish"
@@ -207,19 +207,19 @@ msgstr "完成"
 
 #: src/installer.ec:391
 msgid "G++ Docs"
-msgstr ""
+msgstr "G++文档集"
 
 #: src/installer.ec:390
 msgid "GCC Docs"
-msgstr ""
+msgstr "GCC文档集"
 
 #: src/installer.ec:392
 msgid "GDB Docs"
-msgstr ""
+msgstr "GDB文档集"
 
 #: src/installer.ec:343
 msgid "GNU C Compiler"
-msgstr ""
+msgstr "GNU C编译器"
 
 #: ../ide/src/IDESettings.ec:736
 msgid "GNU Compiler Collection (GCC) / GNU Make"
@@ -227,23 +227,23 @@ msgstr "GNU 编译器套件 (GCC) / GNU Make"
 
 #: src/installer.ec:344
 msgid "GNU Debugger"
-msgstr ""
+msgstr "GNU调试器"
 
 #: src/installer.ec:347
 msgid "GNU Make"
-msgstr ""
+msgstr "GNU Make"
 
 #: src/installer.ec:364 src/installer.ec:365
 msgid "GNU Regexp"
-msgstr ""
+msgstr "GNU 正则表达式"
 
 #: src/installer.ec:320
 msgid "GUI & Graphics"
-msgstr ""
+msgstr "GUI和图形"
 
 #: src/installer.ec:319
 msgid "Games"
-msgstr ""
+msgstr "游戏"
 
 #: ../ide/src/licensing.ec:166
 msgid "I agree"
@@ -259,7 +259,7 @@ msgstr "安装"
 
 #: src/installer.ec:473
 msgid "Install for All Users"
-msgstr ""
+msgstr "为所有用户安装"
 
 #: src/installer.ec:1419
 msgid "Installation Cancelled"
@@ -299,11 +299,11 @@ msgstr "正在安装Ecere SDK"
 
 #: ../ide/src/licensing.ec:38
 msgid "License Agreements"
-msgstr ""
+msgstr "许可协议"
 
 #: src/installer.ec:393
 msgid "Make Docs"
-msgstr ""
+msgstr "Make文档集"
 
 #: ../ide/src/IDESettings.ec:739
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
@@ -319,15 +319,15 @@ msgstr "Microsoft Visual Studio 2010 (10.0)编译器"
 
 #: src/installer.ec:345
 msgid "MinGW-w64 Runtime"
-msgstr ""
+msgstr "MinGW-w64运行时"
 
 #: src/installer.ec:321
 msgid "Miscellaneous"
-msgstr ""
+msgstr "杂类"
 
 #: src/installer.ec:322
 msgid "Networking"
-msgstr ""
+msgstr "联网"
 
 #: src/installer.ec:1233
 msgid ""
@@ -356,11 +356,11 @@ msgstr "正在注册文件类型..."
 
 #: src/installer.ec:339 src/installer.ec:340
 msgid "Runtime Library"
-msgstr ""
+msgstr "运行时库"
 
 #: src/installer.ec:414
 msgid "Samples"
-msgstr ""
+msgstr "例子集"
 
 #: src/installer.ec:506
 msgid "Select a new location"
@@ -407,7 +407,7 @@ msgstr "需要的空间: "
 
 #: src/installer.ec:474
 msgid "Start Menu Group"
-msgstr ""
+msgstr "启动菜单组"
 
 #: src/installer.ec:1815
 msgid "Thank you for using the Ecere SDK."
@@ -419,11 +419,11 @@ msgstr "安装未完成."
 
 #: ../ide/src/licensing.ec:53
 msgid "This program is based on these free open source software components."
-msgstr ""
+msgstr "本程序基于这些自由开源软件部件."
 
 #: src/installer.ec:324
 msgid "Threading"
-msgstr ""
+msgstr "线程"
 
 #: ../ide/src/IDESettings.ec:737
 msgid "Tiny C Compiler / GNU Make"
@@ -431,19 +431,19 @@ msgstr "Tiny C 编译器 / GNU Make"
 
 #: src/installer.ec:396
 msgid "UPX Docs"
-msgstr ""
+msgstr "UPX文档集"
 
 #: src/installer.ec:323
 msgid "WIA Scanning"
-msgstr ""
+msgstr "WIA扫描"
 
 #: src/installer.ec:341 src/installer.ec:342
 msgid "eC Compiler"
-msgstr ""
+msgstr "eC编译器"
 
 #: src/installer.ec:395
 msgid "gnurx Docs"
-msgstr ""
+msgstr "gnurx文档集"
 
 #: src/installer.ec:640
 msgid "terms and conditions"
