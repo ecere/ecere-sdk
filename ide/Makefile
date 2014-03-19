@@ -190,6 +190,7 @@ RESOURCES2 = \
 	../extras/res/types/countryCode/in.png \
 	../extras/res/types/countryCode/nl.png \
 	../extras/res/types/countryCode/il.png \
+	../extras/res/types/countryCode/br.png \
 	res/ecere.jpg \
 	res/ecereBack.jpg \
 	res/icon.png \
@@ -284,6 +285,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/MinGW-w64.LICENSE ../extras/res/licenses/tdm-gcc.LICENSE ../extras/res/licenses/ffi.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/es.png ../extras/res/types/countryCode/gb.png ../extras/res/types/countryCode/hu.png ../extras/res/types/countryCode/cn.png ../extras/res/types/countryCode/pt.png ../extras/res/types/countryCode/vn.png ../extras/res/types/countryCode/ru.png ../extras/res/types/countryCode/in.png ../extras/res/types/countryCode/nl.png ../extras/res/types/countryCode/il.png "countryCode"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/br.png "countryCode"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

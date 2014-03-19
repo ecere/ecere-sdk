@@ -373,7 +373,8 @@
             "../extras/res/types/countryCode/ru.png",
             "../extras/res/types/countryCode/in.png",
             "../extras/res/types/countryCode/nl.png",
-            "../extras/res/types/countryCode/il.png"
+            "../extras/res/types/countryCode/il.png",
+            "../extras/res/types/countryCode/br.png"
          ]
       },
       "ecere.jpg",

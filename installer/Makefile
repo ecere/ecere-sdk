@@ -5226,9 +5226,10 @@ RESOURCES268 = \
 	../extras/res/types/countryCode/in.png \
 	../extras/res/types/countryCode/nl.png \
 	../extras/res/types/countryCode/il.png \
-	../ide/res/icon.png \
-	ecere.png
+	../extras/res/types/countryCode/br.png
 RESOURCES269 = \
+	../ide/res/icon.png \
+	ecere.png \
 	ryoanji.png \
 	ryoanji-progress.png
 
@@ -5951,6 +5952,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.LIB.txt tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.MinGW-w64-runtime.txt tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.MinGW-w64.txt tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.winpthreads.txt "tdm/mingwrt/licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/Installer/es.mo locale/Installer/pt_BR.mo locale/Installer/ru.mo locale/Installer/zh_CN.mo "locale/Installer"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/es.png ../extras/res/types/countryCode/gb.png ../extras/res/types/countryCode/hu.png ../extras/res/types/countryCode/cn.png ../extras/res/types/countryCode/pt.png ../extras/res/types/countryCode/vn.png ../extras/res/types/countryCode/ru.png ../extras/res/types/countryCode/in.png ../extras/res/types/countryCode/nl.png ../extras/res/types/countryCode/il.png "countryCode"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/br.png "countryCode"
 else
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
 endif
