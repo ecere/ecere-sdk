@@ -91,11 +91,11 @@ RESOURCES1 = \
 	../../ecere/res/vanilla/ecere/places/networkServer.png \
 	../../ecere/res/vanilla/ecere/places/networkWorkgroup.png \
 	../../ecere/res/vanilla/ecere/status/folderOpen.png \
-	locale/extract-es.mo \
-	locale/extract-he.mo
+	locale/extract/es.mo \
+	locale/extract/he.mo
 RESOURCES2 = \
-	locale/extract-ru.mo \
-	locale/extract-zh_CN.mo
+	locale/extract/ru.mo \
+	locale/extract/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -211,7 +211,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png ../../ecere/res/vanilla/ecere/elements/optionBoxUp.png "ecere/elements"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/places/driveRemote.png ../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png ../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png "ecere/places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/status/folderOpen.png "ecere/status"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/extract-es.mo locale/extract-he.mo locale/extract-ru.mo locale/extract-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/extract/es.mo locale/extract/he.mo locale/extract/ru.mo locale/extract/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
@@ -235,11 +235,21 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
 	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
 
 clean: cleantarget
 	$(call rmq,$(_OBJECTS))
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(BOWLS))

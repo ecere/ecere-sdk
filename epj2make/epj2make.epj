@@ -100,10 +100,15 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "epj2make-es.mo",
-            "epj2make-he.mo",
-            "epj2make-ru.mo",
-            "epj2make-zh_CN.mo"
+            {
+               "Folder" : "epj2make",
+               "Files" : [
+                  "es.mo",
+                  "he.mo",
+                  "ru.mo",
+                  "zh_CN.mo"
+               ]
+            }
          ]
       },
       "../crossplatform.mk"

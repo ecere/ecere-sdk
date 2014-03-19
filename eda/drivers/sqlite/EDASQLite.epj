@@ -139,11 +139,16 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "EDASQLite-es.mo",
-            "EDASQLite-he.mo",
-            "EDASQLite-ru.mo",
-            "EDASQLite-zh_CN.mo",
-            "EDASQLite-pt_BR.mo"
+            {
+               "Folder" : "EDASQLite",
+               "Files" : [
+                  "es.mo",
+                  "he.mo",
+                  "pt_BR.mo",
+                  "ru.mo",
+                  "zh_CN.mo"
+               ]
+            }
          ]
       }
    ]

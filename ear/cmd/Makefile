@@ -64,9 +64,9 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/ear-es.mo \
-	locale/ear-ru.mo \
-	locale/ear-zh_CN.mo \
+	locale/ear/es.mo \
+	locale/ear/ru.mo \
+	locale/ear/zh_CN.mo \
 	../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/extract$(E)
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -125,7 +125,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/extract$(E) ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ear-es.mo locale/ear-ru.mo locale/ear-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ear/es.mo locale/ear/ru.mo locale/ear/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
@@ -150,11 +150,21 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
 	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
 
 clean: cleantarget
 	$(call rmq,$(_OBJECTS))
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(BOWLS))

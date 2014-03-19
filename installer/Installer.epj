@@ -14894,10 +14894,15 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "Installer-es.mo",
-            "Installer-ru.mo",
-            "Installer-zh_CN.mo",
-            "Installer-pt_BR.mo"
+            {
+               "Folder" : "Installer",
+               "Files" : [
+                  "es.mo",
+                  "pt_BR.mo",
+                  "ru.mo",
+                  "zh_CN.mo"
+               ]
+            }
          ]
       },
       {

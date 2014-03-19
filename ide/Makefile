@@ -161,17 +161,17 @@ RESOURCES1 = \
 	$(RES)codeMarks/topFrameHalfError.png \
 	$(RES)others/mousePointer.png \
 	$(RES)status/software-update-available.png \
-	locale/ide-es.mo \
-	locale/ide-pt_BR.mo \
-	locale/ide-ru.mo \
-	locale/ide-vi.mo \
-	locale/ide-zh_CN.mo \
+	locale/ide/es.mo \
+	locale/ide/pt_BR.mo \
+	locale/ide/ru.mo \
+	locale/ide/vi.mo \
+	locale/ide/zh_CN.mo \
 	../LICENSE \
 	../extras/res/licenses/png.LICENSE \
 	../extras/res/licenses/tango.COPYING \
-	../extras/res/licenses/zlib.README
+	../extras/res/licenses/zlib.README \
+	../extras/res/licenses/sqlite.LICENSE
 RESOURCES2 = \
-	../extras/res/licenses/sqlite.LICENSE \
 	../extras/res/licenses/jpg.LICENSE \
 	../extras/res/licenses/ungif.LICENSE \
 	../extras/res/licenses/freetype.LICENSE \
@@ -280,7 +280,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)others/mousePointer.png "others"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/software-update-available.png "status"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ide-es.mo locale/ide-pt_BR.mo locale/ide-ru.mo locale/ide-vi.mo locale/ide-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ide/es.mo locale/ide/pt_BR.mo locale/ide/ru.mo locale/ide/vi.mo locale/ide/zh_CN.mo "locale/ide"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/MinGW-w64.LICENSE ../extras/res/licenses/tdm-gcc.LICENSE ../extras/res/licenses/ffi.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/es.png ../extras/res/types/countryCode/gb.png ../extras/res/types/countryCode/hu.png ../extras/res/types/countryCode/cn.png ../extras/res/types/countryCode/pt.png ../extras/res/types/countryCode/vn.png ../extras/res/types/countryCode/ru.png ../extras/res/types/countryCode/in.png ../extras/res/types/countryCode/nl.png ../extras/res/types/countryCode/il.png "countryCode"
@@ -700,14 +700,24 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
 	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
 
 clean: cleantarget
 	$(call rmq,$(_OBJECTS))
 ifdef WINDOWS_TARGET
 	$(call rmq,$(RCOBJECTS))
 endif
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(BOWLS))

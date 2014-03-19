@@ -86,11 +86,16 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "ecs-es.mo",
-            "ecs-he.mo",
-            "ecs-ru.mo",
-            "ecs-zh_CN.mo",
-            "ecs-pt_BR.mo"
+            {
+               "Folder" : "ecs",
+               "Files" : [
+                  "es.mo",
+                  "he.mo",
+                  "pt_BR.mo",
+                  "ru.mo",
+                  "zh_CN.mo"
+               ]
+            }
          ]
       }
    ]

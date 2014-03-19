@@ -70,10 +70,10 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/epj2make-es.mo \
-	locale/epj2make-he.mo \
-	locale/epj2make-ru.mo \
-	locale/epj2make-zh_CN.mo \
+	locale/epj2make/es.mo \
+	locale/epj2make/he.mo \
+	locale/epj2make/ru.mo \
+	locale/epj2make/zh_CN.mo \
 	../crossplatform.mk
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -131,7 +131,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../crossplatform.mk ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/epj2make-es.mo locale/epj2make-he.mo locale/epj2make-ru.mo locale/epj2make-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/epj2make/es.mo locale/epj2make/he.mo locale/epj2make/ru.mo locale/epj2make/zh_CN.mo "locale/epj2make"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
@@ -219,11 +219,21 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
 	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
 
 clean: cleantarget
 	$(call rmq,$(_OBJECTS))
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(BOWLS))

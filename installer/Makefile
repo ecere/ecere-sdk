@@ -5212,10 +5212,10 @@ RESOURCES268 = \
 	tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.MinGW-w64-runtime.txt \
 	tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.MinGW-w64.txt \
 	tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.winpthreads.txt \
-	locale/Installer-es.mo \
-	locale/Installer-ru.mo \
-	locale/Installer-zh_CN.mo \
-	locale/Installer-pt_BR.mo \
+	locale/Installer/es.mo \
+	locale/Installer/pt_BR.mo \
+	locale/Installer/ru.mo \
+	locale/Installer/zh_CN.mo \
 	../extras/res/types/countryCode/es.png \
 	../extras/res/types/countryCode/gb.png \
 	../extras/res/types/countryCode/hu.png \
@@ -5949,7 +5949,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxapofx1_0.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxapofx1_1.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxapofx1_2.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxapofx1_3.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxapofx1_4.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxapofx1_5.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxapofxd1_5.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxaudio2_8.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxinput.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxinput1_1.a "tdm/mingwrt/x86_64-w64-mingw32/lib32"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxinput1_2.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxinput1_3.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxinput1_4.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/libxinput9_1_0.a tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/x86_64-w64-mingw32/lib32/txtmode.o "tdm/mingwrt/x86_64-w64-mingw32/lib32"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.LIB.txt tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.MinGW-w64-runtime.txt tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.MinGW-w64.txt tdm/mingw64-runtime-v3-tdm64-gcc48-svn6307/licenses/COPYING.winpthreads.txt "tdm/mingwrt/licenses"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/Installer-es.mo locale/Installer-ru.mo locale/Installer-zh_CN.mo locale/Installer-pt_BR.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/Installer/es.mo locale/Installer/pt_BR.mo locale/Installer/ru.mo locale/Installer/zh_CN.mo "locale/Installer"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/es.png ../extras/res/types/countryCode/gb.png ../extras/res/types/countryCode/hu.png ../extras/res/types/countryCode/cn.png ../extras/res/types/countryCode/pt.png ../extras/res/types/countryCode/vn.png ../extras/res/types/countryCode/ru.png ../extras/res/types/countryCode/in.png ../extras/res/types/countryCode/nl.png ../extras/res/types/countryCode/il.png "countryCode"
 else
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)

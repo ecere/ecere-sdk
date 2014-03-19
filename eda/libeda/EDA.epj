@@ -137,10 +137,15 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "EDA-es.mo",
-            "EDA-he.mo",
-            "EDA-ru.mo",
-            "EDA-zh_CN.mo"
+            {
+               "Folder" : "EDA",
+               "Files" : [
+                  "es.mo",
+                  "he.mo",
+                  "ru.mo",
+                  "zh_CN.mo"
+               ]
+            }
          ]
       }
    ]

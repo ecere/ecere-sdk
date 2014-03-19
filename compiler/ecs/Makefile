@@ -64,11 +64,11 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/ecs-es.mo \
-	locale/ecs-he.mo \
-	locale/ecs-ru.mo \
-	locale/ecs-zh_CN.mo \
-	locale/ecs-pt_BR.mo
+	locale/ecs/es.mo \
+	locale/ecs/he.mo \
+	locale/ecs/pt_BR.mo \
+	locale/ecs/ru.mo \
+	locale/ecs/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -117,7 +117,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecs-es.mo locale/ecs-he.mo locale/ecs-ru.mo locale/ecs-zh_CN.mo locale/ecs-pt_BR.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecs/es.mo locale/ecs/he.mo locale/ecs/pt_BR.mo locale/ecs/ru.mo locale/ecs/zh_CN.mo "locale/ecs"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
@@ -142,11 +142,21 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
 cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
 	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
 
 clean: cleantarget
 	$(call rmq,$(_OBJECTS))
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
 	$(call rmq,$(BOWLS))

@@ -1989,6 +1989,7 @@ class SymbolgenApp : Application
                //strcpy(potFileName, output);
                //StripExtension(potFileName);
                strcpy(potFileName, "locale");
+               PathCat(potFileName, projectName);
                MakeDir(potFileName);
                PathCat(potFileName, projectName);
                ChangeExtension(potFileName, "pot", potFileName);

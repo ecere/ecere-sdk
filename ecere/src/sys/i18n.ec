@@ -64,9 +64,9 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
    }
 
    if(module.name)
-      sprintf(fileName, "<:%s>locale/%s-%s.mo", module.name, name, locale);
+      sprintf(fileName, "<:%s>locale/%s/%s.mo", module.name, name, locale);
    else
-      sprintf(fileName, ":locale/%s-%s.mo", name, locale);
+      sprintf(fileName, ":locale/%s/%s.mo", name, locale);
    f = FileOpen(fileName, read);
    if(!f)
    {
@@ -91,9 +91,9 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
    {
       // Attempt with generic language
       if(module.name)
-         sprintf(fileName, "<:%s>locale/%s-%s.mo", module.name, name, genericLocale);
+         sprintf(fileName, "<:%s>locale/%s/%s.mo", module.name, name, genericLocale);
       else
-         sprintf(fileName, ":locale/%s-%s.mo", name, genericLocale);
+         sprintf(fileName, ":locale/%s/%s.mo", name, genericLocale);
       f = FileOpen(fileName, read);
       if(!f)
       {

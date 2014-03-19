@@ -77,10 +77,10 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/EDA-es.mo \
-	locale/EDA-he.mo \
-	locale/EDA-ru.mo \
-	locale/EDA-zh_CN.mo
+	locale/EDA/es.mo \
+	locale/EDA/he.mo \
+	locale/EDA/ru.mo \
+	locale/EDA/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -144,7 +144,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDA-es.mo locale/EDA-he.mo locale/EDA-ru.mo locale/EDA-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDA/es.mo locale/EDA/he.mo locale/EDA/ru.mo locale/EDA/zh_CN.mo "locale/EDA"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
@@ -244,8 +244,21 @@ $(OBJ)idList.o: $(OBJ)idList.c
 $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(OBJ)$(MODULE).main$(O)
 
-clean: objdir
-	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S) $(TARGET))
+cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
+	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
+
+clean: cleantarget
 	$(call rmq,$(_OBJECTS))
 	$(call rmq,$(ECOBJECTS))
 	$(call rmq,$(COBJECTS))
@@ -253,8 +266,8 @@ clean: objdir
 	$(call rmq,$(IMPORTS))
 	$(call rmq,$(SYMBOLS))
 
-realclean: objdir
+realclean: cleantarget
 	$(call rmrq,$(OBJ))
 
-distclean: objdir
+distclean: cleantarget
 	$(call rmrq,obj/)

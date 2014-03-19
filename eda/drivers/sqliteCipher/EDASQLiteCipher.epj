@@ -115,11 +115,16 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "EDASQLiteCipher-es.mo",
-            "EDASQLiteCipher-he.mo",
-            "EDASQLiteCipher-ru.mo",
-            "EDASQLiteCipher-zh_CN.mo",
-            "EDASQLiteCipher-pt_BR.mo"
+            {
+               "Folder" : "EDASQLiteCipher",
+               "Files" : [
+                  "es.mo",
+                  "he.mo",
+                  "pt_BR.mo",
+                  "ru.mo",
+                  "zh_CN.mo"
+               ]
+            }
          ]
       }
    ]

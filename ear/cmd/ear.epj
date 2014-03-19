@@ -48,9 +48,9 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "ear-es.mo",
-            "ear-ru.mo",
-            "ear-zh_CN.mo"
+            "locale/ear/es.mo",
+            "locale/ear/ru.mo",
+            "locale/ear/zh_CN.mo"
          ]
       },
       "../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/extract$(E)"

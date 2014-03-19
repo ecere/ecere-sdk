@@ -211,10 +211,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "extract-es.mo",
-            "extract-he.mo",
-            "extract-ru.mo",
-            "extract-zh_CN.mo"
+            "locale/extract/es.mo",
+            "locale/extract/he.mo",
+            "locale/extract/ru.mo",
+            "locale/extract/zh_CN.mo"
          ]
       }
    ]

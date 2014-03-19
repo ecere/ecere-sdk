@@ -331,11 +331,16 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "locale/ide-es.mo",
-            "locale/ide-pt_BR.mo",
-            "locale/ide-ru.mo",
-            "locale/ide-vi.mo",
-            "locale/ide-zh_CN.mo"
+            {
+               "Folder" : "ide",
+               "Files" : [
+                  "locale/ide/es.mo",
+                  "locale/ide/pt_BR.mo",
+                  "locale/ide/ru.mo",
+                  "locale/ide/vi.mo",
+                  "locale/ide/zh_CN.mo"
+               ]
+            }
          ]
       },
       {
