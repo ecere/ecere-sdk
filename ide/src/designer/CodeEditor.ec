@@ -874,18 +874,29 @@ class CodeEditor : Window
       void NotifyCaretMove(EditBox editBox, int line, int charPos)
       {
          // Update Line Numbers
+         static int oy1 = 0, oy2 = 0;
+         int y1, y2;
          int spaceH;
-         int oldLine = lastLine;
          display.FontExtent(font.font, " ", 1, null, &spaceH);
+         editBox.GetSelPos(null, &y1, null, null, &y2, null, false);
+         if(y1 > y2)
          {
-            Box box { 0, (oldLine-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, oldLine*spaceH-1 - editBox.scroll.y };
+            int swap = y2;
+            y2 = y1;
+            y1 = swap;
+         }
+         y2++;
+         {
+            Box box { 0, (oy1-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, oy2*spaceH-1 - editBox.scroll.y };
             Update(box);
          }
          {
-            Box box { 0, (line-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, line*spaceH-1 - editBox.scroll.y };
+            Box box { 0, (y1-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, y2*spaceH-1 - editBox.scroll.y };
             Update(box);
          }
          lastLine = line;
+         oy1 = y1;
+         oy2 = y2;
 
          if(ide.activeClient == this)
             ProcessCaretMove(editBox, line, charPos);
@@ -2353,28 +2364,63 @@ class CodeEditor : Window
          char lineFormat[16];
          char lineText[256];
          int spaceH;
+         int y1, y2;
+         int lineNum = editBox.lineNumber + 1;
+
+         int n = 0;
+         Array<int> highlightLines = GetHighlightLines();
 
          surface.textOpacity = false;
          surface.font = font.font;
          surface.TextExtent(" ", 1, null, &spaceH);
          currentLineNumber = editBox.scroll.y / spaceH + 1;
          sprintf(lineFormat, " %%%du", maxLineNumberLength);
+         editBox.GetSelPos(null, &y1, null, null, &y2, null, false);
 
          surface.SetForeground(colorScheme.lineNumbersColor);
          for(i = 0; i < editBox.clientSize.h - 4; i += spaceH)
          {
-            // Highlight current line
-            if(editBox.lineNumber == currentLineNumber - 1)
+            for(; n < highlightLines.count && highlightLines[n] < currentLineNumber; n++);
+            if(currentLineNumber == lineNum)
             {
                surface.SetBackground(colorScheme.selectedMarginColor);
                surface.Area(0, i, editBox.anchor.left.distance, i+spaceH-1);
                surface.SetBackground(colorScheme.marginColor);
             }
-            sprintf(lineText, lineFormat, currentLineNumber);
+            else if((currentLineNumber - 1 >= y1 && currentLineNumber - 1 <= y2) || (currentLineNumber - 1 <= y1 && currentLineNumber - 1 >= y2))
+            {
+               surface.SetBackground(
+                     Color {
+                        (colorScheme.marginColor.r + colorScheme.selectedMarginColor.r) / 2,
+                        (colorScheme.marginColor.g + colorScheme.selectedMarginColor.g) / 2,
+                        (colorScheme.marginColor.b + colorScheme.selectedMarginColor.b) / 2 });
+               surface.Area(0, i, editBox.anchor.left.distance, i+spaceH-1);
+               surface.SetBackground(colorScheme.marginColor);
+            }
+            else
+            {
+               surface.SetBackground(colorScheme.marginColor);
+               surface.Area(0, i, editBox.anchor.left.distance, i+spaceH-1);
+            }
             if(currentLineNumber <= editBox.numLines)
-               surface.WriteText(codeMargin * 20, i+1,lineText,maxLineNumberLength+1);
+            {
+               sprintf(lineText, lineFormat, currentLineNumber);
+               if(currentLineNumber % 10 == 0 || (n < highlightLines.count && currentLineNumber == highlightLines[n]))
+               {
+                  surface.WriteText(codeMargin * 20, i+1,lineText,maxLineNumberLength+1);
+               }
+               else
+               {
+                  surface.SetForeground(Color { 80, 80, 80 });
+                  surface.WriteText(codeMargin * 20, i+1,lineText,maxLineNumberLength+1);
+                  sprintf(lineText, lineFormat, currentLineNumber % 10);
+                  surface.SetForeground(colorScheme.lineNumbersColor);
+                  surface.WriteText(codeMargin * 20, i+1,lineText,maxLineNumberLength+1);
+               }
+            }
             currentLineNumber++;
          }
+         delete highlightLines;
       }
 
       if(codeMargin && fileName && ide.projectView)
@@ -2471,7 +2517,7 @@ class CodeEditor : Window
       bool codeMargin = true;
       if(ideSettings.showLineNumbers)
       {
-         int numLen = Max(4, nofdigits(editBox.numLines));
+         int numLen = Max(3, nofdigits(editBox.numLines));
          int digitWidth;
          maxLineNumberLength = numLen;
          display.FontExtent(font.font, "0", 1, &digitWidth, null);
@@ -6948,6 +6994,37 @@ class CodeEditor : Window
          designer.Activate();
       }
       return true;
+   }
+
+   Array<int> GetHighlightLines()
+   {
+      Array<int> lines { };
+      Map<int, bool> map { };
+      MapNode<int, bool> mn;
+      Debugger debugger = ide.debugger;
+      map[editBox.lineNumber + 1] = true;
+      if(editBox.syntaxHighlighting && fileName && ide.projectView)
+      {
+         bool error, breakpointEnabled[128];
+         int count, lineCursor, lineTopFrame, breakpointLines[128];
+         count = debugger.GetMarginIconsLineNumbers(fileName, breakpointLines, breakpointEnabled, 128, &error, &lineCursor, &lineTopFrame);
+         if(error)
+            map[error] = true;
+         if(lineCursor)
+            map[lineCursor] = true;
+         if(lineTopFrame)
+            map[lineTopFrame] = true;
+         if(count)
+         {
+            int i;
+            for(i = 0; i < count; i++)
+               map[breakpointLines[i]] = true;
+         }
+      }
+      for(mn = map.root.minimum; mn; mn = mn.next)
+         lines.Add(mn.key);
+      delete map;
+      return lines;
    }
 };
 
