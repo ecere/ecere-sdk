@@ -3634,6 +3634,8 @@ class IDEApp : GuiApplication
       //SetLoggingMode(debug, null);
 
       settingsContainer.Load();
+
+      if(ideSettings.language)
       {
          String language = GetLanguageString();
          if(ideSettings.language.OnCompare(language))
@@ -3696,13 +3698,7 @@ class IDEApp : GuiApplication
 
       // Default to language specified by environment if no language selected
       if(!ideSettings.language)
-      {
-         String language = GetLanguageString();
-         if(language)
-            ideSettings.language = language;
-         else
-            ideSettings.language = "";
-      }
+         ideSettings.language = GetLanguageString();
 
       // Default to home directory if no directory yet set up
       if(!ideSettings.ideProjectFileDialogLocation[0])
