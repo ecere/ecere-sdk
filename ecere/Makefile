@@ -376,13 +376,13 @@ RESOURCES3 = \
 	$(RES)status/audioVolumeHigh.png \
 	$(RES)status/folderOpen.png \
 	$(RES)unicode/derivedGeneralCategoryStripped.txt \
-	locale/zh_CN/LC_MESSAGES/ecere.mo \
-	locale/es_ES/LC_MESSAGES/ecere.mo \
-	locale/hu_HU/LC_MESSAGES/ecere.mo \
-	locale/mr_MR/LC_MESSAGES/ecere.mo \
-	locale/nl_NL/LC_MESSAGES/ecere.mo \
-	locale/pt_BR/LC_MESSAGES/ecere.mo \
-	locale/ru_RU/LC_MESSAGES/ecere.mo
+	locale/ecere-es.mo \
+	locale/ecere-hu.mo \
+	locale/ecere-mr.mo \
+	locale/ecere-nl.mo \
+	locale/ecere-pt_BR.mo \
+	locale/ecere-ru.mo \
+	locale/ecere-zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -584,13 +584,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/hu_HU/LC_MESSAGES/ecere.mo "locale/hu_HU/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/mr_MR/LC_MESSAGES/ecere.mo "locale/mr_MR/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/nl_NL/LC_MESSAGES/ecere.mo "locale/nl_NL/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/pt_BR/LC_MESSAGES/ecere.mo "locale/pt_BR/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/ecere.mo "locale/ru_RU/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecere-es.mo locale/ecere-hu.mo locale/ecere-mr.mo locale/ecere-nl.mo locale/ecere-pt_BR.mo locale/ecere-ru.mo locale/ecere-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
 endif

@@ -73,10 +73,10 @@ SOURCES = $(ECSOURCES) \
 	$(if $(LINUX_TARGET),,sqlite3.c)
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/EDASQLite.mo \
-	locale/es_ES/LC_MESSAGES/EDASQLite.mo \
-	locale/he/LC_MESSAGES/EDASQLite.mo \
-	locale/ru_RU/LC_MESSAGES/EDASQLite.mo
+	locale/EDASQLite-es.mo \
+	locale/EDASQLite-he.mo \
+	locale/EDASQLite-ru.mo \
+	locale/EDASQLite-zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -169,10 +169,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLite.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/EDASQLite.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/EDASQLite.mo "locale/he/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/EDASQLite.mo "locale/ru_RU/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLite-es.mo locale/EDASQLite-he.mo locale/EDASQLite-ru.mo locale/EDASQLite-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

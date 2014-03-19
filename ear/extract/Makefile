@@ -91,11 +91,11 @@ RESOURCES1 = \
 	../../ecere/res/vanilla/ecere/places/networkServer.png \
 	../../ecere/res/vanilla/ecere/places/networkWorkgroup.png \
 	../../ecere/res/vanilla/ecere/status/folderOpen.png \
-	locale/zh_CN/LC_MESSAGES/extract.mo
+	locale/extract-es.mo \
+	locale/extract-he.mo
 RESOURCES2 = \
-	locale/es_ES/LC_MESSAGES/extract.mo \
-	locale/he/LC_MESSAGES/extract.mo \
-	locale/ru_RU/LC_MESSAGES/extract.mo
+	locale/extract-ru.mo \
+	locale/extract-zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -211,10 +211,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png ../../ecere/res/vanilla/ecere/elements/optionBoxUp.png "ecere/elements"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/places/driveRemote.png ../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png ../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png "ecere/places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/status/folderOpen.png "ecere/status"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/extract.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/extract.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/extract.mo "locale/he/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/extract.mo "locale/ru_RU/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/extract-es.mo locale/extract-he.mo locale/extract-ru.mo locale/extract-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

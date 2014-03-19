@@ -89,28 +89,8 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "documentor.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "documentor.mo"
-                     ]
-                  }
-               ]
-            }
+            "documentor-es.mo",
+            "documentor-zh_CN.mo"
          ]
       },
       {

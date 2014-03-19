@@ -71,8 +71,9 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/documentor.mo \
-	locale/es_ES/LC_MESSAGES/documentor.mo \
+	locale/documentor-es.mo \
+	locale/documentor-zh_CN.mo \
+	../ide/res/actions/docOpen.png \
 	res/documentorIcon.png
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -88,9 +89,6 @@ PRJ_CFLAGS += \
 
 ECFLAGS += \
 	 -nolinenumbers
-
-
-
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -123,9 +121,8 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) res/documentorIcon.png ""
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/documentor-es.mo locale/documentor-zh_CN.mo "locale"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../ide/res/actions/docOpen.png "actions"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/documentor.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/documentor.mo "locale/es_ES/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

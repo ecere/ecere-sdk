@@ -211,50 +211,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "extract.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "extract.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "he",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "extract.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "extract.mo"
-                     ]
-                  }
-               ]
-            }
+            "extract-es.mo",
+            "extract-he.mo",
+            "extract-ru.mo",
+            "extract-zh_CN.mo"
          ]
       }
    ]

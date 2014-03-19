@@ -137,50 +137,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDA.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDA.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "he",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDA.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDA.mo"
-                     ]
-                  }
-               ]
-            }
+            "EDA-es.mo",
+            "EDA-he.mo",
+            "EDA-ru.mo",
+            "EDA-zh_CN.mo"
          ]
       }
    ]

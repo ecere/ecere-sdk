@@ -77,10 +77,10 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/EDA.mo \
-	locale/es_ES/LC_MESSAGES/EDA.mo \
-	locale/he/LC_MESSAGES/EDA.mo \
-	locale/ru_RU/LC_MESSAGES/EDA.mo
+	locale/EDA-es.mo \
+	locale/EDA-he.mo \
+	locale/EDA-ru.mo \
+	locale/EDA-zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -144,10 +144,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/EDA.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/EDA.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/EDA.mo "locale/he/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/EDA.mo "locale/ru_RU/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDA-es.mo locale/EDA-he.mo locale/EDA-ru.mo locale/EDA-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

@@ -64,11 +64,11 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/ecc.mo \
-	locale/es_ES/LC_MESSAGES/ecc.mo \
-	locale/he/LC_MESSAGES/ecc.mo \
-	locale/ru_RU/LC_MESSAGES/ecc.mo \
-	locale/vi_VI/LC_MESSAGES/ecc.mo
+	locale/ecc-es.mo \
+	locale/ecc-he.mo \
+	locale/ecc-ru.mo \
+	locale/ecc-vi.mo \
+	locale/ecc-zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -117,11 +117,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ecc.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ecc.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/ecc.mo "locale/he/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/ecc.mo "locale/ru_RU/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/vi_VI/LC_MESSAGES/ecc.mo "locale/vi_VI/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecc-es.mo locale/ecc-he.mo locale/ecc-ru.mo locale/ecc-vi.mo locale/ecc-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

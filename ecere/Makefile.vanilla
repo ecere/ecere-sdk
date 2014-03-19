@@ -324,9 +324,7 @@ RESOURCES3 = \
 	$(RES)places/brokenFolder.png \
 	$(RES)status/audioVolumeHigh.png \
 	$(RES)status/folderOpen.png \
-	$(RES)unicode/derivedGeneralCategoryStripped.txt \
-	locale/zh_CN/LC_MESSAGES/ecere.mo \
-	locale/es_ES/LC_MESSAGES/ecere.mo
+	$(RES)unicode/derivedGeneralCategoryStripped.txt
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -494,8 +492,6 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ecere.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ecere.mo "locale/es_ES/LC_MESSAGES"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

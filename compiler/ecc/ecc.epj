@@ -97,61 +97,11 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecc.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecc.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "he",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecc.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecc.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "vi_VI",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecc.mo"
-                     ]
-                  }
-               ]
-            }
+            "ecc-es.mo",
+            "ecc-he.mo",
+            "ecc-ru.mo",
+            "ecc-vi.mo",
+            "ecc-zh_CN.mo"
          ]
       }
    ]

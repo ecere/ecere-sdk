@@ -86,50 +86,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecs.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecs.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "he",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecs.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecs.mo"
-                     ]
-                  }
-               ]
-            }
+            "ecs-es.mo",
+            "ecs-he.mo",
+            "ecs-ru.mo",
+            "ecs-zh_CN.mo"
          ]
       }
    ]

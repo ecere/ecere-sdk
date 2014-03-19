@@ -2388,83 +2388,13 @@ from wherever you obtained them.
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "locale/zh_CN/LC_MESSAGES/ecere.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "locale/es_ES/LC_MESSAGES/ecere.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "hu_HU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "locale/hu_HU/LC_MESSAGES/ecere.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "mr_MR",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "locale/mr_MR/LC_MESSAGES/ecere.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "nl_NL",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "locale/nl_NL/LC_MESSAGES/ecere.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "pt_BR",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "locale/pt_BR/LC_MESSAGES/ecere.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "locale/ru_RU/LC_MESSAGES/ecere.mo"
-                     ]
-                  }
-               ]
-            }
+            "locale/ecere-es.mo",
+            "locale/ecere-hu.mo",
+            "locale/ecere-mr.mo",
+            "locale/ecere-nl.mo",
+            "locale/ecere-pt_BR.mo",
+            "locale/ecere-ru.mo",
+            "locale/ecere-zh_CN.mo"
          ],
          "Configurations" : [
             {

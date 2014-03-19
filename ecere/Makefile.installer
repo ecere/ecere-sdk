@@ -1,0 +1,1862 @@
+.PHONY: all objdir cleantarget clean realclean distclean
+
+# CORE VARIABLES
+
+MODULE := ecere
+VERSION := 0.44
+CONFIG := installer
+ifndef COMPILER
+COMPILER := default
+endif
+
+TARGET_TYPE = staticlib
+
+# FLAGS
+
+ECFLAGS =
+ifndef DEBIAN_PACKAGE
+CFLAGS =
+LDFLAGS =
+endif
+PRJ_CFLAGS =
+CECFLAGS =
+OFLAGS =
+LIBS =
+
+ifdef DEBUG
+NOSTRIP := y
+endif
+
+CONSOLE = -mwindows
+
+# INCLUDES
+
+_CF_DIR = ../
+
+include $(_CF_DIR)crossplatform.mk
+include $(_CF_DIR)default.cf
+
+# POST-INCLUDES VARIABLES
+
+OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
+
+RES = res/
+
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecereInstaller$(A)
+
+_ECSOURCES = $(_ECSOURCES1) $(_ECSOURCES2) $(_ECSOURCES3)
+_ECSOURCES1 = \
+	src/sys/Archive.ec \
+	src/sys/BufferedFile.ec \
+	src/sys/Date.ec \
+	src/sys/DualPipe.ec \
+	src/sys/EARArchive.ec \
+	src/sys/File.ec \
+	src/sys/FileMonitor.ec \
+	src/sys/GlobalAppSettings.ec \
+	src/sys/JSON.ec \
+	src/sys/JSONGlobalSettings.ec \
+	src/sys/memory.ec \
+	src/sys/Mutex.ec \
+	src/sys/Semaphore.ec \
+	src/sys/System.ec \
+	src/sys/TempFile.ec \
+	src/sys/Thread.ec \
+	src/sys/Time.ec \
+	src/sys/unicode.ec \
+	src/sys/units.ec \
+	src/sys/i18n.ec \
+	src/sys/Condition.ec \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/meshes/Cube.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/meshes/SkyBox.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/meshes/Sphere.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/models/Object3DSFormat.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/Camera.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/Matrix.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/Mesh.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/Object.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/Plane.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/Quaternion.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/3D/Vector3D.ec) \
+	src/gfx/bitmaps/BMPFormat.ec \
+	$(if $(WINDOWS_TARGET),,src/gfx/bitmaps/GIFFormat.ec) \
+	$(if $(WINDOWS_TARGET),,src/gfx/bitmaps/JPEGFormat.ec) \
+	src/gfx/bitmaps/PCXFormat.ec \
+	src/gfx/bitmaps/PNGFormat.ec \
+	$(if $(WINDOWS_TARGET),,src/gfx/bitmaps/RGBFormat.ec) \
+	$(if $(WINDOWS_TARGET),src/gfx/drivers/GDIDisplayDriver.ec,) \
+	src/gfx/drivers/lfbBlit.ec \
+	src/gfx/drivers/lfbConvert.ec \
+	src/gfx/drivers/LFBDisplayDriver.ec \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/NCursesDisplayDriver.ec,)
+_ECSOURCES2 = \
+	$(if $(OSX_TARGET),src/gfx/drivers/CocoaOpenGLDisplayDriver.ec,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
+	src/gfx/Bitmap.ec \
+	src/gfx/BitmapResource.ec \
+	src/gfx/Color.ec \
+	src/gfx/Display.ec \
+	src/gfx/DisplaySystem.ec \
+	src/gfx/FontResource.ec \
+	src/gfx/Resource.ec \
+	src/gfx/Surface.ec \
+	src/gui/controls/Button.ec \
+	src/gui/controls/CalendarControl.ec \
+	src/gui/controls/DataBox.ec \
+	src/gui/controls/DropBox.ec \
+	src/gui/controls/EditBox.ec \
+	src/gui/controls/Label.ec \
+	src/gui/controls/ListBox.ec \
+	src/gui/controls/Menu.ec \
+	src/gui/controls/Picture.ec \
+	src/gui/controls/ProgressBar.ec \
+	src/gui/controls/ScrollBar.ec \
+	src/gui/controls/StatusBar.ec \
+	src/gui/controls/TabControl.ec \
+	src/gui/controls/PaneSplitter.ec \
+	src/gui/controls/Stacker.ec \
+	src/gui/controls/PathBox.ec \
+	src/gui/controls/ToolTip.ec \
+	src/gui/controls/SelectorBar.ec \
+	src/gui/dialogs/ColorPicker.ec \
+	src/gui/dialogs/FileDialog.ec \
+	src/gui/dialogs/FindDialog.ec \
+	src/gui/dialogs/GoToDialog.ec \
+	src/gui/dialogs/MessageBox.ec \
+	src/gui/dialogs/ReplaceDialog.ec \
+	src/gui/dialogs/WindowList.ec \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaDispatch.ec,) \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaInterface.ec,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/NCursesInterface.ec,) \
+	$(if $(WINDOWS_TARGET),src/gui/drivers/Win32Interface.ec,) \
+	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gui/drivers/XInterface.ec,)
+_ECSOURCES3 = \
+	$(if $(WINDOWS_TARGET),,src/gui/skins/TVisionSkin.ec) \
+	src/gui/skins/WindowsSkin.ec \
+	src/gui/Anchor.ec \
+	src/gui/ClipBoard.ec \
+	src/gui/Cursor.ec \
+	$(if $(WINDOWS_TARGET),,src/gui/Desktop3D.ec) \
+	src/gui/FormDesigner.ec \
+	src/gui/GuiApplication.ec \
+	src/gui/Interface.ec \
+	src/gui/Key.ec \
+	src/gui/Skin.ec \
+	src/gui/Timer.ec \
+	src/gui/typeEdit.ec \
+	src/gui/Window.ec \
+	$(if $(WINDOWS_TARGET),,src/net/dcom.ec) \
+	$(if $(WINDOWS_TARGET),,src/net/HTTPFile.ec) \
+	$(if $(WINDOWS_TARGET),,src/net/network.ec) \
+	$(if $(WINDOWS_TARGET),,src/net/NetworkClientFile.ec) \
+	$(if $(WINDOWS_TARGET),,src/net/Service.ec) \
+	$(if $(WINDOWS_TARGET),,src/net/Socket.ec) \
+	src/com/containers/Array.ec \
+	src/com/containers/AVLTree.ec \
+	src/com/containers/BuiltInContainer.ec \
+	src/com/containers/Container.ec \
+	src/com/containers/CustomAVLTree.ec \
+	src/com/containers/LinkList.ec \
+	src/com/containers/List.ec \
+	src/com/containers/Map.ec \
+	src/com/BinaryTree.ec \
+	src/com/BTNode.ec \
+	src/com/dataTypes.ec \
+	src/com/instance.ec \
+	src/com/String.ec \
+	src/com/OldList.ec
+
+ECSOURCES = $(call shwspace,$(_ECSOURCES))
+ECSOURCES1 = $(call shwspace,$(_ECSOURCES1))
+ECSOURCES2 = $(call shwspace,$(_ECSOURCES2))
+ECSOURCES3 = $(call shwspace,$(_ECSOURCES3))
+
+_COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
+_COBJECTS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES1))))
+_COBJECTS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES2))))
+_COBJECTS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(C),$(notdir $(_ECSOURCES3))))
+
+_SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
+_SYMBOLS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES1))))
+_SYMBOLS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES2))))
+_SYMBOLS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(S),$(notdir $(_ECSOURCES3))))
+
+_IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3)
+_IMPORTS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES1))))
+_IMPORTS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES2))))
+_IMPORTS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(I),$(notdir $(_ECSOURCES3))))
+
+_ECOBJECTS = $(ECOBJECTS1) $(ECOBJECTS2) $(ECOBJECTS3)
+_ECOBJECTS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES1))))
+_ECOBJECTS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES2))))
+_ECOBJECTS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(O),$(notdir $(_ECSOURCES3))))
+
+_BOWLS = $(BOWLS1) $(BOWLS2) $(BOWLS3)
+_BOWLS1 = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES1))))
+_BOWLS2 = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES2))))
+_BOWLS3 = $(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECSOURCES3))))
+
+COBJECTS = $(COBJECTS1) $(COBJECTS2) $(COBJECTS3)
+COBJECTS1 = $(call shwspace,$(_COBJECTS1))
+COBJECTS2 = $(call shwspace,$(_COBJECTS2))
+COBJECTS3 = $(call shwspace,$(_COBJECTS3))
+
+SYMBOLS = $(SYMBOLS1) $(SYMBOLS2) $(SYMBOLS3)
+SYMBOLS1 = $(call shwspace,$(_SYMBOLS1))
+SYMBOLS2 = $(call shwspace,$(_SYMBOLS2))
+SYMBOLS3 = $(call shwspace,$(_SYMBOLS3))
+
+IMPORTS = $(IMPORTS1) $(IMPORTS2) $(IMPORTS3)
+IMPORTS1 = $(call shwspace,$(_IMPORTS1))
+IMPORTS2 = $(call shwspace,$(_IMPORTS2))
+IMPORTS3 = $(call shwspace,$(_IMPORTS3))
+
+ECOBJECTS = $(ECOBJECTS1) $(ECOBJECTS2) $(ECOBJECTS3)
+ECOBJECTS1 = $(call shwspace,$(_ECOBJECTS1))
+ECOBJECTS2 = $(call shwspace,$(_ECOBJECTS2))
+ECOBJECTS3 = $(call shwspace,$(_ECOBJECTS3))
+
+BOWLS = $(BOWLS1) $(BOWLS2) $(BOWLS3)
+BOWLS1 = $(call shwspace,$(_BOWLS1))
+BOWLS2 = $(call shwspace,$(_BOWLS2))
+BOWLS3 = $(call shwspace,$(_BOWLS3))
+
+_OBJECTS = \
+	$(OBJ)File.c.o \
+	$(OBJ)DualPipe.c.o \
+	$(OBJ)System.c.o \
+	$(if $(OSX_TARGET),$(OBJ)CocoaEcereBridge.o,) \
+	$(if $(OSX_TARGET),$(OBJ)EcereView.o,) \
+	$(OBJ)instance.c.o
+
+OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
+
+SOURCES = $(ECSOURCES) \
+	src/sys/File.c \
+	src/sys/DualPipe.c \
+	src/sys/System.c \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
+	$(if $(OSX_TARGET),src/gui/drivers/cocoa/EcereView.m,) \
+	src/com/instance.c
+
+RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
+RESOURCES1 = \
+	$(RES)actions/editFind.png \
+	$(RES)actions/folderNew.png \
+	$(RES)actions/goDown.png \
+	$(RES)actions/goHome.png \
+	$(RES)actions/goNext.png \
+	$(RES)actions/goPrevious.png \
+	$(RES)actions/goUp.png \
+	$(RES)actions/listAdd.png \
+	$(RES)actions/listRemove.png \
+	$(RES)actions/viewRefresh.png \
+	$(RES)actions/windowNew.png \
+	$(RES)actions/clean.png \
+	$(RES)actions/docSave.png \
+	$(RES)actions/docNew.png \
+	$(RES)constructs/class.png \
+	$(RES)constructs/data.png \
+	$(RES)constructs/dataPrivate.png \
+	$(RES)constructs/dataType.png \
+	$(RES)constructs/enum.png \
+	$(RES)constructs/enumValue.png \
+	$(RES)constructs/event.png \
+	$(RES)constructs/library.png \
+	$(RES)constructs/method.png \
+	$(RES)constructs/methodPrivate.png \
+	$(RES)constructs/namespace.png \
+	$(RES)constructs/property.png \
+	$(RES)constructs/propertyPrivate.png \
+	$(RES)controls/button.png \
+	$(RES)controls/calendar.png \
+	$(RES)controls/checkBox.png \
+	$(RES)controls/dataBox.png \
+	$(RES)controls/dropBox.png \
+	$(RES)controls/editBox.png \
+	$(RES)controls/groupBox.png \
+	$(RES)controls/label.png \
+	$(RES)controls/listBox.png \
+	$(RES)controls/menu.png \
+	$(RES)controls/optionBox.png \
+	$(RES)controls/progressBar.png \
+	$(RES)controls/scrollBarHorizontal.png \
+	$(RES)controls/scrollBarVertical.png \
+	$(RES)controls/statusBar.png \
+	$(RES)cursors/arrow.png \
+	$(RES)cursors/cross.png \
+	$(RES)cursors/iBeam.png \
+	$(RES)cursors/move.png \
+	$(RES)cursors/sizeEastWest.png \
+	$(RES)cursors/sizeNortEastSouthWest.png \
+	$(RES)cursors/sizeNorthSouth.png \
+	$(RES)cursors/sizeNortWestSouthEast.png
+RESOURCES2 = \
+	$(RES)devices/computer.png \
+	$(RES)devices/driveHardDisk.png \
+	$(RES)devices/driveRemovableMedia.png \
+	$(RES)devices/mediaFloppy.png \
+	$(RES)devices/mediaOptical.png \
+	$(RES)elements/areaClose.png \
+	$(RES)elements/areaMaximize.png \
+	$(RES)elements/areaMinimize.png \
+	$(RES)elements/areaRestore.png \
+	$(RES)elements/arrowDown.png \
+	$(RES)elements/arrowLeft.png \
+	$(RES)elements/arrowRight.png \
+	$(RES)elements/arrowUp.png \
+	$(RES)elements/checkBoxChecked.png \
+	$(RES)elements/checkBoxDisabled.png \
+	$(RES)elements/checkBoxDisabledChecked.png \
+	$(RES)elements/checkBox.png \
+	$(RES)elements/optionBoxDisabled.png \
+	$(RES)elements/optionBoxDisabledSelected.png \
+	$(RES)elements/optionBoxDown.png \
+	$(RES)elements/optionBoxSelectedDown.png \
+	$(RES)elements/optionBoxSelectedUp.png \
+	$(RES)elements/optionBoxUp.png \
+	$(RES)elements/orderAscending.png \
+	$(RES)elements/orderCategorized.png \
+	$(RES)elements/orderDescending.png \
+	$(RES)emblems/unreadable.png \
+	$(RES)mimeTypes/file.png \
+	$(RES)mimeTypes/image.png \
+	$(RES)mimeTypes/package.png \
+	$(RES)mimeTypes/packageOpticalDisc.png \
+	$(RES)mimeTypes/packageSoftware.png \
+	$(RES)mimeTypes/text.png \
+	$(RES)mimeTypes/textCHeader.png \
+	$(RES)mimeTypes/textCSource.png \
+	$(RES)mimeTypes/textC++Header.png \
+	$(RES)mimeTypes/textC++Source.png \
+	$(RES)mimeTypes/textEcereHeader.png \
+	$(RES)mimeTypes/textEcereProject.png \
+	$(RES)mimeTypes/textEcereSource.png \
+	$(RES)mimeTypes/textEcereWorkspace.png \
+	$(RES)mimeTypes/textHyperTextMarkup.png
+RESOURCES3 = \
+	$(RES)mimeTypes/brokenFile.png \
+	$(RES)places/driveRemote.png \
+	$(RES)places/folder.png \
+	$(RES)places/folderRemote.png \
+	$(RES)places/networkServer.png \
+	$(RES)places/networkWorkgroup.png \
+	$(RES)places/brokenFolder.png \
+	$(RES)status/audioVolumeHigh.png \
+	$(RES)status/folderOpen.png \
+	$(RES)unicode/derivedGeneralCategoryStripped.txt \
+	locale/ecere-es.mo \
+	locale/ecere-hu.mo \
+	locale/ecere-mr.mo \
+	locale/ecere-nl.mo \
+	locale/ecere-pt_BR.mo \
+	locale/ecere-ru.mo \
+	locale/ecere-zh_CN.mo
+
+LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,jpeg) \
+	$(call _L,png) \
+	$(call _L,z) \
+	$(call _L,freetype)
+endif
+
+PRJ_CFLAGS += \
+	 $(if $(WINDOWS_TARGET), \
+			 -I../deps/DirectX-9.0/include \
+			 -I../deps/jpeg-6b \
+			 -I../deps/libpng-1.4.0 \
+			 -I../deps/libungif-4.1.1/lib \
+			 -I../deps/zlib \
+			 -I../deps/freetype-2.3.12/include \
+			 -I../deps/glext,) \
+	 $(if $(LINUX_TARGET), \
+			 -I/usr/include/freetype2,) \
+	 $(if $(OSX_TARGET), \
+			 -I/usr/include/freetype2 \
+			 -I$(SYSROOT)/usr/X11/include/freetype2 \
+			 -I$(SYSROOT)/usr/X11/include \
+			 -I/usr/X11R6/include/freetype2 \
+			 -I/usr/X11R6/include \
+			 -I../deps/jpeg-6b \
+			 -I../deps/libpng-1.4.0 \
+			 -I../deps/libungif-4.1.1/lib,) \
+	 $(if $(DEBUG), -g, -Os) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
+			 -DBUILDING_ECERE_COM \
+			 -DECERE_NO3D \
+			 -DECERE_NODINPUT \
+			 -DECERE_NONET \
+			 -DECERE_ONEDRIVER \
+			 -DECERE_STATIC \
+			 -Isrc/gfx/drivers/harfbuzz \
+			 -I/usr/X11R6/include \
+			 -I/usr/X11R6/include/freetype2
+
+CUSTOM1_PRJ_CFLAGS = \
+			 -DECERE_COM_MODULE \
+	 $(PRJ_CFLAGS)
+
+ECFLAGS += \
+	 -nolinenumbers -defaultns ecere
+
+# PLATFORM-SPECIFIC OPTIONS
+
+ifdef WINDOWS_TARGET
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += \
+	 -L$(call quote_path,../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
+LIBS += \
+	$(call _L,dxguid) \
+	$(call _L,ddraw) \
+	$(call _L,dinput) \
+	$(call _L,winmm) \
+	$(call _L,opengl32) \
+	$(call _L,ws2_32) \
+	$(call _L,kernel32) \
+	$(call _L,user32) \
+	$(call _L,gdi32) \
+	$(call _L,mpr) \
+	$(call _L,advapi32) \
+	$(call _L,shell32) \
+	$(call _L,winspool) \
+	$(call _L,imm32) \
+	$(call _L,ungif) \
+	$(call _L,eay32) \
+	$(call _L,ssleay32)
+endif
+
+else
+ifdef LINUX_TARGET
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += \
+	 -L$(call quote_path,/usr/X11R6/lib)
+LIBS += \
+	$(call _L,ncurses) \
+	$(call _L,pthread) \
+	$(call _L,m) \
+	$(call _L,dl) \
+	$(call _L,fontconfig) \
+	$(call _L,gif) \
+	$(call _L,X11) \
+	$(call _L,Xext) \
+	$(call _L,Xrender) \
+	$(call _L,GL) \
+	$(call _L,ssl) \
+	$(call _L,crypto)
+endif
+
+else
+ifdef OSX_TARGET
+
+ifndef STATIC_LIBRARY_TARGET
+OFLAGS += \
+	 -L$(call quote_path,$(SYSROOT)/usr/X11/lib) \
+	 -L$(call quote_path,/usr/X11R6/lib) \
+	 -L$(call quote_path,../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
+LIBS += \
+	$(call _L,curses) \
+	$(call _L,pthread) \
+	$(call _L,m) \
+	$(call _L,dl) \
+	$(call _L,fontconfig) \
+	$(call _L,ungif) \
+	$(call _L,X11) \
+	$(call _L,Xext) \
+	$(call _L,Xrender) \
+	$(call _L,GL) \
+	$(call _L,ssl) \
+	$(call _L,crypto)
+endif
+
+endif
+endif
+endif
+
+CECFLAGS += -cpp $(_CPP)
+
+# TARGETS
+
+all: objdir $(TARGET)
+
+objdir:
+	$(if $(wildcard $(OBJ)),,$(call mkdirq,$(OBJ)))
+	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
+	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
+
+$(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
+	@$(call rmq,$(OBJ)symbols.lst)
+	@$(call touch,$(OBJ)symbols.lst)
+	@$(call echo,$(SYMBOLS1)) >> $(OBJ)symbols.lst
+	@$(call echo,$(SYMBOLS2)) >> $(OBJ)symbols.lst
+	@$(call echo,$(SYMBOLS3)) >> $(OBJ)symbols.lst
+	@$(call echo,$(IMPORTS1)) >> $(OBJ)symbols.lst
+	@$(call echo,$(IMPORTS2)) >> $(OBJ)symbols.lst
+	@$(call echo,$(IMPORTS3)) >> $(OBJ)symbols.lst
+	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
+
+$(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.ec -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(SYMBOLS): | objdir
+$(OBJECTS): | objdir
+$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+	@$(call rmq,$(OBJ)objects.lst)
+	@$(call touch,$(OBJ)objects.lst)
+	@$(call echo,$(_OBJECTS)) >> $(OBJ)objects.lst
+	@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst
+	@$(call echo,$(ECOBJECTS1)) >> $(OBJ)objects.lst
+	@$(call echo,$(ECOBJECTS2)) >> $(OBJ)objects.lst
+	@$(call echo,$(ECOBJECTS3)) >> $(OBJ)objects.lst
+ifndef STATIC_LIBRARY_TARGET
+	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
+ifndef NOSTRIP
+	$(STRIP) $(STRIPOPT) $(TARGET)
+endif
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)actions/editFind.png $(RES)actions/folderNew.png $(RES)actions/goDown.png $(RES)actions/goHome.png $(RES)actions/goNext.png $(RES)actions/goPrevious.png $(RES)actions/goUp.png $(RES)actions/listAdd.png $(RES)actions/listRemove.png $(RES)actions/viewRefresh.png "actions"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)actions/windowNew.png $(RES)actions/clean.png $(RES)actions/docSave.png $(RES)actions/docNew.png "actions"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)constructs/class.png $(RES)constructs/data.png $(RES)constructs/dataPrivate.png $(RES)constructs/dataType.png $(RES)constructs/enum.png $(RES)constructs/enumValue.png $(RES)constructs/event.png $(RES)constructs/library.png $(RES)constructs/method.png $(RES)constructs/methodPrivate.png "constructs"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)constructs/namespace.png $(RES)constructs/property.png $(RES)constructs/propertyPrivate.png "constructs"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)controls/button.png $(RES)controls/calendar.png $(RES)controls/checkBox.png $(RES)controls/dataBox.png $(RES)controls/dropBox.png $(RES)controls/editBox.png $(RES)controls/groupBox.png $(RES)controls/label.png $(RES)controls/listBox.png $(RES)controls/menu.png "controls"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)controls/optionBox.png $(RES)controls/progressBar.png $(RES)controls/scrollBarHorizontal.png $(RES)controls/scrollBarVertical.png $(RES)controls/statusBar.png "controls"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)cursors/arrow.png $(RES)cursors/cross.png $(RES)cursors/iBeam.png $(RES)cursors/move.png $(RES)cursors/sizeEastWest.png $(RES)cursors/sizeNortEastSouthWest.png $(RES)cursors/sizeNorthSouth.png $(RES)cursors/sizeNortWestSouthEast.png "cursors"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)devices/computer.png $(RES)devices/driveHardDisk.png $(RES)devices/driveRemovableMedia.png $(RES)devices/mediaFloppy.png $(RES)devices/mediaOptical.png "devices"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)elements/areaClose.png $(RES)elements/areaMaximize.png $(RES)elements/areaMinimize.png $(RES)elements/areaRestore.png $(RES)elements/arrowDown.png $(RES)elements/arrowLeft.png $(RES)elements/arrowRight.png $(RES)elements/arrowUp.png $(RES)elements/checkBoxChecked.png $(RES)elements/checkBoxDisabled.png "elements"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)elements/checkBoxDisabledChecked.png $(RES)elements/checkBox.png $(RES)elements/optionBoxDisabled.png $(RES)elements/optionBoxDisabledSelected.png $(RES)elements/optionBoxDown.png $(RES)elements/optionBoxSelectedDown.png $(RES)elements/optionBoxSelectedUp.png $(RES)elements/optionBoxUp.png $(RES)elements/orderAscending.png $(RES)elements/orderCategorized.png "elements"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)elements/orderDescending.png "elements"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)emblems/unreadable.png "emblems"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)mimeTypes/file.png $(RES)mimeTypes/image.png $(RES)mimeTypes/package.png $(RES)mimeTypes/packageOpticalDisc.png $(RES)mimeTypes/packageSoftware.png $(RES)mimeTypes/text.png $(RES)mimeTypes/textCHeader.png $(RES)mimeTypes/textCSource.png $(RES)mimeTypes/textC++Header.png $(RES)mimeTypes/textC++Source.png "mimeTypes"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)mimeTypes/textEcereHeader.png $(RES)mimeTypes/textEcereProject.png $(RES)mimeTypes/textEcereSource.png $(RES)mimeTypes/textEcereWorkspace.png $(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png "mimeTypes"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecere-es.mo locale/ecere-hu.mo locale/ecere-mr.mo locale/ecere-nl.mo locale/ecere-pt_BR.mo locale/ecere-ru.mo locale/ecere-zh_CN.mo "locale"
+else
+	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
+endif
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(if $(basename $(VER)),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)),)
+	$(if $(VER),ln -sf $(LP)$(MODULE)$(SO)$(VER) $(OBJ)$(LP)$(MODULE)$(SO),)
+endif
+endif
+endif
+
+# SYMBOL RULES
+
+$(OBJ)Archive.sym: src/sys/Archive.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/Archive.ec) -o $(call quote_path,$@)
+
+$(OBJ)BufferedFile.sym: src/sys/BufferedFile.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/BufferedFile.ec) -o $(call quote_path,$@)
+
+$(OBJ)Date.sym: src/sys/Date.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/Date.ec) -o $(call quote_path,$@)
+
+$(OBJ)DualPipe.sym: src/sys/DualPipe.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/DualPipe.ec) -o $(call quote_path,$@)
+
+$(OBJ)EARArchive.sym: src/sys/EARArchive.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/EARArchive.ec) -o $(call quote_path,$@)
+
+$(OBJ)File.sym: src/sys/File.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/File.ec) -o $(call quote_path,$@)
+
+$(OBJ)FileMonitor.sym: src/sys/FileMonitor.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/FileMonitor.ec) -o $(call quote_path,$@)
+
+$(OBJ)GlobalAppSettings.sym: src/sys/GlobalAppSettings.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/GlobalAppSettings.ec) -o $(call quote_path,$@)
+
+$(OBJ)JSON.sym: src/sys/JSON.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/JSON.ec) -o $(call quote_path,$@)
+
+$(OBJ)JSONGlobalSettings.sym: src/sys/JSONGlobalSettings.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/JSONGlobalSettings.ec) -o $(call quote_path,$@)
+
+$(OBJ)memory.sym: src/sys/memory.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/memory.ec) -o $(call quote_path,$@)
+
+$(OBJ)Mutex.sym: src/sys/Mutex.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/sys/Mutex.ec) -o $(call quote_path,$@)
+
+$(OBJ)Semaphore.sym: src/sys/Semaphore.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/Semaphore.ec) -o $(call quote_path,$@)
+
+$(OBJ)System.sym: src/sys/System.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/System.ec) -o $(call quote_path,$@)
+
+$(OBJ)TempFile.sym: src/sys/TempFile.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/TempFile.ec) -o $(call quote_path,$@)
+
+$(OBJ)Thread.sym: src/sys/Thread.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/Thread.ec) -o $(call quote_path,$@)
+
+$(OBJ)Time.sym: src/sys/Time.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/Time.ec) -o $(call quote_path,$@)
+
+$(OBJ)unicode.sym: src/sys/unicode.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/unicode.ec) -o $(call quote_path,$@)
+
+$(OBJ)units.sym: src/sys/units.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/units.ec) -o $(call quote_path,$@)
+
+$(OBJ)i18n.sym: src/sys/i18n.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/sys/i18n.ec) -o $(call quote_path,$@)
+
+$(OBJ)Condition.sym: src/sys/Condition.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/Condition.ec) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Cube.sym: src/gfx/3D/meshes/Cube.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/meshes/Cube.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)SkyBox.sym: src/gfx/3D/meshes/SkyBox.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/meshes/SkyBox.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Sphere.sym: src/gfx/3D/meshes/Sphere.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/meshes/Sphere.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Object3DSFormat.sym: src/gfx/3D/models/Object3DSFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/models/Object3DSFormat.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Camera.sym: src/gfx/3D/Camera.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Camera.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Matrix.sym: src/gfx/3D/Matrix.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Matrix.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Mesh.sym: src/gfx/3D/Mesh.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Mesh.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Object.sym: src/gfx/3D/Object.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Object.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Plane.sym: src/gfx/3D/Plane.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Plane.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Quaternion.sym: src/gfx/3D/Quaternion.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Quaternion.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Vector3D.sym: src/gfx/3D/Vector3D.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/3D/Vector3D.ec) -o $(call quote_path,$@)
+endif
+
+$(OBJ)BMPFormat.sym: src/gfx/bitmaps/BMPFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/BMPFormat.ec) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)GIFFormat.sym: src/gfx/bitmaps/GIFFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/GIFFormat.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)JPEGFormat.sym: src/gfx/bitmaps/JPEGFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/JPEGFormat.ec) -o $(call quote_path,$@)
+endif
+
+$(OBJ)PCXFormat.sym: src/gfx/bitmaps/PCXFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/PCXFormat.ec) -o $(call quote_path,$@)
+
+$(OBJ)PNGFormat.sym: src/gfx/bitmaps/PNGFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/PNGFormat.ec) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)RGBFormat.sym: src/gfx/bitmaps/RGBFormat.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/bitmaps/RGBFormat.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(WINDOWS_TARGET)" ""
+$(OBJ)GDIDisplayDriver.sym: src/gfx/drivers/GDIDisplayDriver.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/GDIDisplayDriver.ec) -o $(call quote_path,$@)
+endif
+
+$(OBJ)lfbBlit.sym: src/gfx/drivers/lfbBlit.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/lfbBlit.ec) -o $(call quote_path,$@)
+
+$(OBJ)lfbConvert.sym: src/gfx/drivers/lfbConvert.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/lfbConvert.ec) -o $(call quote_path,$@)
+
+$(OBJ)LFBDisplayDriver.sym: src/gfx/drivers/LFBDisplayDriver.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/LFBDisplayDriver.ec) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NCursesDisplayDriver.sym: src/gfx/drivers/NCursesDisplayDriver.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/NCursesDisplayDriver.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaOpenGLDisplayDriver.sym: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/CocoaOpenGLDisplayDriver.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/XDisplayDriver.ec) -o $(call quote_path,$@)
+endif
+
+$(OBJ)Bitmap.sym: src/gfx/Bitmap.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/Bitmap.ec) -o $(call quote_path,$@)
+
+$(OBJ)BitmapResource.sym: src/gfx/BitmapResource.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/BitmapResource.ec) -o $(call quote_path,$@)
+
+$(OBJ)Color.sym: src/gfx/Color.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/Color.ec) -o $(call quote_path,$@)
+
+$(OBJ)Display.sym: src/gfx/Display.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/Display.ec) -o $(call quote_path,$@)
+
+$(OBJ)DisplaySystem.sym: src/gfx/DisplaySystem.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/DisplaySystem.ec) -o $(call quote_path,$@)
+
+$(OBJ)FontResource.sym: src/gfx/FontResource.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/FontResource.ec) -o $(call quote_path,$@)
+
+$(OBJ)Resource.sym: src/gfx/Resource.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/Resource.ec) -o $(call quote_path,$@)
+
+$(OBJ)Surface.sym: src/gfx/Surface.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/Surface.ec) -o $(call quote_path,$@)
+
+$(OBJ)Button.sym: src/gui/controls/Button.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/Button.ec) -o $(call quote_path,$@)
+
+$(OBJ)CalendarControl.sym: src/gui/controls/CalendarControl.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/CalendarControl.ec) -o $(call quote_path,$@)
+
+$(OBJ)DataBox.sym: src/gui/controls/DataBox.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/DataBox.ec) -o $(call quote_path,$@)
+
+$(OBJ)DropBox.sym: src/gui/controls/DropBox.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/DropBox.ec) -o $(call quote_path,$@)
+
+$(OBJ)EditBox.sym: src/gui/controls/EditBox.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/EditBox.ec) -o $(call quote_path,$@)
+
+$(OBJ)Label.sym: src/gui/controls/Label.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/Label.ec) -o $(call quote_path,$@)
+
+$(OBJ)ListBox.sym: src/gui/controls/ListBox.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/ListBox.ec) -o $(call quote_path,$@)
+
+$(OBJ)Menu.sym: src/gui/controls/Menu.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/Menu.ec) -o $(call quote_path,$@)
+
+$(OBJ)Picture.sym: src/gui/controls/Picture.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/Picture.ec) -o $(call quote_path,$@)
+
+$(OBJ)ProgressBar.sym: src/gui/controls/ProgressBar.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/ProgressBar.ec) -o $(call quote_path,$@)
+
+$(OBJ)ScrollBar.sym: src/gui/controls/ScrollBar.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/ScrollBar.ec) -o $(call quote_path,$@)
+
+$(OBJ)StatusBar.sym: src/gui/controls/StatusBar.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/StatusBar.ec) -o $(call quote_path,$@)
+
+$(OBJ)TabControl.sym: src/gui/controls/TabControl.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/TabControl.ec) -o $(call quote_path,$@)
+
+$(OBJ)PaneSplitter.sym: src/gui/controls/PaneSplitter.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/PaneSplitter.ec) -o $(call quote_path,$@)
+
+$(OBJ)Stacker.sym: src/gui/controls/Stacker.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/Stacker.ec) -o $(call quote_path,$@)
+
+$(OBJ)PathBox.sym: src/gui/controls/PathBox.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/PathBox.ec) -o $(call quote_path,$@)
+
+$(OBJ)ToolTip.sym: src/gui/controls/ToolTip.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/ToolTip.ec) -o $(call quote_path,$@)
+
+$(OBJ)SelectorBar.sym: src/gui/controls/SelectorBar.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/controls/SelectorBar.ec) -o $(call quote_path,$@)
+
+$(OBJ)ColorPicker.sym: src/gui/dialogs/ColorPicker.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/ColorPicker.ec) -o $(call quote_path,$@)
+
+$(OBJ)FileDialog.sym: src/gui/dialogs/FileDialog.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/FileDialog.ec) -o $(call quote_path,$@)
+
+$(OBJ)FindDialog.sym: src/gui/dialogs/FindDialog.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/FindDialog.ec) -o $(call quote_path,$@)
+
+$(OBJ)GoToDialog.sym: src/gui/dialogs/GoToDialog.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/GoToDialog.ec) -o $(call quote_path,$@)
+
+$(OBJ)MessageBox.sym: src/gui/dialogs/MessageBox.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/MessageBox.ec) -o $(call quote_path,$@)
+
+$(OBJ)ReplaceDialog.sym: src/gui/dialogs/ReplaceDialog.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/ReplaceDialog.ec) -o $(call quote_path,$@)
+
+$(OBJ)WindowList.sym: src/gui/dialogs/WindowList.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/dialogs/WindowList.ec) -o $(call quote_path,$@)
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaDispatch.sym: src/gui/drivers/cocoa/CocoaDispatch.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/CocoaDispatch.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaInterface.sym: src/gui/drivers/cocoa/CocoaInterface.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/CocoaInterface.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NCursesInterface.sym: src/gui/drivers/NCursesInterface.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/NCursesInterface.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(WINDOWS_TARGET)" ""
+$(OBJ)Win32Interface.sym: src/gui/drivers/Win32Interface.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/Win32Interface.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)XInterface.sym: src/gui/drivers/XInterface.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/XInterface.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)TVisionSkin.sym: src/gui/skins/TVisionSkin.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/skins/TVisionSkin.ec) -o $(call quote_path,$@)
+endif
+
+$(OBJ)WindowsSkin.sym: src/gui/skins/WindowsSkin.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/skins/WindowsSkin.ec) -o $(call quote_path,$@)
+
+$(OBJ)Anchor.sym: src/gui/Anchor.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Anchor.ec) -o $(call quote_path,$@)
+
+$(OBJ)ClipBoard.sym: src/gui/ClipBoard.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/ClipBoard.ec) -o $(call quote_path,$@)
+
+$(OBJ)Cursor.sym: src/gui/Cursor.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Cursor.ec) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Desktop3D.sym: src/gui/Desktop3D.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Desktop3D.ec) -o $(call quote_path,$@)
+endif
+
+$(OBJ)FormDesigner.sym: src/gui/FormDesigner.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/FormDesigner.ec) -o $(call quote_path,$@)
+
+$(OBJ)GuiApplication.sym: src/gui/GuiApplication.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/GuiApplication.ec) -o $(call quote_path,$@)
+
+$(OBJ)Interface.sym: src/gui/Interface.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Interface.ec) -o $(call quote_path,$@)
+
+$(OBJ)Key.sym: src/gui/Key.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Key.ec) -o $(call quote_path,$@)
+
+$(OBJ)Skin.sym: src/gui/Skin.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Skin.ec) -o $(call quote_path,$@)
+
+$(OBJ)Timer.sym: src/gui/Timer.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Timer.ec) -o $(call quote_path,$@)
+
+$(OBJ)typeEdit.sym: src/gui/typeEdit.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/typeEdit.ec) -o $(call quote_path,$@)
+
+$(OBJ)Window.sym: src/gui/Window.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/Window.ec) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)dcom.sym: src/net/dcom.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/dcom.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)HTTPFile.sym: src/net/HTTPFile.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/HTTPFile.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)network.sym: src/net/network.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/network.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NetworkClientFile.sym: src/net/NetworkClientFile.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/NetworkClientFile.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Service.sym: src/net/Service.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/Service.ec) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Socket.sym: src/net/Socket.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/net/Socket.ec) -o $(call quote_path,$@)
+endif
+
+$(OBJ)Array.sym: src/com/containers/Array.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/Array.ec) -o $(call quote_path,$@)
+
+$(OBJ)AVLTree.sym: src/com/containers/AVLTree.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/AVLTree.ec) -o $(call quote_path,$@)
+
+$(OBJ)BuiltInContainer.sym: src/com/containers/BuiltInContainer.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/BuiltInContainer.ec) -o $(call quote_path,$@)
+
+$(OBJ)Container.sym: src/com/containers/Container.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/Container.ec) -o $(call quote_path,$@)
+
+$(OBJ)CustomAVLTree.sym: src/com/containers/CustomAVLTree.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/CustomAVLTree.ec) -o $(call quote_path,$@)
+
+$(OBJ)LinkList.sym: src/com/containers/LinkList.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/LinkList.ec) -o $(call quote_path,$@)
+
+$(OBJ)List.sym: src/com/containers/List.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/List.ec) -o $(call quote_path,$@)
+
+$(OBJ)Map.sym: src/com/containers/Map.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/containers/Map.ec) -o $(call quote_path,$@)
+
+$(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/BinaryTree.ec) -o $(call quote_path,$@)
+
+$(OBJ)BTNode.sym: src/com/BTNode.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/BTNode.ec) -o $(call quote_path,$@)
+
+$(OBJ)dataTypes.sym: src/com/dataTypes.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/dataTypes.ec) -o $(call quote_path,$@)
+
+$(OBJ)instance.sym: src/com/instance.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/instance.ec) -o $(call quote_path,$@)
+
+$(OBJ)String.sym: src/com/String.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/String.ec) -o $(call quote_path,$@)
+
+$(OBJ)OldList.sym: src/com/OldList.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/OldList.ec) -o $(call quote_path,$@)
+
+# C OBJECT RULES
+
+$(OBJ)Archive.c: src/sys/Archive.ec $(OBJ)Archive.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Archive.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)BufferedFile.c: src/sys/BufferedFile.ec $(OBJ)BufferedFile.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/BufferedFile.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Date.c: src/sys/Date.ec $(OBJ)Date.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Date.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)DualPipe.c: src/sys/DualPipe.ec $(OBJ)DualPipe.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/DualPipe.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)EARArchive.c: src/sys/EARArchive.ec $(OBJ)EARArchive.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/EARArchive.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)File.c: src/sys/File.ec $(OBJ)File.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/File.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)FileMonitor.c: src/sys/FileMonitor.ec $(OBJ)FileMonitor.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/FileMonitor.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)GlobalAppSettings.c: src/sys/GlobalAppSettings.ec $(OBJ)GlobalAppSettings.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/GlobalAppSettings.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)JSON.c: src/sys/JSON.ec $(OBJ)JSON.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/JSON.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)JSONGlobalSettings.c: src/sys/JSONGlobalSettings.ec $(OBJ)JSONGlobalSettings.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/JSONGlobalSettings.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)memory.c: src/sys/memory.ec $(OBJ)memory.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/memory.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Mutex.c: src/sys/Mutex.ec $(OBJ)Mutex.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Mutex.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Semaphore.c: src/sys/Semaphore.ec $(OBJ)Semaphore.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Semaphore.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)System.c: src/sys/System.ec $(OBJ)System.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/System.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)TempFile.c: src/sys/TempFile.ec $(OBJ)TempFile.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/TempFile.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Thread.c: src/sys/Thread.ec $(OBJ)Thread.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Thread.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Time.c: src/sys/Time.ec $(OBJ)Time.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Time.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)unicode.c: src/sys/unicode.ec $(OBJ)unicode.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/unicode.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)units.c: src/sys/units.ec $(OBJ)units.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/units.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)i18n.c: src/sys/i18n.ec $(OBJ)i18n.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/i18n.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Condition.c: src/sys/Condition.ec $(OBJ)Condition.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/sys/Condition.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Cube.c: src/gfx/3D/meshes/Cube.ec $(OBJ)Cube.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/meshes/Cube.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)SkyBox.c: src/gfx/3D/meshes/SkyBox.ec $(OBJ)SkyBox.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/meshes/SkyBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Sphere.c: src/gfx/3D/meshes/Sphere.ec $(OBJ)Sphere.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/meshes/Sphere.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Object3DSFormat.c: src/gfx/3D/models/Object3DSFormat.ec $(OBJ)Object3DSFormat.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/models/Object3DSFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Camera.c: src/gfx/3D/Camera.ec $(OBJ)Camera.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Camera.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Matrix.c: src/gfx/3D/Matrix.ec $(OBJ)Matrix.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Matrix.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Mesh.c: src/gfx/3D/Mesh.ec $(OBJ)Mesh.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Mesh.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Object.c: src/gfx/3D/Object.ec $(OBJ)Object.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Object.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Plane.c: src/gfx/3D/Plane.ec $(OBJ)Plane.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Plane.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Quaternion.c: src/gfx/3D/Quaternion.ec $(OBJ)Quaternion.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Quaternion.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Vector3D.c: src/gfx/3D/Vector3D.ec $(OBJ)Vector3D.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/3D/Vector3D.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+$(OBJ)BMPFormat.c: src/gfx/bitmaps/BMPFormat.ec $(OBJ)BMPFormat.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/BMPFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)GIFFormat.c: src/gfx/bitmaps/GIFFormat.ec $(OBJ)GIFFormat.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/GIFFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)JPEGFormat.c: src/gfx/bitmaps/JPEGFormat.ec $(OBJ)JPEGFormat.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/JPEGFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+$(OBJ)PCXFormat.c: src/gfx/bitmaps/PCXFormat.ec $(OBJ)PCXFormat.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/PCXFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)PNGFormat.c: src/gfx/bitmaps/PNGFormat.ec $(OBJ)PNGFormat.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/PNGFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)RGBFormat.c: src/gfx/bitmaps/RGBFormat.ec $(OBJ)RGBFormat.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/bitmaps/RGBFormat.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(WINDOWS_TARGET)" ""
+$(OBJ)GDIDisplayDriver.c: src/gfx/drivers/GDIDisplayDriver.ec $(OBJ)GDIDisplayDriver.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/GDIDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+$(OBJ)lfbBlit.c: src/gfx/drivers/lfbBlit.ec $(OBJ)lfbBlit.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/lfbBlit.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)lfbConvert.c: src/gfx/drivers/lfbConvert.ec $(OBJ)lfbConvert.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/lfbConvert.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)LFBDisplayDriver.c: src/gfx/drivers/LFBDisplayDriver.ec $(OBJ)LFBDisplayDriver.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/LFBDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NCursesDisplayDriver.c: src/gfx/drivers/NCursesDisplayDriver.ec $(OBJ)NCursesDisplayDriver.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/NCursesDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaOpenGLDisplayDriver.c: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec $(OBJ)CocoaOpenGLDisplayDriver.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/CocoaOpenGLDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/XDisplayDriver.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+$(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/Bitmap.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)BitmapResource.c: src/gfx/BitmapResource.ec $(OBJ)BitmapResource.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/BitmapResource.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Color.c: src/gfx/Color.ec $(OBJ)Color.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/Color.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Display.c: src/gfx/Display.ec $(OBJ)Display.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/Display.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)DisplaySystem.c: src/gfx/DisplaySystem.ec $(OBJ)DisplaySystem.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/DisplaySystem.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)FontResource.c: src/gfx/FontResource.ec $(OBJ)FontResource.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/FontResource.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Resource.c: src/gfx/Resource.ec $(OBJ)Resource.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/Resource.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Surface.c: src/gfx/Surface.ec $(OBJ)Surface.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/Surface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Button.c: src/gui/controls/Button.ec $(OBJ)Button.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/Button.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)CalendarControl.c: src/gui/controls/CalendarControl.ec $(OBJ)CalendarControl.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/CalendarControl.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)DataBox.c: src/gui/controls/DataBox.ec $(OBJ)DataBox.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/DataBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)DropBox.c: src/gui/controls/DropBox.ec $(OBJ)DropBox.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/DropBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)EditBox.c: src/gui/controls/EditBox.ec $(OBJ)EditBox.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/EditBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Label.c: src/gui/controls/Label.ec $(OBJ)Label.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/Label.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ListBox.c: src/gui/controls/ListBox.ec $(OBJ)ListBox.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/ListBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Menu.c: src/gui/controls/Menu.ec $(OBJ)Menu.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/Menu.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Picture.c: src/gui/controls/Picture.ec $(OBJ)Picture.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/Picture.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ProgressBar.c: src/gui/controls/ProgressBar.ec $(OBJ)ProgressBar.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/ProgressBar.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ScrollBar.c: src/gui/controls/ScrollBar.ec $(OBJ)ScrollBar.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/ScrollBar.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)StatusBar.c: src/gui/controls/StatusBar.ec $(OBJ)StatusBar.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/StatusBar.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)TabControl.c: src/gui/controls/TabControl.ec $(OBJ)TabControl.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/TabControl.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)PaneSplitter.c: src/gui/controls/PaneSplitter.ec $(OBJ)PaneSplitter.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/PaneSplitter.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Stacker.c: src/gui/controls/Stacker.ec $(OBJ)Stacker.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/Stacker.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)PathBox.c: src/gui/controls/PathBox.ec $(OBJ)PathBox.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/PathBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ToolTip.c: src/gui/controls/ToolTip.ec $(OBJ)ToolTip.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/ToolTip.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)SelectorBar.c: src/gui/controls/SelectorBar.ec $(OBJ)SelectorBar.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/controls/SelectorBar.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ColorPicker.c: src/gui/dialogs/ColorPicker.ec $(OBJ)ColorPicker.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/ColorPicker.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)FileDialog.c: src/gui/dialogs/FileDialog.ec $(OBJ)FileDialog.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/FileDialog.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)FindDialog.c: src/gui/dialogs/FindDialog.ec $(OBJ)FindDialog.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/FindDialog.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)GoToDialog.c: src/gui/dialogs/GoToDialog.ec $(OBJ)GoToDialog.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/GoToDialog.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)MessageBox.c: src/gui/dialogs/MessageBox.ec $(OBJ)MessageBox.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/MessageBox.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ReplaceDialog.c: src/gui/dialogs/ReplaceDialog.ec $(OBJ)ReplaceDialog.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/ReplaceDialog.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)WindowList.c: src/gui/dialogs/WindowList.ec $(OBJ)WindowList.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/dialogs/WindowList.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaDispatch.c: src/gui/drivers/cocoa/CocoaDispatch.ec $(OBJ)CocoaDispatch.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/cocoa/CocoaDispatch.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaInterface.c: src/gui/drivers/cocoa/CocoaInterface.ec $(OBJ)CocoaInterface.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/cocoa/CocoaInterface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NCursesInterface.c: src/gui/drivers/NCursesInterface.ec $(OBJ)NCursesInterface.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/NCursesInterface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(WINDOWS_TARGET)" ""
+$(OBJ)Win32Interface.c: src/gui/drivers/Win32Interface.ec $(OBJ)Win32Interface.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/Win32Interface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)XInterface.c: src/gui/drivers/XInterface.ec $(OBJ)XInterface.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/drivers/XInterface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)TVisionSkin.c: src/gui/skins/TVisionSkin.ec $(OBJ)TVisionSkin.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/skins/TVisionSkin.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+$(OBJ)WindowsSkin.c: src/gui/skins/WindowsSkin.ec $(OBJ)WindowsSkin.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/skins/WindowsSkin.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Anchor.c: src/gui/Anchor.ec $(OBJ)Anchor.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Anchor.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)ClipBoard.c: src/gui/ClipBoard.ec $(OBJ)ClipBoard.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/ClipBoard.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Cursor.c: src/gui/Cursor.ec $(OBJ)Cursor.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Cursor.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Desktop3D.c: src/gui/Desktop3D.ec $(OBJ)Desktop3D.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Desktop3D.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+$(OBJ)FormDesigner.c: src/gui/FormDesigner.ec $(OBJ)FormDesigner.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/FormDesigner.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)GuiApplication.c: src/gui/GuiApplication.ec $(OBJ)GuiApplication.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/GuiApplication.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Interface.c: src/gui/Interface.ec $(OBJ)Interface.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Interface.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Key.c: src/gui/Key.ec $(OBJ)Key.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Key.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Skin.c: src/gui/Skin.ec $(OBJ)Skin.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Skin.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Timer.c: src/gui/Timer.ec $(OBJ)Timer.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Timer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)typeEdit.c: src/gui/typeEdit.ec $(OBJ)typeEdit.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/typeEdit.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Window.c: src/gui/Window.ec $(OBJ)Window.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gui/Window.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)dcom.c: src/net/dcom.ec $(OBJ)dcom.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/dcom.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)HTTPFile.c: src/net/HTTPFile.ec $(OBJ)HTTPFile.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/HTTPFile.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)network.c: src/net/network.ec $(OBJ)network.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/network.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NetworkClientFile.c: src/net/NetworkClientFile.ec $(OBJ)NetworkClientFile.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/NetworkClientFile.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Service.c: src/net/Service.ec $(OBJ)Service.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/Service.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Socket.c: src/net/Socket.ec $(OBJ)Socket.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/net/Socket.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+endif
+
+$(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/Array.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)AVLTree.c: src/com/containers/AVLTree.ec $(OBJ)AVLTree.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/AVLTree.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)BuiltInContainer.c: src/com/containers/BuiltInContainer.ec $(OBJ)BuiltInContainer.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/BuiltInContainer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Container.c: src/com/containers/Container.ec $(OBJ)Container.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/Container.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)CustomAVLTree.c: src/com/containers/CustomAVLTree.ec $(OBJ)CustomAVLTree.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/CustomAVLTree.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)LinkList.c: src/com/containers/LinkList.ec $(OBJ)LinkList.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/LinkList.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/List.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/containers/Map.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/BinaryTree.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)BTNode.c: src/com/BTNode.ec $(OBJ)BTNode.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/BTNode.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)dataTypes.c: src/com/dataTypes.ec $(OBJ)dataTypes.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/dataTypes.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)instance.c: src/com/instance.ec $(OBJ)instance.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/instance.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)String.c: src/com/String.ec $(OBJ)String.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/String.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+$(OBJ)OldList.c: src/com/OldList.ec $(OBJ)OldList.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/com/OldList.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
+# OBJECT RULES
+
+$(OBJ)Archive.o: $(OBJ)Archive.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Archive.c) -o $(call quote_path,$@)
+
+$(OBJ)BufferedFile.o: $(OBJ)BufferedFile.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BufferedFile.c) -o $(call quote_path,$@)
+
+$(OBJ)Date.o: $(OBJ)Date.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Date.c) -o $(call quote_path,$@)
+
+$(OBJ)DualPipe.o: $(OBJ)DualPipe.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)DualPipe.c) -o $(call quote_path,$@)
+
+$(OBJ)EARArchive.o: $(OBJ)EARArchive.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)EARArchive.c) -o $(call quote_path,$@)
+
+$(OBJ)File.o: $(OBJ)File.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)File.c) -o $(call quote_path,$@)
+
+$(OBJ)FileMonitor.o: $(OBJ)FileMonitor.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)FileMonitor.c) -o $(call quote_path,$@)
+
+$(OBJ)GlobalAppSettings.o: $(OBJ)GlobalAppSettings.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GlobalAppSettings.c) -o $(call quote_path,$@)
+
+$(OBJ)JSON.o: $(OBJ)JSON.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)JSON.c) -o $(call quote_path,$@)
+
+$(OBJ)JSONGlobalSettings.o: $(OBJ)JSONGlobalSettings.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)JSONGlobalSettings.c) -o $(call quote_path,$@)
+
+$(OBJ)memory.o: $(OBJ)memory.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)memory.c) -o $(call quote_path,$@)
+
+$(OBJ)Mutex.o: $(OBJ)Mutex.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Mutex.c) -o $(call quote_path,$@)
+
+$(OBJ)Semaphore.o: $(OBJ)Semaphore.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Semaphore.c) -o $(call quote_path,$@)
+
+$(OBJ)System.o: $(OBJ)System.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)System.c) -o $(call quote_path,$@)
+
+$(OBJ)TempFile.o: $(OBJ)TempFile.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)TempFile.c) -o $(call quote_path,$@)
+
+$(OBJ)Thread.o: $(OBJ)Thread.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Thread.c) -o $(call quote_path,$@)
+
+$(OBJ)Time.o: $(OBJ)Time.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Time.c) -o $(call quote_path,$@)
+
+$(OBJ)unicode.o: $(OBJ)unicode.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)unicode.c) -o $(call quote_path,$@)
+
+$(OBJ)units.o: $(OBJ)units.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)units.c) -o $(call quote_path,$@)
+
+$(OBJ)File.c.o: src/sys/File.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/File.c) -o $(call quote_path,$@)
+
+$(OBJ)DualPipe.c.o: src/sys/DualPipe.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/DualPipe.c) -o $(call quote_path,$@)
+
+$(OBJ)System.c.o: src/sys/System.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/sys/System.c) -o $(call quote_path,$@)
+
+$(OBJ)i18n.o: $(OBJ)i18n.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)i18n.c) -o $(call quote_path,$@)
+
+$(OBJ)Condition.o: $(OBJ)Condition.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Condition.c) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Cube.o: $(OBJ)Cube.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Cube.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)SkyBox.o: $(OBJ)SkyBox.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)SkyBox.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Sphere.o: $(OBJ)Sphere.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Sphere.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Object3DSFormat.o: $(OBJ)Object3DSFormat.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Object3DSFormat.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Camera.o: $(OBJ)Camera.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Camera.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Matrix.o: $(OBJ)Matrix.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Matrix.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Mesh.o: $(OBJ)Mesh.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Mesh.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Object.o: $(OBJ)Object.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Object.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Plane.o: $(OBJ)Plane.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Plane.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Quaternion.o: $(OBJ)Quaternion.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Quaternion.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Vector3D.o: $(OBJ)Vector3D.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Vector3D.c) -o $(call quote_path,$@)
+endif
+
+$(OBJ)BMPFormat.o: $(OBJ)BMPFormat.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BMPFormat.c) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)GIFFormat.o: $(OBJ)GIFFormat.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GIFFormat.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)JPEGFormat.o: $(OBJ)JPEGFormat.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)JPEGFormat.c) -o $(call quote_path,$@)
+endif
+
+$(OBJ)PCXFormat.o: $(OBJ)PCXFormat.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)PCXFormat.c) -o $(call quote_path,$@)
+
+$(OBJ)PNGFormat.o: $(OBJ)PNGFormat.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)PNGFormat.c) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)RGBFormat.o: $(OBJ)RGBFormat.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)RGBFormat.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(WINDOWS_TARGET)" ""
+$(OBJ)GDIDisplayDriver.o: $(OBJ)GDIDisplayDriver.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GDIDisplayDriver.c) -o $(call quote_path,$@)
+endif
+
+$(OBJ)lfbBlit.o: $(OBJ)lfbBlit.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)lfbBlit.c) -o $(call quote_path,$@)
+
+$(OBJ)lfbConvert.o: $(OBJ)lfbConvert.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)lfbConvert.c) -o $(call quote_path,$@)
+
+$(OBJ)LFBDisplayDriver.o: $(OBJ)LFBDisplayDriver.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)LFBDisplayDriver.c) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NCursesDisplayDriver.o: $(OBJ)NCursesDisplayDriver.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)NCursesDisplayDriver.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaOpenGLDisplayDriver.o: $(OBJ)CocoaOpenGLDisplayDriver.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CocoaOpenGLDisplayDriver.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)XDisplayDriver.c) -o $(call quote_path,$@)
+endif
+
+$(OBJ)Bitmap.o: $(OBJ)Bitmap.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Bitmap.c) -o $(call quote_path,$@)
+
+$(OBJ)BitmapResource.o: $(OBJ)BitmapResource.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BitmapResource.c) -o $(call quote_path,$@)
+
+$(OBJ)Color.o: $(OBJ)Color.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Color.c) -o $(call quote_path,$@)
+
+$(OBJ)Display.o: $(OBJ)Display.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Display.c) -o $(call quote_path,$@)
+
+$(OBJ)DisplaySystem.o: $(OBJ)DisplaySystem.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)DisplaySystem.c) -o $(call quote_path,$@)
+
+$(OBJ)FontResource.o: $(OBJ)FontResource.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)FontResource.c) -o $(call quote_path,$@)
+
+$(OBJ)Resource.o: $(OBJ)Resource.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Resource.c) -o $(call quote_path,$@)
+
+$(OBJ)Surface.o: $(OBJ)Surface.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Surface.c) -o $(call quote_path,$@)
+
+$(OBJ)Button.o: $(OBJ)Button.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Button.c) -o $(call quote_path,$@)
+
+$(OBJ)CalendarControl.o: $(OBJ)CalendarControl.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CalendarControl.c) -o $(call quote_path,$@)
+
+$(OBJ)DataBox.o: $(OBJ)DataBox.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)DataBox.c) -o $(call quote_path,$@)
+
+$(OBJ)DropBox.o: $(OBJ)DropBox.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)DropBox.c) -o $(call quote_path,$@)
+
+$(OBJ)EditBox.o: $(OBJ)EditBox.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)EditBox.c) -o $(call quote_path,$@)
+
+$(OBJ)Label.o: $(OBJ)Label.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Label.c) -o $(call quote_path,$@)
+
+$(OBJ)ListBox.o: $(OBJ)ListBox.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ListBox.c) -o $(call quote_path,$@)
+
+$(OBJ)Menu.o: $(OBJ)Menu.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Menu.c) -o $(call quote_path,$@)
+
+$(OBJ)Picture.o: $(OBJ)Picture.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Picture.c) -o $(call quote_path,$@)
+
+$(OBJ)ProgressBar.o: $(OBJ)ProgressBar.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ProgressBar.c) -o $(call quote_path,$@)
+
+$(OBJ)ScrollBar.o: $(OBJ)ScrollBar.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ScrollBar.c) -o $(call quote_path,$@)
+
+$(OBJ)StatusBar.o: $(OBJ)StatusBar.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)StatusBar.c) -o $(call quote_path,$@)
+
+$(OBJ)TabControl.o: $(OBJ)TabControl.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)TabControl.c) -o $(call quote_path,$@)
+
+$(OBJ)PaneSplitter.o: $(OBJ)PaneSplitter.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)PaneSplitter.c) -o $(call quote_path,$@)
+
+$(OBJ)Stacker.o: $(OBJ)Stacker.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Stacker.c) -o $(call quote_path,$@)
+
+$(OBJ)PathBox.o: $(OBJ)PathBox.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)PathBox.c) -o $(call quote_path,$@)
+
+$(OBJ)ToolTip.o: $(OBJ)ToolTip.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ToolTip.c) -o $(call quote_path,$@)
+
+$(OBJ)SelectorBar.o: $(OBJ)SelectorBar.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)SelectorBar.c) -o $(call quote_path,$@)
+
+$(OBJ)ColorPicker.o: $(OBJ)ColorPicker.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ColorPicker.c) -o $(call quote_path,$@)
+
+$(OBJ)FileDialog.o: $(OBJ)FileDialog.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)FileDialog.c) -o $(call quote_path,$@)
+
+$(OBJ)FindDialog.o: $(OBJ)FindDialog.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)FindDialog.c) -o $(call quote_path,$@)
+
+$(OBJ)GoToDialog.o: $(OBJ)GoToDialog.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GoToDialog.c) -o $(call quote_path,$@)
+
+$(OBJ)MessageBox.o: $(OBJ)MessageBox.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)MessageBox.c) -o $(call quote_path,$@)
+
+$(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ReplaceDialog.c) -o $(call quote_path,$@)
+
+$(OBJ)WindowList.o: $(OBJ)WindowList.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)WindowList.c) -o $(call quote_path,$@)
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaDispatch.o: $(OBJ)CocoaDispatch.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CocoaDispatch.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaEcereBridge.o: src/gui/drivers/cocoa/CocoaEcereBridge.m
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/CocoaEcereBridge.m) -o $(call quote_path,$@)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)CocoaInterface.o: $(OBJ)CocoaInterface.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CocoaInterface.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(OSX_TARGET)" ""
+$(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gui/drivers/cocoa/EcereView.m) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NCursesInterface.o: $(OBJ)NCursesInterface.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)NCursesInterface.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(WINDOWS_TARGET)" ""
+$(OBJ)Win32Interface.o: $(OBJ)Win32Interface.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Win32Interface.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)XInterface.o: $(OBJ)XInterface.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)XInterface.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)TVisionSkin.o: $(OBJ)TVisionSkin.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)TVisionSkin.c) -o $(call quote_path,$@)
+endif
+
+$(OBJ)WindowsSkin.o: $(OBJ)WindowsSkin.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)WindowsSkin.c) -o $(call quote_path,$@)
+
+$(OBJ)Anchor.o: $(OBJ)Anchor.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Anchor.c) -o $(call quote_path,$@)
+
+$(OBJ)ClipBoard.o: $(OBJ)ClipBoard.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)ClipBoard.c) -o $(call quote_path,$@)
+
+$(OBJ)Cursor.o: $(OBJ)Cursor.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Cursor.c) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Desktop3D.o: $(OBJ)Desktop3D.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Desktop3D.c) -o $(call quote_path,$@)
+endif
+
+$(OBJ)FormDesigner.o: $(OBJ)FormDesigner.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)FormDesigner.c) -o $(call quote_path,$@)
+
+$(OBJ)GuiApplication.o: $(OBJ)GuiApplication.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)GuiApplication.c) -o $(call quote_path,$@)
+
+$(OBJ)Interface.o: $(OBJ)Interface.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Interface.c) -o $(call quote_path,$@)
+
+$(OBJ)Key.o: $(OBJ)Key.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Key.c) -o $(call quote_path,$@)
+
+$(OBJ)Skin.o: $(OBJ)Skin.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Skin.c) -o $(call quote_path,$@)
+
+$(OBJ)Timer.o: $(OBJ)Timer.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Timer.c) -o $(call quote_path,$@)
+
+$(OBJ)typeEdit.o: $(OBJ)typeEdit.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)typeEdit.c) -o $(call quote_path,$@)
+
+$(OBJ)Window.o: $(OBJ)Window.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Window.c) -o $(call quote_path,$@)
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)dcom.o: $(OBJ)dcom.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)dcom.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)HTTPFile.o: $(OBJ)HTTPFile.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)HTTPFile.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)network.o: $(OBJ)network.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)network.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)NetworkClientFile.o: $(OBJ)NetworkClientFile.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)NetworkClientFile.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Service.o: $(OBJ)Service.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Service.c) -o $(call quote_path,$@)
+endif
+
+ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+$(OBJ)Socket.o: $(OBJ)Socket.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Socket.c) -o $(call quote_path,$@)
+endif
+
+$(OBJ)Array.o: $(OBJ)Array.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Array.c) -o $(call quote_path,$@)
+
+$(OBJ)AVLTree.o: $(OBJ)AVLTree.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)AVLTree.c) -o $(call quote_path,$@)
+
+$(OBJ)BuiltInContainer.o: $(OBJ)BuiltInContainer.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BuiltInContainer.c) -o $(call quote_path,$@)
+
+$(OBJ)Container.o: $(OBJ)Container.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Container.c) -o $(call quote_path,$@)
+
+$(OBJ)CustomAVLTree.o: $(OBJ)CustomAVLTree.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CustomAVLTree.c) -o $(call quote_path,$@)
+
+$(OBJ)LinkList.o: $(OBJ)LinkList.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)LinkList.c) -o $(call quote_path,$@)
+
+$(OBJ)List.o: $(OBJ)List.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)List.c) -o $(call quote_path,$@)
+
+$(OBJ)Map.o: $(OBJ)Map.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)Map.c) -o $(call quote_path,$@)
+
+$(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BinaryTree.c) -o $(call quote_path,$@)
+
+$(OBJ)BTNode.o: $(OBJ)BTNode.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)BTNode.c) -o $(call quote_path,$@)
+
+$(OBJ)dataTypes.o: $(OBJ)dataTypes.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)dataTypes.c) -o $(call quote_path,$@)
+
+$(OBJ)instance.o: $(OBJ)instance.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)instance.c) -o $(call quote_path,$@)
+
+$(OBJ)String.o: $(OBJ)String.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)String.c) -o $(call quote_path,$@)
+
+$(OBJ)OldList.o: $(OBJ)OldList.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)OldList.c) -o $(call quote_path,$@)
+
+$(OBJ)instance.c.o: src/com/instance.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/com/instance.c) -o $(call quote_path,$@)
+
+$(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(call quote_path,$@)
+
+cleantarget: objdir
+	$(call rmq,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rmq,$(OBJ)symbols.lst)
+	$(call rmq,$(OBJ)objects.lst)
+	$(call rmq,$(TARGET))
+ifdef SHARED_LIBRARY_TARGET
+ifdef LINUX_TARGET
+ifdef LINUX_HOST
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO)$(basename $(VER)))
+	$(call rmq,$(OBJ)$(LP)$(MODULE)$(SO))
+endif
+endif
+endif
+
+clean: cleantarget
+	$(call rmq,$(_OBJECTS))
+	$(call rmq,$(_ECOBJECTS1))
+	$(call rmq,$(_ECOBJECTS2))
+	$(call rmq,$(_ECOBJECTS3))
+	$(call rmq,$(_COBJECTS1))
+	$(call rmq,$(_COBJECTS2))
+	$(call rmq,$(_COBJECTS3))
+	$(call rmq,$(_BOWLS1))
+	$(call rmq,$(_BOWLS2))
+	$(call rmq,$(_BOWLS3))
+	$(call rmq,$(_IMPORTS1))
+	$(call rmq,$(_IMPORTS2))
+	$(call rmq,$(_IMPORTS3))
+	$(call rmq,$(_SYMBOLS1))
+	$(call rmq,$(_SYMBOLS2))
+	$(call rmq,$(_SYMBOLS3))
+
+realclean: cleantarget
+	$(call rmrq,$(OBJ))
+
+distclean: cleantarget
+	$(call rmrq,obj/)

@@ -100,50 +100,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "epj2make.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "epj2make.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "he",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "epj2make.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "epj2make.mo"
-                     ]
-                  }
-               ]
-            }
+            "epj2make-es.mo",
+            "epj2make-he.mo",
+            "epj2make-ru.mo",
+            "epj2make-zh_CN.mo"
          ]
       },
       "../crossplatform.mk"

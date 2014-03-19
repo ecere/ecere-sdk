@@ -277,6 +277,8 @@ extern char *  strcpy(char * , const char * );
 
 extern char *  strstr(const char * , const char * );
 
+extern char *  strchr(const char * , int);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
 struct __ecereNameSpace__ecere__com__NameSpace
@@ -316,6 +318,8 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 extern int sprintf(char * , char * , ...);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
+
+extern int strcasecmp(const char * , const char * );
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
@@ -376,7 +380,9 @@ char language[256];
 char lang[256];
 char lcMessages[256];
 char * locale = (((void *)0));
+char genericLocale[256];
 
+genericLocale[0] = (char)0;
 if(__ecereNameSpace__ecere__sys__GetEnvironment("LANGUAGE", language, sizeof language))
 locale = language;
 else if(__ecereNameSpace__ecere__sys__GetEnvironment("LC_ALL", lcAll, sizeof lcAll))
@@ -396,11 +402,28 @@ if(dot)
 *dot = (char)0;
 locale = language;
 }
+if(locale)
+{
+char * under;
+
+strcpy(genericLocale, locale);
+under = strchr(genericLocale, '_');
+if(under)
+*under = (char)0;
+}
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name)
+sprintf(fileName, "<:%s>locale/%s-%s.mo", ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name, name, locale);
+else
+sprintf(fileName, ":locale/%s-%s.mo", name, locale);
+f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
+if(!f)
+{
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name)
 sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name, locale, name);
 else
 sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
 f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
+}
 if(!f)
 {
 sprintf(fileName, "locale/%s/LC_MESSAGES/%s.mo", locale, name);
@@ -410,6 +433,32 @@ if(!f)
 {
 sprintf(fileName, "/usr/share/locale/%s/LC_MESSAGES/%s.mo", locale, name);
 f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
+}
+if(!f && locale && (strcasecmp)(locale, genericLocale))
+{
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name)
+sprintf(fileName, "<:%s>locale/%s-%s.mo", ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name, name, genericLocale);
+else
+sprintf(fileName, ":locale/%s-%s.mo", name, genericLocale);
+f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
+if(!f)
+{
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name)
+sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->name, genericLocale, name);
+else
+sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", genericLocale, name);
+f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
+}
+if(!f)
+{
+sprintf(fileName, "locale/%s/LC_MESSAGES/%s.mo", genericLocale, name);
+f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
+}
+if(!f)
+{
+sprintf(fileName, "/usr/share/locale/%s/LC_MESSAGES/%s.mo", genericLocale, name);
+f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
+}
 }
 if(f)
 {

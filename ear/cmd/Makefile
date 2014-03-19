@@ -64,9 +64,9 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/es_ES/LC_MESSAGES/ear.mo \
-	locale/zh_CN/LC_MESSAGES/ear.mo \
-	locale/ru_RU/LC_MESSAGES/ear.mo \
+	locale/ear-es.mo \
+	locale/ear-ru.mo \
+	locale/ear-zh_CN.mo \
 	../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/extract$(E)
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -125,9 +125,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/extract$(E) ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ear.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ear.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/ear.mo "locale/ru_RU/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ear-es.mo locale/ear-ru.mo locale/ear-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

@@ -161,11 +161,11 @@ RESOURCES1 = \
 	$(RES)codeMarks/topFrameHalfError.png \
 	$(RES)others/mousePointer.png \
 	$(RES)status/software-update-available.png \
-	locale/zh_CN/LC_MESSAGES/ide.mo \
-	locale/es_ES/LC_MESSAGES/ide.mo \
-	locale/pt_BR/LC_MESSAGES/ide.mo \
-	locale/ru_RU/LC_MESSAGES/ide.mo \
-	locale/vi_VI/LC_MESSAGES/ide.mo \
+	locale/ide-es.mo \
+	locale/ide-pt_BR.mo \
+	locale/ide-ru.mo \
+	locale/ide-vi.mo \
+	locale/ide-zh_CN.mo \
 	../LICENSE \
 	../extras/res/licenses/png.LICENSE \
 	../extras/res/licenses/tango.COPYING \
@@ -280,11 +280,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)codeMarks/breakpoint.png $(RES)codeMarks/breakpointDisabled.png $(RES)codeMarks/breakpointHalf.png $(RES)codeMarks/breakpointHalfDisabled.png $(RES)codeMarks/cursor.png $(RES)codeMarks/cursorError.png $(RES)codeMarks/topFrame.png $(RES)codeMarks/topFrameError.png $(RES)codeMarks/topFrameHalf.png $(RES)codeMarks/topFrameHalfError.png "codeMarks"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)others/mousePointer.png "others"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/software-update-available.png "status"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ide.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ide.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/pt_BR/LC_MESSAGES/ide.mo "locale/pt_BR/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/ide.mo "locale/ru_RU/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/vi_VI/LC_MESSAGES/ide.mo "locale/vi_VI/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ide-es.mo locale/ide-pt_BR.mo locale/ide-ru.mo locale/ide-vi.mo locale/ide-zh_CN.mo "locale"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/zlib.README ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/upx.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/MinGW-w64.LICENSE ../extras/res/licenses/tdm-gcc.LICENSE ../extras/res/licenses/ffi.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/es.png ../extras/res/types/countryCode/gb.png ../extras/res/types/countryCode/hu.png ../extras/res/types/countryCode/cn.png ../extras/res/types/countryCode/pt.png ../extras/res/types/countryCode/vn.png ../extras/res/types/countryCode/ru.png ../extras/res/types/countryCode/in.png ../extras/res/types/countryCode/nl.png ../extras/res/types/countryCode/il.png "countryCode"

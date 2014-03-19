@@ -74,10 +74,10 @@ SOURCES = $(ECSOURCES) \
 	sqlite3.c
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo \
-	locale/es_ES/LC_MESSAGES/EDASQLiteCipher.mo \
-	locale/he/LC_MESSAGES/EDASQLiteCipher.mo \
-	locale/ru_RU/LC_MESSAGES/EDASQLiteCipher.mo
+	locale/EDASQLiteCipher-es.mo \
+	locale/EDASQLiteCipher-he.mo \
+	locale/EDASQLiteCipher-ru.mo \
+	locale/EDASQLiteCipher-zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -178,10 +178,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/EDASQLiteCipher.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/EDASQLiteCipher.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/he/LC_MESSAGES/EDASQLiteCipher.mo "locale/he/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ru_RU/LC_MESSAGES/EDASQLiteCipher.mo "locale/ru_RU/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLiteCipher-es.mo locale/EDASQLiteCipher-he.mo locale/EDASQLiteCipher-ru.mo locale/EDASQLiteCipher-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

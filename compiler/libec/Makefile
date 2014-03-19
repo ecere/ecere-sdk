@@ -100,9 +100,9 @@ SOURCES = $(ECSOURCES) \
 	../bootstrap/bsl.c
 
 RESOURCES = \
-	locale/zh_CN/LC_MESSAGES/ec.mo \
-	locale/es_ES/LC_MESSAGES/ec.mo \
-	locale/mr_MR/LC_MESSAGES/ec.mo
+	locale/ec-es.mo \
+	locale/ec-mr.mo \
+	locale/ec-zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -156,9 +156,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/zh_CN/LC_MESSAGES/ec.mo "locale/zh_CN/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es_ES/LC_MESSAGES/ec.mo "locale/es_ES/LC_MESSAGES"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/mr_MR/LC_MESSAGES/ec.mo "locale/mr_MR/LC_MESSAGES"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ec-es.mo locale/ec-mr.mo locale/ec-zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

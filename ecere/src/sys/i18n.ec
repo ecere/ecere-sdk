@@ -32,6 +32,9 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
    char lang[256];
    char lcMessages[256];
    char * locale = null;
+   char genericLocale[256];
+
+   genericLocale[0] = 0;
 
    if(GetEnvironment("LANGUAGE", language, sizeof(language)))
       locale = language;
@@ -51,12 +54,28 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
       if(dot) *dot = 0;
       locale = language;
    }
+   if(locale)
+   {
+      char * under;
+      strcpy(genericLocale, locale);
+      under = strchr(genericLocale, '_');
+      if(under)
+         *under = 0;
+   }
 
    if(module.name)
-      sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", module.name, locale, name);
+      sprintf(fileName, "<:%s>locale/%s-%s.mo", module.name, name, locale);
    else
-      sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
+      sprintf(fileName, ":locale/%s-%s.mo", name, locale);
    f = FileOpen(fileName, read);
+   if(!f)
+   {
+      if(module.name)
+         sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", module.name, locale, name);
+      else
+         sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
+      f = FileOpen(fileName, read);
+   }
    if(!f)
    {
       sprintf(fileName, "locale/%s/LC_MESSAGES/%s.mo", locale, name);
@@ -67,6 +86,35 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
       sprintf(fileName, "/usr/share/locale/%s/LC_MESSAGES/%s.mo", locale, name);
       f = FileOpen(fileName, read);
    }
+
+   if(!f && locale && strcmpi(locale, genericLocale))
+   {
+      // Attempt with generic language
+      if(module.name)
+         sprintf(fileName, "<:%s>locale/%s-%s.mo", module.name, name, genericLocale);
+      else
+         sprintf(fileName, ":locale/%s-%s.mo", name, genericLocale);
+      f = FileOpen(fileName, read);
+      if(!f)
+      {
+         if(module.name)
+            sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", module.name, genericLocale, name);
+         else
+            sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", genericLocale, name);
+         f = FileOpen(fileName, read);
+      }
+      if(!f)
+      {
+         sprintf(fileName, "locale/%s/LC_MESSAGES/%s.mo", genericLocale, name);
+         f = FileOpen(fileName, read);
+      }
+      if(!f)
+      {
+         sprintf(fileName, "/usr/share/locale/%s/LC_MESSAGES/%s.mo", genericLocale, name);
+         f = FileOpen(fileName, read);
+      }
+   }
+
    if(f)
    {
       uint magic = 0;

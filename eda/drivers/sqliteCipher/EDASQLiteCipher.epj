@@ -115,50 +115,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDASQLiteCipher.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDASQLiteCipher.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "he",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDASQLiteCipher.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "EDASQLiteCipher.mo"
-                     ]
-                  }
-               ]
-            }
+            "EDASQLiteCipher-es.mo",
+            "EDASQLiteCipher-he.mo",
+            "EDASQLiteCipher-ru.mo",
+            "EDASQLiteCipher-zh_CN.mo"
          ]
       }
    ]

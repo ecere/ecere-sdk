@@ -100,51 +100,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecp.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecp.mo"
-                     ]
-                  },
-                  "locale/es_ES/LC_MESSAGES/ecp.mo"
-               ]
-            },
-            {
-               "Folder" : "he",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecp.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ecp.mo"
-                     ]
-                  }
-               ]
-            }
+            "ecp-es.mo",
+            "ecp-he.mo",
+            "ecp-ru.mo",
+            "ecp-zh_CN.mo"
          ]
       }
    ]

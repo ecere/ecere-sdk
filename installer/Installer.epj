@@ -36,7 +36,9 @@
                "png"
             ],
             "LibraryDirs" : [
-               "../ecere/obj/installer.$(PLATFORM)$(ARCH_SUFFIX)"
+               "../ecere/obj/installer.$(PLATFORM)$(ARCH_SUFFIX)",
+               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ],
             "FastMath" : true
          }
@@ -14892,39 +14894,9 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "Installer.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "Installer.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "Installer.mo"
-                     ]
-                  }
-               ]
-            }
+            "Installer-es.mo",
+            "Installer-ru.mo",
+            "Installer-zh_CN.mo"
          ]
       },
       {

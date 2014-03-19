@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard fixprecompile
+.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer
 ifneq "$V" "1"
 .SILENT:
 endif
@@ -363,6 +363,31 @@ endif
 	$(call rmq,$(OBJBINDIR)documentor$(E))
 ifdef EDASQLiteCipher
 	$(call rmq,$(OBJBINDIR)CodeGuard$(E))
+endif
+
+cleantarget:
+	cd compiler && $(MAKE) cleantarget
+	cd documentor && $(MAKE) cleantarget
+	cd ear && $(MAKE) cleantarget
+	cd ecere && $(MAKE) cleantarget
+	cd eda && $(MAKE) cleantarget
+	cd epj2make && $(MAKE) cleantarget
+	cd ide && $(MAKE) cleantarget
+	cd installer && $(MAKE) cleantarget
+
+pots: cleantarget
+	$(MAKE) OUTPUT_POT=1
+	cd installer && $(MAKE) OUTPUT_POT=1 pots
+
+ifdef WINDOWS_TARGET
+installer:
+	$(MAKE) prepinstall ARCH=
+	$(MAKE) prepinstall ARCH=x32
+	@$(call echo,Building Ecere runtime for installer...)
+	cd ecere && @$(MAKE) -f Makefile.installer ARCH=x32
+	@$(call echo,Building Installer for Windows...)
+	cd installer && @$(MAKE) ARCH=x32
+	@$(call echo,The Ecere SDK Windows Installer is fully built.)
 endif
 
 clean: emptyoutput

@@ -48,39 +48,9 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "es_ES",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ear.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "zh_CN",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ear.mo"
-                     ]
-                  }
-               ]
-            },
-            {
-               "Folder" : "ru_RU",
-               "Files" : [
-                  {
-                     "Folder" : "LC_MESSAGES",
-                     "Files" : [
-                        "ear.mo"
-                     ]
-                  }
-               ]
-            }
+            "ear-es.mo",
+            "ear-ru.mo",
+            "ear-zh_CN.mo"
          ]
       },
       "../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/extract$(E)"
