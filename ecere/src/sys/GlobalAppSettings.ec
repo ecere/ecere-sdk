@@ -85,13 +85,19 @@ public:
       set { delete settingsExtension; if(value && value[0]) settingsExtension = CopyString(value); }
       get { return settingsExtension; }
    };
+   property const char * settingsDirectory
+   {
+      set { delete settingsDirectory; if(value && value[0]) settingsDirectory = CopyUnixPath(value); }
+      get { return settingsDirectory; }
+   };
    property const char * settingsLocation
    {
-      set { delete settingsLocation; if(value && value[0]) settingsLocation = CopyString(value); }
+      set { delete settingsLocation; if(value && value[0]) settingsLocation = CopyUnixPath(value); }
       get { return settingsLocation; }
    };
    property const char * settingsFilePath
    {
+      set { delete settingsFilePath; if(value && value[0]) settingsFilePath = CopyUnixPath(value); }
       get { return settingsFilePath; }
    };
    property bool allowDefaultLocations
@@ -128,6 +134,7 @@ private:
    bool allowDefaultLocations;
    bool allUsers;
    bool globalPath;
+   char * settingsDirectory;
 
    FileMonitor settingsMonitor
    {
@@ -153,159 +160,153 @@ private:
       delete settingsExtension;
       delete settingsLocation;
       delete settingsFilePath;
+      delete settingsDirectory;
    }
 
-   char * PrepareSpecifiedLocationPath()
+   char * PrepareSpecifiedLocationPath(const char * extension, bool create)
    {
       char * path = null;
-      if(settingsLocation && FileExists(settingsLocation).isDirectory)
-      {
-         const char * extension = GetExtension();
-         path = new char[strlen(settingsLocation) + strlen(settingsName) + strlen(extension) + 16];
-         strcpy(path, settingsLocation);
-         PathCat(path, settingsName);
-         strcat(path, ".");
-         strcat(path, extension);
-      }
+      char location[MAX_LOCATION] = "";
+      if(settingsLocation)
+         strcpy(location, settingsLocation);
+      path = GetFilePath(location, extension, create, false, false);
       return path;
    }
 
-   char * PreparePortablePath()
+   char * PreparePortablePath(const char * extension, bool create)
    {
       //
       char * path = null;
       char location[MAX_LOCATION];
       LocateModule(null, location);
       StripLastDirectory(location, location);
-      if(location[0] && FileExists(location).isDirectory)
-      {
-         const char * extension = GetExtension();
-         char * name = new char[strlen(settingsName) + 16];
-         path = new char[strlen(location) + strlen(settingsName) + strlen(extension) + 16];
-         strcpy(name, settingsName);
-         strcat(name, ".");
-         strcat(name, extension);
-         strcpy(path, location);
-         PathCat(path, name);
-         delete name;
-      }
+      path = GetFilePath(location, extension, create, false, false);
       return path;
    }
 
-   char * PrepareHomePath(bool useIni)
+   char * PrepareHomePath(const char * extension, bool create, bool unixStyle)
    {
       // ~/.apprc
       char * path = null;
       char * home = getenv("HOME");
-      if(home && home[0] && FileExists(home).isDirectory)
+      if(home && home[0])
       {
-         char * name = new char[strlen(settingsName) + 16];
-         path = new char[strlen(home) + strlen(settingsName) + 16];
-         if(useIni)
-         {
-            strcpy(name, settingsName);
-            strcat(name, ".");
-            strcat(name, GetExtension());
-         }
-         else
-         {
-            strcpy(name, ".");
-            strcat(name, settingsName);
-            strcat(name, "rc");
-         }
-         strcpy(path, home);
-         PathCat(path, name);
-         delete name;
+         char location[MAX_LOCATION];
+         strcpy(location, home);
+         path = GetFilePath(location, extension, create, true, unixStyle);
       }
       return path;
    }
 
 #if defined(__WIN32__)
-   char * PrepareUserProfilePath()
+   char * PrepareUserProfilePath(const char * extension, bool create)
    {
       // Windows attempts: $USERPROFILE/app.ini
       char * path = null;
       char * profile = getenv("USERPROFILE");
-      if(profile && profile[0] && FileExists(profile).isDirectory)
+      if(profile && profile[0])
       {
-         const char * extension = GetExtension();
-         path = new char[strlen(profile) + strlen(settingsName) + strlen(extension) + 16];
-         strcpy(path, profile);
-         PathCat(path, settingsName);
-         strcat(path, ".");
-         strcat(path, extension);
+         char location[MAX_LOCATION];
+         strcpy(location, profile);
+         path = GetFilePath(location, extension, create, false, false);
       }
       return path;
    }
 
-   char * PrepareHomeDrivePath()
+   char * PrepareHomeDrivePath(const char * extension, bool create)
    {
       char * path = null;
-      char * homedrive = getenv("HOMEDRIVE");
-      if(homedrive && homedrive[0])
+      const char * homedrive = getenv("HOMEDRIVE");
+      const char * homepath = getenv("HOMEPATH");
+      if(homedrive && homedrive[0] && homepath && homepath[0])
       {
-         char * homepath = getenv("HOMEPATH");
-         if(homepath && homepath[0])
-         {
-            const char * extension = GetExtension();
-            path = new char[strlen(homedrive) + strlen(homepath) + strlen(settingsName) + strlen(extension) + 32];
-            strcpy(path, homedrive);
-            PathCat(path, homepath);
-            if(FileExists(path).isDirectory)
-            {
-               PathCat(path, settingsName);
-               strcat(path, ".");
-               strcat(path, extension);
-            }
-            else
-               delete path;
-         }
+         char location[MAX_LOCATION];
+         strcpy(location, homedrive);
+         PathCatSlash(location, homepath);
+         path = GetFilePath(location, extension, create, false, false);
       }
       return path;
    }
 
-   char * PrepareSystemPath()
+   char * PrepareSystemPath(const char * extension, bool create)
    {
-      char * path = new char[MAX_LOCATION];
-      const char * extension = GetExtension();
+      char * path = null;
       uint16 _wfilePath[MAX_LOCATION];
+      char location[MAX_LOCATION];
       GetSystemDirectory(_wfilePath, MAX_LOCATION);
-      UTF16toUTF8Buffer(_wfilePath, path, MAX_LOCATION);
-      PathCat(path, settingsName);
-      strcat(path, ".");
-      strcat(path, extension);
+      UTF16toUTF8Buffer(_wfilePath, location, MAX_LOCATION);
+      path = GetFilePath(location, extension, create, false, false);
       return path;
    }
 
-   char * PrepareAllUsersPath()
+   char * PrepareAllUsersPath(const char * extension, bool create)
    {
-      char * allUsers = getenv("ALLUSERSPROFILE");
       char * path = null;
-      if(allUsers)
+      char * allUsers = getenv("ALLUSERSPROFILE");
+      if(allUsers && allUsers[0])
       {
-         const char * extension = GetExtension();
-         path = new char[strlen(allUsers) + strlen(settingsName) + strlen(extension) + 32];
-         strcpy(path, allUsers);
-         PathCat(path, settingsName);
-         strcat(path, ".");
-         strcat(path, extension);
+         char location[MAX_LOCATION];
+         strcpy(location, allUsers);
+         path = GetFilePath(location, extension, create, false, false);
       }
       return path;
    }
 #else
-   char * PrepareEtcPath()
+   char * PrepareEtcPath(const char * extension, bool create)
    {
       char * path = null;
-      const char * etc = "/etc/";
-      const char * extension = GetExtension();
-      path = new char[strlen(etc) + strlen(settingsName) + strlen(extension) + 16];
-      strcpy(path, etc);
-      PathCat(path, settingsName);
-      strcat(path, ".");
-      strcat(path, extension);
+      char location[MAX_LOCATION] = "/etc/";
+      path = GetFilePath(location, extension, create, false, false);
       return path;
    }
 #endif
+
+   char * GetFilePath(char * location, const char * extension, bool create, bool dotPrefix, bool runCommandsStyle)
+   {
+      char * path = null;
+      FileAttribs attribs;
+      if(location[0])
+         MakeSlashPath(location);
+      if(location[0] && (attribs = FileExists(location)).isDirectory)
+      {
+         if(settingsDirectory)
+         {
+            if(dotPrefix)
+            {
+               PathCatSlash(location, ".");
+               strcat(location, settingsDirectory);
+            }
+            else
+               PathCatSlash(location, settingsDirectory);
+            if(create)
+               MakeDir(location);
+            attribs = FileExists(location);
+         }
+         if(attribs.isDirectory)
+         {
+            char * name = new char[strlen(settingsName) + strlen(extension) + 2];
+            if(dotPrefix && !settingsDirectory)
+            {
+               strcpy(name, ".");
+               strcat(name, settingsName);
+            }
+            else
+               strcpy(name, settingsName);
+            if(runCommandsStyle)
+               strcat(name, "rc");
+            else
+            {
+               strcat(name, ".");
+               strcat(name, extension);
+            }
+            path = new char[strlen(location) + strlen(name) + 16];
+            strcpy(path, location);
+            PathCatSlash(path, name);
+            delete name;
+         }
+      }
+      return path;
+   }
 
    const char * GetExtension()
    {
@@ -324,6 +325,7 @@ private:
    void FileOpenTryRead()
    {
       f = FileOpen(settingsFilePath, read);
+      //PrintLn("GlobalSettings::FileOpenTryRead -- ", settingsFilePath, " -- ", f != null);
       if(!f)                       // This delete will cover both trying the next possible config location and
          delete settingsFilePath;  // the case when we're doing a load when the config file is no longer available
    }                               // and we want to re-try all possible config locations.
@@ -356,6 +358,7 @@ private:
       }
       else if(shouldDelete)        // This delete will cover both trying the next possible config location and
          delete settingsFilePath;  // allow trying to save to a location where user has permission.
+      //PrintLn("GlobalSettings::FileOpenTryWrite -- ", settingsFilePath, " -- ", f != null);
       return f != null;
    }
 
@@ -373,43 +376,45 @@ public:
 
          if(!settingsFilePath && settingsName && settingsName[0])
          {
-            if(!f && (settingsFilePath = PrepareSpecifiedLocationPath()))
+            const char * extension = GetExtension();
+
+            if(!f && (settingsFilePath = PrepareSpecifiedLocationPath(extension, false)))
                FileOpenTryRead();
             if(!f && (!settingsLocation || allowDefaultLocations))
             {
                globalPath = false;
-               if(!f && (settingsFilePath = PreparePortablePath()))
+               if(!f && (settingsFilePath = PreparePortablePath(extension, false)))
                   FileOpenTryRead();
                if(f)
                   portable = true;
                if(!allUsers)
                {
 #if defined(__WIN32__)
-                  if(!f && (settingsFilePath = PrepareHomePath(true)))
+                  if(!f && (settingsFilePath = PrepareHomePath(extension, false, false)))
                      FileOpenTryRead();
 #endif
-                  if(!f && (settingsFilePath = PrepareHomePath(false)))
+                  if(!f && (settingsFilePath = PrepareHomePath(extension, false, true)))
                      FileOpenTryRead();
                }
 #if defined(__WIN32__)
                if(!allUsers)
                {
-                  if(!f && (settingsFilePath = PrepareUserProfilePath()))
+                  if(!f && (settingsFilePath = PrepareUserProfilePath(extension, false)))
                      FileOpenTryRead();
-                  if(!f && (settingsFilePath = PrepareHomeDrivePath()))
+                  if(!f && (settingsFilePath = PrepareHomeDrivePath(extension, false)))
                      FileOpenTryRead();
                }
                if(!f)
                   globalPath = true;
-               if(!f && (settingsFilePath = PrepareAllUsersPath()))
+               if(!f && (settingsFilePath = PrepareAllUsersPath(extension, false)))
                   FileOpenTryRead();
 
-               if(!f && (settingsFilePath = PrepareSystemPath()))
+               if(!f && (settingsFilePath = PrepareSystemPath(extension, false)))
                   FileOpenTryRead();
 #else
                if(!f)
                   globalPath = true;
-               if(!f && (settingsFilePath = PrepareEtcPath()))
+               if(!f && (settingsFilePath = PrepareEtcPath(extension, false)))
                   FileOpenTryRead();
 #endif
             }
@@ -466,32 +471,33 @@ public:
 
          if((!settingsFilePath || (!f && globalPath)) && settingsName && settingsName[0])
          {
+            const char * extension = GetExtension();
             delete settingsFilePath;
 
-            if(!f && (settingsFilePath = PrepareSpecifiedLocationPath()))
+            if(!f && (settingsFilePath = PrepareSpecifiedLocationPath(extension, true)))
                FileOpenTryWrite(true, &locked);
             if(!f && (!settingsLocation || allowDefaultLocations))
             {
                globalPath = true;
                // never try to write a new portable configuration file?
-               //       -- Probably always want to write back to the same file, the first FileOpenTryWrite() should succeed
-               //if(!f && (settingsFilePath = PreparePortablePath()))
+               //       -- Probably always want to write back to the same file, the first FileOpenTryWrite(true) should succeed
+               //if(!f && (settingsFilePath = PreparePortablePath(extension, true)))
                //   FileOpenTryWrite(true);
 #if defined(__WIN32__)
-               if(!f && (settingsFilePath = PrepareAllUsersPath()))
+               if(!f && (settingsFilePath = PrepareAllUsersPath(extension, true)))
                   FileOpenTryWrite(true, &locked);
 #else
-               if(!f && (settingsFilePath = PrepareEtcPath()))
+               if(!f && (settingsFilePath = PrepareEtcPath(extension, true)))
                   FileOpenTryWrite(true, &locked);
 #endif
                if(!f && allUsers)
                {
                   globalPath = false;
-                  if(!f && (settingsFilePath = PrepareHomePath(
+                  if(!f && (settingsFilePath = PrepareHomePath(extension, true,
 #if defined(__WIN32__)
-                     true
-#else
                      false
+#else
+                     true
 #endif
                      )))
                      FileOpenTryWrite(true, &locked);
@@ -500,12 +506,12 @@ public:
                if(!f && !allUsers)
                {
                   globalPath = false;
-                  if(!f && (settingsFilePath = PrepareUserProfilePath()))
+                  if(!f && (settingsFilePath = PrepareUserProfilePath(extension, true)))
                      FileOpenTryWrite(true, &locked);
-                  if(!f && (settingsFilePath = PrepareHomeDrivePath()))
+                  if(!f && (settingsFilePath = PrepareHomeDrivePath(extension, true)))
                      FileOpenTryWrite(true, &locked);
                }
-               if(!f && (settingsFilePath = PrepareSystemPath()))
+               if(!f && (settingsFilePath = PrepareSystemPath(extension, true)))
                {
                   globalPath = true;
                   FileOpenTryWrite(true, &locked);
