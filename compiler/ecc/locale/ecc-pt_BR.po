@@ -1,0 +1,31 @@
+# Brazilian Portuguese translation for ecere
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-19 02:50+0000\n"
+"PO-Revision-Date: 2014-03-19 01:35-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: pt_BR\n"
+
+#: ecc.ec:445
+msgid ""
+"Syntax:\n"
+"   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-"
+"symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-"
+"D<definition>]* -c <input>\n"
+msgstr ""
+"Sintaxe:\n"
+"   ecc [-t <plataforma alvo>] [-cpp <pre-processador C>] [-o <saída>] [-"
+"symbols <diretório_saída>] [-I<diretório_com_cabeçalhos>]* [-isystem "
+"<diretório_com_cabeçalhos_de_sistema>]* [-D<definição>]* -c <entrada>\n"

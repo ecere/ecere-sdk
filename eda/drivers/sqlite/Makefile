@@ -76,7 +76,8 @@ RESOURCES = \
 	locale/EDASQLite-es.mo \
 	locale/EDASQLite-he.mo \
 	locale/EDASQLite-ru.mo \
-	locale/EDASQLite-zh_CN.mo
+	locale/EDASQLite-zh_CN.mo \
+	locale/EDASQLite-pt_BR.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -169,7 +170,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLite-es.mo locale/EDASQLite-he.mo locale/EDASQLite-ru.mo locale/EDASQLite-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLite-es.mo locale/EDASQLite-he.mo locale/EDASQLite-ru.mo locale/EDASQLite-zh_CN.mo locale/EDASQLite-pt_BR.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

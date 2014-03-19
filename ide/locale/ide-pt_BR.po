@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: Ricardo Nabinger Sanchez <rnsanchez@wait4.org>\n"
 "POT-Creation-Date: 2014-02-20 05:30+0000\n"
-"PO-Revision-Date: 2014-03-18 23:59-0300\n"
-"Last-Translator: Ricardo Nabinger Sanchez <rnsanchez@wait4.org>\n"
+"PO-Revision-Date: 2014-03-19 01:33-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -134,11 +134,13 @@ msgstr "Busca %s não encontrou nenhuma ocorrência nos %d arquivos procurados\n
 
 #: src/dialogs/FindInFilesDialog.ec:986
 msgid "%s search found a total of %d match%s in the %d file%s searched\n"
-msgstr "Busca %s encontrou um total de %d ocorrência%s nos %d arquivos procurados\n"
+msgstr ""
+"Busca %s encontrou um total de %d ocorrência%s nos %d arquivos procurados\n"
 
 #: src/project/ProjectView.ec:1154
 msgid "%s specific file(s) in project %s using the %s configuration...\n"
-msgstr "%s arquivo(s) específico(s) no projeto %s usando a configuração %s...\n"
+msgstr ""
+"%s arquivo(s) específico(s) no projeto %s usando a configuração %s...\n"
 
 #: src/project/ProjectView.ec:1157
 msgid "%s specific file(s) in project %s...\n"
@@ -154,7 +156,9 @@ msgstr "(Misto)"
 
 #: src/ProjectSettings.ec:1493
 msgid "(Right click or press Ctrl-Del to revert an option to inherited value)"
-msgstr "(Clique com o botão direito ou pressione Ctrl-Del para reverter uma opção para o valor herdado)"
+msgstr ""
+"(Clique com o botão direito ou pressione Ctrl-Del para reverter uma opção "
+"para o valor herdado)"
 
 #: src/designer/CodeObject.ec:32
 msgid "(unnamed)"
@@ -301,7 +305,9 @@ msgstr "Tem certeza de que quer apagar a "
 
 #: src/ProjectSettings.ec:196
 msgid "Are you sure you wish to discard changes made to the build options?"
-msgstr "Tem certeza de que quer descartar as alterações feitas nas opções de construção?"
+msgstr ""
+"Tem certeza de que quer descartar as alterações feitas nas opções de "
+"construção?"
 
 #: src/dialogs/GlobalSettingsDialog.ec:48
 msgid "Are you sure you wish to discard changes?"
@@ -393,12 +399,12 @@ msgstr "Compilador C++"
 msgid ""
 "C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
 msgstr ""
-"Arquivos C/C++/eC (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
+"Arquivos C/C++/eC (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *."
+"hxx)"
 
 #: src/designer/CodeEditor.ec:83 src/ide.ec:93 src/ide.ec:124
 msgid "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
-msgstr ""
-"Arquivos-fonte C/C++/eC (*.ec, *.c, *.cpp, *.cc, *.cxx)"
+msgstr "Arquivos-fonte C/C++/eC (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 
 #: src/ide.ec:2920
 msgid "CAPS"
@@ -614,20 +620,26 @@ msgstr "Erro Fatal do Depurador: Comando %s para o GDB não está disponível.\n
 
 #: src/debugger/Debugger.ec:2377
 msgid "Debugger Fatal Error: Command %s for Valgrind is not available.\n"
-msgstr "Erro Fatal do Depurador: Comando %s para o Valgrind não está disponível.\n"
+msgstr ""
+"Erro Fatal do Depurador: Comando %s para o Valgrind não está disponível.\n"
 
 #: src/debugger/Debugger.ec:2446
 msgid "Debugger Fatal Error: Couldn't get GDB process ID\n"
-msgstr "Erro Fatal do Depurador: Não foi possível obter ID do processo do GDB\n"
+msgstr ""
+"Erro Fatal do Depurador: Não foi possível obter ID do processo do GDB\n"
 
 #: src/debugger/Debugger.ec:2403
 msgid "Debugger Fatal Error: Couldn't get Valgrind process ID\n"
-msgstr "Erro Fatal do Depurador: Não foi possível obter o ID do processo do Valgrind\n"
+msgstr ""
+"Erro Fatal do Depurador: Não foi possível obter o ID do processo do "
+"Valgrind\n"
 
 #: src/debugger/Debugger.ec:2372
 msgid ""
 "Debugger Fatal Error: Couldn't open temporary log file for Valgrind output\n"
-msgstr "Erro Fatal do Depurador: Não foi possível abrir o arquivo temporário de log para a saída do Valgrind\n"
+msgstr ""
+"Erro Fatal do Depurador: Não foi possível abrir o arquivo temporário de log "
+"para a saída do Valgrind\n"
 
 #: src/debugger/Debugger.ec:2433
 msgid "Debugger Fatal Error: Couldn't start GDB\n"
@@ -699,12 +711,13 @@ msgid ""
 "Deleting intermediate objects for %s %s in project %s using the %s "
 "configuration...\n"
 msgstr ""
-"Apagando arquivos-objeto intermediários para %s %s no projeto %s usando a configuração %s "
-"...\n"
+"Apagando arquivos-objeto intermediários para %s %s no projeto %s usando a "
+"configuração %s ...\n"
 
 #: src/project/ProjectView.ec:1216
 msgid "Deleting intermediate objects for %s %s in project %s...\n"
-msgstr "Apagando os arquivos-objeto intermediários para %s %s no projeto %s...\n"
+msgstr ""
+"Apagando os arquivos-objeto intermediários para %s %s no projeto %s...\n"
 
 #: src/designer/Sheet.ec:784
 msgid "Deprecated"
@@ -813,7 +826,8 @@ msgstr ""
 
 #: src/project/ProjectView.ec:746
 msgid "Error generating makefile (Is the project directory writable?)\n"
-msgstr "Erro gerando makefile (O diretório do projeto tem permissão de escrita?)\n"
+msgstr ""
+"Erro gerando makefile (O diretório do projeto tem permissão de escrita?)\n"
 
 #: src/ide.ec:651
 msgid "Error opening file"

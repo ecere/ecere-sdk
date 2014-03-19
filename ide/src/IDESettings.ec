@@ -1142,14 +1142,14 @@ Array<LanguageOption> languages
 { [
    { "English",            ":countryCode/gb.png", "" },
    { "汉语",                ":countryCode/cn.png", "zh_CN" },
-   { "Español",            ":countryCode/es.png", "es_ES" },
-   { "Русский (43%)",      ":countryCode/ru.png", "ru_RU" },
+   { "Español",            ":countryCode/es.png", "es" },
+   { "Русский (43%)",      ":countryCode/ru.png", "ru" },
    { "Português (28%)",    ":countryCode/pt.png", "pt_BR" },
-   { "Nederlandse (13%)",  ":countryCode/nl.png", "nl_NL" },
-   { "Tiếng Việt (12%)",   ":countryCode/vn.png", "vi_VI" },
-   { "मराठी (10%)",          ":countryCode/in.png", "mr_MR" },
-   { "Hebrew (8%)",        ":countryCode/il.png", "he_HE" },
-   { "Magyar (8%)",        ":countryCode/hu.png", "hu_HU" }
+   { "Nederlandse (13%)",  ":countryCode/nl.png", "nl" },
+   { "Tiếng Việt (12%)",   ":countryCode/vn.png", "vi" },
+   { "मराठी (10%)",          ":countryCode/in.png", "mr" },
+   { "Hebrew (8%)",        ":countryCode/il.png", "he" },
+   { "Magyar (8%)",        ":countryCode/hu.png", "hu" }
 ] };
 
 String GetLanguageString()

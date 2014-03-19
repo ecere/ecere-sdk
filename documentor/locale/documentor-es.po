@@ -2,17 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eCere SDK\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-19 02:49+0000\n"
-"PO-Revision-Date: 2014-02-20 01:17-0500\n"
-"Last-Translator: Juan Sánchez <aldeacity@gmail.com>\n"
+"POT-Creation-Date: 2014-03-18 21:23+0000\n"
+"PO-Revision-Date: 2014-03-19 00:02-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Juan Sánchez\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
 "X-Generator: Poedit 1.6.4\n"
-"X-Poedit-SourceCharset: utf-8\n"
 "Language: es_ES\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #: src/Documentor.ec:680
 msgid "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
@@ -180,7 +180,7 @@ msgstr "Archivo"
 msgid "Functions"
 msgstr "Funciones"
 
-#: ../ide/src/IDESettings.ec:699
+#: ../ide/src/IDESettings.ec:736
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "Colección de compiladores GNU (GCC) / GNU Make"
 
@@ -188,15 +188,15 @@ msgstr "Colección de compiladores GNU (GCC) / GNU Make"
 msgid "Methods"
 msgstr "Métodos"
 
-#: ../ide/src/IDESettings.ec:702
+#: ../ide/src/IDESettings.ec:739
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Compilador de Microsoft Visual Studio 2005 (8.0)"
 
-#: ../ide/src/IDESettings.ec:703
+#: ../ide/src/IDESettings.ec:740
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Compilador de Microsoft Visual Studio 2008 (9.0)"
 
-#: ../ide/src/IDESettings.ec:705
+#: ../ide/src/IDESettings.ec:742
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Compilador de Microsoft Visual Studio 2010 (10.0)"
 
@@ -229,7 +229,7 @@ msgstr ""
 "Namespace Padre: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</"
 "a><br>\n"
 
-#: ../ide/src/IDESettings.ec:701
+#: ../ide/src/IDESettings.ec:738
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -265,7 +265,7 @@ msgstr "Estructura"
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: ../ide/src/IDESettings.ec:700
+#: ../ide/src/IDESettings.ec:737
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Compilador Tiny C/ GNU Make"
 

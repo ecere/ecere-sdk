@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-02-20 03:42+0000\n"
-"PO-Revision-Date: 2014-02-20 01:58-0500\n"
-"Last-Translator: Meggyesházi János <janos.meggyeshazi@gmail.com>\n"
+"POT-Creation-Date: 2014-03-18 21:22+0000\n"
+"PO-Revision-Date: 2014-03-19 00:03-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-02-20 06:52+0000\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
 "X-Generator: Poedit 1.6.4\n"
 "Language: hu_HU\n"
 
@@ -34,10 +34,10 @@ msgstr "Minden fájl"
 msgid "Alt+"
 msgstr "Alt+"
 
-#: src/gui/controls/Button.ec:983 src/gui/controls/Button.ec:1014
-#: src/gui/controls/Button.ec:1018 src/gui/controls/Button.ec:1059
-#: src/gui/controls/Button.ec:1061 src/gui/controls/Button.ec:1062
-#: src/gui/controls/Button.ec:1067 src/gui/controls/DropBox.ec:37
+#: src/gui/controls/Button.ec:988 src/gui/controls/Button.ec:1019
+#: src/gui/controls/Button.ec:1023 src/gui/controls/Button.ec:1064
+#: src/gui/controls/Button.ec:1066 src/gui/controls/Button.ec:1067
+#: src/gui/controls/Button.ec:1072 src/gui/controls/DropBox.ec:37
 #: src/gui/controls/DropBox.ec:47 src/gui/controls/DropBox.ec:57
 #: src/gui/controls/DropBox.ec:68 src/gui/controls/DropBox.ec:82
 #: src/gui/controls/DropBox.ec:169 src/gui/controls/EditBox.ec:759
@@ -73,11 +73,11 @@ msgstr "Aug"
 msgid "August"
 msgstr "Augusztus"
 
-#: src/gui/controls/Button.ec:863 src/gui/controls/Button.ec:916
-#: src/gui/controls/Button.ec:939 src/gui/controls/Button.ec:963
-#: src/gui/controls/Button.ec:979 src/gui/controls/Button.ec:1058
-#: src/gui/controls/Button.ec:1060 src/gui/controls/Button.ec:1063
-#: src/gui/controls/Button.ec:1064 src/gui/controls/DropBox.ec:128
+#: src/gui/controls/Button.ec:868 src/gui/controls/Button.ec:921
+#: src/gui/controls/Button.ec:944 src/gui/controls/Button.ec:968
+#: src/gui/controls/Button.ec:984 src/gui/controls/Button.ec:1063
+#: src/gui/controls/Button.ec:1065 src/gui/controls/Button.ec:1068
+#: src/gui/controls/Button.ec:1069 src/gui/controls/DropBox.ec:128
 #: src/gui/controls/DropBox.ec:168 src/gui/controls/DropBox.ec:173
 #: src/gui/controls/EditBox.ec:734 src/gui/controls/EditBox.ec:735
 #: src/gui/controls/EditBox.ec:739 src/gui/controls/EditBox.ec:748
@@ -127,7 +127,7 @@ msgstr "A vezérlő kódot tartalmaz! Törli így is ?"
 msgid "Control contains other controls. Delete control and children?"
 msgstr "A vezérlő más vezérlőt tartalmaz! Törli így is ?"
 
-#: src/gui/controls/EditBox.ec:968 src/gui/controls/EditBox.ec:3149
+#: src/gui/controls/EditBox.ec:968 src/gui/controls/EditBox.ec:3176
 msgid "Copy\tCtrl+C"
 msgstr "Másol \t Ctrl+C"
 
@@ -155,7 +155,7 @@ msgstr "Ctrl+"
 msgid "Custom"
 msgstr "Egyedi beállítások"
 
-#: src/gui/controls/EditBox.ec:957 src/gui/controls/EditBox.ec:3148
+#: src/gui/controls/EditBox.ec:957 src/gui/controls/EditBox.ec:3175
 msgid "Cut\tCtrl+X"
 msgstr "kivág \t Ctr+X"
 
@@ -177,7 +177,7 @@ msgstr "December"
 msgid "Defined"
 msgstr "Definiált"
 
-#: src/gui/controls/EditBox.ec:989 src/gui/controls/EditBox.ec:3151
+#: src/gui/controls/EditBox.ec:989 src/gui/controls/EditBox.ec:3178
 msgid "Delete\tDel"
 msgstr "Töröl \t Del"
 
@@ -494,7 +494,7 @@ msgstr ""
 msgid "Open"
 msgstr ""
 
-#: src/gui/controls/EditBox.ec:978 src/gui/controls/EditBox.ec:3150
+#: src/gui/controls/EditBox.ec:978 src/gui/controls/EditBox.ec:3177
 msgid "Paste\tCtrl+V"
 msgstr ""
 
@@ -594,7 +594,7 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
-#: src/gui/controls/EditBox.ec:1001 src/gui/controls/EditBox.ec:3153
+#: src/gui/controls/EditBox.ec:1001 src/gui/controls/EditBox.ec:3180
 msgid "Select All\tCtrl+A"
 msgstr ""
 
@@ -764,7 +764,7 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: src/sys/System.ec:355
+#: src/sys/System.ec:365
 msgid ""
 "\n"
 "\n"

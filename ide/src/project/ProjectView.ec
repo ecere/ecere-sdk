@@ -49,7 +49,7 @@ static Array<FileFilter> fileFilters
 
 static Array<FileFilter> resourceFilters
 { [
-   { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
+   { $"Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)", "jpg, jpeg, bmp, pcx, png, gif" },
    { $"3D Studio Model Files (*.3ds)", "3ds" },
    { $"Translations (*.mo)", "mo" },
    { $"All files", null }

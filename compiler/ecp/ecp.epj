@@ -103,7 +103,8 @@
             "ecp-es.mo",
             "ecp-he.mo",
             "ecp-ru.mo",
-            "ecp-zh_CN.mo"
+            "ecp-zh_CN.mo",
+            "ecp-pt_BR.mo"
          ]
       }
    ]

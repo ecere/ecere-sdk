@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-02-20 03:42+0000\n"
-"PO-Revision-Date: 2014-02-20 00:33-0500\n"
-"Last-Translator: Juan Sánchez <aldeacity@gmail.com>\n"
+"POT-Creation-Date: 2014-03-18 21:23+0000\n"
+"PO-Revision-Date: 2014-03-19 00:02-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
 "X-Generator: Poedit 1.6.4\n"
 "Language: es_ES\n"
 
@@ -26,11 +26,11 @@ msgstr "se esperaba que %s derivase de la clase del método\n"
 msgid "%s undefined; assuming extern returning int\n"
 msgstr "%s no definido; asumiendo extern devolviendo int\n"
 
-#: src/ecdefs.ec:1313
+#: src/ecdefs.ec:1314
 msgid ":%d:%d: error: "
 msgstr ":%d:%d: error: "
 
-#: src/ecdefs.ec:1354
+#: src/ecdefs.ec:1361
 msgid ":%d:%d: warning: "
 msgstr ":%d:%d: aviso: "
 
@@ -62,7 +62,7 @@ msgstr "Se esperabe un especificador de clase\n"
 msgid "Expression is not a container\n"
 msgstr "La expresión no es un contenedor\n"
 
-#: src/lexer.ec:520
+#: src/lexer.ec:521
 msgid "Includes nested too deeply"
 msgstr "Demasiadas cabeceras anidadas"
 
@@ -289,7 +289,7 @@ msgstr "redifinición del constructor de la clase %s\n"
 msgid "redefinition of destructor for class %s\n"
 msgstr "redifinición del destructor de la clase %s\n"
 
-#: src/ecdefs.ec:1374 src/grammar.ec:3128 src/grammar.ec:3129
+#: src/ecdefs.ec:1381 src/grammar.ec:3128 src/grammar.ec:3129
 #: src/grammar.ec:3130 src/grammar.ec:3131 src/grammar.ec:3132
 #: src/grammar.ec:3133 src/grammar.ec:3134
 msgid "syntax error\n"

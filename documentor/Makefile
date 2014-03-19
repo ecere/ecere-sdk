@@ -73,6 +73,7 @@ SOURCES = $(ECSOURCES)
 RESOURCES = \
 	locale/documentor-es.mo \
 	locale/documentor-zh_CN.mo \
+	locale/documentor-pt_BR.mo \
 	../ide/res/actions/docOpen.png \
 	res/documentorIcon.png
 
@@ -121,7 +122,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) res/documentorIcon.png ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/documentor-es.mo locale/documentor-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/documentor-es.mo locale/documentor-zh_CN.mo locale/documentor-pt_BR.mo "locale"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../ide/res/actions/docOpen.png "actions"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)

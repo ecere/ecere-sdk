@@ -14896,7 +14896,8 @@
          "Files" : [
             "Installer-es.mo",
             "Installer-ru.mo",
-            "Installer-zh_CN.mo"
+            "Installer-zh_CN.mo",
+            "Installer-pt_BR.mo"
          ]
       },
       {

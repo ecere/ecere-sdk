@@ -77,7 +77,8 @@ RESOURCES = \
 	locale/EDASQLiteCipher-es.mo \
 	locale/EDASQLiteCipher-he.mo \
 	locale/EDASQLiteCipher-ru.mo \
-	locale/EDASQLiteCipher-zh_CN.mo
+	locale/EDASQLiteCipher-zh_CN.mo \
+	locale/EDASQLiteCipher-pt_BR.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -178,7 +179,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLiteCipher-es.mo locale/EDASQLiteCipher-he.mo locale/EDASQLiteCipher-ru.mo locale/EDASQLiteCipher-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLiteCipher-es.mo locale/EDASQLiteCipher-he.mo locale/EDASQLiteCipher-ru.mo locale/EDASQLiteCipher-zh_CN.mo locale/EDASQLiteCipher-pt_BR.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

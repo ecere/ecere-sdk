@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-02-19 02:50+0000\n"
-"PO-Revision-Date: 2014-02-20 01:16-0500\n"
-"Last-Translator: Ivan Rubinson <soryy708@gmail.com>\n"
+"POT-Creation-Date: 2014-03-18 21:21+0000\n"
+"PO-Revision-Date: 2014-03-19 00:03-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
 "X-Generator: Poedit 1.6.4\n"
 "Language: ru_RU\n"
 
@@ -115,19 +115,19 @@ msgid "Error: Unable to open project file (%s) due to unknown error.\n"
 msgstr ""
 "Ошибка: Не удалось открыть проектовый файл (%s) из-за неивсестной ошибки.\n"
 
-#: ../ide/src/IDESettings.ec:699
+#: ../ide/src/IDESettings.ec:736
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ../ide/src/IDESettings.ec:702
+#: ../ide/src/IDESettings.ec:739
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
 
-#: ../ide/src/IDESettings.ec:703
+#: ../ide/src/IDESettings.ec:740
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 
-#: ../ide/src/IDESettings.ec:705
+#: ../ide/src/IDESettings.ec:742
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
@@ -139,7 +139,7 @@ msgstr ""
 msgid "Notice: Project configuration (%s) will be used.\n"
 msgstr "Уведомление: Настройки проэкта (%s) будут использованы.\n"
 
-#: ../ide/src/IDESettings.ec:701
+#: ../ide/src/IDESettings.ec:738
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
@@ -147,7 +147,7 @@ msgstr "Portable C Compiler / GNU Make"
 msgid "Syntax:\n"
 msgstr "Формат:\n"
 
-#: ../ide/src/IDESettings.ec:700
+#: ../ide/src/IDESettings.ec:737
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 

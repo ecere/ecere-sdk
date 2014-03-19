@@ -1091,10 +1091,6 @@ msgstr "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
 msgid "Help"
 msgstr "Help"
 
-#: ./src/ide.ec:3794
-msgid "Help Translate"
-msgstr "Help Translate"
-
 #: ./src/panels/BreakpointsView.ec:120
 msgid "Hits"
 msgstr "Hits"
@@ -1117,14 +1113,11 @@ msgstr "Ignore Count"
 msgid "Image"
 msgstr "Image"
 
+#: ./src/project/ProjectView.ec:52
 #: ./src/documents/PictureEdit.ec:21
 #: ./src/ide.ec:96
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
-
-#: ./src/project/ProjectView.ec:52
-msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
-msgstr "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
 
 #: ./src/project/ProjectView.ec:482
 msgid "Import Folder"
@@ -1202,10 +1195,6 @@ msgstr "JPG Image"
 #: ./src/dialogs/GlobalSettingsDialog.ec:238
 msgid "Keep caret visible (move along) when scrolling"
 msgstr "Keep caret visible (move along) when scrolling"
-
-#: ./src/ide.ec:1444
-msgid "Language"
-msgstr "Language"
 
 #: ./src/about.ec:46
 msgid "Lead Architect and Developer"

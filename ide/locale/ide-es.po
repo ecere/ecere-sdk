@@ -2,16 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eCere SDK\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-03-18 11:33-0500\n"
+"POT-Creation-Date: 2014-03-18 21:21+0000\n"
+"PO-Revision-Date: 2014-03-19 00:03-0500\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Juan Sánchez\n"
-"Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
 "X-Generator: Poedit 1.6.4\n"
+"Language: es_ES\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
 #: src/project/Project.ec:1557
@@ -84,7 +84,7 @@ msgstr "%s %s se excluye de la configuración actual de construcción.\n"
 
 #: src/project/ProjectView.ec:743
 msgid "%s - %s%smakefile for %s config...\n"
-msgstr "%s - %s%smakefile para %s config...\n"
+msgstr "%s - %s%smakefile para config %s...\n"
 
 #: src/project/ProjectView.ec:661
 msgid "%s Compiler\n"
@@ -166,7 +166,7 @@ msgstr "(sin nombre)"
 
 #: src/debugger/Debugger.ec:4168
 msgid "...breaked on Valgrind error (F5 to resume)\n"
-msgstr ""
+msgstr "...parado por error en Valgrind (F5 para continuar)\n"
 
 #: src/ide.ec:106
 msgid "3D Studio Model"
@@ -251,7 +251,7 @@ msgstr "Añadir proyecto a espacio de trabajo..."
 
 #: src/ProjectSettings.ec:2077
 msgid "Additional Include Directories"
-msgstr "Additional Include Directories"
+msgstr "Directorios adicionales de encabezados"
 
 #: src/ProjectSettings.ec:2168
 msgid "Additional Libraries"
@@ -392,6 +392,7 @@ msgid ""
 "By using it you agree to the terms and conditions of their individual "
 "licenses."
 msgstr ""
+"Usándolo acepta los términos y condiciones de sus licencias individuales."
 
 #: src/dialogs/GlobalSettingsDialog.ec:723
 msgid "C Compiler"
@@ -746,7 +747,7 @@ msgstr "Separar"
 
 #: src/about.ec:48
 msgid "Developer (IDE, build system, EDA)"
-msgstr ""
+msgstr "Desarrollador (IDE, sistema de construcción, EDA)"
 
 #: src/dialogs/GlobalSettingsDialog.ec:569
 msgid "Directories"
@@ -878,7 +879,7 @@ msgstr "Ejecutable"
 
 #: src/dialogs/GlobalSettingsDialog.ec:564
 msgid "Executable Files"
-msgstr "Archivos ejecutables"
+msgstr "Ejecutables"
 
 #: src/dialogs/GlobalSettingsDialog.ec:753
 msgid "Executable Launcher"
@@ -996,7 +997,7 @@ msgctxt ""
 "Found %d match%s in \"%s\"%s\n"
 "\n"
 msgid "Found"
-msgstr ""
+msgstr "Encontrada(s)"
 
 #: src/dialogs/FindInFilesDialog.ec:1056
 msgid ""
@@ -1117,7 +1118,7 @@ msgstr "Importar carpeta..."
 
 #: src/dialogs/GlobalSettingsDialog.ec:561
 msgid "Include Files"
-msgstr "Incluir archivos"
+msgstr "Encabezados"
 
 #: src/dialogs/FindInFilesDialog.ec:331
 msgid "Include Subdirectories"
@@ -1194,7 +1195,7 @@ msgstr "Biblioteca a excluir"
 
 #: src/dialogs/GlobalSettingsDialog.ec:562
 msgid "Library Files"
-msgstr "Archivos de biblioteca"
+msgstr "Bibliotecas"
 
 #: src/dialogs/ProjectTabSettings.ec:49
 msgid "License"
@@ -1202,7 +1203,7 @@ msgstr "Licencia"
 
 #: src/licensing.ec:38
 msgid "License Agreements"
-msgstr ""
+msgstr "Acuerso de Licencia"
 
 #: src/ProjectSettings.ec:2141
 msgid "Linker"
@@ -1210,7 +1211,7 @@ msgstr "Enlazador"
 
 #: src/project/Project.ec:1740
 msgid "Linker "
-msgstr "Enlazador"
+msgstr "Enlazador "
 
 #: src/project/Project.ec:1731 src/project/Project.ec:1745
 msgid "Linker Error: "
@@ -1505,11 +1506,11 @@ msgstr "Portable C Compiler / GNU Make"
 
 #: src/ProjectSettings.ec:2238
 msgid "Post-build Commands"
-msgstr "Post-build Commands"
+msgstr "Comandos de Post-construcción"
 
 #: src/ProjectSettings.ec:2231
 msgid "Pre-build Commands"
-msgstr "Pre-build Commands"
+msgstr "Comandos de Pre-contrucción"
 
 #: src/ProjectSettings.ec:2006
 msgid "Preprocessor Definitions"
@@ -1595,7 +1596,7 @@ msgstr "Vista de proyecto"
 
 #: src/project/Project.ec:903
 msgid "Project has been modified"
-msgstr "El proyecto ha sigo modificado. "
+msgstr "El proyecto ha sigo modificado."
 
 #: src/project/ProjectView.ec:738
 msgid "Project has been modified. "
@@ -1948,7 +1949,7 @@ msgstr "Parar Contrucción"
 
 #: src/ProjectSettings.ec:2018
 msgid "Strict Name Spaces"
-msgstr "Espacios de nombre estrictos"
+msgstr "Namespaces estrictos"
 
 #: src/debugger/Debugger.ec:2843
 msgid "Symbol \"%s\" not found"
@@ -2071,6 +2072,7 @@ msgstr ""
 #: src/licensing.ec:53
 msgid "This program is based on these free open source software components."
 msgstr ""
+"Este programa está basado en estos componentes de software de código abierto."
 
 #: src/ide.ec:2372
 msgid "This project is already present in workspace."

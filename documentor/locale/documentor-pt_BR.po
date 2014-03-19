@@ -1,0 +1,304 @@
+# Brazilian Portuguese translation for ecere
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-03-18 21:23+0000\n"
+"PO-Revision-Date: 2014-03-19 01:34-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: pt_BR\n"
+
+#: src/Documentor.ec:680
+msgid "<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n"
+msgstr "<FONT FACE=\"Arial\" SIZE=\"6\">Módulo %s</FONT><br>\n"
+
+#: src/Documentor.ec:1245 src/Documentor.ec:1505 src/Documentor.ec:1737
+msgid "<FONT face=\"Courier New\">\n"
+msgstr "<FONT face=\"Courier New\">\n"
+
+#: src/Documentor.ec:1296
+msgid "<H3>Derived Classes</H3><br>\n"
+msgstr "<H3>Classes Derivadas</H3><br>\n"
+
+#: src/Documentor.ec:701
+msgid "<H3>Description</H3><br><br>\n"
+msgstr "<H3>Descrição</H3><br><br>\n"
+
+#: src/Documentor.ec:1244 src/Documentor.ec:1504 src/Documentor.ec:1736
+msgid "<H3>Example</H3><br>\n"
+msgstr "<H3>Exemplo</H3><br>\n"
+
+#: src/Documentor.ec:1409 src/Documentor.ec:1641
+msgid "<H3>Parameters</H3><br><br>\n"
+msgstr "<H3>Parâmetros</H3><br><br>\n"
+
+#: src/Documentor.ec:1268 src/Documentor.ec:1526 src/Documentor.ec:1758
+msgid "<H3>Remarks</H3><br>\n"
+msgstr "<H3>Ressalvas</H3><br>\n"
+
+#: src/Documentor.ec:1312 src/Documentor.ec:1545 src/Documentor.ec:1777
+msgid "<H3>See Also</H3><br>\n"
+msgstr "<H3>Veja Também</H3><br>\n"
+
+#: src/Documentor.ec:724
+msgid "<H3>Sub Namespaces</H3><br><br>\n"
+msgstr ""
+
+#: src/Documentor.ec:1225 src/Documentor.ec:1485 src/Documentor.ec:1717
+msgid "<H3>Usage</H3><br>\n"
+msgstr "<H3>Utilização</H3><br>\n"
+
+#: src/Documentor.ec:670 src/Documentor.ec:902 src/Documentor.ec:1364
+#: src/Documentor.ec:1597
+msgid ""
+"<HTML><HEAD><TITLE>API Reference</TITLE></HEAD>\n"
+"<BODY><FONT SIZE=\"3\">\n"
+msgstr ""
+"<HTML><HEAD><TITLE>Referência da API</TITLE></HEAD>\n"
+"<BODY><FONT SIZE=\"3\">\n"
+
+#: src/Documentor.ec:1455 src/Documentor.ec:1687
+msgid "<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n"
+msgstr "<TD valign=top height=22 nowrap=1><B>Valor de Retorno</B></TD>\n"
+
+#: src/Documentor.ec:762
+msgid "<a name=Classes></a><H3>Classes</H3><br><br>\n"
+msgstr "<a name=Classes></a><H3>Classes</H3><br><br>\n"
+
+#: src/Documentor.ec:1047
+msgid "<a name=Conversions></a><H3>Conversions</H3><br><br>\n"
+msgstr "<a name=Conversions></a><H3>Conversões</H3><br><br>\n"
+
+#: src/Documentor.ec:837
+msgid "<a name=Definitions></a><H3>Definitions</H3><br><br>\n"
+msgstr "<a name=Definitions></a><H3>Definições</H3><br><br>\n"
+
+#: src/Documentor.ec:978
+msgid "<a name=EnumerationValues></a><H3>Enumeration Values</H3><br><br>\n"
+msgstr "<a name=EnumerationValues></a><H3>Valores Enumerados</H3><br><br>\n"
+
+#: src/Documentor.ec:802
+msgid "<a name=Functions></a><H3>Functions</H3><br><br>\n"
+msgstr "<a name=Functions></a><H3>Funções</H3><br><br>\n"
+
+#: src/Documentor.ec:1098
+msgid "<a name=Members></a><H3>Properties and Members</H3><br><br>\n"
+msgstr "<a name=Members></a><H3>Atributos e Membros</H3><br><br>\n"
+
+#: src/Documentor.ec:1190
+msgid "<a name=Methods></a><H3>Non-Virtual Methods</H3><br><br>\n"
+msgstr "<a name=Methods></a><H3>Métodos Não-Virtuais</H3><br><br>\n"
+
+#: src/Documentor.ec:1152
+msgid "<a name=VirtualMethods></a><H3>Virtual Methods</H3><br><br>\n"
+msgstr "<a name=VirtualMethods></a><H3>Métodos Virtuais</H3><br><br>\n"
+
+#: src/Documentor.ec:956
+msgid "<br><H3>Description</H3><br><br>\n"
+msgstr "<br><H3>Descrição</H3><br><br>\n"
+
+#: src/Documentor.ec:1391 src/Documentor.ec:1624
+msgid "<br><br><H3>Description</H3><br><br>\n"
+msgstr "<br><br><H3>Descrição</H3><br><br>\n"
+
+#: src/Documentor.ec:2186
+msgid "API Documentation Browser"
+msgstr "Navegador da documentação da API"
+
+#: src/Documentor.ec:940
+msgid "Base Class: "
+msgstr "Classe Base: "
+
+#: src/Documentor.ec:932
+msgid "Basic Data Type"
+msgstr "Tipo de Dados Básico"
+
+#: src/Documentor.ec:914
+msgid "Bit Collection"
+msgstr "Coleção de Bits"
+
+#: src/Documentor.ec:2480 src/SettingsDialog.ec:52
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: src/Documentor.ec:923
+msgid "Class"
+msgstr "Classe"
+
+#: src/Documentor.ec:926
+msgid "Class (No header)"
+msgstr "Classe (sem cabeçalho)"
+
+#: src/Documentor.ec:1862
+msgid "Classes"
+msgstr "Classes"
+
+#: src/Documentor.ec:2075
+msgid "Conversions"
+msgstr "Conversões"
+
+#: src/Documentor.ec:2062
+msgid "Data Members"
+msgstr ""
+
+#: src/Documentor.ec:1908
+msgid "Definitions"
+msgstr "Definições"
+
+#: src/SettingsDialog.ec:16
+msgid "Documentation Path:"
+msgstr "Caminho para a Documentação:"
+
+#: src/Documentor.ec:917
+msgid "Enumeration"
+msgstr "Enumeração"
+
+#: src/Documentor.ec:2089
+msgid "Enumeration Values"
+msgstr "Valores Enumerados"
+
+#: src/Documentor.ec:2024
+msgid "Events"
+msgstr "Eventos"
+
+#: src/Documentor.ec:2243
+msgid "Exit"
+msgstr "Sair"
+
+#: src/Documentor.ec:2202
+msgid "File"
+msgstr "Arquivo"
+
+#: src/Documentor.ec:1885
+msgid "Functions"
+msgstr "Funções"
+
+#: ../ide/src/IDESettings.ec:736
+msgid "GNU Compiler Collection (GCC) / GNU Make"
+msgstr "GNU Compiler Collection (GCC) / GNU Make"
+
+#: src/Documentor.ec:2037
+msgid "Methods"
+msgstr "Métodos"
+
+#: ../ide/src/IDESettings.ec:739
+msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
+msgstr "Compilador Microsoft Visual Studio 2005 (8.0)"
+
+#: ../ide/src/IDESettings.ec:740
+msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
+msgstr "Compilador Microsoft Visual Studio 2008 (9.0)"
+
+#: ../ide/src/IDESettings.ec:742
+msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
+msgstr "Compilador Microsoft Visual Studio 2010 (10.0)"
+
+#: src/Documentor.ec:675 src/Documentor.ec:905 src/Documentor.ec:1367
+#: src/Documentor.ec:1600
+msgid ""
+"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr ""
+"Módulo: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
+
+#: src/Documentor.ec:907 src/Documentor.ec:1369 src/Documentor.ec:1603
+msgid ""
+"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n"
+msgstr ""
+
+#: src/Documentor.ec:943
+msgid "None"
+msgstr ""
+
+#: src/Documentor.ec:2215
+msgid "Open..."
+msgstr ""
+
+#: src/Documentor.ec:694
+msgid ""
+"Parent namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</"
+"a><br>\n"
+msgstr ""
+
+#: ../ide/src/IDESettings.ec:738
+msgid "Portable C Compiler / GNU Make"
+msgstr ""
+
+#: src/Documentor.ec:2056
+msgid "Properties"
+msgstr ""
+
+#: src/SettingsDialog.ec:39
+msgid "Save"
+msgstr ""
+
+#: src/Documentor.ec:2476
+msgid "Save Changes"
+msgstr ""
+
+#: src/SettingsDialog.ec:34
+msgid "Select a path"
+msgstr ""
+
+#: src/SettingsDialog.ec:6
+msgid "Settings"
+msgstr ""
+
+#: src/Documentor.ec:2228
+msgid "Settings..."
+msgstr ""
+
+#: src/Documentor.ec:920
+msgid "Structure"
+msgstr ""
+
+#: src/SettingsDialog.ec:20
+msgid "Tahoma"
+msgstr ""
+
+#: ../ide/src/IDESettings.ec:737
+msgid "Tiny C Compiler / GNU Make"
+msgstr ""
+
+#: src/Documentor.ec:935
+msgid "Type: %s<br>\n"
+msgstr ""
+
+#: src/Documentor.ec:929
+msgid "Unit"
+msgstr ""
+
+#: src/Documentor.ec:2030
+msgid "Virtual Methods"
+msgstr ""
+
+#: src/Documentor.ec:632 src/Documentor.ec:2599 src/Documentor.ec:2770
+msgid "[Add Text]"
+msgstr ""
+
+#: src/Documentor.ec:2205
+msgid "eC Shared Library files (*.dll, *.so, *.dylib)"
+msgstr ""
+
+#: src/Documentor.ec:2206
+msgid "eC Symbol files (*.sym)"
+msgstr ""
+
+#: src/Documentor.ec:1377 src/Documentor.ec:1610
+msgid ""
+"this pointer class: <a href=\"api://%p\" style=\"text-decoration: none;\">"
+"%s</a><br>\n"
+msgstr ""
+
+#: src/Documentor.ec:1373
+msgid "this pointer class: None<br>\n"
+msgstr ""

@@ -7,16 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2014-03-18 11:35-0500\n"
+"POT-Creation-Date: 2014-03-19 03:21+0000\n"
+"PO-Revision-Date: 2014-03-19 00:04-0500\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
-"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:56+0000\n"
 "X-Generator: Poedit 1.6.4\n"
+"Language: zh_CN\n"
 "X-Poedit-Basepath: ..\\..\\..\n"
 
 #: src/project/Project.ec:1557
@@ -162,7 +162,7 @@ msgstr "(未命名)"
 
 #: src/debugger/Debugger.ec:4168
 msgid "...breaked on Valgrind error (F5 to resume)\n"
-msgstr ""
+msgstr "...Valgrind错误致中断(按F5恢复)\n"
 
 #: src/ide.ec:106
 msgid "3D Studio Model"
@@ -385,7 +385,7 @@ msgstr "正在生成项目%s(引用配置 %s)...\n"
 msgid ""
 "By using it you agree to the terms and conditions of their individual "
 "licenses."
-msgstr ""
+msgstr "使用它即表示同意每个licenses的条款和条件."
 
 #: src/dialogs/GlobalSettingsDialog.ec:723
 msgid "C Compiler"
@@ -731,7 +731,7 @@ msgstr "分离(D)"
 
 #: src/about.ec:48
 msgid "Developer (IDE, build system, EDA)"
-msgstr ""
+msgstr "开发者(IDE, 编译系统, EDA)"
 
 #: src/dialogs/GlobalSettingsDialog.ec:569
 msgid "Directories"
@@ -767,7 +767,7 @@ msgstr "Ecere存档"
 
 #: src/ide.ec:3866
 msgid "Ecere IDE"
-msgstr "Ecere IDE"
+msgstr "Ecere IDE 集成开发环境"
 
 #: src/project/ProjectView.ec:66
 msgid "Ecere IDE Project"
@@ -1182,7 +1182,7 @@ msgstr "许可(A)"
 
 #: src/licensing.ec:38
 msgid "License Agreements"
-msgstr ""
+msgstr "许可协议"
 
 #: src/ProjectSettings.ec:2141
 msgid "Linker"
@@ -2038,7 +2038,7 @@ msgstr ""
 
 #: src/licensing.ec:53
 msgid "This program is based on these free open source software components."
-msgstr ""
+msgstr "本程序基于这些自由开源软件部件."
 
 #: src/ide.ec:2372
 msgid "This project is already present in workspace."

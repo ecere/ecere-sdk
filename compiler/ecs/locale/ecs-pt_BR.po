@@ -1,0 +1,27 @@
+# Brazilian Portuguese translation for ecere
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the ecere package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecere\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-19 02:48+0000\n"
+"PO-Revision-Date: 2014-03-19 01:33-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
+"Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
+"X-Generator: Poedit 1.6.4\n"
+"Language: pt_BR\n"
+
+#: ecs.ec:1725
+msgid ""
+"Syntax:\n"
+"   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+msgstr ""
+"Sintaxe:\n"
+"   ecs [-t <plataforma alvo>] <entrada>[, <entrada>]* -o <saída>\n"

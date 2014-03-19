@@ -118,7 +118,8 @@
             "EDASQLiteCipher-es.mo",
             "EDASQLiteCipher-he.mo",
             "EDASQLiteCipher-ru.mo",
-            "EDASQLiteCipher-zh_CN.mo"
+            "EDASQLiteCipher-zh_CN.mo",
+            "EDASQLiteCipher-pt_BR.mo"
          ]
       }
    ]

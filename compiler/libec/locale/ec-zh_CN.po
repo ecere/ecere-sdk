@@ -7,17 +7,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-20 03:42+0000\n"
-"PO-Revision-Date: 2014-02-20 00:33-0500\n"
-"Last-Translator: 彭海杰 <Peng.Haijie@gmail.com>\n"
+"POT-Creation-Date: 2014-03-18 21:23+0000\n"
+"PO-Revision-Date: 2014-03-19 00:02-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-02-20 04:08+0000\n"
+"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
 "X-Generator: Poedit 1.6.4\n"
-"X-Poedit-Basepath: ..\\..\\..\\\n"
 "Language: zh_CN\n"
+"X-Poedit-Basepath: ..\\..\\..\\\n"
 
 #: src/pass15.ec:3207 src/pass15.ec:3233
 msgid "%s expected to be derived from method class\n"
@@ -27,11 +27,11 @@ msgstr "%s 被期望由方法类导出\n"
 msgid "%s undefined; assuming extern returning int\n"
 msgstr "%s不确定，假设外部返回整数\n"
 
-#: src/ecdefs.ec:1313
+#: src/ecdefs.ec:1314
 msgid ":%d:%d: error: "
 msgstr ":%d:%d: 错误: "
 
-#: src/ecdefs.ec:1354
+#: src/ecdefs.ec:1361
 msgid ":%d:%d: warning: "
 msgstr ":%d:%d: 警告: "
 
@@ -63,7 +63,7 @@ msgstr "需要类限定符\n"
 msgid "Expression is not a container\n"
 msgstr "表达式不是一个容器\n"
 
-#: src/lexer.ec:520
+#: src/lexer.ec:521
 msgid "Includes nested too deeply"
 msgstr "包括的嵌套太深"
 
@@ -283,7 +283,7 @@ msgstr "重复定义构造类%s\n"
 msgid "redefinition of destructor for class %s\n"
 msgstr "重复定义析构类%s\n"
 
-#: src/ecdefs.ec:1374 src/grammar.ec:3128 src/grammar.ec:3129
+#: src/ecdefs.ec:1381 src/grammar.ec:3128 src/grammar.ec:3129
 #: src/grammar.ec:3130 src/grammar.ec:3131 src/grammar.ec:3132
 #: src/grammar.ec:3133 src/grammar.ec:3134
 msgid "syntax error\n"

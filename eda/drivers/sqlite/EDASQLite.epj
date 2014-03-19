@@ -142,7 +142,8 @@
             "EDASQLite-es.mo",
             "EDASQLite-he.mo",
             "EDASQLite-ru.mo",
-            "EDASQLite-zh_CN.mo"
+            "EDASQLite-zh_CN.mo",
+            "EDASQLite-pt_BR.mo"
          ]
       }
    ]

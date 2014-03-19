@@ -1441,7 +1441,7 @@ class IDEWorkSpace : Window
 
       MenuDivider { viewMenu };
 
-      Menu languageMenu { viewMenu, $"Language", l };
+      Menu languageMenu { viewMenu, "Language", l };
 
       //Menu skinsMenu { viewMenu, "GUI Skins", k };
    Menu windowMenu { menu, $"Window", w };
@@ -3791,7 +3791,7 @@ class IDEApp : GuiApplication
          MenuDivider { ide.languageMenu };
          MenuItem
          {
-            ide.languageMenu, $"Help Translate";
+            ide.languageMenu, "Help Translate";
 
             bool Window::NotifySelect(MenuItem selection, Modifiers mods)
             {

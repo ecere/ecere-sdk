@@ -67,7 +67,8 @@ RESOURCES = \
 	locale/ecs-es.mo \
 	locale/ecs-he.mo \
 	locale/ecs-ru.mo \
-	locale/ecs-zh_CN.mo
+	locale/ecs-zh_CN.mo \
+	locale/ecs-pt_BR.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -116,7 +117,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecs-es.mo locale/ecs-he.mo locale/ecs-ru.mo locale/ecs-zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecs-es.mo locale/ecs-he.mo locale/ecs-ru.mo locale/ecs-zh_CN.mo locale/ecs-pt_BR.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
