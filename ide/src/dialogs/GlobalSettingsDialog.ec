@@ -274,7 +274,7 @@ class CompilersTab : GlobalSettingsSubTab
    Label compilerConfigsDirLabel { this, position = { 8, 12 }, labeledWindow = compilerConfigsDir, tabCycle = false, inactive = true };
    PathBox compilerConfigsDir
    {
-      this, anchor = { left = 210, top = 8, right = 8 };
+      this, anchor = { left = 230, top = 8, right = 8 };
       text = $"Compiler Configurations Directory", browseDialog = settingsFileDialog, NotifyModified = NotifyModifiedDocument;
    };
 
@@ -583,6 +583,7 @@ class CompilerDirectoriesTab : CompilersSubTab
    CompilerDirectoriesTab()
    {
       DirTypes c;
+      int v = 8;
       for(c = 0; c < DirTypes::enumSize; c++)
       {
          dirs[c] = DirectoriesBox
@@ -629,14 +630,12 @@ class CompilerDirectoriesTab : CompilersSubTab
          //field[c] = { dataType = class(char *), editable = true };
          //dirs[c].AddField(field[c]);
 
-         {
-         int v = (int)c * 100 + 8;
          dirTypeTglBtn[c] = Button
          {
             this, inactive = true, text = displayDirectoryNames[c], bevelOver = true, isRadio = true, bitmap = null;
             stayOnTop = true;
             id = c;
-            size = { 99, 20 };
+            minClientSize = { 99, 20 };
             anchor = { left = v, top = 8 }; // ((int)c) * 100 + 8
 
             bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -648,6 +647,7 @@ class CompilerDirectoriesTab : CompilersSubTab
                return true;
             }
          };
+         v += dirTypeTglBtn[c].size.w + 1;
          incref dirTypeTglBtn[c];
 
          if(c == includes)
@@ -656,11 +656,21 @@ class CompilerDirectoriesTab : CompilersSubTab
             dirTypeTglBtn[c].hotKey = altL;
          else if(c == executables)
             dirTypeTglBtn[c].hotKey = altE;
-         }
       }
       currentDirs = dirs[includes];
       dirTypeTglBtn[includes].checked = true;
       return true;
+   }
+
+   bool OnLoadGraphics()
+   {
+      DirTypes c;
+      int v = 8;
+      for(c = 0; c < DirTypes::enumSize; c++)
+      {
+         dirTypeTglBtn[c].anchor.left = v;
+         v += dirTypeTglBtn[c].size.w + 1;
+      }
    }
 
    void Load()
@@ -890,7 +900,7 @@ class CompilerOptionsTab : CompilersSubTab
    DataBox numJobsBox
    {
       this, text = $"Number of parallel build jobs", hotKey = altJ, borderStyle = deep;
-      position = { 184, 36 }, size = { 80, 20 }, type = class(int), data = &numJobs;
+      position = { 244, 36 }, size = { 80, 20 }, type = class(int), data = &numJobs;
 
       bool OnKeyDown(Key key, unichar ch)
       {
