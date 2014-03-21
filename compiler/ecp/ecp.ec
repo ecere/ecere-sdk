@@ -1445,6 +1445,16 @@ class PrecompApp : Application
             {
                SetStrictNameSpaces(true);
             }
+            else if(!strcmp(arg+1, "module"))
+            {
+               if(c + 1 < argc)
+               {
+                  SetI18nModuleName(argv[c+1]);
+                  c++;
+               }
+               else
+                  valid = false;
+            }
          }
          else
             valid = false;

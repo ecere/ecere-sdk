@@ -975,9 +975,7 @@ extern char *  __ecereNameSpace__ecere__sys__GetSystemPathBuffer(char *  d, char
 
 extern void Compiler_Error(char *  format, ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
@@ -1585,7 +1583,7 @@ else if(importType != 4)
 char sysFileName[797];
 
 __ecereNameSpace__ecere__sys__GetSystemPathBuffer(sysFileName, fileName);
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't open %s\n", (((void *)0))), sysFileName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Couldn't open %s\n", (((void *)0))), sysFileName);
 }
 return globalInstance;
 }
@@ -1637,6 +1635,8 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, char *  name, int importAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
@@ -1998,7 +1998,7 @@ char type2String[1024] = "";
 PrintType(type1, type1String, 0x0, 0x1);
 PrintType(type2, type2String, 0x0, 0x1);
 if(strcmp(type1String, type2String))
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Redefinition of %s (defining as %s, already defined as %s)\n", (((void *)0))), redefinition->name, type1String, type2String);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "Redefinition of %s (defining as %s, already defined as %s)\n", (((void *)0))), redefinition->name, type1String, type2String);
 FreeType(type1);
 FreeType(type2);
 }

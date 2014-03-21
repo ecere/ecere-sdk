@@ -1395,7 +1395,12 @@ if(!strcmp(defModule->name, "i18n"))
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereCreateModuleInstances_i18n();\n");
 }
 if(i18n)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      LoadTranslatedStrings(module, \"%s\");\n", projectName);
+{
+if(isDynamicLibrary)
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      LoadTranslatedStrings(\"%s\", \"%s\");\n", projectName, projectName);
+else
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      LoadTranslatedStrings(null, \"%s\");\n", projectName);
+}
 if(isDynamicLibrary)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -1517,7 +1522,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereDestroyMod
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
 if(i18n)
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   UnloadTranslatedStrings(__currentModule);\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   UnloadTranslatedStrings(\"%s\");\n", projectName);
 if(destroyI18n)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereDestroyModuleInstances_i18n();\n");
 }
@@ -2407,9 +2412,7 @@ extern void SetSymbolsDir(char *  s);
 
 extern int printf(char * , ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
 
 extern char *  __ecereNameSpace__ecere__sys__GetExtension(char *  string, char *  output);
 
@@ -2650,7 +2653,7 @@ if(!output)
 valid = 0x0;
 if(!valid)
 {
-printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
+printf(__ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
 }
 else
 {
@@ -3101,6 +3104,8 @@ SetSymbolsDir((((void *)0)));
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 

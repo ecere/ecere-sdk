@@ -74,11 +74,11 @@ SOURCES = $(ECSOURCES) \
 	sqlite3.c
 
 RESOURCES = \
-	locale/EDASQLiteCipher/es.mo \
-	locale/EDASQLiteCipher/he.mo \
-	locale/EDASQLiteCipher/pt_BR.mo \
-	locale/EDASQLiteCipher/ru.mo \
-	locale/EDASQLiteCipher/zh_CN.mo
+	locale/es.mo \
+	locale/he.mo \
+	locale/pt_BR.mo \
+	locale/ru.mo \
+	locale/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -102,10 +102,9 @@ CUSTOM1_PRJ_CFLAGS = \
 	 $(if $(DEBUG), -g, -O2) $(FPIC) -w \
 			 -DSQLITE_HAS_CODEC
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers
-
 
 # PLATFORM-SPECIFIC OPTIONS
 
@@ -147,8 +146,6 @@ endif
 endif
 endif
 
-
-
 CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
@@ -179,7 +176,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLiteCipher/es.mo locale/EDASQLiteCipher/he.mo locale/EDASQLiteCipher/pt_BR.mo locale/EDASQLiteCipher/ru.mo locale/EDASQLiteCipher/zh_CN.mo "locale/EDASQLiteCipher"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

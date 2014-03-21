@@ -1541,6 +1541,10 @@ struct __ecereNameSpace__ecere__com__Instance * intlStrings;
 
 extern unsigned int inCompiler;
 
+extern char *  QMkString(char *  source);
+
+extern char *  i18nModuleName;
+
 extern struct Expression * QMkExpId(char *  id);
 
 struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
@@ -1625,7 +1629,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (&yylloc));
 }
-ListAdd(list, QMkExpId("__thisModule"));
+ListAdd(list, MkExpString(QMkString(i18nModuleName ? i18nModuleName : "")));
 ListAdd(list, MkExpString(string));
 if(context)
 {
@@ -2292,9 +2296,7 @@ extern unsigned int buildingECERECOMModule;
 
 extern void Compiler_Warning(char *  format, ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
 
 struct Declaration * MkDeclarationDefine(struct Identifier * id, struct Expression * exp)
 {
@@ -2332,7 +2334,7 @@ id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 if(!__ecereNameSpace__ecere__com__eSystem_FindDefine(privateModule, id->string))
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine(id->string, expString, privateModule, buildingECERECOMModule ? 4 : 1);
 else
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Redefinition of %s ignored\n", (((void *)0))), id->string);
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "Redefinition of %s ignored\n", (((void *)0))), id->string);
 return decl;
 }
 
@@ -3303,7 +3305,7 @@ break;
 FreeList(specs, FreeSpecifier);
 if(!spec)
 {
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Expecting class specifier\n", (((void *)0))));
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Expecting class specifier\n", (((void *)0))));
 inst->_class = MkSpecifierName("");
 }
 }
@@ -4938,6 +4940,8 @@ struct __ecereNameSpace__ecere__com__GlobalFunction;
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 

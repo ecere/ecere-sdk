@@ -398,6 +398,16 @@ class CompilerApp : Application
                else
                   valid = false;
             }
+            else if(!strcmp(arg+1, "module"))
+            {
+               if(c + 1 < argc)
+               {
+                  SetI18nModuleName(argv[c+1]);
+                  c++;
+               }
+               else
+                  valid = false;
+            }
             else if(!strcmp(arg+1, "memguard"))
             {
                SetMemoryGuard(true);
@@ -442,7 +452,7 @@ class CompilerApp : Application
 
       if(!valid)
       {
-         printf($"Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
+         printf($"Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-module <module>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n");
       }
       else
       {

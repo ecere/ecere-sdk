@@ -70,10 +70,10 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/epj2make/es.mo \
-	locale/epj2make/he.mo \
-	locale/epj2make/ru.mo \
-	locale/epj2make/zh_CN.mo \
+	locale/es.mo \
+	locale/he.mo \
+	locale/ru.mo \
+	locale/zh_CN.mo \
 	../crossplatform.mk
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -87,18 +87,15 @@ PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DMAKEFILE_GENERATOR
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers
-
 
 # PLATFORM-SPECIFIC OPTIONS
 
 ifdef LINUX_TARGET
 
 endif
-
-
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -131,7 +128,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../crossplatform.mk ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/epj2make/es.mo locale/epj2make/he.mo locale/epj2make/ru.mo locale/epj2make/zh_CN.mo "locale/epj2make"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

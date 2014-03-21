@@ -64,9 +64,9 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/ear/es.mo \
-	locale/ear/ru.mo \
-	locale/ear/zh_CN.mo \
+	locale/es.mo \
+	locale/ru.mo \
+	locale/zh_CN.mo \
 	../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/extract$(E)
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -79,12 +79,9 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers
-
-
-
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -125,7 +122,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extract/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/extract$(E) ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ear/es.mo locale/ear/ru.mo locale/ear/zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

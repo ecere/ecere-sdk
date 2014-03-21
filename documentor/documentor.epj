@@ -89,14 +89,9 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "documentor",
-               "Files" : [
-                  "es.mo",
-                  "pt_BR.mo",
-                  "zh_CN.mo"
-               ]
-            }
+            "es.mo",
+            "pt_BR.mo",
+            "zh_CN.mo"
          ]
       },
       {

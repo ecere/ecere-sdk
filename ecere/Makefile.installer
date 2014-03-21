@@ -345,13 +345,13 @@ RESOURCES3 = \
 	$(RES)status/audioVolumeHigh.png \
 	$(RES)status/folderOpen.png \
 	$(RES)unicode/derivedGeneralCategoryStripped.txt \
-	locale/ecere/es.mo \
-	locale/ecere/hu.mo \
-	locale/ecere/mr.mo \
-	locale/ecere/nl.mo \
-	locale/ecere/pt_BR.mo \
-	locale/ecere/ru.mo \
-	locale/ecere/zh_CN.mo
+	locale/es.mo \
+	locale/hu.mo \
+	locale/mr.mo \
+	locale/nl.mo \
+	locale/pt_BR.mo \
+	locale/ru.mo \
+	locale/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -398,6 +398,7 @@ CUSTOM1_PRJ_CFLAGS = \
 			 -DECERE_COM_MODULE \
 	 $(PRJ_CFLAGS)
 
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers -defaultns ecere
 
@@ -540,7 +541,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecere/es.mo locale/ecere/hu.mo locale/ecere/mr.mo locale/ecere/nl.mo locale/ecere/pt_BR.mo locale/ecere/ru.mo locale/ecere/zh_CN.mo "locale/ecere"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/hu.mo locale/mr.mo locale/nl.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
 endif

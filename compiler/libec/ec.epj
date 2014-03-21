@@ -136,14 +136,9 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "ec",
-               "Files" : [
-                  "es.mo",
-                  "mr.mo",
-                  "zh_CN.mo"
-               ]
-            }
+            "es.mo",
+            "mr.mo",
+            "zh_CN.mo"
          ]
       }
    ]

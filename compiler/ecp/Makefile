@@ -64,11 +64,11 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/ecp/es.mo \
-	locale/ecp/he.mo \
-	locale/ecp/pt_BR.mo \
-	locale/ecp/ru.mo \
-	locale/ecp/zh_CN.mo
+	locale/es.mo \
+	locale/he.mo \
+	locale/pt_BR.mo \
+	locale/ru.mo \
+	locale/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -80,12 +80,9 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers
-
-
-
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -117,7 +114,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ecp/es.mo locale/ecp/he.mo locale/ecp/pt_BR.mo locale/ecp/ru.mo locale/ecp/zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

@@ -556,7 +556,7 @@ extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__co
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_FindProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern void __ecereNameSpace__ecere__LoadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+extern void __ecereNameSpace__ecere__LoadTranslatedStrings(char * moduleName, char *  name);
 
 extern void __ecereNameSpace__ecere__com__eInstance_Evolve(struct __ecereNameSpace__ecere__com__Instance **  instancePtr, struct __ecereNameSpace__ecere__com__Class * _class);
 
@@ -596,7 +596,7 @@ struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
 
-extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module);
+extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(char * name);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
@@ -716,14 +716,14 @@ __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write = method->vid;
 __ecereClass___ecereNameSpace__ecere__sys__OldLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldLink");
 __ecereClass___ecereNameSpace__ecere__sys__OldList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldList");
 __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::TempFile");
-__ecereNameSpace__ecere__LoadTranslatedStrings(module, "ecs");
+__ecereNameSpace__ecere__LoadTranslatedStrings((((void *)0)), "ecs");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(__currentModule, "SymbolgenApp");
 __ecereNameSpace__ecere__com__eInstance_Evolve((struct __ecereNameSpace__ecere__com__Instance **)&__currentModule, _class);
 __thisModule = __currentModule;
 __ecereCreateModuleInstances_ecs();
 ((void (*)(void *))(void *)((struct __ecereNameSpace__ecere__com__Instance *)(char *)__currentModule)->_vTbl[12])(__currentModule);
 __ecereDestroyModuleInstances_ecs();
-__ecereNameSpace__ecere__UnloadTranslatedStrings(__currentModule);
+__ecereNameSpace__ecere__UnloadTranslatedStrings("ecs");
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(__currentModule, "ecere::com::Application");
 exitCode = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__currentModule) + structSize_Module)))->exitCode;
 (__ecereNameSpace__ecere__com__eInstance_DecRef(__currentModule), __currentModule = 0);

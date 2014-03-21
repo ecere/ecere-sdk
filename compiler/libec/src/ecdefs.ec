@@ -82,6 +82,8 @@ char * outputFile;
 public void SetOutputFile(char * s) { outputFile = s; } public char * GetOutputFile() { return outputFile; }
 char * sourceFile;
 public void SetSourceFile(char * s) { sourceFile = s; } public char * GetSourceFile() { return sourceFile; }
+char * i18nModuleName;
+public void SetI18nModuleName(char * s) { i18nModuleName = s; } public char * GetI18nModuleName() { return i18nModuleName; }
 
 public void SetGlobalContext(Context context) { globalContext = context; } public Context GetGlobalContext() { return globalContext; }
 public void SetTopContext(Context context) { topContext = context; } public Context GetTopContext() { return topContext; }

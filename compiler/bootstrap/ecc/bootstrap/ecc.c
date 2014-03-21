@@ -662,6 +662,8 @@ extern char *  GetSourceFile(void);
 
 extern void SetSourceFile(char *  s);
 
+extern void SetI18nModuleName(char *  s);
+
 extern void SetMemoryGuard(unsigned int b);
 
 extern void SetDefaultNameSpace(char *  s);
@@ -676,9 +678,7 @@ extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, cha
 
 extern int printf(char * , ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
 
 extern void SetGlobalData(struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace);
 
@@ -990,6 +990,16 @@ c++;
 else
 valid = 0x0;
 }
+else if(!strcmp(arg + 1, "module"))
+{
+if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
+{
+SetI18nModuleName(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c + 1]);
+c++;
+}
+else
+valid = 0x0;
+}
 else if(!strcmp(arg + 1, "memguard"))
 {
 SetMemoryGuard(0x1);
@@ -1032,7 +1042,7 @@ SetOutputFile(defaultOutputFile);
 }
 if(!valid)
 {
-printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
+printf(__ecereNameSpace__ecere__GetTranslatedString("ecc", "Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-module <module>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
 }
 else
 {
@@ -1295,6 +1305,8 @@ int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
 

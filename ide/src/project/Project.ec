@@ -2923,6 +2923,7 @@ private:
                ecflagsVariations, nodeECFlagsMapping, null);
 
          GenMakePrintCustomFlags(f, "PRJ_CFLAGS", false, cflagsVariations);
+         f.Puts("ECFLAGS += -module $(MODULE)\n");
          GenMakePrintCustomFlags(f, "ECFLAGS", true, ecflagsVariations);
 
          if(platforms || (config && config.platforms))

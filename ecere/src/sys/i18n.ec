@@ -21,7 +21,7 @@ static Map<String, Map<String, String>> moduleMaps { };
                          | (((unsigned int)(dword) & 0x00ff0000) >>  8) \
                          | (((unsigned int)(dword) & 0xff000000) >> 24))
 
-public dllexport void LoadTranslatedStrings(Module module, char * name)
+public dllexport void LoadTranslatedStrings(String moduleName, char * name)
 {
 #ifndef ECERE_NOFILE
    File f;
@@ -63,15 +63,15 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
          *under = 0;
    }
 
-   if(module.name)
-      sprintf(fileName, "<:%s>locale/%s/%s.mo", module.name, name, locale);
+   if(moduleName)
+      sprintf(fileName, "<:%s>locale/%s.mo", moduleName, locale);
    else
-      sprintf(fileName, ":locale/%s/%s.mo", name, locale);
+      sprintf(fileName, ":locale/%s.mo", locale);
    f = FileOpen(fileName, read);
    if(!f)
    {
-      if(module.name)
-         sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", module.name, locale, name);
+      if(moduleName)
+         sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", moduleName, locale, name);
       else
          sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", locale, name);
       f = FileOpen(fileName, read);
@@ -90,15 +90,15 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
    if(!f && locale && strcmpi(locale, genericLocale))
    {
       // Attempt with generic language
-      if(module.name)
-         sprintf(fileName, "<:%s>locale/%s/%s.mo", module.name, name, genericLocale);
+      if(moduleName)
+         sprintf(fileName, "<:%s>locale/%s.mo", moduleName, genericLocale);
       else
-         sprintf(fileName, ":locale/%s/%s.mo", name, genericLocale);
+         sprintf(fileName, ":locale/%s.mo", name, genericLocale);
       f = FileOpen(fileName, read);
       if(!f)
       {
-         if(module.name)
-            sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", module.name, genericLocale, name);
+         if(moduleName)
+            sprintf(fileName, "<:%s>locale/%s/LC_MESSAGES/%s.mo", moduleName, genericLocale, name);
          else
             sprintf(fileName, ":locale/%s/LC_MESSAGES/%s.mo", genericLocale, name);
          f = FileOpen(fileName, read);
@@ -139,11 +139,11 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
             moduleMaps = { };
          {
             MapIterator<String, Map<String, String>> it { map = moduleMaps };
-            if(it.Index(module.name, false))
+            if(it.Index(name, false))
                delete it.data;
             // TOFIX: delete moduleMaps[module];
          }
-         moduleMaps[module.name] = textMap = { };
+         moduleMaps[name] = textMap = { };
          for(c = 0; c < numStrings; c++)
          {
             uint len = 0, offset = 0;
@@ -189,19 +189,19 @@ public dllexport void LoadTranslatedStrings(Module module, char * name)
 #endif
 }
 
-public dllexport void UnloadTranslatedStrings(Module module)
+public dllexport void UnloadTranslatedStrings(String name)
 {
    MapIterator<String, Map<String, String>> it { map = moduleMaps };
-   if(it.Index(module.name, false))
+   if(it.Index(name, false))
    {
       it.data.Free();
       moduleMaps.Delete(it.pointer);
    }
 }
 
-public dllexport char * GetTranslatedString(Module module, char * string, char * stringAndContext)
+public dllexport char * GetTranslatedString(String name, char * string, char * stringAndContext)
 {
-   Map<String, String> textMap = moduleMaps ? moduleMaps[module.name] : null;
+   Map<String, String> textMap = moduleMaps ? moduleMaps[name] : null;
    char * result = textMap ? textMap[stringAndContext ? stringAndContext : string] : string;
    return (result && result[0]) ? result : string;
 }

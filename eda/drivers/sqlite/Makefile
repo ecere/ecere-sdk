@@ -73,11 +73,11 @@ SOURCES = $(ECSOURCES) \
 	$(if $(LINUX_TARGET),,sqlite3.c)
 
 RESOURCES = \
-	locale/EDASQLite/es.mo \
-	locale/EDASQLite/he.mo \
-	locale/EDASQLite/pt_BR.mo \
-	locale/EDASQLite/ru.mo \
-	locale/EDASQLite/zh_CN.mo
+	locale/es.mo \
+	locale/he.mo \
+	locale/pt_BR.mo \
+	locale/ru.mo \
+	locale/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -97,10 +97,9 @@ CUSTOM1_PRJ_CFLAGS = \
 			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2) $(FPIC) -w
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers
-
 
 # PLATFORM-SPECIFIC OPTIONS
 
@@ -138,8 +137,6 @@ endif
 endif
 endif
 
-
-
 CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
@@ -170,7 +167,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDASQLite/es.mo locale/EDASQLite/he.mo locale/EDASQLite/pt_BR.mo locale/EDASQLite/ru.mo locale/EDASQLite/zh_CN.mo "locale/EDASQLite"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

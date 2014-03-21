@@ -106,10 +106,9 @@ PRJ_CFLAGS += \
 			 -DECERE_COM_MODULE \
 			 -DECERE_NOFILE
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers -defaultns ecere
-
 
 # PLATFORM-SPECIFIC OPTIONS
 
@@ -123,8 +122,6 @@ LIBS += \
 endif
 
 endif
-
-
 
 CECFLAGS += -cpp $(_CPP)
 

@@ -677,7 +677,7 @@ extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__co
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_FindProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern void __ecereNameSpace__ecere__LoadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+extern void __ecereNameSpace__ecere__LoadTranslatedStrings(char * moduleName, char *  name);
 
 unsigned int __ecereDll_Load_ecere(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -1065,7 +1065,7 @@ __ecereClass_int64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "in
 __ecereClass_uint = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint");
 __ecereClass_uint64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "uint64");
 __ecereCreateModuleInstances_i18n();
-__ecereNameSpace__ecere__LoadTranslatedStrings(module, "ecere");
+__ecereNameSpace__ecere__LoadTranslatedStrings("ecere", "ecere");
 }
 if(__currentModule == module)
 {
@@ -1074,14 +1074,14 @@ __ecereCreateModuleInstances_System();
 return 0x1;
 }
 
-extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(struct __ecereNameSpace__ecere__com__Instance * module);
+extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(char * name);
 
 unsigned int __ecereDll_Unload_ecere(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 if(__currentModule == module)
 {
 __ecereDestroyModuleInstances_System();
-__ecereNameSpace__ecere__UnloadTranslatedStrings(__currentModule);
+__ecereNameSpace__ecere__UnloadTranslatedStrings("ecere");
 __ecereDestroyModuleInstances_i18n();
 }
 __ecereUnregisterModule_BufferedFile(module);

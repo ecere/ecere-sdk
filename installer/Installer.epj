@@ -141,6 +141,18 @@
                "Files" : [
                   "../ecere/res/status/folderOpen.png"
                ]
+            },
+            {
+               "Folder" : "locale",
+               "Files" : [
+                  "../ecere/locale/es.mo",
+                  "../ecere/locale/hu.mo",
+                  "../ecere/locale/mr.mo",
+                  "../ecere/locale/nl.mo",
+                  "../ecere/locale/pt_BR.mo",
+                  "../ecere/locale/ru.mo",
+                  "../ecere/locale/zh_CN.mo"
+               ]
             }
          ]
       },
@@ -14894,15 +14906,10 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "Installer",
-               "Files" : [
-                  "es.mo",
-                  "pt_BR.mo",
-                  "ru.mo",
-                  "zh_CN.mo"
-               ]
-            }
+            "es.mo",
+            "pt_BR.mo",
+            "ru.mo",
+            "zh_CN.mo"
          ]
       },
       {

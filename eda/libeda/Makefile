@@ -77,10 +77,10 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/EDA/es.mo \
-	locale/EDA/he.mo \
-	locale/EDA/ru.mo \
-	locale/EDA/zh_CN.mo
+	locale/es.mo \
+	locale/he.mo \
+	locale/ru.mo \
+	locale/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -94,10 +94,9 @@ PRJ_CFLAGS += \
 			 -I../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers -defaultns eda
-
 
 # PLATFORM-SPECIFIC OPTIONS
 
@@ -111,8 +110,6 @@ CFLAGS += \
 	 -I/usr/include/i686-linux-gnu
 
 endif
-
-
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -144,7 +141,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/EDA/es.mo locale/EDA/he.mo locale/EDA/ru.mo locale/EDA/zh_CN.mo "locale/EDA"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

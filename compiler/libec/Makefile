@@ -100,9 +100,9 @@ SOURCES = $(ECSOURCES) \
 	../bootstrap/bsl.c
 
 RESOURCES = \
-	locale/ec/es.mo \
-	locale/ec/mr.mo \
-	locale/ec/zh_CN.mo
+	locale/es.mo \
+	locale/mr.mo \
+	locale/zh_CN.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -118,12 +118,9 @@ CUSTOM1_PRJ_CFLAGS = \
 			 -I../bootstrap/include \
 	 $(PRJ_CFLAGS)
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers
-
-
-
 
 CECFLAGS += -cpp $(_CPP)
 
@@ -156,7 +153,7 @@ ifndef STATIC_LIBRARY_TARGET
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/ec/es.mo locale/ec/mr.mo locale/ec/zh_CN.mo "locale/ec"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/mr.mo locale/zh_CN.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

@@ -1117,6 +1117,18 @@ char * GetSourceFile()
 return sourceFile;
 }
 
+char * i18nModuleName;
+
+void SetI18nModuleName(char * s)
+{
+i18nModuleName = s;
+}
+
+char * GetI18nModuleName()
+{
+return i18nModuleName;
+}
+
 void SetGlobalContext(struct Context * context)
 {
 globalContext = context;
@@ -1675,11 +1687,11 @@ extern char *  GetIncludeFileFromID(int id);
 
 extern int printf(char * , ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
 
 extern int fputs(char * , void *  stream);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
@@ -1752,7 +1764,7 @@ __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
 __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 }
 printf(string);
-printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, ":%d:%d: error: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
+printf(__ecereNameSpace__ecere__GetTranslatedString("ec", ":%d:%d: error: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof string, format, args);
 string[sizeof string - 1] = (char)0;
@@ -1802,7 +1814,7 @@ __ecereNameSpace__ecere__sys__GetLastDirectory(string, fileName);
 if(!strcmp(fileName, "intrin-impl.h"))
 return ;
 printf(string);
-printf(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, ":%d:%d: warning: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
+printf(__ecereNameSpace__ecere__GetTranslatedString("ec", ":%d:%d: warning: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof string, format, args);
 string[sizeof string - 1] = (char)0;
@@ -1821,7 +1833,7 @@ int yyerror(char * s)
 if(!skipErrors)
 {
 parseError = 0x1;
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "syntax error\n", (((void *)0))));
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "syntax error\n", (((void *)0))));
 }
 return 0;
 }
@@ -1953,6 +1965,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetOutputFile", "void Se
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOutputFile", "char * GetOutputFile(void)", GetOutputFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetSourceFile", "void SetSourceFile(char * s)", SetSourceFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetSourceFile", "char * GetSourceFile(void)", GetSourceFile, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetI18nModuleName", "void SetI18nModuleName(char * s)", SetI18nModuleName, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetI18nModuleName", "char * GetI18nModuleName(void)", GetI18nModuleName, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetGlobalContext", "void SetGlobalContext(Context context)", SetGlobalContext, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetGlobalContext", "Context GetGlobalContext(void)", GetGlobalContext, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTopContext", "void SetTopContext(Context context)", SetTopContext, module, 1);

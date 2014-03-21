@@ -71,9 +71,9 @@ OBJECTS = $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 SOURCES = $(ECSOURCES)
 
 RESOURCES = \
-	locale/documentor/es.mo \
-	locale/documentor/pt_BR.mo \
-	locale/documentor/zh_CN.mo \
+	locale/es.mo \
+	locale/pt_BR.mo \
+	locale/zh_CN.mo \
 	../ide/res/actions/docOpen.png \
 	res/documentorIcon.png
 
@@ -87,7 +87,7 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w
 
-
+ECFLAGS += -module $(MODULE)
 ECFLAGS += \
 	 -nolinenumbers
 
@@ -122,7 +122,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) res/documentorIcon.png ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/documentor/es.mo locale/documentor/pt_BR.mo locale/documentor/zh_CN.mo "locale/documentor"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/pt_BR.mo locale/zh_CN.mo "locale"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../ide/res/actions/docOpen.png "actions"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)

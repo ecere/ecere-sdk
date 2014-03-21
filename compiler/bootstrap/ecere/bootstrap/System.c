@@ -377,9 +377,7 @@ unsigned int count;
 unsigned int minAllocSize;
 } __attribute__ ((gcc_struct));
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(struct __ecereNameSpace__ecere__com__Instance * module, char *  string, char *  stringAndContext);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer;
 
@@ -689,6 +687,8 @@ struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
 
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, char *  string, int value);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
@@ -807,7 +807,7 @@ void __ecereCreateModuleInstances_System()
 {
 __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl, __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, 0, __extension__ (char * [])
 {
-__ecereNameSpace__ecere__GetTranslatedString(__thisModule, "No error", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Memory allocation failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Inexistant string identifier specified", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Identic string identifier already exists", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Shared library loading failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "File not found", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString(__thisModule, "Couldn't write to file", (((void *)0)))
+__ecereNameSpace__ecere__GetTranslatedString("ecere", "No error", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Memory allocation failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Inexistant string identifier specified", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Identic string identifier already exists", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Shared library loading failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "File not found", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Couldn't write to file", (((void *)0)))
 }, 7, __ecereClass_String
 })));
 __ecereNameSpace__ecere__com__eInstance_IncRef(__ecereNameSpace__ecere__sys__errorMessages);

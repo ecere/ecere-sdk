@@ -2388,18 +2388,13 @@ from wherever you obtained them.
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "ecere",
-               "Files" : [
-                  "locale/ecere/es.mo",
-                  "locale/ecere/hu.mo",
-                  "locale/ecere/mr.mo",
-                  "locale/ecere/nl.mo",
-                  "locale/ecere/pt_BR.mo",
-                  "locale/ecere/ru.mo",
-                  "locale/ecere/zh_CN.mo"
-               ]
-            }
+            "locale/es.mo",
+            "locale/hu.mo",
+            "locale/mr.mo",
+            "locale/nl.mo",
+            "locale/pt_BR.mo",
+            "locale/ru.mo",
+            "locale/zh_CN.mo"
          ],
          "Configurations" : [
             {

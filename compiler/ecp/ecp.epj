@@ -100,11 +100,11 @@
       {
          "Folder" : "locale",
          "Files" : [
-            "locale/ecp/es.mo",
-            "locale/ecp/he.mo",
-            "locale/ecp/pt_BR.mo",
-            "locale/ecp/ru.mo",
-            "locale/ecp/zh_CN.mo"
+            "es.mo",
+            "he.mo",
+            "pt_BR.mo",
+            "ru.mo",
+            "zh_CN.mo"
          ]
       }
    ]

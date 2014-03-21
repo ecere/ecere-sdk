@@ -205,16 +205,28 @@
                "Files" : [
                   "folderOpen.png"
                ]
+            },
+            {
+               "Folder" : "locale",
+               "Files" : [
+                  "../../ecere/locale/es.mo",
+                  "../../ecere/locale/hu.mo",
+                  "../../ecere/locale/mr.mo",
+                  "../../ecere/locale/nl.mo",
+                  "../../ecere/locale/pt_BR.mo",
+                  "../../ecere/locale/ru.mo",
+                  "../../ecere/locale/zh_CN.mo"
+               ]
             }
          ]
       },
       {
          "Folder" : "locale",
          "Files" : [
-            "locale/extract/es.mo",
-            "locale/extract/he.mo",
-            "locale/extract/ru.mo",
-            "locale/extract/zh_CN.mo"
+            "es.mo",
+            "he.mo",
+            "ru.mo",
+            "zh_CN.mo"
          ]
       }
    ]

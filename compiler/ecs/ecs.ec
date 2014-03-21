@@ -642,7 +642,12 @@ static void WriteMain(char * fileName)
                f.Printf("   __ecereCreateModuleInstances_i18n();\n");
          }
       if(i18n)
-         f.Printf("      LoadTranslatedStrings(module, \"%s\");\n", projectName);
+      {
+         if(isDynamicLibrary)
+            f.Printf("      LoadTranslatedStrings(\"%s\", \"%s\");\n", projectName, projectName);
+         else
+            f.Printf("      LoadTranslatedStrings(null, \"%s\");\n", projectName);
+      }
       if(isDynamicLibrary)
       {
          //f.Printf("   module._vTbl[10](module);\n");
@@ -730,7 +735,8 @@ static void WriteMain(char * fileName)
             f.Printf("\n");
          }
          if(i18n)
-            f.Printf("   UnloadTranslatedStrings(__currentModule);\n");
+            //f.Printf("   UnloadTranslatedStrings(__currentModule);\n");
+            f.Printf("   UnloadTranslatedStrings(\"%s\");\n", projectName);
          if(destroyI18n)
             f.Printf("   __ecereDestroyModuleInstances_i18n();\n");
       }

@@ -97,17 +97,12 @@
       {
          "Folder" : "locale",
          "Files" : [
-            {
-               "Folder" : "ecc",
-               "Files" : [
-                  "es.mo",
-                  "he.mo",
-                  "pt_BR.mo",
-                  "ru.mo",
-                  "vi.mo",
-                  "zh_CN.mo"
-               ]
-            }
+            "es.mo",
+            "he.mo",
+            "pt_BR.mo",
+            "ru.mo",
+            "vi.mo",
+            "zh_CN.mo"
          ]
       }
    ]
