@@ -1464,6 +1464,25 @@ class InstallThread : Thread
 
          settings.language = GetLanguageString();
 
+         // Set LANGUAGE environment variable
+         {
+            HKEY key = null;
+            uint16 wLanguage[256];
+            HRESULT status;
+            wLanguage[0] = 0;
+
+            if(options[0].selected)
+               RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_ALL_ACCESS, &key);
+            else
+               RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+            if(key)
+            {
+               UTF8toUTF16Buffer(settings.language, wLanguage, sizeof(wLanguage) / sizeof(uint16));
+               RegSetValueExW(key, L"ECERE_LANGUAGE", 0, REG_EXPAND_SZ, (byte *)wLanguage, (uint)(wcslen(wLanguage)+1) * 2);
+               RegCloseKey(key);
+            }
+         }
+
          settingsContainer.Save();
          delete settingsContainer;
          delete settings;
@@ -1552,7 +1571,7 @@ class InstallThread : Thread
                RegSetValueExW(userKey, L"path", 0, REG_EXPAND_SZ, (byte *)wUserPath, (uint)(wcslen(wUserPath)+1) * 2);
                RegCloseKey(userKey);
             }
-            SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 1000, NULL);
+            // SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 1000, NULL);
          }
 
          // Install Program Group Icons
@@ -1658,6 +1677,8 @@ class InstallThread : Thread
                CreateLink(idePath, desktopPath, null);//"Ecere IDE");
             }
          }
+
+         SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 1000, NULL);
 
          // Install QuickLaunch Icon
          if(options[IconOptions::QuickLaunchIcon].selected)

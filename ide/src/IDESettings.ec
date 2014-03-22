@@ -1,3 +1,10 @@
+#if defined(__WIN32__)
+#define MessageBox _MessageBox
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#undef MessageBox
+#endif
+
 #ifdef ECERE_STATIC
 public import static "ecere"
 #else
@@ -101,7 +108,7 @@ char * CopyValidateMakefilePath(char * path)
    if(path)
    {
       int len;
-      len = strlen(path);
+      len = (int)strlen(path);
       copy = CopyString(path);
       if(len)
       {
@@ -181,7 +188,7 @@ void ValidPathBufCopy(char *output, char *input)
 void RemoveTrailingPathSeparator(char *path)
 {
    int len;
-   len = strlen(path);
+   len = (int)strlen(path);
    if(len>1 && path[len-1] == DIR_SEP)
       path[--len] = '\0';
 }
@@ -1154,7 +1161,8 @@ Array<LanguageOption> languages
 
 String GetLanguageString()
 {
-   String language = getenv("LANGUAGE");
+   String language = getenv("ECERE_LANGUAGE");
+   if(!language) language = getenv("LANGUAGE");
    if(!language) language = getenv("LC_ALL");
    if(!language) language = getenv("LC_MESSAGES");
    if(!language) language = getenv("LANG");
@@ -1166,7 +1174,7 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
 {
    bool restart = true;
    String command = null;
-   int arg0Len = strlen(app.argv[0]);
+   int arg0Len = (int)strlen(app.argv[0]);
    int len = arg0Len;
    int j;
    char ch;
@@ -1259,7 +1267,7 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
                      strcat(command, " ");
                      len++;
                      ReplaceSpaces(command + len, name);
-                     len = strlen(command);
+                     len = (int)strlen(command);
                   }
                }
             }
@@ -1275,6 +1283,25 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
       {
          settings.language = code;
          settingsContainer.Save();
+
+#if defined(__WIN32__)
+         // Set LANGUAGE environment variable
+         {
+            HKEY key = null;
+            uint16 wLanguage[256];
+            HRESULT status;
+            wLanguage[0] = 0;
+
+            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+            if(key)
+            {
+               UTF8toUTF16Buffer(code, wLanguage, sizeof(wLanguage) / sizeof(uint16));
+               RegSetValueExW(key, L"ECERE_LANGUAGE", 0, REG_EXPAND_SZ, (byte *)wLanguage, (uint)(wcslen(wLanguage)+1) * 2);
+               RegCloseKey(key);
+            }
+         }
+#endif
+
          if(eClass_IsDerived(app._class, class(GuiApplication)))
          {
             GuiApplication guiApp = (GuiApplication)app;
@@ -1301,13 +1328,13 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
          strcat(command, " ");
          len++;
          ReplaceSpaces(command + len, app.argv[i]);
-         len = strlen(command);
+         len = (int)strlen(command);
       }
    }
 
    if(restart)
    {
-      SetEnvironment("LANGUAGE", code);
+      SetEnvironment("ECERE_LANGUAGE", code);
       if(wait)
          ExecuteWait(command);
       else

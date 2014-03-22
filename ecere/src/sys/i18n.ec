@@ -36,7 +36,9 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
 
    genericLocale[0] = 0;
 
-   if(GetEnvironment("LANGUAGE", language, sizeof(language)))
+   if(GetEnvironment("ECERE_LANGUAGE", language, sizeof(language)))
+      locale = language;
+   else if(GetEnvironment("LANGUAGE", language, sizeof(language)))
       locale = language;
    else if(GetEnvironment("LC_ALL", lcAll, sizeof(lcAll)))
       locale = lcAll;
