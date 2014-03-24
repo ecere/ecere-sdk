@@ -32,7 +32,9 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                            Expression sizeExp = (d.type == structDeclarator) ? d.structDecl.exp : null;
                            Expression posExp = (d.type == structDeclarator) ? d.structDecl.posExp : null;
                            int bitSize = 0, bitPos = -1;
-                           char dataTypeString[1024] = "";
+                           //char dataTypeString[1024] = "";
+                           char dataTypeString[8192];
+                           dataTypeString[0] = 0;
 
                            if(sizeExp)
                            {
@@ -89,7 +91,9 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                            //if(isMember || !eClass_FindDataMember(regClass, declId.string))
                            {
                               //char * dataTypeString = StringFromSpecDecl(decl.specifiers, d);
-                              char typeString[1024] = "";
+                              //char typeString[1024] = "";
+                              char typeString[8192];
+                              typeString[0] = 0;
                               dataType = ProcessType(decl.specifiers, d);
                               PrintType(dataType, typeString, false, true);
 
@@ -146,7 +150,9 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                            //if(isMember || !eClass_FindDataMember(regClass, spec.id.string))
                            {
                               Identifier id = spec.id;
-                              char typeString[1024] = "";
+                              // char typeString[1024] = "";
+                              char typeString[8192];
+                              typeString[0] = 0;
 
                               spec.id = null;
                               decl.declarators = MkListOne(MkDeclaratorIdentifier(id));
