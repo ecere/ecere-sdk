@@ -671,6 +671,7 @@ class CompilerDirectoriesTab : CompilersSubTab
          dirTypeTglBtn[c].anchor.left = v;
          v += dirTypeTglBtn[c].size.w + 1;
       }
+      return CompilersSubTab::OnLoadGraphics();
    }
 
    void Load()
