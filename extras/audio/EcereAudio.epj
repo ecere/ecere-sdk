@@ -13,6 +13,9 @@
       {
          "Name" : "Win32",
          "Options" : {
+            "IncludeDirs" : [
+               "../../deps/DirectX-9.0/include"
+            ],
             "Libraries" : [
                "winmm",
                "dsound",
