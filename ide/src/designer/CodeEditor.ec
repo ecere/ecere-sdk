@@ -3967,7 +3967,7 @@ class CodeEditor : Window
          DeleteJunkBefore(f, position, &position);
 
          // Instance already there, clear out the properties
-         for(members = inst.members->first; members; members = members.next)
+         for(members = inst.members ? inst.members->first : null; members; members = members.next)
          {
             if(members.type == dataMembersInit)
             {
