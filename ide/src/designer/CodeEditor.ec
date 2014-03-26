@@ -3096,12 +3096,12 @@ class CodeEditor : Window
                                                             ((void (*)(void *, void *))(void *)prop.Set)(instance, temp);
                                                             delete temp;
 
-                                                            if(propDef.initializer.exp.intlString)
+                                                            if(!propDef.initializer.exp.intlString)
                                                             {
                                                                Map<String, bool> i18nStrings = classObject.i18nStrings;
                                                                if(!i18nStrings)
                                                                   classObject.i18nStrings = i18nStrings = { };
-                                                               i18nStrings[prop.name] = true;
+                                                               i18nStrings[prop.name] = false;
                                                             }
                                                             variable = false;
                                                          }
@@ -3395,12 +3395,12 @@ class CodeEditor : Window
                                                                                        ((void (*)(void *, void *))(void *)prop.Set)(control, temp);
                                                                                        delete temp;
 
-                                                                                       if(member.initializer.exp.intlString)
+                                                                                       if(!member.initializer.exp.intlString)
                                                                                        {
                                                                                           Map<String, bool> i18nStrings = object.i18nStrings;
                                                                                           if(!i18nStrings)
                                                                                              object.i18nStrings = i18nStrings = { };
-                                                                                          i18nStrings[prop.name] = true;
+                                                                                          i18nStrings[prop.name] = false;
                                                                                        }
 
                                                                                        variable = false;
@@ -3730,9 +3730,9 @@ class CodeEditor : Window
                            if(!strcmp(dataType.dataTypeString, "char *"))
                            {
                               Map<String, bool> i18nStrings = object.i18nStrings;
-                              bool i18n = false;
+                              bool i18n = true;
                               if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false))
-                                 i18n = true;
+                                 i18n = false;
 
                               f.Printf("%s\"", i18n ? "$" : "");
                               OutputString(f, string);
@@ -4422,7 +4422,7 @@ class CodeEditor : Window
                   if(!strcmp(prop.name, "contents") && !strcmp(prop._class.name, "EditBox"))
                      isEditBoxContents = true;
 
-                  if(isEditBoxContents && ((EditBox)classObject.instance))
+                  if(isEditBoxContents && ((EditBox)classObject.instance).multiLine)
                   {
                      dataForm = ((EditBox)classObject.instance).multiLineContents;
                      freeDataForm = true;
@@ -4457,9 +4457,9 @@ class CodeEditor : Window
                         if(!strcmp(dataType.dataTypeString, "char *"))
                         {
                            Map<String, bool> i18nStrings = classObject.i18nStrings;
-                           bool i18n = false;
+                           bool i18n = true;
                            if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false))
-                              i18n = true;
+                              i18n = false;
 
                            f.Printf("\n   %s%s = %s\"", specify ? "property::" : "", prop.name, i18n ? "$" : "");
                            OutputString(f, string);
