@@ -4304,12 +4304,7 @@ class CodeEditor : Window
       }
 
       if(!object.instCode)
-      {
-         if(methodPresent)
-            f.Printf("   %c;\n", CloseBracket);
-         else
-            f.Printf("%c;\n", CloseBracket);
-      }
+         f.Printf(methodPresent ? "   %c;" : "%c;", CloseBracket);
       else if(!object.deleted)
       {
          // Turn this into a multiline instance when adding a method
