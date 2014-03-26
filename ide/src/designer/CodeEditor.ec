@@ -3880,6 +3880,7 @@ class CodeEditor : Window
                   int toAdd = 0;
 
                   f.Seek(-1, current);
+                  DeleteJunkBefore(f, position, &position);
                   f.Puts("\n   ");
                   f.Seek(1, current);
                   //f.Puts("\n");
@@ -3913,20 +3914,25 @@ class CodeEditor : Window
                      f.DeleteBytes(toDelete);
                      f.Seek(count, current);
                   }
+
+                  DeleteJunkBefore(f, position, &position);
+
+                  // Removed this here as it was adding trailing spaces when adding a method
+                  /*
                   if(toAdd)
                   {
                      int c;
                      for(c = 0; c<toAdd; c++)
                         f.Putc(' ');
                   }
+                  */
                }
             }
             else
                methodPresent = multiLine;
 
-            if(!prev)
+            //if(!prev) -- always false
                f.Printf(methodPresent ? "\n      " : " ");
-
          }
       }
       else
@@ -4556,7 +4562,9 @@ class CodeEditor : Window
 
                      lastIsDecl = false;
                      DeleteJunkBefore(f, def.loc.start.pos, &position);
-                     f.Printf("\n   ");
+
+                     // This was adding blank spaces between comment and properties -- What was it for?
+                     // f.Printf("\n   ");
 
                      for(propDef = def.defProperties->first; propDef; propDef = propDef.next)
                      {
