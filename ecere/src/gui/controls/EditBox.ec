@@ -2870,6 +2870,7 @@ private:
          else
             SetCaret(0, 0, 0);
 
+         // TOFIX: Mismatch between NotifyCaretMove() and NotifyDropped() / GoToPosition()
          NotifyCaretMove(master, this, y + 1, x + 1);
 
          SelectionEnables();
@@ -5541,6 +5542,7 @@ public:
       return false;
    }
 
+   // NOTE: Mismatch with NotifyCaretMove() for x/y + 1
    bool GoToPosition(EditLine line, int y, int x)
    {
       /*

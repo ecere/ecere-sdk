@@ -1362,9 +1362,11 @@ class CodeEditor : Window
             ObjectInfo object;
             ObjectInfo classObject;
 
-            //editBox.NotifyCaretMove(this, editBox, y, x);
             editBox.GoToLineNum(y);
-            editBox.GoToPosition(editBox.line, y, Min(x, editBox.line.count));
+            x = Min(x, editBox.line.count);
+            editBox.GoToPosition(editBox.line, y, x);
+            // Note: Uncommented this to drag objects after the member instance on which they are dropped
+            editBox.NotifyCaretMove(this, editBox, y+1, x+1);
 
             classObject = selected ? selected.oClass : null;
 
