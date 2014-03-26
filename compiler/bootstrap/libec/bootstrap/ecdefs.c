@@ -385,7 +385,11 @@ struct Identifier * identifier;
 } __attribute__ ((gcc_struct));
 struct Statement * compound;
 struct Instantiation * instance;
+struct
+{
 char * string;
+unsigned int intlString;
+} __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__sys__OldList * list;
 struct
 {
@@ -2246,7 +2250,13 @@ __ecereNameSpace__ecere__com__eMember_AddMember(dataMember0, dataMember1);
 }
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "compound", "Statement", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "instance", "Instantiation", arch_PointerSize, arch_PointerSize, 1);
-__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "string", "char *", arch_PointerSize, arch_PointerSize, 1);
+{
+struct __ecereNameSpace__ecere__com__DataMember * dataMember1 = __ecereNameSpace__ecere__com__eMember_New(2, 1);
+
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "string", "char *", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "intlString", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddMember(dataMember0, dataMember1);
+}
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "list", "ecere::sys::OldList *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "_classExp", "struct { ecere::sys::OldList * specifiers; Declarator decl; }", 2*arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "classData", "struct { Identifier id; }", arch_PointerSize, arch_PointerSize, 1);

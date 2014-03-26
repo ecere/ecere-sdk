@@ -2902,7 +2902,7 @@ p++;
 }
 }
 {
-int len = strlen(templateString);
+int len = (int)strlen(templateString);
 
 if(templateString[len - 1] == '>')
 templateString[len++] = ' ';
@@ -4414,7 +4414,7 @@ __ecereNameSpace__ecere__sys__GetExtension(moduleName, ext);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
 if((!(strcasecmp)(ext, "dylib") || !(strcasecmp)(ext, "so")) && strstr(moduleName, "lib") == moduleName)
 {
-int len = strlen(moduleName) - 3;
+int len = (int)strlen(moduleName) - 3;
 
 memmove(moduleName, moduleName + 3, len);
 moduleName[len] = (char)0;
@@ -4836,7 +4836,7 @@ start = c + 1;
 }
 }
 else
-c = strlen(name);
+c = (int)strlen(name);
 if(c - start && !__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*nameSpace).defines, name + start))
 {
 struct __ecereNameSpace__ecere__com__DefinedExpression * def = (def = __ecereNameSpace__ecere__com__eSystem_New0(structSize_DefinedExpression), def->name = __ecereNameSpace__ecere__sys__CopyString(name), def->nameSpace = nameSpace, def->value = __ecereNameSpace__ecere__sys__CopyString(value), def);
@@ -4893,7 +4893,7 @@ start = c + 1;
 }
 }
 else
-c = strlen(name);
+c = (int)strlen(name);
 if(c - start && !__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*nameSpace).functions, name + start))
 {
 struct __ecereNameSpace__ecere__com__GlobalFunction * function = (function = __ecereNameSpace__ecere__com__eSystem_New0(structSize_GlobalFunction), function->name = __ecereNameSpace__ecere__sys__CopyString(name), function->nameSpace = nameSpace, function->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), function->function = func, function->module = module, function);
@@ -5624,6 +5624,7 @@ struct __ecereNameSpace__ecere__com__ObjectInfo * oClass;
 struct __ecereNameSpace__ecere__sys__OldList instances;
 struct __ecereNameSpace__ecere__com__Instance * classDefinition;
 unsigned int modified;
+void * i18nStrings;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ObjectInfo;
@@ -6082,7 +6083,7 @@ unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(char * source, int * 
 {
 if(source)
 {
-int len = strlen(source);
+int len = (int)strlen(source);
 unsigned short * dest = __ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned short) * (len + 1));
 int c;
 int d = 0;
@@ -6664,6 +6665,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "oClass", "ecere::com:
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "instances", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classDefinition", "ClassDefinition", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "modified", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "i18nStrings", "void *", arch_PointerSize, arch_PointerSize, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::DesignerBase", "ecere::gui::Window", sizeof(struct __ecereNameSpace__ecere__com__DesignerBase), 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__DesignerBase = class;

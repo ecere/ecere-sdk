@@ -347,7 +347,9 @@ char * locale = (((void *)0));
 char genericLocale[256];
 
 genericLocale[0] = (char)0;
-if(__ecereNameSpace__ecere__sys__GetEnvironment("LANGUAGE", language, sizeof language))
+if(__ecereNameSpace__ecere__sys__GetEnvironment("ECERE_LANGUAGE", language, sizeof language))
+locale = language;
+else if(__ecereNameSpace__ecere__sys__GetEnvironment("LANGUAGE", language, sizeof language))
 locale = language;
 else if(__ecereNameSpace__ecere__sys__GetEnvironment("LC_ALL", lcAll, sizeof lcAll))
 locale = lcAll;

@@ -3048,76 +3048,72 @@ class CodeEditor : Window
                                                 propertyClass = prop.dataTypeClass = eSystem_FindClass(this.privateModule, prop.dataTypeString);
                                              if(prop.compiled && prop.Set && prop.Get && propertyClass && propDef.initializer && propDef.initializer.type == expInitializer && propDef.initializer.exp)
                                              {
+                                                Expression computed;
+                                                bool variable = true;
+
                                                 FreeType(propDef.initializer.exp.destType);
                                                 propDef.initializer.exp.destType = MkClassType(propertyClass.name);
                                                 ProcessExpressionType(propDef.initializer.exp);
 
-                                                if(propertyClass.type == structClass || propertyClass.type == noHeadClass || propertyClass.type == normalClass)
+                                                computed = CopyExpression(propDef.initializer.exp);
+                                                ComputeExpression(computed);
+                                                if(computed.isConstant)
                                                 {
-                                                   Expression computed = CopyExpression(propDef.initializer.exp);
-                                                   ComputeExpression(computed);
-
-                                                   if(computed.isConstant && computed.type == instanceExp && !id.next)
+                                                   switch(computed.type)
                                                    {
-                                                      if(prop.Set)
-                                                      {
-                                                         if(computed.instance._class && computed.instance._class.symbol &&
-                                                            computed.instance._class.symbol.registered &&
-                                                            eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
+                                                      case stringExp:
+                                                         if(propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                          {
-                                                            ((void (*)(void *, void *))(void *)prop.Set)(instance, computed.instance.data);
+                                                            String temp = new char[strlen(computed.string)+1];
+                                                            ReadString(temp, computed.string);
+                                                            ((void (*)(void *, void *))(void *)prop.Set)(instance, temp);
+                                                            delete temp;
 
-                                                            // This was saved in the control and shouldn't be freed by FreeExpression...
-                                                            // (Not doing this anymore, incrementing refCount in pass15 instead)
-                                                            /*if(propertyClass.type == normalClass)
-                                                               computed.instance.data = null;*/
+                                                            if(propDef.initializer.exp.intlString)
+                                                            {
+                                                               Map<String, bool> i18nStrings = classObject.i18nStrings;
+                                                               if(!i18nStrings)
+                                                                  classObject.i18nStrings = i18nStrings = { };
+                                                               i18nStrings[prop.name] = true;
+                                                            }
+                                                            variable = false;
                                                          }
-                                                      }
-                                                   }
-                                                   // MOVED THIS UP NOW THAT char * IS A NORMAL CLASS
-                                                   else if(computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
-                                                   {
-                                                      String temp = new char[strlen(computed.string)+1];
-                                                      ReadString(temp, computed.string);
-                                                      ((void (*)(void *, void *))(void *)prop.Set)(instance, temp);
-                                                      delete temp;
-                                                   }
-                                                   else
-                                                      propDef.variable = true;
+                                                         break;
+                                                      case instanceExp:
+                                                         if((propertyClass.type == structClass || propertyClass.type == noHeadClass || propertyClass.type == normalClass) && !id.next)
+                                                         {
+                                                            if(prop.Set)
+                                                            {
+                                                               if(computed.instance._class && computed.instance._class.symbol &&
+                                                                  computed.instance._class.symbol.registered &&
+                                                                  eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
+                                                               {
+                                                                  ((void (*)(void *, void *))(void *)prop.Set)(instance, computed.instance.data);
 
-                                                   FreeExpression(computed);
-                                                }
-                                                else
-                                                {
-                                                   Expression computed = CopyExpression(propDef.initializer.exp);
-                                                   ComputeExpression(computed);
-                                                   if(computed.isConstant)
-                                                   {
-                                                      //if(computed.type == memberExp) computed = computed.member.exp;
-
-                                                      if(computed.type == constantExp)
+                                                                  // This was saved in the control and shouldn't be freed by FreeExpression...
+                                                                  // (Not doing this anymore, incrementing refCount in pass15 instead)
+                                                                  /*if(propertyClass.type == normalClass)
+                                                                     computed.instance.data = null;*/
+                                                               }
+                                                            }
+                                                            variable = false;
+                                                         }
+                                                         break;
+                                                      case constantExp:
                                                       {
                                                          Operand value = GetOperand(computed);
                                                          DataValue valueData;
                                                          valueData.i64 = value.i64;
                                                          SetProperty(prop, instance, valueData);
-                                                      }
-                                                      else if(computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
-                                                      {
-                                                         String temp = new char[strlen(computed.string)+1];
-                                                         ReadString(temp, computed.string);
-                                                         ((void (*)(void *, void *))(void *)prop.Set)(instance, temp);
-                                                         delete temp;
+                                                         variable = false;
+                                                         break;
                                                       }
                                                    }
-                                                   else
-                                                      propDef.variable = true;
-
-                                                   FreeExpression(computed);
                                                 }
+                                                if(variable)
+                                                   propDef.variable = true;
+                                                FreeExpression(computed);
                                              }
-                                             else
-                                                propDef.variable = true;
                                           }
                                           else
                                           {
@@ -3253,6 +3249,7 @@ class CodeEditor : Window
                                                                {
                                                                   Property prop = (Property) curMember;
                                                                   Class propertyClass = prop.dataTypeClass;
+                                                                  bool variable = false;
                                                                   if(!propertyClass)
                                                                      propertyClass = prop.dataTypeClass = eSystem_FindClass(this.privateModule, prop.dataTypeString);
 
@@ -3262,75 +3259,53 @@ class CodeEditor : Window
                                                                      member.initializer.exp.destType = MkClassType(propertyClass.name);
                                                                      if(propertyClass)
                                                                      {
+                                                                        Expression computed;
+
                                                                         ProcessExpressionType(member.initializer.exp);
 
-                                                                        if(propertyClass.type == structClass || propertyClass.type == normalClass || propertyClass.type == noHeadClass)
+                                                                        computed = CopyExpression(member.initializer.exp);
+                                                                        if(computed)
                                                                         {
-                                                                           Expression computed;
-#ifdef _DEBUG
-                                                                           /*char debugExpString[4096];
-                                                                           debugExpString[0] = '\0';
-                                                                           PrintExpression(member.initializer.exp, debugExpString);*/
-#endif
-                                                                           computed = CopyExpression(member.initializer.exp);
-                                                                           if(computed)
+                                                                           bool isClass = propertyClass.type == structClass || propertyClass.type == normalClass || propertyClass.type == noHeadClass;
                                                                            {
+#ifdef _DEBUG
+                                                                              /*char debugExpString[4096];
+                                                                              debugExpString[0] = '\0';
+                                                                              PrintExpression(member.initializer.exp, debugExpString);*/
+#endif
                                                                               ComputeExpression(computed);
 
-                                                                              if(computed.type == instanceExp && computed.isConstant && computed.isConstant)
+                                                                              switch(computed.type)
                                                                               {
-                                                                                 if(computed.instance.data)
-                                                                                 {
-                                                                                    if(computed.instance._class && computed.instance._class.symbol &&
-                                                                                       computed.instance._class.symbol.registered &&
-                                                                                       eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
+                                                                                 case instanceExp:
+                                                                                    if(isClass && computed.isConstant && computed.instance.data)
                                                                                     {
-                                                                                       ((void (*)(void *, void *))(void *)prop.Set)(control, computed.instance.data);
+                                                                                       if(computed.instance._class && computed.instance._class.symbol &&
+                                                                                          computed.instance._class.symbol.registered &&
+                                                                                          eClass_IsDerived(computed.instance._class.symbol.registered, propertyClass))
+                                                                                       {
+                                                                                          ((void (*)(void *, void *))(void *)prop.Set)(control, computed.instance.data);
 
-                                                                                       // This was saved in the control and shouldn't be freed by FreeExpression...
-                                                                                       // (Not doing this anymore, incrementing refCount in pass15 instead)
-                                                                                       /*if(propertyClass.type == normalClass)
-                                                                                          computed.instance.data = null;*/
+                                                                                          // This was saved in the control and shouldn't be freed by FreeExpression...
+                                                                                          // (Not doing this anymore, incrementing refCount in pass15 instead)
+                                                                                          /*if(propertyClass.type == normalClass)
+                                                                                             computed.instance.data = null;*/
+                                                                                       }
+                                                                                       variable = false;
                                                                                     }
-                                                                                 }
-                                                                              }
-                                                                              else if(computed.type == identifierExp)
-                                                                              {
-                                                                                 member.variable = true;
-
-                                                                                 if(eClass_GetDesigner(propertyClass))
-                                                                                 //if(prop.Set)
-                                                                                 {
-                                                                                    char * name = computed.identifier.string;
-                                                                                    if(!strcmp(name, "this"))
+                                                                                    break;
+                                                                                 case identifierExp:
+                                                                                    if(isClass && eClass_GetDesigner(propertyClass))
+                                                                                    //if(prop.Set)
                                                                                     {
-                                                                                       if(prop.Set)
-                                                                                          ((void (*)(void *, void *))(void *)prop.Set)(control, instance);
-                                                                                       member.variable = false;
-                                                                                    }
-                                                                                    else
-                                                                                    {
-                                                                                       ObjectInfo check;
-                                                                                       for(check = classObject.instances.first; check; check = check.next)
-                                                                                          if(check.name && !strcmp(name, check.name))
-                                                                                          {
-                                                                                             if(prop.Set)
-                                                                                                ((void (*)(void *, void *))(void *)prop.Set)(control, check.instance);
-                                                                                             member.variable = false;
-                                                                                             break;
-                                                                                          }
-                                                                                    }
-                                                                                 }
-                                                                              }
-                                                                              else if(computed.type == memberExp)
-                                                                              {
-                                                                                 member.variable = true;
-                                                                                 if(computed.member.exp.type == identifierExp)
-                                                                                 {
-                                                                                    char * name = computed.member.exp.identifier.string;
-                                                                                    if(!strcmp(name, "this"))
-                                                                                    {
-                                                                                       char * name = computed.member.member.string;
+                                                                                       char * name = computed.identifier.string;
+                                                                                       if(!strcmp(name, "this"))
+                                                                                       {
+                                                                                          if(prop.Set)
+                                                                                             ((void (*)(void *, void *))(void *)prop.Set)(control, instance);
+                                                                                          variable = false;
+                                                                                       }
+                                                                                       else
                                                                                        {
                                                                                           ObjectInfo check;
                                                                                           for(check = classObject.instances.first; check; check = check.next)
@@ -3338,80 +3313,94 @@ class CodeEditor : Window
                                                                                              {
                                                                                                 if(prop.Set)
                                                                                                    ((void (*)(void *, void *))(void *)prop.Set)(control, check.instance);
-                                                                                                member.variable = false;
+                                                                                                variable = false;
                                                                                                 break;
                                                                                              }
                                                                                        }
                                                                                     }
-                                                                                    else
+                                                                                    break;
+                                                                                 case memberExp:
+                                                                                    if(isClass)
                                                                                     {
-                                                                                       ObjectInfo check;
-                                                                                       for(check = classObject.instances.first; check; check = check.next)
+                                                                                       if(computed.member.exp.type == identifierExp)
                                                                                        {
-                                                                                          if(check.name && !strcmp(name, check.name))
+                                                                                          char * name = computed.member.exp.identifier.string;
+                                                                                          ObjectInfo check;
+                                                                                          if(!strcmp(name, "this"))
                                                                                           {
-                                                                                             Property getProperty = eClass_FindProperty(check.instance._class, computed.member.member.string, this.privateModule);
-                                                                                             if(getProperty)
+                                                                                             char * name = computed.member.member.string;
+                                                                                             ObjectInfo check;
+                                                                                             for(check = classObject.instances.first; check; check = check.next)
+                                                                                                if(check.name && !strcmp(name, check.name))
+                                                                                                {
+                                                                                                   if(prop.Set)
+                                                                                                      ((void (*)(void *, void *))(void *)prop.Set)(control, check.instance);
+                                                                                                   variable = false;
+                                                                                                   break;
+                                                                                                }
+                                                                                          }
+                                                                                          else
+                                                                                          {
+                                                                                             for(check = classObject.instances.first; check; check = check.next)
                                                                                              {
-                                                                                                DataValue value { };
-                                                                                                GetProperty(getProperty, check.instance, &value);
-                                                                                                SetProperty(prop, control, value);
-                                                                                                member.variable = false;
+                                                                                                if(check.name && !strcmp(name, check.name))
+                                                                                                {
+                                                                                                   Property getProperty = eClass_FindProperty(check.instance._class, computed.member.member.string, this.privateModule);
+                                                                                                   if(getProperty)
+                                                                                                   {
+                                                                                                      DataValue value { };
+                                                                                                      GetProperty(getProperty, check.instance, &value);
+                                                                                                      SetProperty(prop, control, value);
+                                                                                                      variable = false;
+                                                                                                   }
+                                                                                                   break;
+                                                                                                }
                                                                                              }
-                                                                                             break;
                                                                                           }
                                                                                        }
                                                                                     }
-                                                                                 }
-                                                                              }
-                                                                              // MOVED THIS UP NOW THAT char * IS A NORMAL CLASS
-                                                                              else if(computed.isConstant && computed.type == stringExp && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
-                                                                              {
-                                                                                 String temp = new char[strlen(computed.string)+1];
-                                                                                 ReadString(temp, computed.string);
-                                                                                 ((void (*)(void *, void *))(void *)prop.Set)(control, temp);
-                                                                                 delete temp;
-                                                                              }
-                                                                              else
-                                                                                 member.variable = true;
+                                                                                    break;
+                                                                                 case stringExp:
+                                                                                    if(propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
+                                                                                    {
+                                                                                       String temp = new char[strlen(computed.string)+1];
+                                                                                       ReadString(temp, computed.string);
+                                                                                       ((void (*)(void *, void *))(void *)prop.Set)(control, temp);
+                                                                                       delete temp;
 
-                                                                              FreeExpression(computed);
+                                                                                       if(member.initializer.exp.intlString)
+                                                                                       {
+                                                                                          Map<String, bool> i18nStrings = object.i18nStrings;
+                                                                                          if(!i18nStrings)
+                                                                                             object.i18nStrings = i18nStrings = { };
+                                                                                          i18nStrings[prop.name] = true;
+                                                                                       }
+
+                                                                                       variable = false;
+                                                                                    }
+                                                                                    break;
+                                                                                 case constantExp:
+                                                                                    if(computed.isConstant)
+                                                                                    {
+                                                                                       if((!propertyClass.dataTypeString || strcmp(propertyClass.dataTypeString, "char *")))
+                                                                                       {
+                                                                                          if(!strcmp(propertyClass.dataTypeString, "float"))
+                                                                                             ((void (*)(void *, float))(void *)prop.Set)(control, (float)strtod(computed.constant, null));
+                                                                                          else if(!strcmp(propertyClass.dataTypeString, "double"))
+                                                                                             ((void (*)(void *, double))(void *)prop.Set)(control, strtod(computed.constant, null));
+                                                                                          else
+                                                                                             ((void (*)(void *, int))(void *)prop.Set)(control, strtol(computed.constant, null, 0));
+                                                                                          variable = false;
+                                                                                       }
+                                                                                    }
+                                                                                    break;
+                                                                              }
                                                                            }
                                                                         }
-                                                                        else
-                                                                        {
-                                                                           Expression computed = CopyExpression(member.initializer.exp);
-                                                                           if(computed)
-                                                                           {
-                                                                              ComputeExpression(computed);
-                                                                              if(computed.isConstant)
-                                                                              {
-                                                                                 if(computed.type == constantExp && (!propertyClass.dataTypeString || strcmp(propertyClass.dataTypeString, "char *"))) //(strcmp(propertyClass.name, "char *") && (strcmp(propertyClass.name, "String"))))
-                                                                                 {
-                                                                                    if(!strcmp(propertyClass.dataTypeString, "float"))
-                                                                                       ((void (*)(void *, float))(void *)prop.Set)(control, (float)strtod(computed.constant, null));
-                                                                                    else if(!strcmp(propertyClass.dataTypeString, "double"))
-                                                                                       ((void (*)(void *, double))(void *)prop.Set)(control, strtod(computed.constant, null));
-                                                                                    else
-                                                                                       ((void (*)(void *, int))(void *)prop.Set)(control, strtol(computed.constant, null, 0));
-                                                                                 }
-                                                                                 else if(computed.type == stringExp  && propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
-                                                                                 {
-                                                                                    String temp = new char[strlen(computed.string)+1];
-                                                                                    ReadString(temp, computed.string);
-                                                                                    ((void (*)(void *, void *))(void *)prop.Set)(control, temp);
-                                                                                    delete temp;
-                                                                                 }
-                                                                              }
-                                                                              else
-                                                                                 member.variable = true;
-
-                                                                              FreeExpression(computed);
-                                                                           }
-                                                                        }
+                                                                        FreeExpression(computed);
                                                                      }
                                                                   }
-                                                                  else
+                                                                  if(variable)
                                                                      member.variable = true;
                                                                }
                                                                else if(ident && member.initializer && member.initializer.type == expInitializer && member.initializer.exp &&
@@ -3695,7 +3684,12 @@ class CodeEditor : Window
 
                            if(!strcmp(dataType.dataTypeString, "char *"))
                            {
-                              f.Printf("\"");
+                              Map<String, bool> i18nStrings = object.i18nStrings;
+                              bool i18n = false;
+                              if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false))
+                                 i18n = true;
+
+                              f.Printf("%s\"", i18n ? "$" : "");
                               OutputString(f, string);
                               f.Puts("\"");
                            }
@@ -4396,7 +4390,12 @@ class CodeEditor : Window
 
                         if(!strcmp(dataType.dataTypeString, "char *"))
                         {
-                           f.Printf("\n   %s%s = \"", specify ? "property::" : "", prop.name);
+                           Map<String, bool> i18nStrings = classObject.i18nStrings;
+                           bool i18n = false;
+                           if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false))
+                              i18n = true;
+
+                           f.Printf("\n   %s%s = %s\"", specify ? "property::" : "", prop.name, i18n ? "$" : "");
                            OutputString(f, string);
                            f.Puts("\";");
                         }
@@ -5472,6 +5471,11 @@ class CodeEditor : Window
       object.deleted = true;
       object.modified = true;
       object.oClass.modified = true;
+      if(object.i18nStrings)
+      {
+         Map<String, bool> i18nStrings = object.i18nStrings;
+         delete i18nStrings;
+      }
 
       if(selected == object)
       {

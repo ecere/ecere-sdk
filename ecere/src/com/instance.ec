@@ -6465,6 +6465,7 @@ public:
    OldList instances;
    ClassDefinition classDefinition;
    bool modified;
+   void * i18nStrings;
 };
 
 public class DesignerBase : Window

@@ -431,7 +431,11 @@ public:
       };
       Statement compound;
       Instantiation instance;
-      char * string;
+      struct
+      {
+         char * string;
+         bool intlString;
+      };
       OldList * list;
       struct
       {

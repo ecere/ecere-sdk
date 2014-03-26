@@ -277,47 +277,56 @@ Map<ContextStringPair, List<Location>> intlStrings { };
 
 Expression MkExpIntlString(char * string, char * context)
 {
-   OldList * list = MkList();
    if(inCompiler)
    {
-      ContextStringPair pair { };
-      List<Location> list;
-      int len = strlen(string);
-
-      pair.string = new byte[len-2+1]; memcpy(pair.string, string+1, len-2); pair.string[len-2] = '\0';
-      if(context) { len = strlen(context); pair.context = new byte[len-2+1]; memcpy(pair.context, context+1, len-2); pair.context[len-2] = '\0'; }
-
-      list = intlStrings[pair];
-      if(!list)
+      OldList * list = MkList();
+      if(inCompiler)
       {
-         list = { };
-         intlStrings[pair] = list;
+         ContextStringPair pair { };
+         List<Location> list;
+         int len = strlen(string);
+
+         pair.string = new byte[len-2+1]; memcpy(pair.string, string+1, len-2); pair.string[len-2] = '\0';
+         if(context) { len = strlen(context); pair.context = new byte[len-2+1]; memcpy(pair.context, context+1, len-2); pair.context[len-2] = '\0'; }
+
+         list = intlStrings[pair];
+         if(!list)
+         {
+            list = { };
+            intlStrings[pair] = list;
+         }
+         else
+         {
+            delete pair.string;
+            delete pair.context;
+         }
+         list.Add(yylloc);
+      }
+      //ListAdd(list, QMkExpId("__thisModule"));
+      ListAdd(list, MkExpString(QMkString(i18nModuleName ? i18nModuleName : "")));
+      ListAdd(list, MkExpString(string));
+      if(context)
+      {
+         int lenString = strlen(string), lenContext = strlen(context);
+         char * msgid = new char[lenString-2 + lenContext-2 + 4];
+         msgid[0] = '\"';
+         memcpy(msgid+1, context+1, lenContext-2);
+         msgid[1+lenContext-2] = 4; // EOT
+         memcpy(msgid+1+lenContext-2+1, string+1, lenString-2);
+         memcpy(msgid+1+lenContext-2+1+lenString-2, "\"", 2);
+         ListAdd(list, MkExpString(msgid));
+         delete msgid;
       }
       else
-      {
-         delete pair.string;
-         delete pair.context;
-      }
-      list.Add(yylloc);
-   }
-   //ListAdd(list, QMkExpId("__thisModule"));
-   ListAdd(list, MkExpString(QMkString(i18nModuleName ? i18nModuleName : "")));
-   ListAdd(list, MkExpString(string));
-   if(context)
-   {
-      int lenString = strlen(string), lenContext = strlen(context);
-      char * msgid = new char[lenString-2 + lenContext-2 + 4];
-      msgid[0] = '\"';
-      memcpy(msgid+1, context+1, lenContext-2);
-      msgid[1+lenContext-2] = 4; // EOT
-      memcpy(msgid+1+lenContext-2+1, string+1, lenString-2);
-      memcpy(msgid+1+lenContext-2+1+lenString-2, "\"", 2);
-      ListAdd(list, MkExpString(msgid));
-      delete msgid;
+         ListAdd(list, QMkExpId("null"));
+      return MkExpCall(QMkExpId("GetTranslatedString"), list);
    }
    else
-      ListAdd(list, QMkExpId("null"));
-   return MkExpCall(QMkExpId("GetTranslatedString"), list);
+   {
+      Expression e = MkExpString(string);
+      e.intlString = true;
+      return e;
+   }
 }
 
 Expression MkExpOp(Expression exp1, int op, Expression exp2)

@@ -266,7 +266,11 @@ struct Identifier * identifier;
 } __attribute__ ((gcc_struct));
 struct Statement * compound;
 struct Instantiation * instance;
+struct
+{
 char *  string;
+unsigned int intlString;
+} __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
@@ -1055,8 +1059,9 @@ if(regClass && regClass->type == 2)
 struct Expression * sizeExp = (d->type == 0) ? d->structDecl.exp : (((void *)0));
 struct Expression * posExp = (d->type == 0) ? d->structDecl.posExp : (((void *)0));
 int bitSize = 0, bitPos = -1;
-char dataTypeString[1024] = "";
+char dataTypeString[8192];
 
+dataTypeString[0] = (char)0;
 if(sizeExp)
 {
 ProcessExpressionType(sizeExp);
@@ -1101,8 +1106,9 @@ FreeType(dataType);
 else
 {
 {
-char typeString[1024] = "";
+char typeString[8192];
 
+typeString[0] = (char)0;
 dataType = ProcessType(decl->specifiers, d);
 PrintType(dataType, typeString, 0x0, 0x1);
 if(member)
@@ -1152,8 +1158,9 @@ else if(spec->definitions && spec->id)
 {
 {
 struct Identifier * id = spec->id;
-char typeString[1024] = "";
+char typeString[8192];
 
+typeString[0] = (char)0;
 spec->id = (((void *)0));
 decl->declarators = MkListOne(MkDeclaratorIdentifier(id));
 dataType = ProcessType(decl->specifiers, (((void *)0)));

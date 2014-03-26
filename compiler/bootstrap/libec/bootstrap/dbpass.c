@@ -368,7 +368,11 @@ struct Identifier * identifier;
 } __attribute__ ((gcc_struct));
 struct Statement * compound;
 struct Instantiation * instance;
+struct
+{
 char *  string;
+unsigned int intlString;
+} __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {

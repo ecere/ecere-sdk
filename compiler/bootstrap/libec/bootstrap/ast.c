@@ -394,7 +394,11 @@ struct Identifier * identifier;
 } __attribute__ ((gcc_struct));
 struct Statement * compound;
 struct Instantiation * instance;
+struct
+{
 char *  string;
+unsigned int intlString;
+} __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
@@ -1575,6 +1579,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct Expression * MkExpIntlString(char * string, char * context)
 {
+if(inCompiler)
+{
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
 if(inCompiler)
@@ -1647,6 +1653,14 @@ ListAdd(list, MkExpString(msgid));
 else
 ListAdd(list, QMkExpId("null"));
 return MkExpCall(QMkExpId("GetTranslatedString"), list);
+}
+else
+{
+struct Expression * e = MkExpString(string);
+
+e->intlString = 0x1;
+return e;
+}
 }
 
 struct Expression * MkExpOp(struct Expression * exp1, int op, struct Expression * exp2)
