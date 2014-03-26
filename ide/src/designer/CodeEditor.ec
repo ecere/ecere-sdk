@@ -3407,9 +3407,9 @@ class CodeEditor : Window
                                                                                     }
                                                                                     break;
                                                                                  case constantExp:
-                                                                                    if(computed.isConstant)
+                                                                                    if(!isClass && computed.isConstant)
                                                                                     {
-                                                                                       if((!propertyClass.dataTypeString || strcmp(propertyClass.dataTypeString, "char *")))
+                                                                                       if(!propertyClass.dataTypeString)
                                                                                        {
                                                                                           if(!strcmp(propertyClass.dataTypeString, "float"))
                                                                                              ((void (*)(void *, float))(void *)prop.Set)(control, (float)strtod(computed.constant, null));
