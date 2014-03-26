@@ -349,7 +349,7 @@ static class DelTextAction : UndoAction
 {
    int y1, x1, y2, x2;
    char * string;
-   bool placeAfter;
+   bool placeAfter, noHighlight;
    int addedSpaces;
    type = class(DelTextAction);
 
@@ -367,8 +367,11 @@ static class DelTextAction : UndoAction
       if(!placeAfter)
       {
          editBox.GoToPosition(null, y1, x1);
-         editBox.selY = y2;
-         editBox.selX = x2;
+         if(!noHighlight)
+         {
+            editBox.selY = y2;
+            editBox.selX = x2;
+         }
          { int c; editBox.selLine = editBox.lines.first; for(c = 0; c < editBox.selY && editBox.selLine; c++, editBox.selLine = editBox.selLine.next); }
          //editBox.SetViewToCursor(true);
 
@@ -377,8 +380,11 @@ static class DelTextAction : UndoAction
       }
       else
       {
-         editBox.selY = y1;
-         editBox.selX = x1;
+         if(!noHighlight)
+         {
+            editBox.selY = y1;
+            editBox.selX = x1;
+         }
          { int c; editBox.selLine = editBox.lines.first; for(c = 0; c < editBox.selY && editBox.selLine; c++, editBox.selLine = editBox.selLine.next); }
          //editBox.SetViewToCursor(true);
 
@@ -2161,7 +2167,7 @@ private:
 
    int DelCh(EditLine l1, int y1, int c1, EditLine l2, int y2, int c2, bool placeAfter)
    {
-      return _DelCh(l1, y1, c1, l2, y2, c2, placeAfter, null);
+      return _DelCh(l1, y1, c1, l2, y2, c2, placeAfter, true, null);
    }
 
    bool HasCommentOrEscape(EditLine line)
@@ -2186,7 +2192,7 @@ private:
       return hadComment;
    }
 
-   int _DelCh(EditLine l1, int y1, int c1, EditLine l2, int y2, int c2, bool placeAfter, int * addedSpacesPtr)
+   int _DelCh(EditLine l1, int y1, int c1, EditLine l2, int y2, int c2, bool placeAfter, bool highlight, int * addedSpacesPtr)
    {
       EditLine line = l1, next;
       char * buffer;
@@ -2235,7 +2241,7 @@ private:
 
          len = GetText(null, l1, y1, start, l2, y2, c2, false, false);
          string = new char[len];
-         action = DelTextAction { y1 = y1, x1 = start, y2 = y2, x2 = c2, string = string, placeAfter = placeAfter };
+         action = DelTextAction { y1 = y1, x1 = start, y2 = y2, x2 = c2, string = string, placeAfter = placeAfter, noHighlight = !highlight };
          GetText(string, l1, y1, start, l2, y2, c2, false, false);
          Record(action);
       }
@@ -2407,28 +2413,28 @@ private:
       {
          if(this.selY < this.y)
          {
-            _DelCh(this.selLine, this.selY, this.selX, this.line, this.y, this.x, true, addedSpacesPtr);
+            _DelCh(this.selLine, this.selY, this.selX, this.line, this.y, this.x, true, true, addedSpacesPtr);
             this.x = this.selX;
             this.y = this.selY;
             this.line = this.selLine;
          }
          else if(this.selY > this.y)
          {
-            _DelCh(this.line, this.y, this.x, this.selLine, this.selY, this.selX, false, addedSpacesPtr);
+            _DelCh(this.line, this.y, this.x, this.selLine, this.selY, this.selX, false, true, addedSpacesPtr);
             this.selX = this.x;
             this.selY = this.y;
             this.selLine = this.line;
          }
          else if(this.selX < this.x)
          {
-            _DelCh(this.selLine, this.selY, this.selX, this.line, this.y, this.x, true, addedSpacesPtr);
+            _DelCh(this.selLine, this.selY, this.selX, this.line, this.y, this.x, true, true, addedSpacesPtr);
             this.x = this.selX;
             this.y = this.selY;
             this.line = this.selLine;
          }
          else
          {
-            _DelCh(this.line, this.y, this.x, this.selLine, this.selY, this.selX, false, addedSpacesPtr);
+            _DelCh(this.line, this.y, this.x, this.selLine, this.selY, this.selX, false, true, addedSpacesPtr);
             this.selX = this.x;
             this.selY = this.y;
             this.selLine = this.line;
@@ -3564,7 +3570,7 @@ private:
                int c;
                for(y = this.y; y>= 0; y--)
                {
-                  c = (y == this.y) ? (this.x-1) : line.count-1;
+                  c = (y == this.y) ? (Min(this.x-1, line.count-1)) : line.count-1;
 
                   // Slow down when going on lines...
                   if(y != this.y) break;
@@ -3591,9 +3597,10 @@ private:
                   else
                      break;
                }
+
                //if(this.x != 0)
                {
-                  DelCh(line,y,c+1,this.line,this.y,this.x, true);
+                  _DelCh(line, y, c+1, this.line, this.y, this.x, true, false, null);
                   this.x = this.selX = Min(c+1, line.count);
                   this.y = this.selY = y;
                   this.line = this.selLine = line;
@@ -3624,51 +3631,53 @@ private:
                   SetViewToCursor(true);
                   Modified();
                }
-               // Delete word
-               else if(key.ctrl)
-               {
-                  if(this.x < this.line.count)
-                  {
-                     int i;
-                     int length;
-                     for(i = this.x; i < this.line.count; i++)
-                     {
-                        if(!IS_ALUNDER(this.line.buffer[i]))
-                           break;
-                     }
-
-                     for(; i < this.line.count; i++)
-                     {
-                        //Delete trailing whitespace
-                        if(IS_ALUNDER(this.line.buffer[i]))
-                           break;
-                     }
-                     DelCh(this.line, this.y, this.x, this.line, this.y, i, false);
-                     SetViewToCursor(true);
-                     Modified();
-                  }
-                  else if(this.line.next)
-                  {
-                     DelCh(this.line, this.y, this.x, this.line.next, this.y+1, 0, false);
-                     SetViewToCursor(true);
-                     Modified();
-                  }
-               }
                else
                {
-                  if(!(style.freeCaret))
+                  EditLine line1 = this.line, line2 = this.line;
+                  int x1, y1 = this.y, x2, y2 = this.y;
+                  if(!style.freeCaret)
                   {
                      this.selX = this.x = Min(this.x, this.line.count);
                      ComputeColumn();
                   }
-                  if(this.x < this.line.count)
+                  x1 = this.x;
+
+                  if(x1 < line1.count)
                   {
-                     DelCh(this.line, this.y, this.x, this.line, this.y, this.x+1, false);
+                     // Delete word
+                     if(key.ctrl)
+                     {
+                        int i;
+                        int length;
+                        char * buffer = line1.buffer;
+                        for(i = x1; i < line1.count; i++)
+                        {
+                           if(!IS_ALUNDER(buffer[i]))
+                              break;
+                        }
+
+                        for(; i < line1.count; i++)
+                        {
+                           // Delete trailing whitespace
+                           if(IS_ALUNDER(buffer[i]))
+                              break;
+                        }
+                        x2 = i;
+                     }
+                     else
+                        x2 = x1 + 1;
                   }
-                  else if(this.line.next)
+                  else
                   {
-                     DelCh(this.line, this.y, this.x, this.line.next, this.y+1, 0, false);
+                     // Avoid creating trailing spaces if there is no content on next line
+                     line2 = line1.next;
+                     y2++;
+                     if(line2 && !line2.count)
+                        x1 = line1.count;
+                     x2 = 0;
                   }
+                  if(line2)
+                     _DelCh(line1, y1, x1, line2, y2, x2, false, false, null);
                   SetViewToCursor(true);
                   Modified();
                }
@@ -3685,6 +3694,8 @@ private:
                bool stuffAfter = false;
                char * addString;
                int len = 0;
+               bool resetX = false;
+               int backX;
 
                if(style.stuckCaret) GoToEnd(true);
                if(style.readOnly) break;
@@ -3699,6 +3710,17 @@ private:
                   else
                      break;
                }
+
+               // Prevent adding trailing spaces if at the head of a line
+               if(c && c == this.x && c < this.line.count && this.x == this.selX && this.y == this.selY)
+               {
+                  position = 0;
+                  backX = this.x;
+                  this.x = 0;
+                  this.selX = 0;
+                  resetX = true;
+               }
+
                if(!line.count)
                   position = x;
 
@@ -3745,7 +3767,24 @@ private:
                }
                if(AddS(addString))
                {
-                  if(!stuffAfter && style.freeCaret)
+                  /*EditLine prevLine = this.line.prev;
+                  if(prevLine)
+                  {
+                     // Nuke spaces if that is all that is left on previous line
+                     int i;
+                     char * buffer = prevLine.buffer;
+                     for(i = 0; i < prevLine.count; i++)
+                        if(buffer[i] != ' ' && buffer[i] != '\t')
+                           break;
+                     if(i == prevLine.count)
+                        DelCh(prevLine, this.y - 1, 0, prevLine, this.y - 1, prevLine.count, false);
+                  }*/
+                  if(resetX)
+                  {
+                     this.x = this.selX = backX;
+                     ComputeColumn();
+                  }
+                  else if(!stuffAfter && style.freeCaret)
                   {
                      this.x = this.selX = position;
                      ComputeColumn();
@@ -5464,7 +5503,10 @@ public:
       {
          if(x > 0)
          {
-            x -= 1 + DelCh(line, y, x-1, line, y, x, true);
+            if(x > line.count)
+               x--;
+            else
+               x -= 1 + _DelCh(line, y, x-1, line, y, x, true, false, null);
             Modified();
          }
          else if(this.line.prev)
@@ -5473,7 +5515,7 @@ public:
             int x = line.count;
             int y = this.y;
 
-            DelCh(line, this.y-1, x, this.line, this.y, this.x, true);
+            _DelCh(line, this.y-1, x, this.line, this.y, this.x, true, false, null);
             this.line = line;
             this.y = y-1;
             this.x = x;
