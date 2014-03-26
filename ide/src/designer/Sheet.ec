@@ -1557,6 +1557,7 @@ public:
             void * dataPtr, * data = null, * subData = null;
             DataValue valueData, valueSubData;
             uint64 bitValue;
+            bool isEditBoxMultiLineContents = false;
 
             // Get main prop
             if(dataType.type == structClass)
@@ -1567,7 +1568,19 @@ public:
             }
             else
             {
-               GetProperty(prop, object, &valueData);
+               bool freeDataForm = false, freeDataTest = false;
+               // Because contents property is broken for mutiline EditBox at the moment
+               if(!strcmp(prop.name, "contents") && !strcmp(prop._class.name, "EditBox") && ((EditBox)object).multiLine)
+               {
+                  isEditBoxMultiLineContents = true;
+                  dataType = eSystem_FindClass(((Designer)GetActiveDesigner()).codeEditor.privateModule, "MultiLineString");
+                  valueData.p = ((EditBox)object).multiLineContents;
+                  dataBox.size.h = 3*(h-2);
+                  h = dataBox.clientSize.h;
+               }
+               else
+                  GetProperty(prop, object, &valueData);
+
                if(dataType.type == normalClass)
                   dataPtr = valueData.p;
                else
@@ -1626,6 +1639,9 @@ public:
 
             delete data;
             delete subData;
+
+            if(isEditBoxMultiLineContents)
+               delete valueData.p;
 
             editData.font = { font.faceName, font.size, font.bold };
             if(eClass_IsDerived(editData._class, class(DropBox)))
@@ -1726,6 +1742,10 @@ public:
          if(!mainDataType)
             mainDataType = prop.dataTypeClass = eSystem_FindClass(((Designer)GetActiveDesigner()).codeEditor.privateModule, prop.dataTypeString);
          dataType = mainDataType;
+
+         // Because contents property is broken for mutiline EditBox at the moment
+         if(!strcmp(prop.name, "contents") && !strcmp(prop._class.name, "EditBox") && ((EditBox)object).multiLine)
+            dataType = eSystem_FindClass(((Designer)GetActiveDesigner()).codeEditor.privateModule, "MultiLineString");
 
          // Prepare main prop
          if(dataType.type == structClass)
