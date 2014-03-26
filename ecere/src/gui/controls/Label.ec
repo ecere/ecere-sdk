@@ -20,7 +20,8 @@ public:
          Size size;
          if(window)
          {
-            stopwatching(window, text);
+            stopwatching(window, caption);
+            stopwatching(window, disabled);
             delete window;
          }
          window = value;
@@ -58,7 +59,8 @@ private:
    {
       if(window && (window == master || window == parent))
       {
-         stopwatching(window, text);
+         stopwatching(window, caption);
+         stopwatching(window, disabled);
          delete window;
       }
       CommonControl::OnDestroy();
@@ -68,7 +70,8 @@ private:
    {
       if(window)
       {
-         stopwatching(window, text);
+         stopwatching(window, caption);
+         stopwatching(window, disabled);
          delete window;
       }
    }
