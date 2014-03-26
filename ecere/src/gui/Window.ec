@@ -7266,19 +7266,28 @@ public:
          for(slave = slaves.first; slave; slave = slave.next)
          {
             Window w = slave.data;
-            if((w.parent == this || !w.IsDescendantOf(this)) && !w.CloseConfirmation(true))
+            if(w.parent != this && !w.IsDescendantOf(this) && !w.CloseConfirmation(true))
             {
-               // ((Window)slave.data).CloseConfirmation(true);
                result = false;
                break;
             }
          }
       }
 
+      // Confirm closure of active clients first (We use OnClose() to hide instead of destroy in the IDE)
       if(result)
       {
          for(child = children.first; child; child = child.next)
-            if(child.master != this && !child.CloseConfirmation(true))
+            if(child.isActiveClient && !child.CloseConfirmation(true))
+            {
+               result = false;
+               break;
+            }
+      }
+      if(result)
+      {
+         for(child = children.first; child; child = child.next)
+            if(!child.isActiveClient && !child.CloseConfirmation(true))
             {
                result = false;
                break;
