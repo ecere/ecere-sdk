@@ -269,7 +269,10 @@ class Designer : DesignerBase
       // Call class editor AddObject
       if(classDesigner)
          classDesigner.AddObject();
-       Activate();
+      if(visible)
+         Activate();
+      else
+         codeEditor.Activate();
    }
 
    void CreateObject(Instance instance, ObjectInfo object, bool isClass, Instance iclass)
