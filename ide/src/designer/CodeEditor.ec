@@ -196,6 +196,12 @@ static void OutputString(File f, char * string)
          f.Puts("\\\"");
       else if(string[c] == '\\')
          f.Puts("\\\\");
+      else if(string[c] == '\n')
+      {
+         f.Puts("\\n");
+         if(c > 30)
+            f.Puts("\"\n   \"");
+      }
       else
          f.Putc(string[c]);
    }
@@ -412,15 +418,36 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
       else if(dataType && dataType._vTbl && (dataType.type == normalClass || dataType.type == noHeadClass))
       {
          void * dataForm, * dataTest;
+         bool isEditBoxContents = false;
+         bool freeDataForm = false, freeDataTest = false;
 
-         dataForm = ((void *(*)(void *))(void *)prop.Get)(selected.instance);
-         dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
+         // Because contents property is broken for mutiline EditBox at the moment
+         if(!strcmp(prop.name, "contents") && !strcmp(prop._class.name, "EditBox"))
+            isEditBoxContents = true;
+
+         if(isEditBoxContents && ((EditBox)selected.instance).multiLine)
+         {
+            dataForm = ((EditBox)selected.instance).multiLineContents;
+            freeDataForm = true;
+         }
+         else
+            dataForm = ((void *(*)(void *))(void *)prop.Get)(selected.instance);
+         if(isEditBoxContents && ((EditBox)test).multiLine)
+         {
+            dataTest = ((EditBox)test).multiLineContents;
+            freeDataTest = true;
+         }
+         else
+            dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
 
          if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
          {
             ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
             result = true;
          }
+
+         if(freeDataForm) delete dataForm;
+         if(freeDataTest) delete dataTest;
       }
       else if(dataType && dataType._vTbl)
       {
@@ -3628,9 +3655,27 @@ class CodeEditor : Window
                   else if(dataType.type == normalClass || dataType.type == noHeadClass)
                   {
                      void * dataForm, * dataTest;
+                     bool isEditBoxContents = false;
+                     bool freeDataForm = false, freeDataTest = false;
 
-                     dataForm = ((void *(*)(void *))(void *)prop.Get)(control);
-                     dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
+                     // Because contents property is broken for mutiline EditBox at the moment
+                     if(!strcmp(prop.name, "contents") && !strcmp(prop._class.name, "EditBox"))
+                        isEditBoxContents = true;
+
+                     if(isEditBoxContents && ((EditBox)control).multiLine)
+                     {
+                        dataForm = ((EditBox)control).multiLineContents;
+                        freeDataForm = true;
+                     }
+                     else
+                        dataForm = ((void *(*)(void *))(void *)prop.Get)(control);
+                     if(isEditBoxContents && ((EditBox)test).multiLine)
+                     {
+                        dataTest = ((EditBox)test).multiLineContents;
+                        freeDataTest = true;
+                     }
+                     else
+                        dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
 
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
@@ -3701,6 +3746,9 @@ class CodeEditor : Window
                         *prev = true;
                         *lastIsMethod = false;
                      }
+
+                     if(freeDataForm) delete dataForm;
+                     if(freeDataTest) delete dataTest;
                   }
                   else
                   {
@@ -4367,9 +4415,27 @@ class CodeEditor : Window
                else if(dataType && (dataType.type == normalClass || dataType.type == noHeadClass))
                {
                   void * dataForm, * dataTest;
+                  bool isEditBoxContents = false;
+                  bool freeDataForm = false, freeDataTest = false;
 
-                  dataForm = ((void *(*)(void *))(void *)prop.Get)(classObject.instance);
-                  dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
+                  // Because contents property is broken for mutiline EditBox at the moment
+                  if(!strcmp(prop.name, "contents") && !strcmp(prop._class.name, "EditBox"))
+                     isEditBoxContents = true;
+
+                  if(isEditBoxContents && ((EditBox)classObject.instance))
+                  {
+                     dataForm = ((EditBox)classObject.instance).multiLineContents;
+                     freeDataForm = true;
+                  }
+                  else
+                     dataForm = ((void *(*)(void *))(void *)prop.Get)(classObject.instance);
+                  if(isEditBoxContents && ((EditBox)test).multiLine)
+                  {
+                     dataTest = ((EditBox)test).multiLineContents;
+                     freeDataTest = true;
+                  }
+                  else
+                     dataTest = ((void *(*)(void *))(void *)prop.Get)(test);
 
                   if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
@@ -4405,6 +4471,8 @@ class CodeEditor : Window
                            f.Printf("\n   %s%s = %s;", specify ? "property::" : "", prop.name, string);
                      }
                   }
+                  if(freeDataForm) delete dataForm;
+                  if(freeDataTest) delete dataTest;
                }
                else if(dataType)
                {
