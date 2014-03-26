@@ -1970,6 +1970,7 @@ class CodeEditor : Window
          // Nuke trailing spaces
          EditLine line;
          int y = 0;
+         editBox.recordUndoEvent = true;
          for(line = editBox.firstLine; line; line = line.next, y++)
          {
             String buffer = line.text;
@@ -1978,6 +1979,7 @@ class CodeEditor : Window
             if(i < count - 1)
                editBox.Delete(line, y, i + 1, line, y, count);
          }
+         editBox.recordUndoEvent = false;
          return true;
       }
    };
@@ -4552,6 +4554,8 @@ class CodeEditor : Window
 
    	   updatingCode++;
 
+         editBox.recordUndoEvent = true;
+
          if(moveAttached)
          {
             movedFuncId = GetDeclId(function.declarator);
@@ -4969,6 +4973,8 @@ class CodeEditor : Window
 
             delete test;
          }
+
+         editBox.recordUndoEvent = false;
 
          updatingCode--;
          delete f;

@@ -179,6 +179,8 @@ public class UndoAction : struct
 {
 public:
    subclass(UndoAction) type;
+   bool continued;
+
    virtual void Undo(void * data) { type.Undo(this, data); }
    virtual void Redo(void * data) { type.Redo(this, data); }
 #ifdef _DEBUG
@@ -200,6 +202,8 @@ public:
    void * data;
    int dontRecord;
    bool insideRedo;
+   bool recordAsOne;
+   bool firstEvent;
 
    dontRecord = 0;
 
@@ -210,35 +214,43 @@ public:
 
    void Undo()
    {
-      dontRecord++;
-      if(curAction > 0)
+      bool continued = true;
+      while(curAction > 0 && continued)
       {
          UndoAction action = actions[--curAction];
+         dontRecord++;
+
 #ifdef _DEBUG
          /*Print("Undoing: ");
          action.Print(data);*/
 #endif
          action.Undo(data);
+         dontRecord--;
+
+         continued = curAction > 0 && actions[curAction-1].continued;
       }
-      dontRecord--;
    }
 
    void Redo()
    {
-      dontRecord++;
-      insideRedo = true;
-      if(curAction < count)
+      bool continued = true;
+      while(curAction < count && continued)
       {
          UndoAction action = actions[curAction];
+         continued = action.continued;
+         dontRecord++;
+         insideRedo = true;
+
          curAction++;
 #ifdef _DEBUG
          /*Print("Redoing: ");
          action.Print(data);*/
 #endif
          action.Redo(data);
+
+         insideRedo = false;
+         dontRecord--;
       }
-      insideRedo = false;
-      dontRecord--;
    }
 
    void Record(UndoAction action)
@@ -261,6 +273,12 @@ public:
          /*Print("Recording: ");
          action.Print(data);*/
 #endif
+         if(recordAsOne)
+         {
+            if(!firstEvent && count > 0)
+               actions[count-1].continued = true;
+            firstEvent = false;
+         }
          actions[count++] = action;
          curAction = count;
 
@@ -878,6 +896,7 @@ public:
    property Color selectionColor { set { selectionColor = value; } get { return selectionColor; } isset { return selectionColor ? true : false; } };
    property Color selectionText  { set { selectionText = value; } get { return selectionText; } isset { return selectionText ? true : false; } };
    property SyntaxColorScheme syntaxColorScheme { set { delete colorScheme; colorScheme = value; incref colorScheme; } }
+   property bool recordUndoEvent { set { undoBuffer.recordAsOne = value; undoBuffer.firstEvent = true; } get { return undoBuffer.recordAsOne; } };
 
    // selectionStart.line, selectionStart.column (With Set)
    // selection.line1, selection.line2, selection.column1, selection.column2  (Read only)
@@ -3312,12 +3331,16 @@ private:
                               moveX = this.selX - this.x;
                         }
                      }
+
+                     recordUndoEvent = true;
                      DelSel(null);
                      this.dropX -= moveX;
                      this.selX = this.x = this.dropX;
                      this.selY = this.y = this.dropY;
                      this.selLine = this.line = this.dropLine;
                      AddS(text);
+                     recordUndoEvent = false;
+
                      SetViewToCursor(true);
                      delete text;
                      Modified();
@@ -3694,8 +3717,8 @@ private:
                bool stuffAfter = false;
                char * addString;
                int len = 0;
-               bool resetX = false;
-               int backX;
+               /*bool resetX = false;
+               int backX;*/
 
                if(style.stuckCaret) GoToEnd(true);
                if(style.readOnly) break;
@@ -3712,14 +3735,14 @@ private:
                }
 
                // Prevent adding trailing spaces if at the head of a line
-               if(c && c == this.x && c < this.line.count && this.x == this.selX && this.y == this.selY)
+               /*if(c && c == this.x && c < this.line.count && this.x == this.selX && this.y == this.selY)
                {
                   position = 0;
                   backX = this.x;
                   this.x = 0;
                   this.selX = 0;
                   resetX = true;
-               }
+               }*/
 
                if(!line.count)
                   position = x;
@@ -3765,9 +3788,10 @@ private:
                   }
                   addString[len] = '\0';
                }
+               recordUndoEvent = true;
                if(AddS(addString))
                {
-                  /*EditLine prevLine = this.line.prev;
+                  EditLine prevLine = this.line.prev;
                   if(prevLine)
                   {
                      // Nuke spaces if that is all that is left on previous line
@@ -3778,13 +3802,13 @@ private:
                            break;
                      if(i == prevLine.count)
                         DelCh(prevLine, this.y - 1, 0, prevLine, this.y - 1, prevLine.count, false);
-                  }*/
-                  if(resetX)
+                  }
+                  /*if(resetX)
                   {
                      this.x = this.selX = backX;
                      ComputeColumn();
                   }
-                  else if(!stuffAfter && style.freeCaret)
+                  else */if(!stuffAfter && style.freeCaret)
                   {
                      this.x = this.selX = position;
                      ComputeColumn();
@@ -3793,6 +3817,7 @@ private:
                   SetViewToCursor(true);
                   Modified();
                }
+               recordUndoEvent = false;
                delete addString;
                return false;
             }
@@ -5121,7 +5146,7 @@ public:
    void Delete(EditLine line1, int y1, int x1, EditLine line2, int y2, int x2)
    {
       Deselect();
-      DelCh(line1, y1, x1, line2, y2, x2, false);
+      _DelCh(line1, y1, x1, line2, y2, x2, false, false, null);
       SetViewToCursor(true);
       UpdateDirty();
       Modified();
@@ -6573,7 +6598,7 @@ public:
          start.AdjustDelete(pos, end);
          sel.AdjustDelete(pos, end);
 
-         editBox.DelCh(pos.line, pos.y, pos.x, end.line, end.y, end.x, true);
+         editBox._DelCh(pos.line, pos.y, pos.x, end.line, end.y, end.x, true, false, null);
       }
    }
 };
