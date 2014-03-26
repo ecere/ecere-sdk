@@ -1873,8 +1873,8 @@ class ProjectView : Window
                if(codeEditor && lineNumber)
                {
                   EditBox editBox = codeEditor.editBox;
-                  editBox.GoToLineNum(lineNumber - 1);
-                  editBox.GoToPosition(editBox.line, lineNumber - 1, col ? (col - 1) : 0);
+                  if(editBox.GoToLineNum(lineNumber - 1))
+                     editBox.GoToPosition(editBox.line, lineNumber - 1, col ? (col - 1) : 0);
                }
             }
          }

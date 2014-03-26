@@ -2510,8 +2510,8 @@ class IDEWorkSpace : Window
             editor.openedFileInfo.holdTracking = true;
             lineNumber = Max(editor.openedFileInfo.lineNumber - 1, 0);
             position = Max(editor.openedFileInfo.position - 1, 0);
-            editor.editBox.GoToLineNum(lineNumber);
-            editor.editBox.GoToPosition(editor.editBox.line, lineNumber, position);
+            if(editor.editBox.GoToLineNum(lineNumber))
+               editor.editBox.GoToPosition(editor.editBox.line, lineNumber, position);
             scroll.x = Max(editor.openedFileInfo.scroll.x, 0);
             scroll.y = Max(editor.openedFileInfo.scroll.y, 0);
             editor.editBox.scroll = scroll;

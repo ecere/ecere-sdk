@@ -905,8 +905,8 @@ class Debugger
          if(editor)
          {
             EditBox editBox = editor.editBox;
-            editBox.GoToLineNum(codloc.line - 1);
-            editBox.GoToPosition(editBox.line, codloc.line - 1, 0);
+            if(editBox.GoToLineNum(codloc.line - 1))
+               editBox.GoToPosition(editBox.line, codloc.line - 1, 0);
             return true;
          }
       }
