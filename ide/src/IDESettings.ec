@@ -529,6 +529,7 @@ private:
       delete projectDefaultIntermediateObjDir;
       delete compilerConfigsDir;
       delete defaultCompiler;
+      delete language;
 
       delete ideFileDialogLocation;
       delete ideProjectFileDialogLocation;

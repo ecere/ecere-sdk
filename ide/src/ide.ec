@@ -3441,6 +3441,7 @@ class IDEWorkSpace : Window
    {
       delete driverItems;
       delete skinItems;
+      delete languageItems;
       delete ideSettings;
       if(documentor)
       {
@@ -3684,7 +3685,7 @@ class IDEApp : GuiApplication
 
       SetInIDE(true);
 
-      desktop.text = titleECEREIDE;
+      desktop.caption = titleECEREIDE;
       /*
       int c;
       for(c = 1; c<app.argc; c++)
