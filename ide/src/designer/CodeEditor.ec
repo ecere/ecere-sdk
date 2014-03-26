@@ -1974,7 +1974,7 @@ class CodeEditor : Window
          {
             String buffer = line.text;
             int count = line.count, i = count-1;
-            while(i > 0 && isspace(buffer[i])) i--;
+            while(i >= 0 && isspace(buffer[i])) i--;
             if(i < count - 1)
                editBox.Delete(line, y, i + 1, line, y, count);
          }
