@@ -1959,6 +1959,29 @@ class CodeEditor : Window
    MenuItem { fileMenu, $"Save", s, Key { s, ctrl = true }, NotifySelect = MenuFileSave };
    MenuItem { fileMenu, $"Save As...", a, NotifySelect = MenuFileSaveAs };
 
+   Menu editMenu { menu, $"Edit", e };
+   MenuDivider { editMenu };
+   MenuItem clearTrailingSpacesItem
+   {
+      editMenu, $"Clear trailing spaces", t, Key { t, ctrl = true, shift = true };
+
+      bool NotifySelect(MenuItem selection, Modifiers mods)
+      {
+         // Nuke trailing spaces
+         EditLine line;
+         int y = 0;
+         for(line = editBox.firstLine; line; line = line.next, y++)
+         {
+            String buffer = line.text;
+            int count = line.count, i = count-1;
+            while(i > 0 && isspace(buffer[i])) i--;
+            if(i < count - 1)
+               editBox.Delete(line, y, i + 1, line, y, count);
+         }
+         return true;
+      }
+   };
+
    Menu debugMenu { menu, $"Debug", d };
    MenuItem debugRunToCursor                { debugMenu, $"Run To Cursor", c, ctrlF10,                                                                  id = RTCMenuBits { false, false, false }, NotifySelect = RTCMenu_NotifySelect; };
    MenuItem debugSkipRunToCursor            { debugMenu, $"Run To Cursor Skipping Breakpoints", u, Key { f10, ctrl = true, shift = true },              id = RTCMenuBits { true,  false, false }, NotifySelect = RTCMenu_NotifySelect; };
@@ -2232,21 +2255,6 @@ class CodeEditor : Window
                this.fileName = fileName;  // Put this here because the form designer will check for it...
             designer.fileName = fileName;
             designer.modifiedDocument = false;
-         }
-
-         if(editBox.syntaxHighlighting)
-         {
-            // Nuke trailing spaces
-            EditLine line;
-            int y = 0;
-            for(line = editBox.firstLine; line; line = line.next, y++)
-            {
-               String buffer = line.text;
-               int count = line.count, i = count-1;
-               while(i > 0 && isspace(buffer[i])) i--;
-               if(i < count - 1)
-                  editBox.Delete(line, y, i, line, y, count);
-            }
          }
 
          editBox.Save(f, false);

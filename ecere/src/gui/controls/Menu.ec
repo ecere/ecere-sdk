@@ -542,7 +542,7 @@ public:
                   }
                }
 
-               if(!beingMergedItem.isDivider || (previous.item && !previous.item.isDivider))
+               if(!beingMergedItem.isDivider || !previous || (previous.item && !previous.item.isDivider))
                {
                   mergeIntoItemPtr = ItemPtr { };
                   items.Insert(previous, mergeIntoItemPtr);
