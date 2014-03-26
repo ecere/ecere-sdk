@@ -1364,7 +1364,7 @@ class CodeEditor : Window
 
             //editBox.NotifyCaretMove(this, editBox, y, x);
             editBox.GoToLineNum(y);
-            editBox.GoToPosition(editBox.line, y, x);
+            editBox.GoToPosition(editBox.line, y, Min(x, editBox.line.count));
 
             classObject = selected ? selected.oClass : null;
 
