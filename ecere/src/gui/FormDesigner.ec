@@ -90,10 +90,9 @@ class FormDesigner : ClassDesignerBase
    {
       if(form)
       {
-         OnLeftButtonUp(
-            selected.absPosition.x - absPosition.x - clientStart.x + selected.clientStart.x + GridSnap,
-            selected.absPosition.y - absPosition.y - clientStart.y + selected.clientStart.y + GridSnap, 0);
-         Activate();
+         AddControl(form, GridSnap, GridSnap);
+         if(visible)
+            Activate();
       }
    }
 
@@ -566,6 +565,58 @@ class FormDesigner : ClassDesignerBase
       return true;
    }
 
+   void AddControl(Window parent, int x, int y)
+   {
+      char * objectClass = activeDesigner.objectClass;
+      ObjectInfo object;
+      Window control;
+      Class c = eSystem_FindClass(form._class.module, objectClass);
+      if(!c)
+         c = eSystem_FindClass(form._class.module.application, objectClass);
+      if(c)
+      {
+         control = (Window)eInstance_New(c);
+
+         activeDesigner.CodeAddObject(control, &object);
+
+         while(!parent.name)
+         {
+            x += parent.position.x + parent.clientStart.x;
+            y += parent.position.y + parent.clientStart.y;
+            parent = parent.parent;
+         }
+
+         control.object = object;
+
+         control.parent = parent;
+         control.master = form;
+
+         x -= x % GridSnap;
+         y -= y % GridSnap;
+
+         control.position.x = x;
+         control.position.y = y;
+         control.caption = object.name;
+
+         LockControls(control, control);
+
+         control.Create();
+         if(parent == form)
+         {
+            ObjectInfo previous = control.object;
+            while((previous = previous.prev) && ((Window)previous.instance).parent != form);
+            if(previous)
+               control.parent.children.Move(control, (Window)previous.instance);
+         }
+
+         activeDesigner.SheetAddObject(object);
+
+         //selected = control;
+         //activeDesigner.Update(null);
+         Update(null);
+      }
+   }
+
    bool OnLeftButtonUp(int x, int y, Modifiers mods)
    {
       if(moved)
@@ -581,55 +632,7 @@ class FormDesigner : ClassDesignerBase
          {
             Window parent = FindWindow(form, activeDesigner, null, x, y, true, &x, &y);
             if(parent)
-            {
-               ObjectInfo object;
-               Window control;
-               Class c = eSystem_FindClass(form._class.module, objectClass);
-               if(!c)
-                  c = eSystem_FindClass(form._class.module.application, objectClass);
-               if(c)
-               {
-                  control = (Window)eInstance_New(c);
-
-                  activeDesigner.CodeAddObject(control, &object);
-
-                  while(!parent.name)
-                  {
-                     x += parent.position.x + parent.clientStart.x;
-                     y += parent.position.y + parent.clientStart.y;
-                     parent = parent.parent;
-                  }
-
-                  control.object = object;
-
-                  control.parent = parent;
-                  control.master = form;
-
-                  x -= x % GridSnap;
-                  y -= y % GridSnap;
-
-                  control.position.x = x;
-                  control.position.y = y;
-                  control.caption = object.name;
-
-                  LockControls(control, control);
-
-                  control.Create();
-                  if(parent == form)
-                  {
-                     ObjectInfo previous = control.object;
-                     while((previous = previous.prev) && ((Window)previous.instance).parent != form);
-                     if(previous)
-                        control.parent.children.Move(control, (Window)previous.instance);
-                  }
-
-                  activeDesigner.SheetAddObject(object);
-
-                  //selected = control;
-                  //activeDesigner.Update(null);
-                  Update(null);
-               }
-            }
+               AddControl(parent, x, y);
          }
       }
       return true;
