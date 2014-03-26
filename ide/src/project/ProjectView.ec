@@ -1296,6 +1296,7 @@ class ProjectView : Window
    {
       CodeEditor codeEditor = CreateNew("Form", "form", "Window", null);
       codeEditor.EnsureUpToDate();
+      ide.RepositionWindows(false);
       return true;
    }
 
