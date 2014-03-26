@@ -615,7 +615,7 @@ static const yytype_uint16 yyprhs[] =
       90,    93,    95,    98,   101,   104,   107,   110,   113,   115,
      117,   121,   123,   127,   131,   133,   135,   139,   143,   145,
      149,   153,   157,   161,   163,   166,   169,   171,   173,   176,
-     179,   182,   185,   187,   190,   193,   195,   197,   200,   203,
+     179,   182,   185,   188,   191,   193,   195,   197,   200,   203,
      205,   208,   211,   214,   217,   219,   222,   225,   229,   234,
      240,   245,   249,   254,   257,   261,   266,   272,   277,   281,
      286,   292,   298,   303,   306,   310,   314,   318,   322,   325,
@@ -766,8 +766,8 @@ static const yytype_int16 yyrhs[] =
      126,   162,    -1,   163,   126,     1,    -1,   164,   126,     1,
       -1,   126,    -1,   163,   124,    -1,   164,   124,    -1,   165,
       -1,   159,    -1,   168,   165,    -1,   168,   159,    -1,   166,
-     165,    -1,   166,   159,    -1,   124,    -1,   168,   124,    -1,
-     166,   124,    -1,   166,    -1,   163,    -1,   166,   163,    -1,
+     165,    -1,   166,   159,    -1,   168,   124,    -1,   166,   124,
+      -1,   124,    -1,   166,    -1,   163,    -1,   166,   163,    -1,
      168,   163,    -1,   160,    -1,   167,   160,    -1,   168,   160,
       -1,   166,   160,    -1,   166,   164,    -1,   164,    -1,   163,
        1,    -1,   170,   127,    -1,   170,     1,   127,    -1,   301,
@@ -1247,134 +1247,134 @@ static const yytype_uint16 yyrline[] =
      597,   599,   601,   607,   609,   614,   619,   624,   626,   628,
      633,   634,   638,   639,   650,   654,   655,   657,   662,   663,
      665,   668,   680,   691,   710,   712,   717,   718,   719,   720,
-     721,   722,   723,   724,   725,   729,   730,   731,   732,   736,
-     737,   738,   739,   740,   741,   742,   746,   748,   753,   755,
-     757,   759,   761,   791,   793,   798,   800,   802,   804,   806,
-     835,   837,   839,   844,   846,   851,   853,   857,   859,   861,
-     863,   868,   871,   874,   877,   942,   944,   949,   951,   953,
-     955,   957,   988,   992,   993,   994,   998,   999,  1000,  1004,
-    1005,  1006,  1007,  1011,  1014,  1017,  1020,  1023,  1028,  1029,
-    1031,  1033,  1035,  1037,  1042,  1046,  1049,  1052,  1055,  1058,
-    1063,  1064,  1066,  1071,  1075,  1077,  1082,  1084,  1089,  1091,
-    1096,  1101,  1103,  1108,  1110,  1112,  1114,  1119,  1121,  1123,
-    1125,  1130,  1131,  1132,  1133,  1134,  1135,  1136,  1137,  1138,
-    1139,  1140,  1142,  1143,  1145,  1149,  1152,  1153,  1154,  1155,
-    1156,  1157,  1158,  1159,  1160,  1161,  1162,  1163,  1164,  1165,
-    1167,  1168,  1172,  1173,  1174,  1178,  1182,  1183,  1184,  1188,
-    1189,  1190,  1191,  1192,  1196,  1197,  1209,  1210,  1214,  1215,
-    1216,  1217,  1218,  1219,  1220,  1221,  1225,  1229,  1230,  1234,
-    1242,  1243,  1247,  1248,  1249,  1253,  1254,  1258,  1259,  1260,
-    1261,  1262,  1263,  1303,  1304,  1308,  1316,  1317,  1325,  1326,
-    1328,  1329,  1338,  1339,  1343,  1350,  1357,  1363,  1370,  1376,
-    1385,  1392,  1398,  1404,  1410,  1416,  1422,  1433,  1438,  1439,
-    1444,  1445,  1446,  1450,  1454,  1455,  1456,  1457,  1458,  1459,
-    1460,  1473,  1474,  1475,  1476,  1477,  1478,  1479,  1480,  1481,
-    1482,  1483,  1484,  1485,  1486,  1487,  1488,  1489,  1490,  1491,
-    1492,  1493,  1494,  1495,  1497,  1498,  1499,  1500,  1501,  1503,
-    1504,  1508,  1512,  1516,  1517,  1521,  1523,  1524,  1525,  1526,
-    1527,  1528,  1529,  1530,  1531,  1533,  1534,  1535,  1536,  1537,
-    1538,  1539,  1540,  1544,  1546,  1547,  1548,  1549,  1550,  1551,
-    1552,  1553,  1554,  1556,  1557,  1558,  1559,  1560,  1561,  1562,
-    1563,  1567,  1568,  1569,  1570,  1574,  1575,  1576,  1577,  1578,
-    1582,  1583,  1584,  1585,  1586,  1587,  1588,  1589,  1590,  1592,
-    1593,  1594,  1598,  1599,  1603,  1604,  1608,  1609,  1610,  1611,
-    1612,  1613,  1614,  1615,  1619,  1620,  1624,  1625,  1626,  1627,
-    1628,  1629,  1630,  1634,  1635,  1636,  1637,  1638,  1642,  1643,
-    1644,  1645,  1646,  1650,  1658,  1659,  1660,  1661,  1662,  1663,
-    1664,  1665,  1666,  1670,  1671,  1672,  1673,  1674,  1676,  1677,
-    1678,  1679,  1683,  1684,  1685,  1687,  1688,  1692,  1693,  1694,
-    1696,  1697,  1701,  1702,  1703,  1705,  1706,  1710,  1711,  1712,
-    1716,  1717,  1718,  1722,  1723,  1724,  1725,  1726,  1728,  1729,
-    1730,  1731,  1733,  1734,  1735,  1736,  1738,  1739,  1740,  1741,
-    1745,  1746,  1747,  1748,  1749,  1751,  1752,  1753,  1754,  1758,
-    1759,  1760,  1761,  1762,  1763,  1764,  1765,  1766,  1767,  1768,
-    1772,  1773,  1774,  1775,  1779,  1780,  1781,  1785,  1786,  1787,
-    1788,  1790,  1791,  1793,  1794,  1799,  1801,  1806,  1810,  1811,
-    1812,  1814,  1815,  1817,  1818,  1823,  1825,  1830,  1834,  1835,
-    1836,  1837,  1838,  1839,  1840,  1841,  1842,  1843,  1844,  1845,
-    1849,  1850,  1854,  1855,  1860,  1861,  1865,  1866,  1867,  1868,
-    1869,  1870,  1871,  1875,  1876,  1880,  1884,  1888,  1895,  1896,
-    1897,  1898,  1899,  1903,  1904,  1955,  1956,  1957,  1958,  1959,
-    1960,  1961,  1965,  1966,  1967,  1968,  1969,  1976,  1977,  1978,
-    1979,  1983,  1984,  1985,  1987,  1988,  1992,  1993,  1994,  1996,
-    1997,  2001,  2002,  2003,  2005,  2006,  2010,  2011,  2012,  2016,
-    2017,  2018,  2022,  2023,  2024,  2025,  2026,  2027,  2028,  2029,
-    2030,  2032,  2033,  2034,  2035,  2036,  2037,  2038,  2039,  2041,
-    2042,  2043,  2044,  2046,  2047,  2048,  2049,  2051,  2058,  2062,
-    2066,  2073,  2074,  2078,  2083,  2084,  2088,  2089,  2090,  2091,
-    2097,  2098,  2099,  2103,  2104,  2105,  2106,  2110,  2112,  2116,
-    2117,  2118,  2119,  2120,  2121,  2122,  2126,  2127,  2128,  2129,
-    2130,  2131,  2132,  2136,  2137,  2138,  2142,  2143,  2144,  2148,
-    2152,  2153,  2157,  2158,  2159,  2163,  2164,  2166,  2167,  2168,
-    2169,  2170,  2172,  2173,  2174,  2175,  2176,  2180,  2181,  2185,
-    2186,  2187,  2191,  2192,  2193,  2194,  2195,  2196,  2197,  2198,
-    2199,  2201,  2202,  2204,  2205,  2206,  2207,  2208,  2212,  2213,
-    2217,  2218,  2222,  2226,  2227,  2228,  2233,  2234,  2238,  2239,
-    2240,  2241,  2242,  2243,  2244,  2245,  2246,  2247,  2248,  2249,
-    2250,  2251,  2252,  2253,  2254,  2255,  2256,  2257,  2258,  2259,
-    2260,  2261,  2262,  2263,  2267,  2268,  2269,  2270,  2271,  2272,
-    2273,  2274,  2275,  2276,  2277,  2278,  2279,  2280,  2281,  2282,
-    2283,  2284,  2285,  2286,  2287,  2288,  2289,  2290,  2296,  2298,
-    2300,  2302,  2304,  2306,  2308,  2310,  2312,  2314,  2319,  2320,
-    2324,  2330,  2336,  2343,  2353,  2354,  2355,  2356,  2360,  2361,
-    2362,  2364,  2365,  2366,  2368,  2369,  2370,  2374,  2378,  2386,
-    2395,  2404,  2405,  2407,  2408,  2412,  2419,  2426,  2429,  2442,
-    2456,  2459,  2461,  2463,  2468,  2469,  2473,  2474,  2475,  2476,
-    2477,  2478,  2479,  2480,  2484,  2485,  2486,  2487,  2488,  2489,
-    2490,  2491,  2492,  2493,  2497,  2498,  2499,  2500,  2501,  2502,
-    2503,  2504,  2505,  2506,  2510,  2511,  2512,  2513,  2514,  2515,
-    2516,  2517,  2518,  2519,  2520,  2521,  2525,  2526,  2527,  2528,
-    2529,  2530,  2531,  2532,  2533,  2534,  2538,  2539,  2543,  2544,
-    2545,  2546,  2547,  2548,  2549,  2550,  2551,  2553,  2555,  2573,
-    2591,  2592,  2596,  2597,  2598,  2599,  2600,  2601,  2602,  2603,
-    2604,  2622,  2639,  2640,  2641,  2642,  2643,  2644,  2645,  2646,
-    2647,  2648,  2649,  2650,  2651,  2669,  2686,  2687,  2688,  2689,
-    2690,  2691,  2692,  2693,  2694,  2695,  2696,  2697,  2698,  2716,
-    2733,  2734,  2738,  2739,  2740,  2741,  2742,  2746,  2747,  2754,
-    2756,  2765,  2774,  2783,  2792,  2793,  2794,  2795,  2799,  2800,
-    2801,  2802,  2803,  2804,  2805,  2806,  2807,  2811,  2815,  2816,
-    2817,  2818,  2819,  2824,  2833,  2842,  2851,  2865,  2866,  2871,
-    2875,  2876,  2877,  2878,  2879,  2884,  2893,  2902,  2911,  2925,
-    2926,  2975,  2976,  2977,  2978,  2990,  2991,  2992,  2997,  2998,
-    2999,  3000,  3001,  3005,  3006,  3010,  3011,  3012,  3016,  3017,
-    3021,  3022,  3023,  3024,  3025,  3026,  3027,  3028,  3029,  3030,
-    3031,  3032,  3033,  3034,  3035,  3036,  3040,  3041,  3042,  3043,
-    3044,  3045,  3046,  3047,  3051,  3052,  3053,  3054,  3058,  3059,
-    3060,  3061,  3062,  3066,  3067,  3068,  3069,  3070,  3074,  3075,
-    3077,  3079,  3081,  3086,  3087,  3089,  3091,  3096,  3097,  3098,
-    3099,  3103,  3104,  3105,  3106,  3110,  3111,  3112,  3113,  3117,
-    3118,  3119,  3120,  3124,  3125,  3126,  3127,  3131,  3132,  3133,
-    3149,  3150,  3151,  3152,  3165,  3181,  3182,  3187,  3188,  3192,
-    3193,  3194,  3195,  3198,  3199,  3203,  3204,  3205,  3209,  3213,
-    3217,  3218,  3219,  3220,  3221,  3230,  3239,  3240,  3241,  3242,
-    3246,  3247,  3251,  3252,  3257,  3258,  3259,  3260,  3261,  3262,
-    3281,  3282,  3286,  3287,  3288,  3289,  3290,  3291,  3293,  3294,
-    3295,  3296,  3300,  3301,  3302,  3303,  3304,  3306,  3307,  3308,
-    3312,  3313,  3314,  3315,  3316,  3317,  3321,  3322,  3323,  3328,
-    3329,  3330,  3331,  3332,  3333,  3334,  3335,  3336,  3337,  3338,
-    3339,  3340,  3344,  3345,  3346,  3347,  3348,  3349,  3350,  3354,
-    3355,  3356,  3360,  3361,  3362,  3366,  3367,  3368,  3369,  3371,
-    3372,  3373,  3375,  3376,  3377,  3378,  3380,  3381,  3382,  3386,
-    3387,  3388,  3389,  3390,  3392,  3393,  3394,  3395,  3396,  3400,
-    3401,  3402,  3403,  3404,  3405,  3406,  3408,  3409,  3410,  3411,
-    3412,  3416,  3417,  3418,  3422,  3423,  3427,  3428,  3429,  3430,
-    3434,  3435,  3436,  3438,  3439,  3440,  3444,  3448,  3449,  3451,
-    3452,  3453,  3457,  3458,  3459,  3460,  3464,  3465,  3469,  3470,
-    3471,  3475,  3476,  3477,  3478,  3479,  3480,  3481,  3485,  3486,
-    3487,  3488,  3492,  3493,  3494,  3495,  3499,  3503,  3507,  3509,
-    3512,  3518,  3519,  3520,  3524,  3525,  3526,  3527,  3528,  3529,
-    3533,  3534,  3538,  3539,  3540,  3542,  3543,  3545,  3546,  3547,
-    3548,  3549,  3551,  3552,  3556,  3557,  3558,  3559,  3563,  3564,
-    3565,  3566,  3568,  3569,  3570,  3571,  3572,  3573,  3574,  3577,
-    3581,  3582,  3586,  3587,  3591,  3592,  3593,  3594,  3595,  3596,
-    3597,  3598,  3602,  3603,  3604,  3605,  3611,  3612,  3614,  3615,
-    3618,  3619,  3622,  3623,  3624,  3625,  3626,  3627,  3631,  3632,
-    3644,  3645,  3648,  3651,  3653,  3654,  3655,  3665,  3667,  3668,
-    3670,  3671,  3672,  3673,  3683,  3684,  3685,  3686,  3687,  3688,
-    3692,  3693,  3701,  3703,  3704,  3706,  3708,  3712,  3713,  3714,
-    3715,  3716,  3720,  3721,  3722,  3724,  3729,  3730,  3731,  3735,
-    3736,  3737,  3741,  3745,  3746,  3747,  3751,  3752,  3756,  3757,
-    3761,  3762,  3763,  3764,  3768,  3772,  3776,  3780
+     721,   722,   723,   724,   737,   741,   742,   743,   744,   748,
+     749,   750,   751,   752,   753,   754,   758,   760,   765,   767,
+     769,   771,   773,   803,   805,   810,   812,   814,   816,   818,
+     847,   849,   851,   856,   858,   863,   865,   869,   871,   873,
+     875,   880,   883,   886,   889,   954,   956,   961,   963,   965,
+     967,   969,  1000,  1004,  1005,  1006,  1010,  1011,  1012,  1016,
+    1017,  1018,  1019,  1023,  1026,  1029,  1032,  1035,  1040,  1041,
+    1043,  1045,  1047,  1049,  1054,  1058,  1061,  1064,  1067,  1070,
+    1075,  1076,  1078,  1083,  1087,  1089,  1094,  1096,  1101,  1103,
+    1108,  1113,  1115,  1120,  1122,  1124,  1126,  1131,  1133,  1135,
+    1137,  1142,  1143,  1144,  1145,  1146,  1147,  1148,  1149,  1150,
+    1151,  1152,  1154,  1155,  1157,  1161,  1164,  1165,  1166,  1167,
+    1168,  1169,  1170,  1171,  1172,  1173,  1174,  1175,  1176,  1177,
+    1179,  1180,  1184,  1185,  1186,  1190,  1194,  1195,  1196,  1200,
+    1201,  1202,  1203,  1204,  1208,  1209,  1221,  1222,  1226,  1227,
+    1228,  1229,  1230,  1231,  1232,  1233,  1237,  1241,  1242,  1246,
+    1254,  1255,  1259,  1260,  1261,  1265,  1266,  1270,  1271,  1272,
+    1273,  1274,  1275,  1315,  1316,  1320,  1328,  1329,  1337,  1338,
+    1340,  1341,  1350,  1351,  1355,  1362,  1369,  1375,  1382,  1388,
+    1397,  1404,  1410,  1416,  1422,  1428,  1434,  1445,  1450,  1451,
+    1456,  1457,  1458,  1462,  1466,  1467,  1468,  1469,  1470,  1471,
+    1472,  1485,  1486,  1487,  1488,  1489,  1490,  1491,  1492,  1493,
+    1494,  1495,  1496,  1497,  1498,  1499,  1500,  1501,  1502,  1503,
+    1504,  1505,  1506,  1507,  1509,  1510,  1511,  1512,  1513,  1515,
+    1516,  1520,  1524,  1528,  1529,  1533,  1535,  1536,  1537,  1538,
+    1539,  1540,  1541,  1542,  1543,  1545,  1546,  1547,  1548,  1549,
+    1550,  1551,  1552,  1556,  1558,  1559,  1560,  1561,  1562,  1563,
+    1564,  1565,  1566,  1568,  1569,  1570,  1571,  1572,  1573,  1574,
+    1575,  1579,  1580,  1581,  1582,  1586,  1587,  1588,  1589,  1590,
+    1594,  1595,  1596,  1597,  1598,  1599,  1600,  1601,  1602,  1604,
+    1605,  1606,  1610,  1611,  1615,  1616,  1620,  1621,  1622,  1623,
+    1624,  1625,  1626,  1627,  1631,  1632,  1636,  1637,  1638,  1639,
+    1640,  1641,  1642,  1646,  1647,  1648,  1649,  1650,  1654,  1655,
+    1656,  1657,  1658,  1662,  1670,  1671,  1672,  1673,  1674,  1675,
+    1676,  1677,  1678,  1682,  1683,  1684,  1685,  1686,  1688,  1689,
+    1690,  1691,  1695,  1696,  1697,  1699,  1700,  1704,  1705,  1706,
+    1708,  1709,  1713,  1714,  1715,  1717,  1718,  1722,  1723,  1724,
+    1728,  1729,  1730,  1734,  1735,  1736,  1737,  1738,  1740,  1741,
+    1742,  1743,  1745,  1746,  1747,  1748,  1750,  1751,  1752,  1753,
+    1757,  1758,  1759,  1760,  1761,  1763,  1764,  1765,  1766,  1770,
+    1771,  1772,  1773,  1774,  1775,  1776,  1777,  1778,  1779,  1780,
+    1784,  1785,  1786,  1787,  1791,  1792,  1793,  1797,  1798,  1799,
+    1800,  1802,  1803,  1805,  1806,  1811,  1813,  1818,  1822,  1823,
+    1824,  1826,  1827,  1829,  1830,  1835,  1837,  1842,  1846,  1847,
+    1848,  1849,  1850,  1851,  1852,  1853,  1854,  1855,  1856,  1857,
+    1861,  1862,  1866,  1867,  1872,  1873,  1877,  1878,  1879,  1880,
+    1881,  1882,  1883,  1887,  1888,  1892,  1896,  1900,  1907,  1908,
+    1909,  1910,  1911,  1915,  1916,  1967,  1968,  1969,  1970,  1971,
+    1972,  1973,  1977,  1978,  1979,  1980,  1981,  1988,  1989,  1990,
+    1991,  1995,  1996,  1997,  1999,  2000,  2004,  2005,  2006,  2008,
+    2009,  2013,  2014,  2015,  2017,  2018,  2022,  2023,  2024,  2028,
+    2029,  2030,  2034,  2035,  2036,  2037,  2038,  2039,  2040,  2041,
+    2042,  2044,  2045,  2046,  2047,  2048,  2049,  2050,  2051,  2053,
+    2054,  2055,  2056,  2058,  2059,  2060,  2061,  2063,  2070,  2074,
+    2078,  2085,  2086,  2090,  2095,  2096,  2100,  2101,  2102,  2103,
+    2109,  2110,  2111,  2115,  2116,  2117,  2118,  2122,  2124,  2128,
+    2129,  2130,  2131,  2132,  2133,  2134,  2138,  2139,  2140,  2141,
+    2142,  2143,  2144,  2148,  2149,  2150,  2154,  2155,  2156,  2160,
+    2164,  2165,  2169,  2170,  2171,  2175,  2176,  2178,  2179,  2180,
+    2181,  2182,  2184,  2185,  2186,  2187,  2188,  2192,  2193,  2197,
+    2198,  2199,  2203,  2204,  2205,  2206,  2207,  2208,  2209,  2210,
+    2211,  2213,  2214,  2216,  2217,  2218,  2219,  2220,  2224,  2225,
+    2229,  2230,  2234,  2238,  2239,  2240,  2245,  2246,  2250,  2251,
+    2252,  2253,  2254,  2255,  2256,  2257,  2258,  2259,  2260,  2261,
+    2262,  2263,  2264,  2265,  2266,  2267,  2268,  2269,  2270,  2271,
+    2272,  2273,  2274,  2275,  2279,  2280,  2281,  2282,  2283,  2284,
+    2285,  2286,  2287,  2288,  2289,  2290,  2291,  2292,  2293,  2294,
+    2295,  2296,  2297,  2298,  2299,  2300,  2301,  2302,  2308,  2310,
+    2312,  2314,  2316,  2318,  2320,  2322,  2324,  2326,  2331,  2332,
+    2336,  2342,  2348,  2355,  2365,  2366,  2367,  2368,  2372,  2373,
+    2374,  2376,  2377,  2378,  2380,  2381,  2382,  2386,  2390,  2398,
+    2407,  2416,  2417,  2419,  2420,  2424,  2431,  2438,  2441,  2454,
+    2468,  2471,  2473,  2475,  2480,  2481,  2485,  2486,  2487,  2488,
+    2489,  2490,  2491,  2492,  2496,  2497,  2498,  2499,  2500,  2501,
+    2502,  2503,  2504,  2505,  2509,  2510,  2511,  2512,  2513,  2514,
+    2515,  2516,  2517,  2518,  2522,  2523,  2524,  2525,  2526,  2527,
+    2528,  2529,  2530,  2531,  2532,  2533,  2537,  2538,  2539,  2540,
+    2541,  2542,  2543,  2544,  2545,  2546,  2550,  2551,  2555,  2556,
+    2557,  2558,  2559,  2560,  2561,  2562,  2563,  2565,  2567,  2585,
+    2603,  2604,  2608,  2609,  2610,  2611,  2612,  2613,  2614,  2615,
+    2616,  2634,  2651,  2652,  2653,  2654,  2655,  2656,  2657,  2658,
+    2659,  2660,  2661,  2662,  2663,  2681,  2698,  2699,  2700,  2701,
+    2702,  2703,  2704,  2705,  2706,  2707,  2708,  2709,  2710,  2728,
+    2745,  2746,  2750,  2751,  2752,  2753,  2754,  2758,  2759,  2766,
+    2768,  2777,  2786,  2795,  2804,  2805,  2806,  2807,  2811,  2812,
+    2813,  2814,  2815,  2816,  2817,  2818,  2819,  2823,  2827,  2828,
+    2829,  2830,  2831,  2836,  2845,  2854,  2863,  2877,  2878,  2883,
+    2887,  2888,  2889,  2890,  2891,  2896,  2905,  2914,  2923,  2937,
+    2938,  2987,  2988,  2989,  2990,  3002,  3003,  3004,  3009,  3010,
+    3011,  3012,  3013,  3017,  3018,  3022,  3023,  3024,  3028,  3029,
+    3033,  3034,  3035,  3036,  3037,  3038,  3039,  3040,  3041,  3042,
+    3043,  3044,  3045,  3046,  3047,  3048,  3052,  3053,  3054,  3055,
+    3056,  3057,  3058,  3059,  3063,  3064,  3065,  3066,  3070,  3071,
+    3072,  3073,  3074,  3078,  3079,  3080,  3081,  3082,  3086,  3087,
+    3089,  3091,  3093,  3098,  3099,  3101,  3103,  3108,  3109,  3110,
+    3111,  3115,  3116,  3117,  3118,  3122,  3123,  3124,  3125,  3129,
+    3130,  3131,  3132,  3136,  3137,  3138,  3139,  3143,  3144,  3145,
+    3161,  3162,  3163,  3164,  3177,  3193,  3194,  3199,  3200,  3204,
+    3205,  3206,  3207,  3210,  3211,  3215,  3216,  3217,  3221,  3225,
+    3229,  3230,  3231,  3232,  3233,  3242,  3251,  3252,  3253,  3254,
+    3258,  3259,  3263,  3264,  3269,  3270,  3271,  3272,  3273,  3274,
+    3293,  3294,  3298,  3299,  3300,  3301,  3302,  3303,  3305,  3306,
+    3307,  3308,  3312,  3313,  3314,  3315,  3316,  3318,  3319,  3320,
+    3324,  3325,  3326,  3327,  3328,  3329,  3333,  3334,  3335,  3340,
+    3341,  3342,  3343,  3344,  3345,  3346,  3347,  3348,  3349,  3350,
+    3351,  3352,  3356,  3357,  3358,  3359,  3360,  3361,  3362,  3366,
+    3367,  3368,  3372,  3373,  3374,  3378,  3379,  3380,  3381,  3383,
+    3384,  3385,  3387,  3388,  3389,  3390,  3392,  3393,  3394,  3398,
+    3399,  3400,  3401,  3402,  3404,  3405,  3406,  3407,  3408,  3412,
+    3413,  3414,  3415,  3416,  3417,  3418,  3420,  3421,  3422,  3423,
+    3424,  3428,  3429,  3430,  3434,  3435,  3439,  3440,  3441,  3442,
+    3446,  3447,  3448,  3450,  3451,  3452,  3456,  3460,  3461,  3463,
+    3464,  3465,  3469,  3470,  3471,  3472,  3476,  3477,  3481,  3482,
+    3483,  3487,  3488,  3489,  3490,  3491,  3492,  3493,  3497,  3498,
+    3499,  3500,  3504,  3505,  3506,  3507,  3511,  3515,  3519,  3521,
+    3524,  3530,  3531,  3532,  3536,  3537,  3538,  3539,  3540,  3541,
+    3545,  3546,  3550,  3551,  3552,  3554,  3555,  3557,  3558,  3559,
+    3560,  3561,  3563,  3564,  3568,  3569,  3570,  3571,  3575,  3576,
+    3577,  3578,  3580,  3581,  3582,  3583,  3584,  3585,  3586,  3589,
+    3593,  3594,  3598,  3599,  3603,  3604,  3605,  3606,  3607,  3608,
+    3609,  3610,  3614,  3615,  3616,  3617,  3623,  3624,  3626,  3627,
+    3630,  3631,  3634,  3635,  3636,  3637,  3638,  3639,  3643,  3644,
+    3656,  3657,  3660,  3663,  3665,  3666,  3667,  3677,  3679,  3680,
+    3682,  3683,  3684,  3685,  3695,  3696,  3697,  3698,  3699,  3700,
+    3704,  3705,  3713,  3715,  3716,  3718,  3720,  3724,  3725,  3726,
+    3727,  3728,  3732,  3733,  3734,  3736,  3741,  3742,  3743,  3747,
+    3748,  3749,  3753,  3757,  3758,  3759,  3763,  3764,  3768,  3769,
+    3773,  3774,  3775,  3776,  3780,  3784,  3788,  3792
 };
 #endif
 
@@ -1690,7 +1690,7 @@ static const yytype_uint8 yyr2[] =
        2,     1,     2,     2,     2,     2,     2,     2,     1,     1,
        3,     1,     3,     3,     1,     1,     3,     3,     1,     3,
        3,     3,     3,     1,     2,     2,     1,     1,     2,     2,
-       2,     2,     1,     2,     2,     1,     1,     2,     2,     1,
+       2,     2,     2,     2,     1,     1,     1,     2,     2,     1,
        2,     2,     2,     2,     1,     2,     2,     3,     4,     5,
        4,     3,     4,     2,     3,     4,     5,     4,     3,     4,
        5,     5,     4,     2,     3,     3,     3,     3,     2,     4,
@@ -1924,7 +1924,7 @@ static const yytype_uint16 yydefact[] =
        0,   166,   908,   179,     0,   641,   640,   847,   841,   843,
      845,     0,     0,     0,   638,   674,     0,     0,     7,   212,
      208,   769,     0,     0,     0,     0,  1045,  1052,  1053,  1054,
-      62,    53,    92,    39,    38,    57,    69,    45,    48,     0,
+      64,    53,    92,    39,    38,    57,    69,    45,    48,     0,
       74,    56,     0,     0,     0,  1036,  1038,     0,  1035,  1037,
        0,    41,    44,   940,  1009,  1000,  1017,  1005,  1026,  1018,
        0,  1027,  1030,  1047,  1049,  1266,  1272,  1268,  1274,  1051,
@@ -1978,8 +1978,8 @@ static const yytype_uint16 yydefact[] =
      925,  1013,  1014,   908,   193,   194,   178,     0,     0,     0,
        0,   634,   635,   637,     0,     0,   664,   660,     0,     0,
        0,     0,     0,   226,   218,   216,     0,     0,     0,    36,
-      37,    75,    54,     0,    55,     0,    64,    61,    72,    67,
-      73,    60,    90,    39,    70,    63,    91,    59,    71,    68,
+      37,    75,    54,     0,    55,     0,    63,    61,    72,    67,
+      73,    60,    90,    39,    70,    62,    91,    59,    71,    68,
        0,    58,     0,   718,    33,    35,    34,  1039,  1040,     0,
      654,   644,     0,   649,   643,     0,   478,   757,     0,     0,
        0,   988,     0,   960,   971,   972,   965,   963,   964,     0,
@@ -14051,234 +14051,245 @@ yyreduce:
     { ListAdd((yyval.list), MkMembersInitMethod((yyvsp[(2) - (2)].classFunction))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
-  case 62:
+  case 63:
 
 /* Line 1464 of yacc.c  */
-#line 723 "grammar.y"
-    { MembersInit members = MkMembersInitList(MkList()); (yyval.list) = MkList(); ListAdd((yyval.list), members); members.loc = (yylsp[(1) - (1)]);  ;}
+#line 725 "grammar.y"
+    {
+      MembersInit members = (MembersInit)(yyval.list)->last;
+      if(members.type == dataMembersInit)
+         members.loc.end = (yyloc).end;
+      else
+      {
+         MembersInit members = MkMembersInitList(MkList());
+         ListAdd((yyval.list), members);
+         members.loc = (yylsp[(2) - (2)]);
+      }
+      (yyval.list) = (yyvsp[(1) - (2)].list);
+   ;}
     break;
 
   case 64:
 
 /* Line 1464 of yacc.c  */
-#line 725 "grammar.y"
-    { MembersInit members = MkMembersInitList(MkList()); ListAdd((yyval.list), members); members.loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
+#line 737 "grammar.y"
+    { MembersInit members = MkMembersInitList(MkList()); (yyval.list) = MkList(); ListAdd((yyval.list), members); members.loc = (yylsp[(1) - (1)]);  ;}
     break;
 
   case 66:
 
 /* Line 1464 of yacc.c  */
-#line 730 "grammar.y"
+#line 742 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkMembersInitList((yyvsp[(1) - (1)].list))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 67:
 
 /* Line 1464 of yacc.c  */
-#line 731 "grammar.y"
+#line 743 "grammar.y"
     { ListAdd((yyvsp[(1) - (2)].list), MkMembersInitList((yyvsp[(2) - (2)].list)));   ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); ;}
     break;
 
   case 68:
 
 /* Line 1464 of yacc.c  */
-#line 732 "grammar.y"
+#line 744 "grammar.y"
     { ListAdd((yyvsp[(1) - (2)].list), MkMembersInitList((yyvsp[(2) - (2)].list)));   ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); ;}
     break;
 
   case 69:
 
 /* Line 1464 of yacc.c  */
-#line 736 "grammar.y"
+#line 748 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkMembersInitMethod((yyvsp[(1) - (1)].classFunction))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 70:
 
 /* Line 1464 of yacc.c  */
-#line 737 "grammar.y"
+#line 749 "grammar.y"
     { ListAdd((yyval.list), MkMembersInitMethod((yyvsp[(2) - (2)].classFunction))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 71:
 
 /* Line 1464 of yacc.c  */
-#line 738 "grammar.y"
+#line 750 "grammar.y"
     { ListAdd((yyval.list), MkMembersInitMethod((yyvsp[(2) - (2)].classFunction))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 72:
 
 /* Line 1464 of yacc.c  */
-#line 739 "grammar.y"
+#line 751 "grammar.y"
     { ListAdd((yyval.list), MkMembersInitMethod((yyvsp[(2) - (2)].classFunction))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 73:
 
 /* Line 1464 of yacc.c  */
-#line 740 "grammar.y"
+#line 752 "grammar.y"
     { ListAdd((yyval.list), MkMembersInitList((yyvsp[(2) - (2)].list))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 74:
 
 /* Line 1464 of yacc.c  */
-#line 741 "grammar.y"
+#line 753 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkMembersInitList((yyvsp[(1) - (1)].list))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 75:
 
 /* Line 1464 of yacc.c  */
-#line 742 "grammar.y"
+#line 754 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkMembersInitList((yyvsp[(1) - (2)].list))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); ;}
     break;
 
   case 76:
 
 /* Line 1464 of yacc.c  */
-#line 747 "grammar.y"
+#line 759 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).start; (yyval.instance) = (yyvsp[(1) - (2)].instance); ;}
     break;
 
   case 77:
 
 /* Line 1464 of yacc.c  */
-#line 749 "grammar.y"
+#line 761 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).start; (yyval.instance) = (yyvsp[(1) - (3)].instance); ;}
     break;
 
   case 78:
 
 /* Line 1464 of yacc.c  */
-#line 754 "grammar.y"
+#line 766 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), (yyvsp[(4) - (4)].list)); (yyval.instance).exp.loc = (yylsp[(2) - (4)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 79:
 
 /* Line 1464 of yacc.c  */
-#line 756 "grammar.y"
+#line 768 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (5)].list), MkExpIdentifier((yyvsp[(2) - (5)].id)), (yyvsp[(4) - (5)].list)); (yyval.instance).exp.loc = (yylsp[(2) - (5)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (5)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (5)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (5)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 80:
 
 /* Line 1464 of yacc.c  */
-#line 758 "grammar.y"
+#line 770 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), (yyvsp[(4) - (4)].list)); (yyval.instance).exp.loc = (yylsp[(2) - (4)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 81:
 
 /* Line 1464 of yacc.c  */
-#line 760 "grammar.y"
+#line 772 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (3)].list), MkExpIdentifier((yyvsp[(2) - (3)].id)), null); (yyval.instance).exp.loc = (yylsp[(2) - (3)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (3)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 82:
 
 /* Line 1464 of yacc.c  */
-#line 762 "grammar.y"
+#line 774 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), null);(yyval.instance).exp.loc = (yylsp[(2) - (4)]);  (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (4)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 83:
 
 /* Line 1464 of yacc.c  */
-#line 792 "grammar.y"
+#line 804 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).start; ;}
     break;
 
   case 84:
 
 /* Line 1464 of yacc.c  */
-#line 794 "grammar.y"
+#line 806 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).start; ;}
     break;
 
   case 85:
 
 /* Line 1464 of yacc.c  */
-#line 799 "grammar.y"
+#line 811 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), (yyvsp[(4) - (4)].list));(yyval.instance).exp.loc = (yylsp[(2) - (4)]);  (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 86:
 
 /* Line 1464 of yacc.c  */
-#line 801 "grammar.y"
+#line 813 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (5)].list), MkExpIdentifier((yyvsp[(2) - (5)].id)), (yyvsp[(4) - (5)].list)); (yyval.instance).exp.loc = (yylsp[(2) - (5)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (5)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (5)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (5)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 87:
 
 /* Line 1464 of yacc.c  */
-#line 803 "grammar.y"
+#line 815 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), (yyvsp[(4) - (4)].list));(yyval.instance).exp.loc = (yylsp[(2) - (4)]);  (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 88:
 
 /* Line 1464 of yacc.c  */
-#line 805 "grammar.y"
+#line 817 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (3)].list), MkExpIdentifier((yyvsp[(2) - (3)].id)), null);(yyval.instance).exp.loc = (yylsp[(2) - (3)]);  (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (3)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 89:
 
 /* Line 1464 of yacc.c  */
-#line 807 "grammar.y"
+#line 819 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), null);(yyval.instance).exp.loc = (yylsp[(2) - (4)]);  (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (4)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 90:
 
 /* Line 1464 of yacc.c  */
-#line 836 "grammar.y"
+#line 848 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (5)].list), MkExpIdentifier((yyvsp[(2) - (5)].id)), (yyvsp[(4) - (5)].list)); (yyval.instance).exp.loc = (yylsp[(2) - (5)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (5)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (5)]).end; (yyval.instance).insideLoc.end = (yylsp[(5) - (5)]).start;;}
     break;
 
   case 91:
 
 /* Line 1464 of yacc.c  */
-#line 838 "grammar.y"
+#line 850 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (5)].list), MkExpIdentifier((yyvsp[(2) - (5)].id)), (yyvsp[(4) - (5)].list)); (yyval.instance).exp.loc = (yylsp[(2) - (5)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (5)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (5)]).end; (yyval.instance).insideLoc.end = (yylsp[(5) - (5)]).start;;}
     break;
 
   case 92:
 
 /* Line 1464 of yacc.c  */
-#line 840 "grammar.y"
+#line 852 "grammar.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), MkList());  (yyval.instance).exp.loc = (yylsp[(2) - (4)]); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).start;;}
     break;
 
   case 93:
 
 /* Line 1464 of yacc.c  */
-#line 845 "grammar.y"
+#line 857 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).start; (yyval.instance) = (yyvsp[(1) - (2)].instance); ;}
     break;
 
   case 94:
 
 /* Line 1464 of yacc.c  */
-#line 847 "grammar.y"
+#line 859 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).start; (yyval.instance) = (yyvsp[(1) - (3)].instance); ;}
     break;
 
   case 95:
 
 /* Line 1464 of yacc.c  */
-#line 852 "grammar.y"
+#line 864 "grammar.y"
     { (yyval.instance) = MkInstantiation((yyvsp[(1) - (3)].specifier), null, (yyvsp[(3) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 96:
 
 /* Line 1464 of yacc.c  */
-#line 854 "grammar.y"
+#line 866 "grammar.y"
     { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (3)].id).string), null, (yyvsp[(3) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end; FreeIdentifier((yyvsp[(1) - (3)].id)); ;}
     break;
@@ -14286,35 +14297,35 @@ yyreduce:
   case 97:
 
 /* Line 1464 of yacc.c  */
-#line 858 "grammar.y"
+#line 870 "grammar.y"
     { (yyval.instance) = MkInstantiation((yyvsp[(1) - (3)].specifier), null, (yyvsp[(3) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 98:
 
 /* Line 1464 of yacc.c  */
-#line 860 "grammar.y"
+#line 872 "grammar.y"
     { (yyval.instance) = MkInstantiation((yyvsp[(1) - (2)].specifier), null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (2)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 99:
 
 /* Line 1464 of yacc.c  */
-#line 862 "grammar.y"
+#line 874 "grammar.y"
     { (yyval.instance) = MkInstantiation((yyvsp[(1) - (4)].specifier), null, (yyvsp[(3) - (4)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (4)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 100:
 
 /* Line 1464 of yacc.c  */
-#line 864 "grammar.y"
+#line 876 "grammar.y"
     { (yyval.instance) = MkInstantiation((yyvsp[(1) - (3)].specifier), null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++;  ;}
     break;
 
   case 101:
 
 /* Line 1464 of yacc.c  */
-#line 869 "grammar.y"
+#line 881 "grammar.y"
     { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (3)].id).string), null, (yyvsp[(3) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (3)].id)); ;}
     break;
@@ -14322,7 +14333,7 @@ yyreduce:
   case 102:
 
 /* Line 1464 of yacc.c  */
-#line 872 "grammar.y"
+#line 884 "grammar.y"
     { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (2)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (2)].id).string), null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (2)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (2)].id)); ;}
     break;
@@ -14330,7 +14341,7 @@ yyreduce:
   case 103:
 
 /* Line 1464 of yacc.c  */
-#line 875 "grammar.y"
+#line 887 "grammar.y"
     { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (4)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (4)].id).string), null, (yyvsp[(3) - (4)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (4)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (4)].id)); ;}
     break;
@@ -14338,7 +14349,7 @@ yyreduce:
   case 104:
 
 /* Line 1464 of yacc.c  */
-#line 878 "grammar.y"
+#line 890 "grammar.y"
     { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]);
       yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (3)].id).string), null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; FreeIdentifier((yyvsp[(1) - (3)].id)); ;}
     break;
@@ -14346,840 +14357,840 @@ yyreduce:
   case 105:
 
 /* Line 1464 of yacc.c  */
-#line 943 "grammar.y"
+#line 955 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).start; ;}
     break;
 
   case 106:
 
 /* Line 1464 of yacc.c  */
-#line 945 "grammar.y"
+#line 957 "grammar.y"
     { (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).start; ;}
     break;
 
   case 107:
 
 /* Line 1464 of yacc.c  */
-#line 950 "grammar.y"
+#line 962 "grammar.y"
     { (yyval.instance) = MkInstantiation(null, null, (yyvsp[(2) - (2)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(1) - (2)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 108:
 
 /* Line 1464 of yacc.c  */
-#line 952 "grammar.y"
+#line 964 "grammar.y"
     { (yyval.instance) = MkInstantiation(null, null, (yyvsp[(2) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(1) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (3)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 109:
 
 /* Line 1464 of yacc.c  */
-#line 954 "grammar.y"
+#line 966 "grammar.y"
     { (yyval.instance) = MkInstantiation(null, null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(1) - (2)]).end; (yyval.instance).insideLoc.end = (yylsp[(1) - (2)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++;  ;}
     break;
 
   case 110:
 
 /* Line 1464 of yacc.c  */
-#line 956 "grammar.y"
+#line 968 "grammar.y"
     { (yyval.instance) = MkInstantiation(null, null, null);  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(1) - (1)]).end; (yyval.instance).insideLoc.end = (yylsp[(1) - (1)]).end;  (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 111:
 
 /* Line 1464 of yacc.c  */
-#line 958 "grammar.y"
+#line 970 "grammar.y"
     { (yyval.instance) = MkInstantiation(null, null, (yyvsp[(2) - (2)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(1) - (2)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).end; (yyval.instance).loc.end.charPos++; (yyval.instance).loc.end.pos++; ;}
     break;
 
   case 112:
 
 /* Line 1464 of yacc.c  */
-#line 988 "grammar.y"
+#line 1000 "grammar.y"
     { (yyval.memberInit) = MkMemberInitExp((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].initializer)); (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); ;}
     break;
 
   case 113:
 
 /* Line 1464 of yacc.c  */
-#line 992 "grammar.y"
+#line 1004 "grammar.y"
     { (yyval.memberInit) = MkMemberInitExp((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].initializer)); (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); (yyval.memberInit).initializer.loc.start = (yylsp[(2) - (3)]).end; ;}
     break;
 
   case 114:
 
 /* Line 1464 of yacc.c  */
-#line 993 "grammar.y"
+#line 1005 "grammar.y"
     { (yyval.memberInit) = MkMemberInitExp((yyvsp[(1) - (3)].exp), MkInitializerAssignment(MkExpDummy())); (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); (yyval.memberInit).initializer.loc.start = (yylsp[(2) - (3)]).end; (yyval.memberInit).initializer.loc.end = (yylsp[(2) - (3)]).end; ;}
     break;
 
   case 115:
 
 /* Line 1464 of yacc.c  */
-#line 994 "grammar.y"
+#line 1006 "grammar.y"
     { (yyval.memberInit) = MkMemberInitExp((yyvsp[(1) - (2)].exp), null); (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); ;}
     break;
 
   case 116:
 
 /* Line 1464 of yacc.c  */
-#line 998 "grammar.y"
+#line 1010 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].memberInit)); ((MemberInit)(yyval.list)->last).loc = (yyloc); ;}
     break;
 
   case 117:
 
 /* Line 1464 of yacc.c  */
-#line 999 "grammar.y"
+#line 1011 "grammar.y"
     { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(3) - (3)]).start; ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].memberInit)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 118:
 
 /* Line 1464 of yacc.c  */
-#line 1000 "grammar.y"
+#line 1012 "grammar.y"
     { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(3) - (3)]).start; ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].memberInit)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 119:
 
 /* Line 1464 of yacc.c  */
-#line 1004 "grammar.y"
+#line 1016 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].memberInit)); ((MemberInit)(yyval.list)->last).loc = (yyloc); ;}
     break;
 
   case 120:
 
 /* Line 1464 of yacc.c  */
-#line 1005 "grammar.y"
+#line 1017 "grammar.y"
     { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(3) - (3)]).start; ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].memberInit)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 121:
 
 /* Line 1464 of yacc.c  */
-#line 1006 "grammar.y"
+#line 1018 "grammar.y"
     { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(3) - (3)]).start; ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].memberInit)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 123:
 
 /* Line 1464 of yacc.c  */
-#line 1012 "grammar.y"
+#line 1024 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (4)].list), null, (yyvsp[(3) - (4)].id), null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 124:
 
 /* Line 1464 of yacc.c  */
-#line 1015 "grammar.y"
+#line 1027 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (5)].list), (yyvsp[(3) - (5)].declarator), (yyvsp[(4) - (5)].id), null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 125:
 
 /* Line 1464 of yacc.c  */
-#line 1018 "grammar.y"
+#line 1030 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (3)].list), null, null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 126:
 
 /* Line 1464 of yacc.c  */
-#line 1021 "grammar.y"
+#line 1033 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (4)].list), (yyvsp[(3) - (4)].declarator), null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 127:
 
 /* Line 1464 of yacc.c  */
-#line 1024 "grammar.y"
+#line 1036 "grammar.y"
     { (yyval.prop) = MkProperty(null, null, null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 129:
 
 /* Line 1464 of yacc.c  */
-#line 1030 "grammar.y"
+#line 1042 "grammar.y"
     { (yyvsp[(1) - (3)].prop).setStmt = (yyvsp[(3) - (3)].stmt); ;}
     break;
 
   case 130:
 
 /* Line 1464 of yacc.c  */
-#line 1032 "grammar.y"
+#line 1044 "grammar.y"
     { (yyvsp[(1) - (3)].prop).getStmt = (yyvsp[(3) - (3)].stmt); ;}
     break;
 
   case 131:
 
 /* Line 1464 of yacc.c  */
-#line 1034 "grammar.y"
+#line 1046 "grammar.y"
     { (yyvsp[(1) - (3)].prop).issetStmt = (yyvsp[(3) - (3)].stmt); ;}
     break;
 
   case 132:
 
 /* Line 1464 of yacc.c  */
-#line 1036 "grammar.y"
+#line 1048 "grammar.y"
     { (yyvsp[(1) - (2)].prop).isWatchable = true; ;}
     break;
 
   case 133:
 
 /* Line 1464 of yacc.c  */
-#line 1038 "grammar.y"
+#line 1050 "grammar.y"
     { (yyvsp[(1) - (3)].prop).category = (yyvsp[(3) - (3)].exp); ;}
     break;
 
   case 134:
 
 /* Line 1464 of yacc.c  */
-#line 1042 "grammar.y"
+#line 1054 "grammar.y"
     { (yyvsp[(1) - (2)].prop).loc.end = (yylsp[(2) - (2)]).end; (yyval.prop) = (yyvsp[(1) - (2)].prop); ;}
     break;
 
   case 135:
 
 /* Line 1464 of yacc.c  */
-#line 1047 "grammar.y"
+#line 1059 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (4)].list), null, (yyvsp[(3) - (4)].id), null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 136:
 
 /* Line 1464 of yacc.c  */
-#line 1050 "grammar.y"
+#line 1062 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (5)].list), (yyvsp[(3) - (5)].declarator), (yyvsp[(4) - (5)].id), null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 137:
 
 /* Line 1464 of yacc.c  */
-#line 1053 "grammar.y"
+#line 1065 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (3)].list), null, null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 138:
 
 /* Line 1464 of yacc.c  */
-#line 1056 "grammar.y"
+#line 1068 "grammar.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (4)].list), (yyvsp[(3) - (4)].declarator), null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 139:
 
 /* Line 1464 of yacc.c  */
-#line 1059 "grammar.y"
+#line 1071 "grammar.y"
     { (yyval.prop) = MkProperty(null, null, null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 141:
 
 /* Line 1464 of yacc.c  */
-#line 1065 "grammar.y"
+#line 1077 "grammar.y"
     { (yyvsp[(1) - (3)].prop).setStmt = (yyvsp[(3) - (3)].stmt); ;}
     break;
 
   case 142:
 
 /* Line 1464 of yacc.c  */
-#line 1067 "grammar.y"
+#line 1079 "grammar.y"
     { (yyvsp[(1) - (3)].prop).getStmt = (yyvsp[(3) - (3)].stmt); ;}
     break;
 
   case 143:
 
 /* Line 1464 of yacc.c  */
-#line 1071 "grammar.y"
+#line 1083 "grammar.y"
     { (yyvsp[(1) - (2)].prop).loc.end = (yylsp[(2) - (2)]).end; ;}
     break;
 
   case 144:
 
 /* Line 1464 of yacc.c  */
-#line 1076 "grammar.y"
+#line 1088 "grammar.y"
     { (yyval.list) = MkListOne((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 145:
 
 /* Line 1464 of yacc.c  */
-#line 1078 "grammar.y"
+#line 1090 "grammar.y"
     { ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].id)); ;}
     break;
 
   case 146:
 
 /* Line 1464 of yacc.c  */
-#line 1083 "grammar.y"
+#line 1095 "grammar.y"
     { (yyval.propertyWatch) = MkPropertyWatch((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 147:
 
 /* Line 1464 of yacc.c  */
-#line 1085 "grammar.y"
+#line 1097 "grammar.y"
     { (yyval.propertyWatch) = MkDeleteWatch((yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 148:
 
 /* Line 1464 of yacc.c  */
-#line 1090 "grammar.y"
+#line 1102 "grammar.y"
     { (yyval.list) = MkListOne((yyvsp[(1) - (1)].propertyWatch)); ;}
     break;
 
   case 149:
 
 /* Line 1464 of yacc.c  */
-#line 1092 "grammar.y"
+#line 1104 "grammar.y"
     { ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].propertyWatch)); ;}
     break;
 
   case 150:
 
 /* Line 1464 of yacc.c  */
-#line 1097 "grammar.y"
+#line 1109 "grammar.y"
     { (yyval.propertyWatch) = MkPropertyWatch((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt)); ;}
     break;
 
   case 151:
 
 /* Line 1464 of yacc.c  */
-#line 1102 "grammar.y"
+#line 1114 "grammar.y"
     { (yyval.stmt) = MkWatchStmt(null, (yyvsp[(3) - (7)].exp), (yyvsp[(6) - (7)].list)); ;}
     break;
 
   case 152:
 
 /* Line 1464 of yacc.c  */
-#line 1104 "grammar.y"
+#line 1116 "grammar.y"
     { (yyval.stmt) = MkWatchStmt((yyvsp[(1) - (9)].exp), (yyvsp[(5) - (9)].exp), (yyvsp[(8) - (9)].list)); ;}
     break;
 
   case 153:
 
 /* Line 1464 of yacc.c  */
-#line 1109 "grammar.y"
+#line 1121 "grammar.y"
     { (yyval.stmt) = MkStopWatchingStmt(null, (yyvsp[(3) - (6)].exp), (yyvsp[(5) - (6)].list)); ;}
     break;
 
   case 154:
 
 /* Line 1464 of yacc.c  */
-#line 1111 "grammar.y"
+#line 1123 "grammar.y"
     { (yyval.stmt) = MkStopWatchingStmt((yyvsp[(1) - (8)].exp), (yyvsp[(5) - (8)].exp), (yyvsp[(7) - (8)].list)); ;}
     break;
 
   case 155:
 
 /* Line 1464 of yacc.c  */
-#line 1113 "grammar.y"
+#line 1125 "grammar.y"
     { (yyval.stmt) = MkStopWatchingStmt(null, (yyvsp[(3) - (4)].exp), null); ;}
     break;
 
   case 156:
 
 /* Line 1464 of yacc.c  */
-#line 1115 "grammar.y"
+#line 1127 "grammar.y"
     { (yyval.stmt) = MkStopWatchingStmt((yyvsp[(1) - (6)].exp), (yyvsp[(5) - (6)].exp), null); ;}
     break;
 
   case 157:
 
 /* Line 1464 of yacc.c  */
-#line 1120 "grammar.y"
+#line 1132 "grammar.y"
     { (yyval.stmt) = MkFireWatchersStmt(null, null); ;}
     break;
 
   case 158:
 
 /* Line 1464 of yacc.c  */
-#line 1122 "grammar.y"
+#line 1134 "grammar.y"
     { (yyval.stmt) = MkFireWatchersStmt(null, (yyvsp[(2) - (2)].list)); ;}
     break;
 
   case 159:
 
 /* Line 1464 of yacc.c  */
-#line 1124 "grammar.y"
+#line 1136 "grammar.y"
     { (yyval.stmt) = MkFireWatchersStmt((yyvsp[(1) - (3)].exp), null); ;}
     break;
 
   case 160:
 
 /* Line 1464 of yacc.c  */
-#line 1126 "grammar.y"
+#line 1138 "grammar.y"
     { (yyval.stmt) = MkFireWatchersStmt((yyvsp[(1) - (4)].exp), (yyvsp[(4) - (4)].list)); ;}
     break;
 
   case 161:
 
 /* Line 1464 of yacc.c  */
-#line 1130 "grammar.y"
-    { (yyval.classDef) = (yyvsp[(1) - (2)].classDef); (yyval.classDef).loc.end = (yylsp[(2) - (2)]).start; ;}
+#line 1142 "grammar.y"
+    { (yyval.classDef) = (yyvsp[(1) - (2)].classDef); (yyval.classDef).loc.end = (yylsp[(2) - (2)]).end; ;}
     break;
 
   case 162:
 
 /* Line 1464 of yacc.c  */
-#line 1131 "grammar.y"
+#line 1143 "grammar.y"
     { (yyval.classDef) = MkClassDefDefaultProperty((yyvsp[(1) - (2)].list)); if((yyvsp[(1) - (2)].list)->last) ((MemberInit)(yyvsp[(1) - (2)].list)->last).loc.end = (yylsp[(2) - (2)]).start; (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 163:
 
 /* Line 1464 of yacc.c  */
-#line 1132 "grammar.y"
+#line 1144 "grammar.y"
     { (yyval.classDef) = MkClassDefFunction((yyvsp[(1) - (1)].classFunction)); (yyval.classDef).loc = (yyloc); (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 164:
 
 /* Line 1464 of yacc.c  */
-#line 1133 "grammar.y"
+#line 1145 "grammar.y"
     { (yyval.classDef) = MkClassDefProperty((yyvsp[(1) - (1)].prop)); (yyval.classDef).loc = (yyloc); globalContext.nextID++; (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 165:
 
 /* Line 1464 of yacc.c  */
-#line 1134 "grammar.y"
+#line 1146 "grammar.y"
     { (yyval.classDef) = MkClassDefFunction((yyvsp[(2) - (2)].classFunction)); (yyval.classDef).loc = (yyloc); (yyval.classDef).memberAccess = (yyvsp[(1) - (2)].declMode); ;}
     break;
 
   case 166:
 
 /* Line 1464 of yacc.c  */
-#line 1135 "grammar.y"
+#line 1147 "grammar.y"
     { (yyval.classDef) = MkClassDefProperty((yyvsp[(2) - (2)].prop)); (yyval.classDef).loc = (yyloc); globalContext.nextID++; (yyval.classDef).memberAccess = (yyvsp[(1) - (2)].declMode); ;}
     break;
 
   case 167:
 
 /* Line 1464 of yacc.c  */
-#line 1136 "grammar.y"
+#line 1148 "grammar.y"
     { (yyval.classDef) = MkClassDefClassProperty((yyvsp[(1) - (1)].prop)); (yyval.classDef).loc = (yyloc); globalContext.nextID++; ;}
     break;
 
   case 168:
 
 /* Line 1464 of yacc.c  */
-#line 1137 "grammar.y"
+#line 1149 "grammar.y"
     { (yyval.classDef) = null; deleteWatchable = true; ;}
     break;
 
   case 169:
 
 /* Line 1464 of yacc.c  */
-#line 1138 "grammar.y"
+#line 1150 "grammar.y"
     { (yyval.classDef) = MkClassDefNoExpansion(); ;}
     break;
 
   case 170:
 
 /* Line 1464 of yacc.c  */
-#line 1139 "grammar.y"
+#line 1151 "grammar.y"
     { (yyval.classDef) = MkClassDefFixed(); ;}
     break;
 
   case 171:
 
 /* Line 1464 of yacc.c  */
-#line 1140 "grammar.y"
+#line 1152 "grammar.y"
     { (yyval.classDef) = MkClassDefClassPropertyValue((yyvsp[(3) - (7)].id), (yyvsp[(6) - (7)].initializer)); (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 172:
 
 /* Line 1464 of yacc.c  */
-#line 1142 "grammar.y"
+#line 1154 "grammar.y"
     { (yyval.classDef) = null; ;}
     break;
 
   case 173:
 
 /* Line 1464 of yacc.c  */
-#line 1143 "grammar.y"
+#line 1155 "grammar.y"
     { memberAccessStack[defaultMemberAccess] = (yyvsp[(1) - (2)].declMode); if(defaultMemberAccess == 0) { (yyval.classDef) = MkClassDefMemberAccess(); (yyval.classDef).memberAccess = (yyvsp[(1) - (2)].declMode); (yyval.classDef).loc = (yyloc); } else (yyval.classDef) = null; ;}
     break;
 
   case 174:
 
 /* Line 1464 of yacc.c  */
-#line 1145 "grammar.y"
+#line 1157 "grammar.y"
     { (yyval.classDef) = MkClassDefAccessOverride((yyvsp[(1) - (4)].declMode), (yyvsp[(3) - (4)].id)); (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 175:
 
 /* Line 1464 of yacc.c  */
-#line 1149 "grammar.y"
+#line 1161 "grammar.y"
     { (yyval.classDef) = MkClassDefFunction((yyvsp[(1) - (1)].classFunction)); (yyval.classDef).loc = (yyvsp[(1) - (1)].classFunction).loc;  (yyval.classDef).loc.end.charPos++; (yyval.classDef).loc.end.pos++; (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 176:
 
 /* Line 1464 of yacc.c  */
-#line 1152 "grammar.y"
+#line 1164 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkStructDeclaration((yyvsp[(1) - (1)].list), null, null)); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).loc = (yyloc); (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 177:
 
 /* Line 1464 of yacc.c  */
-#line 1153 "grammar.y"
+#line 1165 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkStructDeclaration((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list), null)); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).loc = (yyloc); (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 178:
 
 /* Line 1464 of yacc.c  */
-#line 1154 "grammar.y"
+#line 1166 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkStructDeclaration((yyvsp[(2) - (3)].list), (yyvsp[(3) - (3)].list), null)); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).loc = (yyloc); (yyval.classDef).memberAccess = (yyvsp[(1) - (3)].declMode); ;}
     break;
 
   case 179:
 
 /* Line 1464 of yacc.c  */
-#line 1155 "grammar.y"
+#line 1167 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkStructDeclaration((yyvsp[(2) - (2)].list), null, null)); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).loc = (yyloc); (yyval.classDef).memberAccess = (yyvsp[(1) - (2)].declMode); ;}
     break;
 
   case 180:
 
 /* Line 1464 of yacc.c  */
-#line 1156 "grammar.y"
+#line 1168 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(2) - (2)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).memberAccess = (yyvsp[(1) - (2)].declMode); ;}
     break;
 
   case 181:
 
 /* Line 1464 of yacc.c  */
-#line 1157 "grammar.y"
+#line 1169 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(2) - (2)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).memberAccess = (yyvsp[(1) - (2)].declMode); ;}
     break;
 
   case 182:
 
 /* Line 1464 of yacc.c  */
-#line 1158 "grammar.y"
+#line 1170 "grammar.y"
     { (yyval.classDef) = MkClassDefClassData(MkStructDeclaration((yyvsp[(2) - (3)].list), (yyvsp[(3) - (3)].list), null)); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 183:
 
 /* Line 1464 of yacc.c  */
-#line 1159 "grammar.y"
+#line 1171 "grammar.y"
     { (yyval.classDef) = MkClassDefPropertyWatch((yyvsp[(1) - (1)].propertyWatch)); (yyval.classDef).loc = (yyloc); globalContext.nextID++; ;}
     break;
 
   case 184:
 
 /* Line 1464 of yacc.c  */
-#line 1160 "grammar.y"
+#line 1172 "grammar.y"
     { (yyval.classDef) = MkClassDefDesigner((yyvsp[(2) - (2)].id).string); FreeIdentifier((yyvsp[(2) - (2)].id)); ;}
     break;
 
   case 185:
 
 /* Line 1464 of yacc.c  */
-#line 1161 "grammar.y"
+#line 1173 "grammar.y"
     { (yyval.classDef) = MkClassDefDesigner((yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 186:
 
 /* Line 1464 of yacc.c  */
-#line 1162 "grammar.y"
+#line 1174 "grammar.y"
     { (yyval.classDef) = MkClassDefDesignerDefaultProperty((yyvsp[(2) - (2)].id)); ;}
     break;
 
   case 187:
 
 /* Line 1464 of yacc.c  */
-#line 1163 "grammar.y"
+#line 1175 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(1) - (1)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 188:
 
 /* Line 1464 of yacc.c  */
-#line 1164 "grammar.y"
+#line 1176 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(1) - (1)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 189:
 
 /* Line 1464 of yacc.c  */
-#line 1165 "grammar.y"
+#line 1177 "grammar.y"
     { (yyval.classDef) = MkClassDefDefaultProperty((yyvsp[(1) - (1)].list)); if((yyvsp[(1) - (1)].list)->last) ((MemberInit)(yyvsp[(1) - (1)].list)->last).loc.end = (yylsp[(1) - (1)]).end; (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 190:
 
 /* Line 1464 of yacc.c  */
-#line 1167 "grammar.y"
+#line 1179 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(1) - (2)].instance))); (yyval.classDef).loc = (yyvsp[(1) - (2)].instance).loc; (yyval.classDef).decl.loc = (yyval.classDef).loc;  (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 191:
 
 /* Line 1464 of yacc.c  */
-#line 1168 "grammar.y"
+#line 1180 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(1) - (2)].instance))); (yyval.classDef).loc = (yyvsp[(1) - (2)].instance).loc; (yyval.classDef).decl.loc = (yyval.classDef).loc;  (yyval.classDef).memberAccess = memberAccessStack[defaultMemberAccess]; ;}
     break;
 
   case 192:
 
 /* Line 1464 of yacc.c  */
-#line 1172 "grammar.y"
+#line 1184 "grammar.y"
     { (yyval.classDef) = MkClassDefFunction((yyvsp[(2) - (2)].classFunction)); (yyval.classDef).loc = (yyloc);  (yyval.classDef).loc.end.charPos++; (yyval.classDef).loc.end.pos++; (yyval.classDef).memberAccess = (yyvsp[(1) - (2)].declMode); ;}
     break;
 
   case 193:
 
 /* Line 1464 of yacc.c  */
-#line 1173 "grammar.y"
+#line 1185 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(2) - (3)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyval.classDef).loc; (yyval.classDef).memberAccess = (yyvsp[(1) - (3)].declMode); ;}
     break;
 
   case 194:
 
 /* Line 1464 of yacc.c  */
-#line 1174 "grammar.y"
+#line 1186 "grammar.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(2) - (3)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyval.classDef).loc; (yyval.classDef).memberAccess = (yyvsp[(1) - (3)].declMode); ;}
     break;
 
   case 195:
 
 /* Line 1464 of yacc.c  */
-#line 1178 "grammar.y"
+#line 1190 "grammar.y"
     { (yyval.classDef) = MkClassDefDefaultProperty((yyvsp[(1) - (1)].list)); (yyval.classDef).loc = (yyloc);  (yyval.classDef).loc.end.charPos++; (yyval.classDef).loc.end.pos++; ;}
     break;
 
   case 196:
 
 /* Line 1464 of yacc.c  */
-#line 1182 "grammar.y"
+#line 1194 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].classDef)); ;}
     break;
 
   case 197:
 
 /* Line 1464 of yacc.c  */
-#line 1183 "grammar.y"
+#line 1195 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].classDef)); ;}
     break;
 
   case 198:
 
 /* Line 1464 of yacc.c  */
-#line 1184 "grammar.y"
+#line 1196 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].classDef)); ;}
     break;
 
   case 199:
 
 /* Line 1464 of yacc.c  */
-#line 1188 "grammar.y"
+#line 1200 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].classDef)); ;}
     break;
 
   case 202:
 
 /* Line 1464 of yacc.c  */
-#line 1191 "grammar.y"
+#line 1203 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyval.list), (yyvsp[(2) - (2)].classDef)); ;}
     break;
 
   case 203:
 
 /* Line 1464 of yacc.c  */
-#line 1192 "grammar.y"
+#line 1204 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyval.list), (yyvsp[(2) - (2)].classDef)); ;}
     break;
 
   case 204:
 
 /* Line 1464 of yacc.c  */
-#line 1196 "grammar.y"
+#line 1208 "grammar.y"
     { (yyval.templateDatatype) = MkTemplateDatatype((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 205:
 
 /* Line 1464 of yacc.c  */
-#line 1197 "grammar.y"
+#line 1209 "grammar.y"
     { (yyval.templateDatatype) = MkTemplateDatatype((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 206:
 
 /* Line 1464 of yacc.c  */
-#line 1209 "grammar.y"
+#line 1221 "grammar.y"
     { (yyval.templateArgument) = MkTemplateTypeArgument(MkTemplateDatatype((yyvsp[(1) - (1)].list), null)); ;}
     break;
 
   case 207:
 
 /* Line 1464 of yacc.c  */
-#line 1210 "grammar.y"
+#line 1222 "grammar.y"
     { (yyval.templateArgument) = MkTemplateTypeArgument(MkTemplateDatatype((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator))); ;}
     break;
 
   case 208:
 
 /* Line 1464 of yacc.c  */
-#line 1214 "grammar.y"
+#line 1226 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter((yyvsp[(2) - (2)].id), null, null); ;}
     break;
 
   case 209:
 
 /* Line 1464 of yacc.c  */
-#line 1215 "grammar.y"
+#line 1227 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter((yyvsp[(2) - (4)].id), null, (yyvsp[(4) - (4)].templateArgument)); ;}
     break;
 
   case 210:
 
 /* Line 1464 of yacc.c  */
-#line 1216 "grammar.y"
+#line 1228 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter((yyvsp[(2) - (4)].id), (yyvsp[(4) - (4)].templateDatatype), null); ;}
     break;
 
   case 211:
 
 /* Line 1464 of yacc.c  */
-#line 1217 "grammar.y"
+#line 1229 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter((yyvsp[(2) - (6)].id), (yyvsp[(4) - (6)].templateDatatype), (yyvsp[(6) - (6)].templateArgument)); ;}
     break;
 
   case 212:
 
 /* Line 1464 of yacc.c  */
-#line 1218 "grammar.y"
+#line 1230 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter(MkIdentifier((yyvsp[(2) - (2)].string)), null, null); delete (yyvsp[(2) - (2)].string); ;}
     break;
 
   case 213:
 
 /* Line 1464 of yacc.c  */
-#line 1219 "grammar.y"
+#line 1231 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter(MkIdentifier((yyvsp[(2) - (4)].string)), null, (yyvsp[(4) - (4)].templateArgument)); ;}
     break;
 
   case 214:
 
 /* Line 1464 of yacc.c  */
-#line 1220 "grammar.y"
+#line 1232 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter(MkIdentifier((yyvsp[(2) - (4)].string)), (yyvsp[(4) - (4)].templateDatatype), null); ;}
     break;
 
   case 215:
 
 /* Line 1464 of yacc.c  */
-#line 1221 "grammar.y"
+#line 1233 "grammar.y"
     { (yyval.templateParameter) = MkTypeTemplateParameter(MkIdentifier((yyvsp[(2) - (6)].string)), (yyvsp[(4) - (6)].templateDatatype), (yyvsp[(6) - (6)].templateArgument)); ;}
     break;
 
   case 216:
 
 /* Line 1464 of yacc.c  */
-#line 1225 "grammar.y"
+#line 1237 "grammar.y"
     { (yyval.templateArgument) = MkTemplateIdentifierArgument((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 217:
 
 /* Line 1464 of yacc.c  */
-#line 1229 "grammar.y"
+#line 1241 "grammar.y"
     { (yyval.templateParameter) = MkIdentifierTemplateParameter((yyvsp[(1) - (1)].id), dataMember, null); ;}
     break;
 
   case 218:
 
 /* Line 1464 of yacc.c  */
-#line 1230 "grammar.y"
+#line 1242 "grammar.y"
     { (yyval.templateParameter) = MkIdentifierTemplateParameter((yyvsp[(1) - (3)].id), dataMember, (yyvsp[(3) - (3)].templateArgument)); ;}
     break;
 
   case 219:
 
 /* Line 1464 of yacc.c  */
-#line 1234 "grammar.y"
+#line 1246 "grammar.y"
     { (yyval.templateArgument) = MkTemplateExpressionArgument((yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 220:
 
 /* Line 1464 of yacc.c  */
-#line 1242 "grammar.y"
+#line 1254 "grammar.y"
     { (yyval.templateParameter) = MkExpressionTemplateParameter((yyvsp[(2) - (4)].id), MkTemplateDatatype((yyvsp[(1) - (4)].list), null), (yyvsp[(4) - (4)].templateArgument)); ;}
     break;
 
   case 221:
 
 /* Line 1464 of yacc.c  */
-#line 1243 "grammar.y"
+#line 1255 "grammar.y"
     { (yyval.templateParameter) = MkExpressionTemplateParameter((yyvsp[(3) - (5)].id), MkTemplateDatatype((yyvsp[(1) - (5)].list), (yyvsp[(2) - (5)].declarator)), (yyvsp[(5) - (5)].templateArgument)); ;}
     break;
 
   case 225:
 
 /* Line 1464 of yacc.c  */
-#line 1253 "grammar.y"
+#line 1265 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].templateParameter)); ;}
     break;
 
   case 226:
 
 /* Line 1464 of yacc.c  */
-#line 1254 "grammar.y"
+#line 1266 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].templateParameter)); ;}
     break;
 
   case 230:
 
 /* Line 1464 of yacc.c  */
-#line 1261 "grammar.y"
+#line 1273 "grammar.y"
     { (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument); (yyval.templateArgument).name = (yyvsp[(1) - (3)].id); (yyval.templateArgument).loc = (yyloc); ;}
     break;
 
   case 231:
 
 /* Line 1464 of yacc.c  */
-#line 1262 "grammar.y"
+#line 1274 "grammar.y"
     { (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument); (yyval.templateArgument).name = (yyvsp[(1) - (3)].id); (yyval.templateArgument).loc = (yyloc); ;}
     break;
 
   case 232:
 
 /* Line 1464 of yacc.c  */
-#line 1263 "grammar.y"
+#line 1275 "grammar.y"
     { (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument); (yyval.templateArgument).name = (yyvsp[(1) - (3)].id); (yyval.templateArgument).loc = (yyloc); ;}
     break;
 
   case 233:
 
 /* Line 1464 of yacc.c  */
-#line 1303 "grammar.y"
+#line 1315 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].templateArgument)); ;}
     break;
 
   case 234:
 
 /* Line 1464 of yacc.c  */
-#line 1304 "grammar.y"
+#line 1316 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].templateArgument)); ;}
     break;
 
   case 235:
 
 /* Line 1464 of yacc.c  */
-#line 1309 "grammar.y"
+#line 1321 "grammar.y"
     {
       if(curContext != globalContext)
          PopContext(curContext);
@@ -15190,14 +15201,14 @@ yyreduce:
   case 236:
 
 /* Line 1464 of yacc.c  */
-#line 1316 "grammar.y"
+#line 1328 "grammar.y"
     { (yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClassAddNameSpace(globalContext.nextID++, (yyvsp[(2) - (2)].id).string); FreeIdentifier((yyvsp[(2) - (2)].id)); (yyval.symbol).nameLoc = (yylsp[(2) - (2)]); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 237:
 
 /* Line 1464 of yacc.c  */
-#line 1318 "grammar.y"
+#line 1330 "grammar.y"
     {
       (yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClass(globalContext.nextID++, (yyvsp[(2) - (2)].specifier).name);
       (yyval.symbol).nameLoc = (yylsp[(2) - (2)]);
@@ -15210,28 +15221,28 @@ yyreduce:
   case 238:
 
 /* Line 1464 of yacc.c  */
-#line 1325 "grammar.y"
+#line 1337 "grammar.y"
     { (yyvsp[(2) - (3)].context); (yyval.symbol) = DeclClassAddNameSpace(globalContext.nextID++, (yyvsp[(3) - (3)].id).string); FreeIdentifier((yyvsp[(1) - (3)].id)); FreeIdentifier((yyvsp[(3) - (3)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (3)]); (yyval.symbol).isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 239:
 
 /* Line 1464 of yacc.c  */
-#line 1326 "grammar.y"
+#line 1338 "grammar.y"
     { (yyvsp[(2) - (3)].context); (yyval.symbol) = DeclClass(globalContext.nextID++, (yyvsp[(3) - (3)].specifier).name); FreeIdentifier((yyvsp[(1) - (3)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (3)]); (yyval.symbol).isRemote = true; FreeSpecifier((yyvsp[(3) - (3)].specifier)); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 240:
 
 /* Line 1464 of yacc.c  */
-#line 1328 "grammar.y"
+#line 1340 "grammar.y"
     { (yyvsp[(1) - (5)].context); (yyval.symbol) = DeclClassAddNameSpace(globalContext.nextID++, (yyvsp[(2) - (5)].id).string); (yyval.symbol).templateParams = (yyvsp[(4) - (5)].list); FreeIdentifier((yyvsp[(2) - (5)].id)); (yyval.symbol).nameLoc = (yylsp[(2) - (5)]); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 241:
 
 /* Line 1464 of yacc.c  */
-#line 1330 "grammar.y"
+#line 1342 "grammar.y"
     {
       (yyvsp[(1) - (5)].context); (yyval.symbol) = DeclClass(globalContext.nextID++, (yyvsp[(2) - (5)].specifier).name);
       (yyval.symbol).templateParams = (yyvsp[(4) - (5)].list);
@@ -15245,21 +15256,21 @@ yyreduce:
   case 242:
 
 /* Line 1464 of yacc.c  */
-#line 1338 "grammar.y"
+#line 1350 "grammar.y"
     { (yyvsp[(2) - (6)].context); (yyval.symbol) = DeclClassAddNameSpace(globalContext.nextID++, (yyvsp[(3) - (6)].id).string); (yyval.symbol).templateParams = (yyvsp[(5) - (6)].list); FreeIdentifier((yyvsp[(1) - (6)].id)); FreeIdentifier((yyvsp[(3) - (6)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (6)]); (yyval.symbol).isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 243:
 
 /* Line 1464 of yacc.c  */
-#line 1339 "grammar.y"
+#line 1351 "grammar.y"
     { (yyvsp[(2) - (6)].context); (yyval.symbol) = DeclClass(globalContext.nextID++, (yyvsp[(3) - (6)].specifier).name); (yyval.symbol).templateParams = (yyvsp[(5) - (6)].list); FreeIdentifier((yyvsp[(1) - (6)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (6)]); (yyval.symbol).isRemote = true; FreeSpecifier((yyvsp[(3) - (6)].specifier)); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 244:
 
 /* Line 1464 of yacc.c  */
-#line 1344 "grammar.y"
+#line 1356 "grammar.y"
     {
          (yyval._class).loc = (yyloc);
          (yyval._class) = (yyvsp[(1) - (2)]._class);
@@ -15269,7 +15280,7 @@ yyreduce:
   case 245:
 
 /* Line 1464 of yacc.c  */
-#line 1351 "grammar.y"
+#line 1363 "grammar.y"
     {
          (yyval._class) = (yyvsp[(1) - (2)]._class); (yyval._class).definitions = MkList(); (yyval._class).blockStart = (yylsp[(2) - (2)]);  (yyval._class).loc = (yyloc); (yyval._class).endid = globalContext.nextID++;
          POP_DEFAULT_ACCESS
@@ -15280,7 +15291,7 @@ yyreduce:
   case 246:
 
 /* Line 1464 of yacc.c  */
-#line 1358 "grammar.y"
+#line 1370 "grammar.y"
     {
          (yyval._class) = MkClass((yyvsp[(1) - (3)].symbol), null, MkList()); (yyval._class).blockStart = (yylsp[(2) - (3)]);  (yyval._class).loc = (yyloc); (yyval._class).endid = globalContext.nextID++;
          POP_DEFAULT_ACCESS
@@ -15291,7 +15302,7 @@ yyreduce:
   case 247:
 
 /* Line 1464 of yacc.c  */
-#line 1364 "grammar.y"
+#line 1376 "grammar.y"
     {
          (yyval._class) = (yyvsp[(1) - (3)]._class); (yyval._class).definitions = MkList(); (yyval._class).blockStart = (yylsp[(2) - (3)]);  (yyval._class).loc = (yyloc); (yyval._class).endid = globalContext.nextID++;
          POP_DEFAULT_ACCESS
@@ -15302,7 +15313,7 @@ yyreduce:
   case 248:
 
 /* Line 1464 of yacc.c  */
-#line 1371 "grammar.y"
+#line 1383 "grammar.y"
     {
          (yyvsp[(1) - (3)].context); (yyval._class) = MkClass(DeclClassAddNameSpace(0, (yyvsp[(2) - (3)].id).string), null, null); FreeIdentifier((yyvsp[(2) - (3)].id));
          POP_DEFAULT_ACCESS
@@ -15313,7 +15324,7 @@ yyreduce:
   case 249:
 
 /* Line 1464 of yacc.c  */
-#line 1377 "grammar.y"
+#line 1389 "grammar.y"
     {
          (yyvsp[(1) - (3)].context); (yyval._class) = MkClass(DeclClass(0, (yyvsp[(2) - (3)].specifier).name), null, null); FreeSpecifier((yyvsp[(2) - (3)].specifier));
          POP_DEFAULT_ACCESS
@@ -15324,35 +15335,13 @@ yyreduce:
   case 250:
 
 /* Line 1464 of yacc.c  */
-#line 1386 "grammar.y"
+#line 1398 "grammar.y"
     {
          (yyval._class) = MkClass((yyvsp[(1) - (3)].symbol), (yyvsp[(3) - (3)].list), null);
       ;}
     break;
 
   case 251:
-
-/* Line 1464 of yacc.c  */
-#line 1393 "grammar.y"
-    {
-         (yyval._class) = MkClass((yyvsp[(1) - (3)].symbol), null, (yyvsp[(3) - (3)].list)); (yyval._class).deleteWatchable = deleteWatchable; deleteWatchable = false; (yyval._class).blockStart = (yylsp[(2) - (3)]); (yyval._class).loc = (yyloc); (yyval._class).loc.end.charPos++; (yyval._class).loc.end.pos++; (yyval._class).endid = globalContext.nextID++;
-         POP_DEFAULT_ACCESS
-         PopContext(curContext);
-      ;}
-    break;
-
-  case 252:
-
-/* Line 1464 of yacc.c  */
-#line 1399 "grammar.y"
-    {
-         (yyval._class) = (yyvsp[(1) - (3)]._class); (yyval._class).definitions = (yyvsp[(3) - (3)].list); (yyval._class).deleteWatchable = deleteWatchable; deleteWatchable = false; (yyval._class).blockStart = (yylsp[(2) - (3)]);  (yyval._class).loc = (yyloc); (yyval._class).loc.end.charPos++; (yyval._class).loc.end.pos++; (yyval._class).endid = globalContext.nextID++;
-         POP_DEFAULT_ACCESS
-         PopContext(curContext);
-      ;}
-    break;
-
-  case 253:
 
 /* Line 1464 of yacc.c  */
 #line 1405 "grammar.y"
@@ -15363,7 +15352,7 @@ yyreduce:
       ;}
     break;
 
-  case 254:
+  case 252:
 
 /* Line 1464 of yacc.c  */
 #line 1411 "grammar.y"
@@ -15374,10 +15363,32 @@ yyreduce:
       ;}
     break;
 
-  case 255:
+  case 253:
 
 /* Line 1464 of yacc.c  */
 #line 1417 "grammar.y"
+    {
+         (yyval._class) = MkClass((yyvsp[(1) - (3)].symbol), null, (yyvsp[(3) - (3)].list)); (yyval._class).deleteWatchable = deleteWatchable; deleteWatchable = false; (yyval._class).blockStart = (yylsp[(2) - (3)]); (yyval._class).loc = (yyloc); (yyval._class).loc.end.charPos++; (yyval._class).loc.end.pos++; (yyval._class).endid = globalContext.nextID++;
+         POP_DEFAULT_ACCESS
+         PopContext(curContext);
+      ;}
+    break;
+
+  case 254:
+
+/* Line 1464 of yacc.c  */
+#line 1423 "grammar.y"
+    {
+         (yyval._class) = (yyvsp[(1) - (3)]._class); (yyval._class).definitions = (yyvsp[(3) - (3)].list); (yyval._class).deleteWatchable = deleteWatchable; deleteWatchable = false; (yyval._class).blockStart = (yylsp[(2) - (3)]);  (yyval._class).loc = (yyloc); (yyval._class).loc.end.charPos++; (yyval._class).loc.end.pos++; (yyval._class).endid = globalContext.nextID++;
+         POP_DEFAULT_ACCESS
+         PopContext(curContext);
+      ;}
+    break;
+
+  case 255:
+
+/* Line 1464 of yacc.c  */
+#line 1429 "grammar.y"
     {
          (yyval._class) = MkClass((yyvsp[(1) - (3)].symbol), null, MkList()); (yyval._class).deleteWatchable = deleteWatchable; deleteWatchable = false; (yyval._class).blockStart = (yylsp[(2) - (3)]);  (yyval._class).loc = (yyloc); (yyval._class).loc.end.charPos++; (yyval._class).loc.end.pos++; (yyval._class).endid = globalContext.nextID++;
          POP_DEFAULT_ACCESS
@@ -15388,7 +15399,7 @@ yyreduce:
   case 256:
 
 /* Line 1464 of yacc.c  */
-#line 1423 "grammar.y"
+#line 1435 "grammar.y"
     {
          (yyval._class) = (yyvsp[(1) - (3)]._class); (yyval._class).definitions = MkList(); (yyval._class).deleteWatchable = deleteWatchable; deleteWatchable = false; (yyval._class).blockStart = (yylsp[(2) - (3)]);  (yyval._class).loc = (yyloc); (yyval._class).loc.end.charPos++; (yyval._class).loc.end.pos++; (yyval._class).endid = globalContext.nextID++;
          POP_DEFAULT_ACCESS
@@ -15399,91 +15410,91 @@ yyreduce:
   case 257:
 
 /* Line 1464 of yacc.c  */
-#line 1434 "grammar.y"
+#line 1446 "grammar.y"
     { (yyval.id) = MkIdentifier(yytext); (yyval.id).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 259:
 
 /* Line 1464 of yacc.c  */
-#line 1440 "grammar.y"
+#line 1452 "grammar.y"
     { (yyval.exp) = MkExpBrackets((yyvsp[(2) - (3)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 260:
 
 /* Line 1464 of yacc.c  */
-#line 1444 "grammar.y"
+#line 1456 "grammar.y"
     { (yyval.exp) = MkExpString((yyvsp[(1) - (1)].string)); delete (yyvsp[(1) - (1)].string); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 261:
 
 /* Line 1464 of yacc.c  */
-#line 1445 "grammar.y"
+#line 1457 "grammar.y"
     { (yyval.exp) = MkExpIntlString((yyvsp[(2) - (2)].string), null); delete (yyvsp[(2) - (2)].string); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 262:
 
 /* Line 1464 of yacc.c  */
-#line 1446 "grammar.y"
+#line 1458 "grammar.y"
     { (yyval.exp) = MkExpIntlString((yyvsp[(4) - (4)].string), (yyvsp[(2) - (4)].string)); delete (yyvsp[(2) - (4)].string); delete (yyvsp[(4) - (4)].string); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 263:
 
 /* Line 1464 of yacc.c  */
-#line 1450 "grammar.y"
+#line 1462 "grammar.y"
     { (yyval.exp) = MkExpConstant(yytext); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 264:
 
 /* Line 1464 of yacc.c  */
-#line 1454 "grammar.y"
+#line 1466 "grammar.y"
     { (yyval.exp) = MkExpIdentifier((yyvsp[(1) - (1)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 265:
 
 /* Line 1464 of yacc.c  */
-#line 1455 "grammar.y"
+#line 1467 "grammar.y"
     { (yyval.exp) = MkExpInstance((yyvsp[(1) - (1)].instance)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 266:
 
 /* Line 1464 of yacc.c  */
-#line 1456 "grammar.y"
+#line 1468 "grammar.y"
     { (yyval.exp) = MkExpExtensionCompound((yyvsp[(3) - (4)].stmt)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 267:
 
 /* Line 1464 of yacc.c  */
-#line 1457 "grammar.y"
+#line 1469 "grammar.y"
     { (yyval.exp) = MkExpExtensionExpression((yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 268:
 
 /* Line 1464 of yacc.c  */
-#line 1458 "grammar.y"
+#line 1470 "grammar.y"
     { (yyval.exp) = MkExpExtensionInitializer((yyvsp[(3) - (5)].typeName), (yyvsp[(5) - (5)].initializer)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 269:
 
 /* Line 1464 of yacc.c  */
-#line 1459 "grammar.y"
+#line 1471 "grammar.y"
     { (yyval.exp) = MkExpExtensionInitializer((yyvsp[(3) - (8)].typeName), MkInitializerAssignment(MkExpExtensionInitializer((yyvsp[(6) - (8)].typeName), (yyvsp[(8) - (8)].initializer)))); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 270:
 
 /* Line 1464 of yacc.c  */
-#line 1461 "grammar.y"
+#line 1473 "grammar.y"
     {
       char * constant = (yyvsp[(1) - (2)].exp).constant;
       int len = strlen(constant);
@@ -15501,756 +15512,756 @@ yyreduce:
   case 271:
 
 /* Line 1464 of yacc.c  */
-#line 1473 "grammar.y"
+#line 1485 "grammar.y"
     { (yyval.exp) = (yyvsp[(1) - (1)].exp); ;}
     break;
 
   case 273:
 
 /* Line 1464 of yacc.c  */
-#line 1475 "grammar.y"
+#line 1487 "grammar.y"
     { Expression exp = MkExpDummy(); exp.loc.start = (yylsp[(1) - (2)]).end; exp.loc.end = (yylsp[(2) - (2)]).start; (yyval.exp) = MkExpBrackets(MkListOne(exp)); (yyval.exp).loc = (yyloc); yyerror(); ;}
     break;
 
   case 274:
 
 /* Line 1464 of yacc.c  */
-#line 1476 "grammar.y"
+#line 1488 "grammar.y"
     { (yyval.exp) = MkExpNew(MkTypeName((yyvsp[(2) - (6)].list),(yyvsp[(3) - (6)].declarator)), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 275:
 
 /* Line 1464 of yacc.c  */
-#line 1477 "grammar.y"
+#line 1489 "grammar.y"
     { (yyval.exp) = MkExpNew(MkTypeName((yyvsp[(2) - (6)].list),(yyvsp[(3) - (6)].declarator)), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 276:
 
 /* Line 1464 of yacc.c  */
-#line 1478 "grammar.y"
+#line 1490 "grammar.y"
     { (yyval.exp) = MkExpNew(MkTypeName((yyvsp[(2) - (5)].list),null), (yyvsp[(4) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 277:
 
 /* Line 1464 of yacc.c  */
-#line 1479 "grammar.y"
+#line 1491 "grammar.y"
     { (yyval.exp) = MkExpNew(MkTypeName((yyvsp[(2) - (5)].list),null), (yyvsp[(4) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 278:
 
 /* Line 1464 of yacc.c  */
-#line 1480 "grammar.y"
+#line 1492 "grammar.y"
     { (yyval.exp) = MkExpNew0(MkTypeName((yyvsp[(2) - (6)].list),(yyvsp[(3) - (6)].declarator)), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 279:
 
 /* Line 1464 of yacc.c  */
-#line 1481 "grammar.y"
+#line 1493 "grammar.y"
     { (yyval.exp) = MkExpNew0(MkTypeName((yyvsp[(2) - (6)].list),(yyvsp[(3) - (6)].declarator)), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 280:
 
 /* Line 1464 of yacc.c  */
-#line 1482 "grammar.y"
+#line 1494 "grammar.y"
     { (yyval.exp) = MkExpNew0(MkTypeName((yyvsp[(2) - (5)].list),null), (yyvsp[(4) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 281:
 
 /* Line 1464 of yacc.c  */
-#line 1483 "grammar.y"
+#line 1495 "grammar.y"
     { (yyval.exp) = MkExpNew0(MkTypeName((yyvsp[(2) - (5)].list),null), (yyvsp[(4) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 282:
 
 /* Line 1464 of yacc.c  */
-#line 1484 "grammar.y"
+#line 1496 "grammar.y"
     { (yyval.exp) = MkExpRenew((yyvsp[(2) - (7)].exp), MkTypeName((yyvsp[(3) - (7)].list),(yyvsp[(4) - (7)].declarator)), (yyvsp[(6) - (7)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 283:
 
 /* Line 1464 of yacc.c  */
-#line 1485 "grammar.y"
+#line 1497 "grammar.y"
     { (yyval.exp) = MkExpRenew((yyvsp[(2) - (7)].exp), MkTypeName((yyvsp[(3) - (7)].list),(yyvsp[(4) - (7)].declarator)), (yyvsp[(6) - (7)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 284:
 
 /* Line 1464 of yacc.c  */
-#line 1486 "grammar.y"
+#line 1498 "grammar.y"
     { (yyval.exp) = MkExpRenew((yyvsp[(2) - (6)].exp), MkTypeName((yyvsp[(3) - (6)].list),null), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 285:
 
 /* Line 1464 of yacc.c  */
-#line 1487 "grammar.y"
+#line 1499 "grammar.y"
     { (yyval.exp) = MkExpRenew((yyvsp[(2) - (6)].exp), MkTypeName((yyvsp[(3) - (6)].list),null), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 286:
 
 /* Line 1464 of yacc.c  */
-#line 1488 "grammar.y"
+#line 1500 "grammar.y"
     { (yyval.exp) = MkExpRenew0((yyvsp[(2) - (7)].exp), MkTypeName((yyvsp[(3) - (7)].list),(yyvsp[(4) - (7)].declarator)), (yyvsp[(6) - (7)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 287:
 
 /* Line 1464 of yacc.c  */
-#line 1489 "grammar.y"
+#line 1501 "grammar.y"
     { (yyval.exp) = MkExpRenew0((yyvsp[(2) - (7)].exp), MkTypeName((yyvsp[(3) - (7)].list),(yyvsp[(4) - (7)].declarator)), (yyvsp[(6) - (7)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 288:
 
 /* Line 1464 of yacc.c  */
-#line 1490 "grammar.y"
+#line 1502 "grammar.y"
     { (yyval.exp) = MkExpRenew0((yyvsp[(2) - (6)].exp), MkTypeName((yyvsp[(3) - (6)].list),null), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 289:
 
 /* Line 1464 of yacc.c  */
-#line 1491 "grammar.y"
+#line 1503 "grammar.y"
     { (yyval.exp) = MkExpRenew0((yyvsp[(2) - (6)].exp), MkTypeName((yyvsp[(3) - (6)].list),null), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 290:
 
 /* Line 1464 of yacc.c  */
-#line 1492 "grammar.y"
+#line 1504 "grammar.y"
     { (yyval.exp) = MkExpClass((yyvsp[(3) - (4)].list), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 291:
 
 /* Line 1464 of yacc.c  */
-#line 1493 "grammar.y"
+#line 1505 "grammar.y"
     { (yyval.exp) = MkExpClass((yyvsp[(3) - (5)].list), (yyvsp[(4) - (5)].declarator)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 292:
 
 /* Line 1464 of yacc.c  */
-#line 1494 "grammar.y"
+#line 1506 "grammar.y"
     { (yyval.exp) = MkExpClass(MkListOne(MkSpecifierName((yyvsp[(3) - (4)].id).string)), null); FreeIdentifier((yyvsp[(3) - (4)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 293:
 
 /* Line 1464 of yacc.c  */
-#line 1495 "grammar.y"
+#line 1507 "grammar.y"
     { (yyval.exp) = MkExpVaArg((yyvsp[(3) - (6)].exp), (yyvsp[(5) - (6)].typeName)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 294:
 
 /* Line 1464 of yacc.c  */
-#line 1497 "grammar.y"
+#line 1509 "grammar.y"
     { (yyval.exp) = MkExpClassData((yyvsp[(3) - (4)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 299:
 
 /* Line 1464 of yacc.c  */
-#line 1503 "grammar.y"
+#line 1515 "grammar.y"
     { (yyval.exp) = MkExpArray((yyvsp[(2) - (3)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 300:
 
 /* Line 1464 of yacc.c  */
-#line 1504 "grammar.y"
+#line 1516 "grammar.y"
     { (yyval.exp) = MkExpArray(null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 301:
 
 /* Line 1464 of yacc.c  */
-#line 1508 "grammar.y"
+#line 1520 "grammar.y"
     { (yyval.exp) = MkExpInstance((yyvsp[(1) - (1)].instance)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 302:
 
 /* Line 1464 of yacc.c  */
-#line 1512 "grammar.y"
+#line 1524 "grammar.y"
     { (yyval.exp) = MkExpInstance((yyvsp[(1) - (2)].instance)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 303:
 
 /* Line 1464 of yacc.c  */
-#line 1516 "grammar.y"
+#line 1528 "grammar.y"
     { (yyval.exp) = MkExpBrackets((yyvsp[(2) - (2)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 304:
 
 /* Line 1464 of yacc.c  */
-#line 1517 "grammar.y"
+#line 1529 "grammar.y"
     { (yyval.exp) = MkExpBrackets((yyvsp[(2) - (2)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 306:
 
 /* Line 1464 of yacc.c  */
-#line 1523 "grammar.y"
+#line 1535 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 307:
 
 /* Line 1464 of yacc.c  */
-#line 1524 "grammar.y"
+#line 1536 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 308:
 
 /* Line 1464 of yacc.c  */
-#line 1525 "grammar.y"
+#line 1537 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), MkList()); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 309:
 
 /* Line 1464 of yacc.c  */
-#line 1526 "grammar.y"
+#line 1538 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (4)]).start; (yyval.exp).call.argLoc.end = (yylsp[(4) - (4)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 310:
 
 /* Line 1464 of yacc.c  */
-#line 1527 "grammar.y"
+#line 1539 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (4)]).start; (yyval.exp).call.argLoc.end = (yylsp[(4) - (4)]).end; (yyval.exp).loc = (yyloc); if((yyvsp[(3) - (4)].list)->last) ((Expression)(yyvsp[(3) - (4)].list)->last).loc.end = (yylsp[(4) - (4)]).start; ;}
     break;
 
   case 311:
 
 /* Line 1464 of yacc.c  */
-#line 1528 "grammar.y"
+#line 1540 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 312:
 
 /* Line 1464 of yacc.c  */
-#line 1529 "grammar.y"
+#line 1541 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 313:
 
 /* Line 1464 of yacc.c  */
-#line 1530 "grammar.y"
+#line 1542 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), INC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 314:
 
 /* Line 1464 of yacc.c  */
-#line 1531 "grammar.y"
+#line 1543 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), DEC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 315:
 
 /* Line 1464 of yacc.c  */
-#line 1533 "grammar.y"
+#line 1545 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 316:
 
 /* Line 1464 of yacc.c  */
-#line 1534 "grammar.y"
+#line 1546 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 317:
 
 /* Line 1464 of yacc.c  */
-#line 1535 "grammar.y"
+#line 1547 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), MkList()); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 318:
 
 /* Line 1464 of yacc.c  */
-#line 1536 "grammar.y"
+#line 1548 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (4)]).start; (yyval.exp).call.argLoc.end = (yylsp[(4) - (4)]).end;(yyval.exp).loc = (yyloc); ;}
     break;
 
   case 319:
 
 /* Line 1464 of yacc.c  */
-#line 1537 "grammar.y"
+#line 1549 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 320:
 
 /* Line 1464 of yacc.c  */
-#line 1538 "grammar.y"
+#line 1550 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 321:
 
 /* Line 1464 of yacc.c  */
-#line 1539 "grammar.y"
+#line 1551 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), INC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 322:
 
 /* Line 1464 of yacc.c  */
-#line 1540 "grammar.y"
+#line 1552 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), DEC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 324:
 
 /* Line 1464 of yacc.c  */
-#line 1546 "grammar.y"
+#line 1558 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 325:
 
 /* Line 1464 of yacc.c  */
-#line 1547 "grammar.y"
+#line 1559 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 326:
 
 /* Line 1464 of yacc.c  */
-#line 1548 "grammar.y"
+#line 1560 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), MkList()); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 327:
 
 /* Line 1464 of yacc.c  */
-#line 1549 "grammar.y"
+#line 1561 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (4)]).start; (yyval.exp).call.argLoc.end = (yylsp[(4) - (4)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 328:
 
 /* Line 1464 of yacc.c  */
-#line 1550 "grammar.y"
+#line 1562 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (4)]).start; (yyval.exp).call.argLoc.end = (yylsp[(4) - (4)]).end; (yyval.exp).loc = (yyloc); if((yyvsp[(3) - (4)].list)->last) ((Expression)(yyvsp[(3) - (4)].list)->last).loc.end = (yylsp[(4) - (4)]).start; ;}
     break;
 
   case 329:
 
 /* Line 1464 of yacc.c  */
-#line 1551 "grammar.y"
+#line 1563 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 330:
 
 /* Line 1464 of yacc.c  */
-#line 1552 "grammar.y"
+#line 1564 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 331:
 
 /* Line 1464 of yacc.c  */
-#line 1553 "grammar.y"
+#line 1565 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), INC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 332:
 
 /* Line 1464 of yacc.c  */
-#line 1554 "grammar.y"
+#line 1566 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), DEC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 333:
 
 /* Line 1464 of yacc.c  */
-#line 1556 "grammar.y"
+#line 1568 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 334:
 
 /* Line 1464 of yacc.c  */
-#line 1557 "grammar.y"
+#line 1569 "grammar.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 335:
 
 /* Line 1464 of yacc.c  */
-#line 1558 "grammar.y"
+#line 1570 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), MkList()); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 336:
 
 /* Line 1464 of yacc.c  */
-#line 1559 "grammar.y"
+#line 1571 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (4)]).start; (yyval.exp).call.argLoc.end = (yylsp[(4) - (4)]).end;(yyval.exp).loc = (yyloc); ;}
     break;
 
   case 337:
 
 /* Line 1464 of yacc.c  */
-#line 1560 "grammar.y"
+#line 1572 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 338:
 
 /* Line 1464 of yacc.c  */
-#line 1561 "grammar.y"
+#line 1573 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 339:
 
 /* Line 1464 of yacc.c  */
-#line 1562 "grammar.y"
+#line 1574 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), INC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 340:
 
 /* Line 1464 of yacc.c  */
-#line 1563 "grammar.y"
+#line 1575 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), DEC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 341:
 
 /* Line 1464 of yacc.c  */
-#line 1567 "grammar.y"
+#line 1579 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 342:
 
 /* Line 1464 of yacc.c  */
-#line 1568 "grammar.y"
+#line 1580 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 343:
 
 /* Line 1464 of yacc.c  */
-#line 1569 "grammar.y"
+#line 1581 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp));  ;}
     break;
 
   case 344:
 
 /* Line 1464 of yacc.c  */
-#line 1570 "grammar.y"
+#line 1582 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp));  ;}
     break;
 
   case 345:
 
 /* Line 1464 of yacc.c  */
-#line 1574 "grammar.y"
+#line 1586 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 346:
 
 /* Line 1464 of yacc.c  */
-#line 1575 "grammar.y"
+#line 1587 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 347:
 
 /* Line 1464 of yacc.c  */
-#line 1576 "grammar.y"
+#line 1588 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp));  ;}
     break;
 
   case 348:
 
 /* Line 1464 of yacc.c  */
-#line 1577 "grammar.y"
+#line 1589 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp));  ;}
     break;
 
   case 349:
 
 /* Line 1464 of yacc.c  */
-#line 1578 "grammar.y"
+#line 1590 "grammar.y"
     { Expression exp = MkExpDummy(); exp.loc.start = (yylsp[(2) - (2)]).end; exp.loc.end = (yylsp[(2) - (2)]).end; (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), exp); ;}
     break;
 
   case 350:
 
 /* Line 1464 of yacc.c  */
-#line 1582 "grammar.y"
+#line 1594 "grammar.y"
     { (yyval.exp) = MkExpOp(null, INC_OP, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 351:
 
 /* Line 1464 of yacc.c  */
-#line 1583 "grammar.y"
+#line 1595 "grammar.y"
     { (yyval.exp) = MkExpOp(null, DEC_OP, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 352:
 
 /* Line 1464 of yacc.c  */
-#line 1584 "grammar.y"
+#line 1596 "grammar.y"
     { (yyval.exp) = MkExpOp(null, (yyvsp[(1) - (2)].i), (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 353:
 
 /* Line 1464 of yacc.c  */
-#line 1585 "grammar.y"
+#line 1597 "grammar.y"
     { (yyval.exp) = MkExpOp(null, (yyvsp[(1) - (2)].i), (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 354:
 
 /* Line 1464 of yacc.c  */
-#line 1586 "grammar.y"
+#line 1598 "grammar.y"
     { (yyval.exp) = MkExpOp(null, SIZEOF, (yyvsp[(3) - (4)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 355:
 
 /* Line 1464 of yacc.c  */
-#line 1587 "grammar.y"
+#line 1599 "grammar.y"
     { (yyval.exp) = MkExpOp(null, SIZEOF, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 356:
 
 /* Line 1464 of yacc.c  */
-#line 1588 "grammar.y"
+#line 1600 "grammar.y"
     { (yyval.exp) = MkExpTypeSize((yyvsp[(3) - (4)].typeName)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 357:
 
 /* Line 1464 of yacc.c  */
-#line 1589 "grammar.y"
+#line 1601 "grammar.y"
     { (yyval.exp) = MkExpClassSize((yyvsp[(4) - (5)].specifier)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 358:
 
 /* Line 1464 of yacc.c  */
-#line 1590 "grammar.y"
+#line 1602 "grammar.y"
     { (yyval.exp) = MkExpClassSize((yyvsp[(4) - (5)].specifier)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 359:
 
 /* Line 1464 of yacc.c  */
-#line 1592 "grammar.y"
+#line 1604 "grammar.y"
     { (yyval.exp) = MkExpOp(null, ALIGNOF, (yyvsp[(3) - (4)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 360:
 
 /* Line 1464 of yacc.c  */
-#line 1593 "grammar.y"
+#line 1605 "grammar.y"
     { (yyval.exp) = MkExpOp(null, ALIGNOF, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 361:
 
 /* Line 1464 of yacc.c  */
-#line 1594 "grammar.y"
+#line 1606 "grammar.y"
     { (yyval.exp) = MkExpTypeAlign((yyvsp[(3) - (4)].typeName)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 366:
 
 /* Line 1464 of yacc.c  */
-#line 1608 "grammar.y"
+#line 1620 "grammar.y"
     { (yyval.i) = '&'; ;}
     break;
 
   case 367:
 
 /* Line 1464 of yacc.c  */
-#line 1609 "grammar.y"
+#line 1621 "grammar.y"
     { (yyval.i) = '*'; ;}
     break;
 
   case 368:
 
 /* Line 1464 of yacc.c  */
-#line 1610 "grammar.y"
+#line 1622 "grammar.y"
     { (yyval.i) = '+'; ;}
     break;
 
   case 369:
 
 /* Line 1464 of yacc.c  */
-#line 1611 "grammar.y"
+#line 1623 "grammar.y"
     { (yyval.i) = '-'; ;}
     break;
 
   case 370:
 
 /* Line 1464 of yacc.c  */
-#line 1612 "grammar.y"
+#line 1624 "grammar.y"
     { (yyval.i) = '~'; ;}
     break;
 
   case 371:
 
 /* Line 1464 of yacc.c  */
-#line 1613 "grammar.y"
+#line 1625 "grammar.y"
     { (yyval.i) = '!'; ;}
     break;
 
   case 372:
 
 /* Line 1464 of yacc.c  */
-#line 1614 "grammar.y"
+#line 1626 "grammar.y"
     { (yyval.i) = DELETE; ;}
     break;
 
   case 373:
 
 /* Line 1464 of yacc.c  */
-#line 1615 "grammar.y"
+#line 1627 "grammar.y"
     { (yyval.i) = _INCREF; ;}
     break;
 
   case 375:
 
 /* Line 1464 of yacc.c  */
-#line 1620 "grammar.y"
+#line 1632 "grammar.y"
     { (yyval.exp) = MkExpCast((yyvsp[(2) - (4)].typeName), (yyvsp[(4) - (4)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 377:
 
 /* Line 1464 of yacc.c  */
-#line 1625 "grammar.y"
+#line 1637 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 378:
 
 /* Line 1464 of yacc.c  */
-#line 1626 "grammar.y"
+#line 1638 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 379:
 
 /* Line 1464 of yacc.c  */
-#line 1627 "grammar.y"
+#line 1639 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '%', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 380:
 
 /* Line 1464 of yacc.c  */
-#line 1628 "grammar.y"
+#line 1640 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 381:
 
 /* Line 1464 of yacc.c  */
-#line 1629 "grammar.y"
+#line 1641 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 382:
 
 /* Line 1464 of yacc.c  */
-#line 1630 "grammar.y"
+#line 1642 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '%', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 384:
 
 /* Line 1464 of yacc.c  */
-#line 1635 "grammar.y"
+#line 1647 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 385:
 
 /* Line 1464 of yacc.c  */
-#line 1636 "grammar.y"
+#line 1648 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 386:
 
 /* Line 1464 of yacc.c  */
-#line 1637 "grammar.y"
+#line 1649 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 387:
 
 /* Line 1464 of yacc.c  */
-#line 1638 "grammar.y"
+#line 1650 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 389:
 
 /* Line 1464 of yacc.c  */
-#line 1643 "grammar.y"
+#line 1655 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LEFT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 390:
 
 /* Line 1464 of yacc.c  */
-#line 1644 "grammar.y"
+#line 1656 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), RIGHT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 391:
 
 /* Line 1464 of yacc.c  */
-#line 1645 "grammar.y"
+#line 1657 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LEFT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 392:
 
 /* Line 1464 of yacc.c  */
-#line 1646 "grammar.y"
+#line 1658 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), RIGHT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 393:
 
 /* Line 1464 of yacc.c  */
-#line 1651 "grammar.y"
+#line 1663 "grammar.y"
     {
       (yyval.exp) = (yyvsp[(1) - (2)].exp);
       skipErrors = true;
@@ -16260,833 +16271,833 @@ yyreduce:
   case 395:
 
 /* Line 1464 of yacc.c  */
-#line 1659 "grammar.y"
+#line 1671 "grammar.y"
     { skipErrors = false; (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), '<', (yyvsp[(2) - (2)].exp)/*$3*/); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 396:
 
 /* Line 1464 of yacc.c  */
-#line 1660 "grammar.y"
+#line 1672 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '>', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 397:
 
 /* Line 1464 of yacc.c  */
-#line 1661 "grammar.y"
+#line 1673 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 398:
 
 /* Line 1464 of yacc.c  */
-#line 1662 "grammar.y"
+#line 1674 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), GE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 399:
 
 /* Line 1464 of yacc.c  */
-#line 1663 "grammar.y"
+#line 1675 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '<', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 400:
 
 /* Line 1464 of yacc.c  */
-#line 1664 "grammar.y"
+#line 1676 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '>', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 401:
 
 /* Line 1464 of yacc.c  */
-#line 1665 "grammar.y"
+#line 1677 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 402:
 
 /* Line 1464 of yacc.c  */
-#line 1666 "grammar.y"
+#line 1678 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), GE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 404:
 
 /* Line 1464 of yacc.c  */
-#line 1671 "grammar.y"
+#line 1683 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 405:
 
 /* Line 1464 of yacc.c  */
-#line 1672 "grammar.y"
+#line 1684 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 406:
 
 /* Line 1464 of yacc.c  */
-#line 1673 "grammar.y"
+#line 1685 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 407:
 
 /* Line 1464 of yacc.c  */
-#line 1674 "grammar.y"
+#line 1686 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 408:
 
 /* Line 1464 of yacc.c  */
-#line 1676 "grammar.y"
+#line 1688 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 409:
 
 /* Line 1464 of yacc.c  */
-#line 1677 "grammar.y"
+#line 1689 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 410:
 
 /* Line 1464 of yacc.c  */
-#line 1678 "grammar.y"
+#line 1690 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 411:
 
 /* Line 1464 of yacc.c  */
-#line 1679 "grammar.y"
+#line 1691 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 413:
 
 /* Line 1464 of yacc.c  */
-#line 1684 "grammar.y"
+#line 1696 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 414:
 
 /* Line 1464 of yacc.c  */
-#line 1685 "grammar.y"
+#line 1697 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 415:
 
 /* Line 1464 of yacc.c  */
-#line 1687 "grammar.y"
+#line 1699 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 416:
 
 /* Line 1464 of yacc.c  */
-#line 1688 "grammar.y"
+#line 1700 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 418:
 
 /* Line 1464 of yacc.c  */
-#line 1693 "grammar.y"
+#line 1705 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 419:
 
 /* Line 1464 of yacc.c  */
-#line 1694 "grammar.y"
+#line 1706 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 420:
 
 /* Line 1464 of yacc.c  */
-#line 1696 "grammar.y"
+#line 1708 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 421:
 
 /* Line 1464 of yacc.c  */
-#line 1697 "grammar.y"
+#line 1709 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 423:
 
 /* Line 1464 of yacc.c  */
-#line 1702 "grammar.y"
+#line 1714 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 424:
 
 /* Line 1464 of yacc.c  */
-#line 1703 "grammar.y"
+#line 1715 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 425:
 
 /* Line 1464 of yacc.c  */
-#line 1705 "grammar.y"
+#line 1717 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 426:
 
 /* Line 1464 of yacc.c  */
-#line 1706 "grammar.y"
+#line 1718 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 428:
 
 /* Line 1464 of yacc.c  */
-#line 1711 "grammar.y"
+#line 1723 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), AND_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 429:
 
 /* Line 1464 of yacc.c  */
-#line 1712 "grammar.y"
+#line 1724 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), AND_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 431:
 
 /* Line 1464 of yacc.c  */
-#line 1717 "grammar.y"
+#line 1729 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), OR_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 432:
 
 /* Line 1464 of yacc.c  */
-#line 1718 "grammar.y"
+#line 1730 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), OR_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 434:
 
 /* Line 1464 of yacc.c  */
-#line 1723 "grammar.y"
+#line 1735 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 435:
 
 /* Line 1464 of yacc.c  */
-#line 1724 "grammar.y"
+#line 1736 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 436:
 
 /* Line 1464 of yacc.c  */
-#line 1725 "grammar.y"
+#line 1737 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 437:
 
 /* Line 1464 of yacc.c  */
-#line 1726 "grammar.y"
+#line 1738 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 438:
 
 /* Line 1464 of yacc.c  */
-#line 1728 "grammar.y"
+#line 1740 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 439:
 
 /* Line 1464 of yacc.c  */
-#line 1729 "grammar.y"
+#line 1741 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 440:
 
 /* Line 1464 of yacc.c  */
-#line 1730 "grammar.y"
+#line 1742 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 441:
 
 /* Line 1464 of yacc.c  */
-#line 1731 "grammar.y"
+#line 1743 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 442:
 
 /* Line 1464 of yacc.c  */
-#line 1733 "grammar.y"
+#line 1745 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 443:
 
 /* Line 1464 of yacc.c  */
-#line 1734 "grammar.y"
+#line 1746 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 444:
 
 /* Line 1464 of yacc.c  */
-#line 1735 "grammar.y"
+#line 1747 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 445:
 
 /* Line 1464 of yacc.c  */
-#line 1736 "grammar.y"
+#line 1748 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 446:
 
 /* Line 1464 of yacc.c  */
-#line 1738 "grammar.y"
+#line 1750 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 447:
 
 /* Line 1464 of yacc.c  */
-#line 1739 "grammar.y"
+#line 1751 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 448:
 
 /* Line 1464 of yacc.c  */
-#line 1740 "grammar.y"
+#line 1752 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 449:
 
 /* Line 1464 of yacc.c  */
-#line 1741 "grammar.y"
+#line 1753 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 451:
 
 /* Line 1464 of yacc.c  */
-#line 1746 "grammar.y"
+#line 1758 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 452:
 
 /* Line 1464 of yacc.c  */
-#line 1747 "grammar.y"
+#line 1759 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 453:
 
 /* Line 1464 of yacc.c  */
-#line 1748 "grammar.y"
+#line 1760 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 454:
 
 /* Line 1464 of yacc.c  */
-#line 1749 "grammar.y"
+#line 1761 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 455:
 
 /* Line 1464 of yacc.c  */
-#line 1751 "grammar.y"
+#line 1763 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 456:
 
 /* Line 1464 of yacc.c  */
-#line 1752 "grammar.y"
+#line 1764 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 457:
 
 /* Line 1464 of yacc.c  */
-#line 1753 "grammar.y"
+#line 1765 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 458:
 
 /* Line 1464 of yacc.c  */
-#line 1754 "grammar.y"
+#line 1766 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 459:
 
 /* Line 1464 of yacc.c  */
-#line 1758 "grammar.y"
+#line 1770 "grammar.y"
     { (yyval.i) = '='; ;}
     break;
 
   case 460:
 
 /* Line 1464 of yacc.c  */
-#line 1759 "grammar.y"
+#line 1771 "grammar.y"
     { (yyval.i) = MUL_ASSIGN; ;}
     break;
 
   case 461:
 
 /* Line 1464 of yacc.c  */
-#line 1760 "grammar.y"
+#line 1772 "grammar.y"
     { (yyval.i) = DIV_ASSIGN; ;}
     break;
 
   case 462:
 
 /* Line 1464 of yacc.c  */
-#line 1761 "grammar.y"
+#line 1773 "grammar.y"
     { (yyval.i) = MOD_ASSIGN; ;}
     break;
 
   case 463:
 
 /* Line 1464 of yacc.c  */
-#line 1762 "grammar.y"
+#line 1774 "grammar.y"
     { (yyval.i) = ADD_ASSIGN; ;}
     break;
 
   case 464:
 
 /* Line 1464 of yacc.c  */
-#line 1763 "grammar.y"
+#line 1775 "grammar.y"
     { (yyval.i) = SUB_ASSIGN; ;}
     break;
 
   case 465:
 
 /* Line 1464 of yacc.c  */
-#line 1764 "grammar.y"
+#line 1776 "grammar.y"
     { (yyval.i) = LEFT_ASSIGN; ;}
     break;
 
   case 466:
 
 /* Line 1464 of yacc.c  */
-#line 1765 "grammar.y"
+#line 1777 "grammar.y"
     { (yyval.i) = RIGHT_ASSIGN; ;}
     break;
 
   case 467:
 
 /* Line 1464 of yacc.c  */
-#line 1766 "grammar.y"
+#line 1778 "grammar.y"
     { (yyval.i) = AND_ASSIGN; ;}
     break;
 
   case 468:
 
 /* Line 1464 of yacc.c  */
-#line 1767 "grammar.y"
+#line 1779 "grammar.y"
     { (yyval.i) = XOR_ASSIGN; ;}
     break;
 
   case 469:
 
 /* Line 1464 of yacc.c  */
-#line 1768 "grammar.y"
+#line 1780 "grammar.y"
     { (yyval.i) = OR_ASSIGN; ;}
     break;
 
   case 470:
 
 /* Line 1464 of yacc.c  */
-#line 1772 "grammar.y"
+#line 1784 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 471:
 
 /* Line 1464 of yacc.c  */
-#line 1773 "grammar.y"
+#line 1785 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 472:
 
 /* Line 1464 of yacc.c  */
-#line 1774 "grammar.y"
+#line 1786 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 474:
 
 /* Line 1464 of yacc.c  */
-#line 1779 "grammar.y"
+#line 1791 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 475:
 
 /* Line 1464 of yacc.c  */
-#line 1780 "grammar.y"
+#line 1792 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 476:
 
 /* Line 1464 of yacc.c  */
-#line 1781 "grammar.y"
+#line 1793 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 478:
 
 /* Line 1464 of yacc.c  */
-#line 1786 "grammar.y"
+#line 1798 "grammar.y"
     { (yyval.exp) = MkExpDummy(); (yyval.exp).loc = (yyloc); /*printf("Sorry, didn't mean that syntax error\n");*/ ;}
     break;
 
   case 480:
 
 /* Line 1464 of yacc.c  */
-#line 1788 "grammar.y"
+#line 1800 "grammar.y"
     { (yyval.exp) = MkExpInstance((yyvsp[(1) - (2)].instance)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 481:
 
 /* Line 1464 of yacc.c  */
-#line 1790 "grammar.y"
+#line 1802 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 482:
 
 /* Line 1464 of yacc.c  */
-#line 1791 "grammar.y"
+#line 1803 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 483:
 
 /* Line 1464 of yacc.c  */
-#line 1793 "grammar.y"
+#line 1805 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); (yyval.exp).call.argLoc.end.charPos++;;}
     break;
 
   case 484:
 
 /* Line 1464 of yacc.c  */
-#line 1794 "grammar.y"
+#line 1806 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); (yyval.exp).call.argLoc.end.charPos++;;}
     break;
 
   case 485:
 
 /* Line 1464 of yacc.c  */
-#line 1799 "grammar.y"
+#line 1811 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 486:
 
 /* Line 1464 of yacc.c  */
-#line 1801 "grammar.y"
+#line 1813 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].list)); (yyval.exp).loc = (yyloc); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).call.argLoc.end.charPos++;;}
     break;
 
   case 487:
 
 /* Line 1464 of yacc.c  */
-#line 1806 "grammar.y"
+#line 1818 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 488:
 
 /* Line 1464 of yacc.c  */
-#line 1810 "grammar.y"
+#line 1822 "grammar.y"
     { (yyval.exp) = MkExpDummy(); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 490:
 
 /* Line 1464 of yacc.c  */
-#line 1812 "grammar.y"
+#line 1824 "grammar.y"
     { (yyval.exp) = MkExpInstance((yyvsp[(1) - (2)].instance)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 491:
 
 /* Line 1464 of yacc.c  */
-#line 1814 "grammar.y"
+#line 1826 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 492:
 
 /* Line 1464 of yacc.c  */
-#line 1815 "grammar.y"
+#line 1827 "grammar.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 493:
 
 /* Line 1464 of yacc.c  */
-#line 1817 "grammar.y"
+#line 1829 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); (yyval.exp).call.argLoc.end.charPos++;;}
     break;
 
   case 494:
 
 /* Line 1464 of yacc.c  */
-#line 1818 "grammar.y"
+#line 1830 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); (yyval.exp).call.argLoc.end.charPos++;;}
     break;
 
   case 495:
 
 /* Line 1464 of yacc.c  */
-#line 1823 "grammar.y"
+#line 1835 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 496:
 
 /* Line 1464 of yacc.c  */
-#line 1825 "grammar.y"
+#line 1837 "grammar.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].list)); (yyval.exp).loc = (yyloc); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).call.argLoc.end.charPos++;;}
     break;
 
   case 497:
 
 /* Line 1464 of yacc.c  */
-#line 1830 "grammar.y"
+#line 1842 "grammar.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 498:
 
 /* Line 1464 of yacc.c  */
-#line 1834 "grammar.y"
+#line 1846 "grammar.y"
     { (yyval.exp) = MkExpOp(null, INC_OP, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 499:
 
 /* Line 1464 of yacc.c  */
-#line 1835 "grammar.y"
+#line 1847 "grammar.y"
     { (yyval.exp) = MkExpOp(null, DEC_OP, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 500:
 
 /* Line 1464 of yacc.c  */
-#line 1836 "grammar.y"
+#line 1848 "grammar.y"
     { (yyval.exp) = MkExpOp(null, (yyvsp[(1) - (2)].i), (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 501:
 
 /* Line 1464 of yacc.c  */
-#line 1837 "grammar.y"
+#line 1849 "grammar.y"
     { (yyval.exp) = MkExpOp(null, (yyvsp[(1) - (2)].i), (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 502:
 
 /* Line 1464 of yacc.c  */
-#line 1838 "grammar.y"
+#line 1850 "grammar.y"
     { (yyval.exp) = MkExpOp(null, SIZEOF, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 503:
 
 /* Line 1464 of yacc.c  */
-#line 1839 "grammar.y"
+#line 1851 "grammar.y"
     { (yyval.exp) = MkExpOp(null, SIZEOF, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 504:
 
 /* Line 1464 of yacc.c  */
-#line 1840 "grammar.y"
+#line 1852 "grammar.y"
     { (yyval.exp) = MkExpTypeSize((yyvsp[(3) - (5)].typeName)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 505:
 
 /* Line 1464 of yacc.c  */
-#line 1841 "grammar.y"
+#line 1853 "grammar.y"
     { (yyval.exp) = MkExpClassSize((yyvsp[(4) - (6)].specifier)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 506:
 
 /* Line 1464 of yacc.c  */
-#line 1842 "grammar.y"
+#line 1854 "grammar.y"
     { (yyval.exp) = MkExpClassSize((yyvsp[(4) - (6)].specifier)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 507:
 
 /* Line 1464 of yacc.c  */
-#line 1843 "grammar.y"
+#line 1855 "grammar.y"
     { (yyval.exp) = MkExpOp(null, ALIGNOF, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 508:
 
 /* Line 1464 of yacc.c  */
-#line 1844 "grammar.y"
+#line 1856 "grammar.y"
     { (yyval.exp) = MkExpOp(null, ALIGNOF, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 509:
 
 /* Line 1464 of yacc.c  */
-#line 1845 "grammar.y"
+#line 1857 "grammar.y"
     { (yyval.exp) = MkExpTypeAlign((yyvsp[(3) - (5)].typeName)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 515:
 
 /* Line 1464 of yacc.c  */
-#line 1861 "grammar.y"
+#line 1873 "grammar.y"
     { (yyval.exp) = MkExpCast((yyvsp[(2) - (4)].typeName), (yyvsp[(4) - (4)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 517:
 
 /* Line 1464 of yacc.c  */
-#line 1866 "grammar.y"
+#line 1878 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 518:
 
 /* Line 1464 of yacc.c  */
-#line 1867 "grammar.y"
+#line 1879 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 519:
 
 /* Line 1464 of yacc.c  */
-#line 1868 "grammar.y"
+#line 1880 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '%', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 520:
 
 /* Line 1464 of yacc.c  */
-#line 1869 "grammar.y"
+#line 1881 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 521:
 
 /* Line 1464 of yacc.c  */
-#line 1870 "grammar.y"
+#line 1882 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 522:
 
 /* Line 1464 of yacc.c  */
-#line 1871 "grammar.y"
+#line 1883 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '%', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 524:
 
 /* Line 1464 of yacc.c  */
-#line 1876 "grammar.y"
+#line 1888 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 525:
 
 /* Line 1464 of yacc.c  */
-#line 1880 "grammar.y"
+#line 1892 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 526:
 
 /* Line 1464 of yacc.c  */
-#line 1884 "grammar.y"
+#line 1896 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 527:
 
 /* Line 1464 of yacc.c  */
-#line 1888 "grammar.y"
+#line 1900 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 529:
 
 /* Line 1464 of yacc.c  */
-#line 1896 "grammar.y"
+#line 1908 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LEFT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 530:
 
 /* Line 1464 of yacc.c  */
-#line 1897 "grammar.y"
+#line 1909 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), RIGHT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 531:
 
 /* Line 1464 of yacc.c  */
-#line 1898 "grammar.y"
+#line 1910 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LEFT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 532:
 
 /* Line 1464 of yacc.c  */
-#line 1899 "grammar.y"
+#line 1911 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), RIGHT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 534:
 
 /* Line 1464 of yacc.c  */
-#line 1905 "grammar.y"
+#line 1917 "grammar.y"
     {
       if((yyvsp[(1) - (2)].exp).type == identifierExp)
       {
@@ -17142,392 +17153,392 @@ yyreduce:
   case 535:
 
 /* Line 1464 of yacc.c  */
-#line 1955 "grammar.y"
+#line 1967 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '>', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 536:
 
 /* Line 1464 of yacc.c  */
-#line 1956 "grammar.y"
+#line 1968 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 537:
 
 /* Line 1464 of yacc.c  */
-#line 1957 "grammar.y"
+#line 1969 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), GE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 538:
 
 /* Line 1464 of yacc.c  */
-#line 1958 "grammar.y"
+#line 1970 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '<', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 539:
 
 /* Line 1464 of yacc.c  */
-#line 1959 "grammar.y"
+#line 1971 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '>', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 540:
 
 /* Line 1464 of yacc.c  */
-#line 1960 "grammar.y"
+#line 1972 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 541:
 
 /* Line 1464 of yacc.c  */
-#line 1961 "grammar.y"
+#line 1973 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), GE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 543:
 
 /* Line 1464 of yacc.c  */
-#line 1966 "grammar.y"
+#line 1978 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 544:
 
 /* Line 1464 of yacc.c  */
-#line 1967 "grammar.y"
+#line 1979 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 545:
 
 /* Line 1464 of yacc.c  */
-#line 1968 "grammar.y"
+#line 1980 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 546:
 
 /* Line 1464 of yacc.c  */
-#line 1969 "grammar.y"
+#line 1981 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 547:
 
 /* Line 1464 of yacc.c  */
-#line 1976 "grammar.y"
+#line 1988 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 548:
 
 /* Line 1464 of yacc.c  */
-#line 1977 "grammar.y"
+#line 1989 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 549:
 
 /* Line 1464 of yacc.c  */
-#line 1978 "grammar.y"
+#line 1990 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 550:
 
 /* Line 1464 of yacc.c  */
-#line 1979 "grammar.y"
+#line 1991 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 552:
 
 /* Line 1464 of yacc.c  */
-#line 1984 "grammar.y"
+#line 1996 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 553:
 
 /* Line 1464 of yacc.c  */
-#line 1985 "grammar.y"
+#line 1997 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 554:
 
 /* Line 1464 of yacc.c  */
-#line 1987 "grammar.y"
+#line 1999 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 555:
 
 /* Line 1464 of yacc.c  */
-#line 1988 "grammar.y"
+#line 2000 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 557:
 
 /* Line 1464 of yacc.c  */
-#line 1993 "grammar.y"
+#line 2005 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 558:
 
 /* Line 1464 of yacc.c  */
-#line 1994 "grammar.y"
+#line 2006 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 559:
 
 /* Line 1464 of yacc.c  */
-#line 1996 "grammar.y"
+#line 2008 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 560:
 
 /* Line 1464 of yacc.c  */
-#line 1997 "grammar.y"
+#line 2009 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 562:
 
 /* Line 1464 of yacc.c  */
-#line 2002 "grammar.y"
+#line 2014 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 563:
 
 /* Line 1464 of yacc.c  */
-#line 2003 "grammar.y"
+#line 2015 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 564:
 
 /* Line 1464 of yacc.c  */
-#line 2005 "grammar.y"
+#line 2017 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 565:
 
 /* Line 1464 of yacc.c  */
-#line 2006 "grammar.y"
+#line 2018 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 567:
 
 /* Line 1464 of yacc.c  */
-#line 2011 "grammar.y"
+#line 2023 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), AND_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 568:
 
 /* Line 1464 of yacc.c  */
-#line 2012 "grammar.y"
+#line 2024 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), AND_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 570:
 
 /* Line 1464 of yacc.c  */
-#line 2017 "grammar.y"
+#line 2029 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), OR_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 571:
 
 /* Line 1464 of yacc.c  */
-#line 2018 "grammar.y"
+#line 2030 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), OR_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 573:
 
 /* Line 1464 of yacc.c  */
-#line 2023 "grammar.y"
+#line 2035 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 574:
 
 /* Line 1464 of yacc.c  */
-#line 2024 "grammar.y"
+#line 2036 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 575:
 
 /* Line 1464 of yacc.c  */
-#line 2025 "grammar.y"
+#line 2037 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 576:
 
 /* Line 1464 of yacc.c  */
-#line 2026 "grammar.y"
+#line 2038 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 577:
 
 /* Line 1464 of yacc.c  */
-#line 2027 "grammar.y"
+#line 2039 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 578:
 
 /* Line 1464 of yacc.c  */
-#line 2028 "grammar.y"
+#line 2040 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 579:
 
 /* Line 1464 of yacc.c  */
-#line 2029 "grammar.y"
+#line 2041 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 580:
 
 /* Line 1464 of yacc.c  */
-#line 2030 "grammar.y"
+#line 2042 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 581:
 
 /* Line 1464 of yacc.c  */
-#line 2032 "grammar.y"
+#line 2044 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 582:
 
 /* Line 1464 of yacc.c  */
-#line 2033 "grammar.y"
+#line 2045 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 583:
 
 /* Line 1464 of yacc.c  */
-#line 2034 "grammar.y"
+#line 2046 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 584:
 
 /* Line 1464 of yacc.c  */
-#line 2035 "grammar.y"
+#line 2047 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 585:
 
 /* Line 1464 of yacc.c  */
-#line 2036 "grammar.y"
+#line 2048 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 586:
 
 /* Line 1464 of yacc.c  */
-#line 2037 "grammar.y"
+#line 2049 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 587:
 
 /* Line 1464 of yacc.c  */
-#line 2038 "grammar.y"
+#line 2050 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 588:
 
 /* Line 1464 of yacc.c  */
-#line 2039 "grammar.y"
+#line 2051 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list), MkExpDummy()); (yyval.exp).loc = (yyloc); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (4)]); ;}
     break;
 
   case 589:
 
 /* Line 1464 of yacc.c  */
-#line 2041 "grammar.y"
+#line 2053 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 590:
 
 /* Line 1464 of yacc.c  */
-#line 2042 "grammar.y"
+#line 2054 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 591:
 
 /* Line 1464 of yacc.c  */
-#line 2043 "grammar.y"
+#line 2055 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 592:
 
 /* Line 1464 of yacc.c  */
-#line 2044 "grammar.y"
+#line 2056 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 593:
 
 /* Line 1464 of yacc.c  */
-#line 2046 "grammar.y"
+#line 2058 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 594:
 
 /* Line 1464 of yacc.c  */
-#line 2047 "grammar.y"
+#line 2059 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 595:
 
 /* Line 1464 of yacc.c  */
-#line 2048 "grammar.y"
+#line 2060 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 596:
 
 /* Line 1464 of yacc.c  */
-#line 2049 "grammar.y"
+#line 2061 "grammar.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 597:
 
 /* Line 1464 of yacc.c  */
-#line 2052 "grammar.y"
+#line 2064 "grammar.y"
     {
          (yyval.exp) = MkExpCondition((yyvsp[(1) - (3)].exp), MkListOne(MkExpDummy()), MkExpDummy());
          (yyval.exp).loc = (yyloc);
@@ -17539,7 +17550,7 @@ yyreduce:
   case 598:
 
 /* Line 1464 of yacc.c  */
-#line 2059 "grammar.y"
+#line 2071 "grammar.y"
     {
          (yyval.exp) = MkExpCondition((yyvsp[(1) - (3)].exp), MkListOne(MkExpDummy()), MkExpDummy()); (yyval.exp).loc = (yyloc); ((Expression)(yyval.exp).cond.exp->last).loc = (yylsp[(2) - (3)]); (yyval.exp).cond.elseExp.loc = (yylsp[(3) - (3)]);
       ;}
@@ -17548,7 +17559,7 @@ yyreduce:
   case 599:
 
 /* Line 1464 of yacc.c  */
-#line 2063 "grammar.y"
+#line 2075 "grammar.y"
     {
          (yyval.exp) = MkExpCondition((yyvsp[(1) - (2)].exp), MkListOne(MkExpDummy()), MkExpDummy()); (yyval.exp).loc = (yyloc); ((Expression)(yyval.exp).cond.exp->last).loc = (yylsp[(2) - (2)]); (yyval.exp).cond.elseExp.loc = (yylsp[(2) - (2)]);
       ;}
@@ -17557,7 +17568,7 @@ yyreduce:
   case 600:
 
 /* Line 1464 of yacc.c  */
-#line 2067 "grammar.y"
+#line 2079 "grammar.y"
     {
          (yyval.exp) = MkExpCondition((yyvsp[(1) - (2)].exp), MkListOne(MkExpDummy()), MkExpDummy()); (yyval.exp).loc = (yyloc); ((Expression)(yyval.exp).cond.exp->last).loc = (yylsp[(2) - (2)]); (yyval.exp).cond.elseExp.loc = (yylsp[(2) - (2)]);
       ;}
@@ -17566,952 +17577,952 @@ yyreduce:
   case 602:
 
 /* Line 1464 of yacc.c  */
-#line 2074 "grammar.y"
+#line 2086 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 603:
 
 /* Line 1464 of yacc.c  */
-#line 2078 "grammar.y"
+#line 2090 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 604:
 
 /* Line 1464 of yacc.c  */
-#line 2083 "grammar.y"
+#line 2095 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 605:
 
 /* Line 1464 of yacc.c  */
-#line 2084 "grammar.y"
+#line 2096 "grammar.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 606:
 
 /* Line 1464 of yacc.c  */
-#line 2088 "grammar.y"
+#line 2100 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 607:
 
 /* Line 1464 of yacc.c  */
-#line 2089 "grammar.y"
+#line 2101 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (2)].exp)); ;}
     break;
 
   case 608:
 
 /* Line 1464 of yacc.c  */
-#line 2090 "grammar.y"
+#line 2102 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 609:
 
 /* Line 1464 of yacc.c  */
-#line 2091 "grammar.y"
+#line 2103 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 610:
 
 /* Line 1464 of yacc.c  */
-#line 2097 "grammar.y"
+#line 2109 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); FreeList((yyvsp[(2) - (2)].list), FreeExpression); ;}
     break;
 
   case 611:
 
 /* Line 1464 of yacc.c  */
-#line 2098 "grammar.y"
+#line 2110 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); FreeList((yyvsp[(2) - (2)].list), FreeExpression); ;}
     break;
 
   case 612:
 
 /* Line 1464 of yacc.c  */
-#line 2099 "grammar.y"
+#line 2111 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); FreeList((yyvsp[(2) - (2)].list), FreeExpression); ;}
     break;
 
   case 613:
 
 /* Line 1464 of yacc.c  */
-#line 2103 "grammar.y"
+#line 2115 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 614:
 
 /* Line 1464 of yacc.c  */
-#line 2104 "grammar.y"
+#line 2116 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (2)].exp)); ;}
     break;
 
   case 615:
 
 /* Line 1464 of yacc.c  */
-#line 2105 "grammar.y"
+#line 2117 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 616:
 
 /* Line 1464 of yacc.c  */
-#line 2106 "grammar.y"
+#line 2118 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 619:
 
 /* Line 1464 of yacc.c  */
-#line 2116 "grammar.y"
+#line 2128 "grammar.y"
     { (yyval.specifier) = MkSpecifier(TYPEDEF); ;}
     break;
 
   case 620:
 
 /* Line 1464 of yacc.c  */
-#line 2117 "grammar.y"
+#line 2129 "grammar.y"
     { (yyval.specifier) = MkSpecifier(EXTERN); ;}
     break;
 
   case 621:
 
 /* Line 1464 of yacc.c  */
-#line 2118 "grammar.y"
+#line 2130 "grammar.y"
     { (yyval.specifier) = MkSpecifier(STATIC); ;}
     break;
 
   case 622:
 
 /* Line 1464 of yacc.c  */
-#line 2119 "grammar.y"
+#line 2131 "grammar.y"
     { (yyval.specifier) = MkSpecifier(THREAD); ;}
     break;
 
   case 623:
 
 /* Line 1464 of yacc.c  */
-#line 2120 "grammar.y"
+#line 2132 "grammar.y"
     { (yyval.specifier) = MkSpecifier(AUTO); ;}
     break;
 
   case 624:
 
 /* Line 1464 of yacc.c  */
-#line 2121 "grammar.y"
+#line 2133 "grammar.y"
     { (yyval.specifier) = MkSpecifier(REGISTER); ;}
     break;
 
   case 625:
 
 /* Line 1464 of yacc.c  */
-#line 2122 "grammar.y"
+#line 2134 "grammar.y"
     { (yyval.specifier) = MkSpecifier(RESTRICT); ;}
     break;
 
   case 626:
 
 /* Line 1464 of yacc.c  */
-#line 2126 "grammar.y"
+#line 2138 "grammar.y"
     { (yyval.specifier) = MkSpecifier(TYPEDEF); structDeclMode = declMode = defaultAccess; ;}
     break;
 
   case 627:
 
 /* Line 1464 of yacc.c  */
-#line 2127 "grammar.y"
+#line 2139 "grammar.y"
     { (yyval.specifier) = MkSpecifier(EXTERN); ;}
     break;
 
   case 628:
 
 /* Line 1464 of yacc.c  */
-#line 2128 "grammar.y"
+#line 2140 "grammar.y"
     { (yyval.specifier) = MkSpecifier(STATIC); structDeclMode = declMode = staticAccess; ;}
     break;
 
   case 629:
 
 /* Line 1464 of yacc.c  */
-#line 2129 "grammar.y"
+#line 2141 "grammar.y"
     { (yyval.specifier) = MkSpecifier(THREAD); ;}
     break;
 
   case 630:
 
 /* Line 1464 of yacc.c  */
-#line 2130 "grammar.y"
+#line 2142 "grammar.y"
     { (yyval.specifier) = MkSpecifier(AUTO); ;}
     break;
 
   case 631:
 
 /* Line 1464 of yacc.c  */
-#line 2131 "grammar.y"
+#line 2143 "grammar.y"
     { (yyval.specifier) = MkSpecifier(REGISTER); ;}
     break;
 
   case 632:
 
 /* Line 1464 of yacc.c  */
-#line 2132 "grammar.y"
+#line 2144 "grammar.y"
     { (yyval.specifier) = MkSpecifier(RESTRICT); ;}
     break;
 
   case 633:
 
 /* Line 1464 of yacc.c  */
-#line 2136 "grammar.y"
+#line 2148 "grammar.y"
     { (yyval.enumerator) = MkEnumerator((yyvsp[(1) - (1)].id), null); ;}
     break;
 
   case 634:
 
 /* Line 1464 of yacc.c  */
-#line 2137 "grammar.y"
+#line 2149 "grammar.y"
     { (yyval.enumerator) = MkEnumerator((yyvsp[(1) - (3)].id), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 635:
 
 /* Line 1464 of yacc.c  */
-#line 2138 "grammar.y"
+#line 2150 "grammar.y"
     { (yyval.enumerator) = MkEnumerator((yyvsp[(1) - (3)].id), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 636:
 
 /* Line 1464 of yacc.c  */
-#line 2142 "grammar.y"
+#line 2154 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].enumerator)); ;}
     break;
 
   case 637:
 
 /* Line 1464 of yacc.c  */
-#line 2143 "grammar.y"
+#line 2155 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].enumerator)); ;}
     break;
 
   case 639:
 
 /* Line 1464 of yacc.c  */
-#line 2148 "grammar.y"
+#line 2160 "grammar.y"
     { memberAccessStack[++defaultMemberAccess] = publicAccess; ;}
     break;
 
   case 640:
 
 /* Line 1464 of yacc.c  */
-#line 2152 "grammar.y"
+#line 2164 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(2) - (2)].id), null); POP_DEFAULT_ACCESS ;}
     break;
 
   case 641:
 
 /* Line 1464 of yacc.c  */
-#line 2153 "grammar.y"
+#line 2165 "grammar.y"
     { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); POP_DEFAULT_ACCESS ;}
     break;
 
   case 642:
 
 /* Line 1464 of yacc.c  */
-#line 2157 "grammar.y"
+#line 2169 "grammar.y"
     { (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS (yyval.specifier) = (yyvsp[(1) - (2)].specifier); ;}
     break;
 
   case 643:
 
 /* Line 1464 of yacc.c  */
-#line 2158 "grammar.y"
+#line 2170 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(2) - (4)].id), null); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 644:
 
 /* Line 1464 of yacc.c  */
-#line 2159 "grammar.y"
+#line 2171 "grammar.y"
     { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (4)].specifier).name), null); FreeSpecifier((yyvsp[(2) - (4)].specifier)); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 645:
 
 /* Line 1464 of yacc.c  */
-#line 2163 "grammar.y"
+#line 2175 "grammar.y"
     { (yyval.specifier) = MkEnum(null, (yyvsp[(3) - (3)].list)); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 646:
 
 /* Line 1464 of yacc.c  */
-#line 2164 "grammar.y"
+#line 2176 "grammar.y"
     { (yyval.specifier) = MkEnum(null, null); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 647:
 
 /* Line 1464 of yacc.c  */
-#line 2166 "grammar.y"
+#line 2178 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(2) - (4)].id), (yyvsp[(4) - (4)].list)); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 648:
 
 /* Line 1464 of yacc.c  */
-#line 2167 "grammar.y"
+#line 2179 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list));  (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 649:
 
 /* Line 1464 of yacc.c  */
-#line 2168 "grammar.y"
+#line 2180 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(2) - (4)].id), null);  (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 650:
 
 /* Line 1464 of yacc.c  */
-#line 2169 "grammar.y"
+#line 2181 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(2) - (6)].id), (yyvsp[(4) - (6)].list)); (yyval.specifier).loc = (yyloc); (yyval.specifier).definitions = (yyvsp[(6) - (6)].list);  POP_DEFAULT_ACCESS ;}
     break;
 
   case 651:
 
 /* Line 1464 of yacc.c  */
-#line 2170 "grammar.y"
+#line 2182 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(2) - (6)].id), (yyvsp[(4) - (6)].list)); (yyval.specifier).loc = (yyloc); (yyval.specifier).definitions = (yyvsp[(6) - (6)].list);  POP_DEFAULT_ACCESS ;}
     break;
 
   case 652:
 
 /* Line 1464 of yacc.c  */
-#line 2172 "grammar.y"
+#line 2184 "grammar.y"
     { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (4)].specifier).name), (yyvsp[(4) - (4)].list)); (yyval.specifier).loc = (yyloc); FreeSpecifier((yyvsp[(2) - (4)].specifier)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 653:
 
 /* Line 1464 of yacc.c  */
-#line 2173 "grammar.y"
+#line 2185 "grammar.y"
     { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); (yyval.specifier).loc = (yyloc); FreeSpecifier((yyvsp[(2) - (5)].specifier)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 654:
 
 /* Line 1464 of yacc.c  */
-#line 2174 "grammar.y"
+#line 2186 "grammar.y"
     { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (4)].specifier).name), null); (yyval.specifier).loc = (yyloc); FreeSpecifier((yyvsp[(2) - (4)].specifier)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 655:
 
 /* Line 1464 of yacc.c  */
-#line 2175 "grammar.y"
+#line 2187 "grammar.y"
     { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (6)].specifier).name), (yyvsp[(4) - (6)].list)); (yyval.specifier).loc = (yyloc); (yyval.specifier).definitions = (yyvsp[(6) - (6)].list); FreeSpecifier((yyvsp[(2) - (6)].specifier)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 656:
 
 /* Line 1464 of yacc.c  */
-#line 2176 "grammar.y"
+#line 2188 "grammar.y"
     { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (6)].specifier).name), (yyvsp[(4) - (6)].list)); (yyval.specifier).loc = (yyloc); (yyval.specifier).definitions = (yyvsp[(6) - (6)].list); FreeSpecifier((yyvsp[(2) - (6)].specifier)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 657:
 
 /* Line 1464 of yacc.c  */
-#line 2180 "grammar.y"
+#line 2192 "grammar.y"
     { (yyval.id) = (yyvsp[(2) - (2)].id); if(declMode) DeclClassAddNameSpace(globalContext.nextID++, (yyvsp[(2) - (2)].id).string); ;}
     break;
 
   case 658:
 
 /* Line 1464 of yacc.c  */
-#line 2181 "grammar.y"
+#line 2193 "grammar.y"
     { (yyval.id) = MkIdentifier((yyvsp[(2) - (2)].specifier).name); if(declMode) DeclClass(globalContext.nextID++, (yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 659:
 
 /* Line 1464 of yacc.c  */
-#line 2185 "grammar.y"
+#line 2197 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (2)].specifier); (yyval.specifier).loc = (yyloc); ;}
     break;
 
   case 660:
 
 /* Line 1464 of yacc.c  */
-#line 2186 "grammar.y"
+#line 2198 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (5)].id), null); (yyval.specifier).baseSpecs = (yyvsp[(3) - (5)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 661:
 
 /* Line 1464 of yacc.c  */
-#line 2187 "grammar.y"
+#line 2199 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (3)].id), null); POP_DEFAULT_ACCESS ;}
     break;
 
   case 662:
 
 /* Line 1464 of yacc.c  */
-#line 2191 "grammar.y"
+#line 2203 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (5)].id), (yyvsp[(5) - (5)].list)); (yyval.specifier).baseSpecs = (yyvsp[(3) - (5)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 663:
 
 /* Line 1464 of yacc.c  */
-#line 2192 "grammar.y"
+#line 2204 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (6)].id), (yyvsp[(5) - (6)].list)); (yyval.specifier).baseSpecs = (yyvsp[(3) - (6)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 664:
 
 /* Line 1464 of yacc.c  */
-#line 2193 "grammar.y"
+#line 2205 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (5)].id), null); (yyval.specifier).baseSpecs = (yyvsp[(3) - (5)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 665:
 
 /* Line 1464 of yacc.c  */
-#line 2194 "grammar.y"
+#line 2206 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (7)].id), (yyvsp[(5) - (7)].list)); (yyval.specifier).baseSpecs = (yyvsp[(3) - (7)].list); (yyval.specifier).definitions = (yyvsp[(7) - (7)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 666:
 
 /* Line 1464 of yacc.c  */
-#line 2195 "grammar.y"
+#line 2207 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (7)].id), (yyvsp[(5) - (7)].list)); (yyval.specifier).baseSpecs = (yyvsp[(3) - (7)].list); (yyval.specifier).definitions = (yyvsp[(7) - (7)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 667:
 
 /* Line 1464 of yacc.c  */
-#line 2196 "grammar.y"
+#line 2208 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (8)].id), (yyvsp[(5) - (8)].list)); (yyval.specifier).baseSpecs = (yyvsp[(3) - (8)].list); (yyval.specifier).definitions = (yyvsp[(8) - (8)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 668:
 
 /* Line 1464 of yacc.c  */
-#line 2197 "grammar.y"
+#line 2209 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (8)].id), (yyvsp[(5) - (8)].list)); (yyval.specifier).baseSpecs = (yyvsp[(3) - (8)].list); (yyval.specifier).definitions = (yyvsp[(8) - (8)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 669:
 
 /* Line 1464 of yacc.c  */
-#line 2198 "grammar.y"
+#line 2210 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (7)].id), null); (yyval.specifier).baseSpecs = (yyvsp[(3) - (7)].list); (yyval.specifier).definitions = (yyvsp[(7) - (7)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 670:
 
 /* Line 1464 of yacc.c  */
-#line 2199 "grammar.y"
+#line 2211 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (7)].id), null); (yyval.specifier).baseSpecs = (yyvsp[(3) - (7)].list); (yyval.specifier).definitions = (yyvsp[(7) - (7)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 671:
 
 /* Line 1464 of yacc.c  */
-#line 2201 "grammar.y"
+#line 2213 "grammar.y"
     { (yyval.specifier) = MkEnum(null, (yyvsp[(3) - (3)].list)); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 672:
 
 /* Line 1464 of yacc.c  */
-#line 2202 "grammar.y"
+#line 2214 "grammar.y"
     { (yyval.specifier) = MkEnum(null, null); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 673:
 
 /* Line 1464 of yacc.c  */
-#line 2204 "grammar.y"
+#line 2216 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (3)].id), (yyvsp[(3) - (3)].list)); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 674:
 
 /* Line 1464 of yacc.c  */
-#line 2205 "grammar.y"
+#line 2217 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (4)].id), (yyvsp[(3) - (4)].list)); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 675:
 
 /* Line 1464 of yacc.c  */
-#line 2206 "grammar.y"
+#line 2218 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (3)].id), null); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 676:
 
 /* Line 1464 of yacc.c  */
-#line 2207 "grammar.y"
+#line 2219 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (5)].id), (yyvsp[(3) - (5)].list)); (yyval.specifier).definitions = (yyvsp[(5) - (5)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 677:
 
 /* Line 1464 of yacc.c  */
-#line 2208 "grammar.y"
+#line 2220 "grammar.y"
     { (yyval.specifier) = MkEnum((yyvsp[(1) - (5)].id), (yyvsp[(3) - (5)].list)); (yyval.specifier).definitions = (yyvsp[(5) - (5)].list); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 682:
 
 /* Line 1464 of yacc.c  */
-#line 2222 "grammar.y"
+#line 2234 "grammar.y"
     { (yyval.specifier) = MkSpecifierExtended((yyvsp[(1) - (1)].extDecl)); ;}
     break;
 
   case 683:
 
 /* Line 1464 of yacc.c  */
-#line 2226 "grammar.y"
+#line 2238 "grammar.y"
     { (yyval.specifier) = MkSpecifier(CONST); ;}
     break;
 
   case 684:
 
 /* Line 1464 of yacc.c  */
-#line 2227 "grammar.y"
+#line 2239 "grammar.y"
     { (yyval.specifier) = MkSpecifier(VOLATILE); ;}
     break;
 
   case 685:
 
 /* Line 1464 of yacc.c  */
-#line 2228 "grammar.y"
+#line 2240 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (1)].specifier); ;}
     break;
 
   case 686:
 
 /* Line 1464 of yacc.c  */
-#line 2233 "grammar.y"
+#line 2245 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 687:
 
 /* Line 1464 of yacc.c  */
-#line 2234 "grammar.y"
+#line 2246 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier));  ;}
     break;
 
   case 688:
 
 /* Line 1464 of yacc.c  */
-#line 2238 "grammar.y"
+#line 2250 "grammar.y"
     { (yyval.specifier) = MkSpecifier(VOID); ;}
     break;
 
   case 689:
 
 /* Line 1464 of yacc.c  */
-#line 2239 "grammar.y"
+#line 2251 "grammar.y"
     { (yyval.specifier) = MkSpecifier(CHAR); ;}
     break;
 
   case 690:
 
 /* Line 1464 of yacc.c  */
-#line 2240 "grammar.y"
+#line 2252 "grammar.y"
     { (yyval.specifier) = MkSpecifier(SHORT); ;}
     break;
 
   case 691:
 
 /* Line 1464 of yacc.c  */
-#line 2241 "grammar.y"
+#line 2253 "grammar.y"
     { (yyval.specifier) = MkSpecifier(INT); ;}
     break;
 
   case 692:
 
 /* Line 1464 of yacc.c  */
-#line 2242 "grammar.y"
+#line 2254 "grammar.y"
     { (yyval.specifier) = MkSpecifier(UINT); ;}
     break;
 
   case 693:
 
 /* Line 1464 of yacc.c  */
-#line 2243 "grammar.y"
+#line 2255 "grammar.y"
     { (yyval.specifier) = MkSpecifier(INT64); ;}
     break;
 
   case 694:
 
 /* Line 1464 of yacc.c  */
-#line 2244 "grammar.y"
+#line 2256 "grammar.y"
     { (yyval.specifier) = MkSpecifier(VALIST); ;}
     break;
 
   case 695:
 
 /* Line 1464 of yacc.c  */
-#line 2245 "grammar.y"
+#line 2257 "grammar.y"
     { (yyval.specifier) = MkSpecifier(LONG); ;}
     break;
 
   case 696:
 
 /* Line 1464 of yacc.c  */
-#line 2246 "grammar.y"
+#line 2258 "grammar.y"
     { (yyval.specifier) = MkSpecifier(FLOAT); ;}
     break;
 
   case 697:
 
 /* Line 1464 of yacc.c  */
-#line 2247 "grammar.y"
+#line 2259 "grammar.y"
     { (yyval.specifier) = MkSpecifier(DOUBLE); ;}
     break;
 
   case 698:
 
 /* Line 1464 of yacc.c  */
-#line 2248 "grammar.y"
+#line 2260 "grammar.y"
     { (yyval.specifier) = MkSpecifier(SIGNED); ;}
     break;
 
   case 699:
 
 /* Line 1464 of yacc.c  */
-#line 2249 "grammar.y"
+#line 2261 "grammar.y"
     { (yyval.specifier) = MkSpecifier(UNSIGNED); ;}
     break;
 
   case 700:
 
 /* Line 1464 of yacc.c  */
-#line 2250 "grammar.y"
+#line 2262 "grammar.y"
     { (yyval.specifier) = MkSpecifier(EXTENSION); ;}
     break;
 
   case 704:
 
 /* Line 1464 of yacc.c  */
-#line 2254 "grammar.y"
+#line 2266 "grammar.y"
     { (yyval.specifier) = MkSpecifierTypeOf((yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 705:
 
 /* Line 1464 of yacc.c  */
-#line 2255 "grammar.y"
+#line 2267 "grammar.y"
     { (yyval.specifier) = MkSpecifierSubClass((yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 706:
 
 /* Line 1464 of yacc.c  */
-#line 2256 "grammar.y"
+#line 2268 "grammar.y"
     { _DeclClass(0, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 707:
 
 /* Line 1464 of yacc.c  */
-#line 2257 "grammar.y"
+#line 2269 "grammar.y"
     { (yyval.specifier) = MkSpecifier(THISCLASS); ;}
     break;
 
   case 708:
 
 /* Line 1464 of yacc.c  */
-#line 2258 "grammar.y"
+#line 2270 "grammar.y"
     { (yyval.specifier) = MkSpecifier(TYPED_OBJECT); ;}
     break;
 
   case 709:
 
 /* Line 1464 of yacc.c  */
-#line 2259 "grammar.y"
+#line 2271 "grammar.y"
     { (yyval.specifier) = MkSpecifier(ANY_OBJECT); ;}
     break;
 
   case 710:
 
 /* Line 1464 of yacc.c  */
-#line 2260 "grammar.y"
+#line 2272 "grammar.y"
     { (yyval.specifier) = MkSpecifier(_BOOL); ;}
     break;
 
   case 711:
 
 /* Line 1464 of yacc.c  */
-#line 2261 "grammar.y"
+#line 2273 "grammar.y"
     { (yyval.specifier) = MkSpecifier(BOOL); ;}
     break;
 
   case 712:
 
 /* Line 1464 of yacc.c  */
-#line 2262 "grammar.y"
+#line 2274 "grammar.y"
     { (yyval.specifier) = MkSpecifier(_COMPLEX); ;}
     break;
 
   case 713:
 
 /* Line 1464 of yacc.c  */
-#line 2263 "grammar.y"
+#line 2275 "grammar.y"
     { (yyval.specifier) = MkSpecifier(_IMAGINARY); ;}
     break;
 
   case 714:
 
 /* Line 1464 of yacc.c  */
-#line 2267 "grammar.y"
+#line 2279 "grammar.y"
     { (yyval.specifier) = MkSpecifier(VOID); ;}
     break;
 
   case 715:
 
 /* Line 1464 of yacc.c  */
-#line 2268 "grammar.y"
+#line 2280 "grammar.y"
     { (yyval.specifier) = MkSpecifier(CHAR); ;}
     break;
 
   case 716:
 
 /* Line 1464 of yacc.c  */
-#line 2269 "grammar.y"
+#line 2281 "grammar.y"
     { (yyval.specifier) = MkSpecifier(SHORT); ;}
     break;
 
   case 717:
 
 /* Line 1464 of yacc.c  */
-#line 2270 "grammar.y"
+#line 2282 "grammar.y"
     { (yyval.specifier) = MkSpecifier(INT); ;}
     break;
 
   case 718:
 
 /* Line 1464 of yacc.c  */
-#line 2271 "grammar.y"
+#line 2283 "grammar.y"
     { (yyval.specifier) = MkSpecifier(UINT); ;}
     break;
 
   case 719:
 
 /* Line 1464 of yacc.c  */
-#line 2272 "grammar.y"
+#line 2284 "grammar.y"
     { (yyval.specifier) = MkSpecifier(INT64); ;}
     break;
 
   case 720:
 
 /* Line 1464 of yacc.c  */
-#line 2273 "grammar.y"
+#line 2285 "grammar.y"
     { (yyval.specifier) = MkSpecifier(VALIST); ;}
     break;
 
   case 721:
 
 /* Line 1464 of yacc.c  */
-#line 2274 "grammar.y"
+#line 2286 "grammar.y"
     { (yyval.specifier) = MkSpecifier(LONG); ;}
     break;
 
   case 722:
 
 /* Line 1464 of yacc.c  */
-#line 2275 "grammar.y"
+#line 2287 "grammar.y"
     { (yyval.specifier) = MkSpecifier(FLOAT); ;}
     break;
 
   case 723:
 
 /* Line 1464 of yacc.c  */
-#line 2276 "grammar.y"
+#line 2288 "grammar.y"
     { (yyval.specifier) = MkSpecifier(DOUBLE); ;}
     break;
 
   case 724:
 
 /* Line 1464 of yacc.c  */
-#line 2277 "grammar.y"
+#line 2289 "grammar.y"
     { (yyval.specifier) = MkSpecifier(SIGNED); ;}
     break;
 
   case 725:
 
 /* Line 1464 of yacc.c  */
-#line 2278 "grammar.y"
+#line 2290 "grammar.y"
     { (yyval.specifier) = MkSpecifier(UNSIGNED); ;}
     break;
 
   case 726:
 
 /* Line 1464 of yacc.c  */
-#line 2279 "grammar.y"
+#line 2291 "grammar.y"
     { (yyval.specifier) = MkSpecifier(EXTENSION); ;}
     break;
 
   case 730:
 
 /* Line 1464 of yacc.c  */
-#line 2283 "grammar.y"
+#line 2295 "grammar.y"
     { (yyval.specifier) = MkSpecifier(_BOOL); ;}
     break;
 
   case 731:
 
 /* Line 1464 of yacc.c  */
-#line 2284 "grammar.y"
+#line 2296 "grammar.y"
     { (yyval.specifier) = MkSpecifier(BOOL); ;}
     break;
 
   case 732:
 
 /* Line 1464 of yacc.c  */
-#line 2285 "grammar.y"
+#line 2297 "grammar.y"
     { (yyval.specifier) = MkSpecifier(_COMPLEX); ;}
     break;
 
   case 733:
 
 /* Line 1464 of yacc.c  */
-#line 2286 "grammar.y"
+#line 2298 "grammar.y"
     { (yyval.specifier) = MkSpecifier(_IMAGINARY); ;}
     break;
 
   case 734:
 
 /* Line 1464 of yacc.c  */
-#line 2287 "grammar.y"
+#line 2299 "grammar.y"
     { (yyval.specifier) = MkSpecifierTypeOf((yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 735:
 
 /* Line 1464 of yacc.c  */
-#line 2288 "grammar.y"
+#line 2300 "grammar.y"
     { (yyval.specifier) = MkSpecifierSubClass((yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 736:
 
 /* Line 1464 of yacc.c  */
-#line 2289 "grammar.y"
+#line 2301 "grammar.y"
     { _DeclClass(0, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 737:
 
 /* Line 1464 of yacc.c  */
-#line 2290 "grammar.y"
+#line 2302 "grammar.y"
     { (yyval.specifier) = MkSpecifier(THISCLASS); ;}
     break;
 
   case 738:
 
 /* Line 1464 of yacc.c  */
-#line 2297 "grammar.y"
+#line 2309 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (1)].declarator), null); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 739:
 
 /* Line 1464 of yacc.c  */
-#line 2299 "grammar.y"
+#line 2311 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (2)].declarator), null); (yyval.declarator).structDecl.attrib = (yyvsp[(2) - (2)].attrib); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 740:
 
 /* Line 1464 of yacc.c  */
-#line 2301 "grammar.y"
+#line 2313 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator(null, (yyvsp[(2) - (2)].exp));  (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 741:
 
 /* Line 1464 of yacc.c  */
-#line 2303 "grammar.y"
+#line 2315 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (3)].declarator), (yyvsp[(3) - (3)].exp));  (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 742:
 
 /* Line 1464 of yacc.c  */
-#line 2305 "grammar.y"
+#line 2317 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (5)].declarator), (yyvsp[(3) - (5)].exp)); (yyval.declarator).structDecl.posExp = (yyvsp[(5) - (5)].exp); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 743:
 
 /* Line 1464 of yacc.c  */
-#line 2307 "grammar.y"
+#line 2319 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator(null, (yyvsp[(2) - (2)].exp));  (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 744:
 
 /* Line 1464 of yacc.c  */
-#line 2309 "grammar.y"
+#line 2321 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (3)].declarator), (yyvsp[(3) - (3)].exp));  (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 745:
 
 /* Line 1464 of yacc.c  */
-#line 2311 "grammar.y"
+#line 2323 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (5)].declarator), (yyvsp[(3) - (5)].exp)); (yyval.declarator).structDecl.posExp = (yyvsp[(5) - (5)].exp); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 746:
 
 /* Line 1464 of yacc.c  */
-#line 2313 "grammar.y"
+#line 2325 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (5)].declarator), (yyvsp[(3) - (5)].exp)); (yyval.declarator).structDecl.posExp = (yyvsp[(5) - (5)].exp); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 747:
 
 /* Line 1464 of yacc.c  */
-#line 2315 "grammar.y"
+#line 2327 "grammar.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (5)].declarator), (yyvsp[(3) - (5)].exp)); (yyval.declarator).structDecl.posExp = (yyvsp[(5) - (5)].exp); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 748:
 
 /* Line 1464 of yacc.c  */
-#line 2319 "grammar.y"
+#line 2331 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].declarator)); ;}
     break;
 
   case 749:
 
 /* Line 1464 of yacc.c  */
-#line 2320 "grammar.y"
+#line 2332 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].declarator)); ;}
     break;
 
   case 750:
 
 /* Line 1464 of yacc.c  */
-#line 2325 "grammar.y"
+#line 2337 "grammar.y"
     {
          (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), (yyvsp[(2) - (2)].id), null);
          (yyval.specifier).addNameSpace = true;
@@ -18522,7 +18533,7 @@ yyreduce:
   case 751:
 
 /* Line 1464 of yacc.c  */
-#line 2331 "grammar.y"
+#line 2343 "grammar.y"
     {
          (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), MkIdentifier((yyvsp[(2) - (2)].specifier).name), null);
          (yyval.specifier).ctx = PushContext();
@@ -18533,7 +18544,7 @@ yyreduce:
   case 752:
 
 /* Line 1464 of yacc.c  */
-#line 2337 "grammar.y"
+#line 2349 "grammar.y"
     {
          (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), (yyvsp[(3) - (3)].id), null);
          (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl);
@@ -18545,7 +18556,7 @@ yyreduce:
   case 753:
 
 /* Line 1464 of yacc.c  */
-#line 2344 "grammar.y"
+#line 2356 "grammar.y"
     {
          (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), MkIdentifier((yyvsp[(3) - (3)].specifier).name), null);
          (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl);
@@ -18557,105 +18568,105 @@ yyreduce:
   case 754:
 
 /* Line 1464 of yacc.c  */
-#line 2353 "grammar.y"
+#line 2365 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (2)].specifier); (yyval.specifier).loc = (yyloc); ;}
     break;
 
   case 755:
 
 /* Line 1464 of yacc.c  */
-#line 2354 "grammar.y"
+#line 2366 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 756:
 
 /* Line 1464 of yacc.c  */
-#line 2355 "grammar.y"
+#line 2367 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, null); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 757:
 
 /* Line 1464 of yacc.c  */
-#line 2356 "grammar.y"
+#line 2368 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), null, null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (4)].extDecl); (yyval.specifier).loc = (yyloc); POP_DEFAULT_ACCESS ;}
     break;
 
   case 758:
 
 /* Line 1464 of yacc.c  */
-#line 2360 "grammar.y"
+#line 2372 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); AddStructDefinitions((yyvsp[(1) - (3)].specifier), (yyvsp[(3) - (3)].list));  POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 759:
 
 /* Line 1464 of yacc.c  */
-#line 2361 "grammar.y"
+#line 2373 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); AddStructDefinitions((yyvsp[(1) - (3)].specifier), (yyvsp[(3) - (3)].list));  POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 760:
 
 /* Line 1464 of yacc.c  */
-#line 2362 "grammar.y"
+#line 2374 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 761:
 
 /* Line 1464 of yacc.c  */
-#line 2364 "grammar.y"
+#line 2376 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, (yyvsp[(3) - (3)].list)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 762:
 
 /* Line 1464 of yacc.c  */
-#line 2365 "grammar.y"
+#line 2377 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, (yyvsp[(3) - (3)].list)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 763:
 
 /* Line 1464 of yacc.c  */
-#line 2366 "grammar.y"
+#line 2378 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, null); POP_DEFAULT_ACCESS ;}
     break;
 
   case 764:
 
 /* Line 1464 of yacc.c  */
-#line 2368 "grammar.y"
+#line 2380 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), null, (yyvsp[(4) - (4)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (4)].extDecl); POP_DEFAULT_ACCESS ;}
     break;
 
   case 765:
 
 /* Line 1464 of yacc.c  */
-#line 2369 "grammar.y"
+#line 2381 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), null, (yyvsp[(4) - (4)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (4)].extDecl); POP_DEFAULT_ACCESS ;}
     break;
 
   case 766:
 
 /* Line 1464 of yacc.c  */
-#line 2370 "grammar.y"
+#line 2382 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), null, null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (4)].extDecl); POP_DEFAULT_ACCESS ;}
     break;
 
   case 767:
 
 /* Line 1464 of yacc.c  */
-#line 2374 "grammar.y"
+#line 2386 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (1)].specifier); POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 768:
 
 /* Line 1464 of yacc.c  */
-#line 2379 "grammar.y"
+#line 2391 "grammar.y"
     {
         (yyval.specifier) = (yyvsp[(1) - (1)].specifier);
         if(declMode)
@@ -18668,7 +18679,7 @@ yyreduce:
   case 769:
 
 /* Line 1464 of yacc.c  */
-#line 2387 "grammar.y"
+#line 2399 "grammar.y"
     {
       Symbol symbol = ((yyvsp[(1) - (4)].specifier).addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext.nextID++, (yyvsp[(1) - (4)].specifier).id.string);
       (yyval.specifier) = (yyvsp[(1) - (4)].specifier);
@@ -18679,7 +18690,7 @@ yyreduce:
   case 770:
 
 /* Line 1464 of yacc.c  */
-#line 2396 "grammar.y"
+#line 2408 "grammar.y"
     {
       (yyval.specifier) = (yyvsp[(1) - (3)].specifier);
       (yyval.specifier).baseSpecs = (yyvsp[(3) - (3)].list);
@@ -18690,35 +18701,35 @@ yyreduce:
   case 771:
 
 /* Line 1464 of yacc.c  */
-#line 2404 "grammar.y"
+#line 2416 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (2)].specifier); (yyval.specifier).loc = (yyloc); ;}
     break;
 
   case 772:
 
 /* Line 1464 of yacc.c  */
-#line 2406 "grammar.y"
+#line 2418 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 773:
 
 /* Line 1464 of yacc.c  */
-#line 2407 "grammar.y"
+#line 2419 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 774:
 
 /* Line 1464 of yacc.c  */
-#line 2408 "grammar.y"
+#line 2420 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, null); POP_DEFAULT_ACCESS ;}
     break;
 
   case 775:
 
 /* Line 1464 of yacc.c  */
-#line 2413 "grammar.y"
+#line 2425 "grammar.y"
     {
       (yyval.specifier) = (yyvsp[(1) - (3)].specifier);
       (yyval.specifier).definitions = (yyvsp[(3) - (3)].list);
@@ -18730,7 +18741,7 @@ yyreduce:
   case 776:
 
 /* Line 1464 of yacc.c  */
-#line 2420 "grammar.y"
+#line 2432 "grammar.y"
     {
       (yyval.specifier) = (yyvsp[(1) - (3)].specifier);
       (yyval.specifier).definitions = (yyvsp[(3) - (3)].list);
@@ -18742,14 +18753,14 @@ yyreduce:
   case 777:
 
 /* Line 1464 of yacc.c  */
-#line 2427 "grammar.y"
+#line 2439 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); POP_DEFAULT_ACCESS PopContext(curContext);;}
     break;
 
   case 778:
 
 /* Line 1464 of yacc.c  */
-#line 2430 "grammar.y"
+#line 2442 "grammar.y"
     {
         PopContext(curContext);
         if(!declMode)
@@ -18767,7 +18778,7 @@ yyreduce:
   case 779:
 
 /* Line 1464 of yacc.c  */
-#line 2443 "grammar.y"
+#line 2455 "grammar.y"
     {
         PopContext(curContext);
 
@@ -18786,483 +18797,483 @@ yyreduce:
   case 780:
 
 /* Line 1464 of yacc.c  */
-#line 2457 "grammar.y"
+#line 2469 "grammar.y"
     { (yyval.specifier) = (yyvsp[(1) - (3)].specifier); POP_DEFAULT_ACCESS PopContext(curContext); ;}
     break;
 
   case 781:
 
 /* Line 1464 of yacc.c  */
-#line 2460 "grammar.y"
+#line 2472 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, (yyvsp[(3) - (3)].list)); POP_DEFAULT_ACCESS  ;}
     break;
 
   case 782:
 
 /* Line 1464 of yacc.c  */
-#line 2462 "grammar.y"
+#line 2474 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, (yyvsp[(3) - (3)].list)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 783:
 
 /* Line 1464 of yacc.c  */
-#line 2464 "grammar.y"
+#line 2476 "grammar.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, null); POP_DEFAULT_ACCESS ;}
     break;
 
   case 784:
 
 /* Line 1464 of yacc.c  */
-#line 2468 "grammar.y"
+#line 2480 "grammar.y"
     { (yyval.specifierType) = structSpecifier; memberAccessStack[++defaultMemberAccess] = publicAccess; ;}
     break;
 
   case 785:
 
 /* Line 1464 of yacc.c  */
-#line 2469 "grammar.y"
+#line 2481 "grammar.y"
     { (yyval.specifierType) = unionSpecifier; memberAccessStack[++defaultMemberAccess] = publicAccess; ;}
     break;
 
   case 786:
 
 /* Line 1464 of yacc.c  */
-#line 2473 "grammar.y"
+#line 2485 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 787:
 
 /* Line 1464 of yacc.c  */
-#line 2474 "grammar.y"
+#line 2486 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 788:
 
 /* Line 1464 of yacc.c  */
-#line 2475 "grammar.y"
+#line 2487 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 789:
 
 /* Line 1464 of yacc.c  */
-#line 2476 "grammar.y"
+#line 2488 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 790:
 
 /* Line 1464 of yacc.c  */
-#line 2477 "grammar.y"
+#line 2489 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 791:
 
 /* Line 1464 of yacc.c  */
-#line 2478 "grammar.y"
+#line 2490 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 792:
 
 /* Line 1464 of yacc.c  */
-#line 2479 "grammar.y"
+#line 2491 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 793:
 
 /* Line 1464 of yacc.c  */
-#line 2480 "grammar.y"
+#line 2492 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 794:
 
 /* Line 1464 of yacc.c  */
-#line 2484 "grammar.y"
+#line 2496 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 795:
 
 /* Line 1464 of yacc.c  */
-#line 2485 "grammar.y"
+#line 2497 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 796:
 
 /* Line 1464 of yacc.c  */
-#line 2486 "grammar.y"
+#line 2498 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 797:
 
 /* Line 1464 of yacc.c  */
-#line 2487 "grammar.y"
+#line 2499 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 798:
 
 /* Line 1464 of yacc.c  */
-#line 2488 "grammar.y"
+#line 2500 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 799:
 
 /* Line 1464 of yacc.c  */
-#line 2489 "grammar.y"
+#line 2501 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 800:
 
 /* Line 1464 of yacc.c  */
-#line 2490 "grammar.y"
+#line 2502 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 801:
 
 /* Line 1464 of yacc.c  */
-#line 2491 "grammar.y"
+#line 2503 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 802:
 
 /* Line 1464 of yacc.c  */
-#line 2492 "grammar.y"
+#line 2504 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 803:
 
 /* Line 1464 of yacc.c  */
-#line 2493 "grammar.y"
+#line 2505 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 804:
 
 /* Line 1464 of yacc.c  */
-#line 2497 "grammar.y"
+#line 2509 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 805:
 
 /* Line 1464 of yacc.c  */
-#line 2498 "grammar.y"
+#line 2510 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 806:
 
 /* Line 1464 of yacc.c  */
-#line 2499 "grammar.y"
+#line 2511 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 807:
 
 /* Line 1464 of yacc.c  */
-#line 2500 "grammar.y"
+#line 2512 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 808:
 
 /* Line 1464 of yacc.c  */
-#line 2501 "grammar.y"
+#line 2513 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 809:
 
 /* Line 1464 of yacc.c  */
-#line 2502 "grammar.y"
+#line 2514 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 810:
 
 /* Line 1464 of yacc.c  */
-#line 2503 "grammar.y"
+#line 2515 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 811:
 
 /* Line 1464 of yacc.c  */
-#line 2504 "grammar.y"
+#line 2516 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 812:
 
 /* Line 1464 of yacc.c  */
-#line 2505 "grammar.y"
+#line 2517 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 813:
 
 /* Line 1464 of yacc.c  */
-#line 2506 "grammar.y"
+#line 2518 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 814:
 
 /* Line 1464 of yacc.c  */
-#line 2510 "grammar.y"
+#line 2522 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 815:
 
 /* Line 1464 of yacc.c  */
-#line 2511 "grammar.y"
+#line 2523 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 816:
 
 /* Line 1464 of yacc.c  */
-#line 2512 "grammar.y"
+#line 2524 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 817:
 
 /* Line 1464 of yacc.c  */
-#line 2513 "grammar.y"
+#line 2525 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 818:
 
 /* Line 1464 of yacc.c  */
-#line 2514 "grammar.y"
+#line 2526 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 819:
 
 /* Line 1464 of yacc.c  */
-#line 2515 "grammar.y"
+#line 2527 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 820:
 
 /* Line 1464 of yacc.c  */
-#line 2516 "grammar.y"
+#line 2528 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 821:
 
 /* Line 1464 of yacc.c  */
-#line 2517 "grammar.y"
+#line 2529 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 822:
 
 /* Line 1464 of yacc.c  */
-#line 2518 "grammar.y"
+#line 2530 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 823:
 
 /* Line 1464 of yacc.c  */
-#line 2519 "grammar.y"
+#line 2531 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 824:
 
 /* Line 1464 of yacc.c  */
-#line 2520 "grammar.y"
+#line 2532 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 825:
 
 /* Line 1464 of yacc.c  */
-#line 2521 "grammar.y"
+#line 2533 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 826:
 
 /* Line 1464 of yacc.c  */
-#line 2525 "grammar.y"
+#line 2537 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 827:
 
 /* Line 1464 of yacc.c  */
-#line 2526 "grammar.y"
+#line 2538 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 828:
 
 /* Line 1464 of yacc.c  */
-#line 2527 "grammar.y"
+#line 2539 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 829:
 
 /* Line 1464 of yacc.c  */
-#line 2528 "grammar.y"
+#line 2540 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 830:
 
 /* Line 1464 of yacc.c  */
-#line 2529 "grammar.y"
+#line 2541 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 831:
 
 /* Line 1464 of yacc.c  */
-#line 2530 "grammar.y"
+#line 2542 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 832:
 
 /* Line 1464 of yacc.c  */
-#line 2531 "grammar.y"
+#line 2543 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 833:
 
 /* Line 1464 of yacc.c  */
-#line 2532 "grammar.y"
+#line 2544 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 834:
 
 /* Line 1464 of yacc.c  */
-#line 2533 "grammar.y"
+#line 2545 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 835:
 
 /* Line 1464 of yacc.c  */
-#line 2534 "grammar.y"
+#line 2546 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 836:
 
 /* Line 1464 of yacc.c  */
-#line 2538 "grammar.y"
+#line 2550 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 837:
 
 /* Line 1464 of yacc.c  */
-#line 2539 "grammar.y"
+#line 2551 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 838:
 
 /* Line 1464 of yacc.c  */
-#line 2543 "grammar.y"
+#line 2555 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkSpecifier(PRIVATE)); ;}
     break;
 
   case 839:
 
 /* Line 1464 of yacc.c  */
-#line 2544 "grammar.y"
+#line 2556 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkSpecifier(PUBLIC)); ;}
     break;
 
   case 840:
 
 /* Line 1464 of yacc.c  */
-#line 2545 "grammar.y"
+#line 2557 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 841:
 
 /* Line 1464 of yacc.c  */
-#line 2546 "grammar.y"
+#line 2558 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 842:
 
 /* Line 1464 of yacc.c  */
-#line 2547 "grammar.y"
+#line 2559 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 843:
 
 /* Line 1464 of yacc.c  */
-#line 2548 "grammar.y"
+#line 2560 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 844:
 
 /* Line 1464 of yacc.c  */
-#line 2549 "grammar.y"
+#line 2561 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 845:
 
 /* Line 1464 of yacc.c  */
-#line 2550 "grammar.y"
+#line 2562 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 846:
 
 /* Line 1464 of yacc.c  */
-#line 2552 "grammar.y"
+#line 2564 "grammar.y"
     { _DeclClass(0, (yyvsp[(1) - (1)].id).string); (yyval.list) = MkListOne(MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 847:
 
 /* Line 1464 of yacc.c  */
-#line 2553 "grammar.y"
+#line 2565 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); _DeclClass(0, (yyvsp[(2) - (2)].id).string); ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id)); ;}
     break;
 
   case 848:
 
 /* Line 1464 of yacc.c  */
-#line 2556 "grammar.y"
+#line 2568 "grammar.y"
     {
          // if($1._class && !$1._class.name)
          if((yyvsp[(1) - (4)].id)._class)
@@ -19285,7 +19296,7 @@ yyreduce:
   case 849:
 
 /* Line 1464 of yacc.c  */
-#line 2574 "grammar.y"
+#line 2586 "grammar.y"
     {
          (yyval.list) = (yyvsp[(1) - (5)].list);
          if((yyvsp[(2) - (5)].id)._class && !(yyvsp[(2) - (5)].id)._class.name)
@@ -19305,70 +19316,70 @@ yyreduce:
   case 851:
 
 /* Line 1464 of yacc.c  */
-#line 2592 "grammar.y"
+#line 2604 "grammar.y"
     { (yyval.list) = MkListOne(MkStructOrUnion((yyvsp[(1) - (1)].specifierType), null, null)); POP_DEFAULT_ACCESS ;}
     break;
 
   case 852:
 
 /* Line 1464 of yacc.c  */
-#line 2596 "grammar.y"
+#line 2608 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 853:
 
 /* Line 1464 of yacc.c  */
-#line 2597 "grammar.y"
+#line 2609 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 854:
 
 /* Line 1464 of yacc.c  */
-#line 2598 "grammar.y"
+#line 2610 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 855:
 
 /* Line 1464 of yacc.c  */
-#line 2599 "grammar.y"
+#line 2611 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 856:
 
 /* Line 1464 of yacc.c  */
-#line 2600 "grammar.y"
+#line 2612 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 857:
 
 /* Line 1464 of yacc.c  */
-#line 2601 "grammar.y"
+#line 2613 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 858:
 
 /* Line 1464 of yacc.c  */
-#line 2602 "grammar.y"
+#line 2614 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id));}
     break;
 
   case 859:
 
 /* Line 1464 of yacc.c  */
-#line 2603 "grammar.y"
+#line 2615 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id));}
     break;
 
   case 860:
 
 /* Line 1464 of yacc.c  */
-#line 2605 "grammar.y"
+#line 2617 "grammar.y"
     {
          // if($1._class && !$1._class.name)
          if((yyvsp[(1) - (4)].id)._class)
@@ -19391,7 +19402,7 @@ yyreduce:
   case 861:
 
 /* Line 1464 of yacc.c  */
-#line 2623 "grammar.y"
+#line 2635 "grammar.y"
     {
          if((yyvsp[(2) - (5)].id)._class && !(yyvsp[(2) - (5)].id)._class.name)
          {
@@ -19410,91 +19421,91 @@ yyreduce:
   case 862:
 
 /* Line 1464 of yacc.c  */
-#line 2639 "grammar.y"
+#line 2651 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 863:
 
 /* Line 1464 of yacc.c  */
-#line 2640 "grammar.y"
+#line 2652 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 864:
 
 /* Line 1464 of yacc.c  */
-#line 2641 "grammar.y"
+#line 2653 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 865:
 
 /* Line 1464 of yacc.c  */
-#line 2642 "grammar.y"
+#line 2654 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 866:
 
 /* Line 1464 of yacc.c  */
-#line 2643 "grammar.y"
+#line 2655 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 867:
 
 /* Line 1464 of yacc.c  */
-#line 2644 "grammar.y"
+#line 2656 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 868:
 
 /* Line 1464 of yacc.c  */
-#line 2645 "grammar.y"
+#line 2657 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 869:
 
 /* Line 1464 of yacc.c  */
-#line 2646 "grammar.y"
+#line 2658 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 870:
 
 /* Line 1464 of yacc.c  */
-#line 2647 "grammar.y"
+#line 2659 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 871:
 
 /* Line 1464 of yacc.c  */
-#line 2648 "grammar.y"
+#line 2660 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 872:
 
 /* Line 1464 of yacc.c  */
-#line 2649 "grammar.y"
+#line 2661 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id));}
     break;
 
   case 873:
 
 /* Line 1464 of yacc.c  */
-#line 2650 "grammar.y"
+#line 2662 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id));}
     break;
 
   case 874:
 
 /* Line 1464 of yacc.c  */
-#line 2652 "grammar.y"
+#line 2664 "grammar.y"
     {
          // if($1._class && !$1._class.name)
          if((yyvsp[(1) - (4)].id)._class)
@@ -19517,7 +19528,7 @@ yyreduce:
   case 875:
 
 /* Line 1464 of yacc.c  */
-#line 2670 "grammar.y"
+#line 2682 "grammar.y"
     {
          if((yyvsp[(2) - (5)].id)._class && !(yyvsp[(2) - (5)].id)._class.name)
          {
@@ -19536,91 +19547,91 @@ yyreduce:
   case 876:
 
 /* Line 1464 of yacc.c  */
-#line 2686 "grammar.y"
+#line 2698 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 877:
 
 /* Line 1464 of yacc.c  */
-#line 2687 "grammar.y"
+#line 2699 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 878:
 
 /* Line 1464 of yacc.c  */
-#line 2688 "grammar.y"
+#line 2700 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 879:
 
 /* Line 1464 of yacc.c  */
-#line 2689 "grammar.y"
+#line 2701 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 880:
 
 /* Line 1464 of yacc.c  */
-#line 2690 "grammar.y"
+#line 2702 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 881:
 
 /* Line 1464 of yacc.c  */
-#line 2691 "grammar.y"
+#line 2703 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 882:
 
 /* Line 1464 of yacc.c  */
-#line 2692 "grammar.y"
+#line 2704 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 883:
 
 /* Line 1464 of yacc.c  */
-#line 2693 "grammar.y"
+#line 2705 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 884:
 
 /* Line 1464 of yacc.c  */
-#line 2694 "grammar.y"
+#line 2706 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 885:
 
 /* Line 1464 of yacc.c  */
-#line 2695 "grammar.y"
+#line 2707 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 886:
 
 /* Line 1464 of yacc.c  */
-#line 2696 "grammar.y"
+#line 2708 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id));}
     break;
 
   case 887:
 
 /* Line 1464 of yacc.c  */
-#line 2697 "grammar.y"
+#line 2709 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id));}
     break;
 
   case 888:
 
 /* Line 1464 of yacc.c  */
-#line 2699 "grammar.y"
+#line 2711 "grammar.y"
     {
          // if($1._class && !$1._class.name)
          if((yyvsp[(1) - (4)].id)._class)
@@ -19643,7 +19654,7 @@ yyreduce:
   case 889:
 
 /* Line 1464 of yacc.c  */
-#line 2717 "grammar.y"
+#line 2729 "grammar.y"
     {
          if((yyvsp[(2) - (5)].id)._class && !(yyvsp[(2) - (5)].id)._class.name)
          {
@@ -19662,56 +19673,56 @@ yyreduce:
   case 890:
 
 /* Line 1464 of yacc.c  */
-#line 2733 "grammar.y"
+#line 2745 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), null); ;}
     break;
 
   case 891:
 
 /* Line 1464 of yacc.c  */
-#line 2734 "grammar.y"
+#line 2746 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), null); ;}
     break;
 
   case 892:
 
 /* Line 1464 of yacc.c  */
-#line 2738 "grammar.y"
+#line 2750 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkTypeName(null, MkDeclaratorIdentifier((yyvsp[(1) - (1)].id)))); ;}
     break;
 
   case 893:
 
 /* Line 1464 of yacc.c  */
-#line 2739 "grammar.y"
+#line 2751 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, MkDeclaratorIdentifier((yyvsp[(3) - (3)].id)))); ;}
     break;
 
   case 894:
 
 /* Line 1464 of yacc.c  */
-#line 2740 "grammar.y"
+#line 2752 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, MkDeclaratorIdentifier((yyvsp[(3) - (3)].id)))); ;}
     break;
 
   case 895:
 
 /* Line 1464 of yacc.c  */
-#line 2741 "grammar.y"
+#line 2753 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, MkDeclaratorIdentifier((yyvsp[(3) - (3)].id)))); ;}
     break;
 
   case 896:
 
 /* Line 1464 of yacc.c  */
-#line 2742 "grammar.y"
+#line 2754 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, MkDeclaratorIdentifier((yyvsp[(3) - (3)].id)))); ;}
     break;
 
   case 898:
 
 /* Line 1464 of yacc.c  */
-#line 2748 "grammar.y"
+#line 2760 "grammar.y"
     {
       char * colon = RSearchString((yyvsp[(1) - (1)].specifier).name, "::", strlen((yyvsp[(1) - (1)].specifier).name), true, false);
       String s = colon ? colon + 2 : (yyvsp[(1) - (1)].specifier).name;
@@ -19723,14 +19734,14 @@ yyreduce:
   case 899:
 
 /* Line 1464 of yacc.c  */
-#line 2754 "grammar.y"
+#line 2766 "grammar.y"
     { (yyval.declarator) = MkDeclaratorIdentifier(MkIdentifier("uint")); ;}
     break;
 
   case 900:
 
 /* Line 1464 of yacc.c  */
-#line 2757 "grammar.y"
+#line 2769 "grammar.y"
     {
          Declarator decl;
          char * colon = RSearchString((yyvsp[(1) - (4)].specifier).name, "::", strlen((yyvsp[(1) - (4)].specifier).name), true, false);
@@ -19744,7 +19755,7 @@ yyreduce:
   case 901:
 
 /* Line 1464 of yacc.c  */
-#line 2766 "grammar.y"
+#line 2778 "grammar.y"
     {
          Declarator decl;
          char * colon = RSearchString((yyvsp[(1) - (4)].specifier).name, "::", strlen((yyvsp[(1) - (4)].specifier).name), true, false);
@@ -19758,7 +19769,7 @@ yyreduce:
   case 902:
 
 /* Line 1464 of yacc.c  */
-#line 2775 "grammar.y"
+#line 2787 "grammar.y"
     {
          Declarator decl;
          char * colon = RSearchString((yyvsp[(1) - (4)].specifier).name, "::", strlen((yyvsp[(1) - (4)].specifier).name), true, false);
@@ -19772,7 +19783,7 @@ yyreduce:
   case 903:
 
 /* Line 1464 of yacc.c  */
-#line 2784 "grammar.y"
+#line 2796 "grammar.y"
     {
          Declarator decl;
          char * colon = RSearchString((yyvsp[(1) - (3)].specifier).name, "::", strlen((yyvsp[(1) - (3)].specifier).name), true, false);
@@ -19786,133 +19797,133 @@ yyreduce:
   case 904:
 
 /* Line 1464 of yacc.c  */
-#line 2792 "grammar.y"
+#line 2804 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 905:
 
 /* Line 1464 of yacc.c  */
-#line 2793 "grammar.y"
+#line 2805 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 906:
 
 /* Line 1464 of yacc.c  */
-#line 2794 "grammar.y"
+#line 2806 "grammar.y"
     { (yyval.declarator) = MkDeclaratorEnumArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 907:
 
 /* Line 1464 of yacc.c  */
-#line 2795 "grammar.y"
+#line 2807 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 908:
 
 /* Line 1464 of yacc.c  */
-#line 2799 "grammar.y"
+#line 2811 "grammar.y"
     { (yyval.declarator) = MkDeclaratorIdentifier((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 909:
 
 /* Line 1464 of yacc.c  */
-#line 2800 "grammar.y"
+#line 2812 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets((yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 910:
 
 /* Line 1464 of yacc.c  */
-#line 2801 "grammar.y"
+#line 2813 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets(MkDeclaratorExtended((yyvsp[(2) - (4)].extDecl), (yyvsp[(3) - (4)].declarator))); ;}
     break;
 
   case 911:
 
 /* Line 1464 of yacc.c  */
-#line 2802 "grammar.y"
+#line 2814 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets((yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 912:
 
 /* Line 1464 of yacc.c  */
-#line 2803 "grammar.y"
+#line 2815 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets(MkDeclaratorExtended((yyvsp[(2) - (4)].extDecl), (yyvsp[(3) - (4)].declarator))); ;}
     break;
 
   case 913:
 
 /* Line 1464 of yacc.c  */
-#line 2804 "grammar.y"
+#line 2816 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 914:
 
 /* Line 1464 of yacc.c  */
-#line 2805 "grammar.y"
+#line 2817 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 915:
 
 /* Line 1464 of yacc.c  */
-#line 2806 "grammar.y"
+#line 2818 "grammar.y"
     { (yyval.declarator) = MkDeclaratorEnumArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 916:
 
 /* Line 1464 of yacc.c  */
-#line 2807 "grammar.y"
+#line 2819 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 918:
 
 /* Line 1464 of yacc.c  */
-#line 2815 "grammar.y"
+#line 2827 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 919:
 
 /* Line 1464 of yacc.c  */
-#line 2816 "grammar.y"
+#line 2828 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 920:
 
 /* Line 1464 of yacc.c  */
-#line 2817 "grammar.y"
+#line 2829 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 921:
 
 /* Line 1464 of yacc.c  */
-#line 2818 "grammar.y"
+#line 2830 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 922:
 
 /* Line 1464 of yacc.c  */
-#line 2819 "grammar.y"
+#line 2831 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null); ;}
     break;
 
   case 923:
 
 /* Line 1464 of yacc.c  */
-#line 2825 "grammar.y"
+#line 2837 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), (yyvsp[(2) - (2)].list));
          fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
@@ -19926,7 +19937,7 @@ yyreduce:
   case 924:
 
 /* Line 1464 of yacc.c  */
-#line 2834 "grammar.y"
+#line 2846 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null);
          fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
@@ -19940,7 +19951,7 @@ yyreduce:
   case 925:
 
 /* Line 1464 of yacc.c  */
-#line 2843 "grammar.y"
+#line 2855 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list));
          fileInput.Seek((yylsp[(1) - (3)]).end.pos, start);
@@ -19954,7 +19965,7 @@ yyreduce:
   case 926:
 
 /* Line 1464 of yacc.c  */
-#line 2852 "grammar.y"
+#line 2864 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), null);
          fileInput.Seek((yylsp[(1) - (4)]).end.pos, start);
@@ -19970,42 +19981,42 @@ yyreduce:
   case 930:
 
 /* Line 1464 of yacc.c  */
-#line 2875 "grammar.y"
+#line 2887 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 931:
 
 /* Line 1464 of yacc.c  */
-#line 2876 "grammar.y"
+#line 2888 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 932:
 
 /* Line 1464 of yacc.c  */
-#line 2877 "grammar.y"
+#line 2889 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 933:
 
 /* Line 1464 of yacc.c  */
-#line 2878 "grammar.y"
+#line 2890 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 934:
 
 /* Line 1464 of yacc.c  */
-#line 2879 "grammar.y"
+#line 2891 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null); ;}
     break;
 
   case 935:
 
 /* Line 1464 of yacc.c  */
-#line 2885 "grammar.y"
+#line 2897 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), (yyvsp[(2) - (2)].list));
          fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
@@ -20019,7 +20030,7 @@ yyreduce:
   case 936:
 
 /* Line 1464 of yacc.c  */
-#line 2894 "grammar.y"
+#line 2906 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null);
          fileInput.Seek((yylsp[(1) - (2)]).end.pos, start);
@@ -20033,7 +20044,7 @@ yyreduce:
   case 937:
 
 /* Line 1464 of yacc.c  */
-#line 2903 "grammar.y"
+#line 2915 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list));
          fileInput.Seek((yylsp[(1) - (3)]).end.pos, start);
@@ -20047,7 +20058,7 @@ yyreduce:
   case 938:
 
 /* Line 1464 of yacc.c  */
-#line 2912 "grammar.y"
+#line 2924 "grammar.y"
     {
          (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), null);
          fileInput.Seek((yylsp[(1) - (4)]).end.pos, start);
@@ -20063,28 +20074,28 @@ yyreduce:
   case 941:
 
 /* Line 1464 of yacc.c  */
-#line 2975 "grammar.y"
+#line 2987 "grammar.y"
     { (yyval.extDecl) = MkExtDeclString(CopyString(yytext)); ;}
     break;
 
   case 942:
 
 /* Line 1464 of yacc.c  */
-#line 2976 "grammar.y"
+#line 2988 "grammar.y"
     { (yyval.extDecl) = MkExtDeclString(CopyString(yytext)); ;}
     break;
 
   case 943:
 
 /* Line 1464 of yacc.c  */
-#line 2977 "grammar.y"
+#line 2989 "grammar.y"
     { (yyval.extDecl) = MkExtDeclAttrib((yyvsp[(1) - (1)].attrib)); ;}
     break;
 
   case 944:
 
 /* Line 1464 of yacc.c  */
-#line 2979 "grammar.y"
+#line 2991 "grammar.y"
     {
          char temp[1024];
          strcpy(temp, "__asm__(");
@@ -20098,532 +20109,532 @@ yyreduce:
   case 945:
 
 /* Line 1464 of yacc.c  */
-#line 2990 "grammar.y"
+#line 3002 "grammar.y"
     { (yyval.i) = ATTRIB; ;}
     break;
 
   case 946:
 
 /* Line 1464 of yacc.c  */
-#line 2991 "grammar.y"
+#line 3003 "grammar.y"
     { (yyval.i) = ATTRIB_DEP; ;}
     break;
 
   case 947:
 
 /* Line 1464 of yacc.c  */
-#line 2992 "grammar.y"
+#line 3004 "grammar.y"
     { (yyval.i) = __ATTRIB; ;}
     break;
 
   case 948:
 
 /* Line 1464 of yacc.c  */
-#line 2997 "grammar.y"
+#line 3009 "grammar.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 949:
 
 /* Line 1464 of yacc.c  */
-#line 2998 "grammar.y"
+#line 3010 "grammar.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 950:
 
 /* Line 1464 of yacc.c  */
-#line 2999 "grammar.y"
+#line 3011 "grammar.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 951:
 
 /* Line 1464 of yacc.c  */
-#line 3000 "grammar.y"
+#line 3012 "grammar.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 952:
 
 /* Line 1464 of yacc.c  */
-#line 3001 "grammar.y"
+#line 3013 "grammar.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 953:
 
 /* Line 1464 of yacc.c  */
-#line 3005 "grammar.y"
+#line 3017 "grammar.y"
     { (yyval.attribute) = MkAttribute((yyvsp[(1) - (1)].string), null); (yyval.attribute).loc = (yyloc); ;}
     break;
 
   case 954:
 
 /* Line 1464 of yacc.c  */
-#line 3006 "grammar.y"
+#line 3018 "grammar.y"
     { (yyval.attribute) = MkAttribute((yyvsp[(1) - (4)].string), MkExpBrackets((yyvsp[(3) - (4)].list))); (yyval.attribute).loc = (yyloc); ;}
     break;
 
   case 955:
 
 /* Line 1464 of yacc.c  */
-#line 3010 "grammar.y"
+#line 3022 "grammar.y"
     { (yyval.list) = MkListOne((yyvsp[(1) - (1)].attribute)); ;}
     break;
 
   case 956:
 
 /* Line 1464 of yacc.c  */
-#line 3011 "grammar.y"
+#line 3023 "grammar.y"
     { ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].attribute)); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 957:
 
 /* Line 1464 of yacc.c  */
-#line 3012 "grammar.y"
+#line 3024 "grammar.y"
     { ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].attribute)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 958:
 
 /* Line 1464 of yacc.c  */
-#line 3016 "grammar.y"
+#line 3028 "grammar.y"
     { (yyval.attrib) = MkAttrib((yyvsp[(1) - (6)].i), (yyvsp[(4) - (6)].list)); (yyval.attrib).loc = (yyloc); ;}
     break;
 
   case 959:
 
 /* Line 1464 of yacc.c  */
-#line 3017 "grammar.y"
+#line 3029 "grammar.y"
     { (yyval.attrib) = MkAttrib((yyvsp[(1) - (5)].i), null); (yyval.attrib).loc = (yyloc); ;}
     break;
 
   case 960:
 
 /* Line 1464 of yacc.c  */
-#line 3021 "grammar.y"
+#line 3033 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets((yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 961:
 
 /* Line 1464 of yacc.c  */
-#line 3022 "grammar.y"
+#line 3034 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets(MkDeclaratorExtended((yyvsp[(2) - (4)].extDecl), (yyvsp[(3) - (4)].declarator))); ;}
     break;
 
   case 962:
 
 /* Line 1464 of yacc.c  */
-#line 3023 "grammar.y"
+#line 3035 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray(null, null); ;}
     break;
 
   case 963:
 
 /* Line 1464 of yacc.c  */
-#line 3024 "grammar.y"
+#line 3036 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray(null, (yyvsp[(2) - (3)].exp)); ;}
     break;
 
   case 964:
 
 /* Line 1464 of yacc.c  */
-#line 3025 "grammar.y"
+#line 3037 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray(null, (yyvsp[(2) - (3)].exp)); ;}
     break;
 
   case 965:
 
 /* Line 1464 of yacc.c  */
-#line 3026 "grammar.y"
+#line 3038 "grammar.y"
     { (yyval.declarator) = MkDeclaratorEnumArray(null, (yyvsp[(2) - (3)].specifier)); ;}
     break;
 
   case 966:
 
 /* Line 1464 of yacc.c  */
-#line 3027 "grammar.y"
+#line 3039 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 967:
 
 /* Line 1464 of yacc.c  */
-#line 3028 "grammar.y"
+#line 3040 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 968:
 
 /* Line 1464 of yacc.c  */
-#line 3029 "grammar.y"
+#line 3041 "grammar.y"
     { (yyval.declarator) = MkDeclaratorEnumArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 969:
 
 /* Line 1464 of yacc.c  */
-#line 3030 "grammar.y"
+#line 3042 "grammar.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 970:
 
 /* Line 1464 of yacc.c  */
-#line 3031 "grammar.y"
+#line 3043 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, null); ;}
     break;
 
   case 971:
 
 /* Line 1464 of yacc.c  */
-#line 3032 "grammar.y"
+#line 3044 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 972:
 
 /* Line 1464 of yacc.c  */
-#line 3033 "grammar.y"
+#line 3045 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 973:
 
 /* Line 1464 of yacc.c  */
-#line 3034 "grammar.y"
+#line 3046 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 974:
 
 /* Line 1464 of yacc.c  */
-#line 3035 "grammar.y"
+#line 3047 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 975:
 
 /* Line 1464 of yacc.c  */
-#line 3036 "grammar.y"
+#line 3048 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 976:
 
 /* Line 1464 of yacc.c  */
-#line 3040 "grammar.y"
+#line 3052 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets((yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 977:
 
 /* Line 1464 of yacc.c  */
-#line 3041 "grammar.y"
+#line 3053 "grammar.y"
     { (yyval.declarator) = MkDeclaratorBrackets(MkDeclaratorExtended((yyvsp[(2) - (4)].extDecl), (yyvsp[(3) - (4)].declarator))); ;}
     break;
 
   case 978:
 
 /* Line 1464 of yacc.c  */
-#line 3042 "grammar.y"
+#line 3054 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, null); ;}
     break;
 
   case 979:
 
 /* Line 1464 of yacc.c  */
-#line 3043 "grammar.y"
+#line 3055 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 980:
 
 /* Line 1464 of yacc.c  */
-#line 3044 "grammar.y"
+#line 3056 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 981:
 
 /* Line 1464 of yacc.c  */
-#line 3045 "grammar.y"
+#line 3057 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 982:
 
 /* Line 1464 of yacc.c  */
-#line 3046 "grammar.y"
+#line 3058 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 983:
 
 /* Line 1464 of yacc.c  */
-#line 3047 "grammar.y"
+#line 3059 "grammar.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 984:
 
 /* Line 1464 of yacc.c  */
-#line 3051 "grammar.y"
+#line 3063 "grammar.y"
     { (yyval.pointer) = MkPointer(null, null); ;}
     break;
 
   case 985:
 
 /* Line 1464 of yacc.c  */
-#line 3052 "grammar.y"
+#line 3064 "grammar.y"
     { (yyval.pointer) = MkPointer((yyvsp[(2) - (2)].list), null); ;}
     break;
 
   case 986:
 
 /* Line 1464 of yacc.c  */
-#line 3053 "grammar.y"
+#line 3065 "grammar.y"
     { (yyval.pointer) = MkPointer(null, (yyvsp[(2) - (2)].pointer)); ;}
     break;
 
   case 987:
 
 /* Line 1464 of yacc.c  */
-#line 3054 "grammar.y"
+#line 3066 "grammar.y"
     { (yyval.pointer) = MkPointer((yyvsp[(2) - (3)].list), (yyvsp[(3) - (3)].pointer)); ;}
     break;
 
   case 988:
 
 /* Line 1464 of yacc.c  */
-#line 3058 "grammar.y"
+#line 3070 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (1)].pointer), null); ;}
     break;
 
   case 990:
 
 /* Line 1464 of yacc.c  */
-#line 3060 "grammar.y"
+#line 3072 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 991:
 
 /* Line 1464 of yacc.c  */
-#line 3061 "grammar.y"
+#line 3073 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (2)].pointer), null)); ;}
     break;
 
   case 992:
 
 /* Line 1464 of yacc.c  */
-#line 3062 "grammar.y"
+#line 3074 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 993:
 
 /* Line 1464 of yacc.c  */
-#line 3066 "grammar.y"
+#line 3078 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (1)].pointer), null); ;}
     break;
 
   case 995:
 
 /* Line 1464 of yacc.c  */
-#line 3068 "grammar.y"
+#line 3080 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 996:
 
 /* Line 1464 of yacc.c  */
-#line 3069 "grammar.y"
+#line 3081 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (2)].pointer), null)); ;}
     break;
 
   case 997:
 
 /* Line 1464 of yacc.c  */
-#line 3070 "grammar.y"
+#line 3082 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 999:
 
 /* Line 1464 of yacc.c  */
-#line 3076 "grammar.y"
+#line 3088 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1000:
 
 /* Line 1464 of yacc.c  */
-#line 3078 "grammar.y"
+#line 3090 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1001:
 
 /* Line 1464 of yacc.c  */
-#line 3080 "grammar.y"
+#line 3092 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtendedEnd((yyvsp[(2) - (2)].extDecl), (yyvsp[(1) - (2)].declarator)); ;}
     break;
 
   case 1002:
 
 /* Line 1464 of yacc.c  */
-#line 3082 "grammar.y"
+#line 3094 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtendedEnd((yyvsp[(2) - (2)].extDecl), (yyvsp[(1) - (2)].declarator)); ;}
     break;
 
   case 1004:
 
 /* Line 1464 of yacc.c  */
-#line 3088 "grammar.y"
+#line 3100 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1005:
 
 /* Line 1464 of yacc.c  */
-#line 3090 "grammar.y"
+#line 3102 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1006:
 
 /* Line 1464 of yacc.c  */
-#line 3092 "grammar.y"
+#line 3104 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtendedEnd((yyvsp[(2) - (2)].extDecl), (yyvsp[(1) - (2)].declarator)); ;}
     break;
 
   case 1008:
 
 /* Line 1464 of yacc.c  */
-#line 3097 "grammar.y"
+#line 3109 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1009:
 
 /* Line 1464 of yacc.c  */
-#line 3098 "grammar.y"
+#line 3110 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1010:
 
 /* Line 1464 of yacc.c  */
-#line 3099 "grammar.y"
+#line 3111 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (3)].pointer), MkDeclaratorExtended((yyvsp[(2) - (3)].extDecl), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1012:
 
 /* Line 1464 of yacc.c  */
-#line 3104 "grammar.y"
+#line 3116 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1013:
 
 /* Line 1464 of yacc.c  */
-#line 3105 "grammar.y"
+#line 3117 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1014:
 
 /* Line 1464 of yacc.c  */
-#line 3106 "grammar.y"
+#line 3118 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (3)].pointer), MkDeclaratorExtended((yyvsp[(2) - (3)].extDecl), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1016:
 
 /* Line 1464 of yacc.c  */
-#line 3111 "grammar.y"
+#line 3123 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1017:
 
 /* Line 1464 of yacc.c  */
-#line 3112 "grammar.y"
+#line 3124 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1018:
 
 /* Line 1464 of yacc.c  */
-#line 3113 "grammar.y"
+#line 3125 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (3)].pointer), MkDeclaratorExtended((yyvsp[(2) - (3)].extDecl), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1020:
 
 /* Line 1464 of yacc.c  */
-#line 3118 "grammar.y"
+#line 3130 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1021:
 
 /* Line 1464 of yacc.c  */
-#line 3119 "grammar.y"
+#line 3131 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1022:
 
 /* Line 1464 of yacc.c  */
-#line 3120 "grammar.y"
+#line 3132 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (3)].pointer), MkDeclaratorExtended((yyvsp[(2) - (3)].extDecl), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1024:
 
 /* Line 1464 of yacc.c  */
-#line 3125 "grammar.y"
+#line 3137 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1025:
 
 /* Line 1464 of yacc.c  */
-#line 3126 "grammar.y"
+#line 3138 "grammar.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1026:
 
 /* Line 1464 of yacc.c  */
-#line 3127 "grammar.y"
+#line 3139 "grammar.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (3)].pointer), MkDeclaratorExtended((yyvsp[(2) - (3)].extDecl), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1027:
 
 /* Line 1464 of yacc.c  */
-#line 3131 "grammar.y"
+#line 3143 "grammar.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1028:
 
 /* Line 1464 of yacc.c  */
-#line 3132 "grammar.y"
+#line 3144 "grammar.y"
     { (yyval.initializer) = MkInitializerList((yyvsp[(2) - (3)].list)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1029:
 
 /* Line 1464 of yacc.c  */
-#line 3134 "grammar.y"
+#line 3146 "grammar.y"
     {
          (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list));
          (yyval.initializer).loc = (yyloc);
@@ -20641,28 +20652,28 @@ yyreduce:
   case 1030:
 
 /* Line 1464 of yacc.c  */
-#line 3149 "grammar.y"
+#line 3161 "grammar.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1031:
 
 /* Line 1464 of yacc.c  */
-#line 3150 "grammar.y"
+#line 3162 "grammar.y"
     { (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1032:
 
 /* Line 1464 of yacc.c  */
-#line 3151 "grammar.y"
+#line 3163 "grammar.y"
     { (yyval.initializer) = MkInitializerList((yyvsp[(2) - (2)].list)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1033:
 
 /* Line 1464 of yacc.c  */
-#line 3153 "grammar.y"
+#line 3165 "grammar.y"
     {
          (yyval.initializer) = MkInitializerList((yyvsp[(2) - (5)].list));
          (yyval.initializer).loc = (yyloc);
@@ -20680,7 +20691,7 @@ yyreduce:
   case 1034:
 
 /* Line 1464 of yacc.c  */
-#line 3166 "grammar.y"
+#line 3178 "grammar.y"
     {
          (yyval.initializer) = MkInitializerList((yyvsp[(2) - (3)].list));
          (yyval.initializer).loc = (yyloc);
@@ -20698,140 +20709,140 @@ yyreduce:
   case 1035:
 
 /* Line 1464 of yacc.c  */
-#line 3181 "grammar.y"
+#line 3193 "grammar.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1036:
 
 /* Line 1464 of yacc.c  */
-#line 3183 "grammar.y"
+#line 3195 "grammar.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1037:
 
 /* Line 1464 of yacc.c  */
-#line 3187 "grammar.y"
+#line 3199 "grammar.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1038:
 
 /* Line 1464 of yacc.c  */
-#line 3188 "grammar.y"
+#line 3200 "grammar.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 1039:
 
 /* Line 1464 of yacc.c  */
-#line 3192 "grammar.y"
+#line 3204 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].initializer)); ;}
     break;
 
   case 1040:
 
 /* Line 1464 of yacc.c  */
-#line 3193 "grammar.y"
+#line 3205 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].initializer)); ;}
     break;
 
   case 1041:
 
 /* Line 1464 of yacc.c  */
-#line 3194 "grammar.y"
+#line 3206 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initializer)); ;}
     break;
 
   case 1042:
 
 /* Line 1464 of yacc.c  */
-#line 3195 "grammar.y"
+#line 3207 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initializer)); ;}
     break;
 
   case 1043:
 
 /* Line 1464 of yacc.c  */
-#line 3198 "grammar.y"
+#line 3210 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].initializer)); ;}
     break;
 
   case 1044:
 
 /* Line 1464 of yacc.c  */
-#line 3199 "grammar.y"
+#line 3211 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].initializer)); ;}
     break;
 
   case 1045:
 
 /* Line 1464 of yacc.c  */
-#line 3203 "grammar.y"
+#line 3215 "grammar.y"
     { (yyval.initDeclarator) = MkInitDeclarator((yyvsp[(1) - (1)].declarator), null); (yyval.initDeclarator).loc = (yyloc); ;}
     break;
 
   case 1046:
 
 /* Line 1464 of yacc.c  */
-#line 3204 "grammar.y"
+#line 3216 "grammar.y"
     { (yyval.initDeclarator) = MkInitDeclarator((yyvsp[(1) - (1)].declarator), null); (yyval.initDeclarator).loc = (yyloc); ;}
     break;
 
   case 1047:
 
 /* Line 1464 of yacc.c  */
-#line 3205 "grammar.y"
+#line 3217 "grammar.y"
     { (yyval.initDeclarator) = MkInitDeclarator((yyvsp[(1) - (3)].declarator), (yyvsp[(3) - (3)].initializer)); (yyval.initDeclarator).loc = (yyloc); (yyval.initDeclarator).initializer.loc.start = (yylsp[(2) - (3)]).end; ;}
     break;
 
   case 1048:
 
 /* Line 1464 of yacc.c  */
-#line 3209 "grammar.y"
+#line 3221 "grammar.y"
     { (yyval.initDeclarator) = MkInitDeclarator((yyvsp[(1) - (2)].declarator), null); (yyval.initDeclarator).loc = (yyloc); ;}
     break;
 
   case 1049:
 
 /* Line 1464 of yacc.c  */
-#line 3213 "grammar.y"
+#line 3225 "grammar.y"
     { (yyval.initDeclarator) = MkInitDeclarator((yyvsp[(1) - (3)].declarator), (yyvsp[(3) - (3)].initializer)); (yyval.initDeclarator).loc = (yyloc); (yyval.initDeclarator).initializer.loc.start = (yylsp[(2) - (3)]).end; ;}
     break;
 
   case 1050:
 
 /* Line 1464 of yacc.c  */
-#line 3217 "grammar.y"
+#line 3229 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].initDeclarator)); ;}
     break;
 
   case 1051:
 
 /* Line 1464 of yacc.c  */
-#line 3218 "grammar.y"
+#line 3230 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initDeclarator)); ;}
     break;
 
   case 1052:
 
 /* Line 1464 of yacc.c  */
-#line 3219 "grammar.y"
+#line 3231 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("uint")), null)); ListAdd((yyval.list), (yyvsp[(3) - (3)].initDeclarator)); ;}
     break;
 
   case 1053:
 
 /* Line 1464 of yacc.c  */
-#line 3220 "grammar.y"
+#line 3232 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("int64")), null)); ListAdd((yyval.list), (yyvsp[(3) - (3)].initDeclarator)); ;}
     break;
 
   case 1054:
 
 /* Line 1464 of yacc.c  */
-#line 3222 "grammar.y"
+#line 3234 "grammar.y"
     {
       char * colon = RSearchString((yyvsp[(1) - (3)].specifier).name, "::", strlen((yyvsp[(1) - (3)].specifier).name), true, false);
       String s = colon ? colon + 2 : (yyvsp[(1) - (3)].specifier).name;
@@ -20845,1484 +20856,1484 @@ yyreduce:
   case 1055:
 
 /* Line 1464 of yacc.c  */
-#line 3230 "grammar.y"
+#line 3242 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initDeclarator)); ;}
     break;
 
   case 1056:
 
 /* Line 1464 of yacc.c  */
-#line 3239 "grammar.y"
+#line 3251 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].initDeclarator)); ;}
     break;
 
   case 1057:
 
 /* Line 1464 of yacc.c  */
-#line 3240 "grammar.y"
+#line 3252 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (2)].initDeclarator)); ;}
     break;
 
   case 1058:
 
 /* Line 1464 of yacc.c  */
-#line 3241 "grammar.y"
+#line 3253 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initDeclarator)); ;}
     break;
 
   case 1059:
 
 /* Line 1464 of yacc.c  */
-#line 3242 "grammar.y"
+#line 3254 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initDeclarator)); ;}
     break;
 
   case 1060:
 
 /* Line 1464 of yacc.c  */
-#line 3246 "grammar.y"
+#line 3258 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 1061:
 
 /* Line 1464 of yacc.c  */
-#line 3247 "grammar.y"
+#line 3259 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1062:
 
 /* Line 1464 of yacc.c  */
-#line 3251 "grammar.y"
+#line 3263 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 1063:
 
 /* Line 1464 of yacc.c  */
-#line 3252 "grammar.y"
+#line 3264 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1064:
 
 /* Line 1464 of yacc.c  */
-#line 3257 "grammar.y"
+#line 3269 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1065:
 
 /* Line 1464 of yacc.c  */
-#line 3258 "grammar.y"
+#line 3270 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 1066:
 
 /* Line 1464 of yacc.c  */
-#line 3259 "grammar.y"
+#line 3271 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), MkDeclaratorPointer(MkPointer(null,null), null)); ;}
     break;
 
   case 1067:
 
 /* Line 1464 of yacc.c  */
-#line 3260 "grammar.y"
+#line 3272 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (3)].list), MkDeclaratorPointer(MkPointer(null,null), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 1068:
 
 /* Line 1464 of yacc.c  */
-#line 3261 "grammar.y"
+#line 3273 "grammar.y"
     { (yyval.typeName) = MkTypeNameGuessDecl((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 1069:
 
 /* Line 1464 of yacc.c  */
-#line 3263 "grammar.y"
+#line 3275 "grammar.y"
     { (yyval.typeName) = MkTypeName(MkListOne(MkSpecifier(CLASS)), null); ;}
     break;
 
   case 1070:
 
 /* Line 1464 of yacc.c  */
-#line 3281 "grammar.y"
+#line 3293 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 1071:
 
 /* Line 1464 of yacc.c  */
-#line 3282 "grammar.y"
+#line 3294 "grammar.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 1072:
 
 /* Line 1464 of yacc.c  */
-#line 3286 "grammar.y"
+#line 3298 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].typeName)); ;}
     break;
 
   case 1073:
 
 /* Line 1464 of yacc.c  */
-#line 3287 "grammar.y"
+#line 3299 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1074:
 
 /* Line 1464 of yacc.c  */
-#line 3288 "grammar.y"
+#line 3300 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (4)].list); ListAdd((yyvsp[(1) - (4)].list), (yyvsp[(4) - (4)].typeName)); ;}
     break;
 
   case 1075:
 
 /* Line 1464 of yacc.c  */
-#line 3289 "grammar.y"
+#line 3301 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1076:
 
 /* Line 1464 of yacc.c  */
-#line 3290 "grammar.y"
+#line 3302 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (4)].list); ListAdd((yyvsp[(1) - (4)].list), (yyvsp[(4) - (4)].typeName)); ;}
     break;
 
   case 1077:
 
 /* Line 1464 of yacc.c  */
-#line 3291 "grammar.y"
+#line 3303 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkTypeName(MkList(), null)); ListAdd((yyval.list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1078:
 
 /* Line 1464 of yacc.c  */
-#line 3293 "grammar.y"
+#line 3305 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1079:
 
 /* Line 1464 of yacc.c  */
-#line 3294 "grammar.y"
+#line 3306 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (4)].list); ListAdd((yyvsp[(1) - (4)].list), (yyvsp[(4) - (4)].typeName)); ;}
     break;
 
   case 1080:
 
 /* Line 1464 of yacc.c  */
-#line 3295 "grammar.y"
+#line 3307 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1081:
 
 /* Line 1464 of yacc.c  */
-#line 3296 "grammar.y"
+#line 3308 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (4)].list); ListAdd((yyvsp[(1) - (4)].list), (yyvsp[(4) - (4)].typeName)); ;}
     break;
 
   case 1082:
 
 /* Line 1464 of yacc.c  */
-#line 3300 "grammar.y"
+#line 3312 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].typeName)); ;}
     break;
 
   case 1083:
 
 /* Line 1464 of yacc.c  */
-#line 3301 "grammar.y"
+#line 3313 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1084:
 
 /* Line 1464 of yacc.c  */
-#line 3302 "grammar.y"
+#line 3314 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1085:
 
 /* Line 1464 of yacc.c  */
-#line 3303 "grammar.y"
+#line 3315 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (4)].list); ListAdd((yyvsp[(1) - (4)].list), (yyvsp[(4) - (4)].typeName)); ;}
     break;
 
   case 1086:
 
 /* Line 1464 of yacc.c  */
-#line 3304 "grammar.y"
+#line 3316 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkTypeName(MkList(), null)); ListAdd((yyval.list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1087:
 
 /* Line 1464 of yacc.c  */
-#line 3306 "grammar.y"
+#line 3318 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1088:
 
 /* Line 1464 of yacc.c  */
-#line 3307 "grammar.y"
+#line 3319 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 1089:
 
 /* Line 1464 of yacc.c  */
-#line 3308 "grammar.y"
+#line 3320 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (4)].list); ListAdd((yyvsp[(1) - (4)].list), (yyvsp[(4) - (4)].typeName)); ;}
     break;
 
   case 1091:
 
 /* Line 1464 of yacc.c  */
-#line 3313 "grammar.y"
+#line 3325 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, null)); ;}
     break;
 
   case 1092:
 
 /* Line 1464 of yacc.c  */
-#line 3314 "grammar.y"
+#line 3326 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, null)); ;}
     break;
 
   case 1093:
 
 /* Line 1464 of yacc.c  */
-#line 3315 "grammar.y"
+#line 3327 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, null)); ;}
     break;
 
   case 1094:
 
 /* Line 1464 of yacc.c  */
-#line 3316 "grammar.y"
+#line 3328 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, null)); ;}
     break;
 
   case 1095:
 
 /* Line 1464 of yacc.c  */
-#line 3317 "grammar.y"
+#line 3329 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkTypeName(null, null)); ;}
     break;
 
   case 1097:
 
 /* Line 1464 of yacc.c  */
-#line 3322 "grammar.y"
+#line 3334 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), null); ;}
     break;
 
   case 1100:
 
 /* Line 1464 of yacc.c  */
-#line 3329 "grammar.y"
+#line 3341 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt(null); FreeAttrib((yyvsp[(1) - (1)].attrib)); ;}
     break;
 
   case 1102:
 
 /* Line 1464 of yacc.c  */
-#line 3331 "grammar.y"
+#line 3343 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt(null); ;}
     break;
 
   case 1103:
 
 /* Line 1464 of yacc.c  */
-#line 3332 "grammar.y"
+#line 3344 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt(null); ;}
     break;
 
   case 1104:
 
 /* Line 1464 of yacc.c  */
-#line 3333 "grammar.y"
+#line 3345 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt((yyvsp[(1) - (2)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1112:
 
 /* Line 1464 of yacc.c  */
-#line 3344 "grammar.y"
+#line 3356 "grammar.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1113:
 
 /* Line 1464 of yacc.c  */
-#line 3345 "grammar.y"
+#line 3357 "grammar.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1114:
 
 /* Line 1464 of yacc.c  */
-#line 3346 "grammar.y"
+#line 3358 "grammar.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1115:
 
 /* Line 1464 of yacc.c  */
-#line 3347 "grammar.y"
+#line 3359 "grammar.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1116:
 
 /* Line 1464 of yacc.c  */
-#line 3348 "grammar.y"
+#line 3360 "grammar.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1117:
 
 /* Line 1464 of yacc.c  */
-#line 3349 "grammar.y"
+#line 3361 "grammar.y"
     { (yyval.stmt) = (yyvsp[(1) - (2)].stmt); Compiler_Error($"syntax error\n"); ;}
     break;
 
   case 1118:
 
 /* Line 1464 of yacc.c  */
-#line 3350 "grammar.y"
+#line 3362 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt((yyvsp[(1) - (1)].list)); Compiler_Error($"syntax error\n"); (yyval.stmt).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 1119:
 
 /* Line 1464 of yacc.c  */
-#line 3354 "grammar.y"
+#line 3366 "grammar.y"
     { (yyval.asmField) = MkAsmField((yyvsp[(1) - (1)].string), null, null); (yyval.asmField).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 1120:
 
 /* Line 1464 of yacc.c  */
-#line 3355 "grammar.y"
+#line 3367 "grammar.y"
     { (yyval.asmField) = MkAsmField((yyvsp[(1) - (4)].string), (yyvsp[(3) - (4)].exp), null); (yyval.asmField).loc = (yyloc); ;}
     break;
 
   case 1121:
 
 /* Line 1464 of yacc.c  */
-#line 3356 "grammar.y"
+#line 3368 "grammar.y"
     { (yyval.asmField) = MkAsmField((yyvsp[(4) - (7)].string), (yyvsp[(6) - (7)].exp), (yyvsp[(2) - (7)].id)); (yyval.asmField).loc = (yyloc); ;}
     break;
 
   case 1122:
 
 /* Line 1464 of yacc.c  */
-#line 3360 "grammar.y"
+#line 3372 "grammar.y"
     { (yyval.list) = MkListOne((yyvsp[(1) - (1)].asmField)); ;}
     break;
 
   case 1123:
 
 /* Line 1464 of yacc.c  */
-#line 3361 "grammar.y"
+#line 3373 "grammar.y"
     { ListAdd((yyval.list), (yyvsp[(3) - (3)].asmField)); ;}
     break;
 
   case 1124:
 
 /* Line 1464 of yacc.c  */
-#line 3362 "grammar.y"
+#line 3374 "grammar.y"
     { (yyval.list) = null; ;}
     break;
 
   case 1125:
 
 /* Line 1464 of yacc.c  */
-#line 3366 "grammar.y"
+#line 3378 "grammar.y"
     { (yyval.stmt) = MkAsmStmt((yyvsp[(2) - (6)].specifier), (yyvsp[(4) - (6)].string), null, null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1126:
 
 /* Line 1464 of yacc.c  */
-#line 3367 "grammar.y"
+#line 3379 "grammar.y"
     { (yyval.stmt) = MkAsmStmt((yyvsp[(2) - (8)].specifier), (yyvsp[(4) - (8)].string), (yyvsp[(6) - (8)].list), null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1127:
 
 /* Line 1464 of yacc.c  */
-#line 3368 "grammar.y"
+#line 3380 "grammar.y"
     { (yyval.stmt) = MkAsmStmt((yyvsp[(2) - (10)].specifier), (yyvsp[(4) - (10)].string), (yyvsp[(6) - (10)].list), (yyvsp[(8) - (10)].list), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1128:
 
 /* Line 1464 of yacc.c  */
-#line 3369 "grammar.y"
+#line 3381 "grammar.y"
     { (yyval.stmt) = MkAsmStmt((yyvsp[(2) - (12)].specifier), (yyvsp[(4) - (12)].string), (yyvsp[(6) - (12)].list), (yyvsp[(8) - (12)].list), (yyvsp[(10) - (12)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1129:
 
 /* Line 1464 of yacc.c  */
-#line 3371 "grammar.y"
+#line 3383 "grammar.y"
     { (yyval.stmt) = MkAsmStmt((yyvsp[(2) - (8)].specifier), (yyvsp[(4) - (8)].string), null, (yyvsp[(6) - (8)].list), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1130:
 
 /* Line 1464 of yacc.c  */
-#line 3372 "grammar.y"
+#line 3384 "grammar.y"
     { (yyval.stmt) = MkAsmStmt((yyvsp[(2) - (10)].specifier), (yyvsp[(4) - (10)].string), null, (yyvsp[(6) - (10)].list), (yyvsp[(8) - (10)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1131:
 
 /* Line 1464 of yacc.c  */
-#line 3373 "grammar.y"
+#line 3385 "grammar.y"
     { (yyval.stmt) = MkAsmStmt((yyvsp[(2) - (10)].specifier), (yyvsp[(4) - (10)].string), (yyvsp[(6) - (10)].list), null, (yyvsp[(8) - (10)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1132:
 
 /* Line 1464 of yacc.c  */
-#line 3375 "grammar.y"
+#line 3387 "grammar.y"
     { (yyval.stmt) = MkAsmStmt(null, (yyvsp[(3) - (5)].string), null, null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1133:
 
 /* Line 1464 of yacc.c  */
-#line 3376 "grammar.y"
+#line 3388 "grammar.y"
     { (yyval.stmt) = MkAsmStmt(null, (yyvsp[(3) - (7)].string), (yyvsp[(5) - (7)].list), null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1134:
 
 /* Line 1464 of yacc.c  */
-#line 3377 "grammar.y"
+#line 3389 "grammar.y"
     { (yyval.stmt) = MkAsmStmt(null, (yyvsp[(3) - (9)].string), (yyvsp[(5) - (9)].list), (yyvsp[(7) - (9)].list), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1135:
 
 /* Line 1464 of yacc.c  */
-#line 3378 "grammar.y"
+#line 3390 "grammar.y"
     { (yyval.stmt) = MkAsmStmt(null, (yyvsp[(3) - (11)].string), (yyvsp[(5) - (11)].list), (yyvsp[(7) - (11)].list), (yyvsp[(9) - (11)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1136:
 
 /* Line 1464 of yacc.c  */
-#line 3380 "grammar.y"
+#line 3392 "grammar.y"
     { (yyval.stmt) = MkAsmStmt(null, (yyvsp[(3) - (7)].string), null, (yyvsp[(5) - (7)].list), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1137:
 
 /* Line 1464 of yacc.c  */
-#line 3381 "grammar.y"
+#line 3393 "grammar.y"
     { (yyval.stmt) = MkAsmStmt(null, (yyvsp[(3) - (9)].string), null, (yyvsp[(5) - (9)].list), (yyvsp[(7) - (9)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1138:
 
 /* Line 1464 of yacc.c  */
-#line 3382 "grammar.y"
+#line 3394 "grammar.y"
     { (yyval.stmt) = MkAsmStmt(null, (yyvsp[(3) - (9)].string), (yyvsp[(5) - (9)].list), null, (yyvsp[(7) - (9)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1139:
 
 /* Line 1464 of yacc.c  */
-#line 3386 "grammar.y"
+#line 3398 "grammar.y"
     { (yyval.stmt) = MkLabeledStmt((yyvsp[(1) - (3)].id), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1140:
 
 /* Line 1464 of yacc.c  */
-#line 3387 "grammar.y"
+#line 3399 "grammar.y"
     { (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1141:
 
 /* Line 1464 of yacc.c  */
-#line 3388 "grammar.y"
+#line 3400 "grammar.y"
     { (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1142:
 
 /* Line 1464 of yacc.c  */
-#line 3389 "grammar.y"
+#line 3401 "grammar.y"
     { (yyval.stmt) = MkCaseStmt(MkExpDummy(), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
     break;
 
   case 1143:
 
 /* Line 1464 of yacc.c  */
-#line 3390 "grammar.y"
+#line 3402 "grammar.y"
     { (yyval.stmt) = MkCaseStmt(null, (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1144:
 
 /* Line 1464 of yacc.c  */
-#line 3392 "grammar.y"
+#line 3404 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(3) - (3)].declaration)); stmt.loc = (yylsp[(3) - (3)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkLabeledStmt((yyvsp[(1) - (3)].id), stmt); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1145:
 
 /* Line 1464 of yacc.c  */
-#line 3393 "grammar.y"
+#line 3405 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(4) - (4)].declaration)); stmt.loc = (yylsp[(4) - (4)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), stmt); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1146:
 
 /* Line 1464 of yacc.c  */
-#line 3394 "grammar.y"
+#line 3406 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(4) - (4)].declaration)); stmt.loc = (yylsp[(4) - (4)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), stmt); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1147:
 
 /* Line 1464 of yacc.c  */
-#line 3395 "grammar.y"
+#line 3407 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(3) - (3)].declaration)); stmt.loc = (yylsp[(3) - (3)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt(MkExpDummy(), stmt); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
     break;
 
   case 1148:
 
 /* Line 1464 of yacc.c  */
-#line 3396 "grammar.y"
+#line 3408 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(3) - (3)].declaration)); stmt.loc = (yylsp[(3) - (3)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt(null, stmt); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1149:
 
 /* Line 1464 of yacc.c  */
-#line 3400 "grammar.y"
+#line 3412 "grammar.y"
     { (yyval.stmt) = MkLabeledStmt((yyvsp[(1) - (3)].id), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1150:
 
 /* Line 1464 of yacc.c  */
-#line 3401 "grammar.y"
+#line 3413 "grammar.y"
     { (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1151:
 
 /* Line 1464 of yacc.c  */
-#line 3402 "grammar.y"
+#line 3414 "grammar.y"
     { (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1152:
 
 /* Line 1464 of yacc.c  */
-#line 3403 "grammar.y"
+#line 3415 "grammar.y"
     { (yyval.stmt) = MkCaseStmt(MkExpDummy(), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
     break;
 
   case 1153:
 
 /* Line 1464 of yacc.c  */
-#line 3404 "grammar.y"
+#line 3416 "grammar.y"
     { (yyval.stmt) = MkCaseStmt(MkExpDummy(), null); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (2)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (2)]).end; ;}
     break;
 
   case 1154:
 
 /* Line 1464 of yacc.c  */
-#line 3405 "grammar.y"
+#line 3417 "grammar.y"
     { (yyval.stmt) = MkCaseStmt(null, (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1155:
 
 /* Line 1464 of yacc.c  */
-#line 3406 "grammar.y"
+#line 3418 "grammar.y"
     { (yyval.stmt) = MkCaseStmt(null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1156:
 
 /* Line 1464 of yacc.c  */
-#line 3408 "grammar.y"
+#line 3420 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(3) - (3)].declaration)); stmt.loc = (yylsp[(3) - (3)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkLabeledStmt((yyvsp[(1) - (3)].id), stmt); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1157:
 
 /* Line 1464 of yacc.c  */
-#line 3409 "grammar.y"
+#line 3421 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(4) - (4)].declaration)); stmt.loc = (yylsp[(4) - (4)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), stmt); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1158:
 
 /* Line 1464 of yacc.c  */
-#line 3410 "grammar.y"
+#line 3422 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(4) - (4)].declaration)); stmt.loc = (yylsp[(4) - (4)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), stmt); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1159:
 
 /* Line 1464 of yacc.c  */
-#line 3411 "grammar.y"
+#line 3423 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(3) - (3)].declaration)); stmt.loc = (yylsp[(3) - (3)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt(MkExpDummy(), stmt); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
     break;
 
   case 1160:
 
 /* Line 1464 of yacc.c  */
-#line 3412 "grammar.y"
+#line 3424 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(3) - (3)].declaration)); stmt.loc = (yylsp[(3) - (3)]); Compiler_Warning(C89_DECL_WARNING); (yyval.stmt) = MkCaseStmt(null, stmt); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1161:
 
 /* Line 1464 of yacc.c  */
-#line 3416 "grammar.y"
+#line 3428 "grammar.y"
     { (yyval.declMode) = structDeclMode = declMode = publicAccess; ;}
     break;
 
   case 1162:
 
 /* Line 1464 of yacc.c  */
-#line 3417 "grammar.y"
+#line 3429 "grammar.y"
     { (yyval.declMode) = structDeclMode = declMode = privateAccess; ;}
     break;
 
   case 1163:
 
 /* Line 1464 of yacc.c  */
-#line 3418 "grammar.y"
+#line 3430 "grammar.y"
     { (yyval.declMode) = structDeclMode = declMode = defaultAccess; ;}
     break;
 
   case 1164:
 
 /* Line 1464 of yacc.c  */
-#line 3422 "grammar.y"
+#line 3434 "grammar.y"
     { (yyval.declMode) = publicAccess; ;}
     break;
 
   case 1165:
 
 /* Line 1464 of yacc.c  */
-#line 3423 "grammar.y"
+#line 3435 "grammar.y"
     { (yyval.declMode) = privateAccess; ;}
     break;
 
   case 1166:
 
 /* Line 1464 of yacc.c  */
-#line 3427 "grammar.y"
+#line 3439 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1167:
 
 /* Line 1464 of yacc.c  */
-#line 3428 "grammar.y"
+#line 3440 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].list)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1168:
 
 /* Line 1464 of yacc.c  */
-#line 3429 "grammar.y"
+#line 3441 "grammar.y"
     { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1169:
 
 /* Line 1464 of yacc.c  */
-#line 3430 "grammar.y"
+#line 3442 "grammar.y"
     { (yyval.declaration) = (yyvsp[(1) - (2)].declaration); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1170:
 
 /* Line 1464 of yacc.c  */
-#line 3434 "grammar.y"
+#line 3446 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 1171:
 
 /* Line 1464 of yacc.c  */
-#line 3435 "grammar.y"
+#line 3447 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].list)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 1172:
 
 /* Line 1464 of yacc.c  */
-#line 3436 "grammar.y"
+#line 3448 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].list)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 1173:
 
 /* Line 1464 of yacc.c  */
-#line 3438 "grammar.y"
+#line 3450 "grammar.y"
     { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 1174:
 
 /* Line 1464 of yacc.c  */
-#line 3439 "grammar.y"
+#line 3451 "grammar.y"
     { (yyval.declaration) = MkDeclarationDefine((yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].exp)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 1175:
 
 /* Line 1464 of yacc.c  */
-#line 3440 "grammar.y"
+#line 3452 "grammar.y"
     { structDeclMode = declMode = staticAccess; (yyval.declaration) = MkDeclarationDefine((yyvsp[(3) - (6)].id), (yyvsp[(5) - (6)].exp)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 1176:
 
 /* Line 1464 of yacc.c  */
-#line 3444 "grammar.y"
+#line 3456 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); yyerrok; ;}
     break;
 
   case 1177:
 
 /* Line 1464 of yacc.c  */
-#line 3448 "grammar.y"
+#line 3460 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1178:
 
 /* Line 1464 of yacc.c  */
-#line 3449 "grammar.y"
+#line 3461 "grammar.y"
     { structDeclMode = defaultDeclMode;  ;}
     break;
 
   case 1179:
 
 /* Line 1464 of yacc.c  */
-#line 3451 "grammar.y"
+#line 3463 "grammar.y"
     { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1180:
 
 /* Line 1464 of yacc.c  */
-#line 3452 "grammar.y"
+#line 3464 "grammar.y"
     { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1181:
 
 /* Line 1464 of yacc.c  */
-#line 3453 "grammar.y"
+#line 3465 "grammar.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); (yyval.declaration).loc = (yyloc); structDeclMode = defaultDeclMode; ;}
     break;
 
   case 1182:
 
 /* Line 1464 of yacc.c  */
-#line 3457 "grammar.y"
+#line 3469 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].declaration)); /*declMode = defaultDeclMode;*/ ;}
     break;
 
   case 1183:
 
 /* Line 1464 of yacc.c  */
-#line 3458 "grammar.y"
+#line 3470 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declaration)); /*declMode = defaultDeclMode; */;}
     break;
 
   case 1184:
 
 /* Line 1464 of yacc.c  */
-#line 3459 "grammar.y"
+#line 3471 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declaration)); /*declMode = defaultDeclMode; */;}
     break;
 
   case 1185:
 
 /* Line 1464 of yacc.c  */
-#line 3460 "grammar.y"
+#line 3472 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 1186:
 
 /* Line 1464 of yacc.c  */
-#line 3464 "grammar.y"
+#line 3476 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].declaration)); ;}
     break;
 
   case 1187:
 
 /* Line 1464 of yacc.c  */
-#line 3465 "grammar.y"
+#line 3477 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declaration)); ;}
     break;
 
   case 1188:
 
 /* Line 1464 of yacc.c  */
-#line 3469 "grammar.y"
+#line 3481 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].stmt)); ;}
     break;
 
   case 1189:
 
 /* Line 1464 of yacc.c  */
-#line 3470 "grammar.y"
+#line 3482 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 1190:
 
 /* Line 1464 of yacc.c  */
-#line 3471 "grammar.y"
+#line 3483 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 1191:
 
 /* Line 1464 of yacc.c  */
-#line 3475 "grammar.y"
+#line 3487 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].stmt)); ;}
     break;
 
   case 1192:
 
 /* Line 1464 of yacc.c  */
-#line 3476 "grammar.y"
+#line 3488 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 1193:
 
 /* Line 1464 of yacc.c  */
-#line 3477 "grammar.y"
+#line 3489 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 1194:
 
 /* Line 1464 of yacc.c  */
-#line 3478 "grammar.y"
+#line 3490 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(2) - (2)].declaration)); stmt.loc = (yylsp[(2) - (2)]); Compiler_Warning(C89_DECL_WARNING); (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), stmt); /*declMode = defaultDeclMode;*/ ;}
     break;
 
   case 1195:
 
 /* Line 1464 of yacc.c  */
-#line 3479 "grammar.y"
+#line 3491 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(2) - (2)].declaration)); stmt.loc = (yylsp[(2) - (2)]); Compiler_Warning(C89_DECL_WARNING); (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), stmt); /*declMode = defaultDeclMode;*/ ;}
     break;
 
   case 1196:
 
 /* Line 1464 of yacc.c  */
-#line 3480 "grammar.y"
+#line 3492 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(2) - (2)].declaration)); stmt.loc = (yylsp[(2) - (2)]); Compiler_Warning(C89_DECL_WARNING); (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), stmt); /*declMode = defaultDeclMode;*/ ;}
     break;
 
   case 1197:
 
 /* Line 1464 of yacc.c  */
-#line 3481 "grammar.y"
+#line 3493 "grammar.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(2) - (2)].declaration)); stmt.loc = (yylsp[(2) - (2)]); Compiler_Warning(C89_DECL_WARNING); (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), stmt); /*declMode = defaultDeclMode;*/ ;}
     break;
 
   case 1198:
 
 /* Line 1464 of yacc.c  */
-#line 3485 "grammar.y"
+#line 3497 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt(null, (yyvsp[(1) - (1)].list)); ;}
     break;
 
   case 1199:
 
 /* Line 1464 of yacc.c  */
-#line 3486 "grammar.y"
+#line 3498 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 1200:
 
 /* Line 1464 of yacc.c  */
-#line 3487 "grammar.y"
+#line 3499 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); ;}
     break;
 
   case 1201:
 
 /* Line 1464 of yacc.c  */
-#line 3488 "grammar.y"
+#line 3500 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); ;}
     break;
 
   case 1202:
 
 /* Line 1464 of yacc.c  */
-#line 3492 "grammar.y"
+#line 3504 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt(null, (yyvsp[(1) - (1)].list)); ;}
     break;
 
   case 1203:
 
 /* Line 1464 of yacc.c  */
-#line 3493 "grammar.y"
+#line 3505 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 1204:
 
 /* Line 1464 of yacc.c  */
-#line 3494 "grammar.y"
+#line 3506 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); ;}
     break;
 
   case 1205:
 
 /* Line 1464 of yacc.c  */
-#line 3495 "grammar.y"
+#line 3507 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); ;}
     break;
 
   case 1206:
 
 /* Line 1464 of yacc.c  */
-#line 3499 "grammar.y"
+#line 3511 "grammar.y"
     { (yyval.context) = PushContext(); ;}
     break;
 
   case 1207:
 
 /* Line 1464 of yacc.c  */
-#line 3503 "grammar.y"
+#line 3515 "grammar.y"
     { (yyval.stmt) = (yyvsp[(1) - (2)].stmt); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1208:
 
 /* Line 1464 of yacc.c  */
-#line 3508 "grammar.y"
+#line 3520 "grammar.y"
     { (yyval.stmt) = (yyvsp[(2) - (2)].stmt); (yyval.stmt).compound.context = (yyvsp[(1) - (2)].context); PopContext((yyvsp[(1) - (2)].context)); (yyval.stmt).loc = (yyloc); (yyval.stmt).loc.end.charPos++; (yyval.stmt).loc.end.pos++; ;}
     break;
 
   case 1209:
 
 /* Line 1464 of yacc.c  */
-#line 3510 "grammar.y"
+#line 3522 "grammar.y"
     { (yyval.stmt) = MkCompoundStmt(null, null); (yyval.stmt).compound.context = (yyvsp[(1) - (1)].context); PopContext((yyvsp[(1) - (1)].context)); (yyval.stmt).loc = (yyloc); (yyval.stmt).loc.end.charPos++; (yyval.stmt).loc.end.pos++; ;}
     break;
 
   case 1210:
 
 /* Line 1464 of yacc.c  */
-#line 3513 "grammar.y"
+#line 3525 "grammar.y"
     { (yyval.stmt) = (yyvsp[(2) - (2)].stmt); (yyval.stmt).compound.context = (yyvsp[(1) - (2)].context); PopContext((yyvsp[(1) - (2)].context)); (yyval.stmt).loc = (yyloc); (yyval.stmt).loc.end.charPos++; (yyval.stmt).loc.end.pos++; ;}
     break;
 
   case 1211:
 
 /* Line 1464 of yacc.c  */
-#line 3518 "grammar.y"
+#line 3530 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt(null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1212:
 
 /* Line 1464 of yacc.c  */
-#line 3519 "grammar.y"
+#line 3531 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt((yyvsp[(1) - (2)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1213:
 
 /* Line 1464 of yacc.c  */
-#line 3520 "grammar.y"
+#line 3532 "grammar.y"
     { (yyval.stmt) = MkExpressionStmt((yyvsp[(1) - (2)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1214:
 
 /* Line 1464 of yacc.c  */
-#line 3524 "grammar.y"
+#line 3536 "grammar.y"
     { (yyval.stmt) = MkIfStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1215:
 
 /* Line 1464 of yacc.c  */
-#line 3525 "grammar.y"
+#line 3537 "grammar.y"
     { (yyval.stmt) = MkIfStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1216:
 
 /* Line 1464 of yacc.c  */
-#line 3526 "grammar.y"
+#line 3538 "grammar.y"
     { (yyval.stmt) = MkIfStmt((yyvsp[(3) - (7)].list), (yyvsp[(5) - (7)].stmt), (yyvsp[(7) - (7)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1217:
 
 /* Line 1464 of yacc.c  */
-#line 3527 "grammar.y"
+#line 3539 "grammar.y"
     { (yyval.stmt) = MkIfStmt((yyvsp[(3) - (7)].list), (yyvsp[(5) - (7)].stmt), (yyvsp[(7) - (7)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1218:
 
 /* Line 1464 of yacc.c  */
-#line 3528 "grammar.y"
+#line 3540 "grammar.y"
     { (yyval.stmt) = MkSwitchStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1219:
 
 /* Line 1464 of yacc.c  */
-#line 3529 "grammar.y"
+#line 3541 "grammar.y"
     { (yyval.stmt) = MkSwitchStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1220:
 
 /* Line 1464 of yacc.c  */
-#line 3533 "grammar.y"
+#line 3545 "grammar.y"
     { (yyval.stmt) = MkIfStmt((yyvsp[(3) - (3)].list), null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1222:
 
 /* Line 1464 of yacc.c  */
-#line 3538 "grammar.y"
+#line 3550 "grammar.y"
     { (yyval.stmt) = MkWhileStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1223:
 
 /* Line 1464 of yacc.c  */
-#line 3539 "grammar.y"
+#line 3551 "grammar.y"
     { (yyval.stmt) = MkWhileStmt((yyvsp[(3) - (4)].list), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1224:
 
 /* Line 1464 of yacc.c  */
-#line 3540 "grammar.y"
+#line 3552 "grammar.y"
     { (yyval.stmt) = MkWhileStmt(null, (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1225:
 
 /* Line 1464 of yacc.c  */
-#line 3542 "grammar.y"
+#line 3554 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (7)].stmt), (yyvsp[(5) - (7)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1226:
 
 /* Line 1464 of yacc.c  */
-#line 3543 "grammar.y"
+#line 3555 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (6)].stmt), (yyvsp[(5) - (6)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1227:
 
 /* Line 1464 of yacc.c  */
-#line 3545 "grammar.y"
+#line 3557 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (6)].stmt), (yyvsp[(4) - (6)].stmt), null, (yyvsp[(6) - (6)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1228:
 
 /* Line 1464 of yacc.c  */
-#line 3546 "grammar.y"
+#line 3558 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (5)].stmt), null, null, (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1229:
 
 /* Line 1464 of yacc.c  */
-#line 3547 "grammar.y"
+#line 3559 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (7)].stmt), (yyvsp[(4) - (7)].stmt), (yyvsp[(5) - (7)].list), (yyvsp[(7) - (7)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1230:
 
 /* Line 1464 of yacc.c  */
-#line 3548 "grammar.y"
+#line 3560 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (6)].stmt), (yyvsp[(4) - (6)].stmt), (yyvsp[(5) - (6)].list), (yyvsp[(6) - (6)].stmt) ); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1231:
 
 /* Line 1464 of yacc.c  */
-#line 3549 "grammar.y"
+#line 3561 "grammar.y"
     { (yyval.stmt) = MkForStmt(null, null, null, (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1232:
 
 /* Line 1464 of yacc.c  */
-#line 3551 "grammar.y"
+#line 3563 "grammar.y"
     { (yyval.stmt) = MkForEachStmt((yyvsp[(3) - (7)].id), (yyvsp[(5) - (7)].list), null, (yyvsp[(7) - (7)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1233:
 
 /* Line 1464 of yacc.c  */
-#line 3552 "grammar.y"
+#line 3564 "grammar.y"
     { (yyval.stmt) = MkForEachStmt((yyvsp[(3) - (9)].id), (yyvsp[(5) - (9)].list), (yyvsp[(7) - (9)].list), (yyvsp[(9) - (9)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1234:
 
 /* Line 1464 of yacc.c  */
-#line 3556 "grammar.y"
+#line 3568 "grammar.y"
     { (yyval.stmt) = MkForStmt(null, null, null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1235:
 
 /* Line 1464 of yacc.c  */
-#line 3557 "grammar.y"
+#line 3569 "grammar.y"
     { (yyval.stmt) = MkForStmt(MkExpressionStmt((yyvsp[(3) - (4)].list)), null, null, null); (yyval.stmt).forStmt.init.loc = (yylsp[(3) - (4)]); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1236:
 
 /* Line 1464 of yacc.c  */
-#line 3558 "grammar.y"
+#line 3570 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (4)].stmt), null, null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1237:
 
 /* Line 1464 of yacc.c  */
-#line 3559 "grammar.y"
+#line 3571 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (5)].stmt), MkExpressionStmt((yyvsp[(4) - (5)].list)), null, null); (yyval.stmt).loc = (yyloc); (yyval.stmt).forStmt.check.loc = (yylsp[(4) - (5)]); ;}
     break;
 
   case 1238:
 
 /* Line 1464 of yacc.c  */
-#line 3563 "grammar.y"
+#line 3575 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (5)].stmt), (yyvsp[(4) - (5)].stmt), (yyvsp[(5) - (5)].list), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1239:
 
 /* Line 1464 of yacc.c  */
-#line 3564 "grammar.y"
+#line 3576 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (6)].stmt), (yyvsp[(4) - (6)].stmt), null, (yyvsp[(6) - (6)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1240:
 
 /* Line 1464 of yacc.c  */
-#line 3565 "grammar.y"
+#line 3577 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (7)].stmt), (yyvsp[(4) - (7)].stmt), (yyvsp[(5) - (7)].list), (yyvsp[(7) - (7)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1241:
 
 /* Line 1464 of yacc.c  */
-#line 3566 "grammar.y"
+#line 3578 "grammar.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (6)].stmt), (yyvsp[(4) - (6)].stmt), (yyvsp[(5) - (6)].list), (yyvsp[(6) - (6)].stmt) ); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1242:
 
 /* Line 1464 of yacc.c  */
-#line 3568 "grammar.y"
+#line 3580 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (6)].stmt), (yyvsp[(5) - (6)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1243:
 
 /* Line 1464 of yacc.c  */
-#line 3569 "grammar.y"
+#line 3581 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (5)].stmt), (yyvsp[(5) - (5)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1244:
 
 /* Line 1464 of yacc.c  */
-#line 3570 "grammar.y"
+#line 3582 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (5)].stmt), (yyvsp[(5) - (5)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1245:
 
 /* Line 1464 of yacc.c  */
-#line 3571 "grammar.y"
+#line 3583 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (4)].stmt), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1246:
 
 /* Line 1464 of yacc.c  */
-#line 3572 "grammar.y"
+#line 3584 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (3)].stmt), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1247:
 
 /* Line 1464 of yacc.c  */
-#line 3573 "grammar.y"
+#line 3585 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (2)].stmt), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1248:
 
 /* Line 1464 of yacc.c  */
-#line 3574 "grammar.y"
+#line 3586 "grammar.y"
     { (yyval.stmt) = MkDoWhileStmt(null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1249:
 
 /* Line 1464 of yacc.c  */
-#line 3577 "grammar.y"
+#line 3589 "grammar.y"
     { (yyval.stmt) = MkWhileStmt(null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1250:
 
 /* Line 1464 of yacc.c  */
-#line 3581 "grammar.y"
+#line 3593 "grammar.y"
     { (yyval.stmt) = MkWhileStmt(null, null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1251:
 
 /* Line 1464 of yacc.c  */
-#line 3582 "grammar.y"
+#line 3594 "grammar.y"
     { (yyval.stmt) = MkWhileStmt((yyvsp[(3) - (3)].list), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1252:
 
 /* Line 1464 of yacc.c  */
-#line 3586 "grammar.y"
+#line 3598 "grammar.y"
     { (yyval.stmt) = MkWhileStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1253:
 
 /* Line 1464 of yacc.c  */
-#line 3587 "grammar.y"
+#line 3599 "grammar.y"
     { (yyval.stmt) = MkWhileStmt((yyvsp[(3) - (4)].list), (yyvsp[(4) - (4)].stmt) ); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1254:
 
 /* Line 1464 of yacc.c  */
-#line 3591 "grammar.y"
+#line 3603 "grammar.y"
     { (yyval.stmt) = MkGotoStmt((yyvsp[(2) - (3)].id)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1255:
 
 /* Line 1464 of yacc.c  */
-#line 3592 "grammar.y"
+#line 3604 "grammar.y"
     { (yyval.stmt) = MkContinueStmt(); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1256:
 
 /* Line 1464 of yacc.c  */
-#line 3593 "grammar.y"
+#line 3605 "grammar.y"
     { (yyval.stmt) = MkBreakStmt(); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1257:
 
 /* Line 1464 of yacc.c  */
-#line 3594 "grammar.y"
+#line 3606 "grammar.y"
     { Expression exp = MkExpDummy(); (yyval.stmt) = MkReturnStmt(MkListOne(exp)); (yyval.stmt).loc = (yyloc); exp.loc = (yylsp[(2) - (2)]); ;}
     break;
 
   case 1258:
 
 /* Line 1464 of yacc.c  */
-#line 3595 "grammar.y"
+#line 3607 "grammar.y"
     { (yyval.stmt) = MkReturnStmt((yyvsp[(2) - (3)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1259:
 
 /* Line 1464 of yacc.c  */
-#line 3596 "grammar.y"
+#line 3608 "grammar.y"
     { (yyval.stmt) = MkReturnStmt((yyvsp[(2) - (3)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1260:
 
 /* Line 1464 of yacc.c  */
-#line 3597 "grammar.y"
+#line 3609 "grammar.y"
     { (yyval.stmt) = MkReturnStmt(MkListOne((yyvsp[(2) - (3)].exp))); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1261:
 
 /* Line 1464 of yacc.c  */
-#line 3598 "grammar.y"
+#line 3610 "grammar.y"
     { (yyval.stmt) = MkReturnStmt(MkListOne((yyvsp[(2) - (3)].exp))); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1262:
 
 /* Line 1464 of yacc.c  */
-#line 3602 "grammar.y"
+#line 3614 "grammar.y"
     { (yyval.stmt) = MkReturnStmt((yyvsp[(2) - (2)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1263:
 
 /* Line 1464 of yacc.c  */
-#line 3603 "grammar.y"
+#line 3615 "grammar.y"
     { (yyval.stmt) = MkReturnStmt(MkListOne((yyvsp[(2) - (2)].exp))); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1264:
 
 /* Line 1464 of yacc.c  */
-#line 3604 "grammar.y"
+#line 3616 "grammar.y"
     { Expression exp = MkExpDummy(); (yyval.stmt) = MkReturnStmt(MkListOne(exp)); (yyval.stmt).loc = (yyloc); exp.loc.start = exp.loc.end = (yylsp[(1) - (1)]).end; ;}
     break;
 
   case 1265:
 
 /* Line 1464 of yacc.c  */
-#line 3605 "grammar.y"
+#line 3617 "grammar.y"
     { (yyval.stmt) = MkGotoStmt(null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1266:
 
 /* Line 1464 of yacc.c  */
-#line 3611 "grammar.y"
+#line 3623 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (4)].list), (yyvsp[(2) - (4)].declarator), (yyvsp[(3) - (4)].list)); ProcessFunctionBody((yyval.function), (yyvsp[(4) - (4)].stmt)); (yyval.function).loc = (yyloc); ;}
     break;
 
   case 1267:
 
 /* Line 1464 of yacc.c  */
-#line 3613 "grammar.y"
+#line 3625 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].declarator), null); ProcessFunctionBody((yyval.function), (yyvsp[(3) - (3)].stmt)); (yyval.function).loc = (yyloc); ;}
     break;
 
   case 1268:
 
 /* Line 1464 of yacc.c  */
-#line 3614 "grammar.y"
+#line 3626 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (4)].list), (yyvsp[(2) - (4)].declarator), (yyvsp[(3) - (4)].list)); ProcessFunctionBody((yyval.function), (yyvsp[(4) - (4)].stmt)); (yyval.function).loc = (yyloc); ;}
     break;
 
   case 1269:
 
 /* Line 1464 of yacc.c  */
-#line 3616 "grammar.y"
+#line 3628 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].declarator), null); ProcessFunctionBody((yyval.function), (yyvsp[(3) - (3)].stmt)); (yyval.function).loc = (yyloc); ;}
     break;
 
   case 1270:
 
 /* Line 1464 of yacc.c  */
-#line 3618 "grammar.y"
+#line 3630 "grammar.y"
     { (yyval.function) = MkFunction(null, (yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ProcessFunctionBody((yyval.function), (yyvsp[(3) - (3)].stmt)); (yyval.function).loc = (yyloc); ;}
     break;
 
   case 1271:
 
 /* Line 1464 of yacc.c  */
-#line 3619 "grammar.y"
+#line 3631 "grammar.y"
     { (yyval.function) = MkFunction(null, (yyvsp[(1) - (2)].declarator), null); ProcessFunctionBody((yyval.function), (yyvsp[(2) - (2)].stmt)); (yyval.function).loc = (yyloc);;}
     break;
 
   case 1272:
 
 /* Line 1464 of yacc.c  */
-#line 3622 "grammar.y"
+#line 3634 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (4)].list), (yyvsp[(2) - (4)].declarator), (yyvsp[(3) - (4)].list)); ProcessFunctionBody((yyval.function), (yyvsp[(4) - (4)].stmt)); (yyval.function).loc = (yyloc); (yyval.function).loc.end = (yyvsp[(4) - (4)].stmt).loc.end; ;}
     break;
 
   case 1273:
 
 /* Line 1464 of yacc.c  */
-#line 3623 "grammar.y"
+#line 3635 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].declarator), null); ProcessFunctionBody((yyval.function), (yyvsp[(3) - (3)].stmt)); (yyval.function).loc = (yyloc); (yyval.function).loc.end = (yyvsp[(3) - (3)].stmt).loc.end; ;}
     break;
 
   case 1274:
 
 /* Line 1464 of yacc.c  */
-#line 3624 "grammar.y"
+#line 3636 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (4)].list), (yyvsp[(2) - (4)].declarator), (yyvsp[(3) - (4)].list)); ProcessFunctionBody((yyval.function), (yyvsp[(4) - (4)].stmt)); (yyval.function).loc = (yyloc); (yyval.function).loc.end = (yyvsp[(4) - (4)].stmt).loc.end; ;}
     break;
 
   case 1275:
 
 /* Line 1464 of yacc.c  */
-#line 3625 "grammar.y"
+#line 3637 "grammar.y"
     { (yyval.function) = MkFunction((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].declarator), null); ProcessFunctionBody((yyval.function), (yyvsp[(3) - (3)].stmt)); (yyval.function).loc = (yyloc); (yyval.function).loc.end = (yyvsp[(3) - (3)].stmt).loc.end; ;}
     break;
 
   case 1276:
 
 /* Line 1464 of yacc.c  */
-#line 3626 "grammar.y"
+#line 3638 "grammar.y"
     { (yyval.function) = MkFunction(null, (yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ProcessFunctionBody((yyval.function), (yyvsp[(3) - (3)].stmt)); (yyval.function).loc = (yyloc); (yyval.function).loc.end = (yyvsp[(3) - (3)].stmt).loc.end; ;}
     break;
 
   case 1277:
 
 /* Line 1464 of yacc.c  */
-#line 3627 "grammar.y"
+#line 3639 "grammar.y"
     { (yyval.function) = MkFunction(null, (yyvsp[(1) - (2)].declarator), null); ProcessFunctionBody((yyval.function), (yyvsp[(2) - (2)].stmt)); (yyval.function).loc = (yyloc); (yyval.function).loc.end = (yyvsp[(2) - (2)].stmt).loc.end; ;}
     break;
 
   case 1278:
 
 /* Line 1464 of yacc.c  */
-#line 3631 "grammar.y"
+#line 3643 "grammar.y"
     { (yyval.string) = CopyString(yytext); ;}
     break;
 
   case 1279:
 
 /* Line 1464 of yacc.c  */
-#line 3633 "grammar.y"
+#line 3645 "grammar.y"
     {
       int len1 = strlen((yyvsp[(1) - (2)].string));
       int len2 = strlen(yytext);
@@ -22336,49 +22347,49 @@ yyreduce:
   case 1280:
 
 /* Line 1464 of yacc.c  */
-#line 3644 "grammar.y"
+#line 3656 "grammar.y"
     { (yyval.external) = MkExternalFunction((yyvsp[(1) - (1)].function)); (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].function).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1281:
 
 /* Line 1464 of yacc.c  */
-#line 3646 "grammar.y"
+#line 3658 "grammar.y"
     { (yyval.external) = MkExternalClass((yyvsp[(1) - (1)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1282:
 
 /* Line 1464 of yacc.c  */
-#line 3649 "grammar.y"
+#line 3661 "grammar.y"
     { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; FreeList((yyvsp[(1) - (2)].list), FreeSpecifier); ;}
     break;
 
   case 1283:
 
 /* Line 1464 of yacc.c  */
-#line 3652 "grammar.y"
+#line 3664 "grammar.y"
     { (yyval.external) = MkExternalDeclaration((yyvsp[(1) - (1)].declaration));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].declaration).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1284:
 
 /* Line 1464 of yacc.c  */
-#line 3653 "grammar.y"
+#line 3665 "grammar.y"
     { (yyval.external) = MkExternalImport((yyvsp[(2) - (2)].string), normalImport, (declMode != defaultAccess) ? declMode : privateAccess);  (yyval.external).loc = (yyloc); ;}
     break;
 
   case 1285:
 
 /* Line 1464 of yacc.c  */
-#line 3654 "grammar.y"
+#line 3666 "grammar.y"
     { (yyval.external) = MkExternalImport((yyvsp[(3) - (3)].string), staticImport, (declMode != defaultAccess) ? declMode : privateAccess);  (yyval.external).loc = (yyloc); ;}
     break;
 
   case 1286:
 
 /* Line 1464 of yacc.c  */
-#line 3656 "grammar.y"
+#line 3668 "grammar.y"
     {
       bool isRemote = !strcmp((yyvsp[(2) - (3)].id).string, "remote");
       (yyval.external) = MkExternalImport((yyvsp[(3) - (3)].string), isRemote ? remoteImport : normalImport, (declMode != defaultAccess) ? declMode : privateAccess);
@@ -22392,49 +22403,49 @@ yyreduce:
   case 1287:
 
 /* Line 1464 of yacc.c  */
-#line 3665 "grammar.y"
+#line 3677 "grammar.y"
     { (yyval.external) = null; ;}
     break;
 
   case 1288:
 
 /* Line 1464 of yacc.c  */
-#line 3667 "grammar.y"
+#line 3679 "grammar.y"
     { (yyval.external) = MkExternalFunction((yyvsp[(2) - (2)].function)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].function).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1289:
 
 /* Line 1464 of yacc.c  */
-#line 3669 "grammar.y"
+#line 3681 "grammar.y"
     { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)]._class).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? (yyvsp[(1) - (2)].declMode) : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1290:
 
 /* Line 1464 of yacc.c  */
-#line 3670 "grammar.y"
+#line 3682 "grammar.y"
     { (yyval.external) = MkExternalDeclaration((yyvsp[(2) - (2)].declaration)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].declaration).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1291:
 
 /* Line 1464 of yacc.c  */
-#line 3671 "grammar.y"
+#line 3683 "grammar.y"
     { (yyval.external) = MkExternalImport((yyvsp[(3) - (3)].string), normalImport, ((yyvsp[(1) - (3)].declMode) != defaultAccess) ? (yyvsp[(1) - (3)].declMode) : privateAccess);  (yyval.external).loc = (yyloc); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1292:
 
 /* Line 1464 of yacc.c  */
-#line 3672 "grammar.y"
+#line 3684 "grammar.y"
     { (yyval.external) = MkExternalImport((yyvsp[(4) - (4)].string), staticImport, ((yyvsp[(1) - (4)].declMode) != defaultAccess) ? (yyvsp[(1) - (4)].declMode) : privateAccess);  (yyval.external).loc = (yyloc); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1293:
 
 /* Line 1464 of yacc.c  */
-#line 3674 "grammar.y"
+#line 3686 "grammar.y"
     {
       bool isRemote = !strcmp((yyvsp[(3) - (4)].id).string, "remote");
       (yyval.external) = MkExternalImport((yyvsp[(4) - (4)].string), isRemote ? remoteImport : normalImport, ((yyvsp[(1) - (4)].declMode) != defaultAccess) ? (yyvsp[(1) - (4)].declMode) : privateAccess);
@@ -22449,56 +22460,56 @@ yyreduce:
   case 1294:
 
 /* Line 1464 of yacc.c  */
-#line 3683 "grammar.y"
+#line 3695 "grammar.y"
     { defaultDeclMode = (yyvsp[(1) - (2)].declMode); (yyval.external) = null; ;}
     break;
 
   case 1295:
 
 /* Line 1464 of yacc.c  */
-#line 3684 "grammar.y"
+#line 3696 "grammar.y"
     { defaultDeclMode = staticAccess; (yyval.external) = null; ;}
     break;
 
   case 1296:
 
 /* Line 1464 of yacc.c  */
-#line 3685 "grammar.y"
+#line 3697 "grammar.y"
     { (yyval.external) = MkExternalNameSpace((yyvsp[(2) - (2)].id)); (yyval.external).loc = (yyloc); ;}
     break;
 
   case 1297:
 
 /* Line 1464 of yacc.c  */
-#line 3686 "grammar.y"
+#line 3698 "grammar.y"
     { (yyval.external) = MkExternalNameSpace(MkIdentifier((yyvsp[(2) - (2)].specifier).name)); FreeSpecifier((yyvsp[(2) - (2)].specifier)); (yyval.external).loc = (yyloc); ;}
     break;
 
   case 1298:
 
 /* Line 1464 of yacc.c  */
-#line 3687 "grammar.y"
+#line 3699 "grammar.y"
     { (yyval.external) = MkExternalDBTable((yyvsp[(1) - (1)].dbtableDef)); (yyval.external).loc = (yyloc);  (yyvsp[(1) - (1)].dbtableDef).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1299:
 
 /* Line 1464 of yacc.c  */
-#line 3688 "grammar.y"
+#line 3700 "grammar.y"
     { (yyval.external) = MkExternalDBTable((yyvsp[(2) - (2)].dbtableDef)); (yyval.external).loc = (yyloc);  (yyvsp[(2) - (2)].dbtableDef).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1300:
 
 /* Line 1464 of yacc.c  */
-#line 3692 "grammar.y"
+#line 3704 "grammar.y"
     { (yyval.external) = MkExternalClass((yyvsp[(1) - (1)]._class));  (yyval.external).loc = (yyvsp[(1) - (1)]._class).loc; (yyvsp[(1) - (1)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1301:
 
 /* Line 1464 of yacc.c  */
-#line 3694 "grammar.y"
+#line 3706 "grammar.y"
     {
       FreeList((yyvsp[(1) - (2)].list), FreeSpecifier);
       (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));
@@ -22511,231 +22522,231 @@ yyreduce:
   case 1302:
 
 /* Line 1464 of yacc.c  */
-#line 3701 "grammar.y"
+#line 3713 "grammar.y"
     { (yyval.external) = MkExternalFunction((yyvsp[(1) - (1)].function)); (yyval.external).loc = (yyvsp[(1) - (1)].function).loc;  (yyvsp[(1) - (1)].function).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1303:
 
 /* Line 1464 of yacc.c  */
-#line 3703 "grammar.y"
+#line 3715 "grammar.y"
     { (yyval.external) = MkExternalClass((yyvsp[(2) - (2)]._class));  (yyval.external).loc = (yyvsp[(2) - (2)]._class).loc; (yyvsp[(2) - (2)]._class).declMode = ((yyvsp[(1) - (2)].declMode) != defaultAccess) ? (yyvsp[(1) - (2)].declMode) : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1304:
 
 /* Line 1464 of yacc.c  */
-#line 3704 "grammar.y"
+#line 3716 "grammar.y"
     { (yyval.external) = MkExternalFunction((yyvsp[(2) - (2)].function)); (yyval.external).loc = (yyvsp[(2) - (2)].function).loc; (yyvsp[(2) - (2)].function).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1305:
 
 /* Line 1464 of yacc.c  */
-#line 3707 "grammar.y"
+#line 3719 "grammar.y"
     { (yyval.external) = MkExternalDeclaration((yyvsp[(1) - (1)].declaration));  (yyval.external).loc = (yyloc); (yyvsp[(1) - (1)].declaration).declMode = declMode; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1306:
 
 /* Line 1464 of yacc.c  */
-#line 3708 "grammar.y"
+#line 3720 "grammar.y"
     { (yyval.external) = MkExternalDeclaration((yyvsp[(2) - (2)].declaration)); (yyval.external).loc = (yyloc); (yyvsp[(2) - (2)].declaration).declMode = (yyvsp[(1) - (2)].declMode); structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1307:
 
 /* Line 1464 of yacc.c  */
-#line 3712 "grammar.y"
+#line 3724 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].external)); ast = (yyval.list); ;}
     break;
 
   case 1308:
 
 /* Line 1464 of yacc.c  */
-#line 3713 "grammar.y"
+#line 3725 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].external)); ;}
     break;
 
   case 1309:
 
 /* Line 1464 of yacc.c  */
-#line 3714 "grammar.y"
+#line 3726 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].external)); ;}
     break;
 
   case 1312:
 
 /* Line 1464 of yacc.c  */
-#line 3720 "grammar.y"
+#line 3732 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].external)); ast = (yyval.list); ;}
     break;
 
   case 1313:
 
 /* Line 1464 of yacc.c  */
-#line 3721 "grammar.y"
+#line 3733 "grammar.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].external)); ;}
     break;
 
   case 1314:
 
 /* Line 1464 of yacc.c  */
-#line 3723 "grammar.y"
+#line 3735 "grammar.y"
     { External _class = MkExternalClass((yyvsp[(2) - (2)]._class)); (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), _class); _class.loc = (yylsp[(2) - (2)]);  (yyvsp[(2) - (2)]._class).declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1315:
 
 /* Line 1464 of yacc.c  */
-#line 3725 "grammar.y"
+#line 3737 "grammar.y"
     { External _class = MkExternalClass((yyvsp[(3) - (3)]._class)); (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), _class); _class.loc = (yylsp[(3) - (3)]);  (yyvsp[(3) - (3)]._class).declMode = ((yyvsp[(2) - (3)].declMode) != defaultAccess) ? (yyvsp[(2) - (3)].declMode) : privateAccess; structDeclMode = declMode = defaultDeclMode; ;}
     break;
 
   case 1318:
 
 /* Line 1464 of yacc.c  */
-#line 3731 "grammar.y"
+#line 3743 "grammar.y"
     { ast = MkList(); ;}
     break;
 
   case 1319:
 
 /* Line 1464 of yacc.c  */
-#line 3735 "grammar.y"
+#line 3747 "grammar.y"
     { Symbol symbol = DeclClassAddNameSpace(globalContext.nextID++, (yyvsp[(3) - (6)].id).string); FreeIdentifier((yyvsp[(3) - (6)].id)); (yyval.dbtableDef) = MkDBTableDef((yyvsp[(2) - (6)].string), symbol, (yyvsp[(5) - (6)].list)); ;}
     break;
 
   case 1320:
 
 /* Line 1464 of yacc.c  */
-#line 3736 "grammar.y"
+#line 3748 "grammar.y"
     { Symbol symbol = DeclClass(globalContext.nextID++, (yyvsp[(3) - (6)].specifier).name); FreeSpecifier((yyvsp[(3) - (6)].specifier)); (yyval.dbtableDef) = MkDBTableDef((yyvsp[(2) - (6)].string), symbol, (yyvsp[(5) - (6)].list)); ;}
     break;
 
   case 1321:
 
 /* Line 1464 of yacc.c  */
-#line 3737 "grammar.y"
+#line 3749 "grammar.y"
     { (yyval.dbtableDef) = MkDBTableDef((yyvsp[(2) - (5)].string), null, (yyvsp[(4) - (5)].list)); ;}
     break;
 
   case 1322:
 
 /* Line 1464 of yacc.c  */
-#line 3741 "grammar.y"
+#line 3753 "grammar.y"
     { (yyval.dbtableEntry) = MkDBFieldEntry(MkTypeName((yyvsp[(1) - (4)].list), null), (yyvsp[(2) - (4)].id), (yyvsp[(3) - (4)].string)); ;}
     break;
 
   case 1323:
 
 /* Line 1464 of yacc.c  */
-#line 3745 "grammar.y"
+#line 3757 "grammar.y"
     { (yyval.dbindexItem) = MkDBIndexItem((yyvsp[(1) - (1)].id), ascending); ;}
     break;
 
   case 1324:
 
 /* Line 1464 of yacc.c  */
-#line 3746 "grammar.y"
+#line 3758 "grammar.y"
     { (yyval.dbindexItem) = MkDBIndexItem((yyvsp[(2) - (2)].id), descending); ;}
     break;
 
   case 1325:
 
 /* Line 1464 of yacc.c  */
-#line 3747 "grammar.y"
+#line 3759 "grammar.y"
     { (yyval.dbindexItem) = MkDBIndexItem((yyvsp[(2) - (2)].id), ascending); ;}
     break;
 
   case 1326:
 
 /* Line 1464 of yacc.c  */
-#line 3751 "grammar.y"
+#line 3763 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].dbindexItem)); ;}
     break;
 
   case 1327:
 
 /* Line 1464 of yacc.c  */
-#line 3752 "grammar.y"
+#line 3764 "grammar.y"
     { ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].dbindexItem)); ;}
     break;
 
   case 1328:
 
 /* Line 1464 of yacc.c  */
-#line 3756 "grammar.y"
+#line 3768 "grammar.y"
     { (yyval.dbtableEntry) = MkDBIndexEntry((yyvsp[(2) - (3)].list), null); ;}
     break;
 
   case 1329:
 
 /* Line 1464 of yacc.c  */
-#line 3757 "grammar.y"
+#line 3769 "grammar.y"
     { (yyval.dbtableEntry) = MkDBIndexEntry((yyvsp[(2) - (4)].list), (yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 1330:
 
 /* Line 1464 of yacc.c  */
-#line 3761 "grammar.y"
+#line 3773 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].dbtableEntry)); ;}
     break;
 
   case 1331:
 
 /* Line 1464 of yacc.c  */
-#line 3762 "grammar.y"
+#line 3774 "grammar.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].dbtableEntry)); ;}
     break;
 
   case 1332:
 
 /* Line 1464 of yacc.c  */
-#line 3763 "grammar.y"
+#line 3775 "grammar.y"
     { ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].dbtableEntry)); ;}
     break;
 
   case 1333:
 
 /* Line 1464 of yacc.c  */
-#line 3764 "grammar.y"
+#line 3776 "grammar.y"
     { ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].dbtableEntry)); ;}
     break;
 
   case 1334:
 
 /* Line 1464 of yacc.c  */
-#line 3768 "grammar.y"
+#line 3780 "grammar.y"
     { (yyval.exp) = MkExpDBOpen((yyvsp[(3) - (6)].exp), (yyvsp[(5) - (6)].exp)); ;}
     break;
 
   case 1335:
 
 /* Line 1464 of yacc.c  */
-#line 3772 "grammar.y"
+#line 3784 "grammar.y"
     { (yyval.exp) = MkExpDBField((yyvsp[(3) - (6)].string), (yyvsp[(5) - (6)].id)); ;}
     break;
 
   case 1336:
 
 /* Line 1464 of yacc.c  */
-#line 3776 "grammar.y"
+#line 3788 "grammar.y"
     { (yyval.exp) = MkExpDBIndex((yyvsp[(3) - (6)].string), (yyvsp[(5) - (6)].id)); ;}
     break;
 
   case 1337:
 
 /* Line 1464 of yacc.c  */
-#line 3780 "grammar.y"
+#line 3792 "grammar.y"
     { (yyval.exp) = MkExpDBTable((yyvsp[(3) - (4)].string)); ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 22739 "grammar.ec"
+#line 22750 "grammar.ec"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -22954,6 +22965,6 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 3783 "grammar.y"
+#line 3795 "grammar.y"
 
 

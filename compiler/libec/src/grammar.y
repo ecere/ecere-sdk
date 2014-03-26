@@ -720,9 +720,21 @@ members_initialization_list_coloned:
    | members_initialization_list_error    instance_class_function_definition        { ListAdd($$, MkMembersInitMethod($2)); ((MembersInit)$$->last).loc = @2; $$ = $1; }
    | members_initialization_list_coloned  data_member_initialization_list_coloned   { MembersInit members = MkMembersInitList($2); ListAdd($$, members); members.loc = @2; $$ = $1; }
    | members_initialization_list_coloned  instance_class_function_definition        { ListAdd($$, MkMembersInitMethod($2)); ((MembersInit)$$->last).loc = @2; $$ = $1; }
-   | ';'                                                                            { MembersInit members = MkMembersInitList(MkList()); $$ = MkList(); ListAdd($$, members); members.loc = @1;  }
    | members_initialization_list_error ';'
-   | members_initialization_list_coloned ';'       { MembersInit members = MkMembersInitList(MkList()); ListAdd($$, members); members.loc = @2; $$ = $1; }
+   | members_initialization_list_coloned ';'
+   {
+      MembersInit members = (MembersInit)$$->last;
+      if(members.type == dataMembersInit)
+         members.loc.end = @$.end;
+      else
+      {
+         MembersInit members = MkMembersInitList(MkList());
+         ListAdd($$, members);
+         members.loc = @2;
+      }
+      $$ = $1;
+   }
+   | ';'                                                                            { MembersInit members = MkMembersInitList(MkList()); $$ = MkList(); ListAdd($$, members); members.loc = @1;  }
    ;
 
 members_initialization_list:
@@ -1127,7 +1139,7 @@ firewatchers:
 	;
 
 struct_declaration:
-     struct_declaration_error ';' { $$ = $1; $$.loc.end = @2.start; }
+     struct_declaration_error ';' { $$ = $1; $$.loc.end = @2.end; }
    | default_property_list ';'     { $$ = MkClassDefDefaultProperty($1); if($1->last) ((MemberInit)$1->last).loc.end = @2.start; $$.loc = @$; }
    | class_function_definition                                       { $$ = MkClassDefFunction($1); $$.loc = @$; $$.memberAccess = memberAccessStack[defaultMemberAccess]; }
    | property                       { $$ = MkClassDefProperty($1); $$.loc = @$; globalContext.nextID++; $$.memberAccess = memberAccessStack[defaultMemberAccess]; }
