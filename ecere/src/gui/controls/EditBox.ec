@@ -6123,21 +6123,7 @@ public:
 
       for(line = this.lines.first; line; line = line.next)
       {
-         if(style.syntax && line.count && isspace(line.buffer[line.count-1]))
-         {
-            int c = 0;
-            for(c=line.count-2; c>=-1; c--)
-            {
-               if(c == -1 || !isspace(line.buffer[c]))
-               {
-                  c++;
-                  line.buffer[c] = '\0';
-                  line.count -= (line.count - c);
-                  break;
-               }
-            }
-         }
-         f.Write(line.buffer, line.count,1);
+         f.Write(line.buffer, line.count, 1);
          if(line.next)
          {
             if(cr) f.Putc('\r');

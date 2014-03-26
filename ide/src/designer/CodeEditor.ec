@@ -2204,6 +2204,22 @@ class CodeEditor : Window
             designer.fileName = fileName;
             designer.modifiedDocument = false;
          }
+
+         if(editBox.syntaxHighlighting)
+         {
+            // Nuke trailing spaces
+            EditLine line;
+            int y = 0;
+            for(line = editBox.firstLine; line; line = line.next, y++)
+            {
+               String buffer = line.text;
+               int count = line.count, i = count-1;
+               while(i > 0 && isspace(buffer[i])) i--;
+               if(i < count - 1)
+                  editBox.Delete(line, y, i, line, y, count);
+            }
+         }
+
          editBox.Save(f, false);
          modifiedDocument = false;
 
