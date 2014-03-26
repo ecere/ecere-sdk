@@ -3409,16 +3409,13 @@ class CodeEditor : Window
                                                                                  case constantExp:
                                                                                     if(!isClass && computed.isConstant)
                                                                                     {
-                                                                                       if(!propertyClass.dataTypeString)
-                                                                                       {
-                                                                                          if(!strcmp(propertyClass.dataTypeString, "float"))
-                                                                                             ((void (*)(void *, float))(void *)prop.Set)(control, (float)strtod(computed.constant, null));
-                                                                                          else if(!strcmp(propertyClass.dataTypeString, "double"))
-                                                                                             ((void (*)(void *, double))(void *)prop.Set)(control, strtod(computed.constant, null));
-                                                                                          else
-                                                                                             ((void (*)(void *, int))(void *)prop.Set)(control, strtol(computed.constant, null, 0));
-                                                                                          variable = false;
-                                                                                       }
+                                                                                       if(!strcmp(propertyClass.dataTypeString, "float"))
+                                                                                          ((void (*)(void *, float))(void *)prop.Set)(control, (float)strtod(computed.constant, null));
+                                                                                       else if(!strcmp(propertyClass.dataTypeString, "double"))
+                                                                                          ((void (*)(void *, double))(void *)prop.Set)(control, strtod(computed.constant, null));
+                                                                                       else
+                                                                                          ((void (*)(void *, int))(void *)prop.Set)(control, strtol(computed.constant, null, 0));
+                                                                                       variable = false;
                                                                                     }
                                                                                     break;
                                                                               }
