@@ -3267,7 +3267,7 @@ private:
 
          f.Puts("ifndef STATIC_LIBRARY_TARGET\n");
 
-         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) %s-o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC", containsCXX ? "-lstdc++ " : "");
+         f.Printf("\t$(%s) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)\n", containsCXX ? "CXX" : "CC");
          if(!GetDebug(config))
          {
             f.Puts("ifndef NOSTRIP\n");
