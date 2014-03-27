@@ -1110,15 +1110,53 @@ class Installer : Window
       if(!loaded)
       {
          String language = GetLanguageString();
+         bool found = false;
+         DataRow row;
+
+         // Try to find country-specific language first
          for(l : languages)
          {
             LanguageOption option = l;
-            DataRow row = languageBox.AddRow();
+            row = languageBox.AddRow();
             row.SetData(null, option); // TOFIX: l used directly here
-            if(!language.OnCompare(l.code))
+
+            if(!found && (!strcmpi(l.code, language) || (!row.GetPrevRow() && !strcmpi("en", language))))
+            {
                languageBox.currentRow = row;
+               found = true;
+            }
          }
-         if(!languageBox.currentRow)
+
+         // Try generalizing locale
+         if(!found)
+         {
+            char * under;
+            char genericLocale[256];
+            strncpy(genericLocale, language, sizeof(genericLocale));
+            genericLocale[sizeof(genericLocale)] = 0;
+
+            under = strchr(genericLocale, '_');
+            if(under)
+               *under = 0;
+            if(!strcmpi(genericLocale, "zh"))
+               strcpy(genericLocale, "zh_CN");
+            if(strcmp(genericLocale, language))
+            {
+               row = languageBox.firstRow;
+               for(l : languages)
+               {
+                  if(!strcmpi(l.code, genericLocale) || (!row.GetPrevRow() && !strcmpi("en", genericLocale)))
+                  {
+                     languageBox.currentRow = row;
+                     found = true;
+                     break;
+                  }
+                  row = row.GetNextRow();
+               }
+            }
+         }
+
+         if(!found)
             languageBox.currentRow = languageBox.firstRow;
          loaded = true;
       }
