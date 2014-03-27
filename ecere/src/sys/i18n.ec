@@ -50,10 +50,15 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
    if(locale)
    {
       char * dot;
+      char * colon;
       if(language != locale)
          strcpy(language, locale);
       dot = strstr(language, ".");
       if(dot) *dot = 0;
+
+      // TODO: Try multiple languages defined in LANGUAGE
+      colon = strstr(language, ":");
+      if(colon) *colon = 0;
       locale = language;
    }
    if(locale)
@@ -63,6 +68,8 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
       under = strchr(genericLocale, '_');
       if(under)
          *under = 0;
+      if(!strcmpi(genericLocale, "zh"))
+         strcpy(genericLocale, "zh_CN");
    }
 
    if(moduleName)
@@ -95,7 +102,7 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
       if(moduleName)
          sprintf(fileName, "<:%s>locale/%s.mo", moduleName, genericLocale);
       else
-         sprintf(fileName, ":locale/%s.mo", name, genericLocale);
+         sprintf(fileName, ":locale/%s.mo", genericLocale);
       f = FileOpen(fileName, read);
       if(!f)
       {

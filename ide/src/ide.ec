@@ -3699,7 +3699,10 @@ class IDEApp : GuiApplication
 
       // Default to language specified by environment if no language selected
       if(!ideSettings.language)
+      {
          ideSettings.language = GetLanguageString();
+         settingsContainer.Save();
+      }
 
       // Default to home directory if no directory yet set up
       if(!ideSettings.ideProjectFileDialogLocation[0])
@@ -3748,6 +3751,7 @@ class IDEApp : GuiApplication
       {
          String language = ideSettings.language;
          int i = 0;
+         bool found = false;
 
          ide.languageItems = new MenuItem[languages.count];
          for(l : languages)
@@ -3780,11 +3784,57 @@ class IDEApp : GuiApplication
                   return true;
                }
             };
-            if(((!language || !language[0]) && i == 0) ||
-               (language && !strcmpi(l.code, language)))
-               ide.languageItems[i].checked = true;
             i++;
          }
+
+         // Try to find country-specific language first
+         if(language)
+         {
+            i = 0;
+            for(l : languages)
+            {
+               if(!strcmpi(l.code, language) || (i == 0 && !strcmpi("en", language)))
+               {
+                  ide.languageItems[i].checked = true;
+                  found = true;
+                  break;
+               }
+               i++;
+            }
+         }
+
+         // Try generalizing locale
+         if(!found && language)
+         {
+            char * under;
+            char genericLocale[256];
+            i = 0;
+            strncpy(genericLocale, language, sizeof(genericLocale));
+            genericLocale[sizeof(genericLocale)] = 0;
+
+            under = strchr(genericLocale, '_');
+            if(under)
+               *under = 0;
+            if(!strcmpi(genericLocale, "zh"))
+               strcpy(genericLocale, "zh_CN");
+            if(strcmp(genericLocale, language))
+            {
+               for(l : languages)
+               {
+                  if(!strcmpi(l.code, genericLocale) || (i == 0 && !strcmpi("en", genericLocale)))
+                  {
+                     ide.languageItems[i].checked = true;
+                     found = true;
+                     break;
+                  }
+                  i++;
+               }
+            }
+         }
+
+         if(!found)
+            ide.languageItems[0].checked = true;
+
          MenuDivider { ide.languageMenu };
          MenuItem
          {

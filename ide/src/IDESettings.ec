@@ -1162,12 +1162,30 @@ Array<LanguageOption> languages
 
 String GetLanguageString()
 {
+   char * dot, * colon;
+   static char lang[256];
    String language = getenv("ECERE_LANGUAGE");
    if(!language) language = getenv("LANGUAGE");
    if(!language) language = getenv("LC_ALL");
    if(!language) language = getenv("LC_MESSAGES");
    if(!language) language = getenv("LANG");
    if(!language) language = "";
+   if(language && (colon = strchr(language, ':')))
+   {
+      if(lang != language)
+         strncpy(lang, language, sizeof(lang));
+      lang[sizeof(lang)-1] = 0;
+      lang[colon - language] = 0;
+      language = lang;
+   }
+   if(language && (dot = strchr(language, '.')))
+   {
+      if(lang != language)
+         strncpy(lang, language, sizeof(lang));
+      lang[sizeof(lang)-1] = 0;
+      lang[dot - language] = 0;
+      language = lang;
+   }
    return language;
 }
 
