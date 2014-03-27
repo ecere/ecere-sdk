@@ -3489,6 +3489,12 @@ void FindAndShellOpenInstalledFolder(char * name)
       strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
       PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
    }
+   GetEnvironment("ProgramData", v, maxPathLen);
+   if(v[0])
+   {
+      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
+      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
+   }
    GetEnvironment("ProgramFiles", v, maxPathLen);
    if(v[0])
    {
