@@ -279,11 +279,11 @@ extern char *  strstr(const char * , const char * );
 
 extern char *  strchr(const char * , int);
 
+extern int strcasecmp(const char * , const char * );
+
 extern int sprintf(char * , char * , ...);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
-
-extern int strcasecmp(const char * , const char * );
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
@@ -360,12 +360,16 @@ locale = lang;
 if(locale)
 {
 char * dot;
+char * colon;
 
 if(language != locale)
 strcpy(language, locale);
 dot = strstr(language, ".");
 if(dot)
 *dot = (char)0;
+colon = strstr(language, ":");
+if(colon)
+*colon = (char)0;
 locale = language;
 }
 if(locale)
@@ -376,6 +380,8 @@ strcpy(genericLocale, locale);
 under = strchr(genericLocale, '_');
 if(under)
 *under = (char)0;
+if(!(strcasecmp)(genericLocale, "zh"))
+strcpy(genericLocale, "zh_CN");
 }
 if(moduleName)
 sprintf(fileName, "<:%s>locale/%s.mo", moduleName, locale);
@@ -405,7 +411,7 @@ if(!f && locale && (strcasecmp)(locale, genericLocale))
 if(moduleName)
 sprintf(fileName, "<:%s>locale/%s.mo", moduleName, genericLocale);
 else
-sprintf(fileName, ":locale/%s.mo", name, genericLocale);
+sprintf(fileName, ":locale/%s.mo", genericLocale);
 f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
 if(!f)
 {
