@@ -1739,11 +1739,10 @@ class IDEWorkSpace : Window
          projectView.visible = true;
          projectView.Activate();
       }
-      else
-      {
-         sheet.visible = true;
+      else if(sheet.visible)
          sheet.Activate();
-      }
+      else
+         outputView.visible = false;
       return false;
    }
 
