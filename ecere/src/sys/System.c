@@ -263,7 +263,8 @@ char * System_GetEnvironment(char * envName, char * envValue, int max)
       envValue[0] = 0;
 
    __ecereNameSpace__ecere__com__eSystem_Delete(_wenvName);
-   return success ? envValue : null;
+   // Distinguish empty vs. unexisting environment variables with GetLastError()
+   return (success || !GetLastError()) ? envValue : null;
 #else
    char * result = getenv(envName);
    if(result)

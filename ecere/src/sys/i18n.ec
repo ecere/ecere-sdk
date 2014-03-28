@@ -60,7 +60,10 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
       colon = strstr(language, ":");
       if(colon) *colon = 0;
       locale = language;
+      if(!strcmpi(locale, "zh"))
+         strcpy(locale, "zh_CN");
    }
+
    if(locale)
    {
       char * under;
