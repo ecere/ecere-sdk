@@ -4597,8 +4597,23 @@ static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, String compiler
                if(firstLine)
                {
                   uint count = Tokenize(line, sizeof(tokens)/sizeof(tokens[0]), tokens,false);
-                  if(count)
-                     result = GccVersionInfo::GetVersionInfo(tokens[count-1]);
+                  char * token = null;
+                  int i;
+                  bool inPar = false;
+                  for(i = 0; i < count; i++)
+                  {
+                     if(tokens[i][0] == '(')
+                     {
+                        if(tokens[i][strlen(tokens[i])-1] != ')')
+                           inPar = true;
+                     }
+                     else if(tokens[i][0] && tokens[i][strlen(tokens[i])-1] == ')')
+                        inPar = false;
+                     else if(!inPar && isdigit(tokens[i][0]) && strchr(tokens[i], '.'))
+                        token = tokens[i];
+                  }
+                  if(token)
+                     result = GccVersionInfo::GetVersionInfo(token);
                   firstLine = false;
                }
             }
