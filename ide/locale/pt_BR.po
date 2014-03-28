@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: Ricardo Nabinger Sanchez <rnsanchez@wait4.org>\n"
 "POT-Creation-Date: 2014-02-20 05:30+0000\n"
-"PO-Revision-Date: 2014-03-19 01:33-0500\n"
+"PO-Revision-Date: 2014-03-27 23:11-0300\n"
 "Last-Translator: Ricardo Nabinger Sanchez <rnsanchez@wait4.org>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1747,7 +1747,7 @@ msgstr "Executar até o Cursor Ignorando Pontos de Parada"
 
 #: src/dialogs/GlobalSettingsDialog.ec:747
 msgid "SYSROOT"
-msgstr ""
+msgstr "SYSROOT"
 
 #: src/ide.ec:2355
 msgid "Same Project"
@@ -1998,6 +1998,8 @@ msgid ""
 "The document %s was modified by another application.\n"
 "Would you like to reload it and lose your changes?"
 msgstr ""
+"O documento %s foi modificado por outra aplicação.\n"
+"Deseja recarregá-lo e descartar suas alterações?"
 
 #: src/project/ProjectView.ec:2209
 msgid "The following file"
@@ -2005,55 +2007,63 @@ msgstr "O seguinte arquivo"
 
 #: src/project/Workspace.ec:1266
 msgid "The following file%s could not be re-opened.%s"
-msgstr ""
+msgstr "O(s) seguinte(s) arquivo%s não puderam ser reabertos.%s"
 
 #: src/debugger/Debugger.ec:1074
 msgid "The program %s has exited (gdb provided an unknown reason)%s.\n"
-msgstr ""
+msgstr "O programa %s finalizou (gdb indicou uma razão desconhecida)%s.\n"
 
 #: src/debugger/Debugger.ec:1068
 msgid "The program %s has exited normally%s.\n"
-msgstr ""
+msgstr "O programa %s finalizou normalmente%s.\n"
 
 #: src/debugger/Debugger.ec:1072
 msgid "The program %s has exited with a signal%s.\n"
-msgstr ""
+msgstr "O programa %s finalizou com um sinal%s.\n"
 
 #: src/debugger/Debugger.ec:1066 src/debugger/Debugger.ec:1070
 msgid "The program %s has exited%s.\n"
-msgstr ""
+msgstr "O programa %s finalizou%s.\n"
 
 #: src/project/Project.ec:925
 msgid ""
 "The project %s was modified by another application.\n"
 "Would you like to reload it and lose your changes?"
 msgstr ""
+"O projeto %s foi modificado por outra aplicação.\n"
+"Gostaria de recarregá-lo e descartar suas alterações?"
 
 #: src/project/ProjectView.ec:33
 msgid ""
 "This file can't be imported due to a conflict.\n"
 "\n"
 msgstr ""
+"Este arquivo não pode ser importado devido a um conflito.\n"
+"\n"
 
 #: src/debugger/Debugger.ec:1363
 msgid ""
 "This is the project directory.\n"
 "Would you like to try again?"
 msgstr ""
+"Este é o diretório do projeto.\n"
+"Gostaria de tentar novamente?"
 
 #: src/ide.ec:2356
 msgid "This project is already present in workspace."
-msgstr ""
+msgstr "Este projeto já está presente na área de trabalho."
 
 #: src/debugger/Debugger.ec:1379
 msgid ""
 "This source directory is already specified.\n"
 "Would you like to try again?"
 msgstr ""
+"Este diretório com arquivos-fonte já foi especificado.\n"
+"Gostaria de tentar novamente?"
 
 #: src/ide.ec:1361
 msgid "Threads"
-msgstr ""
+msgstr "Threads"
 
 #: src/ide.ec:1446
 msgid "Tile Horizontally"
@@ -2065,15 +2075,15 @@ msgstr ""
 
 #: src/IDESettings.ec:700
 msgid "Tiny C Compiler / GNU Make"
-msgstr ""
+msgstr "Tiny C Compiler / GNU Make"
 
 #: src/designer/CodeEditor.ec:1966
 msgid "Toggle Breakpoint"
-msgstr ""
+msgstr "Ativar/desativar Ponto de Parada"
 
 #: src/designer/ToolBox.ec:13
 msgid "Toolbox"
-msgstr ""
+msgstr "Caixa de ferramentas"
 
 #: src/dialogs/GlobalSettingsDialog.ec:684
 msgid "Toolchain"
@@ -2081,63 +2091,67 @@ msgstr ""
 
 #: src/project/ProjectView.ec:54
 msgid "Translations (*.mo)"
-msgstr ""
+msgstr "Traduções (*.mo)"
 
 #: src/debugger/GDBDialog.ec:327
 msgid "Tree:"
-msgstr ""
+msgstr "Árvore:"
 
 #: src/panels/WatchesView.ec:84
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: src/project/ProjectNode.ec:2442
 msgid "Unable to locate source file "
-msgstr ""
+msgstr "Não foi possível localizar arquivo-fonte "
 
 #: src/debugger/Debugger.ec:1392
 msgid ""
 "Unable to locate source file.\n"
 "Would you like to try again?"
 msgstr ""
+"Não foi possível localizar o arquivo-fonte.\n"
+"Gostaria de tentar novamente?"
 
 #: src/dialogs/FindInFilesDialog.ec:1064 src/dialogs/FindInFilesDialog.ec:1150
 msgid ""
 "Unable to open file %s\n"
 "\n"
 msgstr ""
+"Não foi possível abrir o arquivo %s\n"
+"\n"
 
 #: src/project/ProjectView.ec:1138 src/project/ProjectView.ec:1189
 msgid "Unable to save %s file.\n"
-msgstr ""
+msgstr "Não foi possível salvar o arquivo %s.\n"
 
 #: src/debugger/Debugger.ec:2865
 msgid "Unknown error for \"%s\""
-msgstr ""
+msgstr "Erro desconhecido para \"%s\""
 
 #: src/project/ProjectView.ec:1243 src/designer/CodeEditor.ec:2481
 msgid "Untitled %d"
-msgstr ""
+msgstr "Sem-nome %d"
 
 #: src/project/ProjectView.ec:732
 msgid "Updating "
-msgstr ""
+msgstr "Atualizando "
 
 #: src/ide.ec:1088
 msgid "Use Valgrind"
-msgstr ""
+msgstr "Usar Valgrind"
 
 #: src/dialogs/GlobalSettingsDialog.ec:931
 msgid "Use ccache"
-msgstr ""
+msgstr "Usar ccache"
 
 #: src/dialogs/GlobalSettingsDialog.ec:949
 msgid "Use distcc"
-msgstr ""
+msgstr "Usar distcc"
 
 #: src/ide.ec:1100
 msgid "Valgrind Leak Check"
-msgstr ""
+msgstr "Verificação do Valgrind por Vazamentos"
 
 #: src/ide.ec:1126
 msgid "Valgrind Redzone Size"
@@ -2145,107 +2159,110 @@ msgstr ""
 
 #: src/ide.ec:1162
 msgid "Valgrind Track Origins"
-msgstr ""
+msgstr "Traçar Origens pelo Valgrind"
 
 #: src/panels/WatchesView.ec:86
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 #: src/designer/Sheet.ec:450 src/designer/ToolBox.ec:36 src/ide.ec:1258
 msgid "View"
-msgstr ""
+msgstr "Visualizar"
 
 #: src/ide.ec:1273 src/ide.ec:1295
 msgid "View Code"
-msgstr ""
+msgstr "Visualizar Código"
 
 #: src/ide.ec:1272 src/ide.ec:1278
 msgid "View Designer"
-msgstr ""
+msgstr "Visualizar Projetista"
 
 #: src/ide.ec:1275 src/ide.ec:1322
 msgid "View Methods"
-msgstr ""
+msgstr "Visualizar Métodos"
 
 #: src/ide.ec:1274 src/ide.ec:1311
 msgid "View Properties"
-msgstr ""
+msgstr "Visualizar Propriedades"
 
 #: src/designer/ToolBox.ec:37 src/ide.ec:1333
 msgid "View Toolbox"
-msgstr ""
+msgstr "Visualizar Caixa de Ferramentas"
 
 #: src/ProjectSettings.ec:2037
 msgid "Warnings"
-msgstr ""
+msgstr "Avisos"
 
 #: src/panels/WatchesView.ec:6 src/ide.ec:1352
 msgid "Watches"
-msgstr ""
+msgstr "Auditores"
 
 #: src/ide.ec:95
 msgid ""
 "Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
 msgstr ""
+"Arquivos da Web (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
 
 #: src/dialogs/FindInFilesDialog.ec:372
 msgid "Whole word only"
-msgstr ""
+msgstr "Apenas palavras inteiras"
 
 #: src/ide.ec:1439
 msgid "Window"
-msgstr ""
+msgstr "Janela"
 
 #: src/ide.ec:1450
 msgid "Windows..."
-msgstr ""
+msgstr "Janelas..."
 
 #: src/about.ec:50
 msgid "With contributions from..."
-msgstr ""
+msgstr "Com contribuições de..."
 
 #: src/dialogs/FindInFilesDialog.ec:457
 #: src/dialogs/GlobalSettingsDialog.ec:1195 src/dialogs/WorkspaceSettings.ec:6
 msgid "Workspace"
-msgstr ""
+msgstr "Área de trabalho"
 
 #: src/project/ProjectView.ec:61
 msgid "Workspace Files (*.ews)"
-msgstr ""
+msgstr "Arquivos de área de trabalho (*.ews)"
 
 #: src/project/Workspace.ec:1233
 msgid "Workspace Load File Error"
-msgstr ""
+msgstr "Erro ao Carregar Arquivo de Área de Trabalho"
 
 #: src/project/Workspace.ec:1233
 msgid "Workspace load file failed"
-msgstr ""
+msgstr "Erro ao carregar arquivo de área de trabalho"
 
 #: src/ProjectSettings.ec:1885
 msgid "Would you like to save changes made to the build options?"
-msgstr ""
+msgstr "Gostaria de salvar as alterações feitas nas opções de construção?"
 
 #: src/dialogs/ProjectTabSettings.ec:98
 msgid "Would you like to save changes made to the project options?"
-msgstr ""
+msgstr "Gostaria de salvar as alterações feitas nas opções do projeto?"
 
 #: src/dialogs/WorkspaceSettings.ec:97
 msgid "Would you like to save changes made to the workspace options?"
-msgstr ""
+msgstr "Gostaria de salvar as alterações feitas nas opções da área de trabalho?"
 
 #: src/project/Project.ec:1688
 msgid "Writing symbol loader...\n"
-msgstr ""
+msgstr "Escrevendo carregador de símbolos...\n"
 
 #: src/ide.ec:1103
 msgid "Yes"
-msgstr ""
+msgstr "Sim"
 
 #: src/project/ProjectView.ec:516
 msgid ""
 "You have modified projects.\n"
 "Save changes to "
 msgstr ""
+"Você possui projetos modificados.\n"
+"Salvar alterações para "
 
 #: src/debugger/Debugger.ec:1493
 msgid ""
@@ -2253,32 +2270,41 @@ msgid ""
 "this file.\n"
 "Would you like to try again?"
 msgstr ""
+"Você deve indicar um diretório válido de arquivos-fonte para poder definir um ponto de parada neste "
+"arquivo.\n"
+"Gostaria de tentar novamente?"
 
 #: src/dialogs/FindInFilesDialog.ec:401
 msgid "You must specify a search location."
-msgstr ""
+msgstr "Você deve especificar um lugar para a busca."
 
 #: src/project/ProjectNode.ec:2442
 msgid "\n"
-msgstr ""
+msgstr "\n"
 
 #: src/project/Project.ec:1484 src/project/Project.ec:1925
 msgid ""
 "\n"
 "Build cancelled by user.\n"
 msgstr ""
+"\n"
+"Construção cancelada pelo usuário.\n"
 
 #: src/project/ProjectView.ec:934
 msgid ""
 "\n"
 "Installing project %s using the %s configuration...\n"
 msgstr ""
+"\n"
+"Instalando projeto %s usando a configuração %s...\n"
 
 #: src/project/Project.ec:2158
 msgid ""
 "\n"
 "Make outputs the following list of commands to choose from:\n"
 msgstr ""
+"\n"
+"Make exibe a seguinte lista de comandos para escolha:\n"
 
 #: src/project/Project.ec:2192
 msgid ""
@@ -2286,6 +2312,9 @@ msgid ""
 "The following command was chosen to be executed:\n"
 "%s\n"
 msgstr ""
+"\n"
+"O seguinte comando foi escolhido para ser executado:\n"
+"%s\n"
 
 #: src/dialogs/GlobalSettingsDialog.ec:969
 msgid "distcc hosts"
@@ -2293,48 +2322,48 @@ msgstr ""
 
 #: src/dialogs/GlobalSettingsDialog.ec:699
 msgid "eC Compiler"
-msgstr ""
+msgstr "Compilador eC"
 
 #: src/ide.ec:121
 msgid "eC Files (*.ec, *.eh)"
-msgstr ""
+msgstr "Arquivos eC (*.ec, *.eh)"
 
 #: src/dialogs/GlobalSettingsDialog.ec:693
 msgid "eC Precompiler"
-msgstr ""
+msgstr "Pré-compilador eC"
 
 #: src/designer/CodeEditor.ec:90
 msgid "eC Source Code"
-msgstr ""
+msgstr "Arquivo-fonte eC"
 
 #: src/dialogs/GlobalSettingsDialog.ec:705
 msgid "eC Symbol Loader"
-msgstr ""
+msgstr "Carregador de Símbolos eC"
 
 #: src/project/ProjectView.ec:44
 msgid ""
 "eC/C/C++ Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
-msgstr ""
+msgstr "Arquivos eC/C/C++ (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
 
 #: src/project/ProjectView.ec:45
 msgid "eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
-msgstr ""
+msgstr "Arquivos-fonte eC/c/C++ (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 
 #: src/debugger/Debugger.ec:4331
 msgid "err: Unable to create FIFO %s\n"
-msgstr ""
+msgstr "erro: Não foi possível criar FIFO %s\n"
 
 #: src/debugger/Debugger.ec:4332
 msgid "err: Unable to open FIFO %s for read\n"
-msgstr ""
+msgstr "erro: Não foi possível abrir FIFO %s para leitura\n"
 
 #: src/project/Project.ec:1945
 msgid "error"
-msgstr ""
+msgstr "erro"
 
 #: src/project/Project.ec:1945
 msgid "errors"
-msgstr ""
+msgstr "erros"
 
 #: src/dialogs/FindInFilesDialog.ec:982 src/dialogs/FindInFilesDialog.ec:987
 #: src/dialogs/FindInFilesDialog.ec:1142
@@ -2343,45 +2372,47 @@ msgstr ""
 
 #: src/project/ProjectView.ec:1214 src/project/ProjectView.ec:1217
 msgid "folder"
-msgstr ""
+msgstr "pasta"
 
 #: src/dialogs/FindInFilesDialog.ec:982
 msgid "found"
-msgstr ""
+msgstr "encontrado"
 
 #: src/ide.ec:2629
 msgid "in"
-msgstr ""
+msgstr "em"
 
 #: src/debugger/Debugger.ec:3470
 msgid "inside %s, %s\n"
-msgstr ""
+msgstr "dentro de %s, %s\n"
 
 #: src/project/Project.ec:2263
 msgid "intermediate objects directory"
-msgstr ""
+msgstr "diretório para arquivos-objeto intermediários"
 
 #: src/ide.ec:2629
 msgid "match"
-msgstr ""
+msgstr "ocorrência"
 
 #: src/project/Project.ec:1947
 msgid "no error, "
-msgstr ""
+msgstr "nenhum erro, "
 
 #: src/project/Project.ec:1952
 msgid "no warning\n"
-msgstr ""
+msgstr "nenhum aviso\n"
 
 #: src/project/ProjectView.ec:2212
 msgid ""
 "not added because of identical file name conflict within the project.\n"
 "\n"
 msgstr ""
+"não incluído em função de um conflito com nome de arquivo idêntico no projeto.\n"
+"\n"
 
 #: src/dialogs/FindInFilesDialog.ec:982
 msgid "replaced"
-msgstr ""
+msgstr "substituído"
 
 #: src/dialogs/FindInFilesDialog.ec:983 src/dialogs/FindInFilesDialog.ec:988
 msgid "s"
@@ -2393,24 +2424,24 @@ msgstr ""
 
 #: src/project/ProjectView.ec:1214 src/project/ProjectView.ec:1217
 msgid "single file"
-msgstr ""
+msgstr "arquivo único"
 
 #: src/project/Project.ec:2263
 msgid "target"
-msgstr ""
+msgstr "alvo"
 
 #: src/debugger/Debugger.ec:3476
 msgid "unknown source\n"
-msgstr ""
+msgstr "fonte desconhecida\n"
 
 #: src/project/Project.ec:1950
 msgid "warning"
-msgstr ""
+msgstr "aviso"
 
 #: src/project/Project.ec:1950
 msgid "warnings"
-msgstr ""
+msgstr "avisos"
 
 #: src/project/ProjectView.ec:661
 msgid "{problem with compiler selection}"
-msgstr ""
+msgstr "{problema com a seleção de compilador}"
