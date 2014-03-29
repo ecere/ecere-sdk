@@ -633,7 +633,7 @@ class Debugger
                      }
                      else
                         _dpl2(_dpct, dplchan::debuggerProblem, 0, "Invalid stopItem!");
-                     if(bpUser && strcmp(stopItem.frame.addr, bpUser.bp.addr))
+                     if(bpUser && stopItem.frame.addr && strcmp(stopItem.frame.addr, bpUser.bp.addr))
                         _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") address missmatch!");
                   }
                   else
@@ -1516,7 +1516,8 @@ class Debugger
                   GdbDebugBreak(true);
             case stopped:
             case loaded:
-               SetBreakpoint(bp, false);
+               if(!SetBreakpoint(bp, false))
+                  SetBreakpoint(bp, true);
                break;
          }
          if(oldState == running)
@@ -1618,17 +1619,15 @@ class Debugger
             else if(!strcmp(item.name, "line"))
                frame.line = atoi(item.value);
             else if(!strcmp(item.name, "fullname"))
-               frame.absoluteFile = item.value;
-            /*{
+            {
                // GDB 6.3 on OS X is giving "fullname" and "dir", all in absolute, but file name only in 'file'
                String path = ide.workspace.GetPathWorkspaceRelativeOrAbsolute(item.value);
                if(strcmp(frame.file, path))
-               {
                   frame.file = path;
-                  frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
-               }
                delete path;
-            }*/
+
+               frame.absoluteFile = item.value; // ide.workspace.GetAbsolutePathFromRelative(frame.file);
+            }
             else
                _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "frame member (", item.name, "=", item.value, ") is unheard of");
          }
@@ -1931,7 +1930,10 @@ class Debugger
                else
                   insert = true;
                if(insert)
-                  SetBreakpoint(bp, false);
+               {
+                  if(!SetBreakpoint(bp, false))
+                     SetBreakpoint(bp, true);
+               }
             }
             delete objDir;
          }
@@ -1939,7 +1941,10 @@ class Debugger
          if(userAction != runToCursor && bpRunToCursor && bpRunToCursor.inserted)
             UnsetBreakpoint(bpRunToCursor);
          if(bpRunToCursor && !bpRunToCursor.inserted)
-            SetBreakpoint(bpRunToCursor, false);
+         {
+            if(!SetBreakpoint(bpRunToCursor, false))
+               SetBreakpoint(bpRunToCursor, true);
+         }
 
          if(ignoreBreakpoints)
          {
@@ -2054,8 +2059,9 @@ class Debugger
                SetBreakpoint(bp, removePath);
             }
          }
+         return !breakpointError;
       }
-      return !breakpointError;
+      return false;
    }
 
    void GdbGetStack()
@@ -3701,7 +3707,9 @@ class Debugger
             if(TokenizeList(output, ',', outTokens))
             {
                if(!strcmp(outTokens[0], "=library-loaded"))
-                  FGODetectLoadedLibraryForAddedProjectIssues(outTokens);
+                  FGODetectLoadedLibraryForAddedProjectIssues(outTokens, false);
+               else if(!strcmp(outTokens[0], "=shlibs-added"))
+                  FGODetectLoadedLibraryForAddedProjectIssues(outTokens, true);
                else if(!strcmp(outTokens[0], "=thread-group-created") || !strcmp(outTokens[0], "=thread-group-added") ||
                         !strcmp(outTokens[0], "=thread-group-started") || !strcmp(outTokens[0], "=thread-group-exited") ||
                         !strcmp(outTokens[0], "=thread-created") || !strcmp(outTokens[0], "=thread-exited") ||
@@ -3950,11 +3958,11 @@ class Debugger
    }
 
    // From GDB Output functions
-   void FGODetectLoadedLibraryForAddedProjectIssues(Array<char *> outTokens)
+   void FGODetectLoadedLibraryForAddedProjectIssues(Array<char *> outTokens, bool shlibs)
    {
       char path[MAX_LOCATION] = "";
       char file[MAX_FILENAME] = "";
-      bool symbolsLoaded;
+      bool symbolsLoaded = false;
       DebugListItem item { };
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::FGODetectLoadedLibraryForAddedProjectIssues()");
       for(token : outTokens)
@@ -3970,6 +3978,29 @@ class Debugger
             else if(!strcmp(item.name, "symbols-loaded"))
             {
                symbolsLoaded = (atoi(item.value) == 1);
+            }
+            else if(!strcmp(item.name, "shlib-info"))
+            {
+               DebugListItem subItem { };
+               Array<char *> tokens { minAllocSize = 50 };
+               item.value = StripBrackets(item.value);
+               TokenizeList(item.value, ',', tokens);
+               for(t : tokens)
+               {
+                  if(TokenizeListItem(t, subItem))
+                  {
+                     if(!strcmp(subItem.name, "path"))
+                     {
+                        StripQuotes(subItem.value, path);
+                        MakeSystemPath(path);
+                        GetLastDirectory(path, file);
+                        symbolsLoaded = true;
+                     }
+                  }
+               }
+               tokens.RemoveAll();
+               delete tokens;
+               delete subItem;
             }
          }
       }
