@@ -2191,8 +2191,22 @@ class Debugger
       GdbCommand(0, true, "-exec-next");
    }
 
+   void ForceUpdateCurrentFrame()
+   {
+      GdbGetStack();
+      GdbCommand(0, false, "-thread-list-ids");
+      InternalSelectFrame(activeFrameLevel);
+      GoToStackFrameLine(activeFrameLevel, true, false);
+      EvaluateWatches();
+      ide.ShowCodeEditor();
+      ide.AdjustDebugMenus();
+      ideMainFrame.Activate();   // TOFIX: ide.Activate() is not reliable (app inactive)
+      ide.Update(null);
+   }
+
    void GdbExecUntil(char * absoluteFilePath, int lineNumber)
    {
+      bool forceUpdate = false;
       char relativeFilePath[MAX_LOCATION];
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecUntil()");
       gdbExecution = until;
@@ -2200,14 +2214,25 @@ class Debugger
       if(absoluteFilePath)
       {
          WorkspaceGetRelativePath(absoluteFilePath, relativeFilePath, null);
-         GdbCommand(0, true, "-exec-until %s:%d", relativeFilePath, lineNumber);
+         if(!GdbCommand(0.1, true, "-exec-until %s:%d", relativeFilePath, lineNumber))
+         {
+            GetLastDirectory(relativeFilePath, relativeFilePath);
+            if(GdbCommand(1, true, "-exec-until %s:%d", relativeFilePath, lineNumber))
+               forceUpdate = true;
+         }
       }
       else
          GdbCommand(0, true, "-exec-until");
+
+      // This is to handle GDB 6.3 on OS X not giving us *running then *stopped:
+      // (It may not be ideal, we may need to wait?)
+      if(forceUpdate)
+         ForceUpdateCurrentFrame();
    }
 
    void GdbExecAdvance(char * absoluteFilePathOrLocation, int lineNumber)
    {
+      bool forceUpdate = false;
       char relativeFilePath[MAX_LOCATION];
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecAdvance()");
       gdbExecution = advance;
@@ -2215,10 +2240,27 @@ class Debugger
       if(lineNumber)
       {
          WorkspaceGetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null);
-         GdbCommand(0, true, "advance %s:%d", relativeFilePath, lineNumber); // should use -exec-advance -- GDB/MI implementation missing
+         if(!GdbCommand(0.1, true, "advance %s:%d", relativeFilePath, lineNumber)) // should use -exec-advance -- GDB/MI implementation missing
+         {
+            GetLastDirectory(relativeFilePath, relativeFilePath);
+            if(GdbCommand(1, true, "advance %s:%d", relativeFilePath, lineNumber))
+               forceUpdate = true;
+         }
       }
       else
-         GdbCommand(0, true, "advance %s", absoluteFilePathOrLocation); // should use -exec-advance -- GDB/MI implementation missing
+      {
+         if(!GdbCommand(0.1, true, "advance %s", absoluteFilePathOrLocation)) // should use -exec-advance -- GDB/MI implementation missing
+         {
+            GetLastDirectory(absoluteFilePathOrLocation, relativeFilePath);
+            if(GdbCommand(1, true, "advance %s", relativeFilePath))
+               forceUpdate = true;
+         }
+      }
+
+      // This is to handle GDB 6.3 on OS X not giving us *running then *stopped:
+      // (It may not be ideal, we may need to wait?)
+      if(forceUpdate)
+         ForceUpdateCurrentFrame();
    }
 
    void GdbExecStep()
