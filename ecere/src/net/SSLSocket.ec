@@ -1,3 +1,4 @@
+#undef __BLOCKS__
 #ifndef ECERE_NOSSL
 #define byte _byte
 #define int64 _int64
