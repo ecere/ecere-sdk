@@ -312,7 +312,7 @@ ECSLIBOPT := $(if $(STATIC_LIBRARY_TARGET),-staticlib,$(if $(SHARED_LIBRARY_TARG
 FVISIBILITY := $(if $(WINDOWS_TARGET),,-fvisibility=hidden)
 FPIC := $(if $(WINDOWS_TARGET),,-fPIC)
 EXECUTABLE := $(if $(WINDOWS_TARGET),$(if $(EXECUTABLE_TARGET),$(CONSOLE),),)
-INSTALLNAME := $(if $(OSX_TARGET),$(if $(STATIC_LIBRARY_TARGET),-install_name $(LP)$(MODULE)$(SO),),)
+INSTALLNAME := $(if $(OSX_TARGET),$(if $(SHARED_LIBRARY_TARGET),-install_name $(LP)$(MODULE)$(SO),),)
 
 # LINKER OPTIONS
 SHAREDLIB := $(if $(SHARED_LIBRARY_TARGET),$(if $(OSX_TARGET),-dynamiclib -single_module -multiply_defined suppress,-shared),)
