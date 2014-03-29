@@ -71,6 +71,7 @@ public:
 #elif defined(__APPLE__)
       bool wait = false;
       mutex.Wait();
+      result = false;
       if(count > 0)
       {
          count--;
