@@ -12,7 +12,7 @@ define pathListSep = ";";
 define pathListSep = ":";
 #endif
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(__WIN32__)
 extern int getch(void);
 #endif
 
@@ -400,7 +400,7 @@ class epj2makeApp : GuiApplication
 
       // CheckMemory();
       delete ideSettings;
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(__WIN32__)
       getch();
 #endif
    }

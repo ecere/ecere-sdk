@@ -2064,7 +2064,7 @@ class SymbolgenApp : Application
       delete argv;
       */
 
-#ifdef _DEBUG
+#if defined(_DEBUG) && defined(__WIN32__)
       getch();
 #endif
    }
