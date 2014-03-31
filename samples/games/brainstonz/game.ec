@@ -1,4 +1,4 @@
-import Ã"ecere"
+import "ecere"
 
 enum Stone { none, black, white };
 
