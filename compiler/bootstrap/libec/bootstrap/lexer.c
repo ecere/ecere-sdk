@@ -1183,7 +1183,7 @@ break;
 case 65:
 TESTTTT();
 {
-return (RESTRICT);
+return (EXT_DECL);
 }
 break;
 case 66:
