@@ -660,7 +660,7 @@ public struct DateTime
          minute = 0;
          second = 0;
       }
-      get { return Date { year, month, day }; }
+      get { value = Date { year, month, day }; }
    }
 
    char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
