@@ -669,7 +669,7 @@ static char * keyWords1[] =
    "__declspec", "goto",
     "inline", "__inline__", "_inline", "__inline", "__typeof","__extension__",
    "asm", "__asm", "_asm", "volatile", "#cpu", "__stdcall__",
-   "__restrict__", "__restrict", "restrict"
+   "__restrict__", "__restrict", "restrict",
 
    // eC
    "class", "private", "public",
