@@ -2240,13 +2240,12 @@ MangleClassName(name);
 params = MkList();
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
-if(!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion)
+if((regClass->type == 1 || regClass->type == 6) || ((regClass->type == 5 || regClass->type == 0) && (!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion)))
 ListAdd(specifiers, MkSpecifier(VOID));
 else
 {
-if(regClass->type == 1)
-ListAdd(specifiers, MkSpecifier(VOID));
-else
+if(regClass->type != 5 && regClass->type != 0)
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "set defined on type without storage for non-conversion property\n", (((void *)0))));
 ListAdd(specifiers, MkSpecifierName(regClass->fullName));
 }
 func = MkClassFunction(specifiers, (((void *)0)), decl, (((void *)0)));

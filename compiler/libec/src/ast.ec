@@ -1147,7 +1147,7 @@ FunctionDefinition _MkFunction(OldList specifiers, Declarator declarator, OldLis
                   Specifier spec = tn.qualifiers ? tn.qualifiers->first : null;
                   if(!tn.declarator && !tn.prev && !tn.next && spec && !spec.next && spec.type == baseSpecifier && spec.specifier == VOID);
                   else
-                     Compiler_Error("parameter name omitted\n");
+                     Compiler_Error($"parameter name omitted\n");
                   break;
                }
             }

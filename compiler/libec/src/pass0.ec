@@ -1200,15 +1200,14 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         MkDeclaratorIdentifier(MkIdentifier(name)), params);
 
                      // TESTING COMMENTING OUT THESE, ADDED noHeadClass here
-                     if(!propertyDef.symbol._property || !propertyDef.symbol._property.conversion)
+                     if((regClass.type == structClass || regClass.type == unionClass) ||
+                        ((regClass.type == noHeadClass || regClass.type == normalClass) && (!propertyDef.symbol._property || !propertyDef.symbol._property.conversion)))
                         ListAdd(specifiers, MkSpecifier(VOID));
                      else
                      {
-                        // Conversion property
-                        if(regClass.type == structClass)
-                           ListAdd(specifiers, MkSpecifier(VOID));
-                        else
-                           ListAdd(specifiers, MkSpecifierName(regClass.fullName));
+                        if(regClass.type != noHeadClass && regClass.type != normalClass)
+                           Compiler_Error($"set defined on type without storage for non-conversion property\n");
+                        ListAdd(specifiers, MkSpecifierName(regClass.fullName));
                      }
 
                      func = MkClassFunction(specifiers, null, decl, null);

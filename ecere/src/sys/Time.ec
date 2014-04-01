@@ -316,8 +316,6 @@ public class SecSince1970 : int64
 public:
    property SecSince1970 global
    {
-      // TOFIX: 'return' with a value, in function returning void
-      set { return value.local; }
       get
       {
       #if defined(__WIN32__)
@@ -371,8 +369,6 @@ public:
    };
    property SecSince1970 local
    {
-      // TOFIX: warning: 'return' with a value, in function returning void
-      set { return value.global; }
       get
       {
 #if defined(__WIN32__)
