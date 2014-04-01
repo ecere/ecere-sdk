@@ -327,7 +327,7 @@ class EARArchive : Archive
                Defrag(position + sizeof(EAREntry) + entry.nameLen);
          }
          else
-            return 0;
+            return;
       }
 
       // Move all the blocks
@@ -623,7 +623,7 @@ class EARArchive : Archive
    {
       uint first, last;
       if(!f.Read(&first, sizeof(uint), 1))
-         return 0;
+         return;
 #ifdef _DEBUG
       if(first > f.GetSize())
       {
