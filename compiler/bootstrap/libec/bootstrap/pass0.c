@@ -2244,7 +2244,7 @@ if((regClass->type == 1 || regClass->type == 6) || ((regClass->type == 5 || regC
 ListAdd(specifiers, MkSpecifier(VOID));
 else
 {
-if(regClass->type != 5 && regClass->type != 0)
+if(regClass->type != 5 && regClass->type != 0 && (!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion))
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "set defined on type without storage for non-conversion property\n", (((void *)0))));
 ListAdd(specifiers, MkSpecifierName(regClass->fullName));
 }

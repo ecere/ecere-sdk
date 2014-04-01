@@ -1205,7 +1205,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         ListAdd(specifiers, MkSpecifier(VOID));
                      else
                      {
-                        if(regClass.type != noHeadClass && regClass.type != normalClass)
+                        if(regClass.type != noHeadClass && regClass.type != normalClass && (!propertyDef.symbol._property || !propertyDef.symbol._property.conversion))
                            Compiler_Error($"set defined on type without storage for non-conversion property\n");
                         ListAdd(specifiers, MkSpecifierName(regClass.fullName));
                      }
