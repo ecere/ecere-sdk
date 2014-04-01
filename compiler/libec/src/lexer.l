@@ -134,7 +134,7 @@ default:
 "_Bool"              { return(_BOOL); }
 "_Complex"           { return(_COMPLEX); }
 "_Imaginary"         { return(_IMAGINARY); }
-"restrict"           { return(RESTRICT); }
+"restrict"           { return(EXT_DECL); }
 
  /* "__attribute__".?"(("({D}|{L})*"))" { return(EXT_ATTRIB); } */
 

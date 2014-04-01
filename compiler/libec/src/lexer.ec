@@ -1753,7 +1753,7 @@ YY_RULE_SETUP
 case 65:
 YY_RULE_SETUP
 #line 137 "lexer.l"
-{ return(RESTRICT); }
+{ return(EXT_DECL); }
 	YY_BREAK
 /* "__attribute__".?"(("({D}|{L})*"))" { return(EXT_ATTRIB); } */
 /* DID I MEAN? "__attribute__"" "*"(("" "*({D}|{L})*" "*("("({D}|{L})*(" "*","" "*({D}|{L})*)*" "*")")?" "*"))" { return(EXT_ATTRIB); } */
