@@ -3571,7 +3571,8 @@ private:
             int x,y;
             if(rootWindow == guiApp.desktop || rootWindow.parent == guiApp.desktop)
             {
-               guiApp.interfaceDriver.GetMousePosition(&x, &y);
+               if(guiApp.interfaceDriver)
+                  guiApp.interfaceDriver.GetMousePosition(&x, &y);
 
                if(guiApp.windowMoving || rootWindow.GetAtPosition(x, y, true, false, null))
                   rootWindow.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove, x, y, &mods, true, false);
