@@ -4,6 +4,8 @@ import "ecere"
 #define WINDOW_WIDTH 768
 #define WINDOW_HEIGHT 480
 
+#define SCALE ((float)virtualDesktop.clientSize.h / WINDOW_HEIGHT)
+
 #define FULLSCREEN
 
 class Window3D : struct
@@ -252,7 +254,7 @@ static bool CreateSide(Mesh mesh, int width, int height, int depth, DisplaySyste
          uint16 indices[16] =
          {
             // up, down, right, left
-            17,21,20,16 ,
+            17,21,20,16,
             22,18,19,23,
             9,10,14,13,
             12,15,11,8
@@ -280,13 +282,18 @@ static bool CreateSide(Mesh mesh, int width, int height, int depth, DisplaySyste
 
 class Desktop3D : Window
 {
-   text = "Orbiting 3D Desktop", size = Size { WINDOW_WIDTH,WINDOW_HEIGHT };
+   text = "Orbiting 3D Desktop";
+#ifdef FULLSCREEN
+   anchor = { 0, 0, 0, 0 };
+#else
+   size = Size { WINDOW_WIDTH, WINDOW_HEIGHT };
+#endif
 
    Object lookAt {};
    Camera camera
    {
       lookAt, position = {0, ORBIT_HEIGHT, -2000}, target = lookAt, orientation = Euler { pitch = 15 },
-      zMin = 1, zMax = 10000, fov = 53
+      zMin = 1, zMax = 10000, fovDirection = vertical, fov = 53
    };
    Light light;
    bool moving;
@@ -309,7 +316,9 @@ class Desktop3D : Window
    // Camera Sliding
    Quaternion fromAngle, toAngle;
    Vector3D fromPosition, toPosition;
-   float sliding, switching, entering;
+   float sliding;    // Camera sliding from the bottom position looking at the orbit to looking at 1 window
+   float switching;  // Switching from looking at one application to the next within the orbit
+   float entering;
    bool dockHidden;
    bool fullScreen;
 
@@ -643,7 +652,7 @@ class Desktop3D : Window
             dy = (int)(y - h/2);
 
             surface.SetForeground(ColorAlpha{alpha, white});
-            surface.Stretch(bitmap, dx, dy, 0,0, w, h, bitmap.width, bitmap.height);
+            surface.Stretch(bitmap, dx * SCALE, dy * SCALE, 0,0, w * SCALE, h * SCALE, bitmap.width, bitmap.height);
 
             x += FULL_SWITCH;
 
@@ -725,7 +734,7 @@ class Desktop3D : Window
             if(child == poppingWindow)
             {
                Vector3D finalPosition;
-               Vector3D startPositionProjected = { - 120 + 284, DOCK_HEIGHT, 1.0f };
+               Vector3D startPositionProjected = { (-120 + 284) * SCALE, DOCK_HEIGHT * SCALE, 1.0f };
                Vector3D startPositionView, startPositionWorld;
 
                camera.Unproject(startPositionProjected, startPositionView);
@@ -993,7 +1002,12 @@ class Desktop3D : Window
             if(dockHidden)
             {
                Window3D window3D;
+               Window ac = virtualDesktop.activeChild;
+
+               if(sliding < 1 || switching < 1 || entering < 1) break;
+
                virtualDesktop.CycleChildren(true, false, false, true);
+               if(ac == virtualDesktop.activeChild) break;
 
                window3D = Desktop3DGetWindowHandle(virtualDesktop.activeChild);
 
@@ -1028,7 +1042,12 @@ class Desktop3D : Window
             if(dockHidden)
             {
                Window3D window3D;
+               Window ac = virtualDesktop.activeChild;
+
+               if(sliding < 1 || switching < 1 || entering < 1) break;
+
                virtualDesktop.CycleChildren(false, false, false, true);
+               if(ac == virtualDesktop.activeChild) break;
 
                window3D = Desktop3DGetWindowHandle(virtualDesktop.activeChild);
 
@@ -1059,6 +1078,7 @@ class Desktop3D : Window
             break;
          case enter:
          {
+            if(sliding < 1 || switching < 1 || entering < 1) break;
             if(!dockHidden)
             {
                if(!poppingWindow)
@@ -1153,41 +1173,46 @@ class Desktop3D : Window
          }
          case up:
          {
+            if(poppingWindow) break;
             if(sliding == 1.0 && !dockHidden)
             {
                Quaternion fa, ta;
                Vector3D fp, tp;
 
                Window window = virtualDesktop.activeChild;
-               Window3D window3D = Desktop3DGetWindowHandle(window);
+               if(window)
+               {
+                  Window3D window3D = Desktop3DGetWindowHandle(window);
 
-               camera.Update();
-               fa = fromAngle = camera.cOrientation;
-               fp = fromPosition = camera.cPosition;
+                  camera.Update();
+                  fa = fromAngle = camera.cOrientation;
+                  fp = fromPosition = camera.cPosition;
 
-               camera.type = lookAt;
-               camera.position = { 0,0,0 };
-               camera.orientation = Euler {};
-               lookAt.transform.position = window3D.cube.transform.position;
-               lookAt.transform.orientation = Euler {};
-               lookAt.UpdateTransform();
+                  camera.type = lookAt;
+                  camera.position = { 0,0,0 };
+                  camera.orientation = Euler {};
+                  lookAt.transform.position = window3D.cube.transform.position;
+                  lookAt.transform.orientation = Euler {};
+                  lookAt.UpdateTransform();
 
-               sliding = 0;
-               dockHidden = true;
+                  sliding = 0;
+                  dockHidden = true;
 
-               camera.Update();
-               tp = toPosition = camera.cPosition;
-               ta = toAngle = camera.cOrientation;
+                  camera.Update();
+                  tp = toPosition = camera.cPosition;
+                  ta = toAngle = camera.cOrientation;
 
-               camera.AdjustAngle(fromAngle);
-               camera.AdjustPosition(fromPosition);
+                  camera.AdjustAngle(fromAngle);
+                  camera.AdjustPosition(fromPosition);
+               }
             }
             break;
          }
          case down:
-         {
+         case escape:
             if(sliding == 1.0 && dockHidden)
             {
+               if(sliding < 1 || switching < 1 || entering < 1) break;
                fromAngle = camera.cOrientation;
                fromPosition = camera.cPosition;
 
@@ -1208,14 +1233,11 @@ class Desktop3D : Window
 
                camera.AdjustAngle(fromAngle);
                camera.AdjustPosition(fromPosition);
-               break;
             }
-         }
-         case escape:
-            Destroy(0);
+            else if(key == escape)
+               Destroy(0);
             break;
       }
-
       return true;
    }
 }
@@ -1312,6 +1334,9 @@ class Orbit : GuiApplication
    driver = "OpenGL";
    bool Init()
    {
+#ifdef FULLSCREEN
+      fullScreen = true;
+#endif
       Desktop3DInitialize(virtualDesktop, Setup3DWindow, Update3DWindow);
       return true;
    }
