@@ -767,7 +767,8 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                destType._class = symbol;
                ProcessExpressionType(e.exp);
             }
-            ComputeExpression(e.exp);
+            if(e.exp.isConstant)
+               ComputeExpression(e.exp);
             if(e.exp.isConstant && e.exp.type == constantExp)
             {
                Operand op = GetOperand(e.exp);
@@ -787,8 +788,14 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                eEnum_AddFixedValue(regClass, e.id.string, value);
             }
             else
-               // Sort of an error
+            {
+               char expString[8192];
+               expString[0] = 0;
+               PrintExpression(e.exp, expString);
+               printf($"error: could not resolve value %s for enum %s in precompiler\n", expString, regClass.name);
+               ((PrecompApp)__thisModule).exitCode = 1;
                eEnum_AddValue(regClass, e.id.string);
+            }
          }
          else
             eEnum_AddValue(regClass, e.id.string);

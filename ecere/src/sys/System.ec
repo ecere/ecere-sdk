@@ -90,18 +90,28 @@ public define AllErrors = ErrorLevel::Minor;
 
 public class ErrorCode
 {
+public:
    ErrorLevel level:2:12;
    uint code:12:0;
 };
 
+// TODO: Support enums resolved in compiling pass to allow moving this to GuiApplication.ec
+public enum GuiErrorCode : ErrorCode
+{
+   driverNotSupported      = ErrorCode { veryFatal, 1 },
+   windowCreationFailed    = ErrorCode { veryFatal, 2 },
+   graphicsLoadingFailed   = ErrorCode { veryFatal, 3 },
+   modeSwitchFailed        = ErrorCode { veryFatal, 4 }
+};
+
 public enum SysErrorCode : ErrorCode
 {
-   allocationFailed = ErrorCode { Fatal, 1 },
-   nameInexistant   = ErrorCode { Fatal, 2 },
-   nameExists       = ErrorCode { Fatal, 3 },
-   missingLibrary   = ErrorCode { Fatal, 4 },
-   fileNotFound     = ErrorCode { Minor, 5 },
-   writeFailed      = ErrorCode { Major, 6 }
+   allocationFailed = ErrorCode { fatal, 1 },
+   nameInexistant   = ErrorCode { fatal, 2 },
+   nameExists       = ErrorCode { fatal, 3 },
+   missingLibrary   = ErrorCode { fatal, 4 },
+   fileNotFound     = ErrorCode { minor, 5 },
+   writeFailed      = ErrorCode { major, 6 }
 };
 
 static define DEFAULT_BUFFER_SIZE = 100 * MAX_F_STRING;

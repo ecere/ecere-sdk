@@ -49,6 +49,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -136,15 +138,6 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
-
-struct __ecereNameSpace__ecere__com__Instance
-{
-int (* *  _vTbl)();
-struct __ecereNameSpace__ecere__com__Class * _class;
-int _refCount;
-} __attribute__ ((gcc_struct));
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -171,6 +164,17 @@ char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
+} __attribute__ ((gcc_struct));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
+
+struct __ecereNameSpace__ecere__com__Instance
+{
+int (* *  _vTbl)();
+struct __ecereNameSpace__ecere__com__Class * _class;
+int _refCount;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
@@ -364,6 +368,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__ErrorCode;
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__GuiErrorCode;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__SysErrorCode;
 
@@ -736,17 +742,24 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::AllErrors", "e
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::ErrorCode", 0, 0, 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ErrorCode = class;
-__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "level", "ecere::sys::ErrorLevel", 2, 12, 2);
-__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "code", "uint", 12, 0, 2);
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "level", "ecere::sys::ErrorLevel", 2, 12, 1);
+__ecereNameSpace__ecere__com__eClass_AddBitMember(class, "code", "uint", 12, 0, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::GuiErrorCode", "ecere::sys::ErrorCode", 0, 0, 0, 0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
+__ecereClass___ecereNameSpace__ecere__sys__GuiErrorCode = class;
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "driverNotSupported", 1);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "windowCreationFailed", 2);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "graphicsLoadingFailed", 3);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "modeSwitchFailed", 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::SysErrorCode", "ecere::sys::ErrorCode", 0, 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__SysErrorCode = class;
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "allocationFailed", 0);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameInexistant", 1);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameExists", 2);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "missingLibrary", 3);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fileNotFound", 4);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "writeFailed", 5);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "allocationFailed", 4097);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameInexistant", 4098);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameExists", 4099);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "missingLibrary", 4100);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fileNotFound", 12293);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "writeFailed", 8198);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveFile", "bool ecere::sys::MoveFile(char * source, char * dest)", __ecereNameSpace__ecere__sys__MoveFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RenameFile", "bool ecere::sys::RenameFile(char * oldName, char * newName)", __ecereNameSpace__ecere__sys__RenameFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DeleteFile", "bool ecere::sys::DeleteFile(char * fileName)", __ecereNameSpace__ecere__sys__DeleteFile, module, 1);

@@ -50,6 +50,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -278,7 +280,11 @@ struct Identifier * identifier;
 } __attribute__ ((gcc_struct));
 struct Statement * compound;
 struct Instantiation * instance;
+struct
+{
 char *  string;
+unsigned int intlString;
+} __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
@@ -747,6 +753,8 @@ unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1854,7 +1862,28 @@ extern void SetParsingType(unsigned int b);
 
 extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, char *  string, int value);
 
+extern void PrintExpression(struct Expression * exp, char *  string);
+
+extern int printf(char * , ...);
+
+extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
 extern int __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, char *  string);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
+
+struct __ecereNameSpace__ecere__com__Application
+{
+int argc;
+char * *  argv;
+int exitCode;
+unsigned int isGUIApp;
+struct __ecereNameSpace__ecere__sys__OldList allModules;
+char *  parsedCommand;
+struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
+} __attribute__ ((gcc_struct));
 
 static void ProcessClassEnumValues(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues)
 {
@@ -1880,6 +1909,7 @@ destType->kind = 8;
 destType->_class = symbol;
 ProcessExpressionType(e->exp);
 }
+if(e->exp->isConstant)
 ComputeExpression(e->exp);
 if(e->exp->isConstant && e->exp->type == 2)
 {
@@ -1900,7 +1930,15 @@ value = op.i;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, e->id->string, value);
 }
 else
+{
+char expString[8192];
+
+expString[0] = (char)0;
+PrintExpression(e->exp, expString);
+printf(__ecereNameSpace__ecere__GetTranslatedString("ecp", "error: could not resolve value %s for enum %s in precompiler\n", (((void *)0))), expString, regClass->name);
+((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__thisModule) + structSize_Module)))->exitCode = 1;
 __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
+}
 }
 else
 __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, e->id->string);
@@ -2209,8 +2247,6 @@ int importAccess;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
 
-extern void PrintExpression(struct Expression * exp, char *  string);
-
 extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__EnumClassData;
@@ -2490,10 +2526,6 @@ extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, char *  add
 
 extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, char *  ext, char *  output);
 
-extern int printf(char * , ...);
-
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
-
 extern void SetGlobalData(struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace);
 
 extern void SetExcludedSymbols(struct __ecereNameSpace__ecere__sys__OldList *  list);
@@ -2561,19 +2593,6 @@ extern void FreeIncludeFiles(void);
 extern void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
-
-struct __ecereNameSpace__ecere__com__Application
-{
-int argc;
-char * *  argv;
-int exitCode;
-unsigned int isGUIApp;
-struct __ecereNameSpace__ecere__sys__OldList allModules;
-char *  parsedCommand;
-struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
-} __attribute__ ((gcc_struct));
 
 char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(int this);
 
@@ -2923,8 +2942,6 @@ int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
 

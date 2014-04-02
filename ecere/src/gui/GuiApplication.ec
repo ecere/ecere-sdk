@@ -87,14 +87,6 @@ import "Window"
 GuiApplication guiApp;
 int terminateX;
 
-enum GuiErrorCode : ErrorCode
-{
-   driverNotSupported      = ErrorCode { VeryFatal, 1 },
-   windowCreationFailed    = ErrorCode { VeryFatal, 2 },
-   graphicsLoadingFailed   = ErrorCode { VeryFatal, 3 },
-   modeSwitchFailed        = ErrorCode { VeryFatal, 4 }
-};
-
 static Array<String> errorMessages
 { [
    $"No error",

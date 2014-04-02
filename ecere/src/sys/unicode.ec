@@ -286,10 +286,10 @@ public enum PredefinedCharCategories : CharCategories
    separators = CharCategories { separatorSpace = true, separatorLine = true, separatorParagraph = true },
    others = CharCategories { otherControl = true, otherFormat = true, otherSurrogate = true, otherPrivateUse = true, otherNotAssigned = true },
    letters = CharCategories { letterUpperCase = true, letterLowerCase = true, letterTitleCase = true, letterModifier = true, letterOther = true },
-   punctuation = CharCategories { punctiationConnector = true, punctuationDash = true, punctuationOpen = true, punctuationClose = true, punctuationInitial = true,
+   punctuation = CharCategories { punctuationConnector = true, punctuationDash = true, punctuationOpen = true, punctuationClose = true, punctuationInitial = true,
                      punctuationFinal = true, punctuationOther = true },
    symbols = CharCategories { symbolMath = true, symbolCurrency = true, symbolModifier = true, symbolOther = true },
-   connector = CharCategories { punctuationConnector = true },
+   connector = CharCategories { punctuationConnector = true }
 };
 
 public bool GetAlNum(char ** input, char * string, int max)

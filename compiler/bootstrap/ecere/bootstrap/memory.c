@@ -38,6 +38,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -125,15 +127,6 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
-
-struct __ecereNameSpace__ecere__com__Instance
-{
-int (* *  _vTbl)();
-struct __ecereNameSpace__ecere__com__Class * _class;
-int _refCount;
-} __attribute__ ((gcc_struct));
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -160,6 +153,17 @@ char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
+} __attribute__ ((gcc_struct));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
+
+struct __ecereNameSpace__ecere__com__Instance
+{
+int (* *  _vTbl)();
+struct __ecereNameSpace__ecere__com__Class * _class;
+int _refCount;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
