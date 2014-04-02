@@ -1394,19 +1394,20 @@ class XInterface : Interface
       joystickFD[2] = open("/dev/js2", O_RDONLY);
       joystickFD[3] = open("/dev/js3", O_RDONLY);
 
-      systemCursors[iBeam]    = XCreateFontCursor(xGlobalDisplay, XC_xterm);
-      systemCursors[cross]    = XCreateFontCursor(xGlobalDisplay, XC_tcross);
-      systemCursors[moving]   = XCreateFontCursor(xGlobalDisplay, XC_fleur);
-      systemCursors[sizeNESW] = XCreateFontCursor(xGlobalDisplay, XC_bottom_left_corner);
-      systemCursors[sizeNS]   = XCreateFontCursor(xGlobalDisplay, XC_sb_v_double_arrow);
-      systemCursors[sizeNWSE] = XCreateFontCursor(xGlobalDisplay, XC_bottom_right_corner);
-      systemCursors[sizeWE]   = XCreateFontCursor(xGlobalDisplay, XC_sb_h_double_arrow);
-      systemCursors[hand]     = XCreateFontCursor(xGlobalDisplay, XC_hand2);
-      systemCursors[arrow]    = XCreateFontCursor(xGlobalDisplay, XC_left_ptr);
-
       if(xGlobalDisplay)
       {
          XWindowAttributes attributes = { 0 };
+
+         systemCursors[iBeam]    = XCreateFontCursor(xGlobalDisplay, XC_xterm);
+         systemCursors[cross]    = XCreateFontCursor(xGlobalDisplay, XC_tcross);
+         systemCursors[moving]   = XCreateFontCursor(xGlobalDisplay, XC_fleur);
+         systemCursors[sizeNESW] = XCreateFontCursor(xGlobalDisplay, XC_bottom_left_corner);
+         systemCursors[sizeNS]   = XCreateFontCursor(xGlobalDisplay, XC_sb_v_double_arrow);
+         systemCursors[sizeNWSE] = XCreateFontCursor(xGlobalDisplay, XC_bottom_right_corner);
+         systemCursors[sizeWE]   = XCreateFontCursor(xGlobalDisplay, XC_sb_h_double_arrow);
+         systemCursors[hand]     = XCreateFontCursor(xGlobalDisplay, XC_hand2);
+         systemCursors[arrow]    = XCreateFontCursor(xGlobalDisplay, XC_left_ptr);
+
          XGetWindowAttributes(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), &attributes);
          xSystemDepth = attributes.depth;
          xSystemVisual = attributes.visual;
