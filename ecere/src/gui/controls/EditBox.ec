@@ -2185,9 +2185,9 @@ private:
       this.col = position;
    }
 
-   int DelCh(EditLine l1, int y1, int c1, EditLine l2, int y2, int c2, bool placeAfter)
+   void DelCh(EditLine l1, int y1, int c1, EditLine l2, int y2, int c2, bool placeAfter)
    {
-      return _DelCh(l1, y1, c1, l2, y2, c2, placeAfter, true, null);
+      _DelCh(l1, y1, c1, l2, y2, c2, placeAfter, true, null);
    }
 
    bool HasCommentOrEscape(EditLine line)
@@ -2286,14 +2286,16 @@ private:
          buffer = new char[line.size ? line.size : 1];
          */
          buffer = new char[line.size];
-         if(!buffer) return;
+         // TODO: Better handling of these allocation failures
+         if(!buffer) return extras;
          CopyBytes(buffer,l2.buffer,oldCount1 + 1/*line.count + 1*//*line.size*/);
       }
       else
          buffer = l2.buffer;
 
+      // TODO: Better handling of these allocation failures
       if(!line.AdjustBuffer(newLineCount))
-         return;
+         return extras;
 
 #ifdef _DEBUG
       /*if(newLineCount > 4000 || newLineCount < 0)
