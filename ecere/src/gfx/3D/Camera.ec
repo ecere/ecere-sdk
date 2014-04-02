@@ -164,8 +164,10 @@ public:
                if(target)
                {
                   Euler eulerCamera = orientation, euler;
+                  Euler eulerTarget = this.target.transform.orientation;
+                  // Cannot rely on 'this.target.eulerOrientation' as it is only updated when calling Rotate()
 
-                  euler.Add(eulerCamera, this.target.eulerOrientation);
+                  euler.Add(eulerCamera, eulerTarget);
 
                   // Logf("yaw = %f, pitch = %f\n", eulerCamera.yaw, eulerCamera.pitch);
 

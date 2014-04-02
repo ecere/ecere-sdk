@@ -1084,6 +1084,7 @@ public:
 
    void RotateEuler(Euler rotation, Euler min, Euler max)
    {
+      // WARNING: 'eulerOrientation' is only updated by this function
       Euler euler = eulerOrientation;//transform.orientation;
       euler.Add(euler, rotation);
 
