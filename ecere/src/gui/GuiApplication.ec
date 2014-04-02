@@ -639,8 +639,8 @@ public class GuiApplication : Application
          #endif
          #endif
             }
-            if(!interfaceDriver)
-               guiApplicationInitialized = false;
+            /*if(!interfaceDriver)
+               guiApplicationInitialized = false;*/
          }
          else
             defaultDisplayDriver = defaultDriver;
@@ -1407,9 +1407,8 @@ public:
    {
       set
       {
-         if((value && !defaultDisplayDriver) || (!value && defaultDisplayDriver) || strcmpi(defaultDisplayDriver, value))
-            SwitchMode( fullScreen, value, resolution, pixelFormat, refreshRate,
-               currentSkin ? currentSkin.name : null, true);
+         SwitchMode( fullScreen, value, resolution, pixelFormat, refreshRate,
+            currentSkin ? currentSkin.name : null, true);
        }
        get { return this ? defaultDisplayDriver : null; }
    };
