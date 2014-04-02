@@ -602,11 +602,10 @@ public class GuiApplication : Application
          }
    #elif defined(__APPLE__)
          {
-            if (driver) {
+            if (driver)
                defaultDriver = driver;
-            } else {
-               defaultDriver = "X"; //"CocoaOpenGL";
-            }
+            else
+               defaultDriver = "NCurses"; //"CocoaOpenGL";
          }
    #elif defined(__ANDROID__)
          {
