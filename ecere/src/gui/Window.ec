@@ -2440,7 +2440,8 @@ private:
       {
          char caption[2048];
          FigureCaption(caption);
-         guiApp.interfaceDriver.SetRootWindowCaption(this, caption);
+         if(guiApp.interfaceDriver)
+            guiApp.interfaceDriver.SetRootWindowCaption(this, caption);
       }
       UpdateDecorations();
       if(parent)
@@ -2451,7 +2452,8 @@ private:
             {
                char caption[2048];
                parent.FigureCaption(caption);
-               guiApp.interfaceDriver.SetRootWindowCaption(parent, caption);
+               if(guiApp.interfaceDriver)
+                  guiApp.interfaceDriver.SetRootWindowCaption(parent, caption);
             }
             else
                parent.UpdateCaption();
