@@ -50,6 +50,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -17971,6 +17973,7 @@ DeclareFunctionUtil("eSystem_New");
 DeclareFunctionUtil("eSystem_New0");
 DeclareFunctionUtil("eSystem_Renew");
 DeclareFunctionUtil("eSystem_Renew0");
+DeclareFunctionUtil("eSystem_Delete");
 DeclareFunctionUtil("eClass_GetProperty");
 DeclareFunctionUtil("eInstance_FireSelfWatchers");
 DeclareStruct("ecere::com::Class", 0x0);

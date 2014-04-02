@@ -12432,6 +12432,7 @@ void ComputeDataTypes()
    DeclareFunctionUtil("eSystem_New0");
    DeclareFunctionUtil("eSystem_Renew");
    DeclareFunctionUtil("eSystem_Renew0");
+   DeclareFunctionUtil("eSystem_Delete");
    DeclareFunctionUtil("eClass_GetProperty");
    DeclareFunctionUtil("eInstance_FireSelfWatchers");
 
