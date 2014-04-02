@@ -2218,7 +2218,7 @@ private:
             result = true;
          }
          ChangeWorkingDir(oldwd);
-         return result;
+         //return result;
       }
       else
       {
