@@ -597,7 +597,7 @@ public class GuiApplication : Application
             if (driver)
                defaultDriver = driver;
             else
-               defaultDriver = "NCurses"; //"CocoaOpenGL";
+               defaultDriver = "X"; //"CocoaOpenGL";
          }
    #elif defined(__ANDROID__)
          {
@@ -639,7 +639,7 @@ public class GuiApplication : Application
          #endif
 
          #if defined(__APPLE__)
-               SwitchMode(true, "X" /*"CocoaOpenGL"*/, 0, 0, 0, null, true);
+               // SwitchMode(true, "X" /*"CocoaOpenGL"*/, 0, 0, 0, null, true);
          #endif
 
          #if defined(__unix__)
