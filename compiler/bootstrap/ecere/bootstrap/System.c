@@ -595,10 +595,21 @@ void __ecereNameSpace__ecere__sys__LogErrorCode(unsigned int errorCode, char * d
 {
 if(((int)((errorCode & 0x3000) >> 12)) <= __ecereNameSpace__ecere__sys__globalSystem.errorLevel)
 {
+int cat = (((unsigned int)((errorCode & 0xFFF) >> 0)) & 0xF00) >> 8;
+int code = ((unsigned int)((errorCode & 0xFFF) >> 0)) & 0xFF;
+
 if(details)
-__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s (%s).\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))], details);
+__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s (%s).\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)__extension__ ({
+char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[cat]);
+
+((struct __ecereNameSpace__ecere__com__Array *)(__ecTemp1 + structSize_Instance));
+})->array)[code], details);
 else
-__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s.\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[((unsigned int)((errorCode & 0xFFF) >> 0))]);
+__ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s.\n", ((int)((errorCode & 0x3000) >> 12)), ((char **)__extension__ ({
+char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[cat]);
+
+((struct __ecereNameSpace__ecere__com__Array *)(__ecTemp1 + structSize_Instance));
+})->array)[code]);
 }
 __ecereNameSpace__ecere__sys__globalSystem.lastErrorCode = errorCode;
 }

@@ -116,15 +116,26 @@ public enum GuiErrorCode : ErrorCode
 
 static define DEFAULT_BUFFER_SIZE = 100 * MAX_F_STRING;
 
-static Array<String> errorMessages
+static Array<Array<String>> errorMessages
 { [
-   $"No error",
-   $"Memory allocation failed",
-   $"Inexistant string identifier specified",
-   $"Identic string identifier already exists",
-   $"Shared library loading failed",
-   $"File not found",
-   $"Couldn't write to file"
+   // System
+   { [
+      $"No error",
+      $"Memory allocation failed",
+      $"Inexistant string identifier specified",
+      $"Identic string identifier already exists",
+      $"Shared library loading failed",
+      $"File not found",
+      $"Couldn't write to file"
+   ] },
+   // GUI
+   { [
+      $"No error",
+      $"Graphics driver not supported by any user interface system",
+      $"Window creation failed",
+      $"Window graphics loading failed",
+      $"Driver/Mode switch failed"
+   ] }
 ] };
 
 // --- File, directory & environment manipulation ---
@@ -303,15 +314,17 @@ public void LogErrorCode(ErrorCode errorCode, char * details)
 {
    if(errorCode.level <= globalSystem.errorLevel)
    {
+      int cat = (errorCode.code & 0xF00) >> 8;
+      int code = errorCode.code & 0xFF;
       if(details)
          Logf("System Error [%d]: %s (%s).\n",
             errorCode.level,
-            errorMessages[errorCode.code],
+            errorMessages[cat][code],
             details);
       else
          Logf("System Error [%d]: %s.\n",
             errorCode.level,
-            errorMessages[errorCode.code]);
+            errorMessages[cat][code]);
    }
    globalSystem.lastErrorCode = errorCode;
 }

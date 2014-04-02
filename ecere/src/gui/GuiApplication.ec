@@ -87,15 +87,6 @@ import "Window"
 GuiApplication guiApp;
 int terminateX;
 
-static Array<String> errorMessages
-{ [
-   $"No error",
-   $"Graphics driver not supported by any user interface system",
-   $"Window creation failed",
-   $"Window graphics loading failed",
-   $"Driver/Mode switch failed"
-] };
-
 public class GuiApplication : Application
 {
    int numDrivers;
