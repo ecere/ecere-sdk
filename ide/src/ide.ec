@@ -3673,7 +3673,7 @@ class IDEApp : GuiApplication
          }
       }
 
-      if(app.argFilesCount > 1 && !strcmpi(GetExtension(argv[1], ext), "3ds"))
+      if(app.argFilesCount > 0 && !strcmpi(GetExtension(argv[1], ext), "3ds"))
       {
          app.driver = "OpenGL";
          ide.driverItems[1].checked = true;
