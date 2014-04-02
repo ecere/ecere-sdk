@@ -98,20 +98,20 @@ public:
 // TODO: Support enums resolved in compiling pass to allow moving this to GuiApplication.ec
 public enum SysErrorCode : ErrorCode
 {
-   allocationFailed = ErrorCode { fatal, 0x0001 },
-   nameInexistant   = ErrorCode { fatal, 0x0002 },
-   nameExists       = ErrorCode { fatal, 0x0003 },
-   missingLibrary   = ErrorCode { fatal, 0x0004 },
-   fileNotFound     = ErrorCode { minor, 0x0005 },
-   writeFailed      = ErrorCode { major, 0x0006 }
+   allocationFailed = ErrorCode { fatal, 0x001 },
+   nameInexistant   = ErrorCode { fatal, 0x002 },
+   nameExists       = ErrorCode { fatal, 0x003 },
+   missingLibrary   = ErrorCode { fatal, 0x004 },
+   fileNotFound     = ErrorCode { minor, 0x005 },
+   writeFailed      = ErrorCode { major, 0x006 }
 };
 
 public enum GuiErrorCode : ErrorCode
 {
-   driverNotSupported      = ErrorCode { veryFatal, 0x1001 },
-   windowCreationFailed    = ErrorCode { veryFatal, 0x1002 },
-   graphicsLoadingFailed   = ErrorCode { veryFatal, 0x1003 },
-   modeSwitchFailed        = ErrorCode { veryFatal, 0x1004 }
+   driverNotSupported      = ErrorCode { veryFatal, 0x101 },
+   windowCreationFailed    = ErrorCode { veryFatal, 0x102 },
+   graphicsLoadingFailed   = ErrorCode { veryFatal, 0x103 },
+   modeSwitchFailed        = ErrorCode { veryFatal, 0x104 }
 };
 
 static define DEFAULT_BUFFER_SIZE = 100 * MAX_F_STRING;
