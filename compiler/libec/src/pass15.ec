@@ -12433,6 +12433,7 @@ void ComputeDataTypes()
    DeclareFunctionUtil("eSystem_Renew");
    DeclareFunctionUtil("eSystem_Renew0");
    DeclareFunctionUtil("eClass_GetProperty");
+   DeclareFunctionUtil("eInstance_FireSelfWatchers");
 
    DeclareStruct("ecere::com::Class", false);
    DeclareStruct("ecere::com::Instance", false);

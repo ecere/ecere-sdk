@@ -872,6 +872,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -17970,6 +17972,7 @@ DeclareFunctionUtil("eSystem_New0");
 DeclareFunctionUtil("eSystem_Renew");
 DeclareFunctionUtil("eSystem_Renew0");
 DeclareFunctionUtil("eClass_GetProperty");
+DeclareFunctionUtil("eInstance_FireSelfWatchers");
 DeclareStruct("ecere::com::Class", 0x0);
 DeclareStruct("ecere::com::Instance", 0x0);
 DeclareStruct("ecere::com::Property", 0x0);
