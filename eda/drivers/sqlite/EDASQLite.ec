@@ -483,6 +483,7 @@ class SQLiteDatabase : Database
 
 static class FFITypesHolder : Map<Class, String> { ~FFITypesHolder() { Free(); } }
 FFITypesHolder structFFITypes { };
+static Iterator dummy; // TOFIX: forward struct declaration issues on Clang
 
 public ffi_type * FFIGetType(Class type, bool structByValue)
 {

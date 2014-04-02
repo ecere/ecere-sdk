@@ -306,7 +306,7 @@ public void Desktop3DInitialize(Window window,
 
 public void * Desktop3DGetWindowHandle(Window window)
 {
-   return window.windowHandle;
+   return window ? window.windowHandle : null;
 }
 
 public void Desktop3DGetClipBox(Box box)
