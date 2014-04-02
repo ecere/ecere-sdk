@@ -1407,8 +1407,9 @@ public:
    {
       set
       {
-         SwitchMode( fullScreen, value, resolution, pixelFormat, refreshRate,
-            currentSkin ? currentSkin.name : null, true);
+         if((value && !defaultDisplayDriver) || (!value && defaultDisplayDriver) || strcmpi(defaultDisplayDriver, value))
+            SwitchMode( fullScreen, value, resolution, pixelFormat, refreshRate,
+               currentSkin ? currentSkin.name : null, true);
        }
        get { return this ? defaultDisplayDriver : null; }
    };
