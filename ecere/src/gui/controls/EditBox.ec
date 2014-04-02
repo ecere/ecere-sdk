@@ -4715,21 +4715,24 @@ private:
                Copy();
                return false;
             }
-            else if(key.shift)
+            else if(!style.readOnly)
             {
-               if(!(style.readOnly))
-                  Paste();
-               return false;
-            }
-            else
-            {
-               this.overwrite ^= 1;
-               UpdateCaretPosition(true);
-               if(this.overwrite)
-                  SetCaret(0,0,0);
-               DirtyLine(this.y);
-               UpdateDirty();
-               NotifyOvrToggle(master, this, this.overwrite);
+               if(key.shift)
+               {
+                  if(!(style.readOnly))
+                     Paste();
+                  return false;
+               }
+               else
+               {
+                  this.overwrite ^= 1;
+                  UpdateCaretPosition(true);
+                  if(this.overwrite)
+                     SetCaret(0,0,0);
+                  DirtyLine(this.y);
+                  UpdateDirty();
+                  NotifyOvrToggle(master, this, this.overwrite);
+               }
             }
             break;
          case hotKey:
