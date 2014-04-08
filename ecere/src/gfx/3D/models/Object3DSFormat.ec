@@ -768,7 +768,6 @@ static bool ReadMap(FileInfo * info, Material mat)
    {
       case MAP_FILENAME:
       {
-         Bitmap opacityMap = null;
          char * name;
          char location[MAX_LOCATION];
 
@@ -778,46 +777,66 @@ static bool ReadMap(FileInfo * info, Material mat)
          strcpy(location, info->textureDirectory);
          PathCat(location, name);
 
-         if(!mat.baseMap)
          {
-            mat.baseMap = displaySystem.GetTexture(name);
+            Bitmap opacityMap = null;
+            bool alphaOnly = true;
+            bool translucent = false;
             if(!mat.baseMap)
             {
-               mat.baseMap = Bitmap { };
-               if(!mat.baseMap.Load(location, null, null) ||
-                  !mat.baseMap.Convert(null, pixelFormat888, null) ||
-                  !displaySystem.AddTexture(name, mat.baseMap))
+               mat.baseMap = displaySystem.GetTexture(name);
+               if(!mat.baseMap)
                {
-                  delete mat.baseMap;
+                  mat.baseMap = Bitmap { };
+                  if(!mat.baseMap.Load(location, null, null) ||
+                     !mat.baseMap.Convert(null, pixelFormat888, null) ||
+                     !displaySystem.AddTexture(name, mat.baseMap))
+                  {
+                     delete mat.baseMap;
+                  }
+                  opacityMap = mat.baseMap;
                }
-               opacityMap = mat.baseMap;
             }
-         }
-         else if(info->parent->chunkId == MAT_MAPOPACITY)
-         {
-            opacityMap = Bitmap { };
-            if(!opacityMap.Load(location, null, null) ||
-               !opacityMap.Convert(null, pixelFormat888, null))
+            else if(info->parent->chunkId == MAT_MAPOPACITY)
             {
+               opacityMap = Bitmap { };
+               if(opacityMap.Load(location, null, null))
+               {
+                  if(opacityMap.pixelFormat == pixelFormatRGBA)
+                     alphaOnly = false;
+                  if(!opacityMap.Convert(null, pixelFormat888, null))
+                     delete opacityMap;
+               }
+            }
+
+            if(mat.baseMap)
+            {
+               if(!mat.baseMap.displaySystem && info->parent->chunkId == MAT_MAPOPACITY && opacityMap && opacityMap.width && opacityMap.height)
+               {
+                  ColorAlpha * picture = (ColorAlpha *)mat.baseMap.picture;
+                  ColorAlpha * opacityPicture = (ColorAlpha *)opacityMap.picture;
+                  uint x, y;
+                  int ow = opacityMap.width, oh = opacityMap.height;
+                  int bw = mat.baseMap.width, bh = mat.baseMap.height;
+
+                  for(y = 0; y < bh; y++)
+                     for(x = 0; x < bw; x++)
+                     {
+                        int bc = ((y % bh) * bw + (x % bw));
+                        int oc = ((y % oh) * bw + (x % ow));
+                        byte alpha = alphaOnly ? opacityPicture[oc].color.r : opacityPicture[oc].a;
+                        if(alpha && alpha < 255)
+                           translucent = true;
+                        picture[bc] = ColorAlpha { alpha, picture[bc].color };
+                     }
+               }
+               if(translucent)
+                  mat.flags.translucent = true;
+               mat.diffuse.r = mat.diffuse.g = mat.diffuse.b =
+               mat.ambient.r = mat.ambient.g = mat.ambient.b = 1.0f;
+            }
+            if(opacityMap != mat.baseMap)
                delete opacityMap;
-            }
          }
-
-         if(mat.baseMap)
-         {
-            if(!mat.baseMap.displaySystem && info->parent->chunkId == MAT_MAPOPACITY && opacityMap)
-            {
-               unsigned int c;
-               ColorAlpha * picture = (ColorAlpha *)mat.baseMap.picture;
-
-               for(c = 0; c < opacityMap.width * opacityMap.height; c++)
-                  picture[c] = ColorAlpha { ((ColorAlpha *)opacityMap.picture)[c].color.r, picture[c].color };
-            }
-            mat.diffuse.r = mat.diffuse.g = mat.diffuse.b =
-            mat.ambient.r = mat.ambient.g = mat.ambient.b = 1.0f;
-         }
-         if(opacityMap != mat.baseMap)
-            delete opacityMap;
          delete name;
          break;
       }
@@ -903,7 +922,6 @@ static bool ReadMaterial(FileInfo * info, Material mat)
          break;
       case MAT_MAPOPACITY:
          ReadChunks(ReadMap, info, mat);
-         mat.flags.translucent = true;
          break;
       case MAT_DOUBLESIDED:
          mat.flags.doubleSided = true;
