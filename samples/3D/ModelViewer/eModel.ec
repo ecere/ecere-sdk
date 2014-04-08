@@ -157,7 +157,7 @@ class ModelViewer : Window
       {
          startPosition.x = x;
          startPosition.y = y;
-         startOrientation = camera.orientation;
+         startOrientation = camera.eulerOrientation;
          Capture();
          moving = true;
       }
@@ -207,10 +207,8 @@ class ModelViewer : Window
             startOrientation.pitch + (y - startPosition.y),
             0
          };
-         //if(euler.pitch > 90) euler.pitch = 90;
-         //if(euler.pitch < 1) euler.pitch = 1;
 
-         camera.orientation = euler;
+         camera.eulerOrientation = euler;
 
          Update(null);
       }

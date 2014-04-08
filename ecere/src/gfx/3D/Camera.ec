@@ -13,7 +13,8 @@ public:
    // Change type to inherited types...
    property CameraType type { set { type = value; } get { return type; } };
    property Vector3D position { set { position = value; } get { value = position; } };
-   property Quaternion orientation { set { orientation = value; } get { value = orientation; } };
+   property Quaternion orientation { set { orientation = value; if(type == attached || type == fixed) eulerOrientation = value; } get { value = orientation; } };
+   property Euler eulerOrientation { set { eulerOrientation = value; if(type != attached && type != fixed) orientation = value; } get { value = eulerOrientation; } };
    property Vector3D cPosition { get { value = cPosition; } };
    property Quaternion cOrientation { get { value = cAngle; } };
    property Degrees fov { set { fov = value; } get { return fov; } };
@@ -163,11 +164,10 @@ public:
                toAngle = { 1,0,0,0 };
                if(target)
                {
-                  Euler eulerCamera = orientation, euler;
-                  Euler eulerTarget = this.target.transform.orientation;
-                  // Cannot rely on 'this.target.eulerOrientation' as it is only updated when calling Rotate()
+                  Euler euler;
+                  Euler eulerTarget = this.target.eulerOrientation;
 
-                  euler.Add(eulerCamera, eulerTarget);
+                  euler.Add(eulerOrientation, eulerTarget);
 
                   // Logf("yaw = %f, pitch = %f\n", eulerCamera.yaw, eulerCamera.pitch);
 
@@ -598,6 +598,7 @@ private:
    Object target;
    Vector3D position;
    Quaternion orientation;
+   Euler eulerOrientation;
    float aspectRatio;
    Degrees fov;
    float zMin, zMax;

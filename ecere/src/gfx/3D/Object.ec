@@ -1225,7 +1225,7 @@ public:
       return result;
    }
 
-   property Transform transform { set { transform = value; } get { value = transform; } };
+   property Transform transform { set { transform = value; eulerOrientation = transform.orientation; } get { value = transform; } };
    property Material material { set { material = value; } get { return material; } };
    property Vector3Df max { get { value = max; } };
    property Vector3Df min { get { value = min; } };
