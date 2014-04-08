@@ -191,7 +191,7 @@ class FormDesigner : ClassDesignerBase
       editBox.Printf("class %s : %s\n", name, inherit);
       editBox.Printf("{\n");
 
-      editBox.Printf("   caption = \"%s\";\n", name);
+      editBox.Printf("   caption = $\"%s\";\n", name);
       //editBox.Printf("   background = Color { 212, 208, 200 };\n");
 
       editBox.Printf("   background = formColor;\n");
