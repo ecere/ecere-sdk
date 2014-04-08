@@ -50,20 +50,63 @@ import "Object"
 #define MAT_SPECULAR          0xA030
 #define MAT_SHININESS         0xA040
 #define MAT_SHINSTRENGTH      0xA041
+#define MAT_SHIN3PC           0xA042
 #define MAT_TRANSPARENCY      0xA050
+#define MAT_XPFALL            0xA052
+#define MAT_REFBLUR           0xA053
+#define MAT_SELFILLUM         0xA080
 #define MAT_DOUBLESIDED       0xA081
-#define MAT_SELFILLUM         0xA084
+#define MAT_ADDITIVE          0xA083
+#define MAT_SELFILPCT         0xA084
+#define MAT_WIRE              0xA085
+#define MAT_SUPERSMP          0xA086
+#define MAT_WIRETHICKNESS     0xA087
+#define MAT_FACEMAP           0xA088
+#define MAT_XPFALLIN          0xA08A
+#define MAT_PHONG             0xA08C
+#define MAT_WIREABS           0xA08E
+#define MAT_SHADING           0xA100
 #define MAT_MAPTEXTURE1       0xA200
+#define MAT_SPECULARMAP       0xA204
 #define MAT_MAPOPACITY        0xA210
+#define MAT_REFLECTIONMAP     0xA220
+#define MAT_BUMPMAP           0xA230
 
 // Map Chunks
 #define MAP_FILENAME          0xA300
+
+#define MAT_SHININESSMAP      0xA33C
+#define MAT_EMISSIVEMAP       0xA33D
 #define MAP_OPTIONS           0xA351
 #define MAP_1_U_SCALE   0xA354
 #define MAP_1_V_SCALE   0xA356
 #define MAP_U_OFFSET    0xA358
 #define MAP_V_OFFSET    0xA35A
 #define MAP_ROTATION    0xA35C
+
+#define MAP_OPTIONS_DECAL           0x0001      // (related to MAP_OPTIONS_DONTTILE)
+#define MAP_OPTIONS_MIRROR          0x0002
+#define MAP_OPTIONS_NEGATIVE        0x0008
+#define MAP_OPTIONS_DONTTILE        0x0010
+#define MAP_OPTIONS_SUMMEDFILTERING 0x0020
+#define MAP_OPTIONS_USEALPHA        0x0040
+#define MAP_OPTIONS_LUMORALPHATINT  0x0080
+#define MAP_OPTIONS_IGNOREALPHA     0x0100
+#define MAP_OPTIONS_RGBTINT         0x0200
+
+#define MAP_FILTERBLUR        0xA353
+#define MAP_1_U_SCALE         0xA354
+#define MAP_1_V_SCALE         0xA356
+#define MAP_U_OFFSET          0xA358
+#define MAP_V_OFFSET          0xA35A
+#define MAP_ROTATION          0xA35C
+
+#define MAP_LUMTINT1          0xA360
+#define MAP_LUMTINT2          0xA362
+
+#define MAP_TINTR             0xA364
+#define MAP_TINTG             0xA366
+#define MAP_TINTB             0xA368
 
 // Keyframer Chunks
 #define KEYFRAME3DS           0xB000
@@ -843,7 +886,7 @@ static bool ReadMap(FileInfo * info, Material mat)
       case MAP_OPTIONS:
       {
          uint16 options = ReadWORD(info->f);
-         if(!(options & 0x10)) mat.flags.tile = true;
+         if(!(options & MAP_OPTIONS_DONTTILE)) mat.flags.tile = true;
          break;
       }
       case MAP_1_U_SCALE:
@@ -852,6 +895,13 @@ static bool ReadMap(FileInfo * info, Material mat)
       case MAP_1_V_SCALE:
          mat.vScale = ReadFloat(info->f);
          break;
+      /*
+      case AMOUNT_OF:
+         break;
+      default:
+         PrintLn("Unhandled Map block");
+         break;
+      */
    }
    return true;
 }
@@ -926,6 +976,10 @@ static bool ReadMaterial(FileInfo * info, Material mat)
       case MAT_DOUBLESIDED:
          mat.flags.doubleSided = true;
          break;
+      /*
+      default:
+         PrintLn("Unhandled MAT type ID", info->chunkId);
+      */
    }
    return true;
 }
