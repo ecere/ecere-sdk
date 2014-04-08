@@ -1909,9 +1909,10 @@ class Object3DSFormat : ObjectFormat
          {
             if(ReadChunks(ReadMain, &info, object) && info.rootObject.children.first)
             {
-               object.Animate(object.frame);
                object.flags.root = true;
                object.SetMinMaxRadius(true);
+               object._Animate(object.frame);
+               object.UpdateTransform();
                result = true;
             }
             delete info.f;
