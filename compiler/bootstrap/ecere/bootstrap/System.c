@@ -397,6 +397,10 @@ int count;
 struct __ecereNameSpace__ecere__com__Class * type;
 } __attribute__ ((gcc_struct));
 
+static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__sysErrorMessages;
+
+static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__guiErrorMessages;
+
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__errorMessages;
 
 unsigned int __ecereNameSpace__ecere__sys__MoveFile(char * source, char * dest)
@@ -819,6 +823,8 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Array_TPL_ecere__com__Array_TPL_String___;
+
 void __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Container_copySrc;
@@ -827,18 +833,36 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 
 void __ecereCreateModuleInstances_System()
 {
-(__ecereNameSpace__ecere__sys__errorMessages = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_), __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(__ecereNameSpace__ecere__sys__errorMessages, ((struct __ecereNameSpace__ecere__com__Instance *)&__extension__ (struct __ecereNameSpace__ecere__com__BuiltInContainer)
+(__ecereNameSpace__ecere__sys__sysErrorMessages = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_), __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(__ecereNameSpace__ecere__sys__sysErrorMessages, ((struct __ecereNameSpace__ecere__com__Instance *)&__extension__ (struct __ecereNameSpace__ecere__com__BuiltInContainer)
 {
 __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl, __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, 0, __extension__ (char * [])
 {
 __ecereNameSpace__ecere__GetTranslatedString("ecere", "No error", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Memory allocation failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Inexistant string identifier specified", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Identic string identifier already exists", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Shared library loading failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "File not found", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Couldn't write to file", (((void *)0)))
 }, 7, __ecereClass_String
 })));
+__ecereNameSpace__ecere__com__eInstance_IncRef(__ecereNameSpace__ecere__sys__sysErrorMessages);
+(__ecereNameSpace__ecere__sys__guiErrorMessages = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_), __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(__ecereNameSpace__ecere__sys__guiErrorMessages, ((struct __ecereNameSpace__ecere__com__Instance *)&__extension__ (struct __ecereNameSpace__ecere__com__BuiltInContainer)
+{
+__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl, __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, 0, __extension__ (char * [])
+{
+__ecereNameSpace__ecere__GetTranslatedString("ecere", "No error", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Graphics driver not supported by any user interface system", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Window creation failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Window graphics loading failed", (((void *)0))), __ecereNameSpace__ecere__GetTranslatedString("ecere", "Driver/Mode switch failed", (((void *)0)))
+}, 5, __ecereClass_String
+})));
+__ecereNameSpace__ecere__com__eInstance_IncRef(__ecereNameSpace__ecere__sys__guiErrorMessages);
+(__ecereNameSpace__ecere__sys__errorMessages = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Array_TPL_ecere__com__Array_TPL_String___), __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(__ecereNameSpace__ecere__sys__errorMessages, ((struct __ecereNameSpace__ecere__com__Instance *)&__extension__ (struct __ecereNameSpace__ecere__com__BuiltInContainer)
+{
+__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl, __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer, 0, __extension__ (struct __ecereNameSpace__ecere__com__Instance * [])
+{
+__ecereNameSpace__ecere__sys__sysErrorMessages, __ecereNameSpace__ecere__sys__guiErrorMessages
+}, 2, __ecereClass___ecereNameSpace__ecere__com__Array_TPL_String_
+})));
 __ecereNameSpace__ecere__com__eInstance_IncRef(__ecereNameSpace__ecere__sys__errorMessages);
 }
 
 void __ecereDestroyModuleInstances_System()
 {
+(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__sysErrorMessages), __ecereNameSpace__ecere__sys__sysErrorMessages = 0);
+(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__guiErrorMessages), __ecereNameSpace__ecere__sys__guiErrorMessages = 0);
 (__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__errorMessages), __ecereNameSpace__ecere__sys__errorMessages = 0);
 }
 

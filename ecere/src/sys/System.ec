@@ -116,27 +116,27 @@ public enum GuiErrorCode : ErrorCode
 
 static define DEFAULT_BUFFER_SIZE = 100 * MAX_F_STRING;
 
-static Array<Array<String>> errorMessages
+static Array<String> sysErrorMessages
 { [
-   // System
-   { [
-      $"No error",
-      $"Memory allocation failed",
-      $"Inexistant string identifier specified",
-      $"Identic string identifier already exists",
-      $"Shared library loading failed",
-      $"File not found",
-      $"Couldn't write to file"
-   ] },
-   // GUI
-   { [
-      $"No error",
-      $"Graphics driver not supported by any user interface system",
-      $"Window creation failed",
-      $"Window graphics loading failed",
-      $"Driver/Mode switch failed"
-   ] }
+   $"No error",
+   $"Memory allocation failed",
+   $"Inexistant string identifier specified",
+   $"Identic string identifier already exists",
+   $"Shared library loading failed",
+   $"File not found",
+   $"Couldn't write to file"
 ] };
+
+static Array<String> guiErrorMessages
+{ [
+   $"No error",
+   $"Graphics driver not supported by any user interface system",
+   $"Window creation failed",
+   $"Window graphics loading failed",
+   $"Driver/Mode switch failed"
+] };
+
+static Array<Array<String>> errorMessages { [ sysErrorMessages, guiErrorMessages ] };
 
 // --- File, directory & environment manipulation ---
 #undef MoveFile
