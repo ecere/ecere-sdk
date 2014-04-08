@@ -1792,6 +1792,7 @@ private:
                               exponent = strchr(word, 'e');
                               if(!exponent) exponent = strchr(word, 'E');
                            }
+                           if(exponent && exponent > word + wordLen) exponent = null;
                            if(dot && dot > word + wordLen) dot = null;
                            isReal = dot || exponent;
                            if(isReal)
