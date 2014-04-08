@@ -820,6 +820,33 @@ static bool ReadMap(FileInfo * info, Material mat)
          strcpy(location, info->textureDirectory);
          PathCat(location, name);
 
+         if(info->parent->chunkId == MAT_BUMPMAP)
+         {
+            mat.bumpMap = displaySystem.GetTexture(name);
+            if(!mat.bumpMap)
+            {
+               mat.bumpMap = Bitmap { };
+               if(!mat.bumpMap.Load(location, null, null) ||
+                  !mat.bumpMap.Convert(null, pixelFormat888, null) ||
+                  !displaySystem.AddTexture(name, mat.bumpMap))
+                  delete mat.bumpMap;
+            }
+            if(mat.bumpMap)
+            {
+               ColorAlpha * picture = (ColorAlpha *)mat.bumpMap.picture;
+               int bw = mat.bumpMap.width, bh = mat.bumpMap.height;
+               int y, x;
+
+               for(y = 0; y < bh; y++)
+                  for(x = 0; x < bw; x++)
+                  {
+                     uint bc = y * bw + x;
+                     Color color = picture[bc].color;
+                     picture[bc] = { 255, { color.r, 255 - color.b, color.g } };
+                  }
+            }
+         }
+         else
          {
             Bitmap opacityMap = null;
             bool alphaOnly = true;
@@ -975,6 +1002,9 @@ static bool ReadMaterial(FileInfo * info, Material mat)
          break;
       case MAT_DOUBLESIDED:
          mat.flags.doubleSided = true;
+         break;
+      case MAT_BUMPMAP:
+         ReadChunks(ReadMap, info, mat);
          break;
       /*
       default:
@@ -1241,6 +1271,8 @@ static bool ReadEditChunks(FileInfo * info, void * data)
          {
             if(material.baseMap)
                material.baseMap.MakeMipMaps(info->displaySystem);
+            if(material.bumpMap)
+               material.bumpMap.MakeMipMaps(info->displaySystem);
             // COPY_NITEM(mat, material);
             CopyBytes(((byte *)(mat)) + sizeof(class NamedItem), ((byte *)(material)) + sizeof(class NamedItem), sizeof(class Material) - sizeof(class NamedItem));
          }
