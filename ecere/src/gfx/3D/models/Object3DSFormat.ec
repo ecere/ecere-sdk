@@ -822,13 +822,17 @@ static bool ReadMap(FileInfo * info, Material mat)
 
          if(info->parent->chunkId == MAT_BUMPMAP)
          {
-            mat.bumpMap = displaySystem.GetTexture(name);
+            // To avoid messing up the diffuse texture if same bitmap is specified by mistake...
+            char bumpName[MAX_FILENAME];
+            strcpy(bumpName, "BUMP:");
+            strcat(bumpName, name);
+            mat.bumpMap = displaySystem.GetTexture(bumpName);
             if(!mat.bumpMap)
             {
                mat.bumpMap = Bitmap { };
                if(!mat.bumpMap.Load(location, null, null) ||
                   !mat.bumpMap.Convert(null, pixelFormat888, null) ||
-                  !displaySystem.AddTexture(name, mat.bumpMap))
+                  !displaySystem.AddTexture(bumpName, mat.bumpMap))
                   delete mat.bumpMap;
             }
             if(mat.bumpMap)
