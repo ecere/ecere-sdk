@@ -59,6 +59,11 @@ import "Object"
 // Map Chunks
 #define MAP_FILENAME          0xA300
 #define MAP_OPTIONS           0xA351
+#define MAP_1_U_SCALE   0xA354
+#define MAP_1_V_SCALE   0xA356
+#define MAP_U_OFFSET    0xA358
+#define MAP_V_OFFSET    0xA35A
+#define MAP_ROTATION    0xA35C
 
 // Keyframer Chunks
 #define KEYFRAME3DS           0xB000
@@ -822,6 +827,12 @@ static bool ReadMap(FileInfo * info, Material mat)
          if(!(options & 0x10)) mat.flags.tile = true;
          break;
       }
+      case MAP_1_U_SCALE:
+         mat.uScale = ReadFloat(info->f);
+         break;
+      case MAP_1_V_SCALE:
+         mat.vScale = ReadFloat(info->f);
+         break;
    }
    return true;
 }

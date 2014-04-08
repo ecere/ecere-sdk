@@ -31,6 +31,7 @@ public:
    Bitmap bumpMap;
    Bitmap envMap;
    MaterialFlags flags;
+   float uScale, vScale;
 
    void Free()
    {

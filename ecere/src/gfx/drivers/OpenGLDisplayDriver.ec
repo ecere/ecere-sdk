@@ -3481,6 +3481,12 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnable(GL_TEXTURE_2D);
          glBindTexture(GL_TEXTURE_2D, (uint)map.driverData);
 
+         glMatrixMode(GL_TEXTURE);
+         glLoadIdentity();
+         if(material.uScale && material.vScale)
+            glScalef(material.uScale, material.vScale, 1);
+         glMatrixMode(GL_MODELVIEW);
+
          if(material.flags.tile)
          {
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
