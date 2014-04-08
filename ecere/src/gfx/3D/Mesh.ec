@@ -601,7 +601,7 @@ private:
       float xRadius, yRadius, zRadius;
 
       min = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
-      max = { MINFLOAT, MINFLOAT, MINFLOAT };
+      max = {-MAXFLOAT,-MAXFLOAT,-MAXFLOAT };
 
       for(c = 0; c<nVertices; c++)
       {

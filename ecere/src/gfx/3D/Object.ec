@@ -500,7 +500,7 @@ public:
             mesh.SetMinMaxRadius();
          min = mesh.min;
          max = mesh.max;
-         volume = true;
+         volume = (max.x >= min.x && max.y >= min.y && max.z >= min.z);
       }
       else
       {
@@ -532,13 +532,13 @@ public:
                Vector3Df point;
                point.MultMatrix(points[c], child.localMatrix);
 
-               if(point.x < this.min.x) this.min.x = point.x;
-               if(point.y < this.min.y) this.min.y = point.y;
-               if(point.z < this.min.z) this.min.z = point.z;
+               if(point.x < min.x) min.x = point.x;
+               if(point.y < min.y) min.y = point.y;
+               if(point.z < min.z) min.z = point.z;
 
-               if(point.x > this.max.x) this.max.x = point.x;
-               if(point.y > this.max.y) this.max.y = point.y;
-               if(point.z > this.max.z) this.max.z = point.z;
+               if(point.x > max.x) max.x = point.x;
+               if(point.y > max.y) max.y = point.y;
+               if(point.z > max.z) max.z = point.z;
             }
             volume = true;
          }
