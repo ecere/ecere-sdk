@@ -3815,7 +3815,7 @@ class OpenGLDisplayDriver : DisplayDriver
                MeshFeatures flags = mesh.flags;
                for(c = 0; c<primitive->nIndices; c++)
                {
-                  short index = ((short *) oglIndices.indices)[c];
+                  uint16 index = ((uint16 *) oglIndices.indices)[c];
                   if(flags.normals) glNormal3fv((float *)&mesh.normals[index]);
                   if(flags.texCoords1) glTexCoord2fv((float *)&mesh.texCoords[index]);
                   if(flags.colors) glColor4fv((float *)&mesh.colors[index]);
