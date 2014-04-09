@@ -1621,12 +1621,15 @@ class Debugger
             else if(!strcmp(item.name, "fullname"))
             {
                // GDB 6.3 on OS X is giving "fullname" and "dir", all in absolute, but file name only in 'file'
-               String path = ide.workspace.GetPathWorkspaceRelativeOrAbsolute(item.value);
-               if(strcmp(frame.file, path))
-                  frame.file = path;
-               delete path;
-
-               frame.absoluteFile = item.value; // ide.workspace.GetAbsolutePathFromRelative(frame.file);
+               Workspace ws = ide.workspace;
+               if(ws)
+               {
+                  String path = ide.workspace.GetPathWorkspaceRelativeOrAbsolute(item.value);
+                  if(strcmp(frame.file, path))
+                     frame.file = path;
+                  delete path;
+               }
+               frame.absoluteFile = item.value;
             }
             else
                _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "frame member (", item.name, "=", item.value, ") is unheard of");
