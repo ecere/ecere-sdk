@@ -2838,7 +2838,7 @@ private:
    {
       if(line)
       {
-         if(mouseMove || (!overwrite && !style.noCaret))
+         if(mouseMove || !style.noCaret)
          {
             int max = this.mouseMove ? this.dropX : this.x;
             int y = this.mouseMove ? this.dropY : this.y;
@@ -2894,7 +2894,10 @@ private:
             if(setCaret)
                caretX = x;
             caretY = y * this.space.h;
-            SetCaret(x + XOFFSET-2, y * space.h + YOFFSET, space.h);
+            if(!overwrite)
+               SetCaret(x + XOFFSET-2, y * space.h + YOFFSET, space.h);
+            else
+               SetCaret(0, 0, 0);
          }
          else
             SetCaret(0, 0, 0);
