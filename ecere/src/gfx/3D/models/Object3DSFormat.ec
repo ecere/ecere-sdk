@@ -834,20 +834,20 @@ static bool ReadMap(FileInfo * info, Material mat)
                   !mat.bumpMap.Convert(null, pixelFormat888, null) ||
                   !displaySystem.AddTexture(bumpName, mat.bumpMap))
                   delete mat.bumpMap;
-            }
-            if(mat.bumpMap)
-            {
-               ColorAlpha * picture = (ColorAlpha *)mat.bumpMap.picture;
-               int bw = mat.bumpMap.width, bh = mat.bumpMap.height;
-               int y, x;
+               if(mat.bumpMap)
+               {
+                  ColorAlpha * picture = (ColorAlpha *)mat.bumpMap.picture;
+                  int bw = mat.bumpMap.width, bh = mat.bumpMap.height;
+                  int y, x;
 
-               for(y = 0; y < bh; y++)
-                  for(x = 0; x < bw; x++)
-                  {
-                     uint bc = y * bw + x;
-                     Color color = picture[bc].color;
-                     picture[bc] = { 255, { color.r, 255 - color.b, color.g } };
-                  }
+                  for(y = 0; y < bh; y++)
+                     for(x = 0; x < bw; x++)
+                     {
+                        uint bc = y * bw + x;
+                        Color color = picture[bc].color;
+                        picture[bc] = { 255, { color.r, 255 - color.b, color.g } };
+                     }
+               }
             }
          }
          else
