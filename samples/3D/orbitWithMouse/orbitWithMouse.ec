@@ -652,7 +652,7 @@ class Desktop3D : Window
             dy = (int)(y - h/2);
 
             surface.SetForeground(ColorAlpha{alpha, white});
-            surface.Stretch(bitmap, dx * SCALE, dy * SCALE, 0,0, w * SCALE, h * SCALE, bitmap.width, bitmap.height);
+            surface.Stretch(bitmap, (int)(dx * SCALE), (int)(dy * SCALE), 0,0, (int)(w * SCALE), (int)(h * SCALE), bitmap.width, bitmap.height);
 
             x += FULL_SWITCH;
 
@@ -1076,6 +1076,43 @@ class Desktop3D : Window
                }
             }
             break;
+         case up:
+         {
+            if(poppingWindow) break;
+            if(sliding == 1.0 && !dockHidden)
+            {
+               Quaternion fa, ta;
+               Vector3D fp, tp;
+
+               Window window = virtualDesktop.activeChild;
+               if(window)
+               {
+                  Window3D window3D = Desktop3DGetWindowHandle(window);
+
+                  camera.Update();
+                  fa = fromAngle = camera.cOrientation;
+                  fp = fromPosition = camera.cPosition;
+
+                  camera.type = lookAt;
+                  camera.position = { 0,0,0 };
+                  camera.orientation = Euler {};
+                  lookAt.transform.position = window3D.cube.transform.position;
+                  lookAt.transform.orientation = Euler {};
+                  lookAt.UpdateTransform();
+
+                  sliding = 0;
+                  dockHidden = true;
+
+                  camera.Update();
+                  tp = toPosition = camera.cPosition;
+                  ta = toAngle = camera.cOrientation;
+
+                  camera.AdjustAngle(fromAngle);
+                  camera.AdjustPosition(fromPosition);
+               }
+            }
+            if(!dockHidden) break;  // Follow through to 'full screen' if dock is hiddens
+         }
          case enter:
          {
             if(sliding < 1 || switching < 1 || entering < 1) break;
@@ -1135,97 +1172,40 @@ class Desktop3D : Window
             }
             break;
          }
-         case f1:
-         {
-            if(dockHidden)
-            {
-               Window window = virtualDesktop.activeChild;
-               Window3D window3D = Desktop3DGetWindowHandle(window);
-
-               if(fullScreen)
-               {
-                  fromAngle = camera.cOrientation;
-                  fromPosition = camera.cPosition;
-
-                  camera.type = lookAt;
-                  camera.position = {};
-                  camera.orientation = Euler{};
-                  lookAt.transform.position = window3D.cube.transform.position;
-                  lookAt.transform.orientation = Euler { };
-                  lookAt.UpdateTransform();
-
-                  entering = 0;
-
-                  camera.Update();
-                  toPosition = camera.cPosition;
-                  toAngle = camera.cOrientation;
-
-                  camera.AdjustAngle(fromAngle);
-                  camera.AdjustPosition(fromPosition);
-
-                  // window.Deactivate();
-
-                  entering = 0;
-                  fullScreen = false;
-               }
-            }
-            break;
-         }
-         case up:
-         {
-            if(poppingWindow) break;
-            if(sliding == 1.0 && !dockHidden)
-            {
-               Quaternion fa, ta;
-               Vector3D fp, tp;
-
-               Window window = virtualDesktop.activeChild;
-               if(window)
-               {
-                  Window3D window3D = Desktop3DGetWindowHandle(window);
-
-                  camera.Update();
-                  fa = fromAngle = camera.cOrientation;
-                  fp = fromPosition = camera.cPosition;
-
-                  camera.type = lookAt;
-                  camera.position = { 0,0,0 };
-                  camera.orientation = Euler {};
-                  lookAt.transform.position = window3D.cube.transform.position;
-                  lookAt.transform.orientation = Euler {};
-                  lookAt.UpdateTransform();
-
-                  sliding = 0;
-                  dockHidden = true;
-
-                  camera.Update();
-                  tp = toPosition = camera.cPosition;
-                  ta = toAngle = camera.cOrientation;
-
-                  camera.AdjustAngle(fromAngle);
-                  camera.AdjustPosition(fromPosition);
-               }
-            }
-            break;
-         }
          case down:
          case escape:
+         case f1:
             if(sliding == 1.0 && dockHidden)
             {
                if(sliding < 1 || switching < 1 || entering < 1) break;
+
                fromAngle = camera.cOrientation;
                fromPosition = camera.cPosition;
 
-               camera.type = lookAt;
-               camera.position = {0, ORBIT_HEIGHT, -2000};
-               camera.orientation = Euler { pitch = 15 };
-               lookAt.transform.position = {};
+               if(fullScreen)
+               {
+                  Window window = virtualDesktop.activeChild;
+                  Window3D window3D = Desktop3DGetWindowHandle(window);
+
+                  camera.type = lookAt;
+                  camera.position = {};
+                  camera.orientation = Euler {};
+                  lookAt.transform.position = window3D.cube.transform.position;
+                  entering = 0;
+               }
+               else
+               {
+                  camera.type = lookAt;
+                  camera.position = {0, ORBIT_HEIGHT, -2000};
+                  camera.orientation = Euler { pitch = 15 };
+                  lookAt.transform.position = {};
+                  sliding = 0;
+                  dockHidden = false;
+               }
+               fullScreen = false;
+
                lookAt.transform.orientation = Euler {};
                lookAt.UpdateTransform();
-
-               sliding = 0;
-               dockHidden = false;
-               fullScreen = false;
 
                camera.Update();
                toPosition = camera.cPosition;

@@ -24,6 +24,7 @@
          "Name" : "Linux",
          "Options" : {
             "Libraries" : [
+               "m",
                "GL"
             ]
          }
