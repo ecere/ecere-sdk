@@ -1,5 +1,7 @@
 namespace gfx3D;
 
+#include <math.h>
+
 import "Display"
 
 public class MeshFeatures { public bool vertices:1, normals:1, texCoords1:1, texCoords2:1, doubleNormals:1, doubleVertices:1, colors:1; };
@@ -605,12 +607,18 @@ private:
 
       for(c = 0; c<nVertices; c++)
       {
-         min.x = Min(min.x, vertices[c].x);
-         min.y = Min(min.y, vertices[c].y);
-         min.z = Min(min.z, vertices[c].z);
-         max.x = Max(max.x, vertices[c].x);
-         max.y = Max(max.y, vertices[c].y);
-         max.z = Max(max.z, vertices[c].z);
+         float x = vertices[c].x, y = vertices[c].y, z = vertices[c].z;
+         if(isnan(x) || isnan(y) || isnan(z));
+         else if(x > 1E20 || x < -1E20 || y > 1E20 || y < -1E20 || z > 1E20 || z < -1E20);
+         else
+         {
+            min.x = Min(min.x, x);
+            min.y = Min(min.y, y);
+            min.z = Min(min.z, z);
+            max.x = Max(max.x, x);
+            max.y = Max(max.y, y);
+            max.z = Max(max.z, z);
+         }
       }
       xRadius = Max(max.x, -min.x);
       yRadius = Max(max.y, -min.y);
