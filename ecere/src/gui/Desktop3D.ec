@@ -144,7 +144,7 @@ public bool Desktop3DUpdateDisplay()
 {
    Window window;
 
-   if(!virtualDesktop || !virtualDesktop.display) return false;
+   if(!virtualDesktop || !virtualDesktop.rootWindow.display) return false;
 
    for(window = guiApp.desktop.children.first; window; window = window.next)
    {
@@ -157,7 +157,7 @@ public bool Desktop3DUpdateDisplay()
 
          if(fullScreenWindow)
          {
-            if(virtualDesktop.dirty)
+            if(virtualDesktop.dirty || virtualDesktop.rootWindow.dirty)
                fullScreenWindow.dirty = true;
             for(window = virtualDesktop.children.first; window; window = window.next)
                if(!window.is3D && window.dirty)
@@ -228,7 +228,7 @@ public bool Desktop3DUpdateDisplay()
          }
 
          // Comment out fullScreen check here and dirty = true up there for ITV update
-         if(/*!fullScreenWindow && */(virtualDesktopDirty || virtualDesktop.dirty))
+         if(/*!fullScreenWindow && */(virtualDesktopDirty || virtualDesktop.rootWindow.dirty))
          {
             if(virtualDesktopDirty)
                virtualDesktop.Update(null);
