@@ -2150,7 +2150,7 @@ class XInterface : Interface
                   {
                      bool offset = false;
                      int x, y, w, h;
-                     if(unmaximized && window.nativeDecorations)
+                     if(unmaximized && window.nativeDecorations && ((BorderBits)window.borderStyle).fixed)
                      {
                         if(window.nativeDecorations && RequestFrameExtents((X11Window)window.windowHandle))
                            WaitForFrameExtents(window, false);
@@ -2184,7 +2184,7 @@ class XInterface : Interface
                         x -= desktopX;
                         y -= desktopY;
 
-                        if(window.nativeDecorations && window.state != maximized)
+                        if(window.nativeDecorations && window.state != maximized && ((BorderBits)window.borderStyle).fixed)
                         {
                            x -= windowData.decor.left;
                            y -= windowData.decor.top;
@@ -2773,14 +2773,16 @@ class XInterface : Interface
       {
          if ( atoms[_motif_wm_hints] != None )
          {
+            BorderBits borderBits = (BorderBits)window.borderStyle;
+            bool hasTitleBar = borderBits.fixed;
             MWM_Hints hints
             {
-               (window.nativeDecorations ? 0 : MWM_HINTS_DECORATIONS)|MWM_HINTS_FUNCTIONS,
+               ((window.nativeDecorations && hasTitleBar) ? 0 : MWM_HINTS_DECORATIONS)|MWM_HINTS_FUNCTIONS,
                (window.hasClose ? MWM_FUNC_CLOSE : 0) |
                (fullScreenMode || window.hasMaximize ? MWM_FUNC_MAXIMIZE : 0) |
                (fullScreenMode || window.hasMinimize ? MWM_FUNC_MINIMIZE : 0) |
-               ((fullScreenMode || window.moveable || ((BorderBits)window.borderStyle).fixed) ? MWM_FUNC_MOVE : 0) |
-               (fullScreenMode || ((BorderBits)window.borderStyle).sizable ? MWM_FUNC_RESIZE : 0),
+               ((fullScreenMode || window.moveable || hasTitleBar) ? MWM_FUNC_MOVE : 0) |
+               (fullScreenMode || borderBits.sizable ? MWM_FUNC_RESIZE : 0),
                 0, 0, 0
             };
             XChangeProperty(xGlobalDisplay, windowHandle, atoms[_motif_wm_hints], atoms[_motif_wm_hints], 32,
@@ -2817,7 +2819,7 @@ class XInterface : Interface
          XUngrabPointer(xGlobalDisplay, CurrentTime);
       }
 
-      if(fullScreenMode || !window.nativeDecorations || !RequestFrameExtents(windowHandle))
+      if(fullScreenMode || !window.nativeDecorations ||  !((BorderBits)window.borderStyle).fixed || !RequestFrameExtents(windowHandle))
          ((XWindowData)window.windowData).gotFrameExtents = true;
 
       window.windowHandle = (void *)windowHandle;
