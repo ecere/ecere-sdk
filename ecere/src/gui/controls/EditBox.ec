@@ -4459,7 +4459,7 @@ private:
                   for(c=0; line.buffer[c]; c++)
                      if(line.buffer[c] != ' ' && line.buffer[c] != '\t')
                         break;
-                  if(shift && (c != 0 || this.x))
+                  if(overwrite || (shift && (c != 0 || this.x)))
                      DirtyLine(this.y);
                   if(this.x != c)
                      this.x = c;
@@ -4468,7 +4468,7 @@ private:
                }
                else
                {
-                  if(shift && this.x != 0)
+                  if(overwrite || (shift && this.x != 0))
                      DirtyLine(this.y);
                   this.x = 0;
                }
@@ -4494,7 +4494,7 @@ private:
             else if(this.x != this.line.count)
             {
                this.x = this.line.count;
-               if(shift)
+               if(overwrite || shift)
                   DirtyLine(this.y);
                ComputeColumn();
             }
