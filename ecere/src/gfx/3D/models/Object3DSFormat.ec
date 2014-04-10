@@ -1143,12 +1143,10 @@ static bool ReadEditObject(FileInfo * info, char * name)
          if(!object)
          {
             object = Object { };
-            object.name = name;
+            object.name = CopyString(name);
             info->rootObject.children.AddName(object);
             object.parent = info->rootObject;
          }
-         else
-            delete name;
          object.InitializeMesh(displaySystem);
          ReadChunks(ReadTriMesh, info, object);
          object.flags.mesh = true;
@@ -1164,12 +1162,10 @@ static bool ReadEditObject(FileInfo * info, char * name)
          if(!object)
          {
             object = Object { };
-            object.name = name;
+            object.name = CopyString(name);
             info->rootObject.children.AddName(object);
             object.parent = info->rootObject;
          }
-         else
-            delete name;
          object.flags.light = true;
 
          light = &object.light;
@@ -1196,24 +1192,26 @@ static bool ReadEditObject(FileInfo * info, char * name)
 
          strcpy(targetName, name);
          strcat(targetName, ".target");
+         target = info->rootObject.Find(targetName);
 
          if(!object)
          {
             object = Object { };
-            object.name = name;
+            object.name = CopyString(name);
             info->rootObject.children.AddName(object);
 
             object.parent = info->rootObject;
             object.camera = Camera { };
             object.camera.type = lookAtObject;
+         }
 
+         if(!target)
+         {
             target = Object { };
             target.name = CopyString(targetName);
             info->rootObject.children.AddName(target);
             target.parent = info->rootObject;
          }
-         else
-            delete name;
 
          object.flags.camera = true;
          object.cameraTarget = target;
@@ -1246,8 +1244,6 @@ static bool ReadEditObject(FileInfo * info, char * name)
          break;
       }
       case OBJ_HIDDEN: break;
-      default:
-         delete name;
    }
    return true;
 }
@@ -1293,6 +1289,7 @@ static bool ReadEditChunks(FileInfo * info, void * data)
          char * name;
          info->pos += ReadASCIIZ(info->f, &name);
          ReadChunks(ReadEditObject, info, name);
+         delete name;
          break;
       }
    }
