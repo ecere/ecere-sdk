@@ -2568,6 +2568,7 @@ class CodeEditor : Window
    ****************************************************************************/
    void FreeParser()
    {
+      SetCurrentNameSpace(null);
       if(ast != null)
       {
          FreeASTTree(ast);
