@@ -1328,7 +1328,7 @@ class OpenGLDisplayDriver : DisplayDriver
       // printf("   Making DISPLAY current\n");
       #if defined(__ANDROID__)
       #else
-      glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
+      glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
       #endif
    #endif
       return true;
@@ -1691,7 +1691,7 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglDisplay.glContext)
          {
             //printf("CreateDisplay Got a Context\n");
-            glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
+            glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
             result = true;
          }
       #endif
@@ -2002,7 +2002,7 @@ class OpenGLDisplayDriver : DisplayDriver
                if(oglDisplay.glContext)
                {
                   glXMakeCurrent(xGlobalDisplay, None, null);
-                  glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
+                  glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
 
                   // Initialize Shared Memory Pixmap
                   oglDisplay.image = XShmCreateImage(xGlobalDisplay, DefaultVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay)), 32,
@@ -2081,7 +2081,7 @@ class OpenGLDisplayDriver : DisplayDriver
          width = eglWidth;
          height = eglHeight;
       #else
-         glXMakeCurrent(xGlobalDisplay, (int)display.window, oglDisplay.glContext);
+         glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
       #endif
 #endif
       }
@@ -2242,7 +2242,7 @@ class OpenGLDisplayDriver : DisplayDriver
       #if defined(__ANDROID__)
          eglSwapBuffers(eglDisplay, eglSurface);
       #else
-         glXSwapBuffers(xGlobalDisplay, (int)display.window);
+         glXSwapBuffers(xGlobalDisplay, (GLXDrawable)display.window);
       #endif
 #endif
       }
