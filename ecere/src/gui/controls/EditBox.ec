@@ -3758,7 +3758,7 @@ private:
                   stuffAfter = true;
 
                //If last character is a { indent one tab
-               if(this.line.buffer[this.x - 1] == '{')
+               if(x > 0 && x < line.count && line.buffer[x - 1] == '{')
                {
                   //Except if the next non space character is a }
                   bool indent = false;
