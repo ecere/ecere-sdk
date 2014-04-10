@@ -915,7 +915,7 @@ class CodeEditor : Window
                int c;
                // HOW WE MIGHT WANT TO DO IT:
                char * text = before.line.text;
-               for(c = before.x-1; c>= 0; c--)
+               for(c = Min(before.line.count, before.x-1); c>= 0; c--)
                   if(!isspace(text[c]))
                      break;
                ide.debugger.MoveIcons(fileName, before.y + (((!pasteOperation && c > -1) || !after.line.count) ? 1 : 0), after.y - before.y, false);
