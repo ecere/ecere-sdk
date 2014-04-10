@@ -633,6 +633,11 @@ public:
          {
             children.Remove(child);
             child.Free(displaySystem);
+
+            // We did not do this before so as to keep transform on reloading for new DisplaySystem
+            // However since children are removed, it seems that purpose has been gone, we'd need
+            // a new mechanism to handle lost resources reloading...
+            delete child;
          }
          if(flags.ownMesh && mesh)
          {

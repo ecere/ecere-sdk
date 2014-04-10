@@ -19,7 +19,9 @@ public class DisplaySystemResPtr : struct
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
 static void FreeTexture(NamedLink texture)
 {
-   ((Bitmap)texture.data).Free();
+   Bitmap bitmap = texture.data;
+   bitmap.Free();
+   delete bitmap;
    delete texture.name;
 }
 
