@@ -3884,7 +3884,7 @@ private:
                            break;
                         }
                      }
-                     while(--c)
+                     while(--c >= 0)
                      {
                         byte ch = line.buffer[c];
                         if(UTF8_IS_FIRST(ch)) break;
