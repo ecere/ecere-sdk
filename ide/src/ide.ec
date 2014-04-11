@@ -195,7 +195,7 @@ void DrawLineMarginIcon(Surface surface, BitmapResource resource, int line, int 
 
 class IDEToolbar : ToolBar
 {
-   /* File options */
+   // File options
    // New
    ToolButton buttonNewFile { this, toolTip = $"New file", menuItemPtr = IDEItem(fileNewItem) };
    // Open
@@ -209,7 +209,7 @@ class IDEToolbar : ToolBar
 
    ToolSeparator separator1 { this };
 
-   /* Edit options */
+   // Edit options
    // Cut
    // Copy
    // Paste
@@ -218,7 +218,7 @@ class IDEToolbar : ToolBar
 
    // ToolSeparator separator2 { this };
 
-   /* Project  options */
+   // Project options
    // New project
    ToolButton buttonNewProject { this, toolTip = $"New project", menuItemPtr = IDEItem(projectNewItem) };
    // Open project
@@ -230,7 +230,7 @@ class IDEToolbar : ToolBar
 
    ToolSeparator separator3 { this };
 
-   /* Build/Execution options */
+   // Build/Execution options
    // Build
    ToolButton buttonBuild { this, toolTip = $"Build project", menuItemPtr = IDEItem(projectBuildItem), disabled = true; };
    // Re-link
@@ -252,7 +252,7 @@ class IDEToolbar : ToolBar
 
    ToolSeparator separator4 { this };
 
-   /* Debug options */
+   // Debug options
    // Start/Resume
    ToolButton buttonDebugStartResume { this, toolTip = $"Start", menuItemPtr = IDEItem(debugStartResumeItem), disabled = true; };
    // Restart
@@ -344,7 +344,6 @@ class IDEToolbar : ToolBar
       activeBitDepth.AddString("64 bit").tag = 64;
       activeBitDepth.currentRow = row;
    }
-
 }
 
 class IDEMainFrame : Window
@@ -3680,11 +3679,14 @@ class IDEApp : GuiApplication
       }
       else
       {
+         app.driver = "OpenGL";
+/*
 #if defined(__unix__) || defined(__APPLE__)
          app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "X";
 #else
          app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "GDI";
 #endif
+*/
          ide.driverItems[ideSettings.displayDriver && !strcmp(ideSettings.displayDriver,"OpenGL")].checked = true;
       }
 
@@ -3852,6 +3854,8 @@ class IDEApp : GuiApplication
             }
          };
       }
+
+      // ideMainFrame.toolBar.autoCreate = false;
 
       ideMainFrame.Create();
       if(app.argFilesCount > 1)

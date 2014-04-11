@@ -8038,7 +8038,8 @@ public:
 
                   if(reloadGraphics)
                      UnloadGraphics(false);
-                  SetupDisplay();
+                  if(created)
+                     SetupDisplay();
                   if(reloadGraphics)
                      LoadGraphics(false, false);
 
