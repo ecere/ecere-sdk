@@ -48,7 +48,7 @@ public:
    PrimitiveGroupType type;
    union
    {
-      struct { uint16 * indices; int nIndices; };
+      struct { union { uint16 * indices; uint * indices32; }; int nIndices; };
       struct { int first, nVertices; };
    };
    Material material;
@@ -62,7 +62,7 @@ public:
    PrimitiveGroupType type;
    union
    {
-      struct { uint16 * indices; int nIndices; };
+      struct { union { uint16 * indices; uint * indices32; }; int nIndices; };
       struct { int first, nVertices; };
    };
    Material material;
