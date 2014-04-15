@@ -30,7 +30,7 @@ The Ecere SDK is a Software Development Kit including:
       - The Ecere Data Access (EDA) layer, an abstract relational database
         API, providing an active record system for eC. Currently it has
         drivers for a minimal Ecere RDBMS and SQLite (as well as an encrypted
-        version using SQLiteCipher), and recently a basic Oracle driver was
+        version using SQLCipher), and recently a basic Oracle driver was
         introduced
       - An audio library (supporting DirectSound on Windows and ALSA on Linux)
       - WIA Scanning support on Windows
