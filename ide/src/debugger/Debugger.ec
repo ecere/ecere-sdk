@@ -10,10 +10,11 @@ import "ide"
 import "process"
 import "debugFindCtx"
 import "debugTools"
+import "dpl.ec"
 
 #ifdef _DEBUG
 #define GDB_DEBUG_CONSOLE
-#define _DEBUG_INST
+#define _DPL_ON
 #endif
 
 extern char * strrchr(const char * s, int c);
@@ -36,29 +37,9 @@ extern char * strrchr(const char * s, int c);
 #undef uint
 #undef strlen
 
-char * PrintNow()
-{
-   int c;
-   char * s[6];
-   char * time;
-   DateTime now;
-   now.GetLocalTime();
-   for(c=0; c<6; c++)
-      s[c] = new char[8];
-   sprintf(s[0], "%04d", now.year);
-   sprintf(s[1], "%02d", now.month+1);
-   sprintf(s[2], "%02d", now.day);
-   sprintf(s[3], "%02d", now.hour);
-   sprintf(s[4], "%02d", now.minute);
-   sprintf(s[5], "%02d", now.second);
-   time = PrintString("*", s[0], s[1], s[2], "-", s[3], s[4], s[5], "*");
-   for(c=0; c<6; c++)
-      delete s[c];
-   return time;
-}
-
+#include <dpl.eh>
+#ifdef _DPL_ON
 // use =0 to disable printing of specific channels
-#ifdef _DEBUG_INST
 static enum dplchan { none, gdbProtoIgnored=0/*1*/, gdbProtoUnknown=2, gdbOutput=3/*3*/, gdbCommand=4/*4*/, debuggerCall=0/*5*/, debuggerProblem=6,
                         debuggerUserAction=7,debuggerState=8, debuggerBreakpoints=9, debuggerWatches=0/*10*/, debuggerTemp=0 };
 static const char * _dpct[] = {
@@ -76,70 +57,7 @@ static const char * _dpct[] = {
    "-----> Temporary Message",
    null
 };
-
-#else
-static enum dplchan { none, gdbProtoIgnored=0, gdbProtoUnknown=0, gdbOutput=0, gdbCommand=0, debuggerCall=0, debuggerProblem=0,
-                        debuggerUserAction=0,debuggerState=0, debuggerBreakpoints=0, debuggerWatches=0, debuggerTemp=0 };
 #endif
-
-// TODO if(strlen(item.value) < MAX_F_STRING)
-
-// Debug Print Line
-#ifdef _DEBUG_INST
-#define _dpl2(...) __dpl2(__FILE__, __LINE__, ##__VA_ARGS__)
-static void __dpl2(const char * file, int line, const char ** channels, int channel, int indent, typed_object object, ...)
-{
-   bool chan = channel && channels && channels[channel];
-   if(chan || !channels)
-   {
-      char string[MAX_F_STRING];
-      char * time = PrintNow();
-      va_list args;
-      //ide.outputView.debugBox.Logf();
-      Logf("%s %s:% 5d: %s%s", time, file, line, chan ? channels[channel] : "", chan && channels[channel][0] ? ": " : "");
-      va_start(args, object);
-      PrintStdArgsToBuffer(string, sizeof(string), object, args);
-      Log(string);
-      va_end(args);
-      Log("\n");
-      delete time;
-   }
-}
-#else
-#define _dpl2(...)
-#endif
-
-#define _dpl(...) __dpl(__FILE__, __LINE__, ##__VA_ARGS__)
-static void __dpl(const char * file, int line, int indent, const char * format, ...)
-{
-   va_list args;
-   char string[MAX_F_STRING];
-   int c;
-   char * time = PrintNow();
-   //static File f = null;
-   va_start(args, format);
-   vsnprintf(string, sizeof(string), format, args);
-   string[sizeof(string)-1] = 0;
-   /*if(!f)
-   {
-      char * time = PrintNow();
-      char * logName;
-      logName = PrintString(time, ".log");
-      delete time;
-      f = FileOpen(logName, write);
-      delete logName;
-   }*/
-   /*f.Printf("%s %s:% 5d: ", time, file, line);
-   for(c = 0; c<indent; c++)
-      f.Putc(' ');
-   f.Printf("%s\n", string);*/
-   Logf("%s %s:% 5d: ", time, file, line);
-   for(c = 0; c<indent; c++)
-      Log(" ");
-   Logf("%s\n", string);
-   va_end(args);
-   delete time;
-}
 
 public char * StripQuotes2(char * string, char * output)
 {
@@ -493,7 +411,7 @@ class Debugger
          if(this.stopItem)
          {
             this.stopItem = null;
-#ifdef _DEBUG_INST
+#ifdef _DPL_ON
             {
                char * s = null;
                DynamicString bpReport { };
@@ -515,7 +433,7 @@ class Debugger
                   delete s;
                }
                s = bpReport;
-               _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "gdbTimer::DelayExpired: ", s+1);
+               _dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "gdbTimer::DelayExpired: ", s+1);
 
                if(stopItem.bkptno)
                {
@@ -523,7 +441,7 @@ class Debugger
                   Breakpoint bp = GetBreakpointById(stopItem.bkptno, &isInternal);
                   if(bp)
                   {
-                     _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "gdb stopped by a breakpoint: ", bp.type, "(", s=bp.CopyLocationString(false), ")");
+                     _dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "gdb stopped by a breakpoint: ", bp.type, "(", s=bp.CopyLocationString(false), ")");
                      delete s;
                   }
                }
@@ -531,12 +449,12 @@ class Debugger
             }
 #endif
          }
-#ifdef _DEBUG_INST
+#ifdef _DPL_ON
          else
          {
             if(curEvent && curEvent != exit)
             {
-               _dpl(0, "No stop item");
+               _dplf(0, "No stop item");
             }
          }
 #endif
@@ -600,12 +518,12 @@ class Debugger
                         }
                      }
                      else
-                        _dpl2(_dpct, dplchan::debuggerProblem, 0, "Invalid stopItem!");
+                        _dpcl(_dpct, dplchan::debuggerProblem, 0, "Invalid stopItem!");
                      if(bpUser && stopItem.frame.addr && strcmp(stopItem.frame.addr, bpUser.bp.addr))
-                        _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") address missmatch!");
+                        _dpcl(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") address missmatch!");
                   }
                   else
-                     _dpl2(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") invalid or not found!");
+                     _dpcl(_dpct, dplchan::debuggerProblem, 0, "Breakpoint bkptno(", stopItem.bkptno, ") invalid or not found!");
                   if((bpUser && !ignoreBreakpoints) || (bpInternal && userAction.breaksOnInternalBreakpoint))
                      monitor = true;
                   hitThread = stopItem.threadid;
@@ -703,13 +621,13 @@ class Debugger
    ProgramThread progThread { };
 #endif
 
-#ifdef _DEBUG_INST
+#ifdef _DPL_ON
 #define _ChangeUserAction(value) ChangeUserAction(__FILE__, __LINE__, value)
    void ChangeUserAction(const char * file, int line, DebuggerUserAction value)
    {
 #if 0
       bool same = value == userAction;
-      __dpl2(file, line, _dpct, dplchan::debuggerUserAction, 0, userAction, /*same ? " *** == *** " : */" -> ", value);
+      __dpl(file, line, _dpct, dplchan::debuggerUserAction, 0, userAction, /*same ? " *** == *** " : */" -> ", value);
 #endif
       userAction = value;
    }
@@ -717,7 +635,7 @@ class Debugger
 #define _ChangeUserAction(value) userAction = value
 #endif
 
-#ifdef _DEBUG_INST
+#ifdef _DPL_ON
 #define _ChangeState(value) ChangeState(__FILE__, __LINE__, value)
    void ChangeState(const char * file, int line, DebuggerState value)
 #else
@@ -726,8 +644,8 @@ class Debugger
 #endif
    {
       bool same = value == state;
-#if 0 //def _DEBUG_INST
-      __dpl2(file, line, _dpct, dplchan::debuggerState, 0, state, same ? " *** == *** " : " -> ", value);
+#if 0 //def _DPL_ON
+      __dpl(file, line, _dpct, dplchan::debuggerState, 0, state, same ? " *** == *** " : " -> ", value);
 #endif
       state = value;
       if(!same) ide.AdjustDebugMenus();
@@ -735,7 +653,7 @@ class Debugger
 
    void CleanUp()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::CleanUp");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::CleanUp");
 
       stackFrames.Free(Frame::Free);
 
@@ -789,7 +707,7 @@ class Debugger
 
    Debugger()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::constructor");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::constructor");
       ideProcessId = Process_GetCurrentProcessId();
 
       sysBPs.Add((intBpEntry = Breakpoint { type = internalEntry, enabled = false, level = -1 }));
@@ -803,7 +721,7 @@ class Debugger
 
    ~Debugger()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::destructor");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::destructor");
       sysBPs.Free();
       Stop();
       CleanUp();
@@ -816,14 +734,14 @@ class Debugger
 
    void Resume()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Resume");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Resume");
       _ChangeUserAction(resume);
       GdbExecContinue(true);
    }
 
    void Break()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Break");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Break");
       _ChangeUserAction(_break);
       if(state == running)
       {
@@ -834,7 +752,7 @@ class Debugger
 
    void Stop()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Stop");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Stop");
       _ChangeUserAction(stop);
       switch(state)
       {
@@ -858,7 +776,7 @@ class Debugger
 
    void Restart(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Restart");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Restart");
       _ChangeUserAction(restart);
       if(StartSession(compiler, config, bitDepth, useValgrind, true, false) == loaded)
          GdbExecRun();
@@ -867,7 +785,7 @@ class Debugger
    bool GoToCodeLine(char * location)
    {
       CodeLocation codloc;
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GoToCodeLine(", location, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GoToCodeLine(", location, ")");
       codloc = CodeLocation::ParseCodeLocation(location);
       if(codloc)
       {
@@ -885,7 +803,7 @@ class Debugger
 
    bool GoToStackFrameLine(int stackLevel, bool askForLocation, bool fromCallStack)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GoToStackFrameLine(", stackLevel, ", ", askForLocation, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GoToStackFrameLine(", stackLevel, ", ", askForLocation, ")");
       if(ide)
       {
          char sourceDir[MAX_LOCATION];
@@ -937,7 +855,7 @@ class Debugger
 
    void SelectThread(int thread)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectThread(", thread, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectThread(", thread, ")");
       _ChangeUserAction(selectThread);
       if(state == stopped)
       {
@@ -958,7 +876,7 @@ class Debugger
 
    void SelectFrame(int frame)
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectFrame(", frame, ")");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::SelectFrame(", frame, ")");
       _ChangeUserAction(selectFrame);
       if(state == stopped)
       {
@@ -973,7 +891,7 @@ class Debugger
 
    void InternalSelectFrame(int frame)
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::InternalSelectFrame(", frame, ")");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::InternalSelectFrame(", frame, ")");
       activeFrameLevel = frame;  // there is no active frame number in the gdb reply
       GdbCommand(0, false, "-stack-select-frame %d", activeFrameLevel);
       for(activeFrame = stackFrames.first; activeFrame; activeFrame = activeFrame.next)
@@ -985,7 +903,7 @@ class Debugger
    {
       char verboseExitCode[128];
 
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::HandleExit(", reason, ", ", code, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::HandleExit(", reason, ", ", code, ")");
       _ChangeState(loaded); // this state change seems to be superfluous, might be in case of gdb crash
       targetProcessId = 0;
 
@@ -1047,7 +965,7 @@ class Debugger
    DebuggerState StartSession(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool restart, bool ignoreBreakpoints)
    {
       DebuggerState result = none;
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StartSession(restart(", restart, "), ignoreBreakpoints(", ignoreBreakpoints, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StartSession(restart(", restart, "), ignoreBreakpoints(", ignoreBreakpoints, ")");
       if(restart && state == running && targetProcessId)
       {
          breakType = DebuggerAction::restart;
@@ -1088,7 +1006,7 @@ class Debugger
 
    void Start(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::Start()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::Start()");
       _ChangeUserAction(start);
       if(StartSession(compiler, config, bitDepth, useValgrind, true, false) == loaded)
          GdbExecRun();
@@ -1096,7 +1014,7 @@ class Debugger
 
    void StepInto(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepInto()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StepInto()");
       _ChangeUserAction(stepInto);
       switch(StartSession(compiler, config, bitDepth, useValgrind, false, false))
       {
@@ -1107,7 +1025,7 @@ class Debugger
 
    void StepOver(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool ignoreBreakpoints)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOver()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOver()");
       _ChangeUserAction(stepOver);
       switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints))
       {
@@ -1118,7 +1036,7 @@ class Debugger
 
    void StepUntil(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, bool ignoreBreakpoints)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepUntil()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StepUntil()");
       _ChangeUserAction(stepUntil);
       switch(StartSession(compiler, config, bitDepth, useValgrind, false, ignoreBreakpoints))
       {
@@ -1129,7 +1047,7 @@ class Debugger
 
    void StepOut(bool ignoreBreakpoints)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOut()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StepOut()");
       _ChangeUserAction(stepOut);
       if(state == stopped)
       {
@@ -1144,7 +1062,7 @@ class Debugger
    void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, const char * absoluteFilePath, int lineNumber, bool ignoreBreakpoints, bool atSameLevel, bool oldImplementation)
    {
       char relativeFilePath[MAX_LOCATION];
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
       _ChangeUserAction(runToCursor);
       WorkspaceGetRelativePath(absoluteFilePath, relativeFilePath, null);
 
@@ -1190,7 +1108,7 @@ class Debugger
 
    void GetCallStackCursorLine(bool * error, int * lineCursor, int * lineTopFrame)
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GetCallStackCursorLine()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GetCallStackCursorLine()");
       if(activeFrameLevel == -1)
       {
          *error = false;
@@ -1211,7 +1129,7 @@ class Debugger
       char * absoluteFilePath = GetSlashPathBuffer(winFilePath, fileName);
       int count = 0;
       Iterator<Breakpoint> it { ide.workspace.breakpoints };
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GetMarginIconsLineNumbers()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GetMarginIconsLineNumbers()");
       while(it.Next() && count < max)
       {
          Breakpoint bp = it.data;
@@ -1254,7 +1172,7 @@ class Debugger
    void ChangeWatch(DataRow row, char * expression)
    {
       Watch wh = (Watch)(intptr)row.tag;
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ChangeWatch(", expression, ")");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ChangeWatch(", expression, ")");
       if(wh)
       {
          delete wh.expression;
@@ -1287,7 +1205,7 @@ class Debugger
       const char * absoluteFilePath = GetSlashPathBuffer(winFilePath, fileName);
 
       Link bpLink, next;
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::MoveIcons()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::MoveIcons()");
       for(bpLink = ide.workspace.breakpoints.first; bpLink; bpLink = next)
       {
          Breakpoint bp = (Breakpoint)(intptr)bpLink.data;
@@ -1317,7 +1235,7 @@ class Debugger
       bool result;
       String srcDir = null;
 
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SourceDirDialog()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::SourceDirDialog()");
       debuggerFileDialog.text = title;
       debuggerFileDialog.currentDirectory = startDir;
       debuggerFileDialog.master = ide;
@@ -1373,7 +1291,7 @@ class Debugger
 
    void AddSourceDir(const char * sourceDir)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::AddSourceDir(", sourceDir, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::AddSourceDir(", sourceDir, ")");
       ide.workspace.sourceDirs.Add(CopyString(sourceDir));
       ide.workspace.Save();
 
@@ -1400,7 +1318,7 @@ class Debugger
       char absolutePath[MAX_LOCATION];
       Breakpoint bp = null;
 
-      _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::ToggleBreakpoint(", fileName, ":", lineNumber, ")");
+      _dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::ToggleBreakpoint(", fileName, ":", lineNumber, ")");
 
       GetSlashPathBuffer(absolutePath, fileName);
       for(i : ide.workspace.breakpoints; i.type == user && i.absoluteFilePath && !fstrcmp(i.absoluteFilePath, absolutePath) && i.line == lineNumber)
@@ -1496,7 +1414,7 @@ class Debugger
 
    void UpdateRemovedBreakpoint(Breakpoint bp)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::UpdateRemovedBreakpoint()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::UpdateRemovedBreakpoint()");
       if(targeted && bp.inserted)
       {
          DebuggerState oldState = state;
@@ -1526,7 +1444,7 @@ class Debugger
       DebugListItem item { };
       Argument arg;
 
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ParseFrame()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ParseFrame()");
       TokenizeList(string, ',', frameTokens);
       for(i = 0; i < frameTokens.count; i++)
       {
@@ -1568,10 +1486,10 @@ class Debugger
                               arg.val = item.value;
                            }
                            else
-                              _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "frame args item (", item.name, "=", item.value, ") is unheard of");
+                              _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "frame args item (", item.name, "=", item.value, ") is unheard of");
                         }
                         else
-                           _dpl(0, "Bad frame args item");
+                           _dplf(0, "Bad frame args item");
                      }
                      argumentTokens.RemoveAll();
                   }
@@ -1599,10 +1517,10 @@ class Debugger
                frame.absoluteFile = item.value;
             }
             else
-               _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "frame member (", item.name, "=", item.value, ") is unheard of");
+               _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "frame member (", item.name, "=", item.value, ") is unheard of");
          }
          else
-            _dpl(0, "Bad frame");
+            _dplf(0, "Bad frame");
       }
 
       delete frameTokens;
@@ -1614,7 +1532,7 @@ class Debugger
    Breakpoint GetBreakpointById(int id, bool * isInternal)
    {
       Breakpoint bp = null;
-      //_dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::GetBreakpointById(", id, ")");
+      //_dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::GetBreakpointById(", id, ")");
       if(isInternal)
          *isInternal = false;
       if(id)
@@ -1646,7 +1564,7 @@ class Debugger
       GdbDataBreakpoint bp { };
       DebugListItem item { };
       Array<char *> bpTokens { minAllocSize = 16 };
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ParseBreakpoint()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ParseBreakpoint()");
       string = StripCurlies(string);
       TokenizeList(string, ',', bpTokens);
       for(i = 0; i < bpTokens.count; i++)
@@ -1694,9 +1612,9 @@ class Debugger
             else if(!strcmp(item.name, "times"))
                bp.times = atoi(item.value);
             else if(!strcmp(item.name, "original-location") || !strcmp(item.name, "thread-groups"))
-               _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "breakpoint member (", item.name, "=", item.value, ") is ignored");
+               _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, "breakpoint member (", item.name, "=", item.value, ") is ignored");
             else
-               _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "breakpoint member (", item.name, "=", item.value, ") is unheard of");
+               _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "breakpoint member (", item.name, "=", item.value, ") is unheard of");
          }
       }
       delete bpTokens;
@@ -1706,7 +1624,7 @@ class Debugger
 
    void ShowDebuggerViews()
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ShowDebuggerViews()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ShowDebuggerViews()");
       ide.outputView.Show();
       ide.outputView.SelectTab(debug);
       ide.threadsView.Show();
@@ -1717,7 +1635,7 @@ class Debugger
 
    void HideDebuggerViews()
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::HideDebuggerViews()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::HideDebuggerViews()");
       ide.RepositionWindows(true);
    }
 
@@ -1739,7 +1657,7 @@ class Debugger
          ide.debugger.serialSemaphore.TryWait();
 
 #ifdef GDB_DEBUG_CONSOLE
-         _dpl2(_dpct, dplchan::gdbCommand, 0, string);
+         _dpcl(_dpct, dplchan::gdbCommand, 0, string);
 #endif
 #ifdef GDB_DEBUG_OUTPUT
          ide.outputView.gdbBox.Logf("cmd: %s\n", string);
@@ -1788,7 +1706,7 @@ class Debugger
 
    bool ValidateBreakpoint(Breakpoint bp)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ValidateBreakpoint()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ValidateBreakpoint()");
       if(modules && bp.line && bp.bp)
       {
          if(bp.bp.line != bp.line)
@@ -1816,7 +1734,7 @@ class Debugger
 
    void BreakpointsMaintenance()
    {
-      //_dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::BreakpointsMaintenance()");
+      //_dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::BreakpointsMaintenance()");
       if(symbols)
       {
          if(gdbExecution.suspendInternalBreakpoints)
@@ -1934,7 +1852,7 @@ class Debugger
                {
 #ifdef _DEBUG
                   if(bp.bp)
-                     _dpl(0, "problem");
+                     _dplf(0, "problem");
 #endif
                   delete bp.bp;
                   bp.bp = GdbDataBreakpoint { };
@@ -1946,7 +1864,7 @@ class Debugger
 
    void UnsetBreakpoint(Breakpoint bp)
    {
-      char * s = null; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::UnsetBreakpoint(", s=bp.CopyLocationString(false), ") -- ", bp.type); delete s;
+      char * s = null; _dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::UnsetBreakpoint(", s=bp.CopyLocationString(false), ") -- ", bp.type); delete s;
       if(symbols && bp.inserted)
       {
          GdbCommand(0, false, "-break-delete %s", bp.bp.number);
@@ -1958,7 +1876,7 @@ class Debugger
 
    bool SetBreakpoint(Breakpoint bp, bool removePath)
    {
-      char * s = null; _dpl2(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::SetBreakpoint(", s=bp.CopyLocationString(false), ", ", removePath ? "**** removePath(true) ****" : "", ") -- ", bp.type); delete s;
+      char * s = null; _dpcl(_dpct, dplchan::debuggerBreakpoints, 0, "Debugger::SetBreakpoint(", s=bp.CopyLocationString(false), ", ", removePath ? "**** removePath(true) ****" : "", ") -- ", bp.type); delete s;
       breakpointError = false;
       if(symbols && bp.enabled && (!bp.project || bp.project.GetTargetType(bp.project.config) == staticLibrary || bp.project == ide.project || projectsLibraryLoaded[bp.project.name]))
       {
@@ -1994,7 +1912,7 @@ class Debugger
                         n.enabled = false;
                      }
                      else
-                        _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error breakpoint already disabled.");
+                        _dpcl(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error breakpoint already disabled.");
                   }*/
                }
                if(first)
@@ -2008,9 +1926,9 @@ class Debugger
                   //bpItem.thread-groups = first.thread-groups;*/
                }
                else if(count == 0)
-                  _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints all disabled.");
+                  _dpcl(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints all disabled.");
                else
-                  _dpl2(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints in exact same file not supported.");
+                  _dpcl(_dpct, dplchan::debuggerProblem, 0, "Debugger::SetBreakpoint -- error multiple breakpoints in exact same file not supported.");
                bpItem.multipleBPs.Free();
                delete bpItem.multipleBPs;
             }
@@ -2036,7 +1954,7 @@ class Debugger
 
    void GdbGetStack()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbGetStack()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbGetStack()");
       activeFrame = null;
       stackFrames.Free(Frame::Free);
       GdbCommand(0, false, "-stack-info-depth");
@@ -2054,7 +1972,7 @@ class Debugger
 
    bool GdbTargetSet()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbTargetSet()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbTargetSet()");
       if(!targeted)
       {
          char escaped[MAX_LOCATION];
@@ -2110,7 +2028,7 @@ class Debugger
 
    void GdbDebugBreak(bool internal)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbDebugBreak()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbDebugBreak()");
       if(targetProcessId)
       {
          if(internal)
@@ -2133,7 +2051,7 @@ class Debugger
 
    void GdbExecRun()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecRun()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecRun()");
       GdbTargetSet();
       if(!usingValgrind)
          gdbExecution = run;
@@ -2147,7 +2065,7 @@ class Debugger
 
    void GdbExecContinue(bool focus)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecContinue()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecContinue()");
       gdbExecution = run;
       GdbExecCommon();
       GdbCommand(0, focus, "-exec-continue");
@@ -2155,7 +2073,7 @@ class Debugger
 
    void GdbExecNext()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecNext()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecNext()");
       gdbExecution = next;
       GdbExecCommon();
       GdbCommand(0, true, "-exec-next");
@@ -2178,7 +2096,7 @@ class Debugger
    {
       bool forceUpdate = false;
       char relativeFilePath[MAX_LOCATION];
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecUntil()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecUntil()");
       gdbExecution = until;
       GdbExecCommon();
       if(absoluteFilePath)
@@ -2204,7 +2122,7 @@ class Debugger
    {
       bool forceUpdate = false;
       char relativeFilePath[MAX_LOCATION];
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecAdvance()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecAdvance()");
       gdbExecution = advance;
       GdbExecCommon();
       if(lineNumber)
@@ -2235,7 +2153,7 @@ class Debugger
 
    void GdbExecStep()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecStep()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecStep()");
       gdbExecution = step;
       GdbExecCommon();
       GdbCommand(0, true, "-exec-step");
@@ -2243,7 +2161,7 @@ class Debugger
 
    void GdbExecFinish()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecFinish()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecFinish()");
       gdbExecution = finish;
       GdbExecCommon();
       GdbCommand(0, true, "-exec-finish");
@@ -2251,14 +2169,14 @@ class Debugger
 
    void GdbExecCommon()
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecCommon()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecCommon()");
       BreakpointsMaintenance();
    }
 
 #ifdef GDB_DEBUG_GUI
    void SendGDBCommand(const char * command)
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SendGDBCommand()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::SendGDBCommand()");
       DebuggerState oldState = state;
       switch(state)
       {
@@ -2277,7 +2195,7 @@ class Debugger
 
    void ClearBreakDisplay()
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ClearBreakDisplay()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ClearBreakDisplay()");
       activeThread = 0;
       activeFrameLevel = -1;
       hitThread = 0;
@@ -2297,7 +2215,7 @@ class Debugger
 
    bool GdbAbortExec()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbAbortExec()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbAbortExec()");
       sentKill = true;
       GdbCommand(0, false, "-interpreter-exec console \"kill\""); // should use -exec-abort -- GDB/MI implementation incomplete
       return true;
@@ -2314,7 +2232,7 @@ class Debugger
       PathBackup pathBackup { };
       Map<String, String> envBackup { };
 
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbInit()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbInit()");
       if(currentCompiler != compiler)
       {
          delete currentCompiler;
@@ -2559,7 +2477,7 @@ class Debugger
 
    void GdbExit()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExit()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExit()");
       if(gdbHandle && gdbProcessId)
       {
          gdbTimer.Stop();
@@ -2633,7 +2551,7 @@ class Debugger
    bool WatchesLinkCodeEditor()
    {
       bool goodFrame = activeFrame && activeFrame.absoluteFile;
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesLinkCodeEditor()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesLinkCodeEditor()");
       if(codeEditor && (!goodFrame || fstrcmp(codeEditor.fileName, activeFrame.absoluteFile)))
          WatchesReleaseCodeEditor();
 
@@ -2651,7 +2569,7 @@ class Debugger
 
    void WatchesReleaseCodeEditor()
    {
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesReleaseCodeEditor()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::WatchesReleaseCodeEditor()");
       if(codeEditor)
       {
          codeEditor.inUseDebug = false;
@@ -2665,7 +2583,7 @@ class Debugger
    {
       bool result = false;
 
-      _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::ResolveWatch()");
+      _dpcl(_dpct, dplchan::debuggerWatches, 0, "Debugger::ResolveWatch()");
       wh.Reset();
 
       /*delete wh.value;
@@ -3050,7 +2968,7 @@ class Debugger
                            //evaluation = Debugger::EvaluateExpression(temp, &evalError);
                            // address = strtoul(exp.constant, null, 0);
                            address = _strtoui64(exp.constant, null, 0);
-                           //_dpl(0, "0x", address);
+                           //_dplf(0, "0x", address);
                            // snprintf(value, sizeof(value), "0x%08x ", address);
 
                            if(address > 0xFFFFFFFFLL)
@@ -3291,7 +3209,7 @@ class Debugger
 
    void EvaluateWatches()
    {
-      _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::EvaluateWatches()");
+      _dpcl(_dpct, dplchan::debuggerWatches, 0, "Debugger::EvaluateWatches()");
       WatchesLinkCodeEditor();
       if(state == stopped)
       {
@@ -3302,7 +3220,7 @@ class Debugger
 
    char * ::GdbEvaluateExpression(char * expression)
    {
-      _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::GdbEvaluateExpression(", expression, ")");
+      _dpcl(_dpct, dplchan::debuggerWatches, 0, "Debugger::GdbEvaluateExpression(", expression, ")");
       eval.active = true;
       eval.error = none;
       GdbCommand(0, false, "-data-evaluate-expression \"%s\"", expression);
@@ -3314,12 +3232,12 @@ class Debugger
    // to be removed... use GdbReadMemory that returns a byte array instead
    char * ::GdbReadMemoryString(uint64 address, int size, char format, int rows, int cols)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbReadMemoryString(", address, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbReadMemoryString(", address, ")");
       eval.active = true;
       eval.error = none;
 #ifdef _DEBUG
       if(!size)
-         _dpl(0, "GdbReadMemoryString called with size = 0!");
+         _dplf(0, "GdbReadMemoryString called with size = 0!");
 #endif
       GdbCommand(0, false,
          (__runtimePlatform == win32) ? "-data-read-memory 0x%016I64x %c, %d, %d, %d" : "-data-read-memory 0x%016llx %c, %d, %d, %d", address, format, size, rows, cols);
@@ -3330,7 +3248,7 @@ class Debugger
 
    byte * ::GdbReadMemory(uint64 address, int bytes)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbReadMemory(", address, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbReadMemory(", address, ")");
       eval.active = true;
       eval.error = none;
       GdbCommand(0, false,
@@ -3338,7 +3256,7 @@ class Debugger
          address, 'u', bytes);
 #ifdef _DEBUG
       if(!bytes)
-         _dpl(0, "GdbReadMemory called with bytes = 0!");
+         _dplf(0, "GdbReadMemory called with bytes = 0!");
 #endif
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbReadMemory\n");
@@ -3370,7 +3288,7 @@ class Debugger
    {
       bool result = true;
       char * s1 = null; char * s2 = null;
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::BreakpointHit(",
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::BreakpointHit(",
             "bpInternal(", bpInternal ? s1=bpInternal.CopyLocationString(false) : null, "), ",
             "bpUser(", bpUser ? s2=bpUser.CopyLocationString(false) : null, ")) -- ",
             "ignoreBreakpoints(", ignoreBreakpoints, "), ",
@@ -3439,7 +3357,7 @@ class Debugger
 
    void ValgrindTargetThreadExit()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ValgrindTargetThreadExit()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ValgrindTargetThreadExit()");
       if(vgTargetHandle)
       {
          vgTargetHandle.Wait();
@@ -3450,7 +3368,7 @@ class Debugger
 
    void GdbThreadExit()
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbThreadExit()");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbThreadExit()");
       if(state != terminated)
       {
          _ChangeState(terminated);
@@ -3486,7 +3404,7 @@ class Debugger
 
 #if defined(GDB_DEBUG_CONSOLE) || defined(GDB_DEBUG_GUI)
 #ifdef GDB_DEBUG_CONSOLE
-      // _dpl2(_dpct, dplchan::gdbOutput, 0, output);
+      // _dpcl(_dpct, dplchan::gdbOutput, 0, output);
       puts(output);
 #endif
 #ifdef GDB_DEBUG_OUTPUT
@@ -3582,7 +3500,7 @@ class Debugger
                            }
                         }
                         else
-                           _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "kill reply (", item.name, "=", item.value, ") is unheard of");
+                           _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "kill reply (", item.name, "=", item.value, ") is unheard of");
                      }
                      else
                         HandleExit(null, null);
@@ -3595,7 +3513,7 @@ class Debugger
                      sentBreakInsert = false;
 #ifdef _DEBUG
                      if(bpItem)
-                        _dpl(0, "problem");
+                        _dplf(0, "problem");
 #endif
                      delete bpItem;
                      bpItem = ParseBreakpoint(item.value, outTokens);
@@ -3628,7 +3546,7 @@ class Debugger
                               item.value = StripCurlies(item.value);
                               ParseFrame(frame, item.value);
                               if(frame.file && frame.from)
-                                 _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "unexpected frame file and from members present");
+                                 _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "unexpected frame file and from members present");
                               if(frame.file)
                               {
                                  char * s = null;
@@ -3676,7 +3594,7 @@ class Debugger
                               }
                            }
                            else
-                              _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "stack content (", item.name, "=", item.value, ") is unheard of");
+                              _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "stack content (", item.name, "=", item.value, ") is unheard of");
                         }
                      }
                      if(activeFrameLevel == -1)
@@ -3711,7 +3629,7 @@ class Debugger
                               ide.threadsView.Logf("%3d \n", value);
                            }
                            else
-                              _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "threads content (", item.name, "=", item.value, ") is unheard of");
+                              _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "threads content (", item.name, "=", item.value, ") is unheard of");
                         }
                         if(!i)
                            break;
@@ -3776,9 +3694,9 @@ class Debugger
                      }
                   }
                   else if(!strcmp(item.name, "source-path") || !strcmp(item.name, "BreakpointTable"))
-                     _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "command reply (", item.name, "=", item.value, ") is ignored");
+                     _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, "command reply (", item.name, "=", item.value, ") is ignored");
                   else
-                     _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "command reply (", item.name, "=", item.value, ") is unheard of");
+                     _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "command reply (", item.name, "=", item.value, ") is unheard of");
                }
             }
             else if(!strcmp(outTokens[0], "^running"))
@@ -3869,14 +3787,14 @@ class Debugger
                   }
                }
                else
-                  _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "error content (", item.name, "=", item.value, ") is unheard of");
+                  _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "error content (", item.name, "=", item.value, ") is unheard of");
             }
             else
-               _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "result-record: ", outTokens[0]);
+               _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "result-record: ", outTokens[0]);
             outTokens.RemoveAll();
             break;
          case '+':
-            _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "status-async-output: ", outTokens[0]);
+            _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "status-async-output: ", outTokens[0]);
             break;
          case '=':
             if(TokenizeList(output, ',', outTokens))
@@ -3890,13 +3808,13 @@ class Debugger
                         !strcmp(outTokens[0], "=thread-created") || !strcmp(outTokens[0], "=thread-exited") ||
                         !strcmp(outTokens[0], "=cmd-param-changed") || !strcmp(outTokens[0], "=library-unloaded") ||
                         !strcmp(outTokens[0], "=breakpoint-modified"))
-                  _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, outTokens[0], outTokens.count>1 ? outTokens[1] : "",
+                  _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, outTokens[0], outTokens.count>1 ? outTokens[1] : "",
                            outTokens.count>2 ? outTokens[2] : "", outTokens.count>3 ? outTokens[3] : "",
                            outTokens.count>4 ? outTokens[4] : "", outTokens.count>5 ? outTokens[5] : "",
                            outTokens.count>6 ? outTokens[6] : "", outTokens.count>7 ? outTokens[7] : "",
                            outTokens.count>8 ? outTokens[8] : "", outTokens.count>9 ? outTokens[9] : "");
                else
-                  _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "notify-async-output: ", outTokens[0]);
+                  _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "notify-async-output: ", outTokens[0]);
             }
             outTokens.RemoveAll();
             break;
@@ -3947,7 +3865,7 @@ class Debugger
                            {
                               char r = reason[0];
 #ifdef _DEBUG
-                              if(stopItem) _dpl(0, "problem");
+                              if(stopItem) _dplf(0, "problem");
 #endif
                               stopItem = GdbDataStop { };
                               stopItem.reason = r == 'b' ? breakpointHit : r == 'f' ? functionFinished : r == 'e' ? endSteppingRange : r == 'l' ? locationReached : signalReceived;
@@ -3974,13 +3892,13 @@ class Debugger
                                  else if(stopItem.reason == signalReceived && !strcmp(item.name, "signal-meaning"))
                                     stopItem.meaning = CopyString(item.value);
                                  else if(!strcmp(item.name, "stopped-threads"))
-                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": Advanced thread debugging not handled");
+                                    _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": Advanced thread debugging not handled");
                                  else if(!strcmp(item.name, "core"))
-                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": Information (core) not used");
+                                    _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": Information (core) not used");
                                  else if(!strcmp(item.name, "disp"))
-                                    _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": (", item.name, "=", item.value, ")");
+                                    _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, reason, ": (", item.name, "=", item.value, ")");
                                  else
-                                    _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown ", reason, " item name (", item.name, "=", item.value, ")");
+                                    _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown ", reason, " item name (", item.name, "=", item.value, ")");
                               }
 
                               if(stopItem.reason == signalReceived && !strcmp(stopItem.name, "SIGTRAP"))
@@ -4004,15 +3922,15 @@ class Debugger
                               }
                            }
                            else if(!strcmp(reason, "watchpoint-trigger"))
-                              _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Reason watchpoint trigger not handled");
+                              _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, "Reason watchpoint trigger not handled");
                            else if(!strcmp(reason, "read-watchpoint-trigger"))
-                              _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Reason read watchpoint trigger not handled");
+                              _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, "Reason read watchpoint trigger not handled");
                            else if(!strcmp(reason, "access-watchpoint-trigger"))
-                              _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Reason access watchpoint trigger not handled");
+                              _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, "Reason access watchpoint trigger not handled");
                            else if(!strcmp(reason, "watchpoint-scope"))
-                              _dpl2(_dpct, dplchan::gdbProtoIgnored, 0, "Reason watchpoint scope not handled");
+                              _dpcl(_dpct, dplchan::gdbProtoIgnored, 0, "Reason watchpoint scope not handled");
                            else
-                              _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown reason: ", reason);
+                              _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown reason: ", reason);
                         }
                         else
                         {
@@ -4026,7 +3944,7 @@ class Debugger
                }
             }
             else
-               _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown exec-async-output: ", outTokens[0]);
+               _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, "Unknown exec-async-output: ", outTokens[0]);
             outTokens.RemoveAll();
             break;
          case '(':
@@ -4098,7 +4016,7 @@ class Debugger
                serialSemaphore.Release();
             }
             else
-               _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, $"Unknown prompt", output);
+               _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, $"Unknown prompt", output);
 
             break;
          case '&':
@@ -4120,7 +4038,7 @@ class Debugger
             }
             break;
          default:
-            _dpl2(_dpct, dplchan::gdbProtoUnknown, 0, $"Unknown output: ", output);
+            _dpcl(_dpct, dplchan::gdbProtoUnknown, 0, $"Unknown output: ", output);
       }
       if(!setWaitingForPID)
          waitingForPID = false;
@@ -4139,7 +4057,7 @@ class Debugger
       char file[MAX_FILENAME] = "";
       //bool symbolsLoaded = false;
       DebugListItem item { };
-      //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::FGODetectLoadedLibraryForAddedProjectIssues()");
+      //_dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::FGODetectLoadedLibraryForAddedProjectIssues()");
       for(token : outTokens)
       {
          if(TokenizeListItem(token, item))
@@ -4246,7 +4164,7 @@ class Debugger
 
    void FGOBreakpointModified(Array<char *> outTokens)
    {
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::FGOBreakpointModified() -- TODO only if needed: support breakpoint modified");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::FGOBreakpointModified() -- TODO only if needed: support breakpoint modified");
 #if 0
       DebugListItem item { };
       if(outTokens.count > 1 && TokenizeListItem(outTokens[1], item))
@@ -4263,7 +4181,7 @@ class Debugger
 
    ExpressionType ::DebugEvalExpTypeError(char * result)
    {
-      _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::DebugEvalExpTypeError()");
+      _dpcl(_dpct, dplchan::debuggerWatches, 0, "Debugger::DebugEvalExpTypeError()");
       if(result)
          return dummyExp;
       switch(eval.error)
@@ -4279,7 +4197,7 @@ class Debugger
    char * ::EvaluateExpression(char * expression, ExpressionType * error)
    {
       char * result;
-      _dpl2(_dpct, dplchan::debuggerWatches, 0, "Debugger::EvaluateExpression(", expression, ")");
+      _dpcl(_dpct, dplchan::debuggerWatches, 0, "Debugger::EvaluateExpression(", expression, ")");
       if(ide.projectView && ide.debugger.state == stopped)
       {
          result = GdbEvaluateExpression(expression);
@@ -4297,7 +4215,7 @@ class Debugger
    {
       // check for state
       char * result = GdbReadMemoryString(address, size, format, 1, 1);
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ReadMemory(", address, ")");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::ReadMemory(", address, ")");
       if(!result || !strcmp(result, "N/A"))
          *error = memoryErrorExp;
       else
@@ -4442,7 +4360,7 @@ class ValgrindLogThread : Thread
          }
       }
       delete dynamicBuffer;
-      _dpl2(_dpct, dplchan::debuggerCall, 0, "ValgrindLogThreadExit");
+      _dpcl(_dpct, dplchan::debuggerCall, 0, "ValgrindLogThreadExit");
       //if(oldValgrindHandle == vgLogFile)
          debugger.GdbThreadExit/*ValgrindLogThreadExit*/();
       delete oldValgrindHandle;
@@ -4558,7 +4476,7 @@ class GdbThread : Thread
                      dynamicBuffer.size++;
                   dynamicBuffer[dynamicBuffer.count - 1] = '\0';
 #ifdef _DEBUG
-                  // _dpl(0, dynamicBuffer.array);
+                  // _dplf(0, dynamicBuffer.array);
 #endif
                   debugger.GdbThreadMain(&dynamicBuffer[0]);
                   dynamicBuffer.size = 0;
@@ -4575,7 +4493,7 @@ class GdbThread : Thread
          else
          {
 #ifdef _DEBUG
-            _dpl(0, "Got end of file from GDB!");
+            _dplf(0, "Got end of file from GDB!");
 #endif
          }
       }
@@ -4817,7 +4735,7 @@ class GdbDataBreakpoint : struct
 
    void Print()
    {
-   _dpl(0, "");
+   _dplf(0, "");
       PrintLn("{", "#", number, " T", type, " D", disp, " E", enabled, " H", times, " (", func, ") (", file, ":", line, ") (", fullname, ") (", addr, ") (", at, ")", "}");
    }
 
