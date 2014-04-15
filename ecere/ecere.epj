@@ -197,10 +197,8 @@ from wherever you obtained them.
          "Options" : {
             "Debug" : true,
             "PreprocessorDefinitions" : [
-               "_DEBUG",
-               "BUILDING_ECERE_COM"
-            ],
-            "FastMath" : false
+               "_DEBUG"
+            ]
          }
       },
       {
@@ -208,20 +206,17 @@ from wherever you obtained them.
          "Options" : {
             "Debug" : true,
             "MemoryGuard" : true,
-            "Optimization" : "None",
             "PreprocessorDefinitions" : [
                "BUILDING_ECERE_COM",
                "_DEBUG",
                "MEMINFO",
                "REDZONE=32"
-            ],
-            "FastMath" : false
+            ]
          }
       },
       {
          "Name" : "MemoryGuardRelease",
          "Options" : {
-            "Debug" : false,
             "MemoryGuard" : true,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
@@ -251,12 +246,8 @@ from wherever you obtained them.
          "Name" : "Release",
          "Options" : {
             "Warnings" : "None",
-            "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
-            "PreprocessorDefinitions" : [
-               "BUILDING_ECERE_COM"
-            ],
             "FastMath" : true,
             "PostbuildCommands" : [
                "$(call mkdirq,../$(SODESTDIR))",
@@ -272,7 +263,6 @@ from wherever you obtained them.
       {
          "Name" : "Static",
          "Options" : {
-            "Debug" : false,
             "Optimization" : "Size",
             "PreprocessorDefinitions" : [
                "BUILDING_ECERE_COM",
@@ -286,20 +276,17 @@ from wherever you obtained them.
                "z",
                "freetype"
             ],
-            "Compress" : true,
-            "FastMath" : false
+            "Compress" : true
          }
       },
       {
          "Name" : "Tight",
          "Options" : {
-            "Debug" : false,
             "Optimization" : "Size",
             "PreprocessorDefinitions" : [
                "BUILDING_ECERE_COM"
             ],
-            "Compress" : true,
-            "FastMath" : false
+            "Compress" : true
          }
       },
       {
@@ -315,8 +302,7 @@ from wherever you obtained them.
                "ECERE_NOSSL"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecerePACS",
-            "FastMath" : false
+            "TargetFileName" : "ecerePACS"
          }
       },
       {
@@ -335,15 +321,13 @@ from wherever you obtained them.
             "TargetFileName" : "ecereBootstrap",
             "Libraries" : [
 
-            ],
-            "FastMath" : false
+            ]
          }
       },
       {
          "Name" : "Vanilla",
          "Options" : {
             "Warnings" : "None",
-            "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Size",
             "PreprocessorDefinitions" : [
@@ -354,7 +338,6 @@ from wherever you obtained them.
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereVanilla",
-            "FastMath" : false,
             "PostbuildCommands" : [
                "$(call cpq,$(TARGET),../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib/)"
             ],
@@ -373,8 +356,7 @@ from wherever you obtained them.
                "ECERE_NOSSL"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereWSMS",
-            "FastMath" : false
+            "TargetFileName" : "ecereWSMS"
          },
          "Platforms" : [
             {
@@ -403,8 +385,7 @@ from wherever you obtained them.
                "ECERE_NODINPUT"
             ],
             "TargetType" : "StaticLibrary",
-            "TargetFileName" : "ecereInstaller",
-            "FastMath" : false
+            "TargetFileName" : "ecereInstaller"
          }
       },
       {
