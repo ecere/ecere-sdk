@@ -43,18 +43,24 @@
       {
          "Folder" : "./skycube",
          "Files" : [
-            "res/skycube/up.pcx",
-            "res/skycube/rt.pcx",
-            "res/skycube/lf.pcx",
-            "res/skycube/fr.pcx",
-            "res/skycube/dn.pcx",
-            "res/skycube/bk.pcx"
+            "../ModelViewer/skycube/bk.jpg",
+            "../ModelViewer/skycube/dn.jpg",
+            "../ModelViewer/skycube/fr.jpg",
+            "../ModelViewer/skycube/lf.jpg",
+            "../ModelViewer/skycube/rt.jpg",
+            "../ModelViewer/skycube/up.jpg"
+         ]
+      },
+      {
+         "Folder" : "aircraft",
+         "Files" : [
+            "06 17 09.png",
+            "aircraft.3DS"
          ]
       },
       "dted.pcx",
       "texture1.pcx",
       "N19.DT1",
-      "../ModelViewer/res/ecere.png",
-      "cesna.3ds"
+      "../ModelViewer/res/ecere.png"
    ]
 }

@@ -23,7 +23,7 @@ class Scene : Window
       //type = attached;
       type = attachedQuaternion;
       position = { 0, 0, -10 };
-      orientation = Euler { 180, 20, 0 };
+      orientation = Euler { 180, 30, 0 };
       zMax = 340000;
    };
    Light light;
@@ -31,7 +31,7 @@ class Scene : Window
    Bitmap textures[16];
    Bitmap detail { };
    Object player { };
-   SkyBox sky { size = { 100, 100, 100 }, folder = ":skycube", extension = "pcx" };
+   SkyBox sky { size = { 100, 100, 100 }, folder = ":skycube", extension = "jpg" };
    DNAModel dna
    {
       numBases = 24;
@@ -166,7 +166,7 @@ class Scene : Window
          if(firstTime || x || y || b)
          {
             firstTime = false;
-            camera.Slerp(0.3f);
+            camera.Slerp(0.2f);
          }
 
          if(camera.Update())
@@ -274,8 +274,7 @@ class Scene : Window
       }
       delete map;
 
-      //player.Load(":beholder/beholder.3ds", null, displaySystem);
-      player.Load(":cesna.3ds", null, displaySystem);
+      player.Load(":aircraft/aircraft.3DS", null, displaySystem);
 
       camera.target = player;
 
@@ -372,13 +371,13 @@ class Scene : Window
             */
             camera.type = attachedQuaternion;
             camera.position = { 0, 0, -10 };
-            camera.orientation = Euler { 180, 20, 0 };
-            camera.Slerp(0.3f);
+            camera.orientation = Euler { 180, 30, 0 };
+            camera.Slerp(0.2f);
             break;
          case k2:
             camera.type = lookAt;
             camera.position = camera.cPosition; //{ 1000, -3000, 0 };
-            camera.position.z -= 50;
+            camera.position.z -= 5;
             camera.orientation = { 1,0,0,0 };
             camera.Slerp(0.1f);
             break;
