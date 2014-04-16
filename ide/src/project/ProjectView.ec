@@ -785,6 +785,8 @@ class ProjectView : Window
                result = DebugStop();
          }
       }
+      app.ProcessInput(true);
+      ShowOutputBuildLog(false);
       return result;
    }
 
