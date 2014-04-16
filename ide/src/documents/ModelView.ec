@@ -8,12 +8,22 @@ class ModelView : Window
 {
    isActiveClient = true;
    background = blue;
-   anchor = Anchor { left = 0.1, right = 0.1, top = 0.1, bottom = 0.1 };
+   anchor = { left = 0, top = 0, right = 0, bottom = 0 };
 
    FillModeValue fillMode;
    bool moving, lightMoving;
    char fileName[MAX_LOCATION];
-   Camera camera { type = attached, zMax = 10000, position = Vector3D { 0, 0, -1000 } };
+   Camera camera
+   {
+      attached,
+      fovDirection = vertical,
+      fov = 53,
+      position = { 0, 0, -10 },
+      eulerOrientation = Euler { 30, 0, 0 },
+      zMin = 1;
+      zMax = 10000;
+   };
+   Object cameraTarget { };
    Object model {};
    Point startPosition;
    Euler startOrientation;
@@ -30,7 +40,7 @@ class ModelView : Window
       bool DelayExpired()
       {
          if(model)
-            model.Animate(model.frame + 1);
+            model.frame++; //Animate(model.frame + 1);
 
          Update(null);
          return true;
@@ -45,65 +55,30 @@ class ModelView : Window
       }
    }
 
-   bool OnLoadGraphics(void)
+   void OnUnloadGraphics()
    {
-      /*
-      model.InitializeMesh(display);
-      model.mesh.CreateCylinder(50, 100, 50, display);
-      model.SetMinMaxRadius();
-      */
-      if(model.Load(fileName, null, displaySystem))
+      model.Free(displaySystem);
+      delete model;  // At the moment the reload preserving hierarchy position is not working, causing things to be misplaced in some models
+      model = { };
+   }
+
+   void OnDestroy()
+   {
+      DisplaySystem displaySystem = parent.displaySystem;
+      /*delete model;
+      model = { };*/
+      if(_class.count == 1 && parent.displaySystem)
       {
-         if(model)
-            camera.position.z = - model.radius * 1.5f;
-
-         camera.target = model;
-
-         display.fogColor = blue;
-         display.fogDensity = 0.000001f;
-
-         return true;
+         displaySystem.ClearMaterials();
+         displaySystem.ClearTextures();
+         displaySystem.ClearMeshes();
       }
-      else
-         return false;
-      return true;
    }
 
-   void OnUnloadGraphics(void)
+   void OnResize(int w, int h)
    {
-      //displaySystem.ClearMaterials();
-      //displaySystem.ClearTextures());
-      //displaySystem.ClearMeshes();
-   }
-
-   void OnResize(int width, int height)
-   {
-      camera.Setup(width, height, null);
-   }
-
-   void OnDestroy(void)
-   {
-      //eObject_Free(model, null);
-   }
-
-   void OnRedraw(Surface surface)
-   {
-      surface.SetBackground(lightBlue);
-      surface.Clear(colorAndDepth);
-
-      camera.Update();
-
-      display.SetCamera(surface, camera);
-
-      display.SetLight(0, light);
-
-      display.fillMode = fillMode;
-      display.DrawObject(model);
-      display.fillMode = solid;
-
-      display.SetCamera(surface, null);
-
-      surface.SetForeground(black);
+      camera.Setup(w, h, null);
+      Update(null);
    }
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
@@ -112,7 +87,7 @@ class ModelView : Window
       {
          startPosition.x = x;
          startPosition.y = y;
-         startOrientation = camera.orientation;
+         startOrientation = camera.eulerOrientation;
          Capture();
          moving = true;
       }
@@ -162,10 +137,8 @@ class ModelView : Window
             startOrientation.pitch + (y - startPosition.y),
             0
          };
-         //if(euler.pitch > 90) euler.pitch = 90;
-         //if(euler.pitch < 1) euler.pitch = 1;
 
-         camera.orientation = euler;
+         camera.eulerOrientation = euler;
 
          Update(null);
       }
@@ -183,26 +156,6 @@ class ModelView : Window
       return true;
    }
 
-   bool OnKeyHit(Key key, unichar ch)
-   {
-      switch((SmartKey) key)
-      {
-         case wheelDown: case minus: camera.position.z *= 1.1111111f; break;
-         case wheelUp: case equal: camera.position.z *= 0.9f; break;
-
-         /*
-            case minus: camera.position.z += 10; break;
-            case equal: camera.position.z -= 10; break;
-
-            case pageDown: model.Animate(model.frame + 1); break;
-            case pageUp: model.Animate(model.frame - 1); break;
-            case home: model.Animate(model.startFrame); break;
-            case end: model.Animate(model.endFrame); break;
-         */
-      }
-      return true;
-   }
-
    bool OnKeyDown(Key key, unichar ch)
    {
       switch(key)
@@ -214,11 +167,91 @@ class ModelView : Window
       return true;
    }
 
+   bool OnKeyHit(Key key, unichar ch)
+   {
+      switch((SmartKey) key)
+      {
+         case wheelDown: case minus: camera.position.z *= 1.1111111f; Update(null); break;
+         case wheelUp: case plus: camera.position.z *= 0.9f; Update(null); break;
+         case up:    camera.position.y += camera.position.z / 20; Update(null); break;
+         case down:  camera.position.y -= camera.position.z / 20; Update(null); break;
+         case left:    camera.position.x += camera.position.z / 20; Update(null); break;
+         case right:  camera.position.x -= camera.position.z / 20; Update(null); break;
+         /*
+            case pageDown: model.Animate(model.frame + 1); break;
+            case pageUp: model.Animate(model.frame - 1); break;
+            case home: model.Animate(model.startFrame); break;
+            case end: model.Animate(model.endFrame); break;
+         */
+      }
+      return true;
+   }
+
+   bool OnLoadGraphics()
+   {
+      if(model.Load(fileName, null, displaySystem))
+      {
+         float r = model.radius;
+         cameraTarget.transform.position =
+         {
+            (model.max.x + model.min.x) / 2,
+            (model.max.y + model.min.y) / 2,
+            (model.max.z + model.min.z) / 2
+         };
+
+         camera.zMin = 1;
+         camera.zMax = 10000;
+         camera.position = { 0, 0, -r * 2 };
+         camera.eulerOrientation = Euler { 30, 0, 0 };
+         if(r * 2 < camera.zMax / 10)
+         {
+            while(r * 2 < camera.zMax / 100)
+            {
+               camera.zMax /= 10;
+               camera.zMin /= 10;
+            }
+         }
+         else
+            while(r * 2 > camera.zMax / 10)
+            {
+               camera.zMax *= 10;
+               camera.zMin *= 10;
+            }
+
+         camera.target = cameraTarget;
+         return true;
+      }
+      return false;
+   }
+
+   void OnRedraw(Surface surface)
+   {
+      //display.fogColor = blue;
+      display.fogDensity = 0; //0.000001f;
+
+      surface.SetBackground(lightBlue);
+      surface.Clear(colorAndDepth);
+
+      camera.Update();
+
+      display.SetCamera(surface, camera);
+
+      display.SetLight(0, light);
+
+      display.fillMode = fillMode;
+      display.DrawObject(model);
+      display.fillMode = solid;
+
+      display.SetCamera(surface, null);
+
+      surface.SetForeground(black);
+   }
+
    ModelView()
    {
       fillMode = solid;
       light.orientation.Yaw(0);
-      timer.Start();
+      // timer.Start();
    }
 
    void SetFormat(char * format)
