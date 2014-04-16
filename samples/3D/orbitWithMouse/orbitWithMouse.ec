@@ -6,7 +6,7 @@ import "ecere"
 
 #define SCALE ((float)virtualDesktop.clientSize.h / WINDOW_HEIGHT)
 
-#define FULLSCREEN
+//#define FULLSCREEN
 
 class Window3D : struct
 {
