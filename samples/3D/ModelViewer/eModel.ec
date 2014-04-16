@@ -34,7 +34,7 @@ class eModelApp : GuiApplication
          }
          else
          {
-            strcpy(fileDialog.filePath, "toyota.3ds");
+            strcpy(fileDialog.filePath, "models/cow/cow.3DS");
             //selected = true;
          }
          while(selected || fileDialog.Modal() == ok)
@@ -49,18 +49,29 @@ class eModelApp : GuiApplication
 
 class ModelViewer : Window
 {
+   caption = $"Ecere Model Viewer";
+   background = blue;
+   borderStyle = sizable;
+   hasMaximize = true;
+   hasMinimize = true;
+   hasClose = true;
+   anchor = { left = 0, top = 0, right = 0, bottom = 0 };
+
    Camera camera
    {
       attached,
+      fovDirection = vertical,
       fov = 53,
-      position = { 0, 0,-100 },
-      orientation = Euler { 0, 30, 0 },
-      zMin = 0.01f;
-
+      position = { 0, 0, -10 },
+      eulerOrientation = Euler { 30, 0, 0 },
+      zMin = 1;
+      zMax = 10000;
    };
+   Object cameraTarget { };
    Object model {};
 
    //FPS frameRate;
+
    bool moving, lightMoving;
    Timer timer
    {
@@ -69,24 +80,13 @@ class ModelViewer : Window
       bool DelayExpired()
       {
          if(model)
-         {
-            /*
-            Object rotor = model.Find("propmain");
-            Object rrotor = model.Find("propback");
-
-            if(rotor)
-               rotor.transform.angle.RotateY(0.01 * 30);
-            if(rrotor)
-               rrotor->transform.angle.RotateX(0.01 * 30);
-            */
             model.frame++;
-            // cameraObject.frame++;
-         }
 
          Update(null);
          return true;
       }
    };
+
    Point startPosition;
    Euler startOrientation;
    Light light
@@ -97,22 +97,13 @@ class ModelViewer : Window
    };
    EditBox help
    {
-      this, visible = false, noCaret = true, multiLine = true, readOnly = true, hasVertScroll = true, hasHorzScroll = true, borderStyle = sizable,
-      text = "Help", anchor = Anchor { right = 0, top = 0 }, size = Size { 400, 120 }, background = red, opacity = 0.2f,
-      font = { "Courier New", 10 }
+      this, caption = $"Help", background = red, 0.2f, borderStyle = sizable, font = { "Courier New", 10 }, size = { 420, 130 }, anchor = { top = 0, right = 0 }, visible = false, hasHorzScroll = true, true, readOnly = true, true, noCaret = true
    };
-   FillModeValue fillMode;
-   Object cameraObject;
-   SkyBox sky { size = { 10000, 10000, 10000 }, folder = ":skycube", extension = "pcx" };
-   char * modelFile;
 
-   background = blue;
-   borderStyle = sizable;
-   hasMaximize = true;
-   hasMinimize = true;
-   hasClose = true;
-   text = "ECERE Model Viewer";
-   anchor = Anchor { 0,0,0,0 };
+   FillModeValue fillMode;
+   SkyBox sky { size = { 10000, 10000, 10000 }, folder = ":skycube", extension = "jpg" };
+
+   char * modelFile;
 
    ModelViewer()
    {
@@ -134,6 +125,8 @@ class ModelViewer : Window
 
    void OnUnloadGraphics()
    {
+      sky.Free(displaySystem);
+      model.Free(displaySystem);
       displaySystem.ClearMaterials();
       displaySystem.ClearTextures();
       displaySystem.ClearMeshes();
@@ -141,6 +134,8 @@ class ModelViewer : Window
 
    void OnDestroy()
    {
+      delete model;
+      model = { };
       //sky.Free(null);
       //model.Free(null);
    }
@@ -237,16 +232,6 @@ class ModelViewer : Window
          case h:
             help.visible ^= true;
             break;
-         case k1: case k2: case k3: case k4:
-            if(key == k1)        cameraObject = model.Find("Camera01");
-            else if(key == k2)   cameraObject = model.Find("Camera02");
-            else if(key == k3)   cameraObject = model.Find("Camera03");
-            else if(key == k4)   cameraObject = model.Find("Camera04");
-
-            camera = cameraObject.camera;
-            camera.Setup(clientSize.w, clientSize.h, null);
-            Update(null);
-            break;
       }
       return true;
    }
@@ -257,22 +242,16 @@ class ModelViewer : Window
       {
          case wheelDown: case minus: camera.position.z *= 1.1111111f; Update(null); break;
          case wheelUp: case plus: camera.position.z *= 0.9f; Update(null); break;
-         //case minus: camera.position.z += 10; break;
-         //case plus: camera.position.z -= 10; break;
-   /*
-         case pageDown:
-            model.Animate(model.frame + 1);
-            break;
-         case pageUp:
-            model.Animate(model.frame - 1);
-            break;
-         case home:
-            model.Animate(model.startFrame);
-            break;
-         case end:
-            model.Animate(model.endFrame);
-            break;
-   */
+         case up:    camera.position.y += camera.position.z / 20; Update(null); break;
+         case down:  camera.position.y -= camera.position.z / 20; Update(null); break;
+         case left:    camera.position.x += camera.position.z / 20; Update(null); break;
+         case right:  camera.position.x -= camera.position.z / 20; Update(null); break;
+         /*
+            case pageDown: model.Animate(model.frame + 1); break;
+            case pageUp: model.Animate(model.frame - 1); break;
+            case home: model.Animate(model.startFrame); break;
+            case end: model.Animate(model.endFrame); break;
+         */
       }
       return true;
    }
@@ -281,59 +260,67 @@ class ModelViewer : Window
    {
       if(model.Load(modelFile, null, displaySystem))
       {
-         if(model)
+         float r = model.radius;
+         cameraTarget.transform.position =
          {
-            // model.Merge(displaySystem);
-
-            // camera.position.z = - model.radius * 5;
-
-            //cameraObject = model.Find("Camera01");
-            //cameraObject = model.Find("Camera03");
-            //cameraObject = model.Find("Camera02");
-            //cameraObject = model.Find("Camera04");
-            //cameraObject = model.Find("FullscreenCam01");
-            //cameraObject = model.Find("Full Scre1");
-            //cameraObject = model.Find("Full Scree");
-            cameraObject = model.Find("Plasma Cam");
-            if(cameraObject)
-               camera = cameraObject.camera;
-            else
-               camera.target = model;
+            (model.max.x + model.min.x) / 2,
+            (model.max.y + model.min.y) / 2,
+            (model.max.z + model.min.z) / 2
+         };
+         // model.Merge(displaySystem);
+         camera.zMin = 1;
+         camera.zMax = 10000;
+         camera.position = { 0, 0, -r * 2 };
+         camera.eulerOrientation = Euler { 30, 0, 0 };
+         if(r * 2 < camera.zMax / 10)
+         {
+            while(r * 2 < camera.zMax / 100)
+            {
+               camera.zMax /= 10;
+               camera.zMin /= 10;
+            }
          }
+         else
+            while(r * 2 > camera.zMax / 10)
+            {
+               camera.zMax *= 10;
+               camera.zMin *= 10;
+            }
 
+         camera.target = cameraTarget;
+
+         sky.size = { camera.zMax, camera.zMax, camera.zMax };
          sky.Create(displaySystem);
          return true;
       }
-      else
-         return false;
+      return false;
    }
 
    void OnRedraw(Surface surface)
    {
-      display.fogColor = blue;
-      display.fogDensity = 0.000001f;
+      //display.fogColor = blue;
+      display.fogDensity = 0; //0.000001f;
 
       surface.SetBackground(lightBlue);
       surface.Clear(colorAndDepth);
 
       camera.Update();
 
+      // Set Light before setting the camera will set the light in view space
+      // display.SetLight(0, &light);
+
       display.SetCamera(surface, camera);
 
+      // Set Light after setting the camera will set the light in world space
       display.SetLight(0, &light);
-      display.ambient = black;
+
+      display.ambient = { 30, 30, 30 }; //black;
       // display.SetLights(model);
 
       display.fillMode = fillMode;
 
       sky.Render(camera, display);
       display.DrawObject(model);
-      /*
-      display.DrawObject(model);
-      display.DrawObject(model);
-      display.DrawObject(model);
-      display.DrawObject(model);
-      */
 
       display.fillMode = solid;
 

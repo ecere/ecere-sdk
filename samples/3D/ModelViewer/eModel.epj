@@ -16,6 +16,7 @@
          "Name" : "Debug",
          "Options" : {
             "Debug" : true,
+            "Console" : true,
             "FastMath" : false
          }
       },
@@ -33,6 +34,17 @@
    ],
    "ResourcesPath" : "res",
    "Resources" : [
+      {
+         "Folder" : "skycube",
+         "Files" : [
+            "skycube/bk.jpg",
+            "skycube/dn.jpg",
+            "skycube/fr.jpg",
+            "skycube/lf.jpg",
+            "skycube/rt.jpg",
+            "skycube/up.jpg"
+         ]
+      },
       "ecere.png",
       "help.txt"
    ]
