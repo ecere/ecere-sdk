@@ -137,9 +137,11 @@ typedef struct FileInfo FileInfo;
 
 typedef struct
 {
-   uint16 indices[3];
-   uint16 oldIndices[3];
+   uint indices[3];
+   uint origIndices[3];
    uint smoothGroups;
+   Material material;
+   Vector3Df normal;
    bool done:1;
 } Face;
 
@@ -157,6 +159,7 @@ struct FileInfo
    int nFaces;
    Face * faces;
    char textureDirectory[MAX_DIRECTORY];
+   Map<uintptr, Array<int>> matFaces;
 };
 
 #define SWAP_WORD(word) (((unsigned short)(word) & 0x00ff) << 8) \
@@ -275,80 +278,304 @@ static bool ReadAmountOf(FileInfo * info, uint16 * amountOf)
    return true;
 }
 
-typedef struct
-{
-   uint smoothGroups;
-   int index;
-} VertexConfig;
+#define WELD_TRESHOLD        0.000001
+#define SMOOTH_CUTOFF   0  // 45
 
-typedef struct
+struct SharedSourceVertexInfo
 {
-   int numConfig;
-   VertexConfig * config;
-} VertexConfigList;
+   int index;
+   Vector3Df value;
+   uint unique;
+   Face * face;
+
+   int OnCompare(SharedSourceVertexInfo b)
+   {
+      if(unique < b.unique) return -1;
+      if(unique > b.unique) return 1;
+
+      if(unique)
+      {
+         if(face < b.face) return -1;
+         if(face > b.face) return 1;
+      }
+      if(index == b.index) return 0;
+      if(WELD_TRESHOLD)
+      {
+         if(value.x < b.value.x - WELD_TRESHOLD) return -1;
+         if(value.x > b.value.x + WELD_TRESHOLD) return 1;
+         if(value.y < b.value.y - WELD_TRESHOLD) return -1;
+         if(value.y > b.value.y + WELD_TRESHOLD) return 1;
+         if(value.z < b.value.z - WELD_TRESHOLD) return -1;
+         if(value.z > b.value.z + WELD_TRESHOLD) return 1;
+      }
+      else
+      {
+         if(index < b.index) return -1;
+         if(index > b.index) return 1;
+      }
+      return 0;
+   }
+};
+
+class SharedDestVertexInfo
+{
+   Array<int> faces { };
+};
+
+struct SourceVertexInfo
+{
+   SharedSourceVertexInfo * shared;
+   Pointf texCoord;
+   uint smoothGroups;
+
+   int OnCompare(SourceVertexInfo b)
+   {
+      int r = (*shared).OnCompare(*b.shared);
+      if(!r) r = texCoord.OnCompare(b.texCoord);
+      if(!r) r = smoothGroups.OnCompare(b.smoothGroups);
+      return r;
+   }
+};
+
+class DestVertexInfo
+{
+   int index, copyFromIndex;
+   Vector3Df normal;
+};
 
 static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
 {
    int c;
    Face * faces = info->faces;
-   //int nFaces = info->nFaces;
    int nVertices = mesh.nVertices;
    int index;
    int nNewVertices;
-   int * numShared;
+   Vector3Df * mVertices;
+   double cutOff = cos(Degrees { SMOOTH_CUTOFF });
 
-   VertexConfigList * configLists = new0 VertexConfigList[nVertices];
+   Map<SharedSourceVertexInfo, SharedDestVertexInfo> sharedVertices { };
+   Map<SourceVertexInfo, DestVertexInfo> vertexMap { };
+   Array<MapNode<SourceVertexInfo, DestVertexInfo>> vertices { size = nVertices };
+
+   MapIterator<SharedSourceVertexInfo, SharedDestVertexInfo> itShared { map = sharedVertices };
+   MapIterator<SourceVertexInfo, DestVertexInfo> it { map = vertexMap };
 
    nNewVertices = nVertices;
+   mVertices = mesh->vertices;
+
    for(c = 0; c<info->nFaces; c++)
+   {
+      Face * face = &faces[c];
+      Plane plane;
+      Vector3Df planeNormal;
+      plane.FromPointsf(mesh.vertices[face->indices[2]],
+                        mesh.vertices[face->indices[1]],
+                        mesh.vertices[face->indices[0]]);
+      face->normal = { (float)plane.normal.x, (float)plane.normal.y, (float)plane.normal.z };
+   }
+
+   for(c = 0; c < info->nFaces; c++)
    {
       Face * face = &faces[c];
       int i;
 
+      // Zero space points
+      if(!mVertices[face->indices[0]].OnCompare(mVertices[face->indices[1]]) &&
+         !mVertices[face->indices[0]].OnCompare(mVertices[face->indices[2]]))
+         continue;
+
       for(i = 0; i<3; i++)
       {
-         int index = face->indices[i];
          int v;
-         VertexConfigList * configList = &configLists[index];
-         VertexConfig * config = null;
-         for(v = 0; v<configList->numConfig; v++)
+         SharedSourceVertexInfo * source;
+         SharedDestVertexInfo svInfo;
+         DestVertexInfo vInfo;
+
+         index = face->indices[i];
+
+         if(face->smoothGroups)
+            itShared.Index({ index = index, mVertices[index], face = face }, true);
+         else
+            itShared.Index({ index = index, { }, unique = index + 1, face = face }, true);
+         svInfo = itShared.data;
+         if(!svInfo) itShared.data = svInfo = { };
+         svInfo.faces.Add(c);
+
+         source = (SharedSourceVertexInfo *)&(((AVLNode)itShared.pointer).key);
+         // TODO: Allow obtaining address of MapIterator::key
+         // it.Index({ &itShared.key, mesh->texCoords[index] }, true);
+         it.Index({ source, mesh->texCoords ? mesh->texCoords[index] : { }, face->smoothGroups }, true);
+         vInfo = it.data;
+         if(!vInfo)
          {
-            uint smoothGroups = configList->config[v].smoothGroups;
-            if(smoothGroups == face->smoothGroups)
+            vInfo = { };
+            it.data = vInfo;
+            vInfo.copyFromIndex = index;
+            vInfo.index = index;
+         }
+
+         if(!vertices[index])
+            vertices[index] = (void *)it.pointer;
+         else if(vertices[index] != it.pointer)
+         {
+            // If it's a different smoothing group, we'll need extra vertices
+            index = vertices.size;
+            vInfo.index = index;
+            vertices.Add((void *)it.pointer);
+            nNewVertices++;
+         }
+         face->indices[i] = vInfo.index;
+      }
+   }
+
+   for(index = 0; index < nNewVertices; index++)
+   {
+      int numShared = 0;
+      it.pointer = vertices[index];
+      if(it.pointer)
+      {
+         DestVertexInfo vInfo = it.data;
+         Vector3Df normal { };
+         SourceVertexInfo * inf = (SourceVertexInfo *)&(((AVLNode)it.pointer).key);
+         uint smoothing = inf->smoothGroups;
+         bool added = true;
+         SharedSourceVertexInfo * shared = inf->shared;
+         SharedDestVertexInfo svInfo = sharedVertices[*shared];
+         int origIndex;
+         if(!svInfo || vInfo.index != index)
+            continue;
+
+         for(i : svInfo.faces)
+         {
+            Face * face = &info->faces[i];
+            face->done = false;
+            if(smoothing & face->smoothGroups)
+               smoothing |= face->smoothGroups;
+         }
+
+         // Optional code to compensate auto-welding with a limit angle cutoff between faces of same smoothing group
+         if(SMOOTH_CUTOFF && WELD_TRESHOLD)
+         {
+            for(i : svInfo.faces)
             {
-               config = &configList->config[v];
-               break;
-            }
-            else if(smoothGroups && face->smoothGroups)
-            {
-               int g;
-               for(g = 0; g<32; g++)
-                  if(smoothGroups & (1<<g) && face->smoothGroups & (1<<g))
+               Face * face = &info->faces[i];
+               if((smoothing & face->smoothGroups) || (!smoothing && !face->smoothGroups))
+               {
+                  int j;
+                  for(j = 0; j < 3; j++)
                   {
-                     config = &configList->config[v];
-                     config->smoothGroups |= face->smoothGroups;
-                     break;
+                     if(face->indices[j] == vInfo.index)
+                     {
+                        origIndex = face->origIndices[j];
+                        face->done = true;
+                        normal.x += face->normal.x;
+                        normal.y += face->normal.y;
+                        normal.z += face->normal.z;
+                        numShared++;
+                        break;
+                     }
                   }
+               }
+               if(numShared) break;
             }
          }
 
-         if(!config || !face->smoothGroups)
+         while(added)
          {
-            // Duplicate the vertex and make the face use it
-            if(configList->numConfig)
-               index = nNewVertices++;
-            face->indices[i] = (uint16)index;
-            if(!config)
+            added = false;
+            for(i : svInfo.faces)
             {
-               configList->config = renew configList->config VertexConfig[configList->numConfig + 1];
-               config = &configList->config[configList->numConfig++];
-               config->index = index;
-               config->smoothGroups = face->smoothGroups;
+               Face * face = &info->faces[i];
+               if(!face->done && ((smoothing & face->smoothGroups) || (!smoothing && !face->smoothGroups)))
+               {
+                  bool valid = true;
+
+                  if(SMOOTH_CUTOFF && WELD_TRESHOLD)
+                  {
+                     int origIndexB = -1;
+                     int k;
+
+                     for(k = 0; k < 3; k++)
+                     {
+                        if(face->indices[k] == vInfo.index)
+                        {
+                           origIndexB = face->origIndices[k];
+                           break;
+                        }
+                     }
+                     valid = origIndex == origIndexB;
+                     if(!valid)
+                     {
+                        for(j : svInfo.faces)
+                        {
+                           if(info->faces[j].done)
+                           {
+                              double dot = info->faces[j].normal.DotProduct(face->normal);
+                              if(dot > 1) dot = 1; else if(dot < -1) dot = -1;
+                              valid = fabs(dot) > cutOff;
+                              if(valid) break;
+                           }
+                        }
+                     }
+                  }
+
+                  if(valid)
+                  {
+                     normal.x += face->normal.x;
+                     normal.y += face->normal.y;
+                     normal.z += face->normal.z;
+                     numShared++;
+                     added = true;
+                     face->done = true;
+                  }
+               }
             }
+            if(!SMOOTH_CUTOFF || !WELD_TRESHOLD) break;
          }
-         else
+         normal.Scale(normal, 1.0f / numShared);
+         if(vInfo.index == index)
+            vInfo.normal.Normalize(normal);
+
+         // Auto welding/smoothing requires extra vertices because angle is too steep
+         if(SMOOTH_CUTOFF && WELD_TRESHOLD)
          {
-            face->indices[i] = (uint16)config->index;
+            SharedDestVertexInfo newSharedInfo = null;
+            int index;
+            for(i : svInfo.faces)
+            {
+               Face * face = &info->faces[i];
+               if(!face->done && ((smoothing & face->smoothGroups) || (!smoothing && !face->smoothGroups)))
+               {
+                  int j;
+                  for(j = 0; j < 3; j++)
+                  {
+                     if(face->indices[j] == vInfo.index)
+                     {
+                        if(!newSharedInfo)
+                        {
+                           DestVertexInfo newVert;
+                           SharedSourceVertexInfo * source;
+
+                           index = nNewVertices++;
+                           itShared.Index({ index = index, { }, unique = index + 1, face = face }, true);
+                           source = (SharedSourceVertexInfo *)&(((AVLNode)itShared.pointer).key);
+                           itShared.data = newSharedInfo = { };
+
+                           it.Index({ source, mesh->texCoords ? mesh->texCoords[vInfo.copyFromIndex] : { }, face->smoothGroups }, true);
+                           newVert = { };
+                           it.data = newVert;
+                           newVert.copyFromIndex = vInfo.copyFromIndex;
+                           newVert.index = index;
+
+                           vertices.Add((void *)it.pointer);
+                        }
+                        face->indices[j] = index;
+                        newSharedInfo.faces.Add(i);
+                        break;
+                     }
+                  }
+               }
+            }
          }
       }
    }
@@ -358,6 +585,7 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
       Vector3Df * oldVertices = mesh.vertices;
       Pointf * oldTexCoords = mesh.texCoords;
 
+      // TODO: Support reallocation?
       *((void **)&mesh.vertices) = null;
       *((void **)&mesh.texCoords) = null;
       *((int *)&mesh.nVertices) = 0;
@@ -365,99 +593,38 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
       mesh.Allocate( { vertices = true, normals = true, texCoords1 = oldTexCoords ? true : false }, nNewVertices, info->displaySystem);
 
       // Fill in the new vertices
-      for(index = 0; index<nVertices; index++)
+      for(index = 0; index < nNewVertices; index++)
       {
-         int v;
-         VertexConfigList * configList = &configLists[index];
-         for(v = 0; v<configList->numConfig; v++)
-         {
-            VertexConfig * config = &configList->config[v];
-            Vector3Df * normal;
-            if(config->smoothGroups)
-            {
-               //if(v > 0)
-               {
-                  // Duplicate vertex
-                  mesh.vertices[config->index] = oldVertices[index]; //mesh.vertices[index];
-                  if(mesh.texCoords)
-                     mesh.texCoords[config->index] = oldTexCoords[index]; //mesh.texCoords[index];
-               }
-            }
-            else
-            {
-               mesh.vertices[config->index] = oldVertices[index];
-               if(mesh.texCoords)
-                  mesh.texCoords[config->index] = oldTexCoords[index]; //mesh.texCoords[index];
-            }
-            normal = &mesh.normals[config->index];
-            *normal = { 0,0,0 };
-         }
+         DestVertexInfo vInfo;
+         it.pointer = vertices[index];
+         vInfo = it.data;
+
+         // Duplicate vertex
+         mesh.normals[index] = vInfo ? vInfo.normal : { };
+         mesh.vertices[index] = oldVertices[vInfo ? vInfo.copyFromIndex : index];
+         if(mesh.texCoords)
+            mesh.texCoords[index] = oldTexCoords[vInfo ? vInfo.copyFromIndex : index];
       }
 
       delete oldVertices;
       delete oldTexCoords;
    }
 
-   numShared = new0 int[nNewVertices];
-
-   for(c = 0; c<info->nFaces; c++)
    {
-      Face * face = &faces[c];
       int i;
-      Plane plane;
-      Vector3Df planeNormal;
-      plane.FromPointsf(mesh.vertices[face->oldIndices[2]],
-                       mesh.vertices[face->oldIndices[1]],
-                       mesh.vertices[face->oldIndices[0]]);
-      planeNormal = { (float)plane.normal.x, (float)plane.normal.y, (float)plane.normal.z };
-      if(face->smoothGroups)
-      {
-         for(i = 0; i<3; i++)
-         {
-            int index = face->indices[i];
-            Vector3Df * normal = &mesh.normals[index];
-            normal->Add(normal, planeNormal);
-            numShared[index]++;
-         }
-      }
-      else
-      {
-         for(i = 0; i<3; i++)
-         {
-            int index = face->oldIndices[i];
-            int newIndex = face->indices[i];
-            mesh.normals[newIndex] = planeNormal;
-            // Duplicate vertex
-            if(index != newIndex)
-            {
-               mesh.vertices[newIndex] = mesh.vertices[index];
-               if(mesh.texCoords)
-                  mesh.texCoords[newIndex] = mesh.texCoords[index];
-            }
-            numShared[newIndex]++;
-         }
-      }
-   }
-   for(index = 0; index<nNewVertices; index++)
-   {
-      Vector3Df * normal = &mesh.normals[index];
-      normal->Scale(normal, 1.0f / numShared[index]);
-      normal->Normalize(normal);
+      for(i = 0; i < info->nFaces; i++)
+         info->faces[i].done = false;
    }
 
    mesh.Unlock({ normals = true });
 
    // Free all the temporary stuff
-   if(configLists)
-   {
-      for(index = 0; index < nVertices; index++)
-      {
-         VertexConfigList * configList = &configLists[index];
-         if(configList->config) delete configList->config;
-      }
-      delete configLists;
-   }
-   delete numShared;
+
+   delete vertices;
+   vertexMap.Free();
+   delete vertexMap;
+   sharedVertices.Free();
+   delete sharedVertices;
 }
 
 // Meshes
@@ -487,77 +654,28 @@ static bool ReadFacesListChunks(FileInfo * info, Object object)
       {
          char * name;
          Material mat;
+         int i, c;
+         int count;
+         Array<int> faces;
          char matName[MAX_LOCATION + 100];
 
          strcpy(matName, info->fileName);
          ReadASCIIZ(info->f, &name);
+         count = ReadWORD(info->f);
          strcat(matName, name);
+
          mat = displaySystem.GetMaterial(matName);
-         if(mat)
+         faces = info->matFaces[(uintptr)mat];
+         if(!faces)
+            info->matFaces[(uintptr)mat] = faces = { };
+         i = faces.size;
+         faces.size += count;
+
+         for(c = 0; c<count; c++)
          {
-            if(mat.flags.translucent)
-            {
-               int c;
-               uint16 count = ReadWORD(info->f);
-               mesh.primitives = renew mesh.primitives PrimitiveSingle[mesh.nPrimitives + count];
-               for(c = 0; c<count; c++)
-               {
-                  uint16 face = ReadWORD(info->f);
-                  PrimitiveSingle * triangle = &mesh.primitives[mesh.nPrimitives++];
-
-                  if(mesh.AllocatePrimitive(triangle, triangles, 3))
-                  {
-                     triangle->indices[0] = info->faces[face].indices[0];
-                     triangle->indices[1] = info->faces[face].indices[1];
-                     triangle->indices[2] = info->faces[face].indices[2];
-                     triangle->middle.Add(mesh.vertices[triangle->indices[0]], mesh.vertices[triangle->indices[1]]);
-                     triangle->middle.Add(triangle->middle, mesh.vertices[triangle->indices[2]]);
-                     triangle->plane.FromPointsf(
-                        mesh.vertices[triangle->indices[2]],
-                        mesh.vertices[triangle->indices[1]],
-                        mesh.vertices[triangle->indices[0]]);
-
-                     mesh.UnlockPrimitive(triangle);
-                  }
-                  triangle->middle.x /= 3;
-                  triangle->middle.y /= 3;
-                  triangle->middle.z /= 3;
-
-                  triangle->material = mat;
-
-                  info->faces[face].done = (byte)bool::true;
-               }
-               object.flags.translucent = true;
-            }
-            else
-            {
-               PrimitiveGroup group;
-               uint16 count = ReadWORD(info->f);
-               group = mesh.AddPrimitiveGroup(triangles, count * 3);
-               if(group)
-               {
-                  int c;
-                  group.material = mat;
-                  for(c = 0; c<count; c++)
-                  {
-                     uint16 face = ReadWORD(info->f);
-                     if(object.flags.flipWindings)
-                     {
-                        group.indices[c*3]   = info->faces[face].indices[2];
-                        group.indices[c*3+1] = info->faces[face].indices[1];
-                        group.indices[c*3+2] = info->faces[face].indices[0];
-                     }
-                     else
-                     {
-                        group.indices[c*3]   = info->faces[face].indices[0];
-                        group.indices[c*3+1] = info->faces[face].indices[1];
-                        group.indices[c*3+2] = info->faces[face].indices[2];
-                     }
-                     info->faces[face].done = (byte)bool::true;
-                  }
-                  mesh.UnlockPrimitiveGroup(group);
-               }
-            }
+            uint16 face = ReadWORD(info->f);
+            faces[i + c] = face;
+            info->faces[face].material = mat;
          }
          delete name;
          break;
@@ -618,7 +736,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
       {
          int c;
          uint16 nFaces = 0;
-         int count;
+         uint count;
          uint pos;
 
          info->nFaces = nFaces = ReadWORD(info->f);
@@ -629,10 +747,8 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          {
             int i;
             for(i = 0; i<3; i++)
-            {
-               info->faces[c].oldIndices[i] =
+               info->faces[c].origIndices[i] =
                info->faces[c].indices[i] = ReadWORD(info->f);
-            }
             ReadWORD(info->f);
             info->pos += 4*sizeof(uint16);
          }
@@ -640,9 +756,83 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          ReadChunks(ReadSmoothing, info, object);
          info->pos = pos;
 
-         ComputeNormals(mesh, info, object);
+         if(info->matFaces)
+            info->matFaces.Free();
+         info->matFaces = { };
 
          ReadChunks(ReadFacesListChunks, info, object);
+
+         ComputeNormals(mesh, info, object);
+
+         // Create Groups
+         for(m : info->matFaces)
+         {
+            int i;
+            Material mat = (Material)&m;
+            Array<int> faces = m;
+            if(mat.flags.translucent)
+            {
+               mesh.primitives = renew mesh.primitives PrimitiveSingle[mesh.nPrimitives + faces.count];
+               for(i : faces)
+               {
+                  Face * face = &info->faces[i];
+                  PrimitiveSingle * triangle;
+
+                  triangle = &mesh.primitives[mesh.nPrimitives++];
+                  if(mesh.AllocatePrimitive(triangle, { triangles, indices32bit = true }, 3))
+                  {
+                     triangle->indices32[0] = face->indices[0];
+                     triangle->indices32[1] = face->indices[1];
+                     triangle->indices32[2] = face->indices[2];
+                     triangle->middle.Add(mesh.vertices[triangle->indices32[0]], mesh.vertices[triangle->indices32[1]]);
+                     triangle->middle.Add(triangle->middle, mesh.vertices[triangle->indices32[2]]);
+                     triangle->plane.FromPointsf(
+                        mesh.vertices[triangle->indices32[2]],
+                        mesh.vertices[triangle->indices32[1]],
+                        mesh.vertices[triangle->indices32[0]]);
+
+                     mesh.UnlockPrimitive(triangle);
+                  }
+                  triangle->middle.x /= 3;
+                  triangle->middle.y /= 3;
+                  triangle->middle.z /= 3;
+
+                  triangle->material = mat;
+
+                  face->done = (byte)bool::true;
+                  object.flags.translucent = true;
+               }
+            }
+            else
+            {
+               PrimitiveGroup group = mesh.AddPrimitiveGroup({ triangles, indices32bit = true }, faces.count * 3);
+               if(group)
+               {
+                  c = 0;
+                  group.material = mat;
+                  for(i : faces)
+                  {
+                     Face * face = &info->faces[i];
+
+                     if(object.flags.flipWindings)
+                     {
+                        group.indices32[c*3]   = face->indices[2];
+                        group.indices32[c*3+1] = face->indices[1];
+                        group.indices32[c*3+2] = face->indices[0];
+                     }
+                     else
+                     {
+                        group.indices32[c*3]   = face->indices[0];
+                        group.indices32[c*3+1] = face->indices[1];
+                        group.indices32[c*3+2] = face->indices[2];
+                     }
+                     face->done = (byte)bool::true;
+                     c++;
+                  }
+                  mesh.UnlockPrimitiveGroup(group);
+               }
+            }
+         }
 
          // Add faces without a material all together
          count = 0;
@@ -651,40 +841,29 @@ static bool ReadTriMesh(FileInfo * info, Object object)
                count++;
          if(count)
          {
-            PrimitiveGroup group = mesh.AddPrimitiveGroup(triangles, count * 3);
+            PrimitiveGroup group = mesh.AddPrimitiveGroup({ triangles, indices32bit = true }, count * 3);
             if(group)
             {
                for(c = 0; c<nFaces; c++)
-                  if(!info->faces[c].done)
+               {
+                  Face * face = &info->faces[c];
+                  if(!face->done)
                   {
-                     group.indices[c*3]   = info->faces[c].indices[0];
-                     group.indices[c*3+1] = info->faces[c].indices[1];
-                     group.indices[c*3+2] = info->faces[c].indices[2];
+                     group.indices32[c*3]   = face->indices[0];
+                     group.indices32[c*3+1] = face->indices[1];
+                     group.indices32[c*3+2] = face->indices[2];
                   }
+               }
                mesh.UnlockPrimitiveGroup(group);
             }
          }
 
          delete info->faces;
-
-         /*
-         mesh.ComputeNormals();
-
-         if(object.flags.flipWindings)
+         if(info->matFaces)
          {
-            if(mesh.Lock({ normals = true }))
-            {
-               for(c = 0; c<mesh.nVertices; c++)
-               {
-                  mesh.normals[c].x *= -1;
-                  mesh.normals[c].y *= -1;
-                  mesh.normals[c].z *= -1;
-               }
-               mesh.Unlock({ normals = true });
-            }
-         }*/
-
-         // could use this instead? : mesh.ApplyTranslucency(object);
+            info->matFaces.Free();
+            delete info->matFaces;
+         }
          break;
       }
       case TRI_LOCAL:
@@ -1275,7 +1454,7 @@ static bool ReadEditChunks(FileInfo * info, void * data)
       }
       case EDIT_MATERIAL:
       {
-         Material material { };
+         Material material { /*flags = { singleSideLight = true }*/ };
          Material mat;
          ReadChunks(ReadMaterial, info, material);
 
@@ -1932,6 +2111,9 @@ class Object3DSFormat : ObjectFormat
             }
             delete info.f;
          }
+         if(info.matFaces)
+            info.matFaces.Free();
+         delete info.matFaces;
       }
       if(!result)
          object.Free(displaySystem);
