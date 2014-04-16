@@ -318,7 +318,7 @@ struct SortPrimitive
       Mesh mesh = object.mesh;
       Matrix * matrix = &object.matrix;
       int v;
-      float a = poly2.plane.a, b = poly2.plane.b, c = poly2.plane.c, d = poly2.plane.d;
+      double a = poly2.plane.a, b = poly2.plane.b, c = poly2.plane.c, d = poly2.plane.d;
       if(d < 0)
       {
          a*=-1;
@@ -350,7 +350,7 @@ struct SortPrimitive
          return result;
    }
 
-   int SurfaceInside(SortPrimitive poly2)
+   bool SurfaceInside(SortPrimitive poly2)
    {
       bool result = true;
 
@@ -358,7 +358,7 @@ struct SortPrimitive
       Mesh mesh = poly2.object.mesh;
       Matrix * matrix = &poly2.object.matrix;
       int v;
-      float a = plane.a, b = plane.b, c = plane.c, d = plane.d;
+      double a = plane.a, b = plane.b, c = plane.c, d = plane.d;
       if(d < 0)
       {
          a*=-1;
@@ -373,7 +373,7 @@ struct SortPrimitive
          Vector3Df * local = &mesh.vertices[primitive->indices[v]];
          Vector3Df vertex;
 
-         vertex.Transform(local, matrix);
+         vertex.MultMatrix(local, matrix);
 
          surface = a * vertex.x + b * vertex.y + c * vertex.z + d;
    		if(surface > -EPSILON)
@@ -1617,8 +1617,7 @@ private class Display3D
             }
          }
       }
-      */
-   /*
+
       {
          int p;
          for(p = 0; p<nTriangles; p++)
@@ -1650,8 +1649,8 @@ private class Display3D
                }
             }
          }
-      }*/
-      /*
+      }
+
       {
          int p;
          for(p = nTriangles-1; p>=0; p--)
@@ -1682,9 +1681,9 @@ private class Display3D
                }
             }
          }
-      }*/
+      }
 
-   /*
+
       {
          for(c=0; c<nTriangles; c++)
          {
@@ -1707,7 +1706,8 @@ private class Display3D
             }
    	   }
       }
-   */
+      */
+
    }
 };
 #endif
