@@ -323,6 +323,10 @@ endif
 endif
 
 eda: prepbinaries
+ifdef CROSS_TARGET
+	@$(call echo,Building EDA (host))
+	cd eda && $(MAKE) $(XBOOT)
+endif
 	@$(call echo,Building EDA...)
 	cd eda && $(MAKE)
 
