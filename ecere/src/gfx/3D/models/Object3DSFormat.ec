@@ -148,6 +148,7 @@ struct FileInfo
    File f;
    DisplaySystem displaySystem;
    Object rootObject;
+   String fileName;
 
    uint16 chunkId;
    uint pos, end;
@@ -486,9 +487,12 @@ static bool ReadFacesListChunks(FileInfo * info, Object object)
       {
          char * name;
          Material mat;
+         char matName[MAX_LOCATION + 100];
 
+         strcpy(matName, info->fileName);
          ReadASCIIZ(info->f, &name);
-         mat = displaySystem.GetMaterial(name);
+         strcat(matName, name);
+         mat = displaySystem.GetMaterial(matName);
          if(mat)
          {
             if(mat.flags.translucent)
@@ -823,9 +827,9 @@ static bool ReadMap(FileInfo * info, Material mat)
          if(info->parent->chunkId == MAT_BUMPMAP)
          {
             // To avoid messing up the diffuse texture if same bitmap is specified by mistake...
-            char bumpName[MAX_FILENAME];
+            char bumpName[MAX_LOCATION+5];
             strcpy(bumpName, "BUMP:");
-            strcat(bumpName, name);
+            strcat(bumpName, location);
             if(!mat.bumpMap)
             {
                mat.bumpMap = displaySystem.GetTexture(bumpName);
@@ -860,13 +864,13 @@ static bool ReadMap(FileInfo * info, Material mat)
             bool translucent = false;
             if(!mat.baseMap)
             {
-               mat.baseMap = displaySystem.GetTexture(name);
+               mat.baseMap = displaySystem.GetTexture(location);
                if(!mat.baseMap)
                {
                   mat.baseMap = Bitmap { };
                   if(!mat.baseMap.Load(location, null, null) ||
                      !mat.baseMap.Convert(null, pixelFormat888, null) ||
-                     !displaySystem.AddTexture(name, mat.baseMap))
+                     !displaySystem.AddTexture(location, mat.baseMap))
                   {
                      delete mat.baseMap;
                   }
@@ -946,7 +950,13 @@ static bool ReadMaterial(FileInfo * info, Material mat)
    {
       case MAT_NAME:
       {
-         ReadASCIIZ(info->f, &mat.name);
+         String name;
+         char matName[MAX_LOCATION + 100];
+         strcpy(matName, info->fileName);
+         ReadASCIIZ(info->f, &name);
+         strcat(matName, name);
+         mat.name = CopyString(matName);
+         delete name;
          break;
       }
       case MAT_TRANSPARENCY:
@@ -1907,6 +1917,7 @@ class Object3DSFormat : ObjectFormat
          info.displaySystem = displaySystem;
          info.pos = 0;
          info.end = 1;
+         info.fileName = fileName;
          StripLastDirectory(fileName, info.textureDirectory);
          info.f = FileOpen(fileName, read);
          if(info.f)
