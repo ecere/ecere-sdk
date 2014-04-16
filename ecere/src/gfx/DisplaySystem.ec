@@ -241,6 +241,7 @@ public:
       if(item)
       {
          item.data = bitmap;
+         incref bitmap;
          item.name = new char[strlen(name) + 1];
          strcpy(item.name, name);
          textures.AddName(item);
