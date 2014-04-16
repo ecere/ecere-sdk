@@ -3758,12 +3758,13 @@ private:
                   stuffAfter = true;
 
                //If last character is a { indent one tab
-               if(x > 0 && x < line.count && line.buffer[x - 1] == '{')
+               c = Min(x, line.count);
+               if(c > 0 && line.buffer[c - 1] == '{')
                {
                   //Except if the next non space character is a }
                   bool indent = false;
                   int i;
-                  for(i = this.x; i < this.line.size; i++)
+                  for(i = c; i <= this.line.count; i++)   // indent will be set to true on nul terminating char
                      if(this.line.buffer[i] != ' ' && this.line.buffer[i] != '\t')
                      {
                         if(this.line.buffer[i] != '}')
