@@ -818,6 +818,7 @@ static void ProcessDBTable(DBTableDef table)
                         CopyList(entry.dataType.qualifiers, CopySpecifier), CopyDeclarator(entry.dataType.declarator),
                            MkIdentifier(name), rowSet, null));
                      def.propertyDef.symbol.id = def.propertyDef.symbol.idCode = symbolID;
+                     def.propertyDef.isDBProp = true;
                      def.memberAccess = publicAccess;
                      rowClassDefs->Add(def);
                   }
@@ -873,6 +874,7 @@ static void ProcessDBTable(DBTableDef table)
                   curContext = globalContext;
                   def = MkClassDefProperty(MkProperty(CopyList(entry.dataType.qualifiers, CopySpecifier), entry.dataType.declarator, CopyIdentifier(entry.id), rowSet, rowGet));
                   def.propertyDef.symbol.id = def.propertyDef.symbol.idCode = symbolID;
+                  def.propertyDef.isDBProp = true;
                   def.memberAccess = publicAccess;
                   rowClassDefs->Add(def);
                }
@@ -1044,6 +1046,7 @@ static void ProcessDBTable(DBTableDef table)
                      CopyList(entry.dataType.qualifiers, CopySpecifier), CopyDeclarator(entry.dataType.declarator),
                         CopyIdentifier(entry.id), idSet, idGet));
                   def.propertyDef.symbol.id = def.propertyDef.symbol.idCode = symbolID;
+                  def.propertyDef.isDBProp = true;
                   def.memberAccess = publicAccess;
                   idClassDefs->Add(def);
                }

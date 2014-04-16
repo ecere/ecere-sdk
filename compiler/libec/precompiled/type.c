@@ -879,9 +879,13 @@ struct Statement * getStmt;
 struct Statement * setStmt;
 struct Statement * issetStmt;
 struct Symbol * symbol;
-unsigned int conversion;
-unsigned int isWatchable;
 struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;

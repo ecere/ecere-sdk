@@ -923,9 +923,13 @@ public:
    Statement setStmt;
    Statement issetStmt;
    Symbol symbol;
-   bool conversion;
-   bool isWatchable;
    Expression category;
+   struct
+   {
+      bool conversion:1;
+      bool isWatchable:1;
+      bool isDBProp:1;
+   };
 };
 
 public class ClassDef : struct
