@@ -3679,14 +3679,11 @@ class IDEApp : GuiApplication
       }
       else
       {
-         app.driver = "OpenGL";
-/*
 #if defined(__unix__) || defined(__APPLE__)
          app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "X";
 #else
          app.driver = (ideSettings.displayDriver && !strcmp(ideSettings.displayDriver, "OpenGL")) ? ideSettings.displayDriver : "GDI";
 #endif
-*/
          ide.driverItems[ideSettings.displayDriver && !strcmp(ideSettings.displayDriver,"OpenGL")].checked = true;
       }
 
@@ -3854,8 +3851,6 @@ class IDEApp : GuiApplication
             }
          };
       }
-
-      // ideMainFrame.toolBar.autoCreate = false;
 
       ideMainFrame.Create();
       if(app.argFilesCount > 1)
