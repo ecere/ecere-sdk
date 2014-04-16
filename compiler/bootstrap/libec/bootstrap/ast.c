@@ -50,6 +50,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -894,6 +896,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1121,9 +1125,13 @@ struct Statement * getStmt;
 struct Statement * setStmt;
 struct Statement * issetStmt;
 struct Symbol * symbol;
-unsigned int conversion;
-unsigned int isWatchable;
 struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -2771,7 +2779,7 @@ struct Specifier * spec = tn->qualifiers ? (*tn->qualifiers).first : (((void *)0
 if(!tn->declarator && !tn->prev && !tn->next && spec && !spec->next && spec->type == 0 && spec->specifier == VOID)
 ;
 else
-Compiler_Error("parameter name omitted\n");
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "parameter name omitted\n", (((void *)0))));
 break;
 }
 }

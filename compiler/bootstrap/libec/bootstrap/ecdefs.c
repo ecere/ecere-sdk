@@ -55,6 +55,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 struct __ecereNameSpace__ecere__sys__BTNode;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
@@ -876,6 +878,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1522,9 +1526,13 @@ struct Statement * getStmt;
 struct Statement * setStmt;
 struct Statement * issetStmt;
 struct Symbol * symbol;
-unsigned int conversion;
-unsigned int isWatchable;
 struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
@@ -2603,9 +2611,15 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "getStmt", "Statement"
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "setStmt", "Statement", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "issetStmt", "Statement", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "symbol", "Symbol", arch_PointerSize, arch_PointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "conversion", "bool", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isWatchable", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "category", "Expression", arch_PointerSize, arch_PointerSize, 1);
+{
+struct __ecereNameSpace__ecere__com__DataMember * dataMember0 = __ecereNameSpace__ecere__com__eMember_New(2, 1);
+
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "conversion", "bool:1", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "isWatchable", "bool:1", 4, 4, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "isDBProp", "bool:1", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
+}
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDef", 0, sizeof(struct ClassDef), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassDef = class;

@@ -38,6 +38,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -785,6 +787,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -990,9 +994,13 @@ struct Statement * getStmt;
 struct Statement * setStmt;
 struct Statement * issetStmt;
 struct Symbol * symbol;
-unsigned int conversion;
-unsigned int isWatchable;
 struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1983,6 +1991,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifie
 curContext = globalContext;
 def = MkClassDefProperty(MkProperty(CopyList(entry->dataType->qualifiers, CopySpecifier), CopyDeclarator(entry->dataType->declarator), MkIdentifier(name), rowSet, (((void *)0))));
 def->propertyDef->symbol->id = def->propertyDef->symbol->idCode = symbolID;
+def->propertyDef->isDBProp = 0x1;
 def->memberAccess = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowClassDefs), def);
 }
@@ -2032,6 +2041,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifie
 curContext = globalContext;
 def = MkClassDefProperty(MkProperty(CopyList(entry->dataType->qualifiers, CopySpecifier), entry->dataType->declarator, CopyIdentifier(entry->id), rowSet, rowGet));
 def->propertyDef->symbol->id = def->propertyDef->symbol->idCode = symbolID;
+def->propertyDef->isDBProp = 0x1;
 def->memberAccess = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowClassDefs), def);
 }
@@ -2152,6 +2162,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idSet->compound.state
 curContext = globalContext;
 def = MkClassDefProperty(MkProperty(CopyList(entry->dataType->qualifiers, CopySpecifier), CopyDeclarator(entry->dataType->declarator), CopyIdentifier(entry->id), idSet, idGet));
 def->propertyDef->symbol->id = def->propertyDef->symbol->idCode = symbolID;
+def->propertyDef->isDBProp = 0x1;
 def->memberAccess = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idClassDefs), def);
 }

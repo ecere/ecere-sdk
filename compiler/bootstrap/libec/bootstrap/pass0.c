@@ -49,6 +49,8 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsig
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -825,6 +827,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1023,9 +1027,13 @@ struct Statement * getStmt;
 struct Statement * setStmt;
 struct Statement * issetStmt;
 struct Symbol * symbol;
-unsigned int conversion;
-unsigned int isWatchable;
 struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} __attribute__ ((gcc_struct));
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -2244,7 +2252,7 @@ if((regClass->type == 1 || regClass->type == 6) || ((regClass->type == 5 || regC
 ListAdd(specifiers, MkSpecifier(VOID));
 else
 {
-if(regClass->type != 5 && regClass->type != 0 && (!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion))
+if(regClass->type != 5 && regClass->type != 0 && !propertyDef->isDBProp && (!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion))
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "set defined on type without storage for non-conversion property\n", (((void *)0))));
 ListAdd(specifiers, MkSpecifierName(regClass->fullName));
 }
