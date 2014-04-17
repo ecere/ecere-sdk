@@ -994,7 +994,7 @@ class Desktop3D : Window
       static int id = 0;
       static char * shotFileNames[] =
       {
-         ":shot1.jpg", ":shot2.jpg", ":shot3.jpg", ":shot4.jpg"
+         ":img1.jpg", ":img2.jpg", ":img3.jpg", ":img4.jpg", ":img5.jpg"
       };
 
       switch(key)
@@ -1031,7 +1031,7 @@ class Desktop3D : Window
             }
             else
             {
-               if(!dockTimer.started)
+               if(!dockTimer.started && !poppingWindow)
                {
                   dock.lastTime = GetTime();
                   dockTimer.Start();
@@ -1069,7 +1069,7 @@ class Desktop3D : Window
             }
             else
             {
-               if(!dockTimer.started)
+               if(!dockTimer.started && !poppingWindow)
                {
                   dock.lastTime = GetTime();
                   dockTimer.Start();

@@ -51,11 +51,6 @@
             "../ModelViewer/skycube/up.jpg"
          ]
       },
-      "background.jpg",
-      "shot1.jpg",
-      "shot2.jpg",
-      "shot3.jpg",
-      "shot4.jpg",
       "icon1.png",
       "icon10.png",
       "icon2.png",
@@ -65,6 +60,11 @@
       "icon6.png",
       "icon7.png",
       "icon8.png",
-      "icon9.png"
+      "icon9.png",
+      "img1.jpg",
+      "img2.jpg",
+      "img3.jpg",
+      "img4.jpg",
+      "img5.jpg"
    ]
 }
