@@ -457,13 +457,14 @@ public:
       }
       else
       {
-         Euler euler = orientation;
+         Euler euler = eulerOrientation;
          euler.pitch += amount;
          if(min || max)
          {
             euler.pitch = Min(euler.pitch, max);
             euler.pitch = Max(euler.pitch, min);
          }
+         eulerOrientation = euler;
          orientation = euler;
       }
    }
@@ -476,13 +477,14 @@ public:
       }
       else
       {
-         Euler euler = orientation;
+         Euler euler = eulerOrientation;
          euler.yaw += amount;
          if(min || max)
          {
             euler.yaw = Min(euler.yaw, max);
             euler.yaw = Max(euler.yaw, min);
          }
+         eulerOrientation = euler;
          orientation = euler;
       }
    }
@@ -495,13 +497,14 @@ public:
       }
       else
       {
-         Euler euler = orientation;
+         Euler euler = eulerOrientation;
          euler.roll += amount;
          if(min || max)
          {
             euler.roll = Min(euler.roll, max);
             euler.roll = Max(euler.roll, min);
          }
+         eulerOrientation = euler;
          orientation = euler;
       }
    }
