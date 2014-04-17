@@ -33,7 +33,6 @@
    ],
    "Files" : [
       "demo.ec",
-      "dted.ec",
       "../ModelViewer/engineSettings.ec",
       "terrain.ec",
       "dna.ec"
@@ -58,9 +57,9 @@
             "aircraft.3DS"
          ]
       },
-      "dted.pcx",
       "texture1.pcx",
-      "N19.DT1",
-      "../ModelViewer/res/ecere.png"
+      "../ModelViewer/res/ecere.png",
+      "N45W110.hgt",
+      "texture.png"
    ]
 }

@@ -8,11 +8,136 @@
 ****************************************************************************/
 import "ecere"
 import "engineSettings"
-import "dted"
 import "dna"
+import "terrain"
 
 define BACKGROUND = white;
 define speed = 200;
+
+// --- Terrain Data Loading ---
+static Elevation heightMap[1025 * 1025];
+
+#define ALTITUDE_FACTOR 1
+#define ALTITUDE_OFFSET 0 // -5000
+
+#define EARTH_RADIUS 6367000
+
+#define CELL_LAT_POINTS  1201
+#define CELL_LON_POINTS  1201
+
+#define RESOLUTION_LAT  (EARTH_RADIUS * ((Pi / 180) / (CELL_LAT_POINTS - 1)))
+#define RESOLUTION_LON(LATITUDE)  (EARTH_RADIUS * ((float)sin(LATITUDE) * ((Pi / 180) / (CELL_LON_POINTS - 1))))
+
+/*
+struct ElevationColor
+{
+   int altitude;
+   ColorAlpha color;
+};
+
+static Array<ElevationColor> colorMap
+{ [
+   {  0, Color { 0, 0, 0 } },
+   {  1100, Color { 28, 24, 101 } },
+   {   1200, Color { 17, 138, 150 } },
+   {   1300, Color { 0,75,0 } },
+   {  1500, Color { 244,244,144 } },
+   {  2000, Color { 79, 45, 8 } },
+   {  2300, Color { 129, 65, 58 } },
+   {  2600, Color { 185, 185, 185 } },
+   {  3000, Color { 255, 255, 255 } }
+] };
+
+static void OutputTexture(String fileName)
+{
+   Bitmap bitmap { };
+   if(bitmap.Allocate(null, 1025, 1025, 0, pixelFormat888, false))
+   {
+      ColorAlpha * picture = (ColorAlpha *)bitmap.picture;
+      int y, x;
+
+      Array<ColorAlpha> colorTable { size = 65536 };
+      int altitude;
+      ElevationColor * curKey = colorMap.array, * nextKey = colorMap.array;
+      int keyNum = 0, nextKeyNum = 0;
+
+      for(altitude = -32768; altitude<32768; altitude++)
+      {
+         int a = 255;
+         Color color;
+         while(altitude > nextKey->altitude)
+         {
+            curKey = nextKey; keyNum = nextKeyNum;
+            if(keyNum < colorMap.count - 1)
+            {
+               nextKey = curKey + 1;
+               nextKeyNum = keyNum + 1;
+            }
+            else
+               break;
+         }
+
+         if(nextKey->altitude != curKey->altitude)
+         {
+            float scale = (float) (altitude - curKey->altitude) / (nextKey->altitude - curKey->altitude);
+            Color cColor = curKey->color, nColor = nextKey->color;
+            int cr = cColor.r, cg = cColor.g, cb = cColor.b;
+            int nr = nColor.r, ng = nColor.g, nb = nColor.b;
+            int r = (int)(cr + (nr - cr) * scale);
+            int g = (int)(cg + (ng - cg) * scale);
+            int b = (int)(cb + (nb - cb) * scale);
+            r = Max(Min(r, 255),0);
+            g = Max(Min(g, 255),0);
+            b = Max(Min(b, 255),0);
+            color = { (byte)r, (byte)g, (byte)b };
+         }
+         else
+            color = curKey->color;
+         colorTable[altitude + 32768] = { 255, color };
+      }
+
+      for(y = 0; y < bitmap.height; y++)
+         for(x = 0; x < bitmap.width; x++)
+            picture[y * bitmap.width + x] = colorTable[heightMap[y * 1025 + x] + 32768];
+
+      delete colorTable;
+      bitmap.Save(fileName, null, null);
+   }
+   delete bitmap;
+}
+*/
+
+static bool LoadTerrain(Terrain terrain, char * fileName, Angle lat)
+{
+   bool result = false;
+   File f = FileOpen(fileName, read);
+   if(f)
+   {
+      int y;
+      float resLon = (float)RESOLUTION_LON(lat);
+      for(y = 0; y<1025; y++)
+      {
+         int x;
+         byte buffer[1201 * 2];
+         if(f.Read(buffer, sizeof(uint16), 1201) < 1201)
+            break;
+         for(x = 0; x<1025; x++)
+         {
+            unsigned char b0 = buffer[2*x], b1 = buffer[2*x+1];
+            short value = (short)((((int)b0 << 8) | b1) - ((b0 & 0x80) ? 0x10000 : 0));
+            if(value > 20000) value = -32768;
+            heightMap[y*1025+x] = value * ALTITUDE_FACTOR + ALTITUDE_OFFSET;
+         }
+      }
+
+      // OutputTexture("res/texture.png");
+
+      if(terrain.Create(heightMap, 16, 1025, 2, resLon, RESOLUTION_LAT, 512,512))
+         result = true;
+      delete f;
+   }
+   return result;
+}
 
 class Scene : Window
 {
@@ -29,7 +154,7 @@ class Scene : Window
    Light light;
    Terrain terrain { };
    Bitmap textures[16];
-   Bitmap detail { };
+   //Bitmap detail { };
    Object player { };
    SkyBox sky { size = { 100, 100, 100 }, folder = ":skycube", extension = "jpg" };
    DNAModel dna
@@ -75,7 +200,8 @@ class Scene : Window
 
    Scene()
    {
-      LoadDTEDTerrain(terrain, ":N19.DT1");
+      // Load terrain from SRTM data ( 3 arc seconds data from http://www.viewfinderpanoramas.org/ , L12 Cell)
+      LoadTerrain(terrain, ":N45W110.hgt", Degrees { 45 });
 
       frame = 0;
       fogDensity = 0.0001f;
@@ -255,10 +381,11 @@ class Scene : Window
       light.orientation = { 1,0,0,0 };
       light.orientation.RotatePitch(30);
 
-      if(map.Load(":dted.pcx", null, null))
+      if(map.Load(":texture.png", null, null))
       {
          int c;
          int across = 4;
+         map.Convert(null, pixelFormat888, null);
          map.SmoothEdges(256);
          for(c = 0; c < across * across; c++)
          {
@@ -281,18 +408,18 @@ class Scene : Window
       dna.Create(displaySystem);
 
       if(dna)
-         dna.transform.position.y = -3000;
+         dna.transform.position.y = -2200;
       dna.UpdateTransform();
 
       if(player)
       {
-         player.transform.position.y = -3000;
+         player.transform.position.y = -2200;
          player.transform.position.x = 1000;
          player.transform.orientation = Euler { yaw = 230 };
       }
 
-      detail.Load(":detail.pcx", null, displaySystem);
-      displaySystem.AddTexture("DetailTexture", detail);
+      /*detail.Load(":detail.pcx", null, displaySystem);
+      displaySystem.AddTexture("DetailTexture", detail);*/
 
       sky.InitializeMesh(displaySystem);
       sky.Create(displaySystem);
