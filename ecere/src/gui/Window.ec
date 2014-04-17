@@ -743,7 +743,7 @@ private:
       {
          int x = absPosition.x + clientStart.x;
          int y = absPosition.y + clientStart.y;
-         if(rootWindow.nativeDecorations && rootWindow.windowHandle)
+         if(rootWindow.nativeDecorations && rootWindow.windowHandle && !is3D)
          {
             x -= rootWindow.clientStart.x;
             y -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -791,7 +791,7 @@ private:
       {
          int x = absPosition.x;
          int y = absPosition.y;
-         if(rootWindow.nativeDecorations && rootWindow.windowHandle)
+         if(rootWindow.nativeDecorations && rootWindow.windowHandle && !is3D)
          {
             x -= rootWindow.clientStart.x;
             y -= rootWindow.clientStart.y - (rootWindow.hasMenuBar ? skinMenuHeight : 0);
@@ -2567,7 +2567,7 @@ private:
 
    void _ShowDecorations(Box box, bool post)
    {
-      if(rootWindow == this && nativeDecorations) return;
+      if(rootWindow == this && nativeDecorations && !is3D) return;
       if(visible && this != guiApp.desktop)
       {
          Surface surface = RedrawFull(box);

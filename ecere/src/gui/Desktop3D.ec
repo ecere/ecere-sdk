@@ -213,7 +213,14 @@ public bool Desktop3DUpdateDisplay()
                            window.Render(updateExtent);
 
                            FASTLIST_LOOP(updateExtent, extentBox)
-                              Update3DWindow(window, extentBox.box);
+                           {
+                              Box box
+                              {
+                                 window.clientStart.x + extentBox.box.left, window.clientStart.y + extentBox.box.top,
+                                 window.clientStart.x + extentBox.box.right, window.clientStart.y + extentBox.box.bottom
+                              };
+                              Update3DWindow(window, box);
+                           }
 
                            updateExtent.Free(null);
                         }

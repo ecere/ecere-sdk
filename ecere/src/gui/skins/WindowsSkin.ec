@@ -185,7 +185,7 @@ public class WindowsSkin_Window : Window
          *h += statusBarHeight;
       }
 
-      if(nativeDecorations && rootWindow == this && windowHandle)
+      if(nativeDecorations && rootWindow == this && windowHandle && !is3D)
       {
 #if defined(WIN32)
          RECT rcClient = { 0 }, rcWindow = { 0 };
@@ -235,7 +235,7 @@ public class WindowsSkin_Window : Window
    void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh)
    {
       bool isNormal = (state == normal);
-      if(nativeDecorations && rootWindow == this && windowHandle) return;
+      if(nativeDecorations && rootWindow == this && windowHandle && !is3D) return;
       if(((BorderBits)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
          *mw = MIN_WIDTH;
@@ -274,10 +274,10 @@ public class WindowsSkin_Window : Window
 
       GetDecorationsSize(&aw, &ah);
 
-      if(nativeDecorations && rootWindow == this && windowHandle)
+      if(nativeDecorations && rootWindow == this && windowHandle && !is3D)
       {
 #if defined(WIN32)
-         RECT rcWindow;
+         RECT rcWindow = { 0, 0, 0, 0 };
          POINT client00 = { 0, 0 };
          ClientToScreen(windowHandle, &client00);
          GetWindowRect(windowHandle, &rcWindow);
@@ -338,7 +338,7 @@ public class WindowsSkin_Window : Window
       int top = 0, border = 0, bottom = 0;
       Window parentMenuBar = GetParentMenuBar();
 
-      if(nativeDecorations && rootWindow == this && windowHandle) return;
+      if(nativeDecorations && rootWindow == this && windowHandle && !is3D) return;
 
       if(state == minimized)
          top = border = bottom = DEAD_BORDER;
@@ -437,7 +437,7 @@ public class WindowsSkin_Window : Window
    {
       bool isNormal = (state == normal);
       bool result = false;
-      if(nativeDecorations && rootWindow == this && windowHandle) return false;
+      if(nativeDecorations && rootWindow == this && windowHandle && !is3D) return false;
 
       if(((BorderBits)borderStyle).fixed && (state != maximized || !GetParentMenuBar()))
       {
@@ -462,7 +462,7 @@ public class WindowsSkin_Window : Window
       bool result = false;
 
       *resizeX = *resizeY = *resizeEndX = *resizeEndY = false;
-      if(nativeDecorations && rootWindow == this && windowHandle) return false;
+      if(nativeDecorations && rootWindow == this && windowHandle && !is3D) return false;
 
       if(((BorderBits)borderStyle).sizable && (state == normal))
       {
@@ -500,7 +500,7 @@ public class WindowsSkin_Window : Window
       int top = 0, border = 0;
       int insideBorder = 0;
 
-      if(!nativeDecorations || rootWindow != this || !windowHandle)
+      if(!nativeDecorations || rootWindow != this || !windowHandle || is3D)
       {
          if(state == minimized)
             top = border = DEAD_BORDER;
@@ -552,7 +552,7 @@ public class WindowsSkin_Window : Window
          else
          {
             statusBar.visible = true;
-            if(nativeDecorations && rootWindow == this && windowHandle)
+            if(nativeDecorations && rootWindow == this && windowHandle && !is3D)
             {
                statusBar.anchor = { left = clientStart.x, bottom = (int)(size.h - clientSize.h - clientStart.y - statusBarHeight ) };
                statusBar.size.w = size.w - insideBorder * 2;
@@ -564,7 +564,7 @@ public class WindowsSkin_Window : Window
             }
          }
       }
-      if(!nativeDecorations || rootWindow != this || !windowHandle)
+      if(!nativeDecorations || rootWindow != this || !windowHandle || is3D)
       {
          if(sysButtons[0])
          {
