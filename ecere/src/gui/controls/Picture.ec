@@ -256,22 +256,23 @@ private:
          {
             int w = bitmap.width;
             int h = bitmap.height;
-            if(clientSize.w == bitmap.width && clientSize.h == bitmap.height)
+            int cw = clientSize.w, ch = clientSize.h;
+            if(cw == bitmap.width && ch == bitmap.height)
                surface.Blit(bitmap,
-                  Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
+                  Max(0, (cw - w) / 2), Max(0, (ch - h) / 2),
                   scroll.x,scroll.y,
-                  hasHorzScroll ? clientSize.w : bitmap.width, hasVertScroll ? clientSize.h : bitmap.height);
+                  hasHorzScroll ? cw : w, hasVertScroll ? ch : h);
             else
             {
-               int x = hasHorzScroll ? Max(0, (clientSize.w - w) / 2) : 0;
-               int y = hasVertScroll ? Max(0, (clientSize.h - h) / 2) : 0;
+               int x = hasHorzScroll ? Max(0, (cw - w) / 2) : 0;
+               int y = hasVertScroll ? Max(0, (ch - h) / 2) : 0;
                int sx = scroll.x, sy = scroll.y;
-               int w = clientSize.w, h = clientSize.h;
-               int sw = hasHorzScroll ? clientSize.w : bitmap.width, sh = hasVertScroll ? clientSize.h : bitmap.height;
+               int dw = cw, dh = ch;
+               int sw = hasHorzScroll ? cw : w, sh = hasVertScroll ? ch : h;
                if(filter)
-                  surface.Filter(bitmap, x, y, sx, sy, w, h, sw, sh);
+                  surface.Filter(bitmap, x, y, sx, sy, dw, dh, sw, sh);
                else
-                  surface.Stretch(bitmap, x, y, sx, sy, w, h, sw, sh);
+                  surface.Stretch(bitmap, x, y, sx, sy, dw, dh, sw, sh);
             }
          }
       }
