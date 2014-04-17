@@ -545,14 +545,6 @@ class CameraDemoApp : GuiApplication
 {
    driver = "OpenGL";
    timerResolution = 60;
-
-   void Main()
-   {
-      //if(EngineSettings { }.Modal())
-      {
-         scene.Modal();
-      }
-   }
 }
 
-Scene scene { autoCreate = false };
+Scene scene { };

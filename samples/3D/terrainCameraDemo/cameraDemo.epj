@@ -33,7 +33,6 @@
    ],
    "Files" : [
       "demo.ec",
-      "../ModelViewer/engineSettings.ec",
       "terrain.ec",
       "dna.ec"
    ],
