@@ -43,12 +43,12 @@
       {
          "Folder" : "skycube/skycube",
          "Files" : [
-            "res/skycube/bk.jpg",
-            "res/skycube/dn.jpg",
-            "res/skycube/fr.jpg",
-            "res/skycube/lf.jpg",
-            "res/skycube/rt.jpg",
-            "res/skycube/up.jpg"
+            "../ModelViewer/skycube/bk.jpg",
+            "../ModelViewer/skycube/dn.jpg",
+            "../ModelViewer/skycube/fr.jpg",
+            "../ModelViewer/skycube/lf.jpg",
+            "../ModelViewer/skycube/rt.jpg",
+            "../ModelViewer/skycube/up.jpg"
          ]
       },
       "background.jpg",
@@ -56,15 +56,15 @@
       "shot2.jpg",
       "shot3.jpg",
       "shot4.jpg",
-      "slidehex-cinema_guide.png",
-      "slidehex-jukebox.png",
-      "slidehex-net_radio.png",
-      "slidehex-photo_album.png",
-      "slidehex-search_guide.png",
-      "slidehex-settings.png",
-      "slidehex-shopping.png",
-      "slidehex-transcode.png",
-      "slidehex-tv_guide.png",
-      "slidehex-website.png"
+      "icon1.png",
+      "icon10.png",
+      "icon2.png",
+      "icon3.png",
+      "icon4.png",
+      "icon5.png",
+      "icon6.png",
+      "icon7.png",
+      "icon8.png",
+      "icon9.png"
    ]
 }

@@ -22,22 +22,23 @@ class Window3D : struct
 
 static char * iconFiles[] =
 {
-   ":slidehex-cinema_guide.png",
-   ":slidehex-jukebox.png",
-   ":slidehex-net_radio.png",
-   ":slidehex-photo_album.png",
-   ":slidehex-search_guide.png",
-   ":slidehex-settings.png",
-   ":slidehex-shopping.png",
-   ":slidehex-tv_guide.png",
-   ":slidehex-website.png"
+   ":icon1.png",
+   ":icon2.png",
+   ":icon3.png",
+   ":icon4.png",
+   ":icon5.png",
+   ":icon6.png",
+   ":icon7.png",
+   ":icon8.png",
+   ":icon9.png",
+   ":icon10.png",
 };
 
 #define NUM_ICONS (sizeof(iconFiles)/sizeof(char *))
 // #define DOCK_HEIGHT  500
 #define DOCK_HEIGHT  400
 #define FULL_SWITCH     ((int)dock.iconBitmaps[0].width)
-#define SMALL_SCALE  0.8f
+#define SMALL_SCALE  0.6f
 #define SWITCH_SPEED 700
 #define DOCK_TIMER   1
 
@@ -292,7 +293,7 @@ class Desktop3D : Window
    Object lookAt {};
    Camera camera
    {
-      lookAt, position = {0, ORBIT_HEIGHT, -2000}, target = lookAt, orientation = Euler { pitch = 15 },
+      lookAt, position = {0, ORBIT_HEIGHT, -2000}, target = lookAt, eulerOrientation = Euler { pitch = 15 },
       zMin = 1, zMax = 10000, fovDirection = vertical, fov = 53
    };
    Light light;
@@ -1017,7 +1018,7 @@ class Desktop3D : Window
                lookAt.transform.position = window3D.cube.transform.position;
                lookAt.UpdateTransform();
                camera.position = {};
-               camera.orientation = Euler{};
+               camera.eulerOrientation = Euler{};
 
                switching = 0;
 
@@ -1095,7 +1096,7 @@ class Desktop3D : Window
 
                   camera.type = lookAt;
                   camera.position = { 0,0,0 };
-                  camera.orientation = Euler {};
+                  camera.eulerOrientation = Euler {};
                   lookAt.transform.position = window3D.cube.transform.position;
                   lookAt.transform.orientation = Euler {};
                   lookAt.UpdateTransform();
@@ -1154,7 +1155,7 @@ class Desktop3D : Window
 
                camera.type = attached;
                camera.position = {0,0,-distance};
-               camera.orientation = Euler{};
+               camera.eulerOrientation = Euler{};
                lookAt.transform.position = window3D.cube.transform.position;
                lookAt.transform.orientation = window3D.cube.transform.orientation;
                lookAt.UpdateTransform();
@@ -1189,7 +1190,7 @@ class Desktop3D : Window
 
                   camera.type = lookAt;
                   camera.position = {};
-                  camera.orientation = Euler {};
+                  camera.eulerOrientation = Euler {};
                   lookAt.transform.position = window3D.cube.transform.position;
                   entering = 0;
                }
@@ -1197,7 +1198,7 @@ class Desktop3D : Window
                {
                   camera.type = lookAt;
                   camera.position = {0, ORBIT_HEIGHT, -2000};
-                  camera.orientation = Euler { pitch = 15 };
+                  camera.eulerOrientation = Euler { pitch = 15 };
                   lookAt.transform.position = {};
                   sliding = 0;
                   dockHidden = false;
