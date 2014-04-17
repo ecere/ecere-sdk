@@ -1005,7 +1005,7 @@ class Desktop3D : Window
                Window3D window3D;
                Window ac = virtualDesktop.activeChild;
 
-               if(sliding < 1 || switching < 1 || entering < 1) break;
+               if(fullScreen || sliding < 1 || switching < 1 || entering < 1) break;
 
                virtualDesktop.CycleChildren(true, false, false, true);
                if(ac == virtualDesktop.activeChild) break;
@@ -1045,7 +1045,7 @@ class Desktop3D : Window
                Window3D window3D;
                Window ac = virtualDesktop.activeChild;
 
-               if(sliding < 1 || switching < 1 || entering < 1) break;
+               if(fullScreen || sliding < 1 || switching < 1 || entering < 1) break;
 
                virtualDesktop.CycleChildren(false, false, false, true);
                if(ac == virtualDesktop.activeChild) break;
