@@ -27,7 +27,7 @@ class Form1 : Window
 
    bool OnPostCreate()
    {
-      if(sound.Load("test.wav"))
+      if(sound.Load("sweep.wav"))
       {
          AudioSpec wantedSpec
          {
@@ -50,7 +50,7 @@ class Form1 : Window
          return true;
       }
       else
-         MessageBox { contents = "test.wav not found" }.Modal();
+         MessageBox { contents = "sweep.wav not found" }.Modal();
       return false;
    }
 
