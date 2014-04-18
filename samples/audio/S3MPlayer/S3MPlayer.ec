@@ -462,13 +462,14 @@ class MainWindow : Window
    {
       mixer.systemHandle = systemHandle;
       //s3m.Load("2ND_KEV.S3M");
-      s3m.Load("2nd_pm.s3m");
+      //s3m.Load("2nd_pm.s3m");
       //s3m.Load("theweird.s3m");
       //s3m.Load("forgivme.s3m");
       //s3m.Load("quiadroi.s3m");
       //s3m.Load("everyido.s3m");
       //s3m.Load("saywords.s3m");
-      //s3m.Load("keven1.s3m");
+      s3m.Load("keven1.s3m");
+      //s3m.Load("trans.s3m");
 
       instrument = s3m.instruments[0].sound;
       return true;
