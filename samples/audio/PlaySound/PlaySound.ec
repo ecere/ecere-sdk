@@ -11,7 +11,7 @@ class MainWindow : Window
    size = { 576, 432 };
 
    Mixer mixer { };
-   Sound sound10 { "10.wav" };
+   Sound sound10 { "sound.wav" };
 
    bool OnCreate()
    {
