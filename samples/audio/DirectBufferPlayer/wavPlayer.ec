@@ -62,7 +62,7 @@ class Form1 : Window
    void AudioCallback(byte *stream, int len)
    {
       static byte buffer[AUDIO_BUFFER_SIZE];
-      int s = Min(sound.length - pos, len);
+      int s = Min(sound.length * (sound.bits == 16 ? 2 : 1) - pos, len);
       memcpy(buffer, sound.data + pos, s);
       pos += s;
       if(s < len)
