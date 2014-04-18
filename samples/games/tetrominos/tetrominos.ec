@@ -1,10 +1,10 @@
 /****************************************************************************
-   Tetris Game
+   Tetrominos Game
 
    Copyright (c) 2001-2007 Jerome Jacovella-St-Louis
    All Rights Reserved.
 
-   tetris.ec - Tetris
+   tetrominos.ec - Tetrominos
 ****************************************************************************/
 import "ecere"
 
@@ -19,7 +19,7 @@ define NUM_ROWS     = 8;
 define CUBE_WIDTH   = 40;
 define CUBE_HEIGHT  = 40;
 
-define TETRIS_PORT = 7779;
+define TETROMINOS_PORT = 7779;
 
 struct Piece
 {
@@ -60,8 +60,8 @@ static Piece pieces[7] =
    {
       3, 2, 0, 0,
       {
-         0,1,1,
-         1,1,0
+         0,6,6,
+         6,6,0
       }
    },
    {
@@ -74,8 +74,8 @@ static Piece pieces[7] =
    {
       3, 2, 0, 0,
       {
-         2,2,2,
-         0,2,0
+         7,7,7,
+         0,7,0
       }
    }
 };
@@ -93,56 +93,56 @@ define WIDTH  = 12;
 define HEIGHT = 22;
 
 // --- Main Function ---
-class TetrisApp : GuiApplication
+class TetrominosApp : GuiApplication
 {
-   appName = "ECERE Tetris";
+   appName = "Ecere Tetrominos";
 }
 
-Tetris tetris { };
+Tetrominos tetrominos { };
 
-TetrisService service { };
+TetrominosService service { };
 
-class TetrisService : Service
+class TetrominosService : Service
 {
-   port = TETRIS_PORT;
-   Tetris tetris;
+   port = TETROMINOS_PORT;
+   Tetrominos tetrominos;
    void OnAccept()
    {
-      if(!tetris.sockets[CLIENT] && !tetris.gameRunning)
+      if(!tetrominos.sockets[CLIENT] && !tetrominos.gameRunning)
       {
-         TetrisSocket socket { this };
+         TetrominosSocket socket { this };
          TPacket packet;
 
-         tetris.sockets[CLIENT] = socket;
+         tetrominos.sockets[CLIENT] = socket;
          packet.type = MSG_NEWGAME;
-         tetris.sockets[CLIENT].Send((byte *)&packet, sizeof(TPacket));
-         tetris.NewGame();
-         tetris.gameRunning = true;
-         tetris.EnableButtons();
-         tetris.Update(null);
+         tetrominos.sockets[CLIENT].Send((byte *)&packet, sizeof(TPacket));
+         tetrominos.NewGame();
+         tetrominos.gameRunning = true;
+         tetrominos.EnableButtons();
+         tetrominos.Update(null);
       }
    }
 }
 
-class TetrisSocket : Socket
+class TetrominosSocket : Socket
 {
-   // --- Tetris Communication ---
-   Tetris tetris;
+   // --- Tetrominos Communication ---
+   Tetrominos tetrominos;
    static void OnDisconnect(int code)
    {
-      if(this == tetris.sockets[CLIENT])
+      if(this == tetrominos.sockets[CLIENT])
       {
-         tetris.sockets[CLIENT] = null;
-         tetris.gameRunning = false;
+         tetrominos.sockets[CLIENT] = null;
+         tetrominos.gameRunning = false;
       }
-      else if(this == tetris.sockets[SERVER])
+      else if(this == tetrominos.sockets[SERVER])
       {
-         tetris.sockets[SERVER] = null;
-         tetris.gameRunning = false;
+         tetrominos.sockets[SERVER] = null;
+         tetrominos.gameRunning = false;
       }
 
-      tetris.EnableButtons();
-      tetris.Update(null);
+      tetrominos.EnableButtons();
+      tetrominos.Update(null);
    }
 
    uint OnReceive(const byte * buffer, uint count)
@@ -155,8 +155,8 @@ class TetrisSocket : Socket
             case MSG_POSITION:
                break;
             case MSG_NEWGAME:
-               tetris.gameRunning = true;
-               tetris.NewGame();
+               tetrominos.gameRunning = true;
+               tetrominos.NewGame();
                break;
          }
          return sizeof(TPacket);
@@ -166,16 +166,16 @@ class TetrisSocket : Socket
 
    void OnConnect()
    {
-      tetris.sockets[SERVER] = this;
-      tetris.gameRunning = true;
-      tetris.EnableButtons();
-      tetris.NewGame();
+      tetrominos.sockets[SERVER] = this;
+      tetrominos.gameRunning = true;
+      tetrominos.EnableButtons();
+      tetrominos.NewGame();
    }
 }
 
-class Tetris : Window
+class Tetrominos : Window
 {
-   text = "ECERE Tetris";
+   text = "Ecere Tetrominos";
    hasClose = true;
    clientSize = { 300, 420 };
 
@@ -213,9 +213,9 @@ class Tetris : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         TetrisSocket socket { tetris = this };
+         TetrominosSocket socket { tetrominos = this };
          sockets[SERVER] = socket;
-         socket.Connect(address.contents, TETRIS_PORT);
+         socket.Connect(address.contents, TETROMINOS_PORT);
          EnableButtons();
          Update(null);
          return true;
@@ -239,7 +239,7 @@ class Tetris : Window
 
    bool hosting, gameRunning, local;
    byte turn;
-   Bitmap squares[5];
+   Bitmap squares[7];
    Bitmap backgroundBmp { };
    Socket sockets[2];
    byte board[HEIGHT][WIDTH];
@@ -252,7 +252,7 @@ class Tetris : Window
    background = black;
    tabCycle = true;
 
-   // --- Tetris Utilities ---
+   // --- Tetrominos Utilities ---
 
    void NewGame()
    {
@@ -290,7 +290,7 @@ class Tetris : Window
       // address.disabled = join.disabled;
    }
 
-   // --- Tetris Window Class ---
+   // --- Tetrominos Window Class ---
 
    void OnRedraw(Surface surface)
    {
@@ -382,30 +382,34 @@ class Tetris : Window
    bool OnLoadGraphics()
    {
       int c;
-      Bitmap tetrisBlocks { };
-      if(tetrisBlocks.Load(":tetris.bmp", null, null))
+      Bitmap tetrominosBlocks { };
+      if(tetrominosBlocks.Load(":tetrominos.png", null, null))
       {
-         for(c=0; c<5; c++)
+         tetrominosBlocks.Convert(null, pixelFormat888, null);
+         for(c=0; c<7; c++)
          {
             if(!squares[c]) squares[c] = Bitmap { };
             squares[c].Allocate(null, 16,16,16, pixelFormat888, false);
-            squares[c].Grab(tetrisBlocks, c*16, 0);
+            squares[c].Grab(tetrominosBlocks, c*16, 0);
             squares[c].MakeDD(displaySystem);
          }
 
          backgroundBmp.Allocate(null, 192,352,192, pixelFormat888, false);
-         backgroundBmp.Grab(tetrisBlocks, 0, 24);
+         backgroundBmp.Grab(tetrominosBlocks, 0, 24);
          backgroundBmp.MakeDD(displaySystem);
       }
-      delete tetrisBlocks;
+      delete tetrominosBlocks;
       return true;
    }
 
    void OnUnloadGraphics()
    {
       int c;
-      for(c=0; c<5; c++)
+      for(c=0; c<7; c++)
+      {
          squares[c].Free();
+         delete squares[c];
+      }
       backgroundBmp.Free();
    }
 
@@ -419,6 +423,26 @@ class Tetris : Window
       }
       return true;
    }
+
+   Timer timer
+   {
+      userData = this, delay = 0.8, started = true;
+
+      bool DelayExpired()
+      {
+         if(!gameOver)
+         {
+            playery++;
+            if(CheckPiece())
+            {
+               playery--;
+               FreezePiece();
+            }
+            Update(null);
+         }
+         return true;
+      }
+   };
 
    void NewPiece()
    {
@@ -583,7 +607,8 @@ class Tetris : Window
             }
             case space:
             {
-               DropPiece();
+               if(playery > 0)
+                  DropPiece();
                break;
             }
          }

@@ -1,12 +1,12 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "tetris",
+   "ModuleName" : "tetrominos",
    "Options" : {
       "Warnings" : "All",
       "Profile" : false,
       "StrictNameSpaces" : false,
       "TargetType" : "Executable",
-      "TargetFileName" : "tetris",
+      "TargetFileName" : "tetrominos",
       "Libraries" : [
          "ecere"
       ],
@@ -16,10 +16,7 @@
       {
          "Name" : "Debug",
          "Options" : {
-            "Debug" : true,
-            "MemoryGuard" : false,
-            "Optimization" : "None",
-            "FastMath" : false
+            "Debug" : true
          }
       },
       {
@@ -42,10 +39,10 @@
       }
    ],
    "Files" : [
-      "tetris.ec"
+      "tetrominos.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "res/tetris.bmp"
+      "res/tetrominos.png"
    ]
 }
