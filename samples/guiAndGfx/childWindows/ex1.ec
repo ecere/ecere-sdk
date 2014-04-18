@@ -22,7 +22,7 @@ class Parent : Window
    hasMaximize = true, hasMinimize = true, hasClose = true;
    text = "Hello, Ex1!", position = { 10, 10 }, size = { 1000, 600 };
 
-   BitmapResource bubbles { ":SoapBubbles.bmp", window = this, transparent = false };
+   BitmapResource bubbles { ":stone2.jpg", window = this, transparent = false };
 
    void OnRedraw(Surface surface)
    {
