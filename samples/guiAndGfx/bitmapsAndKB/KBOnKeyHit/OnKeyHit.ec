@@ -1,12 +1,12 @@
 import "ecere"
 
-BitmapResource peasantGfx { ":peasant.png" };
+BitmapResource knightGfx { ":knight.png" };
 BitmapResource dragonGfx { ":dragon.png" };
 BitmapResource mageGfx { ":mage.png" };
 BitmapResource archerGfx { ":archer.png" };
 BitmapResource castleGfx { ":castle.png" };
 
-Array<BitmapResource> gfxResources { [ peasantGfx, dragonGfx, mageGfx, archerGfx, castleGfx ] };
+Array<BitmapResource> gfxResources { [ knightGfx, dragonGfx, mageGfx, archerGfx, castleGfx ] };
 
 class WorldObject
 {
@@ -33,7 +33,7 @@ public:
    int x, y;
 }
 
-class Peasant : WorldObject { res = peasantGfx; selectable = true; }
+class Knight : WorldObject { res = knightGfx; selectable = true; }
 class Dragon : WorldObject { res = dragonGfx; }
 class Mage : WorldObject { res = mageGfx; selectable = true; }
 class Archer : WorldObject { res = archerGfx; selectable = true; }
@@ -44,8 +44,8 @@ Array<WorldObject> objects
    Castle { 180, 150 },
    Mage { 50, 50 },
    Archer { 150, 250 },
-   Peasant { 380, 290 },
-   Peasant { 120, 150 },
+   Knight { 380, 290 },
+   Knight { 120, 150 },
    Dragon { 320, 50 }
 ] };
 
