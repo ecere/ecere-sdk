@@ -603,7 +603,7 @@ public:
       {
          Object modelChild;
 
-         name = model.name;
+         name = CopyString(model.name);
          flags = model.flags;
          flags.ownMesh = false;
          mesh = model.mesh;
