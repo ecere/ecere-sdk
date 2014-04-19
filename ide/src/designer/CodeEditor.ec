@@ -2115,6 +2115,11 @@ class CodeEditor : Window
                Designer::DestroyObject(object.instance);
                delete object.instance;
             }
+            if(object.i18nStrings)
+            {
+               Map<String, bool> i18nStrings = object.i18nStrings;
+               delete i18nStrings;
+            }
             sheet.DeleteObject(object);
             delete object.name;
             oClass.instances.Delete(object);
@@ -2123,6 +2128,11 @@ class CodeEditor : Window
          {
             Designer::DestroyObject(oClass.instance);
             delete oClass.instance;
+         }
+         if(oClass.i18nStrings)
+         {
+            Map<String, bool> i18nStrings = oClass.i18nStrings;
+            delete i18nStrings;
          }
          sheet.DeleteObject(oClass);
          delete oClass.name;
@@ -5551,11 +5561,6 @@ class CodeEditor : Window
       object.deleted = true;
       object.modified = true;
       object.oClass.modified = true;
-      if(object.i18nStrings)
-      {
-         Map<String, bool> i18nStrings = object.i18nStrings;
-         delete i18nStrings;
-      }
 
       if(selected == object)
       {
