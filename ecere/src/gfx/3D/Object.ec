@@ -921,8 +921,12 @@ public:
                            if(newGroup.material == group.material && newGroup.type == group.type)
                            {
                               int c;
-                              for(c = 0; c<group.nIndices; c++)
-                                 newGroup.indices[nIndices++] = group.indices[c] + (uint16)vertexOffset;
+                              if(group.type.indices32bit)
+                                 for(c = 0; c<group.nIndices; c++)
+                                    newGroup.indices32[nIndices++] = group.indices32[c] + vertexOffset;
+                              else
+                                 for(c = 0; c<group.nIndices; c++)
+                                    newGroup.indices[nIndices++] = group.indices[c] + (uint16)vertexOffset;
                            }
                         }
                         vertexOffset += objectMesh.nVertices;
@@ -938,8 +942,12 @@ public:
                                  newGroup.type == group.type)
                               {
                                  int c;
-                                 for(c = 0; c<group.nIndices; c++)
-                                    newGroup.indices[nIndices++] = group.indices[c] + (uint16)vertexOffset;
+                                 if(group.type.indices32bit)
+                                    for(c = 0; c<group.nIndices; c++)
+                                       newGroup.indices32[nIndices++] = group.indices32[c] + vertexOffset;
+                                 else
+                                    for(c = 0; c<group.nIndices; c++)
+                                       newGroup.indices[nIndices++] = group.indices[c] + (uint16)vertexOffset;
                               }
                            }
                            vertexOffset += child.mesh.nVertices;
@@ -1026,8 +1034,12 @@ public:
                   objectMesh.primitives[c].data = null;
                   */
 
-                  for(i = 0; i<triangle->nIndices; i++)
-                     triangle->indices[i] += (uint16)vertexOffset;
+                  if(triangle->type.indices32bit)
+                     for(i = 0; i<triangle->nIndices; i++)
+                        triangle->indices32[i] += vertexOffset;
+                  else
+                     for(i = 0; i<triangle->nIndices; i++)
+                        triangle->indices[i] += (uint16)vertexOffset;
                   mesh.UnlockPrimitive(triangle);
                }
                vertexOffset += objectMesh.nVertices;
@@ -1053,8 +1065,12 @@ public:
                      child.mesh.primitives[c].data = null;
                      */
 
-                     for(i = 0; i<triangle->nIndices; i++)
-                        triangle->indices[i] += (uint16)vertexOffset;
+                     if(triangle->type.indices32bit)
+                        for(i = 0; i<triangle->nIndices; i++)
+                           triangle->indices[i] += (uint16)vertexOffset;
+                     else
+                        for(i = 0; i<triangle->nIndices; i++)
+                           triangle->indices32[i] += vertexOffset;
                      mesh.UnlockPrimitive(triangle);
                   }
                   vertexOffset += child.mesh.nVertices;
