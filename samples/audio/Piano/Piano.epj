@@ -1,10 +1,10 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "BitmapAudioKB",
+   "ModuleName" : "Piano",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
-      "TargetFileName" : "BitmapAudioKB",
+      "TargetFileName" : "Piano",
       "Libraries" : [
          "ecere"
       ]
