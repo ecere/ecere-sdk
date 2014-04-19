@@ -91,7 +91,7 @@ public class Mixer
    void AudioCallback(byte *stream, int lenToFill)
    {
       static byte buffer[AUDIO_BUFFER_SIZE];
-      static float fBuffer[AUDIO_BUFFER_SIZE];
+      static float fBuffer[AUDIO_BUFFER_SIZE/2];
       int c;
       int numSamples = (bits == 16) ? (lenToFill / 2) : lenToFill;
       memset(fBuffer, 0, sizeof(float) * numSamples);

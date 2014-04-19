@@ -132,7 +132,7 @@ public int OpenAudio(AudioSpec wanted, AudioSpec result)
                                  wanted.channels,
                                  wanted.freq,
                                  1,
-                                 500000)) < 0)
+                                 50000)) < 0)
    {   /* 0.5sec */
       printf("Playback open error: %s\n", snd_strerror(err));
       return 0;
@@ -185,15 +185,16 @@ static class SoundThread : Thread
          {
             int c;
             short int * samples = (short int *)buffer;
-            double m = volume / (1 + Abs(balance * 2 - 1));
+            double m = volume / (1 + Abs(balance * 2 - 1)) / 100.0;
             double ll = (2 - (2 * Max(balance, 0.5)))* m;
             double lr = (-2 * Min(balance, 0.5) + 1) * m;
             double rl = (2 * Max(balance, 0.5) - 1)  * m;
             double rr = (2 * Min(balance, 0.5))      * m;
+            uint numSamples = audioSpec.samples/16;
             // printf("Volume: %f, m : %f, Left: (%f, %f), Right: (%f, %f) \n", volume, m, ll, lr, rl, rr);
 
-            audioSpec.callback(audioSpec.userdata, buffer, audioSpec.samples * audioSpec.channels * audioSpec.bits / 8);
-            for(c = 0; c<audioSpec.samples; c++)
+            audioSpec.callback(audioSpec.userdata, buffer, numSamples * audioSpec.channels * audioSpec.bits / 8);
+            for(c = 0; c<numSamples; c++)
             {
                short sLeft = samples[0], sRight = samples[1];
                samples[0] = (short)(sLeft * ll + sRight * lr);
@@ -201,7 +202,7 @@ static class SoundThread : Thread
                samples += 2;
             }
 
-            frames = snd_pcm_writei(handle, buffer, audioSpec.samples);
+            frames = snd_pcm_writei(handle, buffer, numSamples);
             if(frames < 0)
                frames = snd_pcm_recover(handle, frames, 0);
             if (frames < 0)
@@ -209,8 +210,8 @@ static class SoundThread : Thread
                printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
                break;
             }
-            if (frames > 0 && frames < audioSpec.samples)
-               printf("Short write (expected %li, wrote %li)\n", (long)sizeof(buffer), frames);
+            if (frames > 0 && frames < numSamples)
+               printf("Short write (expected %li, wrote %li)\n", numSamples, frames);
          }
       }
       return 0;
