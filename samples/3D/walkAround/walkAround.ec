@@ -112,7 +112,7 @@ class WalkAroundForm : Window
    Array<Cube> cubes { };
 
    Material sideMat { opacity = 0.5f, diffuse = teal, ambient = teal, flags = { doubleSided = true, translucent = true } };
-   Material cow1Mat { opacity = 1.0f, diffuse = skyBlue, ambient = skyBlue };
+   Material cow1Mat { opacity = 1.0f, power = 20, diffuse = goldenrod, ambient = goldenrod, specular = goldenrod };
    Material cow2Mat { opacity = 1.0f, diffuse = lightGray, ambient = lightGray };
    Object cowModel { };
    Object cow1 { };
@@ -156,6 +156,9 @@ class WalkAroundForm : Window
       cow2.transform.scaling = { 20, 20, 20 };
       cow2.transform.orientation = Euler { yaw = 225 };
       cow2.UpdateTransform();
+      cow2.Merge(displaySystem); // Merge() also makes a copy of the mesh (as opposed to the instance Duplicate() creates)
+      cow2.mesh.ApplyMaterial(null);
+      cow2.material = cow1Mat;
 
       if(textureFile.Load(":texture1.pcx", null, null))
       {
