@@ -18,6 +18,7 @@
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
+            "Console" : true,
             "FastMath" : false
          }
       },
@@ -36,6 +37,7 @@
    "ResourcesPath" : "",
    "Resources" : [
       "../terrainCameraDemo/res/texture1.pcx",
-      "../ModelViewer/models/dolphin.3ds"
+      "../ModelViewer/models/cow/spot_tex.png",
+      "../ModelViewer/models/cow/cow.3DS"
    ]
 }

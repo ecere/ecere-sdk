@@ -112,11 +112,11 @@ class WalkAroundForm : Window
    Array<Cube> cubes { };
 
    Material sideMat { opacity = 0.5f, diffuse = teal, ambient = teal, flags = { doubleSided = true, translucent = true } };
-   Material dolphin1Mat { opacity = 1.0f, diffuse = skyBlue, ambient = skyBlue };
-   Material dolphin2Mat { opacity = 1.0f, diffuse = lightGray, ambient = lightGray };
-   Object dolphinModel { };
-   Object dolphin1 { };
-   Object dolphin2 { };
+   Material cow1Mat { opacity = 1.0f, diffuse = skyBlue, ambient = skyBlue };
+   Material cow2Mat { opacity = 1.0f, diffuse = lightGray, ambient = lightGray };
+   Object cowModel { };
+   Object cow1 { };
+   Object cow2 { };
    Cube cube { };
    Array<Bitmap> textures { };
    bool acquiredInput;
@@ -143,21 +143,19 @@ class WalkAroundForm : Window
       int i, x, y;
       PrimitiveGroup group;
 
-      dolphinModel.Load(":dolphin.3ds", null, displaySystem);
-      dolphinModel.Merge(displaySystem);
-      dolphinModel.mesh.ApplyMaterial(null);
+      cowModel.Load(":cow.3DS", null, displaySystem);
 
-      dolphin1.Duplicate(dolphinModel);
-      dolphin1.transform.position = { -20, -50, 10 };
-      dolphin1.transform.scaling = { 0.2, 0.2, 0.2 };
-      dolphin1.UpdateTransform();
-      dolphin1.material = dolphin1Mat;
+      cow1.Duplicate(cowModel);
+      cow1.transform.position = { -20, -50, 10 };
+      cow1.transform.scaling = { 20, 20, 20 };
+      cow1.transform.orientation = Euler { yaw = 135 };
+      cow1.UpdateTransform();
 
-      dolphin2.Duplicate(dolphinModel);
-      dolphin2.transform.position = { 60, -30, -5 };
-      dolphin2.transform.scaling = { 0.2, 0.2, 0.2 };
-      dolphin2.UpdateTransform();
-      dolphin2.material = dolphin2Mat;
+      cow2.Duplicate(cowModel);
+      cow2.transform.position = { 60, -42, -5 };
+      cow2.transform.scaling = { 20, 20, 20 };
+      cow2.transform.orientation = Euler { yaw = 225 };
+      cow2.UpdateTransform();
 
       if(textureFile.Load(":texture1.pcx", null, null))
       {
@@ -212,11 +210,14 @@ class WalkAroundForm : Window
 
    void OnUnloadGraphics()
    {
+      materials.Free();
+      textures.Free();
+
       for(c : cubes)
          c.Free(displaySystem);
-      dolphinModel.Free(displaySystem);
-      dolphin1.Free(displaySystem);
-      dolphin2.Free(displaySystem);
+      cowModel.Free(displaySystem);
+      cow1.Free(displaySystem);
+      cow2.Free(displaySystem);
       cubes.Free();
    }
 
@@ -236,8 +237,8 @@ class WalkAroundForm : Window
       for(c : cubes)
          display.DrawObject(c);
 
-      display.DrawObject(dolphin1);
-      display.DrawObject(dolphin2);
+      display.DrawObject(cow1);
+      display.DrawObject(cow2);
 
       display.SetCamera(surface, null);
 
