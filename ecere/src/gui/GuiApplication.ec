@@ -975,7 +975,7 @@ public:
                for(socket = network.connectSockets.first; socket; socket = next)
                {
                   next = socket.next;
-                  if(socket._connected  && socket._connected != -2)
+                  if(socket._connected && socket._connected != -2)
                   {
                      network.connectSockets.Remove(socket);
                      delete socket.connectThread;
@@ -993,6 +993,7 @@ public:
                         if(socket.s == network.ns - 1)
                            Network_DetermineMaxSocket();
 
+                        socket._connected = 0;
                         socket.Free(false);
                         delete socket;
                      }

@@ -107,7 +107,7 @@ static class SocketConnectThread : Thread
    #endif
       if(result && !socket.destroyed)
          socket._connected = 1;
-      else
+      else if(socket._connected == -2)
          socket._connected = -1;
 
    #ifdef DEBUG_SOCKETS
@@ -251,11 +251,20 @@ public:
 
          if(!disconnected)
          {
+            if(_connected == -2 && connectThread)
+            {
+               incref this;
+               network.mutex.Release();
+               connectThread.Wait();
+               delete connectThread;
+               network.mutex.Wait();
+               _refCount--;
+            }
             disconnected = true;
             if(!service)
             {
                if(_connected)
-                  ((_connected == -1) ? network.connectSockets : network.sockets).Remove(this);
+                  ((_connected == -1 || _connected == -2) ? network.connectSockets : network.sockets).Remove(this);
             }
             else
             {
@@ -442,9 +451,10 @@ private:
       SOCKET s = this.s;
 
       if(mustLock) network.mutex.Wait();
+
       if(!service && _connected)
       {
-         (_connected == -1 ? network.connectSockets : network.sockets).Remove(this);
+         ((_connected == -1 || _connected == -2) ? network.connectSockets : network.sockets).Remove(this);
          _connected = 0;
       }
 
@@ -749,7 +759,7 @@ private:
    Thread connectThread;
    DisconnectCode disconnectCode;
    bool destroyed;
-   int _connected;
+   int _connected;         // -2: Initial value when calling Connect(), -1: Disconnected or otherwise destroyed while connecting, 1: succesfully connected, 0: no longer in any connect/sockets list
    bool disconnected;
 
    // Receiving Buffer
