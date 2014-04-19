@@ -1647,7 +1647,7 @@ class SymbolgenApp : Application
       }
       */
 
-#ifdef _DEBUG
+#if 0 //def _DEBUG
       printf("\nArguments given:\n");
       for(c=1; c<argc; c++)
          printf(" %s", argv[c]);
@@ -2064,7 +2064,7 @@ class SymbolgenApp : Application
       delete argv;
       */
 
-#if defined(_DEBUG) && defined(__WIN32__)
+#if 0 //defined(_DEBUG) && defined(__WIN32__)
       getch();
 #endif
    }

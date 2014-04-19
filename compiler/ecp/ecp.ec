@@ -1326,7 +1326,7 @@ class PrecompApp : Application
          argc++;
       }*/
 
-#ifdef _DEBUG
+#if 0 //def _DEBUG
       printf("\nArguments given:\n");
       for(c=1; c<argc; c++)
          printf(" %s", argv[c]);
@@ -1524,7 +1524,7 @@ class PrecompApp : Application
 
          snprintf(command, sizeof(command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
          command[sizeof(command)-1] = 0;
-#ifdef _DEBUG
+#if 0 //def _DEBUG
          PrintLn("ECP Executing:");
          PrintLn(command);
 #endif
@@ -1607,7 +1607,7 @@ class PrecompApp : Application
       */
       SetSymbolsDir(null); // Free symbols dir
 
-#if defined(_DEBUG) && defined(__WIN32__)
+#if 0 //defined(_DEBUG) && defined(__WIN32__)
       // CheckMemory();
       PrintLn("Done.");
       getch();
