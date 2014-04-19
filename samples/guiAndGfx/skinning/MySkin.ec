@@ -179,7 +179,7 @@ public class MySkin_ScrollBar : ScrollBar
 
       if(direction == vertical)
       {
-         downBtn.bevel = false;
+         /*downBtn.bevel = false;
          downBtn.size.h = 18;
          downBtn.anchor = Anchor { left = 0, right = 0, bottom = 0 };
          downBtn.bitmap = { fileName = "scrollDown.png", alphaBlend = true };
@@ -191,7 +191,7 @@ public class MySkin_ScrollBar : ScrollBar
 
          thumb.OnRedraw = ThumbOnRedraw;
          thumb.IsInside = ThumbIsInside;
-         thumb.SetBox = ThumbSetBox;
+         thumb.SetBox = ThumbSetBox;*/
       }
       else
       {
