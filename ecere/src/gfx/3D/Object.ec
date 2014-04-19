@@ -770,7 +770,7 @@ public:
    {
       bool result = false;
 
-      if(!children.first)
+      if(!children.first && this.flags.ownMesh)
          result = true;
       else
       {
