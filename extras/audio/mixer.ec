@@ -276,12 +276,16 @@ public:
 
    Voice Play(Sound sound, double volume, double balance, double pitch)
    {
-      Voice voice { sound, volume, balance, pitch };
-      mutex.Wait();
-      voices.Add(voice);
-      incref voice;
-      mutex.Release();
-      return voice;
+      if(sound && sound.data)
+      {
+         Voice voice { sound, volume, balance, pitch };
+         mutex.Wait();
+         voices.Add(voice);
+         incref voice;
+         mutex.Release();
+         return voice;
+      }
+      return null;
    }
 
    void Wait()
