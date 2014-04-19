@@ -111,12 +111,15 @@ class WalkAroundForm : Window
    Array<int> elv { size = width * height };
    Array<Cube> cubes { };
 
+   BitmapResource spotTex { ":spot_tex.png", window = this };
    Material sideMat { opacity = 0.5f, diffuse = teal, ambient = teal, flags = { doubleSided = true, translucent = true } };
-   Material cow1Mat { opacity = 1.0f, power = 20, diffuse = goldenrod, ambient = goldenrod, specular = goldenrod };
-   Material cow2Mat { opacity = 1.0f, diffuse = lightGray, ambient = lightGray };
+   Material cow1Mat { opacity = 1.0f, diffuse = white, ambient = white };
+   Material cow2Mat { opacity = 1.0f, power = 20, diffuse = goldenrod, ambient = goldenrod, specular = goldenrod };
+   Material cow3Mat { opacity = 1.0f, power = 20, diffuse = goldenrod, ambient = goldenrod, specular = goldenrod };
    Object cowModel { };
    Object cow1 { };
    Object cow2 { };
+   Object cow3 { };
    Cube cube { };
    Array<Bitmap> textures { };
    bool acquiredInput;
@@ -144,21 +147,31 @@ class WalkAroundForm : Window
       PrimitiveGroup group;
 
       cowModel.Load(":cow.3DS", null, displaySystem);
+      cowModel.Merge(displaySystem);
+      cowModel.mesh.ApplyMaterial(null);
 
       cow1.Duplicate(cowModel);
       cow1.transform.position = { -20, -50, 10 };
       cow1.transform.scaling = { 20, 20, 20 };
       cow1.transform.orientation = Euler { yaw = 135 };
       cow1.UpdateTransform();
+      cow1.material = cow1Mat;
+      cow1Mat.baseMap = spotTex.bitmap;
 
       cow2.Duplicate(cowModel);
       cow2.transform.position = { 60, -42, -5 };
       cow2.transform.scaling = { 20, 20, 20 };
       cow2.transform.orientation = Euler { yaw = 225 };
       cow2.UpdateTransform();
-      cow2.Merge(displaySystem); // Merge() also makes a copy of the mesh (as opposed to the instance Duplicate() creates)
-      cow2.mesh.ApplyMaterial(null);
-      cow2.material = cow1Mat;
+      cow2.material = cow2Mat;
+
+      cow3.Duplicate(cowModel);
+      cow3.transform.position = { 120, -89, 13 };
+      cow3.transform.scaling = { 20, 20, 20 };
+      cow3.transform.orientation = Euler { yaw = 185 };
+      cow3.UpdateTransform();
+      cow3.material = cow3Mat;
+      cow3Mat.baseMap = spotTex.bitmap;
 
       if(textureFile.Load(":texture1.pcx", null, null))
       {
@@ -221,6 +234,7 @@ class WalkAroundForm : Window
       cowModel.Free(displaySystem);
       cow1.Free(displaySystem);
       cow2.Free(displaySystem);
+      cow3.Free(displaySystem);
       cubes.Free();
    }
 
@@ -242,6 +256,7 @@ class WalkAroundForm : Window
 
       display.DrawObject(cow1);
       display.DrawObject(cow2);
+      display.DrawObject(cow3);
 
       display.SetCamera(surface, null);
 
