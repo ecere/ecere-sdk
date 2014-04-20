@@ -1160,9 +1160,9 @@ Identifier FindCtxTree(OldList ast, int line, int charPos)
                {
                   currentClass = external._class.symbol.registered;
                   idResult = FindCtxClass(external._class, line, charPos);
+                  currentClass = null;
                   if(idResult)
                      return (idResult == (void *)-1 || idResult == (void *)-2) ? null : idResult;
-                  currentClass = null;
                }
                break;
          }
