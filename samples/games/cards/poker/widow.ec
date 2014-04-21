@@ -15,8 +15,8 @@ class Widow : Window
       Poker poker = (Poker) master;
       int c;
       for(c=0; c<widowNum; c++)
-         poker.DrawCard(surface, c * 15, 0, POKER_Card(widow[c]));
+         poker.DrawCard(surface, c * GAP, 0, POKER_Card(widow[c]));
       surface.SetForeground(red);
-      surface.WriteTextf(10, 130, "POT MONEY: %.2f", potMoney / 2.0);
+      surface.WriteTextf(10, 175, "POT MONEY: %.2f", potMoney / 2.0);
    }
 }

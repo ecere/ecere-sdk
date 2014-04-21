@@ -11,6 +11,18 @@ import "player.ec"
 import "widow.ec"
 import "bet.ec"
 
+static String cardsNames[] =
+{
+   ":ac.png", ":ad.png", ":ah.png", ":as.png",    ":2c.png", ":2d.png", ":2h.png", ":2s.png",    ":3c.png", ":3d.png", ":3h.png", ":3s.png",
+   ":4c.png", ":4d.png", ":4h.png", ":4s.png",    ":5c.png", ":5d.png", ":5h.png", ":5s.png",    ":6c.png", ":6d.png", ":6h.png", ":6s.png",
+   ":7c.png", ":7d.png", ":7h.png", ":7s.png",    ":8c.png", ":8d.png", ":8h.png", ":8s.png",    ":9c.png", ":9d.png", ":9h.png", ":9s.png",
+   ":10c.png", ":10d.png", ":10h.png", ":10s.png",":jc.png", ":jd.png", ":jh.png", ":js.png",    ":qc.png", ":qd.png", ":qh.png", ":qs.png",
+   ":kc.png", ":kd.png", ":kh.png", ":ks.png",    ":rb.png", ":rr.png"
+};
+
+static define CARD_WIDTH = 111;
+static define CARD_HEIGHT = 150;
+
 enum PokerHand { nothing, onePair, twoPair, threeOfAKind, straight, flush, fullHouse, fourOfAKind, straightFlush, royalFlush };
 
 /*
@@ -67,7 +79,7 @@ class Poker : Window
    hasMinimize = true, hasMaximize = true, hasClose = true;
    borderStyle = sizable;
    text = "ECERE Poker";
-   size = Size { 800, 600 };
+   size = Size { 986, 740 };
 
    Bitmap bitmapCards[52];
    Bitmap cardBack {};
@@ -386,23 +398,13 @@ class Poker : Window
    // --- Poker Window Class ---
    bool OnLoadGraphics()
    {
-      Bitmap ptrCardLoad {};
-      if(ptrCardLoad.Load(":cards.pcx",null,null))
+      int i;
+      cardBack.LoadT(":back.png",null,displaySystem);
+      for(i = 0; i < 52; i++)
       {
-         int i;
-         cardBack.LoadT(":ecereCard.png",null,displaySystem);
-
-         for(i = 0; i < 52; i++)
-         {
-            bitmapCards[i] = Bitmap {};
-            bitmapCards[i].Allocate(null,ptrCardLoad.width, ptrCardLoad.height/52,0,pixelFormat8,true);
-            CopyBytesBy4(bitmapCards[i].palette, ptrCardLoad.palette, 256);
-            bitmapCards[i].Grab(ptrCardLoad,0,(ptrCardLoad.height/52)*i);
-            bitmapCards[i].transparent = true;
-            bitmapCards[i].MakeDD(displaySystem);
-         }
+         bitmapCards[i] = Bitmap {};
+         bitmapCards[i].LoadT(cardsNames[i], null, displaySystem);
       }
-      delete ptrCardLoad;
       return true;
    }
 
@@ -410,7 +412,7 @@ class Poker : Window
    {
       int i;
       for(i=0;i<52;i++)
-         bitmapCards[i].Free();
+         delete bitmapCards[i];
       cardBack.Free();
    }
 

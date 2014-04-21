@@ -94,10 +94,10 @@ class TrumpDialog : Window
       row = trumpDrop.AddRow(); row.tag = Kind::hearts; row.SetData(null, hearts);
       row = trumpDrop.AddRow(); row.tag = Kind::spades; row.SetData(null, spades);
 
-      AddResource(icons[clubs] = BitmapResource { ":clubs.bmp" });
-      AddResource(icons[diamonds] = BitmapResource { ":diamonds.bmp" });
-      AddResource(icons[hearts] = BitmapResource { ":hearts.bmp" });
-      AddResource(icons[spades] = BitmapResource { ":spades.bmp" });
+      AddResource(icons[clubs] = BitmapResource { ":clubs.png" });
+      AddResource(icons[diamonds] = BitmapResource { ":diamonds.png" });
+      AddResource(icons[hearts] = BitmapResource { ":hearts.png" });
+      AddResource(icons[spades] = BitmapResource { ":spades.png" });
    }
 
    bool OnPostCreate()

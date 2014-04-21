@@ -16,6 +16,20 @@ struct Card // class Card : uint16
    Kind kind;
 } Card;
 
+static String cardsNames[] =
+{
+   ":ac.png", ":ad.png", ":ah.png", ":as.png",    ":2c.png", ":2d.png", ":2h.png", ":2s.png",    ":3c.png", ":3d.png", ":3h.png", ":3s.png",
+   ":4c.png", ":4d.png", ":4h.png", ":4s.png",    ":5c.png", ":5d.png", ":5h.png", ":5s.png",    ":6c.png", ":6d.png", ":6h.png", ":6s.png",
+   ":7c.png", ":7d.png", ":7h.png", ":7s.png",    ":8c.png", ":8d.png", ":8h.png", ":8s.png",    ":9c.png", ":9d.png", ":9h.png", ":9s.png",
+   ":10c.png", ":10d.png", ":10h.png", ":10s.png",":jc.png", ":jd.png", ":jh.png", ":js.png",    ":qc.png", ":qd.png", ":qh.png", ":qs.png",
+   ":kc.png", ":kd.png", ":kh.png", ":ks.png",    ":rb.png", ":rr.png"
+};
+
+static define CARD_WIDTH = 111;
+static define CARD_HEIGHT = 150;
+
+static define GAP = 38;
+
 enum PlayerPosition : byte { bottom, left, top, right, none = 0xFF };
 
 // For selectedCard
@@ -685,9 +699,9 @@ class Ruff : Window
    text = "The Ruff Card Game";
    borderStyle = sizable;
    hasMaximize = true, hasMinimize = true, hasClose = true;
-   anchor = Anchor { horz = -0.1, vert = -0.1 };
-   size = Size { 620, 460 };
-   background = Color { 0, 128, 0 };
+   anchor = { horz = -0.1, vert = -0.1 };
+   clientSize = { 926, 688 };
+   background = { 0, 128, 0 };
 
    // State of the game
    RuffGame game;
@@ -712,7 +726,7 @@ class Ruff : Window
       {
          Player * player = &game.players[playedPlayer];
          if(game.gameStarted)
-            Player_PlaceBet(player, result);
+            Player_PlaceBet(player, (int)result);
       }
    };
 
@@ -749,9 +763,9 @@ class Ruff : Window
       Player * player = (playedPlayer != none) ? &game.players[playedPlayer] : null;
       Round * round = &game.rounds[game.round];
       PlayerPosition c;
-      static const Point playedPos[] = { { 295, 325 }, { 172, 225 }, { 295, 125 }, { 417, 225 } };
-      static const Point lastPlayedPos[] = { { 275, 305 }, { 152, 205 }, { 275, 105 }, { 397, 205 } };
-      static const Point namePos[] = { { 200, 362 }, { 100, 257 }, { 440, 150 }, { 540, 257 } };
+      static const Point playedPos[] = { { 461, 528 }, { 268, 372 }, { 461, 215 }, { 652, 372 } };
+      static const Point lastPlayedPos[] = { { 430, 497 }, { 238, 340 }, { 430, 184 }, { 621, 340 } };
+      static const Point namePos[] = { { 313, 585 }, { 156, 422 }, { 688, 254 }, { 844, 422 } };
 
       if(game.gameStarted)
       {
@@ -764,14 +778,14 @@ class Ruff : Window
    		      if(player->cards[c].kind != none)
    		      {
                   if(c != selectedCard)
-                     RUFF_DrawCard(surface, c * 20 + player->cards[c].kind * 71, 20, &player->cards[c]);
+                     RUFF_DrawCard(surface, c * GAP + player->cards[c].kind * CARD_WIDTH, 20, &player->cards[c]);
    		      }
             }
 
             // The selected card
             if(selectedCard != None && player->cards[selectedCard].kind != none)
                RUFF_DrawCard(surface,
-                  selectedCard * 20 + player->cards[selectedCard].kind * 71, 0,
+                  selectedCard * GAP + player->cards[selectedCard].kind * CARD_WIDTH, 0,
                   &player->cards[selectedCard]);
          }
 
@@ -779,15 +793,15 @@ class Ruff : Window
          if(round->bet.howMuch)
          {
             surface.SetForeground((round->bet.player == playedPlayer) ? LT_RED : black);
-            surface.CenterTextf(555,105,"%d",round->bet.howMuch);
+            surface.CenterTextf(868, 164, "%d",round->bet.howMuch);
             if(round->bet.trump != none)
             {
                Card card;
                card.kind = round->bet.trump;
                card.number = ace;
-               RUFF_DrawCard(surface, 520, 0, &card);
+               RUFF_DrawCard(surface, 813, 0, &card);
             }
-            surface.CenterTextf(555,128,game.players[round->bet.player].name);
+            surface.CenterTextf(868, 200, game.players[round->bet.player].name);
          }
 
          // 4 Cards Played
@@ -835,8 +849,8 @@ class Ruff : Window
 
          for(c=8; c>=0; c--)
          {
-            int start = c * 20 + player->cards[c].kind * 71;
-            if(y>=0 && y<96+20 && x>=start && x<start+71)
+            int start = c * GAP + player->cards[c].kind * CARD_WIDTH;
+            if(y>=0 && y<CARD_HEIGHT+GAP && x>=start && x<start+CARD_WIDTH)
             {
    			   if(RUFF_Legal(game, player,c))
    				   selectedCard=c;
@@ -862,8 +876,8 @@ class Ruff : Window
 
          for(c=8; c>=0; c--)
          {
-            int start = c * 20 + player->cards[c].kind * 71;
-            if(y>=0 && y<96+20 && x>=start && x<start+71)
+            int start = c * GAP + player->cards[c].kind * CARD_WIDTH;
+            if(y>=0 && y<CARD_HEIGHT+GAP && x>=start && x<start+CARD_WIDTH)
             {
    			   if(RUFF_Legal(game, player,c))
                {
@@ -932,27 +946,19 @@ class Ruff : Window
    bool OnPostCreate()
    {
       playedPlayer = none;
+      setup.Create();
       return true;
    }
 
    bool OnLoadGraphics()
    {
-      Bitmap ptrCardLoad {};
-      if(ptrCardLoad.Load(":cards.pcx",null,null))
+      int i;
+      cardBack.LoadT(":back.png", null, displaySystem);
+      for(i=0; i<52; i++)
       {
-         int i;
-         cardBack.LoadT(":ecereCard.png",null,displaySystem);
-         for(i=0;i<52;i++)
-         {
-            bitmapCards[i] = Bitmap {};
-            bitmapCards[i].Allocate(null,ptrCardLoad.width, ptrCardLoad.height/52,0,pixelFormat8,true);
-            CopyBytesBy4(bitmapCards[i].palette, ptrCardLoad.palette, 256);
-            bitmapCards[i].Grab(ptrCardLoad,0,(ptrCardLoad.height/52)*i);
-            bitmapCards[i].transparent = true;
-            bitmapCards[i].MakeDD(displaySystem);
-         }
+         bitmapCards[i] = Bitmap {};
+         bitmapCards[i].LoadT(cardsNames[i], null, displaySystem);
       }
-      delete ptrCardLoad;
       return true;
    }
 
@@ -991,6 +997,8 @@ class RuffApp : GuiApplication
    bool Init()
    {
       app = this;
+      ruff.Create();
+      ruff.setup.Activate();
       return true;
    }
 }

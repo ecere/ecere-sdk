@@ -1,10 +1,22 @@
 import "ecere"
 
+static String cardsNames[] =
+{
+   ":ac.png", ":ad.png", ":ah.png", ":as.png",    ":2c.png", ":2d.png", ":2h.png", ":2s.png",    ":3c.png", ":3d.png", ":3h.png", ":3s.png",
+   ":4c.png", ":4d.png", ":4h.png", ":4s.png",    ":5c.png", ":5d.png", ":5h.png", ":5s.png",    ":6c.png", ":6d.png", ":6h.png", ":6s.png",
+   ":7c.png", ":7d.png", ":7h.png", ":7s.png",    ":8c.png", ":8d.png", ":8h.png", ":8s.png",    ":9c.png", ":9d.png", ":9h.png", ":9s.png",
+   ":10c.png", ":10d.png", ":10h.png", ":10s.png",":jc.png", ":jd.png", ":jh.png", ":js.png",    ":qc.png", ":qd.png", ":qh.png", ":qs.png",
+   ":kc.png", ":kd.png", ":kh.png", ":ks.png",    ":rb.png", ":rr.png"
+};
+
+static define CARD_WIDTH = 111;
+static define CARD_HEIGHT = 150;
+
 #define MCARD(k,n) ((n) * 4 + (k))
 #define NUMBER(id) ((id) / 4)
 #define KIND(id)   ((id) % 4)
-#define OFFSETTER1   15
-#define OFFSETTER2   120
+#define OFFSETTER1   17
+#define OFFSETTER2   180
 #define HOUSETYPE_STRAIGHT 0
 #define HOUSETYPE_KIND     1
 
@@ -50,10 +62,10 @@ int dragCard = -1;
 Player player[4];
 Point xyPositions[4] =
 {
-   {30,150},
-   {30,500},
-   {600,500},
-   {600,150}
+   {30,200},
+   {30,620},
+   {600,620},
+   {600,200}
 };
 
 bool flagButtonDown, leftDoubleClick, gameOver;
@@ -95,7 +107,7 @@ void DealCards(int numPlayers)
 int CheckHouse(int cardsToCheck,int * checkIfHouse)
 {
    int i,straight=0,house=0;
-   for(i=cardsToCheck-1;i>=0;i--)
+   for(i=cardsToCheck-1; i>0; i--)
    {
       if(checkIfHouse[i] == checkIfHouse[i-1] + 4)
       {
@@ -145,7 +157,7 @@ class TongIts : Window
    background = Color { 113,156,169 };
    borderStyle = sizable;
    text = "Tong-Its";
-   size = Size { 900,700 };
+   clientSize = { 900,850 };
 
    bool OnCreate()
    {
@@ -172,20 +184,12 @@ class TongIts : Window
    bool OnLoadGraphics()
    {
       int i;
-      Bitmap ptrCardLoad {};
-      ptrCardLoad.Load(":cards.pcx",null,null);
-      cardBack.LoadT(":ecereCard.png", null, displaySystem);
-
-      for(i=0;i<52;i++)
+      cardBack.LoadT(":back.png", null, displaySystem);
+      for(i=0; i<52; i++)
       {
-         Bitmap bitmap { transparent = true };
-         bitmap.Allocate(null,ptrCardLoad.width, ptrCardLoad.height/52,0,pixelFormat8,true);
-         CopyBytesBy4(bitmap.palette, ptrCardLoad.palette, 256);
-         bitmap.Grab(ptrCardLoad,0,(ptrCardLoad.height/52)*i);
-         bitmap.MakeDD(displaySystem);
-         bitmapCards[i] = bitmap;
+         bitmapCards[i] = Bitmap {};
+         bitmapCards[i].LoadT(cardsNames[i], null, displaySystem);
       }
-      delete ptrCardLoad;
       return true;
    }
 
@@ -193,7 +197,7 @@ class TongIts : Window
    {
       int i;
       for(i=0;i<52;i++)
-         bitmapCards[i].Free();
+         delete bitmapCards[i];
    }
 
    void GameOver()
@@ -205,30 +209,30 @@ class TongIts : Window
       };
       Button { gameOverBox, text = "Close", [position.y] = A_CENTER|80, size = Size { 80,20 } };
       */
+      int i;
       gameOver = true;
+
+      for(i=0;i<numOfPlayers;i++)
+      {
+         drawButton[i].disabled = true;
+         chowButton[i].disabled = true;
+         dumpButton[i].disabled = true;
+         callButton[i].disabled = true;
+         showButton[i].disabled = true;
+         doneButton[i].disabled = true;
+      }
    }
 
    void OnRedraw(Surface surface)
    {
       int h=0,i=0,j=0,k=0,x=0;
 
-      surface.Rectangle(375, 315, 495, 475);
-
-      if(gameOver)
-      {
-         surface.SetForeground(blue);
-         surface.SetBackground(red);
-   //      surface.Area(375,100,495,150);
-         surface.Area(375,370,495,420);
-         //surface.TextOpacity(true);
-   //      surface.WriteTextf(398, 115,"GAME OVER");
-         surface.WriteTextf(398, 385,"GAME OVER");
-      }
+      surface.Rectangle(385, 345, 532, 535);
 
       for(i=deckCounter,x=0;i<52;i+=5,x+=2)
       {
          Bitmap bitmap = cardBack;
-         surface.Blit(bitmap,400 + x, 195 + x,0,0, bitmap.width,bitmap.height);
+         surface.Blit(bitmap,400 + x, 145 + x,0,0, bitmap.width,bitmap.height);
       }
 
       if(discardCounter > 0)
@@ -291,24 +295,13 @@ class TongIts : Window
             }
          }
       }
+
       if(gameOver)
       {
          surface.SetForeground(blue);
          surface.SetBackground(red);
-   //      surface.Area(375,100,495,150);
-         surface.Area(375,370,495,420);
-         //surface.TextOpacity(true);
-   //      surface.WriteTextf(398, 115,"GAME OVER");
-         surface.WriteTextf(398, 385,"GAME OVER");
-         for(i=0;i<numOfPlayers;i++)
-         {
-            drawButton[i].disabled = true;
-            chowButton[i].disabled = true;
-            dumpButton[i].disabled = true;
-            callButton[i].disabled = true;
-            showButton[i].disabled = true;
-            doneButton[i].disabled = true;
-         }
+         surface.Area(400,405,520,465);
+         surface.WriteTextf(432, 430,"GAME OVER");
    //      eWindow_Create("MessageBox",MSGBOX_OK,ES_CAPTION,window,null,A_LEFT,A_RIGHT,200,100,0,null,0,null,0);
       }
    /*      if(j == 1)
@@ -316,7 +309,7 @@ class TongIts : Window
             for(i=0;i<player[j].numCards;i++)
             {
                Bitmap bitmap = bitmapCards[MCARD(KIND(player[2].cardValues[i]),NUMBER(player[2].cardValues[i]))];
-               surface.Blit(bitmap,30+15*i,500,0,0, bitmap.width,bitmap.height);
+               surface.Blit(bitmap,30+OFFSETTER1*i,500,0,0, bitmap.width,bitmap.height);
             }
          }
          else
@@ -325,7 +318,7 @@ class TongIts : Window
             {
                //Bitmap bitmap1 = bitmapCards[MCARD(KIND(player[1].cardValues[i]),NUMBER(player[1].cardValues[i]))];
                Bitmap bitmap = cardBack;
-               surface.Blit(bitmap,30+15*i,30+nextLane,0,0, bitmap.width,bitmap.height);
+               surface.Blit(bitmap,30+OFFSETTER1*i,30+nextLane,0,0, bitmap.width,bitmap.height);
             }
          }
       }*/
@@ -560,14 +553,14 @@ class TongIts : Window
    bool OnLeftButtonUp(int x, int y, Modifiers mods)
    {
       int h,i,j;
-      Box boxDiscard={375, 315, 495, 475};
+      Box boxDiscard { 385, 345, 532, 535 };
       Box boxCard = {x + xCursorPositionAtCard,y + yCursorPositionAtCard, x + xCursorPositionAtCard + width - 1, y + yCursorPositionAtCard + height - 1};
       if(flagButtonDown)
       {
          if(boxCard.Overlap(boxDiscard))
          {
-            xLeftButtonUp = 400;
-            yLeftButtonUp = 350;
+            xLeftButtonUp = 405;
+            yLeftButtonUp = 365;
             CopyBytesBy4(&player[currentPlayer].cardValues[cardToReposition],
                &player[currentPlayer].cardValues[cardToReposition+1],
                player[currentPlayer].numCards-1-cardToReposition);
@@ -752,8 +745,8 @@ class TongIts : Window
       {
          if(boxCard.Overlap(boxPlayerCards))
          {
-            swapCard = (x  + xCursorPositionAtCard >= player[currentPlayer].numCards * 15 + xyPositions[currentPlayer].x) ?
-               (player[currentPlayer].numCards-1) : ((x  + xCursorPositionAtCard - xyPositions[currentPlayer].x) / 15);
+            swapCard = (x  + xCursorPositionAtCard >= player[currentPlayer].numCards * OFFSETTER1 + xyPositions[currentPlayer].x) ?
+               (player[currentPlayer].numCards-1) : ((x  + xCursorPositionAtCard - xyPositions[currentPlayer].x) / OFFSETTER1);
             if(cardToReposition > swapCard)
             {
                dest = swapCard + 1;

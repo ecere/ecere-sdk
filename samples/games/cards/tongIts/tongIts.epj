@@ -12,12 +12,19 @@
    },
    "Configurations" : [
       {
-         "Name" : "Default",
+         "Name" : "Debug",
          "Options" : {
             "Debug" : true,
-            "Profile" : false,
-            "Optimization" : "None",
-            "FastMath" : false
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],
@@ -26,7 +33,60 @@
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "../res/cards.pcx",
-      "../res/ecereCard.png"
+      "../res/10c.png",
+      "../res/10d.png",
+      "../res/10h.png",
+      "../res/10s.png",
+      "../res/2c.png",
+      "../res/2d.png",
+      "../res/2h.png",
+      "../res/2s.png",
+      "../res/3c.png",
+      "../res/3d.png",
+      "../res/3h.png",
+      "../res/3s.png",
+      "../res/4c.png",
+      "../res/4d.png",
+      "../res/4h.png",
+      "../res/4s.png",
+      "../res/5c.png",
+      "../res/5d.png",
+      "../res/5h.png",
+      "../res/5s.png",
+      "../res/6c.png",
+      "../res/6d.png",
+      "../res/6h.png",
+      "../res/6s.png",
+      "../res/7c.png",
+      "../res/7d.png",
+      "../res/7h.png",
+      "../res/7s.png",
+      "../res/8c.png",
+      "../res/8d.png",
+      "../res/8h.png",
+      "../res/8s.png",
+      "../res/9c.png",
+      "../res/9d.png",
+      "../res/9h.png",
+      "../res/9s.png",
+      "../res/ac.png",
+      "../res/ad.png",
+      "../res/ah.png",
+      "../res/as.png",
+      "../res/back.png",
+      "../res/jc.png",
+      "../res/jd.png",
+      "../res/jh.png",
+      "../res/js.png",
+      "../res/kc.png",
+      "../res/kd.png",
+      "../res/kh.png",
+      "../res/ks.png",
+      "../res/qc.png",
+      "../res/qd.png",
+      "../res/qh.png",
+      "../res/qs.png",
+      "../res/rb.png",
+      "../res/rr.png"
    ]
 }

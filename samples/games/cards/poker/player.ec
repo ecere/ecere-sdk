@@ -23,6 +23,8 @@ static char handTypes[10][20] =
    "ROYAL FLUSH"
 };
 
+define GAP = 17;
+
 class Player : Window
 {
    borderStyle = sizable;
@@ -50,25 +52,25 @@ class Player : Window
 
       for(c=0; c<numDown; c++)
       {
-         poker.DrawCard(surface, c*15, 0, (human || gameOver && !folded) ? POKER_Card(down[c]) : -1);
+         poker.DrawCard(surface, c*GAP, 0, (human || gameOver && !folded) ? POKER_Card(down[c]) : -1);
       }
       POKER_HandType(bestHand);
       for(c=0; c<numUp; c++)
-         poker.DrawCard(surface, c*15, 40, folded ? -1 : POKER_Card(up[c]));
+         poker.DrawCard(surface, c*GAP, 40, folded ? -1 : POKER_Card(up[c]));
       if(folded)
       {
          surface.SetForeground(blue);
-         surface.WriteTextf(10, 130, "FOLDED");
+         surface.WriteTextf(10, 175, "FOLDED");
       }
       else if(gameOver)
       {
          surface.SetForeground(red);
          if(winner)
-            surface.WriteTextf(10, 130, "WINNER");
+            surface.WriteTextf(10, 175, "WINNER");
          surface.SetForeground(blue);
-         surface.WriteTextf(80, 130, "%s", handTypes[handType]);
+         surface.WriteTextf(80, 175, "%s", handTypes[handType]);
       }
       surface.SetForeground(white);
-      surface.WriteTextf(110, 110, "$%.2f", money / 2.0);
+      surface.WriteTextf(110, 155, "$%.2f", money / 2.0);
    }
 }
