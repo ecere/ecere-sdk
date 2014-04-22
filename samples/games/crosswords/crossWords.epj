@@ -1,0 +1,55 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "crossWords",
+   "Options" : {
+      "Warnings" : "All",
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "crossWords",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : false,
+            "Optimization" : "None",
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "MemoryGuard" : false,
+            "Optimization" : "Speed",
+            "Console" : false,
+            "FastMath" : true
+         }
+      },
+      {
+         "Name" : "memoryguard",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "Console" : true,
+            "FastMath" : false
+         }
+      }
+   ],
+   "Files" : [
+      "crossWords.ec",
+      "CrossWordsServer.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      "res/englishWords.txt",
+      "res/frenchWords.txt"
+   ]
+}
