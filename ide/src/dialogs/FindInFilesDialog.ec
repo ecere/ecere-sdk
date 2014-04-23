@@ -447,7 +447,7 @@ private:
    bool OnPostCreate()
    {
       bool disabled;
-      bool withWorkspace = (bool)ide.workspace;
+      bool withWorkspace = ide.workspace != null;
       DataRow row;
       if(!inDirectoryRow)
          inDirectoryRow = findIn.AddString($"Directory");
@@ -725,7 +725,7 @@ private:
                {
                   char name[MAX_LOCATION];
                   GetLastDirectory(stack[frame].fileList.path, name);
-                  if(!(bool)SearchString(name, 0, nameCriteria, false, false))
+                  if(SearchString(name, 0, nameCriteria, false, false) == null)
                      match = false;
                }
                if(!stack[frame].fileList.stats.attribs.isDirectory)
@@ -876,7 +876,7 @@ private:
                      if(filter.ValidateFileName(stack[frame].name))
                      {
                         filesSearchedCount++;
-                        if(!nameCriteria[0] || (bool)SearchString(stack[frame].name, 0, nameCriteria, false, false))
+                        if(!nameCriteria[0] || SearchString(stack[frame].name, 0, nameCriteria, false, false) != null)
                         {
                            if(contentCriteria[0])
                            {
@@ -927,7 +927,7 @@ private:
                         sprintf(special, "(%s)%s", prj.name, fileRelative);
                         strcpy(fileRelative, special);
                      }
-                     if(nameCriteria[0] && (bool)SearchString(stack[frame].name, 0, nameCriteria, false, false))
+                     if(nameCriteria[0] && SearchString(stack[frame].name, 0, nameCriteria, false, false) != null)
                      {
                         dirsMatchedCount++;
                         app.Lock();

@@ -233,7 +233,7 @@ class OutputView : Window
       char * searchString = findDialog.searchString;
       if(id != 2 && searchString[0])
       {
-         activeBox.Find(searchString, findDialog.wholeWord, findDialog.matchCase, (bool)id);
+         activeBox.Find(searchString, findDialog.wholeWord, findDialog.matchCase, id != 0);
          return true;
       }
       findDialog.Create();

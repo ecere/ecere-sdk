@@ -1243,7 +1243,7 @@ class ProjectView : Window
          MakePathRelative(filePath, parentNode.project.topNode.path, filePath);
          for(n = parentNode; n && n != parentNode.project.resNode; n = n.parent);
          sprintf(fileName, $"Untitled %d", documentID);
-         fileNode = AddFile(parentNode, fileName, (bool)n, true);
+         fileNode = AddFile(parentNode, fileName, n != null, true);
          fileNode.path = CopyUnixPath(filePath);
          if(fileNode)
          {
