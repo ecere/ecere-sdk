@@ -1362,24 +1362,26 @@ private:
 
    void ModifiedAllConfigs(bool making, bool compiling, bool linking, bool symbolGen)
    {
-      Map<String, NameCollisionInfo> cfgNameCollision = configsNameCollisions[""];
-      if(cfgNameCollision)
+      Map<String, NameCollisionInfo> cfgNameCollision;
+      MapIterator<String, Map<String, NameCollisionInfo>> it { map = configsNameCollisions };
+      if(it.Index("", false))
       {
+         cfgNameCollision = it.data;
          cfgNameCollision.Free();
          delete cfgNameCollision;
-         configsNameCollisions[""] = null;
+         it.Remove();
       }
       for(cfg : configurations)
       {
          if(making)
          {
             cfg.makingModified = true;
-            cfgNameCollision = configsNameCollisions[cfg.name];
-            if(cfgNameCollision)
+            if(it.Index(cfg.name, false))
             {
+               cfgNameCollision = it.data;
                cfgNameCollision.Free();
                delete cfgNameCollision;
-               configsNameCollisions[cfg.name] = null;
+               it.Remove();
             }
          }
          if(compiling)
