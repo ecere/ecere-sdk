@@ -10,7 +10,7 @@ int symbols[4][4] =
    { 2, 3, 0, 7 }
 };
 
-class BrainStonzGame
+class StonePairsGame
 {
    int movesLeft;
    movesLeft = 1;
@@ -110,7 +110,7 @@ class BrainStonzGame
    }
 }
 
-BrainStonzGame game { };
+StonePairsGame game { };
 
 class GameConnection
 {

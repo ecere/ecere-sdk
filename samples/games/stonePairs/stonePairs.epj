@@ -1,10 +1,10 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "brainstonz",
+   "ModuleName" : "stonePairs",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
-      "TargetFileName" : "brainstonz",
+      "TargetFileName" : "stonePairs",
       "Libraries" : [
          "ecere"
       ]
@@ -31,7 +31,7 @@
       }
    ],
    "Files" : [
-      "brainstonz.ec",
+      "stonePairs.ec",
       "game.ec"
    ],
    "ResourcesPath" : "",
@@ -40,7 +40,8 @@
       "res/black.png",
       "res/board.jpg",
       "res/remove.png",
-      "res/smile.png",
-      "res/white.png"
+      "res/white.png",
+      "res/blackGray.png",
+      "res/whiteGray.png"
    ]
 }

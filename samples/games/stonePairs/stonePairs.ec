@@ -5,23 +5,24 @@ define upperLeftX = 334;
 define upperLeftY = 147;
 define spaceX = (676 - upperLeftX);
 define spaceY = (485 - upperLeftY);
-define whiteDrawer = 150;
-define blackDrawer = 1888;
+define whiteDrawer = 145;
+define blackDrawer = 1885;
 define topDrawer = 126;
+define stoneOverlap = 0.75;
 
 class MainWindow : Window
 {
    GameConnection player1 { };
    GameConnection player2 { };
 
-   text = "BrainStonz";
+   text = "Stone Pairs";
    background = black;
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
-   state = maximized;
-   size = { w = parent.clientSize.h * 2038/1647, h = parent.clientSize.h };
+   clientSize = { 1019, 824 };
+
    hasMenuBar = true;
 
    BitmapResource boardBmp { ":board.jpg", window = this };
@@ -32,7 +33,9 @@ class MainWindow : Window
    { [
       null,
       BitmapResource { ":black.png", alphaBlend = true, window = this },
-      BitmapResource { ":white.png", alphaBlend = true, window = this }
+      BitmapResource { ":white.png", alphaBlend = true, window = this },
+      BitmapResource { ":blackGray.png", alphaBlend = true, window = this },
+      BitmapResource { ":whiteGray.png", alphaBlend = true, window = this }
    ] };
 
    menu = { };
@@ -101,6 +104,7 @@ class MainWindow : Window
 
       int x, y;
       Stone c;
+      bool draw = false;
 
       // Draw the board
       DrawBitmap(surface, boardBmp, 0,0, 1);
@@ -115,7 +119,20 @@ class MainWindow : Window
 
          for(r = 0; r < game.numStones[c]; r++)
             DrawBitmap(surface, stoneBmps[c],
-               drawerX - stone.width/2, topDrawer + r*wStone.height*2/3, 1);
+               drawerX - stone.width/2, topDrawer + (int)(r*wStone.height*stoneOverlap), 1);
+      }
+
+      if(!game.takeOut)
+      {
+         draw = true;
+         for(y = 0; draw && y < 4; y++)
+         {
+            for(x = 0; draw && x < 4; x++)
+            {
+               if(!game.stones[y][x])
+                  draw = false;
+            }
+         }
       }
 
       // Draw the stones
@@ -125,17 +142,16 @@ class MainWindow : Window
          {
             Stone stone = game.stones[y][x];
             if(stone)
+            {
+               if(game.winner || draw) stone += 2;
                DrawStone(surface, { x, y }, stone);
+            }
          }
       }
 
-      // Inform the player he can remove a stone
-      if(game.takeOut)
-         DrawBitmap(surface, removeBmp, board.width/2 - removeBmp.bitmap.width*3/2, 30, 4);
-
-      // Display a win
       if(game.winner)
       {
+         // Display winning stones only in color
          int i;
          for(i = 0; i < 4; i++)
          {
@@ -145,27 +161,36 @@ class MainWindow : Window
                if(game.stones[i][j] != game.winner)
                   break;
             if(j == 4)
-               DrawWin(surface, {0, i}, { 3, i });
+               for(j = 0; j < 4; j++)
+                  DrawStone(surface, { j, i }, game.winner);
 
             for(j = 0; j < 4; j++)
                if(game.stones[j][i] != game.winner)
                   break;
             if(j == 4)
-               DrawWin(surface, {i, 0}, { i, 3 });
+               for(j = 0; j < 4; j++)
+                  DrawStone(surface, { i, j }, game.winner);
          }
          for(i = 0; i < 4; i++)
             if(game.stones[i][i] != game.winner)
                break;
          if(i == 4)
-            DrawWin(surface, {0, 0}, { 3, 3 });
+            for(i = 0; i < 4; i++)
+               DrawStone(surface, { i, i }, game.winner);
 
          for(i = 0; i < 4; i++)
             if(game.stones[3-i][i] != game.winner)
                break;
          if(i == 4)
-            DrawWin(surface, {0, 3}, { 3, 0 });
+            for(i = 0; i < 4; i++)
+               DrawStone(surface, { i, 3-i }, game.winner);
       }
-      else
+
+      // Inform the player he can remove a stone
+      if(game.takeOut)
+         DrawBitmap(surface, removeBmp, board.width/2 - removeBmp.bitmap.width*3/2, 30, 4);
+
+      if(!game.winner && !draw)
       {
          // Display the current turn
          DrawBitmap(surface, arrowBmp,
