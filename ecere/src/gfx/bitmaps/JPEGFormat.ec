@@ -214,7 +214,16 @@ class JPGFormat : BitmapFormat
                jpeg_read_scanlines(&cinfo, buffer, 1);
                for(c = 0; c<cinfo.image_width; c++)
                {
-                  if(cinfo.output_components == 1)
+                  if(cinfo.out_color_space == JCS_CMYK && cinfo.output_components == 4)
+                  {
+                     int cyan = 255-buffer[0][c*4+0];
+                     int m = 255-buffer[0][c*4+1];
+                     int y = 255-buffer[0][c*4+2];
+                     int k = 255-buffer[0][c*4+3];
+                     //picture[c] = ColorAlpha { 255, { cinfo.sample_range_limit[(255 - (cyan + k))], cinfo.sample_range_limit[(255 - (m + k))], cinfo.sample_range_limit[(255 - (y + k))] } };
+                     picture[c] = ColorCMYK { cyan * 100.0f / 255, m * 100.0f / 255, y * 100.0f / 255, k * 100.0f / 255 };
+                  }
+                  else if(cinfo.output_components == 1)
                      picture[c] = ColorAlpha { 255, { buffer[0][c], buffer[0][c], buffer[0][c] } };
                   else
                      picture[c] = ColorAlpha { 255, { buffer[0][c*3], buffer[0][c*3+1], buffer[0][c*3+2] } };
