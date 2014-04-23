@@ -188,6 +188,9 @@ public class PathBox : CommonControl
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
+         if(modifiedDocument)
+            NotifyModified(master, this);
+
          if(browseDialog)
          {
             char browsePath[MAX_LOCATION];

@@ -12,7 +12,20 @@ class WorkspaceTab : Tab
       text = $"Debug Working Directory", hotKey = altU;
       typeExpected = directory;
       browseDialog = { };
-      NotifyModified = WorkspaceControlModified;
+
+      bool NotifyModified(PathBox pathBox)
+      {
+         char path[MAX_LOCATION];
+         String debugDir = pathBox.path;
+         strcpy(path, ide.workspace.projectDir);
+         if(debugDir)
+            PathCat(path, debugDir);
+         if(strcmp(path, debugDir))
+            debugDirectory.path = path;
+
+         modifiedDocument = true;
+         return true;
+      }
    };
 
    Label labelCommandLineArgs { this, position = { 8, 50 }, labeledWindow = commandLineArgs };
@@ -46,12 +59,16 @@ class WorkspaceTab : Tab
       if(ide.projectView)
       {
          Array<String> strings { };
-
+         char path[MAX_LOCATION];
+         String debugDir = ide.workspace.debugDir;
          for(dir : ide.workspace.sourceDirs)
             strings.Add(dir);
          sourceDirs.strings = strings;
 
-         debugDirectory.path = ide.workspace.debugDir;
+         strcpy(path, ide.workspace.projectDir);
+         if(debugDir)
+            PathCat(path, debugDir);
+         debugDirectory.path = path;
          commandLineArgs.contents = ide.workspace.commandLineArgs;
          environmentVars.namedStrings = ide.workspace.environmentVars;
 
@@ -69,7 +86,13 @@ class WorkspaceTab : Tab
    void SaveChanges()
    {
       if(debugDirectory.modifiedDocument)
-         ide.workspace.debugDir = debugDirectory.slashPath;
+      {
+         char path[MAX_LOCATION];
+         strcpy(path, debugDirectory.slashPath);
+         if(!fstrcmp(path, ide.workspace.projectDir))
+            strcpy(path, "");
+         ide.workspace.debugDir = path;
+      }
       if(commandLineArgs.modifiedDocument)
          ide.workspace.commandLineArgs = commandLineArgs.line.text;
       if(environmentVars.modifiedDocument)
