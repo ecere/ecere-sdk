@@ -1,12 +1,12 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "tetrominos",
+   "ModuleName" : "tetrominoes",
    "Options" : {
       "Warnings" : "All",
       "Profile" : false,
       "StrictNameSpaces" : false,
       "TargetType" : "Executable",
-      "TargetFileName" : "tetrominos",
+      "TargetFileName" : "tetrominoes",
       "Libraries" : [
          "ecere"
       ],
@@ -39,10 +39,10 @@
       }
    ],
    "Files" : [
-      "tetrominos.ec"
+      "tetrominoes.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
-      "res/tetrominos.png"
+      "res/tetrominoes.png"
    ]
 }

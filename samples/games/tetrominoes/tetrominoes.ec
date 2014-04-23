@@ -1,10 +1,10 @@
 /****************************************************************************
-   Tetrominos Game
+   Tetrominoes Game
 
    Copyright (c) 2001-2007 Jerome Jacovella-St-Louis
    All Rights Reserved.
 
-   tetrominos.ec - Tetrominos
+   tetrominoes.ec - Tetrominoes
 ****************************************************************************/
 import "ecere"
 
@@ -19,7 +19,7 @@ define NUM_ROWS     = 8;
 define CUBE_WIDTH   = 40;
 define CUBE_HEIGHT  = 40;
 
-define TETROMINOS_PORT = 7779;
+define TETROMINOES_PORT = 7779;
 
 struct Piece
 {
@@ -93,56 +93,56 @@ define WIDTH  = 12;
 define HEIGHT = 22;
 
 // --- Main Function ---
-class TetrominosApp : GuiApplication
+class TetrominoesApp : GuiApplication
 {
-   appName = "Ecere Tetrominos";
+   appName = "Ecere Tetrominoes";
 }
 
-Tetrominos tetrominos { };
+Tetrominoes tetrominoes { };
 
-TetrominosService service { };
+TetrominoesService service { };
 
-class TetrominosService : Service
+class TetrominoesService : Service
 {
-   port = TETROMINOS_PORT;
-   Tetrominos tetrominos;
+   port = TETROMINOES_PORT;
+   Tetrominoes tetrominoes;
    void OnAccept()
    {
-      if(!tetrominos.sockets[CLIENT] && !tetrominos.gameRunning)
+      if(!tetrominoes.sockets[CLIENT] && !tetrominoes.gameRunning)
       {
-         TetrominosSocket socket { this };
+         TetrominoesSocket socket { this };
          TPacket packet;
 
-         tetrominos.sockets[CLIENT] = socket;
+         tetrominoes.sockets[CLIENT] = socket;
          packet.type = MSG_NEWGAME;
-         tetrominos.sockets[CLIENT].Send((byte *)&packet, sizeof(TPacket));
-         tetrominos.NewGame();
-         tetrominos.gameRunning = true;
-         tetrominos.EnableButtons();
-         tetrominos.Update(null);
+         tetrominoes.sockets[CLIENT].Send((byte *)&packet, sizeof(TPacket));
+         tetrominoes.NewGame();
+         tetrominoes.gameRunning = true;
+         tetrominoes.EnableButtons();
+         tetrominoes.Update(null);
       }
    }
 }
 
-class TetrominosSocket : Socket
+class TetrominoesSocket : Socket
 {
-   // --- Tetrominos Communication ---
-   Tetrominos tetrominos;
+   // --- Tetrominoes Communication ---
+   Tetrominoes tetrominoes;
    static void OnDisconnect(int code)
    {
-      if(this == tetrominos.sockets[CLIENT])
+      if(this == tetrominoes.sockets[CLIENT])
       {
-         tetrominos.sockets[CLIENT] = null;
-         tetrominos.gameRunning = false;
+         tetrominoes.sockets[CLIENT] = null;
+         tetrominoes.gameRunning = false;
       }
-      else if(this == tetrominos.sockets[SERVER])
+      else if(this == tetrominoes.sockets[SERVER])
       {
-         tetrominos.sockets[SERVER] = null;
-         tetrominos.gameRunning = false;
+         tetrominoes.sockets[SERVER] = null;
+         tetrominoes.gameRunning = false;
       }
 
-      tetrominos.EnableButtons();
-      tetrominos.Update(null);
+      tetrominoes.EnableButtons();
+      tetrominoes.Update(null);
    }
 
    uint OnReceive(const byte * buffer, uint count)
@@ -155,8 +155,8 @@ class TetrominosSocket : Socket
             case MSG_POSITION:
                break;
             case MSG_NEWGAME:
-               tetrominos.gameRunning = true;
-               tetrominos.NewGame();
+               tetrominoes.gameRunning = true;
+               tetrominoes.NewGame();
                break;
          }
          return sizeof(TPacket);
@@ -166,16 +166,16 @@ class TetrominosSocket : Socket
 
    void OnConnect()
    {
-      tetrominos.sockets[SERVER] = this;
-      tetrominos.gameRunning = true;
-      tetrominos.EnableButtons();
-      tetrominos.NewGame();
+      tetrominoes.sockets[SERVER] = this;
+      tetrominoes.gameRunning = true;
+      tetrominoes.EnableButtons();
+      tetrominoes.NewGame();
    }
 }
 
-class Tetrominos : Window
+class Tetrominoes : Window
 {
-   text = "Ecere Tetrominos";
+   text = "Ecere Tetrominoes";
    hasClose = true;
    clientSize = { 300, 420 };
 
@@ -213,9 +213,9 @@ class Tetrominos : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         TetrominosSocket socket { tetrominos = this };
+         TetrominoesSocket socket { tetrominoes = this };
          sockets[SERVER] = socket;
-         socket.Connect(address.contents, TETROMINOS_PORT);
+         socket.Connect(address.contents, TETROMINOES_PORT);
          EnableButtons();
          Update(null);
          return true;
@@ -252,7 +252,7 @@ class Tetrominos : Window
    background = black;
    tabCycle = true;
 
-   // --- Tetrominos Utilities ---
+   // --- Tetrominoes Utilities ---
 
    void NewGame()
    {
@@ -290,7 +290,7 @@ class Tetrominos : Window
       // address.disabled = join.disabled;
    }
 
-   // --- Tetrominos Window Class ---
+   // --- Tetrominoes Window Class ---
 
    void OnRedraw(Surface surface)
    {
@@ -382,23 +382,23 @@ class Tetrominos : Window
    bool OnLoadGraphics()
    {
       int c;
-      Bitmap tetrominosBlocks { };
-      if(tetrominosBlocks.Load(":tetrominos.png", null, null))
+      Bitmap tetrominoesBlocks { };
+      if(tetrominoesBlocks.Load(":tetrominoes.png", null, null))
       {
-         tetrominosBlocks.Convert(null, pixelFormat888, null);
+         tetrominoesBlocks.Convert(null, pixelFormat888, null);
          for(c=0; c<7; c++)
          {
             if(!squares[c]) squares[c] = Bitmap { };
             squares[c].Allocate(null, 16,16,16, pixelFormat888, false);
-            squares[c].Grab(tetrominosBlocks, c*16, 0);
+            squares[c].Grab(tetrominoesBlocks, c*16, 0);
             squares[c].MakeDD(displaySystem);
          }
 
          backgroundBmp.Allocate(null, 192,352,192, pixelFormat888, false);
-         backgroundBmp.Grab(tetrominosBlocks, 0, 24);
+         backgroundBmp.Grab(tetrominoesBlocks, 0, 24);
          backgroundBmp.MakeDD(displaySystem);
       }
-      delete tetrominosBlocks;
+      delete tetrominoesBlocks;
       return true;
    }
 
