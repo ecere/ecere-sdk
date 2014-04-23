@@ -2321,8 +2321,11 @@ class OpenGLDisplayDriver : DisplayDriver
          w = Min(w, oglSystem.maxTextureSize);
          h = Min(h, oglSystem.maxTextureSize);
 
-         if(w * 2 < h) w = h / 2;
-         else if(h * 2 < w) h = w / 2;
+         if(mipMaps)
+         {
+            while(w * 2 < h) w *= 2;
+            while(h * 2 < w) h *= 2;
+         }
 
          // Switch ARGB to RGBA
          //if(bitmap.format != pixelFormatRGBA)
