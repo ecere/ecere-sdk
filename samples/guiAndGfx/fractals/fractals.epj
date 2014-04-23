@@ -1,0 +1,38 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "fractals",
+   "Options" : {
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "fractals",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false,
+      "Compress" : false
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed"
+         }
+      }
+   ],
+   "Files" : [
+      "fractals.ec",
+      "GradientDesigner.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
