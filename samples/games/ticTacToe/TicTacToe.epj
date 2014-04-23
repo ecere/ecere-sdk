@@ -1,0 +1,55 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "TicTacToe",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "TicTacToe",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed"
+         }
+      },
+      {
+         "Name" : "Static",
+         "Options" : {
+            "Optimization" : "Size",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC"
+            ],
+            "Libraries" : [
+               "ecereVanilla",
+               "mpr",
+               "imm32",
+               "winmm",
+               "z"
+            ],
+            "Compress" : true
+         }
+      }
+   ],
+   "Files" : [
+      "TicTacToe.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
