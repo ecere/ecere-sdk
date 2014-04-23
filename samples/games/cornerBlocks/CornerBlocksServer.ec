@@ -1,4 +1,4 @@
-import "blokus"
+import "cornerBlocks"
 
 // FOR COMMUNICATION //////////////////////////////////////////
 public struct GameInfo
@@ -44,7 +44,7 @@ public class Player
 Player serverPlayers[MaxPlayers];
 bool serverGameStarted;
 
-BlokusGameState serverGameState;
+CornerBlocksGameState serverGameState;
 
 DCOMSendControl sendControl { };
 

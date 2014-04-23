@@ -1,10 +1,10 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "Blokus",
+   "ModuleName" : "CornerBlocks",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
-      "TargetFileName" : "Blokus",
+      "TargetFileName" : "CornerBlock",
       "Libraries" : [
          "ecere"
       ]
@@ -99,12 +99,12 @@
             "AndroidManifest.xml"
          ]
       },
-      "blokus.ec",
-      "BlokusServer.ec",
+      "cornerBlocks.ec",
+      "CornerBlocksServer.ec",
       "../../net/eirc/console.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
-
+      "ollie.png"
    ]
 }

@@ -1,18 +1,18 @@
 import "ecere"
 import "console"
-public enum BlokusColor : byte { none, blue, yellow, red, green };
+public enum CornerBlocksColor : byte { none, blue, yellow, red, green };
 
 public enum PlayerColor : byte
 {
    blue, yellow, red, green;
-   property BlokusColor
+   property CornerBlocksColor
    {
-      // TOFIX: get { return (BlokusColor)((int)this+1); }
-      get { return (BlokusColor)*(int *)&this+1; }
+      // TOFIX: get { return (CornerBlocksColor)((int)this+1); }
+      get { return (CornerBlocksColor)*(int *)&this+1; }
    }
 };
 
-static Color colors[2][BlokusColor] =
+static Color colors[2][CornerBlocksColor] =
 {
    // TOFIX: (omitting Color { })
    { 0, Color { 64, 64, 96 }, Color { 141, 114, 48 }, Color { 96, 32, 32 }, Color { 64, 96, 64 } },
@@ -229,11 +229,11 @@ Piece pieces[numPieces] =
    }
 };
 
-struct BlokusGameState
+struct CornerBlocksGameState
 {
    byte playerPieces[PlayerColor][numPieces];
    bool firstPiece[PlayerColor];
-   BlokusColor board[boardSize * boardSize];
+   CornerBlocksColor board[boardSize * boardSize];
    PlayerColor colorTurn;
    PlayerColor rotatingColor;
    int numPlayers;
@@ -432,9 +432,9 @@ int PieceBlock(int p, int x, int y, int direction, bool flip)
    return 0;
 }
 
-class Blokus : Window
+class CornerBlocks : Window
 {
-   caption = "Ecere Blokus";
+   caption = "Ecere Corner Blocks";
    background = black;
    minClientSize = { 1068 /*800*/, 700 };
 #ifdef __ANDROID__
@@ -457,7 +457,7 @@ class Blokus : Window
    char *playerNames[MaxPlayers];
 
    // Current game state
-   BlokusGameState gameState;
+   CornerBlocksGameState gameState;
 
    // User Interaction
    PlayerColor colorPlayed; // Color currently (or next) being played
@@ -605,7 +605,7 @@ class Blokus : Window
       }
    }
 
-   void DrawSquare(Surface surface, int x, int y, BlokusColor color, int shade)
+   void DrawSquare(Surface surface, int x, int y, CornerBlocksColor color, int shade)
    {
       surface.background = colors[shade][color];
       surface.Area(x+1, y+1, x + squareWidth-1, y + squareWidth-1);
@@ -621,7 +621,7 @@ class Blokus : Window
       if((gameStarted && !gameState.over) || hosting)
       {
          if(MessageBox { type = okCancel,
-            caption = "Ecere Blokus", contents = "Quit Ecere Blokus?" }.Modal() == cancel)
+            caption = "Ecere CornerBlocks", contents = "Quit Ecere CornerBlocks?" }.Modal() == cancel)
             return false;
       }
       return true;
@@ -636,7 +636,7 @@ class Blokus : Window
       scoresPanel.Destroy(0);
    }
 
-   ~Blokus()
+   ~CornerBlocks()
    {
       delete server;
    }
@@ -881,7 +881,7 @@ class Blokus : Window
          surface.VLine(by,by+squareWidth*boardSize, bx + c * squareWidth);
       }
 
-      surface.background = colors[blokus.gameStarted][blue];
+      surface.background = colors[cornerBlocks.gameStarted][blue];
       x = bx;
       y = by;
       surface.Area(x - 10, y - 10, x + 10, y-1);
@@ -895,7 +895,7 @@ class Blokus : Window
          surface.WriteText(x + 15, y - 20, s, len);
       }
 
-      surface.background = colors[blokus.gameStarted][yellow];
+      surface.background = colors[cornerBlocks.gameStarted][yellow];
       x = bx + boardSize*squareWidth;
       y = by;
       surface.Area(x - 10, y - 10, x + 10, y-1);
@@ -910,7 +910,7 @@ class Blokus : Window
          surface.WriteText(x - 15 - tw, y - 20, s, len);
       }
 
-      surface.background = colors[blokus.gameStarted][red];
+      surface.background = colors[cornerBlocks.gameStarted][red];
       x = bx + boardSize*squareWidth;
       y = by + boardSize*squareWidth;
       surface.Area(x - 10, y + 1, x + 10, y+10);
@@ -924,7 +924,7 @@ class Blokus : Window
          surface.WriteText(x - 15 - tw, y, s, len);
       }
 
-      surface.background = colors[blokus.gameStarted][green];
+      surface.background = colors[cornerBlocks.gameStarted][green];
       x = bx;
       y = by + boardSize*squareWidth;
       surface.Area(x - 10, y + 1, x + 10, y+10);
@@ -954,10 +954,10 @@ class Blokus : Window
       {
          for(x = 0; x < boardSize; x++)
          {
-            BlokusColor color = gameState.board[y * boardSize + x];
+            CornerBlocksColor color = gameState.board[y * boardSize + x];
             if(color)
             {
-               DrawSquare(surface, bx + x * squareWidth, by + y * squareWidth, color, blokus.gameStarted);
+               DrawSquare(surface, bx + x * squareWidth, by + y * squareWidth, color, cornerBlocks.gameStarted);
             }
          }
       }
@@ -1061,7 +1061,7 @@ class Blokus : Window
 
       bool ProcessCommand(char * command)
       {
-         blokus.server.SendMessage(command);
+         cornerBlocks.server.SendMessage(command);
          return false;
       }
    };
@@ -1077,7 +1077,7 @@ class Blokus : Window
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          btnPass.visible = false;
-         blokus.passed[blokus.gameState.colorTurn] = true;
+         cornerBlocks.passed[cornerBlocks.gameState.colorTurn] = true;
          server.Pass();
          return true;
       }
@@ -1085,13 +1085,13 @@ class Blokus : Window
    };
 }
 
-class BlokusScores : Window
+class CornerBlocksScores : Window
 {
-   master = blokus;
+   master = cornerBlocks;
    moveable = true;
    borderStyle = fixed;
    background = black;
-   caption = "Blokus Final Scores";
+   caption = "CornerBlocks Final Scores";
    clientSize = { 580, 210 };
    font = { "Arial", 12, bold = true };
    icon = { ":ollie.png" };
@@ -1102,7 +1102,7 @@ class BlokusScores : Window
       int len;
       char temp[256];
       int grandTotals[4];
-      BlokusGameState * state = &blokus.gameState;
+      CornerBlocksGameState * state = &cornerBlocks.gameState;
       surface.foreground = white;
       s = "Score"; len = strlen(s);
       surface.WriteText(10, 40, s, len);
@@ -1125,7 +1125,7 @@ class BlokusScores : Window
          int x = 80 + (p-1) * 120;
          surface.foreground = colors[1][p];
          /* // GCC internal compiler error with -O2, MinGW GCC 4.4.0
-         s = (state->numPlayers == 3 && p == green) ? "* Green *" : blokus.playerNames[p];
+         s = (state->numPlayers == 3 && p == green) ? "* Green *" : cornerBlocks.playerNames[p];
          len = strlen(s);
          surface.WriteText(x, 20, s, len);
          */
@@ -1135,9 +1135,9 @@ class BlokusScores : Window
             len = strlen(s);
             surface.WriteText(x, 20, s, len);
          }
-         else if(blokus.playerNames[p])
+         else if(cornerBlocks.playerNames[p])
          {
-            s = blokus.playerNames[p];
+            s = cornerBlocks.playerNames[p];
             len = strlen(s);
             surface.WriteText(x, 20, s, len);
          }
@@ -1172,9 +1172,9 @@ class BlokusScores : Window
                                 state->scores[2] + state->bonus[2] +
                                 state->scores[3] + state->bonus[3];
 
-            if(blokus.playerNames[p])
+            if(cornerBlocks.playerNames[p])
             {
-               s = blokus.playerNames[p];
+               s = cornerBlocks.playerNames[p];
                len = strlen(s);
                surface.WriteText(x, 140, s, len);
             }
@@ -1213,7 +1213,7 @@ class BlokusScores : Window
          {
             for(c = 0; c < numTies; c++)
             {
-               strcat(string, blokus.playerNames[c]);
+               strcat(string, cornerBlocks.playerNames[c]);
                if(c < numTies-2)
                   strcat(string, ", ");
                else if(c < numTies-1)
@@ -1225,7 +1225,7 @@ class BlokusScores : Window
          else
          {
             surface.foreground = colors[1][(PlayerColor)winner];
-            sprintf(string, "%s won!", blokus.playerNames[winner]);
+            sprintf(string, "%s won!", cornerBlocks.playerNames[winner]);
          }
 
          len = strlen(string);
@@ -1234,16 +1234,16 @@ class BlokusScores : Window
    }
 }
 
-BlokusScores scoresPanel { visible = false };
+CornerBlocksScores scoresPanel { visible = false };
 
-Blokus blokus { };
+CornerBlocks cornerBlocks { };
 
-class BlokusApp : GuiApplication
+class CornerBlocksApp : GuiApplication
 {
    //fullScreen = true;
    bool Init()
    {
-      blokus.Create();
+      cornerBlocks.Create();
       panel.Create();
       return true;
    }
@@ -1251,9 +1251,9 @@ class BlokusApp : GuiApplication
    bool Cycle(bool idle)
    {
       // This is here because it hangs in MovePlayed() (Why?)
-      scoresPanel.visible = blokus.gameStarted && blokus.gameState.over;
+      scoresPanel.visible = cornerBlocks.gameStarted && cornerBlocks.gameState.over;
 #ifdef _DEBUG
-      /*if(blokus.gameState.over)
+      /*if(cornerBlocks.gameState.over)
          panel.btnStart.NotifyClicked(panel, panel.btnStart, 0, 0, 0);*/
 #endif
       return true;
@@ -1261,21 +1261,21 @@ class BlokusApp : GuiApplication
    void Terminate()
    {
       if(hosting)
-         blokusService.Stop();
+         cornerBlocksService.Stop();
    }
 }
 
-import remote "BlokusServer"
+import remote "CornerBlocksServer"
 
-define app = ((BlokusApp)__thisModule.application);
+define app = ((CornerBlocksApp)__thisModule.application);
 
-define BLOKUS_PORT = 1495;
+define CORNERBLOCKS_PORT = 1495;
 static bool hosting;
 define MaxPlayers = 4;
 
 class CommunicationPanel : Window
 {
-   caption = "Blokus Communication Panel";
+   caption = "CornerBlocks Communication Panel";
    background = lightSlateGray;
    borderStyle = fixed;
    hasClose = true;
@@ -1294,7 +1294,7 @@ class CommunicationPanel : Window
 
    bool OnClose(bool parentClosing)
    {
-      if(!blokus || blokus.destroyed || blokus.Destroy(0))
+      if(!cornerBlocks || cornerBlocks.destroyed || cornerBlocks.Destroy(0))
          return true;
       return false;
    }
@@ -1303,7 +1303,7 @@ class CommunicationPanel : Window
    {
       app.Unlock();
       if(hosting)
-         blokusService.Stop();
+         cornerBlocksService.Stop();
       app.Lock();
    }
 
@@ -1350,19 +1350,19 @@ class CommunicationPanel : Window
             if(serverPlayers[c])
                numPlayers++;
       }
-      lblServerAddress.disabled = serverAddress.disabled = blokus.server ? true : false;
-      lblPlayerName.disabled = playerName.disabled = blokus.server ? true : false;
+      lblServerAddress.disabled = serverAddress.disabled = cornerBlocks.server ? true : false;
+      lblPlayerName.disabled = playerName.disabled = cornerBlocks.server ? true : false;
       lblServerAddress.Update(null);
       lblPlayerName.Update(null);
-      btnConnect.visible = blokus.server ? false : true;
-      btnDisconnect.visible = blokus.server ? true : false;
-      blokus.chat.visible = blokus.server ? true : false;
+      btnConnect.visible = cornerBlocks.server ? false : true;
+      btnDisconnect.visible = cornerBlocks.server ? true : false;
+      cornerBlocks.chat.visible = cornerBlocks.server ? true : false;
 
-      btnHost.visible = !hosting && !blokus.server;
+      btnHost.visible = !hosting && !cornerBlocks.server;
       btnStopHosting.visible = hosting;
       btnStart.visible = hosting && (!serverGameStarted || serverGameState.over) && numPlayers > 0;
       btnStopGame.visible = hosting && (serverGameStarted && !serverGameState.over);
-      listPlayers.visible = (hosting && (serverGameStarted || numPlayers > 0)) || (!hosting && blokus.server && blokus.gameStarted);
+      listPlayers.visible = (hosting && (serverGameStarted || numPlayers > 0)) || (!hosting && cornerBlocks.server && cornerBlocks.gameStarted);
       btnKick.visible = hosting && !serverGameStarted && numPlayers > 0;
       btnKick.disabled = listPlayers.currentRow ? false : true;
    }
@@ -1377,21 +1377,21 @@ class CommunicationPanel : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         if(!blokus.server)
+         if(!cornerBlocks.server)
          {
-            blokus.server = ServerConnection
+            cornerBlocks.server = ServerConnection
             {
                void OnDisconnect(int code)
                {
                   app.Lock();
-                  if(blokus)
+                  if(cornerBlocks)
                   {
-                     delete blokus.server;
-                     blokus.gameStarted = false;
-                     blokus.turnLightTimer.Stop();
-                     blokus.lightValue = 1;
-                     blokus.lightDir = -.1f;
-                     blokus.Update(null);
+                     delete cornerBlocks.server;
+                     cornerBlocks.gameStarted = false;
+                     cornerBlocks.turnLightTimer.Stop();
+                     cornerBlocks.lightValue = 1;
+                     cornerBlocks.lightDir = -.1f;
+                     cornerBlocks.Update(null);
                      panel.UpdateControlsStates();
                      panel.ListPlayers();
                   }
@@ -1404,9 +1404,9 @@ class CommunicationPanel : Window
                   int x,y;
                   int c, np = 0;
 
-                  blokus.gameState.numPlayers = gameInfo.numPlayers;
-                  blokus.firstColor = gameInfo.firstColor;
-                  blokus.colorPlayed = blokus.firstColor;
+                  cornerBlocks.gameState.numPlayers = gameInfo.numPlayers;
+                  cornerBlocks.firstColor = gameInfo.firstColor;
+                  cornerBlocks.colorPlayed = cornerBlocks.firstColor;
 
                   for(c = 0; c<MaxPlayers; c++)
                   {
@@ -1414,19 +1414,19 @@ class CommunicationPanel : Window
                         strcpy(panel.playerNames[np++], gameInfo.players[c]);
                   }
 
-                  blokus.btnPass.visible = false;
-                  blokus.gameState.NewGame();
-                  blokus.passed[0] = false;
-                  blokus.passed[1] = false;
-                  blokus.passed[2] = false;
-                  blokus.passed[3] = false;
-                  blokus.gameStarted = true;
-                  blokus.lightValue = 1;
-                  blokus.lightDir = -.1f;
-                  blokus.turnLightTimer.Start();
-                  blokus.UpdatePlayerNames();
+                  cornerBlocks.btnPass.visible = false;
+                  cornerBlocks.gameState.NewGame();
+                  cornerBlocks.passed[0] = false;
+                  cornerBlocks.passed[1] = false;
+                  cornerBlocks.passed[2] = false;
+                  cornerBlocks.passed[3] = false;
+                  cornerBlocks.gameStarted = true;
+                  cornerBlocks.lightValue = 1;
+                  cornerBlocks.lightDir = -.1f;
+                  cornerBlocks.turnLightTimer.Start();
+                  cornerBlocks.UpdatePlayerNames();
 
-                  blokus.Update(null);
+                  cornerBlocks.Update(null);
 
                   panel.UpdateControlsStates();
                   panel.ListPlayers();
@@ -1437,102 +1437,102 @@ class CommunicationPanel : Window
                   int c;
 
                   panel.ListPlayers();
-                  blokus.gameStarted = false;
-                  blokus.btnPass.visible = false;
-                  blokus.Update(null);
+                  cornerBlocks.gameStarted = false;
+                  cornerBlocks.btnPass.visible = false;
+                  cornerBlocks.Update(null);
                }
 
                void MovePlayed(PlayerColor color, int pieceType, int direction, bool flip, int boardX, int boardY)
                {
-                  blokus.gameState.PlayMove(pieceType, direction, flip, boardX, boardY);
-                  if(color == blokus.colorPlayed)
-                     blokus.NextColorPlayed();
+                  cornerBlocks.gameState.PlayMove(pieceType, direction, flip, boardX, boardY);
+                  if(color == cornerBlocks.colorPlayed)
+                     cornerBlocks.NextColorPlayed();
 #ifdef _DEBUG
-                  blokus.gotMove = true;
+                  cornerBlocks.gotMove = true;
 #endif
-                  if(blokus.colorPlayed == blokus.gameState.colorTurn && !blokus.gameState.over)
+                  if(cornerBlocks.colorPlayed == cornerBlocks.gameState.colorTurn && !cornerBlocks.gameState.over)
                   {
-                     if(!blokus.gameState.validMove)
+                     if(!cornerBlocks.gameState.validMove)
                      {
-                        if(!blokus.passed[blokus.gameState.colorTurn])
+                        if(!cornerBlocks.passed[cornerBlocks.gameState.colorTurn])
                         {
-                           blokus.btnPass.visible = true;
-                           if(!blokus.active)
-                              blokus.Flash();
+                           cornerBlocks.btnPass.visible = true;
+                           if(!cornerBlocks.active)
+                              cornerBlocks.Flash();
                         }
                         else
-                           blokus.server.Pass();
+                           cornerBlocks.server.Pass();
                      }
-                     else if(!blokus.active)
-                        blokus.Flash();
+                     else if(!cornerBlocks.active)
+                        cornerBlocks.Flash();
                   }
 
                   // This hangs here, why?
-                  /*if(blokus.gameState.over)
+                  /*if(cornerBlocks.gameState.over)
                      scoresPanel.visible = true;*/
-                  if(blokus)
+                  if(cornerBlocks)
                   {
-                     blokus.UpdatePlayerNames();
-                     blokus.Update(null);
+                     cornerBlocks.UpdatePlayerNames();
+                     cornerBlocks.Update(null);
                   }
                }
 
                void Passed(PlayerColor color)
                {
-                  blokus.gameState.Pass();
-                  if(color == blokus.colorPlayed)
-                     blokus.NextColorPlayed();
-                  else if(!blokus.active)
-                     blokus.Flash();
+                  cornerBlocks.gameState.Pass();
+                  if(color == cornerBlocks.colorPlayed)
+                     cornerBlocks.NextColorPlayed();
+                  else if(!cornerBlocks.active)
+                     cornerBlocks.Flash();
 
-                  if(blokus.colorPlayed == blokus.gameState.colorTurn && !blokus.gameState.over)
+                  if(cornerBlocks.colorPlayed == cornerBlocks.gameState.colorTurn && !cornerBlocks.gameState.over)
                   {
-                     if(!blokus.gameState.validMove)
+                     if(!cornerBlocks.gameState.validMove)
                      {
-                        if(!blokus.passed[blokus.gameState.colorTurn])
+                        if(!cornerBlocks.passed[cornerBlocks.gameState.colorTurn])
                         {
-                           blokus.btnPass.visible = true;
-                           if(!blokus.active)
-                              blokus.Flash();
+                           cornerBlocks.btnPass.visible = true;
+                           if(!cornerBlocks.active)
+                              cornerBlocks.Flash();
                         }
                         else
-                           blokus.server.Pass();
+                           cornerBlocks.server.Pass();
                      }
-                     else if(!blokus.active)
-                        blokus.Flash();
+                     else if(!cornerBlocks.active)
+                        cornerBlocks.Flash();
                   }
 
-                  if(blokus)
+                  if(cornerBlocks)
                   {
-                     blokus.UpdatePlayerNames();
-                     blokus.Update(null);
+                     cornerBlocks.UpdatePlayerNames();
+                     cornerBlocks.Update(null);
                   }
                }
 
                void NotifyMessage(String name, String msg)
                {
-                  EditBox log = blokus.chat.log;
+                  EditBox log = cornerBlocks.chat.log;
                   char * format = (log.numLines > 1 || log.line.count) ?
                      "\n%s: %s" : "%s: %s";
                   int len = strlen(msg);
                   // Avoid buffer overflow...
                   if(len >= MAX_F_STRING-100)
                      msg[MAX_F_STRING-100] = 0;
-                  blokus.chat.Log(format, name, msg);
+                  cornerBlocks.chat.Log(format, name, msg);
                }
             };
-            incref blokus.server;
-            if(blokus.server.Connect(serverAddress.contents, BLOKUS_PORT))
+            incref cornerBlocks.server;
+            if(cornerBlocks.server.Connect(serverAddress.contents, CORNERBLOCKS_PORT))
             {
-               int playerID = blokus.server.Join();
-               if(blokus.server && playerID != -1)
-                  blokus.server.SetName(playerName.contents);
+               int playerID = cornerBlocks.server.Join();
+               if(cornerBlocks.server && playerID != -1)
+                  cornerBlocks.server.SetName(playerName.contents);
                else
-                  blokus.server.Disconnect(0);
+                  cornerBlocks.server.Disconnect(0);
                UpdateControlsStates();
             }
             else
-               delete blokus.server;
+               delete cornerBlocks.server;
          }
          return true;
       }
@@ -1543,13 +1543,13 @@ class CommunicationPanel : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         if(!blokus.gameStarted || blokus.gameState.over ||
-            MessageBox { type = okCancel, caption = "Ecere Blokus",
+         if(!cornerBlocks.gameStarted || cornerBlocks.gameState.over ||
+            MessageBox { type = okCancel, caption = "Ecere Corner Blocks",
                contents = "Game in progress! Disconnect?"
             }.Modal() == ok)
          {
-            if(blokus.server)
-               blokus.server.Disconnect(0);
+            if(cornerBlocks.server)
+               cornerBlocks.server.Disconnect(0);
          }
          return true;
       }
@@ -1560,9 +1560,9 @@ class CommunicationPanel : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         if(!blokus.gameStarted)
+         if(!cornerBlocks.gameStarted)
          {
-            if(blokusService.Start())
+            if(cornerBlocksService.Start())
             {
                hosting = true;
                Update(null);
@@ -1584,12 +1584,12 @@ class CommunicationPanel : Window
             if(serverPlayers[c])
                numPlayers++;
          if(!numPlayers ||
-            MessageBox { type = okCancel, caption = "Ecere Blokus",
+            MessageBox { type = okCancel, caption = "Ecere Corner Blocks",
                contents = "Players connected! Stop hosting?"
             }.Modal() == ok)
          {
             app.Unlock();
-            blokusService.Stop();
+            cornerBlocksService.Stop();
             app.Lock();
             hosting = false;
             Update(null);
@@ -1619,7 +1619,7 @@ class CommunicationPanel : Window
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          if(!serverGameStarted || serverGameState.over ||
-            MessageBox { type = okCancel, caption = "Ecere Blokus",
+            MessageBox { type = okCancel, caption = "Ecere Corner Blocks",
                contents = "Stop game in progress?"
             }.Modal() == ok)
          {
@@ -1652,7 +1652,7 @@ class CommunicationPanel : Window
             int id = (int)row.tag;
             char msg[1024];
             sprintf(msg, "Kick %s?", serverPlayers[id].name);
-            if(MessageBox { type = okCancel, caption = "Ecere Blokus",
+            if(MessageBox { type = okCancel, caption = "Ecere Corner Blocks",
                   contents = msg
                }.Modal() == ok)
                KickPlayer(id);
@@ -1662,11 +1662,11 @@ class CommunicationPanel : Window
    };
    EditBox playerName
    {
-      this, caption = "Player Name:", altN, font = { "Arial", 12 }, size = { 132, 24 }, position = { 104, 8 }, contents = "BlokusPlayer"
+      this, caption = "Player Name:", altN, font = { "Arial", 12 }, size = { 132, 24 }, position = { 104, 8 }, contents = "Player"
    };
    Label lblPlayerName { this, font = { "Tahoma", 8.25f, bold = true }, position = { 16, 16 }, labeledWindow = playerName };
 }
 
 CommunicationPanel panel { };
 
-DCOMService blokusService { port = BLOKUS_PORT };
+DCOMService cornerBlocksService { port = CORNERBLOCKS_PORT };
