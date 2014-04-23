@@ -18,7 +18,7 @@ class Buffer
 {
    float * pixels;
    Complex * z;
-   int width, height;   
+   int width, height;
 
    void Allocate(int w, int h)
    {
@@ -93,7 +93,7 @@ class ParallelFractalRenderThread : Thread
          float * buf;
          bool got = false;
          bufferPos = y * w;
-         buf = buffer + bufferPos;         
+         buf = buffer + bufferPos;
          for( x = 0; x < w/* && !terminate*/; x++)
          {
             /*int n;
@@ -138,7 +138,7 @@ class ParallelFractalRenderThread : Thread
             if(minY == MAXINT) minY = y;
             maxY = y;
          }
-         if(!julia) 
+         if(!julia)
          {
             C.a = C0.a;
             C.b += delta;
@@ -190,7 +190,7 @@ class FractalRenderThread : Thread
    Mutex mutex {};
    Fractal fractal;
    bool terminate;
-   
+
    int depth, maxDepth;
 
    unsigned int Main()
@@ -223,7 +223,7 @@ class FractalRenderThread : Thread
          }
          for(t = 0; t < numThreads; t++)
             threads[t].done.Wait();
-         mutex.Release();         
+         mutex.Release();
 
          app.Lock();
 
@@ -323,9 +323,9 @@ class Fractal : Window
       {
          thread.range = 3;
          if(thread.exponent == 2)
-            thread.center = { -0.75, 0 }; 
+            thread.center = { -0.75, 0 };
          else
-            thread.center = { 0, 0 }; 
+            thread.center = { 0, 0 };
       }
       params.UpdateControls();
       Render(true);
@@ -334,7 +334,7 @@ class Fractal : Window
    Size imageSize { 400, 400 };
    scrollArea = imageSize;
    Bitmap image {};
-   
+
    bool selecting;
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
@@ -463,7 +463,7 @@ class Fractal : Window
       else
       {
          if(mods.ctrl)
-            params.depthScroll.thumbPosition = 
+            params.depthScroll.thumbPosition =
                   (int)((double)x / (double)clientSize.w * (double)(params.depthScroll.range - 1));
          if(mods.shift)
             params.loop.thumbPosition = (int)((double)y / (double)clientSize.h * 512);
@@ -588,7 +588,7 @@ class Fractal : Window
 
    bool OnCreate()
    {
-      Render(true);
+      //Render(true);
       params.UpdateControls();
       return true;
    }
@@ -731,7 +731,7 @@ class FractalParams : Window
          return true;
       }
    };
-   EditBox exponent 
+   EditBox exponent
    {
       parent = this, text = "Exponent", position = Point { 16, 88 };
 
@@ -749,7 +749,7 @@ class FractalParams : Window
          return true;
       }
    };
-   EditBox iterations 
+   EditBox iterations
    {
       parent = this, text = "Iterations", position = Point { 104, 88 };
 
@@ -763,7 +763,7 @@ class FractalParams : Window
          return true;
       }
    };
-   ScrollBar depthScroll 
+   ScrollBar depthScroll
    {
       parent = this, text = "scrollBar1", size = Size { 172, 16 }, position = Point { 16, 120 };
 
@@ -782,7 +782,7 @@ class FractalParams : Window
          }
       }
    };
-   EditBox centerX 
+   EditBox centerX
    {
       parent = this, text = "X", size = Size { 166, 19 }, position = Point { 16, 192 };
 
@@ -793,7 +793,7 @@ class FractalParams : Window
          return true;
       }
    };
-   EditBox centerY 
+   EditBox centerY
    {
       parent = this, text = "Y", size = Size { 166, 19 }, position = Point { 16, 240 };
 
@@ -804,7 +804,7 @@ class FractalParams : Window
          return true;
       }
    };
-   EditBox rangeEdit 
+   EditBox rangeEdit
    {
       parent = this, text = "Range", size = Size { 166, 19 }, position = Point { 16, 296 };
 
@@ -815,7 +815,7 @@ class FractalParams : Window
          return true;
       }
    };
-   Button reset 
+   Button reset
    {
       parent = this, text = "Reset", size = Size { 170, 21 }, position = Point { 16, 328 };
 
@@ -842,7 +842,7 @@ class FractalParams : Window
          if(fractal)
          {
             position = Max(position, 1);
-            fractal.thread.loop = position;         
+            fractal.thread.loop = position;
             fractal.thread.numScales = numColors / position;
 
             loopEdit.Clear();
@@ -931,7 +931,7 @@ class FractalParams : Window
 
       bool NotifyModified(EditBox editBox)
       {
-         float value = atof(editBox.contents);
+         float value = (float)strtod(editBox.contents, null);
          //if(value != maxLoop.thumbPosition)
          {
             //thumbPosition = value;
@@ -977,7 +977,7 @@ class FractalParamsJulia : FractalParams
    text = "Julia Parameters";
    size = Size { 206, 610 };
 
-   EditBox juliaX 
+   EditBox juliaX
    {
       parent = this, text = "Xj", size = Size { 166, 19 }, position = Point { 16, 504 };
 
@@ -988,7 +988,7 @@ class FractalParamsJulia : FractalParams
          return true;
       }
    };
-   EditBox juliaY 
+   EditBox juliaY
    {
       parent = this, text = "Yj", size = Size { 166, 19 }, position = Point { 16, 552 };
 
@@ -1315,7 +1315,7 @@ class FractalsDesigner : Window
    MenuItem saveItemAsData
    {
       fileMenu, "Save As (with data)...";
-      
+
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
          return MenuFileSaveAs(selection, mods);
@@ -1360,7 +1360,7 @@ class FractalsDesigner : Window
       master = this, type = save, text = "Save Fractals Settings...",
       types = fractalTypes, sizeTypes = sizeof(fractalTypes), filters = fractalFilters, sizeFilters = sizeof(fractalFilters)
    };
-   
+
    FileDialog openDialog
    {
       master = this, type = open, text = "Load Fractals Settings...",
@@ -1369,7 +1369,7 @@ class FractalsDesigner : Window
    bool saveASCII;
 
    saveDialog = mySaveDialog;
-   
+
    bool OnSaveFile(char * fileName)
    {
       File f = FileOpen(fileName, write);
@@ -1466,7 +1466,7 @@ class FractalsDesigner : Window
             f.Printf("%d\n", julia.thread.doLoop);
          }
          delete f;
-      }           
+      }
       return true;
    }
 
@@ -1475,6 +1475,9 @@ class FractalsDesigner : Window
       if(app.argc > 1)
          LoadFractals(app.argv[1]);
       mandelbrot.Activate();
+
+      julia.Render(true);
+      mandelbrot.Render(true);
       return true;
    }
 }
