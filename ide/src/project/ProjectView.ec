@@ -1886,8 +1886,16 @@ class ProjectView : Window
    bool OpenNode(ProjectNode node, bool noParsing)
    {
       char filePath[MAX_LOCATION];
+      char ext[MAX_EXTENSION];
       node.GetFullFilePath(filePath);
-      return ide.OpenFile(filePath, false, true/*false Why was it opening hidden?*/, null, something, normal, noParsing) ? true : false;
+      GetExtension(filePath, ext);
+      if(binaryDocExt.Find(ext))
+      {
+         ShellOpen(filePath);
+         return true;
+      }
+      else
+         return ide.OpenFile(filePath, false, true/*false Why was it opening hidden?*/, null, something, normal, noParsing) ? true : false;
    }
 
    void AddNode(ProjectNode node, DataRow addTo)

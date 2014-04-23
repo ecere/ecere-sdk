@@ -44,7 +44,7 @@ import "about"
 
 import "FileSystemIterator"
 
-static AVLTree<String> binaryDocExt
+AVLTree<String> binaryDocExt
 { [
    "wav", "mp3", "flac", "ogg",
    "mid",
