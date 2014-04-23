@@ -28,7 +28,6 @@ class MainWindow : Window
    BitmapResource boardBmp { ":board.jpg", window = this };
    BitmapResource arrowBmp { ":arrow.png", alphaBlend = true, window = this };
    BitmapResource removeBmp { ":remove.png", alphaBlend = true, window = this };
-   BitmapResource smileBmp { ":smile.png", alphaBlend = true, window = this };
    Array<BitmapResource> stoneBmps
    { [
       null,
@@ -75,17 +74,6 @@ class MainWindow : Window
          bx + (int)(x * scale), by + (int)(y * scale), 0,0,
          (int)(s*bmp.width * scale), (int)(s*bmp.height * scale),
          bmp.width, bmp.height);
-   }
-
-   void DrawWin(Surface surface, Point p1, Point p2)
-   {
-      int c;
-      for(c = 0; c < 13; c++)
-      {
-         int x = (int)(upperLeftX + (p1.x+0.5)*spaceX + (p2.x - p1.x)/3 * c * spaceX / 4 - (smileBmp.bitmap.width*3)/2);
-         int y = (int)(upperLeftY + (p1.y+0.5)*spaceY + (p2.y - p1.y)/3 * c * spaceY / 4 - (smileBmp.bitmap.height*3)/2);
-         DrawBitmap(surface, smileBmp, x, y, 3);
-      }
    }
 
    void DrawStone(Surface surface, Point where, Stone color)
