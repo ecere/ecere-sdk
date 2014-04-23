@@ -127,6 +127,7 @@ private:
    char * settingsFilePath;
    bool allowDefaultLocations;
    bool allUsers;
+   bool globalPath;
 
    FileMonitor settingsMonitor
    {
@@ -326,7 +327,7 @@ private:
          delete settingsFilePath;  // the case when we're doing a load when the config file is no longer available
    }                               // and we want to re-try all possible config locations.
 
-   bool FileOpenTryWrite()
+   bool FileOpenTryWrite(bool shouldDelete)
    {
       if(driverClass)
          f = FileOpen(settingsFilePath, write);
@@ -337,11 +338,15 @@ private:
             f = FileOpen(settingsFilePath, writeRead);
             delete f;
             f = FileOpen(settingsFilePath, readWrite);
-            if(!f)                       // This delete will cover both trying the next possible config location and
-               delete settingsFilePath;  // allow trying to save to a location where user has permission.
          }
       }
-      return (bool)f;
+      /*    NOTE: This used to handle chaining to write to a where the user has permission after loading from a global settings file.
+                  This was broken a while back, and is now working through checking 'f' for non-null if 'globalPath' is true.
+                  This new way has the advantage of avoiding using different alternate user profile settings files if the first one fails for whatever reason.
+      */
+      if(!f && shouldDelete)       // This delete will cover both trying the next possible config location and
+         delete settingsFilePath;  // allow trying to save to a location where user has permission.
+      return f != null;
    }
 
 public:
@@ -361,8 +366,9 @@ public:
          {
             if(!f && (settingsFilePath = PrepareSpecifiedLocationPath()))
                FileOpenTryRead();
-            if(!settingsLocation || allowDefaultLocations)
+            if(!f && (!settingsLocation || allowDefaultLocations))
             {
+               globalPath = false;
                if(!f && (settingsFilePath = PreparePortablePath()))
                   FileOpenTryRead();
                if(f)
@@ -384,12 +390,16 @@ public:
                   if(!f && (settingsFilePath = PrepareHomeDrivePath()))
                      FileOpenTryRead();
                }
+               if(!f)
+                  globalPath = true;
                if(!f && (settingsFilePath = PrepareAllUsersPath()))
                   FileOpenTryRead();
 
                if(!f && (settingsFilePath = PrepareSystemPath()))
                   FileOpenTryRead();
 #else
+               if(!f)
+                  globalPath = true;
                if(!f && (settingsFilePath = PrepareEtcPath()))
                   FileOpenTryRead();
 #endif
@@ -430,26 +440,32 @@ public:
          settingsMonitor.StopMonitoring();
 
          if(settingsFilePath)
-            FileOpenTryWrite();
+            // Don't auto delete settingsFilePath because only want to try another path if we were using a global path
+            FileOpenTryWrite(false);
 
-         if(!settingsFilePath && settingsName && settingsName[0])
+         if((!settingsFilePath || (!f && globalPath)) && settingsName && settingsName[0])
          {
+            delete settingsFilePath;
+
             if(!f && (settingsFilePath = PrepareSpecifiedLocationPath()))
-               FileOpenTryWrite();
-            if(!settingsLocation || allowDefaultLocations)
+               FileOpenTryWrite(true);
+            if(!f && (!settingsLocation || allowDefaultLocations))
             {
+               globalPath = true;
                // never try to write a new portable configuration file?
+               //       -- Probably always want to write back to the same file, the first FileOpenTryWrite() should succeed
                //if(!f && (settingsFilePath = PreparePortablePath()))
-               //   FileOpenTryWrite();
+               //   FileOpenTryWrite(true);
 #if defined(__WIN32__)
                if(!f && (settingsFilePath = PrepareAllUsersPath()))
-                  FileOpenTryWrite();
+                  FileOpenTryWrite(true);
 #else
                if(!f && (settingsFilePath = PrepareEtcPath()))
-                  FileOpenTryWrite();
+                  FileOpenTryWrite(true);
 #endif
-               if(!allUsers)
+               if(!f && allUsers)
                {
+                  globalPath = false;
                   if(!f && (settingsFilePath = PrepareHomePath(
 #if defined(__WIN32__)
                      true
@@ -457,18 +473,22 @@ public:
                      false
 #endif
                      )))
-                     FileOpenTryWrite();
+                     FileOpenTryWrite(true);
                }
 #if defined(__WIN32__)
-               if(!allUsers)
+               if(!f && !allUsers)
                {
+                  globalPath = false;
                   if(!f && (settingsFilePath = PrepareUserProfilePath()))
-                     FileOpenTryWrite();
+                     FileOpenTryWrite(true);
                   if(!f && (settingsFilePath = PrepareHomeDrivePath()))
-                     FileOpenTryWrite();
+                     FileOpenTryWrite(true);
                }
                if(!f && (settingsFilePath = PrepareSystemPath()))
-                  FileOpenTryWrite();
+               {
+                  globalPath = true;
+                  FileOpenTryWrite(true);
+               }
 #endif
             }
          }
