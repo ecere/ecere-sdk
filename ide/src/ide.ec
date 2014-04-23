@@ -44,6 +44,15 @@ import "about"
 
 import "FileSystemIterator"
 
+static AVLTree<String> binaryDocExt
+{ [
+   "wav", "mp3", "flac", "ogg",
+   "mid",
+   "avi", "mkv", "mpg", "mpeg",
+   "7z", "zip", "gz", "bz2", "xz", "rar", "z", "tar", "ear",
+   "pdf", "odp", "ods", "odt", "ppt", "doc", "xls", "pptx", "docx", "xlsx"
+] };
+
 #if defined(__WIN32__)
 define pathListSep = ";";
 #else
@@ -2754,7 +2763,7 @@ class IDEWorkSpace : Window
          char ext[MAX_EXTENSION];
          GetExtension(path, ext);
          strlwr(ext);
-         if(!strcmp(ext, "mp3") || !strcmp(ext, "flac") || !strcmp(ext, "ogg") || !strcmp(ext, "avi") || !strcmp(ext, "mkv"))
+         if(binaryDocExt.Find(ext))
             ShellOpen(path);
          else if(!strcmp(ext, "a") || !strcmp(ext, "o") || !strcmp(ext, "lib") || !strcmp(ext, "dll") || !strcmp(ext, "exe"))
          {
