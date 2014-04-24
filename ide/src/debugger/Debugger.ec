@@ -2367,6 +2367,7 @@ class Debugger
       targeted = false;
       modules = false;
       needReset = false;
+      entryPoint = false;
       projectsLibraryLoaded.Free();
 
       ide.outputView.ShowClearSelectTab(debug);
