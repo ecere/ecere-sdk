@@ -9,7 +9,10 @@ echo "The Ecere cross-platform SDK is pre-configured. Just type:
 		export PATH=$PATH:/Applications/Xcode.app/Contents/Developer/usr/bin
       export SYSROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
       make;
-				(Lion™/Xcode 4.5.2™ recommended)
+				(Lion™/Xcode™ 4.5.2 recommended)
+            Also tested on Mavericks with XCode 5, but debugger integration will not work without GDB.
+
+      It's also recommended to install XQuartz.
 
 
 or simply	make;  if you are on GNU/Linux™
