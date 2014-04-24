@@ -47,6 +47,7 @@ class PictureEdit : Window
    float zoomFactor;
    char fileName[MAX_LOCATION];
    Bitmap bitmap;
+   Bitmap bitmapNotIndexed;
 
    //saveDialog = pictureEditFileDialog;
 
@@ -63,6 +64,10 @@ class PictureEdit : Window
                if(bitmap)
                {
                   ColorAlpha * palette = bitmap.Quantize(0, 255);
+                  bitmapNotIndexed = { };
+                  bitmapNotIndexed.Copy(bitmap);
+                  bitmapNotIndexed.Convert(null, pixelFormat888, null);
+
                   /*
                   eBitmap_Convert(null, bitmap, PixelFormat8, palette);
                   bitmap.allocatePalette = true;
@@ -82,6 +87,7 @@ class PictureEdit : Window
             {
                if(bitmap)
                   bitmap.Convert(null, pixelFormat888, null);
+               delete bitmapNotIndexed;
                imageModeColorTableItem.disabled = true;
                Update(null);
                modifiedDocument = true;
@@ -139,6 +145,12 @@ class PictureEdit : Window
                   bitmap.alphaBlend = true;
                   bitmap.Convert(null, pixelFormat888, null);
                }
+               if(bitmap.pixelFormat == pixelFormat8)
+               {
+                  bitmapNotIndexed = { };
+                  bitmapNotIndexed.Copy(bitmap);
+                  bitmapNotIndexed.Convert(null, pixelFormat888, null);
+               }
                //if(!eWindow_GetStartWidth(window) || !eWindow_GetStartHeight(window))
                {
                   Size size = initSize;  // what's the use of retrieving initSize
@@ -158,7 +170,7 @@ class PictureEdit : Window
                      (!eWindow_GetStartHeight(window)) ? (A_CLIENT|bitmap.height) : eWindow_GetStartHeight(window));
                   */
                }
-               scrollArea = Size {bitmap.width, bitmap.height };
+               scrollArea = Size { bitmap.width, bitmap.height };
             }
             else
                delete bitmap;
@@ -182,22 +194,23 @@ class PictureEdit : Window
 
    void OnRedraw(Surface surface)
    {
-      if(bitmap)
+      Bitmap bmp = (bitmapNotIndexed && displaySystem.pixelFormat != pixelFormat8) ? bitmapNotIndexed : bitmap;
+      if(bmp)
       {
-         int w = (int)(bitmap.width * zoomFactor);
-         int h = (int)(bitmap.height * zoomFactor);
-         if(w == bitmap.width && h == bitmap.height)
+         int w = (int)(bmp.width * zoomFactor);
+         int h = (int)(bmp.height * zoomFactor);
+         if(w == bmp.width && h == bmp.height)
          {
-            surface.Blit(bitmap,
+            surface.Blit(bmp,
                Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
                scroll.x, scroll.y, w, h);
          }
          else
          {
-            surface.Filter(bitmap,
+            surface.Filter(bmp,
                Max(0, (clientSize.w - w) / 2), Max(0, (clientSize.h - h) / 2),
                (int)(scroll.x / zoomFactor), (int)(scroll.y / zoomFactor), w, h,
-               bitmap.width, bitmap.height);
+               bmp.width, bmp.height);
          }
       }
    }
@@ -276,6 +289,11 @@ class PictureEdit : Window
       return true;
    }
 
+   ~PictureEdit()
+   {
+      delete bitmap;
+      delete bitmapNotIndexed;
+   }
 }
 
 class PictureEditColorTable : Window
