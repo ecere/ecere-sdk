@@ -998,10 +998,16 @@ static bool ReadMap(FileInfo * info, Material mat)
          char location[MAX_LOCATION];
 
          ReadASCIIZ(info->f, &name);
-         strlwr(name);
 
          strcpy(location, info->textureDirectory);
          PathCat(location, name);
+         if(!FileExists(location))
+         {
+            // Attempt all lowercase if original case does not exist
+            strlwr(name);
+            strcpy(location, info->textureDirectory);
+            PathCat(location, name);
+         }
 
          if(info->parent->chunkId == MAT_BUMPMAP)
          {
