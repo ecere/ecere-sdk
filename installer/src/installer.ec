@@ -322,7 +322,7 @@ Array<Component> additional
 
 public enum DocumentationID
 {
-   ecereBook, apiRef, tutorials, coursework,
+   ecereBook, apiRef, coursework,
    gccDoc, gppDocs, gdbDocs, makeDocs, binDocs, mingwDocs, gnurxDocs, upxDocs,
    none
 };
@@ -331,7 +331,6 @@ Array<Component> documentation
 { [
    { $"Ecere Book",         "ecere-sdk/book",       "doc",            null, false, true, true, none },
    { $"API Reference",      "ecere-sdk/doc",        "doc",            null, false, true, true, none },
-   { $"Ecere Tutorials",    "ecere-sdk/tutorials",  "doc",            null, false, true, true, none },
    { $"Ecere Coursework",   "ecere-sdk/coursework", "doc",            null, false, true, true, none },
    { $"GCC Docs",           "tdm/doc/gcc",          "tdm",          null, false, false, minGWIncluded, none },
    { $"G++ Docs",           "tdm/doc/g++",          "tdm",          null, false, false, minGWIncluded, none },

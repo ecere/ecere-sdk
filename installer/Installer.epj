@@ -202,14 +202,6 @@
                ]
             },
             {
-               "Folder" : "tutorials",
-               "Files" : [
-                  "../samples/db/MovieCollection/eda presentation.pptx",
-                  "../samples/guiAndGfx/bitmapsAndKB/Bitmaps, Keyboard and Sound.pptx",
-                  "./SDKIntro.pdf"
-               ]
-            },
-            {
                "Folder" : "coursework/coursework",
                "Files" : [
                   {
@@ -431,12 +423,113 @@
                               "../samples/3D/ModelViewer/res/help.txt"
                            ]
                         },
+                        {
+                           "Folder" : "models",
+                           "Files" : [
+                              {
+                                 "Folder" : "barn",
+                                 "Files" : [
+                                    "../samples/3D/ModelViewer/models/barn/barn.3DS",
+                                    "../samples/3D/ModelViewer/models/barn/Batten.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Boardbmp.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Boards.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Boards1.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Concrete.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/cutout.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Finish.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/FlWood.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Horizont.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/OLDWOOD.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Read me_Old Barn.txt",
+                                    "../samples/3D/ModelViewer/models/barn/SANDSHOR.JPG",
+                                    "../samples/3D/ModelViewer/models/barn/Shadow.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/STEELPLT.JPG",
+                                    "../samples/3D/ModelViewer/models/barn/Trellis.jpg",
+                                    "../samples/3D/ModelViewer/models/barn/Wood1.jpg"
+                                 ]
+                              },
+                              {
+                                 "Folder" : "cart",
+                                 "Files" : [
+                                    "../samples/3D/ModelViewer/models/cart/Barrel.JPG",
+                                    "../samples/3D/ModelViewer/models/cart/cart.3DS",
+                                    "../samples/3D/ModelViewer/models/cart/Cart1.jpg",
+                                    "../samples/3D/ModelViewer/models/cart/Cart2.jpg",
+                                    "../samples/3D/ModelViewer/models/cart/Cart3.jpg",
+                                    "../samples/3D/ModelViewer/models/cart/metal_F.jpg",
+                                    "../samples/3D/ModelViewer/models/cart/MetCart1.jpg",
+                                    "../samples/3D/ModelViewer/models/cart/MetCart2.jpg",
+                                    "../samples/3D/ModelViewer/models/cart/OLDWOOD.JPG",
+                                    "../samples/3D/ModelViewer/models/cart/Read me_Cart For the Barn.txt",
+                                    "../samples/3D/ModelViewer/models/cart/WoodBr.jpg"
+                                 ]
+                              },
+                              {
+                                 "Folder" : "cow",
+                                 "Files" : [
+                                    "../samples/3D/ModelViewer/models/cow/cow.3DS",
+                                    "../samples/3D/ModelViewer/models/cow/spot_tex.png"
+                                 ]
+                              },
+                              {
+                                 "Folder" : "duck",
+                                 "Files" : [
+                                    "../samples/3D/ModelViewer/models/duck/duck.3DS",
+                                    "../samples/3D/ModelViewer/models/duck/duck.png"
+                                 ]
+                              },
+                              {
+                                 "Folder" : "house",
+                                 "Files" : [
+                                    "../samples/3D/ModelViewer/models/house/bordo.jpg",
+                                    "../samples/3D/ModelViewer/models/house/cement.jpg",
+                                    "../samples/3D/ModelViewer/models/house/CUT2WV.JPG",
+                                    "../samples/3D/ModelViewer/models/house/CUTWV.JPG",
+                                    "../samples/3D/ModelViewer/models/house/fence.JPG",
+                                    "../samples/3D/ModelViewer/models/house/Hardwood.jpg",
+                                    "../samples/3D/ModelViewer/models/house/house.3DS",
+                                    "../samples/3D/ModelViewer/models/house/latB.jpg",
+                                    "../samples/3D/ModelViewer/models/house/lati.jpg",
+                                    "../samples/3D/ModelViewer/models/house/latiA.jpg",
+                                    "../samples/3D/ModelViewer/models/house/OLDWOOD.JPG",
+                                    "../samples/3D/ModelViewer/models/house/pezzomur.jpg",
+                                    "../samples/3D/ModelViewer/models/house/Read me_House.txt",
+                                    "../samples/3D/ModelViewer/models/house/Tetto1.jpg"
+                                 ]
+                              },
+                              {
+                                 "Folder" : "katanakake",
+                                 "Files" : [
+                                    "../samples/3D/ModelViewer/models/katanakake/Katanakake.3DS",
+                                    "../samples/3D/ModelViewer/models/katanakake/Wood_t~1.jpg"
+                                 ]
+                              },
+                              {
+                                 "Folder" : "table",
+                                 "Files" : [
+                                    "../samples/3D/ModelViewer/models/table/aluminiu.jpg",
+                                    "../samples/3D/ModelViewer/models/table/pine_4.JPG",
+                                    "../samples/3D/ModelViewer/models/table/Read me_Set LunchRoom.txt",
+                                    "../samples/3D/ModelViewer/models/table/table.3DS"
+                                 ]
+                              },
+                              "../samples/3D/ModelViewer/models/teapot.3DS"
+                           ]
+                        },
+                        {
+                           "Folder" : "skycube",
+                           "Files" : [
+                              "../samples/3D/ModelViewer/skycube/bk.jpg",
+                              "../samples/3D/ModelViewer/skycube/dn.jpg",
+                              "../samples/3D/ModelViewer/skycube/fr.jpg",
+                              "../samples/3D/ModelViewer/skycube/lf.jpg",
+                              "../samples/3D/ModelViewer/skycube/rt.jpg",
+                              "../samples/3D/ModelViewer/skycube/up.jpg"
+                           ]
+                        },
                         "../samples/3D/ModelViewer/eModel.ec",
                         "../samples/3D/ModelViewer/eModel.epj",
-                        "../samples/3D/ModelViewer/engineSettings.ec",
-                        "../samples/3D/ModelViewer/dolphin.3ds",
-                        "../samples/3D/ModelViewer/ecere.3ds",
-                        "../samples/3D/ModelViewer/teapot.3ds"
+                        "../samples/3D/ModelViewer/engineSettings.ec"
                      ]
                   },
                   {
@@ -453,32 +546,21 @@
                         {
                            "Folder" : "res",
                            "Files" : [
-                              {
-                                 "Folder" : "skycube",
-                                 "Files" : [
-                                    "../samples/3D/orbitWithMouse/res/skycube/bk.jpg",
-                                    "../samples/3D/orbitWithMouse/res/skycube/dn.jpg",
-                                    "../samples/3D/orbitWithMouse/res/skycube/fr.jpg",
-                                    "../samples/3D/orbitWithMouse/res/skycube/lf.jpg",
-                                    "../samples/3D/orbitWithMouse/res/skycube/rt.jpg",
-                                    "../samples/3D/orbitWithMouse/res/skycube/up.jpg"
-                                 ]
-                              },
-                              "../samples/3D/orbitWithMouse/res/background.jpg",
-                              "../samples/3D/orbitWithMouse/res/shot1.jpg",
-                              "../samples/3D/orbitWithMouse/res/shot2.jpg",
-                              "../samples/3D/orbitWithMouse/res/shot3.jpg",
-                              "../samples/3D/orbitWithMouse/res/shot4.jpg",
-                              "../samples/3D/orbitWithMouse/res/slidehex-cinema_guide.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-jukebox.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-net_radio.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-photo_album.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-search_guide.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-settings.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-shopping.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-transcode.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-tv_guide.png",
-                              "../samples/3D/orbitWithMouse/res/slidehex-website.png"
+                              "../samples/3D/orbitWithMouse/res/icon1.png",
+                              "../samples/3D/orbitWithMouse/res/icon10.png",
+                              "../samples/3D/orbitWithMouse/res/icon2.png",
+                              "../samples/3D/orbitWithMouse/res/icon3.png",
+                              "../samples/3D/orbitWithMouse/res/icon4.png",
+                              "../samples/3D/orbitWithMouse/res/icon5.png",
+                              "../samples/3D/orbitWithMouse/res/icon6.png",
+                              "../samples/3D/orbitWithMouse/res/icon7.png",
+                              "../samples/3D/orbitWithMouse/res/icon8.png",
+                              "../samples/3D/orbitWithMouse/res/icon9.png",
+                              "../samples/3D/orbitWithMouse/res/img1.jpg",
+                              "../samples/3D/orbitWithMouse/res/img2.jpg",
+                              "../samples/3D/orbitWithMouse/res/img3.jpg",
+                              "../samples/3D/orbitWithMouse/res/img4.jpg",
+                              "../samples/3D/orbitWithMouse/res/img5.jpg"
                            ]
                         },
                         "../samples/3D/orbitWithMouse/orbitWithMouse.ec",
@@ -506,28 +588,20 @@
                            "Folder" : "res",
                            "Files" : [
                               {
-                                 "Folder" : "skycube",
+                                 "Folder" : "aircraft",
                                  "Files" : [
-                                    "../samples/3D/terrainCameraDemo/res/skycube/bk.pcx",
-                                    "../samples/3D/terrainCameraDemo/res/skycube/dn.pcx",
-                                    "../samples/3D/terrainCameraDemo/res/skycube/fr.pcx",
-                                    "../samples/3D/terrainCameraDemo/res/skycube/lf.pcx",
-                                    "../samples/3D/terrainCameraDemo/res/skycube/rt.pcx",
-                                    "../samples/3D/terrainCameraDemo/res/skycube/up.pcx"
+                                    "../samples/3D/terrainCameraDemo/res/aircraft/06 17 09.png",
+                                    "../samples/3D/terrainCameraDemo/res/aircraft/aircraft.3DS"
                                  ]
                               },
-                              "../samples/3D/terrainCameraDemo/res/cesna.3ds",
-                              "../samples/3D/terrainCameraDemo/res/detail.pcx",
-                              "../samples/3D/terrainCameraDemo/res/dted.pcx",
-                              "../samples/3D/terrainCameraDemo/res/look.pcx",
-                              "../samples/3D/terrainCameraDemo/res/texture1.pcx",
-                              "../samples/3D/terrainCameraDemo/res/water.bmp"
+                              "../samples/3D/terrainCameraDemo/res/N45W110.hgt",
+                              "../samples/3D/terrainCameraDemo/res/texture.png",
+                              "../samples/3D/terrainCameraDemo/res/texture1.pcx"
                            ]
                         },
                         "../samples/3D/terrainCameraDemo/cameraDemo.epj",
                         "../samples/3D/terrainCameraDemo/demo.ec",
                         "../samples/3D/terrainCameraDemo/dna.ec",
-                        "../samples/3D/terrainCameraDemo/dted.ec",
                         "../samples/3D/terrainCameraDemo/terrain.ec"
                      ]
                   },
@@ -560,6 +634,13 @@
                         "../samples/3D/VertexColorTest/VertexColorTest.ec",
                         "../samples/3D/VertexColorTest/VertexColorTest.epj"
                      ]
+                  },
+                  {
+                     "Folder" : "walkAround",
+                     "Files" : [
+                        "../samples/3D/walkAround/walkAround.ec",
+                        "../samples/3D/walkAround/walkAround.epj"
+                     ]
                   }
                ]
             },
@@ -570,23 +651,36 @@
                      "Folder" : "DirectBufferPlayer",
                      "Files" : [
                         "../samples/audio/DirectBufferPlayer/wavPlayer.ec",
-                        "../samples/audio/DirectBufferPlayer/WavPlayer.epj"
+                        "../samples/audio/DirectBufferPlayer/WavPlayer.epj",
+                        "../samples/audio/DirectBufferPlayer/sweep.wav"
                      ]
                   },
                   {
                      "Folder" : "Piano",
                      "Files" : [
                         "../samples/audio/Piano/Piano.ec",
-                        "../samples/audio/Piano/Piano.epj"
+                        "../samples/audio/Piano/Piano.epj",
+                        "../samples/audio/Piano/cello.wav",
+                        "../samples/audio/Piano/piano.wav",
+                        "../samples/audio/Piano/tone.wav",
+                        "../samples/audio/Piano/xylophone.wav"
                      ]
                   },
                   {
                      "Folder" : "PlaySound",
                      "Files" : [
                         "../samples/audio/PlaySound/PlaySound.ec",
-                        "../samples/audio/PlaySound/PlaySound.epj"
+                        "../samples/audio/PlaySound/PlaySound.epj",
+                        "../samples/audio/PlaySound/sound.wav"
                      ]
-                  }
+                  },
+                  {
+                     "Folder" : "S3MPlayer",
+                     "Files" : [
+                        "../samples/audio/S3MPlayer/keven1.s3m"
+                     ]
+                  },
+                  "../samples/audio/Ecere Audio Library.odp"
                ]
             },
             {
@@ -616,9 +710,11 @@
                         "../samples/db/MovieCollection/movieCollection.ec",
                         "../samples/db/MovieCollection/MovieCollection.epj",
                         "../samples/db/MovieCollection/movieSchema.ec",
-                        "../samples/db/MovieCollection/reports.ec"
+                        "../samples/db/MovieCollection/reports.ec",
+                        "../samples/db/MovieCollection/collection.sqlite"
                      ]
-                  }
+                  },
+                  "../samples/db/eda presentation.odp"
                ]
             },
             {
@@ -682,11 +778,11 @@
                "Folder" : "games",
                "Files" : [
                   {
-                     "Folder" : "blokus",
+                     "Folder" : "cornerBlocks",
                      "Files" : [
-                        "../samples/games/blokus/blokus.ec",
-                        "../samples/games/blokus/blokus.epj",
-                        "../samples/games/blokus/BlokusServer.ec"
+                        "../samples/games/cornerBlocks/cornerBlocks.ec",
+                        "../samples/games/cornerBlocks/cornerBlocks.epj",
+                        "../samples/games/cornerBlocks/CornerBlocksServer.ec"
                      ]
                   },
                   {
@@ -723,19 +819,24 @@
                      ]
                   },
                   {
-                     "Folder" : "brainstonz",
+                     "Folder" : "stonePairs",
                      "Files" : [
                         {
-                           "Folder" : "res",
+                           "Folder" : "samples/games/brainstonz/res/res",
                            "Files" : [
-                              "../samples/games/brainstonz/res/arrow.png",
-                              "../samples/games/brainstonz/res/remove.png",
-                              "../samples/games/brainstonz/res/smile.png"
+                              "../samples/games/stonePairs/res/remove.png",
+                              "../samples/games/stonePairs/res/arrow.png",
+                              "../samples/games/stonePairs/res/black.png",
+                              "../samples/games/stonePairs/res/blackGray.png",
+                              "../samples/games/stonePairs/res/board.jpg",
+                              "../samples/games/stonePairs/res/white.png",
+                              "../samples/games/stonePairs/res/whiteGray.png"
                            ]
                         },
-                        "../samples/games/brainstonz/brainstonz.ec",
-                        "../samples/games/brainstonz/brainstonz.epj",
-                        "../samples/games/brainstonz/game.ec"
+                        "../samples/games/stonePairs/Building a simple board game with the Ecere SDK.odp",
+                        "../samples/games/stonePairs/game.ec",
+                        "../samples/games/stonePairs/stonePairs.ec",
+                        "../samples/games/stonePairs/stonePairs.epj"
                      ]
                   },
                   {
@@ -755,12 +856,65 @@
                         {
                            "Folder" : "res",
                            "Files" : [
-                              "../samples/games/cards/res/cards.pcx",
-                              "../samples/games/cards/res/clubs.bmp",
-                              "../samples/games/cards/res/diamonds.bmp",
-                              "../samples/games/cards/res/ecereCard.png",
-                              "../samples/games/cards/res/hearts.bmp",
-                              "../samples/games/cards/res/spades.bmp"
+                              "../samples/games/cards/res/10c.png",
+                              "../samples/games/cards/res/10d.png",
+                              "../samples/games/cards/res/10h.png",
+                              "../samples/games/cards/res/10s.png",
+                              "../samples/games/cards/res/2c.png",
+                              "../samples/games/cards/res/2d.png",
+                              "../samples/games/cards/res/2h.png",
+                              "../samples/games/cards/res/2s.png",
+                              "../samples/games/cards/res/3c.png",
+                              "../samples/games/cards/res/3d.png",
+                              "../samples/games/cards/res/3h.png",
+                              "../samples/games/cards/res/3s.png",
+                              "../samples/games/cards/res/4c.png",
+                              "../samples/games/cards/res/4d.png",
+                              "../samples/games/cards/res/4h.png",
+                              "../samples/games/cards/res/4s.png",
+                              "../samples/games/cards/res/5c.png",
+                              "../samples/games/cards/res/5d.png",
+                              "../samples/games/cards/res/5h.png",
+                              "../samples/games/cards/res/5s.png",
+                              "../samples/games/cards/res/6c.png",
+                              "../samples/games/cards/res/6d.png",
+                              "../samples/games/cards/res/6h.png",
+                              "../samples/games/cards/res/6s.png",
+                              "../samples/games/cards/res/7c.png",
+                              "../samples/games/cards/res/7d.png",
+                              "../samples/games/cards/res/7h.png",
+                              "../samples/games/cards/res/7s.png",
+                              "../samples/games/cards/res/8c.png",
+                              "../samples/games/cards/res/8d.png",
+                              "../samples/games/cards/res/8h.png",
+                              "../samples/games/cards/res/8s.png",
+                              "../samples/games/cards/res/9c.png",
+                              "../samples/games/cards/res/9d.png",
+                              "../samples/games/cards/res/9h.png",
+                              "../samples/games/cards/res/9s.png",
+                              "../samples/games/cards/res/ac.png",
+                              "../samples/games/cards/res/ad.png",
+                              "../samples/games/cards/res/ah.png",
+                              "../samples/games/cards/res/as.png",
+                              "../samples/games/cards/res/back.png",
+                              "../samples/games/cards/res/clubs.png",
+                              "../samples/games/cards/res/diamonds.png",
+                              "../samples/games/cards/res/hearts.png",
+                              "../samples/games/cards/res/jc.png",
+                              "../samples/games/cards/res/jd.png",
+                              "../samples/games/cards/res/jh.png",
+                              "../samples/games/cards/res/js.png",
+                              "../samples/games/cards/res/kc.png",
+                              "../samples/games/cards/res/kd.png",
+                              "../samples/games/cards/res/kh.png",
+                              "../samples/games/cards/res/ks.png",
+                              "../samples/games/cards/res/qc.png",
+                              "../samples/games/cards/res/qd.png",
+                              "../samples/games/cards/res/qh.png",
+                              "../samples/games/cards/res/qs.png",
+                              "../samples/games/cards/res/rb.png",
+                              "../samples/games/cards/res/rr.png",
+                              "../samples/games/cards/res/spades.png"
                            ]
                         },
                         {
@@ -807,30 +961,81 @@
                      ]
                   },
                   {
-                     "Folder" : "scrabble",
+                     "Folder" : "crosswords",
                      "Files" : [
                         {
                            "Folder" : "res",
                            "Files" : [
-
+                              "../samples/games/crosswords/res/englishWords.txt",
+                              "../samples/games/crosswords/res/frenchWords.txt"
                            ]
                         },
-                        "../samples/games/scrabble/scrabble.ec",
-                        "../samples/games/scrabble/scrabble.epj",
-                        "../samples/games/scrabble/ScrabbleServer.ec"
+                        "../samples/games/crosswords/crossWords.ec",
+                        "../samples/games/crosswords/crossWords.epj",
+                        "../samples/games/crosswords/CrossWordsServer.ec"
                      ]
                   },
                   {
-                     "Folder" : "tetris",
+                     "Folder" : "terominoes",
+                     "Files" : [
+                        {
+                           "Folder" : "samples/games/tetris/res/res",
+                           "Files" : [
+                              "../samples/games/tetrominoes/res/tetrominoes.png"
+                           ]
+                        },
+                        "../samples/games/tetrominoes/tetrominoes.ec",
+                        "../samples/games/tetrominoes/tetrominoes.epj"
+                     ]
+                  },
+                  {
+                     "Folder" : "ticTacToe",
+                     "Files" : [
+                        "../samples/games/ticTacToe/SDKIntro.pdf",
+                        "../samples/games/ticTacToe/TicTacToe.ec",
+                        "../samples/games/ticTacToe/TicTacToe.epj"
+                     ]
+                  },
+                  {
+                     "Folder" : "chess",
                      "Files" : [
                         {
                            "Folder" : "res",
                            "Files" : [
-                              "../samples/games/tetris/res/tetris.bmp"
+                              "../samples/games/chess/res/aboutPic.jpg",
+                              "../samples/games/chess/res/blackBishop.png",
+                              "../samples/games/chess/res/blackKing.png",
+                              "../samples/games/chess/res/blackKnight.png",
+                              "../samples/games/chess/res/blackPawn.png",
+                              "../samples/games/chess/res/blackQueen.png",
+                              "../samples/games/chess/res/blackRook.png",
+                              "../samples/games/chess/res/board.jpg",
+                              "../samples/games/chess/res/bthr.jpg",
+                              "../samples/games/chess/res/chessSet.3ds",
+                              "../samples/games/chess/res/darkwood.jpg",
+                              "../samples/games/chess/res/lightwo1.jpg",
+                              "../samples/games/chess/res/whiteBishop.png",
+                              "../samples/games/chess/res/whiteKing.png",
+                              "../samples/games/chess/res/whiteKnight.png",
+                              "../samples/games/chess/res/whitePawn.png",
+                              "../samples/games/chess/res/whiteQueen.png",
+                              "../samples/games/chess/res/whiteRook.png"
                            ]
                         },
-                        "../samples/games/tetris/tetris.ec",
-                        "../samples/games/tetris/tetris.epj"
+                        {
+                           "Folder" : "src",
+                           "Files" : [
+                              "../samples/games/chess/src/about.ec",
+                              "../samples/games/chess/src/ai.ec",
+                              "../samples/games/chess/src/chess.ec",
+                              "../samples/games/chess/src/chess2D.ec",
+                              "../samples/games/chess/src/chess3D.ec",
+                              "../samples/games/chess/src/chessutils.ec",
+                              "../samples/games/chess/src/connect.ec",
+                              "../samples/games/chess/src/promotion.ec"
+                           ]
+                        },
+                        "../samples/games/chess/chess.epj"
                      ]
                   }
                ]
@@ -879,10 +1084,17 @@
                         {
                            "Folder" : "res",
                            "Files" : [
-
+                              "../samples/guiAndGfx/bitmapsAndKB/res/archer.png",
+                              "../samples/guiAndGfx/bitmapsAndKB/res/castle.png",
+                              "../samples/guiAndGfx/bitmapsAndKB/res/dragon.png",
+                              "../samples/guiAndGfx/bitmapsAndKB/res/knight.png",
+                              "../samples/guiAndGfx/bitmapsAndKB/res/mage.png",
+                              "../samples/guiAndGfx/bitmapsAndKB/res/mountain.png",
+                              "../samples/guiAndGfx/bitmapsAndKB/res/mountains.png",
+                              "../samples/guiAndGfx/bitmapsAndKB/res/tree.png"
                            ]
                         },
-                        "../samples/guiAndGfx/bitmapsAndKB/Bitmaps, Keyboard and Sound.pptx"
+                        "../samples/guiAndGfx/bitmapsAndKB/Bitmaps and Keyboard Input.odp"
                      ]
                   },
                   {
@@ -891,7 +1103,7 @@
                         {
                            "Folder" : "res",
                            "Files" : [
-
+                              "../samples/guiAndGfx/childWindows/res/stone2.jpg"
                            ]
                         },
                         "../samples/guiAndGfx/childWindows/ex1.ec",
@@ -1046,11 +1258,7 @@
                               "../samples/guiAndGfx/skinning/res/downMiddle.png",
                               "../samples/guiAndGfx/skinning/res/downRight.png",
                               "../samples/guiAndGfx/skinning/res/leftBorder.png",
-                              "../samples/guiAndGfx/skinning/res/NEWtopBorder.png",
                               "../samples/guiAndGfx/skinning/res/rightBorder.png",
-                              "../samples/guiAndGfx/skinning/res/scrollDown.png",
-                              "../samples/guiAndGfx/skinning/res/scrollUp.png",
-                              "../samples/guiAndGfx/skinning/res/scrollVert.png",
                               "../samples/guiAndGfx/skinning/res/thumbDown.png",
                               "../samples/guiAndGfx/skinning/res/thumbUp.png",
                               "../samples/guiAndGfx/skinning/res/thumbVert.png",
@@ -1131,6 +1339,33 @@
                         "../samples/guiAndGfx/pictureRotateAlpha/image.png",
                         "../samples/guiAndGfx/pictureRotateAlpha/pictureRotate.epj",
                         "../samples/guiAndGfx/pictureRotateAlpha/rotate1.ec"
+                     ]
+                  },
+                  {
+                     "Folder" : "fractals",
+                     "Files" : [
+                        {
+                           "Folder" : "samples",
+                           "Files" : [
+                              "../samples/guiAndGfx/fractals/samples/colorful.frc",
+                              "../samples/guiAndGfx/fractals/samples/coolSpiral.frc",
+                              "../samples/guiAndGfx/fractals/samples/deep.frc",
+                              "../samples/guiAndGfx/fractals/samples/hot.frc",
+                              "../samples/guiAndGfx/fractals/samples/hot2.frc",
+                              "../samples/guiAndGfx/fractals/samples/minibrot.frc",
+                              "../samples/guiAndGfx/fractals/samples/MOI.frc",
+                              "../samples/guiAndGfx/fractals/samples/nicejulia.frc",
+                              "../samples/guiAndGfx/fractals/samples/oldColors.frc",
+                              "../samples/guiAndGfx/fractals/samples/purplishmandelbrot.frc",
+                              "../samples/guiAndGfx/fractals/samples/seaHorseValley.frc",
+                              "../samples/guiAndGfx/fractals/samples/star.frc",
+                              "../samples/guiAndGfx/fractals/samples/sunnySpiral.frc",
+                              "../samples/guiAndGfx/fractals/samples/woah.frc"
+                           ]
+                        },
+                        "../samples/guiAndGfx/fractals/fractals.ec",
+                        "../samples/guiAndGfx/fractals/fractals.epj",
+                        "../samples/guiAndGfx/fractals/GradientDesigner.ec"
                      ]
                   }
                ]
@@ -1228,6 +1463,30 @@
                         "../samples/net/XMLSample/xmlSample.ec",
                         "../samples/net/XMLSample/XMLSample.epj"
                      ]
+                  },
+                  {
+                     "Folder" : "browser",
+                     "Files" : [
+                        "../samples/net/browser/browser.ec",
+                        "../samples/net/browser/browser.epj",
+                        "../samples/net/browser/newb.ico",
+                        "../samples/net/browser/newb.png",
+                        "../samples/net/browser/resources.rc"
+                     ]
+                  },
+                  {
+                     "Folder" : "SocketRx",
+                     "Files" : [
+                        "../samples/net/SocketRx/socketRx.ec",
+                        "../samples/net/SocketRx/socketRx.epj"
+                     ]
+                  },
+                  {
+                     "Folder" : "SocketTx",
+                     "Files" : [
+                        "../samples/net/SocketTx/socketTX.ec",
+                        "../samples/net/SocketTx/socketTX.epj"
+                     ]
                   }
                ]
             },
@@ -1253,75 +1512,6 @@
                         "../samples/threads/threadsAndListBoxes/blank.epj"
                      ]
                   }
-               ]
-            },
-            {
-               "Folder" : "chess",
-               "Files" : [
-                  {
-                     "Folder" : "res",
-                     "Files" : [
-                        "../../Apps/chess/res/aboutPic.jpg",
-                        "../../Apps/chess/res/blackBishop.png",
-                        "../../Apps/chess/res/blackKing.png",
-                        "../../Apps/chess/res/blackKnight.png",
-                        "../../Apps/chess/res/blackPawn.png",
-                        "../../Apps/chess/res/blackQueen.png",
-                        "../../Apps/chess/res/blackRook.png",
-                        "../../Apps/chess/res/board.jpg",
-                        "../../Apps/chess/res/bthr.jpg",
-                        "../../Apps/chess/res/chessSet.3ds",
-                        "../../Apps/chess/res/darkwood.jpg",
-                        "../../Apps/chess/res/lightwo1.jpg",
-                        "../../Apps/chess/res/whiteBishop.png",
-                        "../../Apps/chess/res/whiteKing.png",
-                        "../../Apps/chess/res/whiteKnight.png",
-                        "../../Apps/chess/res/whitePawn.png",
-                        "../../Apps/chess/res/whiteQueen.png",
-                        "../../Apps/chess/res/whiteRook.png"
-                     ]
-                  },
-                  {
-                     "Folder" : "src",
-                     "Files" : [
-                        "../../Apps/chess/src/about.ec",
-                        "../../Apps/chess/src/ai.ec",
-                        "../../Apps/chess/src/chess.ec",
-                        "../../Apps/chess/src/chess2D.ec",
-                        "../../Apps/chess/src/chess3D.ec",
-                        "../../Apps/chess/src/chessutils.ec",
-                        "../../Apps/chess/src/connect.ec",
-                        "../../Apps/chess/src/promotion.ec"
-                     ]
-                  },
-                  "../../Apps/chess/chess.epj",
-                  "../../Apps/chess/LICENSE"
-               ]
-            },
-            {
-               "Folder" : "fractals",
-               "Files" : [
-                  {
-                     "Folder" : "samples",
-                     "Files" : [
-                        "../../Apps/fractals/samples/colorful.frc",
-                        "../../Apps/fractals/samples/coolSpiral.frc",
-                        "../../Apps/fractals/samples/deep.frc",
-                        "../../Apps/fractals/samples/hot.frc",
-                        "../../Apps/fractals/samples/hot2.frc",
-                        "../../Apps/fractals/samples/MOI.frc",
-                        "../../Apps/fractals/samples/oldColors.frc",
-                        "../../Apps/fractals/samples/purplishmandelbrot.frc",
-                        "../../Apps/fractals/samples/seaHorseValley.frc",
-                        "../../Apps/fractals/samples/star.frc",
-                        "../../Apps/fractals/samples/sunnySpiral.frc",
-                        "../../Apps/fractals/samples/woah.frc"
-                     ]
-                  },
-                  "../../Apps/fractals/fractals.ec",
-                  "../../Apps/fractals/fractals.epj",
-                  "../../Apps/fractals/GradientDesigner.ec",
-                  "../../Apps/fractals/LICENSE"
                ]
             },
             {
