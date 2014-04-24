@@ -22,11 +22,11 @@ msgstr "COMMIT FAILED!"
 msgid "EDASQLite: Can't open database (%s): %s\n"
 msgstr "EDASQLite: Can't open database (%s): %s\n"
 
-#: ./EDASQLite.ec:894
+#: ./EDASQLite.ec:895
 msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 msgstr "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
 
-#: ./EDASQLite.ec:855
+#: ./EDASQLite.ec:856
 msgid "WARNING: Table not yet created for class "
 msgstr "WARNING: Table not yet created for class "
 

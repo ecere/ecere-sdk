@@ -19,11 +19,11 @@ msgstr "%s expected to be derived from method class\n"
 msgid "%s undefined; assuming extern returning int\n"
 msgstr "%s undefined; assuming extern returning int\n"
 
-#: ./src/ecdefs.ec:1314
+#: ./src/ecdefs.ec:1324
 msgid ":%d:%d: error: "
 msgstr ":%d:%d: error: "
 
-#: ./src/ecdefs.ec:1361
+#: ./src/ecdefs.ec:1371
 msgid ":%d:%d: warning: "
 msgstr ":%d:%d: warning: "
 
@@ -48,7 +48,7 @@ msgstr "Couldn't find member %s to override\n"
 msgid "Couldn't open %s\n"
 msgstr "Couldn't open %s\n"
 
-#: ./src/ast.ec:1655
+#: ./src/ast.ec:1665
 msgid "Expecting class specifier\n"
 msgstr "Expecting class specifier\n"
 
@@ -73,20 +73,20 @@ msgstr "Invalid object specified and not inside a class\n"
 msgid "Invalid watched object\n"
 msgstr "Invalid watched object\n"
 
-#: ./src/firstPass.ec:83
-#: ./src/firstPass.ec:108
-#: ./src/firstPass.ec:169
-#: ./src/firstPass.ec:211
+#: ./src/firstPass.ec:85
+#: ./src/firstPass.ec:112
+#: ./src/firstPass.ec:175
+#: ./src/firstPass.ec:217
 msgid "Member with same name already exists %s in class %s\n"
 msgstr "Member with same name already exists %s in class %s\n"
 
-#: ./src/firstPass.ec:101
-#: ./src/firstPass.ec:162
-#: ./src/firstPass.ec:204
+#: ./src/firstPass.ec:105
+#: ./src/firstPass.ec:168
+#: ./src/firstPass.ec:210
 msgid "Member with same name already exists %s in member %s\n"
 msgstr "Member with same name already exists %s in member %s\n"
 
-#: ./src/dbpass.ec:1082
+#: ./src/dbpass.ec:1085
 msgid "Multiple field index requires a name\n"
 msgstr "Multiple field index requires a name\n"
 
@@ -130,11 +130,11 @@ msgstr "Recursion in defined expression %s\n"
 msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgstr "Redefinition of %s (defining as %s, already defined as %s)\n"
 
-#: ./src/ast.ec:800
+#: ./src/ast.ec:810
 msgid "Redefinition of %s ignored\n"
 msgstr "Redefinition of %s ignored\n"
 
-#: ./src/firstPass.ec:446
+#: ./src/firstPass.ec:452
 msgid "Redefinition of method %s in class %s\n"
 msgstr "Redefinition of method %s in class %s\n"
 
@@ -281,12 +281,16 @@ msgstr "operator %s illegal on pointer\n"
 msgid "overriding class expected to be derived from method class\n"
 msgstr "overriding class expected to be derived from method class\n"
 
+#: ./src/ast.ec:1150
+msgid "parameter name omitted\n"
+msgstr "parameter name omitted\n"
+
 #: ./src/shortcuts.ec:223
 #: ./src/shortcuts.ec:229
 msgid "parsing type %s\n"
 msgstr "parsing type %s\n"
 
-#: ./src/firstPass.ec:310
+#: ./src/firstPass.ec:316
 msgid "redefinition of class %s\n"
 msgstr "redefinition of class %s\n"
 
@@ -298,7 +302,11 @@ msgstr "redefinition of constructor for class %s\n"
 msgid "redefinition of destructor for class %s\n"
 msgstr "redefinition of destructor for class %s\n"
 
-#: ./src/ecdefs.ec:1381
+#: ./src/pass0.ec:1209
+msgid "set defined on type without storage for non-conversion property\n"
+msgstr "set defined on type without storage for non-conversion property\n"
+
+#: ./src/ecdefs.ec:1391
 #: ./src/grammar.ec:3128
 #: ./src/grammar.ec:3129
 #: ./src/grammar.ec:3130
