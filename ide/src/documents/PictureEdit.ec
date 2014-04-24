@@ -135,8 +135,10 @@ class PictureEdit : Window
             if(bitmap.Load(fileName, null, null))
             {
                if(bitmap.pixelFormat == pixelFormatRGBA)
+               {
+                  bitmap.alphaBlend = true;
                   bitmap.Convert(null, pixelFormat888, null);
-
+               }
                //if(!eWindow_GetStartWidth(window) || !eWindow_GetStartHeight(window))
                {
                   Size size = initSize;  // what's the use of retrieving initSize
