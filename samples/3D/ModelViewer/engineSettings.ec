@@ -64,7 +64,7 @@ class EngineSettings : Window
 
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
-         refreshRate = row.tag;
+         refreshRate = (int)row.tag;
          return true;
       }
    };
@@ -101,9 +101,9 @@ class EngineSettings : Window
 
    EngineSettings()
    {
-      driverBox.AddString("OpenGL").tag = (int)"OpenGL";
-      driverBox.AddString("Direct3D 9").tag = (int)"Direct3D";
-      driverBox.AddString("Direct3D 8").tag = (int)"Direct3D8";
+      driverBox.AddString("OpenGL").tag = (int64)"OpenGL";
+      driverBox.AddString("Direct3D 9").tag = (int64)"Direct3D";
+      driverBox.AddString("Direct3D 8").tag = (int64)"Direct3D8";
       driverBox.currentRow = driverBox.firstRow;
 
       resBox.AddString("Current");
