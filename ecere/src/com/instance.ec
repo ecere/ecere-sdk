@@ -6435,7 +6435,7 @@ public enum Platform
    bool OnGetDataFromString(char * string)
    {
       this = string;
-      return this != null;
+      return this != unknown;
    }
 };
 

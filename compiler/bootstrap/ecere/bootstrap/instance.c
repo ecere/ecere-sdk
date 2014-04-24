@@ -5603,7 +5603,7 @@ return (((void *)0));
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Platform_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * class, int * this, char * string)
 {
 (*this) = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(string);
-return (unsigned int)*(int *)this;
+return (*this) != 0;
 }
 
 extern int runtimePlatform;
