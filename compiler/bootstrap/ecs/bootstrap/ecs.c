@@ -2492,8 +2492,6 @@ extern void ComputeModuleClasses(struct __ecereNameSpace__ecere__com__Instance *
 
 extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, char *  addedPath);
 
-extern unsigned int __ecereNameSpace__ecere__sys__MakeDir(char *  path);
-
 extern void FreeContext(struct Context * context);
 
 extern void FreeExcludedSymbols(struct __ecereNameSpace__ecere__sys__OldList * excludedSymbols);
@@ -2939,8 +2937,6 @@ struct __ecereNameSpace__ecere__com__Instance * potFile;
 char potFileName[797];
 
 strcpy(potFileName, "locale");
-__ecereNameSpace__ecere__sys__PathCat(potFileName, projectName);
-__ecereNameSpace__ecere__sys__MakeDir(potFileName);
 __ecereNameSpace__ecere__sys__PathCat(potFileName, projectName);
 __ecereNameSpace__ecere__sys__ChangeExtension(potFileName, "pot", potFileName);
 potFile = __ecereNameSpace__ecere__sys__FileOpen(potFileName, 2);

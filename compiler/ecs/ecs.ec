@@ -1996,8 +1996,6 @@ class SymbolgenApp : Application
                //StripExtension(potFileName);
                strcpy(potFileName, "locale");
                PathCat(potFileName, projectName);
-               MakeDir(potFileName);
-               PathCat(potFileName, projectName);
                ChangeExtension(potFileName, "pot", potFileName);
                potFile = FileOpen(potFileName, write);
                if(potFile)
