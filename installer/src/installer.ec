@@ -255,8 +255,6 @@ define minGWIncluded = false;
 
 Array<Component> samples
 { [
-   { "Ecere Chess",     "samples/chess",     "chess",       null, false, true, true, none },
-   { "Ecere Fractals",  "samples/fractals",  "fractals",    null, false, true, true, none },
    { "3D",              "samples/3D",        "3D",          null, false, true, true, none },
    { "Android",         "samples/android",   "android",          null, false, true, true, none },
    { $"Audio",           "samples/audio",     "audio",       null, false, true, true, none },
@@ -1132,7 +1130,7 @@ class Installer : Window
             char * under;
             char genericLocale[256];
             strncpy(genericLocale, language, sizeof(genericLocale));
-            genericLocale[sizeof(genericLocale)] = 0;
+            genericLocale[sizeof(genericLocale)-1] = 0;
 
             under = strchr(genericLocale, '_');
             if(under)

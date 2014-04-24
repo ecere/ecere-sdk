@@ -10,97 +10,97 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./src/installer.ec:716
+#: ./src/installer.ec:714
 msgid " Destination Folder"
 msgstr " Destination Folder"
 
-#: ./src/installer.ec:333
+#: ./src/installer.ec:331
 msgid "API Reference"
 msgstr "API Reference"
 
-#: ./src/installer.ec:620
+#: ./src/installer.ec:618
 msgid "Add Ecere binaries location to the system environment path"
 msgstr "Add Ecere binaries location to the system environment path"
 
-#: ./src/installer.ec:404
-#: ./src/installer.ec:620
+#: ./src/installer.ec:402
+#: ./src/installer.ec:618
 msgid "Add Ecere binaries location to the user environment path"
 msgstr "Add Ecere binaries location to the user environment path"
 
-#: ./src/installer.ec:405
+#: ./src/installer.ec:403
 msgid "Add MinGW to the user environment path"
 msgstr "Add MinGW to the user environment path"
 
-#: ./src/installer.ec:624
+#: ./src/installer.ec:622
 msgid "Add TDM-GCC/MinGW-w64 to the system environment path"
 msgstr "Add TDM-GCC/MinGW-w64 to the system environment path"
 
-#: ./src/installer.ec:624
+#: ./src/installer.ec:622
 msgid "Add TDM-GCC/MinGW-w64 to the user environment path"
 msgstr "Add TDM-GCC/MinGW-w64 to the user environment path"
 
-#: ./src/installer.ec:616
+#: ./src/installer.ec:614
 msgid "Add binaries location to the system environment paths"
 msgstr "Add binaries location to the system environment paths"
 
-#: ./src/installer.ec:423
-#: ./src/installer.ec:616
+#: ./src/installer.ec:421
+#: ./src/installer.ec:614
 msgid "Add binaries location to the user environment paths"
 msgstr "Add binaries location to the user environment paths"
 
-#: ./src/installer.ec:357
+#: ./src/installer.ec:355
 msgid "Additional Support"
 msgstr "Additional Support"
 
-#: ./src/installer.ec:422
+#: ./src/installer.ec:420
 msgid "Associate the Ecere IDE with Supported File Types"
 msgstr "Associate the Ecere IDE with Supported File Types"
 
-#: ./src/installer.ec:392
+#: ./src/installer.ec:390
 msgid "Associate with 3D Studio Model Files (*.3ds)"
 msgstr "Associate with 3D Studio Model Files (*.3ds)"
 
-#: ./src/installer.ec:389
+#: ./src/installer.ec:387
 msgid "Associate with C files (*.c, *.h)"
 msgstr "Associate with C files (*.c, *.h)"
 
-#: ./src/installer.ec:390
+#: ./src/installer.ec:388
 msgid "Associate with C++ Files (*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)"
 msgstr "Associate with C++ Files (*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)"
 
-#: ./src/installer.ec:387
+#: ./src/installer.ec:385
 msgid "Associate with Ecere Project Files (*.epj)"
 msgstr "Associate with Ecere Project Files (*.epj)"
 
-#: ./src/installer.ec:393
+#: ./src/installer.ec:391
 msgid "Associate with Image Files (*.png, *.jpg, *.pcx, *.bmp, *.gif)"
 msgstr "Associate with Image Files (*.png, *.jpg, *.pcx, *.bmp, *.gif)"
 
-#: ./src/installer.ec:388
+#: ./src/installer.ec:386
 msgid "Associate with eC Files (*.ec, *.eh)"
 msgstr "Associate with eC Files (*.ec, *.eh)"
 
-#: ./src/installer.ec:391
+#: ./src/installer.ec:389
 msgid "Associate with text files (*.txt)"
 msgstr "Associate with text files (*.txt)"
 
-#: ./src/installer.ec:262
+#: ./src/installer.ec:260
 msgid "Audio"
 msgstr "Audio"
 
-#: ./src/installer.ec:809
+#: ./src/installer.ec:807
 msgid "Avail. Space"
 msgstr "Avail. Space"
 
-#: ./src/installer.ec:292
+#: ./src/installer.ec:290
 msgid "Binary Utils"
 msgstr "Binary Utils"
 
-#: ./src/installer.ec:339
+#: ./src/installer.ec:337
 msgid "Binutils Docs"
 msgstr "Binutils Docs"
 
-#: ./src/installer.ec:582
+#: ./src/installer.ec:580
 msgid "By installing the Ecere SDK, you agree to the"
 msgstr "By installing the Ecere SDK, you agree to the"
 
@@ -108,69 +108,69 @@ msgstr "By installing the Ecere SDK, you agree to the"
 msgid "By using it you agree to the terms and conditions of their individual licenses."
 msgstr "By using it you agree to the terms and conditions of their individual licenses."
 
-#: ./src/installer.ec:313
+#: ./src/installer.ec:311
 msgid "C++ Compiler"
 msgstr "C++ Compiler"
 
-#: ./src/installer.ec:680
-#: ./src/installer.ec:1206
+#: ./src/installer.ec:678
+#: ./src/installer.ec:1204
 msgid "Cancel"
 msgstr "Cancel"
 
-#: ./src/installer.ec:805
+#: ./src/installer.ec:803
 msgid "Choose Components, Locations and Install Options"
 msgstr "Choose Components, Locations and Install Options"
 
-#: ./src/installer.ec:792
+#: ./src/installer.ec:790
 msgid "Choose in which folder to install the Ecere SDK, which features\nof the SDK to install, as well as where to install program icons."
 msgstr "Choose in which folder to install the Ecere SDK, which features\nof the SDK to install, as well as where to install program icons."
 
-#: ./src/installer.ec:1400
+#: ./src/installer.ec:1398
 msgid "Close"
 msgstr "Close"
 
-#: ./src/installer.ec:806
+#: ./src/installer.ec:804
 msgid "Component"
 msgstr "Component"
 
-#: ./src/installer.ec:1424
+#: ./src/installer.ec:1422
 msgid "Configuring Ecere IDE..."
 msgstr "Configuring Ecere IDE..."
 
-#: ./src/installer.ec:356
+#: ./src/installer.ec:354
 msgid "Core SDK Files"
 msgstr "Core SDK Files"
 
-#: ./src/installer.ec:304
-#: ./src/installer.ec:305
+#: ./src/installer.ec:302
+#: ./src/installer.ec:303
 msgid "Data Access"
 msgstr "Data Access"
 
-#: ./src/installer.ec:263
+#: ./src/installer.ec:261
 msgid "Database"
 msgstr "Database"
 
-#: ./src/installer.ec:420
+#: ./src/installer.ec:418
 msgid "Desktop Icon"
 msgstr "Desktop Icon"
 
-#: ./src/installer.ec:807
+#: ./src/installer.ec:805
 msgid "Destination Folder"
 msgstr "Destination Folder"
 
-#: ./src/installer.ec:358
+#: ./src/installer.ec:356
 msgid "Documentation"
 msgstr "Documentation"
 
-#: ./src/installer.ec:332
+#: ./src/installer.ec:330
 msgid "Ecere Book"
 msgstr "Ecere Book"
 
-#: ./src/installer.ec:334
+#: ./src/installer.ec:332
 msgid "Ecere Coursework"
 msgstr "Ecere Coursework"
 
-#: ./src/installer.ec:308
+#: ./src/installer.ec:306
 msgid "Ecere Extras"
 msgstr "Ecere Extras"
 
@@ -178,33 +178,33 @@ msgstr "Ecere Extras"
 msgid "Ecere SDK v0.44.10 -- built on March 9th, 2014 "
 msgstr "Ecere SDK v0.44.10 -- built on March 9th, 2014 "
 
-#: ./src/installer.ec:441
-#: ./src/installer.ec:1184
+#: ./src/installer.ec:439
+#: ./src/installer.ec:1182
 msgid "Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition"
 msgstr "Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition"
 
-#: ./src/installer.ec:306
-#: ./src/installer.ec:307
+#: ./src/installer.ec:304
+#: ./src/installer.ec:305
 msgid "Ecere Vanilla"
 msgstr "Ecere Vanilla"
 
-#: ./src/installer.ec:1817
+#: ./src/installer.ec:1815
 msgid "Finish"
 msgstr "Finish"
 
-#: ./src/installer.ec:336
+#: ./src/installer.ec:334
 msgid "G++ Docs"
 msgstr "G++ Docs"
 
-#: ./src/installer.ec:335
+#: ./src/installer.ec:333
 msgid "GCC Docs"
 msgstr "GCC Docs"
 
-#: ./src/installer.ec:337
+#: ./src/installer.ec:335
 msgid "GDB Docs"
 msgstr "GDB Docs"
 
-#: ./src/installer.ec:289
+#: ./src/installer.ec:287
 msgid "GNU C Compiler"
 msgstr "GNU C Compiler"
 
@@ -212,24 +212,24 @@ msgstr "GNU C Compiler"
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: ./src/installer.ec:290
+#: ./src/installer.ec:288
 msgid "GNU Debugger"
 msgstr "GNU Debugger"
 
-#: ./src/installer.ec:293
+#: ./src/installer.ec:291
 msgid "GNU Make"
 msgstr "GNU Make"
 
-#: ./src/installer.ec:310
-#: ./src/installer.ec:311
+#: ./src/installer.ec:308
+#: ./src/installer.ec:309
 msgid "GNU Regexp"
 msgstr "GNU Regexp"
 
-#: ./src/installer.ec:266
+#: ./src/installer.ec:264
 msgid "GUI & Graphics"
 msgstr "GUI & Graphics"
 
-#: ./src/installer.ec:265
+#: ./src/installer.ec:263
 msgid "Games"
 msgstr "Games"
 
@@ -241,28 +241,28 @@ msgstr "I agree"
 msgid "I don't agree"
 msgstr "I don't agree"
 
-#: ./src/installer.ec:669
-#: ./src/installer.ec:1200
+#: ./src/installer.ec:667
+#: ./src/installer.ec:1198
 msgid "Install"
 msgstr "Install"
 
-#: ./src/installer.ec:418
+#: ./src/installer.ec:416
 msgid "Install for All Users"
 msgstr "Install for All Users"
 
-#: ./src/installer.ec:1405
+#: ./src/installer.ec:1403
 msgid "Installation Cancelled"
 msgstr "Installation Cancelled"
 
-#: ./src/installer.ec:1404
+#: ./src/installer.ec:1402
 msgid "Installation Cancelled."
 msgstr "Installation Cancelled."
 
-#: ./src/installer.ec:1821
+#: ./src/installer.ec:1819
 msgid "Installation Complete"
 msgstr "Installation Complete"
 
-#: ./src/installer.ec:1820
+#: ./src/installer.ec:1818
 msgid "Installation Complete."
 msgstr "Installation Complete."
 
@@ -270,19 +270,19 @@ msgstr "Installation Complete."
 msgid "Installing %s..."
 msgstr "Installing %s..."
 
-#: ./src/installer.ec:1710
+#: ./src/installer.ec:1708
 msgid "Installing Desktop Icon..."
 msgstr "Installing Desktop Icon..."
 
-#: ./src/installer.ec:1740
+#: ./src/installer.ec:1738
 msgid "Installing Quicklaunch Icon..."
 msgstr "Installing Quicklaunch Icon..."
 
-#: ./src/installer.ec:1624
+#: ./src/installer.ec:1622
 msgid "Installing Start Menu Icons..."
 msgstr "Installing Start Menu Icons..."
 
-#: ./src/installer.ec:1232
+#: ./src/installer.ec:1230
 msgid "Installing the Ecere SDK"
 msgstr "Installing the Ecere SDK"
 
@@ -290,7 +290,7 @@ msgstr "Installing the Ecere SDK"
 msgid "License Agreements"
 msgstr "License Agreements"
 
-#: ./src/installer.ec:338
+#: ./src/installer.ec:336
 msgid "Make Docs"
 msgstr "Make Docs"
 
@@ -306,19 +306,19 @@ msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
-#: ./src/installer.ec:291
+#: ./src/installer.ec:289
 msgid "MinGW-w64 Runtime"
 msgstr "MinGW-w64 Runtime"
 
-#: ./src/installer.ec:267
+#: ./src/installer.ec:265
 msgid "Miscellaneous"
 msgstr "Miscellaneous"
 
-#: ./src/installer.ec:268
+#: ./src/installer.ec:266
 msgid "Networking"
 msgstr "Networking"
 
-#: ./src/installer.ec:1219
+#: ./src/installer.ec:1217
 msgid "Please wait while the Ecere Software Development Kit is being installed."
 msgstr "Please wait while the Ecere Software Development Kit is being installed."
 
@@ -326,60 +326,60 @@ msgstr "Please wait while the Ecere Software Development Kit is being installed.
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
-#: ./src/installer.ec:421
+#: ./src/installer.ec:419
 msgid "Quicklaunch Icon"
 msgstr "Quicklaunch Icon"
 
-#: ./src/installer.ec:1529
+#: ./src/installer.ec:1527
 msgid "Registering uninstaller..."
 msgstr "Registering uninstaller..."
 
-#: ./src/installer.ec:808
+#: ./src/installer.ec:806
 msgid "Req. Space"
 msgstr "Req. Space"
 
-#: ./src/installer.ec:1769
+#: ./src/installer.ec:1767
 msgid "Resgistering File Types..."
 msgstr "Resgistering File Types..."
 
-#: ./src/installer.ec:285
-#: ./src/installer.ec:286
+#: ./src/installer.ec:283
+#: ./src/installer.ec:284
 msgid "Runtime Library"
 msgstr "Runtime Library"
 
-#: ./src/installer.ec:359
+#: ./src/installer.ec:357
 msgid "Samples"
 msgstr "Samples"
 
-#: ./src/installer.ec:451
+#: ./src/installer.ec:449
 msgid "Select a new location"
 msgstr "Select a new location"
 
-#: ./src/installer.ec:779
+#: ./src/installer.ec:777
 msgid "Select icons to install, file\nassociations, and system\nenvironment modifications:"
 msgstr "Select icons to install, file\nassociations, and system\nenvironment modifications:"
 
-#: ./src/installer.ec:758
+#: ./src/installer.ec:756
 msgid "Select the default root\nfolder where to install\nall components:"
 msgstr "Select the default root\nfolder where to install\nall components:"
 
-#: ./src/installer.ec:771
+#: ./src/installer.ec:769
 msgid "Select the optional\ncomponents you wish\nto install:\n\nYou may customize the\ninstall location for each\nof them, or use the default\nbased on the main\ndestination folder."
 msgstr "Select the optional\ncomponents you wish\nto install:\n\nYou may customize the\ninstall location for each\nof them, or use the default\nbased on the main\ndestination folder."
 
-#: ./src/installer.ec:783
+#: ./src/installer.ec:781
 msgid "Space Required: "
 msgstr "Space Required: "
 
-#: ./src/installer.ec:419
+#: ./src/installer.ec:417
 msgid "Start Menu Group"
 msgstr "Start Menu Group"
 
-#: ./src/installer.ec:1822
+#: ./src/installer.ec:1820
 msgid "Thank you for using the Ecere SDK."
 msgstr "Thank you for using the Ecere SDK."
 
-#: ./src/installer.ec:1406
+#: ./src/installer.ec:1404
 msgid "The installation was not completed."
 msgstr "The installation was not completed."
 
@@ -387,7 +387,7 @@ msgstr "The installation was not completed."
 msgid "This program is based on these free open source software components."
 msgstr "This program is based on these free open source software components."
 
-#: ./src/installer.ec:270
+#: ./src/installer.ec:268
 msgid "Threading"
 msgstr "Threading"
 
@@ -395,24 +395,24 @@ msgstr "Threading"
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: ./src/installer.ec:341
+#: ./src/installer.ec:339
 msgid "UPX Docs"
 msgstr "UPX Docs"
 
-#: ./src/installer.ec:269
+#: ./src/installer.ec:267
 msgid "WIA Scanning"
 msgstr "WIA Scanning"
 
-#: ./src/installer.ec:287
-#: ./src/installer.ec:288
+#: ./src/installer.ec:285
+#: ./src/installer.ec:286
 msgid "eC Compiler"
 msgstr "eC Compiler"
 
-#: ./src/installer.ec:340
+#: ./src/installer.ec:338
 msgid "gnurx Docs"
 msgstr "gnurx Docs"
 
-#: ./src/installer.ec:587
+#: ./src/installer.ec:585
 msgid "terms and conditions"
 msgstr "terms and conditions"
 

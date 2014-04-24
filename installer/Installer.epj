@@ -388,7 +388,8 @@
                      "Files" : [
                         "../samples/3D/cube2/cube2.ec",
                         "../samples/3D/cube2/cube2.epj",
-                        "../samples/3D/cube2/knot.png"
+                        "../samples/3D/cube2/knot.png",
+                        "../samples/3D/cube2/fractal3.jpg"
                      ]
                   },
                   {
@@ -976,7 +977,7 @@
                      ]
                   },
                   {
-                     "Folder" : "terominoes",
+                     "Folder" : "tetrominoes",
                      "Files" : [
                         {
                            "Folder" : "samples/games/tetris/res/res",
@@ -1526,23 +1527,23 @@
                               {
                                  "Folder" : "values",
                                  "Files" : [
-                                    "../samples/android/hello/android/res/values/strings.xml"
+                                    "../samples/android/android/res/values/strings.xml"
                                  ]
                               }
                            ]
                         },
-                        "../samples/android/hello/android/AndroidManifest.xml"
+                        "../samples/android/android/AndroidManifest.xml"
                      ]
                   },
                   {
                      "Folder" : "res",
                      "Files" : [
-                        "../samples/android/hello/res/ecere sdk.png"
+                        "../samples/android/res/ecere sdk.png"
                      ]
                   },
-                  "../samples/android/hello/helloAndroid.ec",
-                  "../samples/android/hello/helloAndroid.epj",
-                  "../samples/android/hello/note.txt"
+                  "../samples/android/helloAndroid.ec",
+                  "../samples/android/helloAndroid.epj",
+                  "../samples/android/note.txt"
                ]
             },
             "../samples/LICENSE"

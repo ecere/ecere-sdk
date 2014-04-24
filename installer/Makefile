@@ -201,6 +201,7 @@ RESOURCES3 = \
 	../samples/3D/cube2/cube2.epj \
 	../samples/3D/cube2/knot.png
 RESOURCES4 = \
+	../samples/3D/cube2/fractal3.jpg \
 	../samples/3D/glTriangle/glTriangle.ec \
 	../samples/3D/glTriangle/glTriangle.epj \
 	../samples/3D/hello3D/hello3D.ec \
@@ -696,12 +697,12 @@ RESOURCES18 = \
 	../samples/scanning/wiaTest/wiaTest.epj \
 	../samples/threads/threadsAndListBoxes/blank.ec \
 	../samples/threads/threadsAndListBoxes/blank.epj \
-	../samples/android/hello/android/res/values/strings.xml \
-	../samples/android/hello/android/AndroidManifest.xml \
-	../samples/android/hello/res/ecere\ sdk.png \
-	../samples/android/hello/helloAndroid.ec \
-	../samples/android/hello/helloAndroid.epj \
-	../samples/android/hello/note.txt \
+	../samples/android/android/res/values/strings.xml \
+	../samples/android/android/AndroidManifest.xml \
+	../samples/android/res/ecere\ sdk.png \
+	../samples/android/helloAndroid.ec \
+	../samples/android/helloAndroid.epj \
+	../samples/android/note.txt \
 	../samples/LICENSE \
 	../extras/audio/alsa.ec \
 	../extras/audio/audio.ec \
@@ -718,9 +719,9 @@ RESOURCES18 = \
 	../extras/gui/layout.ec \
 	../extras/gui/LicensesDialog.ec \
 	../extras/gui/RoundedSquare.ec \
-	../extras/gui/genericEditor.ec
+	../extras/gui/genericEditor.ec \
+	../extras/html/htmlParser.ec
 RESOURCES19 = \
-	../extras/html/htmlParser.ec \
 	../extras/html/HTMLView.ec \
 	../extras/html/lines.ec \
 	../extras/html/tables.ec \
@@ -757,9 +758,9 @@ RESOURCES19 = \
 	../extras/res/types/countryCode/as.png \
 	../extras/res/types/countryCode/at.png \
 	../extras/res/types/countryCode/au.png \
-	../extras/res/types/countryCode/aw.png
+	../extras/res/types/countryCode/aw.png \
+	../extras/res/types/countryCode/ax.png
 RESOURCES20 = \
-	../extras/res/types/countryCode/ax.png \
 	../extras/res/types/countryCode/az.png \
 	../extras/res/types/countryCode/ba.png \
 	../extras/res/types/countryCode/bb.png \
@@ -794,9 +795,9 @@ RESOURCES20 = \
 	../extras/res/types/countryCode/cn.png \
 	../extras/res/types/countryCode/co.png \
 	../extras/res/types/countryCode/cr.png \
-	../extras/res/types/countryCode/cs.png
+	../extras/res/types/countryCode/cs.png \
+	../extras/res/types/countryCode/cu.png
 RESOURCES21 = \
-	../extras/res/types/countryCode/cu.png \
 	../extras/res/types/countryCode/cv.png \
 	../extras/res/types/countryCode/cx.png \
 	../extras/res/types/countryCode/cy.png \
@@ -831,9 +832,9 @@ RESOURCES21 = \
 	../extras/res/types/countryCode/gh.png \
 	../extras/res/types/countryCode/gi.png \
 	../extras/res/types/countryCode/gl.png \
-	../extras/res/types/countryCode/gm.png
+	../extras/res/types/countryCode/gm.png \
+	../extras/res/types/countryCode/gn.png
 RESOURCES22 = \
-	../extras/res/types/countryCode/gn.png \
 	../extras/res/types/countryCode/gp.png \
 	../extras/res/types/countryCode/gq.png \
 	../extras/res/types/countryCode/gr.png \
@@ -868,9 +869,9 @@ RESOURCES22 = \
 	../extras/res/types/countryCode/kn.png \
 	../extras/res/types/countryCode/kp.png \
 	../extras/res/types/countryCode/kr.png \
-	../extras/res/types/countryCode/kw.png
+	../extras/res/types/countryCode/kw.png \
+	../extras/res/types/countryCode/ky.png
 RESOURCES23 = \
-	../extras/res/types/countryCode/ky.png \
 	../extras/res/types/countryCode/kz.png \
 	../extras/res/types/countryCode/la.png \
 	../extras/res/types/countryCode/lb.png \
@@ -905,9 +906,9 @@ RESOURCES23 = \
 	../extras/res/types/countryCode/mx.png \
 	../extras/res/types/countryCode/my.png \
 	../extras/res/types/countryCode/mz.png \
-	../extras/res/types/countryCode/na.png
+	../extras/res/types/countryCode/na.png \
+	../extras/res/types/countryCode/nc.png
 RESOURCES24 = \
-	../extras/res/types/countryCode/nc.png \
 	../extras/res/types/countryCode/ne.png \
 	../extras/res/types/countryCode/nf.png \
 	../extras/res/types/countryCode/ng.png \
@@ -942,9 +943,9 @@ RESOURCES24 = \
 	../extras/res/types/countryCode/sa.png \
 	../extras/res/types/countryCode/sb.png \
 	../extras/res/types/countryCode/sc.png \
-	../extras/res/types/countryCode/scotland.png
+	../extras/res/types/countryCode/scotland.png \
+	../extras/res/types/countryCode/sd.png
 RESOURCES25 = \
-	../extras/res/types/countryCode/sd.png \
 	../extras/res/types/countryCode/se.png \
 	../extras/res/types/countryCode/sg.png \
 	../extras/res/types/countryCode/sh.png \
@@ -979,9 +980,9 @@ RESOURCES25 = \
 	../extras/res/types/countryCode/ua.png \
 	../extras/res/types/countryCode/ug.png \
 	../extras/res/types/countryCode/um.png \
-	../extras/res/types/countryCode/us.png
+	../extras/res/types/countryCode/us.png \
+	../extras/res/types/countryCode/uy.png
 RESOURCES26 = \
-	../extras/res/types/countryCode/uy.png \
 	../extras/res/types/countryCode/uz.png \
 	../extras/res/types/countryCode/va.png \
 	../extras/res/types/countryCode/vc.png \
@@ -1025,9 +1026,9 @@ RESOURCES26 = \
 	../extras/stringTools.ec \
 	../extras/res/licenses/freetype.LICENSE \
 	../extras/res/licenses/harfbuzz.LICENSE \
-	../extras/res/licenses/jpg.LICENSE
+	../extras/res/licenses/jpg.LICENSE \
+	../extras/res/licenses/png.LICENSE
 RESOURCES27 = \
-	../extras/res/licenses/png.LICENSE \
 	../extras/res/licenses/sqlite.LICENSE \
 	../extras/res/licenses/tango.COPYING \
 	../extras/res/licenses/ungif.LICENSE \
@@ -1065,9 +1066,9 @@ RESOURCES27 = \
 	tdm/binutils-2.23.2-tdm64-1/bin/nm.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/objcopy.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/objdump.exe \
-	tdm/binutils-2.23.2-tdm64-1/bin/ranlib.exe
+	tdm/binutils-2.23.2-tdm64-1/bin/ranlib.exe \
+	tdm/binutils-2.23.2-tdm64-1/bin/readelf.exe
 RESOURCES28 = \
-	tdm/binutils-2.23.2-tdm64-1/bin/readelf.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/size.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/strings.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/strip.exe \
@@ -5474,7 +5475,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/Animate3DS/Animate3DS.ec ../samples/3D/Animate3DS/Animate3DS.epj "samples/3D/Animate3DS"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/Animate3DS/res/desktop.3ds ../samples/3D/Animate3DS/res/floor.jpg ../samples/3D/Animate3DS/res/wall_80.jpg "samples/3D/Animate3DS/res"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/ColorSpheres/colorSpheres.ec ../samples/3D/ColorSpheres/colorSpheres.epj "samples/3D/ColorSpheres"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/cube2/cube2.ec ../samples/3D/cube2/cube2.epj ../samples/3D/cube2/knot.png "samples/3D/cube2"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/cube2/cube2.ec ../samples/3D/cube2/cube2.epj ../samples/3D/cube2/knot.png ../samples/3D/cube2/fractal3.jpg "samples/3D/cube2"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/glTriangle/glTriangle.ec ../samples/3D/glTriangle/glTriangle.epj "samples/3D/glTriangle"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/hello3D/hello3D.ec ../samples/3D/hello3D/hello3D.epj "samples/3D/hello3D"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/3D/HiraganaCube/FreeSans.ttf ../samples/3D/HiraganaCube/hiraganaCube.ec ../samples/3D/HiraganaCube/HiraganaCube.epj "samples/3D/HiraganaCube"
@@ -5543,8 +5544,8 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/othello/res/blue.bmp ../samples/games/othello/res/green.bmp ../samples/games/othello/res/othello.bmp "samples/games/othello/res"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/crosswords/crossWords.ec ../samples/games/crosswords/crossWords.epj ../samples/games/crosswords/CrossWordsServer.ec "samples/games/crosswords"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/crosswords/res/englishWords.txt ../samples/games/crosswords/res/frenchWords.txt "samples/games/crosswords/res"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/tetrominoes/tetrominoes.ec ../samples/games/tetrominoes/tetrominoes.epj "samples/games/terominoes"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/tetrominoes/res/tetrominoes.png "samples/games/terominoes/res"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/tetrominoes/tetrominoes.ec ../samples/games/tetrominoes/tetrominoes.epj "samples/games/tetrominoes"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/tetrominoes/res/tetrominoes.png "samples/games/tetrominoes/res"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/ticTacToe/SDKIntro.pdf ../samples/games/ticTacToe/TicTacToe.ec ../samples/games/ticTacToe/TicTacToe.epj "samples/games/ticTacToe"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/chess/chess.epj "samples/games/chess"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/games/chess/res/aboutPic.jpg ../samples/games/chess/res/blackBishop.png ../samples/games/chess/res/blackKing.png ../samples/games/chess/res/blackKnight.png ../samples/games/chess/res/blackPawn.png ../samples/games/chess/res/blackQueen.png ../samples/games/chess/res/blackRook.png ../samples/games/chess/res/board.jpg ../samples/games/chess/res/bthr.jpg ../samples/games/chess/res/chessSet.3ds "samples/games/chess/res"
@@ -5609,10 +5610,10 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/net/SocketTx/socketTX.ec ../samples/net/SocketTx/socketTX.epj "samples/net/SocketTx"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/scanning/wiaTest/wiaTest.ec ../samples/scanning/wiaTest/wiaTest.epj "samples/scanning/wiaTest"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/threads/threadsAndListBoxes/blank.ec ../samples/threads/threadsAndListBoxes/blank.epj "samples/threads/threadsAndListBoxes"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/hello/helloAndroid.ec ../samples/android/hello/helloAndroid.epj ../samples/android/hello/note.txt "samples/android"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/hello/android/AndroidManifest.xml "samples/android/android"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/hello/android/res/values/strings.xml "samples/android/android/res/values"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/hello/res/ecere\ sdk.png "samples/android/res"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/helloAndroid.ec ../samples/android/helloAndroid.epj ../samples/android/note.txt "samples/android"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/android/AndroidManifest.xml "samples/android/android"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/android/res/values/strings.xml "samples/android/android/res/values"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/android/res/ecere\ sdk.png "samples/android/res"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/base64.ec ../extras/CSVDataParser.ec ../extras/CSVParser.ec ../extras/EnvironmentVariables.ec ../extras/FileSystemIterator.ec ../extras/fli.ec ../extras/fliPlay.ec ../extras/md5.ec ../extras/Regex.ec ../extras/sha256.ec "extras"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/SMTPSocket.ec ../extras/timeTools.ec ../extras/wia.ec ../extras/windowsShortcut.ec ../extras/XMLParser.ec ../extras/createLink.ec ../extras/stringTools.ec "extras"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/audio/alsa.ec ../extras/audio/audio.ec ../extras/audio/dsound.ec ../extras/audio/EcereAudio.epj ../extras/audio/mixer.ec "extras/audio"
