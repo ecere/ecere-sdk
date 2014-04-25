@@ -2251,9 +2251,11 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
    {
-      glDeleteTextures(1, (int *)&bitmap.driverData);
-      bitmap.driverData = 0;
-
+      if(bitmap.driverData)
+      {
+         glDeleteTextures(1, (int *)&bitmap.driverData);
+         bitmap.driverData = 0;
+      }
       bitmap.driver = ((subclass(DisplayDriver))class(LFBDisplayDriver));
    }
 

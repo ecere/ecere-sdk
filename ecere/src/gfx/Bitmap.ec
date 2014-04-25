@@ -860,8 +860,7 @@ public:
    {
       if(this && driver)
       {
-         if(driverData)
-            driver.FreeBitmap(displaySystem, this);
+         driver.FreeBitmap(displaySystem, this);
          driverData = null;
       }
       if(this && keepData)

@@ -634,16 +634,19 @@ class XDisplayDriver : DisplayDriver
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
    {
       XBitmap xBitmap = bitmap.driverData;
-
-      if(xBitmap.pixmap)
-         XFreePixmap(xGlobalDisplay, xBitmap.pixmap);
-      if(xBitmap.mask)
-         XFreePixmap(xGlobalDisplay, xBitmap.mask);
-      if(xBitmap.picture)
-         XRenderFreePicture(xGlobalDisplay, xBitmap.picture);
-      if(xBitmap.maskPicture)
-         XRenderFreePicture(xGlobalDisplay, xBitmap.maskPicture);
-      delete xBitmap;
+      if(xBitmap)
+      {
+         if(xBitmap.pixmap)
+            XFreePixmap(xGlobalDisplay, xBitmap.pixmap);
+         if(xBitmap.mask)
+            XFreePixmap(xGlobalDisplay, xBitmap.mask);
+         if(xBitmap.picture)
+            XRenderFreePicture(xGlobalDisplay, xBitmap.picture);
+         if(xBitmap.maskPicture)
+            XRenderFreePicture(xGlobalDisplay, xBitmap.maskPicture);
+         delete xBitmap;
+         bitmap.driverData = null;
+      }
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).FreeBitmap(displaySystem, bitmap);
    }
 
