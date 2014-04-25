@@ -2682,6 +2682,9 @@ class XInterface : Interface
                XChangeProperty(xGlobalDisplay, windowHandle, atoms[_net_wm_window_type], XA_ATOM, 32,
                   PropModeReplace, (unsigned char*)&hints, count);
 
+               if(window.stayOnTop)
+                  SetNETWMState((X11Window)windowHandle, false, add, atoms[_net_wm_state_above], 0);
+
                {
                   XWMHints xwmHints;
                   xwmHints.flags = InputHint;
@@ -2947,7 +2950,7 @@ class XInterface : Interface
 
    void OrderRootWindow(Window window, bool topMost)
    {
-
+      SetNETWMState((X11Window)window.windowHandle, false, topMost ? add : remove, atoms[_net_wm_state_above], 0);
    }
 
    void SetRootWindowColor(Window window)
