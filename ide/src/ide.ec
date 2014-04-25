@@ -1103,7 +1103,7 @@ class IDEWorkSpace : Window
          isRemote = true,
          borderStyle = 0,
          moveable = true,
-         anchor = { right = 0, top = 0 },
+         anchor = { right = 0, bottom = 0 },
          inactive = true,
          isActiveClient = false,
          stayOnTop = true,
@@ -1114,7 +1114,7 @@ class IDEWorkSpace : Window
          {
             ModelView::OnLoadGraphics();
             camera.position.z /= 1.3;
-            camera.orientation = Euler { yaw = 290, pitch = 20 };
+            camera.orientation = Euler { yaw = 280, pitch = 20 };
             camera.Update();
             Update(null);
             return true;
@@ -1122,6 +1122,7 @@ class IDEWorkSpace : Window
 
          bool OnRightButtonDown(int x, int y, Modifiers mods)
          {
+            if(!displaySystem.flags.flipping) return true;
             MenuWindowMove(null, 0);
             return false;
          }
@@ -1659,8 +1660,7 @@ class IDEWorkSpace : Window
       delete ideSettings.displayDriver;
       ideSettings.displayDriver = CopyString(selection.id ? "OpenGL" : "Default");
 
-      if(ide.duck.modelFile && !strcmpi(app.driver, "OpenGL"))
-         ide.debugRubberDuck.disabled = false;
+      ide.debugRubberDuck.disabled = !ide.duck.modelFile || strcmpi(app.driver, "OpenGL");
 
       settingsContainer.Save();
       //SetDriverAndSkin();

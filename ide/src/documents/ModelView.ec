@@ -50,7 +50,7 @@ class ModelView : Window
    property char * modelFile
    {
       set { strcpy(fileName, value); }
-      get { return (char *)fileName; }
+      get { return fileName[0] ? (char *)fileName : null; }
    }
 
    void OnUnloadGraphics()
@@ -81,6 +81,7 @@ class ModelView : Window
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
+      if(!displaySystem.flags.flipping) return true;
       if(!moving && !lightMoving)
       {
          bool clicked = false;
