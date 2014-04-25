@@ -1697,6 +1697,8 @@ extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNa
 
 extern struct Declarator * PlugDeclarator(struct Declarator * decl, struct Declarator * baseDecl);
 
+extern void Compiler_Warning(char *  format, ...);
+
 extern struct __ecereNameSpace__ecere__sys__OldList *  ast;
 
 extern int sprintf(char * , char * , ...);
@@ -2248,13 +2250,26 @@ MangleClassName(name);
 params = MkList();
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
-if((regClass->type == 1 || regClass->type == 6) || ((regClass->type == 5 || regClass->type == 0) && (!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion)))
-ListAdd(specifiers, MkSpecifier(VOID));
-else
 {
-if(regClass->type != 5 && regClass->type != 0 && !propertyDef->isDBProp && (!propertyDef->symbol->_property || !propertyDef->symbol->_property->conversion))
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "set defined on type without storage for non-conversion property\n", (((void *)0))));
-ListAdd(specifiers, MkSpecifierName(regClass->fullName));
+unsigned int isConversion = propertyDef->symbol->_property && propertyDef->symbol->_property->conversion;
+unsigned int useVoid = 0x0;
+
+switch(regClass->type)
+{
+case 1:
+case 6:
+useVoid = 0x1;
+break;
+case 5:
+case 0:
+useVoid = !isConversion;
+break;
+default:
+useVoid = !isConversion;
+if(useVoid && !propertyDef->isDBProp)
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "set defined on type without storage for non-conversion property\n", (((void *)0))));
+}
+ListAdd(specifiers, useVoid ? MkSpecifier(VOID) : MkSpecifierName(regClass->fullName));
 }
 func = MkClassFunction(specifiers, (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propertyDef->setStmt);

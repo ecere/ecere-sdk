@@ -1199,15 +1199,19 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      decl = MkDeclaratorFunction(
                         MkDeclaratorIdentifier(MkIdentifier(name)), params);
 
-                     // TESTING COMMENTING OUT THESE, ADDED noHeadClass here
-                     if((regClass.type == structClass || regClass.type == unionClass) ||
-                        ((regClass.type == noHeadClass || regClass.type == normalClass) && (!propertyDef.symbol._property || !propertyDef.symbol._property.conversion)))
-                        ListAdd(specifiers, MkSpecifier(VOID));
-                     else
                      {
-                        if(regClass.type != noHeadClass && regClass.type != normalClass && !propertyDef.isDBProp && (!propertyDef.symbol._property || !propertyDef.symbol._property.conversion))
-                           Compiler_Error($"set defined on type without storage for non-conversion property\n");
-                        ListAdd(specifiers, MkSpecifierName(regClass.fullName));
+                        bool isConversion = propertyDef.symbol._property && propertyDef.symbol._property.conversion;
+                        bool useVoid = false;
+                        switch(regClass.type)
+                        {
+                           case structClass: case unionClass:  useVoid = true; break;
+                           case noHeadClass: case normalClass: useVoid = !isConversion; break;
+                           default:
+                              useVoid = !isConversion;
+                              if(useVoid && !propertyDef.isDBProp)
+                                 Compiler_Warning($"set defined on type without storage for non-conversion property\n");
+                        }
+                        ListAdd(specifiers, useVoid ? MkSpecifier(VOID) : MkSpecifierName(regClass.fullName));
                      }
 
                      func = MkClassFunction(specifiers, null, decl, null);
