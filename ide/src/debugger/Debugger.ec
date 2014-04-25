@@ -740,7 +740,9 @@ class Debugger
    void ChangeUserAction(char * file, int line, DebuggerUserAction value)
    {
       bool same = value == userAction;
+#if 0
       __dpl2(file, line, _dpct, dplchan::debuggerUserAction, 0, userAction, /*same ? " *** == *** " : */" -> ", value);
+#endif
       userAction = value;
    }
 #else
@@ -756,7 +758,7 @@ class Debugger
 #endif
    {
       bool same = value == state;
-#ifdef _DEBUG_INST
+#if 0 //def _DEBUG_INST
       __dpl2(file, line, _dpct, dplchan::debuggerState, 0, state, same ? " *** == *** " : " -> ", value);
 #endif
       state = value;
