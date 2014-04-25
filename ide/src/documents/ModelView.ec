@@ -7,7 +7,7 @@ import "ecere"
 class ModelView : Window
 {
    isActiveClient = true;
-   background = blue;
+   background = lightBlue;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
 
    FillModeValue fillMode;
@@ -53,6 +53,7 @@ class ModelView : Window
       {
          strcpy(fileName, value);
       }
+      get { return fileName; }
    }
 
    void OnUnloadGraphics()
@@ -85,11 +86,30 @@ class ModelView : Window
    {
       if(!moving && !lightMoving)
       {
-         startPosition.x = x;
-         startPosition.y = y;
-         startOrientation = camera.eulerOrientation;
-         Capture();
-         moving = true;
+         bool clicked = false;
+         OldList list {};
+
+         display.StartSelection(x,y, 0,0);
+         display.SetCamera(null, camera);
+         display.CollectHits();
+         display.DrawObject(model);
+         if(display.GetHits(list))
+         {
+            clicked = true;
+            list.Free(null);
+         }
+         display.SetCamera(null, null);
+         display.StopSelection();
+
+         if(clicked)
+         {
+            startPosition.x = x;
+            startPosition.y = y;
+            startOrientation = camera.eulerOrientation;
+            Capture();
+            moving = true;
+            return false;
+         }
       }
       return true;
    }
@@ -203,6 +223,8 @@ class ModelView : Window
          camera.zMax = 10000;
          camera.position = { 0, 0, -r * 2 };
          camera.eulerOrientation = Euler { 30, 0, 0 };
+         light.orientation = Euler { pitch = 50, yaw = 45 };
+
          if(r * 2 < camera.zMax / 10)
          {
             while(r * 2 < camera.zMax / 100)
@@ -229,14 +251,13 @@ class ModelView : Window
       //display.fogColor = blue;
       display.fogDensity = 0; //0.000001f;
 
-      surface.SetBackground(lightBlue);
-      surface.Clear(colorAndDepth);
-
+      surface.Clear(depthBuffer);
       camera.Update();
 
+      display.SetLight(0, light);
       display.SetCamera(surface, camera);
 
-      display.SetLight(0, light);
+      //display.SetLight(0, light);
 
       display.fillMode = fillMode;
       display.DrawObject(model);

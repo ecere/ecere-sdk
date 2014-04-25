@@ -1092,6 +1092,59 @@ class IDEWorkSpace : Window
             return true;
          }
       }
+      MenuDivider { debugMenu };
+      ModelView duck
+      {
+         this,
+         // nonClient = true,
+         autoCreate = false,
+         alphaBlend = true,
+         opacity = 0,
+         isRemote = true,
+         borderStyle = 0,
+         moveable = true,
+         anchor = { right = 0, top = 0 },
+         inactive = true,
+         isActiveClient = false,
+         stayOnTop = true,
+         clickThrough = true,
+         size = { 500, 500 };
+
+         bool OnLoadGraphics()
+         {
+            ModelView::OnLoadGraphics();
+            camera.position.z /= 1.3;
+            camera.orientation = Euler { yaw = 290, pitch = 20 };
+            camera.Update();
+            Update(null);
+            return true;
+         }
+
+         bool OnRightButtonDown(int x, int y, Modifiers mods)
+         {
+            MenuWindowMove(null, 0);
+            return false;
+         }
+
+         bool OnRightButtonUp(int x, int y, Modifiers mods)
+         {
+            position = position;
+            state = normal;
+            return true;
+         }
+      };
+      MenuItem debugRubberDuck
+      {
+         debugMenu, $"Rubber Duck", checkable = true, disabled = true;
+         bool NotifySelect(MenuItem selection, Modifiers mods)
+         {
+            if(selection.checked)
+               duck.Create();
+            else
+               duck.Destroy(0);
+            return true;
+         }
+      }
 #ifndef __WIN32__
       MenuDivider { debugMenu };
       MenuItem debugUseValgrindItem
@@ -1605,6 +1658,9 @@ class IDEWorkSpace : Window
 #endif
       delete ideSettings.displayDriver;
       ideSettings.displayDriver = CopyString(selection.id ? "OpenGL" : "Default");
+
+      if(ide.duck.modelFile && !strcmpi(app.driver, "OpenGL"))
+         ide.debugRubberDuck.disabled = false;
 
       settingsContainer.Save();
       //SetDriverAndSkin();
@@ -3472,146 +3528,126 @@ define sdkDirName = "Ecere SDK";
 define sdkDirName = "ecere";
 #endif
 
-void FindAndShellOpenInstalledFolder(char * name)
+bool GetInstalledFileOrFolder(char * subDir, char * name, char * path, FileAttribs attribs)
 {
-   char * p = new char[MAX_LOCATION];
+   bool found = false;
    char * v = new char[maxPathLen];
-   byte * tokens[256];
-   int c, numTokens;
-   Array<String> paths { };
-   p[0] = v[0] = '\0';
-   strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-   StripLastDirectory(p, p);
-   PathCat(p, name);
-   paths.Add(CopyString(p));
+   v[0] = '\0';
+   if(found)
+   {
+      strncpy(path, settingsContainer.moduleLocation, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+      StripLastDirectory(path, path);
+      PathCat(path, subDir);
+      if(name) PathCat(path, name);
+      if(FileExists(path) & attribs) found = true;
+   }
 #if defined(__WIN32__)
-   GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
-   if(v[0])
+   if(!found)
    {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, name); paths.Add(CopyString(p));
-   }
-   GetEnvironment("AppData", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
-   }
-   GetEnvironment("ProgramData", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
-   }
-   GetEnvironment("ProgramFiles", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
-   }
-   GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
-   }
-   GetEnvironment("SystemDrive", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, "Program Files"); PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
-   }
-#else
-   GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
-   numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
-   for(c=0; c<numTokens; c++)
-   {
-      strncpy(p, tokens[c], MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, name); paths.Add(CopyString(p));
-   }
-#endif
-   for(path : paths)
-   {
-      strncpy(p, path, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      if(FileExists(p).isDirectory)
+      GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
+      if(v[0])
       {
-         ShellOpen(p);
-         break;
+         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+         PathCat(path, subDir);
+         if(name) PathCat(path, name);
+         if(FileExists(path) & attribs) found = true;
       }
    }
-   delete p;
+   if(!found)
+   {
+      GetEnvironment("AppData", v, maxPathLen);
+      if(v[0])
+      {
+         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+         PathCat(path, sdkDirName);
+         PathCat(path, subDir);
+         if(name) PathCat(path, name);
+         if(FileExists(path) & attribs) found = true;
+      }
+   }
+   if(!found)
+   {
+      GetEnvironment("ProgramData", v, maxPathLen);
+      if(v[0])
+      {
+         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+         PathCat(path, sdkDirName);
+         PathCat(path, subDir);
+         if(name) PathCat(path, name);
+         if(FileExists(path) & attribs) found = true;
+      }
+   }
+   if(!found)
+   {
+      GetEnvironment("ProgramFiles", v, maxPathLen);
+      if(v[0])
+      {
+         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+         PathCat(path, sdkDirName);
+         PathCat(path, subDir);
+         if(name) PathCat(path, name);
+         if(FileExists(path) & attribs) found = true;
+      }
+   }
+   if(!found)
+   {
+      GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
+      if(v[0])
+      {
+         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+         PathCat(path, sdkDirName);
+         PathCat(path, subDir);
+         if(name) PathCat(path, name);
+         if(FileExists(path) & attribs) found = true;
+      }
+   }
+   if(!found)
+   {
+      GetEnvironment("SystemDrive", v, maxPathLen);
+      if(v[0])
+      {
+         strncpy(path, v, MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+         PathCat(path, "Program Files");
+         PathCat(path, sdkDirName);
+         PathCat(path, subDir);
+         if(name) PathCat(path, name);
+         if(FileExists(path) & attribs) found = true;
+      }
+   }
+#else
+   if(!found)
+   {
+      byte * tokens[256];
+      int c, numTokens;
+
+      GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
+      numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
+      for(c=0; c<numTokens; c++)
+      {
+         strncpy(path, tokens[c], MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
+         PathCat(path, sdkDirName);
+         PathCat(path, subDir);
+         if(name) PathCat(path, name);
+         if(FileExists(path) & attribs) found = true;
+      }
+   }
+#endif
    delete v;
-   paths.Free();
-   delete paths;
+   return found;
+}
+
+void FindAndShellOpenInstalledFolder(char * name)
+{
+   char path[MAX_LOCATION];
+   if(GetInstalledFileOrFolder(name, null, path, { isDirectory = true }))
+      ShellOpen(path);
 }
 
 void FindAndShellOpenInstalledFile(char * subdir, char * name)
 {
-   char * p = new char[MAX_LOCATION];
-   char * v = new char[maxPathLen];
-   byte * tokens[256];
-   int c, numTokens;
-   Array<String> paths { };
-   p[0] = v[0] = '\0';
-   strncpy(p, settingsContainer.moduleLocation, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-   paths.Add(CopyString(p));
-   StripLastDirectory(p, p);
-   PathCat(p, subdir);
-   paths.Add(CopyString(p));
-#if defined(__WIN32__)
-   GetEnvironment("ECERE_SDK_SRC", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
-   }
-   GetEnvironment("AppData", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
-   }
-   GetEnvironment("ProgramFiles", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
-   }
-   GetEnvironment("ProgramFiles(x86)", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
-   }
-   GetEnvironment("SystemDrive", v, maxPathLen);
-   if(v[0])
-   {
-      strncpy(p, v, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, "Program Files"); PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
-   }
-#else
-   GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
-   numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
-   for(c=0; c<numTokens; c++)
-   {
-      strncpy(p, tokens[c], MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, sdkDirName); PathCat(p, subdir); paths.Add(CopyString(p));
-   }
-#endif
-   for(path : paths)
-   {
-      strncpy(p, path, MAX_LOCATION); p[MAX_LOCATION-1] = '\0';
-      PathCat(p, name);
-      if(FileExists(p).isFile)
-      {
-         ShellOpen(p);
-         break;
-      }
-   }
-   delete p;
-   delete v;
-   paths.Free();
-   delete paths;
+   char path[MAX_LOCATION];
+   if(GetInstalledFileOrFolder(subdir, name, path, { isFile = true }))
+      ShellOpen(path);
 }
 
 class RecursiveDeleteFolderFSI : NormalFileSystemIterator
@@ -3695,6 +3731,17 @@ class IDEApp : GuiApplication
 #endif
          ide.driverItems[ideSettings.displayDriver && !strcmp(ideSettings.displayDriver,"OpenGL")].checked = true;
       }
+
+      {
+         char model[MAX_LOCATION];
+         if(GetInstalledFileOrFolder("samples", "3D/ModelViewer/models/duck/duck.3DS", model, { isFile = true }))
+         {
+            ide.duck.modelFile = model;
+            ide.duck.parent = ideMainFrame;
+         }
+      }
+      if(ide.duck.modelFile && !strcmpi(app.driver, "OpenGL"))
+         ide.debugRubberDuck.disabled = false;
 
       SetInIDE(true);
 

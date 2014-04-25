@@ -4296,7 +4296,8 @@ private:
          }
          SelectMouseCursor();
 
-         if(window && !guiApp.windowMoving && !wasMoving && !wasScrolling)
+         if(window && ((!guiApp.windowMoving && !wasMoving) ||
+            (wasMoving && guiApp.windowMoving && method == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp)) && !wasScrolling)
          {
             int clientX = x - (window.absPosition.x + window.clientStart.x);
             int clientY = y - (window.absPosition.y + window.clientStart.y);
