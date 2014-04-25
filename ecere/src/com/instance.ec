@@ -2378,7 +2378,24 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
       offsetClass = base ? base.sizeClass : (type == noHeadClass ? 0 : 0 /*sizeof(class Class)*/);
       totalSizeClass = offsetClass + sizeClass;
 
-      if((_class = eSystem_FindClass(module, name)))
+      _class = eSystem_FindClass(module, name);
+      if(!_class)
+      {
+         char * colons = RSearchString(name, "::", strlen(name), true, false);
+         if(colons && colons)
+         {
+            _class = eSystem_FindClass(module, colons + 2);
+            if(_class)
+               if(_class.internalDecl)
+               {
+                  delete _class.fullName;
+                  _class.fullName = CopyString(name);
+               }
+               else
+                  _class = null;
+         }
+      }
+      if(_class)
       {
          if(!_class.internalDecl)
          {
@@ -4032,10 +4049,12 @@ public dllexport Method eClass_AddMethod(Class _class, char * name, char * type,
       Class base;
       for(base = _class; base; base = base.base)
       {
-         Method method = (Method)base.methods.FindString(name);
+         Method method;
+         if(base.templateClass) base = base.templateClass;
+         method = (Method)base.methods.FindString(name);
          if(method)
          {
-            // If this overides a virtual method
+            // If this overrides a virtual method
             if(method.type == virtualMethod)
             {
                OldLink deriv;
