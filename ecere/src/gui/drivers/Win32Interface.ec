@@ -1595,7 +1595,8 @@ class Win32Interface : Interface
       {
          SetWindowPos(window.windowHandle, HWND_TOPMOST, 0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
          mouse_event(MOUSEEVENTF_LEFTDOWN, x, y, 0, 0);
-         SetWindowPos(window.windowHandle, HWND_NOTOPMOST, 0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
+         if(!window.stayOnTop)
+            SetWindowPos(window.windowHandle, HWND_NOTOPMOST, 0,0,0,0,SWP_NOMOVE|SWP_NOSIZE|SWP_NOACTIVATE);
       }
    }
 
