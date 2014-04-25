@@ -756,7 +756,7 @@ class XDisplayDriver : DisplayDriver
    void ReleaseSurface(Display display, Surface surface)
    {
       XSurface xSurface = surface.driverData;
-      XDisplay xDisplay = display.driverData;
+      XDisplay xDisplay = display ? display.driverData : null;
       XRectangle rectangle;
 
       if(xSurface.colorPicture)
@@ -764,10 +764,12 @@ class XDisplayDriver : DisplayDriver
 
       rectangle.x = 0;
       rectangle.y = 0;
-      rectangle.width = (uint16)display.width;
-      rectangle.height = (uint16)display.height;
-
-      XRenderSetPictureClipRectangles(xGlobalDisplay, xDisplay.picture, 0, 0, &rectangle, 1);
+      if(display)
+      {
+         rectangle.width = (uint16)display.width;
+         rectangle.height = (uint16)display.height;
+         XRenderSetPictureClipRectangles(xGlobalDisplay, xDisplay.picture, 0, 0, &rectangle, 1);
+      }
 
       if(xSurface.colorPixmap)
          XFreePixmap(xGlobalDisplay, xSurface.colorPixmap);
@@ -930,7 +932,7 @@ class XDisplayDriver : DisplayDriver
    void SetForeground(Display display, Surface surface, ColorAlpha color)
    {
       XSurface xSurface = surface.driverData;
-      XDisplay xDisplay = display.driverData;
+      XDisplay xDisplay = display ? display.driverData : null;
       XRenderColor renderColor = { color.color.r * color.a, color.color.g * color.a, color.color.b * color.a, color.a * 255};
       X11Picture colorPicture;
 
@@ -956,19 +958,21 @@ class XDisplayDriver : DisplayDriver
       // xSurface.foreground = ARGB(A(color),B(color),G(color),R(color));
       xSurface.foreground = color;
 
-      XSetForeground(xGlobalDisplay, xDisplay.gc, (xSystemPixelFormat == pixelFormat888) ? xSurface.foreground :
-         ((xSystemPixelFormat == pixelFormat565) ? ((Color565)xSurface.foreground) : ((Color555)xSurface.foreground)));
+      if(xDisplay)
+         XSetForeground(xGlobalDisplay, xDisplay.gc, (xSystemPixelFormat == pixelFormat888) ? xSurface.foreground :
+            ((xSystemPixelFormat == pixelFormat565) ? ((Color565)xSurface.foreground) : ((Color555)xSurface.foreground)));
    }
 
    void SetBackground(Display display, Surface surface, ColorAlpha color)
    {
       XSurface xSurface = surface.driverData;
-      XDisplay xDisplay = display.driverData;
+      XDisplay xDisplay = display ? display.driverData : null;
       // xSurface.background = ARGB(A(color),B(color),G(color),R(color));
       xSurface.background = color;
 
-      XSetBackground(xGlobalDisplay, xDisplay.gc, (xSystemPixelFormat == pixelFormat888) ? xSurface.background :
-         ((xSystemPixelFormat == pixelFormat565) ? ((Color565)xSurface.background) : ((Color555)xSurface.background)));
+      if(xDisplay)
+         XSetBackground(xGlobalDisplay, xDisplay.gc, (xSystemPixelFormat == pixelFormat888) ? xSurface.background :
+            ((xSystemPixelFormat == pixelFormat565) ? ((Color565)xSurface.background) : ((Color555)xSurface.background)));
    }
 
    ColorAlpha GetPixel(Display display, Surface surface, int x, int y)
@@ -991,9 +995,9 @@ class XDisplayDriver : DisplayDriver
 
    void DrawLine(Display display, Surface surface, int x1, int y1, int x2, int y2)
    {
-      XDisplay xDisplay = display.driverData;
+      XDisplay xDisplay = display ? display.driverData : null;
       XSurface xSurface = surface.driverData;
-      if(xSurface.foreground.a < 255)
+      if(!xDisplay || xSurface.foreground.a < 255)
       {
          XTrapezoid traps[3];
          int nTraps = 0;
@@ -1154,10 +1158,10 @@ class XDisplayDriver : DisplayDriver
 
    void Rectangle(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
-      XDisplay xDisplay = display.driverData;
+      XDisplay xDisplay = xDisplay ? display.driverData : null;
       XSurface xSurface = surface.driverData;
 
-      if(xSurface.foreground.a < 255)
+      if(!xDisplay || xSurface.foreground.a < 255)
       {
          DrawLine(display, surface,x1,y1,x2-1,y1);
          DrawLine(display, surface,x2,y1,x2,y2-1);
@@ -1173,9 +1177,9 @@ class XDisplayDriver : DisplayDriver
 
    void Area(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
-      XDisplay xDisplay = display.driverData;
+      XDisplay xDisplay = display ? display.driverData : null;
       XSurface xSurface = surface.driverData;
-      if(xSurface.background.a < 255)
+      if(!xDisplay || xSurface.background.a < 255)
       {
          XRenderColor renderColor =
          {
@@ -1207,7 +1211,7 @@ class XDisplayDriver : DisplayDriver
    {
       if(flags != depthBuffer)
       {
-         XDisplay xDisplay = display.driverData;
+         // XDisplay xDisplay = display.driverData;
          XSurface xSurface = surface.driverData;
          if(xSurface.background.a < 255)
          {
@@ -1413,11 +1417,11 @@ class XDisplayDriver : DisplayDriver
    void BlitDI(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h)
    {
       XImage image = { 0 };
-      XDisplay xDisplay = display.driverData;
+      XDisplay xDisplay = display ? display.driverData : null;
       XSurface xSurface = surface.driverData;
       bool flip;
 
-      if(!src.picture || !ClipBlitCoords(surface, src, &dx, &dy, &sx, &sy, &w, &h, &flip))
+      if(!xDisplay || !src.picture || !ClipBlitCoords(surface, src, &dx, &dy, &sx, &sy, &w, &h, &flip))
          return;
 
       if(src.pixelFormat == display.pixelFormat)
