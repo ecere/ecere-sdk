@@ -272,6 +272,9 @@ class ModelViewer : Window
          camera.zMax = 10000;
          camera.position = { 0, 0, -r * 2 };
          camera.eulerOrientation = Euler { 30, 0, 0 };
+
+         light.orientation = Euler { pitch = 50, yaw = 45 };
+
          if(r * 2 < camera.zMax / 10)
          {
             while(r * 2 < camera.zMax / 100)
@@ -307,12 +310,12 @@ class ModelViewer : Window
       camera.Update();
 
       // Set Light before setting the camera will set the light in view space
-      // display.SetLight(0, &light);
+      display.SetLight(0, &light);
 
       display.SetCamera(surface, camera);
 
       // Set Light after setting the camera will set the light in world space
-      display.SetLight(0, &light);
+      //display.SetLight(0, &light);
 
       display.ambient = { 30, 30, 30 }; //black;
       // display.SetLights(model);

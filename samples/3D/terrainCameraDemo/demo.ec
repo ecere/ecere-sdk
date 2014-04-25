@@ -7,7 +7,6 @@
    demo.ec - Main Module
 ****************************************************************************/
 import "ecere"
-import "engineSettings"
 import "dna"
 import "terrain"
 

@@ -10,6 +10,16 @@
       ],
       "Console" : false
    },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      }
+   ],
    "Configurations" : [
       {
          "Name" : "Debug",

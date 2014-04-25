@@ -108,7 +108,8 @@ class Bomb : Window
          case STATE_CREDITS: palette = LoadPalette(":3.pcx", null); break;
          case STATE_ENDSCREEN: palette = LoadPalette(":max3.pcx", null); break;
       }
-      CopyBytesBy4(buffer.palette, palette, 256);
+      if(buffer.palette)
+         CopyBytesBy4(buffer.palette, palette, 256);
       display.SetPalette(palette, flag);
       delete palette;
    }
@@ -185,7 +186,8 @@ class Bomb : Window
       mapSize.w = gfx[0].width;
       mapSize.h = gfx[0].height;
 
-      buffer.AllocateDD(displaySystem, 320, 200);
+      //buffer.AllocateDD(displaySystem, 320, 200);
+      buffer.Allocate(null, 320, 200, 0, pixelFormat888, false);
 
       SetPalette(true);
       return true;

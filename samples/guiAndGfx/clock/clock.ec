@@ -5,10 +5,12 @@ class Form1 : Window
    background = 0;
    opacity = 0;
    font = { "Arial", 40 };
-   size = { 320, 60 };
-   //displayDriver = "OpenGL";
-   moveable = true;
+   size = { 220, 60 };
+#if defined(__linux__)     // Alpha blended windows only work in OpenGL on Linux at the moment
+   displayDriver = "OpenGL";
+#endif
    alphaBlend = true;
+   moveable = true;
    stayOnTop = true;
    showInTaskBar = false;
 

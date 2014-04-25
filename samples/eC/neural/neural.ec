@@ -209,6 +209,8 @@ class NeuralApp : Application
          winner = Neuron_Winner(outputNeurons, NUM_OUTPUT);
          printf("%s\n", behaviors[winner]);
       }
-      getch();
+#if defined(__WIN32__)
+      system("pause");
+#endif
    }
 }
