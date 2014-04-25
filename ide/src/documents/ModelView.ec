@@ -49,11 +49,8 @@ class ModelView : Window
 
    property char * modelFile
    {
-      set
-      {
-         strcpy(fileName, value);
-      }
-      get { return fileName; }
+      set { strcpy(fileName, value); }
+      get { return (char *)fileName; }
    }
 
    void OnUnloadGraphics()
