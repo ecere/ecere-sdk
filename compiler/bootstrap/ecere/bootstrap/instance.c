@@ -1438,6 +1438,10 @@ extern int strcmp(const char * , const char * );
 
 extern char *  strncpy(char * , const char * , size_t n);
 
+extern char *  __ecereNameSpace__ecere__sys__RSearchString(char *  buffer, char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
+
+extern size_t strlen(const char * );
+
 extern int printf(char * , ...);
 
 static void __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(struct __ecereNameSpace__ecere__com__Class * base);
@@ -1603,7 +1607,25 @@ dataTypeString = enumBase ? enumBase->dataTypeString : base->dataTypeString;
 }
 offsetClass = base ? base->sizeClass : (type == 5 ? 0 : 0);
 totalSizeClass = offsetClass + sizeClass;
-if((_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, name)))
+_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, name);
+if(!_class)
+{
+char * colons = __ecereNameSpace__ecere__sys__RSearchString(name, "::", strlen(name), 0x1, 0x0);
+
+if(colons && colons)
+{
+_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, colons + 2);
+if(_class)
+if(_class->internalDecl)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(_class->fullName), _class->fullName = 0);
+_class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
+}
+else
+_class = (((void *)0));
+}
+}
+if(_class)
 {
 if(!_class->internalDecl)
 {
@@ -2399,8 +2421,6 @@ return sign * value;
 }
 
 extern char *  strcat(char * , const char * );
-
-extern size_t strlen(const char * );
 
 struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char * name)
 {
@@ -3245,8 +3265,11 @@ struct __ecereNameSpace__ecere__com__Class * base;
 
 for(base = _class; base; base = base->base)
 {
-struct __ecereNameSpace__ecere__com__Method * method = (struct __ecereNameSpace__ecere__com__Method *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&base->methods, name);
+struct __ecereNameSpace__ecere__com__Method * method;
 
+if(base->templateClass)
+base = base->templateClass;
+method = (struct __ecereNameSpace__ecere__com__Method *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&base->methods, name);
 if(method)
 {
 if(method->type == 1)
