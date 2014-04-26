@@ -5006,7 +5006,8 @@ private:
 
             for(ptr = resources.first; ptr; ptr = ptr.next)
             {
-               ptr.loaded = display.displaySystem.LoadResource(ptr.resource);
+               if(!ptr.loaded)   // This check prevents a leak in case a watcher on 'font' calls AddResource (ListBox FontResource leak)
+                  ptr.loaded = display.displaySystem.LoadResource(ptr.resource);
             }
             if(setFont)
                AddResource(setFont);
@@ -6905,7 +6906,8 @@ public:
          if(/*created && */display)
          {
             display.Lock(false);
-            ptr.loaded = display.displaySystem.LoadResource(resource);
+            if(!ptr.loaded)   // This check prevents a leak in case a watcher on 'font' calls AddResource (ListBox FontResource leak)
+               ptr.loaded = display.displaySystem.LoadResource(resource);
             display.Unlock();
          }
          /*
