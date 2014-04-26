@@ -30,6 +30,7 @@ class StonePairsGame
       turn = white;
       movesLeft = 1;
       winner = none;
+      takeOut = false;
    }
 
    bool ProcessMove(int sx, int sy)
