@@ -2747,7 +2747,8 @@ class Debugger
 
                if(GetPrivateModule())
                {
-                  if(codeEditor)
+                  SetThisClass(null);
+                  if(codeEditor && activeFrame)
                      DebugFindCtxTree(codeEditor.ast, activeFrame.line, 0);
                   ProcessExpressionType(exp);
                }
