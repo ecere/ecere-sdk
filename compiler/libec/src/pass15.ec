@@ -1764,6 +1764,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
                         Expression exp;
                         char * string = PrintHexUInt64(arg.expression.ui64);
                         exp = MkExpCast(MkTypeName(specs, decl), MkExpConstant(string));
+                        delete string;
 
                         ProcessExpressionType(exp);
                         ComputeExpression(exp);
@@ -9268,6 +9269,7 @@ void ProcessExpressionType(Expression exp)
                                     Expression exp;
                                     char * string = PrintHexUInt64(arg.expression.ui64);
                                     exp = MkExpCast(MkTypeName(specs, decl), MkExpConstant(string));
+                                    delete string;
 
                                     ProcessExpressionType(exp);
                                     ComputeExpression(exp);
@@ -9809,6 +9811,7 @@ void ProcessExpressionType(Expression exp)
                                        Expression exp;
                                        char * string = PrintHexUInt64(arg.expression.ui64);
                                        exp = MkExpCast(MkTypeName(specs, decl), MkExpConstant(string));
+                                       delete string;
 
                                        ProcessExpressionType(exp);
                                        ComputeExpression(exp);

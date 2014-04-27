@@ -1130,6 +1130,17 @@ static void FreeDataMember(DataMember parentMember)
    }
 }
 
+static void FreeClassProperties(ClassProperty classProp)
+{
+   if(classProp.left) FreeClassProperties(classProp.left);
+   if(classProp.right) FreeClassProperties(classProp.right);
+   if(classProp.dataType)
+   {
+      FreeType(classProp.dataType);
+      classProp.dataType = null;
+   }
+}
+
 void FreeModuleData(Module module)
 {
    Class _class;
@@ -1182,6 +1193,8 @@ void FreeModuleData(Module module)
             prop.dataType = null;
          }
       }
+      if(_class.classProperties.first)
+         FreeClassProperties((ClassProperty)_class.classProperties.first);
       for(method = (Method)_class.methods.first; method; method = (Method)((BTNode)method).next)
       {
          if(method.dataType)

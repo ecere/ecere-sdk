@@ -2317,6 +2317,35 @@ dataMember->dataType = (((void *)0));
 }
 }
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassProperty;
+
+struct __ecereNameSpace__ecere__com__ClassProperty
+{
+char *  name;
+struct __ecereNameSpace__ecere__com__ClassProperty * parent;
+struct __ecereNameSpace__ecere__com__ClassProperty * left;
+struct __ecereNameSpace__ecere__com__ClassProperty * right;
+int depth;
+void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, long long);
+long long (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
+char *  dataTypeString;
+struct Type * dataType;
+unsigned int constant;
+} __attribute__ ((gcc_struct));
+
+static void FreeClassProperties(struct __ecereNameSpace__ecere__com__ClassProperty * classProp)
+{
+if(classProp->left)
+FreeClassProperties(classProp->left);
+if(classProp->right)
+FreeClassProperties(classProp->right);
+if(classProp->dataType)
+{
+FreeType(classProp->dataType);
+classProp->dataType = (((void *)0));
+}
+}
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
 struct __ecereNameSpace__ecere__com__NameSpace
@@ -2507,6 +2536,8 @@ FreeType(prop->dataType);
 prop->dataType = (((void *)0));
 }
 }
+if(__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->classProperties))
+FreeClassProperties((struct __ecereNameSpace__ecere__com__ClassProperty *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->classProperties));
 for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods); method; method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)method)))
 {
 if(method->dataType)

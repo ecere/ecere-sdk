@@ -3638,6 +3638,7 @@ struct Expression * exp;
 char * string = PrintHexUInt64(arg.expression.ui64);
 
 exp = MkExpCast(MkTypeName(specs, decl), MkExpConstant(string));
+(__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 ProcessExpressionType(exp);
 ComputeExpression(exp);
 expString[0] = '\0';
@@ -15188,6 +15189,7 @@ struct Expression * exp;
 char * string = PrintHexUInt64(arg.expression.ui64);
 
 exp = MkExpCast(MkTypeName(specs, decl), MkExpConstant(string));
+(__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 ProcessExpressionType(exp);
 ComputeExpression(exp);
 expString[0] = '\0';
@@ -15660,6 +15662,7 @@ struct Expression * exp;
 char * string = PrintHexUInt64(arg.expression.ui64);
 
 exp = MkExpCast(MkTypeName(specs, decl), MkExpConstant(string));
+(__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 ProcessExpressionType(exp);
 ComputeExpression(exp);
 expString[0] = '\0';
