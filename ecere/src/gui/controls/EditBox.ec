@@ -11,6 +11,17 @@ import "FindDialog"
 import "GoToDialog"
 import "Array"
 
+char * strchrmax(const char * s, int c, int max)
+{
+   char * result = null;
+   int i;
+   char ch;
+   for(i = 0; i < max && (ch = s[i]); i++)
+      if(ch == c)
+         return s + i;
+   return null;
+}
+
 public class SyntaxColorScheme
 {
 public:
@@ -1775,25 +1786,25 @@ private:
                            if(!wasEscaped)
                               escaped = true;
                         }
-                        else if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
+                        else if(x < box.right && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
                         {
-                           char * dot = strchr(word, '.');
+                           char * dot = strchrmax(word, '.', wordLen);
                            bool isHex = (word[0] == '0' && (word[1] == 'x' || word[1] == 'X'));
                            char * exponent;
                            bool isReal;
                            char * s = null;
                            if(isHex)
                            {
-                              exponent = strchr(word, 'p');
-                              if(!exponent) exponent = strchr(word, 'P');
+                              exponent = strchrmax(word, 'p', wordLen);
+                              if(!exponent) exponent = strchrmax(word, 'P', wordLen);
                            }
                            else
                            {
-                              exponent = strchr(word, 'e');
-                              if(!exponent) exponent = strchr(word, 'E');
+                              exponent = strchrmax(word, 'e', wordLen);
+                              if(!exponent) exponent = strchrmax(word, 'E', wordLen);
                            }
-                           if(exponent && exponent > word + wordLen) exponent = null;
-                           if(dot && dot > word + wordLen) dot = null;
+                           //if(exponent && exponent > word + wordLen) exponent = null;
+                           //if(dot && dot > word + wordLen) dot = null;
                            isReal = dot || exponent;
                            if(isReal)
                               strtod(word, &s);      // strtod() seems to break on hex floats (e.g. 0x23e3p12, 0x1.fp3)
@@ -1859,7 +1870,7 @@ private:
                                  newTextColor = colorScheme.preprocessorColor;
                               }
                            }
-                           if(!inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
+                           if(x < box.right && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
                            {
                               for(g = 0; g < ((inPrep && word[0] != '#') ? 2 : 1); g++)
                               {
