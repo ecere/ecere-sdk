@@ -1161,7 +1161,7 @@ class XDisplayDriver : DisplayDriver
 
    void Rectangle(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
-      XDisplay xDisplay = xDisplay ? display.driverData : null;
+      XDisplay xDisplay = display ? display.driverData : null;
       XSurface xSurface = surface.driverData;
 
       if(!xDisplay || xSurface.foreground.a < 255)
