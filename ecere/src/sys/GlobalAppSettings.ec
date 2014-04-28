@@ -140,6 +140,7 @@ private:
       }
    };
    File f;
+   bool locked;
 
    subclass(GlobalSettingsDriver) driverClass;
 
@@ -327,24 +328,34 @@ private:
          delete settingsFilePath;  // the case when we're doing a load when the config file is no longer available
    }                               // and we want to re-try all possible config locations.
 
-   bool FileOpenTryWrite(bool shouldDelete)
+   bool FileOpenTryWrite(bool shouldDelete, bool * locked)
    {
-      if(driverClass)
-         f = FileOpen(settingsFilePath, write);
-      else
+      *locked = false;
+      f = FileOpen(settingsFilePath, readWrite);
+      if(!f)
       {
-         if(!(f = FileOpen(settingsFilePath, readWrite)))
+         f = FileOpen(settingsFilePath, writeRead);
+         if(!driverClass)
          {
-            f = FileOpen(settingsFilePath, writeRead);
             delete f;
             f = FileOpen(settingsFilePath, readWrite);
          }
       }
-      /*    NOTE: This used to handle chaining to write to a where the user has permission after loading from a global settings file.
-                  This was broken a while back, and is now working through checking 'f' for non-null if 'globalPath' is true.
-                  This new way has the advantage of avoiding using different alternate user profile settings files if the first one fails for whatever reason.
-      */
-      if(!f && shouldDelete)       // This delete will cover both trying the next possible config location and
+      if(f)
+      {
+         // Don't wait for a lock, first one to lock gets to write, other will likely loose changes on a reload.
+         if(f.Lock(exclusive, 0, 0, false))
+         {
+            *locked = true;
+            if(driverClass)
+            {
+               f.Truncate(0);
+               f.Seek(0, start);
+            }
+         }
+      }
+
+      if(shouldDelete)       // This delete will cover both trying the next possible config location and
          delete settingsFilePath;  // allow trying to save to a location where user has permission.
       return f != null;
    }
@@ -352,7 +363,7 @@ private:
 public:
    virtual void OnAskReloadSettings();
 
-   virtual SettingsIOResult Load()
+   bool OpenAndLock(FileSize * fileSize)
    {
       SettingsIOResult result = fileNotFound;
       if(!f)
@@ -405,11 +416,12 @@ public:
 #endif
             }
          }
-
-         if(f)
+      }
+      if(f)
+      {
+         int c;
+         if(!locked)
          {
-            int c;
-            bool locked;
             // At some point wait was true, it was changed to false and now we do retries.
             // Could it be because the wait to true was causing blocking behaviors?
             //if(f && f.Lock(shared, 0, 0, true)) <- I think the wait to true is bad, it wrote blanked out global settings.
@@ -417,15 +429,26 @@ public:
             {
                ecere::sys::Sleep(0.01);
             }
-            if(locked)
-            {
-               if(driverClass)
-                  result = driverClass.Load(f, this);
-               else
-                  result = success;
-            }
          }
 
+         if(locked && fileSize)
+            *fileSize = f.GetSize();
+      }
+      return f && locked;
+   }
+
+   virtual SettingsIOResult Load()
+   {
+      SettingsIOResult result = fileNotFound;
+      if(!f || !locked)
+         OpenAndLock(null);
+
+      if(f && locked)
+      {
+         if(driverClass)
+            result = driverClass.Load(f, this);
+         else
+            result = success;
       }
       return result;
    }
@@ -436,19 +459,20 @@ public:
       if(!f)
       {
          char filePath[MAX_LOCATION];
+         locked = false;
 
          settingsMonitor.StopMonitoring();
 
          if(settingsFilePath)
             // Don't auto delete settingsFilePath because only want to try another path if we were using a global path
-            FileOpenTryWrite(false);
+            FileOpenTryWrite(false, &locked);
 
          if((!settingsFilePath || (!f && globalPath)) && settingsName && settingsName[0])
          {
             delete settingsFilePath;
 
             if(!f && (settingsFilePath = PrepareSpecifiedLocationPath()))
-               FileOpenTryWrite(true);
+               FileOpenTryWrite(true, &locked);
             if(!f && (!settingsLocation || allowDefaultLocations))
             {
                globalPath = true;
@@ -458,10 +482,10 @@ public:
                //   FileOpenTryWrite(true);
 #if defined(__WIN32__)
                if(!f && (settingsFilePath = PrepareAllUsersPath()))
-                  FileOpenTryWrite(true);
+                  FileOpenTryWrite(true, &locked);
 #else
                if(!f && (settingsFilePath = PrepareEtcPath()))
-                  FileOpenTryWrite(true);
+                  FileOpenTryWrite(true, &locked);
 #endif
                if(!f && allUsers)
                {
@@ -473,27 +497,26 @@ public:
                      false
 #endif
                      )))
-                     FileOpenTryWrite(true);
+                     FileOpenTryWrite(true, &locked);
                }
 #if defined(__WIN32__)
                if(!f && !allUsers)
                {
                   globalPath = false;
                   if(!f && (settingsFilePath = PrepareUserProfilePath()))
-                     FileOpenTryWrite(true);
+                     FileOpenTryWrite(true, &locked);
                   if(!f && (settingsFilePath = PrepareHomeDrivePath()))
-                     FileOpenTryWrite(true);
+                     FileOpenTryWrite(true, &locked);
                }
                if(!f && (settingsFilePath = PrepareSystemPath()))
                {
                   globalPath = true;
-                  FileOpenTryWrite(true);
+                  FileOpenTryWrite(true, &locked);
                }
 #endif
             }
          }
-         // Don't wait for a lock, first one to lock gets to write, other will likely loose changes on a reload.
-         if(f && f.Lock(exclusive, 0, 0, false))
+         if(f && locked)
          {
             if(driverClass)
                result = driverClass.Save(f, this);
@@ -510,6 +533,7 @@ public:
       {
          settingsMonitor.StopMonitoring();
          f.Unlock(0,0,true);
+         locked = false;
          delete f;
       }
    }
