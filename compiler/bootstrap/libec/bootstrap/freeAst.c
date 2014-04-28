@@ -1399,6 +1399,8 @@ if(spec->extDecl)
 FreeExtDecl(spec->extDecl);
 break;
 case 2:
+if(spec->baseSpecs)
+FreeList(spec->baseSpecs, FreeSpecifier);
 if(spec->id)
 FreeIdentifier(spec->id);
 if(spec->list)

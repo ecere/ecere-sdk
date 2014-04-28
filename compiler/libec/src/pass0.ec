@@ -1407,7 +1407,11 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      definitions.Insert(after, newDef);
                      after = newDef;
 
-                     func.type = ProcessType(propertyDef.specifiers, MkDeclaratorFunction(propertyDef.declarator, null));
+                     decl = MkDeclaratorFunction(propertyDef.declarator, null);
+                     func.type = ProcessType(propertyDef.specifiers, decl);
+                     decl.declarator = null;
+                     FreeDeclarator(decl);
+
                      if(func.type.returnType.kind == TypeKind::classType && func.type.returnType._class && func.type.returnType._class.registered && func.type.returnType._class.registered.type == structClass)
                         func.type.returnType.byReference = true;
 

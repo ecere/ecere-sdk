@@ -7981,7 +7981,10 @@ void ProcessExpressionType(Expression exp)
                type2.isSigned = true;
             }
             else
+            {
                type2 = exp.op.exp2.expType;
+               if(type2) type2.refCount++;
+            }
          }
 
          dummy.kind = voidType;
@@ -8091,7 +8094,12 @@ void ProcessExpressionType(Expression exp)
                                        MkExpMember(classExp, MkIdentifier("typeSize"))))))));
 
                            if(!exp.op.exp2.expType)
+                           {
+                              if(type2)
+                                 FreeType(type2);
                               type2 = exp.op.exp2.expType = ProcessTypeString("int", false);
+                              type2.refCount++;
+                           }
 
                            ProcessExpressionType(exp.op.exp2);
                         }
@@ -8273,7 +8281,10 @@ void ProcessExpressionType(Expression exp)
                      exp.op.exp2.destType.refCount++;
 
                      CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false);
+                     if(type2)
+                        FreeType(type2);
                      type2 = exp.op.exp2.destType;
+                     if(type2) type2.refCount++;
 
                      exp.expType = type2;
                      type2.refCount++;
@@ -8534,6 +8545,8 @@ void ProcessExpressionType(Expression exp)
          yylloc = oldyylloc;
 
          FreeType(dummy);
+         if(type2)
+            FreeType(type2);
          break;
       }
       case bracketsExp:

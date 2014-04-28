@@ -14073,7 +14073,11 @@ type2->refCount = 1;
 type2->isSigned = 0x1;
 }
 else
+{
 type2 = exp->op.exp2->expType;
+if(type2)
+type2->refCount++;
+}
 }
 dummy->kind = 0;
 if(exp->op.op == SIZEOF)
@@ -14155,7 +14159,12 @@ if(type2->kind != 13)
 ProcessExpressionType(classExp);
 exp->op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp->op.exp2, '*', MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("5")), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("0"))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))))))));
 if(!exp->op.exp2->expType)
+{
+if(type2)
+FreeType(type2);
 type2 = exp->op.exp2->expType = ProcessTypeString("int", 0x0);
+type2->refCount++;
+}
 ProcessExpressionType(exp->op.exp2);
 }
 }
@@ -14320,7 +14329,11 @@ type1->_class->registered->dataType = ProcessTypeString(type1->_class->registere
 exp->op.exp2->destType = type1->_class->registered->dataType;
 exp->op.exp2->destType->refCount++;
 CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0);
+if(type2)
+FreeType(type2);
 type2 = exp->op.exp2->destType;
+if(type2)
+type2->refCount++;
 exp->expType = type2;
 type2->refCount++;
 }
@@ -14520,6 +14533,8 @@ DeclareType(exp->op.exp2->expType, 0x0, 0x0);
 }
 yylloc = oldyylloc;
 FreeType(dummy);
+if(type2)
+FreeType(type2);
 break;
 }
 case 5:

@@ -2390,7 +2390,10 @@ func->dontMangle = 0x1;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
 after = newDef;
-func->type = ProcessType(propertyDef->specifiers, MkDeclaratorFunction(propertyDef->declarator, (((void *)0))));
+decl = MkDeclaratorFunction(propertyDef->declarator, (((void *)0)));
+func->type = ProcessType(propertyDef->specifiers, decl);
+decl->declarator = (((void *)0));
+FreeDeclarator(decl);
 if(func->type->returnType->kind == 8 && func->type->returnType->_class && func->type->returnType->_class->registered && func->type->returnType->_class->registered->type == 1)
 func->type->returnType->byReference = 0x1;
 if(inCompiler)
