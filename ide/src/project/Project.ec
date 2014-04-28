@@ -4466,12 +4466,11 @@ void CombineIdenticalConfigOptions(Project project)
                   continue;
                if(cfg != firstConfig)
                {
-                  cfg.platforms.Free();
-                  delete cfg.platforms;
+                  cfg.platforms = null;
                }
             }
             project.platforms = firstConfig.platforms;
-            firstConfig.platforms = null;
+            *&firstConfig.platforms = null;
          }
       }
 
