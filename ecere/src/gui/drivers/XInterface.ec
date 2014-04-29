@@ -2147,6 +2147,7 @@ class XInterface : Interface
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
 
                   X11UpdateState(window, &unmaximized);
+                  unmaximized = false;
                   {
                      bool offset = false;
                      int x, y, w, h;
