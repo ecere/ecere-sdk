@@ -2635,11 +2635,12 @@ public void ProcessInstantiations()
                   //thisClass = regClass;
                   if(propertyWatch.compound)
                   {
+                     /* This was already added in pass15:ProcessClass()
                      Symbol thisSymbol
                      {
                         string = CopyString("this");
                         type = MkClassTypeSymbol(_class.symbol); //regClass.fullName);
-                     };
+                     };*/
                      propertyWatch.compound.compound.context.symbols.Add((BTNode)thisSymbol);
                      curExternal = null;
                      ProcessStatement(propertyWatch.compound);

@@ -3589,8 +3589,6 @@ struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstan
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
 if(propertyWatch->compound)
 {
-struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassTypeSymbol(_class->symbol), thisSymbol);
-
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&propertyWatch->compound->compound.context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
 curExternal = (((void *)0));
 ProcessStatement(propertyWatch->compound);
