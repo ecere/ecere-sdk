@@ -2174,10 +2174,12 @@ class XInterface : Interface
 
                            if(x != rootX || y != rootY)
                            {
-                              /*if(event->send_event)
-                                 offset = true;*/
-                              x = rootX;
-                              y = rootY;
+                              if(!event->send_event)
+                              {
+                                 // offset = true;
+                                 x = rootX;
+                                 y = rootY;
+                              }
                            }
                         }
 
