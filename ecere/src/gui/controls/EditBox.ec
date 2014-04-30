@@ -1788,24 +1788,27 @@ private:
                         }
                         else if(x < box.right && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
                         {
-                           char * dot = strchrmax(word, '.', wordLen);
-                           bool isHex = (word[0] == '0' && (word[1] == 'x' || word[1] == 'X'));
-                           char * exponent;
-                           bool isReal;
+                           char * dot = word[wordLen] == '.' ? word + wordLen : null;
+                           bool isReal = dot != null;
                            char * s = null;
-                           if(isHex)
-                           {
-                              exponent = strchrmax(word, 'p', wordLen);
-                              if(!exponent) exponent = strchrmax(word, 'P', wordLen);
-                           }
+                           if(dot)
+                              isReal = true;
                            else
                            {
-                              exponent = strchrmax(word, 'e', wordLen);
-                              if(!exponent) exponent = strchrmax(word, 'E', wordLen);
+                              char * exponent;
+                              bool isHex = (word[0] == '0' && (word[1] == 'x' || word[1] == 'X'));
+                              if(isHex)
+                              {
+                                 exponent = strchrmax(word, 'p', wordLen);
+                                 if(!exponent) exponent = strchrmax(word, 'P', wordLen);
+                              }
+                              else
+                              {
+                                 exponent = strchrmax(word, 'e', wordLen);
+                                 if(!exponent) exponent = strchrmax(word, 'E', wordLen);
+                              }
+                              isReal = exponent != null;
                            }
-                           //if(exponent && exponent > word + wordLen) exponent = null;
-                           //if(dot && dot > word + wordLen) dot = null;
-                           isReal = dot || exponent;
                            if(isReal)
                               strtod(word, &s);      // strtod() seems to break on hex floats (e.g. 0x23e3p12, 0x1.fp3)
                            else
