@@ -1392,34 +1392,78 @@ void DebugComputeExpression(Expression exp)
          }
          break;
       }
-      /*
-      case ExpCondition:
+      case conditionExp:
       {
-         Expression e;
-         exp.isConstant = true;
-
-         FreeType(exp.cond.cond.destType);
-         exp.cond.cond.destType = MkClassType("bool");
-         DebugComputeExpression(exp.cond.cond);
-         if(!exp.cond.cond.isConstant)
-            exp.isConstant = false;
-         for(e = exp.cond.exp->first; e; e = e.next)
+         if(exp.cond.cond)
          {
-            FreeType(e.destType);
-            e.destType = exp.destType;
-            DebugComputeExpression(e);
-            if(!e.isConstant)
-               exp.isConstant = false;
-         }
-         if(!exp.cond.elseExp.isConstant)
-            exp.isConstant = false;
+            DebugComputeExpression(exp.cond.cond);
 
-         FreeType(exp.cond.elseExp.destType);
-         exp.cond.elseExp.destType = exp.destType;
-         DebugComputeExpression(exp.cond.elseExp);
+            if(ExpressionIsError(exp.cond.cond))
+               CarryExpressionError(exp, exp.cond.cond);
+            else if(exp.cond.cond.type == constantExp && exp.cond.cond.constant)
+            {
+               Expression e = null;
+               if(strtol(exp.cond.cond.constant, null, 0))
+               {
+                  for(e = exp.cond.exp ? exp.cond.exp->first : null; e; e = e.next)
+                  {
+                     DebugComputeExpression(e);
+                     if(!e.next) break;
+                  }
+                  if(e)
+                  {
+                     if(ExpressionIsError(e))
+                     {
+                        CarryExpressionError(exp, e);
+                        e = null;
+                     }
+                     else
+                        exp.cond.exp->Remove(e);
+                  }
+               }
+               else
+               {
+                  e = exp.cond.elseExp;
+                  if(e)
+                  {
+                     DebugComputeExpression(e);
+                     if(ExpressionIsError(e))
+                     {
+                        CarryExpressionError(exp, e);
+                        e = null;
+                     }
+                     else
+                        exp.cond.elseExp = null;
+                  }
+               }
+               if(e)
+               {
+                  FreeType(exp.expType);
+                  FreeType(exp.destType);
+                  e.prev = exp.prev;
+                  e.next = exp.next;
+                  FreeExpContents(exp);
+                  *exp = *e;
+                  delete e;
+               }
+               else if(!ExpressionIsError(exp))
+               {
+                  FreeExpContents(exp);
+                  exp.type = unknownErrorExp;
+               }
+            }
+            else
+            {
+               FreeExpContents(exp);
+               exp.type = unknownErrorExp;
+            }
+         }
+         else
+         {
+            FreeExpContents(exp);
+            exp.type = unknownErrorExp;
+         }
          break;
       }
-      */
    }
-
 }
