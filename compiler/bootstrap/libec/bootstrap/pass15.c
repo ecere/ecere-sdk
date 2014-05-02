@@ -12935,6 +12935,13 @@ return memberType;
 return (((void *)0));
 }
 
+extern unsigned int parseError;
+
+unsigned int GetParseError()
+{
+return parseError;
+}
+
 extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
@@ -12943,6 +12950,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct Expression * ParseExpressionString(char * expression)
 {
+parseError = 0x0;
 fileInput = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
@@ -18126,6 +18134,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindSymbol", "Symbol Fin
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintType", "void PrintType(Type type, char * string, bool printName, bool fullName)", PrintType, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintTypeNoConst", "void PrintTypeNoConst(Type type, char * string, bool printName, bool fullName)", PrintTypeNoConst, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindMemberAndOffset", "Type FindMemberAndOffset(Type type, char * string, uint * offset)", FindMemberAndOffset, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetParseError", "bool GetParseError(void)", GetParseError, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ParseExpressionString", "Expression ParseExpressionString(char * expression)", ParseExpressionString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceExpContents", "void ReplaceExpContents(Expression checkedExp, Expression newExp)", ReplaceExpContents, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ApplyAnyObjectLogic", "void ApplyAnyObjectLogic(Expression e)", ApplyAnyObjectLogic, module, 1);

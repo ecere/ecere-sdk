@@ -38,6 +38,8 @@ extern __declspec(dllexport) void *  __ecereNameSpace__ecere__com__eSystem_Renew
 
 extern __declspec(dllexport) void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
 
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -640,6 +642,8 @@ unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
 extern __declspec(dllexport) long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -2255,6 +2259,7 @@ break;
 case 20:
 {
 yyval.exp = MkExpDummy();
+yyerror();
 ;
 }
 break;

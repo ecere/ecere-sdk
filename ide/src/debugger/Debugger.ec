@@ -2723,7 +2723,6 @@ class Debugger
             Context backupContext;
             Class backupThisClass;
             Expression exp;
-            parseError = false;
 
             backupPrivateModule = GetPrivateModule();
             backupContext = GetCurrentContext();
@@ -2739,7 +2738,7 @@ class Debugger
 
             exp = ParseExpressionString(wh.expression);
 
-            if(exp && !parseError)
+            if(exp && !GetParseError())
             {
                char expString[4096];
                expString[0] = 0;

@@ -23,8 +23,8 @@ static class FreeBlock : struct
 static struct EARHeader
 {
    byte recognition[sizeof(earRecognition)] __attribute__((packed));
-   uint version　                           __attribute__((packed));
-   FileSize totalSize　                     __attribute__((packed));
+   uint version                             __attribute__((packed));
+   FileSize totalSize                       __attribute__((packed));
 };
 
 static enum EAREntryType { ENTRY_FILE = 1, ENTRY_FOLDER = 2 };

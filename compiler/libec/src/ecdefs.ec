@@ -1381,7 +1381,7 @@ void Compiler_Warning(char * format, ...)
 bool parseError;
 bool skipErrors;
 
-int yyerror(char * s)
+int yyerror()
 {
    if(!skipErrors)
    {

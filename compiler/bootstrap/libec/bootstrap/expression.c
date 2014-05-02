@@ -2259,6 +2259,7 @@ break;
 case 20:
 {
 yyval.exp = MkExpDummy();
+yyerror();
 ;
 }
 break;

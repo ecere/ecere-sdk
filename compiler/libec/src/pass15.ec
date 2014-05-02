@@ -6727,8 +6727,12 @@ Type FindMemberAndOffset(Type type, char * string, uint * offset)
    return null;
 }
 
+public bool GetParseError() { return parseError; }
+
 Expression ParseExpressionString(char * expression)
 {
+   parseError = false;
+
    fileInput = TempFile { };
    fileInput.Write(expression, 1, strlen(expression));
    fileInput.Seek(0, start);

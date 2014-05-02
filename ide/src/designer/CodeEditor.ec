@@ -168,8 +168,6 @@ File output;
 
 File fileInput;
 
-bool parseError = false;
-
 int returnCode;
 
 Class insideClass;

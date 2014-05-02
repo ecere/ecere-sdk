@@ -1840,7 +1840,7 @@ unsigned int parseError;
 
 unsigned int skipErrors;
 
-int yyerror(char * s)
+int yyerror()
 {
 if(!skipErrors)
 {
@@ -2971,7 +2971,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("MAX_INCLUDE_DEPTH", "30", 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Compiler_Error", "void Compiler_Error(char * format, ...)", Compiler_Error, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNumWarnings", "int GetNumWarnings(void)", GetNumWarnings, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Compiler_Warning", "void Compiler_Warning(char * format, ...)", Compiler_Warning, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("yyerror", "int yyerror(char * s)", yyerror, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("yyerror", "int yyerror(void)", yyerror, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetHostBits", "int GetHostBits(void)", GetHostBits, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetPlatform", "void SetTargetPlatform(ecere::com::Platform platform)", SetTargetPlatform, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetTargetBits", "void SetTargetBits(int bits)", SetTargetBits, module, 1);

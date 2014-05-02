@@ -898,6 +898,8 @@ uint64 ui64;
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
 
+extern unsigned int skipErrors;
+
 extern struct Expression * ParseExpressionString(char *  expression);
 
 extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
@@ -1373,7 +1375,10 @@ struct __ecereNameSpace__ecere__com__Instance * backup = pushLexer();
 struct Operand op;
 struct Expression * exp;
 
+skipErrors = 0x1;
 exp = ParseExpressionString(line);
+if(exp)
+{
 if(info)
 exp->destType = ProcessTypeString(info, 0x0);
 ProcessExpressionType(exp);
@@ -1381,6 +1386,8 @@ ComputeExpression(exp);
 op = GetOperand(exp);
 defaultArg.expression.ui64 = op.ui64;
 FreeExpression(exp);
+}
+skipErrors = 0x0;
 popLexer(backup);
 }
 break;

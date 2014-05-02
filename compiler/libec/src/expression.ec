@@ -4696,7 +4696,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 243 "expression.y"
-    { (yyval.exp) = MkExpDummy(); ;}
+    { (yyval.exp) = MkExpDummy(); yyerror(); ;}
     break;
 
   case 21:

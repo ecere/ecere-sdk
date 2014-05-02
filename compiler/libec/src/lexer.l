@@ -308,8 +308,13 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
    expression_yylloc.start.charPos++ /*= 3 - (expression_yylloc.start.col % 3)*/; expression_yylloc.end.charPos = expression_yylloc.start.charPos; expression_yylloc.start.pos = expression_yylloc.end.pos;
    type_yylloc.start.charPos++ /*= 3 - (type_yylloc.start.col % 3)*/; type_yylloc.end.charPos = type_yylloc.start.charPos; type_yylloc.start.pos = type_yylloc.end.pos;
    }
-
-.         { yylloc.start = yylloc.end; expression_yylloc.start = expression_yylloc.end;  type_yylloc.start = type_yylloc.end; }
+[\r]  { yylloc.start = yylloc.end; expression_yylloc.start = expression_yylloc.end;  type_yylloc.start = type_yylloc.end; }
+.         {
+   yylloc.start = yylloc.end; expression_yylloc.start = expression_yylloc.end;  type_yylloc.start = type_yylloc.end;
+   if(inCompiler)
+      printf("lexer error: invalid char 0x%X at line %d, col %d\n", (unsigned char)yytext[0], yylloc.start.line, yylloc.start.charPos);
+   yyerror();
+   }
 
 %%
 

@@ -501,15 +501,19 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                                     Operand op;
                                     Expression exp;
 
+                                    skipErrors = true;
                                     exp = ParseExpressionString(line);
-                                    if(info)
-                                       exp.destType = ProcessTypeString(info, false);
-                                    ProcessExpressionType(exp);
-                                    ComputeExpression(exp);
-                                    op = GetOperand(exp);
-                                    defaultArg.expression.ui64 = op.ui64;
-                                    FreeExpression(exp);
-
+                                    if(exp)
+                                    {
+                                       if(info)
+                                          exp.destType = ProcessTypeString(info, false);
+                                       ProcessExpressionType(exp);
+                                       ComputeExpression(exp);
+                                       op = GetOperand(exp);
+                                       defaultArg.expression.ui64 = op.ui64;
+                                       FreeExpression(exp);
+                                    }
+                                    skipErrors = false;
                                     popLexer(backup);
                                  }
                                  break;
