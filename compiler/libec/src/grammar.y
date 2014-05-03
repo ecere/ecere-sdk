@@ -368,6 +368,14 @@ type:
    | identifier identifier
    {
    #ifdef PRECOMPILER
+      if(!$1.string[0])
+      {
+         $$ = MkSpecifierName($1.string);
+         FreeIdentifier($1);
+         FreeIdentifier($2);
+         return;
+      }
+
       // if($1._class && !$1._class.name)
       if($1._class)
       {
@@ -379,6 +387,7 @@ type:
       }
       else
          _DeclClass(0, $1.string);
+
       FreeIdentifier($1);
       FreeIdentifier($2);
 
