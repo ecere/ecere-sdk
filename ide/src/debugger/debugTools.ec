@@ -526,22 +526,55 @@ void DebugComputeExpression(Expression exp)
                // TODO: Do pointer operations
                if(exp1.expType && exp1.expType.type)
                {
-                  uint size = ComputeTypeSize(exp1.expType.type);
-                  if(size)
+                  if(exp1.type == stringExp)
                   {
-                     op1.ui /= exp1.expType.type.size;
-                     CallOperator(exp, exp1, exp2, op1, op2);
-                     if(exp.type == constantExp)
+                     int len = exp1.string ? strlen(exp1.string)-2 : 0;
+                     uint64 offset = (exp.op.op == '+') ? op2.i64 : -op2.i64;
+                     String newString = null;
+                     if(len >= 0 && offset <= len)
                      {
-                        exp.address = _strtoui64(exp.constant, null, 0);
-                        exp.address *= size;
+                        newString = new char[3 + len - offset];
+                        newString[0] = '\"';
+                        memcpy(newString + 1, exp1.string + 1 + offset, len - offset);
+                        newString[1 + len - offset] = '\"';
+                        newString[1 + len - offset + 1] = 0;
+                     }
+                     FreeExpContents(exp);
+                     if(newString)
+                     {
+                        exp.type = stringExp;
+                        exp.string = newString;
+                     }
+                     else
+                        exp.type = dereferenceErrorExp;
+                  }
+                  else
+                  {
+                     uint size = ComputeTypeSize(exp1.expType.type);
+                     if(size)
+                     {
+                        op1.ui64 /= exp1.expType.type.size;
+                        CallOperator(exp, exp1, exp2, op1, op2);
+                        if(exp.type == constantExp)
+                        {
+                           exp.address = _strtoui64(exp.constant, null, 0);
+                           exp.address *= size;
+                           if(op1.type.kind == arrayType)
+                              exp.hasAddress = true;
+                        }
                      }
                   }
                }
             }
             else
             {
-               CallOperator(exp, exp1, exp2, op1, op2);
+               if((exp1 && exp1.type == stringExp) || (exp2 && exp2.type == stringExp))
+               {
+                  FreeExpContents(exp);
+                  exp.type = unknownErrorExp;   // We should have an invalid operands error
+               }
+               else
+                  CallOperator(exp, exp1, exp2, op1, op2);
             }
             if(op1.type) FreeType(op1.type);
             if(op2.type) FreeType(op2.type);
@@ -604,8 +637,13 @@ void DebugComputeExpression(Expression exp)
             // 0 == size = ComputeTypeSize(exp.expType.arrayType);
             // 4 == size = ComputeTypeSize(exp.index.exp.expType);
             // 0 == size = ComputeTypeSize(exp.index.exp.expType.arrayType);
+
             size = ComputeTypeSize(exp.expType);
-            format = GetGdbFormatChar(exp.expType);
+            if(exp.expType && exp.expType.type && exp.expType.kind == arrayType)
+               // For multilevels arrays
+               format = 'x';
+            else
+               format = GetGdbFormatChar(exp.expType);
 
             for(e = exp.index.index->first; e; e = e.next)
             {
