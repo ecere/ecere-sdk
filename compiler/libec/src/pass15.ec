@@ -7263,7 +7263,7 @@ void ProcessExpressionType(Expression exp)
       case identifierExp:
       {
          Identifier id = exp.identifier;
-         if(!id) return;
+         if(!id || !topContext) return;
 
          // DOING THIS LATER NOW...
          if(id._class && id._class.name)

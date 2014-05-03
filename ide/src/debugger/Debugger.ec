@@ -2744,13 +2744,11 @@ class Debugger
                expString[0] = 0;
                PrintExpression(exp, expString);
 
-               if(GetPrivateModule())
-               {
-                  SetThisClass(null);
-                  if(codeEditor && activeFrame)
-                     DebugFindCtxTree(codeEditor.ast, activeFrame.line, 0);
-                  ProcessExpressionType(exp);
-               }
+               SetThisClass(null);
+               if(codeEditor && activeFrame)
+                  DebugFindCtxTree(codeEditor.ast, activeFrame.line, 0);
+               ProcessExpressionType(exp);
+
                wh.type = exp.expType;
                if(wh.type)
                   wh.type.refCount++;

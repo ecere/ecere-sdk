@@ -13455,7 +13455,7 @@ case 0:
 {
 struct Identifier * id = exp->identifier;
 
-if(!id)
+if(!id || !topContext)
 return ;
 if(id->_class && id->_class->name)
 {
