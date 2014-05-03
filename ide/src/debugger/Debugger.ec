@@ -2630,7 +2630,6 @@ class Debugger
       }
       gdbTimer.Stop();
       _ChangeState(terminated); // this state change seems to be superfluous, is it safety for something?
-      prjConfig = null;
       needReset = false;
 
       if(ide.workspace)
@@ -2644,8 +2643,6 @@ class Debugger
          bpRunToCursor.Reset();
 
       ide.outputView.debugBox.Logf($"Debugging stopped\n");
-      ClearBreakDisplay();
-      ide.Update(null);
 
 #if defined(__unix__)
       if(!usingValgrind && FileExists(progFifoPath)) //fileCreated)
@@ -2664,6 +2661,9 @@ class Debugger
          rmdir(progFifoDir);
       }
 #endif
+
+      CleanUp();
+      ide.Update(null);
    }
 
    bool WatchesLinkCodeEditor()
