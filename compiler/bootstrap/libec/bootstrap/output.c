@@ -1816,6 +1816,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " : ");
+if(exp->cond.elseExp)
 OutputExpression(exp->cond.elseExp, f);
 break;
 case 36:

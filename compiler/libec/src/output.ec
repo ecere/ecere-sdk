@@ -301,7 +301,8 @@ public void OutputExpression(Expression exp, File f)
             }
          }
          f.Puts(" : ");
-         OutputExpression(exp.cond.elseExp, f);
+         if(exp.cond.elseExp)
+            OutputExpression(exp.cond.elseExp, f);
          break;
       case vaArgExp:
          f.Puts("__builtin_va_arg(");
