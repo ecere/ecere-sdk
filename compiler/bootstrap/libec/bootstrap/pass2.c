@@ -3401,7 +3401,7 @@ else if(_class->type == 3)
 }
 else
 {
-if(exp->member.exp->type == 0 && thisPtr && (!exp->member.exp->expType || !exp->member.exp->expType->typedByReference))
+if(exp->member.exp->type == 0 && thisPtr && type->kind == 8 && (!exp->member.exp->expType || !exp->member.exp->expType->typedByReference))
 {
 char pointerName[1024];
 

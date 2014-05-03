@@ -2682,7 +2682,7 @@ static void ProcessExpression(Expression exp)
                else
                {
                   // If it's a this pointer, replace by precomputed shortcut
-                  if(exp.member.exp.type == identifierExp && thisPtr && (!exp.member.exp.expType || !exp.member.exp.expType.typedByReference))
+                  if(exp.member.exp.type == identifierExp && thisPtr && type.kind == classType && (!exp.member.exp.expType || !exp.member.exp.expType.typedByReference))
                   {
                      char pointerName[1024];
 
