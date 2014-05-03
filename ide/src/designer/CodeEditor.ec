@@ -2534,6 +2534,11 @@ class CodeEditor : Window
       CodeObjectType c;
       ProjectView projectView = ide.projectView;
 
+      globalData.classes.CompareKey = (void *)BinaryTree::CompareString;
+      globalData.defines.CompareKey = (void *)BinaryTree::CompareString;
+      globalData.functions.CompareKey = (void *)BinaryTree::CompareString;
+      globalData.nameSpaces.CompareKey = (void *)BinaryTree::CompareString;
+
       /*if(fileName)
          designer.fileName = fileName;
       else
