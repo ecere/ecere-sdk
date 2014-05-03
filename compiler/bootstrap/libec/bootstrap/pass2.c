@@ -3367,7 +3367,7 @@ if(((unsigned int)((exp->usage & 0x1) >> 0)))
 exp->member.exp->usage = (exp->member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
 }
 ProcessExpression(exp->member.exp);
-if(type->kind == 8)
+if(type->kind == 8 && type->_class && type->_class->registered)
 DeclareStruct(type->_class->registered->fullName, 0x0);
 if(_class->type == 5)
 {

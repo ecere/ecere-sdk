@@ -2640,7 +2640,7 @@ static void ProcessExpression(Expression exp)
                ProcessExpression(exp.member.exp);
                // TEST: exp.tempCount = exp.member.exp.tempCount;
 
-               if(type.kind == classType)
+               if(type.kind == classType && type._class && type._class.registered)
                   DeclareStruct(type._class.registered.fullName, false);
 
                // TESTING THIS NOHEAD STUFF...
