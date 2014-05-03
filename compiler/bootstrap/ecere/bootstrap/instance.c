@@ -4310,6 +4310,14 @@ else
 addTo->memberID += dataMember->memberID;
 addTo->structAlignment = (__simpleStruct0 = addTo->structAlignment, __simpleStruct1 = dataMember->structAlignment, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
 dataMember->offset = (addTo->type == 1) ? 0 : addTo->memberOffset;
+if(dataMember->structAlignment)
+{
+int __simpleStruct0, __simpleStruct1;
+
+addTo->structAlignment = (__simpleStruct0 = addTo->structAlignment, __simpleStruct1 = dataMember->structAlignment, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+if(addTo->memberOffset % dataMember->structAlignment)
+addTo->memberOffset += dataMember->structAlignment - (addTo->memberOffset % dataMember->structAlignment);
+}
 if(addTo->type == 1)
 {
 if(dataMember->memberOffset > addTo->memberOffset)
@@ -4344,6 +4352,14 @@ if(dataMember->type == 1)
 _class->memberID += 1;
 else
 _class->memberID += dataMember->memberID;
+if(dataMember->structAlignment)
+{
+int __simpleStruct0, __simpleStruct1;
+
+_class->structAlignment = (__simpleStruct0 = _class->structAlignment, __simpleStruct1 = dataMember->structAlignment, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+if(_class->memberOffset % dataMember->structAlignment)
+_class->memberOffset += dataMember->structAlignment - (_class->memberOffset % dataMember->structAlignment);
+}
 dataMember->offset = _class->memberOffset;
 _class->memberOffset += dataMember->memberOffset;
 return 0x1;

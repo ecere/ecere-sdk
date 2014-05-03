@@ -5166,6 +5166,15 @@ public dllexport bool eMember_AddMember(DataMember addTo, DataMember dataMember)
 
    addTo.structAlignment = Max(addTo.structAlignment, dataMember.structAlignment);
    dataMember.offset = (addTo.type == unionMember) ? 0 : addTo.memberOffset;
+
+   if(dataMember.structAlignment)
+   {
+      addTo.structAlignment = Max(addTo.structAlignment, dataMember.structAlignment);
+
+      if(addTo.memberOffset % dataMember.structAlignment)
+         addTo.memberOffset += dataMember.structAlignment - (addTo.memberOffset % dataMember.structAlignment);
+   }
+
    if(addTo.type == unionMember)
    {
       if(dataMember.memberOffset > addTo.memberOffset)
@@ -5200,6 +5209,15 @@ public dllexport bool eClass_AddMember(Class _class, DataMember dataMember)
       _class.memberID += 1;
    else
       _class.memberID += dataMember.memberID;
+
+   if(dataMember.structAlignment)
+   {
+      _class.structAlignment = Max(_class.structAlignment, dataMember.structAlignment);
+
+      if(_class.memberOffset % dataMember.structAlignment)
+         _class.memberOffset += dataMember.structAlignment - (_class.memberOffset % dataMember.structAlignment);
+   }
+
    dataMember.offset = _class.memberOffset;
    _class.memberOffset += dataMember.memberOffset;
    return true;
