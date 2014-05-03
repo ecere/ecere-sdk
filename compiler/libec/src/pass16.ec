@@ -614,7 +614,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                      thisMember = curMember;
                   }
 
-                  if(thisMember || method)
+                  if(instExp && (thisMember || method))
                   {
                      Expression instExpCopy = CopyExpression(instExp);
                      Expression setExp = null;

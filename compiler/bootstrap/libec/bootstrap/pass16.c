@@ -1784,7 +1784,7 @@ else
 __ecereNameSpace__ecere__com__eClass_FindNextMember(classSym->registered, &curClass, &curMember, subMemberStack, &subMemberStackPos);
 thisMember = curMember;
 }
-if(thisMember || method)
+if(instExp && (thisMember || method))
 {
 struct Expression * instExpCopy = CopyExpression(instExp);
 struct Expression * setExp = (((void *)0));
