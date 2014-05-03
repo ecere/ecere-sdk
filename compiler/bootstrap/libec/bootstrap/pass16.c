@@ -1908,7 +1908,7 @@ classSym->id = curExternal->symbol ? curExternal->symbol->idCode : 0;
 classSym->idCode = classSym->id;
 }
 }
-else if(classSym && curExternal->symbol->idCode < classSym->id)
+else if(classSym && curExternal && curExternal->symbol->idCode < classSym->id)
 {
 if(classSym->structExternal)
 DeclareStruct(classSym->string, classSym->registered && classSym->registered->type == 5);

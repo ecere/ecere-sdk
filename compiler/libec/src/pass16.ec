@@ -748,7 +748,7 @@ public void DeclareClass(Symbol classSym, char * className)
          classSym.idCode = classSym.id;
       }
    }
-   else if(classSym && curExternal.symbol.idCode < classSym.id)
+   else if(classSym && curExternal && curExternal.symbol.idCode < classSym.id)
    //else if(curExternal.symbol.id <= classSym.id)
    {
       // DANGER: (Moved here)
