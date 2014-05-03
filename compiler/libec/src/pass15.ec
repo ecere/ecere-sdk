@@ -4192,7 +4192,13 @@ public Operand GetOperand(Expression exp)
       }
       op.kind = type.kind;
       op.type = exp.expType;
-      if(exp.isConstant && exp.type == constantExp)
+      if(exp.type == stringExp && op.kind == pointerType)
+      {
+         op.ui64 = (uint64)exp.string;
+         op.kind = pointerType;
+         op.ops = uint64Ops;
+      }
+      else if(exp.isConstant && exp.type == constantExp)
       {
          switch(op.kind)
          {

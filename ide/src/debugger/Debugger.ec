@@ -23,6 +23,7 @@ extern char * strrchr(const char * s, int c);
 #include <stdarg.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <string.h> // For memchr
 
 #ifdef __APPLE__
 #define __unix__
@@ -2943,8 +2944,10 @@ class Debugger
                   case 0:
                      snprintf(watchmsg, sizeof(watchmsg), $"Null type for \"%s\"", wh.expression);
                      break;
-                  case constantExp:
                   case stringExp:
+                     wh.value = CopyString(exp.string);
+                     break;
+                  case constantExp:
                      // Temporary Code for displaying Strings
                      if((exp.expType && ((exp.expType.kind == pointerType ||
                               exp.expType.kind == arrayType) && exp.expType.type.kind == charType)) ||
@@ -2956,9 +2959,7 @@ class Debugger
                         if(exp.expType.kind != arrayType || exp.hasAddress)
                         {
                            uint64 address;
-                           char * string;
                            char value[4196];
-                           int len;
                            //char temp[MAX_F_STRING * 32];
 
                            ExpressionType evalError = dummyExp;
@@ -2983,43 +2984,63 @@ class Debugger
                               strcat(value, $"Null string");
                            else
                            {
-                              int size = 4096;
-                              len = strlen(value);
-                              string = null;
-                              while(!string && size > 2)
+                              String string = new char[4097];
+                              int start = 0;
+                              bool success = false;
+                              int size = 256;
+                              bool done = false;
+
+                              for(start = 0; !done && start + size <= 4096; start += size)
                               {
-                                 string = GdbReadMemory(address, size);
-                                 size /= 2;
-                              }
-                              if(string && string[0])
-                              {
-                                 value[len++] = '(';
-                                 if(UTF8Validate(string))
+                                 String s = null;
+                                 while(!done && !s)
                                  {
-                                    int c;
-                                    char ch;
+                                    // Try to read 256 bytes at a time, then half if that fails
+                                    s = GdbReadMemory(address + start, size);
+                                    if(s)
+                                    {
+                                       success = true;
+                                       memcpy(string + start, s, size);
+                                       string[start + size] = 0;
+                                       if(size == 1 || memchr(s, 0, size))
+                                          done = true;
+                                    }
+                                    else if(size > 1)
+                                       size /= 2;
+                                    else
+                                       done = true;
+                                 }
+                                 delete s;
+                              }
+                              if(success)
+                              {
+                                 if(string[0])
+                                 {
+                                    int len = strlen(value);
+                                    value[len++] = '(';
+                                    if(UTF8Validate(string))
+                                    {
+                                       int c;
+                                       char ch;
 
-                                    for(c = 0; (ch = string[c]) && c<4096; c++)
-                                       value[len++] = ch;
-                                    value[len++] = ')';
-                                    value[len++] = '\0';
+                                       for(c = 0; (ch = string[c]); c++)
+                                          value[len++] = ch;
+                                       value[len++] = ')';
+                                       value[len++] = '\0';
 
+                                    }
+                                    else
+                                    {
+                                       ISO8859_1toUTF8(string, value + len, strlen(value) - len - 30);
+                                       strcat(value, ") (ISO8859-1)");
+                                    }
                                  }
                                  else
-                                 {
-                                    ISO8859_1toUTF8(string, value + len, 4096 - len - 30);
-                                    strcat(value, ") (ISO8859-1)");
-                                 }
-
-                                 delete string;
-                              }
-                              else if(string)
-                              {
-                                 strcat(value, $"Empty string");
-                                 delete string;
+                                    strcat(value, $"Empty string");
                               }
                               else
                                  strcat(value, $"Couldn't read memory");
+                              delete string;
                            }
                            wh.value = CopyString(value);
                         }

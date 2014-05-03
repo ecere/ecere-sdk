@@ -624,55 +624,113 @@ void DebugComputeExpression(Expression exp)
             }
             if(!ExpressionIsError(exp))
             {
+               // Is this necessary here? pass15 had done this already...
+               if(exp.expType) FreeType(exp.expType);
                exp.expType = Dereference(exp.index.exp.expType);
 
-               if(exp.index.index && exp.index.index->last && ((Expression)exp.index.index->last) && ((Expression)exp.index.index->last).expType &&
-                  ((Expression)exp.index.index->last).expType.kind == intType)
+               if(!exp.expType)
                {
-                  uint64 address, offset;
-                  Expression expNew, last = (Expression)exp.index.index->last;
-                  //GetUInt(exp.index.exp, &address);
-
-                  // TOFIX: Check if it has address: TESTING
-                  if(exp.index.exp.hasAddress && (exp.index.exp.expType.kind == arrayType))
-                     address = exp.index.exp.address;
-                  else if(exp.index.exp.type == constantExp)
-                     GetUInt64(exp.index.exp, &address);
-
-                  GetUInt64(last, &offset);
-                  //size = ComputeTypeSize(exp.expType.arrayType); //exp.expType.arrayType.size;
-                  address += offset * size;
-                  evaluation = Debugger::ReadMemory(address, size, format, &evalError);
-                  if(evalError != dummyExp)
+                  delete evaluation;
+                  FreeExpContents(exp);
+                  exp.type = dereferenceErrorExp;
+               }
+               else if(exp.index.index && exp.index.index->last && ((Expression)exp.index.index->last) && ((Expression)exp.index.index->last).expType)
+               {
+                  Type type = ((Expression)exp.index.index->last).expType;
+                  if(type.kind == intType || type.kind == charType || type.kind == shortType || type.kind == int64Type || type.kind == intPtrType ||
+                     type.kind == intSizeType || type.kind == longType || type.kind == _BoolType || type.kind == enumType ||
+                        (type.kind == classType && type._class && type._class.registered &&
+                           type._class.registered.type == enumClass))
                   {
-                     exp.type = evalError;
-                     exp.constant = CopyString("");
+                     uint64 address = 0, offset = 0;
+                     Expression expNew, last = (Expression)exp.index.index->last;
+                     //GetUInt(exp.index.exp, &address);
+
+                     // TOFIX: Check if it has address: TESTING
+                     if(exp.index.exp.hasAddress && (exp.index.exp.expType.kind == arrayType))
+                        address = exp.index.exp.address;
+                     else if(exp.index.exp.type == constantExp)
+                        GetUInt64(exp.index.exp, &address);
+
+                     GetUInt64(last, &offset);
+                     //size = ComputeTypeSize(exp.expType.arrayType); //exp.expType.arrayType.size;
+                     address += offset * size;
+                     if(exp.index.exp.type == stringExp)
+                     {
+                        String string = exp.index.exp.string;
+                        int len = string ? strlen(string)-2 : 0;
+                        bool valid = false;
+                        char ch = 0;
+                        if(len >= 0 && offset <= len)
+                        {
+                           ch = offset < len ? string[1 + offset] : 0;
+                           valid = true;
+                        }
+                        FreeExpContents(exp);
+                        if(valid)
+                        {
+                           exp.type = constantExp;
+                           exp.constant = PrintChar(ch);
+                        }
+                        else
+                           exp.type = dereferenceErrorExp;
+                     }
+                     else if(exp.expType.kind == arrayType)
+                     {
+                        FreeExpContents(exp);
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                        exp.constant = PrintHexUInt64(address);
+                        exp.address = address;
+                        exp.hasAddress = true;
+                     }
+                     else
+                     {
+                        evaluation = Debugger::ReadMemory(address, size, format, &evalError);
+                        switch(evalError)
+                        {
+                           case dummyExp:
+                              if(evaluation)
+                              {
+                                 expNew = ParseExpressionString(evaluation);
+                                 delete evaluation;
+                                 expNew.destType = exp.expType;
+                                 FreeType(exp.destType);
+                                 FreeExpContents(exp);
+                                 ProcessExpressionType(expNew);
+                                 DebugComputeExpression(expNew);
+
+                                 // TOFIX: Only for Array Types
+                                 expNew.address = address;
+
+                                 expNew.hasAddress = true;
+                                 expNew.prev = prev;
+                                 expNew.next = next;
+                                 expNew.isConstant = true;
+                                 *exp = *expNew;
+                                 delete expNew;
+                              }
+                              else
+                              {
+                                 // Unhandled code path, evaluation is null
+                                 FreeExpContents(exp);
+                                 exp.type = unknownErrorExp;
+                              }
+                              break;
+                           case memoryErrorExp:
+                              delete evaluation;
+                              FreeExpContents(exp);
+                              exp.type = evalError;
+                              exp.constant = PrintHexUInt64(address);
+                              break;
+                           default:
+                              delete evaluation;
+                              FreeExpContents(exp);
+                              exp.type = evalError;
+                              break;
+                        }
+                     }
                   }
-                  else if(evaluation)
-                  {
-                     expNew = ParseExpressionString(evaluation);
-                     delete evaluation;
-                     expNew.destType = exp.expType;
-                     FreeType(exp.destType);
-                     FreeExpContents(exp);
-                     ProcessExpressionType(expNew);
-                     DebugComputeExpression(expNew);
-
-                     // TOFIX: Only for Array Types
-                     expNew.address = address;
-
-                     expNew.hasAddress = true;
-                     expNew.prev = prev;
-                     expNew.next = next;
-                     expNew.isConstant = true;
-                     *exp = *expNew;
-                  }
-                  else
-                     exp.type = unknownErrorExp;
-
-                  //FreeExpContents(exp);
-                  //exp.constant = PrintUInt64(value);
-                  //exp.type = constantExp;
                }
             }
          }

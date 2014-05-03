@@ -10507,7 +10507,13 @@ type = type->_class->registered->dataType;
 }
 op.kind = type->kind;
 op.type = exp->expType;
-if(exp->isConstant && exp->type == 2)
+if(exp->type == 3 && op.kind == 13)
+{
+op.ui64 = (uint64)exp->string;
+op.kind = 13;
+op.ops = uint64Ops;
+}
+else if(exp->isConstant && exp->type == 2)
 {
 switch(op.kind)
 {
