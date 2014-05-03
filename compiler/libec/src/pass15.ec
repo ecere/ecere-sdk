@@ -4005,8 +4005,8 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 #define OPERATOR_ALL(macro, o, name) \
    macro(o, Int##name, i, int, PrintInt) \
    macro(o, UInt##name, ui, unsigned int, PrintUInt) \
-   macro(o, Int64##name, i, int, PrintInt64) \
-   macro(o, UInt64##name, ui, unsigned int, PrintUInt64) \
+   macro(o, Int64##name, i64, int64, PrintInt64) \
+   macro(o, UInt64##name, ui64, uint64, PrintUInt64) \
    macro(o, Short##name, s, short, PrintShort) \
    macro(o, UShort##name, us, unsigned short, PrintUShort) \
    macro(o, Char##name, c, char, PrintChar) \
@@ -4017,8 +4017,8 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 #define OPERATOR_INTTYPES(macro, o, name) \
    macro(o, Int##name, i, int, PrintInt) \
    macro(o, UInt##name, ui, unsigned int, PrintUInt) \
-   macro(o, Int64##name, i, int, PrintInt64) \
-   macro(o, UInt64##name, ui, unsigned int, PrintUInt64) \
+   macro(o, Int64##name, i64, int64, PrintInt64) \
+   macro(o, UInt64##name, ui64, uint64, PrintUInt64) \
    macro(o, Short##name, s, short, PrintShort) \
    macro(o, UShort##name, us, unsigned short, PrintUShort) \
    macro(o, Char##name, c, char, PrintChar) \
@@ -4294,7 +4294,7 @@ public Operand GetOperand(Expression exp)
             case classType:
                op.ui64 = _strtoui64(exp.constant, null, 0);
                op.kind = pointerType;
-               op.ops = uintOps;
+               op.ops = uint64Ops;
                // op.ptrSize =
                break;
          }
