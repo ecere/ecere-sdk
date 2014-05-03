@@ -13580,6 +13580,7 @@ break;
 if(c == definedExpStackPos && c < sizeof definedExpStack / sizeof(void *))
 {
 struct Location backupYylloc = yylloc;
+struct __ecereNameSpace__ecere__com__Instance * backInput = fileInput;
 
 definedExpStack[definedExpStackPos++] = definedExp;
 fileInput = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
@@ -13598,6 +13599,8 @@ parsedExpression = (((void *)0));
 resetScanner();
 expression_yyparse();
 (__ecereNameSpace__ecere__com__eInstance_DecRef(fileInput), fileInput = 0);
+if(backInput)
+fileInput = backInput;
 yylloc = backupYylloc;
 if(parsedExpression)
 {

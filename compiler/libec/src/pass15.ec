@@ -7418,7 +7418,9 @@ void ProcessExpressionType(Expression exp)
                   if(c == definedExpStackPos && c < sizeof(definedExpStack) / sizeof(void *))
                   {
                      Location backupYylloc = yylloc;
+                     File backInput = fileInput;
                      definedExpStack[definedExpStackPos++] = definedExp;
+
                      fileInput = TempFile { };
                      fileInput.Write(definedExp.value, 1, strlen(definedExp.value));
                      fileInput.Seek(0, start);
@@ -7428,6 +7430,8 @@ void ProcessExpressionType(Expression exp)
                      resetScanner();
                      expression_yyparse();
                      delete fileInput;
+                     if(backInput)
+                        fileInput = backInput;
 
                      yylloc = backupYylloc;
 
