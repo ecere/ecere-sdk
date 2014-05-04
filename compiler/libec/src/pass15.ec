@@ -9623,7 +9623,8 @@ void ProcessExpressionType(Expression exp)
                      FreeExpContents(exp);
                      exp.type = identifierExp;
                      exp.identifier = MkIdentifier("class");
-                     ProcessExpressionType(exp);
+                     FreeType(exp.expType);
+                     exp.expType = MkClassType("ecere::com::Class");
                      return;
                   }
                   yylloc = exp.member.member.loc;

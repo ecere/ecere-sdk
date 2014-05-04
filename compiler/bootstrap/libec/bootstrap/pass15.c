@@ -15493,7 +15493,8 @@ if(exp->member.exp->expType->classObjectType == 2 && !strcmp(exp->member.member-
 FreeExpContents(exp);
 exp->type = 0;
 exp->identifier = MkIdentifier("class");
-ProcessExpressionType(exp);
+FreeType(exp->expType);
+exp->expType = MkClassType("ecere::com::Class");
 return ;
 }
 yylloc = exp->member.member->loc;
