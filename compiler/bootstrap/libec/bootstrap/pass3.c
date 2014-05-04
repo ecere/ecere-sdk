@@ -1509,7 +1509,7 @@ InstDeclPassExpression(exp->op.exp1);
 if(exp->op.exp2)
 InstDeclPassExpression(exp->op.exp2);
 break;
-case 34:
+case 32:
 case 5:
 {
 struct Expression * e;
@@ -1591,17 +1591,17 @@ InstDeclPassExpression(e);
 InstDeclPassExpression(exp->cond.elseExp);
 break;
 }
-case 25:
+case 23:
 {
 InstDeclPassStatement(exp->compound);
 break;
 }
-case 36:
+case 34:
 {
 InstDeclPassExpression(exp->vaArg.exp);
 break;
 }
-case 35:
+case 33:
 {
 InstDeclPassTypeName(exp->initializer.typeName, 0x0);
 InstDeclPassInitializer(exp->initializer.initializer);

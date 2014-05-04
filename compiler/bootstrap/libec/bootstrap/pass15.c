@@ -5337,7 +5337,7 @@ ReadString(string, sourceExp->string);
 decl = SpecDeclFromString(string, specs, (((void *)0)));
 FreeExpContents(sourceExp);
 FreeType(sourceExp->expType);
-sourceExp->type = 26;
+sourceExp->type = 24;
 sourceExp->_classExp.specifiers = specs;
 sourceExp->_classExp.decl = decl;
 sourceExp->expType = dest;
@@ -5594,7 +5594,7 @@ return 0x1;
 }
 else
 {
-while((sourceExp->type == 5 || sourceExp->type == 34) && sourceExp->list)
+while((sourceExp->type == 5 || sourceExp->type == 32) && sourceExp->list)
 sourceExp = (*sourceExp->list).last;
 if(sourceExp->type == 0)
 {
@@ -11564,7 +11564,7 @@ FreeType(op2.type);
 break;
 }
 case 5:
-case 34:
+case 32:
 {
 struct Expression * e, * n;
 
@@ -11604,7 +11604,7 @@ struct __ecereNameSpace__ecere__com__Property * prop = (((void *)0));
 struct __ecereNameSpace__ecere__com__DataMember * member = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * convertTo = (((void *)0));
 
-if(type->kind == 19 && exp->member.exp->type == 26)
+if(type->kind == 19 && exp->member.exp->type == 24)
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::com::Class");
 if(!_class)
 {
@@ -12324,7 +12324,7 @@ context = PushContext();
 ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), (((void *)0)))));
 ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), (((void *)0)))));
 specs = MkListOne(MkStructOrUnion(4, (((void *)0)), unionDefs));
-exp->type = 25;
+exp->type = 23;
 exp->compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), (((void *)0)))))), statements);
 ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")), '=', newExp))));
 ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")))));
@@ -12373,7 +12373,7 @@ context = PushContext();
 ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifier(DOUBLE)), MkListOne(MkDeclaratorIdentifier(MkIdentifier("d"))), (((void *)0)))));
 ListAdd(unionDefs, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpecifierName("uint64")), MkListOne(MkDeclaratorIdentifier(MkIdentifier("i"))), (((void *)0)))));
 specs = MkListOne(MkStructOrUnion(4, (((void *)0)), unionDefs));
-exp->type = 25;
+exp->type = 23;
 exp->compound = MkCompoundStmt(MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_union")), (((void *)0)))))), statements);
 ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("i")), '=', newExp))));
 ListAdd(statements, MkExpressionStmt(MkListOne(MkExpMember(MkExpIdentifier(MkIdentifier("__internal_union")), MkIdentifier("d")))));
@@ -13197,11 +13197,11 @@ if(!_class || strcmp(_class->fullName, "char *"))
 {
 struct Expression * checkedExp = e, * newExp;
 
-while(((checkedExp->type == 5 || checkedExp->type == 34 || checkedExp->type == 25) && checkedExp->list) || checkedExp->type == 11)
+while(((checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23) && checkedExp->list) || checkedExp->type == 11)
 {
-if(checkedExp->type == 5 || checkedExp->type == 34 || checkedExp->type == 25)
+if(checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23)
 {
-if(checkedExp->type == 25)
+if(checkedExp->type == 23)
 {
 checkedExp = (*((struct Statement *)(*checkedExp->compound->compound.statements).last)->expressions).last;
 }
@@ -13256,7 +13256,7 @@ if(curCompound)
 char name[100];
 struct __ecereNameSpace__ecere__sys__OldList * stmts = MkList();
 
-e->type = 25;
+e->type = 23;
 sprintf(name, "__internalValue%03X", internalValueCounter++);
 if(!curCompound->compound.declarations)
 curCompound->compound.declarations = MkList();
@@ -13282,11 +13282,11 @@ curContext = context->parent;
 }
 }
 checkedExp = e;
-while(((checkedExp->type == 5 || checkedExp->type == 34 || checkedExp->type == 25) && checkedExp->list) || checkedExp->type == 11)
+while(((checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23) && checkedExp->list) || checkedExp->type == 11)
 {
-if(checkedExp->type == 5 || checkedExp->type == 34 || checkedExp->type == 25)
+if(checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23)
 {
-if(checkedExp->type == 25)
+if(checkedExp->type == 23)
 {
 checkedExp = (*((struct Statement *)(*checkedExp->compound->compound.statements).last)->expressions).last;
 }
@@ -13828,7 +13828,7 @@ __ecereInstance1->refCount = 1, __ecereInstance1->kind = 1, __ecereInstance1->co
 break;
 }
 case 13:
-case 28:
+case 26:
 ProcessExpressionType(exp->_new.size);
 exp->expType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
@@ -13838,7 +13838,7 @@ __ecereInstance1->refCount = 1, __ecereInstance1->kind = 13, __ecereInstance1->t
 DeclareType(exp->expType->type, 0x0, 0x0);
 break;
 case 14:
-case 29:
+case 27:
 ProcessExpressionType(exp->_renew.size);
 ProcessExpressionType(exp->_renew.exp);
 exp->expType = __extension__ ({
@@ -14555,7 +14555,7 @@ FreeType(type2);
 break;
 }
 case 5:
-case 34:
+case 32:
 {
 struct Expression * e;
 
@@ -15297,7 +15297,7 @@ struct Identifier * id = exp->member.member;
 int typeKind = type->kind;
 struct __ecereNameSpace__ecere__com__Class * _class = (id && (!id->_class || id->_class->name)) ? (id->classSym ? id->classSym->registered : (type->_class ? type->_class->registered : (((void *)0)))) : (((void *)0));
 
-if(typeKind == 19 && exp->member.exp->type == 26)
+if(typeKind == 19 && exp->member.exp->type == 24)
 {
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::com::Class");
 typeKind = 8;
@@ -15909,14 +15909,14 @@ exp->isConstant = exp->cast.exp->isConstant;
 }
 break;
 }
-case 35:
+case 33:
 {
 struct Type * type = ProcessType(exp->initializer.typeName->qualifiers, exp->initializer.typeName->declarator);
 
 exp->expType = type;
 break;
 }
-case 36:
+case 34:
 {
 struct Type * type = ProcessType(exp->vaArg.typeName->qualifiers, exp->vaArg.typeName->declarator);
 
@@ -15963,7 +15963,7 @@ if(!exp->cond.elseExp->isConstant)
 exp->isConstant = 0x0;
 break;
 }
-case 25:
+case 23:
 {
 if(exp->compound && exp->compound->compound.statements && (*exp->compound->compound.statements).last)
 {
@@ -15982,7 +15982,7 @@ exp->expType->refCount++;
 }
 break;
 }
-case 26:
+case 24:
 {
 struct Specifier * spec = (*exp->_classExp.specifiers).first;
 
@@ -15999,7 +15999,7 @@ exp->byReference = 0x1;
 }
 break;
 }
-case 27:
+case 25:
 {
 struct __ecereNameSpace__ecere__com__Class * _class = thisClass ? thisClass : currentClass;
 
@@ -16023,7 +16023,7 @@ return ;
 }
 break;
 }
-case 37:
+case 35:
 {
 struct Type * type = (((void *)0));
 char * typeString = (((void *)0));
@@ -16953,7 +16953,7 @@ struct Statement * block = stmt->forEachStmt.stmt;
 char iteratorType[1024];
 struct Type * source;
 struct Expression * e;
-unsigned int isBuiltin = exp && (*exp).last && (((struct Expression *)(*exp).last)->type == 37 || (((struct Expression *)(*exp).last)->type == 11 && ((struct Expression *)(*exp).last)->cast.exp->type == 37));
+unsigned int isBuiltin = exp && (*exp).last && (((struct Expression *)(*exp).last)->type == 35 || (((struct Expression *)(*exp).last)->type == 11 && ((struct Expression *)(*exp).last)->cast.exp->type == 35));
 struct Expression * arrayExp;
 char * typeString = (((void *)0));
 int builtinCount = 0;
@@ -17017,7 +17017,7 @@ else if(isBuiltin)
 struct Type * type = (((void *)0));
 char typeStringBuf[1024];
 
-arrayExp = (((struct Expression *)(*exp).last)->type == 37) ? (struct Expression *)(*exp).last : ((struct Expression *)(*exp).last)->cast.exp;
+arrayExp = (((struct Expression *)(*exp).last)->type == 35) ? (struct Expression *)(*exp).last : ((struct Expression *)(*exp).last)->cast.exp;
 if(((struct Expression *)(*exp).last)->type == 11)
 {
 struct TypeName * typeName = ((struct Expression *)(*exp).last)->cast.typeName;

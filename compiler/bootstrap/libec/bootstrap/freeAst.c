@@ -1477,12 +1477,12 @@ static void _FreeExpression(struct Expression * exp, unsigned int freePointer)
 switch(exp->type)
 {
 case 13:
-case 28:
+case 26:
 FreeExpression(exp->_new.size);
 FreeTypeName(exp->_new.typeName);
 break;
 case 14:
-case 29:
+case 27:
 FreeExpression(exp->_renew.exp);
 FreeExpression(exp->_renew.size);
 FreeTypeName(exp->_renew.typeName);
@@ -1540,7 +1540,7 @@ break;
 case 10:
 FreeTypeName(exp->_new.typeName);
 break;
-case 38:
+case 36:
 FreeTypeName(exp->_new.typeName);
 break;
 case 11:
@@ -1558,19 +1558,19 @@ if(exp->cond.elseExp)
 FreeExpression(exp->cond.elseExp);
 break;
 }
-case 25:
+case 23:
 {
 if(exp->compound)
 FreeStatement(exp->compound);
 break;
 }
-case 34:
+case 32:
 {
 if(exp->list)
 FreeList(exp->list, FreeExpression);
 break;
 }
-case 35:
+case 33:
 {
 if(exp->initializer.typeName)
 FreeTypeName(exp->initializer.typeName);
@@ -1580,32 +1580,32 @@ break;
 }
 case 16:
 break;
-case 26:
+case 24:
 if(exp->_classExp.specifiers)
 FreeList(exp->_classExp.specifiers, FreeSpecifier);
 if(exp->_classExp.decl)
 FreeDeclarator(exp->_classExp.decl);
 break;
+case 29:
 case 31:
-case 33:
-case 32:
+case 30:
 if(exp->db.id)
 FreeIdentifier(exp->db.id);
 (__ecereNameSpace__ecere__com__eSystem_Delete(exp->db.table), exp->db.table = 0);
 break;
-case 30:
+case 28:
 if(exp->dbopen.ds)
 FreeExpression(exp->dbopen.ds);
 if(exp->dbopen.name)
 FreeExpression(exp->dbopen.name);
 break;
-case 36:
+case 34:
 if(exp->vaArg.exp)
 FreeExpression(exp->vaArg.exp);
 if(exp->vaArg.typeName)
 FreeTypeName(exp->vaArg.typeName);
 break;
-case 37:
+case 35:
 if(exp->list)
 FreeList(exp->list, FreeExpression);
 break;
@@ -1613,9 +1613,26 @@ case 15:
 if(exp->_class)
 FreeSpecifier(exp->_class);
 break;
-case 27:
+case 25:
 if(exp->classData.id)
 FreeIdentifier(exp->classData.id);
+break;
+case 18:
+if(exp->identifier)
+FreeIdentifier(exp->identifier);
+break;
+case 20:
+(__ecereNameSpace__ecere__com__eSystem_Delete(exp->constant), exp->constant = 0);
+break;
+case 19:
+if(exp->member.exp)
+FreeExpression(exp->member.exp);
+if(exp->member.member)
+FreeIdentifier(exp->member.member);
+break;
+case 17:
+case 21:
+case 22:
 break;
 }
 if(freePointer)

@@ -1410,11 +1410,11 @@ CheckPublicExpression(exp->cond.elseExp, access);
 break;
 }
 case 13:
-case 28:
+case 26:
 CheckPublicExpression(exp->_new.size, access);
 break;
 case 14:
-case 29:
+case 27:
 CheckPublicExpression(exp->_renew.size, access);
 CheckPublicExpression(exp->_renew.exp, access);
 break;

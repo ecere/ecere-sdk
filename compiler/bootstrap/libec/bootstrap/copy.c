@@ -1117,7 +1117,7 @@ break;
 case 10:
 result = MkExpTypeSize(CopyTypeName(exp->typeName));
 break;
-case 38:
+case 36:
 result = MkExpTypeAlign(CopyTypeName(exp->typeName));
 break;
 case 11:
@@ -1133,13 +1133,13 @@ ListAdd(list, CopyExpression(e));
 result = MkExpCondition(CopyExpression(exp->cond.cond), list, CopyExpression(exp->cond.elseExp));
 break;
 }
-case 36:
+case 34:
 result = MkExpVaArg(CopyExpression(exp->vaArg.exp), CopyTypeName(exp->vaArg.typeName));
 break;
-case 25:
+case 23:
 result = MkExpExtensionCompound(CopyStatement(exp->compound));
 break;
-case 35:
+case 33:
 result = MkExpExtensionInitializer(CopyTypeName(exp->initializer.typeName), CopyInitializer(exp->initializer.initializer));
 break;
 }

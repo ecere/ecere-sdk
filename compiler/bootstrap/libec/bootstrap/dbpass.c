@@ -1306,7 +1306,7 @@ ProcessExpression(exp->cond.elseExp);
 break;
 case 16:
 break;
-case 31:
+case 29:
 {
 char tableName[1024];
 char name[1024];
@@ -1321,7 +1321,7 @@ exp->type = 0;
 exp->identifier = MkIdentifier(name);
 break;
 }
-case 32:
+case 30:
 {
 char tableName[1024];
 char name[1024];
@@ -1336,7 +1336,7 @@ exp->type = 0;
 exp->identifier = MkIdentifier(name);
 break;
 }
-case 33:
+case 31:
 {
 char tableName[1024];
 char name[1024];
@@ -1351,7 +1351,7 @@ exp->type = 0;
 exp->identifier = MkIdentifier(name);
 break;
 }
-case 30:
+case 28:
 {
 if(tableStatements)
 {
@@ -1418,7 +1418,7 @@ struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(
 __ecereInstance1->parent = ifDBStmt->compound.context, __ecereInstance1;
 });
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ifDBStmt->compound.statements), MkExpressionStmt(MkListOne(MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier("db")), MkIdentifier("Commit")), MkList()))));
-exp->type = 25;
+exp->type = 23;
 exp->compound = databaseOpenStmt;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("db")))));
 tableStatements = (((void *)0));

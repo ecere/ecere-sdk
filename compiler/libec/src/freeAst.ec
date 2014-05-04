@@ -503,6 +503,23 @@ static void _FreeExpression(Expression exp, bool freePointer)
          if(exp.classData.id)
             FreeIdentifier(exp.classData.id);
             break;
+      case symbolErrorExp:
+         if(exp.identifier)
+            FreeIdentifier(exp.identifier);
+         break;
+      case memoryErrorExp:
+         delete exp.constant;
+         break;
+      case memberSymbolErrorExp:
+         if(exp.member.exp)
+            FreeExpression(exp.member.exp);
+         if(exp.member.member)
+            FreeIdentifier(exp.member.member);
+         break;
+      case dereferenceErrorExp:
+      case unknownErrorExp:
+      case noDebuggerErrorExp:
+         break;
    }
    if(freePointer)
    {

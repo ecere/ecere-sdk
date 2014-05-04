@@ -2245,7 +2245,7 @@ tempCount = ((tempCount > declTempCount) ? tempCount : declTempCount);
 tempCount++;
 curExternal->function->tempCount = (__simpleStruct0 = curExternal->function->tempCount, (__simpleStruct0 > tempCount) ? __simpleStruct0 : tempCount);
 sprintf(ecereTemp, "__ecereInstance%d", tempCount);
-exp->type = 25;
+exp->type = 23;
 exp->compound = MkCompoundStmt((((void *)0)), (((void *)0)));
 exp->compound->compound.context = PushContext();
 exp->compound->compound.context->simpleID = exp->compound->compound.context->parent->simpleID;
@@ -2292,11 +2292,11 @@ break;
 case 3:
 break;
 case 13:
-case 28:
+case 26:
 ProcessExpression(exp->_new.size);
 break;
 case 14:
-case 29:
+case 27:
 ProcessExpression(exp->_renew.size);
 ProcessExpression(exp->_renew.exp);
 break;
@@ -2384,7 +2384,7 @@ ProcessExpression(exp->op.exp2);
 }
 break;
 }
-case 34:
+case 32:
 case 5:
 {
 struct Expression * e;
@@ -2558,7 +2558,7 @@ ProcessExpression(exp->cond.elseExp);
 }
 break;
 }
-case 25:
+case 23:
 {
 if(exp->compound->compound.statements && ((struct Statement *)(*exp->compound->compound.statements).last)->type == 3 && ((struct Statement *)(*exp->compound->compound.statements).last)->expressions && (*((struct Statement *)(*exp->compound->compound.statements).last)->expressions).last)
 {
@@ -2567,12 +2567,12 @@ if(exp->compound->compound.statements && ((struct Statement *)(*exp->compound->c
 ProcessStatement(exp->compound);
 break;
 }
-case 36:
+case 34:
 {
 ProcessExpression(exp->vaArg.exp);
 break;
 }
-case 35:
+case 33:
 {
 ProcessInitializer(exp->initializer.initializer);
 break;

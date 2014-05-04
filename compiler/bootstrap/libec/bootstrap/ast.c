@@ -1469,7 +1469,7 @@ struct Expression * MkExpExtensionCompound(struct Statement * compound)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 25, __ecereInstance1->compound = compound, __ecereInstance1;
+__ecereInstance1->type = 23, __ecereInstance1->compound = compound, __ecereInstance1;
 });
 }
 
@@ -1478,7 +1478,7 @@ struct Expression * MkExpExtensionExpression(struct __ecereNameSpace__ecere__sys
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 34, __ecereInstance1->list = expressions, __ecereInstance1->loc = yylloc, __ecereInstance1;
+__ecereInstance1->type = 32, __ecereInstance1->list = expressions, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1487,7 +1487,7 @@ struct Expression * MkExpExtensionInitializer(struct TypeName * typeName, struct
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 35, __ecereInstance1->initializer.typeName = typeName, __ecereInstance1->initializer.initializer = initializer, __ecereInstance1->loc = yylloc, __ecereInstance1;
+__ecereInstance1->type = 33, __ecereInstance1->initializer.typeName = typeName, __ecereInstance1->initializer.initializer = initializer, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1745,7 +1745,7 @@ struct Expression * MkExpTypeAlign(struct TypeName * typeName)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 38, __ecereInstance1->typeName = typeName, __ecereInstance1;
+__ecereInstance1->type = 36, __ecereInstance1->typeName = typeName, __ecereInstance1;
 });
 }
 
@@ -1790,7 +1790,7 @@ struct Expression * MkExpRenew0(struct Expression * memExp, struct TypeName * ty
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 29, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1;
+__ecereInstance1->type = 27, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1;
 });
 }
 
@@ -1808,7 +1808,7 @@ struct Expression * MkExpNew0(struct TypeName * type, struct Expression * size)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 28, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1;
+__ecereInstance1->type = 26, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1;
 });
 }
 
@@ -1817,7 +1817,7 @@ struct Expression * MkExpVaArg(struct Expression * exp, struct TypeName * type)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 36, __ecereInstance1->vaArg.exp = exp, __ecereInstance1->vaArg.typeName = type, __ecereInstance1;
+__ecereInstance1->type = 34, __ecereInstance1->vaArg.exp = exp, __ecereInstance1->vaArg.typeName = type, __ecereInstance1;
 });
 }
 
@@ -4665,7 +4665,7 @@ struct Expression * MkExpClass(struct __ecereNameSpace__ecere__sys__OldList * sp
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 26, __ecereInstance1->_classExp.specifiers = specifiers, __ecereInstance1->_classExp.decl = decl, __ecereInstance1;
+__ecereInstance1->type = 24, __ecereInstance1->_classExp.specifiers = specifiers, __ecereInstance1->_classExp.decl = decl, __ecereInstance1;
 });
 }
 
@@ -4674,7 +4674,7 @@ struct Expression * MkExpClassData(struct Identifier * id)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 27, __ecereInstance1->classData.id = id, __ecereInstance1;
+__ecereInstance1->type = 25, __ecereInstance1->classData.id = id, __ecereInstance1;
 });
 }
 
@@ -4728,7 +4728,7 @@ struct Expression * MkExpDBOpen(struct Expression * ds, struct Expression * dbNa
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 30, __ecereInstance1->dbopen.ds = ds, __ecereInstance1->dbopen.name = dbName, __ecereInstance1;
+__ecereInstance1->type = 28, __ecereInstance1->dbopen.ds = ds, __ecereInstance1->dbopen.name = dbName, __ecereInstance1;
 });
 }
 
@@ -4737,7 +4737,7 @@ struct Expression * MkExpDBField(char * table, struct Identifier * id)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 31, __ecereInstance1->db.table = table, __ecereInstance1->db.id = id, __ecereInstance1;
+__ecereInstance1->type = 29, __ecereInstance1->db.table = table, __ecereInstance1->db.id = id, __ecereInstance1;
 });
 }
 
@@ -4746,7 +4746,7 @@ struct Expression * MkExpDBIndex(char * table, struct Identifier * id)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 33, __ecereInstance1->db.table = table, __ecereInstance1->db.id = id, __ecereInstance1;
+__ecereInstance1->type = 31, __ecereInstance1->db.table = table, __ecereInstance1->db.id = id, __ecereInstance1;
 });
 }
 
@@ -4755,7 +4755,7 @@ struct Expression * MkExpDBTable(char * table)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 32, __ecereInstance1->db.table = table, __ecereInstance1;
+__ecereInstance1->type = 30, __ecereInstance1->db.table = table, __ecereInstance1;
 });
 }
 
@@ -4764,7 +4764,7 @@ struct Expression * MkExpArray(struct __ecereNameSpace__ecere__sys__OldList * ex
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 37, __ecereInstance1->list = expressions, __ecereInstance1;
+__ecereInstance1->type = 35, __ecereInstance1->list = expressions, __ecereInstance1;
 });
 }
 

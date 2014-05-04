@@ -2895,22 +2895,28 @@ class Debugger
                   case symbolErrorExp:
                      snprintf(watchmsg, sizeof(watchmsg), $"Symbol \"%s\" not found", exp.identifier.string);
                      break;
-                  case structMemberSymbolErrorExp:
-                     // todo get info as in next case (ExpClassMemberSymbolError)
-                     snprintf(watchmsg, sizeof(watchmsg), $"Error: Struct member not found for \"%s\"", wh.expression);
-                     break;
-                  case classMemberSymbolErrorExp:
+                  case memberSymbolErrorExp:
+                  {
+                     Class _class;
+                     Expression memberExp = exp.member.exp;
+                     Identifier memberID = exp.member.member;
+                     Type type = memberExp.expType;
+                     if(type)
                      {
-                        Class _class;
-                        Expression memberExp = exp.member.exp;
-                        Identifier memberID = exp.member.member;
-                        Type type = memberExp.expType;
-                        if(type)
+                        if(type.kind == structType || type.kind == unionType)
                         {
-                           _class = (memberID && memberID.classSym) ? memberID.classSym.registered : ((type.kind == classType && type._class) ? type._class.registered : null);
+                           char string[1024] = "";
+                           if(!type.name)
+                              PrintTypeNoConst(type, string, false, true);
+                           snprintf(watchmsg, sizeof(watchmsg), $"Member \"%s\" not found in %s \"%s\"",
+                              memberID ? memberID.string : "", type.kind == unionType ? "union" : "struct", type.name ? type.name : string);
+                        }
+                        else
+                        {
+                           Class _class = (memberID && memberID.classSym) ? memberID.classSym.registered : ((type.kind == classType && type._class) ? type._class.registered : null);
+                           char string[1024] = "";
                            if(!_class)
                            {
-                              char string[256] = "";
                               Symbol classSym;
                               PrintTypeNoConst(type, string, false, true);
                               classSym = FindClass(string);
@@ -2919,29 +2925,31 @@ class Debugger
                            if(_class)
                               snprintf(watchmsg, sizeof(watchmsg), $"Member \"%s\" not found in class \"%s\"", memberID ? memberID.string : "", _class.name);
                            else
-                              snprintf(watchmsg, sizeof(watchmsg), "Member \"%s\" not found in unregistered class? (Should never get this message)", memberID ? memberID.string : "");
+                              // NOTE: This should probably never happen, only classes and struct can be dereferenced, a dereferenceErrorExp should be displayed instead
+                              snprintf(watchmsg, sizeof(watchmsg), $"Member \"%s\" not found in type \"%s\"", memberID ? memberID.string : "", string);
                         }
-                        else
-                           snprintf(watchmsg, sizeof(watchmsg), "Member \"%s\" not found in no type? (Should never get this message)", memberID ? memberID.string : "");
                      }
+                     else
+                        // NOTE: This should probably never happen, the error causing the unresolved expression should be displayed instead
+                        snprintf(watchmsg, sizeof(watchmsg), $"Accessing member \"%s\" from unresolved expression", memberID ? memberID.string : "");
                      break;
+                  }
                   case memoryErrorExp:
                      // Need to ensure when set to memoryErrorExp, constant is set
                      snprintf(watchmsg, sizeof(watchmsg), $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
                      break;
                   case dereferenceErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Dereference failure for \"%s\"", wh.expression);
-                     break;
-                  case unknownErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Unknown error for \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Dereferencing error evaluating for \"%s\"", wh.expression);
                      break;
                   case noDebuggerErrorExp:
                      snprintf(watchmsg, sizeof(watchmsg), $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
                      break;
-                  case debugStateErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Incorrect debugger state for symbol evaluation in \"%s\"", wh.expression);
+                  case unknownErrorExp:
+                     // NOTE: This should never happen
+                     snprintf(watchmsg, sizeof(watchmsg), $"Error evaluating \"%s\"", wh.expression);
                      break;
                   case 0:
+                     // NOTE: This should never happen
                      snprintf(watchmsg, sizeof(watchmsg), $"Null type for \"%s\"", wh.expression);
                      break;
                   case stringExp:
@@ -3058,7 +3066,7 @@ class Debugger
                         if(item)
                            wh.value = CopyString(item.name);
                         else
-                           wh.value = CopyString($"Invalid Enum Value");
+                           wh.value = PrintString($"Invalid Enum Value (", value, ")");
                         result = true;
                      }
                      else if(wh.type && (wh.type.kind == charType || (wh.type.kind == classType && wh.type._class &&
@@ -3147,10 +3155,13 @@ class Debugger
                      {
                         char tempString[256];
                         if(exp.member.memberType == propertyMember)
+                           // TODO: Have a propertyErrorExp to carry over
                            snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation support for \"%s\"", wh.expression);
                         else
-                           snprintf(watchmsg, sizeof(watchmsg), $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression,
-                                 exp.type.OnGetString(tempString, null, null));
+                           // NOTE: This should never happen
+                           snprintf(watchmsg, sizeof(watchmsg), $"Error evaluating \"%s\"", wh.expression);
+                           /*snprintf(watchmsg, sizeof(watchmsg), $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression,
+                                 exp.type.OnGetString(tempString, null, null));*/
                      }
                      break;
                }
@@ -3253,6 +3264,7 @@ class Debugger
             else
                break;
          }
+         delete eval.result;
          return result;
       }
       return null;
@@ -5012,6 +5024,7 @@ void GDBFallBack(Expression exp, String expString)
    result = Debugger::EvaluateExpression(expString, &evalError);
    if(result)
    {
+      FreeExpContents(exp);
       exp.constant = result;
       exp.type = constantExp;
    }
