@@ -113,7 +113,7 @@ public:
          if(value)
             driverClass = GetGlobalSettingsDriver(value);
       }
-      get { return driverClass ? (driverClass.name : null; }
+      get { return driverClass ? driverClass.name : null; }
    }
    GlobalSettingsData data;
    GlobalSettingsData * dataOwner;

@@ -501,10 +501,13 @@ static void OutputStatement(Statement stmt, File f)
       {
          Expression exp;
          f.Puts("switch(");
-         for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
+         if(stmt.switchStmt.exp)
          {
-            OutputExpression(exp, f);
-            if(exp.next) f.Puts(", ");
+            for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
+            {
+               OutputExpression(exp, f);
+               if(exp.next) f.Puts(", ");
+            }
          }
          f.Puts(")\n");
          outputLine ++;
@@ -515,10 +518,13 @@ static void OutputStatement(Statement stmt, File f)
       {
          Expression exp;
          f.Puts("while(");
-         for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
+         if(stmt.switchStmt.exp)
          {
-            OutputExpression(exp, f);
-            if(exp.next) f.Puts(", ");
+            for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
+            {
+               OutputExpression(exp, f);
+               if(exp.next) f.Puts(", ");
+            }
          }
          f.Puts(")\n");
          outputLine ++;

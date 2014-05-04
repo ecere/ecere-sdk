@@ -344,7 +344,7 @@ class OptionBox<class Z> : CommonControl
          ob.Unset();
          return false;
       }
-      return (((bool(*)(Window, Key, unichar)) ob.chainKeyDown)(this, key, ch);
+      return ((bool(*)(Window, Key, unichar)) ob.chainKeyDown)(this, key, ch);
    }
 
    // code: 0 = not set anywhere, 1 = overridden here, 2 = inherited
@@ -870,7 +870,7 @@ class MultiStringOptionBox : OptionBox<Array<String>>
    {
       if(mergeValues)
       {
-         Array<String> strings = options ? *((Array<String>*)((byte *)options + option) : null;
+         Array<String> strings = options ? *(Array<String>*)((byte *)options + option) : null;
          if(strings)
          {
             if(!tempStrings)

@@ -991,7 +991,7 @@ class CompilerOptionsTab : CompilersSubTab
          }
          return true;
       }
-   }
+   };
 
    Label lblPrepDefs { this, position = { 8, 126 }, labeledWindow = prepDefs };
    StringListBox prepDefs
@@ -1010,7 +1010,7 @@ class CompilerOptionsTab : CompilersSubTab
          }
          return true;
       }
-   }
+   };
 
    Label leCcompilerFlags { this, position = { 8, 156 }, labeledWindow = eCcompilerFlags };
    StringListBox eCcompilerFlags
@@ -1029,7 +1029,7 @@ class CompilerOptionsTab : CompilersSubTab
          }
          return true;
       }
-   }
+   };
 
    Label lblCompilerFlags { this, position = { 8, 186 }, labeledWindow = compilerFlags };
    StringListBox compilerFlags
@@ -1048,7 +1048,7 @@ class CompilerOptionsTab : CompilersSubTab
          }
          return true;
       }
-   }
+   };
 
    Label lblLinkerFlags { this, position = { 8, 216 }, labeledWindow = linkerFlags };
    StringListBox linkerFlags
@@ -1067,7 +1067,7 @@ class CompilerOptionsTab : CompilersSubTab
          }
          return true;
       }
-   }
+   };
 
    Label lblExcludedLibraries { this, position = { 8, 246 }, labeledWindow = excludedLibraries };
    StringListBox excludedLibraries
@@ -1086,7 +1086,7 @@ class CompilerOptionsTab : CompilersSubTab
          }
          return true;
       }
-   }
+   };
 
    CompilerOptionsTab()
    {

@@ -2388,7 +2388,7 @@ private:
             int level = 0;
             DataRow p = row;
             while(p = p.parent) level++;
-            background = colors[(level % (sizeof(colors)/sizeof(colors[0]))];
+            background = colors[level % (sizeof(colors)/sizeof(colors[0]))];
             surface.SetBackground(background);
             surface.Area(rowStart, y, clientSize.w, (y + rowHeight) - 1);
             foreground = branchesColor;

@@ -134,7 +134,7 @@ class SelfExtract : Window
          whereLabel.Update(null); // Is this still needed?
          return true;
       }
-   }
+   };
    EditBox where { this, text = $"Extract to", anchor = Anchor { left = 10, top = 40, right = 100 }, size = Size { h = 22 }, hotKey = altT, disabled = true };
    Label whereLabel { this, position = Point { 10,20 }, labeledWindow = where };
    Button browse
@@ -148,7 +148,7 @@ class SelfExtract : Window
             where.contents = fileDialog.filePath;
          return true;
       }
-   }
+   };
    Button close { this, text = $"Exit", anchor = Anchor { right = 10, top = 70 }, size = Size { 80 }, hotKey = altX, NotifyClicked = ButtonCloseDialog };
    Button extract
    {

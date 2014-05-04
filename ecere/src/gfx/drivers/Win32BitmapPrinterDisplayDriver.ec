@@ -455,7 +455,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
    bool MakeDDBitmap(DisplaySystem displaySystem, Bitmap bitmap, bool mipMaps)
    {
-      return (((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps);
+      return ((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps);
    }
 
    void ReleaseSurface(Display display, Surface surface)

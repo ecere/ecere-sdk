@@ -7530,7 +7530,7 @@ public:
 
       for(document = children.first; document; document = next)
       {
-         for(next = document.next; next && !(next.style.isActiveClient; next = next.next);
+         for(next = document.next; next && !next.style.isActiveClient; next = next.next);
          if(document.style.isActiveClient)
             if(!document.Destroy(0) && !document.style.hidden)
                return false;
@@ -9285,7 +9285,7 @@ public:
    {
       property_category $"Window Style"
       set { style.showInTaskBar = value; }
-      get { return (style.showInTaskBar; }
+      get { return style.showInTaskBar; }
    };
    property FileDialog saveDialog { set { saveDialog = value; } };
    property bool isActiveClient

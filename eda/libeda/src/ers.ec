@@ -529,7 +529,7 @@ public class PrintedReport : ReportDestination
    watch(report)
    {
       size = report.pageSize;
-   }
+   };
 
    void AddPage(Page page)
    {

@@ -209,7 +209,7 @@ public:
                {
                   t = *(uint *)&value.f;
                }
-               else if(arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64")
+               else if(arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64") ||
                   !strcmp(arrayType.dataTypeString, "unsigned int64") || !strcmp(arrayType.dataTypeString, "uint64"))
                {
                   t = value.ui64;
@@ -420,7 +420,7 @@ public:
                                  {
                                     *(float *)((byte *)*object + member._class.offset + member.offset) = value.f;
                                  }
-                                 else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64")
+                                 else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                                     !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                                  {
                                     *(uint64 *)((byte *)*object + member._class.offset + member.offset) = value.ui64;
@@ -462,7 +462,7 @@ public:
                                  {
                                     ((void (*)(void *, float))(void *)prop.Set)(*object, value.f);
                                  }
-                                 else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64")
+                                 else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                                     !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                                  {
                                     ((void (*)(void *, uint64))(void *)prop.Set)(*object, value.ui64);
@@ -602,7 +602,7 @@ bool WriteArray(File f, Class type, Container array, int indent)
          {
             value.f = *(float *)&t;
          }
-         else if(arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64")
+         else if(arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64") ||
             !strcmp(arrayType.dataTypeString, "unsigned int64") || !strcmp(arrayType.dataTypeString, "uint64"))
          {
             value.ui64 = t;
@@ -816,7 +816,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   {
                      value.f = ((float (*)(void *))(void *)prop.Get)(object);
                   }
-                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64")
+                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                      !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                   {
                      value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
@@ -880,7 +880,7 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   {
                      value.f = *(float *)((byte *)object + member._class.offset + member.offset);
                   }
-                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64")
+                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                      !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                   {
                      value.ui64 = *(uint64 *)((byte *)object + member._class.offset + member.offset);

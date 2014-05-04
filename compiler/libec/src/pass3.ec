@@ -709,16 +709,22 @@ static void InstDeclPassStatement(Statement stmt)
       case switchStmt:
       {
          Expression exp;
-         for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
-            InstDeclPassExpression(exp);
+         if(stmt.switchStmt.exp)
+         {
+            for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
+               InstDeclPassExpression(exp);
+         }
          InstDeclPassStatement(stmt.switchStmt.stmt);
          break;
       }
       case whileStmt:
       {
          Expression exp;
-         for(exp = stmt.whileStmt.exp->first; exp; exp = exp.next)
-            InstDeclPassExpression(exp);
+         if(stmt.whileStmt.exp)
+         {
+            for(exp = stmt.whileStmt.exp->first; exp; exp = exp.next)
+               InstDeclPassExpression(exp);
+         }
          InstDeclPassStatement(stmt.whileStmt.stmt);
          break;
       }

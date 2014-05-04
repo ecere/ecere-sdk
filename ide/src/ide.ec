@@ -635,7 +635,7 @@ class IDEWorkSpace : Window
             document.NotifySaved = DocumentSaved;
             return true;
          }
-      }
+      };
       MenuItem fileOpenItem
       {
          fileMenu, $"Open...", o, ctrlO;
@@ -673,7 +673,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem fileCloseItem { fileMenu, $"Close", c, ctrlF4, NotifySelect = MenuFileClose };
       MenuDivider { fileMenu };
       MenuItem fileSaveItem
@@ -701,7 +701,7 @@ class IDEWorkSpace : Window
             findInFilesDialog.Show();
             return true;
          }
-      }
+      };
       MenuItem replaceInFiles
       {
          fileMenu, $"Replace In Files...", e, Key { r, ctrl = true , shift = true };
@@ -711,7 +711,7 @@ class IDEWorkSpace : Window
             findInFilesDialog.Show();
             return true;
          }
-      }
+      };
       MenuDivider { fileMenu };
       MenuItem globalSettingsItem
       {
@@ -726,7 +726,7 @@ class IDEWorkSpace : Window
             globalSettingsDialog.Modal();
             return true;
          }
-      }
+      };
       MenuDivider { fileMenu };
       Menu recentFiles { fileMenu, $"Recent Files", r };
       Menu recentProjects { fileMenu, $"Recent Projects", p };
@@ -825,7 +825,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem projectOpenItem
       {
          projectMenu, $"Open...", o, Key { o, true, true };
@@ -843,7 +843,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem projectQuickItem
       {
          projectMenu, $"Quick...", q, f7, disabled = true;
@@ -853,7 +853,7 @@ class IDEWorkSpace : Window
                QuickProjectDialog { this }.Modal();
             return true;
          }
-      }
+      };
       MenuItem projectAddItem
       {
          projectMenu, $"Add project to workspace...", a, Key { a, true, true };
@@ -882,7 +882,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem projectCloseItem
       {
          projectMenu, $"Close", c, disabled = true;
@@ -895,7 +895,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuDivider { projectMenu };
       MenuItem projectSettingsItem
       {
@@ -905,7 +905,7 @@ class IDEWorkSpace : Window
             projectView.MenuSettings(projectView.active ? selection : null, mods);
             return true;
          }
-      }
+      };
       MenuDivider { projectMenu };
       MenuItem projectBrowseFolderItem
       {
@@ -916,7 +916,7 @@ class IDEWorkSpace : Window
                projectView.MenuBrowseFolder(null, mods);
             return true;
          }
-      }
+      };
       MenuDivider { projectMenu };
       MenuItem projectRunItem
       {
@@ -928,7 +928,7 @@ class IDEWorkSpace : Window
                projectView.Run(null, mods);
             return true;
          }
-      }
+      };
       MenuItem projectBuildItem
       {
          projectMenu, $"Build", b, f7, disabled = true;
@@ -944,7 +944,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem projectLinkItem
       {
          projectMenu, $"Relink", l, disabled = true;
@@ -955,7 +955,7 @@ class IDEWorkSpace : Window
                projectView.ProjectLink(projectView.active ? selection : null, mods);
             return true;
          }
-      }
+      };
       MenuItem projectRebuildItem
       {
          projectMenu, $"Rebuild", d, shiftF7, disabled = true;
@@ -966,7 +966,7 @@ class IDEWorkSpace : Window
                projectView.ProjectRebuild(projectView.active ? selection : null, mods);
             return true;
          }
-      }
+      };
       MenuItem projectCleanTargetItem
       {
          projectMenu, $"Clean Target", g, disabled = true;
@@ -980,7 +980,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem projectCleanItem
       {
          projectMenu, $"Clean", e, disabled = true;
@@ -994,7 +994,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem projectRealCleanItem
       {
          projectMenu, $"Real Clean", disabled = true;
@@ -1008,7 +1008,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuItem projectRegenerateItem
       {
          projectMenu, $"Regenerate Makefile", m, disabled = true;
@@ -1019,7 +1019,7 @@ class IDEWorkSpace : Window
                projectView.ProjectRegenerate(projectView.active ? selection : null, mods);
             return true;
          }
-      }
+      };
       MenuItem projectInstallItem
       {
 #ifdef IDE_SHOW_INSTALL_MENU_BUTTON
@@ -1032,7 +1032,7 @@ class IDEWorkSpace : Window
                projectView.ProjectInstall(projectView.active ? selection : null, mods);
             return true;
          }
-      }
+      };
       MenuItem projectCompileItem;
    Menu debugMenu { menu, $"Debug", d, hasMargin = true };
       MenuItem debugStartResumeItem
@@ -1040,7 +1040,7 @@ class IDEWorkSpace : Window
          debugMenu, $"Start", s, f5, disabled = true;
          bitmap = { ":actions/debug.png" };
          NotifySelect = MenuDebugStart;
-      }
+      };
       bool MenuDebugStart(MenuItem selection, Modifiers mods)
       {
          if(projectView)
@@ -1067,7 +1067,7 @@ class IDEWorkSpace : Window
                projectView.DebugRestart();
             return true;
          }
-      }
+      };
       MenuItem debugBreakItem
       {
          debugMenu, $"Break", b, Key { pauseBreak, ctrl = true }, disabled = true;
@@ -1080,7 +1080,7 @@ class IDEWorkSpace : Window
                projectView.DebugBreak();
             return true;
          }
-      }
+      };
       MenuItem debugStopItem
       {
          debugMenu, $"Stop", p, shiftF5, disabled = true;
@@ -1091,7 +1091,7 @@ class IDEWorkSpace : Window
                projectView.DebugStop();
             return true;
          }
-      }
+      };
       MenuDivider { debugMenu };
       ModelView duck
       {
@@ -1145,7 +1145,7 @@ class IDEWorkSpace : Window
                duck.Destroy(0);
             return true;
          }
-      }
+      };
 #ifndef __WIN32__
       MenuDivider { debugMenu };
       MenuItem debugUseValgrindItem
@@ -1161,12 +1161,12 @@ class IDEWorkSpace : Window
             ide.AdjustValgrindMenus();
             return true;
          }
-      }
+      };
       Menu debugValgrindLeakCheckItem { debugMenu, $"Valgrind Leak Check", h };
-         MenuItem debugValgrindNoLeakCheckItem      { debugValgrindLeakCheckItem, $"No"     , f, id = ValgrindLeakCheck::no     , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; }
-         MenuItem debugValgrindSummaryLeakCheckItem { debugValgrindLeakCheckItem, $"Summary", f, id = ValgrindLeakCheck::summary, checkable = true, disabled = true; NotifySelect = ValgrindLCSelect, checked = true; }
-         MenuItem debugValgrindYesLeakCheckItem     { debugValgrindLeakCheckItem, $"Yes"    , f, id = ValgrindLeakCheck::yes    , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; }
-         MenuItem debugValgrindFullLeakCheckItem    { debugValgrindLeakCheckItem, $"Full"   , f, id = ValgrindLeakCheck::full   , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; }
+         MenuItem debugValgrindNoLeakCheckItem      { debugValgrindLeakCheckItem, $"No"     , f, id = ValgrindLeakCheck::no     , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; };
+         MenuItem debugValgrindSummaryLeakCheckItem { debugValgrindLeakCheckItem, $"Summary", f, id = ValgrindLeakCheck::summary, checkable = true, disabled = true; NotifySelect = ValgrindLCSelect, checked = true; };
+         MenuItem debugValgrindYesLeakCheckItem     { debugValgrindLeakCheckItem, $"Yes"    , f, id = ValgrindLeakCheck::yes    , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; };
+         MenuItem debugValgrindFullLeakCheckItem    { debugValgrindLeakCheckItem, $"Full"   , f, id = ValgrindLeakCheck::full   , checkable = true, disabled = true; NotifySelect = ValgrindLCSelect; };
          bool ValgrindLCSelect(MenuItem selection, Modifiers mods)
          {
             if(ide.workspace)
@@ -1189,14 +1189,14 @@ class IDEWorkSpace : Window
             return true;
          }
       Menu debugValgrindRedzoneSizeItem { debugMenu, $"Valgrind Redzone Size", z };
-         MenuItem debugValgrindRSDefaultItem { debugValgrindRedzoneSizeItem, $"Default", f, id =  -1, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect, checked = true; }
-         MenuItem debugValgrindRS0Item       { debugValgrindRedzoneSizeItem, "0"      , f, id =   0, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS16Item      { debugValgrindRedzoneSizeItem, "16"     , f, id =  16, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS32Item      { debugValgrindRedzoneSizeItem, "32"     , f, id =  32, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS64Item      { debugValgrindRedzoneSizeItem, "64"     , f, id =  64, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS128Item     { debugValgrindRedzoneSizeItem, "128"    , f, id = 128, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS256Item     { debugValgrindRedzoneSizeItem, "256"    , f, id = 256, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
-         MenuItem debugValgrindRS512Item     { debugValgrindRedzoneSizeItem, "512"    , f, id = 512, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; }
+         MenuItem debugValgrindRSDefaultItem { debugValgrindRedzoneSizeItem, $"Default", f, id =  -1, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect, checked = true; };
+         MenuItem debugValgrindRS0Item       { debugValgrindRedzoneSizeItem, "0"      , f, id =   0, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; };
+         MenuItem debugValgrindRS16Item      { debugValgrindRedzoneSizeItem, "16"     , f, id =  16, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; };
+         MenuItem debugValgrindRS32Item      { debugValgrindRedzoneSizeItem, "32"     , f, id =  32, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; };
+         MenuItem debugValgrindRS64Item      { debugValgrindRedzoneSizeItem, "64"     , f, id =  64, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; };
+         MenuItem debugValgrindRS128Item     { debugValgrindRedzoneSizeItem, "128"    , f, id = 128, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; };
+         MenuItem debugValgrindRS256Item     { debugValgrindRedzoneSizeItem, "256"    , f, id = 256, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; };
+         MenuItem debugValgrindRS512Item     { debugValgrindRedzoneSizeItem, "512"    , f, id = 512, checkable = true, disabled = true; NotifySelect = ValgrindRSSelect; };
          bool ValgrindRSSelect(MenuItem selection, Modifiers mods)
          {
             if(ide.workspace)
@@ -1246,7 +1246,7 @@ class IDEWorkSpace : Window
             if(projectView) projectView.DebugStepInto();
             return true;
          }
-      }
+      };
       MenuItem debugStepOverItem
       {
          debugMenu, $"Step Over", v, f10, disabled = true;
@@ -1256,7 +1256,7 @@ class IDEWorkSpace : Window
             if(projectView) projectView.DebugStepOver(false);
             return true;
          }
-      }
+      };
       MenuItem debugSkipStepOverItem
       {
          debugMenu, $"Step Over Skipping Breakpoints", e, shiftF10, disabled = true;
@@ -1266,7 +1266,7 @@ class IDEWorkSpace : Window
             if(projectView) projectView.DebugStepOver(true);
             return true;
          }
-      }
+      };
       MenuItem debugStepOutItem
       {
          debugMenu, $"Step Out", o, shiftF11, disabled = true;
@@ -1276,7 +1276,7 @@ class IDEWorkSpace : Window
             if(projectView) projectView.DebugStepOut(false);
             return true;
          }
-      }
+      };
       MenuItem debugSkipStepOutItem
       {
          debugMenu, $"Step Out Skipping Breakpoints", n, Key { f11, ctrl = true, shift = true }, disabled = true;
@@ -1286,7 +1286,7 @@ class IDEWorkSpace : Window
             if(projectView) projectView.DebugStepOut(true);
             return true;
          }
-      }
+      };
 #if 0
       MenuItem debugStepUntilItem
       {
@@ -1296,7 +1296,7 @@ class IDEWorkSpace : Window
             if(projectView) projectView.DebugStepUntil(false);
             return true;
          }
-      }
+      };
       MenuItem debugSkipStepUntilItem
       {
          debugMenu, $"Step Over Until Next Line Skipping Breakpoints", e, Key { f10, shift = true, alt = true }, disabled = true;
@@ -1305,7 +1305,7 @@ class IDEWorkSpace : Window
             if(projectView) projectView.DebugStepUntil(true);
             return true;
          }
-      }
+      };
 #endif
       MenuPlacement debugRunToCursorItem { debugMenu, $"Run To Cursor", c };
       MenuPlacement debugSkipRunToCursorItem { debugMenu, $"Run To Cursor Skipping Breakpoints", u };
@@ -1333,7 +1333,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuPlacement { viewMenu, $"View Designer" };
       MenuPlacement { viewMenu, $"View Code" };
       MenuPlacement { viewMenu, $"View Properties" };
@@ -1354,7 +1354,7 @@ class IDEWorkSpace : Window
                ((CodeEditor)client).ViewDesigner();
             return true;
          }
-      }
+      };
       MenuItem viewCodeItem
       {
          viewMenu, $"View Code", c, f8;
@@ -1370,7 +1370,7 @@ class IDEWorkSpace : Window
             client.visible = true;
             return true;
          }
-      }
+      };
       MenuItem viewPropertiesItem
       {
          viewMenu, $"View Properties", p, f4;
@@ -1381,7 +1381,7 @@ class IDEWorkSpace : Window
             sheet.Activate();
             return true;
          }
-      }
+      };
       MenuItem viewMethodsItem
       {
          viewMenu, $"View Methods", m, f4;
@@ -1392,7 +1392,7 @@ class IDEWorkSpace : Window
             sheet.Activate();
             return true;
          }
-      }
+      };
       MenuItem viewToolBoxItem
       {
          viewMenu, $"View Toolbox", x, f12;
@@ -1402,7 +1402,7 @@ class IDEWorkSpace : Window
             toolBox.Activate();
             return true;
          }
-      }
+      };
       MenuItem viewOutputItem
       {
          viewMenu, $"Output", o, alt2;
@@ -1411,7 +1411,7 @@ class IDEWorkSpace : Window
             outputView.Show();
             return true;
          }
-      }
+      };
       MenuItem viewWatchesItem
       {
          viewMenu, $"Watches", w, alt3;
@@ -1420,7 +1420,7 @@ class IDEWorkSpace : Window
             watchesView.Show();
             return true;
          }
-      }
+      };
       MenuItem viewThreadsItem
       {
          viewMenu, $"Threads", t, alt4;
@@ -1429,7 +1429,7 @@ class IDEWorkSpace : Window
             threadsView.Show();
             return true;
          }
-      }
+      };
       MenuItem viewBreakpointsItem
       {
          viewMenu, $"Breakpoints", b, alt5;
@@ -1438,7 +1438,7 @@ class IDEWorkSpace : Window
             breakpointsView.Show();
             return true;
          }
-      }
+      };
       MenuItem viewCallStackItem
       {
          viewMenu, $"Call Stack", s, alt7;
@@ -1447,7 +1447,7 @@ class IDEWorkSpace : Window
             callStackView.Show();
             return true;
          }
-      }
+      };
       MenuItem viewAllDebugViews
       {
          viewMenu, $"All Debug Views", a, alt9;
@@ -1460,7 +1460,7 @@ class IDEWorkSpace : Window
             breakpointsView.Show();
             return true;
          }
-      }
+      };
 #ifdef GDB_DEBUG_GUI
       MenuDivider { viewMenu };
       MenuItem viewGDBItem
@@ -1471,7 +1471,7 @@ class IDEWorkSpace : Window
             gdbDialog.Show();
             return true;
          }
-      }
+      };
 #endif
       MenuDivider { viewMenu };
       MenuItem viewColorPicker
@@ -1483,7 +1483,7 @@ class IDEWorkSpace : Window
             colorPicker.Modal();
             return true;
          }
-      }
+      };
       MenuDivider { viewMenu };
       /*
       MenuItem
@@ -1546,7 +1546,7 @@ class IDEWorkSpace : Window
             }
             return true;
          }
-      }
+      };
       MenuDivider { helpMenu };
       MenuItem
       {
@@ -1556,7 +1556,7 @@ class IDEWorkSpace : Window
             FindAndShellOpenInstalledFile("doc", "Ecere Tao of Programming [work in progress].pdf");
             return true;
          }
-      }
+      };
       MenuDivider { helpMenu };
       MenuItem
       {
@@ -1566,7 +1566,7 @@ class IDEWorkSpace : Window
             FindAndShellOpenInstalledFolder("doc");
             return true;
          }
-      }
+      };
       MenuItem
       {
          helpMenu, $"Samples Folder", s;
@@ -1575,7 +1575,7 @@ class IDEWorkSpace : Window
             FindAndShellOpenInstalledFolder("samples");
             return true;
          }
-      }
+      };
       MenuItem
       {
          helpMenu, $"Extras Folder", x;
@@ -1584,7 +1584,7 @@ class IDEWorkSpace : Window
             FindAndShellOpenInstalledFolder("extras");
             return true;
          }
-      }
+      };
       MenuDivider { helpMenu };
       MenuItem
       {
@@ -1594,7 +1594,7 @@ class IDEWorkSpace : Window
             ShellOpen("http://ecere.com/forums");
             return true;
          }
-      }
+      };
       MenuDivider { helpMenu };
       MenuItem
       {
@@ -1604,7 +1604,7 @@ class IDEWorkSpace : Window
             AboutIDE { master = this }.Modal();
             return true;
          }
-      }
+      };
 
    property ToolBox toolBox
    {

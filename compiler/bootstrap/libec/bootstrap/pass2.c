@@ -3757,10 +3757,13 @@ case 5:
 {
 struct Expression * exp;
 
+if(stmt->switchStmt.exp && (*stmt->switchStmt.exp).last)
+{
 ((struct Expression *)(*stmt->switchStmt.exp).last)->usage = (((struct Expression *)(*stmt->switchStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
 for(exp = (*stmt->switchStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
+}
 }
 ProcessStatement(stmt->switchStmt.stmt);
 break;
@@ -3769,10 +3772,13 @@ case 6:
 {
 struct Expression * exp;
 
+if(stmt->whileStmt.exp && (*stmt->whileStmt.exp).last)
+{
 ((struct Expression *)(*stmt->whileStmt.exp).last)->usage = (((struct Expression *)(*stmt->whileStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
 for(exp = (*stmt->whileStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
+}
 }
 ProcessStatement(stmt->whileStmt.stmt);
 break;

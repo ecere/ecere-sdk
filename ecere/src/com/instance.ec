@@ -2018,7 +2018,7 @@ static void FixDerivativesBase(Class base, Class mod)
       {
          Method method, next;
          Class b;
-         bool needUpdate = (mod != (base.templateClass ? base.templateClass : base) || _class.vTblSize != mod.vTblSize;
+         bool needUpdate = (mod != (base.templateClass ? base.templateClass : base) || _class.vTblSize != mod.vTblSize);
          int updateStart = -1, updateEnd = -1;
 
          if(mod.base && mod.base.base && mod.base.vTblSize > baseClass.vTblSize && needUpdate)

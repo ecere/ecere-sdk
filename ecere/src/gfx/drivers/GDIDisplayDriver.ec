@@ -465,7 +465,7 @@ class GDIDisplayDriver : DisplayDriver
       /*if(bitmap.alphaBlend)
          return true;
       else*/
-         return (((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps);
+         return ((subclass(DisplayDriver))class(LFBDisplayDriver)).MakeDDBitmap(displaySystem, bitmap, mipMaps);
    }
 
    void ReleaseSurface(Display display, Surface surface)

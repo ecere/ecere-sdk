@@ -827,7 +827,7 @@ private:
          UpdatePosition();
          return true;
       }
-   }
+   };
 
    Label label7 { this, position = { 385, 32 }, text = "%" };
 

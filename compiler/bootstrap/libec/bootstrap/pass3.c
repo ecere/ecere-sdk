@@ -1776,8 +1776,11 @@ case 5:
 {
 struct Expression * exp;
 
+if(stmt->switchStmt.exp)
+{
 for(exp = (*stmt->switchStmt.exp).first; exp; exp = exp->next)
 InstDeclPassExpression(exp);
+}
 InstDeclPassStatement(stmt->switchStmt.stmt);
 break;
 }
@@ -1785,8 +1788,11 @@ case 6:
 {
 struct Expression * exp;
 
+if(stmt->whileStmt.exp)
+{
 for(exp = (*stmt->whileStmt.exp).first; exp; exp = exp->next)
 InstDeclPassExpression(exp);
+}
 InstDeclPassStatement(stmt->whileStmt.stmt);
 break;
 }

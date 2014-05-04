@@ -1206,10 +1206,10 @@ struct_declaration_list:
 	;
 
 struct_declaration_list_error:
-     struct_declaration_error { $$ = MkList(); ListAdd($$, $1); }
+     struct_declaration_error { yyerror(); $$ = MkList(); ListAdd($$, $1); }
    | struct_declaration_list error
    | struct_declaration_list_error error
-   | struct_declaration_list struct_declaration_error { $$ = $1; ListAdd($$, $2); }
+   | struct_declaration_list struct_declaration_error { yyerror(); $$ = $1; ListAdd($$, $2); }
    | struct_declaration_list_error struct_declaration_error { $$ = $1; ListAdd($$, $2); }
 	;
 
@@ -1534,7 +1534,7 @@ anon_instantiation_expression_error:
    ;
 
 primary_expression_error:
-	  '(' expression  { $$ = MkExpBrackets($2); $$.loc = @$; }
+	  '(' expression  { yyerror(); $$ = MkExpBrackets($2); $$.loc = @$; }
    | '(' expression_error { $$ = MkExpBrackets($2); $$.loc = @$; }
    ;
 
@@ -1596,7 +1596,7 @@ argument_expression_list_error:
    | anon_instantiation_expression_error    { $$ = MkList(); ListAdd($$, $1); }
    | argument_expression_list ',' assignment_expression_error  { $$ = $1; ListAdd($1, $3);  }
    | argument_expression_list ',' anon_instantiation_expression_error  { $$ = $1; ListAdd($1, $3);  }
-   | argument_expression_list ',' { Expression exp = MkExpDummy(); exp.loc.start = @2.end; exp.loc.end = @2.end; $$ = $1; ListAdd($1, exp); }
+   | argument_expression_list ',' { yyerror(); Expression exp = MkExpDummy(); exp.loc.start = @2.end; exp.loc.end = @2.end; $$ = $1; ListAdd($1, exp); }
 	;
 
 common_unary_expression:
@@ -1766,8 +1766,8 @@ assignment_expression:
 	  conditional_expression
 	| unary_expression assignment_operator assignment_expression   { $$ = MkExpOp($1, $2, $3); $$.loc = @$; }
    | unary_expression_error assignment_operator assignment_expression   { $$ = MkExpOp($1, $2, $3); $$.loc = @$; }
-	| conditional_expression assignment_operator assignment_expression   { $$ = MkExpOp($1, $2, $3); $$.loc = @$; }           // TODO: Generate error here:
-   | conditional_expression_error assignment_operator assignment_expression   { $$ = MkExpOp($1, $2, $3); $$.loc = @$; }     // TODO: Generate error here:
+	| conditional_expression assignment_operator assignment_expression   { Compiler_Error($"l-value expected\n"); $$ = MkExpOp($1, $2, $3); $$.loc = @$; }
+   | conditional_expression_error assignment_operator assignment_expression   { Compiler_Error($"l-value expected\n"); $$ = MkExpOp($1, $2, $3); $$.loc = @$; }
 
 	| unary_expression assignment_operator anon_instantiation_expression   { $$ = MkExpOp($1, $2, $3); $$.loc = @$; }
    | unary_expression_error assignment_operator anon_instantiation_expression   { $$ = MkExpOp($1, $2, $3); $$.loc = @$; }
@@ -1811,7 +1811,7 @@ postfix_expression_error:
    | postfix_expression PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
    | postfix_expression_error PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
 
-   | postfix_expression '(' argument_expression_list { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
+   | postfix_expression '(' argument_expression_list { yyerror(); $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
 	| postfix_expression '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
    /* Useless rules due to conflicts
    | postfix_expression '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end;$$.loc = @$; $$.call.argLoc.end.charPos++;}
@@ -1835,7 +1835,7 @@ simple_postfix_expression_error:
    | simple_postfix_expression PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
    | simple_postfix_expression_error PTR_OP error                { $$ = MkExpPointer($1, null); $$.loc = @$; }
 
-   | simple_postfix_expression '(' argument_expression_list { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
+   | simple_postfix_expression '(' argument_expression_list { yyerror(); $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
 	| simple_postfix_expression '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
    /* Useless rules due to conflicts
    | simple_postfix_expression '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end;$$.loc = @$; $$.call.argLoc.end.charPos++;}
@@ -2071,6 +2071,7 @@ conditional_expression_error:
 
 	| logical_or_expression '?' ':'
       {
+         yyerror();
          $$ = MkExpCondition($1, MkListOne(MkExpDummy()), MkExpDummy());
          $$.loc = @$;
          ((Expression)$$.cond.exp->last).loc = @2;
@@ -2082,6 +2083,7 @@ conditional_expression_error:
       }
    | logical_or_expression '?'
       {
+         yyerror();
          $$ = MkExpCondition($1, MkListOne(MkExpDummy()), MkExpDummy()); $$.loc = @$; ((Expression)$$.cond.exp->last).loc = @2; $$.cond.elseExp.loc = @2;
       }
    | logical_or_expression_error '?'
@@ -2115,7 +2117,7 @@ expression_error:
    | expression_error ',' error
    | expression error
    */
-   | expression expression                      { $$ = $1; FreeList($2, FreeExpression); }
+   | expression expression                      { yyerror(); $$ = $1; FreeList($2, FreeExpression); }
    | expression_error expression                { $$ = $1; FreeList($2, FreeExpression); }
    | expression expression_error                { $$ = $1; FreeList($2, FreeExpression); }
    ;
@@ -3153,6 +3155,7 @@ initializer:
 	| '{' initializer_list '}'       { $$ = MkInitializerList($2); $$.loc = @$; }
 	| '{' initializer_list ',' '}'
       {
+         Compiler_Warning($"Extra comma\n");
          $$ = MkInitializerList($2);
          $$.loc = @$;
 
@@ -3169,7 +3172,7 @@ initializer:
 initializer_error:
      assignment_expression_error    { $$ = MkInitializerAssignment($1); $$.loc = @$; }
 	| '{' initializer_list '}' error      { $$ = MkInitializerList($2); $$.loc = @$; }
-   | '{' initializer_list                 { $$ = MkInitializerList($2); $$.loc = @$; }
+   | '{' initializer_list                 { yyerror(); $$ = MkInitializerList($2); $$.loc = @$; }
 	| '{' initializer_list ',' '}' error
       {
          $$ = MkInitializerList($2);
@@ -3185,6 +3188,7 @@ initializer_error:
       }
 	| '{' initializer_list ','
       {
+         yyerror();
          $$ = MkInitializerList($2);
          $$.loc = @$;
 
@@ -3216,7 +3220,7 @@ initializer_list:
    | initializer_list ',' initializer_error  { $$ = $1; ListAdd($1, $3); }
 
    // Errors
-	| initializer_list initializer  { $$ = $1; ListAdd($1, $2); }
+	| initializer_list initializer  { yyerror(); $$ = $1; ListAdd($1, $2); }
    | initializer_list initializer_error  { $$ = $1; ListAdd($1, $2); }
 	;
 
@@ -3558,16 +3562,16 @@ selection_statement_error:
 iteration_statement:
 	  WHILE '(' expression ')' statement           { $$ = MkWhileStmt($3, $5); $$.loc = @$; }
    | WHILE '(' expression_error statement     { $$ = MkWhileStmt($3, $4); $$.loc = @$; }
-   | WHILE '(' ')' statement     { $$ = MkWhileStmt(null, $4); $$.loc = @$; }
+   | WHILE '(' ')' statement     { yyerror(); $$ = MkWhileStmt(null, $4); $$.loc = @$; }
 
 	| DO statement WHILE '(' expression ')' ';'     { $$ = MkDoWhileStmt($2, $5); $$.loc = @$; }
    | DO statement WHILE '(' expression_error ';'     { $$ = MkDoWhileStmt($2, $5); $$.loc = @$; }
 
 	| FOR '(' expression_statement expression_statement ')' statement                   { $$ = MkForStmt($3, $4, null, $6); $$.loc = @$; }
-   | FOR '(' expression_statement ')' statement                   { $$ = MkForStmt($3, null, null, $5); $$.loc = @$; }
+   | FOR '(' expression_statement ')' statement                   { yyerror(); $$ = MkForStmt($3, null, null, $5); $$.loc = @$; }
 	| FOR '(' expression_statement expression_statement expression ')' statement        { $$ = MkForStmt($3, $4, $5, $7); $$.loc = @$; }
    | FOR '(' expression_statement expression_statement expression_error statement  { $$ = MkForStmt($3, $4, $5, $6 ); $$.loc = @$; }
-   | FOR '(' ')' statement  { $$ = MkForStmt(null, null, null, $4); $$.loc = @$; }
+   | FOR '(' ')' statement  { yyerror(); $$ = MkForStmt(null, null, null, $4); $$.loc = @$; }
 
    | FOR '(' identifier ':' expression ')' statement                   { $$ = MkForEachStmt($3, $5, null, $7); $$.loc = @$; }
    | FOR '(' identifier ':' expression ';' expression ')' statement    { $$ = MkForEachStmt($3, $5, $7, $9); $$.loc = @$; }
@@ -3586,13 +3590,13 @@ iteration_statement_error:
 	FOR '(' expression_statement expression_statement expression ')' statement_error  { $$ = MkForStmt($3, $4, $5, $7); $$.loc = @$; } |
    FOR '(' expression_statement expression_statement expression_error statement_error  { $$ = MkForStmt($3, $4, $5, $6 ); $$.loc = @$; } |
 
-	DO statement WHILE '(' expression ')'     { $$ = MkDoWhileStmt($2, $5); $$.loc = @$; } |
-	DO statement WHILE '(' expression      { $$ = MkDoWhileStmt($2, $5); $$.loc = @$; } |
+	DO statement WHILE '(' expression ')'     { yyerror(); $$ = MkDoWhileStmt($2, $5); $$.loc = @$; } |
+	DO statement WHILE '(' expression      { yyerror(); $$ = MkDoWhileStmt($2, $5); $$.loc = @$; } |
    DO statement WHILE '(' expression_error      { $$ = MkDoWhileStmt($2, $5); $$.loc = @$; } |
 	DO statement WHILE '(' { $$ = MkDoWhileStmt($2, null); $$.loc = @$; } |
-   DO statement WHILE { $$ = MkDoWhileStmt($2, null); $$.loc = @$; } |
-	DO statement { $$ = MkDoWhileStmt($2, null); $$.loc = @$; } |
-   DO { $$ = MkDoWhileStmt(null, null); $$.loc = @$; } |
+   DO statement WHILE { yyerror(); $$ = MkDoWhileStmt($2, null); $$.loc = @$; } |
+	DO statement { yyerror(); $$ = MkDoWhileStmt($2, null); $$.loc = @$; } |
+   DO { yyerror(); $$ = MkDoWhileStmt(null, null); $$.loc = @$; } |
 
 
    WHILE error           { $$ = MkWhileStmt(null, null); $$.loc = @$; } |
@@ -3710,23 +3714,24 @@ external_declaration:
    ;
 
 external_declaration_error:
-     class_error               { $$ = MkExternalClass($1);  $$.loc = $1.loc; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
+     class_error               { yyerror(); $$ = MkExternalClass($1);  $$.loc = $1.loc; $1.declMode = (declMode != defaultAccess) ? declMode : privateAccess; structDeclMode = declMode = defaultDeclMode; }
    | external_guess_declaration_specifiers class_error
    {
+      yyerror();
       FreeList($1, FreeSpecifier);
       $$ = MkExternalClass($2);
       $$.loc = $2.loc;
       $2.declMode = (declMode != defaultAccess) ? declMode : privateAccess;
       structDeclMode = declMode = defaultDeclMode;
    }
-   | function_definition_error { $$ = MkExternalFunction($1); $$.loc = $1.loc;  $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
+   | function_definition_error { yyerror(); $$ = MkExternalFunction($1); $$.loc = $1.loc;  $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
 
-   | declaration_mode class_error               { $$ = MkExternalClass($2);  $$.loc = $2.loc; $2.declMode = ($1 != defaultAccess) ? $1 : privateAccess; structDeclMode = declMode = defaultDeclMode; }
-   | declaration_mode function_definition_error { $$ = MkExternalFunction($2); $$.loc = $2.loc; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode class_error               { yyerror(); $$ = MkExternalClass($2);  $$.loc = $2.loc; $2.declMode = ($1 != defaultAccess) ? $1 : privateAccess; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode function_definition_error { yyerror(); $$ = MkExternalFunction($2); $$.loc = $2.loc; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
 
 	| external_guess_declaration_error
-      { $$ = MkExternalDeclaration($1);  $$.loc = @$; $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
-   | declaration_mode external_guess_declaration_error         { $$ = MkExternalDeclaration($2); $$.loc = @$; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
+      { yyerror(); $$ = MkExternalDeclaration($1);  $$.loc = @$; $1.declMode = declMode; structDeclMode = declMode = defaultDeclMode; }
+   | declaration_mode external_guess_declaration_error         { yyerror(); $$ = MkExternalDeclaration($2); $$.loc = @$; $2.declMode = $1; structDeclMode = declMode = defaultDeclMode; }
    ;
 
 translation_unit_error:

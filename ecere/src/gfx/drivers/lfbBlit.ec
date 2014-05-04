@@ -125,7 +125,7 @@ void (* blits_8bit_table[PixelFormat][2][2]) (BLIT_ARGS) =
    { { BLIT_B888, BLIT_B888F }, { BLIT_B888T, BLIT_B888TF } },
    { { null, null }, { null, null } },
    { { null, null }, { null, null } },
-   { { BLIT_BRGBA, BLIT_BRGBAF }, { BLIT_BRGBAT, BLIT_BRGBATF } },
+   { { BLIT_BRGBA, BLIT_BRGBAF }, { BLIT_BRGBAT, BLIT_BRGBATF } }
 };
 
 // Using Palette Shades
@@ -155,7 +155,7 @@ void (* shades_blit_table[PixelFormat][2]) (BLIT_ARGS) =
    { BLIT_BI888,BLIT_BI888F },
    { null, null },
    { null, null },
-   { BLIT_BIRGBA,BLIT_BIRGBAF },
+   { BLIT_BIRGBA,BLIT_BIRGBAF }
 };
 
 //////////////////////////////////////////////////////////////////////////////

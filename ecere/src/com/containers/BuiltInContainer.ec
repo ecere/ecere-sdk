@@ -34,7 +34,7 @@ public:
    virtual IteratorPointer GetNext(IteratorPointer pointer)
    {
       return (IteratorPointer)((pointer && (byte *)pointer < (byte *)data + (count - 1) *
-         ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize) ?
+         ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize)) ?
          ((byte *)pointer + ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize)) : null);
    }
    virtual uint64 GetData(IteratorPointer pointer)

@@ -2627,7 +2627,7 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
       void LoadOption(ProjectOptions options, int option, int priority, Array<Array<String>> optionTempStrings, ProjectOptions output) {
          if(mergeValues)
          {
-            Array<String> strings = options ? *((Array<String>*)((byte *)options + option) : null;
+            Array<String> strings = options ? *(Array<String>*)((byte *)options + option) : null;
             if(strings)
             {
                int order = 0;

@@ -1515,7 +1515,7 @@ static void ProcessExpression(Expression exp)
                {
                   OldList * specs = MkList();
                   Declarator decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, null);
-                  TypeName typeName = MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl);
+                  TypeName typeName = MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl));
                   exp.index.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpMember(exp.index.exp, MkIdentifier("array")))));
                   ProcessExpressionType(exp.index.exp);
                   ProcessExpression(exp);
@@ -1524,7 +1524,7 @@ static void ProcessExpression(Expression exp)
                {
                   OldList * specs = MkList();
                   Declarator decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, null);
-                  TypeName typeName = MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl);
+                  TypeName typeName = MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl));
                   exp.index.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
                      MkExpPointer(MkExpCast(QMkType("BuiltInContainer", QMkPtrDecl(null)), exp.index.exp), MkIdentifier("data")))));
                   ProcessExpressionType(exp.index.exp);
@@ -3094,10 +3094,13 @@ static void ProcessStatement(Statement stmt)
       case switchStmt:
       {
          Expression exp;
-         ((Expression)stmt.switchStmt.exp->last).usage.usageGet = true;
-         for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
+         if(stmt.switchStmt.exp && stmt.switchStmt.exp->last)
          {
-            ProcessExpression(exp);
+            ((Expression)stmt.switchStmt.exp->last).usage.usageGet = true;
+            for(exp = stmt.switchStmt.exp->first; exp; exp = exp.next)
+            {
+               ProcessExpression(exp);
+            }
          }
          ProcessStatement(stmt.switchStmt.stmt);
          break;
@@ -3105,10 +3108,13 @@ static void ProcessStatement(Statement stmt)
       case whileStmt:
       {
          Expression exp;
-         ((Expression)stmt.whileStmt.exp->last).usage.usageGet = true;
-         for(exp = stmt.whileStmt.exp->first; exp; exp = exp.next)
+         if(stmt.whileStmt.exp && stmt.whileStmt.exp->last)
          {
-            ProcessExpression(exp);
+            ((Expression)stmt.whileStmt.exp->last).usage.usageGet = true;
+            for(exp = stmt.whileStmt.exp->first; exp; exp = exp.next)
+            {
+               ProcessExpression(exp);
+            }
          }
          ProcessStatement(stmt.whileStmt.stmt);
          break;

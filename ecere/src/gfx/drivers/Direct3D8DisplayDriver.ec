@@ -1124,7 +1124,7 @@ class Direct3D8DisplayDriver : DisplayDriver
             // Opacity on the light?
             { light.diffuse.r, light.diffuse.g, light.diffuse.b,    1.0f },
             { light.specular.r, light.specular.g, light.specular.b, 1.0f },
-            { light.ambient.r, light.ambient.g, light.ambient.b,    1.0f },
+            { light.ambient.r, light.ambient.g, light.ambient.b,    1.0f }
          };
          Vector3Df vector {0,0,1};
          Vector3Df vectorPI {0,0,-1};

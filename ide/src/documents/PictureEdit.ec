@@ -51,7 +51,7 @@ class PictureEdit : Window
 
    //saveDialog = pictureEditFileDialog;
 
-   Menu fileMenu { menu, $"File", f }
+   Menu fileMenu { menu, $"File", f };
       MenuItem { fileMenu, $"Save", s, ctrlS, NotifySelect = MenuFileSave };
       MenuItem { fileMenu, $"Save As...", a, NotifySelect = MenuFileSaveAs };
    Menu imageMenu { menu, $"Image", i };
