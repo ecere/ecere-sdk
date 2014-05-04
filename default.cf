@@ -83,4 +83,6 @@ ifdef DISABLE_GL
 CFLAGS += -DECERE_NOGL
 endif
 
+ifndef ENABLE_SSL
 CFLAGS += -DECERE_NOSSL
+endif
