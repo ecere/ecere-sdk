@@ -2157,6 +2157,7 @@ static void ProcessDeclaration(Declaration decl)
 
             {
                char className[1024];
+               className[0] = 0;
 
                decl.type = initDeclaration;
                decl.specifiers = MkList();
@@ -2248,6 +2249,20 @@ static void ProcessDeclaration(Declaration decl)
                {
                   Expression newCall;
 
+                  strcpy(className, "__ecereClass_");
+
+                  if(classSym && classSym.registered && classSym.registered.type == noHeadClass && classSym.registered.templateClass)
+                  {
+                     classSym = FindClass(classSym.registered.templateClass.fullName);
+                     FullClassNameCat(className, classSym.string, true);
+                  }
+                  else
+                     FullClassNameCat(className, inst._class.name, true);
+                  MangleClassName(className);
+
+                  if(classSym)
+                     DeclareClass(classSym, className);
+
                   if(classSym && classSym.registered && classSym.registered.type == noHeadClass &&
                      (classSym.registered.templateClass ? classSym.registered.templateClass.fixed : classSym.registered.fixed))
                   {
@@ -2257,25 +2272,10 @@ static void ProcessDeclaration(Declaration decl)
                   }
                   else
                   {
-                     strcpy(className, "__ecereClass_");
-
-                     if(classSym && classSym.registered && classSym.registered.type == noHeadClass && classSym.registered.templateClass)
-                     {
-                        classSym = FindClass(classSym.registered.templateClass.fullName);
-                        FullClassNameCat(className, classSym.string, true);
-                     }
-                     else
-                        FullClassNameCat(className, inst._class.name, true);
-                     MangleClassName(className);
-
-                     DeclareClass(classSym, className);   // THIS WAS IN C VERSION BUT NOT IN eC VERSION?
                      newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
                      ProcessExpressionType(newCall);
                      newCall.byReference = true;
                   }
-
-                  if(classSym)
-                     DeclareClass(classSym, className);
 
                   if(inst.exp)
                   {

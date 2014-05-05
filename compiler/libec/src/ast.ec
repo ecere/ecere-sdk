@@ -2407,7 +2407,6 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                int nextValue = 0;
                for(e = spec.list->first; e; e = e.next)
                {
-                  // TOFIX: NamedItem i { } causes cryptic error, bad .c!
                   NamedLink i { name = CopyString(e.id.string) };
                   specType.members.Add(i);
                }

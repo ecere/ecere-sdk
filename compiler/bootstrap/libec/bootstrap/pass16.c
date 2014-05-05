@@ -3165,6 +3165,7 @@ CreateInstancesBody();
 {
 char className[1024];
 
+className[0] = (char)0;
 decl->type = 1;
 decl->specifiers = MkList();
 decl->declarators = MkList();
@@ -3234,15 +3235,6 @@ else
 {
 struct Expression * newCall;
 
-if(classSym && classSym->registered && classSym->registered->type == 5 && (classSym->registered->templateClass ? classSym->registered->templateClass->fixed : classSym->registered->fixed))
-{
-char size[256];
-
-sprintf(size, "%d", classSym->registered->templateClass ? classSym->registered->templateClass->structSize : classSym->registered->structSize);
-newCall = MkExpCall(QMkExpId("ecere::com::eSystem_New0"), MkListOne(MkExpConstant(size)));
-}
-else
-{
 strcpy(className, "__ecereClass_");
 if(classSym && classSym->registered && classSym->registered->type == 5 && classSym->registered->templateClass)
 {
@@ -3252,13 +3244,21 @@ FullClassNameCat(className, classSym->string, 0x1);
 else
 FullClassNameCat(className, inst->_class->name, 0x1);
 MangleClassName(className);
+if(classSym)
 DeclareClass(classSym, className);
+if(classSym && classSym->registered && classSym->registered->type == 5 && (classSym->registered->templateClass ? classSym->registered->templateClass->fixed : classSym->registered->fixed))
+{
+char size[256];
+
+sprintf(size, "%d", classSym->registered->templateClass ? classSym->registered->templateClass->structSize : classSym->registered->structSize);
+newCall = MkExpCall(QMkExpId("ecere::com::eSystem_New0"), MkListOne(MkExpConstant(size)));
+}
+else
+{
 newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
 ProcessExpressionType(newCall);
 newCall->byReference = 0x1;
 }
-if(classSym)
-DeclareClass(classSym, className);
 if(inst->exp)
 {
 struct Expression * exp, * newExp;
