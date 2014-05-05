@@ -1596,7 +1596,7 @@ argument_expression_list_error:
    | anon_instantiation_expression_error    { $$ = MkList(); ListAdd($$, $1); }
    | argument_expression_list ',' assignment_expression_error  { $$ = $1; ListAdd($1, $3);  }
    | argument_expression_list ',' anon_instantiation_expression_error  { $$ = $1; ListAdd($1, $3);  }
-   | argument_expression_list ',' { yyerror(); Expression exp = MkExpDummy(); exp.loc.start = @2.end; exp.loc.end = @2.end; $$ = $1; ListAdd($1, exp); }
+   | argument_expression_list ',' { Expression exp = MkExpDummy(); yyerror(); exp.loc.start = @2.end; exp.loc.end = @2.end; $$ = $1; ListAdd($1, exp); }
 	;
 
 common_unary_expression:

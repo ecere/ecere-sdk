@@ -5947,9 +5947,9 @@ ListAdd(yyvsp[(1) - (3)].list, yyvsp[(3) - (3)].exp);
 break;
 case 349:
 {
-yyerror();
 struct Expression * exp = MkExpDummy();
 
+yyerror();
 exp->loc.start = (yylsp[(2) - (2)]).end;
 exp->loc.end = (yylsp[(2) - (2)]).end;
 yyval.list = yyvsp[(1) - (2)].list;

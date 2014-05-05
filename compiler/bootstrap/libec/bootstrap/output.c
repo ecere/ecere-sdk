@@ -2180,6 +2180,8 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "switch(");
+if(stmt->switchStmt.exp)
+{
 for(exp = (*stmt->switchStmt.exp).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
@@ -2189,6 +2191,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ", ");
+}
 }
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
@@ -2208,6 +2211,8 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "while(");
+if(stmt->switchStmt.exp)
+{
 for(exp = (*stmt->switchStmt.exp).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
@@ -2217,6 +2222,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ", ");
+}
 }
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
