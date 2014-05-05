@@ -398,9 +398,23 @@ void DebugComputeExpression(Expression exp)
          // We don't care about operations with only exp2 (INC_OP, DEC_OP...)
          if(exp.op.exp2)
          {
-            DebugComputeExpression(exp.op.exp2);
-            if(ExpressionIsError(exp.op.exp2))
-               expError = exp.op.exp2;
+            PrintLn((int)exp.op.op);
+            if(exp.op.op == TokenType::sizeOf && exp.op.exp2.expType)
+            {
+               Type type = exp.op.exp2.expType;
+               type.refCount++;
+               FreeExpContents(exp);
+               exp.type = constantExp;
+               exp.constant = PrintUInt(ComputeTypeSize(type));
+               FreeType(type);
+               break;
+            }
+            else
+            {
+               DebugComputeExpression(exp.op.exp2);
+               if(ExpressionIsError(exp.op.exp2))
+                  expError = exp.op.exp2;
+            }
          }
          if(!expError)
          {

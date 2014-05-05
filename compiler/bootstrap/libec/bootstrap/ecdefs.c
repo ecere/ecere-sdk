@@ -1005,9 +1005,201 @@ int ferror(FILE * stream);
 
 int fileno(FILE * stream);
 
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Order;
+enum yytokentype
+{
+IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363, ALIGNOF = 364, ATTRIB_DEP = 365, __ATTRIB = 366, BOOL = 367, _BOOL = 368, _COMPLEX = 369, _IMAGINARY = 370, RESTRICT = 371, THREAD = 372
+};
 
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableEntryType;
+typedef union YYSTYPE
+{
+int specifierType;
+int i;
+int declMode;
+struct Identifier * id;
+struct Expression * exp;
+struct Specifier * specifier;
+struct __ecereNameSpace__ecere__sys__OldList * list;
+struct Enumerator * enumerator;
+struct Declarator * declarator;
+struct Pointer * pointer;
+struct Initializer * initializer;
+struct InitDeclarator * initDeclarator;
+struct TypeName * typeName;
+struct Declaration * declaration;
+struct Statement * stmt;
+struct FunctionDefinition * function;
+struct External * external;
+struct Context * context;
+struct AsmField * asmField;
+struct Attrib * attrib;
+struct ExtDecl * extDecl;
+struct Attribute * attribute;
+struct Instantiation * instance;
+struct MembersInit * membersInit;
+struct MemberInit * memberInit;
+struct ClassFunction * classFunction;
+struct ClassDefinition * _class;
+struct ClassDef * classDef;
+struct PropertyDef * prop;
+char * string;
+struct Symbol * symbol;
+struct PropertyWatch * propertyWatch;
+struct TemplateParameter * templateParameter;
+struct TemplateArgument * templateArgument;
+struct TemplateDatatype * templateDatatype;
+struct DBTableEntry * dbtableEntry;
+struct DBIndexItem * dbindexItem;
+struct DBTableDef * dbtableDef;
+} __attribute__ ((gcc_struct)) YYSTYPE;
+
+struct Enumerator
+{
+struct Enumerator * prev, * next;
+struct Location loc;
+struct Identifier * id;
+struct Expression * exp;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
+
+struct InitDeclarator
+{
+struct InitDeclarator * prev, * next;
+struct Location loc;
+struct Declarator * declarator;
+struct Initializer * initializer;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_InitDeclarator;
+
+struct AsmField
+{
+struct AsmField * prev, * next;
+struct Location loc;
+char * command;
+struct Expression * expression;
+struct Identifier * symbolic;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
+
+struct Attribute
+{
+struct Attribute * prev, * next;
+struct Location loc;
+char * attr;
+struct Expression * exp;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
+
+struct ClassFunction
+{
+struct ClassFunction * prev, * next;
+struct Location loc;
+struct __ecereNameSpace__ecere__sys__OldList * specifiers;
+struct Declarator * declarator;
+struct __ecereNameSpace__ecere__sys__OldList * declarations;
+struct Statement * body;
+struct __ecereNameSpace__ecere__com__Class * _class;
+struct __ecereNameSpace__ecere__sys__OldList attached;
+int declMode;
+struct Type * type;
+struct Symbol * propSet;
+unsigned int isVirtual;
+unsigned int isConstructor, isDestructor;
+unsigned int dontMangle;
+int id, idCode;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
+
+struct MembersInit
+{
+struct MembersInit * prev, * next;
+struct Location loc;
+int type;
+union
+{
+struct __ecereNameSpace__ecere__sys__OldList * dataMembers;
+struct ClassFunction * function;
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_MembersInit;
+
+struct MemberInit
+{
+struct MemberInit * prev, * next;
+struct Location loc;
+struct Location realLoc;
+struct __ecereNameSpace__ecere__sys__OldList * identifiers;
+struct Initializer * initializer;
+unsigned int used;
+unsigned int variable;
+unsigned int takeOutExp;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
+
+struct PropertyDef
+{
+struct PropertyDef * prev, * next;
+struct Location loc;
+struct __ecereNameSpace__ecere__sys__OldList * specifiers;
+struct Declarator * declarator;
+struct Identifier * id;
+struct Statement * getStmt;
+struct Statement * setStmt;
+struct Statement * issetStmt;
+struct Symbol * symbol;
+struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
+
+struct PropertyWatch
+{
+struct PropertyWatch * prev, * next;
+struct Location loc;
+struct Statement * compound;
+struct __ecereNameSpace__ecere__sys__OldList * properties;
+unsigned int deleteWatch;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
+
+struct ClassDef
+{
+struct ClassDef * prev, * next;
+struct Location loc;
+int type;
+union
+{
+struct Declaration * decl;
+struct ClassFunction * function;
+struct __ecereNameSpace__ecere__sys__OldList * defProperties;
+struct PropertyDef * propertyDef;
+struct PropertyWatch * propertyWatch;
+char * designer;
+struct Identifier * defaultProperty;
+struct
+{
+struct Identifier * id;
+struct Initializer * initializer;
+} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct));
+int memberAccess;
+void * object;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDef;
 
 struct DBTableEntry
 {
@@ -1035,6 +1227,24 @@ int order;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBIndexItem;
+
+extern YYSTYPE yylval;
+
+typedef struct YYLTYPE
+{
+int first_line;
+int first_column;
+int last_line;
+int last_column;
+} __attribute__ ((gcc_struct)) YYLTYPE;
+
+extern YYLTYPE _yylloc;
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_TokenType;
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Order;
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableEntryType;
 
 unsigned int inCompiler = 0x0;
 
@@ -1376,16 +1586,6 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExpUsage;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_SpecifierType;
 
-struct Attribute
-{
-struct Attribute * prev, * next;
-struct Location loc;
-char * attr;
-struct Expression * exp;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
-
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDeclType;
 
 void __ecereMethod_Expression_Clear(struct Expression * this)
@@ -1410,42 +1610,11 @@ this->needCast = 0x0;
 this->thisPtr = 0x0;
 }
 
-struct Enumerator
-{
-struct Enumerator * prev, * next;
-struct Location loc;
-struct Identifier * id;
-struct Expression * exp;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
-
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_DeclaratorType;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_InitializerType;
 
-struct InitDeclarator
-{
-struct InitDeclarator * prev, * next;
-struct Location loc;
-struct Declarator * declarator;
-struct Initializer * initializer;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_InitDeclarator;
-
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassObjectType;
-
-struct AsmField
-{
-struct AsmField * prev, * next;
-struct Location loc;
-char * command;
-struct Expression * expression;
-struct Identifier * symbolic;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_StmtType;
 
@@ -1453,115 +1622,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_DeclarationType
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_MembersInitType;
 
-struct ClassFunction
-{
-struct ClassFunction * prev, * next;
-struct Location loc;
-struct __ecereNameSpace__ecere__sys__OldList * specifiers;
-struct Declarator * declarator;
-struct __ecereNameSpace__ecere__sys__OldList * declarations;
-struct Statement * body;
-struct __ecereNameSpace__ecere__com__Class * _class;
-struct __ecereNameSpace__ecere__sys__OldList attached;
-int declMode;
-struct Type * type;
-struct Symbol * propSet;
-unsigned int isVirtual;
-unsigned int isConstructor, isDestructor;
-unsigned int dontMangle;
-int id, idCode;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
-
-struct MembersInit
-{
-struct MembersInit * prev, * next;
-struct Location loc;
-int type;
-union
-{
-struct __ecereNameSpace__ecere__sys__OldList * dataMembers;
-struct ClassFunction * function;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_MembersInit;
-
-struct MemberInit
-{
-struct MemberInit * prev, * next;
-struct Location loc;
-struct Location realLoc;
-struct __ecereNameSpace__ecere__sys__OldList * identifiers;
-struct Initializer * initializer;
-unsigned int used;
-unsigned int variable;
-unsigned int takeOutExp;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
-
-struct PropertyWatch
-{
-struct PropertyWatch * prev, * next;
-struct Location loc;
-struct Statement * compound;
-struct __ecereNameSpace__ecere__sys__OldList * properties;
-unsigned int deleteWatch;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
-
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefType;
-
-struct PropertyDef
-{
-struct PropertyDef * prev, * next;
-struct Location loc;
-struct __ecereNameSpace__ecere__sys__OldList * specifiers;
-struct Declarator * declarator;
-struct Identifier * id;
-struct Statement * getStmt;
-struct Statement * setStmt;
-struct Statement * issetStmt;
-struct Symbol * symbol;
-struct Expression * category;
-struct
-{
-unsigned int conversion : 1;
-unsigned int isWatchable : 1;
-unsigned int isDBProp : 1;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
-
-struct ClassDef
-{
-struct ClassDef * prev, * next;
-struct Location loc;
-int type;
-union
-{
-struct Declaration * decl;
-struct ClassFunction * function;
-struct __ecereNameSpace__ecere__sys__OldList * defProperties;
-struct PropertyDef * propertyDef;
-struct PropertyWatch * propertyWatch;
-char * designer;
-struct Identifier * defaultProperty;
-struct
-{
-struct Identifier * id;
-struct Initializer * initializer;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-int memberAccess;
-void * object;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDef;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExternalType;
 
@@ -1942,6 +2003,124 @@ void __ecereRegisterModule_ecdefs(struct __ecereNameSpace__ecere__com__Instance 
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "TokenType", 0, 0, 0, 0, 0, module, 1, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
+__ecereClass_TokenType = class;
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "identifier", 258);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "constant", 259);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "stringLiteral", 260);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "sizeOf", 261);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ptrOp", 262);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "incOp", 263);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "decOp", 264);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "leftOp", 265);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "rightOp", 266);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "leOp", 267);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "geOp", 268);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "eqOp", 269);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "neOp", 270);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "andOp", 271);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "orOp", 272);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "mulAssign", 273);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "divAssign", 274);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "modAssign", 275);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "addAssign", 276);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "subAssign", 277);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "leftAssign", 278);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "rightAssign", 279);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "andAssign", 280);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "xorAssign", 281);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "orAssign", 282);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "typeName", 283);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_typedef", 284);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_extern", 285);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_static", 286);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_auto", 287);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_register", 288);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_char", 289);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_short", 290);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_int", 291);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_uint", 292);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_int64", 293);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_long", 294);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_signed", 295);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_unsigned", 296);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_float", 297);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_double", 298);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_const", 299);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_volatile", 300);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_void", 301);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_valist", 302);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_struct", 303);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_union", 304);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_enum", 305);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ellipsis", 306);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_case", 307);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_default", 308);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_if", 309);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_switch", 310);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_whilte", 311);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_do", 312);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_for", 313);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_goto", 314);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_continue", 315);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_break", 316);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_return", 317);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ifx", 318);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_else", 319);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_class", 320);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClass", 321);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "className", 322);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_property", 323);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "setProp", 324);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "getProp", 325);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "newOp", 326);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_renew", 327);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_delete", 328);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_extDecl", 329);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_extStorage", 330);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_import", 331);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_define", 332);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_virtual", 333);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "attrib", 334);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_public", 335);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_priate", 336);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "typedObject", 337);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "anyObject", 338);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_incref", 339);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extension", 340);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "___asm", 341);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_typeof", 342);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_watch", 343);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "stopWatching", 344);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fireWatchers", 345);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_watchable", 346);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classDesigner", 347);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classNoExpansion", 348);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classFixed", 349);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "isPropSet", 350);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classDefaultProperty", 351);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "propertyCategory", 352);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classData", 353);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classProperty", 354);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "subClass", 355);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameSpace", 356);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "new0Op", 357);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "renew0Op", 358);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "vaArg", 359);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dbTable", 360);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dbField", 361);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dbIndex", 362);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "databaseOpen", 363);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "alignOf", 364);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "attribDep", 365);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_attrib", 366);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "BOOL", 367);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_BOOL", 368);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "complex", 369);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "imaginary", 370);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_restrict", 371);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_thread", 372);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "Order", 0, 0, 0, 0, 0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Order = class;
