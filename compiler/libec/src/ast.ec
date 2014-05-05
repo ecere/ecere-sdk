@@ -2408,6 +2408,8 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                for(e = spec.list->first; e; e = e.next)
                {
                   NamedLink i { name = CopyString(e.id.string) };
+                  if(e.exp && e.exp.type == constantExp && e.exp.constant)
+                     i.data = (void *)strtol(e.exp.constant, null, 0);
                   specType.members.Add(i);
                }
             }

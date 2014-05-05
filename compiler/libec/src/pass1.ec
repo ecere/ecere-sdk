@@ -923,7 +923,29 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   destType._class = symbol;
                   ProcessExpressionType(e.exp);
                }
-               ComputeExpression(e.exp);
+               if(e.exp.type == identifierExp && e.exp.expType && e.exp.identifier && e.exp.identifier.string && e.exp.expType.kind == enumType)
+               {
+                  // Resolve enums here
+                  NamedLink l;
+                  char * string = e.exp.identifier.string;
+                  for(l = e.exp.expType.members.first; l; l = l.next)
+                  {
+                     if(!strcmp(l.name, string))
+                     {
+                        if(l.data)
+                        {
+                           FreeExpContents(e.exp);
+                           e.exp.type = constantExp;
+                           e.exp.constant = PrintUInt((uint)l.data);
+                           FreeType(e.exp.expType);
+                           e.exp.expType = ProcessTypeString("uint", false);
+                        }
+                        break;
+                     }
+                  }
+               }
+               else
+                  ComputeExpression(e.exp);
                if(e.exp.isConstant && /*e.exp.expType.kind == intType*/ e.exp.type == constantExp)
                {
                   Operand op = GetOperand(e.exp);

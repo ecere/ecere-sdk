@@ -1994,6 +1994,22 @@ extern unsigned int parsingType;
 
 extern void ProcessExpressionType(struct Expression * exp);
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+
+struct __ecereNameSpace__ecere__sys__NamedLink
+{
+struct __ecereNameSpace__ecere__sys__NamedLink * prev;
+struct __ecereNameSpace__ecere__sys__NamedLink * next;
+char *  name;
+void *  data;
+} __attribute__ ((gcc_struct));
+
+extern int strcmp(const char * , const char * );
+
+extern void FreeExpContents(struct Expression * exp);
+
+extern char *  PrintUInt(uint64 result);
+
 extern void ComputeExpression(struct Expression * exp);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_OpTable;
@@ -2115,16 +2131,6 @@ extern void DeclareMethod(struct __ecereNameSpace__ecere__com__Method * method, 
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
-
-struct __ecereNameSpace__ecere__sys__NamedLink
-{
-struct __ecereNameSpace__ecere__sys__NamedLink * prev;
-struct __ecereNameSpace__ecere__sys__NamedLink * next;
-char *  name;
-void *  data;
-} __attribute__ ((gcc_struct));
-
 extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
 extern size_t strlen(const char * );
@@ -2186,6 +2192,28 @@ destType->kind = 8;
 destType->_class = symbol;
 ProcessExpressionType(e->exp);
 }
+if(e->exp->type == 0 && e->exp->expType && e->exp->identifier && e->exp->identifier->string && e->exp->expType->kind == 15)
+{
+struct __ecereNameSpace__ecere__sys__NamedLink * l;
+char * string = e->exp->identifier->string;
+
+for(l = e->exp->expType->members.first; l; l = l->next)
+{
+if(!strcmp(l->name, string))
+{
+if(l->data)
+{
+FreeExpContents(e->exp);
+e->exp->type = 2;
+e->exp->constant = PrintUInt((unsigned int)l->data);
+FreeType(e->exp->expType);
+e->exp->expType = ProcessTypeString("uint", 0x0);
+}
+break;
+}
+}
+}
+else
 ComputeExpression(e->exp);
 if(e->exp->isConstant && e->exp->type == 2)
 {
@@ -2826,8 +2854,6 @@ struct ClassPropertyValue * __ecerePointer_ClassPropertyValue = (struct ClassPro
 FreeIdentifier(__ecerePointer_ClassPropertyValue->id);
 }
 }
-
-extern int strcmp(const char * , const char * );
 
 extern void PrintExpression(struct Expression * exp, char *  string);
 

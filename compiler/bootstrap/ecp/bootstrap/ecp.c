@@ -1864,6 +1864,24 @@ __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(regClass, param->ident
 
 extern void SetParsingType(unsigned int b);
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+
+struct __ecereNameSpace__ecere__sys__NamedLink
+{
+struct __ecereNameSpace__ecere__sys__NamedLink * prev;
+struct __ecereNameSpace__ecere__sys__NamedLink * next;
+char *  name;
+void *  data;
+} __attribute__ ((gcc_struct));
+
+extern int strcmp(const char * , const char * );
+
+extern void FreeExpContents(struct Expression * exp);
+
+extern char *  PrintUInt(uint64 result);
+
+extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
+
 extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, char *  string, int value);
 
 extern void PrintExpression(struct Expression * exp, char *  string);
@@ -1914,7 +1932,31 @@ destType->_class = symbol;
 ProcessExpressionType(e->exp);
 }
 if(e->exp->isConstant)
+{
+if(e->exp->type == 0 && e->exp->expType && e->exp->identifier && e->exp->identifier->string && e->exp->expType->kind == 15)
+{
+struct __ecereNameSpace__ecere__sys__NamedLink * l;
+char * string = e->exp->identifier->string;
+
+for(l = e->exp->expType->members.first; l; l = l->next)
+{
+if(!strcmp(l->name, string))
+{
+if(l->data)
+{
+FreeExpContents(e->exp);
+e->exp->type = 2;
+e->exp->constant = PrintUInt((unsigned int)l->data);
+FreeType(e->exp->expType);
+e->exp->expType = ProcessTypeString("uint", 0x0);
+}
+break;
+}
+}
+}
+else
 ComputeExpression(e->exp);
+}
 if(e->exp->isConstant && e->exp->type == 2)
 {
 struct Operand op = GetOperand(e->exp);
@@ -2261,16 +2303,6 @@ struct __ecereNameSpace__ecere__sys__OldList values;
 int largest;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
-
-struct __ecereNameSpace__ecere__sys__NamedLink
-{
-struct __ecereNameSpace__ecere__sys__NamedLink * prev;
-struct __ecereNameSpace__ecere__sys__NamedLink * next;
-char *  name;
-void *  data;
-} __attribute__ ((gcc_struct));
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
 
 struct __ecereNameSpace__ecere__com__DefinedExpression;
@@ -2502,8 +2534,6 @@ extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
 extern int GetHostBits(void);
 
-extern int strcmp(const char * , const char * );
-
 extern size_t strlen(const char * );
 
 extern char *  PassArg(char *  output, const char *  input);
@@ -2557,8 +2587,6 @@ extern void SetEchoOn(unsigned int b);
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char *  argv[]);
 
 extern void SetPrivateModule(struct __ecereNameSpace__ecere__com__Instance * module);
-
-extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
 
 extern unsigned int __ecereNameSpace__ecere__sys__FileExists(char *  fileName);
 

@@ -4009,6 +4009,8 @@ extern int targetBits;
 
 extern int targetPlatform;
 
+extern int strtol(char * , char * * , int base);
+
 extern struct Symbol * FindSymbol(char *  name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace);
 
 static struct Type * ProcessTypeSpecs(struct __ecereNameSpace__ecere__sys__OldList * specs, unsigned int assumeEllipsis, unsigned int keepTypeName)
@@ -4188,6 +4190,8 @@ for(e = (*spec->list).first; e; e = e->next)
 {
 struct __ecereNameSpace__ecere__sys__NamedLink * i = (i = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink), i->name = __ecereNameSpace__ecere__sys__CopyString(e->id->string), i);
 
+if(e->exp && e->exp->type == 2 && e->exp->constant)
+i->data = (void *)strtol(e->exp->constant, (((void *)0)), 0);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&specType->members, i);
 }
 }
