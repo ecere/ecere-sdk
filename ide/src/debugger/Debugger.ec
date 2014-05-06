@@ -195,8 +195,9 @@ static void strescpy(char * d, char * s)
 
 static char * CopyUnescapedSystemPath(char * p)
 {
-   char * d = new char[strlen(p) + 1];
-   struscpy(d, p);
+   int len = strlen(p);
+   char * d = new char[len + 1];
+   UnescapeString(d, p, len);
 #if defined(__WIN32__)
    ChangeCh(d, '/', '\\');
 #endif
@@ -205,8 +206,9 @@ static char * CopyUnescapedSystemPath(char * p)
 
 static char * CopyUnescapedUnixPath(char * p)
 {
-   char * d = new char[strlen(p) + 1];
-   struscpy(d, p);
+   int len = strlen(p);
+   char * d = new char[len + 1];
+   UnescapeString(d, p, len);
 #if defined(__WIN32__)
    ChangeCh(d, '\\', '/');
 #endif
@@ -215,45 +217,10 @@ static char * CopyUnescapedUnixPath(char * p)
 
 static char * CopyUnescapedString(char * s)
 {
-   char * d = new char[strlen(s) + 1];
-   struscpy(d, s);
+   int len = strlen(s);
+   char * d = new char[len + 1];
+   UnescapeString(d, s, len);
    return d;
-}
-
-// String Unescape Copy
-
-// TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
-// Seems very similar to ReadString in pass15.ec (which also misses numeric escape codes :) )
-
-static void struscpy(char * d, char * s)
-{
-   int j = 0, k = 0;
-   char ch;
-   while((ch = s[j]))
-   {
-      switch(ch)
-      {
-         case '\\':
-            switch(s[++j])
-            {
-               case 'n': d[k] = '\n'; break;
-               case 't': d[k] = '\t'; break;
-               case 'a': d[k] = '\a'; break;
-               case 'b': d[k] = '\b'; break;
-               case 'f': d[k] = '\f'; break;
-               case 'r': d[k] = '\r'; break;
-               case 'v': d[k] = '\v'; break;
-               case '\\': d[k] = '\\'; break;
-               case '\"': d[k] = '\"'; break;
-               default: d[k] = '\\'; d[++k] = s[j];
-            }
-            break;
-         default:
-            d[k] = s[j];
-      }
-      j++, k++;
-   }
-   d[k] = '\0';
 }
 
 static char * StripBrackets(char * string)
@@ -2939,7 +2906,7 @@ class Debugger
                      snprintf(watchmsg, sizeof(watchmsg), $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
                      break;
                   case dereferenceErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Dereferencing error evaluating for \"%s\"", wh.expression);
+                     snprintf(watchmsg, sizeof(watchmsg), $"Dereferencing error evaluating \"%s\"", wh.expression);
                      break;
                   case noDebuggerErrorExp:
                      snprintf(watchmsg, sizeof(watchmsg), $"Debugger required for symbol evaluation in \"%s\"", wh.expression);

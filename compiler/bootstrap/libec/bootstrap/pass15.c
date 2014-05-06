@@ -10457,8 +10457,10 @@ break;
 case '\"':
 output[d] = '\"';
 break;
+case '\'':
+output[d] = '\'';
+break;
 default:
-output[d++] = '\\';
 output[d] = ch;
 }
 d++;
@@ -10478,6 +10480,76 @@ output[d++] = ch;
 }
 }
 output[d] = '\0';
+}
+
+int UnescapeString(char * d, char * s, int len)
+{
+int j = 0, k = 0;
+char ch;
+
+while(j < len && (ch = s[j]))
+{
+switch(ch)
+{
+case '\\':
+switch((ch = s[++j]))
+{
+case 'n':
+d[k] = '\n';
+break;
+case 't':
+d[k] = '\t';
+break;
+case 'a':
+d[k] = '\a';
+break;
+case 'b':
+d[k] = '\b';
+break;
+case 'f':
+d[k] = '\f';
+break;
+case 'r':
+d[k] = '\r';
+break;
+case 'v':
+d[k] = '\v';
+break;
+case '\\':
+d[k] = '\\';
+break;
+case '\"':
+d[k] = '\"';
+break;
+case '\'':
+d[k] = '\'';
+break;
+default:
+d[k] = '\\';
+d[k] = ch;
+}
+break;
+default:
+d[k] = ch;
+}
+j++, k++;
+}
+d[k] = '\0';
+return k;
+}
+
+char * OffsetEscapedString(char * s, int len, int offset)
+{
+char ch;
+int j = 0, k = 0;
+
+while(j < len && k < offset && (ch = s[j]))
+{
+if(ch == '\\')
+++j;
+j++, k++;
+}
+return (k == offset) ? s + j : (((void *)0));
 }
 
 extern long long __ecereNameSpace__ecere__com___strtoi64(char *  string, char * *  endString, int base);
@@ -11533,7 +11605,50 @@ struct Operand op2 =
 };
 
 if(exp->op.exp2)
+{
+struct Expression * e = exp->op.exp2;
+
+while(((e->type == 5 || e->type == 32 || e->type == 23) && e->list) || e->type == 11)
+{
+if(e->type == 5 || e->type == 32 || e->type == 23)
+{
+if(e->type == 23)
+e = (*((struct Statement *)(*e->compound->compound.statements).last)->expressions).last;
+else
+e = (*e->list).last;
+}
+else if(e->type == 11)
+e = e->cast.exp;
+}
+if(exp->op.op == 261 && e && e->expType)
+{
+if(e->type == 3 && e->string)
+{
+char * string = e->string;
+int len = strlen(string);
+char * tmp = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (len - 2 + 1));
+
+len = UnescapeString(tmp, string + 1, len - 2);
+(__ecereNameSpace__ecere__com__eSystem_Delete(tmp), tmp = 0);
+FreeExpContents(exp);
+exp->type = 2;
+exp->constant = PrintUInt(len + 1);
+}
+else
+{
+struct Type * type = e->expType;
+
+type->refCount++;
+FreeExpContents(exp);
+exp->type = 2;
+exp->constant = PrintUInt(ComputeTypeSize(type));
+FreeType(type);
+}
+break;
+}
+else
 ComputeExpression(exp->op.exp2);
+}
 if(exp->op.exp1)
 {
 ComputeExpression(exp->op.exp1);
@@ -18134,6 +18249,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ModuleVisibility", "bool
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchWithEnums_Module", "bool MatchWithEnums_Module(ecere::com::Module mainModule, Expression sourceExp, Type dest, char * string, ecere::sys::OldList conversions)", MatchWithEnums_Module, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypeExpression", "bool MatchTypeExpression(Expression sourceExp, Type dest, ecere::sys::OldList conversions, bool skipUnitBla)", MatchTypeExpression, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReadString", "void ReadString(char * output, char * string)", ReadString, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("UnescapeString", "int UnescapeString(char * d, char * s, int len)", UnescapeString, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("OffsetEscapedString", "char * OffsetEscapedString(char * s, int len, int offset)", OffsetEscapedString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOperand", "Operand GetOperand(Expression exp)", GetOperand, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PopulateInstance", "void PopulateInstance(Instantiation inst)", PopulateInstance, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeInstantiation", "void ComputeInstantiation(Expression exp)", ComputeInstantiation, module, 1);

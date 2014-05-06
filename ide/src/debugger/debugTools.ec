@@ -398,15 +398,42 @@ void DebugComputeExpression(Expression exp)
          // We don't care about operations with only exp2 (INC_OP, DEC_OP...)
          if(exp.op.exp2)
          {
-            PrintLn((int)exp.op.op);
-            if(exp.op.op == TokenType::sizeOf && exp.op.exp2.expType)
+            Expression e = exp.op.exp2;
+
+            while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
             {
-               Type type = exp.op.exp2.expType;
-               type.refCount++;
-               FreeExpContents(exp);
-               exp.type = constantExp;
-               exp.constant = PrintUInt(ComputeTypeSize(type));
-               FreeType(type);
+               if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
+               {
+                  if(e.type == extensionCompoundExp)
+                     e = ((Statement)e.compound.compound.statements->last).expressions->last;
+                  else
+                     e = e.list->last;
+               }
+               else if(e.type == castExp)
+                  e = e.cast.exp;
+            }
+            if(exp.op.op == TokenType::sizeOf && e && e.expType)
+            {
+               if(e.type == stringExp && e.string)
+               {
+                  char * string = e.string;
+                  int len = strlen(string);
+                  char * tmp = new char[len-2+1];
+                  len = UnescapeString(tmp, string + 1, len - 2);
+                  delete tmp;
+                  FreeExpContents(exp);
+                  exp.type = constantExp;
+                  exp.constant = PrintUInt(len + 1);
+               }
+               else
+               {
+                  Type type = e.expType;
+                  type.refCount++;
+                  FreeExpContents(exp);
+                  exp.type = constantExp;
+                  exp.constant = PrintUInt(ComputeTypeSize(type));
+                  FreeType(type);
+               }
                break;
             }
             else
@@ -576,16 +603,21 @@ void DebugComputeExpression(Expression exp)
                {
                   if(exp1.type == stringExp)
                   {
-                     int len = exp1.string ? strlen(exp1.string)-2 : 0;
                      uint64 offset = (exp.op.op == '+') ? op2.i64 : -op2.i64;
                      String newString = null;
-                     if(len >= 0 && offset <= len)
+                     if(exp1.string)
                      {
-                        newString = new char[3 + len - offset];
-                        newString[0] = '\"';
-                        memcpy(newString + 1, exp1.string + 1 + offset, len - offset);
-                        newString[1 + len - offset] = '\"';
-                        newString[1 + len - offset + 1] = 0;
+                        int len = strlen(exp1.string) - 2;
+                        char * tmp = OffsetEscapedString(exp1.string + 1, len, (int)offset);
+                        if(tmp)
+                        {
+                           len -= tmp - (exp1.string + 1);
+                           newString = new char[2 + len];
+                           newString[0] = '\"';
+                           memcpy(newString + 1, tmp, len);
+                           newString[1 + len] = '\"';
+                           newString[1 + len + 1] = 0;
+                        }
                      }
                      FreeExpContents(exp);
                      if(newString)
@@ -744,13 +776,20 @@ void DebugComputeExpression(Expression exp)
                      if(exp.index.exp.type == stringExp)
                      {
                         String string = exp.index.exp.string;
-                        int len = string ? strlen(string)-2 : 0;
                         bool valid = false;
                         char ch = 0;
-                        if(len >= 0 && offset <= len)
+                        char * tmp = null;
+                        if(string)
                         {
-                           ch = offset < len ? string[1 + offset] : 0;
-                           valid = true;
+                           int len = string ? strlen(string) : 0;
+                           tmp = new char[len-2+1];
+                           len = UnescapeString(tmp, string + 1, len - 2);
+                           if(len >= 0 && offset <= len)
+                           {
+                              ch = offset < len ? tmp[offset] : 0;
+                              valid = true;
+                           }
+                           delete tmp;
                         }
                         FreeExpContents(exp);
                         if(valid)

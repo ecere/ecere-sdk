@@ -4154,8 +4154,8 @@ public void ReadString(char * output,  char * string)
             case 'v': output[d] = '\v'; break;
             case '\\': output[d] = '\\'; break;
             case '\"': output[d] = '\"'; break;
-            default: output[d++] = '\\'; output[d] = ch;
-            //default: output[d] = ch;
+            case '\'': output[d] = '\''; break;
+            default: output[d] = ch;
          }
          d++;
          escaped = false;
@@ -4174,6 +4174,55 @@ public void ReadString(char * output,  char * string)
       }
    }
    output[d] = '\0';
+}
+
+// String Unescape Copy
+
+// TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
+// This is the same as ReadString above (which also misses numeric escape codes) except it doesn't handle external quotes
+public int UnescapeString(char * d, char * s, int len)
+{
+   int j = 0, k = 0;
+   char ch;
+   while(j < len && (ch = s[j]))
+   {
+      switch(ch)
+      {
+         case '\\':
+            switch((ch = s[++j]))
+            {
+               case 'n': d[k] = '\n'; break;
+               case 't': d[k] = '\t'; break;
+               case 'a': d[k] = '\a'; break;
+               case 'b': d[k] = '\b'; break;
+               case 'f': d[k] = '\f'; break;
+               case 'r': d[k] = '\r'; break;
+               case 'v': d[k] = '\v'; break;
+               case '\\': d[k] = '\\'; break;
+               case '\"': d[k] = '\"'; break;
+               case '\'': d[k] = '\''; break;
+               default: d[k] = '\\'; d[k] = ch;
+            }
+            break;
+         default:
+            d[k] = ch;
+      }
+      j++, k++;
+   }
+   d[k] = '\0';
+   return k;
+}
+
+public char * OffsetEscapedString(char * s, int len, int offset)
+{
+   char ch;
+   int j = 0, k = 0;
+   while(j < len && k < offset && (ch = s[j]))
+   {
+      if(ch == '\\') ++j;
+      j++, k++;
+   }
+   return (k == offset) ? s + j : null;
 }
 
 public Operand GetOperand(Expression exp)
@@ -5152,7 +5201,48 @@ void ComputeExpression(Expression exp)
 
          // We don't care about operations with only exp2 (INC_OP, DEC_OP...)
          if(exp.op.exp2)
-            ComputeExpression(exp.op.exp2);
+         {
+            Expression e = exp.op.exp2;
+
+            while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
+            {
+               if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
+               {
+                  if(e.type == extensionCompoundExp)
+                     e = ((Statement)e.compound.compound.statements->last).expressions->last;
+                  else
+                     e = e.list->last;
+               }
+               else if(e.type == castExp)
+                  e = e.cast.exp;
+            }
+            if(exp.op.op == TokenType::sizeOf && e && e.expType)
+            {
+               if(e.type == stringExp && e.string)
+               {
+                  char * string = e.string;
+                  int len = strlen(string);
+                  char * tmp = new char[len-2+1];
+                  len = UnescapeString(tmp, string + 1, len - 2);
+                  delete tmp;
+                  FreeExpContents(exp);
+                  exp.type = constantExp;
+                  exp.constant = PrintUInt(len + 1);
+               }
+               else
+               {
+                  Type type = e.expType;
+                  type.refCount++;
+                  FreeExpContents(exp);
+                  exp.type = constantExp;
+                  exp.constant = PrintUInt(ComputeTypeSize(type));
+                  FreeType(type);
+               }
+               break;
+            }
+            else
+               ComputeExpression(exp.op.exp2);
+         }
          if(exp.op.exp1)
          {
             ComputeExpression(exp.op.exp1);
