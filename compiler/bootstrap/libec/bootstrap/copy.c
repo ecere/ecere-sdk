@@ -1048,6 +1048,10 @@ static struct Statement * CopyStatement(struct Statement * stmt);
 
 extern struct Expression * MkExpExtensionInitializer(struct TypeName * typeName, struct Initializer * initializer);
 
+extern struct Expression * MkExpClass(struct __ecereNameSpace__ecere__sys__OldList *  specifiers, struct Declarator * decl);
+
+struct Declarator * CopyDeclarator(struct Declarator * declarator);
+
 struct Expression * CopyExpression(struct Expression * exp)
 {
 struct Expression * result = (((void *)0));
@@ -1141,6 +1145,9 @@ result = MkExpExtensionCompound(CopyStatement(exp->compound));
 break;
 case 33:
 result = MkExpExtensionInitializer(CopyTypeName(exp->initializer.typeName), CopyInitializer(exp->initializer.initializer));
+break;
+case 24:
+result = MkExpClass(CopyList(exp->_classExp.specifiers, CopySpecifier), CopyDeclarator(exp->_classExp.decl));
 break;
 }
 if(result)
@@ -1342,8 +1349,6 @@ return (((void *)0));
 }
 
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
-
-struct Declarator * CopyDeclarator(struct Declarator * declarator);
 
 struct TypeName * CopyTypeName(struct TypeName * typeName)
 {

@@ -195,6 +195,9 @@ static Instantiation CopyInstantiation(Instantiation inst)
          case extensionInitializerExp:
             result = MkExpExtensionInitializer(CopyTypeName(exp.initializer.typeName), CopyInitializer(exp.initializer.initializer));
             break;
+         case classExp:
+            result = MkExpClass(CopyList(exp._classExp.specifiers, CopySpecifier), CopyDeclarator(exp._classExp.decl));
+            break;
       }
    if(result)
    {
