@@ -172,7 +172,7 @@ static const char *atomNames[AtomIdents] = {
    "_NET_WM_STATE_ABOVE",
    "Caps Lock",
    "Num Lock",
-   "Scroll Lock",
+   "Scroll Lock"
 };
 /*
 _NET_WM_STATE_STICKY, ATOM

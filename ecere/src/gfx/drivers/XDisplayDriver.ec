@@ -1021,7 +1021,7 @@ class XDisplayDriver : DisplayDriver
                {
                   XDoubleToFixed(y1 - width + offset), XDoubleToFixed(y1 + width + offset),
                   { { XDoubleToFixed(Min(x1, x2) - 0 + offset), XDoubleToFixed(y1 - width + offset) }, { XDoubleToFixed(Min(x1, x2) + 0.0 + offset), XDoubleToFixed(y1 + width+ offset) } },
-                  { { XDoubleToFixed(Max(x1, x2) - 0 + offset), XDoubleToFixed(y1 - width + offset) }, { XDoubleToFixed(Max(x1, x2) + 0.0 + offset), XDoubleToFixed(y1 + width+ offset) } },
+                  { { XDoubleToFixed(Max(x1, x2) - 0 + offset), XDoubleToFixed(y1 - width + offset) }, { XDoubleToFixed(Max(x1, x2) + 0.0 + offset), XDoubleToFixed(y1 + width+ offset) } }
                };
                traps[0] = trap1;
                nTraps = 1;
@@ -1036,7 +1036,7 @@ class XDisplayDriver : DisplayDriver
                {
                   XDoubleToFixed(Min(y1, y2) - 0.0 + offset), XDoubleToFixed(Max(y1, y2) + 0.0 + offset),
                   { { XDoubleToFixed(x1 - width + offset), XDoubleToFixed(Min(y1, y2) - 0.0 + offset) }, { XDoubleToFixed(x1 - width + offset), XDoubleToFixed(Max(y1, y2) + 0.0 + offset) } },
-                  { { XDoubleToFixed(x1 + width + offset), XDoubleToFixed(Min(y1, y2) - 0.0 + offset) }, { XDoubleToFixed(x1 + width + offset), XDoubleToFixed(Max(y1, y2) + 0.0 + offset) } },
+                  { { XDoubleToFixed(x1 + width + offset), XDoubleToFixed(Min(y1, y2) - 0.0 + offset) }, { XDoubleToFixed(x1 + width + offset), XDoubleToFixed(Max(y1, y2) + 0.0 + offset) } }
                };
                traps[0] = trap1;
                nTraps = 1;
@@ -1088,7 +1088,7 @@ class XDisplayDriver : DisplayDriver
                   {
                      XDoubleToFixed(D.y + offset), XDoubleToFixed(F.y + offset),
                      { { XDoubleToFixed(D.x + offset), XDoubleToFixed(D.y + offset) }, { XDoubleToFixed(F.x + offset), XDoubleToFixed(F.y + offset) } },
-                     { { XDoubleToFixed(E.x + offset), XDoubleToFixed(E.y + offset) }, { XDoubleToFixed(F.x + offset), XDoubleToFixed(F.y + offset) } },
+                     { { XDoubleToFixed(E.x + offset), XDoubleToFixed(E.y + offset) }, { XDoubleToFixed(F.x + offset), XDoubleToFixed(F.y + offset) } }
                   };
                   traps[0] = trap1;
                   traps[1] = trap2;
