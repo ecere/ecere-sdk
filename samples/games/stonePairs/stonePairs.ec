@@ -65,7 +65,7 @@ class MainWindow : Window
    {
       Bitmap board = boardBmp.bitmap;
       Bitmap bmp = res.bitmap;
-      int bw = (int)(board.width * scale;
+      int bw = (int)(board.width * scale);
       int bh = clientSize.h;
       int bx = (clientSize.w - bw) / 2;
       int by = (clientSize.h - bh) / 2;
