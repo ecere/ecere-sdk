@@ -95,7 +95,7 @@ Piece pieces[numPieces] =
          1,
          1
       }
-   }
+   },
    {
       2,3,
       {

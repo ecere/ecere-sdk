@@ -20,7 +20,7 @@ class Trump : Kind
       Bitmap icon = (this != none) ? trumpDialog.icons[this].bitmap : null;
       char name[10];
       int w, h;
-      int xStart = icon ? (icon.width + 8) : ((trumpDialog.icons[0].bitmap ? trumpDialog.icons[0].bitmap.width : 0) + 8;
+      int xStart = icon ? (icon.width + 8) : ((trumpDialog.icons[0].bitmap ? trumpDialog.icons[0].bitmap.width : 0) + 8);
       int len;
 
       OnGetString(name, trumpDialog, null);

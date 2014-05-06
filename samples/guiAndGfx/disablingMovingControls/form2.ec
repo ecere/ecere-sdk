@@ -102,7 +102,7 @@ class Form2 : Window
          }
          return true;
       }
-   }
+   };
 
    uint counter0, counter1;
    Button button5

@@ -7,7 +7,7 @@ static FileFilter txtFilters[] =
 };
 static FileType txtTypes[] =
 {
-   { "Text Files", "txt", always },
+   { "Text Files", "txt", always }
 };
 
 eNotepad app;
@@ -43,7 +43,7 @@ class eNodepadWindow : Window
             }
          }
       }
-   }
+   };
    MenuDivider { fileMenu };
    MenuItem saveItem { fileMenu, "Save", s, ctrlS, NotifySelect = MenuFileSave };
    MenuItem saveItemAs { fileMenu, "Save As...", a, NotifySelect = MenuFileSaveAs };

@@ -98,7 +98,7 @@ class ReminderWindow : Window
          }
          return true;
       }
-   }
+   };
 }
 
 ReminderWindow reminderWindow { };

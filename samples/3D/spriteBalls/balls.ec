@@ -74,7 +74,7 @@ static ColorAlpha palette[256] =
    0,0,0,0,0,0,0,0,
    0,0,0,0,0,0,0,0,
    0,0,0,0,0,0,0,0,
-   0xFF343973, 0xFF463971, 0xFF553870, 0xFF5F386F, 0xFF6F3872, 0xFF6F3860, 0,0,
+   0xFF343973, 0xFF463971, 0xFF553870, 0xFF5F386F, 0xFF6F3872, 0xFF6F3860, 0,0
 };
 
 static void ScaleCenterBit(Surface surface, int sx,int sy,int sizex,int sizey, Bitmap bitmap)

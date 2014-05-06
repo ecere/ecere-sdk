@@ -139,7 +139,7 @@ struct Camera2D {
 static FileFilter fileFilters[] =
 {
    { "OpenRider track files (*.ort)", "ort" },
-   { "All files", null},
+   { "All files", null}
 };
 
 static FileType fileTypes[] =
@@ -257,7 +257,7 @@ class Form1 : Window
             Update(null);
             return true;
          }
-      }
+      };
    MenuItem fileOpenItem {
          fileMenu, "Open...", o, Key {o, ctrl = true};
 
@@ -273,9 +273,9 @@ class Form1 : Window
             }
             return true;
          }
-      }
-   MenuItem fileSaveItem { fileMenu, "Save", s, Key {s, ctrl = true}, NotifySelect=MenuFileSave}
-   MenuItem fileSaveAsItem { fileMenu, "Save As...", a, Key {a, ctrl = true}, NotifySelect=MenuFileSaveAs }
+      };
+   MenuItem fileSaveItem { fileMenu, "Save", s, Key {s, ctrl = true}, NotifySelect=MenuFileSave};
+   MenuItem fileSaveAsItem { fileMenu, "Save As...", a, Key {a, ctrl = true}, NotifySelect=MenuFileSaveAs };
    MenuDivider {fileMenu};
    MenuItem exitItem {fileMenu, "Exit", x, altF4, NotifySelect = MenuFileExit };
 
@@ -289,25 +289,25 @@ class Form1 : Window
          }
          return true;
       }
-   }
+   };
    MenuDivider {viewMenu};
    MenuItem zoomInItem {viewMenu, "Zoom in\t+", i;
       bool NotifySelect(MenuItem selection, Modifiers mods) {
          Zoom(1.5, 0);
          return true;
       }
-   }
+   };
    MenuItem zoomOutItem {viewMenu, "Zoom out\t-", o;
       bool NotifySelect(MenuItem selection, Modifiers mods) {
          Zoom(1/1.5, 0);
          return true;
       }
-   }
+   };
    MenuDivider {viewMenu};
-   MenuItem nudgeLeftItem {viewMenu, "Left", l, left, NotifySelect = NudgeCallback, id=0}
-   MenuItem nudgeRightItem {viewMenu, "Right", r, right, NotifySelect = NudgeCallback, id=1}
-   MenuItem nudgeUpItem {viewMenu, "Up", u, up, NotifySelect = NudgeCallback, id=2}
-   MenuItem nudgeDownItem {viewMenu, "Down", d, down, NotifySelect = NudgeCallback, id=3}
+   MenuItem nudgeLeftItem {viewMenu, "Left", l, left, NotifySelect = NudgeCallback, id=0};
+   MenuItem nudgeRightItem {viewMenu, "Right", r, right, NotifySelect = NudgeCallback, id=1};
+   MenuItem nudgeUpItem {viewMenu, "Up", u, up, NotifySelect = NudgeCallback, id=2};
+   MenuItem nudgeDownItem {viewMenu, "Down", d, down, NotifySelect = NudgeCallback, id=3};
 
    bool NudgeCallback(MenuItem selection, Modifiers mods) {
       Camera2D *c = camera;
@@ -348,7 +348,7 @@ class Form1 : Window
          running = selection.checked;
          return true;
       }
-   }
+   };
    MenuItem resetItem {controlMenu, "Reset Ball", r, Key {r, ctrl=true};
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
@@ -358,7 +358,7 @@ class Form1 : Window
          Update(null);
          return true;
       }
-   }
+   };
 
    bool MyCustomMenu(MenuItem selection, Modifiers mods) {
       if (browseItem.checked)

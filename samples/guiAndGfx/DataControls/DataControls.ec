@@ -12,8 +12,8 @@ class Form1 : Window
 
    ListBox listBox1 { this, text = "listBox1", size = { 108, 132 }, position = { 144, 88 } };
 
-   DataField field1 { dataType = "int", editable = false, alignment = center, width = 40, header = "MyInt1" };
-   DataField field2 { dataType = "int", editable = false, alignment = center, width = 40, header = "MyInt2" };
+   DataField field1 { dataType = class(int), editable = false, alignment = center, width = 40, header = "MyInt1" };
+   DataField field2 { dataType = class(int), editable = false, alignment = center, width = 40, header = "MyInt2" };
 
    Form1()
    {
