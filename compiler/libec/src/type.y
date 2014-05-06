@@ -83,8 +83,10 @@ default:
             exclusive_or_expression inclusive_or_expression logical_and_expression
             logical_or_expression conditional_expression assignment_expression
             constant_expression
-            common_unary_expression simple_primary_expression simple_postfix_expression simple_unary_expression
+            common_unary_expression simple_primary_expression
             anon_instantiation_expression
+
+//simple_postfix_expression simple_unary_expression
 
 %type <list> argument_expression_list expression enumerator_list
              struct_declarator_list struct_declaration_list
@@ -463,7 +465,7 @@ anon_instantiation_expression:
    instantiation_anon            { $$ = MkExpInstance($1); $$.loc = @$; }
    ;
 
-
+/*
 simple_postfix_expression:
 	  simple_primary_expression
    | simple_postfix_expression '[' expression ']'               { $$ = MkExpIndex($1, $3); $$.loc = @$; }
@@ -487,7 +489,7 @@ simple_postfix_expression:
 	| simple_postfix_expression INC_OP                           { $$ = MkExpOp($1, INC_OP, null); $$.loc = @$; }
 	| simple_postfix_expression DEC_OP                           { $$ = MkExpOp($1, DEC_OP, null); $$.loc = @$; }
 	;
-
+*/
 argument_expression_list:
 	  assignment_expression          { $$ = MkList(); ListAdd($$, $1); }
    | anon_instantiation_expression  { $$ = MkList(); ListAdd($$, $1); }
@@ -499,11 +501,11 @@ common_unary_expression:
 	  INC_OP unary_expression           { $$ = MkExpOp(null, INC_OP, $2); $$.loc = @$; }
 	| DEC_OP unary_expression           { $$ = MkExpOp(null, DEC_OP, $2); $$.loc = @$; }
 	| unary_operator cast_expression    { $$ = MkExpOp(null, $1, $2); $$.loc = @$; }
-	| SIZEOF '(' unary_expression ')'         { $$ = MkExpOp(null, SIZEOF, $3); $$.loc = @$; }
-   | SIZEOF simple_unary_expression          { $$ = MkExpOp(null, SIZEOF, $2); $$.loc = @$; }
+	//| SIZEOF '(' unary_expression ')'         { $$ = MkExpOp(null, SIZEOF, $3); $$.loc = @$; }
+   | SIZEOF unary_expression          { $$ = MkExpOp(null, SIZEOF, $2); $$.loc = @$; }
    | SIZEOF '(' guess_type_name ')'          { $$ = MkExpTypeSize($3); $$.loc = @$; }
-	| ALIGNOF '(' unary_expression ')'         { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
-   | ALIGNOF simple_unary_expression          { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
+	//| ALIGNOF '(' unary_expression ')'         { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
+   | ALIGNOF unary_expression          { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
    | ALIGNOF '(' guess_type_name ')'          { $$ = MkExpTypeAlign($3); $$.loc = @$; }
    ;
 
@@ -511,12 +513,12 @@ unary_expression:
        common_unary_expression
 	  | postfix_expression
 	;
-
+/*
 simple_unary_expression:
      common_unary_expression
 	| simple_postfix_expression
 	;
-
+*/
 unary_operator:
 	  '&'     { $$ = '&'; }
 	| '*'     { $$ = '*'; }

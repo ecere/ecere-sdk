@@ -97,10 +97,11 @@ default:
             exclusive_or_expression_error inclusive_or_expression_error logical_and_expression_error
             logical_or_expression_error conditional_expression_error assignment_expression_error
             simple_primary_expression constant
-            simple_postfix_expression simple_postfix_expression_error
             common_unary_expression common_unary_expression_error
-            simple_unary_expression simple_unary_expression_error
             database_open dbfield dbindex dbtable
+
+//simple_unary_expression simple_unary_expression_error
+// simple_postfix_expression simple_postfix_expression_error
 
 %type <list> argument_expression_list expression expression_anon_inst expression_anon_inst_error enumerator_list type_qualifier_list
              struct_declarator_list struct_declaration_list
@@ -1561,7 +1562,7 @@ postfix_expression:
 	| postfix_expression_error DEC_OP                           { $$ = MkExpOp($1, DEC_OP, null); $$.loc = @$; }
 ;
 
-simple_postfix_expression:
+/*simple_postfix_expression:
 	  simple_primary_expression
 
    | simple_postfix_expression '[' expression ']'               { $$ = MkExpIndex($1, $3); $$.loc = @$; }
@@ -1582,7 +1583,7 @@ simple_postfix_expression:
 	| simple_postfix_expression_error PTR_OP identifier                { $$ = MkExpPointer($1, $3); $$.loc = @$; }
 	| simple_postfix_expression_error INC_OP                           { $$ = MkExpOp($1, INC_OP, null); $$.loc = @$; }
 	| simple_postfix_expression_error DEC_OP                           { $$ = MkExpOp($1, DEC_OP, null); $$.loc = @$; }
-;
+;*/
 
 argument_expression_list:
 	  assignment_expression          { $$ = MkList(); ListAdd($$, $1); }
@@ -1604,14 +1605,14 @@ common_unary_expression:
 	| DEC_OP unary_expression           { $$ = MkExpOp(null, DEC_OP, $2); $$.loc = @$; }
 	| unary_operator cast_expression    { $$ = MkExpOp(null, $1, $2); $$.loc = @$; }
    | unary_operator anon_instantiation_expression    { $$ = MkExpOp(null, $1, $2); $$.loc = @$; }
-	| SIZEOF '(' unary_expression ')'         { $$ = MkExpOp(null, SIZEOF, $3); $$.loc = @$; }
-   | SIZEOF simple_unary_expression           { $$ = MkExpOp(null, SIZEOF, $2); $$.loc = @$; }
+	//| SIZEOF '(' unary_expression ')'         { $$ = MkExpOp(null, SIZEOF, $3); $$.loc = @$; }
+   | SIZEOF unary_expression           { $$ = MkExpOp(null, SIZEOF, $2); $$.loc = @$; }
    | SIZEOF '(' guess_type_name ')'          { $$ = MkExpTypeSize($3); $$.loc = @$; }
    | SIZEOF '(' CLASS type ')'          { $$ = MkExpClassSize($4); $$.loc = @$; }
    | SIZEOF '(' CLASS guess_type ')'          { $$ = MkExpClassSize($4); $$.loc = @$; }
 
-	| ALIGNOF '(' unary_expression ')'         { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
-   | ALIGNOF simple_unary_expression           { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
+	//| ALIGNOF '(' unary_expression ')'         { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
+   | ALIGNOF unary_expression           { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
    | ALIGNOF '(' guess_type_name ')'          { $$ = MkExpTypeAlign($3); $$.loc = @$; }
 	;
 
@@ -1619,12 +1620,12 @@ unary_expression:
        common_unary_expression
 	  | postfix_expression
 	;
-
-simple_unary_expression:
+/*
+?:
      common_unary_expression
 	| simple_postfix_expression
 	;
-
+*/
 unary_operator:
 	  '&'     { $$ = '&'; }
 	| '*'     { $$ = '*'; }
@@ -1827,7 +1828,7 @@ postfix_expression_error:
    | postfix_expression_error '.' error                   { $$ = MkExpMember($1, null); $$.loc = @$; }
 	;
 
-simple_postfix_expression_error:
+/*simple_postfix_expression_error:
       error { $$ = MkExpDummy(); $$.loc = @$; }
    | simple_postfix_expression error
    | instantiation_unnamed_error error { $$ = MkExpInstance($1); $$.loc = @$; }
@@ -1837,32 +1838,32 @@ simple_postfix_expression_error:
 
    | simple_postfix_expression '(' argument_expression_list { yyerror(); $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
 	| simple_postfix_expression '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.loc = @$; $$.call.argLoc.end.charPos++;}
-   /* Useless rules due to conflicts
-   | simple_postfix_expression '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end;$$.loc = @$; $$.call.argLoc.end.charPos++;}
-   | simple_postfix_expression '(' error { $$ = MkExpCall($1, MkList() ); @$.end = yylloc.start; $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = yylloc.start; }
-   */
+   // Useless rules due to conflicts
+   //| simple_postfix_expression '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end;$$.loc = @$; $$.call.argLoc.end.charPos++;}
+   //| simple_postfix_expression '(' error { $$ = MkExpCall($1, MkList() ); @$.end = yylloc.start; $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = yylloc.start; }
+
    | simple_postfix_expression '.' error                   { $$ = MkExpMember($1, null); $$.loc = @$; }
 
 	| simple_postfix_expression_error '(' argument_expression_list_error { $$ = MkExpCall($1, $3); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @3.end; $$.call.argLoc.end.charPos++;}
-   /* Useless rules due to conflicts
-   | simple_postfix_expression_error '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end; $$.call.argLoc.end.charPos++;}
-   | simple_postfix_expression_error '(' error { $$ = MkExpCall($1, MkList() ); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @2.end; $$.call.argLoc.end.charPos++;}
-   */
+   // Useless rules due to conflicts
+   //| simple_postfix_expression_error '(' argument_expression_list ',' error { $$ = MkExpCall($1, $3); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @4.end; $$.call.argLoc.end.charPos++;}
+   //| simple_postfix_expression_error '(' error { $$ = MkExpCall($1, MkList() ); $$.loc = @$; $$.call.argLoc.start = @2.start; $$.call.argLoc.end = @2.end; $$.call.argLoc.end.charPos++;}
    | simple_postfix_expression_error '.' error                   { $$ = MkExpMember($1, null); $$.loc = @$; }
 	;
+*/
 
 common_unary_expression_error:
 	   INC_OP unary_expression_error           { $$ = MkExpOp(null, INC_OP, $2); $$.loc = @$; }
 	 | DEC_OP unary_expression_error           { $$ = MkExpOp(null, DEC_OP, $2); $$.loc = @$; }
 	 | unary_operator cast_expression_error    { $$ = MkExpOp(null, $1, $2); $$.loc = @$; }
     | unary_operator anon_instantiation_expression_error    { $$ = MkExpOp(null, $1, $2); $$.loc = @$; }
-    | SIZEOF '(' unary_expression_error           { $$ = MkExpOp(null, SIZEOF, $3); $$.loc = @$; }
-	 | SIZEOF simple_unary_expression_error           { $$ = MkExpOp(null, SIZEOF, $2); $$.loc = @$; }
+    //| SIZEOF '(' unary_expression_error           { $$ = MkExpOp(null, SIZEOF, $3); $$.loc = @$; }
+	 | SIZEOF unary_expression_error           { $$ = MkExpOp(null, SIZEOF, $2); $$.loc = @$; }
 	 | SIZEOF '(' guess_type_name ')' error          { $$ = MkExpTypeSize($3); $$.loc = @$; }
     | SIZEOF '(' CLASS type ')' error   { $$ = MkExpClassSize($4); $$.loc = @$; }
     | SIZEOF '(' CLASS guess_type ')' error   { $$ = MkExpClassSize($4); $$.loc = @$; }
-    | ALIGNOF '(' unary_expression_error           { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
-	 | ALIGNOF simple_unary_expression_error           { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
+    //| ALIGNOF '(' unary_expression_error           { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
+	 | ALIGNOF unary_expression_error           { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
 	 | ALIGNOF '(' guess_type_name ')' error          { $$ = MkExpTypeAlign($3); $$.loc = @$; }
 	;
 
@@ -1871,11 +1872,10 @@ unary_expression_error:
 	| postfix_expression_error
    ;
 
-simple_unary_expression_error:
+/*simple_unary_expression_error:
      common_unary_expression_error
 	| simple_postfix_expression_error
-   ;
-
+   ;*/
 
 cast_expression_error:
      unary_expression_error
