@@ -2972,21 +2972,27 @@ static void ProcessInitializer(Initializer init)
    switch(init.type)
    {
       case expInitializer:
-         init.exp.usage.usageGet = true;
-         ProcessExpression(init.exp);
-         if(init.exp.destType && init.exp.destType.kind == classType && init.exp.destType._class &&
-            init.exp.destType._class.registered && init.exp.destType._class.registered.type == noHeadClass)
+         if(init.exp)
          {
-            FixReference(init.exp, true);
+            init.exp.usage.usageGet = true;
+            ProcessExpression(init.exp);
+            if(init.exp.destType && init.exp.destType.kind == classType && init.exp.destType._class &&
+               init.exp.destType._class.registered && init.exp.destType._class.registered.type == noHeadClass)
+            {
+               FixReference(init.exp, true);
+            }
+            else if(init.exp.destType && init.exp.destType.kind == classType)
+               FixReference(init.exp, false);
          }
-         else if(init.exp.destType && init.exp.destType.kind == classType)
-            FixReference(init.exp, false);
          break;
       case listInitializer:
       {
-         Initializer i;
-         for(i = init.list->first; i; i = i.next)
-            ProcessInitializer(i);
+         if(init.list)
+         {
+            Initializer i;
+            for(i = init.list->first; i; i = i.next)
+               ProcessInitializer(i);
+         }
          break;
       }
    }

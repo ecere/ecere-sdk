@@ -20063,7 +20063,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 3157 "grammar.y"
     {
-         Compiler_Warning($"Extra comma\n");
+         Compiler_Warning($"extra comma\n");
          (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list));
          (yyval.initializer).loc = (yyloc);
 

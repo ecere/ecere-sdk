@@ -2129,28 +2129,28 @@ do
 {
 unsigned int yynewbytes;
 
-__builtin_memcpy(&(*yyptr).yyss_alloc, yyss, (yysize) * sizeof *(yyss));
+__builtin_memcpy(&(*yyptr).yyss_alloc, yyss, (yysize) * sizeof (*(yyss)));
 yyss = &(*yyptr).yyss_alloc;
-yynewbytes = yystacksize * sizeof *yyss + (sizeof(union yyalloc) - 1);
-yyptr += yynewbytes / sizeof *yyptr;
+yynewbytes = yystacksize * sizeof (*yyss) + (sizeof(union yyalloc) - 1);
+yyptr += yynewbytes / sizeof (*yyptr);
 }while((0));
 do
 {
 unsigned int yynewbytes;
 
-__builtin_memcpy(&(*yyptr).yyvs_alloc, yyvs, (yysize) * sizeof *(yyvs));
+__builtin_memcpy(&(*yyptr).yyvs_alloc, yyvs, (yysize) * sizeof (*(yyvs)));
 yyvs = &(*yyptr).yyvs_alloc;
-yynewbytes = yystacksize * sizeof *yyvs + (sizeof(union yyalloc) - 1);
-yyptr += yynewbytes / sizeof *yyptr;
+yynewbytes = yystacksize * sizeof (*yyvs) + (sizeof(union yyalloc) - 1);
+yyptr += yynewbytes / sizeof (*yyptr);
 }while((0));
 do
 {
 unsigned int yynewbytes;
 
-__builtin_memcpy(&(*yyptr).yyls_alloc, yyls, (yysize) * sizeof *(yyls));
+__builtin_memcpy(&(*yyptr).yyls_alloc, yyls, (yysize) * sizeof (*(yyls)));
 yyls = &(*yyptr).yyls_alloc;
-yynewbytes = yystacksize * sizeof *yyls + (sizeof(union yyalloc) - 1);
-yyptr += yynewbytes / sizeof *yyptr;
+yynewbytes = yystacksize * sizeof (*yyls) + (sizeof(union yyalloc) - 1);
+yyptr += yynewbytes / sizeof (*yyptr);
 }while((0));
 if(yyss1 != yyssa)
 free(yyss1);

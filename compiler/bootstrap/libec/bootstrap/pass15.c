@@ -13583,7 +13583,7 @@ int c;
 for(c = 0; c < definedExpStackPos; c++)
 if(definedExpStack[c] == definedExp)
 break;
-if(c == definedExpStackPos && c < sizeof definedExpStack / sizeof(void *))
+if(c == definedExpStackPos && c < sizeof (definedExpStack) / sizeof(void *))
 {
 struct Location backupYylloc = yylloc;
 struct __ecereNameSpace__ecere__com__Instance * backInput = fileInput;

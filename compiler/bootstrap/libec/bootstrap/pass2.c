@@ -3636,6 +3636,8 @@ static void ProcessInitializer(struct Initializer * init)
 switch(init->type)
 {
 case 0:
+if(init->exp)
+{
 init->exp->usage = (init->exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
 ProcessExpression(init->exp);
 if(init->exp->destType && init->exp->destType->kind == 8 && init->exp->destType->_class && init->exp->destType->_class->registered && init->exp->destType->_class->registered->type == 5)
@@ -3644,13 +3646,17 @@ FixReference(init->exp, 0x1);
 }
 else if(init->exp->destType && init->exp->destType->kind == 8)
 FixReference(init->exp, 0x0);
+}
 break;
 case 1:
+{
+if(init->list)
 {
 struct Initializer * i;
 
 for(i = (*init->list).first; i; i = i->next)
 ProcessInitializer(i);
+}
 break;
 }
 }

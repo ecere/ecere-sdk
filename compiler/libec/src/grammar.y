@@ -3155,7 +3155,7 @@ initializer:
 	| '{' initializer_list '}'       { $$ = MkInitializerList($2); $$.loc = @$; }
 	| '{' initializer_list ',' '}'
       {
-         Compiler_Warning($"Extra comma\n");
+         Compiler_Warning($"extra comma\n");
          $$ = MkInitializerList($2);
          $$.loc = @$;
 
