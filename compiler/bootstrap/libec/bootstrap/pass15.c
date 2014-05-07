@@ -1661,42 +1661,84 @@ uint64 ui64;
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
 
+unsigned int GetOpInt(struct Operand * op2, int * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = op2->i;
+else if(op2->kind == 3)
+*value2 = (int)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (int)op2->i64;
+else if(op2->kind == 4)
+*value2 = (int)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (int)op2->i64;
+else if(op2->kind == 23)
+*value2 = (int)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (int)op2->i64;
+else if(op2->kind == 22)
+*value2 = (int)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (int)op2->s;
+else if(op2->kind == 2)
+*value2 = (int)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (int)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (int)op2->uc;
+else if(op2->kind == 6)
+*value2 = (int)op2->f;
+else if(op2->kind == 7)
+*value2 = (int)op2->d;
+else if(op2->kind == 13)
+*value2 = (int)op2->ui64;
+else
+return 0x0;
+return 0x1;
+}
+
 struct Operand GetOperand(struct Expression * exp);
 
 unsigned int GetInt(struct Expression * exp, int * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = op2.i;
-else if(op2.kind == 3)
-*value2 = (int)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (int)op2.i64;
-else if(op2.kind == 4)
-*value2 = (int)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (int)op2.i64;
-else if(op2.kind == 23)
-*value2 = (int)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (int)op2.i64;
-else if(op2.kind == 22)
-*value2 = (int)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (int)op2.s;
-else if(op2.kind == 2)
-*value2 = (int)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (int)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (int)op2.uc;
-else if(op2.kind == 6)
-*value2 = (int)op2.f;
-else if(op2.kind == 7)
-*value2 = (int)op2.d;
-else if(op2.kind == 13)
-*value2 = (int)op2.ui64;
+return GetOpInt(&op2, value2);
+}
+
+unsigned int GetOpUInt(struct Operand * op2, unsigned int * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (unsigned int)op2->i;
+else if(op2->kind == 3)
+*value2 = op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (unsigned int)op2->i64;
+else if(op2->kind == 4)
+*value2 = (unsigned int)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (unsigned int)op2->i64;
+else if(op2->kind == 23)
+*value2 = (unsigned int)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (unsigned int)op2->i64;
+else if(op2->kind == 22)
+*value2 = (unsigned int)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (unsigned int)op2->s;
+else if(op2->kind == 2)
+*value2 = (unsigned int)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (unsigned int)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (unsigned int)op2->uc;
+else if(op2->kind == 6)
+*value2 = (unsigned int)op2->f;
+else if(op2->kind == 7)
+*value2 = (unsigned int)op2->d;
+else if(op2->kind == 13)
+*value2 = (unsigned int)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1706,36 +1748,41 @@ unsigned int GetUInt(struct Expression * exp, unsigned int * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (unsigned int)op2.i;
-else if(op2.kind == 3)
-*value2 = op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (unsigned int)op2.i64;
-else if(op2.kind == 4)
-*value2 = (unsigned int)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (unsigned int)op2.i64;
-else if(op2.kind == 23)
-*value2 = (unsigned int)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (unsigned int)op2.i64;
-else if(op2.kind == 22)
-*value2 = (unsigned int)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (unsigned int)op2.s;
-else if(op2.kind == 2)
-*value2 = (unsigned int)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (unsigned int)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (unsigned int)op2.uc;
-else if(op2.kind == 6)
-*value2 = (unsigned int)op2.f;
-else if(op2.kind == 7)
-*value2 = (unsigned int)op2.d;
-else if(op2.kind == 13)
-*value2 = (unsigned int)op2.ui64;
+return GetOpUInt(&op2, value2);
+}
+
+unsigned int GetOpInt64(struct Operand * op2, long long * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (long long)op2->i;
+else if(op2->kind == 3)
+*value2 = (long long)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = op2->i64;
+else if(op2->kind == 4)
+*value2 = (long long)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = op2->i64;
+else if(op2->kind == 23)
+*value2 = (long long)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = op2->i64;
+else if(op2->kind == 22)
+*value2 = (long long)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (long long)op2->s;
+else if(op2->kind == 2)
+*value2 = (long long)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (long long)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (long long)op2->uc;
+else if(op2->kind == 6)
+*value2 = (long long)op2->f;
+else if(op2->kind == 7)
+*value2 = (long long)op2->d;
+else if(op2->kind == 13)
+*value2 = (long long)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1745,36 +1792,41 @@ unsigned int GetInt64(struct Expression * exp, long long * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (long long)op2.i;
-else if(op2.kind == 3)
-*value2 = (long long)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = op2.i64;
-else if(op2.kind == 4)
-*value2 = (long long)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = op2.i64;
-else if(op2.kind == 23)
-*value2 = (long long)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = op2.i64;
-else if(op2.kind == 22)
-*value2 = (long long)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (long long)op2.s;
-else if(op2.kind == 2)
-*value2 = (long long)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (long long)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (long long)op2.uc;
-else if(op2.kind == 6)
-*value2 = (long long)op2.f;
-else if(op2.kind == 7)
-*value2 = (long long)op2.d;
-else if(op2.kind == 13)
-*value2 = (long long)op2.ui64;
+return GetOpInt64(&op2, value2);
+}
+
+unsigned int GetOpUInt64(struct Operand * op2, uint64 * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (uint64)op2->i;
+else if(op2->kind == 3)
+*value2 = (uint64)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (uint64)op2->i64;
+else if(op2->kind == 4)
+*value2 = op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (uint64)op2->i64;
+else if(op2->kind == 23)
+*value2 = op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (uint64)op2->i64;
+else if(op2->kind == 22)
+*value2 = op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (uint64)op2->s;
+else if(op2->kind == 2)
+*value2 = (uint64)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (uint64)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (uint64)op2->uc;
+else if(op2->kind == 6)
+*value2 = (uint64)op2->f;
+else if(op2->kind == 7)
+*value2 = (uint64)op2->d;
+else if(op2->kind == 13)
+*value2 = op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1784,36 +1836,41 @@ unsigned int GetUInt64(struct Expression * exp, uint64 * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (uint64)op2.i;
-else if(op2.kind == 3)
-*value2 = (uint64)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (uint64)op2.i64;
-else if(op2.kind == 4)
-*value2 = op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (uint64)op2.i64;
-else if(op2.kind == 23)
-*value2 = op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (uint64)op2.i64;
-else if(op2.kind == 22)
-*value2 = op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (uint64)op2.s;
-else if(op2.kind == 2)
-*value2 = (uint64)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (uint64)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (uint64)op2.uc;
-else if(op2.kind == 6)
-*value2 = (uint64)op2.f;
-else if(op2.kind == 7)
-*value2 = (uint64)op2.d;
-else if(op2.kind == 13)
-*value2 = op2.ui64;
+return GetOpUInt64(&op2, value2);
+}
+
+unsigned int GetOpIntPtr(struct Operand * op2, intptr_t * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (intptr_t)op2->i;
+else if(op2->kind == 3)
+*value2 = (intptr_t)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (intptr_t)op2->i64;
+else if(op2->kind == 4)
+*value2 = (intptr_t)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (intptr_t)op2->i64;
+else if(op2->kind == 23)
+*value2 = (intptr_t)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (intptr_t)op2->i64;
+else if(op2->kind == 22)
+*value2 = (intptr_t)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (intptr_t)op2->s;
+else if(op2->kind == 2)
+*value2 = (intptr_t)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (intptr_t)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (intptr_t)op2->uc;
+else if(op2->kind == 6)
+*value2 = (intptr_t)op2->f;
+else if(op2->kind == 7)
+*value2 = (intptr_t)op2->d;
+else if(op2->kind == 13)
+*value2 = (intptr_t)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1823,36 +1880,41 @@ unsigned int GetIntPtr(struct Expression * exp, intptr_t * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (intptr_t)op2.i;
-else if(op2.kind == 3)
-*value2 = (intptr_t)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (intptr_t)op2.i64;
-else if(op2.kind == 4)
-*value2 = (intptr_t)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (intptr_t)op2.i64;
-else if(op2.kind == 23)
-*value2 = (intptr_t)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (intptr_t)op2.i64;
-else if(op2.kind == 22)
-*value2 = (intptr_t)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (intptr_t)op2.s;
-else if(op2.kind == 2)
-*value2 = (intptr_t)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (intptr_t)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (intptr_t)op2.uc;
-else if(op2.kind == 6)
-*value2 = (intptr_t)op2.f;
-else if(op2.kind == 7)
-*value2 = (intptr_t)op2.d;
-else if(op2.kind == 13)
-*value2 = (intptr_t)op2.ui64;
+return GetOpIntPtr(&op2, value2);
+}
+
+unsigned int GetOpUIntPtr(struct Operand * op2, uintptr_t * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (uintptr_t)op2->i;
+else if(op2->kind == 3)
+*value2 = (uintptr_t)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (uintptr_t)op2->i64;
+else if(op2->kind == 4)
+*value2 = (uintptr_t)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (uintptr_t)op2->i64;
+else if(op2->kind == 23)
+*value2 = (uintptr_t)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (uintptr_t)op2->i64;
+else if(op2->kind == 22)
+*value2 = (uintptr_t)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (uintptr_t)op2->s;
+else if(op2->kind == 2)
+*value2 = (uintptr_t)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (uintptr_t)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (uintptr_t)op2->uc;
+else if(op2->kind == 6)
+*value2 = (uintptr_t)op2->f;
+else if(op2->kind == 7)
+*value2 = (uintptr_t)op2->d;
+else if(op2->kind == 13)
+*value2 = (uintptr_t)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1862,36 +1924,41 @@ unsigned int GetUIntPtr(struct Expression * exp, uintptr_t * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (uintptr_t)op2.i;
-else if(op2.kind == 3)
-*value2 = (uintptr_t)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (uintptr_t)op2.i64;
-else if(op2.kind == 4)
-*value2 = (uintptr_t)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (uintptr_t)op2.i64;
-else if(op2.kind == 23)
-*value2 = (uintptr_t)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (uintptr_t)op2.i64;
-else if(op2.kind == 22)
-*value2 = (uintptr_t)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (uintptr_t)op2.s;
-else if(op2.kind == 2)
-*value2 = (uintptr_t)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (uintptr_t)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (uintptr_t)op2.uc;
-else if(op2.kind == 6)
-*value2 = (uintptr_t)op2.f;
-else if(op2.kind == 7)
-*value2 = (uintptr_t)op2.d;
-else if(op2.kind == 13)
-*value2 = (uintptr_t)op2.ui64;
+return GetOpUIntPtr(&op2, value2);
+}
+
+unsigned int GetOpIntSize(struct Operand * op2, ssize_t * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (ssize_t)op2->i;
+else if(op2->kind == 3)
+*value2 = (ssize_t)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (ssize_t)op2->i64;
+else if(op2->kind == 4)
+*value2 = (ssize_t)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (ssize_t)op2->i64;
+else if(op2->kind == 23)
+*value2 = (ssize_t)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (ssize_t)op2->i64;
+else if(op2->kind == 22)
+*value2 = (ssize_t)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (ssize_t)op2->s;
+else if(op2->kind == 2)
+*value2 = (ssize_t)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (ssize_t)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (ssize_t)op2->uc;
+else if(op2->kind == 6)
+*value2 = (ssize_t)op2->f;
+else if(op2->kind == 7)
+*value2 = (ssize_t)op2->d;
+else if(op2->kind == 13)
+*value2 = (ssize_t)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1901,36 +1968,41 @@ unsigned int GetIntSize(struct Expression * exp, ssize_t * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (ssize_t)op2.i;
-else if(op2.kind == 3)
-*value2 = (ssize_t)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (ssize_t)op2.i64;
-else if(op2.kind == 4)
-*value2 = (ssize_t)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (ssize_t)op2.i64;
-else if(op2.kind == 23)
-*value2 = (ssize_t)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (ssize_t)op2.i64;
-else if(op2.kind == 22)
-*value2 = (ssize_t)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (ssize_t)op2.s;
-else if(op2.kind == 2)
-*value2 = (ssize_t)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (ssize_t)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (ssize_t)op2.uc;
-else if(op2.kind == 6)
-*value2 = (ssize_t)op2.f;
-else if(op2.kind == 7)
-*value2 = (ssize_t)op2.d;
-else if(op2.kind == 13)
-*value2 = (ssize_t)op2.ui64;
+return GetOpIntSize(&op2, value2);
+}
+
+unsigned int GetOpUIntSize(struct Operand * op2, size_t * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (size_t)op2->i;
+else if(op2->kind == 3)
+*value2 = (size_t)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (size_t)op2->i64;
+else if(op2->kind == 4)
+*value2 = (size_t)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (size_t)op2->i64;
+else if(op2->kind == 23)
+*value2 = (size_t)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (size_t)op2->i64;
+else if(op2->kind == 22)
+*value2 = (size_t)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (size_t)op2->s;
+else if(op2->kind == 2)
+*value2 = (size_t)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (size_t)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (size_t)op2->uc;
+else if(op2->kind == 6)
+*value2 = (size_t)op2->f;
+else if(op2->kind == 7)
+*value2 = (size_t)op2->d;
+else if(op2->kind == 13)
+*value2 = (size_t)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1940,36 +2012,41 @@ unsigned int GetUIntSize(struct Expression * exp, size_t * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (size_t)op2.i;
-else if(op2.kind == 3)
-*value2 = (size_t)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (size_t)op2.i64;
-else if(op2.kind == 4)
-*value2 = (size_t)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (size_t)op2.i64;
-else if(op2.kind == 23)
-*value2 = (size_t)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (size_t)op2.i64;
-else if(op2.kind == 22)
-*value2 = (size_t)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (size_t)op2.s;
-else if(op2.kind == 2)
-*value2 = (size_t)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (size_t)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (size_t)op2.uc;
-else if(op2.kind == 6)
-*value2 = (size_t)op2.f;
-else if(op2.kind == 7)
-*value2 = (size_t)op2.d;
-else if(op2.kind == 13)
-*value2 = (size_t)op2.ui64;
+return GetOpUIntSize(&op2, value2);
+}
+
+unsigned int GetOpShort(struct Operand * op2, short * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (short)op2->i;
+else if(op2->kind == 3)
+*value2 = (short)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (short)op2->i64;
+else if(op2->kind == 4)
+*value2 = (short)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (short)op2->i64;
+else if(op2->kind == 23)
+*value2 = (short)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (short)op2->i64;
+else if(op2->kind == 22)
+*value2 = (short)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = op2->s;
+else if(op2->kind == 2)
+*value2 = (short)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (short)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (short)op2->uc;
+else if(op2->kind == 6)
+*value2 = (short)op2->f;
+else if(op2->kind == 7)
+*value2 = (short)op2->d;
+else if(op2->kind == 13)
+*value2 = (short)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -1979,36 +2056,41 @@ unsigned int GetShort(struct Expression * exp, short * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (short)op2.i;
-else if(op2.kind == 3)
-*value2 = (short)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (short)op2.i64;
-else if(op2.kind == 4)
-*value2 = (short)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (short)op2.i64;
-else if(op2.kind == 23)
-*value2 = (short)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (short)op2.i64;
-else if(op2.kind == 22)
-*value2 = (short)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = op2.s;
-else if(op2.kind == 2)
-*value2 = (short)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (short)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (short)op2.uc;
-else if(op2.kind == 6)
-*value2 = (short)op2.f;
-else if(op2.kind == 7)
-*value2 = (short)op2.d;
-else if(op2.kind == 13)
-*value2 = (short)op2.ui64;
+return GetOpShort(&op2, value2);
+}
+
+unsigned int GetOpUShort(struct Operand * op2, unsigned short * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (unsigned short)op2->i;
+else if(op2->kind == 3)
+*value2 = (unsigned short)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (unsigned short)op2->i64;
+else if(op2->kind == 4)
+*value2 = (unsigned short)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (unsigned short)op2->i64;
+else if(op2->kind == 23)
+*value2 = (unsigned short)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (unsigned short)op2->i64;
+else if(op2->kind == 22)
+*value2 = (unsigned short)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (unsigned short)op2->s;
+else if(op2->kind == 2)
+*value2 = op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (unsigned short)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (unsigned short)op2->uc;
+else if(op2->kind == 6)
+*value2 = (unsigned short)op2->f;
+else if(op2->kind == 7)
+*value2 = (unsigned short)op2->d;
+else if(op2->kind == 13)
+*value2 = (unsigned short)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -2018,36 +2100,41 @@ unsigned int GetUShort(struct Expression * exp, unsigned short * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (unsigned short)op2.i;
-else if(op2.kind == 3)
-*value2 = (unsigned short)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (unsigned short)op2.i64;
-else if(op2.kind == 4)
-*value2 = (unsigned short)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (unsigned short)op2.i64;
-else if(op2.kind == 23)
-*value2 = (unsigned short)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (unsigned short)op2.i64;
-else if(op2.kind == 22)
-*value2 = (unsigned short)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (unsigned short)op2.s;
-else if(op2.kind == 2)
-*value2 = op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (unsigned short)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (unsigned short)op2.uc;
-else if(op2.kind == 6)
-*value2 = (unsigned short)op2.f;
-else if(op2.kind == 7)
-*value2 = (unsigned short)op2.d;
-else if(op2.kind == 13)
-*value2 = (unsigned short)op2.ui64;
+return GetOpUShort(&op2, value2);
+}
+
+unsigned int GetOpChar(struct Operand * op2, char * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (char)op2->i;
+else if(op2->kind == 3)
+*value2 = (char)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (char)op2->i64;
+else if(op2->kind == 4)
+*value2 = (char)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (char)op2->i64;
+else if(op2->kind == 23)
+*value2 = (char)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (char)op2->i64;
+else if(op2->kind == 22)
+*value2 = (char)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (char)op2->s;
+else if(op2->kind == 2)
+*value2 = (char)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (char)op2->uc;
+else if(op2->kind == 6)
+*value2 = (char)op2->f;
+else if(op2->kind == 7)
+*value2 = (char)op2->d;
+else if(op2->kind == 13)
+*value2 = (char)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -2057,36 +2144,41 @@ unsigned int GetChar(struct Expression * exp, char * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (char)op2.i;
-else if(op2.kind == 3)
-*value2 = (char)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (char)op2.i64;
-else if(op2.kind == 4)
-*value2 = (char)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (char)op2.i64;
-else if(op2.kind == 23)
-*value2 = (char)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (char)op2.i64;
-else if(op2.kind == 22)
-*value2 = (char)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (char)op2.s;
-else if(op2.kind == 2)
-*value2 = (char)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (char)op2.uc;
-else if(op2.kind == 6)
-*value2 = (char)op2.f;
-else if(op2.kind == 7)
-*value2 = (char)op2.d;
-else if(op2.kind == 13)
-*value2 = (char)op2.ui64;
+return GetOpChar(&op2, value2);
+}
+
+unsigned int GetOpUChar(struct Operand * op2, unsigned char * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (unsigned char)op2->i;
+else if(op2->kind == 3)
+*value2 = (unsigned char)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (unsigned char)op2->i64;
+else if(op2->kind == 4)
+*value2 = (unsigned char)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (unsigned char)op2->i64;
+else if(op2->kind == 23)
+*value2 = (unsigned char)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (unsigned char)op2->i64;
+else if(op2->kind == 22)
+*value2 = (unsigned char)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (unsigned char)op2->s;
+else if(op2->kind == 2)
+*value2 = (unsigned char)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (unsigned char)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = op2->uc;
+else if(op2->kind == 6)
+*value2 = (unsigned char)op2->f;
+else if(op2->kind == 7)
+*value2 = (unsigned char)op2->d;
+else if(op2->kind == 13)
+*value2 = (unsigned char)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -2096,36 +2188,41 @@ unsigned int GetUChar(struct Expression * exp, unsigned char * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (unsigned char)op2.i;
-else if(op2.kind == 3)
-*value2 = (unsigned char)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (unsigned char)op2.i64;
-else if(op2.kind == 4)
-*value2 = (unsigned char)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (unsigned char)op2.i64;
-else if(op2.kind == 23)
-*value2 = (unsigned char)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (unsigned char)op2.i64;
-else if(op2.kind == 22)
-*value2 = (unsigned char)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (unsigned char)op2.s;
-else if(op2.kind == 2)
-*value2 = (unsigned char)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (unsigned char)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = op2.uc;
-else if(op2.kind == 6)
-*value2 = (unsigned char)op2.f;
-else if(op2.kind == 7)
-*value2 = (unsigned char)op2.d;
-else if(op2.kind == 13)
-*value2 = (unsigned char)op2.ui64;
+return GetOpUChar(&op2, value2);
+}
+
+unsigned int GetOpFloat(struct Operand * op2, float * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (float)(float)op2->i;
+else if(op2->kind == 3)
+*value2 = (float)(float)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (float)(float)op2->i64;
+else if(op2->kind == 4)
+*value2 = (float)(float)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (float)(float)op2->i64;
+else if(op2->kind == 23)
+*value2 = (float)(float)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (float)(float)op2->i64;
+else if(op2->kind == 22)
+*value2 = (float)(float)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (float)(float)op2->s;
+else if(op2->kind == 2)
+*value2 = (float)(float)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (float)(float)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (float)(float)op2->uc;
+else if(op2->kind == 6)
+*value2 = (float)op2->f;
+else if(op2->kind == 7)
+*value2 = (float)op2->d;
+else if(op2->kind == 13)
+*value2 = (float)(float)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -2135,36 +2232,41 @@ unsigned int GetFloat(struct Expression * exp, float * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (float)(float)op2.i;
-else if(op2.kind == 3)
-*value2 = (float)(float)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (float)(float)op2.i64;
-else if(op2.kind == 4)
-*value2 = (float)(float)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (float)(float)op2.i64;
-else if(op2.kind == 23)
-*value2 = (float)(float)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (float)(float)op2.i64;
-else if(op2.kind == 22)
-*value2 = (float)(float)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (float)(float)op2.s;
-else if(op2.kind == 2)
-*value2 = (float)(float)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (float)(float)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (float)(float)op2.uc;
-else if(op2.kind == 6)
-*value2 = (float)op2.f;
-else if(op2.kind == 7)
-*value2 = (float)op2.d;
-else if(op2.kind == 13)
-*value2 = (float)(float)op2.ui64;
+return GetOpFloat(&op2, value2);
+}
+
+unsigned int GetOpDouble(struct Operand * op2, double * value2)
+{
+if(op2->kind == 3 && op2->type->isSigned)
+*value2 = (double)(double)op2->i;
+else if(op2->kind == 3)
+*value2 = (double)(double)op2->ui;
+else if(op2->kind == 4 && op2->type->isSigned)
+*value2 = (double)(double)op2->i64;
+else if(op2->kind == 4)
+*value2 = (double)(double)op2->ui64;
+else if(op2->kind == 23 && op2->type->isSigned)
+*value2 = (double)(double)op2->i64;
+else if(op2->kind == 23)
+*value2 = (double)(double)op2->ui64;
+else if(op2->kind == 22 && op2->type->isSigned)
+*value2 = (double)(double)op2->i64;
+else if(op2->kind == 22)
+*value2 = (double)(double)op2->ui64;
+else if(op2->kind == 2 && op2->type->isSigned)
+*value2 = (double)(double)op2->s;
+else if(op2->kind == 2)
+*value2 = (double)(double)op2->us;
+else if(op2->kind == 1 && op2->type->isSigned)
+*value2 = (double)(double)op2->c;
+else if(op2->kind == 24 || op2->kind == 1)
+*value2 = (double)(double)op2->uc;
+else if(op2->kind == 6)
+*value2 = (double)op2->f;
+else if(op2->kind == 7)
+*value2 = (double)op2->d;
+else if(op2->kind == 13)
+*value2 = (double)(double)op2->ui64;
 else
 return 0x0;
 return 0x1;
@@ -2174,39 +2276,7 @@ unsigned int GetDouble(struct Expression * exp, double * value2)
 {
 struct Operand op2 = GetOperand(exp);
 
-if(op2.kind == 3 && op2.type->isSigned)
-*value2 = (double)(double)op2.i;
-else if(op2.kind == 3)
-*value2 = (double)(double)op2.ui;
-else if(op2.kind == 4 && op2.type->isSigned)
-*value2 = (double)(double)op2.i64;
-else if(op2.kind == 4)
-*value2 = (double)(double)op2.ui64;
-else if(op2.kind == 23 && op2.type->isSigned)
-*value2 = (double)(double)op2.i64;
-else if(op2.kind == 23)
-*value2 = (double)(double)op2.ui64;
-else if(op2.kind == 22 && op2.type->isSigned)
-*value2 = (double)(double)op2.i64;
-else if(op2.kind == 22)
-*value2 = (double)(double)op2.ui64;
-else if(op2.kind == 2 && op2.type->isSigned)
-*value2 = (double)(double)op2.s;
-else if(op2.kind == 2)
-*value2 = (double)(double)op2.us;
-else if(op2.kind == 1 && op2.type->isSigned)
-*value2 = (double)(double)op2.c;
-else if(op2.kind == 24 || op2.kind == 1)
-*value2 = (double)(double)op2.uc;
-else if(op2.kind == 6)
-*value2 = (double)op2.f;
-else if(op2.kind == 7)
-*value2 = (double)op2.d;
-else if(op2.kind == 13)
-*value2 = (double)(double)op2.ui64;
-else
-return 0x0;
-return 0x1;
+return GetOpDouble(&op2, value2);
 }
 
 void ComputeExpression(struct Expression * exp);
@@ -10593,7 +10663,10 @@ case 24:
 case 1:
 {
 if(exp->constant[0] == '\'')
+{
 op.c = exp->constant[1];
+op.ops = charOps;
+}
 else if(type->isSigned)
 {
 op.c = (char)strtol(exp->constant, (((void *)0)), 0);
@@ -11383,6 +11456,53 @@ FreeInstance(inst);
 }
 }
 
+static unsigned int Promote(struct Operand * op, int kind, unsigned int isSigned)
+{
+unsigned int result = 0x0;
+
+switch(kind)
+{
+case 2:
+if(op->kind == 1 || op->kind == 15 || op->kind == 24)
+result = isSigned ? GetOpShort(op, &op->s) : GetOpUShort(op, &op->us);
+break;
+case 3:
+case 5:
+if(op->kind == 1 || op->kind == 2 || op->kind == 15 || op->kind == 24)
+result = isSigned ? GetOpInt(op, &op->i) : GetOpUInt(op, &op->ui);
+break;
+case 4:
+if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 4 || op->kind == 5 || op->kind == 6 || op->kind == 7 || op->kind == 13 || op->kind == 15 || op->kind == 22 || op->kind == 23 || op->kind == 24)
+result = isSigned ? GetOpInt64(op, &op->i64) : GetOpUInt64(op, &op->ui64);
+break;
+case 6:
+if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 4 || op->kind == 5 || op->kind == 15 || op->kind == 22 || op->kind == 23 || op->kind == 24)
+result = GetOpFloat(op, &op->f);
+break;
+case 7:
+if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 4 || op->kind == 5 || op->kind == 6 || op->kind == 15 || op->kind == 22 || op->kind == 23 || op->kind == 24)
+result = GetOpDouble(op, &op->d);
+break;
+case 13:
+if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 4 || op->kind == 5 || op->kind == 6 || op->kind == 7 || op->kind == 13 || op->kind == 15 || op->kind == 22 || op->kind == 23 || op->kind == 24)
+result = GetOpUIntPtr(op, &op->ui64);
+break;
+case 15:
+if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 4 || op->kind == 5 || op->kind == 6 || op->kind == 7 || op->kind == 13 || op->kind == 15 || op->kind == 22 || op->kind == 23 || op->kind == 24)
+result = isSigned ? GetOpInt(op, &op->i) : GetOpUInt(op, &op->ui);
+break;
+case 22:
+if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 5 || op->kind == 15 || op->kind == 24)
+result = isSigned ? GetOpIntPtr(op, &op->i64) : GetOpUIntPtr(op, &op->i64);
+break;
+case 23:
+if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 5 || op->kind == 15 || op->kind == 24)
+result = isSigned ? GetOpIntSize(op, &op->ui64) : GetOpUIntSize(op, &op->ui64);
+break;
+}
+return result;
+}
+
 void CallOperator(struct Expression * exp, struct Expression * exp1, struct Expression * exp2, struct Operand * op1, struct Operand * op2)
 {
 if(exp->op.op == SIZEOF)
@@ -11434,6 +11554,13 @@ break;
 }
 else
 {
+if(op1 && op2 && op1->kind != op2->kind)
+{
+if(Promote(op2, op1->kind, op1->type->isSigned))
+op2->kind = op1->kind, op2->ops = op1->ops;
+else if(Promote(op1, op2->kind, op2->type->isSigned))
+op1->kind = op2->kind, op1->ops = op2->ops;
+}
 switch(exp->op.op)
 {
 case '+':
@@ -18221,19 +18348,33 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintChar", "char * Prin
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintUChar", "char * PrintUChar(byte result)", PrintUChar, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintFloat", "char * PrintFloat(float result)", PrintFloat, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintDouble", "char * PrintDouble(double result)", PrintDouble, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpInt", "bool GetOpInt(Operand op2, int * value2)", GetOpInt, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetInt", "bool GetInt(Expression exp, int * value2)", GetInt, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpUInt", "bool GetOpUInt(Operand op2, uint * value2)", GetOpUInt, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUInt", "bool GetUInt(Expression exp, uint * value2)", GetUInt, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpInt64", "bool GetOpInt64(Operand op2, int64 * value2)", GetOpInt64, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetInt64", "bool GetInt64(Expression exp, int64 * value2)", GetInt64, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpUInt64", "bool GetOpUInt64(Operand op2, uint64 * value2)", GetOpUInt64, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUInt64", "bool GetUInt64(Expression exp, uint64 * value2)", GetUInt64, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpIntPtr", "bool GetOpIntPtr(Operand op2, intptr * value2)", GetOpIntPtr, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetIntPtr", "bool GetIntPtr(Expression exp, intptr * value2)", GetIntPtr, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpUIntPtr", "bool GetOpUIntPtr(Operand op2, uintptr * value2)", GetOpUIntPtr, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUIntPtr", "bool GetUIntPtr(Expression exp, uintptr * value2)", GetUIntPtr, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpIntSize", "bool GetOpIntSize(Operand op2, intsize * value2)", GetOpIntSize, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetIntSize", "bool GetIntSize(Expression exp, intsize * value2)", GetIntSize, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpUIntSize", "bool GetOpUIntSize(Operand op2, uintsize * value2)", GetOpUIntSize, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUIntSize", "bool GetUIntSize(Expression exp, uintsize * value2)", GetUIntSize, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpShort", "bool GetOpShort(Operand op2, short * value2)", GetOpShort, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetShort", "bool GetShort(Expression exp, short * value2)", GetShort, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpUShort", "bool GetOpUShort(Operand op2, uint16 * value2)", GetOpUShort, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUShort", "bool GetUShort(Expression exp, uint16 * value2)", GetUShort, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpChar", "bool GetOpChar(Operand op2, char * value2)", GetOpChar, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetChar", "bool GetChar(Expression exp, char * value2)", GetChar, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpUChar", "bool GetOpUChar(Operand op2, byte * value2)", GetOpUChar, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetUChar", "bool GetUChar(Expression exp, byte * value2)", GetUChar, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpFloat", "bool GetOpFloat(Operand op2, float * value2)", GetOpFloat, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetFloat", "bool GetFloat(Expression exp, float * value2)", GetFloat, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOpDouble", "bool GetOpDouble(Operand op2, double * value2)", GetOpDouble, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetDouble", "bool GetDouble(Expression exp, double * value2)", GetDouble, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeClassMembers", "void ComputeClassMembers(ecere::com::Class _class, bool isMember)", ComputeClassMembers, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeModuleClasses", "void ComputeModuleClasses(ecere::com::Module module)", ComputeModuleClasses, module, 1);

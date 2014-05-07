@@ -314,9 +314,8 @@ public char * PrintDouble(double result)
 //public Operand GetOperand(Expression exp);
 
 #define GETVALUE(name, t) \
-   public bool Get##name(Expression exp, t * value2) \
+   public bool GetOp##name(Operand op2, t * value2) \
    {                                                        \
-      Operand op2 = GetOperand(exp);                        \
       if(op2.kind == intType && op2.type.isSigned) *value2 = (t) op2.i; \
       else if(op2.kind == intType) *value2 = (t) op2.ui;                 \
       else if(op2.kind == int64Type && op2.type.isSigned) *value2 = (t) op2.i64; \
@@ -335,6 +334,11 @@ public char * PrintDouble(double result)
       else                                                                          \
          return false;                                                              \
       return true;                                                                  \
+   } \
+   public bool Get##name(Expression exp, t * value2) \
+   {                                                        \
+      Operand op2 = GetOperand(exp);                        \
+      return GetOp##name(op2, value2); \
    }
 
 // To help the deubugger currently not preprocessing...
@@ -4255,7 +4259,10 @@ public Operand GetOperand(Expression exp)
             case charType:
             {
                if(exp.constant[0] == '\'')
+               {
                   op.c = exp.constant[1];
+                  op.ops = charOps;
+               }
                else if(type.isSigned)
                {
                   op.c = (char)strtol(exp.constant, null, 0);
@@ -5047,6 +5054,57 @@ void ComputeInstantiation(Expression exp)
    }
 }
 
+static bool Promote(Operand op, TypeKind kind, bool isSigned)
+{
+   bool result = false;
+   switch(kind)
+   {
+      case shortType:
+         if(op.kind == charType || op.kind == enumType || op.kind == _BoolType)
+            result = isSigned ? GetOpShort(op, &op.s) : GetOpUShort(op, &op.us);
+         break;
+      case intType:
+      case longType:
+         if(op.kind == charType || op.kind == shortType || op.kind == enumType || op.kind == _BoolType)
+            result = isSigned ? GetOpInt(op, &op.i) : GetOpUInt(op, &op.ui);
+         break;
+      case int64Type:
+         if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType || op.kind == doubleType ||
+            op.kind == pointerType || op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
+         result = isSigned ? GetOpInt64(op, &op.i64) : GetOpUInt64(op, &op.ui64);
+         break;
+      case floatType:
+         if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType ||
+            op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
+         result = GetOpFloat(op, &op.f);
+         break;
+      case doubleType:
+         if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType ||
+            op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
+         result = GetOpDouble(op, &op.d);
+         break;
+      case pointerType:
+         if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType || op.kind == doubleType ||
+            op.kind == pointerType || op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
+            result = GetOpUIntPtr(op, &op.ui64);
+         break;
+      case enumType:
+         if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType || op.kind == doubleType ||
+            op.kind == pointerType || op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
+            result = isSigned ? GetOpInt(op, &op.i) : GetOpUInt(op, &op.ui);
+         break;
+      case intPtrType:
+         if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == longType || op.kind == enumType || op.kind == _BoolType)
+            result = isSigned ? GetOpIntPtr(op, &op.i64) : GetOpUIntPtr(op, &op.i64);
+         break;
+      case intSizeType:
+         if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == longType || op.kind == enumType || op.kind == _BoolType)
+            result = isSigned ? GetOpIntSize(op, &op.ui64) : GetOpUIntSize(op, &op.ui64);
+         break;
+   }
+   return result;
+}
+
 void CallOperator(Expression exp, Expression exp1, Expression exp2, Operand op1, Operand op2)
 {
    if(exp.op.op == SIZEOF)
@@ -5092,6 +5150,13 @@ void CallOperator(Expression exp, Expression exp1, Expression exp2, Operand op1,
       }
       else
       {
+         if(op1 && op2 && op1.kind != op2.kind)
+         {
+            if(Promote(op2, op1.kind, op1.type.isSigned))
+               op2.kind = op1.kind, op2.ops = op1.ops;
+            else if(Promote(op1, op2.kind, op2.type.isSigned))
+               op1.kind = op2.kind, op1.ops = op2.ops;
+         }
          switch(exp.op.op)
          {
             // binary arithmetic
