@@ -11608,7 +11608,7 @@ if(exp->op.exp2)
 {
 struct Expression * e = exp->op.exp2;
 
-while(((e->type == 5 || e->type == 32 || e->type == 23) && e->list) || e->type == 11)
+while((e->type == 5 || e->type == 32 || e->type == 23) && e->list)
 {
 if(e->type == 5 || e->type == 32 || e->type == 23)
 {
@@ -11617,8 +11617,6 @@ e = (*((struct Statement *)(*e->compound->compound.statements).last)->expression
 else
 e = (*e->list).last;
 }
-else if(e->type == 11)
-e = e->cast.exp;
 }
 if(exp->op.op == 261 && e && e->expType)
 {
@@ -14149,6 +14147,23 @@ type1->refCount++;
 }
 if(exp->op.exp2->destType && exp->op.op != '=')
 exp->op.exp2->destType->count++;
+if(exp->op.op == SIZEOF)
+{
+struct Expression * e = exp->op.exp2;
+
+while((e->type == 5 || e->type == 32 || e->type == 23) && e->list)
+{
+if(e->type == 5 || e->type == 32 || e->type == 23)
+{
+if(e->type == 23)
+e = (*((struct Statement *)(*e->compound->compound.statements).last)->expressions).last;
+else
+e = (*e->list).last;
+}
+}
+if(e->type == 11 && e->cast.exp)
+e->cast.exp->needCast = 0x1;
+}
 ProcessExpressionType(exp->op.exp2);
 if(exp->op.exp2->destType && exp->op.op != '=')
 exp->op.exp2->destType->count--;

@@ -5204,7 +5204,7 @@ void ComputeExpression(Expression exp)
          {
             Expression e = exp.op.exp2;
 
-            while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
+            while((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list)
             {
                if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
                {
@@ -5213,8 +5213,6 @@ void ComputeExpression(Expression exp)
                   else
                      e = e.list->last;
                }
-               else if(e.type == castExp)
-                  e = e.cast.exp;
             }
             if(exp.op.op == TokenType::sizeOf && e && e.expType)
             {
@@ -8026,6 +8024,23 @@ void ProcessExpressionType(Expression exp)
                type1.refCount++;
             }
             if(exp.op.exp2.destType && exp.op.op != '=') exp.op.exp2.destType.count++;
+            // Cannot lose the cast on a sizeof
+            if(exp.op.op == SIZEOF)
+            {
+               Expression e = exp.op.exp2;
+               while((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list)
+               {
+                  if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
+                  {
+                     if(e.type == extensionCompoundExp)
+                        e = ((Statement)e.compound.compound.statements->last).expressions->last;
+                     else
+                        e = e.list->last;
+                  }
+               }
+               if(e.type == castExp && e.cast.exp)
+                  e.cast.exp.needCast = true;
+            }
             ProcessExpressionType(exp.op.exp2);
             if(exp.op.exp2.destType && exp.op.op != '=') exp.op.exp2.destType.count--;
 

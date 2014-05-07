@@ -400,7 +400,7 @@ void DebugComputeExpression(Expression exp)
          {
             Expression e = exp.op.exp2;
 
-            while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
+            while((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list)
             {
                if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
                {
@@ -409,8 +409,6 @@ void DebugComputeExpression(Expression exp)
                   else
                      e = e.list->last;
                }
-               else if(e.type == castExp)
-                  e = e.cast.exp;
             }
             if(exp.op.op == TokenType::sizeOf && e && e.expType)
             {
