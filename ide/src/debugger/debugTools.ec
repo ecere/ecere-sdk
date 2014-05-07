@@ -760,10 +760,25 @@ void DebugComputeExpression(Expression exp)
                   {
                      uint64 address = 0, offset = 0;
                      Expression expNew, last = (Expression)exp.index.index->last;
+                     Expression e = exp.index.exp;
+
+                     while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
+                     {
+                        if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
+                        {
+                           if(e.type == extensionCompoundExp)
+                              e = ((Statement)e.compound.compound.statements->last).expressions->last;
+                           else
+                              e = e.list->last;
+                        }
+                        else if(e.type == castExp)
+                           e = e.cast.exp;
+                     }
+
                      //GetUInt(exp.index.exp, &address);
 
                      // TOFIX: Check if it has address: TESTING
-                     if(exp.index.exp.hasAddress && (exp.index.exp.expType.kind == arrayType))
+                     if(exp.index.exp.hasAddress && exp.index.exp.expType.kind == arrayType)
                         address = exp.index.exp.address;
                      else if(exp.index.exp.type == constantExp)
                         GetUInt64(exp.index.exp, &address);
@@ -771,32 +786,46 @@ void DebugComputeExpression(Expression exp)
                      GetUInt64(last, &offset);
                      //size = ComputeTypeSize(exp.expType.arrayType); //exp.expType.arrayType.size;
                      address += offset * size;
-                     if(exp.index.exp.type == stringExp)
+                     if(e.type == stringExp)
                      {
-                        String string = exp.index.exp.string;
-                        bool valid = false;
-                        char ch = 0;
                         char * tmp = null;
+                        String string = e.string;
+                        bool valid = false;
+                        Type expType = exp.index.exp.expType.type;
+                        if(expType) expType.refCount++;
+
                         if(string)
                         {
                            int len = string ? strlen(string) : 0;
                            tmp = new char[len-2+1];
                            len = UnescapeString(tmp, string + 1, len - 2);
-                           if(len >= 0 && offset <= len)
-                           {
-                              ch = offset < len ? tmp[offset] : 0;
+                           if(len >= 0 && offset * size + size-1 <= len)
                               valid = true;
-                           }
-                           delete tmp;
                         }
+
                         FreeExpContents(exp);
-                        if(valid)
+                        if(!valid)
+                           exp.type = dereferenceErrorExp;
+                        else if(expType)
                         {
                            exp.type = constantExp;
-                           exp.constant = PrintChar(ch);
+                           exp.isConstant = true;
+                           switch(expType.kind)
+                           {
+                              case charType:   exp.constant = type.isSigned ? PrintChar(((char *)tmp)[offset]) : PrintUChar(((byte *)tmp)[offset]); break;
+                              case shortType:  exp.constant = type.isSigned ? PrintShort(((short *)tmp)[offset]) : PrintUShort(((uint16 *)tmp)[offset]); break;
+                              case intType:    exp.constant = type.isSigned ? PrintInt(((int *)tmp)[offset]) : PrintUInt(((uint *)tmp)[offset]); break;
+                              case int64Type:  exp.constant = type.isSigned ? PrintInt64(((int64 *)tmp)[offset]) : PrintUInt64(((uint64 *)tmp)[offset]); break;
+                              case floatType:  exp.constant = PrintFloat(((float *)tmp)[offset]); break;
+                              case doubleType: exp.constant = PrintDouble(((double *)tmp)[offset]); break;
+                              default:
+                                 exp.type = unknownErrorExp;
+                           }
                         }
                         else
-                           exp.type = dereferenceErrorExp;
+                           exp.type = unknownErrorExp;
+                        FreeType(expType);
+                        delete tmp;
                      }
                      else if(exp.expType.kind == arrayType)
                      {
