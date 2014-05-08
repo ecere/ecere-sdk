@@ -1468,6 +1468,7 @@ private class Display3D
    		Vector3Df min { MAXFLOAT, MAXFLOAT, MAXFLOAT };
          Vector3Df max { -MAXFLOAT, -MAXFLOAT, -MAXFLOAT };
          int v;
+         bool ix32 = primitive->type.indices32bit;
          if(object != sort->object)
          {
             object = sort->object;
@@ -1486,7 +1487,7 @@ private class Display3D
 
          for(v = 0; v<primitive->nIndices; v++)
          {
-            Vector3Df * local = &mesh.vertices[primitive->indices[v]];
+            Vector3Df * local = &mesh.vertices[ix32 ? primitive->indices32[v] : primitive->indices[v]];
             Vector3Df vertex;
 
             vertex.MultMatrix(local, &matrix);
