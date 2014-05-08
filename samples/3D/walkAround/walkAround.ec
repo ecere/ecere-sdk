@@ -106,7 +106,7 @@ class WalkAroundForm : Window
    hasClose = true;
    clientSize = { 632, 438 };
 
-   Array<Material> materials { size = 8 };
+   Array<Material> materials { };
    Array<int> map { size = width * height };
    Array<int> elv { size = width * height };
    Array<Cube> cubes { };
@@ -173,6 +173,7 @@ class WalkAroundForm : Window
       cow3.material = cow3Mat;
       cow3Mat.baseMap = spotTex.bitmap;
 
+      materials.size = 8;
       if(textureFile.Load(":texture1.pcx", null, null))
       {
          int count = 8;
