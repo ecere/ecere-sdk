@@ -695,7 +695,7 @@ int memberAccess = 1;
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -704,13 +704,13 @@ if(line[0] == '[')
 {
 if(!strcmp(line, "[Size]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 size = strtol(line, (((void *)0)), 0);
 }
 else if(!strcmp(line, "[Pos]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 bitPos = strtol(line, (((void *)0)), 0);
 }
@@ -720,7 +720,7 @@ else if(!strcmp(line, "[Private]"))
 memberAccess = 2;
 else if(!strcmp(line, "[Type]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(member)
 {
@@ -1020,7 +1020,7 @@ for(; ; )
 {
 char line[1024];
 
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(line[0] == '[')
@@ -1041,7 +1041,7 @@ int inheritanceAccess = 1;
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -1072,7 +1072,7 @@ else if(!strcmp(line, "[Base]") || !strcmp(line, "[Private Base]"))
 {
 if(!strcmp(line, "[Private Base]"))
 inheritanceAccess = 2;
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(importType == 3)
 DeclClass(0, name);
@@ -1152,7 +1152,7 @@ for(; ; )
 {
 char * equal;
 
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -1185,7 +1185,7 @@ int memberAccess = 1;
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -1194,7 +1194,7 @@ if(line[0] == '[')
 {
 if(!strcmp(line, "[Type]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 if(regClass)
 {
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
@@ -1228,7 +1228,7 @@ int memberAccess = 1;
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -1237,7 +1237,7 @@ if(line[0] == '[')
 {
 if(!strcmp(line, "[Type]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass)
 {
@@ -1285,7 +1285,7 @@ unsigned int setStmt = 0x0, getStmt = 0x0;
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -1294,7 +1294,7 @@ if(line[0] == '[')
 {
 if(!strcmp(line, "[Type]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass)
 {
@@ -1333,12 +1333,12 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg =
 };
 void * info = (((void *)0));
 
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(line[0] == '.')
 break;
 strcpy(name, line);
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "[Expression]"))
 type = 2;
@@ -1347,13 +1347,13 @@ type = 1;
 switch(type)
 {
 case 0:
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
 info = __ecereNameSpace__ecere__sys__CopyString(line);
 }
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
@@ -1361,13 +1361,13 @@ defaultArg.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(line);
 }
 break;
 case 2:
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
 info = __ecereNameSpace__ecere__sys__CopyString(line);
 }
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
@@ -1392,7 +1392,7 @@ popLexer(backup);
 }
 break;
 case 1:
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "[Data member]"))
 info = (void *)0;
@@ -1400,7 +1400,7 @@ else if(!strcmp(line, "[Method]"))
 info = (void *)1;
 else if(!strcmp(line, "[Property]"))
 info = (void *)2;
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
@@ -1435,14 +1435,14 @@ char name[1024];
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
 break;
 if(!strcmp(line, "[Value]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!loadDllOnly && importType != 3 && importType != 4)
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine(name, line, privateModule, ecereCOMModule ? 4 : 1);
@@ -1459,14 +1459,14 @@ char name[1024];
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
 break;
 if(!strcmp(line, "[Type]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!loadDllOnly && importType != 3 && importType != 4)
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction(name, line, (((void *)0)), privateModule, ecereCOMModule ? 4 : 1);
@@ -1483,14 +1483,14 @@ char name[1024];
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
 break;
 if(!strcmp(line, "[Type]"))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!loadDllOnly && importType != 3 && importType != 4)
 {
@@ -1565,7 +1565,7 @@ int importAccess = 1;
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))

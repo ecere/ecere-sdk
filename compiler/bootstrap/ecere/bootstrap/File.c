@@ -559,7 +559,7 @@ unsigned int read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, v
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, buffer, 1, sizeof buffer);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, buffer, 1, sizeof (buffer));
 
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = (*this);
@@ -751,8 +751,8 @@ char text[1025];
 va_list args;
 
 __builtin_va_start(args, format);
-vsnprintf(text, sizeof text, format, args);
-text[sizeof text - 1] = (char)0;
+vsnprintf(text, sizeof (text), format, args);
+text[sizeof (text) - 1] = (char)0;
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -775,7 +775,7 @@ va_list args;
 char buffer[4096];
 
 __builtin_va_start(args, object);
-__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof buffer, class, object, args);
+__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -796,7 +796,7 @@ va_list args;
 char buffer[4096];
 
 __builtin_va_start(args, object);
-__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof buffer, class, object, args);
+__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -920,7 +920,7 @@ int __ecereMethod___ecereNameSpace__ecere__sys__File_GetValue(struct __ecereName
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 char string[32];
 
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof string);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof (string));
 return atoi(string);
 }
 
@@ -931,7 +931,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetHexValue(struct
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 char string[32];
 
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof string);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof (string));
 return strtoul(string, (((void *)0)), 16);
 }
 
@@ -942,7 +942,7 @@ float __ecereMethod___ecereNameSpace__ecere__sys__File_GetFloat(struct __ecereNa
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 char string[32];
 
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof string);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof (string));
 return (float)__ecereNameSpace__ecere__sys__FloatFromString(string);
 }
 
@@ -951,7 +951,7 @@ double __ecereMethod___ecereNameSpace__ecere__sys__File_GetDouble(struct __ecere
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 char string[32];
 
-__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof string);
+__ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof (string));
 return __ecereNameSpace__ecere__sys__FloatFromString(string);
 }
 
@@ -1066,7 +1066,7 @@ unsigned int count = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, 
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(this, buffer, 1, sizeof buffer);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(this, buffer, 1, sizeof (buffer));
 
 if(count && !((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;

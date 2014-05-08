@@ -1133,7 +1133,7 @@ unsigned char buffer[1024];
 
 for(c = 0; c < size; )
 {
-int s = sizeof buffer;
+int s = sizeof (buffer);
 
 if(c + s > size)
 s = size - c;

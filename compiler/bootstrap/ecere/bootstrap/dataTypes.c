@@ -1283,14 +1283,14 @@ if(_class->type == 0)
 else if(_class->type == 1)
 memset(data, 0, _class->structSize);
 memberName[0] = '\0';
-for(c = 0; string[c] && count < sizeof memberString; )
+for(c = 0; string[c] && count < sizeof (memberString); )
 {
 unsigned int found = 0x0;
 struct __ecereNameSpace__ecere__com__DataMember * thisMember = (((void *)0));
 
 brackets = 0;
 gotChar = 0x0;
-for(; (ch = string[c]) && count < sizeof memberString; c++)
+for(; (ch = string[c]) && count < sizeof (memberString); c++)
 {
 if(ch == '\"' && !escape)
 {
@@ -2921,7 +2921,7 @@ char * string;
 int len;
 
 __builtin_va_start(args, object);
-len = __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof buffer, class, object, args);
+len = __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 string = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (len + 1));
 memcpy(string, buffer, len + 1);
 __builtin_va_end(args);
@@ -2936,7 +2936,7 @@ char * string;
 int len;
 
 __builtin_va_start(args, object);
-len = __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof buffer, class, object, args);
+len = __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 string = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (len + 2));
 memcpy(string, buffer, len);
 string[len++] = '\n';
@@ -2953,7 +2953,7 @@ va_list args;
 char buffer[4096];
 
 __builtin_va_start(args, object);
-__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof buffer, class, object, args);
+__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 __builtin_va_end(args);
 puts(buffer);
 }
@@ -2966,7 +2966,7 @@ va_list args;
 char buffer[4096];
 
 __builtin_va_start(args, object);
-__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof buffer, class, object, args);
+__ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
 __builtin_va_end(args);
 fputs(buffer, eC_stdout());
 }

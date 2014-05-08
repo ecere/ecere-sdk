@@ -317,7 +317,7 @@ return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((pointer && (uns
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetNext(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)
 {
-return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((pointer && (unsigned char *)pointer < (unsigned char *)this->data + (this->count - 1) * ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize) ? ((unsigned char *)pointer + ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize)) : (((void *)0))));
+return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((pointer && (unsigned char *)pointer < (unsigned char *)this->data + (this->count - 1) * ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize)) ? ((unsigned char *)pointer + ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize)) : (((void *)0)));
 }
 
 uint64 __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)

@@ -1828,19 +1828,19 @@ char string[10000];
 
 if(yylloc.start.included)
 {
-__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
+__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof (string));
 __ecereNameSpace__ecere__sys__PathCat(string, GetIncludeFileFromID(yylloc.start.included));
 }
 else
 {
-__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
+__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof (string));
 __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 }
 printf(string);
 printf(__ecereNameSpace__ecere__GetTranslatedString("ec", ":%d:%d: error: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
-vsnprintf(string, sizeof string, format, args);
-string[sizeof string - 1] = (char)0;
+vsnprintf(string, sizeof (string), format, args);
+string[sizeof (string) - 1] = (char)0;
 __builtin_va_end(args);
 fputs(string, (bsl_stdout()));
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application + structSize_Module)))->exitCode = 1;
@@ -1875,12 +1875,12 @@ if(yylloc.start.included)
 {
 char * include = GetIncludeFileFromID(yylloc.start.included);
 
-__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
+__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof (string));
 __ecereNameSpace__ecere__sys__PathCat(string, include);
 }
 else
 {
-__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof string);
+__ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof (string));
 __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 }
 __ecereNameSpace__ecere__sys__GetLastDirectory(string, fileName);
@@ -1889,8 +1889,8 @@ return ;
 printf(string);
 printf(__ecereNameSpace__ecere__GetTranslatedString("ec", ":%d:%d: warning: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
-vsnprintf(string, sizeof string, format, args);
-string[sizeof string - 1] = (char)0;
+vsnprintf(string, sizeof (string), format, args);
+string[sizeof (string) - 1] = (char)0;
 __builtin_va_end(args);
 fputs(string, (bsl_stdout()));
 numWarnings++;
@@ -1933,7 +1933,7 @@ struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys
 
 if(f)
 {
-if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, host, sizeof host))
+if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, host, sizeof (host)))
 hostType = host;
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }

@@ -509,8 +509,8 @@ va_list args;
 char string[1025];
 
 __builtin_va_start(args, format);
-vsnprintf(string, sizeof string, format, args);
-string[sizeof string - 1] = (char)0;
+vsnprintf(string, sizeof (string), format, args);
+string[sizeof (string) - 1] = (char)0;
 __ecereNameSpace__ecere__sys__Log(string);
 __builtin_va_end(args);
 }
@@ -771,10 +771,10 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "writeFailed", 8198);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::GuiErrorCode", "ecere::sys::ErrorCode", 0, 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__GuiErrorCode = class;
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "driverNotSupported", 4097);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "windowCreationFailed", 4098);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "graphicsLoadingFailed", 4099);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "modeSwitchFailed", 4100);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "driverNotSupported", 257);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "windowCreationFailed", 258);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "graphicsLoadingFailed", 259);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "modeSwitchFailed", 260);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveFile", "bool ecere::sys::MoveFile(char * source, char * dest)", __ecereNameSpace__ecere__sys__MoveFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RenameFile", "bool ecere::sys::RenameFile(char * oldName, char * newName)", __ecereNameSpace__ecere__sys__RenameFile, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DeleteFile", "bool ecere::sys::DeleteFile(char * fileName)", __ecereNameSpace__ecere__sys__DeleteFile, module, 1);
