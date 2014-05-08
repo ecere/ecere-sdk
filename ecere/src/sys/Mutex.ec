@@ -175,4 +175,6 @@ public:
 #endif
       }
    }
+
+   property int lockCount { get { return lockCount; } }
 };
