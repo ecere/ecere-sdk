@@ -509,6 +509,7 @@ void DebugComputeExpression(Expression exp)
                      }
                      else if(exp.op.op == '*')
                      {
+                        // TODO: Common pathway for * and [ ]
                         if(!exp.expType)
                         {
                            delete evaluation;
@@ -521,7 +522,22 @@ void DebugComputeExpression(Expression exp)
                            uint64 address = 0;
                            int size;
                            char format;
+                           Expression e = exp1;
+                           uint offset = 0;
                            bool gotAddress = false;
+
+                           while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
+                           {
+                              if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
+                              {
+                                 if(e.type == extensionCompoundExp)
+                                    e = ((Statement)e.compound.compound.statements->last).expressions->last;
+                                 else
+                                    e = e.list->last;
+                              }
+                              else if(e.type == castExp)
+                                 e = e.cast.exp;
+                           }
 
                            if(e.expType.kind == structType)
                            {
@@ -531,8 +547,104 @@ void DebugComputeExpression(Expression exp)
                            else
                               gotAddress = GetUInt64(e, &address);
                            size = ComputeTypeSize(exp.expType); //exp.expType.arrayType.size;
-                           format = GetGdbFormatChar(exp.expType);
-                           if(gotAddress && format)
+                           if(exp.expType && exp.expType.type && exp.expType.kind == arrayType)
+                              // For multilevels arrays
+                              format = 'x';
+                           else
+                              format = GetGdbFormatChar(exp.expType);
+                           while(e.type == opExp && e.op.op == '+' && e.op.exp1 && e.op.exp2)
+                           {
+                              Expression e1 = e.op.exp1, e2 = e.op.exp2;
+                              while(((e1.type == bracketsExp || e1.type == extensionExpressionExp || e1.type == extensionCompoundExp) && e1.list) || e1.type == castExp)
+                              {
+                                 if(e1.type == bracketsExp || e1.type == extensionExpressionExp || e1.type == extensionCompoundExp)
+                                 {
+                                    if(e1.type == extensionCompoundExp)
+                                       e1 = ((Statement)e1.compound.compound.statements->last).expressions->last;
+                                    else
+                                       e1 = e1.list->last;
+                                 }
+                                 else if(e1.type == castExp)
+                                    e1 = e1.cast.exp;
+                              }
+                              while(((e2.type == bracketsExp || e2.type == extensionExpressionExp || e2.type == extensionCompoundExp) && e2.list) || e2.type == castExp)
+                              {
+                                 if(e2.type == bracketsExp || e2.type == extensionExpressionExp || e2.type == extensionCompoundExp)
+                                 {
+                                    if(e2.type == extensionCompoundExp)
+                                       e2 = ((Statement)e2.compound.compound.statements->last).expressions->last;
+                                    else
+                                       e2 = e2.list->last;
+                                 }
+                                 else if(e2.type == castExp)
+                                    e2 = e2.cast.exp;
+                              }
+
+                              if((e1.type == stringExp || e1.type == opExp) && e.op.exp2.isConstant && e.op.exp2.expType && e.op.exp2.expType.kind == intType)
+                              {
+                                 offset += strtol(e.op.exp2.constant, null, 0);
+                                 e = e1;
+                              }
+                              else if((e2.type == stringExp || e2.type == opExp) && e.op.exp1.isConstant && e.op.exp1.expType && e.op.exp1.expType.kind == intType)
+                              {
+                                 offset += strtol(e.op.exp1.constant, null, 0);
+                                 e = e2;
+                              }
+                              else
+                                  break;
+                           }
+
+                           if(e.type == stringExp)
+                           {
+                              char * tmp = null;
+                              String string = e.string;
+                              bool valid = false;
+                              Type expType = exp1.expType.type;
+                              if(expType) expType.refCount++;
+
+                              if(string)
+                              {
+                                 int len = string ? strlen(string) : 0;
+                                 tmp = new char[len-2+1];
+                                 len = UnescapeString(tmp, string + 1, len - 2);
+                                 if(len >= 0 && offset * size + size-1 <= len)
+                                    valid = true;
+                              }
+
+                              FreeExpContents(exp);
+                              if(!valid)
+                                 exp.type = dereferenceErrorExp;
+                              else if(expType)
+                              {
+                                 exp.type = constantExp;
+                                 exp.isConstant = true;
+                                 switch(expType.kind)
+                                 {
+                                    case charType:   exp.constant = expType.isSigned ? PrintChar(((char *)tmp)[offset]) : PrintUChar(((byte *)tmp)[offset]); break;
+                                    case shortType:  exp.constant = expType.isSigned ? PrintShort(((short *)tmp)[offset]) : PrintUShort(((uint16 *)tmp)[offset]); break;
+                                    case intType:    exp.constant = expType.isSigned ? PrintInt(((int *)tmp)[offset]) : PrintUInt(((uint *)tmp)[offset]); break;
+                                    case int64Type:  exp.constant = expType.isSigned ? PrintInt64(((int64 *)tmp)[offset]) : PrintUInt64(((uint64 *)tmp)[offset]); break;
+                                    case floatType:  exp.constant = PrintFloat(((float *)tmp)[offset]); break;
+                                    case doubleType: exp.constant = PrintDouble(((double *)tmp)[offset]); break;
+                                    default:
+                                       exp.type = unknownErrorExp;
+                                 }
+                              }
+                              else
+                                 exp.type = unknownErrorExp;
+                              FreeType(expType);
+                              delete tmp;
+                           }
+                           else if(gotAddress && exp.expType.kind == arrayType)
+                           {
+                              FreeExpContents(exp);
+                              exp.type = constantExp;
+                              exp.isConstant = true;
+                              exp.constant = PrintHexUInt64(address);
+                              exp.address = address;
+                              exp.hasAddress = true;
+                           }
+                           else if(gotAddress && format)
                            {
                               evaluation = Debugger::ReadMemory(address, size, format, &evalError);
                               switch(evalError)
@@ -596,24 +708,39 @@ void DebugComputeExpression(Expression exp)
             CarryExpressionError(exp, expError);
          else if(exp.type == opExp)
          {
-            // TODO: check condition
-            if((exp.op.op == '+' || exp.op.op == '-') && op1.type && op2.type &&
-               (op1.type.kind == arrayType || op1.type.kind == pointerType) && op2.type.kind == intType)
+            if(exp1 && exp2 && exp1.expType && exp2.expType &&
+               ((exp1.expType.kind == pointerType || exp1.expType.kind == arrayType) ||
+                (exp2.expType.kind == pointerType || exp2.expType.kind == arrayType)))
             {
-               // TODO: Do pointer operations
-               if(exp1.expType && exp1.expType.type)
+               bool valid = false;
+               // TODO: Support 1 + pointer
+               if((exp.op.op == '+' || exp.op.op == '-') && exp2.expType && op2.type && op2.type.kind == intType)
                {
-                  if(exp1.type == stringExp)
+                  Expression e = exp1;
+                  while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
+                  {
+                     if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
+                     {
+                        if(e.type == extensionCompoundExp)
+                           e = ((Statement)e.compound.compound.statements->last).expressions->last;
+                        else
+                           e = e.list->last;
+                     }
+                     else if(e.type == castExp)
+                        e = e.cast.exp;
+                  }
+
+                  if(e.type == stringExp)
                   {
                      uint64 offset = (exp.op.op == '+') ? op2.i64 : -op2.i64;
                      String newString = null;
-                     if(exp1.string)
+                     if(e.string)
                      {
-                        int len = strlen(exp1.string) - 2;
-                        char * tmp = OffsetEscapedString(exp1.string + 1, len, (int)offset);
+                        int len = strlen(e.string) - 2;
+                        char * tmp = OffsetEscapedString(e.string + 1, len, (int)offset);
                         if(tmp)
                         {
-                           len -= tmp - (exp1.string + 1);
+                           len -= tmp - (e.string + 1);
                            newString = new char[2 + len];
                            newString[0] = '\"';
                            memcpy(newString + 1, tmp, len);
@@ -621,6 +748,7 @@ void DebugComputeExpression(Expression exp)
                            newString[1 + len + 1] = 0;
                         }
                      }
+                     valid = true;
                      FreeExpContents(exp);
                      if(newString)
                      {
@@ -630,36 +758,38 @@ void DebugComputeExpression(Expression exp)
                      else
                         exp.type = dereferenceErrorExp;
                   }
-                  else
+                  else if(op1.type)
                   {
-                     uint size = ComputeTypeSize(exp1.expType.type);
-                     if(size)
+                     // TODO: Do pointer operations
+                     if(exp1.expType && exp1.expType.type)
                      {
-                        op1.ui64 /= exp1.expType.type.size;
-                        CallOperator(exp, exp1, exp2, op1, op2);
-                        if(exp.type == constantExp)
+                        uint size = ComputeTypeSize(exp1.expType.type);
+                        if(size)
                         {
-                           exp.address = _strtoui64(exp.constant, null, 0);
-                           exp.address *= size;
-                           if(op1.type.kind == arrayType)
-                              exp.hasAddress = true;
+                           valid = true;
+                           op1.ui64 /= exp1.expType.type.size;
+                           CallOperator(exp, exp1, exp2, op1, op2);
+                           if(exp.type == constantExp)
+                           {
+                              exp.address = _strtoui64(exp.constant, null, 0);
+                              exp.address *= size;
+                              if(op1.type.kind == arrayType)
+                                 exp.hasAddress = true;
+                           }
                         }
                      }
                   }
                }
-            }
-            else
-            {
-               if((exp1 && exp1.type == stringExp) || (exp2 && exp2.type == stringExp))
+               if(!valid)
                {
                   FreeExpContents(exp);
                   exp.type = unknownErrorExp;   // We should have an invalid operands error
                }
-               else
-                  CallOperator(exp, exp1, exp2, op1, op2);
             }
-            if(op1.type) FreeType(op1.type);
-            if(op2.type) FreeType(op2.type);
+            else
+               CallOperator(exp, exp1, exp2, op1, op2);
+            FreeType(op1.type);
+            FreeType(op2.type);
             exp.isConstant = true;
          }
          break;
@@ -792,6 +922,48 @@ void DebugComputeExpression(Expression exp)
                      }
                      else if(exp.index.exp.type == constantExp)
                         gotAddress = GetUInt64(exp.index.exp, &address);
+
+                     while(e.type == opExp && e.op.op == '+' && e.op.exp1 && e.op.exp2)
+                     {
+                        Expression e1 = e.op.exp1, e2 = e.op.exp2;
+                        while(((e1.type == bracketsExp || e1.type == extensionExpressionExp || e1.type == extensionCompoundExp) && e1.list) || e1.type == castExp)
+                        {
+                           if(e1.type == bracketsExp || e1.type == extensionExpressionExp || e1.type == extensionCompoundExp)
+                           {
+                              if(e1.type == extensionCompoundExp)
+                                 e1 = ((Statement)e1.compound.compound.statements->last).expressions->last;
+                              else
+                                 e1 = e1.list->last;
+                           }
+                           else if(e1.type == castExp)
+                              e1 = e1.cast.exp;
+                        }
+                        while(((e2.type == bracketsExp || e2.type == extensionExpressionExp || e2.type == extensionCompoundExp) && e2.list) || e2.type == castExp)
+                        {
+                           if(e2.type == bracketsExp || e2.type == extensionExpressionExp || e2.type == extensionCompoundExp)
+                           {
+                              if(e2.type == extensionCompoundExp)
+                                 e2 = ((Statement)e2.compound.compound.statements->last).expressions->last;
+                              else
+                                 e2 = e2.list->last;
+                           }
+                           else if(e2.type == castExp)
+                              e2 = e2.cast.exp;
+                        }
+
+                        if((e1.type == stringExp || e1.type == opExp) && e.op.exp2.isConstant && e.op.exp2.expType && e.op.exp2.expType.kind == intType)
+                        {
+                           offset += strtol(e.op.exp2.constant, null, 0);
+                           e = e1;
+                        }
+                        else if((e2.type == stringExp || e2.type == opExp) && e.op.exp1.isConstant && e.op.exp1.expType && e.op.exp1.expType.kind == intType)
+                        {
+                           offset += strtol(e.op.exp1.constant, null, 0);
+                           e = e2;
+                        }
+                        else
+                            break;
+                     }
 
                      //size = ComputeTypeSize(exp.expType.arrayType); //exp.expType.arrayType.size;
                      address += offset * size;
