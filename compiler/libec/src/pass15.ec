@@ -4243,8 +4243,6 @@ public Operand GetOperand(Expression exp)
          type = type._class.registered.dataType;
 
       }
-      op.kind = type.kind;
-      op.type = exp.expType;
       if(exp.type == stringExp && op.kind == pointerType)
       {
          op.ui64 = (uint64)exp.string;
@@ -4253,6 +4251,9 @@ public Operand GetOperand(Expression exp)
       }
       else if(exp.isConstant && exp.type == constantExp)
       {
+         op.kind = type.kind;
+         op.type = exp.expType;
+
          switch(op.kind)
          {
             case _BoolType:
@@ -5150,7 +5151,7 @@ void CallOperator(Expression exp, Expression exp1, Expression exp2, Operand op1,
       }
       else
       {
-         if(op1 && op2 && op1.kind != op2.kind)
+         if(op1 && op2 && op1.type && op2.type && op1.kind != op2.kind)
          {
             if(Promote(op2, op1.kind, op1.type.isSigned))
                op2.kind = op1.kind, op2.ops = op1.ops;
@@ -5978,127 +5979,155 @@ void ComputeExpression(Expression exp)
                case charType:
                   if(type.isSigned)
                   {
-                     char value;
-                     GetChar(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintChar(value);
-                     exp.type = constantExp;
+                     char value = 0;
+                     if(GetChar(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintChar(value);
+                        exp.type = constantExp;
+                     }
                   }
                   else
                   {
-                     unsigned char value;
-                     GetUChar(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintUChar(value);
-                     exp.type = constantExp;
+                     unsigned char value = 0;
+                     if(GetUChar(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintUChar(value);
+                        exp.type = constantExp;
+                     }
                   }
                   break;
                case shortType:
                   if(type.isSigned)
                   {
-                     short value;
-                     GetShort(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintShort(value);
-                     exp.type = constantExp;
+                     short value = 0;
+                     if(GetShort(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintShort(value);
+                        exp.type = constantExp;
+                     }
                   }
                   else
                   {
-                     unsigned short value;
-                     GetUShort(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintUShort(value);
-                     exp.type = constantExp;
+                     unsigned short value = 0;
+                     if(GetUShort(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintUShort(value);
+                        exp.type = constantExp;
+                     }
                   }
                   break;
                case intType:
                   if(type.isSigned)
                   {
-                     int value;
-                     GetInt(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintInt(value);
-                     exp.type = constantExp;
+                     int value = 0;
+                     if(GetInt(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintInt(value);
+                        exp.type = constantExp;
+                     }
                   }
                   else
                   {
-                     unsigned int value;
-                     GetUInt(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintUInt(value);
-                     exp.type = constantExp;
+                     unsigned int value = 0;
+                     if(GetUInt(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintUInt(value);
+                        exp.type = constantExp;
+                     }
                   }
                   break;
                case int64Type:
                   if(type.isSigned)
                   {
-                     int64 value;
-                     GetInt64(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintInt64(value);
-                     exp.type = constantExp;
+                     int64 value = 0;
+                     if(GetInt64(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintInt64(value);
+                        exp.type = constantExp;
+                     }
                   }
                   else
                   {
-                     uint64 value;
-                     GetUInt64(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintUInt64(value);
-                     exp.type = constantExp;
+                     uint64 value = 0;
+                     if(GetUInt64(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintUInt64(value);
+                        exp.type = constantExp;
+                     }
                   }
                   break;
                case intPtrType:
                   if(type.isSigned)
                   {
-                     intptr value;
-                     GetIntPtr(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintInt64((int64)value);
-                     exp.type = constantExp;
+                     intptr value = 0;
+                     if(GetIntPtr(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintInt64((int64)value);
+                        exp.type = constantExp;
+                     }
                   }
                   else
                   {
-                     uintptr value;
-                     GetUIntPtr(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintUInt64((uint64)value);
-                     exp.type = constantExp;
+                     uintptr value = 0;
+                     if(GetUIntPtr(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintUInt64((uint64)value);
+                        exp.type = constantExp;
+                     }
                   }
                   break;
                case intSizeType:
                   if(type.isSigned)
                   {
-                     intsize value;
-                     GetIntSize(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintInt64((int64)value);
-                     exp.type = constantExp;
+                     intsize value = 0;
+                     if(GetIntSize(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintInt64((int64)value);
+                        exp.type = constantExp;
+                     }
                   }
                   else
                   {
-                     uintsize value;
-                     GetUIntSize(e, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintUInt64((uint64)value);
-                     exp.type = constantExp;
+                     uintsize value = 0;
+                     if(GetUIntSize(e, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintUInt64((uint64)value);
+                        exp.type = constantExp;
+                     }
                   }
                   break;
                case floatType:
                {
-                  float value;
-                  GetFloat(e, &value);
-                  FreeExpContents(exp);
-                  exp.constant = PrintFloat(value);
-                  exp.type = constantExp;
+                  float value = 0;
+                  if(GetFloat(e, &value))
+                  {
+                     FreeExpContents(exp);
+                     exp.constant = PrintFloat(value);
+                     exp.type = constantExp;
+                  }
                   break;
                }
                case doubleType:
                {
-                  double value;
-                  GetDouble(e, &value);
-                  FreeExpContents(exp);
-                  exp.constant = PrintDouble(value);
-                  exp.type = constantExp;
+                  double value = 0;
+                  if(GetDouble(e, &value))
+                  {
+                     FreeExpContents(exp);
+                     exp.constant = PrintDouble(value);
+                     exp.type = constantExp;
+                  }
                   break;
                }
             }

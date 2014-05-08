@@ -518,16 +518,21 @@ void DebugComputeExpression(Expression exp)
                         }
                         else
                         {
-                           uint64 address;
+                           uint64 address = 0;
                            int size;
                            char format;
-                           if(exp1.expType.kind == structType)
+                           bool gotAddress = false;
+
+                           if(e.expType.kind == structType)
+                           {
                               address = exp1.address;
+                              gotAddress = true;
+                           }
                            else
-                              GetUInt64(exp1, &address);
+                              gotAddress = GetUInt64(e, &address);
                            size = ComputeTypeSize(exp.expType); //exp.expType.arrayType.size;
                            format = GetGdbFormatChar(exp.expType);
-                           if(format)
+                           if(gotAddress && format)
                            {
                               evaluation = Debugger::ReadMemory(address, size, format, &evalError);
                               switch(evalError)
@@ -570,7 +575,6 @@ void DebugComputeExpression(Expression exp)
                                     exp1.type = evalError;
                                     expError = exp1;
                                     break;
-
                               }
                            }
                            else
@@ -758,6 +762,7 @@ void DebugComputeExpression(Expression exp)
                         (type.kind == classType && type._class && type._class.registered &&
                            type._class.registered.type == enumClass))
                   {
+                     bool gotAddress = false;
                      uint64 address = 0, offset = 0;
                      Expression expNew, last = (Expression)exp.index.index->last;
                      Expression e = exp.index.exp;
@@ -777,15 +782,20 @@ void DebugComputeExpression(Expression exp)
 
                      //GetUInt(exp.index.exp, &address);
 
+                     GetUInt64(last, &offset);
+
                      // TOFIX: Check if it has address: TESTING
                      if(exp.index.exp.hasAddress && exp.index.exp.expType.kind == arrayType)
+                     {
                         address = exp.index.exp.address;
+                        gotAddress = true;
+                     }
                      else if(exp.index.exp.type == constantExp)
-                        GetUInt64(exp.index.exp, &address);
+                        gotAddress = GetUInt64(exp.index.exp, &address);
 
-                     GetUInt64(last, &offset);
                      //size = ComputeTypeSize(exp.expType.arrayType); //exp.expType.arrayType.size;
                      address += offset * size;
+
                      if(e.type == stringExp)
                      {
                         char * tmp = null;
@@ -827,7 +837,7 @@ void DebugComputeExpression(Expression exp)
                         FreeType(expType);
                         delete tmp;
                      }
-                     else if(exp.expType.kind == arrayType)
+                     else if(gotAddress && exp.expType.kind == arrayType)
                      {
                         FreeExpContents(exp);
                         exp.type = constantExp;
@@ -836,7 +846,7 @@ void DebugComputeExpression(Expression exp)
                         exp.address = address;
                         exp.hasAddress = true;
                      }
-                     else
+                     else if(gotAddress)
                      {
                         evaluation = Debugger::ReadMemory(address, size, format, &evalError);
                         switch(evalError)
@@ -881,6 +891,11 @@ void DebugComputeExpression(Expression exp)
                               exp.type = evalError;
                               break;
                         }
+                     }
+                     else
+                     {
+                        FreeExpContents(exp);
+                        exp.type = unknownErrorExp;
                      }
                   }
                }
@@ -1213,7 +1228,7 @@ void DebugComputeExpression(Expression exp)
                         {
                            // Unfinished business...
                            BitMember bitMember = (BitMember)member;
-                           uint64 bits;
+                           uint64 bits = 0;
                            GetUInt64(memberExp, &bits);
                            bits &= bitMember.mask;
                            bits >>= bitMember.pos;
@@ -1232,7 +1247,8 @@ void DebugComputeExpression(Expression exp)
                      {
                         char * evaluation = null;
                         ExpressionType evalError = dummyExp;
-                        uint64 address;
+                        bool gotAddress = false;
+                        uint64 address = 0;
                         Expression prev = exp.prev, next = exp.next;
                         char format;
                         int size;
@@ -1268,13 +1284,15 @@ void DebugComputeExpression(Expression exp)
                            // VERIFY THIS: (trying to fix primitive.type)
                            // if(memberExp.type == constantExp)
                            if(memberExp.hasAddress && (_class.type != normalClass && _class.type != noHeadClass && _class.type != systemClass))
+                           {
                               address = memberExp.address;
+                              gotAddress = true;
+                           }
                            else if(memberExp.type == constantExp)
-                              GetUInt64(memberExp, &address);
+                              gotAddress = GetUInt64(memberExp, &address);
                            else
                            {
-                              address = 0;
-                              GetUInt64(memberExp, &address);
+                              gotAddress = GetUInt64(memberExp, &address);
                               //printf("Unhandled !!\n");
 
                               //printf("memberExp.hasAddress = %d\n", memberExp.hasAddress);
@@ -1284,7 +1302,9 @@ void DebugComputeExpression(Expression exp)
 
                            address += offset;
 
-                           if((dataType.kind == classType && dataType._class &&
+                           if(!gotAddress)
+                              exp.type = unknownErrorExp;
+                           else if((dataType.kind == classType && dataType._class &&
                                  (!dataType._class.registered || dataType._class.registered.type == normalClass || dataType._class.registered.type == noHeadClass || dataType._class.registered.type == systemClass)) ||
                               (dataType.kind != classType && dataType.kind != arrayType && dataType.kind != structType && dataType.kind != unionType))
                            {
@@ -1317,7 +1337,10 @@ void DebugComputeExpression(Expression exp)
                                  delete expNew;
                               }
                               else
+                              {
+                                 FreeExpContents(exp);
                                  exp.type = unknownErrorExp;
+                              }
                            }
                            else
                            {
@@ -1349,7 +1372,8 @@ void DebugComputeExpression(Expression exp)
                      {
                         char * evaluation = null;
                         ExpressionType evalError = dummyExp;
-                        uint64 address;
+                        uint64 address = 0;
+                        bool gotAddress = false;
                         Expression prev = exp.prev, next = exp.next;
                         char format;
                         int size = memberType.size;
@@ -1364,13 +1388,21 @@ void DebugComputeExpression(Expression exp)
                         format = GetGdbFormatChar(dataType);
 
                         if(memberExp.hasAddress)
+                        {
                            address = memberExp.address;
+                           gotAddress = true;
+                        }
                         else if(memberExp.type == constantExp)
-                           GetUInt64(memberExp, &address);
+                           gotAddress = GetUInt64(memberExp, &address);
 
                         address += offset;
 
-                        if((dataType.kind == classType && dataType._class &&
+                        if(!gotAddress)
+                        {
+                           FreeExpContents(exp);
+                           exp.type = unknownErrorExp;
+                        }
+                        else if((dataType.kind == classType && dataType._class &&
                               (!dataType._class.registered || dataType._class.registered.type == normalClass || dataType._class.registered.type == noHeadClass || dataType._class.registered.type == systemClass)) ||
                            (dataType.kind != classType && dataType.kind != arrayType && dataType.kind != structType && dataType.kind != unionType))
                         {
@@ -1402,7 +1434,10 @@ void DebugComputeExpression(Expression exp)
                               delete expNew;
                            }
                            else
+                           {
+                              FreeExpContents(exp);
                               exp.type = unknownErrorExp;
+                           }
                         }
                         else
                         {
@@ -1492,115 +1527,137 @@ void DebugComputeExpression(Expression exp)
                   case charType:
                      if(type.isSigned)
                      {
-                        char value;
-                        GetChar(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintChar(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        char value = 0;
+                        if(GetChar(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintChar(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      else
                      {
-                        unsigned char value;
-                        GetUChar(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintUChar(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        unsigned char value = 0;
+                        if(GetUChar(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintUChar(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      break;
                   case shortType:
                      if(type.isSigned)
                      {
-                        short value;
-                        GetShort(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintShort(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        short value = 0;
+                        if(GetShort(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintShort(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      else
                      {
-                        unsigned short value;
-                        GetUShort(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintUShort(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        unsigned short value = 0;
+                        if(GetUShort(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintUShort(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      break;
                   case intType:
                      if(type.isSigned)
                      {
-                        int value;
-                        GetInt(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintInt(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        int value = 0;
+                        if(GetInt(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintInt(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      else
                      {
-                        unsigned int value;
-                        GetUInt(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintUInt(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        unsigned int value = 0;
+                        if(GetUInt(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintUInt(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      break;
                   case int64Type:
                      if(type.isSigned)
                      {
-                        int64 value;
-                        GetInt64(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintInt64(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        int64 value = 0;
+                        if(GetInt64(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintInt64(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      else
                      {
-                        uint64 value;
-                        GetUInt64(exp.cast.exp, &value);
-                        FreeExpContents(exp);
-                        exp.constant = PrintUInt64(value);
-                        exp.type = constantExp;
-                        exp.isConstant = true;
+                        uint64 value = 0;
+                        if(GetUInt64(exp.cast.exp, &value))
+                        {
+                           FreeExpContents(exp);
+                           exp.constant = PrintUInt64(value);
+                           exp.type = constantExp;
+                           exp.isConstant = true;
+                        }
                      }
                      break;
                   case pointerType:
                   case classType:
                   {
-                     uint64 value;
-                     GetUInt64(exp.cast.exp, &value);
-                     FreeExpContents(exp);
-                     if(type.kind == pointerType || type.kind == classType)
-                        exp.constant = PrintHexUInt64(value);
-                     else
-                        exp.constant = PrintUInt64(value);
-                     exp.type = constantExp;
-                     exp.isConstant = true;
+                     uint64 value = 0;
+                     if(GetUInt64(exp.cast.exp, &value))
+                     {
+                        FreeExpContents(exp);
+                        if(type.kind == pointerType || type.kind == classType)
+                           exp.constant = PrintHexUInt64(value);
+                        else
+                           exp.constant = PrintUInt64(value);
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                     }
                      break;
                   }
                   case floatType:
                   {
-                     float value;
-                     GetFloat(exp.cast.exp, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintFloat(value);
-                     exp.type = constantExp;
-                     exp.isConstant = true;
+                     float value = 0;
+                     if(GetFloat(exp.cast.exp, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintFloat(value);
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                     }
                      break;
                   }
                   case doubleType:
                   {
-                     double value;
-                     GetDouble(exp.cast.exp, &value);
-                     FreeExpContents(exp);
-                     exp.constant = PrintDouble(value);
-                     exp.type = constantExp;
-                     exp.isConstant = true;
+                     double value = 0;
+                     if(GetDouble(exp.cast.exp, &value))
+                     {
+                        FreeExpContents(exp);
+                        exp.constant = PrintDouble(value);
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                     }
                      break;
                   }
                }

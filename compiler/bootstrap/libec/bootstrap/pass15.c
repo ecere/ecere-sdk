@@ -10647,8 +10647,6 @@ if(!type->_class->registered->dataType)
 type->_class->registered->dataType = ProcessTypeString(type->_class->registered->dataTypeString, 0x0);
 type = type->_class->registered->dataType;
 }
-op.kind = type->kind;
-op.type = exp->expType;
 if(exp->type == 3 && op.kind == 13)
 {
 op.ui64 = (uint64)exp->string;
@@ -10657,6 +10655,8 @@ op.ops = uint64Ops;
 }
 else if(exp->isConstant && exp->type == 2)
 {
+op.kind = type->kind;
+op.type = exp->expType;
 switch(op.kind)
 {
 case 24:
@@ -11554,7 +11554,7 @@ break;
 }
 else
 {
-if(op1 && op2 && op1->kind != op2->kind)
+if(op1 && op2 && op1->type && op2->type && op1->kind != op2->kind)
 {
 if(Promote(op2, op1->kind, op1->type->isSigned))
 op2->kind = op1->kind, op2->ops = op1->ops;
@@ -12212,141 +12212,169 @@ case 24:
 case 1:
 if(type->isSigned)
 {
-char value;
+char value = (char)0;
 
-GetChar(e, &value);
+if(GetChar(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintChar(value);
 exp->type = 2;
 }
+}
 else
 {
-unsigned char value;
+unsigned char value = (unsigned char)0;
 
-GetUChar(e, &value);
+if(GetUChar(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintUChar(value);
 exp->type = 2;
+}
 }
 break;
 case 2:
 if(type->isSigned)
 {
-short value;
+short value = (short)0;
 
-GetShort(e, &value);
+if(GetShort(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintShort(value);
 exp->type = 2;
 }
+}
 else
 {
-unsigned short value;
+unsigned short value = (unsigned short)0;
 
-GetUShort(e, &value);
+if(GetUShort(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintUShort(value);
 exp->type = 2;
+}
 }
 break;
 case 3:
 if(type->isSigned)
 {
-int value;
+int value = 0;
 
-GetInt(e, &value);
+if(GetInt(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintInt(value);
 exp->type = 2;
 }
+}
 else
 {
-unsigned int value;
+unsigned int value = 0;
 
-GetUInt(e, &value);
+if(GetUInt(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintUInt(value);
 exp->type = 2;
+}
 }
 break;
 case 4:
 if(type->isSigned)
 {
-long long value;
+long long value = 0;
 
-GetInt64(e, &value);
+if(GetInt64(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintInt64(value);
 exp->type = 2;
 }
+}
 else
 {
-uint64 value;
+uint64 value = 0;
 
-GetUInt64(e, &value);
+if(GetUInt64(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintUInt64(value);
 exp->type = 2;
+}
 }
 break;
 case 22:
 if(type->isSigned)
 {
-intptr_t value;
+intptr_t value = 0;
 
-GetIntPtr(e, &value);
+if(GetIntPtr(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintInt64((long long)value);
 exp->type = 2;
 }
+}
 else
 {
-uintptr_t value;
+uintptr_t value = 0;
 
-GetUIntPtr(e, &value);
+if(GetUIntPtr(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintUInt64((uint64)value);
 exp->type = 2;
+}
 }
 break;
 case 23:
 if(type->isSigned)
 {
-ssize_t value;
+ssize_t value = 0;
 
-GetIntSize(e, &value);
+if(GetIntSize(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintInt64((long long)value);
 exp->type = 2;
 }
+}
 else
 {
-size_t value;
+size_t value = 0;
 
-GetUIntSize(e, &value);
+if(GetUIntSize(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintUInt64((uint64)value);
 exp->type = 2;
 }
+}
 break;
 case 6:
 {
-float value;
+float value = 0;
 
-GetFloat(e, &value);
+if(GetFloat(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintFloat(value);
 exp->type = 2;
+}
 break;
 }
 case 7:
 {
-double value;
+double value = 0;
 
-GetDouble(e, &value);
+if(GetDouble(e, &value))
+{
 FreeExpContents(exp);
 exp->constant = PrintDouble(value);
 exp->type = 2;
+}
 break;
 }
 }
