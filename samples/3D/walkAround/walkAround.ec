@@ -25,7 +25,7 @@ class WalkAroundApp : GuiApplication
          diffTime = time - lastTime;
          lastTime = time;
          GetMouseState(&buttons, &xd, &yd);
-         if(form)
+         if(form && form.active)
          {
             bool updateCamera = false;
             float speed = 50;
