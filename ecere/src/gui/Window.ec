@@ -568,6 +568,16 @@ private:
       OldLink slave;
       ResPtr ptr;
 
+      if(fileMonitor)
+      {
+         int i, lockCount = guiApp.lockMutex.lockCount;
+         for(i = 0; i < lockCount; i++)
+            guiApp.lockMutex.Release();
+         delete fileMonitor;
+         for(i = 0; i < lockCount; i++)
+            guiApp.lockMutex.Wait();
+      }
+
       if(parent)
       {
          stopwatching(parent, font);
@@ -6071,6 +6081,28 @@ private:
       }
    }
 
+   void SetupFileMonitor()
+   {
+      if(!fileMonitor)
+      {
+         fileMonitor = FileMonitor
+         {
+            this, FileChange { modified = true };
+
+            bool OnFileNotify(FileChange action, char * param)
+            {
+               incref this;
+               fileMonitor.StopMonitoring();
+               if(OnFileModified(action, param))
+                  fileMonitor.StartMonitoring();
+               delete this;
+               return true;
+            }
+         };
+         incref fileMonitor;
+      }
+   }
+
 public:
    // normal Methods
    bool Create()
@@ -7330,6 +7362,7 @@ public:
 
    bool MenuFileSave(MenuItem selection, Modifiers mods)
    {
+      SetupFileMonitor();
       if(fileName)
       {
          fileMonitor.fileName = null;
@@ -7359,6 +7392,8 @@ public:
    {
       DialogResult result = (DialogResult)bool::true;
       FileDialog fileDialog = saveDialog;
+
+      SetupFileMonitor();
 
       if(!fileDialog)
          fileDialog = FileDialog {};
@@ -9085,7 +9120,7 @@ public:
    property bool isDocument
    {
       property_category $"Document"
-      set { style.isDocument = value; }
+      set { style.isDocument = value; if(value) SetupFileMonitor(); }
       get { return style.isDocument; }
    };
 
@@ -9227,6 +9262,8 @@ public:
       property_category $"Document"
       set
       {
+         SetupFileMonitor();
+
          if(menu && ((!fileName && value) || (fileName && !value)))
          {
             MenuItem item = menu.FindItem(MenuFileSave, 0);
@@ -9540,20 +9577,8 @@ private:
    Mutex mutex;
    WindowState lastState;
 
-   FileMonitor fileMonitor
-   {
-      this, FileChange { modified = true };
+   FileMonitor fileMonitor;
 
-      bool OnFileNotify(FileChange action, char * param)
-      {
-         incref this;
-         fileMonitor.StopMonitoring();
-         if(OnFileModified(action, param))
-            fileMonitor.StartMonitoring();
-         delete this;
-         return true;
-      }
-   };
    FontResource setFont, systemFont;
    FontResource usedFont;
    FontResource captionFont;
