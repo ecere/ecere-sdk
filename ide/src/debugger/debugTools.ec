@@ -822,10 +822,10 @@ void DebugComputeExpression(Expression exp)
                            exp.isConstant = true;
                            switch(expType.kind)
                            {
-                              case charType:   exp.constant = type.isSigned ? PrintChar(((char *)tmp)[offset]) : PrintUChar(((byte *)tmp)[offset]); break;
-                              case shortType:  exp.constant = type.isSigned ? PrintShort(((short *)tmp)[offset]) : PrintUShort(((uint16 *)tmp)[offset]); break;
-                              case intType:    exp.constant = type.isSigned ? PrintInt(((int *)tmp)[offset]) : PrintUInt(((uint *)tmp)[offset]); break;
-                              case int64Type:  exp.constant = type.isSigned ? PrintInt64(((int64 *)tmp)[offset]) : PrintUInt64(((uint64 *)tmp)[offset]); break;
+                              case charType:   exp.constant = expType.isSigned ? PrintChar(((char *)tmp)[offset]) : PrintUChar(((byte *)tmp)[offset]); break;
+                              case shortType:  exp.constant = expType.isSigned ? PrintShort(((short *)tmp)[offset]) : PrintUShort(((uint16 *)tmp)[offset]); break;
+                              case intType:    exp.constant = expType.isSigned ? PrintInt(((int *)tmp)[offset]) : PrintUInt(((uint *)tmp)[offset]); break;
+                              case int64Type:  exp.constant = expType.isSigned ? PrintInt64(((int64 *)tmp)[offset]) : PrintUInt64(((uint64 *)tmp)[offset]); break;
                               case floatType:  exp.constant = PrintFloat(((float *)tmp)[offset]); break;
                               case doubleType: exp.constant = PrintDouble(((double *)tmp)[offset]); break;
                               default:
