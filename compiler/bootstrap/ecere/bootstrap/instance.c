@@ -5222,6 +5222,12 @@ extern struct __ecereNameSpace__ecere__com__Instance * acos(double number);
 
 extern struct __ecereNameSpace__ecere__com__Instance * atan(double number);
 
+extern struct __ecereNameSpace__ecere__com__Instance * asinh(double number);
+
+extern struct __ecereNameSpace__ecere__com__Instance * acosh(double number);
+
+extern struct __ecereNameSpace__ecere__com__Instance * atanh(double number);
+
 extern double pow(double number, double number2);
 
 extern double fmod(double x, double y);
@@ -5380,6 +5386,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("atan2", "Angle atan2(dou
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("asin", "Angle asin(double number)", asin, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("acos", "Angle acos(double number)", acos, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("atan", "Angle atan(double number)", atan, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("asinh", "Angle asinh(double number)", asinh, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("acosh", "Angle acosh(double number)", acosh, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("atanh", "Angle atanh(double number)", atanh, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("pow", "double pow(double number, double number2)", pow, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("fmod", "double fmod(double x, double y)", fmod, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("fabs", "double fabs(double number)", fabs, module, 4);

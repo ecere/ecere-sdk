@@ -6167,6 +6167,9 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("asin", "Angle asin(double number)", asin, module, baseSystemAccess);
    eSystem_RegisterFunction("acos", "Angle acos(double number)", acos, module, baseSystemAccess);
    eSystem_RegisterFunction("atan", "Angle atan(double number)", atan, module, baseSystemAccess);
+   eSystem_RegisterFunction("asinh", "Angle asinh(double number)", asinh, module, baseSystemAccess);
+   eSystem_RegisterFunction("acosh", "Angle acosh(double number)", acosh, module, baseSystemAccess);
+   eSystem_RegisterFunction("atanh", "Angle atanh(double number)", atanh, module, baseSystemAccess);
    eSystem_RegisterFunction("pow", "double pow(double number, double number2)", pow, module, baseSystemAccess);
    eSystem_RegisterFunction("fmod", "double fmod(double x, double y)", fmod, module, baseSystemAccess);
    eSystem_RegisterFunction("fabs", "double fabs(double number)", fabs, module, baseSystemAccess);
