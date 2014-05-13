@@ -2721,7 +2721,7 @@ class Debugger
                if(wh.type)
                   wh.type.refCount++;
                DebugComputeExpression(exp);
-               if(ExpressionIsError(exp))
+               if(ExpressionIsError(exp) && exp.type != functionCallErrorExp)
                {
                   GDBFallBack(exp, expString);
                }
@@ -2915,6 +2915,12 @@ class Debugger
                         snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation for \"%s\"", wh.expression);
                      break;
                   }
+                  case functionCallErrorExp:
+                     if(exp.call.exp && exp.call.exp.type == identifierExp && exp.call.exp.identifier.string)
+                        snprintf(watchmsg, sizeof(watchmsg), $"Missing function evaluation for call to \"%s\"", exp.call.exp.identifier.string);
+                     else
+                        snprintf(watchmsg, sizeof(watchmsg), $"Missing function evaluation for \"%s\"", wh.expression);
+                     break;
                   case memoryErrorExp:
                      // Need to ensure when set to memoryErrorExp, constant is set
                      snprintf(watchmsg, sizeof(watchmsg), $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);

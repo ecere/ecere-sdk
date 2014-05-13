@@ -407,7 +407,8 @@ static void _FreeExpression(Expression exp, bool freePointer)
       }
       case callExp:
       {
-         FreeExpression(exp.call.exp);
+         if(exp.call.exp)
+            FreeExpression(exp.call.exp);
          if(exp.call.arguments)
             FreeList(exp.call.arguments, FreeExpression);
          break;
@@ -516,6 +517,12 @@ static void _FreeExpression(Expression exp, bool freePointer)
             FreeExpression(exp.member.exp);
          if(exp.member.member)
             FreeIdentifier(exp.member.member);
+         break;
+      case functionCallErrorExp:
+         if(exp.call.exp)
+            FreeExpression(exp.call.exp);
+         if(exp.call.arguments)
+            FreeList(exp.call.arguments, FreeExpression);
          break;
       case dereferenceErrorExp:
       case unknownErrorExp:

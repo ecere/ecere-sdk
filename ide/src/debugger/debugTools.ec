@@ -17,6 +17,10 @@ static void CarryExpressionError(Expression exp, Expression expError)
    // Nulling things that may be freed now, but this is all overly messy/complex
    switch(expError.type)
    {
+      case functionCallErrorExp:
+         expError.call.exp = null;
+         expError.call.arguments = null;
+         break;
       case symbolErrorExp:
          expError.identifier = null;
          break;
@@ -98,7 +102,7 @@ static char GetGdbFormatChar(Type type)
 {
    return (exp.type == dereferenceErrorExp || exp.type == symbolErrorExp ||
          exp.type == memberSymbolErrorExp || exp.type == memoryErrorExp || exp.type == unknownErrorExp ||
-         exp.type == noDebuggerErrorExp || exp.type == memberPropertyErrorExp);
+         exp.type == noDebuggerErrorExp || exp.type == memberPropertyErrorExp || exp.type == functionCallErrorExp);
 }
 
 void DebugComputeExpression(Expression exp)
@@ -1091,6 +1095,7 @@ void DebugComputeExpression(Expression exp)
       {
          Expression callExp = exp.call.exp;
          Identifier id = (callExp && callExp.type == identifierExp) ? callExp.identifier : null;
+         bool resolved = false;
          if(id && id.string)
          {
             if(!strcmp(id.string, "nan") || !strcmp(id.string, "inf"))
@@ -1100,8 +1105,11 @@ void DebugComputeExpression(Expression exp)
                FreeExpContents(exp);
                exp.type = constantExp;
                exp.constant = s;
+               resolved = true;
             }
          }
+         if(!resolved)
+            exp.type = functionCallErrorExp;
          break;
       }
       case memberExp:

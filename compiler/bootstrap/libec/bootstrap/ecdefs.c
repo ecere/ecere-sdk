@@ -2277,6 +2277,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "vaArgExp", 34);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "arrayExp", 35);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "typeAlignExp", 36);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "memberPropertyErrorExp", 37);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "functionCallErrorExp", 38);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "MemberType", 0, 0, 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_MemberType = class;

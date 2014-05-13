@@ -1525,6 +1525,7 @@ break;
 }
 case 7:
 {
+if(exp->call.exp)
 FreeExpression(exp->call.exp);
 if(exp->call.arguments)
 FreeList(exp->call.arguments, FreeExpression);
@@ -1630,6 +1631,12 @@ if(exp->member.exp)
 FreeExpression(exp->member.exp);
 if(exp->member.member)
 FreeIdentifier(exp->member.member);
+break;
+case 38:
+if(exp->call.exp)
+FreeExpression(exp->call.exp);
+if(exp->call.arguments)
+FreeList(exp->call.arguments, FreeExpression);
 break;
 case 17:
 case 21:
