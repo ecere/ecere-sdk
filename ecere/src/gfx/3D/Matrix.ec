@@ -7,6 +7,28 @@ public union Matrix
    double array[16];
    double m[4][4];
 
+   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   {
+      int y, x;
+      string[0] = 0;
+      strcat(string, "{ ");
+      for(y = 0; y < 4; y++)
+      {
+         strcat(string, "{ ");
+         for(x = 0; x < 4; x++)
+         {
+            char member[256];
+            char * s = m[y][x].OnGetString(member, null, null);
+            strcat(string, s);
+            if(x < 3) strcat(string, ", ");
+         }
+         strcat(string, " }");
+         if(y < 3) strcat(string, ", ");
+      }
+      strcat(string, " }");
+      return string;
+   }
+
    void Identity()
    {
       FillBytesBy4(this, 0, sizeof(Matrix) >> 2);
