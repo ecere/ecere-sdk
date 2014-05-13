@@ -481,11 +481,43 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
 
 int __ecereVMethodID_class_OnGetString;
 
+int (* __ecereMethod_double_inf)();
+
+int (* __ecereMethod_double_nan)();
+
+void * __ecereProp_double_Get_isInf;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isInf;
+
+void * __ecereProp_double_Get_isNan;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
+
+void * __ecereProp_double_Get_signBit;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_signBit;
+
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+
+int (* __ecereMethod_float_inf)();
+
+int (* __ecereMethod_float_nan)();
+
+void * __ecereProp_float_Get_isInf;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
+
+void * __ecereProp_float_Get_isNan;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isNan;
+
+void * __ecereProp_float_Get_signBit;
+
+struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_signBit;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
@@ -789,9 +821,35 @@ _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "class");
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "OnGetString", module);
 if(method)
 __ecereVMethodID_class_OnGetString = method->vid;
+_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "double");
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "inf", module);
+if(method)
+__ecereMethod_double_inf = method->function;
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "nan", module);
+if(method)
+__ecereMethod_double_nan = method->function;
+__ecereProp_double_isInf = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "isInf", module);
+__ecereProp_double_Get_isInf = _property->Get;
+__ecereProp_double_isNan = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "isNan", module);
+__ecereProp_double_Get_isNan = _property->Get;
+__ecereProp_double_signBit = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "signBit", module);
+__ecereProp_double_Get_signBit = _property->Get;
 __ecereClass___ecereNameSpace__ecere__com__Application = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Application");
 __ecereClass___ecereNameSpace__ecere__com__Instance = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");
 __ecereClass___ecereNameSpace__ecere__com__Module = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Module");
+_class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "float");
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "inf", module);
+if(method)
+__ecereMethod_float_inf = method->function;
+method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "nan", module);
+if(method)
+__ecereMethod_float_nan = method->function;
+__ecereProp_float_isInf = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "isInf", module);
+__ecereProp_float_Get_isInf = _property->Get;
+__ecereProp_float_isNan = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "isNan", module);
+__ecereProp_float_Get_isNan = _property->Get;
+__ecereProp_float_signBit = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, "signBit", module);
+__ecereProp_float_Get_signBit = _property->Get;
 __ecereClass_int = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 __ecereClass___ecereNameSpace__ecere__com__BTNamedLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::BTNamedLink");
 __ecereClass___ecereNameSpace__ecere__com__BitMember = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::BitMember");

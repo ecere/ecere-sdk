@@ -297,14 +297,44 @@ public char * PrintUChar(unsigned char result)
 public char * PrintFloat(float result)
 {
    char temp[350];
-   sprintf(temp, "%.16ff", result);
+   if(result.isInf)
+   {
+      if(result.signBit)
+         strcpy(temp, "-inf");
+      else
+         strcpy(temp, "inf");
+   }
+   else if(result.isNan)
+   {
+      if(result.signBit)
+         strcpy(temp, "-nan");
+      else
+         strcpy(temp, "nan");
+   }
+   else
+      sprintf(temp, "%.16ff", result);
    return CopyString(temp);
 }
 
 public char * PrintDouble(double result)
 {
    char temp[350];
-   sprintf(temp, "%.16f", result);
+   if(result.isInf)
+   {
+      if(result.signBit)
+         strcpy(temp, "-inf");
+      else
+         strcpy(temp, "inf");
+   }
+   else if(result.isNan)
+   {
+      if(result.signBit)
+         strcpy(temp, "-nan");
+      else
+         strcpy(temp, "nan");
+   }
+   else
+      sprintf(temp, "%.16f", result);
    return CopyString(temp);
 }
 
@@ -1258,7 +1288,9 @@ void DeclareProperty(Property prop, char * setName, char * getName)
                classSym._import.properties.Add(symbol._import);
          }
          imported = true;
-         if(prop._class.module != privateModule && prop._class.module.importType != staticImport)
+         // Ugly work around for isNan properties declared within float/double classes which are initialized with ecereCOM
+         if((prop._class.module != privateModule || !strcmp(prop._class.name, "float") || !strcmp(prop._class.name, "double")) &&
+            prop._class.module.importType != staticImport)
             dllImport = true;
       }
 
@@ -2418,7 +2450,7 @@ public void DeclareMethod(Method method, char * name)
          if(!method.dataType.dllExport)
          {
             imported = true;
-            if(method._class.module != privateModule && method._class.module.importType != staticImport)
+            if((method._class.module != privateModule || !strcmp(method._class.name, "float") || !strcmp(method._class.name, "double")) && method._class.module.importType != staticImport)
                dllImport = true;
          }
       }
@@ -4342,11 +4374,21 @@ public Operand GetOperand(Expression exp)
                op.kind = int64Type;
                break;
             case floatType:
-               op.f = (float)strtod(exp.constant, null);
+               if(!strcmp(exp.constant, "inf")) op.f = float::inf();
+               else if(!strcmp(exp.constant, "-inf")) op.f = -float::inf();
+               else if(!strcmp(exp.constant, "nan")) op.f = float::nan();
+               else if(!strcmp(exp.constant, "-nan")) op.f = -float::nan();
+               else
+                  op.f = (float)strtod(exp.constant, null);
                op.ops = floatOps;
                break;
             case doubleType:
-               op.d = (double)strtod(exp.constant, null);
+               if(!strcmp(exp.constant, "inf")) op.d = double::inf();
+               else if(!strcmp(exp.constant, "-inf")) op.d = -double::inf();
+               else if(!strcmp(exp.constant, "nan")) op.d = double::nan();
+               else if(!strcmp(exp.constant, "-nan")) op.d = -double::nan();
+               else
+                  op.d = (double)strtod(exp.constant, null);
                op.ops = doubleOps;
                break;
             //case classType:    For when we have operator overloading...

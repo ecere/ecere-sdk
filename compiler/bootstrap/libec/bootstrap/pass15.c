@@ -1581,18 +1581,74 @@ sprintf(temp, "0x%X", result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 
+extern char *  strcpy(char * , const char * );
+
+extern unsigned int (* __ecereProp_float_Get_isInf)(float this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isInf;
+
+extern int (* __ecereProp_float_Get_signBit)(float this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_signBit;
+
+extern unsigned int (* __ecereProp_float_Get_isNan)(float this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isNan;
+
 char * PrintFloat(float result)
 {
 char temp[350];
 
+if(__ecereProp_float_Get_isInf(result))
+{
+if(__ecereProp_float_Get_signBit(result))
+strcpy(temp, "-inf");
+else
+strcpy(temp, "inf");
+}
+else if(__ecereProp_float_Get_isNan(result))
+{
+if(__ecereProp_float_Get_signBit(result))
+strcpy(temp, "-nan");
+else
+strcpy(temp, "nan");
+}
+else
 sprintf(temp, "%.16ff", result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
+
+extern unsigned int (* __ecereProp_double_Get_isInf)(double this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isInf;
+
+extern int (* __ecereProp_double_Get_signBit)(double this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_signBit;
+
+extern unsigned int (* __ecereProp_double_Get_isNan)(double this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isNan;
 
 char * PrintDouble(double result)
 {
 char temp[350];
 
+if(__ecereProp_double_Get_isInf(result))
+{
+if(__ecereProp_double_Get_signBit(result))
+strcpy(temp, "-inf");
+else
+strcpy(temp, "inf");
+}
+else if(__ecereProp_double_Get_isNan(result))
+{
+if(__ecereProp_double_Get_signBit(result))
+strcpy(temp, "-nan");
+else
+strcpy(temp, "nan");
+}
+else
 sprintf(temp, "%.16f", result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
@@ -3025,8 +3081,6 @@ extern struct External * MkExternalDeclaration(struct Declaration * declaration)
 
 extern struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators);
 
-extern char *  strcpy(char * , const char * );
-
 extern void MangleClassName(char *  className);
 
 extern void DeclareClass(struct Symbol * classSym, char *  className);
@@ -3243,7 +3297,7 @@ if(classSym)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classSym->_import->properties, symbol->_import);
 }
 imported = 0x1;
-if(prop->_class->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)prop->_class->module + structSize_Instance)))->importType != 1)
+if((prop->_class->module != privateModule || !strcmp(prop->_class->name, "float") || !strcmp(prop->_class->name, "double")) && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)prop->_class->module + 24)))->importType != 1)
 dllImport = 0x1;
 }
 if(!symbol->type)
@@ -4273,7 +4327,7 @@ symbol->type->refCount++;
 if(!method->dataType->dllExport)
 {
 imported = 0x1;
-if(method->_class->module != privateModule && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)method->_class->module + structSize_Instance)))->importType != 1)
+if((method->_class->module != privateModule || !strcmp(method->_class->name, "float") || !strcmp(method->_class->name, "double")) && ((struct __ecereNameSpace__ecere__com__Module *)(((char *)method->_class->module + 24)))->importType != 1)
 dllImport = 0x1;
 }
 }
@@ -10628,6 +10682,14 @@ extern uint64 __ecereNameSpace__ecere__com___strtoui64(char *  string, char * * 
 
 extern double strtod(char * , char * * );
 
+extern float (* __ecereMethod_float_inf)(void);
+
+extern float (* __ecereMethod_float_nan)(void);
+
+extern double (* __ecereMethod_double_inf)(void);
+
+extern double (* __ecereMethod_double_nan)(void);
+
 struct Operand GetOperand(struct Expression * exp)
 {
 struct Operand op = 
@@ -10745,10 +10807,28 @@ op.ops = uint64Ops;
 op.kind = 4;
 break;
 case 6:
+if(!strcmp(exp->constant, "inf"))
+op.f = __ecereMethod_float_inf();
+else if(!strcmp(exp->constant, "-inf"))
+op.f = -__ecereMethod_float_inf();
+else if(!strcmp(exp->constant, "nan"))
+op.f = __ecereMethod_float_nan();
+else if(!strcmp(exp->constant, "-nan"))
+op.f = -__ecereMethod_float_nan();
+else
 op.f = (float)strtod(exp->constant, (((void *)0)));
 op.ops = floatOps;
 break;
 case 7:
+if(!strcmp(exp->constant, "inf"))
+op.d = __ecereMethod_double_inf();
+else if(!strcmp(exp->constant, "-inf"))
+op.d = -__ecereMethod_double_inf();
+else if(!strcmp(exp->constant, "nan"))
+op.d = __ecereMethod_double_nan();
+else if(!strcmp(exp->constant, "-nan"))
+op.d = -__ecereMethod_double_nan();
+else
 op.d = (double)strtod(exp->constant, (((void *)0)));
 op.ops = doubleOps;
 break;

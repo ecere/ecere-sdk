@@ -344,7 +344,7 @@ static void WriteMain(char * fileName)
 
                      if(method.isVirtual)
                         f.Printf("int __ecereVMethodID_%s_%s;\n", className, method.name);
-                     else if(module.name && module.importType != staticImport && (!meth || !meth.dataType.dllExport))
+                     else if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport && (!meth || !meth.dataType.dllExport))
                      {
                         /*char name[4096];
 
@@ -376,7 +376,7 @@ static void WriteMain(char * fileName)
                   // strcpy(propName, prop.name);
                   MangleClassName(propName);
 
-                  if(module.name && module.importType != staticImport)
+                  if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                   {
                      if(prop.hasSet)
                         f.Printf("void * __ecereProp_%s_Set_%s;\n", className, propName);
@@ -576,7 +576,7 @@ static void WriteMain(char * fileName)
                      Method meth = eClass_FindMethod(regClass, method.name, privateModule);
                      if(!meth || !meth.dataType.dllExport)
                      {
-                        if(method.isVirtual || (module.name && module.importType != staticImport))
+                        if(method.isVirtual || ((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport))
                         {
                            f.Printf("   method = eClass_FindMethod(%s, \"%s\", module);\n",
                               classID, method.name);
@@ -599,7 +599,7 @@ static void WriteMain(char * fileName)
                      f.Printf("   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n",
                         className, propName, classID, prop.name);
 
-                     if(module.name && module.importType != staticImport)
+                     if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                      {
                         if(prop.hasSet)
                            f.Printf("   __ecereProp_%s_Set_%s = _property.Set;\n", className, propName);

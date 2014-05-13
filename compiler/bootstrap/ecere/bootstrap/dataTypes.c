@@ -381,6 +381,26 @@ FILE * eC_stdout(void);
 
 FILE * eC_stderr(void);
 
+unsigned int Float_isNan(float n);
+
+unsigned int Float_isInf(float n);
+
+int Float_signBit(float n);
+
+float Float_nan(void);
+
+float Float_inf(void);
+
+unsigned int Double_isNan(double n);
+
+unsigned int Double_isInf(double n);
+
+int Double_signBit(double n);
+
+double Double_nan(void);
+
+double Double_inf(void);
+
 extern int __ecereVMethodID_class_OnGetString;
 
 extern int __ecereVMethodID_class_OnGetDataFromString;
@@ -2434,17 +2454,47 @@ result = -1;
 return result;
 }
 
+extern unsigned int (* __ecereProp_float_Get_isInf)(float this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isInf;
+
+extern int (* __ecereProp_float_Get_signBit)(float this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_signBit;
+
+extern unsigned int (* __ecereProp_float_Get_isNan)(float this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isNan;
+
 static char * __ecereNameSpace__ecere__com__Float_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, float * data, char * string, void * fieldData, unsigned int * needClass)
+{
+float f = *data;
+
+if(__ecereProp_float_Get_isInf(f))
+{
+if(__ecereProp_float_Get_signBit(f))
+strcpy(string, "-inf");
+else
+strcpy(string, "inf");
+}
+else if(__ecereProp_float_Get_isNan(f))
+{
+if(__ecereProp_float_Get_signBit(f))
+strcpy(string, "-nan");
+else
+strcpy(string, "nan");
+}
+else
 {
 int c;
 int last = 0;
 int numDigits = 7, num = 1;
 char format[10];
 
-while(numDigits && (float)num < *data)
+while(numDigits && (float)num < f)
 numDigits--, num *= 10;
 sprintf(format, "%%.%df", numDigits);
-sprintf(string, format, *data);
+sprintf(string, format, f);
 c = strlen(string) - 1;
 for(; c >= 0; c--)
 {
@@ -2457,6 +2507,7 @@ string[c] = (char)0;
 else
 string[last + 1] = (char)0;
 break;
+}
 }
 }
 return string;
@@ -2507,6 +2558,8 @@ else
 *data = 0;
 }
 
+extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  dataType, void *  setStmt, void *  getStmt, int declMode);
+
 static void __ecereNameSpace__ecere__com__RegisterClass_Float(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__Class * floatClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "float", (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
@@ -2521,6 +2574,11 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(floatClass, "OnGetString", (((voi
 __ecereNameSpace__ecere__com__eClass_AddMethod(floatClass, "OnGetDataFromString", (((void *)0)), __ecereNameSpace__ecere__com__Float_OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(floatClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Float_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(floatClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Float_OnUnserialize, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(floatClass, "nan", "float ::nan(void)", Float_nan, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(floatClass, "inf", "float ::inf(void)", Float_inf, 1);
+__ecereNameSpace__ecere__com__eClass_AddProperty(floatClass, "isNan", "bool", (((void *)0)), Float_isNan, 1);
+__ecereNameSpace__ecere__com__eClass_AddProperty(floatClass, "isInf", "bool", (((void *)0)), Float_isInf, 1);
+__ecereNameSpace__ecere__com__eClass_AddProperty(floatClass, "signBit", "int", (((void *)0)), Float_signBit, 1);
 }
 
 static int __ecereNameSpace__ecere__com__Double_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, double * data1, double * data2)
@@ -2540,15 +2598,45 @@ result = -1;
 return result;
 }
 
+extern unsigned int (* __ecereProp_double_Get_isInf)(double this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isInf;
+
+extern int (* __ecereProp_double_Get_signBit)(double this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_signBit;
+
+extern unsigned int (* __ecereProp_double_Get_isNan)(double this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isNan;
+
 static char * __ecereNameSpace__ecere__com__Double_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, double * data, char * string, void * fieldData, unsigned int * needClass)
+{
+double f = *data;
+
+if(__ecereProp_double_Get_isInf(f))
+{
+if(__ecereProp_double_Get_signBit(f))
+strcpy(string, "-inf");
+else
+strcpy(string, "inf");
+}
+else if(__ecereProp_double_Get_isNan(f))
+{
+if(__ecereProp_double_Get_signBit(f))
+strcpy(string, "-nan");
+else
+strcpy(string, "nan");
+}
+else
 {
 int c;
 int last = 0;
 
 if(runtimePlatform == 1)
-sprintf(string, "%.15g", *data);
+sprintf(string, "%.15g", f);
 else
-sprintf(string, "%.13lf", *data);
+sprintf(string, "%.13lf", f);
 c = strlen(string) - 1;
 for(; c >= 0; c--)
 {
@@ -2561,6 +2649,7 @@ string[c] = (char)0;
 else
 string[last + 1] = (char)0;
 break;
+}
 }
 }
 return string;
@@ -2628,6 +2717,11 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(doubleClass, "OnGetString", (((vo
 __ecereNameSpace__ecere__com__eClass_AddMethod(doubleClass, "OnGetDataFromString", (((void *)0)), __ecereNameSpace__ecere__com__Double_OnGetDataFromString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(doubleClass, "OnSerialize", (((void *)0)), __ecereNameSpace__ecere__com__Double_OnSerialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(doubleClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__Double_OnUnserialize, 1);
+__ecereNameSpace__ecere__com__eClass_AddProperty(doubleClass, "isNan", "bool", (((void *)0)), Double_isNan, 1);
+__ecereNameSpace__ecere__com__eClass_AddProperty(doubleClass, "isInf", "bool", (((void *)0)), Double_isInf, 1);
+__ecereNameSpace__ecere__com__eClass_AddProperty(doubleClass, "signBit", "int", (((void *)0)), Double_signBit, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(doubleClass, "nan", "double ::nan(void)", Double_nan, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(doubleClass, "inf", "double ::inf(void)", Double_inf, 1);
 }
 
 struct __ecereNameSpace__ecere__com__StaticString
@@ -2796,8 +2890,6 @@ else
 *string = __ecereNameSpace__ecere__com__eSystem_Renew(*string, sizeof(char) * (c));
 }
 }
-
-extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  dataType, void *  setStmt, void *  getStmt, int declMode);
 
 static void __ecereNameSpace__ecere__com__RegisterClass_String(struct __ecereNameSpace__ecere__com__Instance * module)
 {

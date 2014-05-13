@@ -75,6 +75,18 @@ default:
 FILE *eC_stdout(void);
 FILE *eC_stderr(void);
 
+bool Float_isNan(float n);
+bool Float_isInf(float n);
+int Float_signBit(float n);
+float Float_nan(void);
+float Float_inf(void);
+
+bool Double_isNan(double n);
+bool Double_isInf(double n);
+int Double_signBit(double n);
+double Double_nan(void);
+double Double_inf(void);
+
 extern int __ecereVMethodID_class_OnGetString;
 extern int __ecereVMethodID_class_OnGetDataFromString;
 extern int __ecereVMethodID_class_OnCompare;
@@ -1924,28 +1936,46 @@ static int Float_OnCompare(Class _class, float * data1, float * data2)
 
 static char * Float_OnGetString(Class _class, float * data, char * string, void * fieldData, bool * needClass)
 {
-   int c;
-   int last = 0;
-   int numDigits = 7, num = 1;
-   char format[10];
-   while(numDigits && num < *data) numDigits--, num *= 10;
-   sprintf(format, "%%.%df", numDigits);
-
-   //sprintf(string, "%f", *data);
-   sprintf(string, format, *data);
-
-   c = strlen(string)-1;
-   for( ; c >= 0; c--)
+   float f = *data;
+   if(f.isInf)
    {
-      if(string[c] != '0')
-         last = Max(last, c);
-      if(string[c] == '.')
+      if(f.signBit)
+         strcpy(string, "-inf");
+      else
+         strcpy(string, "inf");
+   }
+   else if(f.isNan)
+   {
+      if(f.signBit)
+         strcpy(string, "-nan");
+      else
+         strcpy(string, "nan");
+   }
+   else
+   {
+      int c;
+      int last = 0;
+      int numDigits = 7, num = 1;
+      char format[10];
+      while(numDigits && num < f) numDigits--, num *= 10;
+      sprintf(format, "%%.%df", numDigits);
+
+      //sprintf(string, "%f", f);
+      sprintf(string, format, f);
+
+      c = strlen(string)-1;
+      for( ; c >= 0; c--)
       {
-         if(last == c)
-            string[c] = 0;
-         else
-            string[last+1] = 0;
-         break;
+         if(string[c] != '0')
+            last = Max(last, c);
+         if(string[c] == '.')
+         {
+            if(last == c)
+               string[c] = 0;
+            else
+               string[last+1] = 0;
+            break;
+         }
       }
    }
    return string;
@@ -1993,6 +2023,13 @@ static void RegisterClass_Float(Module module)
    eClass_AddMethod(floatClass, "OnGetDataFromString", null, Float_OnGetDataFromString, publicAccess);
    eClass_AddMethod(floatClass, "OnSerialize", null, Float_OnSerialize, publicAccess);
    eClass_AddMethod(floatClass, "OnUnserialize", null, Float_OnUnserialize, publicAccess);
+
+   eClass_AddMethod(floatClass, "nan", "float ::nan(void)", Float_nan, publicAccess);
+   eClass_AddMethod(floatClass, "inf", "float ::inf(void)", Float_inf, publicAccess);
+
+   eClass_AddProperty(floatClass, "isNan", "bool", null, Float_isNan, publicAccess);
+   eClass_AddProperty(floatClass, "isInf", "bool", null, Float_isInf, publicAccess);
+   eClass_AddProperty(floatClass, "signBit", "int", null, Float_signBit, publicAccess);
 }
 
 // Double
@@ -2009,27 +2046,45 @@ static int Double_OnCompare(Class _class, double * data1, double * data2)
 
 static char * Double_OnGetString(Class _class, double * data, char * string, void * fieldData, bool * needClass)
 {
-   int c;
-   int last = 0;
-   //sprintf(string, "%.20f", *data);
-   if(runtimePlatform == win32)
-   // sprintf(string, "%.16g", *data);
-      sprintf(string, "%.15g", *data);
-   else
-      sprintf(string, "%.13lf", *data);
-
-   c = strlen(string)-1;
-   for( ; c >= 0; c--)
+   double f = *data;
+   if(f.isInf)
    {
-      if(string[c] != '0')
-         last = Max(last, c);
-      if(string[c] == '.')
+      if(f.signBit)
+         strcpy(string, "-inf");
+      else
+         strcpy(string, "inf");
+   }
+   else if(f.isNan)
+   {
+      if(f.signBit)
+         strcpy(string, "-nan");
+      else
+         strcpy(string, "nan");
+   }
+   else
+   {
+      int c;
+      int last = 0;
+      //sprintf(string, "%.20f", f);
+      if(runtimePlatform == win32)
+      // sprintf(string, "%.16g", f);
+         sprintf(string, "%.15g", f);
+      else
+         sprintf(string, "%.13lf", f);
+
+      c = strlen(string)-1;
+      for( ; c >= 0; c--)
       {
-         if(last == c)
-            string[c] = 0;
-         else
-            string[last+1] = 0;
-         break;
+         if(string[c] != '0')
+            last = Max(last, c);
+         if(string[c] == '.')
+         {
+            if(last == c)
+               string[c] = 0;
+            else
+               string[last+1] = 0;
+            break;
+         }
       }
    }
    return string;
@@ -2079,6 +2134,13 @@ static void RegisterClass_Double(Module module)
    eClass_AddMethod(doubleClass, "OnGetDataFromString", null, Double_OnGetDataFromString, publicAccess);
    eClass_AddMethod(doubleClass, "OnSerialize", null, Double_OnSerialize, publicAccess);
    eClass_AddMethod(doubleClass, "OnUnserialize", null, Double_OnUnserialize, publicAccess);
+
+   eClass_AddProperty(doubleClass, "isNan", "bool", null, Double_isNan, publicAccess);
+   eClass_AddProperty(doubleClass, "isInf", "bool", null, Double_isInf, publicAccess);
+   eClass_AddProperty(doubleClass, "signBit", "int", null, Double_signBit, publicAccess);
+
+   eClass_AddMethod(doubleClass, "nan", "double ::nan(void)", Double_nan, publicAccess);
+   eClass_AddMethod(doubleClass, "inf", "double ::inf(void)", Double_inf, publicAccess);
 }
 
 public struct StaticString

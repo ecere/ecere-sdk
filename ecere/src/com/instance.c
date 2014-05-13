@@ -559,3 +559,17 @@ void Instance_Module_Free(void * library)
    {
    }
 #endif
+
+#include <math.h>
+
+bool Float_isNan(float n) { return isnan(n); }
+bool Float_isInf(float n) { return isinf(n); }
+int Float_signBit(float n) { return signbit(n); }
+float Float_nan(void) { return NAN; }
+float Float_inf(void) { return INFINITY; }
+
+bool Double_isNan(double n) { return isnan(n); }
+bool Double_isInf(double n) { return isinf(n); }
+int Double_signBit(double n) { return signbit(n); }
+double Double_nan(void) { return NAN; }
+double Double_inf(void) { return INFINITY; }

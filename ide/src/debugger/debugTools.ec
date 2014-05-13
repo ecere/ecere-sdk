@@ -277,8 +277,9 @@ void DebugComputeExpression(Expression exp)
             case dummyExp:
                if(evaluation)
                {
-                  //expNew = ParseExpressionString(evaluation);
-                  expNew = MkExpConstant(evaluation);
+                  // Going back to parsing the expression string so as to catch inf/-inf/nan/-nan etc.
+                  expNew = ParseExpressionString(evaluation);
+                  //expNew = MkExpConstant(evaluation);
                   //printf("Evaluation = %s\n", evaluation);
                   delete evaluation;
                   expNew.destType = exp.expType;
@@ -787,10 +788,20 @@ void DebugComputeExpression(Expression exp)
                }
             }
             else
-               CallOperator(exp, exp1, exp2, op1, op2);
+            {
+               if(!exp2 && exp1 && exp1.type == constantExp && exp1.constant && !strcmp(exp1.constant, "nan") && exp.op.op == '-')
+               {
+                  FreeExpContents(exp);
+                  exp.constant = CopyString("-nan");
+                  exp.type = constantExp;
+               }
+               else
+                  CallOperator(exp, exp1, exp2, op1, op2);
+            }
             FreeType(op1.type);
             FreeType(op2.type);
-            exp.isConstant = true;
+            if(exp.type == constantExp)
+               exp.isConstant = true;
          }
          break;
       }
@@ -1071,6 +1082,23 @@ void DebugComputeExpression(Expression exp)
                      }
                   }
                }
+            }
+         }
+         break;
+      }
+      case callExp:
+      {
+         Expression callExp = exp.call.exp;
+         Identifier id = (callExp && callExp.type == identifierExp) ? callExp.identifier : null;
+         if(id && id.string)
+         {
+            if(!strcmp(id.string, "nan") || !strcmp(id.string, "inf"))
+            {
+               String s = id.string;
+               id.string = null;
+               FreeExpContents(exp);
+               exp.type = constantExp;
+               exp.constant = s;
             }
          }
          break;
@@ -1811,7 +1839,20 @@ void DebugComputeExpression(Expression exp)
                   case floatType:
                   {
                      float value = 0;
-                     if(GetFloat(exp.cast.exp, &value))
+                     if(exp.cast.exp.type == constantExp && exp.cast.exp.constant &&
+                        (!strcmpi(exp.cast.exp.constant, "nan") ||
+                        !strcmpi(exp.cast.exp.constant, "-nan") ||
+                        !strcmpi(exp.cast.exp.constant, "inf") ||
+                        !strcmpi(exp.cast.exp.constant, "-inf")))
+                     {
+                        String constant = exp.cast.exp.constant;
+                        exp.cast.exp.constant = null;
+                        FreeExpContents(exp);
+                        exp.constant = constant;
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                     }
+                     else if(GetFloat(exp.cast.exp, &value))
                      {
                         FreeExpContents(exp);
                         exp.constant = PrintFloat(value);
@@ -1823,7 +1864,20 @@ void DebugComputeExpression(Expression exp)
                   case doubleType:
                   {
                      double value = 0;
-                     if(GetDouble(exp.cast.exp, &value))
+                     if(exp.cast.exp.type == constantExp && exp.cast.exp.constant &&
+                        (!strcmpi(exp.cast.exp.constant, "nan") ||
+                        !strcmpi(exp.cast.exp.constant, "-nan") ||
+                        !strcmpi(exp.cast.exp.constant, "inf") ||
+                        !strcmpi(exp.cast.exp.constant, "-inf")))
+                     {
+                        String constant = exp.cast.exp.constant;
+                        exp.cast.exp.constant = null;
+                        FreeExpContents(exp);
+                        exp.constant = constant;
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                     }
+                     else if(GetDouble(exp.cast.exp, &value))
                      {
                         FreeExpContents(exp);
                         exp.constant = PrintDouble(value);

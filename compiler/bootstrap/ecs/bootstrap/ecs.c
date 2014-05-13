@@ -651,7 +651,7 @@ for(; ; )
 {
 char line[1024];
 
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(line[0] == '[')
@@ -662,7 +662,7 @@ struct ModuleImport * module = (((void *)0));
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -705,7 +705,7 @@ else if(!strcmp(line, "[Imported Classes]"))
 {
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -726,7 +726,7 @@ struct MethodImport * method = (((void *)0));
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -753,7 +753,7 @@ struct PropertyImport * prop = (((void *)0));
 
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -797,7 +797,7 @@ else if(!strcmp(line, "[Imported Functions]"))
 {
 for(; ; )
 {
-if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(!strcmp(line, "."))
@@ -1044,7 +1044,7 @@ FinishTemplatesContext(context);
 }
 if(method->isVirtual)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "int __ecereVMethodID_%s_%s;\n", className, method->name);
-else if(module->name && module->importType != 1 && (!meth || !meth->dataType->dllExport))
+else if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1 && (!meth || !meth->dataType->dllExport))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "int (*__ecereMethod_%s_%s)();\n", className, method->name);
 }
@@ -1058,7 +1058,7 @@ char propName[1024];
 propName[0] = (char)0;
 FullClassNameCat(propName, prop->name, 0x1);
 MangleClassName(propName);
-if(module->name && module->importType != 1)
+if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereProp_%s_Set_%s;\n", className, propName);
@@ -1120,7 +1120,7 @@ int read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  bu
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = dcomSymbols;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(dcomSymbols, buffer, 1, sizeof buffer);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(dcomSymbols, buffer, 1, sizeof (buffer));
 
 if(!read)
 break;
@@ -1339,7 +1339,7 @@ struct __ecereNameSpace__ecere__com__Method * meth = __ecereNameSpace__ecere__co
 
 if(!meth || !meth->dataType->dllExport)
 {
-if(method->isVirtual || (module->name && module->importType != 1))
+if(method->isVirtual || ((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   method = eClass_FindMethod(%s, \"%s\", module);\n", classID, method->name);
 if(method->isVirtual)
@@ -1357,7 +1357,7 @@ propName[0] = (char)0;
 FullClassNameCat(propName, prop->name, 0x1);
 MangleClassName(propName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n", className, propName, classID, prop->name);
-if(module->name && module->importType != 1)
+if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_Set_%s = _property.Set;\n", className, propName);
@@ -2711,8 +2711,8 @@ int c;
 
 if(f)
 {
-while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
-count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof tokens / sizeof tokens[0], tokens, 0x2);
+while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
+count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof (tokens) / sizeof (tokens[0]), tokens, 0x2);
 if(!count)
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
@@ -2764,8 +2764,8 @@ int c;
 
 if(f)
 {
-while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
-count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof tokens / sizeof tokens[0], tokens, 0x2);
+while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
+count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof (tokens) / sizeof (tokens[0]), tokens, 0x2);
 if(!count)
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
@@ -2824,7 +2824,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
 {
-if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof line))
+if(__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 {
 int len;
 
