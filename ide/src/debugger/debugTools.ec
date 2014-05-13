@@ -23,6 +23,7 @@ static void CarryExpressionError(Expression exp, Expression expError)
       case memoryErrorExp:
          expError.constant = null;
          break;
+      case memberPropertyErrorExp:
       case memberSymbolErrorExp:
          expError.member.exp = null;
          expError.member.member = null;
@@ -97,7 +98,7 @@ static char GetGdbFormatChar(Type type)
 {
    return (exp.type == dereferenceErrorExp || exp.type == symbolErrorExp ||
          exp.type == memberSymbolErrorExp || exp.type == memoryErrorExp || exp.type == unknownErrorExp ||
-         exp.type == noDebuggerErrorExp);
+         exp.type == noDebuggerErrorExp || exp.type == memberPropertyErrorExp);
 }
 
 void DebugComputeExpression(Expression exp)
@@ -1157,8 +1158,14 @@ void DebugComputeExpression(Expression exp)
                CarryExpressionError(exp, memberExp);
             else
             {
-               if(prop)
+               if(exp.member.memberType == methodMember)
                {
+                  FreeExpContents(exp);
+                  exp.type = unknownErrorExp;
+               }
+               else if(prop)
+               {
+                  bool supported = false;
                   if(prop.compiled)
                   {
                      Type type = prop.dataType;
@@ -1184,6 +1191,7 @@ void DebugComputeExpression(Expression exp)
                               GetFloat(memberExp, &value);
                               exp.constant = PrintFloat(Get ? Get(value) : value);
                               exp.type = constantExp;
+                              supported = true;
                               break;
                            }
                            case doubleType:
@@ -1198,6 +1206,7 @@ void DebugComputeExpression(Expression exp)
                                  Get = (void *)prop.Get;
                               exp.constant = PrintDouble(Get ? Get(value) : value);
                               exp.type = constantExp;
+                              supported = true;
                               break;
                            }
                         }
@@ -1227,6 +1236,7 @@ void DebugComputeExpression(Expression exp)
                                        };
                                        Set(exp.instance.data, value.instance.data);
                                        PopulateInstance(exp.instance);
+                                       supported = true;
                                     }
                                     break;
                                  }
@@ -1247,6 +1257,7 @@ void DebugComputeExpression(Expression exp)
 
                                     Set(exp.instance.data, intValue);
                                     PopulateInstance(exp.instance);
+                                    supported = true;
                                     break;
                                  }
                                  case int64Type:
@@ -1266,6 +1277,7 @@ void DebugComputeExpression(Expression exp)
 
                                     Set(exp.instance.data, intValue);
                                     PopulateInstance(exp.instance);
+                                    supported = true;
                                     break;
                                  }
                                  case doubleType:
@@ -1285,6 +1297,7 @@ void DebugComputeExpression(Expression exp)
 
                                     Set(exp.instance.data, doubleValue);
                                     PopulateInstance(exp.instance);
+                                    supported = true;
                                     break;
                                  }
                               }
@@ -1302,6 +1315,7 @@ void DebugComputeExpression(Expression exp)
                                        unsigned int bits = Set(value.instance.data);
                                        exp.constant = PrintHexUInt(bits);
                                        exp.type = constantExp;
+                                       supported = true;
                                        break;
                                     }
                                     else if(_class.type == bitClass)
@@ -1314,6 +1328,7 @@ void DebugComputeExpression(Expression exp)
                                        bits = Set(value);
                                        exp.constant = PrintHexUInt(bits);
                                        exp.type = constantExp;
+                                       supported = true;
                                     }
                                  }
                               }
@@ -1345,6 +1360,7 @@ void DebugComputeExpression(Expression exp)
                                        exp.type = instanceExp;
                                        Get(value, exp.instance.data);
                                        PopulateInstance(exp.instance);
+                                       supported = true;
                                     }
                                     else if(_class.type == bitClass)
                                     {
@@ -1352,6 +1368,7 @@ void DebugComputeExpression(Expression exp)
                                        uint64 bits = Get(value);
                                        exp.constant = PrintHexUInt64(bits);
                                        exp.type = constantExp;
+                                       supported = true;
                                     }
                                     break;
                                  }
@@ -1379,6 +1396,7 @@ void DebugComputeExpression(Expression exp)
                                        exp.type = instanceExp;
                                        Get(value, exp.instance.data);
                                        PopulateInstance(exp.instance);
+                                       supported = true;
                                     }
                                     break;
                                  }
@@ -1412,8 +1430,9 @@ void DebugComputeExpression(Expression exp)
                         }
                      }
                   }
-                  else
+                  if(!supported)
                   {
+                     exp.type = memberPropertyErrorExp;
                      exp.isConstant = false;
                   }
                }

@@ -2901,6 +2901,20 @@ class Debugger
                         snprintf(watchmsg, sizeof(watchmsg), $"Accessing member \"%s\" from unresolved expression", memberID ? memberID.string : "");
                      break;
                   }
+                  case memberPropertyErrorExp:
+                  {
+                     Expression memberExp = exp.member.exp;
+                     Identifier memberID = exp.member.member;
+                     Type type = memberExp.expType;
+                     Class _class = (type && memberID) ? (memberID && memberID.classSym) ? memberID.classSym.registered : ((type.kind == classType && type._class) ? type._class.registered : null) : null;
+                     char string[1024];
+                     string[0] = 0;
+                     if(_class && memberID && memberID.string)
+                        snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation for \"%s\" in class \"%s\"", memberID.string, _class.name);
+                     else
+                        snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation for \"%s\"", wh.expression);
+                     break;
+                  }
                   case memoryErrorExp:
                      // Need to ensure when set to memoryErrorExp, constant is set
                      snprintf(watchmsg, sizeof(watchmsg), $"Memory can't be read at %s", /*(exp.type == constantExp) ? */exp.constant /*: null*/);
@@ -3121,14 +3135,8 @@ class Debugger
                      else
                      {
                         char tempString[256];
-                        if(exp.member.memberType == propertyMember)
-                           // TODO: Have a propertyErrorExp to carry over
-                           snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation support for \"%s\"", wh.expression);
-                        else
                            // NOTE: This should never happen
                            snprintf(watchmsg, sizeof(watchmsg), $"Error evaluating \"%s\"", wh.expression);
-                           /*snprintf(watchmsg, sizeof(watchmsg), $"Evaluation failed for \"%s\" of type \"%s\"", wh.expression,
-                                 exp.type.OnGetString(tempString, null, null));*/
                      }
                      break;
                }

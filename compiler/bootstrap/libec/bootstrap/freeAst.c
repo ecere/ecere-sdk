@@ -1624,6 +1624,7 @@ break;
 case 20:
 (__ecereNameSpace__ecere__com__eSystem_Delete(exp->constant), exp->constant = 0);
 break;
+case 37:
 case 19:
 if(exp->member.exp)
 FreeExpression(exp->member.exp);

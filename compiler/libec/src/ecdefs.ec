@@ -410,7 +410,8 @@ public enum ExpressionType
    noDebuggerErrorExp,
    extensionCompoundExp, classExp, classDataExp, new0Exp, renew0Exp,
    dbopenExp, dbfieldExp, dbtableExp, dbindexExp, extensionExpressionExp, extensionInitializerExp,
-   vaArgExp, arrayExp, typeAlignExp
+   vaArgExp, arrayExp, typeAlignExp,
+   memberPropertyErrorExp
 };
 
 public enum MemberType

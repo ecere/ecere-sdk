@@ -510,6 +510,7 @@ static void _FreeExpression(Expression exp, bool freePointer)
       case memoryErrorExp:
          delete exp.constant;
          break;
+      case memberPropertyErrorExp:
       case memberSymbolErrorExp:
          if(exp.member.exp)
             FreeExpression(exp.member.exp);
