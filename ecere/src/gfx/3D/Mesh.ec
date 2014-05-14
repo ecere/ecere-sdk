@@ -1,7 +1,5 @@
 namespace gfx3D;
 
-#include <math.h>
-
 import "Display"
 
 public class MeshFeatures { public bool vertices:1, normals:1, texCoords1:1, texCoords2:1, doubleNormals:1, doubleVertices:1, colors:1; };
@@ -608,7 +606,7 @@ private:
       for(c = 0; c<nVertices; c++)
       {
          float x = vertices[c].x, y = vertices[c].y, z = vertices[c].z;
-         if(isnan(x) || isnan(y) || isnan(z));
+         if(x.isNan || y.isNan || z.isNan);
          else if(x > 1E20 || x < -1E20 || y > 1E20 || y < -1E20 || z > 1E20 || z < -1E20);
          else
          {
