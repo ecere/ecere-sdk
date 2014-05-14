@@ -31,7 +31,7 @@ static char * iconFiles[] =
    ":icon7.png",
    ":icon8.png",
    ":icon9.png",
-   ":icon10.png",
+   ":icon10.png"
 };
 
 #define NUM_ICONS (sizeof(iconFiles)/sizeof(char *))
@@ -114,7 +114,7 @@ static bool CreateBack(Mesh mesh, int width, int height, int depth, DisplaySyste
          };
          uint16 indices[4] =
          {
-            5,6,7,4,
+            5,6,7,4
          };
 
          CopyBytes(mesh.vertices, vertices, sizeof(vertices));
