@@ -2682,6 +2682,7 @@ class Debugger
       if(wh.expression)
       {
          char watchmsg[MAX_F_STRING];
+         watchmsg[0] = 0;
          if(state == stopped && !codeEditor)
             wh.value = CopyString($"No source file found for selected frame");
          //if(codeEditor && state == stopped || state != stopped)
@@ -2721,6 +2722,54 @@ class Debugger
                if(wh.type)
                   wh.type.refCount++;
                DebugComputeExpression(exp);
+               if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == bitClass)
+               {
+                  Class c = exp.expType._class.registered;
+                  char tmp[4096];
+                  bool needClass = false;
+                  Operand op = GetOperand(exp);
+                  char * s = null;
+                  char * (* onGetString)(void *, void *, void *, void *, void *) = (void *)c._vTbl[__ecereVMethodID_class_OnGetString];
+                  if(op.type)
+                  {
+                     if(op.type) op.type.refCount++;
+                     switch(op.kind)
+                     {
+                        case charType: s = onGetString(c, &op.c, tmp, null, &needClass); break;
+                        case shortType: s = onGetString(c, &op.s, tmp, null, &needClass); break;
+                        case intType: s = onGetString(c, &op.i, tmp, null, &needClass); break;
+                        case int64Type: s = onGetString(c, &op.i64, tmp, null, &needClass); break;
+                     }
+                  }
+                  if(s)
+                  {
+                     FreeExpContents(exp);
+                     exp.type = constantExp;
+                     exp.isConstant = true;
+                     exp.constant = CopyString(s);
+                  }
+                  FreeType(op.type);
+               }
+               else if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass && exp.hasAddress)
+               {
+                  Class c = exp.expType._class.registered;
+                  byte * data = GdbReadMemory(exp.address, c.structSize);
+                  if(data)
+                  {
+                     char tmp[4096];
+                     bool needClass = false;
+                     char * s = ((char * (*)(void *, void *, void *, void *, void *))(void *)c._vTbl[__ecereVMethodID_class_OnGetString])(c, data, tmp, null, &needClass);
+                     if(s)
+                     {
+                        FreeExpContents(exp);
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                        exp.constant = CopyString(s);
+                     }
+                     delete data;
+                  }
+               }
+
                if(ExpressionIsError(exp) && exp.type != functionCallErrorExp)
                {
                   GDBFallBack(exp, expString);
