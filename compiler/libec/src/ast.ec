@@ -2378,12 +2378,15 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                Symbol symbol = spec.name ? FindType(curContext, spec.name) : null;
                if(symbol && symbol.type)
                {
+                  // Keep constant qualifier
+                  bool isConstant = specType.constant;
                   // Free Type Contents:
                   Type dummy { };
                   *dummy = *specType;
                   FreeType(dummy);
 
                   CopyTypeInto(specType, symbol.type);
+                  specType.constant = isConstant;
                   specType.typeName = CopyString(symbol.type.name);
                }
                else if(!isTypedef) // !specType.kind)    // TESTING THIS FOR enum / typedef problem

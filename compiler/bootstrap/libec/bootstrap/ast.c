@@ -4161,11 +4161,13 @@ struct Symbol * symbol = spec->name ? FindType(curContext, spec->name) : (((void
 
 if(symbol && symbol->type)
 {
+unsigned int isConstant = specType->constant;
 struct Type * dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
 *dummy = *specType;
 FreeType(dummy);
 CopyTypeInto(specType, symbol->type);
+specType->constant = isConstant;
 specType->typeName = __ecereNameSpace__ecere__sys__CopyString(symbol->type->name);
 }
 else if(!isTypedef)

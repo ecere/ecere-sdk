@@ -1472,16 +1472,20 @@ extern int sprintf(char * , char * , ...);
 
 extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
+extern char *  strcat(char * , const char * );
+
 extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
 char * PrintInt(long long result)
 {
 char temp[100];
 
-if(result > (((long long)0x7fffffffffffffffLL)))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
+if(result > (((int)0x7fffffff)))
+sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
 else
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64dLL" : "%lldLL"), result);
+sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), result);
+if(result > (((int)0x7fffffff)) || result < (((int)0x80000000)))
+strcat(temp, "LL");
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 
@@ -3203,8 +3207,6 @@ classSym->idCode = curExternal->symbol->idCode;
 classSym->declaring--;
 }
 }
-
-extern char *  strcat(char * , const char * );
 
 extern struct ModuleImport * FindModule(struct __ecereNameSpace__ecere__com__Instance * moduleToFind);
 
@@ -10771,12 +10773,12 @@ case 4:
 if(type->isSigned)
 {
 op.i64 = __ecereNameSpace__ecere__com___strtoi64(exp->constant, (((void *)0)), 0);
-op.ops = intOps;
+op.ops = int64Ops;
 }
 else
 {
 op.ui64 = __ecereNameSpace__ecere__com___strtoui64(exp->constant, (((void *)0)), 0);
-op.ops = uintOps;
+op.ops = uint64Ops;
 }
 op.kind = 4;
 break;
@@ -14124,9 +14126,10 @@ type->isSigned = 0x1;
 else
 {
 unsigned int isSigned = constant[0] == '-';
-long long i64 = strtoll(constant, (((void *)0)), 0);
-uint64 ui64 = strtoull(constant, (((void *)0)), 0);
-unsigned int is64Bit = 0x0;
+char * endP = (((void *)0));
+long long i64 = strtoll(constant, &endP, 0);
+uint64 ui64 = strtoull(constant, &endP, 0);
+unsigned int is64Bit = endP && (!strcmp(endP, "LL") || !strcmp(endP, "ll"));
 
 if(isSigned)
 {

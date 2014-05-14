@@ -201,10 +201,12 @@ static void ReplaceClassMembers(Expression exp, Class _class)
 public char * PrintInt(int64 result)
 {
    char temp[100];
-   if(result > MAXINT64)
-      sprintf(temp, FORMAT64HEXLL /*"0x%I64XLL"*/, result);
+   if(result > MAXINT)
+      sprintf(temp, FORMAT64HEX /*"0x%I64XLL"*/, result);
    else
-      sprintf(temp, FORMAT64DLL /*"%I64d"*/, result);
+      sprintf(temp, FORMAT64D /*"%I64d"*/, result);
+   if(result > MAXINT || result < MININT)
+      strcat(temp, "LL");
    return CopyString(temp);
 }
 
@@ -4354,12 +4356,12 @@ public Operand GetOperand(Expression exp)
                if(type.isSigned)
                {
                   op.i64 = (int64)_strtoi64(exp.constant, null, 0);
-                  op.ops = intOps;
+                  op.ops = int64Ops;
                }
                else
                {
                   op.ui64 = (uint64)_strtoui64(exp.constant, null, 0);
-                  op.ops = uintOps;
+                  op.ops = uint64Ops;
                }
                op.kind = int64Type;
                break;
@@ -5130,17 +5132,17 @@ static bool Promote(Operand op, TypeKind kind, bool isSigned)
       case int64Type:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType || op.kind == doubleType ||
             op.kind == pointerType || op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
-         result = isSigned ? GetOpInt64(op, &op.i64) : GetOpUInt64(op, &op.ui64);
+            result = isSigned ? GetOpInt64(op, &op.i64) : GetOpUInt64(op, &op.ui64);
          break;
       case floatType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType ||
             op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
-         result = GetOpFloat(op, &op.f);
+            result = GetOpFloat(op, &op.f);
          break;
       case doubleType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType ||
             op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
-         result = GetOpDouble(op, &op.d);
+            result = GetOpDouble(op, &op.d);
          break;
       case pointerType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType || op.kind == doubleType ||
@@ -7873,9 +7875,10 @@ void ProcessExpressionType(Expression exp)
                else
                {
                   bool isSigned = constant[0] == '-';
-                  int64 i64 = strtoll(constant, null, 0);
-                  uint64 ui64 = strtoull(constant, null, 0);
-                  bool is64Bit = false;
+                  char * endP = null;
+                  int64 i64 = strtoll(constant, &endP, 0);
+                  uint64 ui64 = strtoull(constant, &endP, 0);
+                  bool is64Bit = endP && (!strcmp(endP, "LL") || !strcmp(endP, "ll"));
                   if(isSigned)
                   {
                      if(i64 < MININT)
