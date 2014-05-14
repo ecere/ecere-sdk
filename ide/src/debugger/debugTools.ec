@@ -1994,7 +1994,7 @@ void DebugComputeExpression(Expression exp)
                }
                else if(member)
                {
-                  if(memberExp.hasAddress || memberExp.type == constantExp)
+                  if(memberExp.hasAddress || memberExp.type == constantExp || (memberExp.type == instanceExp && memberExp.instance && memberExp.instance.data))
                   //if(memberExp.expType && memberExp.expType.kind == intType)  // && !exp.index.exp.expType.isSigned
                   {
                      if(_class.type == bitClass)
@@ -2077,8 +2077,55 @@ void DebugComputeExpression(Expression exp)
 
                            address += offset;
 
-                           if(!gotAddress)
+                           if(memberExp.type == instanceExp)
+                           {
+                              String constant = null;
+                              byte * data = memberExp.instance.data + offset;
+                              switch(dataType.kind)
+                              {
+                                 case charType:
+                                    if(dataType.isSigned)
+                                       constant = PrintChar(*(char *)data);
+                                    else
+                                       constant = PrintUChar(*(byte *)data);
+                                    break;
+                                 case shortType:
+                                    if(dataType.isSigned)
+                                       constant = PrintShort(*(short *)data);
+                                    else
+                                       constant = PrintUShort(*(uint16 *)data);
+                                    break;
+                                 case intType:
+                                    if(dataType.isSigned)
+                                       constant = PrintInt(*(int *)data);
+                                    else
+                                       constant = PrintUInt(*(uint *)data);
+                                    break;
+                                 case longType:
+                                 case int64Type:
+                                    if(dataType.isSigned)
+                                       constant = PrintInt64(*(int64 *)data);
+                                    else
+                                       constant = PrintUInt64(*(uint64 *)data);
+                                    break;
+                                 case floatType: constant = PrintFloat(*(float *)data); break;
+                                 case doubleType: constant = PrintDouble(*(double *)data); break;
+                              }
+                              if(constant)
+                              {
+                                 FreeExpContents(exp);
+                                 exp.constant = constant;
+                                 exp.type = constantExp;
+                                 exp.isConstant = true;
+                              }
+                              else
+                                 exp.type = unknownErrorExp;
+                           }
+                           else if(!gotAddress)
+                           {
+                              FreeExpContents(exp);
                               exp.type = unknownErrorExp;
+                           }
                            else if((dataType.kind == classType && dataType._class &&
                                  (!dataType._class.registered || dataType._class.registered.type == normalClass || dataType._class.registered.type == noHeadClass || dataType._class.registered.type == systemClass)) ||
                               (dataType.kind != classType && dataType.kind != arrayType && dataType.kind != structType && dataType.kind != unionType))
