@@ -419,11 +419,13 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
          }
          else if(def.type == classFixedClassDef)
          {
-            classDefine.fixed = true;
+            if(classDefine)
+               classDefine.fixed = true;
          }
          else if(def.type == classNoExpansionClassDef)
          {
-            classDefine.noExpansion = true;
+            if(classDefine)
+               classDefine.noExpansion = true;
          }
          else if(def.type == accessOverrideClassDef)
          {

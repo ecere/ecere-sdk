@@ -1481,10 +1481,12 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classDefine->classPrope
 }
 else if(def->type == 7)
 {
+if(classDefine)
 classDefine->fixed = 0x1;
 }
 else if(def->type == 6)
 {
+if(classDefine)
 classDefine->noExpansion = 0x1;
 }
 else if(def->type == 13)
