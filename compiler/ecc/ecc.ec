@@ -606,7 +606,7 @@ class CompilerApp : Application
 
             ast = GetAST();
 
-            if(/*ast /*&& !parseError*/ /*&& */!exitCode)
+            if(/*ast && !parseError*/ /*&& */!exitCode)
             {
                ProcessDBTableDefinitions();
 
