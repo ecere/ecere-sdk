@@ -1,5 +1,38 @@
 import "ide"
 
+#include <math.h>
+
+static Map<String, uintptr> oneArgFns
+{ [
+   { "sqrt", (uintptr)sqrt },
+   { "log", (uintptr)log },
+   { "log10", (uintptr)log10 },
+   { "sin", (uintptr)sin },
+   { "cos", (uintptr)cos },
+   { "tan", (uintptr)tan },
+   { "asin", (uintptr)asin },
+   { "acos", (uintptr)acos },
+   { "atan", (uintptr)atan },
+   { "sinh", (uintptr)sinh },
+   { "cosh", (uintptr)cosh },
+   { "tanh", (uintptr)tanh },
+   { "asinh", (uintptr)asinh },
+   { "acosh", (uintptr)acosh },
+   { "atanh", (uintptr)atanh },
+   { "exp", (uintptr)exp },
+   { "floor", (uintptr)floor },
+   { "ceil", (uintptr)ceil },
+   { "fabs", (uintptr)sqrt }
+
+] };
+
+static Map<String, uintptr> twoArgFns
+{ [
+   { "pow", (uintptr)pow },
+   { "atan2", (uintptr)atan2 },
+   { "fmod", (uintptr)fmod }
+] };
+
 static void CarryExpressionError(Expression exp, Expression expError)
 {
    Expression temp { };
@@ -1106,6 +1139,61 @@ void DebugComputeExpression(Expression exp)
                exp.type = constantExp;
                exp.constant = s;
                resolved = true;
+            }
+            else if(exp.call.arguments)
+            {
+               if(exp.call.arguments->count == 1)
+               {
+                  double (* fn1)(double) = (void *)oneArgFns[id.string];
+                  if(fn1)
+                  {
+                     Expression arg = exp.call.arguments->first;
+                     DebugComputeExpression(arg);
+                     if(ExpressionIsError(arg))
+                        CarryExpressionError(exp, arg);
+                     else if(arg.isConstant && arg.type == constantExp)
+                     {
+                        double v;
+                        if(GetDouble(arg, &v))
+                        {
+                           FreeExpContents(exp);
+                           exp.type = constantExp;
+                           v = fn1(v);
+                           exp.constant = PrintDouble(v);
+                           exp.isConstant = true;
+                           resolved = true;
+                        }
+                     }
+                  }
+               }
+               else if(exp.call.arguments->count == 2)
+               {
+                  double (* fn2)(double, double) = (void *)twoArgFns[id.string];
+                  if(fn2)
+                  {
+                     Expression arg1 = exp.call.arguments->first;
+                     Expression arg2 = exp.call.arguments->last;
+                     DebugComputeExpression(arg1);
+                     DebugComputeExpression(arg2);
+                     if(ExpressionIsError(arg1))
+                        CarryExpressionError(exp, arg1);
+                     else if(ExpressionIsError(arg2))
+                        CarryExpressionError(exp, arg2);
+                     else if(arg1.isConstant && arg1.type == constantExp && arg2.isConstant && arg2.type == constantExp)
+                     {
+                        double v1, v2;
+                        if(GetDouble(arg1, &v1) && GetDouble(arg2, &v2))
+                        {
+                           FreeExpContents(exp);
+                           exp.type = constantExp;
+                           v1 = fn2(v1, v2);
+                           exp.constant = PrintDouble(v1);
+                           exp.isConstant = true;
+                           resolved = true;
+                        }
+                     }
+                  }
+               }
             }
          }
          if(!resolved)
