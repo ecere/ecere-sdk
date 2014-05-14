@@ -12094,6 +12094,21 @@ Set(exp->instance->data, intValue);
 PopulateInstance(exp->instance);
 break;
 }
+case 6:
+{
+float floatValue;
+void (* Set)(void *, float) = (void *)prop->Set;
+
+exp->instance = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Instantiation);
+exp->instance->data = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(unsigned char) * (_class->structSize));
+exp->instance->_class = MkSpecifierName(_class->fullName);
+exp->instance->loc = exp->loc;
+exp->type = 1;
+GetFloat(value, &floatValue);
+Set(exp->instance->data, floatValue);
+PopulateInstance(exp->instance);
+break;
+}
 case 7:
 {
 double doubleValue;

@@ -5738,7 +5738,7 @@ void ComputeExpression(Expression exp)
                                     void (*Set)(void *, void *) = (void *)prop.Set;
                                     exp.instance = Instantiation { };
                                     exp.instance.data = new0 byte[_class.structSize];
-                                    exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                    exp.instance._class = MkSpecifierName(_class.fullName);
                                     exp.instance.loc = exp.loc;
                                     exp.type = instanceExp;
                                     Set(exp.instance.data, value.instance.data);
@@ -5753,7 +5753,7 @@ void ComputeExpression(Expression exp)
 
                                  exp.instance = Instantiation { };
                                  exp.instance.data = new0 byte[_class.structSize];
-                                 exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                 exp.instance._class = MkSpecifierName(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
 
@@ -5788,7 +5788,7 @@ void ComputeExpression(Expression exp)
 
                                  exp.instance = Instantiation { };
                                  exp.instance.data = new0 byte[_class.structSize];
-                                 exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                 exp.instance._class = MkSpecifierName(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
 
@@ -5806,13 +5806,30 @@ void ComputeExpression(Expression exp)
 
                                  exp.instance = Instantiation { };
                                  exp.instance.data = new0 byte[_class.structSize];
-                                 exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                 exp.instance._class = MkSpecifierName(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
 
                                  GetIntSize(value, &intValue);
 
                                  Set(exp.instance.data, intValue);
+                                 PopulateInstance(exp.instance);
+                                 break;
+                              }
+                              case floatType:
+                              {
+                                 float floatValue;
+                                 void (*Set)(void *, float) = (void *)prop.Set;
+
+                                 exp.instance = Instantiation { };
+                                 exp.instance.data = new0 byte[_class.structSize];
+                                 exp.instance._class = MkSpecifierName(_class.fullName);
+                                 exp.instance.loc = exp.loc;
+                                 exp.type = instanceExp;
+
+                                 GetFloat(value, &floatValue);
+
+                                 Set(exp.instance.data, floatValue);
                                  PopulateInstance(exp.instance);
                                  break;
                               }
@@ -5823,7 +5840,7 @@ void ComputeExpression(Expression exp)
 
                                  exp.instance = Instantiation { };
                                  exp.instance.data = new0 byte[_class.structSize];
-                                 exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                 exp.instance._class = MkSpecifierName(_class.fullName);
                                  exp.instance.loc = exp.loc;
                                  exp.type = instanceExp;
 
@@ -5883,7 +5900,7 @@ void ComputeExpression(Expression exp)
 
                                     exp.instance = Instantiation { };
                                     exp.instance.data = new0 byte[_class.structSize];
-                                    exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                    exp.instance._class = MkSpecifierName(_class.fullName);
                                     exp.instance.loc = exp.loc;
                                     //exp.instance.fullSet = true;
                                     exp.type = instanceExp;
@@ -5915,7 +5932,7 @@ void ComputeExpression(Expression exp)
 
                                     exp.instance = Instantiation { };
                                     exp.instance.data = new0 byte[_class.structSize];
-                                    exp.instance._class = MkSpecifierName/*MkClassName*/(_class.fullName);
+                                    exp.instance._class = MkSpecifierName(_class.fullName);
                                     exp.instance.loc = exp.loc;
                                     //exp.instance.fullSet = true;
                                     exp.type = instanceExp;

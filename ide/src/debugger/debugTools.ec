@@ -813,8 +813,6 @@ void DebugComputeExpression(Expression exp)
          {
             FreeInstance(inst);
          }
-
-         //ComputeInstantiation(exp);
          break;
       }
       /*
@@ -1747,6 +1745,8 @@ void DebugComputeExpression(Expression exp)
                               float value;
                               float (*Get)(float) = (void *) (convertTo ? prop.Set : prop.Get);
                               GetFloat(memberExp, &value);
+
+                              FreeExpContents(exp);
                               exp.constant = PrintFloat(Get ? Get(value) : value);
                               exp.type = constantExp;
                               exp.isConstant = true;
@@ -1758,6 +1758,8 @@ void DebugComputeExpression(Expression exp)
                               double value;
                               double (*Get)(double) = (void *) (convertTo ? prop.Set : prop.Get);
                               GetDouble(memberExp, &value);
+
+                              FreeExpContents(exp);
                               exp.constant = PrintDouble(Get ? Get(value) : value);
                               exp.isConstant = true;
                               exp.type = constantExp;
@@ -1772,6 +1774,8 @@ void DebugComputeExpression(Expression exp)
                         {
                            Expression value = memberExp;
                            Type type = prop.dataType;
+                           exp.member.exp = null;
+
                            if(_class.type == structClass)
                            {
                               switch(type.kind)
@@ -1782,6 +1786,7 @@ void DebugComputeExpression(Expression exp)
                                     if(propertyClass.type == structClass && value.type == instanceExp)
                                     {
                                        void (*Set)(void *, void *) = (void *)prop.Set;
+                                       FreeExpContents(exp);
                                        exp.instance = Instantiation
                                        {
                                           data = new0 byte[_class.structSize];
@@ -1801,6 +1806,8 @@ void DebugComputeExpression(Expression exp)
                                     int intValue;
                                     void (*Set)(void *, int) = (void *)prop.Set;
 
+                                    GetInt(value, &intValue);
+                                    FreeExpContents(exp);
                                     exp.instance = Instantiation
                                     {
                                        data = new0 byte[_class.structSize];
@@ -1808,8 +1815,6 @@ void DebugComputeExpression(Expression exp)
                                        loc = exp.loc;
                                     };
                                     exp.type = instanceExp;
-
-                                    GetInt(value, &intValue);
 
                                     Set(exp.instance.data, intValue);
                                     PopulateInstance(exp.instance);
@@ -1821,6 +1826,8 @@ void DebugComputeExpression(Expression exp)
                                     int64 intValue;
                                     void (*Set)(void *, int64) = (void *)prop.Set;
 
+                                    GetInt64(value, &intValue);
+                                    FreeExpContents(exp);
                                     exp.instance = Instantiation
                                     {
                                        data = new0 byte[_class.structSize];
@@ -1829,9 +1836,27 @@ void DebugComputeExpression(Expression exp)
                                     };
                                     exp.type = instanceExp;
 
-                                    GetInt64(value, &intValue);
-
                                     Set(exp.instance.data, intValue);
+                                    PopulateInstance(exp.instance);
+                                    supported = true;
+                                    break;
+                                 }
+                                 case floatType:
+                                 {
+                                    float floatValue;
+                                    void (*Set)(void *, float) = (void *)prop.Set;
+
+                                    GetFloat(value, &floatValue);
+                                    FreeExpContents(exp);
+                                    exp.instance = Instantiation
+                                    {
+                                       data = new0 byte[_class.structSize];
+                                       _class = MkSpecifierName/*MkClassName*/(_class.name);
+                                       loc = exp.loc;
+                                    };
+                                    exp.type = instanceExp;
+
+                                    Set(exp.instance.data, floatValue);
                                     PopulateInstance(exp.instance);
                                     supported = true;
                                     break;
@@ -1841,6 +1866,8 @@ void DebugComputeExpression(Expression exp)
                                     double doubleValue;
                                     void (*Set)(void *, double) = (void *)prop.Set;
 
+                                    GetDouble(value, &doubleValue);
+                                    FreeExpContents(exp);
                                     exp.instance = Instantiation
                                     {
                                        data = new0 byte[_class.structSize];
@@ -1848,8 +1875,6 @@ void DebugComputeExpression(Expression exp)
                                        loc = exp.loc;
                                     };
                                     exp.type = instanceExp;
-
-                                    GetDouble(value, &doubleValue);
 
                                     Set(exp.instance.data, doubleValue);
                                     PopulateInstance(exp.instance);
@@ -1869,6 +1894,7 @@ void DebugComputeExpression(Expression exp)
                                     {
                                        unsigned int (*Set)(void *) = (void *)prop.Set;
                                        unsigned int bits = Set(value.instance.data);
+                                       FreeExpContents(exp);
                                        exp.constant = PrintHexUInt(bits);
                                        exp.type = constantExp;
                                        supported = true;
@@ -1882,6 +1908,7 @@ void DebugComputeExpression(Expression exp)
 
                                        GetUInt(memberExp, &value);
                                        bits = Set(value);
+                                       FreeExpContents(exp);
                                        exp.constant = PrintHexUInt(bits);
                                        exp.type = constantExp;
                                        supported = true;
@@ -1889,6 +1916,7 @@ void DebugComputeExpression(Expression exp)
                                  }
                               }
                            }
+                           FreeExpression(value);
                         }
                         else
                         {
@@ -1906,6 +1934,7 @@ void DebugComputeExpression(Expression exp)
                                     {
                                        void (*Get)(unsigned int, void *) = (void *)prop.Get;
 
+                                       FreeExpContents(exp);
                                        exp.instance = Instantiation
                                        {
                                           data = new0 byte[_class.structSize];
@@ -1933,6 +1962,9 @@ void DebugComputeExpression(Expression exp)
                            else if(_class.type == structClass)
                            {
                               char * value = (memberExp.type == instanceExp ) ? memberExp.instance.data : null;
+                              if(value)
+                                 memberExp.instance.data = null;
+
                               switch(type.kind)
                               {
                                  case classType:
@@ -1942,6 +1974,7 @@ void DebugComputeExpression(Expression exp)
                                     {
                                        void (*Get)(void *, void *) = (void *)prop.Get;
 
+                                       FreeExpContents(exp);
                                        exp.instance = Instantiation
                                        {
                                           data = new0 byte[_class.structSize];
@@ -1957,6 +1990,8 @@ void DebugComputeExpression(Expression exp)
                                     break;
                                  }
                               }
+
+                              delete value;
                            }
                            /*else
                            {
@@ -1970,6 +2005,7 @@ void DebugComputeExpression(Expression exp)
                                     {
                                        void *(*Get)(void *) = (void *)prop.Get;
 
+                                       FreeExpContents(exp);
                                        exp.instance = Instantiation
                                        {
                                           data = Get(value, exp.instance.data);     ?????
@@ -1988,6 +2024,7 @@ void DebugComputeExpression(Expression exp)
                   }
                   if(!supported)
                   {
+                     FreeExpContents(exp);
                      exp.type = memberPropertyErrorExp;
                      exp.isConstant = false;
                   }
