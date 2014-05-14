@@ -374,40 +374,41 @@ type:
          $$ = MkSpecifierName($1.string);
          FreeIdentifier($1);
          FreeIdentifier($2);
-         return;
-      }
-
-      // if($1._class && !$1._class.name)
-      if($1._class)
-      {
-         char name[1024];
-         strcpy(name,  $1._class.name ? $1._class.name : "");
-         strcat(name, "::");
-         strcat(name, $1.string);
-         _DeclClass(0, name);
       }
       else
-         _DeclClass(0, $1.string);
+      {
+         // if($1._class && !$1._class.name)
+         if($1._class)
+         {
+            char name[1024];
+            strcpy(name,  $1._class.name ? $1._class.name : "");
+            strcat(name, "::");
+            strcat(name, $1.string);
+            _DeclClass(0, name);
+         }
+         else
+            _DeclClass(0, $1.string);
 
-      FreeIdentifier($1);
-      FreeIdentifier($2);
+         FreeIdentifier($1);
+         FreeIdentifier($2);
 
-      fileInput.Seek(@1.start.pos, start);
-      resetScannerPos(&@1.start);
-      yyclearin;
+         fileInput.Seek(@1.start.pos, start);
+         resetScannerPos(&@1.start);
+         yyclearin;
 
-      YYPOPSTACK(1);
-      yystate = *yyssp;
-      YY_STACK_PRINT (yyss, yyssp);
-      YYPOPSTACK(1);
-      yystate = *yyssp;
-      YY_STACK_PRINT (yyss, yyssp);
-      goto yysetstate;
+         YYPOPSTACK(1);
+         yystate = *yyssp;
+         YY_STACK_PRINT (yyss, yyssp);
+         YYPOPSTACK(1);
+         yystate = *yyssp;
+         YY_STACK_PRINT (yyss, yyssp);
+         goto yysetstate;
    #else
-      Location tmpLoc = yylloc; $$ = $2; yylloc = @1;
-      Compiler_Error($"Not a type: %s\n", $1.string);
-      yylloc = tmpLoc; $2.badID = $1;
+         Location tmpLoc = yylloc; $$ = $2; yylloc = @1;
+         Compiler_Error($"Not a type: %s\n", $1.string);
+         yylloc = tmpLoc; $2.badID = $1;
    #endif
+      }
    }
    /*
    | identifier '<'
