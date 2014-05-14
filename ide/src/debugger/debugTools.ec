@@ -1256,7 +1256,7 @@ void DebugComputeExpression(Expression exp)
                convertTo = _class;
                _class = classSym ? classSym.registered : null;
                if(_class)
-                  prop = eClass_FindProperty(_class, convertTo.name, _class.module.application);
+                  prop = eClass_FindProperty(_class, convertTo.fullName, _class.module.application);
             }
 
             //DebugComputeExpression(memberExp);
@@ -1293,24 +1293,21 @@ void DebugComputeExpression(Expression exp)
                            case floatType:
                            {
                               float value;
-                              float (*Get)(float) = (void *)prop.Get;
+                              float (*Get)(float) = (void *) (convertTo ? prop.Set : prop.Get);
                               GetFloat(memberExp, &value);
                               exp.constant = PrintFloat(Get ? Get(value) : value);
                               exp.type = constantExp;
+                              exp.isConstant = true;
                               supported = true;
                               break;
                            }
                            case doubleType:
                            {
                               double value;
-                              double (*Get)(double);
+                              double (*Get)(double) = (void *) (convertTo ? prop.Set : prop.Get);
                               GetDouble(memberExp, &value);
-
-                              if(convertTo)
-                                 Get = (void *)prop.Set;
-                              else
-                                 Get = (void *)prop.Get;
                               exp.constant = PrintDouble(Get ? Get(value) : value);
+                              exp.isConstant = true;
                               exp.type = constantExp;
                               supported = true;
                               break;
@@ -1336,10 +1333,11 @@ void DebugComputeExpression(Expression exp)
                                        exp.instance = Instantiation
                                        {
                                           data = new0 byte[_class.structSize];
-                                          _class = MkSpecifierName/*MkClassName*/(_class.name);
+                                          _class = MkSpecifierName(_class.name);
                                           loc = exp.loc;
-                                          exp.type = instanceExp;
                                        };
+                                       exp.type = instanceExp;
+
                                        Set(exp.instance.data, value.instance.data);
                                        PopulateInstance(exp.instance);
                                        supported = true;
