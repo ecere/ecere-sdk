@@ -2722,7 +2722,20 @@ class Debugger
                if(wh.type)
                   wh.type.refCount++;
                DebugComputeExpression(exp);
-               if(exp.type == instanceExp && exp.instance.data)
+               // e.g. Meters * Degrees has no type set yet for some reason
+               if(!wh.type && exp.expType)
+               {
+                  wh.type = exp.expType;
+                  exp.expType.refCount++;
+               }
+
+               // This makes Degrees { 45 } work
+               if(exp.type == constantExp && exp.isConstant && exp.expType && exp.expType.kind == classType &&
+                  exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == unitClass && exp.expType._class.registered.base.type == unitClass)
+               {
+                  ApplyUnitConverters(exp);
+               }
+               else if(exp.type == instanceExp && exp.instance.data)
                {
                   Symbol s = exp.instance._class ? exp.instance._class.symbol : null;
                   Class c = s ? s.registered : null;

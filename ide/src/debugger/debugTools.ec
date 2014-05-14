@@ -2604,3 +2604,231 @@ void DebugComputeExpression(Expression exp)
       }
    }
 }
+
+void ApplyUnitConverters(Expression exp)
+{
+   Property convert = null;
+   Type type = exp.expType;
+   bool useGet = false;
+   if(type.kind == classType && type._class && type._class.registered)
+   {
+      Class _class = type._class.registered;
+      if(_class.type == unitClass || _class.type == bitClass || _class.type == enumClass)
+      {
+         if(_class.type == unitClass && _class.base.type == unitClass)
+         {
+            Property p;
+            for(p = _class.conversions.first; p; p = p.next)
+            {
+               if(!strcmp(p.name, _class.base.fullName))
+               {
+                  convert = p;
+                  break;
+               }
+               else
+               {
+                  Class c = eSystem_FindClass(_class.module, p.name);
+                  if(c)
+                  {
+                     Property p2;
+                     for(p2 = c.conversions.first; p2; p2 = p2.next)
+                     {
+                        if(!strcmp(p2.name, _class.base.fullName))
+                        {
+                           convert = p;
+                           break;
+                        }
+                     }
+                  }
+                  if(convert)
+                     break;
+               }
+            }
+         }
+
+         if(!_class.dataType)
+            _class.dataType = ProcessTypeString(_class.dataTypeString, false);
+         type = _class.dataType;
+      }
+   }
+   if(convert)
+   {
+      switch(type.kind)
+      {
+         case charType:
+            if(type.isSigned)
+            {
+               char value = 0;
+               if(GetChar(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintChar(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            else
+            {
+               unsigned char value = 0;
+               if(GetUChar(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintUChar(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            break;
+         case shortType:
+            if(type.isSigned)
+            {
+               short value = 0;
+               if(GetShort(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintShort(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            else
+            {
+               unsigned short value = 0;
+               if(GetUShort(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintUShort(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            break;
+         case intType:
+            if(type.isSigned)
+            {
+               int value = 0;
+               if(GetInt(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintInt(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            else
+            {
+               unsigned int value = 0;
+               if(GetUInt(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintUInt(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            break;
+         case int64Type:
+            if(type.isSigned)
+            {
+               int64 value = 0;
+               if(GetInt64(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintInt64(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            else
+            {
+               uint64 value = 0;
+               if(GetUInt64(exp, &value))
+               {
+                  FreeExpContents(exp);
+                  exp.constant = PrintUInt64(value);
+                  exp.type = constantExp;
+                  exp.isConstant = true;
+               }
+            }
+            break;
+         case pointerType:
+         case classType:
+         {
+            uint64 value = 0;
+            if(GetUInt64(exp, &value))
+            {
+               FreeExpContents(exp);
+               if(type.kind == pointerType || type.kind == classType)
+                  exp.constant = PrintHexUInt64(value);
+               else
+                  exp.constant = PrintUInt64(value);
+               exp.type = constantExp;
+               exp.isConstant = true;
+            }
+            break;
+         }
+         case floatType:
+         {
+            float value = 0;
+            if(exp.type == constantExp && exp.constant &&
+               (!strcmpi(exp.constant, "nan") ||
+               !strcmpi(exp.constant, "-nan") ||
+               !strcmpi(exp.constant, "inf") ||
+               !strcmpi(exp.constant, "-inf")))
+            {
+               String constant = exp.constant;
+               exp.constant = null;
+               FreeExpContents(exp);
+               exp.constant = constant;
+               exp.type = constantExp;
+               exp.isConstant = true;
+            }
+            else if(GetFloat(exp, &value))
+            {
+               if(convert)
+               {
+                  float (*convertFn)(float) = (void *)(useGet ? convert.Get : convert.Set);
+                  if(convertFn)
+                     value = convertFn(value);
+               }
+               FreeExpContents(exp);
+               exp.constant = PrintFloat(value);
+               exp.type = constantExp;
+               exp.isConstant = true;
+            }
+            break;
+         }
+         case doubleType:
+         {
+            double value = 0;
+            if(exp.type == constantExp && exp.constant &&
+               (!strcmpi(exp.constant, "nan") ||
+               !strcmpi(exp.constant, "-nan") ||
+               !strcmpi(exp.constant, "inf") ||
+               !strcmpi(exp.constant, "-inf")))
+            {
+               String constant = exp.constant;
+               exp.constant = null;
+               FreeExpContents(exp);
+               exp.constant = constant;
+               exp.type = constantExp;
+               exp.isConstant = true;
+            }
+            else if(GetDouble(exp, &value))
+            {
+               if(convert)
+               {
+                  double (*convertFn)(double) = (void *)(useGet ? convert.Get : convert.Set);
+                  if(convertFn)
+                     value = convertFn(value);
+               }
+               FreeExpContents(exp);
+               exp.constant = PrintDouble(value);
+               exp.type = constantExp;
+               exp.isConstant = true;
+            }
+            break;
+         }
+      }
+   }
+}
