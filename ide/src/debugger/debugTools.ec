@@ -1,7 +1,5 @@
 import "ide"
 
-#include <math.h>
-
 static Map<String, uintptr> oneArgFns
 { [
    { "sqrt", (uintptr)sqrt },
@@ -23,7 +21,6 @@ static Map<String, uintptr> oneArgFns
    { "floor", (uintptr)floor },
    { "ceil", (uintptr)ceil },
    { "fabs", (uintptr)sqrt }
-
 ] };
 
 static Map<String, uintptr> twoArgFns

@@ -224,7 +224,8 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L/usr/X11R6/lib
 LIBS += \
-	$(call _L,X11)
+	$(call _L,X11) \
+	$(call _L,m)
 endif
 
 else
@@ -234,7 +235,8 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L/usr/X11R6/lib
 LIBS += \
-	$(call _L,X11)
+	$(call _L,X11) \
+	$(call _L,m)
 endif
 
 endif
