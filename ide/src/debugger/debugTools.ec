@@ -1835,6 +1835,12 @@ void DebugComputeExpression(Expression exp)
                         _class.dataType = ProcessTypeString(_class.dataTypeString, false);
                      type = _class.dataType;
                   }
+                  else if(_class.type == structClass && !type.byReference)
+                  {
+                     FreeExpContents(exp);
+                     exp.type = unknownErrorExp;
+                     break;
+                  }
                }
 
                switch(type.kind)

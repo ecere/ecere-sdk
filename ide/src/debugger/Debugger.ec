@@ -3133,18 +3133,45 @@ class Debugger
                      }
                      break;
                   default:
-                     if(exp.hasAddress)
+                  {
+                     bool genericError = true;
+                     if(exp.expType && exp.hasAddress)
                      {
-                        wh.value = PrintHexUInt64(exp.address);
-                        result = true;
+                        bool showAddress = false;
+                        switch(exp.expType.kind)
+                        {
+                           case pointerType:
+                           case functionType:
+                           case methodType:
+                           case arrayType:
+                           case subClassType:
+                           case thisClassType:
+                              showAddress = true;
+                              break;
+                           case classType:
+                           {
+                              Symbol s = exp.expType._class;
+                              if(s)
+                              {
+                                 Class c = s.registered;
+                                 if(c.type == noHeadClass || c.type == normalClass)
+                                    showAddress = true;
+                              }
+                              break;
+                           }
+                        }
+                        if(showAddress)
+                        {
+                           wh.value = PrintHexUInt64(exp.address);
+                           result = true;
+                           genericError = false;
+                        }
                      }
-                     else
-                     {
-                        char tempString[256];
-                           // NOTE: This should never happen
-                           snprintf(watchmsg, sizeof(watchmsg), $"Error evaluating \"%s\"", wh.expression);
-                     }
+                     if(genericError)
+                        // NOTE: This should ideally be handled with a specific error message
+                        snprintf(watchmsg, sizeof(watchmsg), $"Error evaluating \"%s\"", wh.expression);
                      break;
+                  }
                }
             }
             else
