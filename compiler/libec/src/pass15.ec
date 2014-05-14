@@ -4017,12 +4017,23 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       return true;                                                \
    }
 
-#define BINARY_DIVIDE(o, name, m, t, p) \
+#define BINARY_DIVIDEINT(o, name, m, t, p) \
    static bool name(Expression exp, Operand op1, Operand op2)   \
    {                                                              \
       t value2 = op2.m;                                           \
       exp.type = constantExp;                                    \
       exp.string = p(value2 ? (op1.m o value2) : 0);             \
+      if(!exp.expType) \
+         { exp.expType = op1.type; if(op1.type) op1.type.refCount++; } \
+      return true;                                                \
+   }
+
+#define BINARY_DIVIDEREAL(o, name, m, t, p) \
+   static bool name(Expression exp, Operand op1, Operand op2)   \
+   {                                                              \
+      t value2 = op2.m;                                           \
+      exp.type = constantExp;                                    \
+      exp.string = p(op1.m o value2);             \
       if(!exp.expType) \
          { exp.expType = op1.type; if(op1.type) op1.type.refCount++; } \
       return true;                                                \
@@ -4060,13 +4071,17 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    macro(o, Char##name, c, char, PrintChar) \
    macro(o, UChar##name, uc, unsigned char, PrintUChar)
 
+#define OPERATOR_REALTYPES(macro, o, name) \
+   macro(o, Float##name, f, float, PrintFloat) \
+   macro(o, Double##name, d, double, PrintDouble)
 
 // binary arithmetic
 OPERATOR_ALL(BINARY, +, Add)
 OPERATOR_ALL(BINARY, -, Sub)
 OPERATOR_ALL(BINARY, *, Mul)
-OPERATOR_ALL(BINARY_DIVIDE, /, Div)
-OPERATOR_INTTYPES(BINARY_DIVIDE, %, Mod)
+OPERATOR_INTTYPES(BINARY_DIVIDEINT, /, Div)
+OPERATOR_REALTYPES(BINARY_DIVIDEREAL, /, Div)
+OPERATOR_INTTYPES(BINARY_DIVIDEINT, %, Mod)
 
 // unary arithmetic
 OPERATOR_ALL(UNARY, -, Neg)
@@ -4080,8 +4095,9 @@ OPERATOR_ALL(BINARY, =, Asign)
 OPERATOR_ALL(BINARY, +=, AddAsign)
 OPERATOR_ALL(BINARY, -=, SubAsign)
 OPERATOR_ALL(BINARY, *=, MulAsign)
-OPERATOR_ALL(BINARY_DIVIDE, /=, DivAsign)
-OPERATOR_INTTYPES(BINARY_DIVIDE, %=, ModAsign)
+OPERATOR_INTTYPES(BINARY_DIVIDEINT, /=, DivAsign)
+OPERATOR_REALTYPES(BINARY_DIVIDEREAL, /=, DivAsign)
+OPERATOR_INTTYPES(BINARY_DIVIDEINT, %=, ModAsign)
 
 // binary bitwise
 OPERATOR_INTTYPES(BINARY, &, BitAnd)

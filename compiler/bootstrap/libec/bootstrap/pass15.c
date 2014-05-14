@@ -6347,7 +6347,7 @@ static unsigned int FloatDiv(struct Expression * exp, struct Operand * op1, stru
 float value2 = op2->f;
 
 exp->type = 2;
-exp->string = PrintFloat(value2 ? (op1->f / value2) : 0);
+exp->string = PrintFloat(op1->f / value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -6362,7 +6362,7 @@ static unsigned int DoubleDiv(struct Expression * exp, struct Operand * op1, str
 double value2 = op2->d;
 
 exp->type = 2;
-exp->string = PrintDouble(value2 ? (op1->d / value2) : 0);
+exp->string = PrintDouble(op1->d / value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7607,7 +7607,7 @@ static unsigned int FloatDivAsign(struct Expression * exp, struct Operand * op1,
 float value2 = op2->f;
 
 exp->type = 2;
-exp->string = PrintFloat(value2 ? (op1->f /= value2) : 0);
+exp->string = PrintFloat(op1->f /= value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -7622,7 +7622,7 @@ static unsigned int DoubleDivAsign(struct Expression * exp, struct Operand * op1
 double value2 = op2->d;
 
 exp->type = 2;
-exp->string = PrintDouble(value2 ? (op1->d /= value2) : 0);
+exp->string = PrintDouble(op1->d /= value2);
 if(!exp->expType)
 {
 exp->expType = op1->type;

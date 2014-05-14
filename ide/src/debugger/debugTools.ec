@@ -135,7 +135,7 @@ static char GetGdbFormatChar(Type type)
 {
    return (exp.type == dereferenceErrorExp || exp.type == symbolErrorExp ||
          exp.type == memberSymbolErrorExp || exp.type == memoryErrorExp || exp.type == unknownErrorExp ||
-         exp.type == noDebuggerErrorExp || exp.type == memberPropertyErrorExp || exp.type == functionCallErrorExp);
+         exp.type == noDebuggerErrorExp || exp.type == memberPropertyErrorExp || exp.type == functionCallErrorExp || exp.type == divideBy0ErrorExp);
 }
 
 void DebugComputeExpression(Expression exp)
@@ -834,7 +834,17 @@ void DebugComputeExpression(Expression exp)
                   exp.type = constantExp;
                }
                else
-                  CallOperator(exp, exp1, exp2, op1, op2);
+               {
+                  if((exp.op.op == '/' || exp.op.op == '%') && op2.kind != doubleType && op1.kind != doubleType && op2.kind != floatType && op1.kind != floatType &&
+                     (((op2.kind == int64Type || op2.kind == intPtrType || op2.kind == intSizeType) && !op2.i64) ||
+                     (op2.kind == intType && !op2.i) || (op2.kind == shortType && !op2.s) || (op2.kind == charType && !op2.c)))
+                  {
+                     FreeExpContents(exp);
+                     exp.type = divideBy0ErrorExp;
+                  }
+                  else
+                     CallOperator(exp, exp1, exp2, op1, op2);
+               }
             }
             FreeType(op1.type);
             FreeType(op2.type);

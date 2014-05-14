@@ -2928,6 +2928,9 @@ class Debugger
                   case dereferenceErrorExp:
                      snprintf(watchmsg, sizeof(watchmsg), $"Dereferencing error evaluating \"%s\"", wh.expression);
                      break;
+                  case divideBy0ErrorExp:
+                     snprintf(watchmsg, sizeof(watchmsg), $"Integer division by 0");
+                     break;
                   case noDebuggerErrorExp:
                      snprintf(watchmsg, sizeof(watchmsg), $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
                      break;
