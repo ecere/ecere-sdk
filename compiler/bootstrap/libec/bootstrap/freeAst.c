@@ -2721,7 +2721,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeDeclaration", "void 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeFunction", "void FreeFunction(FunctionDefinition func)", FreeFunction, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeMemberInit", "void FreeMemberInit(MemberInit init)", FreeMemberInit, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeMembersInit", "void FreeMembersInit(MembersInit init)", FreeMembersInit, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeInstance", "void FreeInstance(Instantiation inst)", FreeInstance, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeInstance", "void FreeInstance(Instantiation inst)", FreeInstance, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeClassFunction", "void FreeClassFunction(ClassFunction func)", FreeClassFunction, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeProperty", "void FreeProperty(PropertyDef def)", FreeProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeClassDef", "void FreeClassDef(ClassDef def)", FreeClassDef, module, 2);

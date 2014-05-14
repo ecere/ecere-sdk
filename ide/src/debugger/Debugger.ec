@@ -2722,7 +2722,25 @@ class Debugger
                if(wh.type)
                   wh.type.refCount++;
                DebugComputeExpression(exp);
-               if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == bitClass)
+               if(exp.type == instanceExp && exp.instance.data)
+               {
+                  Symbol s = exp.instance._class ? exp.instance._class.symbol : null;
+                  Class c = s ? s.registered : null;
+                  if(c)
+                  {
+                     char tmp[4096];
+                     bool needClass = false;
+                     char * s = ((char * (*)(void *, void *, void *, void *, void *))(void *)c._vTbl[__ecereVMethodID_class_OnGetString])(c, exp.instance.data, tmp, null, &needClass);
+                     if(s)
+                     {
+                        FreeExpContents(exp);
+                        exp.type = constantExp;
+                        exp.isConstant = true;
+                        exp.constant = CopyString(s);
+                     }
+                  }
+               }
+               else if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == bitClass)
                {
                   Class c = exp.expType._class.registered;
                   char tmp[4096];

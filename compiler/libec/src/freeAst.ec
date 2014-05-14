@@ -876,7 +876,7 @@ void FreeMembersInit(MembersInit init)
    delete init;
 }
 
-void FreeInstance(Instantiation inst)
+public void FreeInstance(Instantiation inst)
 {
    if(inst.members)
    {

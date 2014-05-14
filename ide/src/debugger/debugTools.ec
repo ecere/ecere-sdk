@@ -362,7 +362,459 @@ void DebugComputeExpression(Expression exp)
       }
       case instanceExp:
       {
-         ComputeInstantiation(exp);
+         Instantiation inst = exp.instance;
+         MembersInit members;
+         Symbol classSym = inst._class ? inst._class.symbol : null; // FindClass(inst._class.name);
+         Class _class = classSym ? classSym.registered : null;
+         DataMember curMember = null;
+         Class curClass = null;
+         DataMember subMemberStack[256];
+         int subMemberStackPos = 0;
+         uint64 bits = 0;
+
+         if(_class && (_class.type == structClass || _class.type == normalClass || _class.type == noHeadClass ))
+         {
+            // Don't recompute the instantiation...
+            // Non Simple classes will have become constants by now
+            if(inst.data)
+               return;
+
+            if(_class.type == normalClass || _class.type == noHeadClass)
+            {
+               inst.data = (byte *)eInstance_New(_class);
+               if(_class.type == normalClass)
+                  ((Instance)inst.data)._refCount++;
+            }
+            else
+               inst.data = new0 byte[_class.structSize];
+         }
+
+         if(inst.members)
+         {
+            for(members = inst.members->first; members; members = members.next)
+            {
+               switch(members.type)
+               {
+                  case dataMembersInit:
+                  {
+                     if(members.dataMembers)
+                     {
+                        MemberInit member;
+                        for(member = members.dataMembers->first; member; member = member.next)
+                        {
+                           Identifier ident = member.identifiers ? member.identifiers->first : null;
+                           bool found = false;
+
+                           Property prop = null;
+                           DataMember dataMember = null;
+                           Method method = null;
+                           uint dataMemberOffset;
+
+                           if(!ident)
+                           {
+                              eClass_FindNextMember(_class, &curClass, &curMember, subMemberStack, &subMemberStackPos);
+                              if(curMember)
+                              {
+                                 if(curMember.isProperty)
+                                 {
+                                    prop = (Property)curMember; // TOFIX: (eC II ? THe mss
+                                 }
+                                 else
+                                 {
+                                    dataMember = curMember;
+
+                                    // CHANGED THIS HERE
+                                    eClass_FindDataMemberAndOffset(_class, dataMember.name, &dataMemberOffset, GetPrivateModule(), null, null);
+
+                                    // 2013/17/29 -- It seems that this was missing here!
+                                    if(_class.type == normalClass)
+                                       dataMemberOffset += _class.base.structSize;
+                                    // dataMemberOffset = dataMember.offset;
+                                 }
+                                 found = true;
+                              }
+                           }
+                           else
+                           {
+                              prop = eClass_FindProperty(_class, ident.string, GetPrivateModule());
+                              if(prop)
+                              {
+                                 found = true;
+                                 if(prop.memberAccess == publicAccess)
+                                 {
+                                    curMember = (DataMember)prop;
+                                    curClass = prop._class;
+                                 }
+                              }
+                              else
+                              {
+                                 DataMember _subMemberStack[256];
+                                 int _subMemberStackPos = 0;
+
+                                 // FILL MEMBER STACK
+                                 dataMember = eClass_FindDataMemberAndOffset(_class, ident.string, &dataMemberOffset, GetPrivateModule(), _subMemberStack, &_subMemberStackPos);
+
+                                 if(dataMember)
+                                 {
+                                    found = true;
+                                    if(dataMember.memberAccess == publicAccess)
+                                    {
+                                       curMember = dataMember;
+                                       curClass = dataMember._class;
+                                       memcpy(subMemberStack, _subMemberStack, sizeof(DataMember) * _subMemberStackPos);
+                                       subMemberStackPos = _subMemberStackPos;
+                                    }
+                                 }
+                              }
+                           }
+
+                           if(found && member.initializer && member.initializer.type == expInitializer)
+                           {
+                              Expression value = member.initializer.exp;
+                              Type type = null;
+                              bool deepMember = false;
+                              if(prop)
+                              {
+                                 type = prop.dataType;
+                              }
+                              else if(dataMember)
+                              {
+                                 if(!dataMember.dataType)
+                                    dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
+
+                                 type = dataMember.dataType;
+                              }
+
+                              if(ident && ident.next)
+                              {
+                                 deepMember = true;
+
+                                 // for(; ident && type; ident = ident.next)
+                                 for(ident = ident.next; ident && type; ident = ident.next)
+                                 {
+                                    if(type.kind == classType)
+                                    {
+                                       prop = eClass_FindProperty(type._class.registered,
+                                          ident.string, GetPrivateModule());
+                                       if(prop)
+                                          type = prop.dataType;
+                                       else
+                                       {
+                                          dataMember = eClass_FindDataMemberAndOffset(type._class.registered,
+                                             ident.string, &dataMemberOffset, GetPrivateModule(), null, null);
+                                          if(dataMember)
+                                             type = dataMember.dataType;
+                                       }
+                                    }
+                                    else if(type.kind == structType || type.kind == unionType)
+                                    {
+                                       Type memberType;
+                                       for(memberType = type.members.first; memberType; memberType = memberType.next)
+                                       {
+                                          if(!strcmp(memberType.name, ident.string))
+                                          {
+                                             type = memberType;
+                                             break;
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                              if(value)
+                              {
+                                 FreeType(value.destType);
+                                 value.destType = type;
+                                 if(type) type.refCount++;
+                                 DebugComputeExpression(value);
+                              }
+                              if(!deepMember && type && value && (_class.type == structClass || _class.type == normalClass || _class.type == noHeadClass /*&& value.expType.kind == type.kind*/))
+                              {
+                                 if(type.kind == classType)
+                                 {
+                                    Class _class = type._class.registered;
+                                    if(_class.type == bitClass || _class.type == unitClass ||
+                                       _class.type == enumClass)
+                                    {
+                                       if(!_class.dataType)
+                                          _class.dataType = ProcessTypeString(_class.dataTypeString, false);
+                                       type = _class.dataType;
+                                    }
+                                 }
+
+                                 if(dataMember)
+                                 {
+                                    void * ptr = inst.data + dataMemberOffset;
+
+                                    if(value.type == constantExp)
+                                    {
+                                       switch(type.kind)
+                                       {
+                                          case intType:
+                                          {
+                                             GetInt(value, (int*)ptr);
+                                             break;
+                                          }
+                                          case int64Type:
+                                          {
+                                             GetInt64(value, (int64*)ptr);
+                                             break;
+                                          }
+                                          case intPtrType:
+                                          {
+                                             GetIntPtr(value, (intptr*)ptr);
+                                             break;
+                                          }
+                                          case intSizeType:
+                                          {
+                                             GetIntSize(value, (intsize*)ptr);
+                                             break;
+                                          }
+                                          case floatType:
+                                          {
+                                             GetFloat(value, (float*)ptr);
+                                             break;
+                                          }
+                                          case doubleType:
+                                          {
+                                             GetDouble(value, (double *)ptr);
+                                             break;
+                                          }
+                                       }
+                                    }
+                                    else if(value.type == instanceExp)
+                                    {
+                                       if(type.kind == classType)
+                                       {
+                                          Class _class = type._class.registered;
+                                          if(_class.type == structClass)
+                                          {
+                                             ComputeTypeSize(type);
+                                             if(value.instance.data)
+                                                memcpy(ptr, value.instance.data, type.size);
+                                          }
+                                       }
+                                    }
+                                 }
+                                 else if(prop)
+                                 {
+                                    if(value.type == instanceExp && value.instance.data)
+                                    {
+                                       if(type.kind == classType)
+                                       {
+                                          Class _class = type._class.registered;
+                                          if(_class && (_class.type != normalClass || eClass_IsDerived(((Instance)value.instance.data)._class, _class)))
+                                          {
+                                             void (*Set)(void *, void *) = (void *)prop.Set;
+                                             Set(inst.data, value.instance.data);
+                                             PopulateInstance(inst);
+                                          }
+                                       }
+                                    }
+                                    else if(value.type == constantExp)
+                                    {
+                                       switch(type.kind)
+                                       {
+                                          case doubleType:
+                                          {
+                                             void (*Set)(void *, double) = (void *)prop.Set;
+                                             Set(inst.data, strtod(value.constant, null) );
+                                             break;
+                                          }
+                                          case floatType:
+                                          {
+                                             void (*Set)(void *, float) = (void *)prop.Set;
+                                             Set(inst.data, (float)(strtod(value.constant, null)));
+                                             break;
+                                          }
+                                          case intType:
+                                          {
+                                             void (*Set)(void *, int) = (void *)prop.Set;
+                                             Set(inst.data, (int)strtol(value.constant, null, 0));
+                                             break;
+                                          }
+                                          case int64Type:
+                                          {
+                                             void (*Set)(void *, int64) = (void *)prop.Set;
+                                             Set(inst.data, _strtoi64(value.constant, null, 0));
+                                             break;
+                                          }
+                                          case intPtrType:
+                                          {
+                                             void (*Set)(void *, intptr) = (void *)prop.Set;
+                                             Set(inst.data, (intptr)_strtoi64(value.constant, null, 0));
+                                             break;
+                                          }
+                                          case intSizeType:
+                                          {
+                                             void (*Set)(void *, intsize) = (void *)prop.Set;
+                                             Set(inst.data, (intsize)_strtoi64(value.constant, null, 0));
+                                             break;
+                                          }
+                                       }
+                                    }
+                                    else if(value.type == stringExp)
+                                    {
+                                       char temp[1024];
+                                       ReadString(temp, value.string);
+                                       ((void (*)(void *, void *))(void *)prop.Set)(inst.data, temp);
+                                    }
+                                 }
+                              }
+                              else if(!deepMember && type && _class.type == unitClass)
+                              {
+                                 if(prop)
+                                 {
+                                    // Only support converting units to units for now...
+                                    if(value.type == constantExp)
+                                    {
+                                       if(type.kind == classType)
+                                       {
+                                          Class _class = type._class.registered;
+                                          if(_class.type == unitClass)
+                                          {
+                                             if(!_class.dataType)
+                                                _class.dataType = ProcessTypeString(_class.dataTypeString, false);
+                                             type = _class.dataType;
+                                          }
+                                       }
+                                       // TODO: Assuming same base type for units...
+                                       switch(type.kind)
+                                       {
+                                          case floatType:
+                                          {
+                                             float fValue;
+                                             float (*Set)(float) = (void *)prop.Set;
+                                             GetFloat(member.initializer.exp, &fValue);
+                                             exp.constant = PrintFloat(Set(fValue));
+                                             exp.type = constantExp;
+                                             break;
+                                          }
+                                          case doubleType:
+                                          {
+                                             double dValue;
+                                             double (*Set)(double) = (void *)prop.Set;
+                                             GetDouble(member.initializer.exp, &dValue);
+                                             exp.constant = PrintDouble(Set(dValue));
+                                             exp.type = constantExp;
+                                             break;
+                                          }
+                                       }
+                                    }
+                                 }
+                              }
+                              else if(!deepMember && type && _class.type == bitClass)
+                              {
+                                 if(prop)
+                                 {
+                                    if(value.type == instanceExp && value.instance.data)
+                                    {
+                                       unsigned int (*Set)(void *) = (void *)prop.Set;
+                                       bits = Set(value.instance.data);
+                                    }
+                                    else if(value.type == constantExp)
+                                    {
+                                    }
+                                 }
+                                 else if(dataMember)
+                                 {
+                                    BitMember bitMember = (BitMember) dataMember;
+                                    Type type;
+                                    int part = 0;
+                                    GetInt(value, &part);
+                                    bits = (bits & ~bitMember.mask);
+                                    if(!bitMember.dataType)
+                                       bitMember.dataType = ProcessTypeString(bitMember.dataTypeString, false);
+
+                                    type = bitMember.dataType;
+
+                                    if(type.kind == classType && type._class && type._class.registered)
+                                    {
+                                       if(!type._class.registered.dataType)
+                                          type._class.registered.dataType = ProcessTypeString(type._class.registered.dataTypeString, false);
+                                       type = type._class.registered.dataType;
+                                    }
+
+                                    switch(type.kind)
+                                    {
+                                       case _BoolType:
+                                       case charType:
+                                          if(type.isSigned)
+                                             bits |= ((char)part << bitMember.pos);
+                                          else
+                                             bits |= ((unsigned char)part << bitMember.pos);
+                                          break;
+                                       case shortType:
+                                          if(type.isSigned)
+                                             bits |= ((short)part << bitMember.pos);
+                                          else
+                                             bits |= ((unsigned short)part << bitMember.pos);
+                                          break;
+                                       case intType:
+                                       case longType:
+                                          if(type.isSigned)
+                                             bits |= ((int)part << bitMember.pos);
+                                          else
+                                             bits |= ((unsigned int)part << bitMember.pos);
+                                          break;
+                                       case int64Type:
+                                          if(type.isSigned)
+                                             bits |= ((int64)part << bitMember.pos);
+                                          else
+                                             bits |= ((uint64)part << bitMember.pos);
+                                          break;
+                                       case intPtrType:
+                                          if(type.isSigned)
+                                          {
+                                             bits |= ((intptr)part << bitMember.pos);
+                                          }
+                                          else
+                                          {
+                                             bits |= ((uintptr)part << bitMember.pos);
+                                          }
+                                          break;
+                                       case intSizeType:
+                                          if(type.isSigned)
+                                          {
+                                             bits |= ((ssize_t)(intsize)part << bitMember.pos);
+                                          }
+                                          else
+                                          {
+                                             bits |= ((size_t) (uintsize)part << bitMember.pos);
+                                          }
+                                          break;
+                                    }
+                                 }
+                              }
+                           }
+                           else
+                           {
+                              if(_class && _class.type == unitClass)
+                              {
+                                 DebugComputeExpression(member.initializer.exp);
+                                 exp.constant = member.initializer.exp.constant;
+                                 exp.type = constantExp;
+
+                                 member.initializer.exp.constant = null;
+                              }
+                           }
+                        }
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+         if(_class && _class.type == bitClass)
+         {
+            exp.constant = PrintHexUInt(bits);
+            exp.type = constantExp;
+         }
+         if(exp.type != instanceExp)
+         {
+            FreeInstance(inst);
+         }
+
+         //ComputeInstantiation(exp);
          break;
       }
       /*
@@ -1831,7 +2283,17 @@ void DebugComputeExpression(Expression exp)
          {
             exp.hasAddress = exp.cast.exp.hasAddress;
             exp.address = exp.cast.exp.address;
-            if(exp.cast.exp.type == constantExp && exp.expType)
+            if(exp.cast.exp.type == instanceExp && exp.cast.exp.expType && exp.expType && exp.cast.exp.expType.kind == classType && exp.expType.kind == classType &&
+               exp.cast.exp.expType._class && exp.expType._class && exp.cast.exp.expType._class.registered && exp.expType._class.registered &&
+               exp.cast.exp.expType._class.registered == exp.expType._class.registered)
+            {
+               Instantiation inst = exp.cast.exp.instance;
+               exp.cast.exp.instance = null;
+               FreeExpContents(exp);
+               exp.instance = inst;
+               exp.type = instanceExp;
+            }
+            else if(exp.cast.exp.type == constantExp && exp.expType)
             {
                Type type = exp.expType;
                if(type.kind == classType && type._class && type._class.registered)
