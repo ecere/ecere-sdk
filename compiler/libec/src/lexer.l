@@ -2,6 +2,7 @@ D         [0-9]
 L         [a-zA-Z_]
 H         [a-fA-F0-9]
 E         [Ee][+-]?{D}+
+P         [Pp][+-]?{D}+
 FS         (f|F|l|L|i|I|j|J)*
 IS         (u|U|l|L|i|I|j|J)*
 IDENT    {L}({L}|{D})*
@@ -212,6 +213,11 @@ default:
 ("::"|(({IDENT}"&"?"::")*)){IDENT}?    { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }  // ("::"|(({IDENT}"::")*)){IDENT}  { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }
 
 0[xX]{H}+{IS}?          { return(CONSTANT); }
+
+0[xX]{H}+{P}{FS}?    { return(CONSTANT); }
+0[xX]{H}*"."{H}+({P})?{FS}?    { return(CONSTANT); }
+0[xX]{H}+"."{H}*({P})?{FS}?    { return(CONSTANT); }
+
 0{D}+{IS}?              { return(CONSTANT); }
 {D}+{IS}?               { return(CONSTANT); }
 L?'(\\.|[^\\'])+'       { return(CONSTANT); }
