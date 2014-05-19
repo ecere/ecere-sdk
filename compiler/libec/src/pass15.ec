@@ -4138,7 +4138,7 @@ OPERATOR_ALL(BINARY, >=, GrtEqu)
 OPERATOR_ALL(BINARY, <=, SmaEqu)
 
 // tertiary condition operator
-OPERATOR_ALL(TERTIARY, ?, Cond)
+OPERATOR_INTTYPES(TERTIARY, ?, Cond)
 
 //Add, Sub, Mul, Div, Mod,     , Neg,     Inc, Dec,    Asign, AddAsign, SubAsign, MulAsign, DivAsign, ModAsign,     BitAnd, BitOr, BitXor, LShift, RShift, BitNot,     AndAsign, OrAsign, XorAsign, LShiftAsign, RShiftAsign,     Not,     Equ, Nqu,     And, Or,     Grt, Sma, GrtEqu, SmaEqu
 #define OPERATOR_TABLE_ALL(name, type) \

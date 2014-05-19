@@ -10468,32 +10468,6 @@ op1->type->refCount++;
 return 0x1;
 }
 
-static unsigned int FloatCond(struct Expression * exp, struct Operand * op1, struct Operand * op2, struct Operand * op3)
-{
-exp->type = 2;
-exp->string = PrintFloat(op1->f ? op2->f : op3->f);
-if(!exp->expType)
-{
-exp->expType = op1->type;
-if(op1->type)
-op1->type->refCount++;
-}
-return 0x1;
-}
-
-static unsigned int DoubleCond(struct Expression * exp, struct Operand * op1, struct Operand * op2, struct Operand * op3)
-{
-exp->type = 2;
-exp->string = PrintDouble(op1->d ? op2->d : op3->d);
-if(!exp->expType)
-{
-exp->expType = op1->type;
-if(op1->type)
-op1->type->refCount++;
-}
-return 0x1;
-}
-
 struct OpTable intOps = 
 {
 IntAdd, IntSub, IntMul, IntDiv, IntMod, IntNeg, IntInc, IntDec, IntAsign, IntAddAsign, IntSubAsign, IntMulAsign, IntDivAsign, IntModAsign, IntBitAnd, IntBitOr, IntBitXor, IntLShift, IntRShift, IntBitNot, IntAndAsign, IntOrAsign, IntXorAsign, IntLShiftAsign, IntRShiftAsign, IntNot, IntEqu, IntNqu, IntAnd, IntOr, IntGrt, IntSma, IntGrtEqu, IntSmaEqu, IntCond
