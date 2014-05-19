@@ -2526,7 +2526,6 @@ break;
 case 7:
 {
 struct Expression * e;
-struct Expression * memberExp;
 unsigned int typedObject = 0x0;
 struct Type * ellipsisDestType = (((void *)0));
 unsigned int usedEllipsis = 0x0;
@@ -2549,9 +2548,10 @@ exp->call.exp->usage = (exp->call.exp->usage & ~0x1) | (((unsigned int)0x1) << 0
 exp->call.exp->usage = (exp->call.exp->usage & ~0x8) | (((unsigned int)0x1) << 3);
 exp->call.exp->tempCount = exp->tempCount;
 ProcessExpression(exp->call.exp);
-memberExp = (exp->call.exp->type == 8) ? exp->call.exp : (((void *)0));
 if(exp->call.exp->expType && exp->call.exp->expType->kind == 16)
 {
+unsigned int nullMemberExp = 0x0;
+struct Expression * memberExp = (exp->call.exp->type == 8) ? exp->call.exp : (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * _class = exp->call.exp->expType->methodClass;
 struct __ecereNameSpace__ecere__com__Class * argClass = exp->call.exp->expType->methodClass;
 struct __ecereNameSpace__ecere__com__Method * method = exp->call.exp->expType->method;
@@ -2701,6 +2701,8 @@ strcpy(name, "__ecereMethod_");
 FullClassNameCat(name, method->_class->fullName, 0x0);
 strcat(name, "_");
 strcat(name, method->name);
+if(!memberExp)
+FreeExpression(exp->call.exp);
 exp->call.exp = MkExpIdentifier(MkIdentifier(name));
 DeclareMethod(method, name);
 if(memberExp && memberExp->expType && method->dataType)
@@ -2748,10 +2750,19 @@ while(((checkedExp->type == 5 || checkedExp->type == 32) && checkedExp->list) ||
 {
 parentExp = checkedExp;
 if(checkedExp->type == 5 || checkedExp->type == 32)
+{
 checkedExp = (*checkedExp->list).last;
-else if(checkedExp->type == 11)
-checkedExp = checkedExp->cast.exp;
+if(checkedExp)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*parentExp->list), checkedExp);
 }
+else if(checkedExp->type == 11)
+{
+checkedExp = checkedExp->cast.exp;
+checkedExp->cast.exp = (((void *)0));
+}
+}
+if(!parentExp)
+nullMemberExp = 0x1;
 newExp = (typedObject && !memberExp->member.exp->expType->classObjectType) ? checkedExp : MkExpOp((((void *)0)), '&', checkedExp);
 if(parentExp && (parentExp->type == 5 || parentExp->type == 32))
 {
@@ -2777,10 +2788,16 @@ checkedExp->expType->refCount++;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), parentExp ? parentExp : newExp);
 }
 else
+{
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), memberExp->member.exp);
+nullMemberExp = 0x1;
+}
 }
 else
+{
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), memberExp->member.exp);
+nullMemberExp = 0x1;
+}
 {
 char className[1024];
 struct Type * type = memberExp->member.exp ? memberExp->member.exp->expType : (((void *)0));
@@ -2820,9 +2837,16 @@ if(memberExpMemberExp)
 FreeExpression(memberExpMemberExp);
 }
 else
+{
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), memberExp->member.exp);
-memberExp->member.exp = (((void *)0));
+nullMemberExp = 0x1;
 }
+}
+}
+if(memberExp)
+{
+if(nullMemberExp)
+memberExp->member.exp = (((void *)0));
 FreeExpression(memberExp);
 }
 }

@@ -1584,7 +1584,6 @@ static void ProcessExpression(Expression exp)
       case callExp:
       {
          Expression e;
-         Expression memberExp;
          bool typedObject = false;
          Type ellipsisDestType = null;
          bool usedEllipsis = false;
@@ -1603,11 +1602,14 @@ static void ProcessExpression(Expression exp)
          exp.call.exp.usage.usageGet = true;
          exp.call.exp.usage.usageCall = true;
          exp.call.exp.tempCount = exp.tempCount;
+
          ProcessExpression(exp.call.exp);
-         memberExp = (exp.call.exp.type == ExpressionType::memberExp) ? exp.call.exp : null;
 
          if(exp.call.exp.expType && exp.call.exp.expType.kind == methodType)
          {
+            bool nullMemberExp = false;
+            Expression memberExp = (exp.call.exp.type == ExpressionType::memberExp) ? exp.call.exp : null;
+
             Class _class = exp.call.exp.expType.methodClass;     // For Virtual Method
             Class argClass = exp.call.exp.expType.methodClass;  // Class actually passed
             Method method = exp.call.exp.expType.method;
@@ -1796,6 +1798,8 @@ static void ProcessExpression(Expression exp)
                strcat(name, "_");
                strcat(name, method.name);
 
+               if(!memberExp)
+                  FreeExpression(exp.call.exp);
                exp.call.exp = MkExpIdentifier(MkIdentifier(name));
                DeclareMethod(method, name);
                if(memberExp && memberExp.expType && method.dataType)
@@ -1884,11 +1888,23 @@ static void ProcessExpression(Expression exp)
                            while(((checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp) && checkedExp.list) || checkedExp.type == castExp)
                            {
                               parentExp = checkedExp;
+
                               if(checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp)
+                              {
                                  checkedExp = checkedExp.list->last;
+                                 // Dissociate from memberExp which will get freed
+                                 if(checkedExp) parentExp.list->Remove(checkedExp);
+                              }
                               else if(checkedExp.type == castExp)
+                              {
                                  checkedExp = checkedExp.cast.exp;
+                                 // Dissociate from memberExp which will get freed
+                                 checkedExp.cast.exp = null;
+                              }
                            }
+                           if(!parentExp)
+                              nullMemberExp = true;
+
                            newExp = (typedObject && !memberExp.member.exp.expType.classObjectType) ? checkedExp : MkExpOp(null, '&', checkedExp);
                            if(parentExp && (parentExp.type == bracketsExp || parentExp.type == extensionExpressionExp))
                            {
@@ -1913,10 +1929,16 @@ static void ProcessExpression(Expression exp)
                            exp.call.arguments->Insert(null, parentExp ? parentExp : newExp);
                         }
                         else
+                        {
                            exp.call.arguments->Insert(null, memberExp.member.exp);
+                           nullMemberExp = true;
+                        }
                      }
                      else
+                     {
                         exp.call.arguments->Insert(null, memberExp.member.exp);
+                        nullMemberExp = true;
+                     }
 
                      {
                         char className[1024];
@@ -1971,15 +1993,23 @@ static void ProcessExpression(Expression exp)
                         FreeExpression(memberExpMemberExp);
                   }
                   else
+                  {
                      exp.call.arguments->Insert(null, memberExp.member.exp);
-                  memberExp.member.exp = null;
+                     nullMemberExp = true;
+                  }
                }
-               FreeExpression(memberExp);
             }
             /*else if(method->dataType)
             {
             }*/
+            if(memberExp)
+            {
+               if(nullMemberExp)
+                  memberExp.member.exp = null;
+               FreeExpression(memberExp);
+            }
          }
+
          if(exp.call.arguments)
          {
             for(e = exp.call.arguments->first; e; e = e.next)
