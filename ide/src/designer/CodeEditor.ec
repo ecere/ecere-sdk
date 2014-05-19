@@ -2750,6 +2750,11 @@ class CodeEditor : Window
                   Designer::DestroyObject(object.instance);
                   delete object.instance;
                }
+               if(object.i18nStrings)
+               {
+                  Map<String, bool> i18nStrings = object.i18nStrings;
+                  delete i18nStrings;
+               }
                sheet.DeleteObject(object);
                delete object.name;
                _class.instances.Delete(object);
@@ -2758,6 +2763,11 @@ class CodeEditor : Window
             {
                Designer::DestroyObject(_class.instance);
                delete _class.instance;
+            }
+            if(_class.i18nStrings)
+            {
+               Map<String, bool> i18nStrings = _class.i18nStrings;
+               delete i18nStrings;
             }
             sheet.DeleteObject(_class);
             delete _class.name;
