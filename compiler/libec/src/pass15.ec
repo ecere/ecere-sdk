@@ -243,9 +243,11 @@ public char * PrintHexUInt(uint64 result)
 {
    char temp[100];
    if(result > MAXDWORD)
-      sprintf(temp, FORMAT64HEXLL /*"0x%I64xLL"*/, result);
+      sprintf(temp, FORMAT64HEX /*"0x%I64xLL"*/, result);
    else
       sprintf(temp, FORMAT64HEX /*"0x%I64x"*/, result);
+   if(result > MAXDWORD)
+      strcat(temp, "LL");
    return CopyString(temp);
 }
 

@@ -1526,9 +1526,11 @@ char * PrintHexUInt(uint64 result)
 char temp[100];
 
 if(result > (0xffffffff))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
+sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
 else
 sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
+if(result > (0xffffffff))
+strcat(temp, "LL");
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 

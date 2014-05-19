@@ -1199,27 +1199,39 @@ void DebugComputeExpression(Expression exp)
                 (exp2.expType.kind == pointerType || exp2.expType.kind == arrayType)))
             {
                bool valid = false;
-               // TODO: Support 1 + pointer
-               if((exp.op.op == '+' || exp.op.op == '-') && exp2.expType && op2.type && op2.type.kind == intType)
+               if((exp.op.op == '+' || exp.op.op == '-') && (op2.type || op1.type))
                {
-                  Expression e = exp1;
-                  while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
+                  Expression e1 = exp1, e2 = exp2;
+                  while(((e1.type == bracketsExp || e1.type == extensionExpressionExp || e1.type == extensionCompoundExp) && e1.list) || e1.type == castExp)
                   {
-                     if(e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp)
+                     if(e1.type == bracketsExp || e1.type == extensionExpressionExp || e1.type == extensionCompoundExp)
                      {
-                        if(e.type == extensionCompoundExp)
-                           e = ((Statement)e.compound.compound.statements->last).expressions->last;
+                        if(e1.type == extensionCompoundExp)
+                           e1 = ((Statement)e1.compound.compound.statements->last).expressions->last;
                         else
-                           e = e.list->last;
+                           e1 = e1.list->last;
                      }
-                     else if(e.type == castExp)
-                        e = e.cast.exp;
+                     else if(e1.type == castExp)
+                        e1 = e1.cast.exp;
+                  }
+                  while(((e2.type == bracketsExp || e2.type == extensionExpressionExp || e2.type == extensionCompoundExp) && e2.list) || e2.type == castExp)
+                  {
+                     if(e2.type == bracketsExp || e2.type == extensionExpressionExp || e2.type == extensionCompoundExp)
+                     {
+                        if(e2.type == extensionCompoundExp)
+                           e2 = ((Statement)e2.compound.compound.statements->last).expressions->last;
+                        else
+                           e2 = e2.list->last;
+                     }
+                     else if(e2.type == castExp)
+                        e2 = e2.cast.exp;
                   }
 
-                  if(e.type == stringExp)
+                  if((e1.type == stringExp && op2.type && op2.type.kind == intType) || (e2.type == stringExp && op1.type && op1.type.kind == intType))
                   {
-                     uint64 offset = (exp.op.op == '+') ? op2.i64 : -op2.i64;
+                     uint64 offset = ((exp.op.op == '+') ? 1 : -1) * (e1.type == stringExp ? op2.i64 : op1.i64);
                      String newString = null;
+                     Expression e = e1.type == stringExp ? e1 : e2;
                      if(e.string)
                      {
                         int len = strlen(e.string) - 2;
@@ -1244,24 +1256,45 @@ void DebugComputeExpression(Expression exp)
                      else
                         exp.type = dereferenceErrorExp;
                   }
-                  else if(op1.type)
+                  // Can't add 2 pointers...
+                  else if(exp.op.op != '+' ||
+                     !((exp1.expType.kind == pointerType || exp1.expType.kind == arrayType) &&
+                       (exp2.expType.kind == pointerType || exp2.expType.kind == arrayType)))
                   {
-                     // TODO: Do pointer operations
-                     if(exp1.expType && exp1.expType.type)
+                     bool op1IsPointer = exp1.expType.kind == pointerType || exp1.expType.kind == arrayType;
+                     bool op2IsPointer = exp2.expType.kind == pointerType || exp2.expType.kind == arrayType;
+                     bool addressResult = !op1IsPointer || !op2IsPointer;
+                     uint size;
+                     int op = exp.op.op;
+                     valid = true;
+                     if(op1IsPointer)
+                        size = ComputeTypeSize(exp1.expType.type);
+                     else if(op2IsPointer)
+                        size = ComputeTypeSize(exp2.expType.type);
+
+                     if(addressResult && size)
                      {
-                        uint size = ComputeTypeSize(exp1.expType.type);
-                        if(size)
+                       if(op1IsPointer) op2.ui64 *= size;
+                       else if(op1IsPointer) op1.ui64 *= size;
+                     }
+
+                     CallOperator(exp, exp1, exp2, op1, op2);
+                     if(exp.type == constantExp)
+                     {
+                        if(addressResult)
                         {
-                           valid = true;
-                           op1.ui64 /= exp1.expType.type.size;
-                           CallOperator(exp, exp1, exp2, op1, op2);
-                           if(exp.type == constantExp)
-                           {
-                              exp.address = _strtoui64(exp.constant, null, 0);
-                              exp.address *= size;
-                              if(op1.type.kind == arrayType)
-                                 exp.hasAddress = true;
-                           }
+                           exp.address = _strtoui64(exp.constant, null, 0);
+                           delete exp.constant;
+                           exp.constant = PrintHexUInt64(exp.address);
+                           if(op1.type.kind == arrayType || op2.type.kind == arrayType)
+                              exp.hasAddress = true;
+                        }
+                        else
+                        {
+                           int64 v = _strtoi64(exp.constant, null, 0);
+                           if(size) v /= size;
+                           delete exp.constant;
+                           exp.constant = PrintInt(v);
                         }
                      }
                   }

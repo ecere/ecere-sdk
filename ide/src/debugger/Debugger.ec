@@ -193,7 +193,7 @@ static void strescpy(char * d, char * s)
    d[k] = '\0';
 }
 
-static char * CopyUnescapedSystemPath(char * p)
+/*static char * CopyUnescapedSystemPath(char * p)
 {
    int len = strlen(p);
    char * d = new char[len + 1];
@@ -202,7 +202,7 @@ static char * CopyUnescapedSystemPath(char * p)
    ChangeCh(d, '/', '\\');
 #endif
    return d;
-}
+}*/
 
 static char * CopyUnescapedUnixPath(char * p)
 {
@@ -249,7 +249,7 @@ static char * StripCurlies(char * string)
       return string;
 }
 
-static int StringGetInt(char * string, int start)
+/*static int StringGetInt(char * string, int start)
 {
    char number[8];
    int i, len = strlen(string);
@@ -262,7 +262,7 @@ static int StringGetInt(char * string, int start)
          break;
    }
    return atoi(number);
-}
+}*/
 
 static int TokenizeList(char * string, const char seperator, Array<char *> tokens)
 {
