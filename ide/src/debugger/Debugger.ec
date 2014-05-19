@@ -2784,6 +2784,13 @@ class Debugger
                else if(exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass && exp.hasAddress)
                {
                   Class c = exp.expType._class.registered;
+                  char structString[1024];
+                  strcpy(structString, "*(struct ");
+                  FullClassNameCat(structString, c.fullName, false);
+                  strcat(structString, " *)");
+                  strcatf(structString, "0x%p", exp.address);
+                  GDBFallBack(exp, structString);
+                  /*
                   byte * data = GdbReadMemory(exp.address, c.structSize);
                   if(data)
                   {
@@ -2799,6 +2806,7 @@ class Debugger
                      }
                      delete data;
                   }
+                  */
                }
 
                if(ExpressionIsError(exp) && exp.type != functionCallErrorExp)
