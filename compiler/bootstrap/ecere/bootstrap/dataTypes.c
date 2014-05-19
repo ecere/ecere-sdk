@@ -3127,10 +3127,10 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MININT64", "((
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXINT64", "((long long)0x7fffffffffffffffLL)", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXDWORD", "0xffffffff", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXQWORD", "0xffffffffffffffffLL", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MINFLOAT", "((float)1.17549435082228750e-38)", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXFLOAT", "((float)3.40282346638528860e+38)", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MINDOUBLE", "((double)2.2250738585072014e-308)", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXDOUBLE", "((double)1.7976931348623158e+308)", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MINFLOAT", "1.17549435082228750e-38f", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXFLOAT", "3.40282346638528860e+38f", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MINDOUBLE", "2.2250738585072014e-308", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXDOUBLE", "1.7976931348623158e+308", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64HEXLL", "(GetRuntimePlatform() == win32) ? \"0x%I64XLL\" : \"0x%llXLL\"", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64HEX", "(GetRuntimePlatform() == win32) ? \"0x%I64X\" : \"0x%llX\"", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64DLL", "(GetRuntimePlatform() == win32) ? \"%I64dLL\" : \"%lldLL\"", module, 4);

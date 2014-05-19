@@ -17,10 +17,10 @@ public define MININT64 = ((int64)0x8000000000000000LL);
 public define MAXINT64 = ((int64)0x7fffffffffffffffLL);
 public define MAXDWORD = 0xffffffff;
 public define MAXQWORD = 0xffffffffffffffffLL;
-public define MINFLOAT = ((float)1.17549435082228750e-38);
-public define MAXFLOAT = ((float)3.40282346638528860e+38);
-public define MINDOUBLE = ((double) 2.2250738585072014e-308);
-public define MAXDOUBLE = ((double) 1.7976931348623158e+308);
+public define MINFLOAT = 1.17549435082228750e-38f;
+public define MAXFLOAT = 3.40282346638528860e+38f;
+public define MINDOUBLE = 2.2250738585072014e-308;
+public define MAXDOUBLE = 1.7976931348623158e+308;
 
 public define FORMAT64HEXLL  = (GetRuntimePlatform() == win32) ? "0x%I64XLL" : "0x%llXLL";
 public define FORMAT64HEX    = (GetRuntimePlatform() == win32) ? "0x%I64X" : "0x%llX";
