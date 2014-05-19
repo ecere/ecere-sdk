@@ -425,6 +425,18 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
    {
       for(def = definitions.first; def; def = def.next)
       {
+         if(def.type == functionClassDef && (def.function.isConstructor || def.function.isDestructor))
+         {
+            Specifier spec = def.function.specifiers ? def.function.specifiers->last : null;
+            if(!spec || spec.type != nameSpecifier || !spec.name ||
+               (strcmp(spec.name, regClass.name) && (!spec.symbol || !spec.symbol.registered || strcmp(spec.symbol.registered.name, regClass.name))) )
+            {
+               yylloc = def.function.loc;
+               Compiler_Error($"wrong class name specified for %s\n", def.function.isConstructor ? $"constructor" : $"destructor");
+            }
+            FreeList(def.function.specifiers, FreeSpecifier);
+            def.function.specifiers = null;
+         }
          if(def.type == functionClassDef && def.function.declarator)
          {
             ClassFunction func = def.function;

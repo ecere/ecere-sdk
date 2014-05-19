@@ -3278,21 +3278,20 @@ yyval.classFunction->id = ++globalContext->nextID;
 break;
 case 13:
 {
-yyval.classFunction = MkClassFunction((((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)));
+yyval.classFunction = MkClassFunction(yyvsp[(1) - (3)].list, (((void *)0)), (((void *)0)), (((void *)0)));
 yyval.classFunction->isConstructor = 0x1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
-FreeList(yyvsp[(1) - (3)].list, FreeSpecifier);
 ;
 }
 break;
 case 14:
 {
-yyval.classFunction = MkClassFunction((((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)));
+yyval.classFunction = MkClassFunction(yyvsp[(2) - (4)].list, (((void *)0)), (((void *)0)), (((void *)0)));
 yyval.classFunction->isDestructor = 0x1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
-FreeList(yyvsp[(2) - (4)].list, FreeSpecifier);
+;
 }
 break;
 case 15:

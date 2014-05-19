@@ -13,7 +13,7 @@ public class TempFile : File
 
    openMode = writeRead;
 
-   ~File()
+   ~TempFile()
    {
       delete buffer;
    }

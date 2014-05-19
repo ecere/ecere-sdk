@@ -1281,6 +1281,12 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com
 
 extern unsigned int buildingECERECOMModule;
 
+extern int strcmp(const char * , const char * );
+
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
+
+extern void FreeSpecifier(struct Specifier * spec);
+
 extern struct Declarator * GetFuncDecl(struct Declarator * decl);
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
@@ -1493,6 +1499,18 @@ if(definitions != (((void *)0)))
 {
 for(def = definitions->first; def; def = def->next)
 {
+if(def->type == 0 && (def->function->isConstructor || def->function->isDestructor))
+{
+struct Specifier * spec = def->function->specifiers ? (*def->function->specifiers).last : (((void *)0));
+
+if(!spec || spec->type != 1 || !spec->name || (strcmp(spec->name, regClass->name) && (!spec->symbol || !spec->symbol->registered || strcmp(spec->symbol->registered->name, regClass->name))))
+{
+yylloc = def->function->loc;
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "wrong class name specified for %s\n", (((void *)0))), def->function->isConstructor ? __ecereNameSpace__ecere__GetTranslatedString("ec", "constructor", (((void *)0))) : __ecereNameSpace__ecere__GetTranslatedString("ec", "destructor", (((void *)0))));
+}
+FreeList(def->function->specifiers, FreeSpecifier);
+def->function->specifiers = (((void *)0));
+}
 if(def->type == 0 && def->function->declarator)
 {
 struct ClassFunction * func = def->function;

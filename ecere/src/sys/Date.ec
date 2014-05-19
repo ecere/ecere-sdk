@@ -386,7 +386,7 @@ class DateDropBox : DropBox
       if(pullDown && sKey == enter)
       {
          // Because we can still edit the date text while the calendar is dropped, enter on the date box should validate it
-         NotifyTextEntry(master, this, contents /*null*/, true);//false);
+         NotifyTextEntry(master, this, contents, true);
          ((DataBox)master).SetData(&calendar.dateValue, false);
          ((DataBox)master).Refresh();
          return false;

@@ -13299,14 +13299,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 545 "grammar.y"
-    { (yyval.classFunction) = MkClassFunction(null, null, null, null); (yyval.classFunction).isConstructor = true; (yyval.classFunction).loc = (yyloc); (yyval.classFunction).id = ++globalContext.nextID; FreeList((yyvsp[(1) - (3)].list), FreeSpecifier); ;}
+    { (yyval.classFunction) = MkClassFunction((yyvsp[(1) - (3)].list), null, null, null); (yyval.classFunction).isConstructor = true; (yyval.classFunction).loc = (yyloc); (yyval.classFunction).id = ++globalContext.nextID; ;}
     break;
 
   case 14:
 
 /* Line 1464 of yacc.c  */
 #line 550 "grammar.y"
-    { (yyval.classFunction) = MkClassFunction(null, null, null, null); (yyval.classFunction).isDestructor = true; (yyval.classFunction).loc = (yyloc); (yyval.classFunction).id = ++globalContext.nextID; FreeList((yyvsp[(2) - (4)].list), FreeSpecifier) ;}
+    { (yyval.classFunction) = MkClassFunction((yyvsp[(2) - (4)].list), null, null, null); (yyval.classFunction).isDestructor = true; (yyval.classFunction).loc = (yyloc); (yyval.classFunction).id = ++globalContext.nextID; ;}
     break;
 
   case 15:

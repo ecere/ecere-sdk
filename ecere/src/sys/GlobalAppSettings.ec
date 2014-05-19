@@ -144,7 +144,7 @@ private:
 
    subclass(GlobalSettingsDriver) driverClass;
 
-   ~GlobalAppSettings()
+   ~GlobalSettings()
    {
       if(f)
          f.Unlock(0, 0, true);
@@ -541,7 +541,7 @@ public:
    void CloseAndMonitor()
    {
       Close();
-      if(settingsFilePath && OnAskReloadSettings != GlobalAppSettings::OnAskReloadSettings)
+      if(settingsFilePath && OnAskReloadSettings != GlobalSettings::OnAskReloadSettings)
       {
          settingsMonitor.fileName = settingsFilePath;
          settingsMonitor.StartMonitoring();
@@ -745,4 +745,3 @@ public:
       return result;
    }
 };
-

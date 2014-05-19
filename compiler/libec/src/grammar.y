@@ -542,12 +542,12 @@ class_function_definition_start:
 
 constructor_function_definition_start:
    guess_declaration_specifiers '(' ')'
-      { $$ = MkClassFunction(null, null, null, null); $$.isConstructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; FreeList($1, FreeSpecifier); }
+      { $$ = MkClassFunction($1, null, null, null); $$.isConstructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
    ;
 
 destructor_function_definition_start:
    '~' guess_declaration_specifiers '(' ')'
-      { $$ = MkClassFunction(null, null, null, null); $$.isDestructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; FreeList($2, FreeSpecifier) }
+      { $$ = MkClassFunction($2, null, null, null); $$.isDestructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
    ;
 
 virtual_class_function_definition_start:
