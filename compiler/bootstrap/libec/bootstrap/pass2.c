@@ -1097,6 +1097,8 @@ static struct Statement * curCompound;
 
 extern struct Expression * CopyExpression(struct Expression * exp);
 
+extern void FreeExpContents(struct Expression * exp);
+
 extern void FreeExpression(struct Expression * exp);
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
@@ -1119,6 +1121,7 @@ struct Expression * exp = *expPtr;
 
 *memberExpPtr = (((void *)0));
 newExp = CopyExpression(exp);
+FreeExpContents(exp);
 *(struct Expression **)((unsigned char *)newExp + ((unsigned char *)memberExpPtr - (unsigned char *)exp)) = memberExp;
 memberExp->member.exp = idExp;
 exp->type = 5;
@@ -1309,6 +1312,8 @@ extern struct Expression * MkExpIdentifier(struct Identifier * id);
 
 extern struct Identifier * MkIdentifier(char *  string);
 
+extern void FreeSpecifier(struct Specifier * spec);
+
 extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
 extern void ListAdd(struct __ecereNameSpace__ecere__sys__OldList * list, void *  item);
@@ -1381,11 +1386,9 @@ unsigned int constant;
 
 extern struct __ecereNameSpace__ecere__com__ClassProperty * __ecereNameSpace__ecere__com__eClass_FindClassProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
-extern void FreeExpContents(struct Expression * exp);
+extern char *  QMkString(char *  source);
 
 extern struct Expression * MkExpString(char *  string);
-
-extern char *  QMkString(char *  source);
 
 extern struct Specifier * MkSpecifier(int specifier);
 
@@ -1457,6 +1460,8 @@ extern struct Context * SetupTemplatesContext(struct __ecereNameSpace__ecere__co
 
 extern void FinishTemplatesContext(struct Context * context);
 
+extern void FreeTypeName(struct TypeName * typeName);
+
 extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
 
 extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
@@ -1464,8 +1469,6 @@ extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod
 extern void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern int ComputeTypeSize(struct Type * type);
-
-extern void FreeTypeName(struct TypeName * typeName);
 
 extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
@@ -1476,8 +1479,6 @@ extern int printf(char * , ...);
 extern struct Type * ProcessTemplateParameterType(struct TemplateParameter * param);
 
 extern void DeclareStruct(char *  name, unsigned int skipNoHead);
-
-extern void FreeSpecifier(struct Specifier * spec);
 
 static void ProcessStatement(struct Statement * stmt);
 
@@ -1563,6 +1564,7 @@ FullClassNameCat(name, method->_class->fullName, 0x0);
 strcat(name, "_");
 strcat(name, method->name);
 (__ecereNameSpace__ecere__com__eSystem_Delete(exp->identifier->string), exp->identifier->string = 0);
+FreeSpecifier(exp->identifier->_class);
 exp->identifier->_class = (((void *)0));
 exp->identifier->string = __ecereNameSpace__ecere__sys__CopyString(name);
 DeclareMethod(method, name);
@@ -1927,7 +1929,12 @@ exp->type = 7;
 exp->call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty"));
 exp->call.arguments = MkList();
 ListAdd(exp->call.arguments, classExp);
-ListAdd(exp->call.arguments, MkExpString(QMkString(id->string)));
+{
+char * s = QMkString(id->string);
+
+ListAdd(exp->call.arguments, MkExpString(s));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
+}
 ListAdd(exp->call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), (((void *)0))), value));
 FreeIdentifier(id);
 ProcessExpression(exp);
@@ -2160,6 +2167,8 @@ struct Expression * object = exp->op.exp2;
 
 exp->op.exp2 = (((void *)0));
 FreeExpContents(exp);
+FreeType(exp->expType);
+FreeType(exp->destType);
 exp->expType = (((void *)0));
 exp->destType = (((void *)0));
 exp->op.op = INC_OP;
@@ -2580,7 +2589,10 @@ struct TypeName * firstParam = ((struct TypeName *)(*funcDecl->function.paramete
 struct Specifier * firstSpec = firstParam ? (*firstParam->qualifiers).first : (((void *)0));
 
 if(firstParam && firstSpec && firstSpec->type == 0 && firstSpec->specifier == VOID && !firstParam->declarator)
+{
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*funcDecl->function.parameters), (*funcDecl->function.parameters).first);
+FreeTypeName(firstParam);
+}
 }
 if(method->dataType->thisClass && !strcmp(method->dataType->thisClass->string, "class"))
 {
@@ -2755,6 +2767,8 @@ if(typedObject && !memberExp->member.exp->expType->classObjectType)
 {
 struct Type * destType = (destType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), destType->refCount = 1, destType->kind = 8, destType->classObjectType = 3, destType);
 
+FreeType((parentExp ? parentExp : newExp)->expType);
+FreeType((parentExp ? parentExp : newExp)->destType);
 (parentExp ? parentExp : newExp)->expType = checkedExp->expType;
 (parentExp ? parentExp : newExp)->destType = destType;
 if(checkedExp->expType)
@@ -3299,7 +3313,12 @@ exp->type = 7;
 exp->call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_GetProperty"));
 exp->call.arguments = MkList();
 ListAdd(exp->call.arguments, classExp);
-ListAdd(exp->call.arguments, MkExpString(QMkString(id->string)));
+{
+char * s = QMkString(id->string);
+
+ListAdd(exp->call.arguments, MkExpString(s));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
+}
 FreeIdentifier(id);
 ProcessExpression(exp);
 return ;
@@ -3332,6 +3351,7 @@ MangleClassName(className);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
+FreeExpression(exp->member.exp);
 exp->index.exp = MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"));
 }
 else

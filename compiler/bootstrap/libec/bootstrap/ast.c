@@ -1590,6 +1590,7 @@ struct Expression * MkExpIntlString(char * string, char * context)
 if(inCompiler)
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
+char * s;
 
 if(inCompiler)
 {
@@ -1643,7 +1644,9 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (&yylloc));
 }
-ListAdd(list, MkExpString(QMkString(i18nModuleName ? i18nModuleName : "")));
+s = QMkString(i18nModuleName ? i18nModuleName : "");
+ListAdd(list, MkExpString(s));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 ListAdd(list, MkExpString(string));
 if(context)
 {

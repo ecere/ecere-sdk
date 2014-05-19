@@ -26,6 +26,8 @@ static void _FixRefExp(Expression * expPtr, Expression * memberExpPtr)
 
          *memberExpPtr = null;
          newExp = CopyExpression(exp);
+         FreeExpContents(exp);
+
          *(Expression *)((byte *)newExp + (uint)((byte *)memberExpPtr - (byte *)exp)) = memberExp;
 
          memberExp.member.exp = idExp;
@@ -271,6 +273,7 @@ static void ProcessExpression(Expression exp)
                strcat(name, method.name);
 
                delete exp.identifier.string;
+               FreeSpecifier(exp.identifier._class);
 
                exp.identifier._class = null;
                exp.identifier.string = CopyString(name);
@@ -708,7 +711,11 @@ static void ProcessExpression(Expression exp)
                               exp.call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty"));
                               exp.call.arguments = MkList();
                               ListAdd(exp.call.arguments, classExp);
-                              ListAdd(exp.call.arguments, MkExpString(QMkString(id.string)));
+                              {
+                                 char * s = QMkString(id.string);
+                                 ListAdd(exp.call.arguments, MkExpString(s));
+                                 delete s;
+                              }
                               ListAdd(exp.call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), value));
 
                               FreeIdentifier(id);
@@ -954,6 +961,8 @@ static void ProcessExpression(Expression exp)
             Expression object = exp.op.exp2;
             exp.op.exp2 = null;
             FreeExpContents(exp);
+            FreeType(exp.expType);
+            FreeType(exp.destType);
             exp.expType = null;
             exp.destType = null;
             exp.op.op = INC_OP;
@@ -1639,7 +1648,10 @@ static void ProcessExpression(Expression exp)
                      Specifier firstSpec = firstParam ? firstParam.qualifiers->first : null;
 
                      if(firstParam && firstSpec && firstSpec.type == baseSpecifier && firstSpec.specifier == VOID && !firstParam.declarator)
+                     {
                         funcDecl.function.parameters->Remove(funcDecl.function.parameters->first);
+                        FreeTypeName(firstParam);
+                     }
                   }
 
                   if(method.dataType.thisClass && !strcmp(method.dataType.thisClass.string, "class"))
@@ -1892,6 +1904,8 @@ static void ProcessExpression(Expression exp)
                            if(typedObject && !memberExp.member.exp.expType.classObjectType)
                            {
                               Type destType { refCount = 1, kind = classType, classObjectType = ClassObjectType::anyObject };
+                              FreeType((parentExp ? parentExp : newExp).expType);
+                              FreeType((parentExp ? parentExp : newExp).destType);
                               (parentExp ? parentExp : newExp).expType = checkedExp.expType;
                               (parentExp ? parentExp : newExp).destType = destType;
                               if(checkedExp.expType) checkedExp.expType.refCount++;
@@ -2560,7 +2574,11 @@ static void ProcessExpression(Expression exp)
                      exp.call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_GetProperty"));
                      exp.call.arguments = MkList();
                      ListAdd(exp.call.arguments, classExp);
-                     ListAdd(exp.call.arguments, MkExpString(QMkString(id.string)));
+                     {
+                        char * s = QMkString(id.string);
+                        ListAdd(exp.call.arguments, MkExpString(s));
+                        delete s;
+                     }
                      FreeIdentifier(id);
 
                      ProcessExpression(exp);
@@ -2600,9 +2618,9 @@ static void ProcessExpression(Expression exp)
                         if(!_class.symbol)
                            _class.symbol = FindClass(_class.fullName);
                         DeclareClass(_class.symbol, className);
-                        exp.index.exp = MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"));
 
-                        // WHAT HAPPENS TO exp.member.exp ?
+                        FreeExpression(exp.member.exp);
+                        exp.index.exp = MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"));
                      }
                      else
                      {

@@ -1051,9 +1051,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   propWatch.compound = null;
                   definitions.Insert(null, MkClassDefFunction(func));
 
-                  stmt.type = expressionStmt;
-                  stmt.expressions = MkList();
-
                   for(propID = propWatch.properties->first; propID; propID = propID.next)
                   {
                      Property prop = eClass_FindProperty(regClass, propID.string, privateModule);
@@ -1062,7 +1059,11 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         // eProperty_SelfWatch(_class, name, callback);
                         OldList * args = MkList();
                         ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
-                        ListAdd(args, MkExpString(QMkString(propID.string)));
+                        {
+                           char * s = QMkString(propID.string);
+                           ListAdd(args, MkExpString(s));
+                           delete s;
+                        }
                         ListAdd(args, MkExpIdentifier(MkIdentifier(watcherName)));
 
                         ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("eProperty_SelfWatch")), args));
@@ -1681,9 +1682,13 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   DeclareClass(FindClass(def.designer), className);
                   */
 
-                  stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("class"))), MkExpressionStmt(MkListOne(
-                     MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("designerClass")), '=',
-                        MkExpString(QMkString(def.designer))))), null);
+                  {
+                     char * s = QMkString(def.designer);
+                     stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("class"))), MkExpressionStmt(MkListOne(
+                        MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("designerClass")), '=',
+                           MkExpString(s)))), null);
+                     delete s;
+                  }
                   ListAdd(registerModuleBody.compound.statements, stmt);
                }
                else if(def.type == classNoExpansionClassDef)
@@ -1704,10 +1709,12 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                }
                else if(def.type == designerDefaultPropertyClassDef)
                {
+                  char * s = QMkString(def.defaultProperty.string);
                   stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("class"))), MkExpressionStmt(MkListOne(
                      MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("defaultProperty")), '=',
-                        MkExpString(QMkString(def.defaultProperty.string))))), null);
+                        MkExpString(s)))), null);
                   ListAdd(registerModuleBody.compound.statements, stmt);
+                  delete s;
                }
                else if(def.type == classPropertyValueClassDef)
                {
@@ -1950,12 +1957,17 @@ public void ProcessClassDefinitions()
          OldList * findClassArgs = MkList();
          OldList * args = MkList();
          Statement compoundStmt;
+         String s;
 
          ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
-         ListAdd(findClassArgs, MkExpString(QMkString(v.regClass.name)));
+         s = QMkString(v.regClass.name);
+         ListAdd(findClassArgs, MkExpString(s));
+         delete s;
 
          ListAdd(args, MkExpIdentifier(MkIdentifier("_class")));
-         ListAdd(args, MkExpString(QMkString(v.id.string)));
+         s = QMkString(v.id.string);
+         ListAdd(args, MkExpString(s));
+         delete s;
          ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), v.exp));
          compoundStmt = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")),
                        MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("_class")),

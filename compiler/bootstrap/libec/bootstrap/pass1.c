@@ -2308,8 +2308,6 @@ decl->symbol->idCode = symbol->idCode;
 }
 propWatch->compound = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, (((void *)0)), MkClassDefFunction(func));
-stmt->type = 3;
-stmt->expressions = MkList();
 for(propID = (*propWatch->properties).first; propID; propID = propID->next)
 {
 struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_FindProperty(regClass, propID->string, privateModule);
@@ -2319,7 +2317,12 @@ if(prop)
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 
 ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
-ListAdd(args, MkExpString(QMkString(propID->string)));
+{
+char * s = QMkString(propID->string);
+
+ListAdd(args, MkExpString(s));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
+}
 ListAdd(args, MkExpIdentifier(MkIdentifier(watcherName)));
 ListAdd(stmt->expressions, MkExpCall(MkExpIdentifier(MkIdentifier("eProperty_SelfWatch")), args));
 }
@@ -2804,7 +2807,12 @@ def->propertyWatch = (((void *)0));
 }
 else if(def->type == 5)
 {
-stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("class"))), MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("designerClass")), '=', MkExpString(QMkString(def->designer))))), (((void *)0)));
+{
+char * s = QMkString(def->designer);
+
+stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("class"))), MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("designerClass")), '=', MkExpString(s)))), (((void *)0)));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
+}
 ListAdd(registerModuleBody->compound.statements, stmt);
 }
 else if(def->type == 6)
@@ -2821,8 +2829,11 @@ regClass->fixed = 0x1;
 }
 else if(def->type == 8)
 {
-stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("class"))), MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("defaultProperty")), '=', MkExpString(QMkString(def->defaultProperty->string))))), (((void *)0)));
+char * s = QMkString(def->defaultProperty->string);
+
+stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("class"))), MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("class")), MkIdentifier("defaultProperty")), '=', MkExpString(s)))), (((void *)0)));
 ListAdd(registerModuleBody->compound.statements, stmt);
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 }
 else if(def->type == 11)
 {
@@ -3072,19 +3083,24 @@ while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&v))
 struct __ecereNameSpace__ecere__sys__OldList * findClassArgs = MkList();
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 struct Statement * compoundStmt;
+char * s;
 
 ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
-ListAdd(findClassArgs, MkExpString(QMkString(__extension__ ({
+s = QMkString(__extension__ ({
 char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
-})->regClass->name)));
+})->regClass->name);
+ListAdd(findClassArgs, MkExpString(s));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 ListAdd(args, MkExpIdentifier(MkIdentifier("_class")));
-ListAdd(args, MkExpString(QMkString(__extension__ ({
+s = QMkString(__extension__ ({
 char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
-})->id->string)));
+})->id->string);
+ListAdd(args, MkExpString(s));
+(__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), (((void *)0))), __extension__ ({
 char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 

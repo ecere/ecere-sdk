@@ -280,6 +280,7 @@ Expression MkExpIntlString(char * string, char * context)
    if(inCompiler)
    {
       OldList * list = MkList();
+      String s;
       if(inCompiler)
       {
          ContextStringPair pair { };
@@ -303,7 +304,9 @@ Expression MkExpIntlString(char * string, char * context)
          list.Add(yylloc);
       }
       //ListAdd(list, QMkExpId("__thisModule"));
-      ListAdd(list, MkExpString(QMkString(i18nModuleName ? i18nModuleName : "")));
+      s = QMkString(i18nModuleName ? i18nModuleName : "");
+      ListAdd(list, MkExpString(s));
+      delete s;
       ListAdd(list, MkExpString(string));
       if(context)
       {
