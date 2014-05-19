@@ -1293,6 +1293,17 @@ FreeExpression(enumerator->exp);
 ((enumerator ? (__ecereClass_Enumerator->Destructor ? __ecereClass_Enumerator->Destructor(enumerator) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(enumerator)) : 0), enumerator = 0);
 }
 
+void FreeSpecifierContents(struct Specifier * spec);
+
+void FreeSpecifier(struct Specifier * spec)
+{
+if(spec)
+{
+FreeSpecifierContents(spec);
+((spec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor(spec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(spec)) : 0), spec = 0);
+}
+}
+
 void FreeExtDecl(struct ExtDecl * extDecl);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
@@ -1383,41 +1394,69 @@ void *  object;
 
 void FreeClassDef(struct ClassDef * def);
 
-void FreeSpecifier(struct Specifier * spec)
-{
-if(spec)
+void FreeSpecifierContents(struct Specifier * spec)
 {
 switch(spec->type)
 {
 case 1:
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 if(spec->templateArgs)
+{
 FreeList(spec->templateArgs, FreeTemplateArgument);
+spec->templateArgs = (((void *)0));
+}
 break;
 case 5:
 if(spec->extDecl)
+{
 FreeExtDecl(spec->extDecl);
+spec->extDecl = (((void *)0));
+}
 break;
 case 2:
 if(spec->baseSpecs)
+{
 FreeList(spec->baseSpecs, FreeSpecifier);
+spec->baseSpecs = (((void *)0));
+}
 if(spec->id)
+{
 FreeIdentifier(spec->id);
+spec->id = (((void *)0));
+}
 if(spec->list)
+{
 FreeList(spec->list, FreeEnumerator);
+spec->list = (((void *)0));
+}
 if(spec->definitions)
+{
 FreeList(spec->definitions, FreeClassDef);
+spec->definitions = (((void *)0));
+}
 break;
 case 3:
 case 4:
 if(spec->id)
+{
 FreeIdentifier(spec->id);
+spec->id = (((void *)0));
+}
 if(spec->definitions)
+{
 FreeList(spec->definitions, FreeClassDef);
+spec->definitions = (((void *)0));
+}
 if(spec->baseSpecs)
+{
 FreeList(spec->baseSpecs, FreeSpecifier);
+spec->baseSpecs = (((void *)0));
+}
 if(spec->extDeclStruct)
+{
 FreeExtDecl(spec->extDeclStruct);
+spec->extDeclStruct = (((void *)0));
+}
 if(spec->ctx)
 {
 FreeContext(spec->ctx);
@@ -1426,10 +1465,11 @@ FreeContext(spec->ctx);
 break;
 case 7:
 if(spec->_class)
+{
 FreeSpecifier(spec->_class);
-break;
+spec->_class = (((void *)0));
 }
-((spec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor(spec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(spec)) : 0), spec = 0);
+break;
 }
 }
 
@@ -2703,6 +2743,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeTemplateType", "void
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeContext", "void FreeContext(Context context)", FreeContext, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeEnumerator", "void FreeEnumerator(Enumerator enumerator)", FreeEnumerator, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeSpecifier", "void FreeSpecifier(Specifier spec)", FreeSpecifier, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeSpecifierContents", "void FreeSpecifierContents(Specifier spec)", FreeSpecifierContents, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeIdentifier", "void FreeIdentifier(Identifier id)", FreeIdentifier, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeTypeName", "void FreeTypeName(TypeName typeName)", FreeTypeName, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeExpContents", "void FreeExpContents(Expression exp)", FreeExpContents, module, 1);

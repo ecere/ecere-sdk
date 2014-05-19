@@ -72,22 +72,17 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
       if(classSym)
       {
          Class _class = classSym.registered;
+
+         FreeSpecifierContents(spec);
+
          spec.type = nameSpecifier;
-
-         if(spec.templateArgs)
-         {
-            FreeList(spec.templateArgs, FreeTemplateArgument);
-            spec.templateArgs = null;
-         }
-
          if(_class && _class.type == structClass)
          {
             //Externalexternal;
             char name[1024];
             name[0] = 0;
             FullClassNameCat(name, _class.fullName, false);
-            //spec.name = CopyString(name);
-            delete spec.name;
+            FreeSpecifierContents(spec);
             spec.type = structSpecifier;
             spec.baseSpecs = null;
             spec.id = MkIdentifier(name);
@@ -100,7 +95,6 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
          {
             char name[1024] = "";
             FullClassNameCat(name, _class.fullName, false);
-            delete spec.name;
             spec.type = structSpecifier;
             spec.baseSpecs = null;
             spec.id = MkIdentifier(name);
@@ -125,7 +119,6 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
                !strcmp(_class.fullName, "uint") ||
                !strcmp(_class.fullName, "byte")))
             {
-               delete spec.name;
                if(_class.dataTypeString)
                {
                   if(!strcmp(_class.dataTypeString, "uint64") ||
@@ -147,10 +140,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
                      _class = classSym ? classSym.registered : null;
                   }
 
-                  if(!strcmp(_class.dataTypeString, "char *"))
-                     spec.name = CopyString("char");
-                  else
-                     spec.name = CopyString(_class.dataTypeString);
+                  spec.name = CopyString(!strcmp(_class.dataTypeString, "char *") ? "char" : _class.dataTypeString);
                   spec.symbol = null;
                }
                else
@@ -161,7 +151,6 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             }
             else if(!_class.base)
             {
-               delete spec.name;
                spec.type = baseSpecifier;
                spec.specifier = VOID;
                return true;
@@ -169,7 +158,6 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
          }
          else
          {
-            delete spec.name;
             spec.type = structSpecifier;
             spec.id = MkIdentifier("__ecereNameSpace__ecere__com__Instance");
             spec.list = null;

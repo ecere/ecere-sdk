@@ -270,50 +270,88 @@ void FreeSpecifier(Specifier spec)
 {
    if(spec)
    {
-      switch(spec.type)
-      {
-         case nameSpecifier:
-         //case classSpecifier:
-            delete spec.name;
-            if(spec.templateArgs)
-               FreeList(spec.templateArgs, FreeTemplateArgument);
-            break;
-         case extendedSpecifier:
-            if(spec.extDecl)
-               FreeExtDecl(spec.extDecl);
-            break;
-         case enumSpecifier:
-            if(spec.baseSpecs)
-               FreeList(spec.baseSpecs, FreeSpecifier);
-            if(spec.id)
-               FreeIdentifier(spec.id);
-            if(spec.list)
-               FreeList(spec.list, FreeEnumerator);
-            if(spec.definitions)
-               FreeList(spec.definitions, FreeClassDef);
-            break;
-         case structSpecifier:
-         case unionSpecifier:
-            if(spec.id)
-               FreeIdentifier(spec.id);
-            if(spec.definitions)
-               FreeList(spec.definitions, FreeClassDef);
-            if(spec.baseSpecs)
-               FreeList(spec.baseSpecs, FreeSpecifier);
-            if(spec.extDeclStruct)
-               FreeExtDecl(spec.extDeclStruct);
-            if(spec.ctx)
-            {
-               FreeContext(spec.ctx);
-               delete spec.ctx;
-            }
-            break;
-         case subClassSpecifier:
-            if(spec._class)
-               FreeSpecifier(spec._class);
-            break;
-      }
+      FreeSpecifierContents(spec);
       delete spec;
+   }
+}
+
+void FreeSpecifierContents(Specifier spec)
+{
+   switch(spec.type)
+   {
+      case nameSpecifier:
+      //case classSpecifier:
+         delete spec.name;
+         if(spec.templateArgs)
+         {
+            FreeList(spec.templateArgs, FreeTemplateArgument);
+            spec.templateArgs = null;
+         }
+         break;
+      case extendedSpecifier:
+         if(spec.extDecl)
+         {
+            FreeExtDecl(spec.extDecl);
+            spec.extDecl = null;
+         }
+         break;
+      case enumSpecifier:
+         if(spec.baseSpecs)
+         {
+            FreeList(spec.baseSpecs, FreeSpecifier);
+            spec.baseSpecs = null;
+         }
+         if(spec.id)
+         {
+            FreeIdentifier(spec.id);
+            spec.id = null;
+         }
+         if(spec.list)
+         {
+            FreeList(spec.list, FreeEnumerator);
+            spec.list = null;
+         }
+         if(spec.definitions)
+         {
+            FreeList(spec.definitions, FreeClassDef);
+            spec.definitions = null;
+         }
+         break;
+      case structSpecifier:
+      case unionSpecifier:
+         if(spec.id)
+         {
+            FreeIdentifier(spec.id);
+            spec.id = null;
+         }
+         if(spec.definitions)
+         {
+            FreeList(spec.definitions, FreeClassDef);
+            spec.definitions = null;
+         }
+         if(spec.baseSpecs)
+         {
+            FreeList(spec.baseSpecs, FreeSpecifier);
+            spec.baseSpecs = null;
+         }
+         if(spec.extDeclStruct)
+         {
+            FreeExtDecl(spec.extDeclStruct);
+            spec.extDeclStruct = null;
+         }
+         if(spec.ctx)
+         {
+            FreeContext(spec.ctx);
+            delete spec.ctx;
+         }
+         break;
+      case subClassSpecifier:
+         if(spec._class)
+         {
+            FreeSpecifier(spec._class);
+            spec._class = null;
+         }
+         break;
    }
 }
 

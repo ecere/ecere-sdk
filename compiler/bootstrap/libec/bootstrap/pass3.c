@@ -1033,7 +1033,7 @@ extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
 
 extern struct Symbol * FindClass(char *  name);
 
-extern void FreeTemplateArgument(struct TemplateArgument * arg);
+extern void FreeSpecifierContents(struct Specifier * spec);
 
 extern void FullClassNameCat(char *  output, char *  className, unsigned int includeTemplateParams);
 
@@ -1111,19 +1111,15 @@ if(classSym)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = classSym->registered;
 
+FreeSpecifierContents(spec);
 spec->type = 1;
-if(spec->templateArgs)
-{
-FreeList(spec->templateArgs, FreeTemplateArgument);
-spec->templateArgs = (((void *)0));
-}
 if(_class && _class->type == 1)
 {
 char name[1024];
 
 name[0] = (char)0;
 FullClassNameCat(name, _class->fullName, 0x0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
+FreeSpecifierContents(spec);
 spec->type = 3;
 spec->baseSpecs = (((void *)0));
 spec->id = MkIdentifier(name);
@@ -1137,7 +1133,6 @@ else if(_class && _class->type == 5)
 char name[1024] = "";
 
 FullClassNameCat(name, _class->fullName, 0x0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 spec->type = 3;
 spec->baseSpecs = (((void *)0));
 spec->id = MkIdentifier(name);
@@ -1150,7 +1145,6 @@ else if(_class)
 {
 if((_class->type != 1000 || !strcmp(_class->fullName, "enum") || (_class->dataTypeString && !strcmp(_class->dataTypeString, "char *")) || !strcmp(_class->fullName, "uint64") || !strcmp(_class->fullName, "uint32") || !strcmp(_class->fullName, "uint16") || !strcmp(_class->fullName, "uintptr") || !strcmp(_class->fullName, "intptr") || !strcmp(_class->fullName, "uintsize") || !strcmp(_class->fullName, "intsize") || !strcmp(_class->fullName, "uint") || !strcmp(_class->fullName, "byte")))
 {
-(__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 if(_class->dataTypeString)
 {
 if(!strcmp(_class->dataTypeString, "uint64") || !strcmp(_class->dataTypeString, "uint32") || !strcmp(_class->dataTypeString, "uint16") || !strcmp(_class->dataTypeString, "uintptr") || !strcmp(_class->dataTypeString, "intptr") || !strcmp(_class->dataTypeString, "uintsize") || !strcmp(_class->dataTypeString, "intsize") || !strcmp(_class->dataTypeString, "uint") || !strcmp(_class->dataTypeString, "byte"))
@@ -1163,10 +1157,7 @@ else
 classSym = FindClass(_class->dataTypeString);
 _class = classSym ? classSym->registered : (((void *)0));
 }
-if(!strcmp(_class->dataTypeString, "char *"))
-spec->name = __ecereNameSpace__ecere__sys__CopyString("char");
-else
-spec->name = __ecereNameSpace__ecere__sys__CopyString(_class->dataTypeString);
+spec->name = __ecereNameSpace__ecere__sys__CopyString(!strcmp(_class->dataTypeString, "char *") ? "char" : _class->dataTypeString);
 spec->symbol = (((void *)0));
 }
 else
@@ -1177,7 +1168,6 @@ spec->symbol = (((void *)0));
 }
 else if(!_class->base)
 {
-(__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 spec->type = 0;
 spec->specifier = VOID;
 return 0x1;
@@ -1185,7 +1175,6 @@ return 0x1;
 }
 else
 {
-(__ecereNameSpace__ecere__com__eSystem_Delete(spec->name), spec->name = 0);
 spec->type = 3;
 spec->id = MkIdentifier("__ecereNameSpace__ecere__com__Instance");
 spec->list = (((void *)0));
