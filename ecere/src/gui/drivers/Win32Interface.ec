@@ -102,15 +102,14 @@ import "Window"
 static byte key2VK[256] =
 {
    0,VK_ESCAPE,'1','2','3','4','5','6','7','8','9','0',VK_MINUS,VK_EQUALS,VK_BACK,VK_TAB,
-   'Q','W','E','R','T','Y','U','I','O','P',VK_LBRACKET,VK_RBRACKET,VK_RETURN,VK_CONTROL,'A','S',
-   'D','F','G','H','J','K','L',VK_SEMI,VK_QUOTE,VK_TILDE,VK_SHIFT,VK_BACK_SLASH,'Z','X','C','V',
-   'B','N','M',VK_COMMA,VK_PERIOD,VK_DIVIDE,VK_SHIFT,VK_MULTIPLY,VK_LMENU,VK_SPACE,VK_CAPITAL,VK_F1,VK_F2,VK_F3,VK_F4,VK_F5,
+   'Q','W','E','R','T','Y','U','I','O','P',VK_LBRACKET,VK_RBRACKET,VK_RETURN,VK_LCONTROL,'A','S',
+   'D','F','G','H','J','K','L',VK_SEMI,VK_QUOTE,VK_TILDE,VK_LSHIFT,VK_BACK_SLASH,'Z','X','C','V',
+   'B','N','M',VK_COMMA,VK_PERIOD,VK_DIVIDE,VK_RSHIFT,VK_MULTIPLY,VK_LMENU,VK_SPACE,VK_CAPITAL,VK_F1,VK_F2,VK_F3,VK_F4,VK_F5,
    VK_F6,VK_F7,VK_F8,VK_F9,VK_F10,VK_NUMLOCK,VK_SCROLL,VK_NUMPAD7,VK_NUMPAD8,VK_NUMPAD9,VK_SUBTRACT,VK_NUMPAD4,VK_NUMPAD5,VK_NUMPAD6,VK_ADD,VK_NUMPAD1,
    VK_NUMPAD2,VK_NUMPAD3,VK_NUMPAD0,VK_DELETE,0,0,0,VK_F11,VK_F12,0,0,0,0,0,0,0,
-   0,0,0,0,0,0,VK_HOME,VK_UP,VK_PRIOR,VK_LEFT,VK_RIGHT,VK_END,VK_DOWN,VK_NEXT,VK_INSERT,VK_DELETE,
-   0,0,0,VK_SHIFT,VK_MENU,VK_CONTROL
+   0,VK_RCONTROL,0,0,VK_RMENU,0,VK_HOME,VK_UP,VK_PRIOR,VK_LEFT,VK_RIGHT,VK_END,VK_DOWN,VK_NEXT,VK_INSERT,VK_DELETE
 };
-static char className[] = "ECERE Application";
+static char className[] = "Ecere Application";
 static HINSTANCE hInstance;
 
 static DEVMODE devMode;
@@ -1832,18 +1831,25 @@ class Win32Interface : Interface
    bool GetKeyState(Key key)
    {
       bool keyState = false;
-      if(key < 256)
+      if(key < 256 || key == alt || key == shift || key == control)
       {
-         if(key2VK[key])
-            keyState = GetAsyncKeyState(key2VK[key]);
-         keyState = (keyState & 0x80000) ? true : false;
+         uint ks = 0;
+         if(key == alt)
+            ks = GetAsyncKeyState(VK_MENU);
+         else if(key == control)
+            ks = GetAsyncKeyState(VK_CONTROL);
+         else if(key == shift)
+            ks = GetAsyncKeyState(VK_SHIFT);
+         else if(key2VK[key])
+            ks = GetAsyncKeyState(key2VK[key]);
+         keyState = (ks & 0x80000) ? true : false;
       }
       else if(key == capsState)
-         keyState = ::GetKeyState(VK_CAPITAL) & 0x00000001;
+         keyState = (::GetKeyState(VK_CAPITAL) & 0x00000001) != 0;
       else if(key == numState)
-         keyState = ::GetKeyState(VK_NUMLOCK) & 0x00000001;
+         keyState = (::GetKeyState(VK_NUMLOCK) & 0x00000001) != 0;
       else if(key == scrollState)
-         keyState = ::GetKeyState(VK_SCROLL) & 0x00000001;
+         keyState = (::GetKeyState(VK_SCROLL) & 0x00000001) != 0;
       return keyState;
    }
 
