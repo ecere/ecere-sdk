@@ -523,6 +523,7 @@ public class MySkin_Window : Window
       {
          if(rootWindow == this)
          {
+            surface.blend = false;
             surface.SetBackground({ 0 });
 
             // Top
@@ -533,6 +534,7 @@ public class MySkin_Window : Window
             surface.Area(size.w-9, bmpTopBorder.bitmap.height, size.w-1, size.h);
             // Bottom
             surface.Area(0,size.h-9,size.w-1, size.h);
+            surface.blend = true;
          }
       }
    }
@@ -541,6 +543,7 @@ public class MySkin_Window : Window
    {
       bool isNormal = (state == normal);
       int top = 0, border = 0, bottom = 0;
+
       if(state == minimized)
          top = border = bottom = DEAD_BORDER;
       else if(((BorderBits)borderStyle).fixed /*sizable*/)
@@ -605,7 +608,6 @@ public class MySkin_Window : Window
          surface.Blit(bmpBottomBorder.bitmap, 0, 27 + 448, 0, 0, bmpBottomBorder.bitmap.width, bmpBottomBorder.bitmap.height);
          */
          surface.alphaWrite = blend;
-         // surface.blend = rootWindow != this;
 
          surface.Blit(bmpTopLeftBorder.bitmap, 0, 0, 0, 0, bmpTopLeftBorder.bitmap.width, bmpTopLeftBorder.bitmap.height);
          surface.Stretch(bmpTopBorder.bitmap, bmpTopLeftBorder.bitmap.width, 0, 0, 0, size.w - 2 * bmpTopLeftBorder.bitmap.width, bmpTopBorder.bitmap.height,
@@ -620,7 +622,6 @@ public class MySkin_Window : Window
             bmpBottomBorder.bitmap.width, bmpBottomBorder.bitmap.height);
          surface.Blit(bmpBottomRightBorder.bitmap, size.w - bmpBottomRightBorder.bitmap.width, size.h - 9, 0, 0, bmpBottomRightBorder.bitmap.width, bmpBottomRightBorder.bitmap.height);
          //surface.alphaWrite = DontWrite;
-         surface.blend = true;
 
          surface.SetForeground(activeBorder);
          /*

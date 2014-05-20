@@ -1902,7 +1902,7 @@ public class LFBDisplayDriver : DisplayDriver
             }
             else
             {
-               if(surface.background.a == 255 || lfbSurface.clearing)
+               if(!surface.blend || surface.background.a == 255 || lfbSurface.clearing)
                {
                   switch(GetColorDepthShifts(lfbSurface.bitmap.pixelFormat))
                   {
