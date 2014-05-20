@@ -2,6 +2,9 @@ import "Project"
 
 class WorkspaceTab : Tab
 {
+   bool firstCreation;
+   firstCreation = true;
+
    background = formColor;
    text = $"Workspace";
 
@@ -53,26 +56,30 @@ class WorkspaceTab : Tab
 
    bool OnCreate()
    {
-      // This is required to be here because the label is labeling its parent, which otherwise has issues
-      labelSourceDirs.labeledWindow = sourceDirs;
-
-      if(ide.projectView)
+      if(firstCreation)
       {
-         Array<String> strings { };
-         char path[MAX_LOCATION];
-         String debugDir = ide.workspace.debugDir;
-         for(dir : ide.workspace.sourceDirs)
-            strings.Add(dir);
-         sourceDirs.strings = strings;
+         // This is required to be here because the label is labeling its parent, which otherwise has issues
+         labelSourceDirs.labeledWindow = sourceDirs;
 
-         strcpy(path, ide.workspace.projectDir);
-         if(debugDir)
-            PathCat(path, debugDir);
-         debugDirectory.path = path;
-         commandLineArgs.contents = ide.workspace.commandLineArgs;
-         environmentVars.namedStrings = ide.workspace.environmentVars;
+         if(ide.projectView)
+         {
+            Array<String> strings { };
+            char path[MAX_LOCATION];
+            String debugDir = ide.workspace.debugDir;
+            for(dir : ide.workspace.sourceDirs)
+               strings.Add(dir);
+            sourceDirs.strings = strings;
 
-         delete strings;
+            strcpy(path, ide.workspace.projectDir);
+            if(debugDir)
+               PathCat(path, debugDir);
+            debugDirectory.path = path;
+            commandLineArgs.contents = ide.workspace.commandLineArgs;
+            environmentVars.namedStrings = ide.workspace.environmentVars;
+
+            delete strings;
+         }
+         firstCreation = false;
       }
       return true;
    }
