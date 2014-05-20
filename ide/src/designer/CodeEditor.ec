@@ -444,8 +444,19 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
             result = true;
          }
 
-         if(freeDataForm) delete dataForm;
-         if(freeDataTest) delete dataTest;
+         // Temporary work around until we standardize how properties should manage memory
+         if(!strcmp(prop.name, "strings") && !strcmp(prop._class.name, "DirectoriesBox"))
+            freeDataForm = freeDataTest = true;
+         if(dataType.type == normalClass && dataType.structSize)
+         {
+            if(freeDataForm) eInstance_Delete(dataForm);
+            if(freeDataTest) eInstance_Delete(dataTest);
+         }
+         else
+         {
+            if(freeDataForm) delete dataForm;
+            if(freeDataTest) delete dataTest;
+         }
       }
       else if(dataType && dataType._vTbl)
       {
