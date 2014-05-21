@@ -262,6 +262,8 @@ Identifier FindCtxExpression(Expression exp, int line, int charPos)
                arg++;
             }
 
+            if(type && type.kind == methodType && type.method)
+               type = type.method.dataType;
 
             if(!ctxInsideExp && /*ctxInsideExp == exp && */type && type.kind == functionType)
             {
