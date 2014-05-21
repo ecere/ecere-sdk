@@ -5021,70 +5021,29 @@ void ComputeInstantiation(Expression exp)
                            {
                               BitMember bitMember = (BitMember) dataMember;
                               Type type;
-                              int part = 0;
-                              GetInt(value, &part);
+                              uint64 part;
                               bits = (bits & ~bitMember.mask);
                               if(!bitMember.dataType)
                                  bitMember.dataType = ProcessTypeString(bitMember.dataTypeString, false);
-
                               type = bitMember.dataType;
-
                               if(type.kind == classType && type._class && type._class.registered)
                               {
                                  if(!type._class.registered.dataType)
                                     type._class.registered.dataType = ProcessTypeString(type._class.registered.dataTypeString, false);
                                  type = type._class.registered.dataType;
                               }
-
                               switch(type.kind)
                               {
                                  case _BoolType:
-                                 case charType:
-                                    if(type.isSigned)
-                                       bits |= ((char)part << bitMember.pos);
-                                    else
-                                       bits |= ((unsigned char)part << bitMember.pos);
-                                    break;
-                                 case shortType:
-                                    if(type.isSigned)
-                                       bits |= ((short)part << bitMember.pos);
-                                    else
-                                       bits |= ((unsigned short)part << bitMember.pos);
-                                    break;
+                                 case charType:       { byte v; type.isSigned ? GetChar(value, &v) : GetUChar(value, &v); part = (uint64)v; break; }
+                                 case shortType:      { uint16 v; type.isSigned ? GetShort(value, &v) : GetUShort(value, &v); part = (uint64)v; break; }
                                  case intType:
-                                 case longType:
-                                    if(type.isSigned)
-                                       bits |= ((int)part << bitMember.pos);
-                                    else
-                                       bits |= ((unsigned int)part << bitMember.pos);
-                                    break;
-                                 case int64Type:
-                                    if(type.isSigned)
-                                       bits |= ((int64)part << bitMember.pos);
-                                    else
-                                       bits |= ((uint64)part << bitMember.pos);
-                                    break;
-                                 case intPtrType:
-                                    if(type.isSigned)
-                                    {
-                                       bits |= ((intptr)part << bitMember.pos);
-                                    }
-                                    else
-                                    {
-                                       bits |= ((uintptr)part << bitMember.pos);
-                                    }
-                                    break;
-                                 case intSizeType:
-                                    if(type.isSigned)
-                                    {
-                                       bits |= ((ssize_t)(intsize)part << bitMember.pos);
-                                    }
-                                    else
-                                    {
-                                       bits |= ((size_t) (uintsize)part << bitMember.pos);
-                                    }
-                                    break;
+                                 case longType:       { uint v; type.isSigned ? GetInt(value, &v) : GetUInt(value, &v); part = (uint64)v; break; }
+                                 case int64Type:      { uint64 v; type.isSigned ? GetInt64(value, &v) : GetUInt64(value, &v); part = (uint64)v; break; }
+                                 case intPtrType:     { intptr v; type.isSigned ? GetIntPtr(value, &v) : GetUIntPtr(value, &v); part = (uint64)v; break; }
+                                 case intSizeType:    { intsize v; type.isSigned ? GetIntSize(value, &v) : GetUIntSize(value, &v); part = (uint64)v; break; }
                               }
+                              bits += part << bitMember.pos;
                            }
                         }
                      }

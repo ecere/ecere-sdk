@@ -11421,9 +11421,8 @@ else if(dataMember)
 {
 struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)dataMember;
 struct Type * type;
-int part = 0;
+uint64 part;
 
-GetInt(value, &part);
 bits = (bits & ~bitMember->mask);
 if(!bitMember->dataType)
 bitMember->dataType = ProcessTypeString(bitMember->dataTypeString, 0x0);
@@ -11438,51 +11437,56 @@ switch(type->kind)
 {
 case 24:
 case 1:
-if(type->isSigned)
-bits |= ((char)part << bitMember->pos);
-else
-bits |= ((unsigned char)part << bitMember->pos);
+{
+unsigned char v;
+
+type->isSigned ? GetChar(value, &v) : GetUChar(value, &v);
+part = (uint64)v;
 break;
+}
 case 2:
-if(type->isSigned)
-bits |= ((short)part << bitMember->pos);
-else
-bits |= ((unsigned short)part << bitMember->pos);
+{
+unsigned short v;
+
+type->isSigned ? GetShort(value, &v) : GetUShort(value, &v);
+part = (uint64)v;
 break;
+}
 case 3:
 case 5:
-if(type->isSigned)
-bits |= (part << bitMember->pos);
-else
-bits |= ((unsigned int)part << bitMember->pos);
+{
+unsigned int v;
+
+type->isSigned ? GetInt(value, &v) : GetUInt(value, &v);
+part = (uint64)v;
 break;
+}
 case 4:
-if(type->isSigned)
-bits |= ((long long)part << bitMember->pos);
-else
-bits |= ((uint64)part << bitMember->pos);
+{
+uint64 v;
+
+type->isSigned ? GetInt64(value, &v) : GetUInt64(value, &v);
+part = v;
 break;
+}
 case 22:
-if(type->isSigned)
 {
-bits |= ((intptr_t)part << bitMember->pos);
-}
-else
-{
-bits |= ((uintptr_t)part << bitMember->pos);
-}
+intptr_t v;
+
+type->isSigned ? GetIntPtr(value, &v) : GetUIntPtr(value, &v);
+part = (uint64)v;
 break;
+}
 case 23:
-if(type->isSigned)
 {
-bits |= ((ssize_t)part << bitMember->pos);
-}
-else
-{
-bits |= ((size_t)part << bitMember->pos);
-}
+ssize_t v;
+
+type->isSigned ? GetIntSize(value, &v) : GetUIntSize(value, &v);
+part = (uint64)v;
 break;
 }
+}
+bits += part << bitMember->pos;
 }
 }
 }
