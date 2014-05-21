@@ -1239,7 +1239,7 @@ void DebugComputeExpression(Expression exp)
                         if(tmp)
                         {
                            len -= tmp - (e.string + 1);
-                           newString = new char[2 + len];
+                           newString = new char[2 + len + 1];
                            newString[0] = '\"';
                            memcpy(newString + 1, tmp, len);
                            newString[1 + len] = '\"';
@@ -2054,7 +2054,6 @@ void DebugComputeExpression(Expression exp)
                   }
                   if(!supported)
                   {
-                     FreeExpContents(exp);
                      exp.type = memberPropertyErrorExp;
                      exp.isConstant = false;
                   }
