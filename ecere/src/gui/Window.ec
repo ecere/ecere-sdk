@@ -1060,7 +1060,7 @@ private:
          int loX = 0, loY = 0, hiX = pw, hiY = ph;
          for(win = parent.children.first; win; win = win.next)
          {
-            if(!win.isActiveClient && win.visible)
+            if(!win.nonClient && !win.isActiveClient && win.visible)
             {
                Size size = win.size;
                Point pos = win.position;
