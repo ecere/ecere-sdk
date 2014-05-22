@@ -1791,6 +1791,7 @@ class IDEWorkSpace : Window
          }
          // If this is not here, the IDE is not updated when doing Debug/Break then Alt-4 to show call stack (IDE not updated)
          Update(null);
+         if(duck.visible) duck.Update(null);   // TOFIX: If this is not here, the duck disappears -- Why?
       }
    }
 
