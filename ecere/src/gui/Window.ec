@@ -9328,7 +9328,23 @@ public:
    property bool isActiveClient
    {
       property_category $"Behavior"
-      set { style.isActiveClient = value; }
+      set
+      {
+         if(parent && style.isActiveClient != value && !style.hidden)
+         {
+            if(value)
+            {
+               if(state == minimized) parent.numIcons++;
+               parent.numPositions++;
+            }
+            else
+            {
+               if(state == minimized) parent.numIcons--;
+               parent.numPositions--;
+            }
+         }
+         style.isActiveClient = value;
+      }
       get { return style.isActiveClient; }
    };
 
