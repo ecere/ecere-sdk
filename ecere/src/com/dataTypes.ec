@@ -2286,6 +2286,7 @@ static void RegisterClass_String(Module module)
    delete stringClass.dataTypeString;
    stringClass.dataTypeString = CopyString("char *");
    stringClass.structSize = 0;
+   stringClass.computeSize = false;
 
    eClass_AddMethod(stringClass, "OnCompare", null, String_OnCompare, publicAccess);
    eClass_AddMethod(stringClass, "OnCopy", null, String_OnCopy, publicAccess);
@@ -2298,6 +2299,7 @@ static void RegisterClass_String(Module module)
 
    stringClass = eSystem_RegisterClass(normalClass, "String", "char *", 0, 0, null, null, module, baseSystemAccess, publicAccess);
    stringClass.structSize = 0;
+   stringClass.computeSize = false;
    eClass_AddProperty(stringClass, null, "char *", null, null, publicAccess);
 }
 

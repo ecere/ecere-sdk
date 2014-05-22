@@ -2898,6 +2898,7 @@ struct __ecereNameSpace__ecere__com__Class * stringClass = __ecereNameSpace__ece
 (__ecereNameSpace__ecere__com__eSystem_Delete(stringClass->dataTypeString), stringClass->dataTypeString = 0);
 stringClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("char *");
 stringClass->structSize = 0;
+stringClass->computeSize = 0x0;
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnCompare", (((void *)0)), __ecereNameSpace__ecere__com__String_OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnCopy", (((void *)0)), __ecereNameSpace__ecere__com__String_OnCopy, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnFree", (((void *)0)), __ecereNameSpace__ecere__com__String_OnFree, 1);
@@ -2907,6 +2908,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnSerialize", (((vo
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__String_OnUnserialize, 1);
 stringClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "String", "char *", 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
 stringClass->structSize = 0;
+stringClass->computeSize = 0x0;
 __ecereNameSpace__ecere__com__eClass_AddProperty(stringClass, (((void *)0)), "char *", (((void *)0)), (((void *)0)), 1);
 }
 
