@@ -324,6 +324,13 @@ void DebugComputeExpression(Expression exp)
                   {
                      expNew.expType = expNew.destType;
                      expNew.destType.refCount++;
+                     // For negative values parsed as opExp
+                     if(expNew.type == opExp && expNew.op.op == '-' && !expNew.op.exp1 && expNew.op.exp2)
+                     {
+                        expNew.op.exp2.expType = expNew.destType;
+                        expNew.destType.refCount++;
+                        expNew.op.exp2.isConstant = true;
+                     }
                   }
                   else
                      ProcessExpressionType(expNew);
