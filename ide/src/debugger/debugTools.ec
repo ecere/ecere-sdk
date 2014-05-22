@@ -826,7 +826,7 @@ void DebugComputeExpression(Expression exp)
       case opExp:
       {
          Expression expError = null;
-         Expression exp1, exp2 = null;
+         Expression exp1 = null, exp2 = null;
          Operand op1 = { 0 }, op2 = { 0 };
 
          /*
@@ -956,6 +956,12 @@ void DebugComputeExpression(Expression exp)
                         op2 = GetOperand(exp2);
                         if(op2.type) op2.type.refCount++;
                      }
+                  }
+                  else
+                  {
+                     exp1 = exp.op.exp1;
+                     op1 = GetOperand(exp1);
+                     if(op1.type) op1.type.refCount++;
                   }
                }
             }
