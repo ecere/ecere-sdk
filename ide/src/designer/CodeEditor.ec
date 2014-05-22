@@ -6159,7 +6159,9 @@ class CodeEditor : Window
          }
       }
 
-      if(this.privateModule && destType && (destType.kind != pointerType || destType.type.kind != voidType) && destType.kind != ellipsisType)
+      if(this.privateModule && destType && (destType.kind == _BoolType || destType.kind == classType || destType.kind == enumType || destType.kind == structType || destType.kind == templateType || destType.kind == thisClassType || destType.kind == unionType ||
+         (destType.kind == pointerType && destType.type.kind != voidType)))
+      //if(this.privateModule && destType && (destType.kind != pointerType || destType.type.kind != voidType) && destType.kind != ellipsisType)
       {
          listedEnums = ListEnumsModule(this.privateModule, destType);
       }
