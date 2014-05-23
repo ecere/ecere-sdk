@@ -54,6 +54,10 @@ static void ProcessSpecifier(Specifier spec)
                         ProcessStatement(def.propertyWatch.compound);
                      }
                      break;
+                  case classPropertyValueClassDef:
+                     if(def.initializer)
+                        ProcessInitializer(def.initializer);
+                     break;
                }
             }
          }
@@ -661,6 +665,10 @@ static void ProcessClassDef(ClassDef def)
          }
          break;
       }
+      case classPropertyValueClassDef:
+         if(def.initializer)
+            ProcessInitializer(def.initializer);
+         break;
       case functionClassDef:
          ProcessClassFunction(def.function);
          break;

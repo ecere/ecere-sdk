@@ -1093,6 +1093,8 @@ static void ProcessProperty(struct PropertyDef * def);
 
 static void ProcessStatement(struct Statement * stmt);
 
+static void ProcessInitializer(struct Initializer * initializer);
+
 static void ProcessSpecifier(struct Specifier * spec)
 {
 switch(spec->type)
@@ -1138,6 +1140,10 @@ if(def->propertyWatch && def->propertyWatch->compound)
 {
 ProcessStatement(def->propertyWatch->compound);
 }
+break;
+case 11:
+if(def->initializer)
+ProcessInitializer(def->initializer);
 break;
 }
 }
@@ -1790,6 +1796,10 @@ ProcessMemberInit(init);
 }
 break;
 }
+case 11:
+if(def->initializer)
+ProcessInitializer(def->initializer);
+break;
 case 0:
 ProcessClassFunction(def->function);
 break;
