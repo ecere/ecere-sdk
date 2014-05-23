@@ -11,7 +11,7 @@ Camera camera
    fixed,
    position = Vector3D { 0, 0, -300 },
    orientation = Euler { 0, 0, 0 },
-   fov = 53;
+   fov = 70;
 };
 
 Light light

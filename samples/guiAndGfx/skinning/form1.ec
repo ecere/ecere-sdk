@@ -24,7 +24,7 @@ Form1 form1 {};
 
 class MyApp : GuiApplication
 {
-   //skin = "My";
+   skin = "My";
    //skin = "Acovel";
-   skin = "Sim";
+   //skin = "Sim";
 }

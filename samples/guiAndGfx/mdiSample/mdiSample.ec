@@ -7,7 +7,6 @@ class ChildWindow : Window
    hasMinimize = true;
    hasClose = true;
    isActiveClient = true;
-   isDocument = true;
    text = "Child Window";
    anchor = { { cascade } };
    // Once the parent is set, unlock the cascade anchor
@@ -23,7 +22,7 @@ class MainWindow : Window
    hasVertScroll = true;
    hasMenuBar = true;
    drawBehind = true;
-   text = "MainForm", size = { 640, 480 };
+   text = "MainForm", clientSize = { 640, 480 };
 
    Menu fileMenu { menu, text = "File", hotKey = f };
       MenuItem newItem

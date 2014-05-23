@@ -1,6 +1,8 @@
 #include <GL/gl.h>
 import "ecere"
 
+#define GL_MULTISAMPLE_ARB 0x809D
+
 class GLTriangle : Window
 {
    text = "Triangle";
@@ -20,6 +22,7 @@ class GLTriangle : Window
       glLoadIdentity();
       glTranslatef(-15, -15, 0);
       glShadeModel(GL_SMOOTH);
+      glEnable(GL_MULTISAMPLE_ARB);
 
       glBegin(GL_TRIANGLES);
       glColor3f(1, 0, 0);  glVertex2f(0, 0);

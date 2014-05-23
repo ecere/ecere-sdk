@@ -12,7 +12,7 @@ class Form1 : Window
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
-   size = { 640, 480 };
+   clientSize = { 640, 460 };
 
    EditBox log { this, size = { 598, 323 }, position = { 16, 56 }, multiLine = true };
    EditBox serverAddress { this, contents = "localhost", size = { 182, 27 }, position = { 360, 16 } };
