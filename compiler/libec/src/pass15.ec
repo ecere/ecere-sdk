@@ -11982,7 +11982,7 @@ static void ProcessStatement(Statement stmt)
                               ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_Watch")), args));
                            }
                            else
-                              Compiler_Error($"Property %s not found in class %s\n", prop.name, _class.fullName);
+                              Compiler_Error($"Property %s not found in class %s\n", propID.string, _class.fullName);
                         }
                      }
                   }
@@ -12143,7 +12143,7 @@ static void ProcessStatement(Statement stmt)
                            ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_StopWatching")), args));
                         }
                         else
-                           Compiler_Error($"Property %s not found in class %s\n", prop.name, _class.fullName);
+                           Compiler_Error($"Property %s not found in class %s\n", propID.string, _class.fullName);
                      }
                   }
 

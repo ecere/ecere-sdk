@@ -17748,7 +17748,7 @@ ListAdd(args, MkExpIdentifier(MkIdentifier(watcherName)));
 ListAdd(stmt->expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_Watch")), args));
 }
 else
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Property %s not found in class %s\n", (((void *)0))), prop->name, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Property %s not found in class %s\n", (((void *)0))), propID->string, _class->fullName);
 }
 }
 }
@@ -17894,7 +17894,7 @@ ListAdd(args, watcher ? CopyExpression(watcher) : MkExpIdentifier(MkIdentifier("
 ListAdd(stmt->expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_StopWatching")), args));
 }
 else
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Property %s not found in class %s\n", (((void *)0))), prop->name, _class->fullName);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Property %s not found in class %s\n", (((void *)0))), propID->string, _class->fullName);
 }
 }
 if(object)
