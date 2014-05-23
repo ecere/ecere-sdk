@@ -1885,6 +1885,7 @@ static void ProcessExpression(Expression exp)
                            Expression checkedExp = memberExp.member.exp;
                            Expression parentExp = null;
                            Expression newExp;
+                           bool disconnected = false;
                            while(((checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp) && checkedExp.list) || checkedExp.type == castExp)
                            {
                               parentExp = checkedExp;
@@ -1893,13 +1894,21 @@ static void ProcessExpression(Expression exp)
                               {
                                  checkedExp = checkedExp.list->last;
                                  // Dissociate from memberExp which will get freed
-                                 if(checkedExp) parentExp.list->Remove(checkedExp);
+                                 if(checkedExp && !disconnected)
+                                 {
+                                    parentExp.list->Remove(checkedExp);
+                                    disconnected = true;
+                                 }
                               }
                               else if(checkedExp.type == castExp)
                               {
                                  checkedExp = checkedExp.cast.exp;
                                  // Dissociate from memberExp which will get freed
-                                 checkedExp.cast.exp = null;
+                                 if(checkedExp && !disconnected)
+                                 {
+                                    checkedExp.cast.exp = null;
+                                    disconnected = true;
+                                 }
                               }
                            }
                            if(!parentExp)

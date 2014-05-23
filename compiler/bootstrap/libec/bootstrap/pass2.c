@@ -2745,6 +2745,7 @@ else if(!memberExp->member.exp->byReference)
 struct Expression * checkedExp = memberExp->member.exp;
 struct Expression * parentExp = (((void *)0));
 struct Expression * newExp;
+unsigned int disconnected = 0x0;
 
 while(((checkedExp->type == 5 || checkedExp->type == 32) && checkedExp->list) || checkedExp->type == 11)
 {
@@ -2752,13 +2753,20 @@ parentExp = checkedExp;
 if(checkedExp->type == 5 || checkedExp->type == 32)
 {
 checkedExp = (*checkedExp->list).last;
-if(checkedExp)
+if(checkedExp && !disconnected)
+{
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*parentExp->list), checkedExp);
+disconnected = 0x1;
+}
 }
 else if(checkedExp->type == 11)
 {
 checkedExp = checkedExp->cast.exp;
+if(checkedExp && !disconnected)
+{
 checkedExp->cast.exp = (((void *)0));
+disconnected = 0x1;
+}
 }
 }
 if(!parentExp)
