@@ -293,11 +293,7 @@ public class SecSince1970 : int64
 {
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      // TOFIX:  passing argument 2 of '__ecereProp___ecereNameSpace__ecere__sys__DateTime_Set___ecereNameSpace__ecere__sys__SecSince1970' makes integer from pointer without a cast
-      DateTime t = this;
-      return t.OnGetString(tempString, fieldData, needClass);
-      // TOFIX:
-      // return ((DateTime)this).OnGetString(tempString, fieldData, needClass);
+      return ((DateTime)this).OnGetString(tempString, fieldData, needClass);
    }
 
    // Is this required?
@@ -422,10 +418,7 @@ public class TimeStamp32 : uint32
 public:
    char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      DateTime t = (SecSince1970)(int)this;
-      return t.OnGetString(tempString, fieldData, needClass);
-      // TOFIX:
-      // return ((DateTime)this).OnGetString(tempString, fieldData, needClass);
+      return ((DateTime)this).OnGetString(tempString, fieldData, needClass);
    }
 
    // Is this required?
