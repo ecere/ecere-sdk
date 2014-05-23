@@ -14293,6 +14293,12 @@ exp->op.exp1->destType->count++;
 ProcessExpressionType(exp->op.exp1);
 if(exp->op.exp1->destType && exp->op.op != '=')
 exp->op.exp1->destType->count--;
+if(!exp->op.exp2 && (exp->op.op == INC_OP || exp->op.op == DEC_OP) && exp->op.exp1->expType && exp->op.exp1->expType->kind == 8 && exp->op.exp1->expType->_class && exp->op.exp1->expType->_class->registered && exp->op.exp1->expType->_class->registered->type == 3)
+{
+exp->op.exp2 = MkExpConstant("1");
+exp->op.op = exp->op.op == INC_OP ? ADD_ASSIGN : SUB_ASSIGN;
+assign = 0x1;
+}
 if(exp->op.exp1->destType == dummy)
 {
 FreeType(dummy);
