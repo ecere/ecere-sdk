@@ -815,7 +815,7 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    }
    if(!windowData.ic)
    {
-      ch = (byte)Interface::TranslateKey(key, event->state & ShiftMask);
+      ch = (byte)Interface::TranslateKey(key, (event->state & ShiftMask) != 0);
       // 127 is delete, we don't treat that as a character (Use (SmartKey)key == del)
       if(ch == 128 || ch == 127) ch = 0;
    }

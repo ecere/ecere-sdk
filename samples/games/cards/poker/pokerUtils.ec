@@ -75,7 +75,7 @@ static bool POKER_Same(int cards[5], int howMany, int what[2], int rest[3])
             rest[d++] = cards[c];
       }
    }
-   return numPairs;
+   return numPairs != 0;
 }
 
 // --- External Functions ---

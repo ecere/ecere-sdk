@@ -2,13 +2,13 @@ import "chess.ec"
 
 class AboutChess : Window
 {
-   background = black; 
+   background = black;
    foreground = white, size = Size { 440, 200 }, hasClose = true,
    text = APPNAME;
 
    Button ok
    {
-      this, isDefault = true, text = "OK", 
+      this, isDefault = true, text = "OK",
       anchor = { bottom = 10 }, size = { 80 };
 
       NotifyClicked = ButtonCloseDialog;

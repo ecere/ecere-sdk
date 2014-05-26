@@ -114,7 +114,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -561,7 +561,7 @@ c = 1;
 }
 for(; addedPath[c]; )
 {
-char directory[4384LL];
+char directory[4384];
 int len = 0;
 char ch;
 int count;
@@ -770,7 +770,7 @@ c = 1;
 }
 for(; addedPath[c]; )
 {
-char directory[4384LL];
+char directory[4384];
 int len = 0;
 char ch;
 int count;
@@ -901,8 +901,8 @@ if(!path[0])
 memmove(destination, path, strlen(path) + 1);
 else
 {
-char pathPart[4384LL], pathRest[797];
-char toPart[4384LL], toRest[797];
+char pathPart[4384], pathRest[797];
+char toPart[4384], toRest[797];
 unsigned int different = 0x0;
 
 strcpy(pathRest, path);

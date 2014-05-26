@@ -3,7 +3,7 @@ import "chess.ec"
 static char * names[Player][PieceType] =
 {
    { "", "WhitePawn", "WhiteKnigh", "WhiteBisho", "WhiteRook", "WhiteQueen", "WhiteKing" },
-   { "", "BlackPawn", "BlackKnigh", "BlackBisho", "BlackRook", "BlackQueen", "BlackKing" },
+   { "", "BlackPawn", "BlackKnigh", "BlackBisho", "BlackRook", "BlackQueen", "BlackKing" }
 };
 
 define SQUARE = squareSize; // 160;
@@ -11,9 +11,9 @@ define SQUARE_OFFSET = SQUARE * 3.5f;
 
 class Chess3D : Window
 {
-   Camera camera 
-   { 
-      attached, fov = 45, zMin = 50,zMax = 5000, 
+   Camera camera
+   {
+      attached, fov = 45, zMin = 50,zMax = 5000,
       position = { 0, 0, -1000 },
       orientation = Euler { 30, 30, 0 }
    };
@@ -61,14 +61,14 @@ class Chess3D : Window
    {
       Player player = atBoard.player;
       PieceType type = atBoard.type;
-      
+
       if(type)
       {
          char * name = names[player][type];
          Object object = chessSet.Find(name);
          if(object)
          {
-         
+
             float height = 0;
             if(high)
             {
@@ -90,7 +90,7 @@ class Chess3D : Window
                x * SQUARE - SQUARE_OFFSET,
                offsetY - height;
                y * SQUARE - SQUARE_OFFSET };
-            
+
             object.UpdateTransform();
 
             object.tag = (void *)(((y)*8)+(x)+1);
@@ -117,18 +117,18 @@ class Chess3D : Window
          RenderPiece(atBoard, x, y, false);
       }
    }
-   
+
    void RenderBoard()
    {
       display.DrawObject(chessBoard);
-  
+
       if(chessState->gameRunning)
       {
          int x,y;
          for(y=0; y<8; y++)
 	         for(x=0; x<8; x++)
                RenderSquare(x, y);
-         
+
          if(useDrag && pieceSelected)
          {
             Piece atBoard = chessState->board[start.y][start.x];
@@ -155,7 +155,7 @@ class Chess3D : Window
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
       OldList list {};
-                   
+
       display.StartSelection(x,y, 0,0);
       display.SetCamera(null, camera);
       display.CollectHits();
@@ -180,15 +180,15 @@ class Chess3D : Window
             pieceSelected = false;
             ((Chess)master).ProcessUserMove(start.x, start.y, sx, sy);
          }
-         else if(chessState->board[sy][sx] && 
-            chessState->isLocalPlayer[chessState->turn] && 
+         else if(chessState->board[sy][sx] &&
+            chessState->isLocalPlayer[chessState->turn] &&
             chessState->board[sy][sx].player == chessState->turn)
          {
             if(useDrag)
             {
                Vector3D viewSpace, worldSpace;
                display.IntersectPolygons();
-               RenderSquare(sx, sy);               
+               RenderSquare(sx, sy);
                display.GetIntersect(viewSpace);
 
                camera.Untransform(viewSpace, worldSpace);
@@ -205,7 +205,7 @@ class Chess3D : Window
 
             OnMouseMove(x, y, mods);
          }
-         
+
          list.Free(null);
       }
       else if(display.DrawObject(chessBoard) && !moving && !lightMoving)
@@ -282,12 +282,12 @@ class Chess3D : Window
       else if(lightMoving)
       {
          light.orientation = Euler
-         { 
-            startOrientation.yaw + (x - startPosition.x), 
-            startOrientation.pitch + (y - startPosition.y), 
-            90 
+         {
+            startOrientation.yaw + (x - startPosition.x),
+            startOrientation.pitch + (y - startPosition.y),
+            90
          };
-         
+
          Update(null);
       }
       else if(pieceSelected && useDrag)
@@ -347,7 +347,7 @@ class Chess3D : Window
             Update(null);
             break;
          case wheelUp:
-         case equal: camera.position.z /= 1.1f; 
+         case equal: camera.position.z /= 1.1f;
             if(camera.position.z >= -1100)
                camera.position.z = -1100;
             Update(null);

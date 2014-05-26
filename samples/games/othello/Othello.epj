@@ -11,10 +11,17 @@
    },
    "Configurations" : [
       {
-         "Name" : "Default",
+         "Name" : "Debug",
          "Options" : {
             "Debug" : true,
             "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Optimization" : "Speed",
+            "FastMath" : true
          }
       }
    ],

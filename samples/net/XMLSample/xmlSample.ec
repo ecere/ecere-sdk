@@ -83,11 +83,11 @@ class TrackXMLParser : XMLParser
          Vector3Df position { };
          while(GetWord())
          {
-            if(!strcmpi(keyWord, "x"))          { GetWord(); position.x = atof(keyWord); }
-            else if(!strcmpi(keyWord, "y"))     { GetWord(); position.y = atof(keyWord); }
-            else if(!strcmpi(keyWord, "z"))     { GetWord(); position.z = atof(keyWord); }
-            else if(!strcmpi(keyWord, "speed")) { GetWord(); object.speed = atof(keyWord); }
-            else if(!strcmpi(keyWord, "dir"))   { GetWord(); object.direction = atof(keyWord); }
+            if(!strcmpi(keyWord, "x"))          { GetWord(); position.x = (float)atof(keyWord); }
+            else if(!strcmpi(keyWord, "y"))     { GetWord(); position.y = (float)atof(keyWord); }
+            else if(!strcmpi(keyWord, "z"))     { GetWord(); position.z = (float)atof(keyWord); }
+            else if(!strcmpi(keyWord, "speed")) { GetWord(); object.speed = (float)atof(keyWord); }
+            else if(!strcmpi(keyWord, "dir"))   { GetWord(); object.direction = (float)atof(keyWord); }
          }
          object.position = position;
       }

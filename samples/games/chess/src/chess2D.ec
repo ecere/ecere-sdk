@@ -147,8 +147,8 @@ class Chess2D : Window
       if(!flip) y = 7-y; else x = 7-x;
 
       if(chessState->gameRunning &&
-         x < 8 && y < 8 && x >= 0 && y >= 0 && chessState->board[y][x] && 
-         chessState->isLocalPlayer[chessState->turn] && 
+         x < 8 && y < 8 && x >= 0 && y >= 0 && chessState->board[y][x] &&
+         chessState->isLocalPlayer[chessState->turn] &&
          chessState->board[y][x].player == chessState->turn)
       {
          dragging = true;
@@ -205,7 +205,7 @@ class Chess2D : Window
 
       if(x < 8 && y < 8 && x >= 0 && y >= 0 && dragging)
       {
-         drag.x = x;    
+         drag.x = x;
          drag.y = y;
          Update(null);
       }

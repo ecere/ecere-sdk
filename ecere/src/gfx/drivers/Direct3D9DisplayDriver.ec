@@ -1123,9 +1123,9 @@ class Direct3D9DisplayDriver : DisplayDriver
             break;
          case vSync:
          {
-            if(d3dDisplay.vSync != value)
+            if(d3dDisplay.vSync != (bool)value)
             {
-               d3dDisplay.vSync = value;
+               d3dDisplay.vSync = (bool)value;
                DisplaySize(display, display.width, display.height);
             }
             break;

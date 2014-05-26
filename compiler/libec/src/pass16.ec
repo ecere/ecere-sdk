@@ -717,7 +717,7 @@ public void DeclareClass(Symbol classSym, char * className)
          if(!classSym.module) return;
          classSym._import = ClassImport
          {
-            isRemote = classSym.registered ? classSym.registered.isRemote : false;
+            isRemote = classSym.registered ? classSym.registered.isRemote : 0;
             name = CopyString(classSym.string);
          };
          classSym.module.classes.Add(classSym._import);

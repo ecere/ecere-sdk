@@ -11,6 +11,11 @@ public struct AnchorValue
       int distance;
       float percent;
    };
+   property MinMaxValue
+   {
+      set { distance = value; type = offset; }
+      get { return distance; }
+   }
    property int
    {
       set { distance = value; type = offset; }
@@ -98,6 +103,11 @@ public struct MiddleAnchorValue
       int distance;
       float percent;
    };
+   property MinMaxValue
+   {
+      set { distance = value; type = none; }
+      get { return distance; }
+   }
    property int
    {
       set { distance = value; type = none; }

@@ -114,7 +114,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -672,7 +672,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Eof(struct __ecere
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return __ecerePointer___ecereNameSpace__ecere__sys__File->input ? (unsigned int)feof(__ecerePointer___ecereNameSpace__ecere__sys__File->input) : 0x1;
+return __ecerePointer___ecereNameSpace__ecere__sys__File->input ? feof(__ecerePointer___ecereNameSpace__ecere__sys__File->input) != 0 : 0x1;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Truncate(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int size)

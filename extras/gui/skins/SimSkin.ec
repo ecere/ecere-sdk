@@ -44,7 +44,7 @@ ColorKey skinGradient[3] =
 {
    { Color { 40,40,40 }, 0.0f },
    { darkGray, 0.5f },
-   { Color { 40,40,40 }, 1.0f },
+   { Color { 40,40,40 }, 1.0f }
 };
 
 class SimSkin_Window : Window

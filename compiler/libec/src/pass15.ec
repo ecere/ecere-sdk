@@ -3037,7 +3037,11 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
 
                      if(!convert.dataType)
                         convert.dataType = ProcessTypeString(convert.dataTypeString, false);
-                     if(MatchTypes(convert.dataType, dest, conversions, null, null, false, true, false, true))
+                     // Only go ahead with this conversion flow while processing an existing conversion if the conversion data type is a class
+                     if((!isConversionExploration || convert.dataType.kind == classType || !strcmp(_class.name, "String")) &&
+                        MatchTypes(convert.dataType, dest, conversions, null, null,
+                           (convert.dataType.kind == classType && !strcmp(convert.dataTypeString, "String")) ? true : false,
+                              convert.dataType.kind == classType, false, true))
                      {
                         if(!conversions && !convert.Get)
                            return true;
@@ -3118,7 +3122,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                if(dest._class.registered.dataType.kind == classType || source.truth || dest.truth/* ||
                   !strcmp(dest._class.registered.name, "bool") || (source.kind == classType && !strcmp(source._class.string, "bool"))*/)
                {
-                  if(MatchTypes(source, dest._class.registered.dataType, conversions, null, null, true, true, false, false))
+                  if(MatchTypes(source, dest._class.registered.dataType, conversions, null, null, true, dest._class.registered.dataType.kind == classType, false, false))
                   {
                      return true;
                   }
@@ -3141,7 +3145,9 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
 
                      if(!convert.dataType)
                         convert.dataType = ProcessTypeString(convert.dataTypeString, false);
-                     if(convert.dataType != source && MatchTypes(convert.dataType, dest, conversions, null, null, true, true, false, true))
+                     if(convert.dataType != source &&
+                        (!isConversionExploration || convert.dataType.kind == classType || !strcmp(_class.name, "String")) &&
+                        MatchTypes(convert.dataType, dest, conversions, null, null, convert.dataType.kind == classType, convert.dataType.kind == classType, false, true))
                      {
                         if(!conversions && !convert.Get)
                            return true;
@@ -3170,9 +3176,13 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
             {
                if(!source._class.registered.dataType)
                   source._class.registered.dataType = ProcessTypeString(source._class.registered.dataTypeString, false);
-               if(MatchTypes(source._class.registered.dataType, dest, conversions, null, null, true, true, false, false))
+               if(!isConversionExploration || source._class.registered.dataType.kind == classType || !strcmp(source._class.registered.name, "String"))
                {
-                  return true;
+                  if(MatchTypes(source._class.registered.dataType, dest, conversions, null, null, source._class.registered.dataType.kind == classType, source._class.registered.dataType.kind == classType, false, false))
+                     return true;
+                  // For bool to be accepted by byte, short, etc.
+                  else if(MatchTypes(dest, source._class.registered.dataType, null, null, null, false, false, false, false))
+                     return true;
                }
             }
          }
@@ -3200,7 +3210,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       else if(source.kind == enumType &&
          (dest.kind == intType || dest.kind == shortType || dest.kind == charType || source.kind == _BoolType || dest.kind == longType || dest.kind == int64Type || dest.kind == intPtrType || dest.kind == intSizeType))
           return true;
-      else if(dest.kind == enumType &&
+      else if(dest.kind == enumType && !isConversionExploration &&
          (source.kind == intType || source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == longType || source.kind == int64Type || source.kind == intPtrType || source.kind == intSizeType))
           return true;
       else if((dest.kind == functionType || (dest.kind == pointerType && dest.type.kind == functionType) || dest.kind == methodType) &&
@@ -3512,12 +3522,31 @@ bool MatchWithEnums_Module(Module mainModule, Expression sourceExp, Type dest, c
 
 bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, bool skipUnitBla)
 {
-   Type source = sourceExp.expType;
+   Type source;
    Type realDest = dest;
    Type backupSourceExpType = null;
+   Expression computedExp = sourceExp;
+   dest.refCount++;
+
+   if(sourceExp.isConstant && sourceExp.type != constantExp && sourceExp.type != identifierExp && sourceExp.type != castExp &&
+      dest.kind == classType && dest._class && dest._class.registered && dest._class.registered.type == enumClass)
+   {
+      computedExp = CopyExpression(sourceExp);        // Keep the original expression, but compute for checking enum ranges
+      ComputeExpression(computedExp /*sourceExp*/);
+   }
+
+   source = sourceExp.expType;
 
    if(dest.kind == pointerType && sourceExp.type == constantExp && !strtoul(sourceExp.constant, null, 0))
+   {
+      if(computedExp != sourceExp)
+      {
+         FreeExpression(computedExp);
+         computedExp = sourceExp;
+      }
+      FreeType(dest);
       return true;
+   }
 
    if(!skipUnitBla && source && dest && source.kind == classType && dest.kind == classType)
    {
@@ -3532,8 +3561,16 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
               destBase = destBase.base);
           //if(source._class.registered == dest._class.registered)
           if(sourceBase == destBase)
-             return true;
-       }
+          {
+            if(computedExp != sourceExp)
+            {
+               FreeExpression(computedExp);
+               computedExp = sourceExp;
+            }
+            FreeType(dest);
+            return true;
+         }
+      }
    }
 
    if(source)
@@ -3543,21 +3580,25 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       int64 value = MAXINT;
 
       source.refCount++;
-      dest.refCount++;
 
-      if(sourceExp.type == constantExp)
+      if(computedExp.type == constantExp)
       {
          if(source.isSigned)
-            value = strtoll(sourceExp.constant, null, 0);
+            value = strtoll(computedExp.constant, null, 0);
          else
-            value = strtoull(sourceExp.constant, null, 0);
+            value = strtoull(computedExp.constant, null, 0);
       }
-      else if(sourceExp.type == opExp && sourceExp.op.op == '-' && !sourceExp.op.exp1 && sourceExp.op.exp2 && sourceExp.op.exp2.type == constantExp)
+      else if(computedExp.type == opExp && sourceExp.op.op == '-' && !computedExp.op.exp1 && computedExp.op.exp2 && computedExp.op.exp2.type == constantExp)
       {
          if(source.isSigned)
-            value = -strtoll(sourceExp.op.exp2.constant, null, 0);
+            value = -strtoll(computedExp.op.exp2.constant, null, 0);
          else
-            value = -strtoull(sourceExp.op.exp2.constant, null, 0);
+            value = -strtoull(computedExp.op.exp2.constant, null, 0);
+      }
+      if(computedExp != sourceExp)
+      {
+         FreeExpression(computedExp);
+         computedExp = sourceExp;
       }
 
       if(dest.kind != classType && source.kind == classType && source._class && source._class.registered &&
@@ -3667,7 +3708,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       {
          Class _class = source._class ? source._class.registered : null;
 
-         if(_class && (_class.type == unitClass || !strcmp(_class.fullName, "bool") || /*_class.type == enumClass || */_class.type == bitClass ))  // TOCHECK: enumClass, bitClass is new here...
+         if(_class && (_class.type == unitClass || /*!strcmp(_class.fullName, "bool") || /*_class.type == enumClass || */_class.type == bitClass ))  // TOCHECK: enumClass, bitClass is new here...
          {
             /*
             if(dest.kind != classType)
@@ -3770,7 +3811,16 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       if(dest.kind == classType)
       {
          Class _class = dest._class ? dest._class.registered : null;
-         if(_class && !dest.truth && (_class.type == unitClass || !strcmp(_class.fullName, "bool") ||
+         bool fittingValue = false;
+         if(_class && _class.type == enumClass)
+         {
+            Class enumClass = eSystem_FindClass(privateModule, "enum");
+            EnumClassData c = ACCESS_CLASSDATA(_class, enumClass);
+            if(c && value >= 0 && value <= c.largest)
+               fittingValue = true;
+         }
+
+         if(_class && !dest.truth && (_class.type == unitClass || fittingValue ||
             (/*_class.type == enumClass*/_class.type != structClass && !value && source.kind == intType) || _class.type == bitClass))   // TOCHECK: enumClass, bitClass is new here...
          {
             if(_class.type == normalClass || _class.type == noHeadClass)
@@ -3922,7 +3972,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          return false;
       }
 
-      if(!flag)
+      if(!flag && !sourceExp.opDestType)
       {
          Expression newExp { };
          *newExp = *sourceExp;
@@ -3961,6 +4011,12 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    }
    else
    {
+      if(computedExp != sourceExp)
+      {
+         FreeExpression(computedExp);
+         computedExp = sourceExp;
+      }
+
       while((sourceExp.type == bracketsExp || sourceExp.type == extensionExpressionExp) && sourceExp.list) sourceExp = sourceExp.list->last;
       if(sourceExp.type == identifierExp)
       {
@@ -4000,6 +4056,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                            sourceExp.constant = CopyString(constant);
                            //for(;_class.base && _class.base.type != systemClass; _class = _class.base);
                         }
+                        FreeType(dest);
                         return true;
                      }
                   }
@@ -4009,8 +4066,12 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 
          // Loop through all enum classes
          if(dest.classObjectType != typedObject && dest.kind == classType /*!= ellipsisType */&& MatchWithEnums_Module(privateModule, sourceExp, dest, id.string, conversions))
+         {
+            FreeType(dest);
             return true;
+         }
       }
+      FreeType(dest);
    }
    return false;
 }
@@ -4030,7 +4091,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    {                                                              \
       t value2 = op2.m;                                           \
       exp.type = constantExp;                                    \
-      exp.string = p(op1.m o value2);                     \
+      exp.string = p((t)(op1.m o value2));                     \
       if(!exp.expType) \
          { exp.expType = op1.type; if(op1.type) op1.type.refCount++; } \
       return true;                                                \
@@ -7597,7 +7658,10 @@ void ProcessExpressionType(Expression exp)
                exp.expType = type;
                if(type)
                   type.refCount++;
-               if(type && (type.kind == enumType || (_class && _class.type == enumClass)))
+
+                                                // Commented this out, it was making non-constant enum parameters seen as constant
+                                                // enums should have been resolved by ResolveIdWithClass, changed to constantExp and marked as constant
+               if(type && (type.kind == enumType /*|| (_class && _class.type == enumClass)*/))
                   // Add missing cases here... enum Classes...
                   exp.isConstant = true;
 
@@ -7958,6 +8022,7 @@ void ProcessExpressionType(Expression exp)
          bool useDestType = false, useSideType = false;
          Location oldyylloc = yylloc;
          bool useSideUnit = false;
+         Class destClass = (exp.destType && exp.destType.kind == classType && exp.destType._class) ? exp.destType._class.registered : null;
 
          // Dummy type to prevent ProcessExpression of operands to say unresolved identifiers yet
          Type dummy
@@ -8008,19 +8073,32 @@ void ProcessExpressionType(Expression exp)
             case '+':
             case '-':
                useSideUnit = true;
+               useSideType = true;
+               useDestType = true;
+               break;
 
-               // Just added these... testing
+            case LEFT_OP:
+            case RIGHT_OP:
+               useSideType = true;
+               useDestType = true;
+               break;
+
             case '|':
-            case '&':
             case '^':
+               useSideType = true;
+               useDestType = true;
+               break;
 
-            // DANGER: Verify units
             case '/':
             case '%':
+               useSideType = true;
+               useDestType = true;
+               break;
+            case '&':
             case '*':
-
-               if(exp.op.op != '*' || exp.op.exp1)
+               if(exp.op.exp1)
                {
+                  // For & operator, useDestType nicely ensures the result will fit in a bool (TODO: Fix for generic enum)
                   useSideType = true;
                   useDestType = true;
                }
@@ -8056,21 +8134,22 @@ void ProcessExpressionType(Expression exp)
          }
 
          //dummy.kind = TypeDummy;
-
          if(exp.op.exp1)
          {
-            if(exp.destType && exp.destType.kind == classType &&
-               exp.destType._class && exp.destType._class.registered && useDestType &&
+            // Added this check here to use the dest type only for units derived from the base unit
+            // So that untyped units will use the side unit as opposed to the untyped destination unit
+            // This fixes (#771) sin(Degrees { 5 } + 5) to be equivalent to sin(Degrees { 10 }), since sin expects a generic Angle
+            if(exp.op.exp2 && useSideUnit && useDestType && destClass && destClass.type == unitClass && destClass.base.type != unitClass)
+               useDestType = false;
 
-              ((exp.destType._class.registered.type == unitClass && useSideUnit) ||
-               exp.destType._class.registered.type == enumClass ||
-               exp.destType._class.registered.type == bitClass
-               ))
+            if(destClass && useDestType &&
+              ((destClass.type == unitClass && useSideUnit) || destClass.type == enumClass || destClass.type == bitClass))
 
               //(exp.destType._class.registered.type == unitClass || exp.destType._class.registered.type == enumClass) && useDestType)
             {
                if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
                exp.op.exp1.destType = exp.destType;
+               exp.op.exp1.opDestType = true;
                if(exp.destType)
                   exp.destType.refCount++;
             }
@@ -8085,6 +8164,8 @@ void ProcessExpressionType(Expression exp)
             if(exp.op.exp1.destType && exp.op.op != '=') exp.op.exp1.destType.count++;
             ProcessExpressionType(exp.op.exp1);
             if(exp.op.exp1.destType && exp.op.op != '=') exp.op.exp1.destType.count--;
+
+            exp.op.exp1.opDestType = false;
 
             // Fix for unit and ++ / --
             if(!exp.op.exp2 && (exp.op.op == INC_OP || exp.op.op == DEC_OP) && exp.op.exp1.expType && exp.op.exp1.expType.kind == classType &&
@@ -8118,6 +8199,8 @@ void ProcessExpressionType(Expression exp)
                else
                {
                   exp.op.exp2.destType = exp.destType;
+                  if(!exp.op.exp1 || exp.op.op != '&')
+                     exp.op.exp2.opDestType = true;
                   if(exp.destType)
                      exp.destType.refCount++;
                }
@@ -8159,15 +8242,14 @@ void ProcessExpressionType(Expression exp)
                if(type1) type1.refCount++;
                exp.expType = type1;
             }
-            else if(exp.destType && exp.destType.kind == classType &&
-               exp.destType._class && exp.destType._class.registered &&
-
-                  ((exp.destType._class.registered.type == unitClass && useDestType && useSideUnit) ||
-                  (exp.destType._class.registered.type == enumClass && useDestType))
-                  )
+            else if(destClass &&
+                  ((destClass.type == unitClass && useDestType && useSideUnit) ||
+                  (destClass.type == enumClass && useDestType)))
             {
                if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
                exp.op.exp2.destType = exp.destType;
+               if(exp.op.op != '&')
+                  exp.op.exp2.opDestType = true;
                if(exp.destType)
                   exp.destType.refCount++;
             }
@@ -8205,6 +8287,7 @@ void ProcessExpressionType(Expression exp)
                   e.cast.exp.needCast = true;
             }
             ProcessExpressionType(exp.op.exp2);
+            exp.op.exp2.opDestType = false;
             if(exp.op.exp2.destType && exp.op.op != '=') exp.op.exp2.destType.count--;
 
             if(assign && type1 && type1.kind == pointerType && exp.op.exp2.expType)
@@ -8332,12 +8415,36 @@ void ProcessExpressionType(Expression exp)
                   // If either both are class or both are not class
                   ((type1.kind == classType && type1._class && strcmp(type1._class.string, "String")) == (type2.kind == classType && type2._class && strcmp(type2._class.string, "String"))))
                {
-                  if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
-                  exp.op.exp2.destType = type1;
-                  type1.refCount++;
-                  if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
-                  exp.op.exp1.destType = type2;
-                  type2.refCount++;
+                  // Added this check for enum subtraction to result in an int type:
+                  if(exp.op.op == '-' &&
+                     ((type1.kind == classType && type1._class.registered && type1._class.registered.type == enumClass) ||
+                      (type2.kind == classType && type2._class.registered && type2._class.registered.type == enumClass)) )
+                  {
+                     Type intType;
+                     if(!type1._class.registered.dataType)
+                        type1._class.registered.dataType = ProcessTypeString(type1._class.registered.dataTypeString, false);
+                     if(!type2._class.registered.dataType)
+                        type2._class.registered.dataType = ProcessTypeString(type2._class.registered.dataTypeString, false);
+
+                     intType = ProcessTypeString(
+                        (type1._class.registered.dataType.kind == int64Type || type2._class.registered.dataType.kind == int64Type) ? "int64" : "int", false);
+
+                     if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
+                     if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
+                     exp.op.exp1.destType = intType;
+                     exp.op.exp2.destType = intType;
+                     intType.refCount++;
+                  }
+                  else
+                  {
+                     if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
+                     exp.op.exp2.destType = type1;
+                     type1.refCount++;
+                     if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
+                     exp.op.exp1.destType = type2;
+                     type2.refCount++;
+                  }
+
                   // Warning here for adding Radians + Degrees with no destination type
                   if(!boolResult && type1.kind == classType && (!exp.destType || exp.destType.kind != classType) &&
                      type1._class.registered && type1._class.registered.type == unitClass &&
@@ -8588,36 +8695,81 @@ void ProcessExpressionType(Expression exp)
                   }
 
                   // TESTING THIS NEW CODE
-                  if(!boolResult || exp.op.op == '>' || exp.op.op == '<')
+                  if(!boolResult || exp.op.op == '>' || exp.op.op == '<' || exp.op.op == GE_OP || exp.op.op == LE_OP)
                   {
-                     if(type1.kind == classType && type1._class && type1._class.registered && type1._class.registered.type == enumClass && exp.op.exp2.expType)
+                     bool op1IsEnum = type1 && type1.kind == classType && type1._class && type1._class.registered && type1._class.registered.type == enumClass;
+                     bool op2IsEnum = type2 && type2.kind == classType && type2._class && type2._class.registered && type2._class.registered.type == enumClass;
+                     if(exp.op.op == '*' || exp.op.op == '/' || exp.op.op == '-' || exp.op.op == '|' || exp.op.op == '^')
                      {
-                        if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false))
+                        // Convert the enum to an int instead for these operators
+                        if(op1IsEnum && exp.op.exp2.expType)
                         {
-                           if(exp.expType) FreeType(exp.expType);
-                           exp.expType = exp.op.exp1.expType;
-                           if(exp.op.exp2.expType) exp.op.exp1.expType.refCount++;
-                           valid = true;
+                           if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false))
+                           {
+                              if(exp.expType) FreeType(exp.expType);
+                              exp.expType = exp.op.exp2.expType;
+                              if(exp.op.exp2.expType) exp.op.exp2.expType.refCount++;
+                              valid = true;
+                           }
+                        }
+                        else if(op2IsEnum && exp.op.exp1.expType)
+                        {
+                           if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false))
+                           {
+                              if(exp.expType) FreeType(exp.expType);
+                              exp.expType = exp.op.exp1.expType;
+                              if(exp.op.exp1.expType) exp.op.exp1.expType.refCount++;
+                              valid = true;
+                           }
                         }
                      }
-
-                     else if(type2 && (type2.kind == classType && type2._class && type2._class.registered && type2._class.registered.type == enumClass && exp.op.exp1.expType))
+                     else
                      {
-                        if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false))
+                        if(op1IsEnum && exp.op.exp2.expType)
                         {
-                           if(exp.expType) FreeType(exp.expType);
-                           exp.expType = exp.op.exp2.expType;
-                           if(exp.op.exp2.expType) exp.op.exp2.expType.refCount++;
-                           valid = true;
+                           if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false))
+                           {
+                              if(exp.expType) FreeType(exp.expType);
+                              exp.expType = exp.op.exp1.expType;
+                              if(exp.op.exp1.expType) exp.op.exp1.expType.refCount++;
+                              valid = true;
+                           }
+                        }
+                        else if(op2IsEnum && exp.op.exp1.expType)
+                        {
+                           if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false))
+                           {
+                              if(exp.expType) FreeType(exp.expType);
+                              exp.expType = exp.op.exp2.expType;
+                              if(exp.op.exp2.expType) exp.op.exp2.expType.refCount++;
+                              valid = true;
+                           }
                         }
                      }
                   }
 
                   if(!valid)
                   {
-                     if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
-                     exp.op.exp2.destType = type1;
-                     type1.refCount++;
+                     // Added this first part of the if here to handle  5 + Degrees { 5 } with either a base unit dest or not a unit dest type
+                     if(type2 && type2.kind == classType && type2._class && type2._class.registered && type2._class.registered.type == unitClass &&
+                        (type1.kind != classType || !type1._class || !type1._class.registered || type1._class.registered.type != unitClass))
+                     {
+                        if(exp.op.exp1.destType) FreeType(exp.op.exp1.destType);
+                        exp.op.exp1.destType = type2;
+                        type2.refCount++;
+
+                        if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
+                        {
+                           if(exp.expType) FreeType(exp.expType);
+                           exp.expType = exp.op.exp1.destType;
+                           if(exp.op.exp1.destType) exp.op.exp1.destType.refCount++;
+                        }
+                     }
+                     else
+                     {
+                        if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
+                        exp.op.exp2.destType = type1;
+                        type1.refCount++;
 
                      /*
                      // Maybe this was meant to be an enum...
@@ -8659,43 +8811,44 @@ void ProcessExpressionType(Expression exp)
                      }
                      */
 
-                     if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
-                     {
-                        if(exp.expType) FreeType(exp.expType);
-                        exp.expType = exp.op.exp2.destType;
-                        if(exp.op.exp2.destType) exp.op.exp2.destType.refCount++;
-                     }
-                     else if(type1 && type2)
-                     {
-                        char expString1[10240];
-                        char expString2[10240];
-                        char type1String[1024];
-                        char type2String[1024];
-                        expString1[0] = '\0';
-                        expString2[0] = '\0';
-                        type1String[0] = '\0';
-                        type2String[0] = '\0';
-                        if(inCompiler)
+                        if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
                         {
-                           PrintExpression(exp.op.exp1, expString1);
-                           ChangeCh(expString1, '\n', ' ');
-                           PrintExpression(exp.op.exp2, expString2);
-                           ChangeCh(expString2, '\n', ' ');
-                           PrintType(exp.op.exp1.expType, type1String, false, true);
-                           PrintType(exp.op.exp2.expType, type2String, false, true);
+                           if(exp.expType) FreeType(exp.expType);
+                           exp.expType = exp.op.exp2.destType;
+                           if(exp.op.exp2.destType) exp.op.exp2.destType.refCount++;
                         }
-
-                        Compiler_Warning($"incompatible expressions %s (%s) and %s (%s)\n", expString1, type1String, expString2, type2String);
-
-                        if(type1.kind == classType && type1._class && type1._class.registered && type1._class.registered.type == enumClass)
+                        else if(type1 && type2)
                         {
-                           exp.expType = exp.op.exp1.expType;
-                           if(exp.op.exp1.expType) exp.op.exp1.expType.refCount++;
-                        }
-                        else if(type2.kind == classType && type2._class && type2._class.registered && type2._class.registered.type == enumClass)
-                        {
-                           exp.expType = exp.op.exp2.expType;
-                           if(exp.op.exp2.expType) exp.op.exp2.expType.refCount++;
+                           char expString1[10240];
+                           char expString2[10240];
+                           char type1String[1024];
+                           char type2String[1024];
+                           expString1[0] = '\0';
+                           expString2[0] = '\0';
+                           type1String[0] = '\0';
+                           type2String[0] = '\0';
+                           if(inCompiler)
+                           {
+                              PrintExpression(exp.op.exp1, expString1);
+                              ChangeCh(expString1, '\n', ' ');
+                              PrintExpression(exp.op.exp2, expString2);
+                              ChangeCh(expString2, '\n', ' ');
+                              PrintType(exp.op.exp1.expType, type1String, false, true);
+                              PrintType(exp.op.exp2.expType, type2String, false, true);
+                           }
+
+                           Compiler_Warning($"incompatible expressions %s (%s) and %s (%s)\n", expString1, type1String, expString2, type2String);
+
+                           if(type1.kind == classType && type1._class && type1._class.registered && type1._class.registered.type == enumClass)
+                           {
+                              exp.expType = exp.op.exp1.expType;
+                              if(exp.op.exp1.expType) exp.op.exp1.expType.refCount++;
+                           }
+                           else if(type2.kind == classType && type2._class && type2._class.registered && type2._class.registered.type == enumClass)
+                           {
+                              exp.expType = exp.op.exp2.expType;
+                              if(exp.op.exp2.expType) exp.op.exp2.expType.refCount++;
+                           }
                         }
                      }
                   }
@@ -8842,6 +8995,7 @@ void ProcessExpressionType(Expression exp)
             if(!e.next)
             {
                FreeType(e.destType);
+               e.opDestType = exp.opDestType;
                e.destType = exp.destType;
                if(e.destType) { exp.destType.refCount++; e.destType.count++; inced = true; }
             }

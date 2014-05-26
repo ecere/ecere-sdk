@@ -735,7 +735,7 @@ public:
    {
       if(thread)
          thread.connected = false;
-      answered = 2;
+      answered = true; //2;
    }
 
    dllexport bool CallMethod(unsigned int methodID)

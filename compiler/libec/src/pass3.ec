@@ -7,7 +7,7 @@ extern External curExternal;
 ///////////////// INSTANCE DECLARATION PASS ///////////////////////
 
 // Returns true if we should add a * to the declarator
-static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
+static int ReplaceClassSpec(OldList specs, Specifier spec, bool param)
 {
    if(spec.type == templateTypeSpecifier)
    {
@@ -31,7 +31,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             if(decl)
                FreeDeclarator(decl);
             if(isPointer)
-               return true;
+               return 1;
          }
       }
       else if(!param && parameter.dataType)
@@ -49,7 +49,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
          {
             bool isPointer = decl.type == pointerDeclarator;
             if(isPointer)
-               return true;
+               return 1;
          }
       }
       else
@@ -153,7 +153,7 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             {
                spec.type = baseSpecifier;
                spec.specifier = VOID;
-               return true;
+               return 1;
             }
          }
          else
@@ -168,9 +168,9 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
          }
 
          if(_class && _class.dataTypeString && !strcmp(_class.dataTypeString, "char *"))
-            return true; //false;
+            return 1; //false;
          if(!_class || _class.type == normalClass || _class.type == noHeadClass)
-            return true;
+            return 1;
          else if(param && _class.type == structClass)
             return 2;
       }
@@ -180,10 +180,10 @@ static bool ReplaceClassSpec(OldList specs, Specifier spec, bool param)
       if(spec.specifier == ANY_OBJECT)
       {
          spec.specifier = VOID;
-         return true;
+         return 1;
       }
    }
-   return false;
+   return 0;
 }
 
 static void ReplaceByInstancePtr(Specifier spec, Declarator * declPtr, int type)

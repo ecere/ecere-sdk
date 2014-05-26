@@ -12,7 +12,7 @@ define MAXDEPTH_PASS2 = 50;
 
 static MoveStack moveStack[MAXDEPTH_PASS2];
 
-void AddMoveToList(MoveStack stack, ChessState state, PieceType type, Player player, 
+void AddMoveToList(MoveStack stack, ChessState state, PieceType type, Player player,
                    int x1, int y1, int x2, int y2)
 {
    if(IsMoveValid(x1,y1,x2,y2, state, null, true))
@@ -133,7 +133,7 @@ void GeneratePieceMoveList(ChessState state, int x, int y, MoveStack stack)
                AddMoveToList(stack, state, type, player, x,y,x,y2);
             }
          }
-         break;      
+         break;
       case King:
          AddMoveToList(stack, state, type, player, x,y, x,y+1);
          AddMoveToList(stack, state, type, player, x,y, x+1,y+1);
@@ -338,8 +338,8 @@ class AIThread : Thread
    bool abortAI;
    ChessMove aiMove;
 
-   Timer aiTimer 
-   { 
+   Timer aiTimer
+   {
       this, 0.1;
 
       bool DelayExpired()

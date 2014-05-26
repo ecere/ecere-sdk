@@ -151,14 +151,14 @@ class NeuralApp : Application
                outputNeurons[c].Unactivate();
 
             inputNeurons[0].activation = (double)example->health;
-            inputNeurons[1].activation = example->hasKnife;
-            inputNeurons[2].activation = example->hasGun;
+            inputNeurons[1].activation = (double)example->hasKnife;
+            inputNeurons[2].activation = (double)example->hasGun;
             inputNeurons[3].activation = example->ennemies;
             for(c = 0; c<NUM_OUTPUT; c++)
                outputNeurons[c].Activate();
 
             for(c = 0; c<NUM_OUTPUT; c++)
-               outputNeurons[c].error = ((double)example->result == c) - outputNeurons[c].activation;
+               outputNeurons[c].error = (double)((int)example->result == c) - outputNeurons[c].activation;
 
             for(c = 0; c<NUM_INPUT; c++)
                inputNeurons[c].BackPropagate();
@@ -177,8 +177,8 @@ class NeuralApp : Application
             outputNeurons[o].Unactivate();
 
          inputNeurons[0].activation = (double)example->health;
-         inputNeurons[1].activation = example->hasKnife;
-         inputNeurons[2].activation = example->hasGun;
+         inputNeurons[1].activation = (double)example->hasKnife;
+         inputNeurons[2].activation = (double)example->hasGun;
          inputNeurons[3].activation = example->ennemies;
 
          for(o = 0; o<NUM_OUTPUT; o++)
@@ -199,8 +199,8 @@ class NeuralApp : Application
             outputNeurons[o].Unactivate();
 
          inputNeurons[0].activation = (double)example->health;
-         inputNeurons[1].activation = example->hasKnife;
-         inputNeurons[2].activation = example->hasGun;
+         inputNeurons[1].activation = (double)example->hasKnife;
+         inputNeurons[2].activation = (double)example->hasGun;
          inputNeurons[3].activation = example->ennemies;
 
          for(o = 0; o<NUM_OUTPUT; o++)

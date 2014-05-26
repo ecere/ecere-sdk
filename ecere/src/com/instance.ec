@@ -296,7 +296,7 @@ public:
 
    int count;     // DEBUGGING
 
-   bool isRemote;
+   int isRemote;  // TODO: Convert to an enum, can have values 0..3
    bool internalDecl;
    void * data;
    bool computeSize;

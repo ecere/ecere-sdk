@@ -273,7 +273,7 @@ char *  name;
 struct __ecereNameSpace__ecere__sys__OldList methods;
 struct __ecereNameSpace__ecere__sys__OldList properties;
 unsigned int itself;
-unsigned int isRemote;
+int isRemote;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
@@ -385,7 +385,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -1051,7 +1051,7 @@ printf(__ecereNameSpace__ecere__GetTranslatedString("ecc", "Syntax:\n   ecc [-t 
 else
 {
 struct __ecereNameSpace__ecere__com__Instance * cppOutput;
-char command[3075LL];
+char command[3075];
 
 SetGlobalData(&globalData);
 SetExcludedSymbols(&_excludedSymbols);
@@ -1064,7 +1064,7 @@ SetInCompiler(0x1);
 SetTargetPlatform(targetPlatform);
 SetTargetBits(targetBits);
 SetEchoOn(0x0);
-privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? (unsigned int)2 : targetBits == 32 ? (unsigned int)4 : (unsigned int)0) | (unsigned int)8, 1, (((void *)0)));
+privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? 2 : targetBits == 32 ? 4 : (unsigned int)0) | 8), 1, (((void *)0)));
 SetPrivateModule(privateModule);
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
@@ -1120,8 +1120,8 @@ struct GlobalData * data = (data = __ecereNameSpace__ecere__com__eInstance_New(_
 data->key = (uintptr_t)data->fullName;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalData.functions, (struct __ecereNameSpace__ecere__sys__BTNode *)data);
 }
-snprintf(command, sizeof command, "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h ", GetSourceFile());
-command[sizeof command - 1] = (char)0;
+snprintf(command, sizeof (command), "%s%s -x c -E %s\"%s\"", cppCommand, cppOptions ? cppOptions : "", buildingBootStrap ? "" : "-include stdint.h -include sys/types.h ", GetSourceFile());
+command[sizeof (command) - 1] = (char)0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), command)))
 {
 char impFile[797];

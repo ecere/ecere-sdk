@@ -44,7 +44,7 @@ public class DualPipe : File
    bool Seek(int pos, FileSeekMode mode) { return (input || output) ? File::Seek(pos, mode) : DualPipe_Seek(dp, pos, mode); }
    uint Tell() { return (input || output) ? File::Tell() : DualPipe_Tell(dp); }
    bool Eof() { return DualPipe_Eof(dp); }
-   bool GetSize() { return (input || output) ? File::GetSize() : DualPipe_GetSize(dp); }
+   uint GetSize() { return (input || output) ? File::GetSize() : DualPipe_GetSize(dp); }
 
 public:
    bool Peek() { return DualPipe_Peek(dp); }

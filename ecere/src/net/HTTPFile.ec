@@ -821,7 +821,7 @@ private:
       return eof;
    }
 
-   bool GetSize()
+   uint GetSize()
    {
       return totalSize;
    }

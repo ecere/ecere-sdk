@@ -360,7 +360,7 @@ class GlyphPack : BTNode
       FontEntry fontEntry = null;
       FT_Face faces[128];
       float scales[128];
-      bool isGlyph = (uint)key & 0x80000000;
+      bool isGlyph = ((uint)key & 0x80000000) != 0;
       int curScript = ((uint)key & 0x7F000000) >> 24;
       unichar testChar = 0;
       /*
@@ -666,7 +666,7 @@ static uint * shaping(FontEntry entry, uint16 * string, int len, HB_Script scrip
   }
 
    *numGlyphs = shaper_item.num_glyphs;
-   *rightToLeft = shaper_item.item.bidiLevel % 2;
+   *rightToLeft = (bool)(shaper_item.item.bidiLevel % 2);
    return shaper_item.glyphs;
 }
 

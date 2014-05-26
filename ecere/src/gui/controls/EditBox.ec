@@ -1294,8 +1294,8 @@ private:
       }
    }
 
-   int CheckColors(EditLine line, int wc, bool selection, int selX, int editX, bool *selected,
-                   Color selectionForeground, Color selectionBackground, Color textColor, Color *foreground, Color *background, bool *opacity, bool *overwrite)
+   bool CheckColors(EditLine line, int wc, bool selection, int selX, int editX, bool *selected,
+                    Color selectionForeground, Color selectionBackground, Color textColor, Color *foreground, Color *background, bool *opacity, int *overwrite)
    {
       bool flush = false;
 
@@ -1319,7 +1319,7 @@ private:
          if((style.stuckCaret && wc == line.count && !line.next) ||
             (!mouseMove && line == this.line && wc == editX))
          {
-            *overwrite = true;
+            *overwrite = 1;
             flush = true;
          }
       }
@@ -1491,9 +1491,9 @@ private:
       bool opacity;
 
       // Overwrite Caret Stuff
-      bool overWrite = false;
+      int overWrite = 0;
       int overWriteX, overWriteY;
-      byte overWriteCh;
+      char overWriteCh;
 
       // ****** SYNTAX STATES ******
       bool inMultiLineComment = style.inMultiLineComment;
@@ -1968,7 +1968,7 @@ private:
                {
                   flush = CheckColors(line, wc, selection, selX, editX, &selected, selectionForeground,
                      selectionBackground, textColor, &foreground, &background, &opacity, &overWrite);
-                  if(overWrite == true)
+                  if(overWrite == 1)
                   {
                      overWriteCh = (wc < line.count) ? line.buffer[wc] : ' ';
                      if(overWriteCh == '\t') overWriteCh = ' ';
@@ -1979,7 +1979,7 @@ private:
                      flagTrailingSpace = numSpaces && trailingSpace && style.syntax && start + bufferLen == line.count && line != this.line;
                      if(flagTrailingSpace) surface.SetBackground(red);
                      FlushBuffer(surface, line, wc, &renderStart, &x, y, numSpaces, flagTrailingSpace, box);
-                     if(overWrite == true)
+                     if(overWrite == 1)
                      {
                         overWriteX = x;
                         overWriteY = y;
@@ -2016,7 +2016,7 @@ private:
          if(CheckColors(line, c, selection, selX, editX, &selected, selectionForeground,
                         selectionBackground, textColor, &foreground, &background, &opacity, &overWrite))
          {
-            if(overWrite == true)
+            if(overWrite == 1)
             {
                overWriteX = x;
                overWriteY = y;

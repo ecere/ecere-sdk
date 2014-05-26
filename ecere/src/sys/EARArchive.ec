@@ -1340,7 +1340,7 @@ class EARFile : File
       return position >= size || (f && f.Eof());
    }
 
-   bool GetSize()
+   uint GetSize()
    {
       return size;
    }

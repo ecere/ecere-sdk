@@ -128,7 +128,7 @@ String ParseURL(String input)
    return renew output char[len];
 }
 
-/*static */bool GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool treatEqual, bool acceptSingleQuote)
+/*static */int GetKeyWordEx(char ** input, char * keyWord, int maxSize, bool treatEqual, bool acceptSingleQuote)
 {
    char * string = *input;
    char ch;
@@ -171,7 +171,7 @@ String ParseURL(String input)
    return (c > 0) ? (wasQuoted ? WORD_QUOTED : WORD_NORMAL) : WORD_NONE;
 }
 
-static bool GetKeyWord(char ** input, char * keyWord, int maxSize)
+static int GetKeyWord(char ** input, char * keyWord, int maxSize)
 {
    return GetKeyWordEx(input, keyWord, maxSize, true, false);
 }

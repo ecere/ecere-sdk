@@ -521,7 +521,7 @@ class Win32ConsoleInterface : Interface
    bool GetKeyState(Key key)
    {
       if(key < 256)
-         return keys[key];
+         return keys[key] != 0;
       else if(key == capsState)
          return GetKeyState(VK_CAPITAL) & 0x00000001;
       else if(key == numState)

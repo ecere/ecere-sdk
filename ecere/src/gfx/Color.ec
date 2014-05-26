@@ -787,7 +787,7 @@ private class ColorValue : Color
          for(item = ((EnumClassData)class(DefinedColor).data).values.first; item; item = item.next)
          {
             DataRow row = defined.AddRow();
-            row.SetData(definedColorField, (Color)item.data);
+            row.SetData(definedColorField, (Color)(uint)item.data);
             strcpy(tempString, item.name);
             tempString[0] = (char)toupper(tempString[0]);
             row.SetData(definedColorName, tempString);
@@ -810,7 +810,7 @@ private class ColorValue : Color
          for(item = ((EnumClassData)class(SystemColor).data).values.first; item; item = item.next)
          {
             DataRow row = system.AddRow();
-            row.SetData(sysColorField, (Color)item.data);
+            row.SetData(sysColorField, (Color)(uint)item.data);
             strcpy(tempString, item.name);
             tempString[0] = (char)toupper(tempString[0]);
             row.SetData(sysColorName, tempString);

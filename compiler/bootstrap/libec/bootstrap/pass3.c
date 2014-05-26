@@ -434,6 +434,7 @@ unsigned int isConstant;
 unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
+unsigned int opDestType;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -779,7 +780,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -1043,7 +1044,7 @@ extern int strcmp(const char * , const char * );
 
 extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
 
-static unsigned int ReplaceClassSpec(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Specifier * spec, unsigned int param)
+static int ReplaceClassSpec(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Specifier * spec, unsigned int param)
 {
 if(spec->type == 8)
 {
@@ -1069,7 +1070,7 @@ unsigned int isPointer = decl->type == 5;
 if(decl)
 FreeDeclarator(decl);
 if(isPointer)
-return 0x1;
+return 1;
 }
 }
 else if(!param && parameter->dataType)
@@ -1089,7 +1090,7 @@ if(decl)
 unsigned int isPointer = decl->type == 5;
 
 if(isPointer)
-return 0x1;
+return 1;
 }
 }
 else
@@ -1170,7 +1171,7 @@ else if(!_class->base)
 {
 spec->type = 0;
 spec->specifier = VOID;
-return 0x1;
+return 1;
 }
 }
 else
@@ -1184,11 +1185,11 @@ spec->ctx = (((void *)0));
 spec->addNameSpace = 0x0;
 }
 if(_class && _class->dataTypeString && !strcmp(_class->dataTypeString, "char *"))
-return 0x1;
+return 1;
 if(!_class || _class->type == 0 || _class->type == 5)
-return 0x1;
+return 1;
 else if(param && _class->type == 1)
-return (unsigned int)2;
+return 2;
 }
 }
 else if(spec->type == 0)
@@ -1196,10 +1197,10 @@ else if(spec->type == 0)
 if(spec->specifier == ANY_OBJECT)
 {
 spec->specifier = VOID;
-return 0x1;
+return 1;
 }
 }
-return 0x0;
+return 0;
 }
 
 extern struct Pointer * MkPointer(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Pointer * pointer);
@@ -1425,7 +1426,7 @@ for(spec = (*type->qualifiers).first; spec; spec = spec->next)
 {
 int result;
 
-if((result = (unsigned int)ReplaceClassSpec(type->qualifiers, spec, param)))
+if((result = ReplaceClassSpec(type->qualifiers, spec, param)))
 ReplaceByInstancePtr(spec, &type->declarator, result);
 else
 {
@@ -1632,7 +1633,7 @@ for(spec = (*decl->specifiers).first; spec; spec = spec->next)
 {
 int type;
 
-if((type = (unsigned int)ReplaceClassSpec(decl->specifiers, spec, 0x0)))
+if((type = ReplaceClassSpec(decl->specifiers, spec, 0x0)))
 {
 struct InitDeclarator * d;
 
@@ -1668,7 +1669,7 @@ for(spec = (*decl->specifiers).first; spec; spec = spec->next)
 {
 int type;
 
-if((type = (unsigned int)ReplaceClassSpec(decl->specifiers, spec, 0x0)))
+if((type = ReplaceClassSpec(decl->specifiers, spec, 0x0)))
 {
 if(decl->declarators)
 {
@@ -1883,7 +1884,7 @@ for(spec = (*func->specifiers).first; spec; spec = spec->next)
 {
 int type;
 
-if((type = (unsigned int)ReplaceClassSpec(func->specifiers, spec, 0x0)))
+if((type = ReplaceClassSpec(func->specifiers, spec, 0x0)))
 ReplaceByInstancePtr(spec, &func->declarator, type);
 InstDeclPassSpecifier(spec);
 }

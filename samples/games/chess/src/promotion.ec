@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    promotion.c - Pawn Promotion Window
 ****************************************************************************/
 import "chessutils.ec"

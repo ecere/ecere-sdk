@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    chessutils.ec - Utilities to validate moves
 ****************************************************************************/
 import "chess.ec"
@@ -98,10 +98,10 @@ static bool BasicMove(Piece board[8][8], int x1, int y1, int x2, int y2)
                valid = true;
             break;
          case Queen:
-            if((!Abs(dx) || !Abs(dy) || Abs(dx) == Abs(dy)) && 
+            if((!Abs(dx) || !Abs(dy) || Abs(dx) == Abs(dy)) &&
                FreeWay(board, x1,y1,x2,y2))
                valid = true;
-            break;      
+            break;
          case King:
             if(Abs(dx) <= 1 && Abs(dy) <= 1)
                valid = true;
@@ -184,12 +184,12 @@ bool IsMoveValid(int x1, int y1, int x2, int y2, ChessState state, Piece endBoar
                   if(x1 == x2 && !state.board[y2][x2])
                      valid = true;
                   // En Passant
-                  else if(Abs(dx) == 1 && 
+                  else if(Abs(dx) == 1 &&
                           x2 == state.enPassant.x && y2 == state.enPassant.y + direction)
                      valid = true;
                }
                // First 2 Squares Move
-               else if(y2 - y1 == direction * 2 && y1 == start && x1 == x2 
+               else if(y2 - y1 == direction * 2 && y1 == start && x1 == x2
                   && !state.board[y1+direction][x1] && !state.board[y2][x1])
                   valid = true;
                break;
@@ -201,7 +201,7 @@ bool IsMoveValid(int x1, int y1, int x2, int y2, ChessState state, Piece endBoar
                   if(!state.kingMoved[player] && !Check(state, player, x1, y1))
                   {
                      // King Side
-                     if(dx == 2 && !state.kRookMoved[player] && 
+                     if(dx == 2 && !state.kRookMoved[player] &&
                         !state.board[y1][5] && !state.board[y1][6] &&
                         !Check(state, player, 5, y1))
                         valid = true;
@@ -299,7 +299,7 @@ bool StateMakeMove(ChessState state, int x1, int y1, int x2, int y2, PieceType p
       if(delta)
          *delta = materialValues[Pawn];
    }
-   
+
    if(IsMoveValid(x1,y1,x2,y2, state, state.board, validate))
    {
       valid = true;
@@ -367,5 +367,5 @@ bool StateMakeMove(ChessState state, int x1, int y1, int x2, int y2, PieceType p
       state.turn ^= 1;
       state.numMoves ++;
    }
-   return valid;   
+   return valid;
 }

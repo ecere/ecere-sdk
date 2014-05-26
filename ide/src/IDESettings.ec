@@ -762,7 +762,7 @@ public enum CompilerType
       {
          if(value)
          {
-            Platform c;
+            CompilerType c;
             for(c = firstCompilerType; c <= lastCompilerType; c++)
                if(!strcmpi(value, compilerTypeNames[c]))
                   return c;

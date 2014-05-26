@@ -516,7 +516,7 @@ public:
 
    virtual bool Eof(void)
    {
-      return input ? feof(input) : true;
+      return input ? feof(input) != 0 : true;
    }
 
    virtual bool Truncate(FileSize size)

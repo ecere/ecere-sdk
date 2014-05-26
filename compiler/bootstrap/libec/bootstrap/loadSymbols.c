@@ -310,6 +310,7 @@ unsigned int isConstant;
 unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
+unsigned int opDestType;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -469,7 +470,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -1088,7 +1089,7 @@ if(!isRemote || (importType != 2) || (!sourceFile || !strstr(sourceFile, ".main.
 if(!regClass || regClass->internalDecl)
 regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, name, isRemote ? (((void *)0)) : baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : 1, inheritanceAccess);
 if(regClass && isRemote)
-regClass->isRemote = (importType == 2) ? (unsigned int)1 : (unsigned int)2;
+regClass->isRemote = (importType == 2) ? 1 : 2;
 if(isRemote)
 {
 if(importType == 2)
@@ -1101,7 +1102,7 @@ existingClass = DeclClass(0, name);
 regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, className, baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : 1, inheritanceAccess);
 }
 if(regClass)
-regClass->isRemote = (importType == 2) ? (unsigned int)1 : (unsigned int)3;
+regClass->isRemote = (importType == 2) ? 1 : 3;
 }
 if(existingClass)
 {
@@ -1241,7 +1242,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line))
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass)
 {
-struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_AddProperty(regClass, conversion ? (((void *)0)) : name, line[0] ? line : 0, (void *)(unsigned int)setStmt, (void *)(unsigned int)getStmt, memberAccess);
+struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_AddProperty(regClass, conversion ? (((void *)0)) : name, line[0] ? line : 0, (void *)setStmt, (void *)getStmt, memberAccess);
 
 if(prop)
 {
@@ -1298,7 +1299,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line))
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass)
 {
-__ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, name, line, (void *)(unsigned int)setStmt, (void *)(unsigned int)getStmt);
+__ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, name, line, (void *)setStmt, (void *)getStmt);
 }
 }
 else if(!strcmp(line, "[Set]"))

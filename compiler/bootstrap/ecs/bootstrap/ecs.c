@@ -260,7 +260,7 @@ char *  name;
 struct __ecereNameSpace__ecere__sys__OldList methods;
 struct __ecereNameSpace__ecere__sys__OldList properties;
 unsigned int itself;
-unsigned int isRemote;
+int isRemote;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
@@ -432,7 +432,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -718,7 +718,7 @@ _class->itself = 0x1;
 }
 else if(!strcmp(line, "[Remote]"))
 {
-_class->isRemote = (unsigned int)1;
+_class->isRemote = 1;
 }
 else if(!strcmp(line, "[Imported Methods]"))
 {
@@ -2083,7 +2083,7 @@ struct __ecereNameSpace__ecere__com__Class * _class;
 
 for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + structSize_Instance)))->classes.first; _class; _class = _class->next)
 {
-if(_class->isRemote == (unsigned int)3)
+if(_class->isRemote == 3)
 break;
 }
 if(_class)
@@ -2096,7 +2096,7 @@ f = dcomSymbols;
 DeclareClass(FindClass("ecere::net::DCOMServerObject"), "__ecereClass___ecereNameSpace__ecere__net__DCOMServerObject");
 for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + structSize_Instance)))->classes.first; _class; _class = _class->next)
 {
-if(_class->isRemote == (unsigned int)3)
+if(_class->isRemote == 3)
 {
 struct __ecereNameSpace__ecere__com__Method * method;
 int id = 0;
@@ -2675,7 +2675,7 @@ SetCurrentContext(theGlobalContext);
 SetTargetPlatform(targetPlatform);
 SetTargetBits(targetBits);
 SetInSymbolGen(0x1);
-privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? (unsigned int)2 : targetBits == 32 ? (unsigned int)4 : (unsigned int)0) | (unsigned int)8, 1, (((void *)0)));
+privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? 2 : targetBits == 32 ? 4 : (unsigned int)0) | 8), 1, (((void *)0)));
 SetPrivateModule(privateModule);
 mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport);
 SetMainModule(mainModule);

@@ -1017,7 +1017,7 @@ static FileFilter fractalFilters[] =
 };
 static FileType fractalTypes[] =
 {
-   { "ECERE Fractal", "frc", always },
+   { "Ecere Fractal", "frc", always }
 };
 
 static FileFilter imageFilters[] =
@@ -1242,16 +1242,16 @@ class FractalsDesigner : Window
                      {
                         mandelbrot.thread.loop = loop;
                         mandelbrot.thread.maxLoops = f.GetFloat();
-                        mandelbrot.thread.useBlack = f.GetValue();
-                        mandelbrot.thread.doLoop = f.GetValue();
+                        mandelbrot.thread.useBlack = (bool)f.GetValue();
+                        mandelbrot.thread.doLoop = (bool)f.GetValue();
                      }
                      loop = f.GetValue();
                      if(loop)
                      {
                         julia.thread.loop = loop;
                         julia.thread.maxLoops = f.GetFloat();
-                        julia.thread.useBlack = f.GetValue();
-                        julia.thread.doLoop = f.GetValue();
+                        julia.thread.useBlack = (bool)f.GetValue();
+                        julia.thread.doLoop = (bool)f.GetValue();
                      }
                      else
                      {

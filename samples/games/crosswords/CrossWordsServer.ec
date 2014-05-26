@@ -391,7 +391,7 @@ class CrossWordsGame
                   anchored = true;
             }
             if(wordEnd > wordStart)
-               if(!CheckWord(newBoard, !direction, c, wordStart, wordEnd, score))
+               if(!CheckWord(newBoard, direction^1, c, wordStart, wordEnd, score))
                   return false;
          }
          else

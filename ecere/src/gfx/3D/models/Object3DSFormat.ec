@@ -799,7 +799,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
 
                   triangle->material = mat;
 
-                  face->done = (byte)bool::true;
+                  face->done = true;
                   object.flags.translucent = true;
                }
             }
@@ -826,7 +826,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
                         group.indices32[c*3+1] = face->indices[1];
                         group.indices32[c*3+2] = face->indices[2];
                      }
-                     face->done = (byte)bool::true;
+                     face->done = true;
                      c++;
                   }
                   mesh.UnlockPrimitiveGroup(group);

@@ -123,7 +123,7 @@ unsigned int noExpansion;
 char * defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void * data;
 unsigned int computeSize;
@@ -1470,9 +1470,9 @@ struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSyst
 {
 int start = 0, c;
 struct __ecereNameSpace__ecere__com__NameSpace * nameSpace = (((void *)0));
-unsigned int force64Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 0x1 : 0x0;
-unsigned int force32Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 0x1 : 0x0;
-unsigned int inCompiler = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 0x1 : 0x0;
+unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 0x1 : 0x0;
+unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 0x1 : 0x0;
+unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 0x1 : 0x0;
 unsigned int crossBits = force32Bits || force64Bits;
 unsigned int fixed = 0x0;
 
@@ -3617,7 +3617,7 @@ if(_class)
 {
 {
 int size = _class->structSize;
-int flags = (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + structSize_Instance)))->application + structSize_Module)))->isGUIApp;
+int flags = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + structSize_Instance)))->application + structSize_Module)))->isGUIApp;
 unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
 unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
 
@@ -5032,7 +5032,7 @@ if(instance && _property && _property->isWatchable)
 {
 struct __ecereNameSpace__ecere__com__Instance * module = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->module : (((void *)0));
 struct __ecereNameSpace__ecere__com__Instance * application = module ? ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application : (((void *)0));
-int flags = application ? (unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)application + structSize_Module)))->isGUIApp : 0;
+int flags = application ? ((struct __ecereNameSpace__ecere__com__Application *)(((char *)application + structSize_Module)))->isGUIApp : 0;
 unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
 unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
 
@@ -5292,9 +5292,9 @@ extern int isprint(int c);
 
 static void __ecereNameSpace__ecere__com__LoadCOM(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-unsigned int force64Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 0x1 : 0x0;
-unsigned int force32Bits = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 0x1 : 0x0;
-unsigned int inCompiler = ((unsigned int)((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 0x1 : 0x0;
+unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 0x1 : 0x0;
+unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 0x1 : 0x0;
+unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 0x1 : 0x0;
 int pointerSize = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
 struct __ecereNameSpace__ecere__com__Class * applicationClass;
 struct __ecereNameSpace__ecere__com__Class * enumClass, * structClass, * boolClass;
@@ -5334,8 +5334,8 @@ structClass->structSize = 0;
 structClass->typeSize = 0;
 __ecereNameSpace__ecere__com__InitializeDataTypes(module);
 boolClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "bool", "uint", 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(boolClass, "true", (unsigned int)0x1);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(boolClass, "false", (unsigned int)0x0);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(boolClass, "true", 0x1);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(boolClass, "false", 0x0);
 moduleClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Module", (((void *)0)), force64Bits ? 8 + 32 + 32 + 32 + 32 + 8 + 8 + 8 + 8 + 8 + 4 + 4 + (32 + 8 + 8 + 4 * 32) + (32 + 8 + 8 + 4 * 32) : sizeof(struct __ecereNameSpace__ecere__com__Module), 0, (void *)__ecereNameSpace__ecere__com__Module_Constructor, (void *)__ecereNameSpace__ecere__com__Module_Destructor, module, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(moduleClass, "OnLoad", "bool()", (((void *)0)), 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(moduleClass, "OnUnload", "void()", (((void *)0)), 1);
@@ -6363,7 +6363,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "noExpansion", "bool",
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "defaultProperty", "char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "comRedefinition", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "count", "int", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isRemote", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isRemote", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "internalDecl", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "void *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "computeSize", "bool", 4, 4, 1);

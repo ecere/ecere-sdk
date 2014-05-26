@@ -2920,7 +2920,7 @@ private:
             f.Puts("\n");
          }
 
-         topNode.GenMakeCollectAssignNodeFlags(config, numCObjects,
+         topNode.GenMakeCollectAssignNodeFlags(config, numCObjects != 0,
                cflagsVariations, nodeCFlagsMapping,
                ecflagsVariations, nodeECFlagsMapping, null);
 

@@ -458,6 +458,7 @@ unsigned int isConstant;
 unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
+unsigned int opDestType;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -630,7 +631,7 @@ char *  name;
 struct __ecereNameSpace__ecere__sys__OldList methods;
 struct __ecereNameSpace__ecere__sys__OldList properties;
 unsigned int itself;
-unsigned int isRemote;
+int isRemote;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
@@ -802,7 +803,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -1889,7 +1890,7 @@ return ;
 classSym->_import = __extension__ ({
 struct ClassImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassImport);
 
-__ecereInstance1->isRemote = classSym->registered ? classSym->registered->isRemote : 0x0, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(classSym->string), __ecereInstance1;
+__ecereInstance1->isRemote = classSym->registered ? classSym->registered->isRemote : 0, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(classSym->string), __ecereInstance1;
 });
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classSym->module->classes, classSym->_import);
 }

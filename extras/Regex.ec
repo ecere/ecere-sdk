@@ -49,9 +49,9 @@ public:
    {
       set
       {
-         if(value != (compileFlags & REG_ICASE))
+         if(value != ((compileFlags & REG_ICASE) != 0))
          {
-            compileFlags = value ? compileFlags | REG_ICASE : compileFlags & ~REG_ICASE;
+            value ? (compileFlags |= REG_ICASE) : (compileFlags &= ~REG_ICASE);
             if(regex)
                Compile();
          }
@@ -63,10 +63,13 @@ public:
    {
       set
       {
-         if(value != (compileFlags & REG_NEWLINE))
-            compileFlags = value ? compileFlags | REG_NEWLINE : compileFlags & ~REG_NEWLINE;
-         if(regex)
-            Compile();
+         //if(value != ((compileFlags & REG_NEWLINE) != 0))
+         if(value != ((compileFlags & REG_EXTENDED)))
+         {
+            value ? (compileFlags |= REG_NEWLINE) : (compileFlags &= ~REG_NEWLINE);
+            if(regex)
+               Compile();
+         }
       }
       get { return (compileFlags & REG_NEWLINE) != 0; }
    }
@@ -75,8 +78,8 @@ public:
    {
       set
       {
-         if(value != (executeFlags & REG_NOTBOL))
-            executeFlags = value ? executeFlags | REG_NOTBOL : executeFlags & ~REG_NOTBOL;
+         if(value != ((executeFlags & REG_NOTBOL) != 0))
+            value ? (executeFlags |= REG_NOTBOL) : (executeFlags &= ~REG_NOTBOL);
       }
       get { return (executeFlags & REG_NOTBOL) != 0; }
    }
@@ -85,8 +88,8 @@ public:
    {
       set
       {
-         if(value != (executeFlags & REG_NOTEOL))
-            executeFlags = value ? executeFlags | REG_NOTEOL : executeFlags & ~REG_NOTEOL;
+         if(value != ((executeFlags & REG_NOTEOL) != 0))
+            value ? (executeFlags |= executeFlags | REG_NOTEOL) : (executeFlags &= ~REG_NOTEOL);
       }
       get { return (executeFlags & REG_NOTEOL) != 0; }
    }
@@ -95,9 +98,9 @@ public:
    {
       set
       {
-         if(value != (compileFlags & REG_EXTENDED))
+         if(value != ((compileFlags & REG_EXTENDED) != 0))
          {
-            compileFlags = value ? compileFlags | REG_EXTENDED : compileFlags & ~REG_EXTENDED;
+            value ? (compileFlags |= REG_EXTENDED) : (compileFlags &= ~REG_EXTENDED);
             if(regex)
                Compile();
          }

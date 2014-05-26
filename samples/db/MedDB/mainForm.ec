@@ -50,7 +50,7 @@ class MainForm : Window
    Button tabScl { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 3 * 80 }, caption = "Sub-Classes",  id = (int64)sclEditor, NotifyClicked = NotifyClicked };
    Button tabCls { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 2 * 80 }, caption = "Classes",       id = (int64)clsEditor, NotifyClicked = NotifyClicked };
    Button tabRes { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 1 * 80 }, caption = "Restrictions",  id = (int64)rstEditor, NotifyClicked = NotifyClicked };
-   Button tabMed { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 0 * 80},  caption = "Drugs",   id = (int64)medEditor, NotifyClicked = NotifyClicked };
+   Button tabMed { tabButtons, master = this, stayDown = true, size = { 70, 20 }, anchor = { right = 10 + 0 * 80 },  caption = "Drugs",   id = (int64)medEditor, NotifyClicked = NotifyClicked };
 }
 
 class RestrictionEditor : Window

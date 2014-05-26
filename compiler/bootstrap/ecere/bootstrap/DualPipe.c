@@ -114,7 +114,7 @@ unsigned int noExpansion;
 char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
-unsigned int isRemote;
+int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
@@ -437,7 +437,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetSize(struct
 {
 struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
-return (__ecereProp___ecereNameSpace__ecere__sys__File_Get_input(this) || __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this)) ? (unsigned int)((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(this) : DualPipe_GetSize(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
+return (__ecereProp___ecereNameSpace__ecere__sys__File_Get_input(this) || __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this)) ? ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(this) : DualPipe_GetSize(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Peek(struct __ecereNameSpace__ecere__com__Instance * this)

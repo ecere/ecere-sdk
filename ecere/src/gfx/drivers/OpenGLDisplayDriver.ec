@@ -3165,7 +3165,7 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          case depthWrite:
             if(value) glDepthMask((byte)bool::true); else glDepthMask((byte)bool::false);
-            oglDisplay.depthWrite = value;
+            oglDisplay.depthWrite = (bool)value;
             break;
          case fogColor:
          {

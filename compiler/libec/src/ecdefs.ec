@@ -658,6 +658,7 @@ public:
    bool addedThis;
    bool needCast;
    bool thisPtr;
+   bool opDestType;
 
    void Clear()
    {
@@ -676,6 +677,7 @@ public:
       addedThis = false;
       needCast = false;
       thisPtr = false;
+      opDestType = false;
    }
 };
 
@@ -1192,7 +1194,7 @@ public:
    OldList methods;
    OldList properties;
    bool itself;
-   bool isRemote;
+   int isRemote;
 };
 
 public class FunctionImport : struct

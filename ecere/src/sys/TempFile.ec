@@ -173,7 +173,7 @@ public class TempFile : File
       return eof;
    }
 
-   bool GetSize()
+   uint GetSize()
    {
       return size;
    }

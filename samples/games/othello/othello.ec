@@ -121,8 +121,8 @@ class Othello : Window
       {
          board[sy][sx] = color;
          this.numChips[color] += numChips + 1;
-         this.numChips[1-color] -= numChips;
-         this.turn = 1-color;
+         this.numChips[color^1] -= numChips;
+         this.turn = color^1;
 
          if(!PossibleMove())
          {
@@ -329,7 +329,7 @@ class Othello : Window
          surface.SetForeground(tomato);
          if(gameOver)
             surface.WriteTextf(100, 420, "GAME OVER");
-         else if(!local && sockets[1-turn])
+         else if(!local && sockets[turn^1])
             surface.WriteTextf(50, 420, "It is your turn to move.");
       }
    }
@@ -345,7 +345,7 @@ class Othello : Window
       x /= WIDTH;
       y /= HEIGHT;
 
-      if(sockets[1-turn] || local)
+      if(sockets[turn^1] || local)
       {
          if(x < NUM_COLUMNS && y < NUM_ROWS && board[y][x] == empty)
          {
@@ -353,7 +353,7 @@ class Othello : Window
             if(TurnChips(x, y, turn, 1))
             {
                if(!local)
-                  sockets[1-packet.player].Send((byte *)&packet, sizeof(OPacket));
+                  sockets[packet.player^1].Send((byte *)&packet, sizeof(OPacket));
             }
          }
       }

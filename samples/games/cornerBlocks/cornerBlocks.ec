@@ -7,8 +7,7 @@ public enum PlayerColor : byte
    blue, yellow, red, green;
    property CornerBlocksColor
    {
-      // TOFIX: get { return (CornerBlocksColor)((int)this+1); }
-      get { return (CornerBlocksColor)*(int *)&this+1; }
+      get { return (CornerBlocksColor)((int)this+1); }
    }
 };
 
@@ -248,8 +247,7 @@ struct CornerBlocksGameState
       PlayerColor p;
       int i;
 
-      // TOFIX: for(p = 0; p < PlayerColor::enumSize; p++)
-      for(p = blue; p <= green; p++)
+      for(p = 0; p < PlayerColor::enumSize; p++)
       {
          for(i = 0; i < numPieces; i++)
             playerPieces[p][i] = 1;
@@ -332,11 +330,11 @@ struct CornerBlocksGameState
             {
                for(x = 0; x < boardSize && !validMove; x++)
                {
-                  int flip;
+                  bool flip;
                   int direction;
                   for(direction = 0; direction < 4 && !validMove; direction++)
                   {
-                     for(flip = 0; flip <=1 && !validMove; flip++)
+                     for(flip = 0; flip <= 1 && !validMove; flip++)
                      {
                         if(ValidMove(playerColor, p, direction, flip, x, y))
                            result = validMove = true;
@@ -508,11 +506,11 @@ class CornerBlocks : Window
                         {
                            for(x = 0; x < boardSize && !validMove; x++)
                            {
-                              int flip;
+                              bool flip;
                               int direction;
                               for(direction = 0; direction < 4 && !validMove; direction++)
                               {
-                                 for(flip = 0; flip <=1 && !validMove; flip++)
+                                 for(flip = 0; flip <= 1 && !validMove; flip++)
                                  {
                                     if(gameState.ValidMove(colorPlayed, p, direction, flip, x, y))
                                     {
@@ -1121,8 +1119,7 @@ class CornerBlocksScores : Window
 
       for(p = blue; p <= green; p++)
       {
-         // TOFIX: bug here, why is -1 required?
-         int x = 80 + (p-1) * 120;
+         int x = 80 + p * 120;
          surface.foreground = colors[1][p];
          /* // GCC internal compiler error with -O2, MinGW GCC 4.4.0
          s = (state->numPlayers == 3 && p == green) ? "* Green *" : cornerBlocks.playerNames[p];
@@ -1162,10 +1159,9 @@ class CornerBlocksScores : Window
          if((state->numPlayers == 2 && p <= yellow) ||
             (state->numPlayers == 1 && p == blue))
          {
-            // TOFIX: Annoying +2 conversion issue
             if(state->numPlayers == 2)
                grandTotals[p] = state->scores[p] + state->bonus[p] +
-                                state->scores[p+red /*2*/] + state->bonus[p+red /*2*/];
+                                state->scores[p+2] + state->bonus[p+2];
             else
                grandTotals[p] = state->scores[0] + state->bonus[0] +
                                 state->scores[1] + state->bonus[1] +

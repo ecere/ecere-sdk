@@ -1491,7 +1491,7 @@ class SQLiteRow : DriverRow
          result = GoToSysID(*(int *)data);
          if(result)
             findSysID = true;
-         return result;
+         return result != 0;
       }
 
       useIndex = tbl.GetIndexOrder(order, false);
