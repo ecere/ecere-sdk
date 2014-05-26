@@ -2103,9 +2103,9 @@ ProcessInstMembers(inst, inst->exp, exp->list, 0x0);
 ProcessExpression(inst->exp);
 if(!(*exp->list).count)
 {
-exp->type = (int)1000;
+exp->type = 16;
+(__ecereNameSpace__ecere__com__eSystem_Delete(exp->list), exp->list = 0);
 }
-inst->exp = (((void *)0));
 }
 else
 {

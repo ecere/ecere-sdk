@@ -258,6 +258,8 @@ static void ProcessExpression(Expression exp)
                      _class.symbol = FindClass(_class.fullName);
                   DeclareClass(_class.symbol, className);
 
+                  if(exp.identifier)
+                     FreeIdentifier(exp.identifier);
                   exp.type = bracketsExp;
                   exp.list = MkListOne(MkExpCast(typeName,
                      MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")),
@@ -1761,6 +1763,8 @@ static void ProcessExpression(Expression exp)
                   else if(_class || exp.call.exp.expType.methodClass || !memberExp ||
                          !regClass || regClass.type != normalClass || !strcmp(regClass.dataTypeString, "char *"))
                   {
+                     if(!memberExp)
+                        FreeExpression(exp.call.exp);
                      exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
                         MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")),
                         MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
@@ -2788,7 +2792,6 @@ static void ProcessExpression(Expression exp)
                      {
                         char ecereTemp[100];
                         Statement compound;
-                        OldList * list = MkList();
                         Context context = PushContext();
                         if(exp.member.exp.tempCount > exp.tempCount)
                            exp.tempCount = exp.member.exp.tempCount;

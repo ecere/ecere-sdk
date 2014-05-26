@@ -47,6 +47,8 @@ Time findSymbolTotalTime;
    {
       TempFile f { };
       int count;
+      bool backOutputLineNumbers = outputLineNumbers;
+      outputLineNumbers = false;
 
       if(exp)
          OutputExpression(exp, f);
@@ -55,6 +57,8 @@ Time findSymbolTotalTime;
       count += f.Read(string + count, 1, 1023);
       string[count] = '\0';
       delete f;
+
+      outputLineNumbers = backOutputLineNumbers;
    }
 }
 
@@ -1066,6 +1070,7 @@ void DeclareStruct(char * name, bool skipNoHead)
       OldList * specifiers, * declarators;
       OldList * declarations = null;
       char structName[1024];
+      Specifier spec = null;
       external = (classSym.registered && classSym.registered.type == structClass) ?
          classSym.pointerExternal : classSym.structExternal;
 
@@ -1090,10 +1095,19 @@ void DeclareStruct(char * name, bool skipNoHead)
       structName[0] = 0;
       FullClassNameCat(structName, name, false);
 
+      if(external && external.declaration && external.declaration.specifiers)
+      {
+         for(spec = external.declaration.specifiers->first; spec; spec = spec.next)
+         {
+            if(spec.type == structSpecifier || spec.type == unionSpecifier)
+               break;
+         }
+      }
+
       /*if(!external)
          external = MkExternalDeclaration(null);*/
 
-      if(!skipNoHead)
+      if(!skipNoHead && (!spec || !spec.definitions))
       {
          bool addedPadding = false;
          classSym.declaredStructSym = true;
@@ -1113,9 +1127,10 @@ void DeclareStruct(char * name, bool skipNoHead)
       }
       if(skipNoHead || declarations)
       {
-         if(external && external.declaration)
+         if(spec)
          {
-            ((Specifier)external.declaration.specifiers->first).definitions = declarations;
+            if(declarations)
+               spec.definitions = declarations;
 
             if(curExternal && curExternal.symbol && curExternal.symbol.idCode < classSym.id)
             {
@@ -5547,11 +5562,15 @@ void ComputeExpression(Expression exp)
             if(!n)
             {
                OldList * list = exp.list;
+               Expression prev = exp.prev;
+               Expression next = exp.next;
                ComputeExpression(e);
                //FreeExpContents(exp);
                FreeType(exp.expType);
                FreeType(exp.destType);
                *exp = *e;
+               exp.prev = prev;
+               exp.next = next;
                delete e;
                delete list;
             }
@@ -6228,6 +6247,8 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla)
 
                // TODO: Check this...
                *newExp = *exp;
+               newExp.prev = null;
+               newExp.next = null;
                newExp.destType = null;
 
                if(convert.isGet)
@@ -12736,7 +12757,8 @@ void ComputeDataTypes()
       else if(external.type == declarationExternal)
       {
          currentClass = null;
-         ProcessDeclaration(external.declaration);
+         if(external.declaration)
+            ProcessDeclaration(external.declaration);
       }
       else if(external.type == classExternal)
       {
@@ -12760,6 +12782,7 @@ void ComputeDataTypes()
    }
    currentClass = null;
    thisNameSpace = null;
+   curExternal = null;
 
    delete temp.symbol;
    delete temp;

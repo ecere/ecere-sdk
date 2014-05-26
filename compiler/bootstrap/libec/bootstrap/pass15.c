@@ -1221,6 +1221,8 @@ unsigned int thisClassParams = 0x1;
 
 unsigned int internalValueCounter;
 
+extern unsigned int outputLineNumbers;
+
 extern void OutputExpression(struct Expression * exp, struct __ecereNameSpace__ecere__com__Instance * f);
 
 extern size_t strlen(const char * );
@@ -1240,7 +1242,9 @@ void PrintExpression(struct Expression * exp, char * string)
 {
 struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
 int count;
+unsigned int backOutputLineNumbers = outputLineNumbers;
 
+outputLineNumbers = 0x0;
 if(exp)
 OutputExpression(exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
@@ -1256,6 +1260,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, string + count, 1, 1023);
 string[count] = '\0';
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
+outputLineNumbers = backOutputLineNumbers;
 }
 }
 
@@ -3110,6 +3115,7 @@ struct Declaration * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers, * declarators;
 struct __ecereNameSpace__ecere__sys__OldList * declarations = (((void *)0));
 char structName[1024];
+struct Specifier * spec = (((void *)0));
 
 external = (classSym->registered && classSym->registered->type == 1) ? classSym->pointerExternal : classSym->structExternal;
 classSym->declaring++;
@@ -3125,7 +3131,15 @@ return ;
 DeclareMembers(classSym->registered, 0x0);
 structName[0] = (char)0;
 FullClassNameCat(structName, name, 0x0);
-if(!skipNoHead)
+if(external && external->declaration && external->declaration->specifiers)
+{
+for(spec = (*external->declaration->specifiers).first; spec; spec = spec->next)
+{
+if(spec->type == 3 || spec->type == 4)
+break;
+}
+}
+if(!skipNoHead && (!spec || !spec->definitions))
 {
 unsigned int addedPadding = 0x0;
 
@@ -3140,9 +3154,10 @@ declarations = (((void *)0));
 }
 if(skipNoHead || declarations)
 {
-if(external && external->declaration)
+if(spec)
 {
-((struct Specifier *)(*external->declaration->specifiers).first)->definitions = declarations;
+if(declarations)
+spec->definitions = declarations;
 if(curExternal && curExternal->symbol && curExternal->symbol->idCode < classSym->id)
 {
 if(classSym->structExternal)
@@ -11876,11 +11891,15 @@ n = e->next;
 if(!n)
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = exp->list;
+struct Expression * prev = exp->prev;
+struct Expression * next = exp->next;
 
 ComputeExpression(e);
 FreeType(exp->expType);
 FreeType(exp->destType);
 *exp = *e;
+exp->prev = prev;
+exp->next = next;
 ((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(list), list = 0);
 }
@@ -12545,6 +12564,8 @@ struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecere
 int objectType = exp->expType ? exp->expType->classObjectType : 0;
 
 *newExp = *exp;
+newExp->prev = (((void *)0));
+newExp->next = (((void *)0));
 newExp->destType = (((void *)0));
 if(convert->isGet)
 {
@@ -18404,6 +18425,7 @@ ProcessFunction(external->function);
 else if(external->type == 1)
 {
 currentClass = (((void *)0));
+if(external->declaration)
 ProcessDeclaration(external->declaration);
 }
 else if(external->type == 2)
@@ -18428,6 +18450,7 @@ thisNameSpace = external->id->string;
 }
 currentClass = (((void *)0));
 thisNameSpace = (((void *)0));
+curExternal = (((void *)0));
 ((temp->symbol ? (__ecereClass_Symbol->Destructor ? __ecereClass_Symbol->Destructor(temp->symbol) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(temp->symbol)) : 0), temp->symbol = 0);
 ((temp ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor(temp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(temp)) : 0), temp = 0);
 }

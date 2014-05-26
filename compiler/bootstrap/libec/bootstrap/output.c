@@ -3787,6 +3787,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 outputLine++;
 break;
 case 1:
+if(external->declaration)
 OutputDeclaration(external->declaration, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;

@@ -1414,7 +1414,7 @@ extern char *  strchr(const char * , int);
 char * PassArg(char * output, const char * input)
 {
 #ifdef __WIN32__
-const char * escChars = " !%&'()+,;=[]^`{}~\"";
+const char * escChars = " !\"%&'()+,;=[]^`{}~";
 const char * escCharsQuoted = "\"";
 #else
 const char * escChars = " !\"$&'()*:;<=>?[\\`{|";

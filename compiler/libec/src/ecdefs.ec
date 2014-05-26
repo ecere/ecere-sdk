@@ -495,7 +495,7 @@ public:
          Identifier id;
          OldList * list;
          OldList * baseSpecs;
-         OldList * definitions;
+         OldList/*<ClassDef>*/ * definitions;
          bool addNameSpace;
          Context ctx;
          ExtDecl extDeclStruct;

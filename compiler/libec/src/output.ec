@@ -1519,7 +1519,8 @@ public void OutputTree(OldList ast, File f)
             outputLine ++;
             break;
          case declarationExternal:
-            OutputDeclaration(external.declaration, f);
+            if(external.declaration)
+               OutputDeclaration(external.declaration, f);
             f.Puts("\n");
             outputLine ++;
             break;

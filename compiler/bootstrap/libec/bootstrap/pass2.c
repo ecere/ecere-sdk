@@ -1302,6 +1302,8 @@ extern struct Symbol * FindClass(char *  name);
 
 extern void DeclareClass(struct Symbol * classSym, char *  className);
 
+extern void FreeIdentifier(struct Identifier * id);
+
 extern struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression);
 
 extern struct Expression * MkExpIndex(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * index);
@@ -1391,8 +1393,6 @@ extern char *  QMkString(char *  source);
 extern struct Expression * MkExpString(char *  string);
 
 extern struct Specifier * MkSpecifier(int specifier);
-
-extern void FreeIdentifier(struct Identifier * id);
 
 extern struct Context * PushContext(void);
 
@@ -1551,6 +1551,8 @@ MangleClassName(className);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
+if(exp->identifier)
+FreeIdentifier(exp->identifier);
 exp->type = 5;
 exp->list = MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name))))));
 }
@@ -2678,6 +2680,8 @@ exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPoin
 }
 else if(_class || exp->call.exp->expType->methodClass || !memberExp || !regClass || regClass->type != 0 || !strcmp(regClass->dataTypeString, "char *"))
 {
+if(!memberExp)
+FreeExpression(exp->call.exp);
 exp->call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName, MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")), MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
 }
 else
@@ -3493,7 +3497,6 @@ if(checkedExp->type != 0 && checkedExp->type != 2 && checkedExp->type != 8 && ch
 int __simpleStruct0, __simpleStruct1;
 char ecereTemp[100];
 struct Statement * compound;
-struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 struct Context * context = PushContext();
 
 if(exp->member.exp->tempCount > exp->tempCount)

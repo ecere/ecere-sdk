@@ -914,11 +914,12 @@ static void ProcessExpression(Expression exp)
 
                   if(!exp.list->count)
                   {
-                     exp.type = (ExpressionType)1000; // remove expression
+                     exp.type = dummyExp; // remove expression
+                     delete exp.list;
                   }
 
-                  // Take expression out...
-                  inst.exp = null;
+                  // Take expression out... -- It seems ProcessInstMembers() makes copies of it and it needs to be freed now
+                  // inst.exp = null;
                }
                else
                {
