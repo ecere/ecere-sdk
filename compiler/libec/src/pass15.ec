@@ -5119,7 +5119,7 @@ void ComputeInstantiation(Expression exp)
                                  case intPtrType:     { intptr v; type.isSigned ? GetIntPtr(value, &v) : GetUIntPtr(value, &v); part = (uint64)v; break; }
                                  case intSizeType:    { intsize v; type.isSigned ? GetIntSize(value, &v) : GetUIntSize(value, &v); part = (uint64)v; break; }
                               }
-                              bits += part << bitMember.pos;
+                              bits |= part << bitMember.pos;
                            }
                         }
                      }

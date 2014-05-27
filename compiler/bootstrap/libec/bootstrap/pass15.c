@@ -11554,7 +11554,7 @@ part = (uint64)v;
 break;
 }
 }
-bits += part << bitMember->pos;
+bits |= part << bitMember->pos;
 }
 }
 }
