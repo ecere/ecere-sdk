@@ -2795,7 +2795,7 @@ if(type->arraySizeExp)
 {
 ProcessExpressionType(type->arraySizeExp);
 ComputeExpression(type->arraySizeExp);
-if(!type->arraySizeExp->isConstant || (type->arraySizeExp->expType->kind != 3 && type->arraySizeExp->expType->kind != 15 && (type->arraySizeExp->expType->kind != 8 || !type->arraySizeExp->expType->_class->registered || type->arraySizeExp->expType->_class->registered->type != 4)))
+if(!type->arraySizeExp->isConstant || (type->arraySizeExp->expType->kind != 3 && type->arraySizeExp->expType->kind != 2 && type->arraySizeExp->expType->kind != 1 && type->arraySizeExp->expType->kind != 5 && type->arraySizeExp->expType->kind != 4 && type->arraySizeExp->expType->kind != 23 && type->arraySizeExp->expType->kind != 22 && type->arraySizeExp->expType->kind != 15 && (type->arraySizeExp->expType->kind != 8 || !type->arraySizeExp->expType->_class->registered || type->arraySizeExp->expType->_class->registered->type != 4)))
 {
 struct Location oldLoc = yylloc;
 char expression[10240];
@@ -14568,7 +14568,7 @@ if(exp->op.op == SIZEOF)
 exp->expType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
-__ecereInstance1->refCount = 1, __ecereInstance1->kind = 3, __ecereInstance1;
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 23, __ecereInstance1;
 });
 exp->isConstant = 0x1;
 }
@@ -16393,7 +16393,7 @@ exp->member.member = MkIdentifier("structSize");
 exp->expType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
-__ecereInstance1->refCount = 1, __ecereInstance1->kind = 3, __ecereInstance1;
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 23, __ecereInstance1;
 });
 break;
 }
@@ -16404,7 +16404,7 @@ struct Type * type = ProcessType(exp->typeName->qualifiers, exp->typeName->decla
 exp->expType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
-__ecereInstance1->refCount = 1, __ecereInstance1->kind = 3, __ecereInstance1;
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 23, __ecereInstance1;
 });
 exp->isConstant = 0x1;
 DeclareType(type, 0x0, 0x0);

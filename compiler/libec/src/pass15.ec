@@ -769,7 +769,14 @@ public int ComputeTypeSize(Type type)
             {
                ProcessExpressionType(type.arraySizeExp);
                ComputeExpression(type.arraySizeExp);
-               if(!type.arraySizeExp.isConstant || (type.arraySizeExp.expType.kind != intType && type.arraySizeExp.expType.kind != enumType &&
+               if(!type.arraySizeExp.isConstant || (type.arraySizeExp.expType.kind != intType &&
+                  type.arraySizeExp.expType.kind != shortType &&
+                  type.arraySizeExp.expType.kind != charType &&
+                  type.arraySizeExp.expType.kind != longType &&
+                  type.arraySizeExp.expType.kind != int64Type &&
+                  type.arraySizeExp.expType.kind != intSizeType &&
+                  type.arraySizeExp.expType.kind != intPtrType &&
+                  type.arraySizeExp.expType.kind != enumType &&
                   (type.arraySizeExp.expType.kind != classType || !type.arraySizeExp.expType._class.registered || type.arraySizeExp.expType._class.registered.type != enumClass)))
                {
                   Location oldLoc = yylloc;
@@ -8359,7 +8366,7 @@ void ProcessExpressionType(Expression exp)
             exp.expType = Type
             {
                refCount = 1;
-               kind = intType;
+               kind = intSizeType;
             };
             exp.isConstant = true;
          }
@@ -10423,7 +10430,7 @@ void ProcessExpressionType(Expression exp)
          exp.expType = Type
          {
             refCount = 1;
-            kind = intType;
+            kind = intSizeType;
          };
          // exp.isConstant = true;
          break;
@@ -10435,7 +10442,7 @@ void ProcessExpressionType(Expression exp)
          exp.expType = Type
          {
             refCount = 1;
-            kind = intType;
+            kind = intSizeType;
          };
          exp.isConstant = true;
 
