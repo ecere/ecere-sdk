@@ -574,7 +574,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                {
                   if(memberType.type != structClass && (memberType.type != normalClass || !strcmp(memberType.dataTypeString, "char *")) && memberType.type != bitClass && data)
                   {
-                     DataValue value = { 0 };
+                     DataValue value { };
                      if(!strcmp(prop.dataTypeString, "float"))
                      {
                         value.f = ((float(*)(void *))(void *)prop.Get)(data);
@@ -650,7 +650,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                   //else if(_class /*memberType*/.type != bitClass)
                   else // if(_class /*memberType*/.type != bitClass)
                   {
-                     DataValue value = { 0 };
+                     DataValue value { };
                      if(_class.type == bitClass)
                      {
                         BitMember bitMember = (BitMember) member;
@@ -1028,7 +1028,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
             }
             else
             {
-               DataValue value = { 0 };
+               DataValue value { };
                // Patch for hotKey crash ( #556 )
                // Key has a member KeyCode, which inherits from Key
                // We don't want KeyCode to use its base class OnGetDataFromString

@@ -1593,7 +1593,7 @@ static void ProcessSpecifier(Specifier spec)
    }
 }
 
-static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation inst, OldList list)
+static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation inst, OldList list, DataMember namedParentMember, bool parentMemberSet)
 {
    Symbol classSym = inst._class.symbol; // FindClass(inst._class.name);
    DataMember dataMember = null;
@@ -1607,8 +1607,26 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
 
       if(!dataMember.name && (dataMember.type == unionMember || dataMember.type == structMember))
       {
-         if(!ProcessBracketInst_DataMember(dataMember, inst, list))
+         OldList * subList = 0; //(dataMember.type == structMember) ? MkList() : null;
+
+         if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember.name ? dataMember : namedParentMember, someMemberSet || parentMemberSet))
+         {
+            if(subList)
+               FreeList(subList, FreeInitializer);
+
             return false;
+         }
+         if(subList && subList->count)
+         {
+            ListAdd(list, MkInitializerList(subList));
+            someMemberSet = true;
+         }
+         else
+         {
+            if(list.count)
+               someMemberSet = true;
+            delete subList;
+         }
       }
       else
       {
@@ -1754,21 +1772,37 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
 
          if(member && member.initializer && member.initializer.type == expInitializer)
          {
-            Expression memberExp = null;
+            Initializer init { loc = yylloc };
+            if(namedParentMember.type == unionMember && dataMember.name)
+               init.id = MkIdentifier(dataMember.name);
+
             if(member.initializer.exp.type == instanceExp && member.initializer.exp.expType &&
                member.initializer.exp.expType._class.registered.type == structClass)
             {
                OldList * subList = MkList();
                ProcessBracketInst(member.initializer.exp.instance, subList);
                FreeExpression(member.initializer.exp);
-               ListAdd(list, MkInitializerList(subList));
+               if(subList->count)
+               {
+                  init.type = listInitializer;
+                  init.list = subList;
+               }
+               else
+               {
+                  FreeInitializer(init);
+                  init = null;
+               }
             }
             else
             {
                member.initializer.exp.usage.usageGet = true;
                ProcessExpression(member.initializer.exp);
-               ListAdd(list, MkInitializerAssignment(member.initializer.exp));
+               init.type = expInitializer;
+               init.exp = member.initializer.exp;
             }
+            if(init)
+               ListAdd(list, init);
+
             member.initializer.exp = null;
             FreeInitializer(member.initializer);
             member.initializer = null;
@@ -1776,13 +1810,20 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
          }
          else if(member && member.initializer && member.initializer.type == listInitializer)
          {
+            if(namedParentMember.type == unionMember && dataMember.name)
+               member.initializer.id = MkIdentifier(dataMember.name);
+
             ListAdd(list, member.initializer);
             member.initializer = null;
             someMemberSet = true;
          }
-         else if(dataMember && dataMember.dataTypeString/* && !inst.fullSet*/ && parentMember.type != unionMember)
+         else if(dataMember && dataMember.dataTypeString/* && !inst.fullSet*/ && parentMember.type != unionMember && namedParentMember.type != unionMember)
          {
             Symbol classSym;
+            Initializer init { loc = yylloc };
+            if(namedParentMember.type == unionMember && dataMember.name)
+               init.id = MkIdentifier(dataMember.name);
+
             if(!dataMember.dataType)
                dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
             classSym = (dataMember.dataType && dataMember.dataType.kind == classType) ? dataMember.dataType._class : null; // FindClass(dataMember.dataTypeString);
@@ -1794,10 +1835,25 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                ProcessBracketInst(inst, subList);
                FreeInstance(inst);
 
-               ListAdd(list, MkInitializerList(subList));
+               if(subList->count)
+               {
+                  init.type = listInitializer;
+                  init.list = subList;
+               }
+               else
+               {
+                  FreeInitializer(init);
+                  init = null;
+               }
             }
             else
-               ListAdd(list, MkInitializerAssignment(MkExpConstant("0")));
+            {
+               init.type = expInitializer;
+               init.exp = MkExpConstant("0");
+            }
+            someMemberSet = true;
+            if(init)
+               ListAdd(list, init);
          }
       }
       /*
@@ -1806,10 +1862,15 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
       */
    }
    // TESTING THIS NEW CODE FOR ANCHORS...
-   if(parentMember.type == unionMember && !someMemberSet)
+   if(parentMember.type == unionMember && !someMemberSet && !parentMemberSet)
    {
       Symbol classSym;
+      Initializer init { loc = yylloc };
+
       dataMember = parentMember.members.first;
+      if(namedParentMember.type == unionMember && dataMember.name)
+         init.id = MkIdentifier(dataMember.name);
+
       if(!dataMember.dataType && dataMember.dataTypeString)
          dataMember.dataType = ProcessTypeString(dataMember.dataTypeString, false);
       classSym = (dataMember.dataType && dataMember.dataType.kind == classType) ? dataMember.dataType._class : null; // FindClass(dataMember.dataTypeString);
@@ -1821,10 +1882,15 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
          ProcessBracketInst(inst, subList);
          FreeInstance(inst);
 
-         ListAdd(list, MkInitializerList(subList));
+         init.type = listInitializer;
+         init.list = subList;
       }
       else
-         ListAdd(list, MkInitializerAssignment(MkExpConstant("0")));
+      {
+         init.type = expInitializer;
+         init.exp = MkExpConstant("0");
+      }
+      ListAdd(list, init);
    }
    return true;
 }
@@ -1849,11 +1915,19 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
       {
          if(!dataMember.isProperty && !dataMember.name && (dataMember.type == unionMember || dataMember.type == structMember))
          {
-            if(!ProcessBracketInst_DataMember(dataMember, inst, list))
+            OldList * subList = 0 /*(dataMember.type == structMember ? MkList() : null)*/;
+
+            if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember, false))
             {
+               if(subList)
+                  FreeList(subList, FreeInitializer);
                recursionCount--;
                return false;
             }
+            if(dataMember.type == structMember || (subList && subList->count))
+               ListAdd(list, MkInitializerList(subList));
+            else
+               delete subList;
          }
          else
          {

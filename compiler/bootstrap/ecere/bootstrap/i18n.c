@@ -508,7 +508,7 @@ if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(name
 (__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)), __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&it, 0));
 }
 __extension__ ({
-struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 __ecereNameSpace__ecere__moduleMaps, 0
 };
@@ -589,7 +589,7 @@ if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(orig
 (__ecereNameSpace__ecere__com__eSystem_Delete(translated), translated = 0);
 else
 __extension__ ({
-struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 textMap, 0
 };
@@ -639,7 +639,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 char * __ecereNameSpace__ecere__GetTranslatedString(char * name, char * string, char * stringAndContext)
 {
 struct __ecereNameSpace__ecere__com__Instance * textMap = __ecereNameSpace__ecere__moduleMaps ? (__extension__ ({
-struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 __ecereNameSpace__ecere__moduleMaps, 0
 };
@@ -648,7 +648,7 @@ __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, 
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
 })) : (((void *)0));
 char * result = textMap ? (__extension__ ({
-struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 textMap, 0
 };

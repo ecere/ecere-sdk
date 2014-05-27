@@ -40,6 +40,8 @@ static Initializer CopyInitializer(Initializer initializer)
    if(copy)
    {
       copy.loc = initializer.loc;
+      if(initializer.id)
+         copy.id = CopyIdentifier(initializer.id);
       copy.isConstant = initializer.isConstant;
    }
    return copy;

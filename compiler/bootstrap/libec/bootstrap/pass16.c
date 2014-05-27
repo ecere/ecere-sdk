@@ -322,6 +322,7 @@ struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 } __attribute__ ((gcc_struct));
 unsigned int isConstant;
+struct Identifier * id;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
@@ -2000,7 +2001,7 @@ if(classSym && classSym->registered && classSym->registered->type == 2)
 {
 if(inst->exp)
 {
-struct __ecereNameSpace__ecere__sys__OldList list = 
+struct __ecereNameSpace__ecere__sys__OldList list =
 {
 0
 };
@@ -2017,7 +2018,7 @@ else
 {
 struct Type * expType = exp->expType;
 struct Expression * prev = exp->prev, * next = exp->next;
-struct __ecereNameSpace__ecere__sys__OldList list = 
+struct __ecereNameSpace__ecere__sys__OldList list =
 {
 0, 0, 0, 0, 0
 };
@@ -2040,7 +2041,7 @@ else if(classSym && classSym->registered && (classSym->registered->type == 3 || 
 {
 if(inst->exp)
 {
-struct __ecereNameSpace__ecere__sys__OldList list = 
+struct __ecereNameSpace__ecere__sys__OldList list =
 {
 0
 };
@@ -2064,7 +2065,7 @@ else
 {
 struct Expression * prev = exp->prev, * next = exp->next;
 struct Type * expType = exp->expType;
-struct __ecereNameSpace__ecere__sys__OldList list = 
+struct __ecereNameSpace__ecere__sys__OldList list =
 {
 0
 };
@@ -2643,6 +2644,8 @@ break;
 }
 }
 
+extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
+
 extern struct Specifier * _MkSpecifierName(char *  name, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * templateArgs);
 
 extern struct Identifier * CopyIdentifier(struct Identifier * id);
@@ -2655,7 +2658,7 @@ extern struct Expression * MkExpInstance(struct Instantiation * inst);
 
 extern struct MembersInit * MkMembersInitList(struct __ecereNameSpace__ecere__sys__OldList * dataMembers);
 
-static unsigned int ProcessBracketInst_DataMember(struct __ecereNameSpace__ecere__com__DataMember * parentMember, struct Instantiation * inst, struct __ecereNameSpace__ecere__sys__OldList * list)
+static unsigned int ProcessBracketInst_DataMember(struct __ecereNameSpace__ecere__com__DataMember * parentMember, struct Instantiation * inst, struct __ecereNameSpace__ecere__sys__OldList * list, struct __ecereNameSpace__ecere__com__DataMember * namedParentMember, unsigned int parentMemberSet)
 {
 struct Symbol * classSym = inst->_class->symbol;
 struct __ecereNameSpace__ecere__com__DataMember * dataMember = (((void *)0));
@@ -2668,8 +2671,25 @@ struct MemberInit * member = (((void *)0));
 
 if(!dataMember->name && (dataMember->type == 1 || dataMember->type == 2))
 {
-if(!ProcessBracketInst_DataMember(dataMember, inst, list))
+struct __ecereNameSpace__ecere__sys__OldList * subList = 0;
+
+if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember->name ? dataMember : namedParentMember, someMemberSet || parentMemberSet))
+{
+if(subList)
+FreeList(subList, FreeInitializer);
 return 0x0;
+}
+if(subList && (*subList).count)
+{
+ListAdd(list, MkInitializerList(subList));
+someMemberSet = 0x1;
+}
+else
+{
+if(list->count)
+someMemberSet = 0x1;
+(__ecereNameSpace__ecere__com__eSystem_Delete(subList), subList = 0);
+}
 }
 else
 {
@@ -2772,22 +2792,36 @@ break;
 }
 if(member && member->initializer && member->initializer->type == 0)
 {
-struct Expression * memberExp = (((void *)0));
+struct Initializer * init = (init = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Initializer), init->loc = yylloc, init);
 
+if(namedParentMember->type == 1 && dataMember->name)
+init->id = MkIdentifier(dataMember->name);
 if(member->initializer->exp->type == 1 && member->initializer->exp->expType && member->initializer->exp->expType->_class->registered->type == 1)
 {
 struct __ecereNameSpace__ecere__sys__OldList * subList = MkList();
 
 ProcessBracketInst(member->initializer->exp->instance, subList);
 FreeExpression(member->initializer->exp);
-ListAdd(list, MkInitializerList(subList));
+if((*subList).count)
+{
+init->type = 1;
+init->list = subList;
+}
+else
+{
+FreeInitializer(init);
+init = (((void *)0));
+}
 }
 else
 {
 member->initializer->exp->usage = (member->initializer->exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
 ProcessExpression(member->initializer->exp);
-ListAdd(list, MkInitializerAssignment(member->initializer->exp));
+init->type = 0;
+init->exp = member->initializer->exp;
 }
+if(init)
+ListAdd(list, init);
 member->initializer->exp = (((void *)0));
 FreeInitializer(member->initializer);
 member->initializer = (((void *)0));
@@ -2795,14 +2829,19 @@ someMemberSet = 0x1;
 }
 else if(member && member->initializer && member->initializer->type == 1)
 {
+if(namedParentMember->type == 1 && dataMember->name)
+member->initializer->id = MkIdentifier(dataMember->name);
 ListAdd(list, member->initializer);
 member->initializer = (((void *)0));
 someMemberSet = 0x1;
 }
-else if(dataMember && dataMember->dataTypeString && parentMember->type != 1)
+else if(dataMember && dataMember->dataTypeString && parentMember->type != 1 && namedParentMember->type != 1)
 {
 struct Symbol * classSym;
+struct Initializer * init = (init = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Initializer), init->loc = yylloc, init);
 
+if(namedParentMember->type == 1 && dataMember->name)
+init->id = MkIdentifier(dataMember->name);
 if(!dataMember->dataType)
 dataMember->dataType = ProcessTypeString(dataMember->dataTypeString, 0x0);
 classSym = (dataMember->dataType && dataMember->dataType->kind == 8) ? dataMember->dataType->_class : (((void *)0));
@@ -2814,18 +2853,36 @@ struct Instantiation * inst = MkInstantiation(spec, (((void *)0)), (((void *)0))
 
 ProcessBracketInst(inst, subList);
 FreeInstance(inst);
-ListAdd(list, MkInitializerList(subList));
+if((*subList).count)
+{
+init->type = 1;
+init->list = subList;
 }
 else
-ListAdd(list, MkInitializerAssignment(MkExpConstant("0")));
+{
+FreeInitializer(init);
+init = (((void *)0));
+}
+}
+else
+{
+init->type = 0;
+init->exp = MkExpConstant("0");
+}
+someMemberSet = 0x1;
+if(init)
+ListAdd(list, init);
 }
 }
 }
-if(parentMember->type == 1 && !someMemberSet)
+if(parentMember->type == 1 && !someMemberSet && !parentMemberSet)
 {
 struct Symbol * classSym;
+struct Initializer * init = (init = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Initializer), init->loc = yylloc, init);
 
 dataMember = parentMember->members.first;
+if(namedParentMember->type == 1 && dataMember->name)
+init->id = MkIdentifier(dataMember->name);
 if(!dataMember->dataType && dataMember->dataTypeString)
 dataMember->dataType = ProcessTypeString(dataMember->dataTypeString, 0x0);
 classSym = (dataMember->dataType && dataMember->dataType->kind == 8) ? dataMember->dataType->_class : (((void *)0));
@@ -2837,10 +2894,15 @@ struct Instantiation * inst = MkInstantiation(spec, (((void *)0)), (((void *)0))
 
 ProcessBracketInst(inst, subList);
 FreeInstance(inst);
-ListAdd(list, MkInitializerList(subList));
+init->type = 1;
+init->list = subList;
 }
 else
-ListAdd(list, MkInitializerAssignment(MkExpConstant("0")));
+{
+init->type = 0;
+init->exp = MkExpConstant("0");
+}
+ListAdd(list, init);
 }
 return 0x1;
 }
@@ -2869,11 +2931,19 @@ for(dataMember = _class->membersAndProperties.first; dataMember; dataMember = da
 {
 if(!dataMember->isProperty && !dataMember->name && (dataMember->type == 1 || dataMember->type == 2))
 {
-if(!ProcessBracketInst_DataMember(dataMember, inst, list))
+struct __ecereNameSpace__ecere__sys__OldList * subList = 0;
+
+if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember, 0x0))
 {
+if(subList)
+FreeList(subList, FreeInitializer);
 recursionCount--;
 return 0x0;
 }
+if(dataMember->type == 2 || (subList && (*subList).count))
+ListAdd(list, MkInitializerList(subList));
+else
+(__ecereNameSpace__ecere__com__eSystem_Delete(subList), subList = 0);
 }
 else
 {
@@ -3069,8 +3139,6 @@ recursionCount--;
 return 0x1;
 }
 
-extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
-
 static void ProcessDeclaration(struct Declaration * decl)
 {
 yylloc = decl->loc;
@@ -3172,7 +3240,7 @@ decl->specifiers = MkList();
 decl->declarators = MkList();
 if(classSym && classSym->registered && classSym->registered->type == 2)
 {
-struct __ecereNameSpace__ecere__sys__OldList list = 
+struct __ecereNameSpace__ecere__sys__OldList list =
 {
 0
 };
@@ -3185,7 +3253,7 @@ inst->exp->identifier = (((void *)0));
 }
 else if(classSym && classSym->registered && classSym->registered->type == 3)
 {
-struct __ecereNameSpace__ecere__sys__OldList list = 
+struct __ecereNameSpace__ecere__sys__OldList list =
 {
 0
 };

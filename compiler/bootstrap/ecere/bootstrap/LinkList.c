@@ -582,21 +582,21 @@ extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__co
 
 void __ecereRegisterModule_LinkList(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct3 = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct3 =
 {
-"LT::link", 0, 0, 0, 0
+.dataTypeString = "LT::link"
 };
-struct __ecereNameSpace__ecere__com__DataValue __simpleStruct2 = 
+struct __ecereNameSpace__ecere__com__DataValue __simpleStruct2 =
 {
-0
+.c = 0
 };
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct1 = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct1 =
 {
-0, 0, (__simpleStruct2.ui64 = 0LL, __simpleStruct2), 0, 0
+.expression = (__simpleStruct2.ui64 = 0LL, __simpleStruct2)
 };
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 {
-"ecere::com::ListItem", 0, 0, 0, 0
+.dataTypeString = "ecere::com::ListItem"
 };
 struct __ecereNameSpace__ecere__com__Class * class;
 

@@ -352,6 +352,7 @@ struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 } __attribute__ ((gcc_struct));
 unsigned int isConstant;
+struct Identifier * id;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
@@ -5244,7 +5245,7 @@ struct __ecereNameSpace__ecere__com__Class * _class = link->data;
 
 if(_class->type == 4)
 {
-struct __ecereNameSpace__ecere__sys__OldList converts = 
+struct __ecereNameSpace__ecere__sys__OldList converts =
 {
 0, 0, 0, 0, 0
 };
@@ -10536,52 +10537,52 @@ op1->type->refCount++;
 return 0x1;
 }
 
-struct OpTable intOps = 
+struct OpTable intOps =
 {
 IntAdd, IntSub, IntMul, IntDiv, IntMod, IntNeg, IntInc, IntDec, IntAsign, IntAddAsign, IntSubAsign, IntMulAsign, IntDivAsign, IntModAsign, IntBitAnd, IntBitOr, IntBitXor, IntLShift, IntRShift, IntBitNot, IntAndAsign, IntOrAsign, IntXorAsign, IntLShiftAsign, IntRShiftAsign, IntNot, IntEqu, IntNqu, IntAnd, IntOr, IntGrt, IntSma, IntGrtEqu, IntSmaEqu, IntCond
 };
 
-struct OpTable uintOps = 
+struct OpTable uintOps =
 {
 UIntAdd, UIntSub, UIntMul, UIntDiv, UIntMod, UIntNeg, UIntInc, UIntDec, UIntAsign, UIntAddAsign, UIntSubAsign, UIntMulAsign, UIntDivAsign, UIntModAsign, UIntBitAnd, UIntBitOr, UIntBitXor, UIntLShift, UIntRShift, UIntBitNot, UIntAndAsign, UIntOrAsign, UIntXorAsign, UIntLShiftAsign, UIntRShiftAsign, UIntNot, UIntEqu, UIntNqu, UIntAnd, UIntOr, UIntGrt, UIntSma, UIntGrtEqu, UIntSmaEqu, UIntCond
 };
 
-struct OpTable int64Ops = 
+struct OpTable int64Ops =
 {
 Int64Add, Int64Sub, Int64Mul, Int64Div, Int64Mod, Int64Neg, Int64Inc, Int64Dec, Int64Asign, Int64AddAsign, Int64SubAsign, Int64MulAsign, Int64DivAsign, Int64ModAsign, Int64BitAnd, Int64BitOr, Int64BitXor, Int64LShift, Int64RShift, Int64BitNot, Int64AndAsign, Int64OrAsign, Int64XorAsign, Int64LShiftAsign, Int64RShiftAsign, Int64Not, Int64Equ, Int64Nqu, Int64And, Int64Or, Int64Grt, Int64Sma, Int64GrtEqu, Int64SmaEqu, Int64Cond
 };
 
-struct OpTable uint64Ops = 
+struct OpTable uint64Ops =
 {
 UInt64Add, UInt64Sub, UInt64Mul, UInt64Div, UInt64Mod, UInt64Neg, UInt64Inc, UInt64Dec, UInt64Asign, UInt64AddAsign, UInt64SubAsign, UInt64MulAsign, UInt64DivAsign, UInt64ModAsign, UInt64BitAnd, UInt64BitOr, UInt64BitXor, UInt64LShift, UInt64RShift, UInt64BitNot, UInt64AndAsign, UInt64OrAsign, UInt64XorAsign, UInt64LShiftAsign, UInt64RShiftAsign, UInt64Not, UInt64Equ, UInt64Nqu, UInt64And, UInt64Or, UInt64Grt, UInt64Sma, UInt64GrtEqu, UInt64SmaEqu, UInt64Cond
 };
 
-struct OpTable shortOps = 
+struct OpTable shortOps =
 {
 ShortAdd, ShortSub, ShortMul, ShortDiv, ShortMod, ShortNeg, ShortInc, ShortDec, ShortAsign, ShortAddAsign, ShortSubAsign, ShortMulAsign, ShortDivAsign, ShortModAsign, ShortBitAnd, ShortBitOr, ShortBitXor, ShortLShift, ShortRShift, ShortBitNot, ShortAndAsign, ShortOrAsign, ShortXorAsign, ShortLShiftAsign, ShortRShiftAsign, ShortNot, ShortEqu, ShortNqu, ShortAnd, ShortOr, ShortGrt, ShortSma, ShortGrtEqu, ShortSmaEqu, ShortCond
 };
 
-struct OpTable ushortOps = 
+struct OpTable ushortOps =
 {
 UShortAdd, UShortSub, UShortMul, UShortDiv, UShortMod, UShortNeg, UShortInc, UShortDec, UShortAsign, UShortAddAsign, UShortSubAsign, UShortMulAsign, UShortDivAsign, UShortModAsign, UShortBitAnd, UShortBitOr, UShortBitXor, UShortLShift, UShortRShift, UShortBitNot, UShortAndAsign, UShortOrAsign, UShortXorAsign, UShortLShiftAsign, UShortRShiftAsign, UShortNot, UShortEqu, UShortNqu, UShortAnd, UShortOr, UShortGrt, UShortSma, UShortGrtEqu, UShortSmaEqu, UShortCond
 };
 
-struct OpTable floatOps = 
+struct OpTable floatOps =
 {
 FloatAdd, FloatSub, FloatMul, FloatDiv, (((void *)0)), FloatNeg, FloatInc, FloatDec, FloatAsign, FloatAddAsign, FloatSubAsign, FloatMulAsign, FloatDivAsign, (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), FloatEqu, FloatNqu, FloatAnd, FloatOr, FloatGrt, FloatSma, FloatGrtEqu, FloatSmaEqu
 };
 
-struct OpTable doubleOps = 
+struct OpTable doubleOps =
 {
 DoubleAdd, DoubleSub, DoubleMul, DoubleDiv, (((void *)0)), DoubleNeg, DoubleInc, DoubleDec, DoubleAsign, DoubleAddAsign, DoubleSubAsign, DoubleMulAsign, DoubleDivAsign, (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), DoubleEqu, DoubleNqu, DoubleAnd, DoubleOr, DoubleGrt, DoubleSma, DoubleGrtEqu, DoubleSmaEqu
 };
 
-struct OpTable charOps = 
+struct OpTable charOps =
 {
 CharAdd, CharSub, CharMul, CharDiv, CharMod, CharNeg, CharInc, CharDec, CharAsign, CharAddAsign, CharSubAsign, CharMulAsign, CharDivAsign, CharModAsign, CharBitAnd, CharBitOr, CharBitXor, CharLShift, CharRShift, CharBitNot, CharAndAsign, CharOrAsign, CharXorAsign, CharLShiftAsign, CharRShiftAsign, CharNot, CharEqu, CharNqu, CharAnd, CharOr, CharGrt, CharSma, CharGrtEqu, CharSmaEqu, CharCond
 };
 
-struct OpTable ucharOps = 
+struct OpTable ucharOps =
 {
 UCharAdd, UCharSub, UCharMul, UCharDiv, UCharMod, UCharNeg, UCharInc, UCharDec, UCharAsign, UCharAddAsign, UCharSubAsign, UCharMulAsign, UCharDivAsign, UCharModAsign, UCharBitAnd, UCharBitOr, UCharBitXor, UCharLShift, UCharRShift, UCharBitNot, UCharAndAsign, UCharOrAsign, UCharXorAsign, UCharLShiftAsign, UCharRShiftAsign, UCharNot, UCharEqu, UCharNqu, UCharAnd, UCharOr, UCharGrt, UCharSma, UCharGrtEqu, UCharSmaEqu, UCharCond
 };
@@ -10738,9 +10739,9 @@ extern double (* __ecereMethod_double_nan)(void);
 
 struct Operand GetOperand(struct Expression * exp)
 {
-struct Operand op = 
+struct Operand op =
 {
-0, 0, 0, 0, 
+0, 0, 0, .c = 0,
 {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 }
@@ -11846,16 +11847,16 @@ break;
 case 4:
 {
 struct Expression * exp1, * exp2 = (((void *)0));
-struct Operand op1 = 
+struct Operand op1 =
 {
-0, 0, 0, 0, 
+0, 0, 0, .c = 0,
 {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 }
 };
-struct Operand op2 = 
+struct Operand op2 =
 {
-0, 0, 0, 0, 
+0, 0, 0, .c = 0,
 {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 }
@@ -12532,23 +12533,23 @@ break;
 }
 case 12:
 {
-struct Operand op1 = 
+struct Operand op1 =
 {
-0, 0, 0, 0, 
-{
-0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-}
-};
-struct Operand op2 = 
-{
-0, 0, 0, 0, 
+0, 0, 0, .c = 0,
 {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 }
 };
-struct Operand op3 = 
+struct Operand op2 =
 {
-0, 0, 0, 0, 
+0, 0, 0, .c = 0,
+{
+0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+}
+};
+struct Operand op3 =
+{
+0, 0, 0, .c = 0,
 {
 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 }
@@ -12595,7 +12596,7 @@ unsigned int result = 0x1;
 
 if(destType)
 {
-struct __ecereNameSpace__ecere__sys__OldList converts = 
+struct __ecereNameSpace__ecere__sys__OldList converts =
 {
 0, 0, 0, 0, 0
 };

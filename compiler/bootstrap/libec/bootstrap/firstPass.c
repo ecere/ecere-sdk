@@ -1564,9 +1564,9 @@ struct TemplateParameter * param;
 
 for(param = (*symbol->templateParams).first; param; param = param->next)
 {
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg =
 {
-0, 0, 0, 0, 0
+.member = 0
 };
 
 if(param->defaultArgument)

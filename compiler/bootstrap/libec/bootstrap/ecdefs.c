@@ -349,6 +349,7 @@ struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList * list;
 } __attribute__ ((gcc_struct));
 unsigned int isConstant;
+struct Identifier * id;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Initializer;
@@ -1591,9 +1592,9 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDeclType;
 
 void __ecereMethod_Expression_Clear(struct Expression * this)
 {
-struct __ecereNameSpace__ecere__com__DataValue __simpleStruct0 = 
+struct __ecereNameSpace__ecere__com__DataValue __simpleStruct0 =
 {
-(char)0
+.c = (char)0
 };
 
 this->debugValue = 0x0;
@@ -2542,6 +2543,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "list", "ecere:
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isConstant", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "id", "Identifier", arch_PointerSize, arch_PointerSize, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "InitDeclarator", 0, sizeof(struct InitDeclarator), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_InitDeclarator = class;

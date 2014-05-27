@@ -643,7 +643,7 @@ struct __ecereNameSpace__ecere__com__BlockPool * pool;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MemPart;
 
-static int __ecereNameSpace__ecere__com__power15[] = 
+static int __ecereNameSpace__ecere__com__power15[] =
 {
 4, 8, 12, 16, 24, 32, 48, 64, 96, 144, 224, 320, 480, 720, 1072, 1600, 2400, 6900, 5408, 8096, 12144, 18208, 27312, 40976, 61456, 92176, 138256, 207392, 311088, 466624, 699920
 };
@@ -2464,11 +2464,11 @@ if(link)
 return link->data;
 if(_class && templateParams)
 {
-struct __ecereNameSpace__ecere__sys__OldList __simpleStruct1 = 
+struct __ecereNameSpace__ecere__sys__OldList __simpleStruct1 =
 {
 0, 0, 0, 0, 0
 };
-struct __ecereNameSpace__ecere__sys__OldList __simpleStruct0 = 
+struct __ecereNameSpace__ecere__sys__OldList __simpleStruct0 =
 {
 0, 0, 0, 0, 0
 };
@@ -2686,9 +2686,9 @@ break;
 }
 if(curParam)
 {
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument argument = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument argument =
 {
-0, 0, 0, 0, 0
+.member = 0
 };
 char value[1024];
 
@@ -5602,7 +5602,7 @@ __ecereNameSpace__ecere__com__FreeTemplatesDerivatives(_class);
 }
 }
 
-static const char * __ecereNameSpace__ecere__com__platformNames[4] = 
+static const char * __ecereNameSpace__ecere__com__platformNames[4] =
 {
 "", "win32", "linux", "apple"
 };

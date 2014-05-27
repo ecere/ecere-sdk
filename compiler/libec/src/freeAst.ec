@@ -820,6 +820,8 @@ void FreeInitializer(Initializer initializer)
       case expInitializer:
          if(initializer.exp)
             FreeExpression(initializer.exp);
+         if(initializer.id)
+            FreeIdentifier(initializer.id);
          break;
    }
    delete initializer;

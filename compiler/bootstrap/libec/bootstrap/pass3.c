@@ -298,6 +298,7 @@ struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 } __attribute__ ((gcc_struct));
 unsigned int isConstant;
+struct Identifier * id;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;

@@ -1328,9 +1328,9 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 {
 char name[1024];
 int type = 0;
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg =
 {
-0, 0, 0, 0, 0
+.member = 0
 };
 void * info = (((void *)0));
 
@@ -1779,7 +1779,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(firstModule));
 __extension__ ({
-struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 loadedModules, 0
 };
@@ -1839,7 +1839,7 @@ return ;
 if(inIDE && !__ecereNameSpace__ecere__sys__FileExists(symFile) && sourceDirs)
 {
 {
-struct __ecereNameSpace__ecere__com__Iterator dir = 
+struct __ecereNameSpace__ecere__com__Iterator dir =
 {
 (sourceDirs), 0
 };

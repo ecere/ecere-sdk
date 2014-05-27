@@ -356,6 +356,7 @@ struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 } __attribute__ ((gcc_struct));
 unsigned int isConstant;
+struct Identifier * id;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
@@ -1960,6 +1961,8 @@ break;
 case 0:
 if(initializer->exp)
 FreeExpression(initializer->exp);
+if(initializer->id)
+FreeIdentifier(initializer->id);
 break;
 }
 ((initializer ? (__ecereClass_Initializer->Destructor ? __ecereClass_Initializer->Destructor(initializer) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(initializer)) : 0), initializer = 0);

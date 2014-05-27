@@ -941,17 +941,17 @@ extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__co
 
 void __ecereRegisterModule_Container(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct2 = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct2 =
 {
-"T", 0, 0, 0, 0
+.dataTypeString = "T"
 };
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct1 = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct1 =
 {
-"int", 0, 0, 0, 0
+.dataTypeString = "int"
 };
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 {
-"int", 0, 0, 0, 0
+.dataTypeString = "int"
 };
 struct __ecereNameSpace__ecere__com__Class * class;
 

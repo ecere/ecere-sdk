@@ -755,6 +755,7 @@ public:
       OldList * list;
    };
    bool isConstant;
+   Identifier id;
 };
 
 public class InitDeclarator : struct

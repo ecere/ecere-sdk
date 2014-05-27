@@ -357,6 +357,7 @@ struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 } __attribute__ ((gcc_struct));
 unsigned int isConstant;
+struct Identifier * id;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
@@ -1595,7 +1596,7 @@ char * s;
 
 if(inCompiler)
 {
-struct ContextStringPair pair = 
+struct ContextStringPair pair =
 {
 0, 0
 };
@@ -1613,7 +1614,7 @@ memcpy(pair.context, context + 1, len - 2);
 pair.context[len - 2] = '\0';
 }
 list = (__extension__ ({
-struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 intlStrings, 0
 };
@@ -1625,7 +1626,7 @@ if(!list)
 {
 list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_);
 __extension__ ({
-struct __ecereNameSpace__ecere__com__Iterator __internalIterator = 
+struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 intlStrings, 0
 };
@@ -1886,7 +1887,7 @@ if(list && (!declMode || !id))
 {
 struct Type * type;
 struct Enumerator * e;
-struct __ecereNameSpace__ecere__sys__OldList specs = 
+struct __ecereNameSpace__ecere__sys__OldList specs =
 {
 0, 0, 0, 0, 0
 };
@@ -1929,7 +1930,7 @@ structDeclMode = 0;
 spec->definitions = definitions;
 if(definitions && id && structDeclMode == 0)
 {
-struct __ecereNameSpace__ecere__sys__OldList specs = 
+struct __ecereNameSpace__ecere__sys__OldList specs =
 {
 0, 0, 0, 0, 0
 };
@@ -1953,7 +1954,7 @@ spec->definitions = definitions;
 if(definitions && spec->id && !declMode)
 {
 struct Symbol * symbol;
-struct __ecereNameSpace__ecere__sys__OldList specs = 
+struct __ecereNameSpace__ecere__sys__OldList specs =
 {
 0, 0, 0, 0, 0
 };
@@ -4912,7 +4913,7 @@ while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
 struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s));
 
 {
-struct __ecereNameSpace__ecere__com__Iterator l = 
+struct __ecereNameSpace__ecere__com__Iterator l =
 {
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s)), 0
 };

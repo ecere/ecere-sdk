@@ -1096,12 +1096,23 @@ static void OutputInitializer(Initializer initializer, File f)
       ChangeCh(origName, '\\', '/');
    }
 
+   if(initializer.type == listInitializer)
+      f.Puts("\n");
+   if(initializer.id)
+   {
+      // TODO: Add support for multiple IDs and [ ]
+      f.Puts(".");
+      OutputIdentifier(initializer.id, f);
+      f.Puts(" =");
+   }
    switch(initializer.type)
    {
       case listInitializer:
       {
          Initializer init;
-         f.Puts("\n{\n");
+         if(initializer.id)
+            f.Puts(" ");
+         f.Puts("{\n");
          outputLine += 2;
 
          if(inCompiler && outputLineNumbers && initializer.loc.start.line)
@@ -1116,7 +1127,7 @@ static void OutputInitializer(Initializer initializer, File f)
          for(init = initializer.list->first; init; init = init.next)
          {
             OutputInitializer(init, f);
-            if(init.next) f.Puts(", ");
+            if(init.next) f.Puts(init.next.type == listInitializer ? "," : ", ");
          }
          f.Puts("\n}");
 
@@ -1133,6 +1144,8 @@ static void OutputInitializer(Initializer initializer, File f)
          break;
       }
       case expInitializer:
+         if(initializer.id)
+            f.Puts(" ");
          if(initializer.exp)
             OutputExpression(initializer.exp, f);
          break;
@@ -1144,7 +1157,8 @@ static void OutputInitDeclarator(InitDeclarator decl, File f)
    OutputDeclarator(decl.declarator, f);
    if(decl.initializer)
    {
-      f.Puts(" = ");
+      f.Puts(" =");
+      if(decl.initializer.type == expInitializer) f.Puts(" ");
       OutputInitializer(decl.initializer, f);
    }
 }
@@ -1330,7 +1344,8 @@ static void OutputMemberInit(MemberInit init, File f)
       }
       else if(init.identifiers->first)
          OutputIdentifier(init.identifiers->first, f);
-      f.Puts(" = ");
+      f.Puts(" =");
+      if(init.initializer && init.initializer.type == expInitializer) f.Puts(" ");
    }
    if(init.initializer)
       OutputInitializer(init.initializer, f);

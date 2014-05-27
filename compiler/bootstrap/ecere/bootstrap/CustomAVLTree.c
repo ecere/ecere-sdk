@@ -917,9 +917,9 @@ extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(st
 
 void __ecereRegisterModule_CustomAVLTree(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 = 
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 {
-"uint64", 0, 0, 0, 0
+.dataTypeString = "uint64"
 };
 struct __ecereNameSpace__ecere__com__Class * class;
 
