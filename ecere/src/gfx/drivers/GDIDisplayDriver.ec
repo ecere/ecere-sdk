@@ -397,7 +397,6 @@ class GDIDisplayDriver : DisplayDriver
    void Update(Display display, Box updateBox)
    {
       GDIDisplay gdiDisplay = display.driverData;
-      int returnValue;
       if(display.alphaBlend && display.pixelFormat == pixelFormat888)
       {
          HDC hdc = GetDC(0);
@@ -471,7 +470,7 @@ class GDIDisplayDriver : DisplayDriver
    void ReleaseSurface(Display display, Surface surface)
    {
       GDISurface gdiSurface = surface.driverData;
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
 
       if(gdiSurface.rgn)
       {
@@ -583,7 +582,7 @@ class GDIDisplayDriver : DisplayDriver
       bool result = false;
       if(display)
       {
-         GDIDisplay gdiDisplay = display.driverData;
+         //GDIDisplay gdiDisplay = display.driverData;
          result = ((subclass(DisplayDriver))class(LFBDisplayDriver)).GrabScreen(display, bitmap, x,y, w,h);
       }
       else
@@ -638,7 +637,7 @@ class GDIDisplayDriver : DisplayDriver
       if(true) //display.alphaBlend)
       {
          GDISurface gdiSurface = surface.driverData;
-         GDIDisplay gdiDisplay = display ? display.driverData : null;
+         //GDIDisplay gdiDisplay = display ? display.driverData : null;
          COLORREF rgb = RGB(color.color.r, color.color.g, color.color.b);
 
          SetTextColor(gdiSurface.hdc, rgb);
@@ -673,7 +672,7 @@ class GDIDisplayDriver : DisplayDriver
 
    void PutPixel(Display display, Surface surface, int x, int y)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       //GDISurface gdiSurface = surface.driverData;
       // SetPixel(gdiSurface.hdc, x + surface.offset.x, y + surface.offset.y, gdiSurface.color);
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).PutPixel(display, surface, x,y);
@@ -681,19 +680,19 @@ class GDIDisplayDriver : DisplayDriver
 
    void DrawLine(Display display, Surface surface, int x1, int y1, int x2, int y2)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).DrawLine(display, surface, x1,y1,x2,y2);
    }
 
    void Rectangle(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Rectangle(display, surface, x1,y1,x2,y2);
    }
 
    void Area(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Area(display, surface, x1,y1,x2,y2);
 
       /*
@@ -817,19 +816,19 @@ class GDIDisplayDriver : DisplayDriver
 
    void Blit(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Blit(display, surface, src, dx, dy, sx, sy, w, h);
    }
 
    void Stretch(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Stretch(display, surface, src, dx, dy, sx, sy, w, h, sw, sh);
    }
 
    void Filter(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Filter(display, surface, src, dx, dy, sx, sy, w, h, sw, sh);
    }
 
@@ -1020,7 +1019,7 @@ class GDIDisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint stipple)
    {
-      GDIDisplay gdiDisplay = display ? display.driverData : null;
+      //GDIDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).LineStipple(display, surface, stipple);
    }
 

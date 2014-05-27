@@ -305,7 +305,6 @@ public class TabControl : Window
    {
       if(placement == bottom && ((BorderBits)borderStyle).fixed)
       {
-         bool isNormal = (state == normal || state == maximized);
          int top = 0, border = 0, bottom = 0;
          if(state == minimized)
             top = border = bottom = 0;
@@ -479,7 +478,6 @@ public class TabControl : Window
    {
       if(placement == bottom && ((BorderBits)borderStyle).fixed)
       {
-         bool isNormal = (state == normal || state == maximized);
          MinMaxValue aw = 0, ah = 0;
 
          *x = *y = 0;

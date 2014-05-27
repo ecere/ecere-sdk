@@ -78,9 +78,9 @@ public:
                   Angle cosOmega = cos(omega);
 
                   index = (numLat - 3) * ((numLon) * 2) + lon + 1;
-                  pVertices[index].x = (float) (sin(theta) * cos(omega));
+                  pVertices[index].x = (float) (sin(theta) * cosOmega);
                   pVertices[index].y = (float)  sin(omega);
-                  pVertices[index].z = (float) (cos(theta) * cos(omega));
+                  pVertices[index].z = (float) (cos(theta) * cosOmega);
                   pNormals[index] = pVertices[index];
 
                   omega = (numLat - 2) * Pi / (numLat - 1) - Pi / 2;
@@ -88,28 +88,30 @@ public:
                   index += numLon+2;
 
                   theta = lon * 2 * Pi / (numLon - 1);
-                  pVertices[index].x = (float) (sin(theta) * cos(omega));
+                  pVertices[index].x = (float) (sin(theta) * cosOmega);
                   pVertices[index].y = (float)  sin(omega);
-                  pVertices[index].z = (float) (cos(theta) * cos(omega));
+                  pVertices[index].z = (float) (cos(theta) * cosOmega);
                   pNormals[index] = pVertices[index];
                }
 
-               if(group = mesh.AddPrimitiveGroup({ triFan, true }, 0))
+               if((group = mesh.AddPrimitiveGroup({ triFan, true }, 0)))
                {
                   group.first = (numLat - 3) * (numLon) * 2;
                   group.nVertices = numLon + 2;
                }
 
-               if(group = mesh.AddPrimitiveGroup({ triFan, true }, 0))
+               if((group = mesh.AddPrimitiveGroup({ triFan, true }, 0)))
                {
                   group.first = (numLat - 3) * (numLon) * 2 + (numLon + 2);
                   group.nVertices = numLon + 2;
                }
+               result = true;
             }
             mesh.Unlock(0);
             SetMinMaxRadius(true);
          }
       }
+      return result;
    }
    property int numLat { set { numLat = value; } }
    property int numLon { set { numLon = value; } }

@@ -138,6 +138,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -167,6 +169,16 @@ unsigned int isWatchable;
 } __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -377,7 +389,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 void __ecereMethod___ecereNameSpace__ecere__com__List_Remove(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Link * link)
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, link);
-((link ? (__ecereClass___ecereNameSpace__ecere__com__Link->Destructor ? __ecereClass___ecereNameSpace__ecere__com__Link->Destructor(link) : 0, __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor ? __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor(link) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor(link) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(link)) : 0), link = 0);
+((link ? (__ecereClass___ecereNameSpace__ecere__com__Link->Destructor ? __ecereClass___ecereNameSpace__ecere__com__Link->Destructor((void *)link) : 0, __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor ? __ecereClass___ecereNameSpace__ecere__com__ListItem->Destructor((void *)link) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)link) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(link)) : 0), link = 0);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData;
@@ -404,7 +416,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__List_Free(struct __ecereNameSpa
 {
 void * item;
 
-while(item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + structSize_Instance)))->first)
+while((item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + structSize_Instance)))->first))
 {
 uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;

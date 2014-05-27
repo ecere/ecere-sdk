@@ -17,7 +17,6 @@ public:
       property_category $"Behavior"
       set
       {
-         Size size;
          if(window)
          {
             stopwatching(window, caption);

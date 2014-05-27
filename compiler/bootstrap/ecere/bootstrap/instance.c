@@ -358,6 +358,8 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
 
 void Instance_Module_Free(void * library);
 
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Angle;
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__unichar;
 
 int __ecereNameSpace__ecere__sys__UTF32toUTF8Len(unsigned int *  source, int count, unsigned char *  dest, int max);
@@ -643,11 +645,6 @@ struct __ecereNameSpace__ecere__com__BlockPool * pool;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MemPart;
 
-static int __ecereNameSpace__ecere__com__power15[] =
-{
-4, 8, 12, 16, 24, 32, 48, 64, 96, 144, 224, 320, 480, 720, 1072, 1600, 2400, 6900, 5408, 8096, 12144, 18208, 27312, 40976, 61456, 92176, 138256, 207392, 311088, 466624, 699920
-};
-
 struct __ecereNameSpace__ecere__com__BlockPool
 {
 struct __ecereNameSpace__ecere__com__MemBlock * first, * last;
@@ -766,54 +763,6 @@ free(part);
 }
 
 static struct __ecereNameSpace__ecere__com__BlockPool * __ecereNameSpace__ecere__com__pools;
-
-static unsigned int __ecereNameSpace__ecere__com__PosFibonacci(unsigned int number)
-{
-unsigned int pos;
-unsigned int last = 1, prev = 0;
-unsigned int current = 1;
-
-for(pos = 0; ; pos++)
-{
-current += prev;
-prev = last;
-last = current;
-if(current >= number)
-break;
-}
-return pos;
-}
-
-static unsigned int __ecereNameSpace__ecere__com__NthFibonacci(unsigned int number)
-{
-unsigned int pos;
-unsigned int last = 1, prev = 0;
-unsigned int current = 1;
-
-for(pos = 0; pos <= number; pos++)
-{
-current += prev;
-prev = last;
-last = current;
-}
-return current;
-}
-
-static unsigned int __ecereNameSpace__ecere__com__NextFibonacci(unsigned int number)
-{
-unsigned int pos;
-unsigned int last = 1, prev = 0;
-unsigned int current = 1;
-
-for(pos = 0; ; pos++)
-{
-current += prev;
-prev = last;
-last = current;
-if(current >= number)
-return current;
-}
-}
 
 static unsigned int __ecereNameSpace__ecere__com__log1_5i(unsigned int number)
 {
@@ -1188,7 +1137,6 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(struct _
 static void __ecereNameSpace__ecere__com__FixDerivativesBase(struct __ecereNameSpace__ecere__com__Class * base, struct __ecereNameSpace__ecere__com__Class * mod)
 {
 struct __ecereNameSpace__ecere__sys__OldLink * derivative;
-struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
 
 __ecereNameSpace__ecere__com__ComputeClassParameters(base, strchr(base->name, '<'), (((void *)0)));
 for(derivative = base->derivatives.first; derivative; derivative = derivative->next)
@@ -1406,7 +1354,6 @@ struct __ecereNameSpace__ecere__sys__OldLink * templateLink;
 for(templateLink = base->templatized.first; templateLink; templateLink = templateLink->next)
 {
 struct __ecereNameSpace__ecere__com__Class * template = templateLink->data;
-char * templateParams = strchr(template->name, '<');
 
 template->base = base->base;
 template->_vTbl = base->_vTbl;
@@ -1530,7 +1477,6 @@ struct __ecereNameSpace__ecere__com__Class * _class = (((void *)0));
 char * dataTypeString = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * enumBase = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * base = (baseName && baseName[0]) ? __ecereNameSpace__ecere__com__eSystem_FindClass(module, baseName) : (((void *)0));
-unsigned int refine = 0x0;
 struct __ecereNameSpace__ecere__com__Class * prevBase = (((void *)0));
 
 if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
@@ -1616,6 +1562,7 @@ if(colons && colons)
 {
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, colons + 2);
 if(_class)
+{
 if(_class->internalDecl)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(_class->fullName), _class->fullName = 0);
@@ -1623,6 +1570,7 @@ _class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
 }
 else
 _class = (((void *)0));
+}
 }
 }
 if(_class)
@@ -1664,7 +1612,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*parent).nameSpa
 ns = parent;
 }
 }
-refine = 0x1;
 }
 else
 {
@@ -1692,7 +1639,6 @@ classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
 }
 }
-refine = 0x1;
 (__ecereNameSpace__ecere__com__eSystem_Delete(_class->fullName), _class->fullName = 0);
 _class->fullName = __ecereNameSpace__ecere__sys__CopyString(name);
 }
@@ -2218,7 +2164,7 @@ struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ec
 
 static struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereNameSpace__ecere__com__ScanNameSpace(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace, char * name, void * listOffset)
 {
-struct __ecereNameSpace__ecere__sys__BinaryTree * tree = (struct __ecereNameSpace__ecere__sys__BinaryTree *)((unsigned char *)nameSpace + (unsigned int)listOffset);
+struct __ecereNameSpace__ecere__sys__BinaryTree * tree = (struct __ecereNameSpace__ecere__sys__BinaryTree *)((unsigned char *)nameSpace + (uintptr_t)listOffset);
 struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find((&*tree), (uintptr_t)name);
 struct __ecereNameSpace__ecere__com__NameSpace * child;
 
@@ -4292,7 +4238,7 @@ int __simpleStruct0, __simpleStruct1;
 if(dataMember->name && __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&addTo->membersAlpha, dataMember->name))
 {
 __ecereNameSpace__ecere__com__DataMember_Free(dataMember);
-((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor(dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
+((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
 return 0x0;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&addTo->members, dataMember);
@@ -4335,7 +4281,7 @@ int __simpleStruct0, __simpleStruct1;
 if(!_class || _class->comRedefinition || (dataMember->name && __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->members, dataMember->name)))
 {
 __ecereNameSpace__ecere__com__DataMember_Free(dataMember);
-((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor(dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
+((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
 return 0x0;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, dataMember);
@@ -5200,33 +5146,33 @@ extern void __ecereNameSpace__ecere__com__InitializeDataTypes1(struct __ecereNam
 
 extern void __ecereNameSpace__ecere__com__InitializeDataTypes(struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern double sin(struct __ecereNameSpace__ecere__com__Instance * number);
+extern double sin(double number);
 
-extern double sinh(struct __ecereNameSpace__ecere__com__Instance * number);
+extern double sinh(double number);
 
-extern double cosh(struct __ecereNameSpace__ecere__com__Instance * number);
+extern double cosh(double number);
 
-extern double tanh(struct __ecereNameSpace__ecere__com__Instance * number);
+extern double tanh(double number);
 
 extern double sqrt(double number);
 
-extern double cos(struct __ecereNameSpace__ecere__com__Instance * number);
+extern double cos(double number);
 
-extern double tan(struct __ecereNameSpace__ecere__com__Instance * number);
+extern double tan(double number);
 
-extern struct __ecereNameSpace__ecere__com__Instance * atan2(double y, double x);
+extern double atan2(double y, double x);
 
-extern struct __ecereNameSpace__ecere__com__Instance * asin(double number);
+extern double asin(double number);
 
-extern struct __ecereNameSpace__ecere__com__Instance * acos(double number);
+extern double acos(double number);
 
-extern struct __ecereNameSpace__ecere__com__Instance * atan(double number);
+extern double atan(double number);
 
-extern struct __ecereNameSpace__ecere__com__Instance * asinh(double number);
+extern double asinh(double number);
 
-extern struct __ecereNameSpace__ecere__com__Instance * acosh(double number);
+extern double acosh(double number);
 
-extern struct __ecereNameSpace__ecere__com__Instance * atanh(double number);
+extern double atanh(double number);
 
 extern double pow(double number, double number2);
 
@@ -5273,6 +5219,8 @@ extern char *  strpbrk(const char * , const char * );
 extern int strncasecmp(const char * , const char * , size_t n);
 
 extern int strncmp(const char * , const char * , size_t n);
+
+extern int memcmp(const void * , const void * , size_t size);
 
 extern int vsprintf(char * , const char * , __builtin_va_list);
 
@@ -5430,6 +5378,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcpy", "char * strcpy(
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strncpy", "char * strncpy(char *, const char *, uintsize n)", strncpy, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memcpy", "void * memcpy(void *, const void *, uintsize size)", memcpy, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uintsize size)", memmove, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("memcmp", "int memcmp(const void *, const void *, uintsize size)", memcmp, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("sprintf", "int sprintf(char *, char *, ...)", sprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("snprintf", "int sprintf(char *, uintsize, char *, ...)", snprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("printf", "int printf(char *, ...)", printf, module, 4);
@@ -5460,7 +5409,7 @@ __ecereNameSpace__ecere__com__Module_Constructor(app);
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->systemNameSpace.nameSpaces.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString;
 Instance_COM_Initialize(argc, argv, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->parsedCommand, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->argc, &((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->argv);
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)app + structSize_Instance)))->application = app;
-((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->allModules.offset = structSize_Instance + (unsigned int)&(*((struct __ecereNameSpace__ecere__com__Module *)0)).prev;
+((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->allModules.offset = structSize_Instance + (unsigned int)(uintptr_t)&(*((struct __ecereNameSpace__ecere__com__Module *)0)).prev;
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->isGUIApp = guiApp;
 __ecereNameSpace__ecere__com__LoadCOM(app);
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)app)->_class = __ecereNameSpace__ecere__com__eSystem_FindClass(app, "Application");
@@ -5498,7 +5447,6 @@ void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __
 {
 if(base)
 {
-struct __ecereNameSpace__ecere__sys__OldLink * derivative;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * param;
 
 {
@@ -6235,6 +6183,9 @@ void __ecereRegisterModule_instance(struct __ecereNameSpace__ecere__com__Instanc
 struct __ecereNameSpace__ecere__com__Class * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::null", "((void *)0)", module, 4);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::com::Angle", "double", 0, 0, 0, 0, module, 4, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
+__ecereClass___ecereNameSpace__ecere__com__Angle = class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::com::unichar", "uint", 0, 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__unichar = class;

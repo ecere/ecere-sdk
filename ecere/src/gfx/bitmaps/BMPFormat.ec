@@ -36,7 +36,7 @@ static void swap32s(uint32 n[], uint count) {
 
 struct BMPHead
 {
-   byte type[2]      __attribute__((packed));
+   byte type[2];
    uint32 size       __attribute__((packed));
    uint16 reserved1  __attribute__((packed));
    uint16 reserved2  __attribute__((packed));
@@ -203,8 +203,8 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
                   dest256 = bitmap.picture + y * bitmap.stride;
                   for(;!errorReading;)
                   {
-                     if(!f.Getc(&count)) { errorReading = true; break; }
-                     if(!f.Getc(&value)) { errorReading = true; break; }
+                     if(!f.Getc((char *)&count)) { errorReading = true; break; }
+                     if(!f.Getc((char *)&value)) { errorReading = true; break; }
                      if(count)
                         for(c = 0; c<count; c++)
                            *(dest256++) = value;
@@ -214,9 +214,9 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
                         if(value == 0x01) break;
                         else if(value == 0x02)
                         {
-                           if(!f.Getc(&count)) { errorReading = true; break; }
+                           if(!f.Getc((char *)&count)) { errorReading = true; break; }
                            dest256 += count;
-                           if(!f.Getc(&count)) { errorReading = true; break; }
+                           if(!f.Getc((char *)&count)) { errorReading = true; break; }
                            y -= count;
                            dest256 -= count * bitmap.stride;
                         }
@@ -224,7 +224,7 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
                         {
                            count = value;
                            for(c=0; c<count; c++)
-                              if(!f.Getc(dest256 ++))
+                              if(!f.Getc((char *)(dest256 ++)))
                                  { errorReading = true; break; }
                            if(!errorReading)
                               if(count & 0x01)
@@ -306,7 +306,7 @@ class BMPFormat : BitmapFormat
       BMPInfo info;
       // if(f.Read(&header, sizeof(header), 1) && header.type[0] == 'B' && header.type[1] == 'M' && f.Read(info, sizeof(info), 1))
       if(f.Read(&header.type, 2, 1) && header.type[0] == 'B' && header.type[1] == 'M' &&
-         f.Read(&header.size,sizeof(header) - (uint)&((BMPHead *)0)->size,1) &&
+         f.Read(&header.size,sizeof(header) - (uint)(uintptr)&((BMPHead *)0)->size,1) &&
          f.Read(info, sizeof(info), 1))
       {
          header.Swap();
@@ -339,7 +339,7 @@ class BMPFormat : BitmapFormat
             header.Swap();
 
             //if(f.Write(&header,sizeof(header),1))
-            if(f.Write(&header.type, 2, 1) && f.Write(&header.size,sizeof(header) - (uint)&((BMPHead *)0)->size,1))
+            if(f.Write(&header.type, 2, 1) && f.Write(&header.size,sizeof(header) - (uint)(uintptr)&((BMPHead *)0)->size,1))
             {
                BMPInfo info;
 
@@ -491,7 +491,7 @@ class BMPFormat : BitmapFormat
       {
          BMPHead header;
          //Load BMP header
-         if(f.Read(&header.type, 2, 1) && f.Read(&header.size,sizeof(header) - (uint)&((BMPHead *)0)->size,1))
+         if(f.Read(&header.type, 2, 1) && f.Read(&header.size,sizeof(header) - (uint)(uintptr)&((BMPHead *)0)->size,1))
          {
             BMPInfo info;
             if(f.Read(&info,sizeof(info),1))

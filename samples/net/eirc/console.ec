@@ -104,6 +104,7 @@ class Console : Window
    };
    bool OnCreate()
    {
+      int editHeight;
       if(speed)
          timer.Start();
       commands.Clear();
@@ -112,15 +113,6 @@ class Console : Window
       doneLooping = true;
       if(!referenceHeight)
          referenceHeight = 768;
-
-      log.anchor = { left = 0, top = 0, right = 0, bottom = editHeight + separatorHeight* 768/referenceHeight };
-      return true;
-   }
-
-   bool OnPostCreate()
-   {
-      int editHeight;
-
       if(referenceHeight)
       {
          // h = height * 768 / referenceHeight;
@@ -131,11 +123,16 @@ class Console : Window
       else
          referenceHeight = 768;
 
-      editHeight = editHeight * 768 / referenceHeight;
+      editHeight = this.editHeight * 768 / referenceHeight;
 
+      log.anchor = { left = 0, top = 0, right = 0, bottom = editHeight + separatorHeight* 768/referenceHeight };
+      return true;
+   }
+
+   bool OnPostCreate()
+   {
       log.background = 0;
-
-      log.foreground = (logTextColor & 0xFFFFFF) | (currentAlpha << 24);
+       log.foreground = (logTextColor & 0xFFFFFF) | (currentAlpha << 24);
       if(alpha)
          commandBox.foreground = (editTextColor & 0xFFFFFF) | ((currentAlpha * 255 / alpha) << 24);
       commandBox.background = (editBackColor & 0xFFFFFF) | (currentAlpha << 24);

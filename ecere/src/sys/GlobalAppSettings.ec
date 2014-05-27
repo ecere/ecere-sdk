@@ -365,7 +365,6 @@ public:
 
    bool OpenAndLock(FileSize * fileSize)
    {
-      SettingsIOResult result = fileNotFound;
       if(!f)
       {
          settingsMonitor.StopMonitoring();
@@ -458,7 +457,6 @@ public:
       SettingsIOResult result = error;
       if(!f)
       {
-         char filePath[MAX_LOCATION];
          locked = false;
 
          settingsMonitor.StopMonitoring();
@@ -579,7 +577,7 @@ public:
                      {
                         int c;
                         Container<String> list = value;
-                        byte * tokens[256];
+                        char * tokens[256];
                         int numTokens = TokenizeWith(string,
                            sizeof(tokens) / sizeof(byte *), tokens, " ,", false);
                         list.Free();
@@ -657,7 +655,7 @@ public:
             case integer:
             {
                char integer[64];
-               sprintf(integer, "%d", value);
+               sprintf(integer, "%d", (int)(intptr)value);
                strcat(outputLine, integer);
                break;
             }

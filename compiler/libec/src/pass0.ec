@@ -44,7 +44,7 @@ public void MangleClassName(char * className)
       }
       else if(ch == ',')
       {
-         output[d++] = '__';
+         output[d++] = '_';
       }
       else
          output[d++] = ch;
@@ -114,7 +114,7 @@ public void FullClassNameCat(char * output, char * className, bool includeTempla
       }
       else if(ch == ',')
       {
-         output[len++] = '__';
+         output[len++] = '_';
       }
       else
          output[len++] = ch;

@@ -63,7 +63,7 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
    void Free()
    {
       LT item;
-      while(item = first)
+      while((item = first))
       {
          D data = GetData(item);
          delete data;

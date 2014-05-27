@@ -1444,7 +1444,7 @@ void Compiler_Error(char * format, ...)
          */
 #ifdef _DEBUG
          if(!yylloc.start.line)
-            printf("");
+            printf("no line");
 #endif
 
          //printf("(%d, %d) : error: ", yylloc.start.line, yylloc.start.charPos);

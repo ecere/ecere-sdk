@@ -142,6 +142,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -171,6 +173,16 @@ unsigned int isWatchable;
 } __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -445,7 +457,7 @@ if(this->right)
 __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Free(this->right, FreeKey);
 if(FreeKey)
 FreeKey((void *)this->key);
-((this ? (__ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(this) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(this)) : 0), this = 0);
+((this ? (__ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)this) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(this)) : 0), this = 0);
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Add(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, struct __ecereNameSpace__ecere__sys__BTNode * node)
@@ -941,7 +953,7 @@ char nodeString[10] = "";
 int len;
 
 if(this)
-sprintf(nodeString, "%d", this->key);
+sprintf(nodeString, "%d", (int)this->key);
 len = strlen(nodeString);
 for(c = 0; c < (4 - len) / 2; c++)
 strcat(output, " ");
@@ -975,7 +987,7 @@ if(this->left)
 {
 if(this->left->parent != this)
 {
-printf("Parent not set properly at node %d\n", this->left->key);
+printf("Parent not set properly at node %d\n", (int)this->left->key);
 valid = 0x0;
 }
 valid *= __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->left, tree);
@@ -984,35 +996,35 @@ if(this->right)
 {
 if(this->right->parent != this)
 {
-printf("Parent not set properly at node %d\n", this->right->key);
+printf("Parent not set properly at node %d\n", (int)this->right->key);
 valid = 0x0;
 }
 valid *= __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->right, tree);
 }
 if(this->depth != __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(this))
 {
-printf("Depth value at node %d (%d) doesn't match depth property (%d)\n", this->key, this->depth, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(this));
+printf("Depth value at node %d (%d) doesn't match depth property (%d)\n", (int)this->key, this->depth, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(this));
 valid = (unsigned int)0;
 }
 if(diffHeight < -1 || diffHeight > 1)
 {
 valid = (unsigned int)0;
-printf("Height difference is %d at node %d\n", diffHeight, this->key);
+printf("Height difference is %d at node %d\n", diffHeight, (int)this->key);
 }
 if(diffHeight != __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor(this))
 {
 valid = (unsigned int)0;
-printf("Height difference %d doesnt match balance-factor of %d at node \n", diffHeight, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor(this), this->key);
+printf("Height difference %d doesnt match balance-factor of %d at node %d\n", diffHeight, __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor(this), (int)this->key);
 }
 if(this->left && tree->CompareKey(tree, this->left->key, this->key) > 0)
 {
 valid = 0x0;
-printf("Node %d is *smaller* than left subtree %d\n", this->key, this->left->key);
+printf("Node %d is *smaller* than left subtree %d\n", (int)this->key, (int)this->left->key);
 }
 if(this->right && tree->CompareKey(tree, this->right->key, this->key) < 0)
 {
 valid = 0x0;
-printf("Node %d is *greater* than right subtree %d\n", this->key, this->right->key);
+printf("Node %d is *greater* than right subtree %d\n", (int)this->key, (int)this->right->key);
 }
 return valid;
 }

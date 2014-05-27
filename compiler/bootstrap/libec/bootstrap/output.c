@@ -845,7 +845,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1406,8 +1418,6 @@ extern char *  GetIncludeFileFromID(int id);
 
 static void OutputInstance(struct Instantiation * inst, struct __ecereNameSpace__ecere__com__Instance * f);
 
-extern int printf(char * , ...);
-
 static void OutputInitializer(struct Initializer * initializer, struct __ecereNameSpace__ecere__com__Instance * f);
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
@@ -1586,8 +1596,6 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, exp->constant);
-else
-printf("");
 break;
 case 3:
 if(exp->string)
@@ -3879,7 +3887,7 @@ unsigned int size;
 typeName->qualifiers = specs;
 typeName->declarator = decl;
 OutputTypeName(typeName, f, 0x1);
-((typeName ? (__ecereClass_TypeName->Destructor ? __ecereClass_TypeName->Destructor(typeName) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(typeName)) : 0), typeName = 0);
+((typeName ? (__ecereClass_TypeName->Destructor ? __ecereClass_TypeName->Destructor((void *)typeName) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(typeName)) : 0), typeName = 0);
 size = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 

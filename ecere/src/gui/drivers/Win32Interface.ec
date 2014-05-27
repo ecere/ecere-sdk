@@ -109,7 +109,7 @@ static byte key2VK[256] =
    VK_NUMPAD2,VK_NUMPAD3,VK_NUMPAD0,VK_DELETE,0,0,0,VK_F11,VK_F12,0,0,0,0,0,0,0,
    0,VK_RCONTROL,0,0,VK_RMENU,0,VK_HOME,VK_UP,VK_PRIOR,VK_LEFT,VK_RIGHT,VK_END,VK_DOWN,VK_NEXT,VK_INSERT,VK_DELETE
 };
-static char className[] = "Ecere Application";
+static uint16 className[] = L"Ecere Application";
 static HINSTANCE hInstance;
 
 static DEVMODE devMode;
@@ -235,10 +235,8 @@ class Win32Interface : Interface
       static double lastTime = 0, time;
       int x = 0, y = 0;
       int w, h;
-      static Size lastScreen;
-      static Point lastScreenPos;
-      static WINDOWPLACEMENT lastPlacement;
-      static int tryAgain;
+      //static Size lastScreen;
+      //static Point lastScreenPos;
       static double lastAutoHideCheck = 0;
       int newTaskBarState = taskBarState;
       HMONITOR primaryMonitor;
@@ -349,8 +347,8 @@ class Win32Interface : Interface
             guiApp.SetDesktopPosition(x, y, w, h, updateChildren);
          }
 
-         lastScreen = guiApp.virtualScreen;
-         lastScreenPos = guiApp.virtualScreenPos;
+         //lastScreen = guiApp.virtualScreen;
+         //lastScreenPos = guiApp.virtualScreenPos;
       }
    }
 
@@ -550,7 +548,7 @@ class Win32Interface : Interface
                   }
                   else
                   {
-                     Window window;
+                     //Window window;
 
                      if(wParam && !guiApp.desktop.active /*&& lParam != GetCurrentThreadID()*/)
                      {
@@ -924,7 +922,7 @@ class Win32Interface : Interface
             {
                RECT * rect = (RECT *)lParam;
                MinMaxValue ew, eh;
-               int x, y, w, h;
+               int w, h;
 
                window.GetDecorationsSize(&ew, &eh);
 
@@ -1104,8 +1102,6 @@ class Win32Interface : Interface
 
    void ::AcquireDirectInput(HWND windowHandle, bool state)
    {
-      POINT oldPosition;
-
       if((state && !acquiredWindow) || (!state && acquiredWindow == windowHandle))
       {
          int j;
@@ -1675,7 +1671,7 @@ class Win32Interface : Interface
       bool result = false;
       if(clipBoard.text)
       {
-         uint wordCount;
+         int wordCount;
          uint16 * u16text = UTF8toUTF16(clipBoard.text, &wordCount);
          wordCount++;
          clipBoard.handle = GlobalAlloc(GHND | GMEM_DDESHARE, wordCount * 2);

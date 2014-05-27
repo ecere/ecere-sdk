@@ -137,6 +137,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -166,6 +168,16 @@ unsigned int isWatchable;
 } __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -298,7 +310,7 @@ int __ecereVMethodID_class_OnEdit;
 
 int __ecereVMethodID_class_OnGetDataFromString;
 
-static void __ecereNameSpace__ecere__com__UnusedFunction()
+__attribute__((unused)) static void __ecereNameSpace__ecere__com__UnusedFunction()
 {
 int __internalValue001;
 int __internalValue000;
@@ -412,8 +424,6 @@ extern int __ecereVMethodID_class_OnSerialize;
 extern int __ecereVMethodID_class_OnUnserialize;
 
 extern int __ecereVMethodID_class_OnCopy;
-
-void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IOChannel;
 
@@ -997,9 +1007,9 @@ if(!prop->conversion && prop->Get && prop->Set && (!prop->IsSet || prop->IsSet(d
 {
 if(memberType->type != 1 && (memberType->type != 0 || !strcmp(memberType->dataTypeString, "char *")) && memberType->type != 2 && data)
 {
-struct __ecereNameSpace__ecere__com__DataValue value = 
+struct __ecereNameSpace__ecere__com__DataValue value =
 {
-(char)0
+.c = 0
 };
 
 if(!strcmp(prop->dataTypeString, "float"))
@@ -1079,9 +1089,9 @@ strcpy(memberString, result);
 }
 else
 {
-struct __ecereNameSpace__ecere__com__DataValue value = 
+struct __ecereNameSpace__ecere__com__DataValue value =
 {
-(char)0
+.c = 0
 };
 
 if(_class->type == 2)
@@ -1438,9 +1448,9 @@ result = 0x0;
 }
 else
 {
-struct __ecereNameSpace__ecere__com__DataValue value = 
+struct __ecereNameSpace__ecere__com__DataValue value =
 {
-(char)0
+.c = 0
 };
 
 if(memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString] == _class->_vTbl[__ecereVMethodID_class_OnGetDataFromString])
@@ -1880,17 +1890,17 @@ if(needClass && *needClass)
 char ch = *data;
 
 if(ch == '\t')
-strcpy(string, "'\t'");
+strcpy(string, "'\\t'");
 else if(ch == '\n')
-strcpy(string, "'\n'");
+strcpy(string, "'\\n'");
 else if(ch == '\r')
-strcpy(string, "'\r'");
+strcpy(string, "'\\r'");
 else if(ch == '\a')
-strcpy(string, "'\a'");
+strcpy(string, "'\\a'");
 else if(ch == '\\')
-strcpy(string, "'\\'");
+strcpy(string, "'\\\\'");
 else if(ch < (char)32 || ch >= (char)127)
-sprintf(string, "'\o'", ch);
+sprintf(string, "'\\x%x'", ch);
 else
 sprintf(string, "'%c'", ch);
 }
@@ -2733,7 +2743,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-int len = this ? strlen(this->string) : 0;
+unsigned int len = this ? strlen(this->string) : 0;
 
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
@@ -2747,7 +2757,6 @@ void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnUnserialize(stru
 if(this)
 {
 int c;
-unsigned int size;
 
 for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, unsigned char *  data, unsigned int numBytes))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;

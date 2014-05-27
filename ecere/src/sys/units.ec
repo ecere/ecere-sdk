@@ -107,8 +107,6 @@ public struct Box
    }
 };
 
-public class Angle : double;
-
 public class Radians : Angle
 {
    public property Angle { };

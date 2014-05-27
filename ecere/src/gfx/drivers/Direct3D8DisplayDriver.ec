@@ -62,7 +62,7 @@ static class D3D8System : struct
    IDirect3D8 * (WINAPI * direct3DCreate8)(UINT);
    uint usage;
    D3DPRESENT_PARAMETERS d3dpp;
-   uint shaders[NUM_VERTEX_SHADERS], shader2D;
+   DWORD shaders[NUM_VERTEX_SHADERS], shader2D;
    bool ready;
    HWND hwnd;
    int format;
@@ -130,8 +130,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    bool ::LockDisplay(Display display, Surface surface, Bitmap lfbBitmap, Surface * lfbSurface)
    {
       bool result = false;
-      DisplaySystem displaySystem = display.displaySystem;
-      D3D8System d3dSystem = displaySystem.driverData;
       D3D8Display d3dDisplay = display.driverData;
 
       //if(!IDirect3DDevice8_GetBackBuffer(d3dSystem.d3dDevice, 0, 0, D3DBACKBUFFER_TYPE_MONO, &d3dDisplay.backBuffer))
@@ -139,6 +137,7 @@ class Direct3D8DisplayDriver : DisplayDriver
          D3DLOCKED_RECT lockedRect;
          if(!IDirect3DSurface8_LockRect(d3dDisplay.backBuffer, &lockedRect, null, 0))
          {
+            result = true;
             switch(d3dDisplay.d3dpp.BackBufferFormat)
             {
                case D3DFMT_A8R8G8B8:
@@ -156,19 +155,23 @@ class Direct3D8DisplayDriver : DisplayDriver
                case D3DFMT_X4R4G4B4:
                   lfbBitmap.pixelFormat = pixelFormat444;
                   break;
+               default:
+                  result = false;
             }
-            lfbBitmap.driver = null;
-            lfbBitmap.displaySystem = null;
-            lfbBitmap.picture = (byte *)lockedRect.pBits;
-            lfbBitmap.transparent = false;
-            lfbBitmap.stride = lockedRect.Pitch >> GetColorDepthShifts(lfbBitmap.pixelFormat);
-            lfbBitmap.width = display.width;
-            lfbBitmap.height = display.height;
+            if(result)
+            {
+               lfbBitmap.driver = null;
+               lfbBitmap.displaySystem = null;
+               lfbBitmap.picture = (byte *)lockedRect.pBits;
+               lfbBitmap.transparent = false;
+               lfbBitmap.stride = lockedRect.Pitch >> GetColorDepthShifts(lfbBitmap.pixelFormat);
+               lfbBitmap.width = display.width;
+               lfbBitmap.height = display.height;
 
-            *lfbSurface = lfbBitmap.GetSurface(surface ? surface.offset.x : 0, surface ? surface.offset.y : 0, surface ? &surface.box : null);
-            result = true;
+               *lfbSurface = lfbBitmap.GetSurface(surface ? surface.offset.x : 0, surface ? surface.offset.y : 0, surface ? &surface.box : null);
+            }
          }
-         else
+         if(!result)
             IDirect3DSurface8_Release(d3dDisplay.backBuffer);
       }
       return result;
@@ -176,8 +179,6 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void ::UnlockDisplay(Display display, Surface surface)
    {
-      DisplaySystem displaySystem = display.displaySystem;
-      D3D8System d3dSystem = displaySystem.driverData;
       D3D8Display d3dDisplay = display.driverData;
       if(d3dDisplay.backBuffer)
       {
@@ -248,7 +249,7 @@ class Direct3D8DisplayDriver : DisplayDriver
             d3dSystem.direct3DCreate8 = (void *)GetProcAddress(d3dSystem.d3dDll, "Direct3DCreate8");
             if(d3dSystem.direct3DCreate8)
             {
-               if(d3dSystem.direct3D = d3dSystem.direct3DCreate8(D3D_SDK_VERSION))
+               if((d3dSystem.direct3D = d3dSystem.direct3DCreate8(D3D_SDK_VERSION)))
                {
                   D3DDISPLAYMODE d3ddm;
                   if(!IDirect3D8_GetAdapterDisplayMode(d3dSystem.direct3D, D3DADAPTER_DEFAULT, &d3ddm))
@@ -409,7 +410,7 @@ class Direct3D8DisplayDriver : DisplayDriver
       bool result = false;
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Display d3dDisplay = display.driverData = D3D8Display { };
+      display.driverData = D3D8Display { };
 
       d3dSystem.ready = false;
 
@@ -706,21 +707,26 @@ class Direct3D8DisplayDriver : DisplayDriver
                      case D3DFMT_R5G6B5:   mipMap.pixelFormat = pixelFormat565; break;
                      case D3DFMT_A8R8G8B8: mipMap.pixelFormat = pixelFormat888; break;
                      case D3DFMT_A1R5G5B5: mipMap.pixelFormat = pixelFormat555; break;
+                     default:
+                        result = false;
                   }
-                  mipMap.stride = lockedRect.Pitch >> GetColorDepthShifts(mipMap.pixelFormat);
-
-                  mipSurface = mipMap.GetSurface(0,0,null);
-                  if(mipSurface)
+                  if(result)
                   {
-                     if(mipMap.width != bitmap.width || mipMap.height != bitmap.height)
-                        mipSurface.Filter(bitmap, 0,0, 0,0, mipMap.width, mipMap.height, bitmap.width, bitmap.height);
-                     else
-                     {
-                        //FillBytesBy4(mipMap.picture, bitmap.picture, mipMap.width * mipMap.height);
-                        mipSurface.Blit(bitmap, 0,0, 0,0, bitmap.width, bitmap.height);
-                     }
+                     mipMap.stride = lockedRect.Pitch >> GetColorDepthShifts(mipMap.pixelFormat);
 
-                     delete mipSurface;
+                     mipSurface = mipMap.GetSurface(0,0,null);
+                     if(mipSurface)
+                     {
+                        if(mipMap.width != bitmap.width || mipMap.height != bitmap.height)
+                           mipSurface.Filter(bitmap, 0,0, 0,0, mipMap.width, mipMap.height, bitmap.width, bitmap.height);
+                        else
+                        {
+                           //FillBytesBy4(mipMap.picture, bitmap.picture, mipMap.width * mipMap.height);
+                           mipSurface.Blit(bitmap, 0,0, 0,0, bitmap.width, bitmap.height);
+                        }
+
+                        delete mipSurface;
+                     }
                   }
 
                   mipMap.picture = null;
@@ -781,7 +787,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    void Clip(Display display, Surface surface, Box clip)
    {
       Box box;
-      D3D8Display d3dDisplay = display.driverData;
 
       if(clip != null)
       {
@@ -813,8 +818,6 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void PutPixel(Display display, Surface surface,int x,int y)
    {
-      D3D8Display d3dDisplay = display.driverData;
-      D3D8Surface d3dSurface = surface.driverData;
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
       D3D8Vertex vertex = { (float)x, (float)y, 1.0f, surface.foreground, 0, 0 };
@@ -825,8 +828,6 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void DrawLine(Display display, Surface surface, int x1, int y1, int x2, int y2)
    {
-      D3D8Surface d3dSurface = surface.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
       D3D8Vertex vertex[2] =
@@ -846,8 +847,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Surface d3dSurface = surface.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       D3D8Vertex vertex[5] =
       {
          { (float)x1, (float)y1, 1.0f, surface.foreground, 0, 0 },
@@ -867,7 +866,6 @@ class Direct3D8DisplayDriver : DisplayDriver
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
       D3D8Surface d3dSurface = surface.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       D3D8Vertex vertex[4] =
       {
          { (float)x1, (float)y1, 1.0f, d3dSurface.background, 0, 0 },
@@ -886,7 +884,6 @@ class Direct3D8DisplayDriver : DisplayDriver
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
       D3D8Surface d3dSurface = surface.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       IDirect3DDevice8_Clear(d3dSystem.d3dDevice, 0, null,
          ((type == depthBuffer) ? 0 : D3DCLEAR_TARGET) |
          ((type == colorBuffer) ? 0 : D3DCLEAR_ZBUFFER),
@@ -903,7 +900,6 @@ class Direct3D8DisplayDriver : DisplayDriver
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
       D3D8Surface d3dSurface = surface.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       Color foreground = d3dSurface.writingText ? surface.foreground : white;
       D3D8Vertex vertex[4] =
       {
@@ -927,8 +923,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Surface d3dSurface = surface.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       D3D8Vertex vertex[4] =
       {
          { (float)dx, (float)dy, 1.0f, surface.foreground,
@@ -954,8 +948,6 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void StretchDI(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
-      DisplaySystem displaySystem = display.displaySystem;
-      D3D8System d3dSystem = displaySystem.driverData;
       Surface lfbSurface;
       Bitmap lfbBitmap { };
       if(LockDisplay(display, surface, lfbBitmap, &lfbSurface))
@@ -969,8 +961,6 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void BlitDI(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h)
    {
-      DisplaySystem displaySystem = display.displaySystem;
-      D3D8System d3dSystem = displaySystem.driverData;
       Surface lfbSurface;
       Bitmap lfbBitmap { };
       if(LockDisplay(display, surface, lfbBitmap, &lfbSurface))
@@ -1017,7 +1007,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       D3D8Surface d3dSurface = surface.driverData;
 
       if(surface.textOpacity)
@@ -1065,8 +1054,8 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint stipple)
    {
-      D3D8Display d3dDisplay = display.driverData;
       /*
+      D3D8Display d3dDisplay = display.driverData;
       IDirect3DDevice8_SetRenderState(d3dSystem.d3dDevice, D3DRS_LINEPATTERN,
          stipple?MDWORD(1,stipple):0);
       */
@@ -1076,7 +1065,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       switch(state)
       {
          case antiAlias:
@@ -1255,7 +1243,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       IDirect3DDevice8 * d3dDevice = d3dSystem.d3dDevice;
       D3D8Mesh d3dMesh = mesh.data;
 
@@ -1317,7 +1304,6 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void FreeMesh(DisplaySystem displaySystem, Mesh mesh)
    {
-      D3D8System d3dSystem = displaySystem.driverData;
       D3D8Mesh d3dMesh = mesh.data;
       if(d3dMesh)
       {
@@ -1404,7 +1390,6 @@ class Direct3D8DisplayDriver : DisplayDriver
 
    void UnlockMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags)
    {
-      D3D8System d3dSystem = displaySystem.driverData;
       D3D8Mesh d3dMesh = mesh.data;
       if(!flags) flags = mesh.flags;
 
@@ -1488,7 +1473,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Display d3dDisplay = display.driverData;
       IDirect3DDevice8 * d3dDevice = d3dSystem.d3dDevice;
 
       if(mesh && mesh.data)
@@ -1496,23 +1480,23 @@ class Direct3D8DisplayDriver : DisplayDriver
          int shader = 0;
          D3D8Mesh d3dMesh = mesh.data;
 
-         IDirect3DDevice8_SetStreamSource(d3dSystem.d3dDevice, 0, d3dMesh.vertices, sizeof(Vector3Df));
+         IDirect3DDevice8_SetStreamSource(d3dDevice, 0, d3dMesh.vertices, sizeof(Vector3Df));
          if(d3dMesh.normals)
          {
-            IDirect3DDevice8_SetStreamSource(d3dSystem.d3dDevice, 1, d3dMesh.normals, sizeof(Vector3Df));
+            IDirect3DDevice8_SetStreamSource(d3dDevice, 1, d3dMesh.normals, sizeof(Vector3Df));
             shader |= 1;
          }
          else
-            IDirect3DDevice8_SetStreamSource(d3dSystem.d3dDevice, 1, null, sizeof(Vector3Df));
+            IDirect3DDevice8_SetStreamSource(d3dDevice, 1, null, sizeof(Vector3Df));
          if(d3dMesh.texCoords)
          {
-            IDirect3DDevice8_SetStreamSource(d3dSystem.d3dDevice, 2, d3dMesh.texCoords, sizeof(Pointf));
+            IDirect3DDevice8_SetStreamSource(d3dDevice, 2, d3dMesh.texCoords, sizeof(Pointf));
             shader |= 2;
          }
          else
-            IDirect3DDevice8_SetStreamSource(d3dSystem.d3dDevice, 2, null, sizeof(Pointf));
+            IDirect3DDevice8_SetStreamSource(d3dDevice, 2, null, sizeof(Pointf));
 
-         IDirect3DDevice8_SetVertexShader(d3dSystem.d3dDevice, d3dSystem.shaders[shader]);
+         IDirect3DDevice8_SetVertexShader(d3dDevice, d3dSystem.shaders[shader]);
       }
    }
 
@@ -1632,7 +1616,6 @@ class Direct3D8DisplayDriver : DisplayDriver
       D3D8System d3dSystem = displaySystem.driverData;
       Camera camera = useCamera ? display.display3D.camera : null;
       D3D8Display d3dDisplay = display.driverData;
-      IDirect3DDevice8 * d3dDevice = d3dSystem.d3dDevice;
 
       Matrix matrix = transMatrix, temp;
 
@@ -1675,7 +1658,6 @@ class Direct3D8DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3D8System d3dSystem = displaySystem.driverData;
-      D3D8Display d3dDisplay = display.driverData;
 
       if(d3dSystem.inScene)
       {

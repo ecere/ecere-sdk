@@ -4,7 +4,7 @@ import "BuiltInContainer"
 
 default:
 
-static void UnusedFunction()
+static __attribute__((unused)) void UnusedFunction()
 {
    int a;
    a.OnCompare(null);
@@ -203,7 +203,7 @@ public:
    virtual void Free()
    {
       IteratorPointer i;
-      while(i = GetFirst())
+      while((i = GetFirst()))
          Delete(i);
    }
 

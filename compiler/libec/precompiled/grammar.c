@@ -773,7 +773,19 @@ unsigned int byValueSystemClass;
 
 extern __declspec(dllexport) long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern __declspec(dllexport) void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1641,7 +1653,7 @@ struct Context * ctx = curContext;
 
 PopContext(ctx);
 FreeContext(ctx);
-((ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor(ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(ctx)) : 0), ctx = 0);
+((ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(ctx)) : 0), ctx = 0);
 }
 ;
 break;
@@ -1651,7 +1663,7 @@ struct Context * ctx = curContext;
 
 PopContext(ctx);
 FreeContext(ctx);
-((ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor(ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(ctx)) : 0), ctx = 0);
+((ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(ctx)) : 0), ctx = 0);
 }
 ;
 break;
@@ -2468,7 +2480,7 @@ case 372:
 {
 PopContext((*yyvaluep).context);
 FreeContext((*yyvaluep).context);
-(((*yyvaluep).context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((*yyvaluep).context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete((*yyvaluep).context)) : 0), (*yyvaluep).context = 0);
+(((*yyvaluep).context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)(*yyvaluep).context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete((*yyvaluep).context)) : 0), (*yyvaluep).context = 0);
 }
 ;
 break;

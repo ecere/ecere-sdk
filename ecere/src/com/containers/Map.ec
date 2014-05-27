@@ -142,7 +142,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    void Free()
    {
       MapNode<MT, V> node;
-      while(node = root)
+      while((node = root))
       {
          MapNode<MT, V> n = node;
 
@@ -254,7 +254,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          MapNode<MT, V> srcNode = (MapNode<MT, V>)i;
          MT key = GetKey((MapNode<KT, V>)srcNode);
          D data = GetData(srcNode);
-         Class kEclass = dIsNormalClass ? ((Instance)key)._class : Kclass;
+         Class kEclass = kIsNormalClass ? ((Instance)key)._class : Kclass;
          Class dEclass = dIsNormalClass ? ((Instance)data)._class : Dclass;
 
          ((void (*)(void *, void *, void *))(void *)kEclass._vTbl[__ecereVMethodID_class_OnSerialize])(kEclass,
@@ -268,7 +268,6 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    {
       uint c, count;
       thisclass container = eInstance_New(_class.fullName);
-      IteratorPointer i;
       Class Kclass = class(MT);
       Class Dclass = class(V);
 

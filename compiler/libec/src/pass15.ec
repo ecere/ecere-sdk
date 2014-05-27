@@ -406,7 +406,6 @@ void ComputeClassMembers(Class _class, bool isMember)
    if(member || ((_class.type == bitClass || _class.type == normalClass || _class.type == structClass || _class.type == noHeadClass) &&
                  (_class.type == bitClass || (!_class.structSize || _class.structSize == _class.offset)) && _class.computeSize))
    {
-      int c;
       int unionMemberOffset = 0;
       int bitFields = 0;
 
@@ -887,7 +886,8 @@ public int ComputeTypeSize(Type type)
    DataMember topMember = isMember ? (DataMember) _class : null;
    uint totalSize = 0;
    uint maxSize = 0;
-   int alignment, size;
+   int alignment;
+   uint size;
    DataMember member;
    Context context = isMember ? null : SetupTemplatesContext(_class);
    if(addedPadding)
@@ -1013,7 +1013,6 @@ public int ComputeTypeSize(Type type)
 static int DeclareMembers(Class _class, bool isMember)
 {
    DataMember topMember = isMember ? (DataMember) _class : null;
-   uint totalSize = 0;
    DataMember member;
    Context context = isMember ? null : SetupTemplatesContext(_class);
 
@@ -2072,8 +2071,7 @@ void ProcessInstantiationType(Instantiation inst)
 
                   if(inCompiler)
                   {
-
-                     Type type = declarator.symbol.type;
+                     //Type type = declarator.symbol.type;
                      External oldExternal = curExternal;
 
                      // *** Commented this out... Any negative impact? Yes: makes double prototypes declarations... Why was it commented out?
@@ -4511,7 +4509,7 @@ public Operand GetOperand(Expression exp)
    return op;
 }
 
-static void UnusedFunction()
+static __attribute__((unused)) void UnusedFunction()
 {
    int a;
    a.OnGetString(0,0,0);
@@ -5118,13 +5116,13 @@ void ComputeInstantiation(Expression exp)
                               switch(type.kind)
                               {
                                  case _BoolType:
-                                 case charType:       { byte v; type.isSigned ? GetChar(value, &v) : GetUChar(value, &v); part = (uint64)v; break; }
-                                 case shortType:      { uint16 v; type.isSigned ? GetShort(value, &v) : GetUShort(value, &v); part = (uint64)v; break; }
+                                 case charType:       { byte v; type.isSigned ? GetChar(value, (char *)&v) : GetUChar(value, &v); part = (uint64)v; break; }
+                                 case shortType:      { uint16 v; type.isSigned ? GetShort(value, (uint16 *)&v) : GetUShort(value, &v); part = (uint64)v; break; }
                                  case intType:
-                                 case longType:       { uint v; type.isSigned ? GetInt(value, &v) : GetUInt(value, &v); part = (uint64)v; break; }
-                                 case int64Type:      { uint64 v; type.isSigned ? GetInt64(value, &v) : GetUInt64(value, &v); part = (uint64)v; break; }
-                                 case intPtrType:     { intptr v; type.isSigned ? GetIntPtr(value, &v) : GetUIntPtr(value, &v); part = (uint64)v; break; }
-                                 case intSizeType:    { intsize v; type.isSigned ? GetIntSize(value, &v) : GetUIntSize(value, &v); part = (uint64)v; break; }
+                                 case longType:       { uint v; type.isSigned ? GetInt(value, (uint *)&v) : GetUInt(value, &v); part = (uint64)v; break; }
+                                 case int64Type:      { uint64 v; type.isSigned ? GetInt64(value, (uint64 *)&v) : GetUInt64(value, &v); part = (uint64)v; break; }
+                                 case intPtrType:     { uintptr v; type.isSigned ? GetIntPtr(value, (uintptr *)&v) : GetUIntPtr(value, &v); part = (uint64)v; break; }
+                                 case intSizeType:    { uintsize v; type.isSigned ? GetIntSize(value, (uintsize *)&v) : GetUIntSize(value, &v); part = (uint64)v; break; }
                               }
                               bits |= part << bitMember.pos;
                            }
@@ -6431,7 +6429,6 @@ void CheckTemplateTypes(Expression exp)
    if(exp.destType && exp.destType.passAsTemplate && exp.expType && exp.expType.kind != templateType && !exp.expType.passAsTemplate)
    {
       Expression newExp { };
-      Statement compound;
       Context context;
       *newExp = *exp;
       if(exp.destType) exp.destType.refCount++;
@@ -7321,7 +7318,7 @@ void ApplyAnyObjectLogic(Expression e)
                }
                else if(!e.byReference || (_class && _class.type == noHeadClass))     // TESTING THIS HERE...
                {
-                  Expression checkedExp, newExp;
+                  Expression checkedExp; //, newExp;
 
                   {
                      // TODO: Move code from debugTools.ec for hasAddress flag, this is just temporary
@@ -11645,7 +11642,7 @@ static void ProcessStatement(Statement stmt)
             Class _class = source ? source._class.registered : null;
             Symbol symbol;
             Expression expIt = null;
-            bool isMap = false, isArray = false, isLinkList = false, isList = false, isCustomAVLTree = false, isAVLTree = false;
+            bool isMap = false, isArray = false, isLinkList = false, isList = false, isCustomAVLTree = false; //, isAVLTree = false;
             Class arrayClass = eSystem_FindClass(privateModule, "Array");
             Class linkListClass = eSystem_FindClass(privateModule, "LinkList");
             Class customAVLTreeClass = eSystem_FindClass(privateModule, "CustomAVLTree");
@@ -11658,11 +11655,11 @@ static void ProcessStatement(Statement stmt)
             if(source && eClass_IsDerived(source._class.registered, customAVLTreeClass))
             {
                Class mapClass = eSystem_FindClass(privateModule, "Map");
-               Class avlTreeClass = eSystem_FindClass(privateModule, "AVLTree");
+               //Class avlTreeClass = eSystem_FindClass(privateModule, "AVLTree");
                isCustomAVLTree = true;
-               if(eClass_IsDerived(source._class.registered, avlTreeClass))
+               /*if(eClass_IsDerived(source._class.registered, avlTreeClass))
                   isAVLTree = true;
-               else if(eClass_IsDerived(source._class.registered, mapClass))
+               else */if(eClass_IsDerived(source._class.registered, mapClass))
                   isMap = true;
             }
             else if(source && eClass_IsDerived(source._class.registered, arrayClass)) isArray = true;
@@ -12894,7 +12891,13 @@ void ComputeDataTypes()
    DeclareFunctionUtil("eSystem_Renew0");
    DeclareFunctionUtil("eSystem_Delete");
    DeclareFunctionUtil("eClass_GetProperty");
+   DeclareFunctionUtil("eClass_SetProperty");
    DeclareFunctionUtil("eInstance_FireSelfWatchers");
+   DeclareFunctionUtil("eInstance_SetMethod");
+   DeclareFunctionUtil("eInstance_IncRef");
+   DeclareFunctionUtil("eInstance_StopWatching");
+   DeclareFunctionUtil("eInstance_Watch");
+   DeclareFunctionUtil("eInstance_FireWatchers");
 
    DeclareStruct("ecere::com::Class", false);
    DeclareStruct("ecere::com::Instance", false);

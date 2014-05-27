@@ -172,13 +172,13 @@ bool Network_Initialize()
 
       network.services.Clear();
 
-      network.services.offset = (uint)&((Service)0).prev;
+      network.services.offset = (uint)(uintptr)&((Service)0).prev;
       network.sockets.Clear();
 
-      network.sockets.offset = (uint)&((Socket)0).prev;
+      network.sockets.offset = (uint)(uintptr)&((Socket)0).prev;
 
       network.connectSockets.Clear();
-      network.connectSockets.offset = (uint)&((Socket)0).prev;
+      network.connectSockets.offset = (uint)(uintptr)&((Socket)0).prev;
 
       FD_ZERO(&network.readSet);
       FD_ZERO(&network.writeSet);
@@ -297,7 +297,7 @@ public bool GetNameFromAddress(char * inetAddress, char * hostName)
       return false;
 
    in.s_addr = inet_addr(inetAddress);
-   host = gethostbyaddr((byte *)&in, 4, PF_INET);
+   host = gethostbyaddr((char *)&in, 4, PF_INET);
    if(host)
    {
       strcpy(hostName, host->h_name);

@@ -4,7 +4,7 @@ import "System"
 import "Array"
 
 default:
-static void UnusedFunction()
+__attribute__((unused)) static void UnusedFunction()
 {
    int a;
    a.OnGetDataFromString(null);
@@ -178,7 +178,6 @@ public:
       *array = null;
       if(ch == '[')
       {
-         int count = 0;
          *array = eInstance_New(type);
          result = success;
          while(result)
@@ -344,7 +343,6 @@ public:
             ch = 0;
             if(GetString(&string))
             {
-               bool found = true;
                DataMember member = null;
                Property prop = null;
                Class type = null;
@@ -570,7 +568,6 @@ bool WriteArray(File f, Class type, Container array, int indent)
 {
    if(array)
    {
-      int c;
       int i;
       bool isFirst = true;
       Iterator it { array };
@@ -580,7 +577,6 @@ bool WriteArray(File f, Class type, Container array, int indent)
 
       while(it.Next())
       {
-         byte * pointer;
          DataValue value { };
          uint64 t = ((uint64(*)(void *, void *))(void *)array.GetData)(array, it.pointer);
          if(!isFirst)

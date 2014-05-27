@@ -238,8 +238,8 @@ STRETCH(B888F, byte, ColorAlpha,-1, PALINIT, OPAQUEPUT(palette[*source] | 0xFF00
 STRETCH(BRGBA, byte, ColorRGBA, 1, PALINIT, OPAQUEPUT((ColorRGBA)(palette[*source]) | 0x000000FF));
 STRETCH(BRGBAF,byte, ColorRGBA,-1, PALINIT, OPAQUEPUT((ColorRGBA)(palette[*source]) | 0x000000FF));
 
-STRETCH(B8T,   byte, byte,  1, PALINIT, TRANSPUT(*source));
-STRETCH(B8TF,  byte, byte, -1, PALINIT, TRANSPUT(*source));
+STRETCH(B8T,   byte, byte,  1, ;, TRANSPUT(*source));
+STRETCH(B8TF,  byte, byte, -1, ;, TRANSPUT(*source));
 STRETCH(B444T, byte, Color444,  1, PALINIT, TRANSPUT((Color444)(palette[*source])));
 STRETCH(B444TF,byte, Color444, -1, PALINIT, TRANSPUT((Color444)(palette[*source])));
 STRETCH(B555T, byte, Color555,  1, PALINIT, TRANSPUT((Color555)(palette[*source])));
@@ -289,7 +289,8 @@ void (* shades_stretch_table[PixelFormat][2]) (STRETCH_ARGS) =
    { STRETCH_BI888,STRETCH_BI888F },
    { null, null },
    { null, null },
-   { STRETCH_BI888,STRETCH_BI888F }
+   { STRETCH_BIRGBA,STRETCH_BIRGBAF }
+   //{ STRETCH_BI888,STRETCH_BI888F }
 };
 
 //////////////////////////////////////////////////////////////////////////////

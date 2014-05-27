@@ -901,7 +901,7 @@ public int TokenizeWith(char * string, int maxTokens, char* tokens[], char * tok
 {
    int count = 0;
    bool quoted = false;
-   byte * start = null;
+   char * start = null;
    bool escaped = false;
    char * output = string;
    bool quotedFromStart = false;

@@ -138,6 +138,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -167,6 +169,16 @@ unsigned int isWatchable;
 } __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -519,7 +531,7 @@ return newNode;
 }
 else
 {
-((newNode ? (__ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor(newNode) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor(newNode) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor(newNode) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newNode)) : 0), newNode = 0);
+((newNode ? (__ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor((void *)newNode) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)newNode) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)newNode) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newNode)) : 0), newNode = 0);
 return (((void *)0));
 }
 }
@@ -540,14 +552,14 @@ struct __ecereNameSpace__ecere__com__Class * Tclass = ((struct __ecereNameSpace_
 }
 else
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(node)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(node, 0));
-((node ? (__ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor(node) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor(node) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor(node) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(node)) : 0), node = 0);
+((node ? (__ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor((void *)node) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)node) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)node) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(node)) : 0), node = 0);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Map_Free(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 struct __ecereNameSpace__ecere__com__MapNode * node;
 
-while(node = ((struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + structSize_Instance)))->root))
+while((node = ((struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + structSize_Instance)))->root)))
 {
 struct __ecereNameSpace__ecere__com__MapNode * n = node;
 
@@ -758,7 +770,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, srcNode);
-struct __ecereNameSpace__ecere__com__Class * kEclass = dIsNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)key))->_class : Kclass;
+struct __ecereNameSpace__ecere__com__Class * kEclass = kIsNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)key))->_class : Kclass;
 struct __ecereNameSpace__ecere__com__Class * dEclass = dIsNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)data))->_class : Dclass;
 
 ((void (*)(void *, void *, void *))(void *)kEclass->_vTbl[__ecereVMethodID_class_OnSerialize])(kEclass, ((Kclass->type == 1000 && !Kclass->byValueSystemClass) || Kclass->type == 2 || Kclass->type == 4 || Kclass->type == 3) ? ((char *)&key + __ENDIAN_PAD((class->templateArgs[5].dataTypeClass->type == 1 || class->templateArgs[5].dataTypeClass->type == 0 || class->templateArgs[5].dataTypeClass->type == 5) ? sizeof(void *) : class->templateArgs[5].dataTypeClass->typeSize)) : (void *)key, channel);
@@ -780,7 +792,6 @@ void __ecereMethod___ecereNameSpace__ecere__com__Map_OnUnserialize(struct __ecer
 {
 unsigned int c, count;
 struct __ecereNameSpace__ecere__com__Instance * container = __ecereNameSpace__ecere__com__eInstance_New(__ecereProp___ecereNameSpace__ecere__com__Class_Set_char__PTR_(class->fullName));
-struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 struct __ecereNameSpace__ecere__com__Class * Kclass = class->templateArgs[5].dataTypeClass;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[6].dataTypeClass;
 

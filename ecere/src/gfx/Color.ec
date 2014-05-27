@@ -38,7 +38,6 @@ public:
 
    Window OnEdit(Window dataBox, Window master, int x, int y, int w, int h, Window control)
    {
-      Size size = { 0 };
       char * string = "";
       ColorDropBox colorDropBox
       {

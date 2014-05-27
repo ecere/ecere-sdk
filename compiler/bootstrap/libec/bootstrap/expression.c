@@ -645,7 +645,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1631,7 +1643,7 @@ case 227:
 {
 PopContext((*yyvaluep).context);
 FreeContext((*yyvaluep).context);
-(((*yyvaluep).context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((*yyvaluep).context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete((*yyvaluep).context)) : 0), (*yyvaluep).context = 0);
+(((*yyvaluep).context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)(*yyvaluep).context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete((*yyvaluep).context)) : 0), (*yyvaluep).context = 0);
 }
 ;
 break;

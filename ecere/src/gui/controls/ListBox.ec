@@ -150,9 +150,6 @@ public:
    {
       if(prev != after)
       {
-         int position = 0;
-         DataField field;
-
          listBox.fields.Move(this, after);
 
          // Fix up positions
@@ -486,7 +483,6 @@ public:
          if(listBox && prev != after)
          {
             DataRow search;
-            int afterIndex = -1;
             int headerSize = ((listBox.style.header) ? listBox.rowHeight : 0);
             int height = listBox.clientSize.h + 1 - headerSize;
             int ixCount = (!collapsed && subRows.count) ? GetLastRow().index - index + 1 : 1;
@@ -702,7 +698,7 @@ public:
                      (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                   ListBoxCell cell = (ListBoxCell)new0 byte[size];
                   row.cells.Add(cell);
-                  FillBytes(cell.data, 0, size - (uint)&((ListBoxCell)0).data);
+                  FillBytes(cell.data, 0, size - (uint)(uintptr)&((ListBoxCell)0).data);
                   cell.isSet = false;
                }
             }
@@ -786,7 +782,7 @@ public:
 private:
    DataRow()
    {
-      subRows.offset = (uint)&((DataRow)0).prev;
+      subRows.offset = (uint)(uintptr)&((DataRow)0).prev;
    }
 
    ~DataRow()
@@ -1185,7 +1181,7 @@ public:
                   (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                ListBoxCell cell = (ListBoxCell)new0 byte[size];
                row.cells.Add(cell);
-               FillBytes(cell.data, 0, size - (uint)&((ListBoxCell)0).data);
+               FillBytes(cell.data, 0, size - (uint)(uintptr)&((ListBoxCell)0).data);
                cell.isSet = false;
 
                if(row.subRows.first)
@@ -1281,8 +1277,6 @@ public:
       if(row)
       {
          DataRow search;
-         DataField field;
-         int c;
 
          row.index = 0;
          rows.Insert(null, row);
@@ -1325,8 +1319,7 @@ public:
                // Find very last row
                {
                   DataRow lastRow;
-                  for(lastRow = rows.last; lastRow && !lastRow.collapsed && lastRow.subRows.last; lastRow)
-                     lastRow = lastRow.subRows.last;
+                  for(lastRow = rows.last; lastRow && !lastRow.collapsed && lastRow.subRows.last; lastRow = lastRow.subRows.last);
                   row.index = lastRow ? (lastRow.index + 1) : 0;
                }
 
@@ -1346,7 +1339,7 @@ public:
                         (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                      ListBoxCell cell = (ListBoxCell) new0 byte[size];
                      row.cells.Add(cell);
-                     FillBytes(cell.data, 0, size - (uint)&((ListBoxCell)0).data);
+                     FillBytes(cell.data, 0, size - (uint)(uintptr)&((ListBoxCell)0).data);
                      cell.isSet = false;
                   }
                }
@@ -1414,7 +1407,7 @@ public:
                      (sizeof(class ListBoxCell) + field.dataType.typeSize - sizeof(void *)) : sizeof(class ListBoxCell);
                   ListBoxCell cell = (ListBoxCell) new0 byte[size];
                   row.cells.Add(cell);
-                  FillBytes(cell.data, 0, size - (uint)&((ListBoxCell)0).data);
+                  FillBytes(cell.data, 0, size - (uint)(uintptr)&((ListBoxCell)0).data);
                   cell.isSet = false;
                }
             }
@@ -1564,7 +1557,6 @@ public:
    {
       DataField field;
       bool checkNextField = true;
-      int len = searchedString ? strlen(searchedString) : 0;
 
       for(field = fields.first; field; field = field.next)
       {
@@ -1847,8 +1839,8 @@ private:
    ListBox()
    {
       DataField defaultField { };
-      rows.offset = (uint)&((DataRow)0).prev;
-      fields.offset = (uint)&((DataField)0).prev;
+      rows.offset = (uint)(uintptr)&((DataRow)0).prev;
+      fields.offset = (uint)(uintptr)&((DataField)0).prev;
       style.fullRowSelect = true;
       style.fillLastField = true;
       style.expandOnAdd = true;
@@ -1922,7 +1914,6 @@ private:
    {
       if(editData && editData.visible)
       {
-         Class dataType = currentField.dataType;
          if(save)
             editData.SaveData();
 
@@ -1957,8 +1948,6 @@ private:
             */
             PopupEditBox(currentField, repositionOnly);
          }
-         else
-            printf("");
 
          /*else
             currentField = null;*/
@@ -2387,7 +2376,7 @@ private:
             Color colors[] = { formColor, azure, mistyRose, linen, floralWhite, lavender, lavenderBlush, lemonChiffon };
             int level = 0;
             DataRow p = row;
-            while(p = p.parent) level++;
+            while((p = p.parent)) level++;
             background = colors[level % (sizeof(colors)/sizeof(colors[0]))];
             surface.SetBackground(background);
             surface.Area(rowStart, y, clientSize.w, (y + rowHeight) - 1);
@@ -3377,7 +3366,6 @@ private:
          int rowIndex = firstRowShown ? firstRowShown.index : -1;
          DataRow previousRow = currentRow;
          DataRow newCurrentRow = null;
-         DataField newCurrentField = null;
          bool moveMultiple = false;
          int numSelected = 0;
          int rowStart = -scroll.x;
@@ -3675,14 +3663,12 @@ private:
                   // activate it
                   if(editData && editData.visible && newCurrentRow)
                   {
-                     DataField field, whichField;
+                     DataField field;
                      int sx = -scroll.x;
                      int indent = 0;
 
                      if(style.collapse && !(style.treeBranch))
                         sx += 15;
-
-                     whichField = currentField;
 
                      {
                         DataRow parent;
@@ -4075,16 +4061,10 @@ private:
                   if(style.multiSelect)
                   {
                      DataRow selRow;
-                     bool foundRow = false;
 
-                     //this.clickedRowIndex = 0;
                      clickedRow = row;
                      for(selRow = rows.first; selRow; selRow = selRow.GetNextRow())
-                     {
-                        if(selRow == row) foundRow = true;
                         selRow.selectedFlag = unselected;
-                        //if(!foundRow) this.clickedRowIndex++;
-                     }
                      row.selectedFlag = selected;
                   }
                   SetCurrentRow(row, true);

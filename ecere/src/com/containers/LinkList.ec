@@ -166,7 +166,7 @@ public:
    void Free()
    {
       LT item;
-      while(item = first)
+      while((item = first))
       {
          Remove(item);
          delete item;

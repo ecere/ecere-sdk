@@ -818,7 +818,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1428,7 +1440,7 @@ extern void ProcessExpressionType(struct Expression * exp);
 
 extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
 
-extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (*  CopyFunction)(void * ));
+extern struct Declarator * QMkPtrDecl(char *  id);
 
 extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer);
 
@@ -1440,11 +1452,13 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com
 
 extern struct Context * globalContext;
 
+extern void DeclareFunctionUtil(char * s);
+
 extern void FreeSymbol(struct Symbol * symbol);
 
-extern struct TypeName * QMkType(char *  spec, struct Declarator * decl);
+extern struct __ecereNameSpace__ecere__sys__OldList *  CopyList(struct __ecereNameSpace__ecere__sys__OldList *  source, void *  (*  CopyFunction)(void * ));
 
-extern struct Declarator * QMkPtrDecl(char *  id);
+extern struct TypeName * QMkType(char *  spec, struct Declarator * decl);
 
 extern struct MemberInit * MkMemberInit(struct __ecereNameSpace__ecere__sys__OldList * ids, struct Initializer * initializer);
 
@@ -2212,7 +2226,7 @@ MangleClassName(className);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
-ListAdd(list, MkExpCondition(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCall(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), CopyList(args, CopyExpression))), MkExpConstant("0")));
+ListAdd(list, MkExpCondition(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCall(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0)))), CopyExpression((*args).first))))), MkExpConstant("0")));
 }
 ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
 ListAdd(exp->list, MkExpBrackets(MkListOne(MkExpCondition(CopyExpression(object), MkListOne(MkExpBrackets(list)), MkExpConstant("0")))));
@@ -2286,6 +2300,7 @@ ProcessExpression((*args).last);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), sizeExp);
 ProcessExpressionType((*args).last);
 ProcessExpression((*args).last);
+DeclareFunctionUtil("memcpy");
 exp->list = MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("memcpy")), args));
 exp->type = 5;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalContext->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
@@ -2358,7 +2373,7 @@ FreeType(exp->destType);
 *exp = *refExp;
 exp->prev = prev;
 exp->next = next;
-((refExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(refExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(refExp)) : 0), refExp = 0);
+((refExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)refExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(refExp)) : 0), refExp = 0);
 }
 if(exp->op.op == '&' && !exp->op.exp1 && exp->op.exp2 && exp->op.exp2->expType && exp->op.exp2->expType->kind == 20 && !exp->op.exp2->expType->passAsTemplate)
 {
@@ -2974,7 +2989,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*((struct Statement *)
 e->byReference = 0x1;
 FreeType(checkedExp->expType);
 FreeType(checkedExp->destType);
-((checkedExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(checkedExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(checkedExp)) : 0), checkedExp = 0);
+((checkedExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)checkedExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(checkedExp)) : 0), checkedExp = 0);
 }
 else if((!e->byReference && (!e->expType || !e->expType->classObjectType)) || (_class && _class->type == 5))
 {

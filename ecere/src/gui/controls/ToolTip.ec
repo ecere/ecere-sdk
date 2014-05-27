@@ -44,7 +44,7 @@ public class ToolTip : Window
 
             tip = CopyString(value);
             next = tip[0];
-            for(c = 0; ch = next; c++)
+            for(c = 0; (ch = next); c++)
             {
                next = tip[c+1];
                if(ch == '\n' || next == '\0')

@@ -665,7 +665,6 @@ public class PopupMenu : Window
    {
       bool result;
       PopupMenu window = this, master;
-      PopupMenu popupMenu;
 
       for(; (master = (PopupMenu)window.master); window = master)
       {
@@ -1761,7 +1760,6 @@ public class PopupMenu : Window
    {
       if(isMenuBar)
       {
-         Time t = GetTime(), u = unpressedTime;
          // Had to boost this to 0.1 for Windows Basic / XP theme / Remote Desktop
          // Aero & Classic were fast enough for 0.01
          if(GetTime() - unpressedTime < 0.1)

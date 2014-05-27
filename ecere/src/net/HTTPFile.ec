@@ -171,19 +171,19 @@ private class HTTPConnection : SSLSocket
                {
                   file.status = atoi(string);
                }
-               else if(string = GetString((char *)buffer, "Transfer-Encoding: ", count))
+               else if((string = GetString((char *)buffer, "Transfer-Encoding: ", count)))
                {
                   if(!strnicmp(string, "chunked", strlen("chunked")))
                   {
                      file.chunked = true;
                   }
                }
-               else if(string = GetString((char *)buffer, "Content-Length: ", count))
+               else if((string = GetString((char *)buffer, "Content-Length: ", count)))
                {
                   file.totalSize = atoi(string);
                   file.totalSizeSet = true;
                }
-               else if(string = GetString((char *)buffer, "Content-Type: ", count))
+               else if((string = GetString((char *)buffer, "Content-Type: ", count)))
                {
                   char * cr = strstr(string, "\r");
                   char * lf = strstr(string, "\n");
@@ -199,7 +199,7 @@ private class HTTPConnection : SSLSocket
                   memcpy(file.contentType, string, len);
                   file.contentType[len] = 0;
                }
-               else if(string = GetString((char *)buffer, "Content-disposition: ", count))
+               else if((string = GetString((char *)buffer, "Content-disposition: ", count)))
                {
                   char * cr = strstr(string, "\r");
                   char * lf = strstr(string, "\n");
@@ -215,18 +215,18 @@ private class HTTPConnection : SSLSocket
                   memcpy(file.contentDisposition, string, len);
                   file.contentDisposition[len] = 0;
                }
-               else if(string = GetString((char *)buffer, "Connection: ", count))
+               else if((string = GetString((char *)buffer, "Connection: ", count)))
                {
                   if(!strnicmp(string, "close", strlen("close")))
                   {
                      file.close = true;
                   }
                }
-               else if(string = GetString((char *)buffer, "Location: ", count))
+               else if((string = GetString((char *)buffer, "Location: ", count)))
                {
                   if(file.relocation)
                   {
-                     strncpy(file.relocation, buffer + 10, c - 10);
+                     strncpy(file.relocation, (char *)buffer + 10, c - 10);
                      file.relocation[c - 10] = '\0';
                   }
                }
@@ -587,7 +587,7 @@ private:
                   {
                      if(chunked)
                      {
-                        bool wait = false;
+                        //bool wait = false;
                         this.connection.OnReceive = HTTPConnection::Read_OnReceive;
                         while(!eof)
                         {
@@ -597,7 +597,7 @@ private:
                            {
                               // First time check if we already have bytes, second time wait for an event
                               this.connection.Process();
-                              wait = true;
+                              //wait = true;
                            }
                         }
                      }

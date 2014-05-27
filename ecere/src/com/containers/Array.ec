@@ -102,8 +102,10 @@ public:
 
    void Move(IteratorPointer ip, IteratorPointer afterIp)
    {
+      /*
       T * it = (T *)ip;
       T * after = (T *)afterIp;
+      */
    }
 
    virtual void RemoveAll()

@@ -53,7 +53,7 @@ public:
 private:
    StatusBar()
    {
-      fields.offset = (uint)&((StatusField)0).prev;
+      fields.offset = (uint)(uintptr)&((StatusField)0).prev;
    }
 
    ~StatusBar()

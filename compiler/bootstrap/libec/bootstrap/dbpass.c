@@ -789,7 +789,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1085,8 +1097,6 @@ static struct External * addAfter;
 
 static void ProcessDeclaration(struct Declaration * decl);
 
-extern struct __ecereNameSpace__ecere__com__Class * thisClass;
-
 static void ProcessMemberInit(struct MemberInit * init);
 
 static void ProcessClassFunction(struct ClassFunction * func);
@@ -1122,8 +1132,6 @@ struct MemberInit * init;
 
 for(init = (*def->defProperties).first; init; init = init->next)
 {
-struct __ecereNameSpace__ecere__com__Class * oldThisClass = thisClass;
-
 ProcessMemberInit(init);
 }
 break;
@@ -1189,11 +1197,11 @@ extern struct InitDeclarator * MkInitDeclarator(struct Declarator * declarator, 
 
 extern struct Declarator * MkDeclaratorIdentifier(struct Identifier * id);
 
+extern struct Specifier * MkSpecifier(int specifier);
+
 extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
 
 extern struct Expression * MkExpIdentifier(struct Identifier * id);
-
-extern struct Specifier * MkSpecifier(int specifier);
 
 extern struct Statement * MkIfStmt(struct __ecereNameSpace__ecere__sys__OldList * exp, struct Statement * statement, struct Statement * elseStmt);
 
@@ -1364,7 +1372,7 @@ case 28:
 if(tableStatements)
 {
 struct Statement * databaseOpenStmt = MkCompoundStmt(MkList(), MkList());
-struct Statement * compound, * compound2;
+struct Statement * compound;
 struct Statement * ifDBStmt;
 struct __ecereNameSpace__ecere__sys__OldList * args;
 char numIndexesString[16];
@@ -1375,7 +1383,6 @@ struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(
 __ecereInstance1->parent = curContext, __ecereInstance1;
 });
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.declarations), MkDeclaration(MkListOne(MkSpecifierName("Database")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("db")), (((void *)0))))));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.declarations), MkDeclaration(MkListOne(MkSpecifierName("bool")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("createNow")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier("false")))))));
 args = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkSpecifier(STATIC));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkSpecifierName("bool"));
@@ -1396,7 +1403,7 @@ args = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), exp->dbopen.name);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("create")));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*compound->compound.statements), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("db")), '=', MkExpCall(MkExpMember(exp->dbopen.ds, MkIdentifier("OpenDatabase")), args)))));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*compound->compound.statements), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("createNow")), '=', MkExpIdentifier(MkIdentifier("true"))))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*compound->compound.statements), MkExpressionStmt(MkListOne(MkExpIdentifier(MkIdentifier("true")))));
 exp->dbopen.name = (((void *)0));
 exp->dbopen.ds = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*databaseOpenStmt->compound.statements), MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier("db"))), ifDBStmt = MkCompoundStmt(MkList(), MkList()), (((void *)0))));

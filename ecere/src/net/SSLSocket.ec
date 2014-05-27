@@ -84,11 +84,13 @@ public class SSLSocket : Socket
    bool EstablishConnection()
    {
       bool result;
+      /*
       X509 *peer;
       char peer_CN[256];
       int cipherResult;
+      */
 
-      meth = SSLv23_method();
+      meth = (SSL_METHOD *)SSLv23_method();
       //meth = TLSv1_method();
       ctx = SSL_CTX_new(meth);
       // cipherResult = SSL_CTX_set_cipher_list(ctx, "ALL:!DH:!EXP:!RC4:@STRENGTH"); // TLS_RSA_WITH_3DES_EDE_CBC_SHA ?

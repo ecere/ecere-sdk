@@ -100,7 +100,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
    bool CreateDisplaySystem(DisplaySystem displaySystem)
    {
-      Win32BitmapPrinterSystem gdiSystem = displaySystem.driverData = Win32BitmapPrinterSystem { };
+      displaySystem.driverData = Win32BitmapPrinterSystem { };
       return true;
    }
 
@@ -208,7 +208,6 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
    bool CreateDisplay(Display display)
    {
-      Win32BitmapPrinterSystem gdiSystem = display.displaySystem.driverData;
       bool result = false;
 
       if(display)
@@ -243,7 +242,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
          	uint16 szPrinter[160];
          	uint16 *szDevice, *szDriver, *szOutput;
 
-         	GetProfileString(L"windows", L"device", L"...", (char *)szPrinter, 160);
+            GetProfileString(L"windows", L"device", L"...", (LPWSTR)szPrinter, 160);
          	szDevice = wcstok(szPrinter, L",");
          	szDriver = wcstok(null,      L",");
          	szOutput = wcstok(null,      L",");
@@ -461,7 +460,6 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    void ReleaseSurface(Display display, Surface surface)
    {
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
-      Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       if(gdiSurface)
       {
          if(gdiSurface.rgn)
@@ -588,7 +586,6 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    bool GrabScreen(Display display, Bitmap bitmap, int x, int y, unsigned int w, unsigned int h)
    {
       bool result;
-      Win32BitmapPrinterDisplay gdiDisplay = display.driverData;
       result = ((subclass(DisplayDriver))class(LFBDisplayDriver)).GrabScreen(display, bitmap, x,y, w,h);
       return result;
    }
@@ -596,7 +593,6 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    void SetForeground(Display display, Surface surface, ColorAlpha color)
    {
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
-      Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       COLORREF rgb = RGB(color.color.r, color.color.g, color.color.b);
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).SetForeground(display, surface, color);
       SetTextColor(gdiSurface.hdc, rgb);
@@ -626,7 +622,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    void PutPixel(Display display, Surface surface, int x, int y)
    {
       Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
-      Win32BitmapPrinterSurface gdiSurface = surface.driverData;
+      //Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       Color back = surface.background;
       surface.background = surface.foreground;
       //SetPixel(gdiSurface.hdc, x + gdiSurface.offset.x, y + gdiSurface.offset.y, gdiSurface.color);
@@ -642,7 +638,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
    void DrawLine(Display display, Surface surface, int x1, int y1, int x2, int y2)
    {
-      Win32BitmapPrinterSurface gdiSurface = surface.driverData;
+      //Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       int c = 0;
 
@@ -687,7 +683,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
    void Rectangle(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
-      Win32BitmapPrinterSurface gdiSurface = surface.driverData;
+      //Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       /*
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Rectangle(display, surface,
@@ -723,7 +719,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
    void Area(Display display, Surface surface,int x1,int y1,int x2,int y2)
    {
       Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
-      Win32BitmapPrinterSurface gdiSurface = surface.driverData;
+      //Win32BitmapPrinterSurface gdiSurface = surface.driverData;
 
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).Area(display, surface,
          (int)((float)x1 * gdiDisplay.width / display.width),
@@ -803,7 +799,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       HDC hdc = gdiSystem.hdc;
       int pixels = GetDeviceCaps(hdc, LOGPIXELSY);
       int res = GetDeviceCaps(hdc, VERTRES);
-      void * font = CreateFont(-(int)(((float)size * pixels * RESY / res / 72) + 0.5),
+      void * font = CreateFontA(-(int)(((float)size * pixels * RESY / res / 72) + 0.5),
          0,0,0, flags.bold ? FW_BOLD : FW_NORMAL, flags.italic ? TRUE : FALSE,
             flags.underline ? TRUE : FALSE, 0, DEFAULT_CHARSET,
                         OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY,
@@ -847,7 +843,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       uint16 * u16text = UTF8toUTF16Len(text, len, &wordCount);
 
       for(realLen = 0; realLen<wordCount && u16text[realLen]; realLen++);
-      GetTextExtentPoint32(gdiSurface.hdc, " ", 1, &space);
+      GetTextExtentPoint32(gdiSurface.hdc, L" ", 1, &space);
       GetTextExtentPoint32(gdiSurface.hdc, u16text, realLen, &size);
       delete u16text;
 
@@ -893,7 +889,6 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint stipple)
    {
-      Win32BitmapPrinterDisplay gdiDisplay = display ? display.driverData : null;
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).LineStipple(display, surface, stipple);
    }
 

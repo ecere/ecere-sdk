@@ -140,12 +140,12 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
          uint origStrings = 0, transStrings = 0;
          uint hashingSize = 0, hashingOffset = 0;
          int c;
-         f.Read(&revision, sizeof(uint), 1);       if(swap) SWAP_DWORD(revision);
-         f.Read(&numStrings, sizeof(uint), 1);     if(swap) SWAP_DWORD(numStrings);
-         f.Read(&origStrings, sizeof(uint), 1);    if(swap) SWAP_DWORD(origStrings);
-         f.Read(&transStrings, sizeof(uint), 1);   if(swap) SWAP_DWORD(transStrings);
-         f.Read(&hashingSize, sizeof(uint), 1);    if(swap) SWAP_DWORD(hashingSize);
-         f.Read(&hashingOffset, sizeof(uint), 1);  if(swap) SWAP_DWORD(hashingOffset);
+         f.Read(&revision, sizeof(uint), 1);       if(swap) revision = SWAP_DWORD(revision);
+         f.Read(&numStrings, sizeof(uint), 1);     if(swap) numStrings = SWAP_DWORD(numStrings);
+         f.Read(&origStrings, sizeof(uint), 1);    if(swap) origStrings = SWAP_DWORD(origStrings);
+         f.Read(&transStrings, sizeof(uint), 1);   if(swap) transStrings = SWAP_DWORD(transStrings);
+         f.Read(&hashingSize, sizeof(uint), 1);    if(swap) hashingSize = SWAP_DWORD(hashingSize);
+         f.Read(&hashingOffset, sizeof(uint), 1);  if(swap) hashingOffset = SWAP_DWORD(hashingOffset);
 
          if(!moduleMaps)
             moduleMaps = { };
@@ -162,16 +162,16 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
             char * original = null, * translated = null;
 
             f.Seek(origStrings + c*2*sizeof(uint), start);
-            f.Read(&len, sizeof(uint), 1);      if(swap)SWAP_DWORD(len);
-            f.Read(&offset, sizeof(uint), 1);   if(swap)SWAP_DWORD(offset);
+            f.Read(&len, sizeof(uint), 1);      if(swap) len = SWAP_DWORD(len);
+            f.Read(&offset, sizeof(uint), 1);   if(swap) offset = SWAP_DWORD(offset);
             f.Seek(offset, start);
 
             original = new byte[len + 1];
             f.Read(original, 1, len + 1);
 
             f.Seek(transStrings + c*2*sizeof(uint), start);
-            f.Read(&len, sizeof(uint), 1);      if(swap)SWAP_DWORD(len);
-            f.Read(&offset, sizeof(uint), 1);   if(swap)SWAP_DWORD(offset);
+            f.Read(&len, sizeof(uint), 1);      if(swap) len = SWAP_DWORD(len);
+            f.Read(&offset, sizeof(uint), 1);   if(swap) offset = SWAP_DWORD(offset);
             f.Seek(offset, start);
 
             translated = new byte[len + 1];

@@ -181,8 +181,6 @@ public void OutputExpression(Expression exp, File f)
       case constantExp:
          if(exp.constant)
             f.Puts(exp.constant);
-         else
-            printf("");
          break;
       case stringExp:
          if(exp.string)

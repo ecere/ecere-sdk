@@ -250,9 +250,9 @@ static bool ReadRGB(FileInfo * info, ColorRGB * rgb)
    if(info->chunkId == RGB_BYTE || info->chunkId == RGB_BYTE_GAMMA)
    {
       byte value;
-      info->f.Getc(&value); rgb->r = value / 255.0f;
-      info->f.Getc(&value); rgb->g = value / 255.0f;
-      info->f.Getc(&value); rgb->b = value / 255.0f;
+      info->f.Getc((char *)&value); rgb->r = value / 255.0f;
+      info->f.Getc((char *)&value); rgb->g = value / 255.0f;
+      info->f.Getc((char *)&value); rgb->b = value / 255.0f;
    }
    else if(info->chunkId == RGB_FLOAT || info->chunkId == RGB_FLOAT_GAMMA)
    {
@@ -367,7 +367,6 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
    {
       Face * face = &faces[c];
       Plane plane;
-      Vector3Df planeNormal;
       plane.FromPointsf(mesh.vertices[face->indices[2]],
                         mesh.vertices[face->indices[1]],
                         mesh.vertices[face->indices[0]]);
@@ -386,7 +385,6 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
 
       for(i = 0; i<3; i++)
       {
-         int v;
          SharedSourceVertexInfo * source;
          SharedDestVertexInfo svInfo;
          DestVertexInfo vInfo;
@@ -630,7 +628,6 @@ static void ComputeNormals(Mesh mesh, FileInfo * info, Object object)
 // Meshes
 static bool ReadSmoothing(FileInfo * info, Object object)
 {
-   Mesh mesh = object.mesh;
    switch(info->chunkId)
    {
       case TRI_SMOOTHING:
@@ -647,7 +644,6 @@ static bool ReadSmoothing(FileInfo * info, Object object)
 static bool ReadFacesListChunks(FileInfo * info, Object object)
 {
    DisplaySystem displaySystem = info->displaySystem;
-   Mesh mesh = object.mesh;
    switch(info->chunkId)
    {
       case TRI_MATERIAL:
@@ -767,7 +763,6 @@ static bool ReadTriMesh(FileInfo * info, Object object)
          // Create Groups
          for(m : info->matFaces)
          {
-            int i;
             Material mat = (Material)&m;
             Array<int> faces = m;
             if(mat.flags.translucent)
@@ -1219,7 +1214,6 @@ static bool ReadMaterial(FileInfo * info, Material mat)
 // Lights
 static bool ReadLight(FileInfo * info, Object object)
 {
-   Mesh mesh = object.mesh;
    Light * light = &object.light;
    switch(info->chunkId)
    {
@@ -1307,7 +1301,6 @@ static bool ReadLight(FileInfo * info, Object object)
 // Cameras
 static bool ReadCamera(FileInfo * info, Object object)
 {
-   Mesh mesh = object.mesh;
    switch(info->chunkId)
    {
       case CAM_SEECONE:
@@ -1316,9 +1309,9 @@ static bool ReadCamera(FileInfo * info, Object object)
       }
       case CAM_RANGES:
       {
-         Camera camera = object.camera;
-         float nearRange = ReadFloat(info->f);
-         float farRange = ReadFloat(info->f);
+         //Camera camera = object.camera;
+         /*float nearRange = */ReadFloat(info->f);
+         /*float farRange = */ReadFloat(info->f);
          /*
          camera.zMin = Max(0.1, nearRange);
          camera.zMax = farRange;
@@ -1385,7 +1378,7 @@ static bool ReadEditObject(FileInfo * info, char * name)
          Object object = info->rootObject.Find(name);
          Object target;
          Camera camera;
-         float bankAngle, focus;
+         float /*bankAngle, */focus;
          double mm;
 
          strcpy(targetName, name);
@@ -1430,7 +1423,7 @@ static bool ReadEditObject(FileInfo * info, char * name)
          target.transform.position.y =-ReadFloat(info->f);
 
          info->pos += sizeof(float) * 3;
-         bankAngle = ReadFloat(info->f);
+         /*bankAngle = */ReadFloat(info->f);
          info->pos += sizeof(float);
          focus = ReadFloat(info->f);
          info->pos += sizeof(float);
@@ -1518,10 +1511,10 @@ static bool ReadFrameInfoBlock(FileInfo * info, ObjectInfoBlock * block)
    {
       case FRM_PARAM:
       {
-         uint16 flags1, flags2;
+         //uint16 flags1, flags2;
          ReadASCIIZ(info->f, &block->name);
-         flags1 = ReadWORD(info->f);
-         flags2 = ReadWORD(info->f);
+         /*flags1 = */ReadWORD(info->f);
+         /*flags2 = */ReadWORD(info->f);
          block->parent = ReadWORD(info->f);
          break;
       }

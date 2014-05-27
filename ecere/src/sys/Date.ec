@@ -151,7 +151,6 @@ public struct Date
          while(GetAlNum(&string, value, sizeof(value)))
          {
             int numeric = atoi(value);
-            bool resolved = false;
             int c;
             bool isAlpha = false;
             unichar ch;

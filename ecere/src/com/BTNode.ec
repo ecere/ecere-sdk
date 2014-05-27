@@ -570,7 +570,7 @@ private:
          int len;
 
          if(this)
-            sprintf(nodeString, "%d", key);
+            sprintf(nodeString, "%d", (int)key);
 
          len = strlen(nodeString);
          for(c = 0; c<(NUMSIZE - len)/2; c++)
@@ -607,7 +607,7 @@ private:
       {
          if(left.parent != this)
          {
-            printf("Parent not set properly at node %d\n", left.key);
+            printf("Parent not set properly at node %d\n", (int)left.key);
             valid = false;
          }
          valid *= left.Check(tree);
@@ -616,7 +616,7 @@ private:
       {
          if(right.parent != this)
          {
-            printf("Parent not set properly at node %d\n", right.key);
+            printf("Parent not set properly at node %d\n", (int)right.key);
             valid = false;
          }
          valid *= right.Check(tree);
@@ -624,33 +624,33 @@ private:
 
       if(depth != depthProp)
       {
-         printf("Depth value at node %d (%d) doesn't match depth property (%d)\n", key, depth, depthProp);
+         printf("Depth value at node %d (%d) doesn't match depth property (%d)\n", (int)key, depth, depthProp);
          valid = 0;
       }
 
       if (diffHeight < -1 || diffHeight > 1)
       {
          valid = 0;
-         printf("Height difference is %d at node %d\n", diffHeight, key);
+         printf("Height difference is %d at node %d\n", diffHeight, (int)key);
       }
 
       // Verify that balance-factor is correct
       if (diffHeight != balanceFactor)
       {
          valid = 0;
-         printf("Height difference %d doesnt match balance-factor of %d at node \n", diffHeight, balanceFactor, key);
+         printf("Height difference %d doesnt match balance-factor of %d at node %d\n", diffHeight, balanceFactor, (int)key);
       }
 
       // Verify that search-tree property is satisfied
       if (left && tree.CompareKey(tree, left.key, key) > 0)
       {
          valid = false;
-         printf("Node %d is *smaller* than left subtree %d\n", key, left.key);
+         printf("Node %d is *smaller* than left subtree %d\n", (int)key, (int)left.key);
       }
       if (right && tree.CompareKey(tree, right.key, key) < 0)
       {
          valid = false;
-         printf("Node %d is *greater* than right subtree %d\n", key, right.key);
+         printf("Node %d is *greater* than right subtree %d\n", (int)key, (int)right.key);
       }
       return valid;
    }

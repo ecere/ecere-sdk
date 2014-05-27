@@ -46,7 +46,7 @@ default:
 #undef String
 #include <io.h>
 
-BOOL WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWORD cchBufferLength);
+BOOL __declspec(dllimport) WINAPI GetVolumePathName(LPCTSTR lpszFileName,LPTSTR lpszVolumePathName,DWORD cchBufferLength);
 
 // Missing function...
 /*
@@ -362,7 +362,7 @@ public class File : IOChannel
             uint count = Read(uncompressed, 1,  size);
             if(count == size)
             {
-               uint cSize = size + size / 1000 + 12;
+               uLongf cSize = size + size / 1000 + 12;
                byte * compressed = new byte[cSize];
                if(compressed)
                {
@@ -401,7 +401,8 @@ public class File : IOChannel
 
    void OnUnserialize(IOChannel channel)
    {
-      uint size, cSize;
+      uLongf size;
+      uint cSize;
 
       this = null;
 
@@ -1191,9 +1192,9 @@ static FileDesc FileFind(char * path, char * extensions)
             {
                int c;
                uint drives = 0xFFFFFFFF;
-               d.fHandle = (HANDLE)drives; //GetLogicalDrives();
+               d.fHandle = (HANDLE)(uintptr)drives; //GetLogicalDrives();
                for(c = 0; c<26; c++)
-                  if(((uint)d.fHandle) & (1<<c))
+                  if(((uint)(uintptr)d.fHandle) & (1<<c))
                   {
                      char volume[MAX_FILENAME] = "";
                      uint16 _wvolume[MAX_FILENAME];
@@ -1233,7 +1234,7 @@ static FileDesc FileFind(char * path, char * extensions)
                      result = file;
                      break;
                   }
-               d.fHandle = (HANDLE) drives;
+               d.fHandle = (HANDLE)(uintptr) drives;
                d.resource = 0;
             }
             else if(path[0] != '\\' || path[1] != '\\' || strstr(path+2, "\\"))
@@ -1278,8 +1279,8 @@ static FileDesc FileFind(char * path, char * extensions)
             else
             {
                HANDLE handle = 0;
-               int count = 0xFFFFFFFF;
-               uint size = 512 * sizeof(NETRESOURCE);
+               DWORD count = 0xFFFFFFFF;
+               DWORD size = 512 * sizeof(NETRESOURCE);
                NETRESOURCE * buffer = (NETRESOURCE *)new0 byte[size];
                NETRESOURCE nr = {0};
 
@@ -1352,7 +1353,7 @@ static FileDesc FileFind(char * path, char * extensions)
                   for(c = 0; c<count; c++)
                   {
                      NETRESOURCE * resources;
-                     int countInGroup = 0xFFFFFFFF;
+                     DWORD countInGroup = 0xFFFFFFFF;
 
                      size = 512 * sizeof(NETRESOURCE);
                      resources = (NETRESOURCE *)new0 byte[size];
@@ -1504,7 +1505,7 @@ private class FileDesc : struct
             if(!strcmp(d.name, "/"))
             {
                int c;
-               uint drives = (uint)d.fHandle;
+               uint drives = (uint)(uintptr)d.fHandle;
                for(c = 0; c<26; c++)
                {
                   if(drives & (1<<c))
@@ -1534,7 +1535,7 @@ private class FileDesc : struct
                      {
                         uint16 remoteName[1024];
                         int status;
-                        int size = 1024;
+                        DWORD size = 1024;
                         _wpath[2] = 0;
 
                         status = WNetGetConnection(_wpath, remoteName, &size);
@@ -1561,7 +1562,7 @@ private class FileDesc : struct
                      break;
                   }
                }
-               d.fHandle = (HANDLE) drives;
+               d.fHandle = (HANDLE)(uintptr) drives;
                break;
             }
             else if(d.name[0] != '\\' || d.name[1] != '\\' || strstr(d.name+2, "\\"))
@@ -1624,10 +1625,10 @@ private class FileDesc : struct
                   {
                      if(c != d.workGroup)
                      {
-                        int countInGroup = 0xFFFFFFFF;
+                        DWORD countInGroup = 0xFFFFFFFF;
                         HANDLE handle;
                         NETRESOURCE * resources;
-                        uint size = 512 * sizeof(NETRESOURCE);
+                        DWORD size = 512 * sizeof(NETRESOURCE);
 
                         resources = (NETRESOURCE *)new0 byte[size];
                         // Entire Network
@@ -1740,7 +1741,6 @@ public:
 
    bool Find()
    {
-      bool result = false;
       if(desc)
          desc = desc.FindNext(extensions);
       else

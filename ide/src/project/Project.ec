@@ -21,7 +21,7 @@ import "IDESettings"
 
 default:
 
-static void DummyFunction()
+static __attribute__((unused)) void DummyFunction()
 {
 int a;
 a.OnFree();

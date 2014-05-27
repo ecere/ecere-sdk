@@ -283,7 +283,7 @@ public:
          FillBytes(normals, 0, nVertices * sizeof(Vector3Df));
          for(group = groups.first; group; group = group.next)
          {
-            int nPrimitives = 0, c;
+            int c;
             int offset = 0;
             int strip = 0;
             int nPoints, nIndex;

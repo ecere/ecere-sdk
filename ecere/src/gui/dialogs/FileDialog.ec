@@ -1513,8 +1513,6 @@ private:
 
    CreateDirectoryDialog()
    {
-      FileNameType c;
-
       GetWorkingDir(currentDirectory, MAX_DIRECTORY);
       FileFixCase(currentDirectory);
    }

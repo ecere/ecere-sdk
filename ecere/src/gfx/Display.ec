@@ -44,9 +44,9 @@ public class FontFlags
    public bool bold:1, italic:1, underline:1;
 };
 
-static void DummyFunction()
+__attribute__((unused)) static void DummyFunction()
 {
-   Mutex mutex { };
+   Mutex { };
 }
 
 public class DisplayDriver

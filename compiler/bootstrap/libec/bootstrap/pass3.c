@@ -804,7 +804,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1061,7 +1073,7 @@ if((*newSpecs).first)
 struct Specifier * newSpec = CopySpecifier((*newSpecs).first);
 
 *spec = *newSpec;
-((newSpec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor(newSpec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newSpec)) : 0), newSpec = 0);
+((newSpec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)newSpec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newSpec)) : 0), newSpec = 0);
 }
 FreeList(newSpecs, FreeSpecifier);
 if(decl)
@@ -1084,7 +1096,7 @@ if((*newSpecs).first)
 struct Specifier * newSpec = CopySpecifier((*newSpecs).first);
 
 *spec = *newSpec;
-((newSpec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor(newSpec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newSpec)) : 0), newSpec = 0);
+((newSpec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)newSpec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newSpec)) : 0), newSpec = 0);
 }
 if(decl)
 {
@@ -1559,7 +1571,7 @@ FreeExpContents(exp);
 FreeType(exp->expType);
 FreeType(exp->destType);
 *exp = *castExp;
-((castExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(castExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(castExp)) : 0), castExp = 0);
+((castExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)castExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(castExp)) : 0), castExp = 0);
 exp->prev = prev;
 exp->next = next;
 InstDeclPassExpression(exp);

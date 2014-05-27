@@ -275,7 +275,7 @@ void MD5Digest(char * string, int len, char * output)
    int c;
    MD5_CTX ctx;
    MD5Init(&ctx);
-   MD5Update(&ctx, string, len);
+   MD5Update(&ctx, (byte *)string, len);
    MD5Final(bytes, &ctx);
    len = 0;
    for(c = 0; c<16; c++)

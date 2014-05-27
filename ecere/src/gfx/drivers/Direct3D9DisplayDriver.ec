@@ -133,8 +133,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    bool ::LockDisplay(Display display, Surface surface, Bitmap lfbBitmap, Surface * lfbSurface)
    {
       bool result = false;
-      DisplaySystem displaySystem = display.displaySystem;
-      D3DSystem d3dSystem = displaySystem.driverData;
       D3DDisplay d3dDisplay = display.driverData;
 
       //if(!IDirect3DDevice9_GetBackBuffer(d3dSystem.d3dDevice, 0, 0, D3DBACKBUFFER_TYPE_MONO, &d3dDisplay.backBuffer))
@@ -142,6 +140,7 @@ class Direct3D9DisplayDriver : DisplayDriver
          D3DLOCKED_RECT lockedRect;
          if(!IDirect3DSurface9_LockRect(d3dDisplay.backBuffer, &lockedRect, null, 0))
          {
+            result = true;
             switch(d3dDisplay.d3dpp.BackBufferFormat)
             {
                case D3DFMT_A8R8G8B8:
@@ -159,19 +158,23 @@ class Direct3D9DisplayDriver : DisplayDriver
                case D3DFMT_X4R4G4B4:
                   lfbBitmap.pixelFormat = pixelFormat444;
                   break;
+               default:
+                  result = false;
             }
-            lfbBitmap.driver = null;
-            lfbBitmap.displaySystem = null;
-            lfbBitmap.picture = (byte *)lockedRect.pBits;
-            lfbBitmap.transparent = false;
-            lfbBitmap.stride = lockedRect.Pitch >> GetColorDepthShifts(lfbBitmap.pixelFormat);
-            lfbBitmap.width = display.width;
-            lfbBitmap.height = display.height;
+            if(result)
+            {
+               lfbBitmap.driver = null;
+               lfbBitmap.displaySystem = null;
+               lfbBitmap.picture = (byte *)lockedRect.pBits;
+               lfbBitmap.transparent = false;
+               lfbBitmap.stride = lockedRect.Pitch >> GetColorDepthShifts(lfbBitmap.pixelFormat);
+               lfbBitmap.width = display.width;
+               lfbBitmap.height = display.height;
 
-            *lfbSurface = lfbBitmap.GetSurface(surface ? surface.offset.x : 0, surface ? surface.offset.y : 0, surface ? surface.box : null);
-            result = true;
+               *lfbSurface = lfbBitmap.GetSurface(surface ? surface.offset.x : 0, surface ? surface.offset.y : 0, surface ? surface.box : null);
+            }
          }
-         else
+         if(!result)
             IDirect3DSurface9_Release(d3dDisplay.backBuffer);
       }
       return result;
@@ -179,8 +182,6 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void ::UnlockDisplay(Display display, Surface surface)
    {
-      DisplaySystem displaySystem = display.displaySystem;
-      D3DSystem d3dSystem = displaySystem.driverData;
       D3DDisplay d3dDisplay = display.driverData;
       if(d3dDisplay.backBuffer)
       {
@@ -251,7 +252,7 @@ class Direct3D9DisplayDriver : DisplayDriver
             d3dSystem.direct3DCreate9 = (void *)GetProcAddress(d3dSystem.d3dDll, "Direct3DCreate9");
             if(d3dSystem.direct3DCreate9)
             {
-               if(d3dSystem.direct3D = d3dSystem.direct3DCreate9(D3D_SDK_VERSION))
+               if((d3dSystem.direct3D = d3dSystem.direct3DCreate9(D3D_SDK_VERSION)))
                {
                   D3DDISPLAYMODE d3ddm;
                   if(!IDirect3D9_GetAdapterDisplayMode(d3dSystem.direct3D, D3DADAPTER_DEFAULT, &d3ddm))
@@ -403,7 +404,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       bool result = false;
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
-      D3DDisplay d3dDisplay = display.driverData = D3DDisplay { };
+      display.driverData = D3DDisplay { };
 
       d3dSystem.ready = false;
 
@@ -700,20 +701,25 @@ class Direct3D9DisplayDriver : DisplayDriver
                      case D3DFMT_R5G6B5:   mipMap.pixelFormat = pixelFormat565; break;
                      case D3DFMT_A8R8G8B8: mipMap.pixelFormat = pixelFormat888; break;
                      case D3DFMT_A1R5G5B5: mipMap.pixelFormat = pixelFormat555; break;
+                     default:
+                        result = false;
                   }
-                  mipMap.stride = lockedRect.Pitch >> GetColorDepthShifts(mipMap.pixelFormat);
-
-                  mipSurface = mipMap.GetSurface(0,0,null);
-                  if(mipSurface)
+                  if(result)
                   {
-                     if(mipMap.width != bitmap.width || mipMap.height != bitmap.height)
-                        mipSurface.Filter(bitmap, 0,0, 0,0, mipMap.width, mipMap.height, bitmap.width, bitmap.height);
-                     else
+                     mipMap.stride = lockedRect.Pitch >> GetColorDepthShifts(mipMap.pixelFormat);
+
+                     mipSurface = mipMap.GetSurface(0,0,null);
+                     if(mipSurface)
                      {
-                        //FillBytesBy4(mipMap.picture, bitmap.picture, mipMap.width * mipMap.height);
-                        mipSurface.Blit(bitmap, 0,0, 0,0, bitmap.width, bitmap.height);
+                        if(mipMap.width != bitmap.width || mipMap.height != bitmap.height)
+                           mipSurface.Filter(bitmap, 0,0, 0,0, mipMap.width, mipMap.height, bitmap.width, bitmap.height);
+                        else
+                        {
+                           //FillBytesBy4(mipMap.picture, bitmap.picture, mipMap.width * mipMap.height);
+                           mipSurface.Blit(bitmap, 0,0, 0,0, bitmap.width, bitmap.height);
+                        }
+                        delete mipSurface;
                      }
-                     delete mipSurface;
                   }
 
                   IDirect3DTexture9_UnlockRect(texture, level);
@@ -774,7 +780,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    void Clip(Display display, Surface surface, Box clip)
    {
       Box box;
-      D3DDisplay d3dDisplay = display.driverData;
 
       if(clip != null)
       {
@@ -806,8 +811,6 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void PutPixel(Display display, Surface surface,int x, int y)
    {
-      D3DDisplay d3dDisplay = display.driverData;
-      D3DSurface d3dSurface = surface.driverData;
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
       Vertex vertex { (float)x, (float)y, 1.0f, surface.foreground, 0, 0 };
@@ -818,8 +821,6 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void DrawLine(Display display, Surface surface, int x1, int y1, int x2, int y2)
    {
-      D3DSurface d3dSurface = surface.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
       Vertex vertex[2] =
@@ -853,8 +854,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
-      D3DSurface d3dSurface = surface.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       Vertex vertex[5] =
       {
          { (float)x1, (float)y1, 1.0f, surface.foreground, 0, 0 },
@@ -874,7 +873,6 @@ class Direct3D9DisplayDriver : DisplayDriver
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
       D3DSurface d3dSurface = surface.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       Vertex vertex[4] =
       {
          /*
@@ -898,7 +896,6 @@ class Direct3D9DisplayDriver : DisplayDriver
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
       D3DSurface d3dSurface = surface.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       IDirect3DDevice9_Clear(d3dSystem.d3dDevice, 0, null,
          ((type == depthBuffer) ? 0 : D3DCLEAR_TARGET) |
          ((type == colorBuffer) ? 0 : D3DCLEAR_ZBUFFER),
@@ -915,7 +912,6 @@ class Direct3D9DisplayDriver : DisplayDriver
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
       D3DSurface d3dSurface = surface.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       Color foreground = d3dSurface.writingText ? surface.foreground : white;
       Vertex vertex[4] =
       {
@@ -939,8 +935,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
-      D3DSurface d3dSurface = surface.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       Vertex vertex[4] =
       {
          { (float)dx, (float)dy, 1.0f, surface.foreground,
@@ -966,8 +960,6 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void StretchDI(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
-      DisplaySystem displaySystem = display.displaySystem;
-      D3DSystem d3dSystem = displaySystem.driverData;
       Surface lfbSurface;
       Bitmap lfbBitmap { };
       if(LockDisplay(display, surface, lfbBitmap, &lfbSurface))
@@ -981,8 +973,6 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void BlitDI(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h)
    {
-      DisplaySystem displaySystem = display.displaySystem;
-      D3DSystem d3dSystem = displaySystem.driverData;
       Surface lfbSurface;
       Bitmap lfbBitmap { };
       if(LockDisplay(display, surface, lfbBitmap, &lfbSurface))
@@ -1029,7 +1019,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       D3DSurface d3dSurface = surface.driverData;
 
       if(surface.textOpacity)
@@ -1077,7 +1066,6 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint stipple)
    {
-      D3DDisplay d3dDisplay = display.driverData;
       /*
       IDirect3DDevice9_SetRenderState(d3dSystem.d3dDevice, D3DRS_LINEPATTERN,
          stipple?Muint(1,stipple):0);
@@ -1282,7 +1270,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       IDirect3DDevice9 * d3dDevice = d3dSystem.d3dDevice;
       D3DMesh d3dMesh = mesh.data;
 
@@ -1341,7 +1328,6 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void FreeMesh(DisplaySystem displaySystem, Mesh mesh)
    {
-      D3DSystem d3dSystem = displaySystem.driverData;
       D3DMesh d3dMesh = mesh.data;
       if(d3dMesh)
       {
@@ -1428,14 +1414,13 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void UnlockMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags)
    {
-      D3DSystem d3dSystem = displaySystem.driverData;
       D3DMesh d3dMesh = mesh.data;
       if(!flags) flags = mesh.flags;
 
       if(flags.vertices && mesh.vertices)
       {
          Vector3Df * vertices;
-         if(!IDirect3DVertexBuffer9_Lock(d3dMesh.vertices, 0, 0, (byte **) &vertices, 0))
+         if(!IDirect3DVertexBuffer9_Lock(d3dMesh.vertices, 0, 0, (void **) &vertices, 0))
          {
             memcpy(vertices, mesh.vertices, mesh.nVertices * sizeof(Vector3Df));
             IDirect3DVertexBuffer9_Unlock(d3dMesh.vertices);
@@ -1444,7 +1429,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       if(flags.normals && mesh.normals)
       {
          Vector3Df * normals;
-         if(!IDirect3DVertexBuffer9_Lock(d3dMesh.normals, 0, 0, (byte **) &normals, 0))
+         if(!IDirect3DVertexBuffer9_Lock(d3dMesh.normals, 0, 0, (void **) &normals, 0))
          {
             memcpy(normals, mesh.normals, mesh.nVertices * sizeof(Vector3Df));
             IDirect3DVertexBuffer9_Unlock(d3dMesh.normals);
@@ -1453,7 +1438,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       if(flags.texCoords1 && mesh.texCoords)
       {
          Pointf * texCoords;
-         if(!IDirect3DVertexBuffer9_Lock(d3dMesh.texCoords, 0, 0, (byte **) &texCoords, 0))
+         if(!IDirect3DVertexBuffer9_Lock(d3dMesh.texCoords, 0, 0, (void **) &texCoords, 0))
          {
             memcpy(texCoords, mesh.texCoords, mesh.nVertices * sizeof(Pointf));
             IDirect3DVertexBuffer9_Unlock(d3dMesh.texCoords);
@@ -1496,7 +1481,7 @@ class Direct3D9DisplayDriver : DisplayDriver
    void UnlockIndices(DisplaySystem displaySystem, D3DIndices d3dIndices, bool indices32bit, int nIndices)
    {
       uint16 * indexBuffer = null;
-      if(!IDirect3DIndexBuffer9_Lock(d3dIndices.buffer, 0, 0, (byte **)&indexBuffer, 0))
+      if(!IDirect3DIndexBuffer9_Lock(d3dIndices.buffer, 0, 0, (void **)&indexBuffer, 0))
       {
          memcpy(indexBuffer, d3dIndices.indices, (indices32bit ? sizeof(uint32) : sizeof(uint16)) * d3dIndices.nIndices);
          IDirect3DIndexBuffer9_Unlock(d3dIndices.buffer);
@@ -1512,7 +1497,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
       IDirect3DDevice9 * d3dDevice = d3dSystem.d3dDevice;
 
       if(mesh && mesh.data)
@@ -1520,23 +1504,23 @@ class Direct3D9DisplayDriver : DisplayDriver
          int decl = 0;
          D3DMesh d3dMesh = mesh.data;
 
-         IDirect3DDevice9_SetStreamSource(d3dSystem.d3dDevice, 0, d3dMesh.vertices, 0, sizeof(Vector3Df));
+         IDirect3DDevice9_SetStreamSource(d3dDevice, 0, d3dMesh.vertices, 0, sizeof(Vector3Df));
          if(d3dMesh.normals)
          {
-            IDirect3DDevice9_SetStreamSource(d3dSystem.d3dDevice, 1, d3dMesh.normals, 0, sizeof(Vector3Df));
+            IDirect3DDevice9_SetStreamSource(d3dDevice, 1, d3dMesh.normals, 0, sizeof(Vector3Df));
             decl |= 1;
          }
          else
-            IDirect3DDevice9_SetStreamSource(d3dSystem.d3dDevice, 1, null, 0, sizeof(Vector3Df));
+            IDirect3DDevice9_SetStreamSource(d3dDevice, 1, null, 0, sizeof(Vector3Df));
          if(d3dMesh.texCoords)
          {
-            IDirect3DDevice9_SetStreamSource(d3dSystem.d3dDevice, 2, d3dMesh.texCoords, 0, sizeof(Pointf));
+            IDirect3DDevice9_SetStreamSource(d3dDevice, 2, d3dMesh.texCoords, 0, sizeof(Pointf));
             decl |= 2;
          }
          else
-            IDirect3DDevice9_SetStreamSource(d3dSystem.d3dDevice, 2, null, 0, sizeof(Pointf));
+            IDirect3DDevice9_SetStreamSource(d3dDevice, 2, null, 0, sizeof(Pointf));
 
-         IDirect3DDevice9_SetVertexDeclaration(d3dSystem.d3dDevice, d3dSystem.decls[decl]);
+         IDirect3DDevice9_SetVertexDeclaration(d3dDevice, d3dSystem.decls[decl]);
       }
    }
 
@@ -1701,7 +1685,6 @@ class Direct3D9DisplayDriver : DisplayDriver
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
-      D3DDisplay d3dDisplay = display.driverData;
 
       if(d3dSystem.inScene)
       {

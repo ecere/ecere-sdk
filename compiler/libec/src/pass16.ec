@@ -863,7 +863,7 @@ static void ProcessExpression(Expression exp)
                   inst.exp = null;
 
                   list.Remove(list.first);
-                  while(e = list.first)
+                  while((e = list.first))
                   {
                      list.Remove(e);
                      FreeExpression(e);
@@ -887,7 +887,7 @@ static void ProcessExpression(Expression exp)
                      exp.expType = expType;
                      exp.prev = prev;
                      exp.next = next;
-                     while(e = list.first)
+                     while((e = list.first))
                      {
                         list.Remove(e);
                         FreeExpression(e);
@@ -1181,7 +1181,7 @@ static void ProcessExpression(Expression exp)
          break;
       case opExp:
       {
-         bool assign = false;
+         //bool assign = false;
 
          switch(exp.op.op)
          {
@@ -1191,7 +1191,7 @@ static void ProcessExpression(Expression exp)
                   exp.op.exp2.usage.usageGet = true;
                if(exp.op.exp1)
                   exp.op.exp1.usage.usageSet = true;
-               assign = true;
+               //assign = true;
                break;
             case MUL_ASSIGN:
             case DIV_ASSIGN:
@@ -1205,7 +1205,7 @@ static void ProcessExpression(Expression exp)
             case OR_ASSIGN:
                if(exp.op.exp2)
                   exp.op.exp2.usage.usageGet = true;
-               assign = true;
+               //assign = true;
                if(exp.op.exp1)
                   exp.op.exp1.usage.usageSet = true;
                break;
@@ -1356,7 +1356,7 @@ static void ProcessExpression(Expression exp)
       case callExp:
       {
          Expression e;
-         Method method = null;
+         //Method method = null;
 
          ProcessExpression(exp.call.exp);
 
@@ -2061,7 +2061,6 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
             if(dataMember.isProperty) continue;
             if(member && member.initializer && member.initializer.type == expInitializer)
             {
-               Expression memberExp = null;
                if(member.initializer.exp.type == instanceExp && member.initializer.exp.expType &&
                   member.initializer.exp.expType._class && member.initializer.exp.expType._class.registered && member.initializer.exp.expType._class.registered.type == structClass)
                {

@@ -458,7 +458,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, char * commandLine, char * env, voi
       else
          si.hStdError = hError[PIPE_WRITE] ? hError[PIPE_WRITE] : hStdErr;
 
-      if(CreateProcess(null,_wcommandLine,null,null,TRUE, 0,env,null ,&si,&pi))
+      if(CreateProcess(null,_wcommandLine,null,null,TRUE, 0,(void *)env,null ,&si,&pi))
       {
          CloseHandle(pi.hThread);
 

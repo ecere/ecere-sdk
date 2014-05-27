@@ -10,12 +10,12 @@ static int ReadData(GifFileType * gifFile, GifByteType * bytes, int size)
    return f.Read(bytes, 1, size);
 }
 
-static int WriteData(GifFileType * gifFile, GifByteType * bytes, int size)
+/*static int WriteData(GifFileType * gifFile, GifByteType * bytes, int size)
 {
-   // File f = gifFile->UserData;
-   // f.Write(bytes, 1, size);
+   File f = gifFile->UserData;
+   return f.Write(bytes, 1, size);
 }
-
+*/
 static char * extensions[] = { "gif", null };
 
 class GIFFormat : BitmapFormat

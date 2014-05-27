@@ -3,7 +3,7 @@ import "Window"
 import "Array"
 
 default extern int __ecereVMethodID_class_OnGetDataFromString;
-default static void _workAround()
+default __attribute__((unused)) static void _workAround()
 {
    int a;
    a.OnGetDataFromString(0);
@@ -194,18 +194,18 @@ public class PathBox : CommonControl
          if(browseDialog)
          {
             char browsePath[MAX_LOCATION];
-            char * baseBrowsePath = null;
             PathBox pathBox = this;
             DataBox dataBox = pathBoxDataBox;
             ListBox listBox;
             DirectoriesBox dirsBox = pathBoxDirsBox;
             char * ebContents = editBox.contents;
             String backFilePath = CopyString(browseDialog.filePath);
+            char * baseBrowsePath = dirsBox ? dirsBox.baseBrowsePath : null;
 
             browsePath[0] = '\0';
             strncpy(browsePath, browseDialog.filePath, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
-            if(dirsBox && dirsBox.baseBrowsePath && dirsBox.baseBrowsePath[0] && ((ebContents && ebContents[0]) || !backFilePath || !backFilePath[0]))
-               PathCat(browsePath, dirsBox.baseBrowsePath);
+            if(baseBrowsePath && baseBrowsePath[0] && ((ebContents && ebContents[0]) || !backFilePath || !backFilePath[0]))
+               PathCat(browsePath, baseBrowsePath);
             PathCat(browsePath, ebContents);
             browseDialog.filePath = (ebContents && ebContents[0]) ? browsePath : "";
             if(pathBox.typeExpected == directory && browsePath[0] && FileExists(browsePath).isDirectory && backFilePath && backFilePath[0])
@@ -580,11 +580,7 @@ public:
                listBox.SetData(null, dir);
                listBox.modifiedDocument = true;
                if(listBox.currentRow == listBox.lastRow && listBox.lastRow.string)
-               {
-                  DataRow r = listBox.lastRow;
-                  char * s = r.string;
                   listBox.currentRow = listBox.AddString("");
-               }
             }
             delete dir;
          }

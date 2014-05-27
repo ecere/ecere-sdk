@@ -361,7 +361,7 @@ class GlyphPack : BTNode
       FT_Face faces[128];
       float scales[128];
       bool isGlyph = ((uint)key & 0x80000000) != 0;
-      int curScript = ((uint)key & 0x7F000000) >> 24;
+      //int curScript = ((uint)key & 0x7F000000) >> 24;
       unichar testChar = 0;
       /*
       if(isGlyph)
@@ -530,7 +530,7 @@ class GlyphPack : BTNode
             {
                int total = 0;
                int numPixels = 0;
-               int max;
+               //int max;
                if(slot->bitmap.pixel_mode != FT_PIXEL_MODE_MONO)
                {
                   for(j = y, q = 0; j<yMax; j++)
@@ -547,7 +547,7 @@ class GlyphPack : BTNode
                      q += slot->bitmap.pitch;
                   }
                }
-               max = numPixels ? (total / numPixels) : 1;
+               //max = numPixels ? (total / numPixels) : 1;
 
                for(j = y, q = 0; j<yMax; j++)
                {
@@ -833,11 +833,11 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
             {
                char entryName[1024];
                char fontFileName[1024];
-               uint32 type;
-               int size = 1024;
-               int sizeFileName = 1024;
+               DWORD type;
+               DWORD size = 1024;
+               DWORD sizeFileName = 1024;
                char * occurence;
-               if(RegEnumValue(key, value++, entryName, (PDWORD)&size, null, (PDWORD)&type, (LPBYTE)fontFileName, (PDWORD)&sizeFileName) != ERROR_SUCCESS)
+               if(RegEnumValue(key, value++, entryName, &size, null, (PDWORD)&type, (LPBYTE)fontFileName, &sizeFileName) != ERROR_SUCCESS)
                   break;
                if((occurence = SearchString((char *)entryName, 0, (char *)font->elfFullName, false, false)))
                {
@@ -2598,10 +2598,7 @@ public class LFBDisplayDriver : DisplayDriver
          AlphaWriteMode alphaWrite = surface.alphaWrite;
          if(src.alphaBlend && surface.blend)
          {
-            int x, y;
-            uint xerr,yerr;
             uint adddest = lfbSurface.bitmap.stride, addsource = src.stride;
-            ColorAlpha * backsrc;
             ColorAlpha * source = ((ColorAlpha *) src.picture) + sy * addsource + sx;
             ColorAlpha * dest = ((ColorAlpha *) lfbSurface.bitmap.picture) + dy * adddest   + dx;
             float scaleX = (float)sw / w;
@@ -2627,7 +2624,6 @@ public class LFBDisplayDriver : DisplayDriver
                      int x0 = x * sw / w;
                      int x1 = Min(x0 + 1, sw - 1);
                      float beta = x * scaleX - x0;
-                     ColorAlpha color;
                      ColorAlpha src00, src01, src10, src11;
                      float a1,r1,g1,b1,a2,r2,g2,b2;
                      float a,r,g,b;
@@ -2685,7 +2681,6 @@ public class LFBDisplayDriver : DisplayDriver
                      float a = 0, r = 0, g = 0, b = 0;
                      int numPixels = 0;
                      int i, j;
-                     ColorAlpha color;
                      for (i = y0; i <= y1; i++)
                         for (j = x0; j <= x1; j++)
                         {
@@ -2701,7 +2696,6 @@ public class LFBDisplayDriver : DisplayDriver
                      g /= numPixels;
                      b /= numPixels;
                      {
-                        ColorAlpha src = *source;
                         ColorAlpha dst = *dest;
                         int cr = (int)(a * r / 255 + ((255 - a) * dst.color.r / 255));
                         int cg = (int)(a * g / 255 + ((255 - a) * dst.color.g / 255));
@@ -2785,7 +2779,6 @@ public class LFBDisplayDriver : DisplayDriver
       {
          char fileName[MAX_LOCATION];
          bool fakeItalic = flags.italic;
-         char linkCfgPath[MAX_LOCATION];
          int fontID = 0;
 #if !defined(__WIN32__)
          File linkCfg;
@@ -2793,9 +2786,13 @@ public class LFBDisplayDriver : DisplayDriver
          char * ecereFonts = getenv("ECERE_FONTS");
          if(!ecereFonts) ecereFonts = "<:ecere>";
 #if !defined(__WIN32__)
-         strcpy(linkCfgPath, ecereFonts);
-         PathCat(linkCfgPath, "linking.cfg");
-         linkCfg = FileOpen(linkCfgPath, read);
+         {
+            char linkCfgPath[MAX_LOCATION];
+
+            strcpy(linkCfgPath, ecereFonts);
+            PathCat(linkCfgPath, "linking.cfg");
+            linkCfg = FileOpen(linkCfgPath, read);
+         }
 #endif
          strcpy(fileName, faceName);
          strcpy(font.faceName, faceName);
@@ -2857,17 +2854,17 @@ public class LFBDisplayDriver : DisplayDriver
                strcpy(logFont.lfFaceName, faceName);
                fontData.flags = flags;
 
-               EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (DWORD)&fontData, 0);
+               EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (LPARAM)&fontData, 0);
                if(!fontData.fileName[0] && flags.bold)
                {
                   fontData.forgive = true;
-                  EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (DWORD)&fontData, 0);
+                  EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (LPARAM)&fontData, 0);
                }
                if(!fontData.fileName[0])
                {
                   // Fake italic
                   fontData.flags.italic = false;
-                  EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (DWORD)&fontData, 0);
+                  EnumFontFamiliesEx(hdc, &logFont, (void *)MyFontProc, (LPARAM)&fontData, 0);
                   fakeItalic = true;
                }
 
@@ -2959,9 +2956,9 @@ public class LFBDisplayDriver : DisplayDriver
                !RegOpenKeyEx(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\FontLink\\SystemLink",0,KEY_READ,&key))
             {
                // int value = 0;
-               uint32 type;
-               int size = 1024;
-               RegQueryValueEx(key, faceName, null, (LPDWORD)&type, (LPBYTE)links, (LPDWORD)&size);
+               DWORD type;
+               DWORD size = 1024;
+               RegQueryValueEx(key, faceName, null, &type, (LPBYTE)links, &size);
                memset(links + size, 0, 1024 - size);
                RegCloseKey(key);
             }
@@ -3208,17 +3205,19 @@ public class LFBDisplayDriver : DisplayDriver
             {
                HB_Script curScript = HB_Script_Common;
                byte * scriptStart = text + c;
-               unichar nonASCIIch = 0;
+               //unichar nonASCIIch = 0;
                unichar ch;
                unichar ahead = 0;
                unichar testChar = 0;
+#if !defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
                char * testLang = null;
+#endif
 
                while(true)
                {
                   HB_Script script = HB_Script_Common;
                   ch = UTF8GetChar((char *)text + c, &nb);
-                  if(ch > 127) nonASCIIch = ch;
+                  //if(ch > 127) nonASCIIch = ch;
                   if(!nb) break;
                   if(ch == 32 && curScript)
                   {
@@ -3319,7 +3318,10 @@ public class LFBDisplayDriver : DisplayDriver
                   case HB_Script_Arabic:        testChar = 0x621; /*testLang = "ar"; */
                      //printf("Arabic ");
                      break;
-                  case HB_Script_Devanagari:    testChar = 0x905; testLang = "sa";
+                  case HB_Script_Devanagari:    testChar = 0x905;
+#if !defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
+                     testLang = "sa";
+#endif
                      //printf("Devanagari ");
                      break;
                   case HB_Script_Hebrew:        testChar = 0x05EA /*'ת'*/; /*testLang = "he"; */
@@ -3627,7 +3629,6 @@ public class LFBDisplayDriver : DisplayDriver
 
    void TextOpacity(Display display, Surface surface, bool opaque)
    {
-      LFBSurface lfbSurface = surface.driverData;
 
    }
 

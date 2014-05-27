@@ -608,9 +608,9 @@ public class WindowsSkin_Window : Window
 #define CAPTION_DISTANCE   18
 
 default:
-static void Dummy()
+static __attribute__((unused)) void Dummy()
 {
-   Window a;
+   Window a = null;
    a.OnApplyGraphics();
    a.OnRedraw(null);
 }

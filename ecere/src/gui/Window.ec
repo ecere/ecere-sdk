@@ -616,7 +616,7 @@ private:
       delete order;
       /////////////////////////////////
 
-      while(ptr = resources.first)
+      while((ptr = resources.first))
       {
          delete ptr.resource;
          resources.Delete(ptr);
@@ -635,7 +635,7 @@ private:
          *&child.parent = null;
       }
 
-      while(slave = slaves.first)
+      while((slave = slaves.first))
       {
          // Don't want property here
          *&((Window)slave.data).master = null;
@@ -1612,6 +1612,8 @@ private:
       {
          if(!parent.noAutoScrollArea)
          {
+            // TODO: Review the logic of all this? Each child is going to reposition the parent?
+            /*
             Window child;
             bool found = false;
             for(child = children.first; child; child = child.next)
@@ -1626,7 +1628,8 @@ private:
                   }
                }
             }
-            //if(!found)
+            if(!found)
+            */
             {
                Window parent = this.parent;
                parent.Position(
@@ -1652,7 +1655,7 @@ private:
       int oldCW = clientSize.w, oldCH = clientSize.h;
       bool clientResized, windowResized, windowMoved;
       Window child;
-      bool realResized = size.w != w || size.h != h;
+      //bool realResized = size.w != w || size.h != h;
 
       // TOCHECK: This wasn't in ecere.dll
       //if(!parent) return true;
@@ -2322,18 +2325,18 @@ private:
 
       if(hasMaxMin && parent)
       {
-         SkinBitmap skin;
+         //SkinBitmap skin;
          unichar symbol;
          bool (* method)(Window window, Button button, int x, int y, Modifiers mods);
          if(state == maximized)
          {
-            skin = restore;
+            //skin = restore;
             method = RestoreButtonClicked;
             symbol = '\x12';
          }
          else
          {
-            skin = maximize;
+            //skin = maximize;
             method = MaximizeButtonClicked;
             symbol = '\x18';
          }
@@ -2355,18 +2358,18 @@ private:
 
       if(hasMaxMin && parent)
       {
-         SkinBitmap skin;
+         //SkinBitmap skin;
          unichar symbol;
          bool (* method)(Window window, Button button, int x, int y, Modifiers mods);
          if (state == minimized)
          {
-            skin = restore;
+            //skin = restore;
             method = RestoreButtonClicked;
             symbol = '\x12';
          }
          else
          {
-            skin = minimize;
+            //skin = minimize;
             method = MinimizeButtonClicked;
             symbol = '\x19';
          }
@@ -2491,7 +2494,7 @@ private:
       if(menu)
       {
          MenuItem item;
-         bool disabled;
+         //bool disabled;
 
          if(menu)
             menu.Clean(this);
@@ -2506,7 +2509,6 @@ private:
                int id;
                for(id = 0, cycle = activeClient.cycle; cycle && id<10;)
                {
-                  MenuItem item;
                   Window document = cycle.data;
                   if(!document.style.nonClient && document.style.isActiveClient && document.visible)
                   {
@@ -2527,10 +2529,10 @@ private:
 
          if((!previous && activeClient) || !activeClient)
          {
-            if(!activeClient)
+            /*if(!activeClient)
                disabled = true;
             else
-               disabled = false;
+               disabled = false;*/
             item = menu.FindItem(MenuWindowCloseAll, 0);
             if(item) item.disabled = false;
             item = menu.FindItem(MenuWindowNext, 0);
@@ -2733,7 +2735,6 @@ private:
 
    void ComputeRenderAreaNonOpaque(Extent dirtyExtent, Extent overDirtyExtent, Extent backBufferUpdate)
    {
-      bool opaque = IsOpaque();
       Window child;
       int offsetX = absPosition.x - rootWindow.absPosition.x, offsetY = absPosition.y - rootWindow.absPosition.y;
       if(rootWindow.nativeDecorations && rootWindow.windowHandle)
@@ -2745,7 +2746,6 @@ private:
 
       for(child = children.last; child; child = child.prev)
       {
-         ColorAlpha background = *(ColorAlpha *)&child.background;
          bool opaque = child.IsOpaque();
          if(!child.style.hidden && child.created && !child.is3D && child.rootWindow)
          {
@@ -3487,7 +3487,7 @@ private:
 
          // TESTING THIS HERE
          UpdateDecorations();
-         if(result = OnActivate(active, previous, goOnWithActivation, direct) && *goOnWithActivation && master)
+         if((result = OnActivate(active, previous, goOnWithActivation, direct) && *goOnWithActivation && master))
             result = NotifyActivate(master, this, active, previous);
          else
          {
@@ -3664,7 +3664,7 @@ private:
 
                   if(real)
                   {
-                     bool acquireInput = false;
+                     //bool acquireInput = false;
                      bool maximize =
                         parent.activeChild &&
                         parent.activeChild.state == maximized &&
@@ -3701,7 +3701,7 @@ private:
                               delete this;
                               return false;
                            }
-                           acquireInput = true;
+                           //acquireInput = true;
                         }
                      }
 
@@ -4569,10 +4569,10 @@ private:
                         {
                            if(cycleParent.CycleChildren(!key.shift, false, false, true))
                            {
+                              /*
                               Window child = cycleParent.activeChild;
 
                               // Scroll the window to include the active control
-                              /*
                               if(cycleParent.sbh && !child.style.dontScrollHorz)
                               {
                                  if(child.scrolledPos.x < 0)
@@ -5177,12 +5177,8 @@ private:
          if(activeChild)
             guiApp.interfaceDriver.ActivateRootWindow(activeChild);
       }
-      /*
-      TODO:
       if(!success)
-         //guiApp.LogErrorCode(IERR_GRAPHICS_LOADING_FAILED, caption);
-         guiApp.LogErrorCode(IERR_GRAPHICS_LOADING_FAILED, class.name);
-      */
+         LogErrorCode(graphicsLoadingFailed, _class.name);
 
       // Do this here to avoid problems on Windows
       if(stateBackup == maximized)
@@ -6113,7 +6109,6 @@ public:
          result = true;
       else if(guiApp && guiApp.driver != null)
       {
-         void * systemParent = null;
          OldLink slaveHolder;
          Window last;
          bool visible = !style.hidden;
@@ -6548,7 +6543,6 @@ public:
 
    void SetScrollArea(int width, int height, bool snapToStep)
    {
-      bool resize = false;
       if(snapToStep)
       {
          int stepX = sbStep.x, stepY = sbStep.y;
@@ -6660,7 +6654,7 @@ public:
       {
          if(state == newState || OnStateChange(newState, mods))
          {
-            WindowState prevState = state;
+            //WindowState prevState = state;
 
             StopMoving();
 
@@ -8456,8 +8450,8 @@ public:
          {
             if(value)
             {
-               Window sibling;
-               /*for(sibling = parent.children.first; sibling; sibling = sibling.next)
+               /*Window sibling;
+               for(sibling = parent.children.first; sibling; sibling = sibling.next)
                   if(sibling != this && sibling.style.isDefault)
                      sibling.style.isDefault = false;*/
                if(master.defaultControl)
@@ -8726,11 +8720,6 @@ public:
       property_category $"Layout"
       isset
       {
-         Anchor thisAnchor = anchor;
-         SizeAnchor thisSizeAnchor = sizeAnchor;
-         bool leftRight = (anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none);
-         bool topBottom = (anchor.top.type == none || anchor.top.type == middleRelative || anchor.bottom.type == none);
-         bool isClient = !sizeAnchor.isClientW && !sizeAnchor.isClientH;
          return ((anchor.left.type == none || anchor.left.type == middleRelative || anchor.right.type == none) ||
                 (anchor.top.type == none || anchor.top.type == middleRelative || anchor.bottom.type == none)) &&
             !sizeAnchor.isClientW && !sizeAnchor.isClientH && sizeAnchor.size.w && sizeAnchor.size.h;
@@ -9759,10 +9748,7 @@ public void ApplySkin(Class c, char * name, void ** vTbl)
 
 public void UnapplySkin(Class c)
 {
-   char className[1024];
-   Class sc;
    subclass(Window) wc = (subclass(Window))c;
-   subclass(Window) base = (subclass(Window))c.base;
    OldLink d;
 
    if(wc.pureVTbl && c._vTbl != wc.pureVTbl)

@@ -8,7 +8,6 @@ namespace net;
 #define String _String
 #include <winsock.h>
 #undef String
-static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
 
@@ -423,11 +422,11 @@ public:
 
    virtual int ReceiveData(byte * buffer, int count, uint flags)
    {
-      return (int)recv(s, buffer, count, flags);
+      return (int)recv(s, (char *)buffer, count, flags);
    }
    virtual int SendData(byte * buffer, int count, uint flags)
    {
-      return (int)send(s, buffer, count, flags);
+      return (int)send(s, (char *)buffer, count, flags);
    }
    virtual bool OnEstablishConnection(int s);
 
@@ -628,7 +627,7 @@ private:
             else
             {
                int len = sizeof(a);
-               count = (int)recvfrom(s, recvBuffer + recvBytes,
+               count = (int)recvfrom(s, (char *)recvBuffer + recvBytes,
                   recvBufferSize - recvBytes, 0, (SOCKADDR *)&a, &len);
                strcpy(inetAddress, inet_ntoa(this.a.sin_addr));
                inetPort = ntohs((uint16)a.sin_port);

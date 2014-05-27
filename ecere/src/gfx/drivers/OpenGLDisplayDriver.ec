@@ -531,7 +531,7 @@ static void egl_term_display()
 {
    if(stippleTexture)
    {
-      glDeleteTextures(1, (int *)&stippleTexture);
+      glDeleteTextures(1, &stippleTexture);
       stippleTexture = 0;
    }
    if(eglDisplay != EGL_NO_DISPLAY)
@@ -1036,7 +1036,7 @@ void glesTerminate()
    shortBDSize = 0;
 }
 
-static int stippleTexture;
+static GLuint stippleTexture;
 static bool stippleEnabled;
 
 void glesLineStipple( int i, unsigned short j )
@@ -1144,7 +1144,7 @@ void GLGenBuffers(int count, uint * buffer)
 #endif
 }
 
-void GLDeleteBuffers(int count, uint * buffer)
+void GLDeleteBuffers(int count, GLuint * buffer)
 {
 #ifdef __ANDROID__
    glDeleteBuffers(count, buffer);
@@ -1255,18 +1255,18 @@ class OGLSurface : struct
 
 class OGLMesh : struct
 {
-   int vertices;
-   int normals;
-   int texCoords;
-   int texCoords2;
-   int colors;
+   uint vertices;
+   uint normals;
+   uint texCoords;
+   uint texCoords2;
+   uint colors;
 };
 
 class OGLIndices : struct
 {
    uint16 * indices;
-   int buffer;
-   int nIndices;
+   uint buffer;
+   uint nIndices;
 };
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
@@ -1318,7 +1318,6 @@ class OpenGLDisplayDriver : DisplayDriver
    bool Lock(Display display)
    {
       OGLDisplay oglDisplay = display.driverData;
-      OGLSystem oglSystem = display.displaySystem.driverData;
 
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
@@ -1411,7 +1410,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void ::CheckExtensions(OGLSystem oglSystem)
    {
-      char * extensions = glGetString(GL_EXTENSIONS);
+      const char * extensions = (const char *)glGetString(GL_EXTENSIONS);
       if(extensions)
          oglSystem.pow2textures = strstr(extensions, "GL_ARB_texture_non_power_of_two") ? false : true;
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
@@ -2253,7 +2252,8 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       if(bitmap.driverData)
       {
-         glDeleteTextures(1, (int *)&bitmap.driverData);
+         GLuint tex = (GLuint)(uintptr)bitmap.driverData;
+         glDeleteTextures(1, &tex);
          bitmap.driverData = 0;
       }
       bitmap.driver = ((subclass(DisplayDriver))class(LFBDisplayDriver));
@@ -2264,7 +2264,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = displaySystem.driverData;
       bool result = false;
       Bitmap mipMap { };
-      int glBitmap = -1;
+      GLuint glBitmap = 0;
 
       uint w = width, h = height;
       if(oglSystem.pow2textures)
@@ -2295,7 +2295,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       delete mipMap;
 
-      bitmap.driverData = (void *)glBitmap;
+      bitmap.driverData = (void *)(uintptr)glBitmap;
       bitmap.driver = displaySystem.driver;
       bitmap.width = w;
       bitmap.height = h;
@@ -2314,7 +2314,7 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          int c, level;
          uint w = bitmap.width, h = bitmap.height;
-         int glBitmap = -1;
+         GLuint glBitmap = 0;
          if(oglSystem.pow2textures)
          {
             w = pow2i(w);
@@ -2344,11 +2344,10 @@ class OpenGLDisplayDriver : DisplayDriver
 
          glGetError();
          glGenTextures(1, &glBitmap);
-         if(glBitmap == -1)
+         if(glBitmap == 0)
          {
-            int error = glGetError();
+            //int error = glGetError();
             return false;
-            //Print("");
          }
 
          glBindTexture(GL_TEXTURE_2D, glBitmap);
@@ -2413,7 +2412,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
          if(!bitmap.keepData)
             bitmap.driver.FreeBitmap(bitmap.displaySystem, bitmap);
-         bitmap.driverData = (void *)glBitmap;
+         bitmap.driverData = (void *)(uintptr)glBitmap;
          bitmap.driver = displaySystem.driver;
 
          if(!result)
@@ -2753,7 +2752,7 @@ class OpenGLDisplayDriver : DisplayDriver
       else if(oglSurface.xOffset)
          glTranslated(oglSurface.xOffset / 64.0/*-0.375*/, 0.0, 0.0);
 
-      glBindTexture(GL_TEXTURE_2D, (uint)bitmap.driverData);
+      glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
       glBegin(GL_QUADS);
 
       if(h < 0)
@@ -2820,7 +2819,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
       glEnable(GL_TEXTURE_2D);
-      glBindTexture(GL_TEXTURE_2D, (uint)bitmap.driverData);
+      glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
 
       glColor4fv(oglSurface.bitmapMult);
 
@@ -2875,7 +2874,7 @@ class OpenGLDisplayDriver : DisplayDriver
    void StretchDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
       float s2dw,s2dh,d2sw,d2sh;
-      bool flipX = false, flipY = false;
+      //bool flipX = false, flipY = false;
 
       //Logf("StretchDI\n");
 
@@ -2883,13 +2882,13 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          w = Abs(w);
          sw = Abs(sw);
-         flipX = true;
+         //flipX = true;
       }
       if(Sgn(h) != Sgn(sh))
       {
          h = Abs(h);
          sh = Abs(sh);
-         flipY = true;
+         //flipY = true;
       }
 
       s2dw=(float)w / sw;
@@ -3386,7 +3385,7 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             float pickX = display.display3D.pickX + surface.offset.x;
             float pickY = display.height - (display.display3D.pickY + surface.offset.y) - 1;
-            Matrix pickMatrix =
+            Matrix pickMatrix
             {
                {
                   w / display.display3D.pickWidth, 0, 0, 0,
@@ -3484,7 +3483,7 @@ class OpenGLDisplayDriver : DisplayDriver
       {
          Bitmap map = material.baseMap;
          glEnable(GL_TEXTURE_2D);
-         glBindTexture(GL_TEXTURE_2D, (uint)map.driverData);
+         glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)map.driverData);
 
          glMatrixMode(GL_TEXTURE);
          glLoadIdentity();
@@ -3721,7 +3720,6 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       if(mesh)
       {
-         OGLDisplay oglDisplay = display.driverData;
          OGLMesh oglMesh = mesh.data;
 
          // *** Vertex Stream ***
@@ -3799,7 +3797,6 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
    {
-      OGLDisplay oglDisplay = display.driverData;
       //Logf("DrawPrimitives\n");
 
       if(primitive->type.vertexRange)
@@ -3897,7 +3894,6 @@ public void UseSingleGLContext(bool useSingle)
 
 default dllexport void * __attribute__((stdcall)) IS_GLGetContext(DisplaySystem displaySystem)
 {
-   void * context = null;
    if(displaySystem)
    {
       OGLSystem system = displaySystem.driverData;

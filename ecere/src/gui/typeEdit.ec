@@ -10,7 +10,7 @@ class Enumeration : struct
    int largest;
 };
 
-static void UnusedFunction()
+static __attribute__((unused)) void UnusedFunction()
 {
    int a;
    a.OnGetString(0,0,0);
@@ -229,7 +229,6 @@ public class MultiLineString : String
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
       // Don't show the editbox right away so that the text is highlighted by default
-      char * string = "";
       EditBox editBox
       {
          dataBox, visible = false,

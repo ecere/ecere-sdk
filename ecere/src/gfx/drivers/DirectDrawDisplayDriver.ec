@@ -793,8 +793,8 @@ class DirectDrawDisplayDriver : DisplayDriver
 
    bool Lock(Display display)
    {
-      DDrawDisplay ddrawDisplay = display.driverData;
-      /*if(ddrawDisplay.Lock())
+      /*DDrawDisplay ddrawDisplay = display.driverData;
+      if(ddrawDisplay.Lock())
       {
          display.displaySystem.pixelFormat = ddrawDisplay.bitmap.pixelFormat;
          IDirectDrawSurface_GetDC(ddrawDisplay.back, &ddrawDisplay.hdc);
@@ -804,8 +804,8 @@ class DirectDrawDisplayDriver : DisplayDriver
 
    void Unlock(Display display)
    {
-      DDrawDisplay ddrawDisplay = display.driverData;
-      /*IDirectDrawSurface_ReleaseDC(ddrawDisplay.back, ddrawDisplay.hdc);
+      /*DDrawDisplay ddrawDisplay = display.driverData;
+      IDirectDrawSurface_ReleaseDC(ddrawDisplay.back, ddrawDisplay.hdc);
       ddrawDisplay.Unlock();   */
    }
 }

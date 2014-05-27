@@ -7,7 +7,7 @@ void FreeList(OldList list, void (* FreeFunction)(void *))
    if(list != null)
    {
       Item item;
-      while(item = list.first)
+      while((item = list.first))
       {
          list.Remove(item);
          FreeFunction(item);
@@ -93,7 +93,7 @@ void FreeSymbol(Symbol symbol)
 
    FreeType(symbol.type);
 
-   while(link = symbol.templatedClasses.first)
+   while((link = symbol.templatedClasses.first))
       symbol.templatedClasses.Delete(link);
 
    delete symbol.string;
@@ -153,7 +153,7 @@ public void FreeExcludedSymbols(OldList excludedSymbols)
 {
    Symbol symbol;
 
-   while(symbol = excludedSymbols.first)
+   while((symbol = excludedSymbols.first))
    {
       excludedSymbols.Remove(symbol);
       FreeSymbol(symbol);
@@ -225,27 +225,27 @@ public void FreeContext(Context context)
    if(context == curContext)
       curContext = globalContext;
 
-   while(symbol = (Symbol)context.types.root)
+   while((symbol = (Symbol)context.types.root))
    {
       context.types.Remove((BTNode)symbol);
       FreeSymbol(symbol);
    }
-   while(symbol = (Symbol)context.classes.root)
+   while((symbol = (Symbol)context.classes.root))
    {
       context.classes.Remove((BTNode)symbol);
       FreeSymbol(symbol);
    }
-   while(symbol = (Symbol)context.symbols.root)
+   while((symbol = (Symbol)context.symbols.root))
    {
       context.symbols.Remove((BTNode)symbol);
       FreeSymbol(symbol);
    }
-   while(symbol = (Symbol)context.structSymbols.root)
+   while((symbol = (Symbol)context.structSymbols.root))
    {
       context.structSymbols.Remove((BTNode)symbol);
       FreeSymbol(symbol);
    }
-   while(symbol = (Symbol)context.templateTypes.root)
+   while((symbol = (Symbol)context.templateTypes.root))
    {
       context.templateTypes.Remove((BTNode)symbol);
       FreeTemplateType((TemplatedType)symbol);
@@ -1171,7 +1171,7 @@ public void FreeASTTree(OldList ast)
    if(ast != null)
    {
       External external;
-      while(external = ast.first)
+      while((external = ast.first))
       {
          ast.Remove(external);
          FreeExternal(external);
@@ -1219,7 +1219,6 @@ void FreeModuleData(Module module)
       DataMember dataMember;
       Method method;
       ClassTemplateParameter param;
-      ClassProperty classProp;
 
       if(_class.dataType)
       {

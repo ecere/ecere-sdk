@@ -13,7 +13,6 @@ import "Array"
 
 char * strchrmax(const char * s, int c, int max)
 {
-   char * result = null;
    int i;
    char ch;
    for(i = 0; i < max && (ch = s[i]); i++)
@@ -1209,7 +1208,7 @@ private:
 
       FontExtent = Display::FontExtent;
       font = fontObject;
-      lines.offset = (uint)&((EditLine)0).prev;
+      lines.offset = (uint)(uintptr)&((EditLine)0).prev;
 
       style = EditBoxBits { hScroll = true };
 
@@ -2099,8 +2098,6 @@ private:
    void ComputeLength(EditLine line)
    {
       int c;
-      int tabOccur = 0;
-      int tabWidth;
       int x = 0;
 
       for(c = 0; c < line.count; )
@@ -2706,9 +2703,8 @@ private:
    // Returns true if it needs scrolling
    bool FindMouse(int px, int py, int * tx, int * ty, EditLine * tline, bool half)
    {
-      int w;
       int c;
-      int x, y;
+      int y;
       EditLine line;
       bool needHScroll = false;
 
@@ -2971,7 +2967,6 @@ private:
       while(true)
       {
          int start = c;
-         int numBytes = 1;
          int len = 1;
          int w;
          if(c < Min(max, line.count))
@@ -3692,7 +3687,6 @@ private:
                      if(key.ctrl)
                      {
                         int i;
-                        int length;
                         char * buffer = line1.buffer;
                         for(i = x1; i < line1.count; i++)
                         {
@@ -3932,7 +3926,7 @@ private:
                {
                   if(x <= line.count)
                   {
-                     byte * buffer = line.buffer;
+                     byte * buffer = (byte *)line.buffer;
                      while(--x)
                      {
                         byte ch = buffer[x];
@@ -4078,7 +4072,7 @@ private:
                {
                   if(x < line.count)
                   {
-                     byte * buffer = line.buffer;
+                     byte * buffer = (byte *)line.buffer;
                      while(++x)
                      {
                         byte ch = buffer[x];
@@ -4289,11 +4283,13 @@ private:
             {
                if(style.stuckCaret) break;
                {
+                  /*
                   int th = space.h;
                   int textPos = 0;
                   int sx = 0, sy = this.y * this.space.h;
                   int maxW = clientSize.w - sx;
                   char * text = line.buffer;
+                  */
 
                   if(!shift) SelDirty();
                   DirtyLine(this.y);
@@ -4824,7 +4820,7 @@ private:
                   {
                      //Only indent back if you are exactly at one tab.
                      {
-                        bool whitespace = true;
+                        //bool whitespace = true;
                         int i;
                         char * newline;
                         int putsize;
@@ -5327,7 +5323,7 @@ public:
          {
             if(string[c] == '\n' || string[c] == '\r')
             {
-               if(!AddToLine(line,count, true, addedSpaces ? null : &addedSpaces, addedTabs ? null : &addedTabs))
+               if(!AddToLine(line, count, true, addedSpaces ? null : &addedSpaces, addedTabs ? null : &addedTabs))
                {
                   ret = false;
                   break;
@@ -5672,8 +5668,7 @@ public:
    {
       if(created)
       {
-         int w;
-         int c, numLines;
+         int numLines;
          EditLine line;
          int x;
          int checkX, checkY;
@@ -5836,7 +5831,7 @@ public:
       }
       else
       {
-         EditLine oldLine = this.line;
+         //EditLine oldLine = this.line;
          bool lastOne = false;
          EditLine oldViewLine = this.viewLine;
          bool figureSyntax = false;
@@ -5884,8 +5879,6 @@ public:
       }
       else
       {
-         EditLine oldLine = this.line;
-
          for(c=0, line = this.line.prev; line && c<numLines; line = line.prev, c++)
          {
             this.line = line;

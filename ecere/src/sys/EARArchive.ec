@@ -7,7 +7,7 @@ namespace sys;
 import "System"
 import "BufferedFile"
 
-#define OFFSET(s, m) ((uint) (&((s *) 0)->m))
+#define OFFSET(s, m) ((uint)(uintptr) (&((s *) 0)->m))
 #define MDWORD(a,b) ((((uint32)((uint16)(b)))<<16)+((uint16)(a)))
 
 #define EAR_RECOGNITION { 'e', 'A', 'R', 228, 11, 12, 3, 0 }
@@ -22,7 +22,7 @@ static class FreeBlock : struct
 
 static struct EARHeader
 {
-   byte recognition[sizeof(earRecognition)] __attribute__((packed));
+   byte recognition[sizeof(earRecognition)];
    uint version                             __attribute__((packed));
    FileSize totalSize                       __attribute__((packed));
 };
@@ -62,7 +62,7 @@ static File EAROpenArchive(char * archive, EARHeader header)
 
       // First attempt to treat this as an archive file
       if(f.Read(header, sizeof(EARHeader), 1) == 1 &&
-         !strncmp(header.recognition, earRecognition, sizeof(earRecognition)))
+         !memcmp(header.recognition, earRecognition, sizeof(earRecognition)))
          return f;
 
       // Then try to see if an archive is at the end of the file
@@ -70,7 +70,7 @@ static File EAROpenArchive(char * archive, EARHeader header)
       f.Read(&archiveSize, sizeof(uint), 1);
       f.Seek(-(int)archiveSize, end);
       if(f.Read(header, sizeof(EARHeader), 1) == 1 &&
-         !strncmp(header.recognition, earRecognition, sizeof(earRecognition)))
+         !memcmp(header.recognition, earRecognition, sizeof(earRecognition)))
          return f;
 
       delete f;
@@ -159,6 +159,7 @@ class EARArchive : Archive
 
          return end;
       }
+      return 0;
    }
 
    ~EARArchive()
@@ -198,7 +199,6 @@ class EARArchive : Archive
       if(dir)
       {
          char namePart[MAX_LOCATION] = "", nameRest[MAX_LOCATION];
-         uint position;
 
          dir.archive = this;
 
@@ -519,7 +519,6 @@ class EARArchive : Archive
       EARFile file {};
       if(file)
       {
-         char fileName[MAX_LOCATION];
          EAREntry entry { };
 
          f.Seek(archiveStart + sizeof(EARHeader), start);
@@ -705,7 +704,6 @@ class EARArchiveDir : ArchiveDir
       EARFile file {};
       if(file)
       {
-         char fileName[MAX_LOCATION];
          EAREntry entry { };
 
          archive.f.Seek(position, start);
@@ -1052,7 +1050,6 @@ class EARArchiveDir : ArchiveDir
 
    bool _AddFromFileAtPosition(EAREntry oldEntry, uint oldPosition, char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
    {
-      bool result = false;
       bool skip = false;
       FileStats oldStats { };
 
@@ -1593,7 +1590,7 @@ class EARFileSystem : FileSystem
 
                archive.archiveStart = archive.f.Tell();
                if(archive.f.Read(&header, sizeof(EARHeader), 1) == 1 &&
-                  !strncmp(header.recognition, earRecognition, sizeof(earRecognition)))
+                  !memcmp(header.recognition, earRecognition, sizeof(earRecognition)))
                   opened = true;
 
                if(!opened)
@@ -1602,7 +1599,7 @@ class EARFileSystem : FileSystem
                   archive.archiveStart = archive.f.Tell();
                   archiveSize = archive.f.GetSize();
                   if(archive.f.Read(&header, sizeof(EARHeader), 1) == 1 &&
-                     !strncmp(header.recognition, earRecognition, sizeof(earRecognition)))
+                     !memcmp(header.recognition, earRecognition, sizeof(earRecognition)))
                      opened = true;
                }
 

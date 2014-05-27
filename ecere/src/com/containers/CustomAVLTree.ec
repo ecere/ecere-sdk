@@ -87,7 +87,6 @@ private:
 
    bool Add(Class Tclass, thisclass node)
    {
-      uint64 newKey = (uint64)node.key;
       if(!Tclass)
          Tclass = class(uint64);
       while(true)
@@ -462,7 +461,7 @@ public:
    void Free()
    {
       BT item;
-      while(item = root)
+      while((item = root))
       {
          // THIS SHOULDN'T BE CALLING THE VIRTUAL FUNCTION
          CustomAVLTree::Remove(item);

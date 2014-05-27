@@ -898,7 +898,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -1410,7 +1422,7 @@ struct TemplateParameter * param = (param = __ecereNameSpace__ecere__com__eInsta
 struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = (uintptr_t)identifier->string, type->param = param, type);
 
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
-((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor((void *)type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 return param;
 }
 return (((void *)0));
@@ -3561,7 +3573,7 @@ for(copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__Bin
 struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = copy->key, type->param = copy->param, type);
 
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
-((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor((void *)type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 }
 else if(baseClass && baseClass->registered)
@@ -3593,7 +3605,7 @@ struct TemplatedType * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstanc
 __ecereInstance1->key = (uintptr_t)p->name, __ecereInstance1->param = param, __ecereInstance1;
 });
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&curContext->templateTypes, (struct __ecereNameSpace__ecere__sys__BTNode *)type))
-((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor(type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor((void *)type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 }
 }
@@ -3631,7 +3643,7 @@ break;
 }
 }
 FreeContext(symbol->ctx);
-((symbol->ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor(symbol->ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(symbol->ctx)) : 0), symbol->ctx = 0);
+((symbol->ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)symbol->ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(symbol->ctx)) : 0), symbol->ctx = 0);
 }
 symbol->ctx = curContext;
 classDef = __extension__ ({

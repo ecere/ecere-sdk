@@ -54,7 +54,7 @@ public define FORMAT64U      = (GetRuntimePlatform() == win32) ? "%I64u" : "%llu
 
 #define GETXQWORD(b) (uint64)(((uint64)(b)[0] << 56) | ((uint64)(b)[1] << 48) | ((uint64)(b)[2] << 40) | ((uint64)(b)[3] << 32) | ((uint64)(b)[4] << 24) | ((b)[5] << 16) | ((b)[6] << 8) | (b)[7])
 
-static void UnusedFunction()
+__attribute__((unused)) static void UnusedFunction()
 {
    int a;
    a.OnGetString(0,0,0);
@@ -98,9 +98,6 @@ public:
 #if defined(ECERE_BOOTSTRAP) || defined(ECERE_STATIC)
 #define dllexport
 #endif
-
-// TOFIX: Declaration ordering (Required on gcc 3.4.5)
-dllexport void eSystem_Delete(void * memory);
 
 public class IOChannel
 {
@@ -1465,12 +1462,12 @@ static char * Char_OnGetString(Class _class, char * data, char * string, void * 
    if(needClass && *needClass)
    {
       char ch = *data;
-      if(ch == '\t')      strcpy(string, "'\t'");
-      else if(ch == '\n') strcpy(string, "'\n'");
-      else if(ch == '\r') strcpy(string, "'\r'");
-      else if(ch == '\a') strcpy(string, "'\a'");
-      else if(ch == '\\') strcpy(string, "'\\'");
-      else if(ch < 32 || ch >= 127)    sprintf(string, "'\o'", ch);
+      if(ch == '\t')      strcpy(string, "'\\t'");
+      else if(ch == '\n') strcpy(string, "'\\n'");
+      else if(ch == '\r') strcpy(string, "'\\r'");
+      else if(ch == '\a') strcpy(string, "'\\a'");
+      else if(ch == '\\') strcpy(string, "'\\\\'");
+      else if(ch < 32 || ch >= 127)    sprintf(string, "'\\x%x'", ch);
       else sprintf(string, "'%c'", ch);
    }
    else
@@ -2149,7 +2146,7 @@ public struct StaticString
 
    void OnSerialize(IOChannel channel)
    {
-      int len = this ? strlen(string) : 0;
+      uint len = this ? strlen(string) : 0;
       channel.WriteData(this ? string : "", len+1);
    }
 
@@ -2158,7 +2155,6 @@ public struct StaticString
       if(this)
       {
          int c;
-         uint size;
 
          for(c = 0; channel.ReadData(&string[c], 1) && string[c]; c++);
          string[c++] = '\0';

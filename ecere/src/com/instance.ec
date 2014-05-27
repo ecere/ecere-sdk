@@ -91,6 +91,8 @@ void InternalModuleLoadBreakpoint();
 
 private:
 
+public class Angle : double;
+
 public class unichar : uint32
 {
 
@@ -776,6 +778,7 @@ static uint initNumBlocks[NUM_POOLS] =
 #define SIZE_POSITION(s)   log1_5i(s)
 #define NTH_SIZE(p)        pow1_5(p)
 
+#if 0
 static int power15[] =
 {
 /*
@@ -848,6 +851,7 @@ static int power15[] =
 466624,
 699920
 };
+#endif
 
 private struct BlockPool
 {
@@ -874,8 +878,8 @@ private struct BlockPool
       {
          int c;
 #ifdef _DEBUG
-         uint totalAvailable = 0, totalAllocated = 0, totalBlocks = 0, totalUsed = 0;
-         uint totalParts = 0;
+         /*uint totalAvailable = 0, totalAllocated = 0, totalBlocks = 0, totalUsed = 0;
+         uint totalParts = 0;*/
 #endif
          MemBlock block = (MemBlock)memory;
          MemPart part = calloc(1, sizeof(class MemPart));
@@ -1044,7 +1048,7 @@ private struct BlockPool
 
 static BlockPool * pools; //[NUM_POOLS];
 
-static uint PosFibonacci(uint number)
+/*static uint PosFibonacci(uint number)
 {
    uint pos;
    uint last = 1, prev = 0;
@@ -1091,7 +1095,7 @@ static uint NextFibonacci(uint number)
          return current;
    }
 }
-
+*/
 static uint log1_5i(uint number)
 {
    uint pos;
@@ -1910,7 +1914,6 @@ public void CheckMemory()
 static void FixDerivativesBase(Class base, Class mod)
 {
    OldLink derivative;
-   OldLink templateLink;
 
    ComputeClassParameters(base, strchr(base.name, '<'), null);
 
@@ -2177,7 +2180,7 @@ static void FixDerivativesBase(Class base, Class mod)
       for(templateLink = base.templatized.first; templateLink; templateLink = templateLink.next)
       {
          Class template = templateLink.data;
-         char * templateParams = strchr(template.name, '<');
+         //char * templateParams = strchr(template.name, '<');
          template.base = base.base;
          template._vTbl = base._vTbl;
          //ComputeClassParameters(template, templateParams, null);
@@ -2263,7 +2266,6 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
       char * dataTypeString = null;
       Class enumBase = null;
       Class base = (baseName && baseName[0]) ? eSystem_FindClass(module, baseName) : null;
-      bool refine = false;
       Class prevBase = null;
 
       if(base && !base.internalDecl && (base.type == noHeadClass || base.type == structClass || base.type == normalClass))
@@ -2386,6 +2388,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
          {
             _class = eSystem_FindClass(module, colons + 2);
             if(_class)
+            {
                if(_class.internalDecl)
                {
                   delete _class.fullName;
@@ -2393,6 +2396,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
                }
                else
                   _class = null;
+            }
          }
       }
       if(_class)
@@ -2438,7 +2442,6 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
                ns = parent;
             }
          }
-         refine = true;
       }
       else
       {
@@ -2469,7 +2472,6 @@ public dllexport Class eSystem_RegisterClass(ClassType type, char * name, char *
                }
             }
 
-            refine = true;
             delete _class.fullName;
             _class.fullName = CopyString(name);
          }
@@ -3022,7 +3024,7 @@ public dllexport void eClass_Unregister(Class _class)
 
 static BTNamedLink ScanNameSpace(NameSpace nameSpace, char * name, void * listOffset)
 {
-   BinaryTree * tree = (BinaryTree *)((byte *)nameSpace + (uint)listOffset);
+   BinaryTree * tree = (BinaryTree *)((byte *)nameSpace + (uintptr)listOffset);
    BTNamedLink link = (BTNamedLink)tree->Find((uintptr)name);
    NameSpace * child;
    if(!link)
@@ -6227,6 +6229,7 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("strncpy", "char * strncpy(char *, const char *, uintsize n)", strncpy, module, baseSystemAccess);
    eSystem_RegisterFunction("memcpy", "void * memcpy(void *, const void *, uintsize size)", memcpy, module, baseSystemAccess);
    eSystem_RegisterFunction("memmove", "void * memmove(void *, const void *, uintsize size)", memmove, module, baseSystemAccess);
+   eSystem_RegisterFunction("memcmp", "int memcmp(const void *, const void *, uintsize size)", memcmp, module, baseSystemAccess);
 
    // --- Stdio ---
    eSystem_RegisterFunction("sprintf", "int sprintf(char *, char *, ...)", sprintf, module, baseSystemAccess);
@@ -6285,7 +6288,7 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
    Instance_COM_Initialize(argc, argv, &app.parsedCommand, &app.argc, &app.argv);
 
    app.application = app;
-   app.allModules.offset = sizeof(class Instance) + (uint)&((struct Module *)0)->prev;
+   app.allModules.offset = sizeof(class Instance) + (uint)(uintptr)&((struct Module *)0)->prev;
    app.isGUIApp = guiApp;
 
    LoadCOM(app);
@@ -6327,7 +6330,6 @@ public dllexport void eClass_DoneAddingTemplateParameters(Class base)
 {
    if(base)
    {
-      OldLink derivative;
       ClassTemplateParameter param;
       {
          void * first = base.templateParams.first;

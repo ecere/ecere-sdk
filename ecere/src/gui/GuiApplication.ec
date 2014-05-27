@@ -38,7 +38,6 @@ namespace gui;
 #define String _String
 #include <winsock.h>
 #undef String
-static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
 
@@ -187,14 +186,14 @@ public class GuiApplication : Application
 
       // TODO:
       // customCursors.offset = OFFSET(Cursor, prev);
-      windowTimers.offset = (uint)&((Timer)0).prev;
+      windowTimers.offset = (uint)(uintptr)&((Timer)0).prev;
 
       for(c = 0; c<SystemCursor::enumSize; c++)
          systemCursors[c] = Cursor { systemCursor = c; };
 
       globalSystem.eventSemaphore = Semaphore { };
       globalSystem.fileMonitorMutex = Mutex { };
-      globalSystem.fileMonitors.offset = (uint)&((FileMonitor)0).prev;
+      globalSystem.fileMonitors.offset = (uint)(uintptr)&((FileMonitor)0).prev;
       return true;
    }
 

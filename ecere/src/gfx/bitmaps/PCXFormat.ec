@@ -9,20 +9,20 @@ static struct RGBA32
 
 static struct PCXHead
 {
-   byte manufacturer       __attribute__((packed));
-   byte version            __attribute__((packed));
-   byte encoding           __attribute__((packed));
-   byte bitsPerPixel       __attribute__((packed));
+   byte manufacturer;
+   byte version;
+   byte encoding;
+   byte bitsPerPixel;
    uint16 xMin,yMin        __attribute__((packed));
    uint16 xMax,yMax        __attribute__((packed));
    uint16 hRes             __attribute__((packed));
    uint16 vRes             __attribute__((packed));
-   byte palette16[48]      __attribute__((packed));
-   byte reserved           __attribute__((packed));
-   byte colorPlanes        __attribute__((packed));
+   byte palette16[48];
+   byte reserved;
+   byte colorPlanes;
    uint16 bytesPerLine     __attribute__((packed));
    uint16 paletteType      __attribute__((packed));
-   byte filler[58]         __attribute__((packed));
+   byte filler[58];
 };
 
 #define BUFLEN 1024

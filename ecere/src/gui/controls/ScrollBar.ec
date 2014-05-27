@@ -30,7 +30,6 @@ public:
    {
       if(this)
       {
-         int sbWidth = guiApp.textMode ? 8 : SB_WIDTH;
          int oldPosition = position;
          Window master = this.master;
 

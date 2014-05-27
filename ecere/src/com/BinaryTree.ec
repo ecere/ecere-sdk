@@ -5,7 +5,7 @@ namespace sys;
 import "BTNode"
 
 // TODO: FIX THIS
-static BinaryTree dummy;
+__attribute__((unused)) static BinaryTree dummy;
 
 public struct BinaryTree
 {

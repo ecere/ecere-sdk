@@ -343,7 +343,7 @@ public class TVisionSkin_Window : Window
    void UpdateNonClient()
    {
       Size size = this.size;
-      int w = size.w, h = size.h;
+      int w = size.w;
       Point clientStart = this.clientStart;
       int sx = clientStart.x, sy = clientStart.y;
       if(menuBar)

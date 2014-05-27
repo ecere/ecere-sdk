@@ -20,7 +20,7 @@ WINBASEAPI HWND WINAPI GetConsoleWindow ();
 
 private:
 
-static HANDLE hStdin, hStdout, hInactive;
+static HANDLE hStdin, hStdout;
 static byte keys[256];
 static Point mousePosition;
 static Box mouseRange;
@@ -112,14 +112,15 @@ class Win32ConsoleInterface : Interface
 
    bool ProcessInput(bool processAll)
    {
-      int numInput, c;
+      DWORD numInput;
+      int c;
       GetNumberOfConsoleInputEvents(hStdin, &numInput);
       if(numInput)
       {
          for(c = 0; c<numInput; c++)
          {
             INPUT_RECORD event;
-            int readInputs;
+            DWORD readInputs;
             ReadConsoleInput(hStdin, &event, 1, &readInputs);
             switch(event.EventType)
             {
@@ -481,9 +482,9 @@ class Win32ConsoleInterface : Interface
       bool result = false;
    	if(OpenClipboard(null))
    	{
-         if(clipBoard.handle = GetClipboardData(CF_TEXT))
+         if((clipBoard.handle = GetClipboardData(CF_TEXT)))
          {
-            if(clipBoard.text = GlobalLock(clipBoard.handle))
+            if((clipBoard.text = GlobalLock(clipBoard.handle)))
                result = true;
          }
          CloseClipboard();

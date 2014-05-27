@@ -316,7 +316,7 @@ public:
       {
       #if defined(__WIN32__)
          SYSTEMTIME localTime, systemTime;
-         FILETIME fileTime, localFileTime;
+         //FILETIME fileTime, localFileTime;
          DateTime input, global;
 
          input = this;

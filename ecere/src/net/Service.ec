@@ -10,7 +10,6 @@ namespace net;
 #define String _String
 #include <winsock.h>
 #undef String
-static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
 default:
@@ -89,7 +88,7 @@ public:
                sockets.Clear();
 
                // Fix up the links/offsets here...
-               sockets.offset = (uint)&((Socket)0).prev;
+               sockets.offset = (uint)(uintptr)&((Socket)0).prev;
 
                FD_SET(s, &network.readSet);
                FD_SET(s, &network.exceptSet);

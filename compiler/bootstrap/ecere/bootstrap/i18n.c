@@ -137,6 +137,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -166,6 +168,16 @@ unsigned int isWatchable;
 } __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -463,42 +475,42 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &revision, sizeof(unsigned int), 1);
 if(swap)
-((((revision) & 0x000000ff) << 24) | (((revision) & 0x0000ff00) << 8) | (((revision) & 0x00ff0000) >> 8) | (((revision) & 0xff000000) >> 24));
+revision = ((((revision) & 0x000000ff) << 24) | (((revision) & 0x0000ff00) << 8) | (((revision) & 0x00ff0000) >> 8) | (((revision) & 0xff000000) >> 24));
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &numStrings, sizeof(unsigned int), 1);
 if(swap)
-((((numStrings) & 0x000000ff) << 24) | (((numStrings) & 0x0000ff00) << 8) | (((numStrings) & 0x00ff0000) >> 8) | (((numStrings) & 0xff000000) >> 24));
+numStrings = ((((numStrings) & 0x000000ff) << 24) | (((numStrings) & 0x0000ff00) << 8) | (((numStrings) & 0x00ff0000) >> 8) | (((numStrings) & 0xff000000) >> 24));
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &origStrings, sizeof(unsigned int), 1);
 if(swap)
-((((origStrings) & 0x000000ff) << 24) | (((origStrings) & 0x0000ff00) << 8) | (((origStrings) & 0x00ff0000) >> 8) | (((origStrings) & 0xff000000) >> 24));
+origStrings = ((((origStrings) & 0x000000ff) << 24) | (((origStrings) & 0x0000ff00) << 8) | (((origStrings) & 0x00ff0000) >> 8) | (((origStrings) & 0xff000000) >> 24));
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &transStrings, sizeof(unsigned int), 1);
 if(swap)
-((((transStrings) & 0x000000ff) << 24) | (((transStrings) & 0x0000ff00) << 8) | (((transStrings) & 0x00ff0000) >> 8) | (((transStrings) & 0xff000000) >> 24));
+transStrings = ((((transStrings) & 0x000000ff) << 24) | (((transStrings) & 0x0000ff00) << 8) | (((transStrings) & 0x00ff0000) >> 8) | (((transStrings) & 0xff000000) >> 24));
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &hashingSize, sizeof(unsigned int), 1);
 if(swap)
-((((hashingSize) & 0x000000ff) << 24) | (((hashingSize) & 0x0000ff00) << 8) | (((hashingSize) & 0x00ff0000) >> 8) | (((hashingSize) & 0xff000000) >> 24));
+hashingSize = ((((hashingSize) & 0x000000ff) << 24) | (((hashingSize) & 0x0000ff00) << 8) | (((hashingSize) & 0x00ff0000) >> 8) | (((hashingSize) & 0xff000000) >> 24));
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &hashingOffset, sizeof(unsigned int), 1);
 if(swap)
-((((hashingOffset) & 0x000000ff) << 24) | (((hashingOffset) & 0x0000ff00) << 8) | (((hashingOffset) & 0x00ff0000) >> 8) | (((hashingOffset) & 0xff000000) >> 24));
+hashingOffset = ((((hashingOffset) & 0x000000ff) << 24) | (((hashingOffset) & 0x0000ff00) << 8) | (((hashingOffset) & 0x00ff0000) >> 8) | (((hashingOffset) & 0xff000000) >> 24));
 if(!__ecereNameSpace__ecere__moduleMaps)
 __ecereNameSpace__ecere__moduleMaps = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__String___);
 {
@@ -532,14 +544,14 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &len, sizeof(unsigned int), 1);
 if(swap)
-((((len) & 0x000000ff) << 24) | (((len) & 0x0000ff00) << 8) | (((len) & 0x00ff0000) >> 8) | (((len) & 0xff000000) >> 24));
+len = ((((len) & 0x000000ff) << 24) | (((len) & 0x0000ff00) << 8) | (((len) & 0x00ff0000) >> 8) | (((len) & 0xff000000) >> 24));
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &offset, sizeof(unsigned int), 1);
 if(swap)
-((((offset) & 0x000000ff) << 24) | (((offset) & 0x0000ff00) << 8) | (((offset) & 0x00ff0000) >> 8) | (((offset) & 0xff000000) >> 24));
+offset = ((((offset) & 0x000000ff) << 24) | (((offset) & 0x0000ff00) << 8) | (((offset) & 0x00ff0000) >> 8) | (((offset) & 0xff000000) >> 24));
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -562,14 +574,14 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &len, sizeof(unsigned int), 1);
 if(swap)
-((((len) & 0x000000ff) << 24) | (((len) & 0x0000ff00) << 8) | (((len) & 0x00ff0000) >> 8) | (((len) & 0xff000000) >> 24));
+len = ((((len) & 0x000000ff) << 24) | (((len) & 0x0000ff00) << 8) | (((len) & 0x00ff0000) >> 8) | (((len) & 0xff000000) >> 24));
 ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, &offset, sizeof(unsigned int), 1);
 if(swap)
-((((offset) & 0x000000ff) << 24) | (((offset) & 0x0000ff00) << 8) | (((offset) & 0x00ff0000) >> 8) | (((offset) & 0xff000000) >> 24));
+offset = ((((offset) & 0x000000ff) << 24) | (((offset) & 0x0000ff00) << 8) | (((offset) & 0x00ff0000) >> 8) | (((offset) & 0xff000000) >> 24));
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 

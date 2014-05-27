@@ -137,6 +137,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -166,6 +168,16 @@ unsigned int isWatchable;
 } __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -333,6 +345,8 @@ uint64 * item = (uint64 *)ip;
 return ((((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 1) ? ((uint64)item) : (((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 0 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->type == 5) ? (uint64)*((void **)item) : ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize == 1) ? *((unsigned char *)item) : ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize == 2) ? *((unsigned short *)item) : ((((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[0].dataTypeClass->typeSize == 4) ? *((unsigned int *)item) : *(item)))))));
 }
 
+extern void *  memcpy(void * , const void * , size_t size);
+
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Array_SetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * ip, uint64 value)
 {
 struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + structSize_Instance) : 0);
@@ -399,8 +413,6 @@ __ecerePointer___ecereNameSpace__ecere__com__Array->array = __ecereNameSpace__ec
 void __ecereMethod___ecereNameSpace__ecere__com__Array_Move(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * ip, struct __ecereNameSpace__ecere__com__IteratorPointer * afterIp)
 {
 struct __ecereNameSpace__ecere__com__Array * __ecerePointer___ecereNameSpace__ecere__com__Array = (struct __ecereNameSpace__ecere__com__Array *)(this ? (((char *)this) + structSize_Instance) : 0);
-uint64 * it = (uint64 *)ip;
-uint64 * after = (uint64 *)afterIp;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Array_RemoveAll(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -478,8 +490,6 @@ struct __ecereNameSpace__ecere__com__Class * type;
 } __attribute__ ((gcc_struct));
 
 extern unsigned int __ecereNameSpace__ecere__com__eClass_IsDerived(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from);
-
-extern void *  memcpy(void * , const void * , size_t size);
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount;
 

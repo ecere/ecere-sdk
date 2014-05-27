@@ -6,7 +6,6 @@ namespace net;
 #define String _String
 #include <winsock.h>
 #undef String
-static WSADATA wsaData;
 
 #elif defined(__unix__) || defined(__APPLE__)
 
@@ -154,7 +153,7 @@ public:
          int callID = nextCallID++;
          DCOMServerSocket socket = serverSocket;
          DCOMServerSocket processingSocket;
-         unsigned int size = (uint)&((CallVirtualMethodPacket)0).args + argsBuffer.size; // sizeof(class CallVirtualMethodPacket) + virtualsBuffer.size - 1;
+         unsigned int size = (uint)(uintptr)&((CallVirtualMethodPacket)0).args + argsBuffer.size; // sizeof(class CallVirtualMethodPacket) + virtualsBuffer.size - 1;
          CallVirtualMethodPacket packet = (CallVirtualMethodPacket)new0 byte[size];
          VirtualCallAck ack = null;
 
@@ -200,7 +199,7 @@ public:
          {
             if(!serverSocket || !serverSocket.connected || !serverSocket.thread)
                break;
-            if(ack = VirtualCallAcknowledged(methodID, id, callID))
+            if((ack = VirtualCallAcknowledged(methodID, id, callID)))
                break;
 
             guiApp.Unlock();
@@ -378,7 +377,7 @@ class DCOMClientThread : Thread
 
             if(hasReturnValue)
             {
-               size = (uint)&((MethodReturnedPacket)0).args + buffer.size; // sizeof(class MethodReturnedPacket) + buffer.size - 1;
+               size = (uint)(uintptr)&((MethodReturnedPacket)0).args + buffer.size; // sizeof(class MethodReturnedPacket) + buffer.size - 1;
                packet = (MethodReturnedPacket)new0 byte[size];
                packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_MethodReturned);
                packet.size = size;
@@ -482,7 +481,6 @@ class DCOMClientThread : Thread
 
    void OnDisconnect(int code)
    {
-      int c;
       guiApp.Lock();
       thread.connected = false;
       guiApp.Unlock();
@@ -554,7 +552,6 @@ public class DCOMService : Service
    public bool Stop()
    {
       bool result = true;
-      DCOMServerSocket socket;
       thread.connected = false;
       result = Service::Stop();
       if(thread.started && GetCurrentThreadID() != (int64)thread.id)
@@ -676,7 +673,7 @@ public:
             {
                CallVirtualMethodPacket callMethod = (CallVirtualMethodPacket)p;
                VirtualMethodReturnedPacket packet;
-               unsigned int size = (uint)&((VirtualMethodReturnedPacket)0).args; // sizeof(class VirtualMethodReturnedPacket);
+               unsigned int size = (uint)(uintptr)&((VirtualMethodReturnedPacket)0).args; // sizeof(class VirtualMethodReturnedPacket);
                SerialBuffer buffer { };
                bool hasReturnValue = callMethod.hasReturnValue;
                int methodID = callMethod.methodID;
@@ -761,7 +758,7 @@ public:
          {
             if(!thread || !connected)
                break;
-            if(ack = CallAcknowledged(methodID, objectID, callID))
+            if((ack = CallAcknowledged(methodID, objectID, callID)))
                break;
             guiApp.Unlock();
 

@@ -101,7 +101,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
 
    bool CreateDisplaySystem(DisplaySystem displaySystem)
    {
-      Win32PrinterSystem gdiSystem = displaySystem.driverData = Win32PrinterSystem { };
+      displaySystem.driverData = Win32PrinterSystem { };
       return true; //false;
    }
 
@@ -214,7 +214,6 @@ class Win32PrinterDisplayDriver : DisplayDriver
 
    bool CreateDisplay(Display display)
    {
-      Win32PrinterSystem gdiSystem = display.displaySystem.driverData;
       bool result = false;
 
       if(display)
@@ -245,7 +244,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
          	uint16 szPrinter[160];
          	uint16 *szDevice, *szDriver, *szOutput;
 
-            GetProfileString(L"windows", L"device", L"...", (char *)szPrinter, 160);
+            GetProfileString(L"windows", L"device", L"...", szPrinter, 160);
          	szDevice = wcstok(szPrinter, L",");
          	szDriver = wcstok(null,      L",");
          	szOutput = wcstok(null,      L",");
@@ -430,7 +429,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
          if(bitmap.transparent)
          {
             Bitmap mask { };
-            HGDIOBJ prevDC, prevDC2;
+            HGDIOBJ prevDC;//, prevDC2;
             int c;
             mask.Allocate(null, bitmap.width, bitmap.height, 0, pixelFormat888, false);
             for(c = 0; c<bitmap.width * bitmap.height; c++)
@@ -439,7 +438,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
             gdiBitmap.bmp = CreateDIBitmap(gdiSystem.hdc, (LPBITMAPINFOHEADER)info, CBM_INIT, mask.picture, info, DIB_RGB_COLORS);
             gdiBitmap.mask = CreateBitmap(bitmap.width, bitmap.height, 1, 1, null);
             prevDC = SelectObject(gdiSystem.bmpDC, gdiBitmap.bmp);
-            prevDC2 = SelectObject(gdiSystem.tmpDC, gdiBitmap.mask);
+            /*prevDC2 = */SelectObject(gdiSystem.tmpDC, gdiBitmap.mask);
             SetBkColor(gdiSystem.bmpDC, 0);
             BitBlt(gdiSystem.tmpDC, 0, 0, bitmap.width, bitmap.height, gdiSystem.bmpDC, 0, 0, SRCCOPY);
             SetBkColor(gdiSystem.bmpDC, 0);
@@ -480,7 +479,6 @@ class Win32PrinterDisplayDriver : DisplayDriver
    void ReleaseSurface(Display display, Surface surface)
    {
       Win32PrinterSurface gdiSurface = surface.driverData;
-      Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
       if(gdiSurface)
       {
          if(gdiSurface.rgn)
@@ -609,7 +607,6 @@ class Win32PrinterDisplayDriver : DisplayDriver
    bool GrabScreen(Display display, Bitmap bitmap, int x, int y, unsigned int w, unsigned int h)
    {
       bool result = false;
-      Win32PrinterDisplay gdiDisplay = display.driverData;
       // result = ((subclass(DisplayDriver))class(LFBDisplayDriver)).GrabScreen(display, bitmap, x,y, w,h);
       return result;
    }
@@ -617,7 +614,6 @@ class Win32PrinterDisplayDriver : DisplayDriver
    void SetForeground(Display display, Surface surface, ColorAlpha color)
    {
       Win32PrinterSurface gdiSurface = surface.driverData;
-      Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
       COLORREF rgb = RGB(color.color.r, color.color.g, color.color.b);
       // ((subclass(DisplayDriver))class(LFBDisplayDriver)).SetForeground(display, surface, color);
       SetTextColor(gdiSurface.hdc, rgb);
@@ -628,7 +624,6 @@ class Win32PrinterDisplayDriver : DisplayDriver
    void SetBackground(Display display, Surface surface, ColorAlpha color)
    {
       Win32PrinterSurface gdiSurface = surface.driverData;
-      Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
       COLORREF rgb;
       /*
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).SetBackground(display, surface, color);
@@ -840,7 +835,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
    {
       Win32PrinterSystem gdiSystem = displaySystem.driverData;
       HDC hdc = gdiSystem.hdc;
-      int pixels, res;
+      int /*pixels, */res;
       void * font;
       /*
       SetMapMode(gdiSystem.hdc, MM_ANISOTROPIC);
@@ -848,14 +843,14 @@ class Win32PrinterDisplayDriver : DisplayDriver
       SetViewportExtEx(gdiSystem.hdc, GetDeviceCaps(gdiSystem.hdc, HORZRES), GetDeviceCaps(gdiSystem.hdc, VERTRES), null);
       */
 
-      pixels = GetDeviceCaps(hdc, VERTRES);
+      //pixels = GetDeviceCaps(hdc, VERTRES);
       res = GetDeviceCaps(hdc, LOGPIXELSY);
       {
          int s;
          s = -(int)(((float)size * res / 78) + 0.5);
 
          // font = CreateFont(-(int)(((float)size * 96 / 72) + 0.5),
-         font = CreateFont(s,
+         font = CreateFontA(s,
          // font = CreateFont(-(int)(((float)size * pixels * RESY / res / 72) + 0.5),
             0,0,0, flags.bold ? FW_BOLD : FW_NORMAL, flags.italic ? TRUE : FALSE,
                flags.underline ? TRUE : FALSE, 0, DEFAULT_CHARSET,
@@ -912,7 +907,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       uint16 * u16text = UTF8toUTF16Len(text, len, &wordCount);
 
       for(realLen = 0; realLen<wordCount && u16text[realLen]; realLen++);
-      GetTextExtentPoint32(hdc, " ", 1, &space);
+      GetTextExtentPoint32(hdc, L" ", 1, &space);
       GetTextExtentPoint32(hdc, u16text, realLen, &size);
       delete u16text;
 
@@ -934,7 +929,6 @@ class Win32PrinterDisplayDriver : DisplayDriver
 
    void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
    {
-      Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
       Win32PrinterSystem gdiSystem = (display && display.displaySystem) ? display.displaySystem.driverData : null;
       Win32PrinterSurface gdiSurface = surface.driverData;
 
@@ -963,7 +957,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint stipple)
    {
-      Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
+      //Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
       // ((subclass(DisplayDriver))class(LFBDisplayDriver)).LineStipple(display, surface, stipple);
    }
 

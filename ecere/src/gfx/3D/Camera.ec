@@ -29,7 +29,6 @@ public:
    {
       if(this)
       {
-         Vector3D vector {0,0,1};
          Quaternion quat;
 
          float aspectRatio = this.aspectRatio;
@@ -544,11 +543,11 @@ public:
    {
       if(vector.z >= zMin)
       {
-         float floatZ;
+         //float floatZ;
          point.x = (vector.x*focalX/vector.z);
          point.y = (vector.y*focalY/vector.z);
          point.z = (((zMax * zMin / -vector.z) + zMax) / (zMax - zMin));
-         floatZ = ((((float)zMax * (float)zMin / -(float)vector.z) + (float)zMax) / ((float)zMax - (float)zMin));
+         //floatZ = ((((float)zMax * (float)zMin / -(float)vector.z) + (float)zMax) / ((float)zMax - (float)zMin));
          point.x += origin.x;
          point.y += origin.y;
          return (point.x >= 0 && point.y >= 0 &&

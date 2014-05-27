@@ -140,6 +140,8 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -169,6 +171,16 @@ unsigned int isWatchable;
 } __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -374,15 +386,13 @@ if(this->left)
 __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->left);
 if(this->right)
 __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->right);
-((this ? (__ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor(this) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor(this) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(this)) : 0), this = 0);
+((this ? (__ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)this) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)this) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(this)) : 0), this = 0);
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint64;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Add(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, struct __ecereNameSpace__ecere__com__AVLNode * node)
 {
-uint64 newKey = node->key;
-
 if(!Tclass)
 Tclass = __ecereClass_uint64;
 while(0x1)
@@ -885,7 +895,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Free(struct __ece
 struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 struct __ecereNameSpace__ecere__com__AVLNode * item;
 
-while(item = __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root)
+while((item = __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].dataTypeClass, item), item = 0);

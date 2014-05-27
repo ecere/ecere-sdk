@@ -300,7 +300,7 @@ public void DumpErrors(bool display)
          {
             char title[1024];
             sprintf(title, "%s - Error Log", guiApp.appName);
-            MessageBox(HWND_DESKTOP, globalSystem.errorBuffer, title, MB_OK|MB_ICONWARNING);
+            MessageBoxA(HWND_DESKTOP, globalSystem.errorBuffer, title, MB_OK|MB_ICONWARNING);
          }
 #else
          printf(globalSystem.errorBuffer);
@@ -386,7 +386,7 @@ public void SetLoggingMode(LoggingMode mode, void * where)
 }
 
 static define errorLogMsg = $"\n\nWould you like to view the error log?";
-
+/*
 #if defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
 static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
 {
@@ -397,9 +397,9 @@ static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
    {
       case EXCEPTION_ACCESS_VIOLATION:
          if(record->ExceptionInformation[0])
-            sprintf(exceptionString, "Access Violation Writing to 0x%08X", record->ExceptionInformation[1]);
+            sprintf(exceptionString, "Access Violation Writing to 0x%p", (void *)record->ExceptionInformation[1]);
          else
-            sprintf(exceptionString, "Access Violation Reading from 0x%08X", record->ExceptionInformation[1]);
+            sprintf(exceptionString, "Access Violation Reading from 0x%p", (void *)record->ExceptionInformation[1]);
          break;
       case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
          sprintf(exceptionString, "Array Bounds Exceeded");
@@ -457,10 +457,8 @@ static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
          break;
       case EXCEPTION_STACK_OVERFLOW:
          return EXCEPTION_CONTINUE_SEARCH;
-         /*
-         sprintf(exceptionString, "Stack Overflow");
-         break;
-         */
+         //sprintf(exceptionString, "Stack Overflow");
+         //break;
    }
 
    sprintf(title, "%s - Fatal Error", guiApp.appName);
@@ -468,15 +466,16 @@ static DWORD REAL_ExceptionHandler(EXCEPTION_POINTERS *exception)
    if(globalSystem.errorBuffer && globalSystem.errorBuffer[0])
    {
       strcat(exceptionString, errorLogMsg);
-      if(MessageBox(HWND_DESKTOP, exceptionString, title, MB_YESNO|MB_ICONERROR) == IDYES)
+      if(MessageBoxA(HWND_DESKTOP, exceptionString, title, MB_YESNO|MB_ICONERROR) == IDYES)
          DumpErrors(true);
    }
    else
-      MessageBox(HWND_DESKTOP, exceptionString, title, MB_OK|MB_ICONERROR);
+      MessageBoxA(HWND_DESKTOP, exceptionString, title, MB_OK|MB_ICONERROR);
 
    return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif
+*/
 
 private struct System
 {

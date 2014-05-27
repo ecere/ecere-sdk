@@ -98,7 +98,11 @@ public:
          // printf("Creating %s thread\n", _class.name);
 #if defined(__WIN32__)
          if(!handle)
-            handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadCallBack, this, 0, &id);
+         {
+            DWORD tID;
+            handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)ThreadCallBack, this, 0, &tID);
+            id = (uint)tID;
+         }
 #else
          {
             int error;

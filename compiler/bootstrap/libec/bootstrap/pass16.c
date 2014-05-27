@@ -827,7 +827,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -2029,7 +2041,7 @@ FreeType(exp->destType);
 {
 struct Expression * firstExp = list.first;
 
-((firstExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(firstExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(firstExp)) : 0), firstExp = 0);
+((firstExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)firstExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(firstExp)) : 0), firstExp = 0);
 }
 FreeType(exp->destType);
 exp->destType = expType;
@@ -2055,7 +2067,7 @@ exp->op.exp1 = inst->exp;
 exp->op.exp2 = list.first;
 inst->exp = (((void *)0));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&list, list.first);
-while(e = list.first)
+while((e = list.first))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&list, e);
 FreeExpression(e);
@@ -2078,11 +2090,11 @@ struct Expression * e = list.first;
 FreeType(exp->destType);
 *exp = *e;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&list, e);
-((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
 exp->expType = expType;
 exp->prev = prev;
 exp->next = next;
-while(e = list.first)
+while((e = list.first))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&list, e);
 FreeExpression(e);
@@ -2153,7 +2165,7 @@ void * prev = dummyDecl->prev, * next = dummyDecl->next;
 *dummyDecl = *decl;
 dummyDecl->prev = prev;
 dummyDecl->next = next;
-((decl ? (__ecereClass_Declaration->Destructor ? __ecereClass_Declaration->Destructor(decl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(decl)) : 0), decl = 0);
+((decl ? (__ecereClass_Declaration->Destructor ? __ecereClass_Declaration->Destructor((void *)decl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(decl)) : 0), decl = 0);
 decl = dummyDecl;
 }
 ProcessDeclaration(decl);
@@ -2278,7 +2290,7 @@ FreeType(newCall->expType);
 newCall->destType = exp->destType;
 newCall->expType = exp->expType;
 *exp = *newCall;
-((newCall ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(newCall) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newCall)) : 0), newCall = 0);
+((newCall ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newCall) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newCall)) : 0), newCall = 0);
 }
 }
 }
@@ -2304,8 +2316,6 @@ ProcessExpression(exp->_renew.exp);
 break;
 case 4:
 {
-unsigned int assign = 0x0;
-
 switch(exp->op.op)
 {
 case '=':
@@ -2313,7 +2323,6 @@ if(exp->op.exp2)
 exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
 if(exp->op.exp1)
 exp->op.exp1->usage = (exp->op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
-assign = 0x1;
 break;
 case MUL_ASSIGN:
 case DIV_ASSIGN:
@@ -2327,7 +2336,6 @@ case XOR_ASSIGN:
 case OR_ASSIGN:
 if(exp->op.exp2)
 exp->op.exp2->usage = (exp->op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
-assign = 0x1;
 if(exp->op.exp1)
 exp->op.exp1->usage = (exp->op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
 break;
@@ -2424,7 +2432,6 @@ break;
 case 7:
 {
 struct Expression * e;
-struct __ecereNameSpace__ecere__com__Method * method = (((void *)0));
 
 ProcessExpression(exp->call.exp);
 if(exp->call.arguments)
@@ -3066,8 +3073,6 @@ if(dataMember->isProperty)
 continue;
 if(member && member->initializer && member->initializer->type == 0)
 {
-struct Expression * memberExp = (((void *)0));
-
 if(member->initializer->exp->type == 1 && member->initializer->exp->expType && member->initializer->exp->expType->_class && member->initializer->exp->expType->_class->registered && member->initializer->exp->expType->_class->registered->type == 1)
 {
 struct __ecereNameSpace__ecere__sys__OldList * subList = MkList();

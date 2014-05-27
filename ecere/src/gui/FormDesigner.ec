@@ -98,7 +98,7 @@ class FormDesigner : ClassDesignerBase
 
    void ::ListClasses(DesignerBase designer, Class _class)
    {
-      OldLink link;
+      //OldLink link;
       if(eClass_GetProperty(_class, "icon"))
          designer.AddToolBoxClass(_class);
       /*
@@ -453,7 +453,7 @@ class FormDesigner : ClassDesignerBase
       {
          Window control = FindWindow(form, master, null, x, y, false, null, null);
          bool onBorder = false;
-         Window parent = selected.parent;
+         //Window parent = selected.parent;
          //if(control && (parent == control || parent == control.parent))
          {
             int cx = selected.absPosition.x - absPosition.x - clientStart.x;
@@ -677,12 +677,12 @@ class FormDesigner : ClassDesignerBase
 
    void DrawSelection(Window window, Surface surface)
    {
-      Window result = null, control;
+      Window control;
       for(control = window.lastChild; control; control = control.prev)
       {
          if(selected == control)
          {
-            Window parent = selected.parent;
+            //Window parent = selected.parent;
             int x;
             int y;
             int w = selected.size.w;
@@ -737,7 +737,7 @@ static bool Control_OnActivate(Window window, bool active, Window previous, bool
    }
    return true;
 }
-
+/*
 static Window GetWindow(Window window, int x, int y, int * rx, int * ry)
 {
    Window result = null, control;
@@ -764,7 +764,7 @@ static Window GetWindow(Window window, int x, int y, int * rx, int * ry)
    }
    return result;
 }
-
+*/
 static Window FindWindow(Window form, Window window, Window moved, int x, int y, bool asParent, int * dx, int * dy)
 {
    Window result = null, control;

@@ -594,7 +594,6 @@ private class AnchorDropBox : DropBox
    bool DataBox::NotifyTextEntry(AnchorDropBox dropBox, char * string, bool save)
    {
       Anchor anchor = dropBox.anchorValue;
-      Window control = dropBox.control;
 
       if(save)
       {

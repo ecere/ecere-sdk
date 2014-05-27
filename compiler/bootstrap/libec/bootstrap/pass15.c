@@ -876,7 +876,19 @@ unsigned int byValueSystemClass;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
 
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -2394,7 +2406,6 @@ struct Context * context = isMember ? (((void *)0)) : SetupTemplatesContext(_cla
 
 if(member || ((_class->type == 2 || _class->type == 0 || _class->type == 1 || _class->type == 5) && (_class->type == 2 || (!_class->structSize || _class->structSize == _class->offset)) && _class->computeSize))
 {
-int c;
 int unionMemberOffset = 0;
 int bitFields = 0;
 
@@ -2932,7 +2943,8 @@ int AddMembers(struct __ecereNameSpace__ecere__sys__OldList * declarations, stru
 struct __ecereNameSpace__ecere__com__DataMember * topMember = isMember ? (struct __ecereNameSpace__ecere__com__DataMember *)_class : (((void *)0));
 unsigned int totalSize = 0;
 unsigned int maxSize = 0;
-int alignment, size;
+int alignment;
+unsigned int size;
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct Context * context = isMember ? (((void *)0)) : SetupTemplatesContext(_class);
 
@@ -3046,7 +3058,6 @@ return topMember ? topMember->memberID : _class->memberID;
 static int DeclareMembers(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int isMember)
 {
 struct __ecereNameSpace__ecere__com__DataMember * topMember = isMember ? (struct __ecereNameSpace__ecere__com__DataMember *)_class : (((void *)0));
-unsigned int totalSize = 0;
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct Context * context = isMember ? (((void *)0)) : SetupTemplatesContext(_class);
 
@@ -4020,7 +4031,6 @@ nameID->_class = (((void *)0));
 }
 if(inCompiler)
 {
-struct Type * type = declarator->symbol->type;
 struct External * oldExternal = curExternal;
 
 declarator->symbol->id = declarator->symbol->idCode = curExternal->symbol->idCode;
@@ -4236,7 +4246,7 @@ void FinishTemplatesContext(struct Context * context)
 {
 PopContext(context);
 FreeContext(context);
-((context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor(context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(context)) : 0), context = 0);
+((context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(context)) : 0), context = 0);
 }
 
 void ProcessMethodType(struct __ecereNameSpace__ecere__com__Method * method)
@@ -5296,7 +5306,7 @@ struct Conversion * convert = converts.first;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&converts, convert);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(conversions, convert);
 }
-((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 return 0x1;
 }
 }
@@ -5304,7 +5314,7 @@ return 0x1;
 }
 if(converts.first)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&converts, FreeConvert);
-((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor(type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 }
 for(nameSpace = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&nameSpace->nameSpaces); nameSpace != (((void *)0)); nameSpace = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)nameSpace)))
@@ -5490,7 +5500,7 @@ backupSourceExpType = sourceExp->expType;
 sourceExp->expType = dest;
 dest->refCount++;
 flag = 0x1;
-((tempType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor(tempType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(tempType)) : 0), tempType = 0);
+((tempType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)tempType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(tempType)) : 0), tempType = 0);
 }
 }
 if(_class && _class->type == 2 && source->kind != 8)
@@ -5575,7 +5585,7 @@ dest->classObjectType = source->classObjectType;
 FreeType(source);
 source = _class->dataType;
 source->refCount++;
-((tempType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor(tempType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(tempType)) : 0), tempType = 0);
+((tempType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)tempType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(tempType)) : 0), tempType = 0);
 }
 }
 }
@@ -10896,7 +10906,7 @@ int __ecereVMethodID_class_OnGetString;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
-static void UnusedFunction()
+static __attribute__((unused)) void UnusedFunction()
 {
 int a;
 
@@ -11509,7 +11519,7 @@ case 1:
 {
 unsigned char v;
 
-type->isSigned ? GetChar(value, &v) : GetUChar(value, &v);
+type->isSigned ? GetChar(value, (char *)&v) : GetUChar(value, &v);
 part = (uint64)v;
 break;
 }
@@ -11540,7 +11550,7 @@ break;
 }
 case 22:
 {
-intptr_t v;
+uintptr_t v;
 
 type->isSigned ? GetIntPtr(value, &v) : GetUIntPtr(value, &v);
 part = (uint64)v;
@@ -11548,7 +11558,7 @@ break;
 }
 case 23:
 {
-ssize_t v;
+size_t v;
 
 type->isSigned ? GetIntSize(value, &v) : GetUIntSize(value, &v);
 part = (uint64)v;
@@ -11657,7 +11667,7 @@ FreeExpContents(exp);
 FreeType(exp->expType);
 FreeType(exp->destType);
 *exp = *exp2;
-((exp2 ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(exp2) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(exp2)) : 0), exp2 = 0);
+((exp2 ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)exp2) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(exp2)) : 0), exp2 = 0);
 break;
 }
 case '-':
@@ -11954,7 +11964,7 @@ FreeType(exp->destType);
 *exp = *e;
 exp->prev = prev;
 exp->next = next;
-((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(list), list = 0);
 }
 else
@@ -12713,7 +12723,6 @@ void CheckTemplateTypes(struct Expression * exp)
 if(exp->destType && exp->destType->passAsTemplate && exp->expType && exp->expType->kind != 20 && !exp->expType->passAsTemplate)
 {
 struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
-struct Statement * compound;
 struct Context * context;
 
 *newExp = *exp;
@@ -12732,7 +12741,7 @@ if(exp->destType)
 exp->destType->refCount--;
 if(exp->expType)
 exp->expType->refCount--;
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
 }
 else
 {
@@ -12781,7 +12790,7 @@ if(exp->destType)
 exp->destType->refCount--;
 if(exp->expType)
 exp->expType->refCount--;
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
 }
 else
 {
@@ -12829,7 +12838,7 @@ if(type)
 {
 FreeType(exp->destType);
 FreeType(exp->expType);
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
 break;
 }
 }
@@ -13571,7 +13580,7 @@ FreeExpContents(checkedExp);
 FreeType(checkedExp->expType);
 FreeType(checkedExp->destType);
 *checkedExp = *newExp;
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
 checkedExp->prev = prev;
 checkedExp->next = next;
 }
@@ -13649,7 +13658,7 @@ e->byReference = 0x1;
 }
 else if(!e->byReference || (_class && _class->type == 5))
 {
-struct Expression * checkedExp, * newExp;
+struct Expression * checkedExp;
 
 {
 unsigned int hasAddress = e->type == 0 || (e->type == 8 && e->member.memberType == 3) || (e->type == 9 && e->member.memberType == 3) || (e->type == 4 && !e->op.exp1 && e->op.op == '*') || e->type == 6;
@@ -15136,7 +15145,7 @@ FreeType(exp->destType);
 *exp = *e;
 exp->prev = prev;
 exp->next = next;
-((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
 ProcessExpressionType(exp);
 }
 break;
@@ -16438,7 +16447,7 @@ FreeType(exp->expType);
 FreeType(exp->destType);
 exp->expType = expType;
 exp->destType = destType;
-((castExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor(castExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(castExp)) : 0), castExp = 0);
+((castExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)castExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(castExp)) : 0), castExp = 0);
 exp->prev = prev;
 exp->next = next;
 }
@@ -17513,7 +17522,7 @@ if(isBuiltin || (source && source->kind == 8 && source->_class && source->_class
 struct __ecereNameSpace__ecere__com__Class * _class = source ? source->_class->registered : (((void *)0));
 struct Symbol * symbol;
 struct Expression * expIt = (((void *)0));
-unsigned int isMap = 0x0, isArray = 0x0, isLinkList = 0x0, isList = 0x0, isCustomAVLTree = 0x0, isAVLTree = 0x0;
+unsigned int isMap = 0x0, isArray = 0x0, isLinkList = 0x0, isList = 0x0, isCustomAVLTree = 0x0;
 struct __ecereNameSpace__ecere__com__Class * arrayClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "Array");
 struct __ecereNameSpace__ecere__com__Class * linkListClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "LinkList");
 struct __ecereNameSpace__ecere__com__Class * customAVLTreeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "CustomAVLTree");
@@ -17525,12 +17534,9 @@ curContext = stmt->compound.context;
 if(source && __ecereNameSpace__ecere__com__eClass_IsDerived(source->_class->registered, customAVLTreeClass))
 {
 struct __ecereNameSpace__ecere__com__Class * mapClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "Map");
-struct __ecereNameSpace__ecere__com__Class * avlTreeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "AVLTree");
 
 isCustomAVLTree = 0x1;
-if(__ecereNameSpace__ecere__com__eClass_IsDerived(source->_class->registered, avlTreeClass))
-isAVLTree = 0x1;
-else if(__ecereNameSpace__ecere__com__eClass_IsDerived(source->_class->registered, mapClass))
+if(__ecereNameSpace__ecere__com__eClass_IsDerived(source->_class->registered, mapClass))
 isMap = 0x1;
 }
 else if(source && __ecereNameSpace__ecere__com__eClass_IsDerived(source->_class->registered, arrayClass))
@@ -18553,7 +18559,13 @@ DeclareFunctionUtil("eSystem_Renew");
 DeclareFunctionUtil("eSystem_Renew0");
 DeclareFunctionUtil("eSystem_Delete");
 DeclareFunctionUtil("eClass_GetProperty");
+DeclareFunctionUtil("eClass_SetProperty");
 DeclareFunctionUtil("eInstance_FireSelfWatchers");
+DeclareFunctionUtil("eInstance_SetMethod");
+DeclareFunctionUtil("eInstance_IncRef");
+DeclareFunctionUtil("eInstance_StopWatching");
+DeclareFunctionUtil("eInstance_Watch");
+DeclareFunctionUtil("eInstance_FireWatchers");
 DeclareStruct("ecere::com::Class", 0x0);
 DeclareStruct("ecere::com::Instance", 0x0);
 DeclareStruct("ecere::com::Property", 0x0);
@@ -18588,7 +18600,7 @@ ProcessClass(_class->definitions, _class->symbol);
 if(inCompiler)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*ast), external);
-((external ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor(external) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(external)) : 0), external = 0);
+((external ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)external) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(external)) : 0), external = 0);
 }
 }
 else if(external->type == 4)
@@ -18599,8 +18611,8 @@ thisNameSpace = external->id->string;
 currentClass = (((void *)0));
 thisNameSpace = (((void *)0));
 curExternal = (((void *)0));
-((temp->symbol ? (__ecereClass_Symbol->Destructor ? __ecereClass_Symbol->Destructor(temp->symbol) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(temp->symbol)) : 0), temp->symbol = 0);
-((temp ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor(temp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(temp)) : 0), temp = 0);
+((temp->symbol ? (__ecereClass_Symbol->Destructor ? __ecereClass_Symbol->Destructor((void *)temp->symbol) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(temp->symbol)) : 0), temp->symbol = 0);
+((temp ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)temp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(temp)) : 0), temp = 0);
 }
 
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);

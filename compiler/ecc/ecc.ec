@@ -12,7 +12,7 @@ import "ec"
 static Context globalContext { };
 static Module privateModule;
 static ModuleImport mainModule;
-static OldList _excludedSymbols { offset = (uint)&((Symbol)0).left };
+static OldList _excludedSymbols { offset = (uint)(uintptr)&((Symbol)0).left };
 static OldList defines, imports;
 static NameSpace globalData
 {
@@ -115,7 +115,7 @@ static void OutputImports(char * fileName)
 }
 
 #ifdef _DEBUG
-static bool TestType(String string, String expected)
+/*static bool TestType(String string, String expected)
 {
    bool result = true;
    char typeString[1024] = { 0 };
@@ -228,6 +228,7 @@ static void TestTypes()
 
    PrintLn("\n", succeeded, " / ", count, " tests succeeded.");
 }
+*/
 #endif
 
 class CompilerApp : Application

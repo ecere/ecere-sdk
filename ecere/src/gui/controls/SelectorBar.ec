@@ -11,7 +11,7 @@ public import "ecere"
 */
 #endif
 
-static void DrawStipple(Surface surface, Size clientSize)
+/*static void DrawStipple(Surface surface, Size clientSize)
 {
    int x1 = 0;
    int y1 = 0;
@@ -23,7 +23,7 @@ static void DrawStipple(Surface surface, Size clientSize)
    surface.LineStipple(0x5555);
    surface.Rectangle(x1, y1, x2, y2);
    surface.LineStipple(0);
-}
+}*/
 
 public class SelectorBar : Stacker
 {
@@ -74,7 +74,6 @@ public:
       {
          if(button == (SelectorButton)it.data)
          {
-            IteratorPointer toRemove = it.pointer;
             if(it.Next() || (it.Prev() && it.Prev()))
             {
                SelectorButton newSelection = (SelectorButton)it.data;
