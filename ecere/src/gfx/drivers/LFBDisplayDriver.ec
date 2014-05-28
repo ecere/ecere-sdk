@@ -66,7 +66,7 @@ import "Direct3D9DisplayDriver"
 
 static HB_Script theCurrentScript;
 
-static unichar UTF16GetChar(uint16 *string, int * nw)
+static unichar UTF16GetChar(const uint16 *string, int * nw)
 {
    unichar ch;
    if(HB_IsHighSurrogate(string[0]) && HB_IsLowSurrogate(string[1]))
@@ -82,7 +82,7 @@ static unichar UTF16GetChar(uint16 *string, int * nw)
    return ch;
 }
 
-static HB_Bool hb_stringToGlyphs(HB_Font font, uint16 * string, uint length, HB_Glyph *glyphs, uint *numGlyphs, HB_Bool rightToLeft)
+static HB_Bool hb_stringToGlyphs(HB_Font font, const uint16 * string, uint length, HB_Glyph *glyphs, uint *numGlyphs, HB_Bool rightToLeft)
 {
    FT_Face face = ((FontEntry)font->userData).face;
    int glyph_pos = 0;
@@ -135,7 +135,7 @@ static void hb_getAdvances(HB_Font font, const HB_Glyph * glyphs, uint numGlyphs
    }
 }
 
-static HB_Bool hb_canRender(HB_Font font, uint16 * string, uint length)
+static HB_Bool hb_canRender(HB_Font font, const uint16 * string, uint length)
 {
    FT_Face face = ((FontEntry)font->userData).face;
    int c, nw;
@@ -284,8 +284,7 @@ class FontEntry : BTNode
 
    ~FontEntry()
    {
-      char * fileName = (char *)key;
-      delete fileName;
+      delete (char *)key;
       delete buffer;
       if(hbFace)
          HB_FreeFace(hbFace);
@@ -839,7 +838,7 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
                char * occurence;
                if(RegEnumValue(key, value++, entryName, &size, null, (PDWORD)&type, (LPBYTE)fontFileName, &sizeFileName) != ERROR_SUCCESS)
                   break;
-               if((occurence = SearchString((char *)entryName, 0, (char *)font->elfFullName, false, false)))
+               if((occurence = SearchString(entryName, 0, (const char *)font->elfFullName, false, false)))
                {
                   int c;
                   for(c = (int)(occurence - entryName) - 1; c >= 0; c--)
@@ -2769,7 +2768,7 @@ public class LFBDisplayDriver : DisplayDriver
       }
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       void * result = null;
 
@@ -2783,7 +2782,7 @@ public class LFBDisplayDriver : DisplayDriver
 #if !defined(__WIN32__)
          File linkCfg;
 #endif
-         char * ecereFonts = getenv("ECERE_FONTS");
+         const char * ecereFonts = getenv("ECERE_FONTS");
          if(!ecereFonts) ecereFonts = "<:ecere>";
 #if !defined(__WIN32__)
          {
@@ -3171,7 +3170,7 @@ public class LFBDisplayDriver : DisplayDriver
    }
 
 #if !defined(ECERE_NOTRUETYPE)
-   void ::ProcessString(Font font, DisplaySystem displaySystem, byte * text, int len,
+   void ::ProcessString(Font font, DisplaySystem displaySystem, const byte * text, int len,
                         void (* callback)(Surface surface, Display display, int x, int y, GlyphInfo * glyph, Bitmap bitmap),
                         Surface surface, Display display, int * x, int y)
    {
@@ -3204,19 +3203,19 @@ public class LFBDisplayDriver : DisplayDriver
             else
             {
                HB_Script curScript = HB_Script_Common;
-               byte * scriptStart = text + c;
+               const byte * scriptStart = text + c;
                //unichar nonASCIIch = 0;
                unichar ch;
                unichar ahead = 0;
                unichar testChar = 0;
 #if !defined(__WIN32__) && !defined(ECERE_NOFONTCONFIG)
-               char * testLang = null;
+               const char * testLang = null;
 #endif
 
                while(true)
                {
                   HB_Script script = HB_Script_Common;
-                  ch = UTF8GetChar((char *)text + c, &nb);
+                  ch = UTF8GetChar((const char *)text + c, &nb);
                   //if(ch > 127) nonASCIIch = ch;
                   if(!nb) break;
                   if(ch == 32 && curScript)
@@ -3234,7 +3233,7 @@ public class LFBDisplayDriver : DisplayDriver
                         if(a < c + len)
                         {
                            int nb;
-                           unichar ahead = UTF8GetChar((char *)text + a, &nb);
+                           unichar ahead = UTF8GetChar((const char *)text + a, &nb);
                            if((ahead >= 0x590 && ahead <= 0x7C0) || (ahead >= 0xFB1D && ahead <= 0xFB4F) || (ahead >= 0xFB50 && ahead <= 0xFDFF))
                               script = curScript;
                         }
@@ -3310,7 +3309,7 @@ public class LFBDisplayDriver : DisplayDriver
                      utf16 = renew utf16 uint16[max];
                      utf16BufferSize = max;
                   }
-                  wc = UTF8toUTF16BufferLen((char *)scriptStart, utf16, max, len);
+                  wc = UTF8toUTF16BufferLen((const char *)scriptStart, utf16, max, len);
                   theCurrentScript = glyphScript = curScript;
                }
                switch(curScript)
@@ -3547,7 +3546,7 @@ public class LFBDisplayDriver : DisplayDriver
    }
 
 #endif
-   void FontExtent(DisplaySystem displaySystem, Font font, byte * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
       if(displaySystem && displaySystem.flags.text && len)
       {
@@ -3564,7 +3563,7 @@ public class LFBDisplayDriver : DisplayDriver
          {
             int w = 0;
 #if !defined(ECERE_NOTRUETYPE)
-            ProcessString(font, displaySystem, text, len, null, null, null, &w, 0);
+            ProcessString(font, displaySystem, (const byte *)text, len, null, null, null, &w, 0);
 #endif
             //*width = (w + 64 - w % 64) >> 6;
             *width = w >> 6;
@@ -3586,7 +3585,7 @@ public class LFBDisplayDriver : DisplayDriver
    }
 #endif
 
-   void WriteText(Display display, Surface surface, int x, int y, byte * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       LFBSurface lfbSurface = surface.driverData;
       if(display && display.displaySystem.flags.text)
@@ -3615,7 +3614,7 @@ public class LFBDisplayDriver : DisplayDriver
          lfbSurface.writingText = true;
 #if !defined(ECERE_NOTRUETYPE)
          x <<= 6;
-         ProcessString(lfbSurface.font, surface.displaySystem, text, len, OutputGlyph, surface, display, &x, y);
+         ProcessString(lfbSurface.font, surface.displaySystem, (const byte *)text, len, OutputGlyph, surface, display, &x, y);
 #endif
          lfbSurface.writingText = false;
       }
@@ -3632,7 +3631,7 @@ public class LFBDisplayDriver : DisplayDriver
 
    }
 
-   void TextExtent(Display display, Surface surface, byte * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       LFBSurface lfbSurface = surface.driverData;
       FontExtent(surface.displaySystem, lfbSurface.font, text, len, width, height);

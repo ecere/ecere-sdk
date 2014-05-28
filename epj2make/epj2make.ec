@@ -51,8 +51,8 @@ class epj2makeApp : GuiApplication
       bool noGlobalSettings = false;
       bool noResources = false;
       bool noWarnings = false;
-      char * overrideObjDir = null;
-      char * includemkPath = null;
+      const char * overrideObjDir = null;
+      const char * includemkPath = null;
 
       /*
       for(c = 0; c < this.argc; c++)
@@ -83,7 +83,7 @@ class epj2makeApp : GuiApplication
 
       for(c = 1; c < argc; c++)
       {
-         char * arg = argv[c];
+         const char * arg = argv[c];
          if(arg[0] == '-')
          {
             if(!strcmpi(arg+1, "make"))
@@ -186,14 +186,14 @@ class epj2makeApp : GuiApplication
             else if(arg[1] == 'i')
             {
                if(++c < argc)
-                  ParseDirList(argv[c], optionsCompiler.includeDirs);
+                  ParseDirList((char *)argv[c], optionsCompiler.includeDirs);
                else
                   valid = false;
             }
             else if(arg[1] == 'l')
             {
                if(++c < argc)
-                  ParseDirList(argv[c], optionsCompiler.libraryDirs);
+                  ParseDirList((char *)argv[c], optionsCompiler.libraryDirs);
                else
                   valid = false;
             }
@@ -263,7 +263,7 @@ class epj2makeApp : GuiApplication
                }
                else
                {
-                  char * compiler = getenv("COMPILER");
+                  const char * compiler = getenv("COMPILER");
                   if(!compiler) compiler = "Default";
                   settingsContainer.Load();
                   //incref ideSettings;

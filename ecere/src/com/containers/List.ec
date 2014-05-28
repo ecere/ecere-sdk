@@ -71,7 +71,7 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
       }
    }
 
-   Link Find(LLT value)
+   Link Find(const LLT value)
    {
       return (Link)Container::Find(value);
    }

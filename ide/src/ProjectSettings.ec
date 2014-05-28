@@ -9,7 +9,7 @@ static Platform platform;
 static ProjectNode currentNode;
 static Project project;
 
-static String MakeString(char * s, int len, char * switchToKeep, int lenSwitchToKeep)
+static String MakeString(const char * s, int len, const char * switchToKeep, int lenSwitchToKeep)
 {
    String string = new char[len+1];
    if(s[0] == '-' && switchToKeep && switchToKeep[0])
@@ -32,7 +32,7 @@ static String MakeString(char * s, int len, char * switchToKeep, int lenSwitchTo
 
 class StringListBox : EditBox
 {
-   char * switchToKeep;
+   const char * switchToKeep;
    int lenSwitchToKeep;
 
    textHorzScroll = true;
@@ -61,7 +61,7 @@ class StringListBox : EditBox
       {
          Array<String> array { };
          int c, start = 0;
-         char * contents = property::contents;
+         const char * contents = property::contents;
          char * s;
          char ch;
          bool quoted = false;
@@ -134,9 +134,9 @@ class ProjectSettings : Window
       //char * s = PrintString("Project Settings - ", project.topNode.fileName);
       //text = s;
       char * projectName = new char[strlen(project.topNode.name) + 1];
-      char * nodeName = currentNode && currentNode != project.topNode ? currentNode.name : "";
-      char * config = buildTab.selectedConfigName;
-      char * platform = buildTab.selectedPlatformName;
+      const char * nodeName = currentNode && currentNode != project.topNode ? currentNode.name : "";
+      const char * config = buildTab.selectedConfigName;
+      const char * platform = buildTab.selectedPlatformName;
       char * label = new char[strlen(dialogTitle) + 3 + strlen(project.topNode.name) + 3 +
                               strlen(nodeName) + 2 + strlen(config) + 1 + strlen(platform) + 1 + 1];
       strcpy(label, dialogTitle);
@@ -297,7 +297,7 @@ class OptionBox<class Z> : CommonControl
    property Size size { set { editor.size = value; } }
    property Anchor anchor { set { editor.anchor = value; } }
    property Key hotKey { set { editor.hotKey = value; } }
-   property char * text { set { editor.text = value; Window::text = value; } }
+   property const char * text { set { editor.caption = value; Window::caption = value; } }
 
    uint option;
 
@@ -444,7 +444,7 @@ class OptionBox<class Z> : CommonControl
 
    void Unset()
    {
-      char * platformName = platform ? platform.OnGetString(0,0,0) : null;
+      const char * platformName = platform ? platform.OnGetString(0,0,0) : null;
       MarkBuildTabModified();
 
       if(config)
@@ -549,7 +549,7 @@ class OptionBox<class Z> : CommonControl
    void FigureOutInherited()
    {
       ProjectNode node;
-      char * platformName = platform ? platform.OnGetString(0,0,0) : null;
+      const char * platformName = platform ? platform.OnGetString(0,0,0) : null;
       bool skipped = false;
       for(node = currentNode; node; node = node.parent)
       {
@@ -602,7 +602,7 @@ class OptionBox<class Z> : CommonControl
 
    void Retrieve()
    {
-      char * platformName = platform ? platform.OnGetString(0,0,0) : null;
+      const char * platformName = platform ? platform.OnGetString(0,0,0) : null;
       MarkBuildTabModified();
       if(config)
       {
@@ -652,7 +652,7 @@ class OptionBox<class Z> : CommonControl
    void Load()
    {
       ProjectNode node;
-      char * platformName = platform ? platform.OnGetString(0,0,0) : null;
+      const char * platformName = platform ? platform.OnGetString(0,0,0) : null;
       bool setAttribs = false;
       for(node = currentNode; node; node = node.parent)
       {
@@ -937,7 +937,7 @@ class StringArrayOptionBox : MultiStringOptionBox
    Array<String> GetStrings() { return ((StringListBox)editor).strings; }
    void SetStrings(Array<String> value) { ((StringListBox)editor).strings = value; }
 
-   property char * switchToKeep { set { ((StringListBox)editor).switchToKeep = value; ((StringListBox)editor).lenSwitchToKeep = strlen(value); } };
+   property const char * switchToKeep { set { ((StringListBox)editor).switchToKeep = value; ((StringListBox)editor).lenSwitchToKeep = strlen(value); } };
 }
 
 class StringsArrayOptionBox : MultiStringOptionBox
@@ -1015,9 +1015,9 @@ static void FixPathOnPathBoxNotifyModified(PathBox pathBox)
 class DirsArrayOptionBox : MultiStringOptionBox
 {
 public:
-   property char * switchToKeep { set { switchToKeep = value; lenSwitchToKeep = strlen(value); } };
+   property const char * switchToKeep { set { switchToKeep = value; lenSwitchToKeep = strlen(value); } };
 private:
-   char * switchToKeep;
+   const char * switchToKeep;
    int lenSwitchToKeep;
 
    editor = DirectoriesBox
@@ -1025,7 +1025,7 @@ private:
       browseDialog = { };
       bool NotifyModified(DirectoriesBox dirsBox)
       {
-         char * switchToKeep = ((DirsArrayOptionBox)dirsBox.id).switchToKeep;
+         const char * switchToKeep = ((DirsArrayOptionBox)dirsBox.id).switchToKeep;
          if(switchToKeep && switchToKeep[0])
          {
             bool change = false;
@@ -1275,7 +1275,7 @@ class BuildTab : Tab
 
    ProjectNode lastSelectedNode;
 
-   property char * selectedConfigName
+   property const char * selectedConfigName
    {
       get
       {
@@ -1292,7 +1292,7 @@ class BuildTab : Tab
       }
    }
 
-   property char * selectedPlatformName
+   property const char * selectedPlatformName
    {
       get
       {
@@ -1302,7 +1302,7 @@ class BuildTab : Tab
             if(button && button.id)
             {
                Platform platform = (Platform)button.id;
-               char * platformName = platform ? platform.OnGetString(0,0,0) : null; // all these platformName are leaking, no?
+               const char * platformName = platform ? platform.OnGetString(0,0,0) : null; // all these platformName are leaking, no?
                return platformName;
             }
          }
@@ -1493,7 +1493,7 @@ class BuildTab : Tab
       text = $"(Right click or press Ctrl-Del to revert an option to inherited value)", anchor = { top = 72, right = 16 }
    };
 
-   void FindUniqueConfigName(char * baseName, bool startWithNumber, char * output)
+   void FindUniqueConfigName(const char * baseName, bool startWithNumber, char * output)
    {
       int num = 0;
       char tmp[MAX_F_STRING];

@@ -80,7 +80,7 @@ private:
       if(!*w || !*h)
       {
          Window labeledWindow = text ? this : window;
-         char * string = (labeledWindow && labeledWindow.text) ? labeledWindow.text : " ";
+         const char * string = (labeledWindow && labeledWindow.text) ? labeledWindow.text : " ";
 
          int width = 0, height = 0;
 
@@ -143,7 +143,7 @@ private:
          if(labeledWindow)
          {
             int tw = 0;
-            char * caption = labeledWindow.caption;
+            const char * caption = labeledWindow.caption;
             if(caption)
                surface.TextExtent(caption, strlen(caption), &tw, null);
             GroupBevel(surface, true,  1,7, clientSize.w - 2, clientSize.h - 8, tw);

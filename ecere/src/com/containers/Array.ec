@@ -42,7 +42,7 @@ public:
       *item = value;
       return true;
    }
-   IteratorPointer GetAtPosition(I pos, bool create)
+   IteratorPointer GetAtPosition(const I pos, bool create)
    {
       if((int)pos > count && create)
       {

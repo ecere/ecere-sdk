@@ -10,7 +10,7 @@ namespace gfx3D::meshes;
 ****************************************************************************/
 import "Display"
 
-static char * faceNames[] = { "up", "fr", "dn", "bk", "rt", "lf" };
+static const char * faceNames[] = { "up", "fr", "dn", "bk", "rt", "lf" };
 
 public class SkyBox : Object
 {
@@ -150,8 +150,8 @@ public:
    }
 
    property Vector3Df size { set { size = value; } };
-   property char * folder { set { folder = value; } };
-   property char * extension { set { extension = value; } };
+   property const char * folder { set { folder = value; } };
+   property const char * extension { set { extension = value; } };
 
 private:
    SkyBox()
@@ -162,5 +162,5 @@ private:
    }
 
    Vector3Df size;
-   char * folder, * extension;
+   const char * folder, * extension;
 }

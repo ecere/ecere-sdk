@@ -102,8 +102,8 @@ public:
 public class IOChannel
 {
 public:
-   virtual uint WriteData(byte * data, uint numBytes);
-   virtual uint ReadData(byte * data, uint numBytes);
+   virtual uint WriteData(const void * data, uint numBytes);
+   virtual uint ReadData(void * data, uint numBytes);
 
    dllexport void Serialize(typed_object data)
    {
@@ -134,7 +134,7 @@ public:
    uint _size;
    uint pos;
 
-   uint WriteData(byte * bytes, uint numBytes)
+   uint WriteData(const void * bytes, uint numBytes)
    {
       if(this != null)
       {
@@ -151,7 +151,7 @@ public:
       return 0;
    }
 
-   uint ReadData(byte * bytes, uint numBytes)
+   uint ReadData(void * bytes, uint numBytes)
    {
       if(this != null)
       {
@@ -193,7 +193,7 @@ public:
    }
 };
 
-/*static */char * Enum_OnGetString(Class _class, int * data, char * tempString, void * fieldData, bool * needClass)
+/*static */const char * Enum_OnGetString(Class _class, int * data, char * tempString, void * fieldData, bool * needClass)
 {
    NamedLink item = null;
    Class b;
@@ -216,7 +216,7 @@ public:
       return null;
 }
 
-static bool Enum_OnGetDataFromString(Class _class, int * data, char * string)
+static bool Enum_OnGetDataFromString(Class _class, int * data, const char * string)
 {
    NamedLink item = null;
    Class b;
@@ -463,7 +463,7 @@ static int OnCompare(Class _class, void * data1, void * data2)
    return 0;
 }
 
-static char * OnGetString(Class _class, void * data, char * tempString, void * fieldData, bool * needClass)
+static const char * OnGetString(Class _class, void * data, char * tempString, void * fieldData, bool * needClass)
 {
    // WHY DOES _class.module NOT SEEM TO WORK?
    Module module = _class.templateClass ? _class.templateClass.module : _class.module;
@@ -504,26 +504,26 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
          {
             if(prop.Set && prop.Get)
             {
-               String dts = _class.base.dataTypeString;
+               const String dts = _class.base.dataTypeString;
                if(!strcmp(dts, "double"))
                {
                   double d = ((double(*)(double))(void *)prop.Set)(*(double *)data);
-                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(double)._vTbl[__ecereVMethodID_class_OnGetString])(class(double), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(double)._vTbl[__ecereVMethodID_class_OnGetString])(class(double), &d, tempString, fieldData, needClass);
                }
                else if(!strcmp(dts, "float"))
                {
                   float d = ((float(*)(float))(void *)prop.Set)(*(float *)data);
-                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(float)._vTbl[__ecereVMethodID_class_OnGetString])(class(float), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(float)._vTbl[__ecereVMethodID_class_OnGetString])(class(float), &d, tempString, fieldData, needClass);
                }
                else if(!strcmp(dts, "int"))
                {
                   int d = ((int(*)(int))(void *)prop.Set)(*(int *)data);
-                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(int)._vTbl[__ecereVMethodID_class_OnGetString])(class(int), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(int)._vTbl[__ecereVMethodID_class_OnGetString])(class(int), &d, tempString, fieldData, needClass);
                }
                else if(!strcmp(dts, "int64"))
                {
                   int64 d = ((int64(*)(int64))(void *)prop.Set)(*(int64 *)data);
-                  return ((char *(*)(void *, void *, char *, void *, bool *))(void *)class(int64)._vTbl[__ecereVMethodID_class_OnGetString])(class(int64), &d, tempString, fieldData, needClass);
+                  return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)class(int64)._vTbl[__ecereVMethodID_class_OnGetString])(class(int64), &d, tempString, fieldData, needClass);
                }
             }
             else
@@ -531,7 +531,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
          }
       }
       dataType = eSystem_FindClass(module, _class.dataTypeString);
-      return ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
+      return ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, data, tempString, fieldData, needClass);
    }
    else
    {
@@ -553,7 +553,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
          {
             char memberString[1024];
             Class memberType = member.dataTypeClass;
-            char * name = member.name;
+            const char * name = member.name;
             if(member.id < 0) continue;
 
             memberString[0] = 0;
@@ -578,7 +578,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         if(value.f)
                         {
                            bool needClass = true;
-                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
+                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                            // TESTING THIS HERE
@@ -592,7 +592,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         if(value.p || prop.IsSet)
                         {
                            bool needClass = true;
-                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType,
+                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType,
                               (memberType.type == normalClass) ? value.p : &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
@@ -604,7 +604,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         if(value.i || prop.IsSet)
                         {
                            bool needClass = true;
-                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
+                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                         }
@@ -628,11 +628,11 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                      if(c < typeSize)
                      {
                         bool needClass = true;
-                        char * result;
+                        const char * result;
                         if(memberType.type == normalClass)
-                           result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
+                           result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
                         else
-                           result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
+                           result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
                         if(needClass && strcmp(memberType.dataTypeString, "char *"))
                         {
                            //strcpy(memberString, memberType.name);
@@ -659,7 +659,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         {
                            bool needClass = true;
                            char internalMemberString[1024];
-                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, internalMemberString, null, &needClass);
+                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, internalMemberString, null, &needClass);
 
                            if(needClass && memberType.type != systemClass && memberType.type != enumClass && memberType.type != unitClass)
                            {
@@ -685,7 +685,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                            if(value.i)
                            {
                               bool needClass = true;
-                              char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
+                              const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
                               if(result && memberString != result)
                                  strcpy(memberString, result);
                            }
@@ -693,7 +693,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                         else
                         {
                            bool needClass = true;
-                           char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), memberString, null, &needClass);
+                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), memberString, null, &needClass);
                            if(result && memberString != result)
                               strcpy(memberString, result);
                         }
@@ -704,8 +704,8 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
                      char internalMemberString[1024];
                      byte * memberData = ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                      bool needClass = true;
-                     char * result;
-                     result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
+                     const char * result;
+                     result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
                      if(needClass)
                      {
                         //strcpy(memberString, memberType.name);
@@ -771,7 +771,7 @@ static char * OnGetString(Class _class, void * data, char * tempString, void * f
    return tempString;
 }
 
-static bool OnGetDataFromString(Class _class, void ** data, char * string)
+static bool OnGetDataFromString(Class _class, void ** data, const char * string)
 {
    bool result;
    Module module = _class.module;
@@ -803,7 +803,7 @@ static bool OnGetDataFromString(Class _class, void ** data, char * string)
          {
             if(prop.Set && prop.Get)
             {
-               String dts = _class.base.dataTypeString;
+               const String dts = _class.base.dataTypeString;
                if(!strcmp(dts, "double"))
                {
                   double d;
@@ -1326,13 +1326,13 @@ static int Integer_OnCompare(Class _class, int * data1, int * data2)
    return result;
 }
 
-/*static */char * Integer_OnGetString(Class _class, int * data, char * string, void * fieldData, bool * needClass)
+/*static */const char * Integer_OnGetString(Class _class, int * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, "%d", *data);
    return string;
 }
 
-static bool Integer_OnGetDataFromString(Class _class, int * data, char * string)
+static bool Integer_OnGetDataFromString(Class _class, int * data, const char * string)
 {
    char * end;
    int result = strtol(string, &end, 0);
@@ -1345,13 +1345,13 @@ static bool Integer_OnGetDataFromString(Class _class, int * data, char * string)
    return false;
 }
 
-static char * Int16_OnGetString(Class _class, short * data, char * string, void * fieldData, bool * needClass)
+static const char * Int16_OnGetString(Class _class, short * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, "%d", (int)*data);
    return string;
 }
 
-static bool Int16_OnGetDataFromString(Class _class, short * data, char * string)
+static bool Int16_OnGetDataFromString(Class _class, short * data, const char * string)
 {
    char * end;
    short result = (short)strtol(string, &end, 0);
@@ -1386,7 +1386,7 @@ static int UInteger_OnCompare(Class _class, unsigned int * data1, unsigned int *
    return result;
 }
 
-static char * UInteger_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, bool * needClass)
+static const char * UInteger_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, "%u", *data);
    return string;
@@ -1403,20 +1403,20 @@ static int UInt16_OnCompare(Class _class, uint16 * data1, unsigned int * data2)
    return result;
 }
 
-static char * UInt16_OnGetString(Class _class, uint16 * data, char * string, void * fieldData, bool * needClass)
+static const char * UInt16_OnGetString(Class _class, uint16 * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, "%u", (uint)*data);
    return string;
 }
 
 
-static char * UIntegerHex_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, bool * needClass)
+static const char * UIntegerHex_OnGetString(Class _class, unsigned int * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, "%x", *data);
    return string;
 }
 
-static bool UInteger_OnGetDataFromString(Class _class, unsigned int * data, char * string)
+static bool UInteger_OnGetDataFromString(Class _class, unsigned int * data, const char * string)
 {
    char * end;
    uint result = (uint)strtoul(string, &end, 0);
@@ -1428,7 +1428,7 @@ static bool UInteger_OnGetDataFromString(Class _class, unsigned int * data, char
    return false;
 }
 
-static bool UInt16_OnGetDataFromString(Class _class, uint16 * data, char * string)
+static bool UInt16_OnGetDataFromString(Class _class, uint16 * data, const char * string)
 {
    char * end;
    uint16 result = (uint16)strtoul(string, &end, 0);
@@ -1451,13 +1451,13 @@ static int Byte_OnCompare(Class _class, byte * data1, byte * data2)
    return result;
 }
 
-static char * Byte_OnGetString(Class _class, byte * data, char * string, void * fieldData, bool * needClass)
+static const char * Byte_OnGetString(Class _class, byte * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, "%u", (int)*data);
    return string;
 }
 
-static char * Char_OnGetString(Class _class, char * data, char * string, void * fieldData, bool * needClass)
+static const char * Char_OnGetString(Class _class, char * data, char * string, void * fieldData, bool * needClass)
 {
    if(needClass && *needClass)
    {
@@ -1475,7 +1475,7 @@ static char * Char_OnGetString(Class _class, char * data, char * string, void * 
    return string;
 }
 
-static bool Byte_OnGetDataFromString(Class _class, byte * data, char * string)
+static bool Byte_OnGetDataFromString(Class _class, byte * data, const char * string)
 {
    char * end;
    byte result = (byte)strtoul(string, &end, 0);
@@ -1541,47 +1541,47 @@ static int UIntPtr32_OnCompare(Class _class, uint32 data1, uint32 data2)
    return result;
 }
 
-static char * Int64_OnGetString(Class _class, int64 * data, char * string, void * fieldData, bool * needClass)
+static const char * Int64_OnGetString(Class _class, int64 * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, FORMAT64D, *data);
    return string;
 }
 
-static char * UInt64_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, bool * needClass)
+static const char * UInt64_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, FORMAT64U, *data);
    return string;
 }
 
-static char * UInt64Hex_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, bool * needClass)
+static const char * UInt64Hex_OnGetString(Class _class, uint64 * data, char * string, void * fieldData, bool * needClass)
 {
    sprintf(string, FORMAT64HEX, *data);
    return string;
 }
 
-static char * UIntPtr64_OnGetString(Class _class, uint64 data, char * string, void * fieldData, bool * needClass)
+static const char * UIntPtr64_OnGetString(Class _class, uint64 data, char * string, void * fieldData, bool * needClass)
 {
    return UInt64Hex_OnGetString(_class, &data, string, fieldData, needClass);
 }
 
-static char * UIntPtr32_OnGetString(Class _class, uint data, char * string, void * fieldData, bool * needClass)
+static const char * UIntPtr32_OnGetString(Class _class, uint data, char * string, void * fieldData, bool * needClass)
 {
    return UIntegerHex_OnGetString(_class, &data, string, fieldData, needClass);
 }
 
-static char * IntPtr64_OnGetString(Class _class, uint64 data, char * string, void * fieldData, bool * needClass)
+static const char * IntPtr64_OnGetString(Class _class, int64 data, char * string, void * fieldData, bool * needClass)
 {
    return Int64_OnGetString(_class, &data, string, fieldData, needClass);
 }
 
-static char * IntPtr32_OnGetString(Class _class, uint data, char * string, void * fieldData, bool * needClass)
+static const char * IntPtr32_OnGetString(Class _class, int data, char * string, void * fieldData, bool * needClass)
 {
    return Integer_OnGetString(_class, &data, string, fieldData, needClass);
 }
 
-static bool Int64_OnGetDataFromString(Class _class, uint64 * data, char * string)
+static bool Int64_OnGetDataFromString(Class _class, int64 * data, const char * string)
 {
-   char * end;
+   const char * end;
    uint64 result = _strtoi64(string, &end, 0);
    if(end > string)
    {
@@ -1591,9 +1591,9 @@ static bool Int64_OnGetDataFromString(Class _class, uint64 * data, char * string
    return false;
 }
 
-static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, char * string)
+static bool UInt64_OnGetDataFromString(Class _class, uint64 * data, const char * string)
 {
-   char * end;
+   const char * end;
    uint64 result = _strtoui64(string, &end, 0);
    if(end > string)
    {
@@ -1698,7 +1698,7 @@ static void RegisterClass_Integer(Module module)
 {
    Class integerClass = eSystem_RegisterClass(normalClass, "int", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("int");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(int);
@@ -1713,7 +1713,7 @@ static void RegisterClass_Integer(Module module)
    integerClass.type = systemClass;
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(int64);
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("int64");
    eClass_AddMethod(integerClass, "OnGetString", null, Int64_OnGetString, publicAccess);
    eClass_AddMethod(integerClass, "OnCompare", null, Int64_OnCompare, publicAccess);
@@ -1723,7 +1723,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "uint", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("unsigned int");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uint);
@@ -1735,7 +1735,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "unsigned int", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("unsigned int");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uint);
@@ -1748,7 +1748,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "uint16", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("unsigned short");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uint16);
@@ -1761,7 +1761,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "short", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("short");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(short);
@@ -1775,7 +1775,7 @@ static void RegisterClass_Integer(Module module)
    /*
    integerClass = eSystem_RegisterClass(normalClass, "uint32", null, 0, 0, null, null, module, baseSystemAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("uint32");
    eClass_AddMethod(integerClass, "OnCompare", null, UInteger_OnCompare, publicAccess);
    eClass_AddMethod(integerClass, "OnGetString", null, UInteger_OnGetString, publicAccess);
@@ -1783,14 +1783,14 @@ static void RegisterClass_Integer(Module module)
    */
    integerClass = eSystem_RegisterClass(normalClass, "uint32", "uint", 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("unsigned int");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uint32);
 
    integerClass = eSystem_RegisterClass(normalClass, "uint64", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("uint64");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uint64);
@@ -1802,7 +1802,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "byte", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("unsigned char");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(byte);
@@ -1814,7 +1814,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "char", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("char");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(char);
@@ -1826,7 +1826,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "intsize", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("ssize_t");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(intsize);
@@ -1849,7 +1849,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "uintsize", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("size_t");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uintsize);
@@ -1872,7 +1872,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "uintptr", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("uintptr_t");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(uintptr);
@@ -1896,7 +1896,7 @@ static void RegisterClass_Integer(Module module)
 
    integerClass = eSystem_RegisterClass(normalClass, "intptr", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    integerClass.type = systemClass;
-   delete integerClass.dataTypeString;
+   delete (void *)integerClass.dataTypeString;
    integerClass.dataTypeString = CopyString("intptr_t");
    integerClass.structSize = 0;
    integerClass.typeSize = sizeof(intptr);
@@ -2011,7 +2011,7 @@ static void RegisterClass_Float(Module module)
 {
    Class floatClass = eSystem_RegisterClass(normalClass, "float", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    floatClass.type = systemClass;
-   delete floatClass.dataTypeString;
+   delete (void *)floatClass.dataTypeString;
    floatClass.dataTypeString = CopyString("float");
    floatClass.structSize = 0;
    floatClass.typeSize = sizeof(float);
@@ -2122,7 +2122,7 @@ static void RegisterClass_Double(Module module)
 {
    Class doubleClass = eSystem_RegisterClass(normalClass, "double", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
    doubleClass.type = systemClass;
-   delete doubleClass.dataTypeString;
+   delete (void *)doubleClass.dataTypeString;
    doubleClass.dataTypeString = CopyString("double");
    doubleClass.structSize = 0;
    doubleClass.typeSize = sizeof(double);
@@ -2173,9 +2173,9 @@ public struct StaticString
       return result;
    }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      return (char *)(this ? string : null); // Cast for memguard
+      return (const char *)(this ? string : null); // Cast for memguard
    }
 
    void OnFree()
@@ -2216,7 +2216,7 @@ static bool String_OnGetDataFromString(Class _class, char ** data, char * newDat
    return true;
 }
 
-/*static */int String_OnCompare(Class _class, char * string1, char * string2)
+/*static */int String_OnCompare(Class _class, const char * string1, const char * string2)
 {
    int result = 0;
    if(string1 && string2)
@@ -2279,7 +2279,7 @@ static void String_OnUnserialize(Class _class, char * * string, IOChannel channe
 static void RegisterClass_String(Module module)
 {
    Class stringClass = eSystem_RegisterClass(normalClass, "char *", null, 0, 0, null, null, module, baseSystemAccess, publicAccess);
-   delete stringClass.dataTypeString;
+   delete (void *)stringClass.dataTypeString;
    stringClass.dataTypeString = CopyString("char *");
    stringClass.structSize = 0;
    stringClass.computeSize = false;
@@ -2307,8 +2307,8 @@ void InitializeDataTypes1(Module module)
    eClass_AddVirtualMethod(baseClass, "OnCompare", "int typed_object::OnCompare(any_object object)", OnCompare, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnCopy", "void typed_object&::OnCopy(any_object newData)", OnCopy, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnFree", "void typed_object::OnFree(void)", OnFree, publicAccess);
-   eClass_AddVirtualMethod(baseClass, "OnGetString", "char * typed_object::OnGetString(char * tempString, void * fieldData, bool * needClass)", OnGetString, publicAccess);
-   eClass_AddVirtualMethod(baseClass, "OnGetDataFromString", "bool typed_object&::OnGetDataFromString(char * string)", OnGetDataFromString, publicAccess);
+   eClass_AddVirtualMethod(baseClass, "OnGetString", "const char * typed_object::OnGetString(char * tempString, void * fieldData, bool * needClass)", OnGetString, publicAccess);
+   eClass_AddVirtualMethod(baseClass, "OnGetDataFromString", "bool typed_object&::OnGetDataFromString(const char * string)", OnGetDataFromString, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnEdit", "Window typed_object::OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)", null, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnSerialize", "void typed_object::OnSerialize(IOChannel channel)", OnSerialize, publicAccess);
    eClass_AddVirtualMethod(baseClass, "OnUnserialize", "void typed_object&::OnUnserialize(IOChannel channel)", OnUnserialize, publicAccess);
@@ -2333,7 +2333,7 @@ public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, 
 {
    int len = 0;
    // TOFIX: OnGetString will need a maxLen as well
-   char * result = object.OnGetString(buffer, null, null);
+   const char * result = object.OnGetString(buffer, null, null);
    if(result)
    {
       len = strlen(result);
@@ -2352,7 +2352,7 @@ public int PrintStdArgsToBuffer(char * buffer, int maxLen, typed_object object, 
       if(data)
       {
          // TOFIX: OnGetString will need a maxLen as well
-         result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, buffer + len, null, null);
+         result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, buffer + len, null, null);
          if(result)
          {
             int newLen = strlen(result);

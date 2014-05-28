@@ -1059,7 +1059,7 @@ class HTMLView : Window
       NotifyPageOpened(master);
    }
 
-   bool ScrollToAnchor(Block block, char * anchor)
+   bool ScrollToAnchor(Block block, const char * anchor)
    {
       bool result = false;
       if(block.type == ANCHOR && block.anchor && !strcmpi(block.anchor, anchor))
@@ -1079,7 +1079,7 @@ class HTMLView : Window
       return result;
    }
 
-   bool GoToAnchor(char * anchor)
+   bool GoToAnchor(const char * anchor)
    {
       return anchor ? ScrollToAnchor(html.block, anchor) : false;
    }
@@ -1482,7 +1482,7 @@ class HTMLView : Window
             {
                int c;
                int len;
-               char * text;
+               const char * text;
 
                if(location[strlen(location)-1] != '?')
                {

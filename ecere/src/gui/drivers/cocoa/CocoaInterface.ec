@@ -59,10 +59,10 @@ class CocoaInterface : Interface
         printf("Unlock %s:%i\n", __FILE__, __LINE__);
     }
 
-    char **GraphicsDrivers(int *numDrivers)
+    const char **GraphicsDrivers(int *numDrivers)
     {
-        static char *graphicsDrivers[] = { "CocoaOpenGL" };
-        *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
+        static const char *graphicsDrivers[] = { "CocoaOpenGL" };
+        *numDrivers = (const char *)sizeof(graphicsDrivers) / sizeof(char *);
 
         return (char **)graphicsDrivers;
     }
@@ -105,7 +105,7 @@ class CocoaInterface : Interface
 
     // -- Window manipulation ---
 
-    void SetRootWindowCaption(Window window, char * name)
+    void SetRootWindowCaption(Window window, const char * name)
     {
         printf("SetRootWindowCaption %s:%i\n", __FILE__, __LINE__);
         CocoaSetRootWindowCaption(window.windowHandle, name);

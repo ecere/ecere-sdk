@@ -56,19 +56,19 @@ void * __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
 void * __ecereNameSpace__ecere__com__eSystem_Renew(void * memory, unsigned int size);
 void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, unsigned int size);
 
-unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(char * source, int * wordCount);
-unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(char * source, uint16 * dest, int max);
-char * __ecereNameSpace__ecere__sys__UTF16toUTF8(uint16 * source);
-char * __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(uint16 * source, byte * dest, int max);
+unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(const char * source, int * wordCount);
+unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(const char * source, uint16 * dest, int max);
+char * __ecereNameSpace__ecere__sys__UTF16toUTF8(const uint16 * source);
+char * __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(const uint16 * source, char * dest, int max);
 
-char * __ecereNameSpace__ecere__sys__StripLastDirectory(char * string, char * output);
+char * __ecereNameSpace__ecere__sys__StripLastDirectory(const char * string, char * output);
 
-char * __ecereNameSpace__ecere__sys__GetEnvironment(char * envName, char * envValue, int max);
-char * __ecereNameSpace__ecere__sys__SearchString(char * buffer, int start, char * subStr, bool matchCase, bool matchWord);
+char * __ecereNameSpace__ecere__sys__GetEnvironment(const char * envName, char * envValue, int max);
+char * __ecereNameSpace__ecere__sys__SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord);
 
-FileAttribs FILE_FileExists(char * fileName);
+FileAttribs FILE_FileExists(const char * fileName);
 
-bool System_MoveFile(char * source, char * dest)
+bool System_MoveFile(const char * source, const char * dest)
 {
 #ifdef __WIN32__
    bool result;
@@ -83,7 +83,7 @@ bool System_MoveFile(char * source, char * dest)
 #endif
 }
 
-bool System_RenameFile(char * oldName, char * newName)
+bool System_RenameFile(const char * oldName, const char * newName)
 {
 #if defined(__WIN32__)
    bool result;
@@ -99,7 +99,7 @@ bool System_RenameFile(char * oldName, char * newName)
 #endif
 }
 
-bool System_DeleteFile(char * fileName)
+bool System_DeleteFile(const char * fileName)
 {
    bool result = true;
 #if defined(__WIN32__)
@@ -115,7 +115,7 @@ bool System_DeleteFile(char * fileName)
    return result;
 }
 
-bool System_MakeDir(char * path)
+bool System_MakeDir(const char * path)
 {
    bool result = false;
    char location[MAX_LOCATION] = "";
@@ -167,7 +167,7 @@ bool System_MakeDir(char * path)
    return result;
 }
 
-bool System_RemoveDir(char * path)
+bool System_RemoveDir(const char * path)
 {
    bool result = false;
    char location[MAX_LOCATION] = "";
@@ -225,7 +225,7 @@ char * System_GetWorkingDir(char * buf, int size)
 #if defined(__WIN32__)
    uint16 * _wbuf = __ecereNameSpace__ecere__com__eSystem_New(sizeof(uint16) * size);
    _wgetcwd(_wbuf, size);
-   __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(_wbuf, (byte *)buf, size);
+   __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(_wbuf, buf, size);
    __ecereNameSpace__ecere__com__eSystem_Delete(_wbuf);
    return buf;
 #else
@@ -233,7 +233,7 @@ char * System_GetWorkingDir(char * buf, int size)
 #endif
 }
 
-bool System_ChangeWorkingDir(char * buf)
+bool System_ChangeWorkingDir(const char * buf)
 {
 #if defined(__WIN32__)
    bool result;
@@ -246,7 +246,7 @@ bool System_ChangeWorkingDir(char * buf)
 #endif
 }
 
-char * System_GetEnvironment(char * envName, char * envValue, int max)
+const char * System_GetEnvironment(const char * envName, char * envValue, int max)
 {
 #if defined(__WIN32__)
    uint16 * _wenvName = __ecereNameSpace__ecere__sys__UTF8toUTF16(envName, null);
@@ -258,7 +258,7 @@ char * System_GetEnvironment(char * envName, char * envValue, int max)
    //result = _wgetenv(_wenvName);
    //if(result)
    if(success && success < sizeof(result) / sizeof(uint16))
-      __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(result, (byte *)envValue, max);
+      __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(result, envValue, max);
    else
       envValue[0] = 0;
 
@@ -275,7 +275,7 @@ char * System_GetEnvironment(char * envName, char * envValue, int max)
 #endif
 }
 
-void System_SetEnvironment(char * envName, char * envValue)
+void System_SetEnvironment(const char * envName, const char * envValue)
 {
 #if defined(__WIN32__)
    uint16 * _wenvName = __ecereNameSpace__ecere__sys__UTF8toUTF16(envName, null);
@@ -288,7 +288,7 @@ void System_SetEnvironment(char * envName, char * envValue)
 #endif
 }
 
-void System_UnsetEnvironment(char * envName)
+void System_UnsetEnvironment(const char * envName)
 {
 #if defined(__WIN32__)
    uint16 * _wenvName = __ecereNameSpace__ecere__sys__UTF8toUTF16(envName, null);
@@ -299,7 +299,7 @@ void System_UnsetEnvironment(char * envName)
 #endif
 }
 
-bool System_Execute(char * env, char * command, va_list args, bool wait)
+bool System_Execute(const char * env, const char * command, va_list args, bool wait)
 {
    bool result = false;
    char commandLine[MAX_F_STRING*4];
@@ -320,7 +320,7 @@ bool System_Execute(char * env, char * command, va_list args, bool wait)
       // Set up the start up info struct.
       si.cb = sizeof(STARTUPINFO);
       // if(CreateProcess(null, _wcommandLine, null, null, TRUE, 0, env, null, &si, &pi))
-      if(CreateProcess(null, _wcommandLine, null, null, TRUE, CREATE_NEW_CONSOLE, env, null, &si, &pi))
+      if(CreateProcess(null, _wcommandLine, null, null, TRUE, CREATE_NEW_CONSOLE, (void *)env, null, &si, &pi))
       {
          if(wait)
             WaitForSingleObject(pi.hProcess, INFINITE);
@@ -335,7 +335,7 @@ bool System_Execute(char * env, char * command, va_list args, bool wait)
    return result;
 }
 
-bool System_ShellOpen(char * fileName, va_list args)
+bool System_ShellOpen(const char * fileName, va_list args)
 {
    bool result = false;
    char filePath[MAX_F_STRING*4];
@@ -401,7 +401,7 @@ bool System_ShellOpen(char * fileName, va_list args)
    return result;
 }
 
-void System_GetFreeSpace(char * path, FileSize64 * size)
+void System_GetFreeSpace(const char * path, FileSize64 * size)
 {
    uint64 freeSize = 0;
 #ifdef __WIN32__

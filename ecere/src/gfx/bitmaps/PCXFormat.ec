@@ -27,7 +27,7 @@ static struct PCXHead
 
 #define BUFLEN 1024
 
-static char * extensions[] = { "pcx", null };
+static const char * extensions[] = { "pcx", null };
 
 class PCXFormat : BitmapFormat
 {
@@ -158,7 +158,7 @@ class PCXFormat : BitmapFormat
       return result;
    }
 
-   bool Save(Bitmap bitmap, char *filename, void * options)
+   bool Save(Bitmap bitmap, const char *filename, void * options)
    {
       bool result = false;
       if(bitmap.pixelFormat == pixelFormat8 || bitmap.pixelFormat == pixelFormat888)
@@ -314,7 +314,7 @@ class PCXFormat : BitmapFormat
       return result;
    }
 
-   ColorAlpha * LoadPalette(char * fileName, char * type)
+   ColorAlpha * LoadPalette(const char * fileName, const char * type)
    {
       ColorAlpha * result = null;
       File f = FileOpen(fileName, read);

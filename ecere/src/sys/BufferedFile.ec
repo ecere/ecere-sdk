@@ -109,7 +109,7 @@ public class BufferedFile : File
       return 0;
    }
 
-   int Write(byte * buffer, uint size, uint count)
+   int Write(const byte * buffer, uint size, uint count)
    {
       uint result;
       uint numBytes;
@@ -187,7 +187,7 @@ public class BufferedFile : File
       return written != 0;
    }
 
-   bool Puts(char * string)
+   bool Puts(const char * string)
    {
       int len = strlen(string);
       int written = Write(string, 1, len);
@@ -339,7 +339,7 @@ public:
    }
 };
 
-public BufferedFile FileOpenBuffered(char * fileName, FileOpenMode mode)
+public BufferedFile FileOpenBuffered(const char * fileName, FileOpenMode mode)
 {
    BufferedFile result = null;
    //if(mode == read)

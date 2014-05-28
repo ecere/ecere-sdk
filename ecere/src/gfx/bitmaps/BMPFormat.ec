@@ -266,8 +266,8 @@ static bool LoadBMP(Bitmap bitmap, File f, BMPHead header, BMPInfo info)
    return result;
 }
 
-static char * extensions[] = { "bmp", null };
-static char * extensionsMem[] = { "memorybmp", null };
+static const char * extensions[] = { "bmp", null };
+static const char * extensionsMem[] = { "memorybmp", null };
 
 class MEMORYBMPFormat : BitmapFormat
 {
@@ -316,7 +316,7 @@ class BMPFormat : BitmapFormat
       return result;
    }
 
-   bool Save(Bitmap bitmap, char * filename, void * options)
+   bool Save(Bitmap bitmap, const char * filename, void * options)
    {
       bool result = false;
       if(bitmap.pixelFormat == pixelFormat8 || bitmap.pixelFormat == pixelFormat888)
@@ -482,7 +482,7 @@ class BMPFormat : BitmapFormat
       return result;
    }
 
-   ColorAlpha * LoadPalette(char * fileName, char * type)
+   ColorAlpha * LoadPalette(const char * fileName, const char * type)
    {
       ColorAlpha * result = null;
       File f = FileOpen(fileName, read);

@@ -82,7 +82,7 @@ struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
 struct __ecereNameSpace__ecere__com__Class * next;
-char *  name;
+const char *  name;
 int offset;
 int structSize;
 int (* *  _vTbl)();
@@ -103,16 +103,16 @@ int startMemberID;
 int type;
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int typeSize;
 int defaultAlignment;
 void (*  Initialize)();
 int memberOffset;
 struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-char *  designerClass;
+const char *  designerClass;
 unsigned int noExpansion;
-char *  defaultProperty;
+const char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
 int isRemote;
@@ -124,7 +124,7 @@ int destructionWatchOffset;
 unsigned int fixed;
 struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
 int inheritanceAccess;
-char *  fullName;
+const char *  fullName;
 void *  symbol;
 struct __ecereNameSpace__ecere__sys__OldList conversions;
 struct __ecereNameSpace__ecere__sys__OldList templateParams;
@@ -136,9 +136,9 @@ unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
@@ -146,12 +146,12 @@ struct __ecereNameSpace__ecere__com__Property
 {
 struct __ecereNameSpace__ecere__com__Property * prev;
 struct __ecereNameSpace__ecere__com__Property * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 void (*  Set)(void * , int);
@@ -162,7 +162,7 @@ void *  symbol;
 int vid;
 unsigned int conversion;
 unsigned int watcherOffset;
-char *  category;
+const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
@@ -170,7 +170,7 @@ unsigned int isWatchable;
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -195,12 +195,12 @@ struct __ecereNameSpace__ecere__com__DataMember
 {
 struct __ecereNameSpace__ecere__com__DataMember * prev;
 struct __ecereNameSpace__ecere__com__DataMember * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int type;
@@ -216,7 +216,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Method
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__Method * parent;
 struct __ecereNameSpace__ecere__com__Method * left;
 struct __ecereNameSpace__ecere__com__Method * right;
@@ -226,7 +226,7 @@ int vid;
 int type;
 struct __ecereNameSpace__ecere__com__Class * _class;
 void *  symbol;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int memberAccess;
 } __attribute__ ((gcc_struct));
@@ -269,13 +269,13 @@ union
 {
 struct
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
-char *  memberString;
+const char *  memberString;
 union
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
@@ -459,7 +459,7 @@ return 0;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Write(struct __ecereNameSpace__ecere__com__Instance * this, unsigned char * buffer, unsigned int size, unsigned int count)
+int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Write(struct __ecereNameSpace__ecere__com__Instance * this, const unsigned char * buffer, unsigned int size, unsigned int count)
 {
 unsigned int __simpleStruct0, __simpleStruct1;
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
@@ -473,7 +473,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePo
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(__ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle, __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->pos, 0);
-result = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+result = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->handle;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
@@ -553,7 +553,7 @@ return 0x0;
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Putc(struct __ecereNameSpace__ecere__com__Instance * this, char ch)
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
-int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__BufferedFile->_vTbl;
@@ -564,11 +564,11 @@ return written != 0;
 
 extern size_t strlen(const char * );
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Puts(struct __ecereNameSpace__ecere__com__Instance * this, char * string)
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Puts(struct __ecereNameSpace__ecere__com__Instance * this, const char * string)
 {
 struct __ecereNameSpace__ecere__sys__BufferedFile * __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile = (struct __ecereNameSpace__ecere__sys__BufferedFile *)(this ? (((char *)this) + structSize_File) : 0);
 int len = strlen(string);
-int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__BufferedFile->_vTbl;
@@ -770,7 +770,7 @@ __ecerePointer___ecereNameSpace__ecere__sys__BufferedFile->bufferRead = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_bufferRead), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferRead);
 }
 
-extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
@@ -780,7 +780,7 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpenBuffered(char * fileName, int mode)
+struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpenBuffered(const char * fileName, int mode)
 {
 struct __ecereNameSpace__ecere__com__Instance * result = (((void *)0));
 
@@ -813,13 +813,13 @@ if(!result)
 return result;
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
 struct __ecereNameSpace__ecere__com__NameSpace
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
 struct __ecereNameSpace__ecere__com__NameSpace *  left;
 struct __ecereNameSpace__ecere__com__NameSpace *  right;
@@ -842,7 +842,7 @@ struct __ecereNameSpace__ecere__sys__OldList functions;
 struct __ecereNameSpace__ecere__sys__OldList modules;
 struct __ecereNameSpace__ecere__com__Instance * prev;
 struct __ecereNameSpace__ecere__com__Instance * next;
-char *  name;
+const char *  name;
 void *  library;
 void *  Unload;
 int importType;
@@ -853,15 +853,15 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  dataType, void *  setStmt, void *  getStmt, int declMode);
+extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
 
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 void __ecereRegisterModule_BufferedFile(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -895,7 +895,7 @@ if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize
 __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_bufferRead = __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferRead, __ecerePropM___ecereNameSpace__ecere__sys__BufferedFile_bufferRead = (void *)0;
 if(class)
 class->fixed = (unsigned int)1;
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileOpenBuffered", "ecere::sys::BufferedFile ecere::sys::FileOpenBuffered(char * fileName, ecere::sys::FileOpenMode mode)", __ecereNameSpace__ecere__sys__FileOpenBuffered, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FileOpenBuffered", "ecere::sys::BufferedFile ecere::sys::FileOpenBuffered(const char * fileName, ecere::sys::FileOpenMode mode)", __ecereNameSpace__ecere__sys__FileOpenBuffered, module, 1);
 }
 
 void __ecereUnregisterModule_BufferedFile(struct __ecereNameSpace__ecere__com__Instance * module)

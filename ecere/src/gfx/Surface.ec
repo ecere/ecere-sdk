@@ -278,18 +278,18 @@ public:
       }
    }
 
-   void WriteText(int x, int y, char * text, int len)
+   void WriteText(int x, int y, const char * text, int len)
    {
       if(text)
          driver.WriteText(display, this, x,y, text, len);
    }
 
-   void TextExtent(char * text, int len, int * width, int * height)
+   void TextExtent(const char * text, int len, int * width, int * height)
    {
       driver.TextExtent(display, this, text, len, width, height);
    }
 
-   void WriteTextf(int x, int y, char * format, ...)
+   void WriteTextf(int x, int y, const char * format, ...)
    {
       if(format)
       {
@@ -303,7 +303,7 @@ public:
       }
    }
 
-   void CenterTextf(int x, int y, char * format, ...)
+   void CenterTextf(int x, int y, const char * format, ...)
    {
       if(format)
       {
@@ -322,7 +322,7 @@ public:
       }
    }
 
-   void WriteTextDots(Alignment alignment, int x, int y, int width, char * text, int len)
+   void WriteTextDots(Alignment alignment, int x, int y, int width, const char * text, int len)
    {
       int w, h;
 
@@ -363,7 +363,7 @@ public:
       }
    }
 
-   void WriteTextDotsf(Alignment alignment, int x, int y, int width, char * format, ...)
+   void WriteTextDotsf(Alignment alignment, int x, int y, int width, const char * format, ...)
    {
       if(format)
       {

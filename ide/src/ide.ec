@@ -44,7 +44,7 @@ import "about"
 
 import "FileSystemIterator"
 
-AVLTree<String> binaryDocExt
+AVLTree<const String> binaryDocExt
 { [
    "wav", "mp3", "flac", "ogg",
    "mid",
@@ -437,12 +437,12 @@ class IDEWorkSpace : Window
    {
       parent = this;
 
-      void OnGotoError(char * line, bool noParsing)
+      void OnGotoError(const char * line, bool noParsing)
       {
          ide.GoToError(line, noParsing);
       }
 
-      void OnCodeLocationParseAndGoTo(char * line)
+      void OnCodeLocationParseAndGoTo(const char * line)
       {
          ide.CodeLocationParseAndGoTo(line, ide.findInFilesDialog.findProject, ide.findInFilesDialog.findDir);
       }
@@ -651,7 +651,7 @@ class IDEWorkSpace : Window
                   bool gotWhatWeWant = false;
                   int c;
                   int numSelections = ideFileDialog.numSelections;
-                  char ** multiFilePaths = ideFileDialog.multiFilePaths;
+                  const char * const * multiFilePaths = ideFileDialog.multiFilePaths;
 
                   for(c = 0; c < numSelections; c++)
                   {
@@ -1641,7 +1641,7 @@ class IDEWorkSpace : Window
       master = this, parent = this;
       //anchor = { left = 100, top = 100, right = 100, bottom = 100 };
 
-      void OnCommand(char * string)
+      void OnCommand(const char * string)
       {
          if(ide)
             ide.debugger.SendGDBCommand(string);
@@ -1691,7 +1691,7 @@ class IDEWorkSpace : Window
          }
    }
 
-   ProjectView CreateProjectView(Workspace workspace, char * fileName)
+   ProjectView CreateProjectView(Workspace workspace, const char * fileName)
    {
       Project project = workspace.projects.firstIterator.data;
       projectView = ProjectView
@@ -1811,7 +1811,7 @@ class IDEWorkSpace : Window
       return false;
    }
 
-   void DocumentSaved(Window document, char * fileName)
+   void DocumentSaved(Window document, const char * fileName)
    {
       ideSettings.AddRecentFile(fileName);
       ide.UpdateRecentMenus();
@@ -1819,7 +1819,7 @@ class IDEWorkSpace : Window
       settingsContainer.Save();
    }
 
-   bool Window::OnFileModified(FileChange fileChange, char * param)
+   bool Window::OnFileModified(FileChange fileChange, const char * param)
    {
       char temp[4096];
       sprintf(temp, $"The document %s was modified by another application.\n"
@@ -2176,7 +2176,7 @@ class IDEWorkSpace : Window
       }
    }
 
-   void ChangeFileDialogsDirectory(char * directory, bool saveSettings)
+   void ChangeFileDialogsDirectory(const char * directory, bool saveSettings)
    {
       char tempString[MAX_LOCATION];
       strcpy(tempString, directory);
@@ -2197,14 +2197,14 @@ class IDEWorkSpace : Window
       settingsContainer.Save();
    }
 
-   Window FindWindow(char * filePath)
+   Window FindWindow(const char * filePath)
    {
       Window document = null;
 
       // TOCHECK: Do we need to change slashes here?
       for(document = firstChild; document; document = document.next)
       {
-         char * fileName = document.fileName;
+         const char * fileName = document.fileName;
          if(document.isDocument && fileName && !fstrcmp(fileName, filePath))
          {
             document.visible = true;
@@ -2215,7 +2215,7 @@ class IDEWorkSpace : Window
       return null;
    }
 
-   bool DontTerminateDebugSession(char * title)
+   bool DontTerminateDebugSession(const char * title)
    {
       if(debugger.isActive)
       {
@@ -2239,14 +2239,14 @@ class IDEWorkSpace : Window
       return false;
    }
 
-   Window OpenFile(char * origFilePath, bool dontMaximize, bool visible, char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod, bool noParsing)
+   Window OpenFile(const char * origFilePath, bool dontMaximize, bool visible, const char * type, OpenCreateIfFails createIfFails, OpenMethod openMethod, bool noParsing)
    {
       char extension[MAX_EXTENSION] = "";
       Window document = null;
       bool isProject = false;
       bool needFileModified = true;
       char winFilePath[MAX_LOCATION];
-      char * filePath = strstr(origFilePath, "http://") == origFilePath ? strcpy(winFilePath, origFilePath) : GetSystemPathBuffer(winFilePath, origFilePath);
+      const char * filePath = strstr(origFilePath, "http://") == origFilePath ? strcpy(winFilePath, origFilePath) : GetSystemPathBuffer(winFilePath, origFilePath);
       Window currentDoc = activeClient;
       bool maximizeDoc = !dontMaximize && ((currentDoc && currentDoc.state == maximized) || (!currentDoc && !projectView));
       if(!type)
@@ -2261,7 +2261,7 @@ class IDEWorkSpace : Window
       {
          for(document = firstChild; document; document = document.next)
          {
-            char * fileName = document.fileName;
+            const char * fileName = document.fileName;
             if(document.isDocument && fileName && !fstrcmp(fileName, filePath) && document.created)
             {
                document.visible = true;
@@ -2440,7 +2440,7 @@ class IDEWorkSpace : Window
                   prj = LoadProject(filePath, null);
                   if(prj)
                   {
-                     char * activeConfigName = null;
+                     const char * activeConfigName = null;
                      CompilerConfig compiler = ideSettings.GetCompilerConfig(workspace.compiler);
                      prj.StartMonitoring();
                      workspace.projects.Add(prj);
@@ -2675,7 +2675,7 @@ class IDEWorkSpace : Window
    void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir)
    {
       char *s = null;
-      char *path = text;
+      const char *path = text;
       char *colon = strchr(text, ':');
       char filePath[MAX_LOCATION] = "";
       char completePath[MAX_LOCATION];
@@ -3104,7 +3104,7 @@ class IDEWorkSpace : Window
       {
          if(passThrough)
          {
-            char * arg = app.argv[c];
+            const char * arg = app.argv[c];
             char * buf = new char[strlen(arg)*2+1];
             if(ptArg++ > 0)
                passArgs.concat(" ");
@@ -3529,7 +3529,7 @@ define sdkDirName = "Ecere SDK";
 define sdkDirName = "ecere";
 #endif
 
-bool GetInstalledFileOrFolder(char * subDir, char * name, char * path, FileAttribs attribs)
+bool GetInstalledFileOrFolder(const char * subDir, const char * name, char * path, FileAttribs attribs)
 {
    bool found = false;
    char * v = new char[maxPathLen];
@@ -3637,14 +3637,14 @@ bool GetInstalledFileOrFolder(char * subDir, char * name, char * path, FileAttri
    return found;
 }
 
-void FindAndShellOpenInstalledFolder(char * name)
+void FindAndShellOpenInstalledFolder(const char * name)
 {
    char path[MAX_LOCATION];
    if(GetInstalledFileOrFolder(name, null, path, { isDirectory = true }))
       ShellOpen(path);
 }
 
-void FindAndShellOpenInstalledFile(char * subdir, char * name)
+void FindAndShellOpenInstalledFile(const char * subdir, const char * name)
 {
    char path[MAX_LOCATION];
    if(GetInstalledFileOrFolder(subdir, name, path, { isFile = true }))
@@ -3655,13 +3655,13 @@ class RecursiveDeleteFolderFSI : NormalFileSystemIterator
 {
    bool preserveRootFolder;
 
-   void OutFolder(char * folderPath, bool isRoot)
+   void OutFolder(const char * folderPath, bool isRoot)
    {
       if(!(preserveRootFolder && isRoot))
          RemoveDir(folderPath);
    }
 
-   bool OnFile(char * filePath)
+   bool OnFile(const char * filePath)
    {
       DeleteFile(filePath);
       return true;
@@ -3688,7 +3688,7 @@ class IDEApp : GuiApplication
 
       if(ideSettings.language)
       {
-         String language = GetLanguageString();
+         const String language = GetLanguageString();
          if(ideSettings.language.OnCompare(language))
          {
             LanguageRestart(ideSettings.language, app, null, null, null, null, true);
@@ -3806,7 +3806,7 @@ class IDEApp : GuiApplication
       }
 
       if(!LoadIncludeFile())
-         PrintLn("error: unable to load :crossplatform.mk file inside ide binary.");
+         PrintLn($"error: unable to load :crossplatform.mk file inside ide binary.");
 
       // Create language menu
       {

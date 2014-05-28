@@ -193,7 +193,7 @@ public class NetworkClientFile : File
       return bytesRead;
    }
 
-   int Write(byte * buffer, uint size, uint count)
+   int Write(const byte * buffer, uint size, uint count)
    {
       return 0;
    }
@@ -208,7 +208,7 @@ public class NetworkClientFile : File
       return 0;
    }
 
-   bool Puts(char * string)
+   bool Puts(const char * string)
    {
       return 0;
    }
@@ -389,7 +389,7 @@ public class NetworkClientFile : File
    uint position;
 }
 
-public FileServerConnection ConnectToFileServer(char * hostName, int port)
+public FileServerConnection ConnectToFileServer(const char * hostName, int port)
 {
    FileServerConnection connection { };
    if(connection)

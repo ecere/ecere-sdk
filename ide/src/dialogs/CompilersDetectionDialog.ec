@@ -77,7 +77,7 @@ class CompilersDetectionDialog : Window
                                  dirs = result.includeDirs;
                               if(dirs)
                               {
-                                 byte * tokens[256];
+                                 char * tokens[256];
                                  int c, numTokens;
                                  char * refId = new char[strlen(var)+3];
                                  sprintf(refId, "%%%s%%", var);
@@ -150,7 +150,7 @@ class CompilersDetectionDialog : Window
       char compilerPath[MAX_LOCATION];
       for(compilerType = firstCompilerType; compilerType <= lastCompilerType; compilerType++)
       {
-         char * varName = compilerSignatureEnvVars[compilerType];
+         const char * varName = compilerSignatureEnvVars[compilerType];
          if(varName && *varName)
          {
             compilerPath[0] = '\0';

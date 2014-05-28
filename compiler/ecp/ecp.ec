@@ -1103,7 +1103,7 @@ static void OutputDataMembers(ClassDefine classDefine, Class _class, File f)
    }
 }
 
-static void OutputSymbols(char * fileName)
+static void OutputSymbols(const char * fileName)
 {
    File f = FileOpen(fileName, write);
    if(f)
@@ -1365,7 +1365,7 @@ class PrecompApp : Application
 
       for(c = 1; c<argc; c++)
       {
-         char * arg = argv[c];
+         const char * arg = argv[c];
          if(arg[0] == '-')
          {
             if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
@@ -1430,7 +1430,7 @@ class PrecompApp : Application
                if(c + 1 < argc)
                {
                   char * buf;
-                  char * arg1 = argv[++c];
+                  const char * arg1 = argv[++c];
                   int size = cppOptionsLen + 1 + strlen(arg) * 2 + strlen(arg1) * 2 + 1;
                   cppOptions = renew cppOptions char[size];
                   buf = cppOptions + cppOptionsLen;
@@ -1543,7 +1543,7 @@ class PrecompApp : Application
          globalContext.types.Add((BTNode)Symbol { string = CopyString("size_t"), type = ProcessTypeString("uintsize", false) });
 
          {
-            char * outputFilePath = GetOutputFile();
+            const char * outputFilePath = GetOutputFile();
             if(FileExists(outputFilePath))
                DeleteFile(outputFilePath);
          }

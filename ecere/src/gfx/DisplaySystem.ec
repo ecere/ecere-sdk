@@ -54,7 +54,7 @@ public:
          driver.displaySystem = null;
    }
 
-   bool Create(char * driverName, void * window, bool fullScreen)
+   bool Create(const char * driverName, void * window, bool fullScreen)
    {
       bool result = false;
       subclass(DisplayDriver) displayDriver = GetDisplayDriver(driverName);
@@ -79,7 +79,7 @@ public:
       return result;
    }
 
-   Font LoadFont(char * faceName, float size, FontFlags flags)
+   Font LoadFont(const char * faceName, float size, FontFlags flags)
    {
       Font result = null;
       subclass(DisplayDriver) driver = this ? this.driver : ((subclass(DisplayDriver))class(LFBDisplayDriver));
@@ -109,7 +109,7 @@ public:
       driver.UnloadFont(this, font);
    }
 
-   void FontExtent(Font font, byte * text, int len, int * width, int * height)
+   void FontExtent(Font font, const char * text, int len, int * width, int * height)
    {
       if(this && text)
          driver.FontExtent(this, font, text, len, width, height);
@@ -189,7 +189,7 @@ public:
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
    // --- Materials List Management ---
 
-   Material AddNamedMaterial(char * name)
+   Material AddNamedMaterial(const char * name)
    {
       Material material = materials.FindName(name, false);
       if(!material)
@@ -216,7 +216,7 @@ public:
       return true;
    }
 
-   Material GetMaterial(char * name)
+   Material GetMaterial(const char * name)
    {
       return materials.FindName(name, false);
    }
@@ -235,7 +235,7 @@ public:
 
    // --- Textures List Management ---
 
-   NamedLink AddTexture(char * name, Bitmap bitmap)
+   NamedLink AddTexture(const char * name, Bitmap bitmap)
    {
       NamedLink item { };
       if(item)
@@ -249,12 +249,12 @@ public:
       return item;
    }
 
-   Bitmap GetTexture(char * name)
+   Bitmap GetTexture(const char * name)
    {
       return textures.FindNamedLink(name, false);
    }
 
-   bool RemoveTexture(char * name)
+   bool RemoveTexture(const char * name)
    {
       NamedLink item = textures.FindName(name, false);
       if(item)

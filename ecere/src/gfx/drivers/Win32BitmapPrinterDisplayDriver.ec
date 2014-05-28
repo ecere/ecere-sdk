@@ -793,7 +793,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       Filter(display, surface, src, dx, dy, sx, sy, w, h, sw, sh);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       Win32BitmapPrinterSystem gdiSystem = displaySystem.driverData;
       HDC hdc = gdiSystem.hdc;
@@ -825,7 +825,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       SetBkMode(gdiSurface.hdc, opaque ? OPAQUE : TRANSPARENT);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       int wordCount;
@@ -834,7 +834,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       delete u16text;
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       Win32BitmapPrinterSurface gdiSurface = surface.driverData;
       SIZE space, size;
@@ -858,7 +858,7 @@ class Win32BitmapPrinterDisplayDriver : DisplayDriver
       }
    }
 
-   void FontExtent(DisplaySystem displaySystem, void * font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, void * font, const char * text, int len, int * width, int * height)
    {
       Win32BitmapPrinterSystem gdiSystem = displaySystem.driverData;
       if(gdiSystem.tmpDC)

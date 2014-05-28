@@ -135,7 +135,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
             }
 
             yylloc = func.loc;
-            if(!MatchTypes(type, methodDataType, null, owningClass, method._class /*owningClass*/, true, true, true, false))
+            if(!MatchTypes(type, methodDataType, null, owningClass, method._class /*owningClass*/, true, true, true, false, true))
             {
 #ifdef _DEBUG
                // MatchTypes(type, methodDataType, null, owningClass, owningClass, true, true, true, false);
@@ -343,7 +343,7 @@ void CreateRegisterModuleBody()
    }
 }
 
-void RegisterMembersAndProperties(Class regClass, bool isMember, char * className, Statement statement)
+void RegisterMembersAndProperties(Class regClass, bool isMember, const char * className, Statement statement)
 {
    DataMember dataMember = isMember ? (DataMember)regClass : null;
    DataMember member;
@@ -1096,7 +1096,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          OldList * args = MkList();
          Method method;
          Expression exp;
-         char * registerFunction = null;
+         const char * registerFunction = null;
          AccessMode inheritanceAccess = publicAccess;
 
          CreateRegisterModuleBody();

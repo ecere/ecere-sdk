@@ -7,7 +7,7 @@ public union Matrix
    double array[16];
    double m[4][4];
 
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       int y, x;
       string[0] = 0;
@@ -18,7 +18,7 @@ public union Matrix
          for(x = 0; x < 4; x++)
          {
             char member[256];
-            char * s = m[y][x].OnGetString(member, null, null);
+            const char * s = m[y][x].OnGetString(member, null, null);
             strcat(string, s);
             if(x < 3) strcat(string, ", ");
          }

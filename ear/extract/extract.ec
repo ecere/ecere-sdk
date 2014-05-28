@@ -8,7 +8,7 @@ static char archivePath[MAX_LOCATION], archive[MAX_LOCATION];
 
 #define BUFFERSIZE 0x10000
 
-void ExtractFileFromArchive(ProgressBar progressBar, char * path, char * outputFile)
+void ExtractFileFromArchive(ProgressBar progressBar, const char * path, const char * outputFile)
 {
    char fileName[MAX_LOCATION];
    FileAttribs exists = FileExists(path);
@@ -210,7 +210,7 @@ class SelfExtract : Window
       return true;
    }
 
-   void ViewArchive(char * path)
+   void ViewArchive(const char * path)
    {
       FileListing listing { path };
       char string[MAX_LOCATION], * directory;

@@ -101,7 +101,7 @@ public class BitmapResource : Resource
             fileDialog.master = rootWindow;
             if(fileDialog.Modal() == ok)
             {
-               char * filePath = fileDialog.filePath;
+               const char * filePath = fileDialog.filePath;
                BitmapResource resource { fileName = filePath };
 
                master.SetData(resource, false);
@@ -147,7 +147,7 @@ public class BitmapResource : Resource
    }
 
 public:
-   property char * fileName
+   property const char * fileName
    {
       set
       {

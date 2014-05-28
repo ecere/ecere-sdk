@@ -5,7 +5,7 @@ import "Window"
 public class FontResource : Resource
 {
 public:
-   property char * faceName { set { delete faceName; faceName = CopyString(value); } get { return this ? faceName : null; } };
+   property const char * faceName { set { delete faceName; faceName = CopyString(value); } get { return this ? faceName : null; } };
    property float size { set { size = value; } get { return this ? size : 0; } };
    property bool bold { set { flags.bold = value; } get { return this ? flags.bold : false; } };
    property bool italic { set { flags.italic = value; } get { return this ? flags.italic : false; } };
@@ -87,7 +87,7 @@ private:
       return result;
    }
 
-   char * OnGetString(char * string, void * fieldDat, bool * needClass)
+   const char * OnGetString(char * string, void * fieldDat, bool * needClass)
    {
       if(this)
       {
@@ -101,7 +101,7 @@ private:
       return null;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       this = (string && string[0]) ? FontResource { } : null;
       if(this)

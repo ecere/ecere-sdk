@@ -3,11 +3,11 @@ import "EDA.ec"
 public class DirFilesDataSourceDriver : DataSourceDriver
 {
 public: // this should be visible only to the overriding class, missing access/visibility level
-   String path;
-   String databaseFileExt;
-   String tableFileExt;
+   const String path;
+   const String databaseFileExt;
+   const String tableFileExt;
 
-   virtual bool IsDatabaseFile(char *fullPath)
+   virtual bool IsDatabaseFile(const char *fullPath)
    {
       return FileExists(fullPath).isFile;
    }
@@ -17,7 +17,7 @@ public: // this should be visible only to the overriding class, missing access/v
       if(name)
       {
          char dbPath[MAX_LOCATION];
-         char *ext = databaseFileExt;
+         const char *ext = databaseFileExt;
          strcpy(dbPath, path ? path : "");
          if(ext && *ext)
          {
@@ -41,7 +41,7 @@ public: // this should be visible only to the overriding class, missing access/v
    }
 
 private:
-   Array<String> databases { }; // TODO: make this List<Databases> databases { };
+   Array<const String> databases { }; // TODO: make this List<Databases> databases { };
 
    DirFilesDataSourceDriver()
    {
@@ -52,7 +52,7 @@ private:
 
    ~DirFilesDataSourceDriver()
    {
-      delete path;
+      delete (void *)path;
       databases.Free();
    }
 
@@ -66,7 +66,7 @@ private:
       return databases.count;
    }
 
-   Array<String> GetDatabases()
+   Array<const String> GetDatabases()
    {
       UpdateDatabaseList();
       return databases;
@@ -74,7 +74,7 @@ private:
 
    bool Connect(const String locator)
    {
-      delete path;
+      delete (void *)path;
       path = CopyString(locator);
       if(path && FileExists(path))
       {
@@ -92,7 +92,7 @@ private:
       {
          if(IsDatabaseFile(listing.path))
          {
-            char * ext = databaseFileExt;
+            const char * ext = databaseFileExt;
             char * fileName = CopyString(listing.name);
             if(ext && *ext)
             {
@@ -115,7 +115,7 @@ private:
    {
       if(name && rename && path && FileExists(path))
       {
-         Iterator<String> it { databases };
+         Iterator<const String> it { databases };
          if(it.Find(name))
          {
             String path;
@@ -143,7 +143,7 @@ private:
       if(name && path && FileExists(path))
       {
          bool deleted;
-         Iterator<String> it { databases };
+         Iterator<const String> it { databases };
          if(it.Find(name))
          {
             String path = MakeDatabasePath(name);

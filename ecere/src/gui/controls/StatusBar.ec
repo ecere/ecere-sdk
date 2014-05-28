@@ -142,7 +142,7 @@ private:
       Update(null);
    };
 
-   char * text;
+   const char * text;
    OldList fields;
    int width;
 };
@@ -199,7 +199,7 @@ public:
       }
    }
 
-   property char * text
+   property const char * text
    {
       set
       {
@@ -235,7 +235,7 @@ public:
       }
    }
 
-   void SetTextf(char * format, ...)
+   void SetTextf(const char * format, ...)
    {
       if(this)
       {

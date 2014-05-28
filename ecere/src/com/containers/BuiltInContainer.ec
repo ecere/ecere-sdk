@@ -50,7 +50,7 @@ public:
    {
       return false;
    }
-   virtual IteratorPointer GetAtPosition(uint64 pos, bool create)
+   virtual IteratorPointer GetAtPosition(const uint64 pos, bool create)
    {
       return data ? (IteratorPointer)((byte *)data +
          ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize)) : null;
@@ -108,7 +108,7 @@ public:
 
    virtual void Delete(IteratorPointer it) { }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(this)
       {
@@ -120,9 +120,9 @@ public:
          tempString[0] = '\0';
          for(i = 0; i < count; i++)
          {
-            char * result;
+            const char * result;
             itemString[0] = '\0';
-            result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnGetString])(
+            result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnGetString])(
                Dclass, (type.type == normalClass || type.type == noHeadClass) ? *(void **)data : data, itemString, null, null);
             if(!first) strcat(tempString, ", ");
             strcat(tempString, result);

@@ -154,11 +154,11 @@ private:
          {
             if(needUpdate)
             {
-               String s;
+               const String s;
                if(type.type == noHeadClass || type.type == normalClass)
-                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, *(void **)this.data, tempString, fieldData, null);
+                  s = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, *(void **)this.data, tempString, fieldData, null);
                else
-                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, this.data, tempString, fieldData, null);
+                  s = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, this.data, tempString, fieldData, null);
                delete stringValue;
                stringValue = CopyString(s);
                needUpdate = false;

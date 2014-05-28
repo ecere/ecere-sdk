@@ -127,7 +127,7 @@ class PictureEdit : Window
          };
          #endif
 
-   property char * bitmapFile
+   property const char * bitmapFile
    {
       set
       {
@@ -268,7 +268,7 @@ class PictureEdit : Window
       return true;
    }
 
-   bool OnSaveFile(char * fileName)
+   bool OnSaveFile(const char * fileName)
    {
       bool result = false;
       if(bitmap)

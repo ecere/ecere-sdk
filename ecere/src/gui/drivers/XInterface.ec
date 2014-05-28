@@ -2380,11 +2380,11 @@ class XInterface : Interface
       //*XUnlockDisplay(xGlobalDisplay);
    }
 
-   char ** GraphicsDrivers(int * numDrivers)
+   const char ** GraphicsDrivers(int * numDrivers)
    {
-      static char *graphicsDrivers[] = { "X", "OpenGL" };
+      static const char *graphicsDrivers[] = { "X", "OpenGL" };
       *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
-      return (char **)graphicsDrivers;
+      return (const char **)graphicsDrivers;
    }
 
    void GetCurrentMode(bool * fullScreen, int * resolution, int * colorDepth, int * refreshRate)
@@ -2870,7 +2870,7 @@ class XInterface : Interface
 
    // -- Window manipulation ---
 
-   void SetRootWindowCaption(Window window, char * name)
+   void SetRootWindowCaption(Window window, const char * name)
    {
       if(window.windowHandle)
       {

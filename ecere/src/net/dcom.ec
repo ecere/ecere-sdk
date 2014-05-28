@@ -603,7 +603,7 @@ public:
       socket = this, connected = true;
    };
 
-   bool Connect(char * server, int port)
+   bool Connect(const char * server, int port)
    {
       bool result = false;
       if(Socket::Connect(server, port))

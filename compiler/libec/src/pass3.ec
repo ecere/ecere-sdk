@@ -179,7 +179,8 @@ static int ReplaceClassSpec(OldList specs, Specifier spec, bool param)
    {
       if(spec.specifier == ANY_OBJECT)
       {
-         spec.specifier = VOID;
+         spec.specifier = CONST;
+         specs.Add(MkSpecifier(VOID));
          return 1;
       }
    }
@@ -213,7 +214,7 @@ static void ReplaceByInstancePtr(Specifier spec, Declarator * declPtr, int type)
    }
 }
 
-static void InstDeclPassSpecifier(Specifier spec)
+static void InstDeclPassSpecifier(Specifier spec, bool byRefTypedObject)
 {
    switch(spec.type)
    {
@@ -221,7 +222,9 @@ static void InstDeclPassSpecifier(Specifier spec)
          if(spec.specifier == TYPED_OBJECT)
          {
             spec.type = extendedSpecifier;
-            spec.extDecl = MkExtDeclString(CopyString("struct __ecereNameSpace__ecere__com__Class * class, void *"));
+            spec.extDecl = MkExtDeclString(CopyString(byRefTypedObject ?
+               "struct __ecereNameSpace__ecere__com__Class * class, void *" :
+               "struct __ecereNameSpace__ecere__com__Class * class, const void *"));
          }
          break;
       case nameSpecifier:
@@ -394,7 +397,7 @@ static void InstDeclPassDeclarator(Declarator decl)
                (classSym.registered.type == enumClass || classSym.registered.type == bitClass || classSym.registered.type == unitClass))))
                ReplaceByInstancePtr(spec, &type.declarator, 2);
          }
-         InstDeclPassSpecifier(spec);
+         InstDeclPassSpecifier(spec, type.declarator && type.declarator.type == pointerDeclarator);
       }
    }
    if(type.declarator)
@@ -579,7 +582,7 @@ static void InstDeclPassDeclaration(Declaration decl)
                         ReplaceByInstancePtr(spec, &d.declarator, type);
                   }
                }
-               InstDeclPassSpecifier(spec);
+               InstDeclPassSpecifier(spec, false);
             }
          }
          if(decl.declarators)
@@ -611,7 +614,7 @@ static void InstDeclPassDeclaration(Declaration decl)
                         ReplaceByInstancePtr(spec, &d, type);
                   }
                }
-               InstDeclPassSpecifier(spec);
+               InstDeclPassSpecifier(spec, false);
             }
          }
 
@@ -804,7 +807,7 @@ public void ProcessInstanceDeclarations()
                int type;
                if((type = ReplaceClassSpec(func.specifiers, spec, false)))
                   ReplaceByInstancePtr(spec, &func.declarator, type);
-               InstDeclPassSpecifier(spec);
+               InstDeclPassSpecifier(spec, false);
             }
          }
          InstDeclPassDeclarator(func.declarator);

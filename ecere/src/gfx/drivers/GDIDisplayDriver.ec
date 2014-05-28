@@ -847,7 +847,7 @@ class GDIDisplayDriver : DisplayDriver
       Filter(display, surface, src, dx, dy, sx, sy, w, h, sw, sh);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       if(false) //display.alphaBlend)
          return ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
@@ -914,7 +914,7 @@ class GDIDisplayDriver : DisplayDriver
       }
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       if(display.alphaBlend && display.pixelFormat == pixelFormat888)
       {
@@ -953,7 +953,7 @@ class GDIDisplayDriver : DisplayDriver
       }
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       if(display && display.alphaBlend && display.pixelFormat == pixelFormat888)
          ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
@@ -982,7 +982,7 @@ class GDIDisplayDriver : DisplayDriver
       }
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
       if(false) //display.alphaBlend)
         ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);

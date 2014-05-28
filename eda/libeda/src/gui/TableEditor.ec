@@ -63,7 +63,7 @@ public char ToASCII(unichar ch)
    return asciiCH;
 }
 
-public char * ConvertToASCII(char * string, char * newString, int * len, bool lowerCase)
+public char * ConvertToASCII(const char * string, char * newString, int * len, bool lowerCase)
 {
    if(string)
    {
@@ -1298,7 +1298,7 @@ private:
                      //PrintLn("todo: support other field types for string search");
                   else if(field && field.type)
                   {
-                     char * n = field.name;
+                     const char * n = field.name;
                      char tempString[MAX_F_STRING];
                      int64 data = 0;
                      Class type = field.type;
@@ -1603,7 +1603,7 @@ private:
             }
             else if(lf.CustomLookup && lf.field.type)
             {
-               char * n = lf.field.name;
+               const char * n = lf.field.name;
                int64 data = 0;
                String s = null;
                Class type = lf.field.type;
@@ -1626,7 +1626,7 @@ private:
             }
             else if(lf.field.type && eClass_IsDerived(lf.dataField.dataType, class(char*)))
             {
-               char * n = lf.field.name;
+               const char * n = lf.field.name;
                char tempString[MAX_F_STRING];
                int64 data = 0;
                Class type = lf.field.type;
@@ -1654,7 +1654,7 @@ private:
             }
             else if(lf.field.type)
             {
-               char * n = lf.field.name;
+               const char * n = lf.field.name;
                //char tempString[256];
                int64 data = 0;
                Class type = lf.field.type;

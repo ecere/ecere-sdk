@@ -50,7 +50,7 @@ static void WriteData(png_structp png, png_bytep bytes, png_size_t size)
    f.Write(bytes, 1, (uint)size);
 }
 
-static char * extensions[] = { "png", null };
+static const char * extensions[] = { "png", null };
 
 class PNGFormat : BitmapFormat
 {
@@ -245,7 +245,7 @@ class PNGFormat : BitmapFormat
       return result;
    }
 
-   bool Save(Bitmap bitmap, char *filename, void * options)
+   bool Save(Bitmap bitmap, const char *filename, void * options)
    {
       bool result = false;
       Bitmap tempBitmap = null;
@@ -301,7 +301,7 @@ class PNGFormat : BitmapFormat
       return result;
    }
 
-   ColorAlpha * LoadPalette(char * fileName, char * type)
+   ColorAlpha * LoadPalette(const char * fileName, const char * type)
    {
       ColorAlpha * result = null;
       return result;

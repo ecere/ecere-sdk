@@ -2,7 +2,7 @@ namespace gfx::bitmaps;
 
 import "Display"
 
-static char * extensions[] = { "rgb", null };
+static const char * extensions[] = { "rgb", null };
 
 class RGBFormat : BitmapFormat
 {
@@ -13,12 +13,12 @@ class RGBFormat : BitmapFormat
       return false;
    }
 
-   bool Save(Bitmap bitmap, char * filename, void * options)
+   bool Save(Bitmap bitmap, const char * filename, void * options)
    {
       return false;
    }
 
-   ColorAlpha * LoadPalette(char * fileName, char * type)
+   ColorAlpha * LoadPalette(const char * fileName, const char * type)
    {
       ColorAlpha * result = null;
       File f = FileOpen(fileName, read);

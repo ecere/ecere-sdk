@@ -91,7 +91,7 @@ static Array<FileType> fileTypes
    { $"Text Files", "txt", never }
 ] };
 
-static char * iconNames[] =
+static const char * iconNames[] =
 {
    "<:ecere>constructs/class.png",
    "<:ecere>constructs/data.png",
@@ -176,7 +176,7 @@ Expression paramsInsideExp;
 ClassFunction insideFunction;
 ClassDef insideDef;
 Type instanceType;
-char * instanceName;
+const char * instanceName;
 Type functionType;
 int paramsID;
 bool insideInstance;
@@ -185,7 +185,7 @@ bool insideInstance;
                               GENERATING
 ****************************************************************************/
 
-static void OutputString(File f, char * string)
+static void OutputString(File f, const char * string)
 {
    int c;
    for(c = 0; string[c]; c++)
@@ -483,7 +483,7 @@ bool Code_IsPropertyModified(Instance test, ObjectInfo selected, Property prop)
    return result;
 }
 
-bool Code_IsPropertyDisabled(ObjectInfo selected, char * name)
+bool Code_IsPropertyDisabled(ObjectInfo selected, const char * name)
 {
    bool disabled = false;
    if(selected.oClass == selected)
@@ -555,7 +555,7 @@ static bool CheckCompatibleMethod(Method method, Type type, Class regClass, bool
       method.dataType.thisClass = selectedClass;
    }
    //result = MatchTypes(method.dataType, type, null, regClass, regClass, false);
-   result = MatchTypes(type, method.dataType, null, regClass, regClass, false, true, true, false);
+   result = MatchTypes(type, method.dataType, null, regClass, regClass, false, true, true, false, true);
    if(reset)
       method.dataType.thisClass = null;
    return result;
@@ -791,14 +791,14 @@ class CodeEditor : Window
                   hide = true;
                else
                {
-                  char * buffer = membersLine.text;
+                  const char * buffer = membersLine.text;
                   int c;
 
                   if(charPos - 1 < membersLoc.start.charPos)
                      hide = true;
                   else if(charPos - 1 > membersLoc.end.charPos)
                   {
-                     char * buffer = membersLine.text;
+                     const char * buffer = membersLine.text;
                      //if(membersList.currentRow)
                      //   hide = true;
                      //else
@@ -923,7 +923,7 @@ class CodeEditor : Window
             {
                int c;
                // HOW WE MIGHT WANT TO DO IT:
-               char * text = before.line.text;
+               const char * text = before.line.text;
                for(c = Min(before.line.count, before.x-1); c>= 0; c--)
                   if(!isspace(text[c]))
                      break;
@@ -974,7 +974,7 @@ class CodeEditor : Window
                      hide = true;
                   else
                   {
-                     char * buffer = membersLine.text;
+                     const char * buffer = membersLine.text;
                      int c;
                      bool firstChar = true;
                      bool addedChar = false;
@@ -1040,7 +1040,7 @@ class CodeEditor : Window
                      // Accept current string if hiding typing char
                      if(hide && row && row.selected)
                      {
-                        char * string = row.string;
+                        const char * string = row.string;
                         int len = strlen(string);
                         membersLoc.end.charPos -= after.x - before.x;
                         editBox.GoToPosition(membersLine, membersLoc.start.line, membersLoc.start.charPos);
@@ -1062,7 +1062,7 @@ class CodeEditor : Window
                if(/*after.x - before.x == 1 && */after.y == before.y && !membersListShown)
                {
                   EditLine line = editBox.line;
-                  char * text = line.text;
+                  const char * text = line.text;
                   char ch = text[after.x-1];
                   if(ch == '.' || (ch == '>' && after.x-1 > 0 && text[after.x-1-1] == '-') || (ch == ':' && after.x-1 > 0 && text[after.x-1-1] == ':'))
                   {
@@ -1295,7 +1295,7 @@ class CodeEditor : Window
                   hide = true;
                else
                {
-                  char * buffer = membersLine.text;
+                  const char * buffer = membersLine.text;
                   int c;
                   bool firstChar = true;
                   char string[1024];
@@ -1527,7 +1527,7 @@ class CodeEditor : Window
          DataRow row = listBox.currentRow;
          if(row)
          {
-            char * string = row.string;
+            const char * string = row.string;
 
             editBox.GoToPosition(membersLine, membersLoc.start.line, membersLoc.start.charPos);
             editBox.Delete(
@@ -1602,7 +1602,7 @@ class CodeEditor : Window
                DataRow row = currentRow;
                if(row && row.selected)
                {
-                  char * string = row.string;
+                  const char * string = row.string;
 
                   editor.editBox.GoToPosition(editor.membersLine, editor.membersLoc.start.line, editor.membersLoc.start.charPos);
                   editor.editBox.Delete(
@@ -1982,7 +1982,7 @@ class CodeEditor : Window
          editBox.recordUndoEvent = true;
          for(line = editBox.firstLine; line; line = line.next, y++)
          {
-            String buffer = line.text;
+            const String buffer = line.text;
             int count = line.count, i = count-1;
             while(i >= 0 && isspace(buffer[i])) i--;
             if(i < count - 1)
@@ -2258,7 +2258,7 @@ class CodeEditor : Window
       return true;
    }
 
-   bool OnSaveFile(char * fileName)
+   bool OnSaveFile(const char * fileName)
    {
       File f;
       if(designer)
@@ -2287,7 +2287,7 @@ class CodeEditor : Window
       return false;
    }
 
-   bool OnFileModified(FileChange fileChange, char * param)
+   bool OnFileModified(FileChange fileChange, const char * param)
    {
       bool reload = false;
       if(visible == false && inUseDebug == true)
@@ -2440,7 +2440,7 @@ class CodeEditor : Window
    watch(fileName)
    {
       char ext[MAX_EXTENSION];
-      char * fileName = property::fileName;
+      const char * fileName = property::fileName;
 
       if(SearchString(fileName, 0, "Makefile", false, true))
          editBox.useTab = true;
@@ -2500,7 +2500,7 @@ class CodeEditor : Window
       return true;
    }
 
-   bool LoadFile(char * filePath)
+   bool LoadFile(const char * filePath)
    {
       File f = FileOpen(filePath, read);
       if(f)
@@ -2640,7 +2640,7 @@ class CodeEditor : Window
       Designer backDesigner;
       char oldWorkDir[MAX_LOCATION];
       char mainModuleName[MAX_FILENAME] = "";
-      char * fileName;
+      const char * fileName;
       ImportedModule module;
       char extension[MAX_EXTENSION];
       PathBackup pathBackup { };
@@ -3668,7 +3668,7 @@ class CodeEditor : Window
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
                         char tempString[1024] = "";
-                        char * string = "";
+                        const char * string = "";
                         bool needClass = true;
                         if(*prev)
                            f.Printf(", ");
@@ -3722,7 +3722,7 @@ class CodeEditor : Window
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                      {
                         char tempString[1024] = "";
-                        char * string = "";
+                        const char * string = "";
                         if(*prev)
                            f.Printf(", ");
 
@@ -5030,7 +5030,7 @@ class CodeEditor : Window
       method = null;
    }
 
-   int FindMethod(char * methodName /*Method method*/, ClassFunction*functionPtr, Location propLoc)
+   int FindMethod(const char * methodName /*Method method*/, ClassFunction*functionPtr, Location propLoc)
    {
       int found = 0;
       ClassFunction function = null;
@@ -5181,7 +5181,7 @@ class CodeEditor : Window
       return found;
    }
 
-   void GoToMethod(char * methodName /*Method method*/)
+   void GoToMethod(const char * methodName /*Method method*/)
    {
       if(methodName)
       {
@@ -5617,7 +5617,7 @@ class CodeEditor : Window
          sheet.DeleteObject(object);
    }
 
-   void RenameObject(ObjectInfo object, char * name)
+   void RenameObject(ObjectInfo object, const char * name)
    {
       bool valid = false;
 
@@ -5822,7 +5822,7 @@ class CodeEditor : Window
                   if(!method.dataType)
                      method.dataType = ProcessTypeString(method.dataTypeString, false);
 
-                  if(MatchTypes(method.dataType, methodType, null, whatClass, /*null, */whatClass, false, true, false, false))
+                  if(MatchTypes(method.dataType, methodType, null, whatClass, /*null, */whatClass, false, true, false, false, true))
                   {
                      DataRow row = membersList.FindString(method.name);
                      if(!row)
@@ -5842,7 +5842,7 @@ class CodeEditor : Window
       }
    }
 
-   void ListClassPropertiesAndVirtual(Class whatClass, String curString)
+   void ListClassPropertiesAndVirtual(Class whatClass, const String curString)
    {
       Class _class;
       bool isPrivate = false;
@@ -6038,7 +6038,7 @@ class CodeEditor : Window
       return result;
    }
 
-   void ListNameSpaceByString(Module mainModule, char * string)
+   void ListNameSpaceByString(Module mainModule, const char * string)
    {
       NameSpace * nameSpace;
       Module module;
@@ -6073,7 +6073,7 @@ class CodeEditor : Window
             Type type { };
             type.kind = classType;
             type._class = FindClass(_class.name);
-            if(MatchTypes(type, dest, &conversions, null, null, true, false, false, false))
+            if(MatchTypes(type, dest, &conversions, null, null, true, false, false, false, true))
             {
                ListEnumValues(_class);
                result = true;
@@ -6089,7 +6089,7 @@ class CodeEditor : Window
       return result;
    }
 
-   NameSpace * FindNameSpace(NameSpace nameSpace, char * name)
+   NameSpace * FindNameSpace(NameSpace nameSpace, const char * name)
    {
       int start = 0, c;
       char ch;
@@ -6117,7 +6117,7 @@ class CodeEditor : Window
       return (NameSpace *)nameSpace;
    }
 
-   void ListSymbols(Expression exp, bool enumOnly, char * string, Identifier realIdentifier)
+   void ListSymbols(Expression exp, bool enumOnly, const char * string, Identifier realIdentifier)
    {
       bool listedEnums = false;
       Type destType = (exp && exp.destType && !exp.destType.truth) ? exp.destType : null;
@@ -6439,7 +6439,7 @@ class CodeEditor : Window
    {
       bool didOverride = false;
       EditLine line = editBox.line;
-      char * text = line.text;
+      const char * text = line.text;
       int lineNum, charPos;
       Expression exp = null;
       EditLine l1, l2;
@@ -6545,7 +6545,7 @@ class CodeEditor : Window
 
          if(membersListShown)
          {
-            char * buffer = membersLine.text;
+            const char * buffer = membersLine.text;
             int c;
             bool firstChar = true;
             int len = 0;
@@ -6586,7 +6586,7 @@ class CodeEditor : Window
             string = tempString;
             for(y = lineNum-1; y >= 0; y--)
             {
-               char * buffer = editLine.text;
+               const char * buffer = editLine.text;
                int lineCount = editLine.count;
                for(x = (y == lineNum-1) ? (Min(charPos, lineCount) - 1 ): lineCount-1; x >= 0; x--)
                {
@@ -6711,7 +6711,7 @@ class CodeEditor : Window
                DataRow row = string ? membersList.FindSubString(string) : null;
                if(row && !membersList.FindSubStringAfter(row, string) && !caretMove)
                {
-                  char * newString = row.string;
+                  const char * newString = row.string;
                   if(!membersListShown)
                   {
                      membersLoc.start.line = idStart.line-1;
@@ -6817,7 +6817,7 @@ class CodeEditor : Window
    void InvokeParameters(bool exact, bool reposition, bool caretMove)
    {
       EditLine line = editBox.line;
-      char * text = line.text;
+      const char * text = line.text;
       int lineNum, charPos;
       Expression exp = null;
       EditLine l1, l2;

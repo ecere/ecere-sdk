@@ -28,7 +28,7 @@ public struct BinaryTree
       return (a > b) ? 1 : ((a < b) ? - 1 : 0);
    }
 
-   int CompareString(char * a, char * b)
+   int CompareString(const char * a, const char * b)
    {
       return (a && b) ? strcmp(a, b) : -1;
    }
@@ -70,12 +70,12 @@ public struct BinaryTree
       return root ? root.Find(this, key) : null;
    }
 
-   BTNode FindString(char * key)
+   BTNode FindString(const char * key)
    {
       return root ? root.FindString(key) : null;
    }
 
-   BTNode FindPrefix(char * key)
+   BTNode FindPrefix(const char * key)
    {
       return root ? root.FindPrefix(key) : null;
    }

@@ -16,10 +16,10 @@ class FindInFilesDialog : Window
    autoCreate = false;
 
 public:
-   property char * searchString { set { findContent.contents = value; } get { return findContent.contents; } };
+   property const char * searchString { set { findContent.contents = value; } get { return findContent.contents; } };
    property bool contentWholeWord { set { contentWholeWord.checked = value; } get { return contentWholeWord.checked; } };
    property bool contentMatchCase { set { contentMatchCase.checked = value; } get { return contentMatchCase.checked; } };
-   property char * currentDirectory
+   property const char * currentDirectory
    {
       set
       {
@@ -393,7 +393,7 @@ private:
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
-         String findPath = findWhere.path;
+         const String findPath = findWhere.path;
          if(findIn.currentRow == inDirectoryRow && !findPath[0])
          {
             findWhere.Activate();
@@ -664,8 +664,8 @@ private:
          {
             char substring[512];
             char containing[512];
-            char * and;
-            char * filterName;
+            const char * and;
+            const char * filterName;
             if(!strcmp(filter.name, "All files"))
                filterName = "files";
             else
@@ -999,7 +999,7 @@ private:
       return 0;
    }
 
-   int SearchFileContent(char *filePath, bool relative, char *fileRelative)
+   int SearchFileContent(const char *filePath, bool relative, const char *fileRelative)
    {
       int findCount = -1;
       File f = FileOpen(filePath, read);
@@ -1067,7 +1067,7 @@ private:
       return findCount;
    }
 
-   int SearchFileContentAndReplace(char *filePath, bool relative, char *fileRelative, EditBox edit)
+   int SearchFileContentAndReplace(const char *filePath, bool relative, const char *fileRelative, EditBox edit)
    {
       int replaceCount = -1;
       File f = FileOpen(filePath, read);
@@ -1160,4 +1160,3 @@ static struct SearchStackFrame
    char path[MAX_LOCATION];
    FileListing fileList;
 };
-

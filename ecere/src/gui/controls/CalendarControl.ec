@@ -4,7 +4,7 @@ import "Window"
 
 #define ISLEAP(y) (!((y)%4) && (((y) % 100) || (!((y)% 400))))
 
-/*static */Array<String> veryShortDaysNames
+/*static */Array<const String> veryShortDaysNames
 { [
    $"Sunday"."S", $"Monday"."M", $"Tuesday"."T", $"Wednesday"."W",
    $"Thursday"."T", $"Friday"."F", $"Saturday"."S"

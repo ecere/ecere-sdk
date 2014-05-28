@@ -179,7 +179,7 @@ public:
 
 class TagButton : public Button
 {
-   void * tag;
+   const void * tag;
 }
 
 class GDBDialog : Window
@@ -680,7 +680,7 @@ class GDBDialog : Window
       }
    }
 
-   virtual void OnCommand(char * string);
+   virtual void OnCommand(const char * string);
 
    void Show()
    {

@@ -197,16 +197,16 @@ public void SetMainModule(ModuleImport moduleImport) { mainModule = moduleImport
 File fileInput;
 public void SetFileInput(File file) { fileInput = file; }
 char * symbolsDir = null;
-public void SetSymbolsDir(char * s) {
+public void SetSymbolsDir(const char * s) {
    delete symbolsDir;
    symbolsDir = CopyString(s);
-} public char * GetSymbolsDir() { return symbolsDir ? symbolsDir : ""; }
-char * outputFile;
-public void SetOutputFile(char * s) { outputFile = s; } public char * GetOutputFile() { return outputFile; }
-char * sourceFile;
-public void SetSourceFile(char * s) { sourceFile = s; } public char * GetSourceFile() { return sourceFile; }
-char * i18nModuleName;
-public void SetI18nModuleName(char * s) { i18nModuleName = s; } public char * GetI18nModuleName() { return i18nModuleName; }
+} public const char * GetSymbolsDir() { return symbolsDir ? symbolsDir : ""; }
+const char * outputFile;
+public void SetOutputFile(const char * s) { outputFile = s; } public const char * GetOutputFile() { return outputFile; }
+const char * sourceFile;
+public void SetSourceFile(const char * s) { sourceFile = s; } public const char * GetSourceFile() { return sourceFile; }
+const char * i18nModuleName;
+public void SetI18nModuleName(const char * s) { i18nModuleName = s; } public const char * GetI18nModuleName() { return i18nModuleName; }
 
 public void SetGlobalContext(Context context) { globalContext = context; } public Context GetGlobalContext() { return globalContext; }
 public void SetTopContext(Context context) { topContext = context; } public Context GetTopContext() { return topContext; }
@@ -239,7 +239,8 @@ public char * PassArg(char * output, const char * input)
    const char * escCharsQuoted = "\"()$";
 #endif
    bool quoting = false;
-   char *o = output, *i = input, *l = input;
+   char *o = output;
+   const char *i = input, *l = input;
 #ifdef __WIN32__
    while(*l && !strchr(escChars, *l)) l++;
    if(*l) quoting = true;
@@ -441,7 +442,7 @@ public:
    TemplateArgument defaultArgument;
 
    // For type parameters
-   char * dataTypeString;
+   const char * dataTypeString;
    Type baseType;
 }
 
@@ -1309,10 +1310,11 @@ public:
    bool attrStdcall:1;
    bool declaredWithStruct:1;
    bool typedByReference:1;      // Originally typed by reference, regardless of class type
+   bool casted:1;
    // TODO: Add _Complex & _Imaginary support
    // bool complex:1, imaginary:1;
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       Type type = (Type)this;
       tempString[0] = '\0';
@@ -1416,7 +1418,7 @@ define MAX_INCLUDE_DEPTH = 30;
 
 #include <stdarg.h>
 
-void Compiler_Error(char * format, ...)
+void Compiler_Error(const char * format, ...)
 {
    if(inCompiler)
    {
@@ -1468,7 +1470,7 @@ void Compiler_Error(char * format, ...)
 int numWarnings;
 public int GetNumWarnings() { return numWarnings; }
 
-void Compiler_Warning(char * format, ...)
+void Compiler_Warning(const char * format, ...)
 {
    if(inCompiler)
    {

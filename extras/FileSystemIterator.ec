@@ -15,14 +15,14 @@ public:
    Array<StackFrame> stack { };
 
    char * extensions;
-   property char * extensions { set { delete extensions; if(value) extensions = CopyString(value); } }
+   property const char * extensions { set { delete extensions; if(value) extensions = CopyString(value); } }
 
    ~NormalFileSystemIterator()
    {
       delete extensions;
    }
 
-   void Iterate(char * startPath)
+   void Iterate(const char * startPath)
    {
       StackFrame frame;
 
@@ -54,12 +54,12 @@ public:
       {
          if(frame.listing.Find())
          {
-            char * name = frame.listing.name;
+            const char * name = frame.listing.name;
             bool isDirectory = frame.listing.stats.attribs.isDirectory;
             bool peek = frame.listing.stats.attribs.isDirectory && OnFolder(frame.listing.path);
             if(!frame.listing.stats.attribs.isDirectory)
             {
-               char * path = frame.listing.path;
+               const char * path = frame.listing.path;
                OnFile(frame.listing.path);
             }
             else if(peek)
@@ -90,27 +90,27 @@ public class FileSystemIterator
 public:
    bool iterateStartPath;
 
-   virtual bool OnInit(char * startPath)
+   virtual bool OnInit(const char * startPath)
    {
       return false;
    }
 
-   virtual bool OnFile(char * filePath)
+   virtual bool OnFile(const char * filePath)
    {
       return true;
    }
 
-   virtual bool OnFolder(char * folderPath)
+   virtual bool OnFolder(const char * folderPath)
    {
       return true;
    }
 
-   virtual bool OnVolume(char * volumePath)
+   virtual bool OnVolume(const char * volumePath)
    {
       return true;
    }
 
-   virtual void OutFolder(char * folderPath, bool isRoot)
+   virtual void OutFolder(const char * folderPath, bool isRoot)
    {
    }
 }
@@ -135,4 +135,3 @@ public class StackFrame
       //delete listing;
    }
 };
-

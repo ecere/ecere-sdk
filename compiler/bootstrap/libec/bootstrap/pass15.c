@@ -81,7 +81,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Method
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__Method * parent;
 struct __ecereNameSpace__ecere__com__Method * left;
 struct __ecereNameSpace__ecere__com__Method * right;
@@ -91,7 +91,7 @@ int vid;
 int type;
 struct __ecereNameSpace__ecere__com__Class * _class;
 void *  symbol;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 int memberAccess;
 } __attribute__ ((gcc_struct));
@@ -102,12 +102,12 @@ struct __ecereNameSpace__ecere__com__Property
 {
 struct __ecereNameSpace__ecere__com__Property * prev;
 struct __ecereNameSpace__ecere__com__Property * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 void (*  Set)(void * , int);
@@ -118,7 +118,7 @@ void *  symbol;
 int vid;
 unsigned int conversion;
 unsigned int watcherOffset;
-char *  category;
+const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
@@ -519,7 +519,7 @@ struct TemplateDatatype * dataType;
 int memberType;
 } __attribute__ ((gcc_struct));
 struct TemplateArgument * defaultArgument;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * baseType;
 } __attribute__ ((gcc_struct));
 
@@ -812,6 +812,7 @@ unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
 unsigned int declaredWithStruct : 1;
 unsigned int typedByReference : 1;
+unsigned int casted : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -820,7 +821,7 @@ struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
 struct __ecereNameSpace__ecere__com__Class * next;
-char *  name;
+const char *  name;
 int offset;
 int structSize;
 int (* *  _vTbl)();
@@ -841,16 +842,16 @@ int startMemberID;
 int type;
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 int typeSize;
 int defaultAlignment;
 void (*  Initialize)();
 int memberOffset;
 struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-char *  designerClass;
+const char *  designerClass;
 unsigned int noExpansion;
-char *  defaultProperty;
+const char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
 int isRemote;
@@ -862,7 +863,7 @@ int destructionWatchOffset;
 unsigned int fixed;
 struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
 int inheritanceAccess;
-char *  fullName;
+const char *  fullName;
 void *  symbol;
 struct __ecereNameSpace__ecere__sys__OldList conversions;
 struct __ecereNameSpace__ecere__sys__OldList templateParams;
@@ -874,13 +875,13 @@ unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -905,12 +906,12 @@ struct __ecereNameSpace__ecere__com__DataMember
 {
 struct __ecereNameSpace__ecere__com__DataMember * prev;
 struct __ecereNameSpace__ecere__com__DataMember * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 int type;
@@ -940,13 +941,13 @@ union
 {
 struct
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
-char *  memberString;
+const char *  memberString;
 union
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
@@ -1278,7 +1279,7 @@ outputLineNumbers = backOutputLineNumbers;
 }
 }
 
-extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
+extern struct Type * ProcessTypeString(const char *  string, unsigned int staticMethod);
 
 extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
@@ -1323,7 +1324,7 @@ return type1->isSigned != type2->isSigned;
 case 8:
 return type1->_class != type2->_class;
 case 13:
-return NeedCast(type1->type, type2->type);
+return (type1->type && type2->type && type1->type->constant != type2->type->constant) || NeedCast(type1->type, type2->type);
 default:
 return 0x1;
 }
@@ -1339,33 +1340,33 @@ extern struct Context * topContext;
 
 extern unsigned int __ecereNameSpace__ecere__com__eClass_IsDerived(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from);
 
-extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_FindProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
+extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_FindProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
 extern struct __ecereNameSpace__ecere__com__Instance * privateModule;
 
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_FindMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_FindMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_FindDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, struct __ecereNameSpace__ecere__com__Instance * module, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_FindDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, struct __ecereNameSpace__ecere__com__Instance * module, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassProperty;
 
 struct __ecereNameSpace__ecere__com__ClassProperty
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__ClassProperty * parent;
 struct __ecereNameSpace__ecere__com__ClassProperty * left;
 struct __ecereNameSpace__ecere__com__ClassProperty * right;
 int depth;
 void (*  Set)(struct __ecereNameSpace__ecere__com__Class *, long long);
 long long (*  Get)(struct __ecereNameSpace__ecere__com__Class *);
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 unsigned int constant;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__ClassProperty * __ecereNameSpace__ecere__com__eClass_FindClassProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+extern struct __ecereNameSpace__ecere__com__ClassProperty * __ecereNameSpace__ecere__com__eClass_FindClassProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern struct Expression * QMkExpId(char *  id);
+extern struct Expression * QMkExpId(const char *  id);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateParameter;
 
@@ -1373,18 +1374,18 @@ struct __ecereNameSpace__ecere__com__ClassTemplateParameter
 {
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * prev;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * next;
-char *  name;
+const char *  name;
 int type;
 union
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 int memberType;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg;
 void *  param;
 } __attribute__ ((gcc_struct));
 
-extern struct Expression * GetTemplateArgExpByName(char *  paramName, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType);
+extern struct Expression * GetTemplateArgExpByName(const char *  paramName, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType);
 
 extern struct __ecereNameSpace__ecere__sys__OldList *  MkList(void);
 
@@ -1392,7 +1393,7 @@ extern void FreeIdentifier(struct Identifier * id);
 
 void ProcessExpressionType(struct Expression * exp);
 
-extern struct Declarator * SpecDeclFromString(char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
+extern struct Declarator * SpecDeclFromString(const char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
 
 extern struct __ecereNameSpace__ecere__sys__OldList *  MkListOne(void *  item);
 
@@ -1406,7 +1407,7 @@ extern struct Declarator * MkDeclaratorPointer(struct Pointer * pointer, struct 
 
 extern struct Pointer * MkPointer(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Pointer * pointer);
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  key);
 
 static void ReplaceClassMembers(struct Expression * exp, struct __ecereNameSpace__ecere__com__Class * _class)
 {
@@ -1487,13 +1488,13 @@ exp->list = MkListOne(MkExpOp((((void *)0)), '*', MkExpCast(MkTypeName(specs, Mk
 }
 }
 
-extern int sprintf(char * , char * , ...);
+extern int sprintf(char * , const char * , ...);
 
 extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
 
 extern char *  strcat(char * , const char * );
 
-extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
+extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
 
 char * PrintInt(long long result)
 {
@@ -2374,12 +2375,12 @@ struct __ecereNameSpace__ecere__com__BitMember
 {
 struct __ecereNameSpace__ecere__com__BitMember * prev;
 struct __ecereNameSpace__ecere__com__BitMember * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 int type;
@@ -2687,7 +2688,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__NameSpace
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
 struct __ecereNameSpace__ecere__com__NameSpace *  left;
 struct __ecereNameSpace__ecere__com__NameSpace *  right;
@@ -2710,7 +2711,7 @@ struct __ecereNameSpace__ecere__sys__OldList functions;
 struct __ecereNameSpace__ecere__sys__OldList modules;
 struct __ecereNameSpace__ecere__com__Instance * prev;
 struct __ecereNameSpace__ecere__com__Instance * next;
-char *  name;
+const char *  name;
 void *  library;
 void *  Unload;
 int importType;
@@ -2732,9 +2733,9 @@ ComputeClassMembers(_class, 0x0);
 
 extern unsigned int inCompiler;
 
-extern void Compiler_Error(char *  format, ...);
+extern void Compiler_Error(const char *  format, ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
+extern const char *  __ecereNameSpace__ecere__GetTranslatedString(const char * name, const char *  string, const char *  stringAndContext);
 
 int ComputeTypeSize(struct Type * type)
 {
@@ -2914,7 +2915,7 @@ return size;
 
 extern struct Declarator * MkDeclaratorIdentifier(struct Identifier * id);
 
-extern struct Identifier * MkIdentifier(char *  string);
+extern struct Identifier * MkIdentifier(const char *  string);
 
 extern void ListAdd(struct __ecereNameSpace__ecere__sys__OldList * list, void *  item);
 
@@ -2936,7 +2937,7 @@ extern struct Specifier * MkSpecifier(int specifier);
 
 extern struct Declarator * MkDeclaratorArray(struct Declarator * declarator, struct Expression * exp);
 
-extern struct Expression * MkExpConstant(char *  string);
+extern struct Expression * MkExpConstant(const char *  string);
 
 int AddMembers(struct __ecereNameSpace__ecere__sys__OldList * declarations, struct __ecereNameSpace__ecere__com__Class * _class, unsigned int isMember, unsigned int * retSize, struct __ecereNameSpace__ecere__com__Class * topClass, unsigned int * addedPadding)
 {
@@ -3091,11 +3092,11 @@ FinishTemplatesContext(context);
 return topMember ? topMember->memberID : _class->memberID;
 }
 
-extern struct Symbol * FindClass(char *  name);
+extern struct Symbol * FindClass(const char *  name);
 
 extern char *  strchr(const char * , int);
 
-extern void FullClassNameCat(char *  output, char *  className, unsigned int includeTemplateParams);
+extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
 extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
@@ -3107,13 +3108,13 @@ extern struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__O
 
 extern void MangleClassName(char *  className);
 
-extern void DeclareClass(struct Symbol * classSym, char *  className);
+extern void DeclareClass(struct Symbol * classSym, const char *  className);
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Move(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item, void *  prevItem);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(struct __ecereNameSpace__ecere__sys__OldList * this, void *  prevItem, void *  item);
 
-void DeclareStruct(char * name, unsigned int skipNoHead)
+void DeclareStruct(const char * name, unsigned int skipNoHead)
 {
 struct External * external = (((void *)0));
 struct Symbol * classSym = FindClass(name);
@@ -3242,7 +3243,7 @@ extern struct ModuleImport * FindModule(struct __ecereNameSpace__ecere__com__Ins
 
 extern struct ModuleImport * mainModule;
 
-extern struct Specifier * MkSpecifierName(char *  name);
+extern struct Specifier * MkSpecifierName(const char *  name);
 
 extern struct Declarator * MkDeclaratorBrackets(struct Declarator * declarator);
 
@@ -3572,13 +3573,13 @@ extern void FreeExpression(struct Expression * exp);
 
 extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
 
-unsigned int MatchTypes(struct Type * source, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, struct __ecereNameSpace__ecere__com__Class * owningClassSource, struct __ecereNameSpace__ecere__com__Class * owningClassDest, unsigned int doConversion, unsigned int enumBaseType, unsigned int acceptReversedParams, unsigned int isConversionExploration);
+unsigned int MatchTypes(struct Type * source, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, struct __ecereNameSpace__ecere__com__Class * owningClassSource, struct __ecereNameSpace__ecere__com__Class * owningClassDest, unsigned int doConversion, unsigned int enumBaseType, unsigned int acceptReversedParams, unsigned int isConversionExploration, unsigned int warnConst);
 
 static void ProcessInitializer(struct Initializer * init, struct Type * type);
 
-extern struct Type * MkClassType(char *  name);
+extern struct Type * MkClassType(const char *  name);
 
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, unsigned int size, unsigned int alignment, int declMode);
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
 
 void ProcessMemberInitData(struct MemberInit * member, struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class ** curClass, struct __ecereNameSpace__ecere__com__DataMember ** curMember, struct __ecereNameSpace__ecere__com__DataMember ** subMemberStack, int * subMemberStackPos)
 {
@@ -3712,7 +3713,20 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument arg = _class->templat
 
 if(arg.dataTypeString)
 {
+unsigned int constant = type->constant;
+
 type = ProcessTypeString(arg.dataTypeString, 0x0);
+if(type->kind == 8 && constant)
+type->constant = 0x1;
+else if(type->kind == 13)
+{
+struct Type * t = type->type;
+
+while(t->kind == 13)
+t = t->type;
+if(constant)
+t->constant = constant;
+}
 freeType = 0x1;
 if(type && _class->templateClass)
 type->passAsTemplate = 0x1;
@@ -3870,7 +3884,7 @@ __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "unresolved symbol used as an instance method %s\n", (((void *)0))), expString);
 }
 }
-else if(!MatchTypes(member->initializer->exp->expType, type, (((void *)0)), (((void *)0)), _class, 0x1, 0x1, 0x0, 0x0))
+else if(!MatchTypes(member->initializer->exp->expType, type, (((void *)0)), (((void *)0)), _class, 0x1, 0x1, 0x0, 0x0, 0x1))
 {
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatible instance method %s\n", (((void *)0))), ident->string);
 }
@@ -4127,7 +4141,7 @@ DeclareType(type->arrayType, declarePointers, 0x0);
 }
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
 
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument * FindTemplateArg(struct __ecereNameSpace__ecere__com__Class * _class, struct TemplateParameter * param)
 {
@@ -4300,7 +4314,7 @@ unsigned int isVirtual;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
-void DeclareMethod(struct __ecereNameSpace__ecere__com__Method * method, char * name)
+void DeclareMethod(struct __ecereNameSpace__ecere__com__Method * method, const char * name)
 {
 struct Symbol * symbol = method->symbol;
 
@@ -4576,11 +4590,11 @@ struct __ecereNameSpace__ecere__com__GlobalFunction
 {
 struct __ecereNameSpace__ecere__com__GlobalFunction * prev;
 struct __ecereNameSpace__ecere__com__GlobalFunction * next;
-char *  name;
+const char *  name;
 int (*  function)();
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 void *  symbol;
 } __attribute__ ((gcc_struct));
@@ -4786,14 +4800,33 @@ struct Type * resultType;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Conversion;
 
-extern void Compiler_Warning(char *  format, ...);
+extern void Compiler_Warning(const char *  format, ...);
+
+extern void CopyTypeInto(struct Type * type, struct Type * src);
 
 void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
-unsigned int MatchTypes(struct Type * source, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, struct __ecereNameSpace__ecere__com__Class * owningClassSource, struct __ecereNameSpace__ecere__com__Class * owningClassDest, unsigned int doConversion, unsigned int enumBaseType, unsigned int acceptReversedParams, unsigned int isConversionExploration)
+unsigned int MatchTypes(struct Type * source, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, struct __ecereNameSpace__ecere__com__Class * owningClassSource, struct __ecereNameSpace__ecere__com__Class * owningClassDest, unsigned int doConversion, unsigned int enumBaseType, unsigned int acceptReversedParams, unsigned int isConversionExploration, unsigned int warnConst)
 {
 if(source && dest)
 {
+if(warnConst && ((source->kind == 8 && source->_class && source->_class->registered) || source->kind == 12 || source->kind == 13) && ((dest->kind == 8 && dest->_class && dest->_class->registered) || dest->kind == 13))
+{
+struct __ecereNameSpace__ecere__com__Class * sourceClass = source->kind == 8 ? source->_class->registered : (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * destClass = dest->kind == 8 ? dest->_class->registered : (((void *)0));
+
+if((!sourceClass || (sourceClass && sourceClass->type == 0 && !sourceClass->structSize)) && (!destClass || (destClass && destClass->type == 0 && !destClass->structSize)))
+{
+struct Type * sourceType = source, * destType = dest;
+
+while(sourceType->type && (sourceType->kind == 13 || sourceType->kind == 12))
+sourceType = sourceType->type;
+while(destType->type && (destType->kind == 13 || destType->kind == 12))
+destType = destType->type;
+if(!destType->constant && sourceType->constant)
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "discarding const qualifier\n", (((void *)0))));
+}
+}
 if(source->kind == 20 && dest->kind != 20)
 {
 struct Type * type = ProcessTemplateParameterType(source->templateParameter);
@@ -4892,7 +4925,7 @@ struct Conversion * after = (conversions != (((void *)0))) ? conversions->last :
 
 if(!convert->dataType)
 convert->dataType = ProcessTypeString(convert->dataTypeString, 0x0);
-if((!isConversionExploration || convert->dataType->kind == 8 || !strcmp(_class->name, "String")) && MatchTypes(convert->dataType, dest, conversions, (((void *)0)), (((void *)0)), (convert->dataType->kind == 8 && !strcmp(convert->dataTypeString, "String")) ? 0x1 : 0x0, convert->dataType->kind == 8, 0x0, 0x1))
+if((!isConversionExploration || convert->dataType->kind == 8 || !strcmp(_class->name, "String")) && MatchTypes(convert->dataType, dest, conversions, (((void *)0)), (((void *)0)), (convert->dataType->kind == 8 && !strcmp(convert->dataTypeString, "String")) ? 0x1 : 0x0, convert->dataType->kind == 8, 0x0, 0x1, warnConst))
 {
 if(!conversions && !convert->Get)
 return 0x1;
@@ -4925,25 +4958,45 @@ for(convert = _class->conversions.first; convert; convert = convert->next)
 {
 if(convert->memberAccess == 1 || _class->module == privateModule)
 {
+struct Type * constType = (((void *)0));
+unsigned int success = 0x0;
+
 if(!convert->dataType)
 convert->dataType = ProcessTypeString(convert->dataTypeString, 0x0);
-if(convert->dataType != dest && MatchTypes(source, convert->dataType, conversions, (((void *)0)), (((void *)0)), 0x1, 0x0, 0x0, 0x1))
+if(warnConst && convert->dataType->kind == 13 && convert->dataType->type && dest->constant)
+{
+struct Type * ptrType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+constType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->kind = 13, __ecereInstance1->refCount = 1, __ecereInstance1->type = ptrType, __ecereInstance1;
+});
+CopyTypeInto(ptrType, convert->dataType->type);
+ptrType->refCount++;
+ptrType->constant = 0x1;
+}
+if((constType || convert->dataType != dest) && MatchTypes(source, constType ? constType : convert->dataType, conversions, (((void *)0)), (((void *)0)), 0x1, 0x0, 0x0, 0x1, warnConst))
 {
 if(!conversions && !convert->Set)
-return 0x1;
+success = 0x1;
 else if(conversions != (((void *)0)))
 {
 if(_class->type == 3 && convert->dataType->kind == 8 && convert->dataType->_class && convert->dataType->_class->registered && _class->base == convert->dataType->_class->registered->base && (source->kind != 8 || source->_class->registered != _class->base))
-return 0x1;
+success = 0x1;
 else
 {
 struct Conversion * conv = (conv = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Conversion), conv->convert = convert, conv);
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(conversions, conv);
+success = 0x1;
+}
+}
+}
+if(success)
 return 0x1;
-}
-}
-}
+if(constType)
+FreeType(constType);
 }
 }
 }
@@ -4953,7 +5006,7 @@ if(!dest->_class->registered->dataType)
 dest->_class->registered->dataType = ProcessTypeString(dest->_class->registered->dataTypeString, 0x0);
 if(dest->_class->registered->dataType->kind == 8 || source->truth || dest->truth)
 {
-if(MatchTypes(source, dest->_class->registered->dataType, conversions, (((void *)0)), (((void *)0)), 0x1, dest->_class->registered->dataType->kind == 8, 0x0, 0x0))
+if(MatchTypes(source, dest->_class->registered->dataType, conversions, (((void *)0)), (((void *)0)), 0x1, dest->_class->registered->dataType->kind == 8, 0x0, 0x0, warnConst))
 {
 return 0x1;
 }
@@ -4976,7 +5029,7 @@ struct Conversion * after = (conversions != (((void *)0))) ? conversions->last :
 
 if(!convert->dataType)
 convert->dataType = ProcessTypeString(convert->dataTypeString, 0x0);
-if(convert->dataType != source && (!isConversionExploration || convert->dataType->kind == 8 || !strcmp(_class->name, "String")) && MatchTypes(convert->dataType, dest, conversions, (((void *)0)), (((void *)0)), convert->dataType->kind == 8, convert->dataType->kind == 8, 0x0, 0x1))
+if(convert->dataType != source && (!isConversionExploration || convert->dataType->kind == 8 || !strcmp(_class->name, "String")) && MatchTypes(convert->dataType, dest, conversions, (((void *)0)), (((void *)0)), convert->dataType->kind == 8, convert->dataType->kind == 8, 0x0, 0x1, warnConst))
 {
 if(!conversions && !convert->Get)
 return 0x1;
@@ -5002,9 +5055,9 @@ if(!source->_class->registered->dataType)
 source->_class->registered->dataType = ProcessTypeString(source->_class->registered->dataTypeString, 0x0);
 if(!isConversionExploration || source->_class->registered->dataType->kind == 8 || !strcmp(source->_class->registered->name, "String"))
 {
-if(MatchTypes(source->_class->registered->dataType, dest, conversions, (((void *)0)), (((void *)0)), source->_class->registered->dataType->kind == 8, source->_class->registered->dataType->kind == 8, 0x0, 0x0))
+if(MatchTypes(source->_class->registered->dataType, dest, conversions, (((void *)0)), (((void *)0)), source->_class->registered->dataType->kind == 8, source->_class->registered->dataType->kind == 8, 0x0, 0x0, warnConst))
 return 0x1;
-else if(MatchTypes(dest, source->_class->registered->dataType, (((void *)0)), (((void *)0)), (((void *)0)), 0x0, 0x0, 0x0, 0x0))
+else if(MatchTypes(dest, source->_class->registered->dataType, (((void *)0)), (((void *)0)), (((void *)0)), 0x0, 0x0, 0x0, 0x0, warnConst))
 return 0x1;
 }
 }
@@ -5109,7 +5162,7 @@ return 0x0;
 }
 }
 }
-if(!MatchTypes(source->returnType, dest->returnType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0))
+if(!MatchTypes(source->returnType, dest->returnType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst))
 {
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatible return type for function\n", (((void *)0))));
 return 0x0;
@@ -5161,7 +5214,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument arg = owningClassSour
 paramDestType = type = ProcessTypeString(arg.dataTypeString, 0x0);
 }
 }
-if(!MatchTypes(paramDestType, paramSourceType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0) && (!acceptReversedParams || !MatchTypes(paramSourceType, paramDestType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0)))
+if(!MatchTypes(paramDestType, paramSourceType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst) && (!acceptReversedParams || !MatchTypes(paramSourceType, paramDestType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst)))
 {
 char type[1024];
 
@@ -5190,7 +5243,7 @@ return 0x1;
 }
 else if((dest->kind == 13 || dest->kind == 12) && (source->kind == 12 || source->kind == 13))
 {
-if(MatchTypes(source->type, dest->type, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0))
+if(MatchTypes(source->type, dest->type, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst))
 return 0x1;
 }
 }
@@ -5207,7 +5260,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__BTNamedLink
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__BTNamedLink * parent;
 struct __ecereNameSpace__ecere__com__BTNamedLink * left;
 struct __ecereNameSpace__ecere__com__BTNamedLink * right;
@@ -5265,7 +5318,7 @@ type->kind = 8;
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 type->_class = _class->symbol;
-if(MatchTypes(type, dest, &converts, (((void *)0)), (((void *)0)), 0x1, 0x0, 0x0, 0x0))
+if(MatchTypes(type, dest, &converts, (((void *)0)), (((void *)0)), 0x1, 0x0, 0x0, 0x0, 0x0))
 {
 struct __ecereNameSpace__ecere__sys__NamedLink * value;
 struct __ecereNameSpace__ecere__com__Class * enumClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "enum");
@@ -5355,7 +5408,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 struct __ecereNameSpace__ecere__com__Application
 {
 int argc;
-char * *  argv;
+const char * *  argv;
 int exitCode;
 unsigned int isGUIApp;
 struct __ecereNameSpace__ecere__sys__OldList allModules;
@@ -5389,11 +5442,11 @@ void ReadString(char *  output, char *  string);
 
 extern struct Specifier * MkEnum(struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * list);
 
-extern struct TypeName * QMkClass(char *  spec, struct Declarator * decl);
+extern struct TypeName * QMkClass(const char *  spec, struct Declarator * decl);
 
 extern struct Expression * MkExpBrackets(struct __ecereNameSpace__ecere__sys__OldList * expressions);
 
-unsigned int MatchTypeExpression(struct Expression * sourceExp, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, unsigned int skipUnitBla)
+unsigned int MatchTypeExpression(struct Expression * sourceExp, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, unsigned int skipUnitBla, unsigned int warnConst)
 {
 struct Type * source;
 struct Type * realDest = dest;
@@ -5495,7 +5548,7 @@ _class->symbol = FindClass(_class->fullName);
 tempType->_class = _class->symbol;
 tempType->truth = dest->truth;
 if(tempType->_class)
-MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0);
+MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst);
 backupSourceExpType = sourceExp->expType;
 sourceExp->expType = dest;
 dest->refCount++;
@@ -5507,7 +5560,7 @@ if(_class && _class->type == 2 && source->kind != 8)
 {
 if(!dest->_class->registered->dataType)
 dest->_class->registered->dataType = ProcessTypeString(dest->_class->registered->dataTypeString, 0x0);
-if(MatchTypes(source, dest->_class->registered->dataType, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0))
+if(MatchTypes(source, dest->_class->registered->dataType, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst))
 {
 FreeType(source);
 FreeType(sourceExp->expType);
@@ -5559,7 +5612,7 @@ tempType->_class = FindClass(_class->fullName);
 tempType->truth = source->truth;
 tempType->classObjectType = source->classObjectType;
 if(tempType->_class)
-MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0);
+MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst);
 if(conversions->last)
 {
 ((struct Conversion *)conversions->last)->resultType = dest;
@@ -5591,7 +5644,7 @@ source->refCount++;
 }
 if(!flag)
 {
-if(MatchTypes(source, dest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0))
+if(MatchTypes(source, dest, conversions, (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst))
 {
 FreeType(source);
 FreeType(dest);
@@ -10733,11 +10786,11 @@ j++, k++;
 return (k == offset) ? s + j : (((void *)0));
 }
 
-extern long long __ecereNameSpace__ecere__com___strtoi64(char *  string, char * *  endString, int base);
+extern long long __ecereNameSpace__ecere__com___strtoi64(const char *  string, const char * *  endString, int base);
 
-extern uint64 __ecereNameSpace__ecere__com___strtoui64(char *  string, char * *  endString, int base);
+extern uint64 __ecereNameSpace__ecere__com___strtoui64(const char *  string, const char * *  endString, int base);
 
-extern double strtod(char * , char * * );
+extern double strtod(const char * , char * * );
 
 extern float (* __ecereMethod_float_inf)(void);
 
@@ -10910,7 +10963,7 @@ static __attribute__((unused)) void UnusedFunction()
 {
 int a;
 
-((char *  (*)(struct __ecereNameSpace__ecere__com__Class *, void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &a, 0, 0, 0);
+((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &a, 0, 0, 0);
 }
 
 extern int __ecereVMethodID_class_OnGetString;
@@ -11143,7 +11196,7 @@ ListAdd(memberList, member);
 }
 }
 
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, unsigned int *  offset, struct __ecereNameSpace__ecere__com__Instance * module, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, unsigned int *  offset, struct __ecereNameSpace__ecere__com__Instance * module, struct __ecereNameSpace__ecere__com__DataMember **  subMemberStack, int *  subMemberStackPos);
 
 extern void FreeInstance(struct Instantiation * inst);
 
@@ -12598,9 +12651,7 @@ break;
 
 void ApplyAnyObjectLogic(struct Expression * e);
 
-extern void CopyTypeInto(struct Type * type, struct Type * src);
-
-static unsigned int CheckExpressionType(struct Expression * exp, struct Type * destType, unsigned int skipUnitBla)
+static unsigned int CheckExpressionType(struct Expression * exp, struct Type * destType, unsigned int skipUnitBla, unsigned int warnConst)
 {
 unsigned int result = 0x1;
 
@@ -12614,7 +12665,7 @@ struct Conversion * convert;
 
 if(destType->kind == 0)
 return 0x0;
-if(!MatchTypeExpression(exp, destType, &converts, skipUnitBla))
+if(!MatchTypeExpression(exp, destType, &converts, skipUnitBla, warnConst))
 result = 0x0;
 if(converts.count)
 {
@@ -12701,7 +12752,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&converts, FreeConvert)
 }
 if(!result && exp->expType && converts.count)
 {
-result = MatchTypes(exp->expType, exp->destType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0);
+result = MatchTypes(exp->expType, exp->destType, (((void *)0)), (((void *)0)), (((void *)0)), 0x1, 0x1, 0x0, 0x0, warnConst);
 }
 if(!result && exp->expType && exp->destType)
 {
@@ -12871,9 +12922,9 @@ break;
 
 extern int strncmp(const char * , const char * , size_t n);
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  key);
 
-static struct Symbol * ScanWithNameSpace(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, char * nameSpace, char * name)
+static struct Symbol * ScanWithNameSpace(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, const char * nameSpace, const char * name)
 {
 int nsLen = strlen(nameSpace);
 struct Symbol * symbol;
@@ -12902,11 +12953,11 @@ break;
 return (((void *)0));
 }
 
-static struct Symbol * FindWithNameSpace(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, char * name)
+static struct Symbol * FindWithNameSpace(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, const char * name)
 {
 int c;
 char nameSpace[1024];
-char * namePart;
+const char * namePart;
 unsigned int gotColon = 0x0;
 
 nameSpace[0] = '\0';
@@ -12948,7 +12999,7 @@ return (((void *)0));
 
 static void ProcessDeclaration(struct Declaration * decl);
 
-struct Symbol * FindSymbol(char * name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace)
+struct Symbol * FindSymbol(const char * name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace)
 {
 struct Context * ctx;
 struct Symbol * symbol = (((void *)0));
@@ -13182,7 +13233,7 @@ break;
 }
 }
 
-extern char *  __ecereNameSpace__ecere__sys__RSearchString(char *  buffer, char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
+extern char *  __ecereNameSpace__ecere__sys__RSearchString(const char *  buffer, const char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
 
 static void PrintName(struct Type * type, char * string, unsigned int fullName)
 {
@@ -13387,7 +13438,7 @@ struct Expression * ParseExpressionString(char * expression)
 {
 parseError = 0x0;
 fileInput = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
@@ -13405,7 +13456,7 @@ expression_yyparse();
 return parsedExpression;
 }
 
-extern char *  QMkString(char *  source);
+extern char *  QMkString(const char *  source);
 
 static unsigned int ResolveIdWithClass(struct Expression * exp, struct __ecereNameSpace__ecere__com__Class * _class, unsigned int skipIDClassCheck)
 {
@@ -13587,7 +13638,7 @@ checkedExp->next = next;
 
 extern struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
 
-extern int printf(char * , ...);
+extern int printf(const char * , ...);
 
 void __ecereMethod_Expression_Clear();
 
@@ -13834,6 +13885,79 @@ destType->refCount++;
 }
 }
 
+void ApplyLocation(struct Expression * exp, struct Location * loc)
+{
+exp->loc = *loc;
+switch(exp->type)
+{
+case 4:
+if(exp->op.exp1)
+ApplyLocation(exp->op.exp1, loc);
+if(exp->op.exp2)
+ApplyLocation(exp->op.exp2, loc);
+break;
+case 5:
+if(exp->list)
+{
+struct Expression * e;
+
+for(e = (*exp->list).first; e; e = e->next)
+ApplyLocation(e, loc);
+}
+break;
+case 6:
+if(exp->index.index)
+{
+struct Expression * e;
+
+for(e = (*exp->index.index).first; e; e = e->next)
+ApplyLocation(e, loc);
+}
+if(exp->index.exp)
+ApplyLocation(exp->index.exp, loc);
+break;
+case 7:
+if(exp->call.arguments)
+{
+struct Expression * arg;
+
+for(arg = (*exp->call.arguments).first; arg; arg = arg->next)
+ApplyLocation(arg, loc);
+}
+if(exp->call.exp)
+ApplyLocation(exp->call.exp, loc);
+break;
+case 8:
+case 9:
+if(exp->member.exp)
+ApplyLocation(exp->member.exp, loc);
+break;
+case 11:
+if(exp->cast.exp)
+ApplyLocation(exp->cast.exp, loc);
+break;
+case 12:
+if(exp->cond.exp)
+{
+struct Expression * e;
+
+for(e = (*exp->cond.exp).first; e; e = e->next)
+ApplyLocation(e, loc);
+}
+if(exp->cond.cond)
+ApplyLocation(exp->cond.cond, loc);
+if(exp->cond.elseExp)
+ApplyLocation(exp->cond.elseExp, loc);
+break;
+case 34:
+if(exp->vaArg.exp)
+ApplyLocation(exp->vaArg.exp, loc);
+break;
+default:
+break;
+}
+}
+
 extern char *  strstr(const char * , const char * );
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
@@ -13842,16 +13966,16 @@ struct __ecereNameSpace__ecere__com__DefinedExpression
 {
 struct __ecereNameSpace__ecere__com__DefinedExpression * prev;
 struct __ecereNameSpace__ecere__com__DefinedExpression * next;
-char *  name;
-char *  value;
+const char *  name;
+const char *  value;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_FindDefine(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_FindDefine(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
 
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_FindFunction(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_FindFunction(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
 
-extern unsigned int __ecereNameSpace__ecere__sys__UTF8GetChar(char *  string, int *  numBytes);
+extern unsigned int __ecereNameSpace__ecere__sys__UTF8GetChar(const char *  string, int *  numBytes);
 
 extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct __ecereNameSpace__ecere__com__Class * curClass, unsigned int pointer);
 
@@ -13867,9 +13991,9 @@ extern struct Expression * MkExpExtensionInitializer(struct TypeName * typeName,
 
 extern struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sys__OldList * list);
 
-extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, void * object, ...);
+extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
 
-extern char *  sourceFile;
+extern const char *  sourceFile;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
 
@@ -13916,7 +14040,7 @@ struct Symbol * symbol = FindSymbol(id->string, curContext, topContext, 0x0, id-
 
 if(!symbol)
 {
-if(exp->destType && CheckExpressionType(exp, exp->destType, 0x0))
+if(exp->destType && CheckExpressionType(exp, exp->destType, 0x0, 0x0))
 break;
 else
 {
@@ -14017,7 +14141,7 @@ struct __ecereNameSpace__ecere__com__Instance * backInput = fileInput;
 
 definedExpStack[definedExpStackPos++] = definedExp;
 fileInput = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
@@ -14040,7 +14164,7 @@ if(parsedExpression)
 FreeIdentifier(id);
 exp->type = 5;
 exp->list = MkListOne(parsedExpression);
-parsedExpression->loc = yylloc;
+ApplyLocation(parsedExpression, &yylloc);
 ProcessExpressionType(exp);
 definedExpStackPos--;
 return ;
@@ -14602,7 +14726,7 @@ exp->op.exp1->destType->truth = 0x1;
 if(!exp->op.exp1->expType)
 ProcessExpressionType(exp->op.exp1);
 else
-CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0);
+CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0);
 FreeType(exp->op.exp1->expType);
 exp->op.exp1->expType = MkClassType("bool");
 exp->op.exp1->expType->truth = 0x1;
@@ -14616,7 +14740,7 @@ exp->op.exp2->destType->truth = 0x1;
 if(!exp->op.exp2->expType)
 ProcessExpressionType(exp->op.exp2);
 else
-CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0);
+CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0, 0x0);
 FreeType(exp->op.exp2->expType);
 exp->op.exp2->expType = MkClassType("bool");
 exp->op.exp2->expType->truth = 0x1;
@@ -14711,7 +14835,7 @@ if(exp->op.op == '+')
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "cannot add two pointers\n", (((void *)0))));
 else if(exp->op.op == '-')
 {
-if(MatchTypes(type1->type, type2->type, (((void *)0)), (((void *)0)), (((void *)0)), 0x0, 0x0, 0x0, 0x0))
+if(MatchTypes(type1->type, type2->type, (((void *)0)), (((void *)0)), (((void *)0)), 0x0, 0x0, 0x0, 0x0, 0x0))
 {
 exp->expType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
@@ -14740,7 +14864,7 @@ return ;
 }
 if(!success && exp->op.exp1->type == 2)
 {
-if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
+if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14749,7 +14873,7 @@ if(exp->op.exp1->destType)
 exp->op.exp1->destType->refCount++;
 success = 0x1;
 }
-else if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0))
+else if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14761,7 +14885,7 @@ success = 0x1;
 }
 else if(!success)
 {
-if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0))
+if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14770,7 +14894,7 @@ if(exp->op.exp2->destType)
 exp->op.exp2->destType->refCount++;
 success = 0x1;
 }
-else if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
+else if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14811,7 +14935,7 @@ FreeType(exp->op.exp1->destType);
 exp->op.exp1->destType = type2->_class->registered->dataType;
 if(type2->_class->registered->dataType)
 type2->_class->registered->dataType->refCount++;
-CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0);
+CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0);
 exp->expType = type2;
 if(type2)
 type2->refCount++;
@@ -14823,7 +14947,7 @@ FreeType(exp->op.exp2->destType);
 exp->op.exp2->destType = type1->_class->registered->dataType;
 if(type1->_class->registered->dataType)
 type1->_class->registered->dataType->refCount++;
-CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0);
+CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0, 0x0);
 exp->expType = type1;
 if(type1)
 type1->refCount++;
@@ -14840,7 +14964,7 @@ if(!type1->_class->registered->dataType)
 type1->_class->registered->dataType = ProcessTypeString(type1->_class->registered->dataTypeString, 0x0);
 exp->op.exp2->destType = type1->_class->registered->dataType;
 exp->op.exp2->destType->refCount++;
-CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0);
+CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0, 0x0);
 if(type2)
 FreeType(type2);
 type2 = exp->op.exp2->destType;
@@ -14857,7 +14981,7 @@ if(!type2->_class->registered->dataType)
 type2->_class->registered->dataType = ProcessTypeString(type2->_class->registered->dataTypeString, 0x0);
 exp->op.exp1->destType = type2->_class->registered->dataType;
 exp->op.exp1->destType->refCount++;
-CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0);
+CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0);
 type1 = exp->op.exp1->destType;
 exp->expType = type1;
 type1->refCount++;
@@ -14871,7 +14995,7 @@ if(exp->op.op == '*' || exp->op.op == '/' || exp->op.op == '-' || exp->op.op == 
 {
 if(op1IsEnum && exp->op.exp2->expType)
 {
-if(CheckExpressionType(exp->op.exp1, exp->op.exp2->expType, 0x0))
+if(CheckExpressionType(exp->op.exp1, exp->op.exp2->expType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14883,7 +15007,7 @@ valid = 0x1;
 }
 else if(op2IsEnum && exp->op.exp1->expType)
 {
-if(CheckExpressionType(exp->op.exp2, exp->op.exp1->expType, 0x0))
+if(CheckExpressionType(exp->op.exp2, exp->op.exp1->expType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14898,7 +15022,7 @@ else
 {
 if(op1IsEnum && exp->op.exp2->expType)
 {
-if(CheckExpressionType(exp->op.exp1, exp->op.exp2->expType, 0x0))
+if(CheckExpressionType(exp->op.exp1, exp->op.exp2->expType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14910,7 +15034,7 @@ valid = 0x1;
 }
 else if(op2IsEnum && exp->op.exp1->expType)
 {
-if(CheckExpressionType(exp->op.exp2, exp->op.exp1->expType, 0x0))
+if(CheckExpressionType(exp->op.exp2, exp->op.exp1->expType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14930,7 +15054,7 @@ if(exp->op.exp1->destType)
 FreeType(exp->op.exp1->destType);
 exp->op.exp1->destType = type2;
 type2->refCount++;
-if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
+if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14945,7 +15069,7 @@ if(exp->op.exp2->destType)
 FreeType(exp->op.exp2->destType);
 exp->op.exp2->destType = type1;
 type1->refCount++;
-if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0))
+if(CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -14997,7 +15121,7 @@ if(type2->kind == 8 && type2->_class && type2->_class->registered && type2->_cla
 struct Type * oldType = exp->op.exp1->expType;
 
 exp->op.exp1->expType = (((void *)0));
-if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
+if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0))
 FreeType(oldType);
 else
 exp->op.exp1->expType = oldType;
@@ -15006,7 +15130,7 @@ if(exp->op.exp1->destType)
 FreeType(exp->op.exp1->destType);
 exp->op.exp1->destType = type2;
 type2->refCount++;
-if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0))
+if(CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0))
 {
 if(exp->expType)
 FreeType(exp->expType);
@@ -15025,7 +15149,7 @@ FreeType(exp->op.exp1->destType);
 exp->op.exp1->destType = type2->_class->registered->dataType;
 if(type2->_class->registered->dataType)
 type2->_class->registered->dataType->refCount++;
-CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0);
+CheckExpressionType(exp->op.exp1, exp->op.exp1->destType, 0x0, 0x0);
 }
 if(exp->op.op == '!')
 {
@@ -15048,7 +15172,7 @@ FreeType(exp->op.exp2->destType);
 exp->op.exp2->destType = type1->_class->registered->dataType;
 if(type1->_class->registered->dataType)
 type1->_class->registered->dataType->refCount++;
-CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0);
+CheckExpressionType(exp->op.exp2, exp->op.exp2->destType, 0x0, 0x0);
 }
 exp->expType = type1;
 if(type1)
@@ -15172,7 +15296,19 @@ if(_class != containerClass && __ecereNameSpace__ecere__com__eClass_IsDerived(c,
 exp->expType = ProcessTypeString(_class->templateArgs[2].dataTypeString, 0x0);
 if(exp->index.index && (*exp->index.index).last)
 {
-((struct Expression *)(*exp->index.index).last)->destType = ProcessTypeString(_class->templateArgs[1].dataTypeString, 0x0);
+struct Type * type = ProcessTypeString(_class->templateArgs[1].dataTypeString, 0x0);
+
+if(type->kind == 8)
+type->constant = 0x1;
+else if(type->kind == 13)
+{
+struct Type * t = type;
+
+while(t->kind == 13)
+t = t->type;
+t->constant = 0x1;
+}
+((struct Expression *)(*exp->index.index).last)->destType = type;
 }
 }
 }
@@ -15509,6 +15645,7 @@ break;
 }
 if(curParam && _class->templateArgs[id].dataTypeString)
 {
+unsigned int constant = type->constant;
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument arg = _class->templateArgs[id];
 
 {
@@ -15516,6 +15653,17 @@ struct Context * context = SetupTemplatesContext(_class);
 
 templatedType = ProcessTypeString(arg.dataTypeString, 0x0);
 FinishTemplatesContext(context);
+}
+if(templatedType->kind == 8 && constant)
+templatedType->constant = 0x1;
+else if(templatedType->kind == 13)
+{
+struct Type * t = templatedType->type;
+
+while(t->kind == 13)
+t = t->type;
+if(constant)
+t->constant = constant;
 }
 e->destType = templatedType;
 if(templatedType)
@@ -15912,25 +16060,29 @@ exp->member.thisPtr = 0x1;
 }
 else
 {
+unsigned int useMemberForNonConst = 0x0;
+
 if(!id->classSym)
 {
 prop = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, id->string, (((void *)0)));
-if(!id->_class || !id->_class->name || strcmp(id->_class->name, "property"))
+useMemberForNonConst = prop && exp->destType && ((exp->destType->kind == 8 && !exp->destType->constant) || ((exp->destType->kind == 13 || exp->destType->kind == 12) && exp->destType->type && !exp->destType->type->constant)) && !strncmp(prop->dataTypeString, "const ", 6);
+if(useMemberForNonConst || !id->_class || !id->_class->name || strcmp(id->_class->name, "property"))
 member = __ecereNameSpace__ecere__com__eClass_FindDataMember(_class, id->string, (((void *)0)), (((void *)0)), (((void *)0)));
 }
-if(!prop && !member)
+if((!prop || useMemberForNonConst) && !member)
 {
-method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, id->string, (((void *)0)));
+method = useMemberForNonConst ? (((void *)0)) : __ecereNameSpace__ecere__com__eClass_FindMethod(_class, id->string, (((void *)0)));
 if(!method)
 {
 prop = __ecereNameSpace__ecere__com__eClass_FindProperty(_class, id->string, privateModule);
-if(!id->_class || !id->_class->name || strcmp(id->_class->name, "property"))
+useMemberForNonConst |= prop && exp->destType && ((exp->destType->kind == 8 && !exp->destType->constant) || ((exp->destType->kind == 13 || exp->destType->kind == 12) && exp->destType->type && !exp->destType->type->constant)) && !strncmp(prop->dataTypeString, "const ", 6);
+if(useMemberForNonConst || !id->_class || !id->_class->name || strcmp(id->_class->name, "property"))
 member = __ecereNameSpace__ecere__com__eClass_FindDataMember(_class, id->string, privateModule, (((void *)0)), (((void *)0)));
 }
 }
 if(member && prop)
 {
-if(member->_class != prop->_class && !id->_class && __ecereNameSpace__ecere__com__eClass_IsDerived(member->_class, prop->_class))
+if(useMemberForNonConst || (member->_class != prop->_class && !id->_class && __ecereNameSpace__ecere__com__eClass_IsDerived(member->_class, prop->_class)))
 prop = (((void *)0));
 else
 member = (((void *)0));
@@ -16084,9 +16236,21 @@ if(curParam && tClass->templateArgs[id].dataTypeString)
 {
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument arg = tClass->templateArgs[id];
 struct Context * context = SetupTemplatesContext(tClass);
+unsigned int constant = exp->expType->constant;
 
 FreeType(exp->expType);
 exp->expType = ProcessTypeString(arg.dataTypeString, 0x0);
+if(exp->expType->kind == 8 && constant)
+exp->expType->constant = 0x1;
+else if(exp->expType->kind == 13)
+{
+struct Type * t = exp->expType->type;
+
+while(t->kind == 13)
+t = t->type;
+if(constant)
+t->constant = constant;
+}
 if(exp->expType)
 {
 if(exp->expType->kind == 21)
@@ -16099,6 +16263,17 @@ exp->expType->passAsTemplate = 0x1;
 if(!exp->destType)
 {
 exp->destType = ProcessTypeString(arg.dataTypeString, 0x0);
+if(exp->destType->kind == 8 && constant)
+exp->destType->constant = 0x1;
+else if(exp->destType->kind == 13)
+{
+struct Type * t = exp->destType->type;
+
+while(t->kind == 13)
+t = t->type;
+if(constant)
+t->constant = constant;
+}
 if(exp->destType->kind == 21)
 {
 FreeType(exp->destType);
@@ -16428,7 +16603,9 @@ type->count = 1;
 FreeType(exp->cast.exp->destType);
 exp->cast.exp->destType = type;
 type->refCount++;
+type->casted = 0x1;
 ProcessExpressionType(exp->cast.exp);
+type->casted = 0x0;
 type->count = 0;
 exp->expType = type;
 if(!exp->cast.exp->needCast && !NeedCast(exp->cast.exp->expType, type))
@@ -16574,7 +16751,7 @@ break;
 case 35:
 {
 struct Type * type = (((void *)0));
-char * typeString = (((void *)0));
+const char * typeString = (((void *)0));
 char typeStringBuf[1024];
 
 if(exp->destType && exp->destType->kind == 8 && exp->destType->_class && exp->destType->_class->registered && exp->destType->_class->registered != containerClass && __ecereNameSpace__ecere__com__eClass_IsDerived(exp->destType->_class->registered, containerClass))
@@ -16599,7 +16776,7 @@ type->refCount++;
 }
 else
 {
-if(!MatchTypeExpression(e, type, (((void *)0)), 0x0))
+if(!MatchTypeExpression(e, type, (((void *)0)), 0x0, 0x1))
 {
 FreeType(type);
 type = e->expType;
@@ -16608,7 +16785,7 @@ e = (*exp->list).first;
 ProcessExpressionType(e);
 if(e->expType)
 {
-if(!MatchTypeExpression(e, type, (((void *)0)), 0x0))
+if(!MatchTypeExpression(e, type, (((void *)0)), 0x0, 0x1))
 {
 FreeType(e->expType);
 e->expType = (((void *)0));
@@ -16734,7 +16911,7 @@ if(exp->destType && (exp->destType->kind == 0 || exp->destType->kind == 18))
 ;
 else if(exp->destType && !exp->destType->keepCast)
 {
-if(!CheckExpressionType(exp, exp->destType, 0x0))
+if(!CheckExpressionType(exp, exp->destType, 0x0, !exp->destType->casted))
 {
 if(!exp->destType->count || unresolved)
 {
@@ -17008,7 +17185,7 @@ break;
 }
 }
 
-extern struct Symbol * FindType(struct Context * ctx, char *  name);
+extern struct Symbol * FindType(struct Context * ctx, const char *  name);
 
 static void ProcessClass(struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol);
 
@@ -17119,6 +17296,8 @@ if(spec && spec->specifier == TYPED_OBJECT)
 struct Declarator * d = param->declarator;
 struct TypeName * newParam = (newParam = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), newParam->qualifiers = MkListOne(MkSpecifier(VOID)), newParam->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d), newParam);
 
+if(d->type != 5)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*newParam->qualifiers), (((void *)0)), MkSpecifier(CONST));
 FreeList(param->qualifiers, FreeSpecifier);
 param->qualifiers = MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
 param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier("class")));
@@ -17131,6 +17310,8 @@ struct Declarator * d = param->declarator;
 
 FreeList(param->qualifiers, FreeSpecifier);
 param->qualifiers = MkListOne(MkSpecifier(VOID));
+if(d->type != 5)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*param->qualifiers), (((void *)0)), MkSpecifier(CONST));
 param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d);
 }
 else if(spec->specifier == THISCLASS)
@@ -17503,7 +17684,7 @@ struct Type * source;
 struct Expression * e;
 unsigned int isBuiltin = exp && (*exp).last && (((struct Expression *)(*exp).last)->type == 35 || (((struct Expression *)(*exp).last)->type == 11 && ((struct Expression *)(*exp).last)->cast.exp->type == 35));
 struct Expression * arrayExp;
-char * typeString = (((void *)0));
+const char * typeString = (((void *)0));
 int builtinCount = 0;
 
 for(e = exp ? (*exp).first : (((void *)0)); e; e = e->next)
@@ -17592,7 +17773,7 @@ type->refCount++;
 }
 else
 {
-if(!MatchTypeExpression(e, type, (((void *)0)), 0x0))
+if(!MatchTypeExpression(e, type, (((void *)0)), 0x0, 0x1))
 {
 FreeType(type);
 type = e->expType;
@@ -17601,7 +17782,7 @@ e = (*arrayExp->list).first;
 ProcessExpressionType(e);
 if(e->expType)
 {
-if(!MatchTypeExpression(e, type, (((void *)0)), 0x0))
+if(!MatchTypeExpression(e, type, (((void *)0)), 0x0, 0x1))
 {
 FreeType(e->expType);
 e->expType = (((void *)0));
@@ -18097,9 +18278,9 @@ break;
 
 extern struct Expression * QBrackets(struct Expression * exp);
 
-extern struct TypeName * QMkType(char *  spec, struct Declarator * decl);
+extern struct TypeName * QMkType(const char *  spec, struct Declarator * decl);
 
-extern struct Declarator * QMkPtrDecl(char *  id);
+extern struct Declarator * QMkPtrDecl(const char *  id);
 
 extern struct Expression * MkExpPointer(struct Expression * expression, struct Identifier * member);
 
@@ -18484,7 +18665,7 @@ thisClass = (((void *)0));
 }
 }
 
-void DeclareFunctionUtil(char * s)
+void DeclareFunctionUtil(const char * s)
 {
 struct __ecereNameSpace__ecere__com__GlobalFunction * function = __ecereNameSpace__ecere__com__eSystem_FindFunction(privateModule, s);
 
@@ -18615,9 +18796,9 @@ curExternal = (((void *)0));
 ((temp ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)temp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(temp)) : 0), temp = 0);
 }
 
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
@@ -18675,7 +18856,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeClassMembers", "v
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeModuleClasses", "void ComputeModuleClasses(ecere::com::Module module)", ComputeModuleClasses, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeTypeSize", "int ComputeTypeSize(Type type)", ComputeTypeSize, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("AddMembers", "int AddMembers(ecere::sys::OldList * declarations, ecere::com::Class _class, bool isMember, uint * retSize, ecere::com::Class topClass, bool * addedPadding)", AddMembers, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareStruct", "void DeclareStruct(char * name, bool skipNoHead)", DeclareStruct, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareStruct", "void DeclareStruct(const char * name, bool skipNoHead)", DeclareStruct, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareProperty", "void DeclareProperty(ecere::com::Property prop, char * setName, char * getName)", DeclareProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("Dereference", "Type Dereference(Type source)", Dereference, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessMemberInitData", "void ProcessMemberInitData(MemberInit member, ecere::com::Class _class, ecere::com::Class * curClass, ecere::com::DataMember * curMember, ecere::com::DataMember * subMemberStack, int * subMemberStackPos)", ProcessMemberInitData, module, 2);
@@ -18685,7 +18866,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetupTemplatesContext", 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FinishTemplatesContext", "void FinishTemplatesContext(Context context)", FinishTemplatesContext, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessMethodType", "void ProcessMethodType(ecere::com::Method method)", ProcessMethodType, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessPropertyType", "void ProcessPropertyType(ecere::com::Property prop)", ProcessPropertyType, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareMethod", "void DeclareMethod(ecere::com::Method method, char * name)", DeclareMethod, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareMethod", "void DeclareMethod(ecere::com::Method method, const char * name)", DeclareMethod, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceThisClass", "char * ReplaceThisClass(ecere::com::Class _class)", ReplaceThisClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceThisClassType", "Type ReplaceThisClassType(ecere::com::Class _class)", ReplaceThisClassType, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceThisClassSpecifiers", "void ReplaceThisClassSpecifiers(ecere::sys::OldList specs, ecere::com::Class _class)", ReplaceThisClassSpecifiers, module, 2);
@@ -18694,11 +18875,11 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareGlobalData", "voi
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Conversion", 0, sizeof(struct Conversion), 0, 0, 0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Conversion = class;
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypes", "bool MatchTypes(Type source, Type dest, ecere::sys::OldList conversions, ecere::com::Class owningClassSource, ecere::com::Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams, bool isConversionExploration)", MatchTypes, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypes", "bool MatchTypes(Type source, Type dest, ecere::sys::OldList conversions, ecere::com::Class owningClassSource, ecere::com::Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams, bool isConversionExploration, bool warnConst)", MatchTypes, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchWithEnums_NameSpace", "bool MatchWithEnums_NameSpace(ecere::com::NameSpace nameSpace, Expression sourceExp, Type dest, char * string, ecere::sys::OldList conversions)", MatchWithEnums_NameSpace, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ModuleVisibility", "bool ModuleVisibility(ecere::com::Module searchIn, ecere::com::Module searchFor)", ModuleVisibility, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchWithEnums_Module", "bool MatchWithEnums_Module(ecere::com::Module mainModule, Expression sourceExp, Type dest, char * string, ecere::sys::OldList conversions)", MatchWithEnums_Module, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypeExpression", "bool MatchTypeExpression(Expression sourceExp, Type dest, ecere::sys::OldList conversions, bool skipUnitBla)", MatchTypeExpression, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypeExpression", "bool MatchTypeExpression(Expression sourceExp, Type dest, ecere::sys::OldList conversions, bool skipUnitBla, bool warnConst)", MatchTypeExpression, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReadString", "void ReadString(char * output, char * string)", ReadString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("UnescapeString", "int UnescapeString(char * d, char * s, int len)", UnescapeString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OffsetEscapedString", "char * OffsetEscapedString(char * s, int len, int offset)", OffsetEscapedString, module, 1);
@@ -18708,7 +18889,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeInstantiation", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CallOperator", "void CallOperator(Expression exp, Expression exp1, Expression exp2, Operand op1, Operand op2)", CallOperator, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeExpression", "void ComputeExpression(Expression exp)", ComputeExpression, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CheckTemplateTypes", "void CheckTemplateTypes(Expression exp)", CheckTemplateTypes, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindSymbol", "Symbol FindSymbol(char * name, Context startContext, Context endContext, bool isStruct, bool globalNameSpace)", FindSymbol, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindSymbol", "Symbol FindSymbol(const char * name, Context startContext, Context endContext, bool isStruct, bool globalNameSpace)", FindSymbol, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintType", "void PrintType(Type type, char * string, bool printName, bool fullName)", PrintType, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrintTypeNoConst", "void PrintTypeNoConst(Type type, char * string, bool printName, bool fullName)", PrintTypeNoConst, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindMemberAndOffset", "Type FindMemberAndOffset(Type type, char * string, uint * offset)", FindMemberAndOffset, module, 1);
@@ -18716,8 +18897,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetParseError", "bool Ge
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ParseExpressionString", "Expression ParseExpressionString(char * expression)", ParseExpressionString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceExpContents", "void ReplaceExpContents(Expression checkedExp, Expression newExp)", ReplaceExpContents, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ApplyAnyObjectLogic", "void ApplyAnyObjectLogic(Expression e)", ApplyAnyObjectLogic, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ApplyLocation", "void ApplyLocation(Expression exp, Location loc)", ApplyLocation, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessExpressionType", "void ProcessExpressionType(Expression exp)", ProcessExpressionType, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareFunctionUtil", "void DeclareFunctionUtil(String s)", DeclareFunctionUtil, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareFunctionUtil", "void DeclareFunctionUtil(const String s)", DeclareFunctionUtil, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeDataTypes", "void ComputeDataTypes(void)", ComputeDataTypes, module, 1);
 }
 

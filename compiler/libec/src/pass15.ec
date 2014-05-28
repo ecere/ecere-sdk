@@ -105,7 +105,7 @@ bool NeedCast(Type type1, Type type2)
          case classType:
             return type1._class != type2._class;
          case pointerType:
-            return NeedCast(type1.type, type2.type);
+            return (type1.type && type2.type && type1.type.constant != type2.type.constant) || NeedCast(type1.type, type2.type);
          default:
             return true; //false; ????
       }
@@ -1053,7 +1053,7 @@ static int DeclareMembers(Class _class, bool isMember)
    return topMember ? topMember.memberID : _class.memberID;
 }
 
-void DeclareStruct(char * name, bool skipNoHead)
+void DeclareStruct(const char * name, bool skipNoHead)
 {
    External external = null;
    Symbol classSym = FindClass(name);
@@ -1734,8 +1734,16 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
             ClassTemplateArgument arg = _class.templateArgs[id];
             if(arg.dataTypeString)
             {
+               bool constant = type.constant;
                // FreeType(type);
                type = ProcessTypeString(arg.dataTypeString, false);
+               if(type.kind == classType && constant) type.constant = true;
+               else if(type.kind == pointerType)
+               {
+                  Type t = type.type;
+                  while(t.kind == pointerType) t = t.type;
+                  if(constant) t.constant = constant;
+               }
                freeType = true;
                if(type && _class.templateClass)
                   type.passAsTemplate = true;
@@ -1900,7 +1908,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
             }
          }
          //else if(!MatchTypes(member.exp.expType, type, null, _class, null, true, true, false, false))
-         else if(!MatchTypes(member.initializer.exp.expType, type, null, null, _class, true, true, false, false))
+         else if(!MatchTypes(member.initializer.exp.expType, type, null, null, _class, true, true, false, false, true))
          {
             Compiler_Error($"incompatible instance method %s\n", ident.string);
          }
@@ -2401,7 +2409,7 @@ public void ProcessPropertyType(Property prop)
    }
 }
 
-public void DeclareMethod(Method method, char * name)
+public void DeclareMethod(Method method, const char * name)
 {
    Symbol symbol = method.symbol;
    if(!symbol || (!symbol.pointerExternal && method.type == virtualMethod) || symbol.id > (curExternal ? curExternal.symbol.idCode : -1))
@@ -2914,10 +2922,27 @@ class Conversion : struct
    Type resultType;
 };
 
-public bool MatchTypes(Type source, Type dest, OldList conversions, Class owningClassSource, Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams, bool isConversionExploration)
+public bool MatchTypes(Type source, Type dest, OldList conversions, Class owningClassSource, Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams,
+                       bool isConversionExploration, bool warnConst)
 {
    if(source && dest)
    {
+      if(warnConst &&
+         ((source.kind == classType && source._class && source._class.registered) || source.kind == arrayType || source.kind == pointerType) &&
+         ((dest.kind == classType && dest._class && dest._class.registered) || /*dest.kind == arrayType || */dest.kind == pointerType))
+      {
+         Class sourceClass = source.kind == classType ? source._class.registered : null;
+         Class destClass = dest.kind == classType ? dest._class.registered : null;
+         if((!sourceClass || (sourceClass && sourceClass.type == normalClass && !sourceClass.structSize)) &&
+            (!destClass || (destClass && destClass.type == normalClass && !destClass.structSize)))
+         {
+            Type sourceType = source, destType = dest;
+            while(sourceType.type && (sourceType.kind == pointerType || sourceType.kind == arrayType)) sourceType = sourceType.type;
+            while(destType.type && (destType.kind == pointerType || destType.kind == arrayType)) destType = destType.type;
+            if(!destType.constant && sourceType.constant)
+               Compiler_Warning($"discarding const qualifier\n");
+         }
+      }
       // Property convert;
 
       if(source.kind == templateType && dest.kind != templateType)
@@ -2975,7 +3000,6 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       if(!isConversionExploration && source.kind == pointerType && source.type.kind == voidType &&
          ((dest.kind == classType && (!dest._class || !dest._class.registered || dest._class.registered.type == structClass || dest._class.registered.type == normalClass || dest._class.registered.type == noHeadClass || dest._class.registered.type == systemClass))
          || dest.kind == subClassType || dest.kind == pointerType || dest.kind == arrayType || dest.kind == functionType || dest.kind == thisClassType)
-
          /* dest.kind != voidType && dest.kind != structType && dest.kind != unionType  */
 
          /*&& (dest.kind != classType || dest._class.registered.type != structClass)*/)
@@ -3046,7 +3070,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                      if((!isConversionExploration || convert.dataType.kind == classType || !strcmp(_class.name, "String")) &&
                         MatchTypes(convert.dataType, dest, conversions, null, null,
                            (convert.dataType.kind == classType && !strcmp(convert.dataTypeString, "String")) ? true : false,
-                              convert.dataType.kind == classType, false, true))
+                              convert.dataType.kind == classType, false, true, warnConst))
                      {
                         if(!conversions && !convert.Get)
                            return true;
@@ -3061,6 +3085,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                               Conversion conv { convert = convert, isGet = true };
                               // conversions.Add(conv);
                               conversions.Insert(after, conv);
+
                               return true;
                            }
                         }
@@ -3082,32 +3107,48 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                {
                   if(convert.memberAccess == publicAccess || _class.module == privateModule)
                   {
+                     Type constType = null;
+                     bool success = false;
                      // Conversion after = (conversions != null) ? conversions.last : null;
 
                      if(!convert.dataType)
                         convert.dataType = ProcessTypeString(convert.dataTypeString, false);
+
+                     if(warnConst && convert.dataType.kind == pointerType && convert.dataType.type && dest.constant)
+                     {
+                        Type ptrType { };
+                        constType = { kind = pointerType, refCount = 1, type = ptrType };
+                        CopyTypeInto(ptrType, convert.dataType.type);
+                        ptrType.refCount++;
+                        ptrType.constant = true;
+                     }
+
                      // Just added this equality check to prevent recursion.... Make it safer?
                      // Changed enumBaseType to false here to prevent all int-compatible enums to show up in AnchorValues
-                     if(convert.dataType != dest && MatchTypes(source, convert.dataType, conversions, null, null, true, false /*true*/, false, true))
+                     if((constType || convert.dataType != dest) && MatchTypes(source, constType ? constType : convert.dataType, conversions, null, null, true, false /*true*/, false, true, warnConst))
                      {
                         if(!conversions && !convert.Set)
-                           return true;
+                           success = true;
                         else if(conversions != null)
                         {
                            if(_class.type == unitClass && convert.dataType.kind == classType && convert.dataType._class &&
                               convert.dataType._class.registered && _class.base == convert.dataType._class.registered.base &&
                               (source.kind != classType || source._class.registered != _class.base))
-                              return true;
+                              success = true;
                            else
                            {
                               // *** Testing this! ***
                               Conversion conv { convert = convert };
                               conversions.Add(conv);
                               //conversions.Insert(after, conv);
-                              return true;
+                              success = true;
                            }
                         }
                      }
+                     if(success)
+                        return true;
+                     if(constType)
+                        FreeType(constType);
                   }
                }
             }
@@ -3127,7 +3168,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                if(dest._class.registered.dataType.kind == classType || source.truth || dest.truth/* ||
                   !strcmp(dest._class.registered.name, "bool") || (source.kind == classType && !strcmp(source._class.string, "bool"))*/)
                {
-                  if(MatchTypes(source, dest._class.registered.dataType, conversions, null, null, true, dest._class.registered.dataType.kind == classType, false, false))
+                  if(MatchTypes(source, dest._class.registered.dataType, conversions, null, null, true, dest._class.registered.dataType.kind == classType, false, false, warnConst))
                   {
                      return true;
                   }
@@ -3152,7 +3193,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                         convert.dataType = ProcessTypeString(convert.dataTypeString, false);
                      if(convert.dataType != source &&
                         (!isConversionExploration || convert.dataType.kind == classType || !strcmp(_class.name, "String")) &&
-                        MatchTypes(convert.dataType, dest, conversions, null, null, convert.dataType.kind == classType, convert.dataType.kind == classType, false, true))
+                        MatchTypes(convert.dataType, dest, conversions, null, null, convert.dataType.kind == classType, convert.dataType.kind == classType, false, true, warnConst))
                      {
                         if(!conversions && !convert.Get)
                            return true;
@@ -3183,10 +3224,10 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                   source._class.registered.dataType = ProcessTypeString(source._class.registered.dataTypeString, false);
                if(!isConversionExploration || source._class.registered.dataType.kind == classType || !strcmp(source._class.registered.name, "String"))
                {
-                  if(MatchTypes(source._class.registered.dataType, dest, conversions, null, null, source._class.registered.dataType.kind == classType, source._class.registered.dataType.kind == classType, false, false))
+                  if(MatchTypes(source._class.registered.dataType, dest, conversions, null, null, source._class.registered.dataType.kind == classType, source._class.registered.dataType.kind == classType, false, false, warnConst))
                      return true;
                   // For bool to be accepted by byte, short, etc.
-                  else if(MatchTypes(dest, source._class.registered.dataType, null, null, null, false, false, false, false))
+                  else if(MatchTypes(dest, source._class.registered.dataType, null, null, null, false, false, false, false, warnConst))
                      return true;
                }
             }
@@ -3312,7 +3353,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
 
 
          // Source return type must be derived from destination return type
-         if(!MatchTypes(source.returnType, dest.returnType, null, null, null, true, true, false, false))
+         if(!MatchTypes(source.returnType, dest.returnType, null, null, null, true, true, false, false, warnConst))
          {
             Compiler_Warning($"incompatible return type for function\n");
             return false;
@@ -3368,8 +3409,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                }
 
                // paramDest must be derived from paramSource
-               if(!MatchTypes(paramDestType, paramSourceType, null, null, null, true, true, false, false) &&
-                  (!acceptReversedParams || !MatchTypes(paramSourceType, paramDestType, null, null, null, true, true, false, false)))
+               if(!MatchTypes(paramDestType, paramSourceType, null, null, null, true, true, false, false, warnConst) &&
+                  (!acceptReversedParams || !MatchTypes(paramSourceType, paramDestType, null, null, null, true, true, false, false, warnConst)))
                {
                   char type[1024];
                   type[0] = 0;
@@ -3400,7 +3441,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       else if((dest.kind == pointerType || dest.kind == arrayType) &&
          (source.kind == arrayType || source.kind == pointerType))
       {
-         if(MatchTypes(source.type, dest.type, null, null, null, true, true, false, false))
+         if(MatchTypes(source.type, dest.type, null, null, null, true, true, false, false, warnConst))
             return true;
       }
    }
@@ -3431,7 +3472,7 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
             _class.symbol = FindClass(_class.fullName);
          type._class = _class.symbol;
 
-         if(MatchTypes(type, dest, &converts, null, null, true, false, false, false))
+         if(MatchTypes(type, dest, &converts, null, null, true, false, false, false, false))
          {
             NamedLink value;
             Class enumClass = eSystem_FindClass(privateModule, "enum");
@@ -3525,7 +3566,7 @@ bool MatchWithEnums_Module(Module mainModule, Expression sourceExp, Type dest, c
    return false;
 }
 
-bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, bool skipUnitBla)
+bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, bool skipUnitBla, bool warnConst)
 {
    Type source;
    Type realDest = dest;
@@ -3635,7 +3676,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                tempType._class = _class.symbol;
                tempType.truth = dest.truth;
                if(tempType._class)
-                  MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false);
+                  MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false, warnConst);
 
                // NOTE: To handle bad warnings on int64 vs 32 bit eda::Id incompatibilities
                backupSourceExpType = sourceExp.expType;
@@ -3653,7 +3694,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          {
             if(!dest._class.registered.dataType)
                dest._class.registered.dataType = ProcessTypeString(dest._class.registered.dataTypeString, false);
-            if(MatchTypes(source, dest._class.registered.dataType, conversions, null, null, true, true, false, false))
+            if(MatchTypes(source, dest._class.registered.dataType, conversions, null, null, true, true, false, false, warnConst))
             {
                FreeType(source);
                FreeType(sourceExp.expType);
@@ -3746,7 +3787,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                tempType.classObjectType = source.classObjectType;
 
                if(tempType._class)
-                  MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false);
+                  MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false, warnConst);
 
                // PUT THIS BACK TESTING UNITS?
                if(conversions.last)
@@ -3792,7 +3833,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 
       if(!flag)
       {
-         if(MatchTypes(source, dest, conversions, null, null, true, true, false, false))
+         if(MatchTypes(source, dest, conversions, null, null, true, true, false, false, warnConst))
          {
             FreeType(source);
             FreeType(dest);
@@ -6287,7 +6328,7 @@ void ComputeExpression(Expression exp)
    }
 }
 
-static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla)
+static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla, bool warnConst)
 {
    bool result = true;
    if(destType)
@@ -6298,7 +6339,7 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla)
       if(destType.kind == voidType)
          return false;
 
-      if(!MatchTypeExpression(exp, destType, &converts, skipUnitBla))
+      if(!MatchTypeExpression(exp, destType, &converts, skipUnitBla, warnConst))
          result = false;
       if(converts.count)
       {
@@ -6409,7 +6450,7 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla)
 
       if(!result && exp.expType && converts.count)      // TO TEST: Added converts.count here to avoid a double warning with function type
       {
-         result = MatchTypes(exp.expType, exp.destType, null, null, null, true, true, false, false);
+         result = MatchTypes(exp.expType, exp.destType, null, null, null, true, true, false, false, warnConst);
       }
       if(!result && exp.expType && exp.destType)
       {
@@ -6577,7 +6618,7 @@ void CheckTemplateTypes(Expression exp)
 //    - Tree of all symbols within (stored without namespace)
 //    - Tree of sub-namespaces
 
-static Symbol ScanWithNameSpace(BinaryTree tree, char * nameSpace, char * name)
+static Symbol ScanWithNameSpace(BinaryTree tree, const char * nameSpace, const char * name)
 {
    int nsLen = strlen(nameSpace);
    Symbol symbol;
@@ -6607,11 +6648,11 @@ static Symbol ScanWithNameSpace(BinaryTree tree, char * nameSpace, char * name)
    return null;
 }
 
-static Symbol FindWithNameSpace(BinaryTree tree, char * name)
+static Symbol FindWithNameSpace(BinaryTree tree, const char * name)
 {
    int c;
    char nameSpace[1024];
-   char * namePart;
+   const char * namePart;
    bool gotColon = false;
 
    nameSpace[0] = '\0';
@@ -6656,7 +6697,7 @@ static Symbol FindWithNameSpace(BinaryTree tree, char * name)
 
 static void ProcessDeclaration(Declaration decl);
 
-/*static */Symbol FindSymbol(char * name, Context startContext, Context endContext, bool isStruct, bool globalNameSpace)
+/*static */Symbol FindSymbol(const char * name, Context startContext, Context endContext, bool isStruct, bool globalNameSpace)
 {
 #ifdef _DEBUG
    //Time startTime = GetTime();
@@ -7553,6 +7594,73 @@ void ApplyAnyObjectLogic(Expression e)
    }
 }
 
+void ApplyLocation(Expression exp, Location loc)
+{
+   exp.loc = loc;
+   switch(exp.type)
+   {
+      case opExp:
+         if(exp.op.exp1) ApplyLocation(exp.op.exp1, loc);
+         if(exp.op.exp2) ApplyLocation(exp.op.exp2, loc);
+         break;
+      case bracketsExp:
+         if(exp.list)
+         {
+            Expression e;
+            for(e = exp.list->first; e; e = e.next)
+               ApplyLocation(e, loc);
+         }
+         break;
+      case indexExp:
+         if(exp.index.index)
+         {
+            Expression e;
+            for(e = exp.index.index->first; e; e = e.next)
+               ApplyLocation(e, loc);
+         }
+         if(exp.index.exp)
+            ApplyLocation(exp.index.exp, loc);
+         break;
+      case callExp:
+         if(exp.call.arguments)
+         {
+            Expression arg;
+            for(arg = exp.call.arguments->first; arg; arg = arg.next)
+               ApplyLocation(arg, loc);
+         }
+         if(exp.call.exp)
+            ApplyLocation(exp.call.exp, loc);
+         break;
+      case memberExp:
+      case pointerExp:
+         if(exp.member.exp)
+            ApplyLocation(exp.member.exp, loc);
+         break;
+      case castExp:
+         if(exp.cast.exp)
+            ApplyLocation(exp.cast.exp, loc);
+         break;
+      case conditionExp:
+         if(exp.cond.exp)
+         {
+            Expression e;
+            for(e = exp.cond.exp->first; e; e = e.next)
+               ApplyLocation(e, loc);
+         }
+         if(exp.cond.cond)
+            ApplyLocation(exp.cond.cond, loc);
+         if(exp.cond.elseExp)
+            ApplyLocation(exp.cond.elseExp, loc);
+         break;
+      case vaArgExp:
+         if(exp.vaArg.exp)
+            ApplyLocation(exp.vaArg.exp, loc);
+         break;
+      default:
+         break;
+   }
+}
+
 void ProcessExpressionType(Expression exp)
 {
    bool unresolved = false;
@@ -7616,7 +7724,7 @@ void ProcessExpressionType(Expression exp)
             // Enums should be resolved here (Special pass in opExp to fix identifiers not seen as enum on the first pass)
             if(!symbol/* && exp.destType*/)
             {
-               if(exp.destType && CheckExpressionType(exp, exp.destType, false))
+               if(exp.destType && CheckExpressionType(exp, exp.destType, false, false))
                   break;
                else
                {
@@ -7755,7 +7863,7 @@ void ProcessExpressionType(Expression exp)
                         FreeIdentifier(id);
                         exp.type = bracketsExp;
                         exp.list = MkListOne(parsedExpression);
-                        parsedExpression.loc = yylloc;
+                        ApplyLocation(parsedExpression, yylloc);
                         ProcessExpressionType(exp);
                         definedExpStackPos--;
                         return;
@@ -7856,6 +7964,7 @@ void ProcessExpressionType(Expression exp)
          //_class = classSym ? classSym.registered : null;
 
          ProcessInstantiationType(exp.instance);
+
          exp.isConstant = exp.instance.isConstant;
 
          /*
@@ -8166,7 +8275,7 @@ void ProcessExpressionType(Expression exp)
 
             // TESTING THIS HERE...
             if(exp.op.exp1.destType && exp.op.op != '=') exp.op.exp1.destType.count++;
-            ProcessExpressionType(exp.op.exp1);
+               ProcessExpressionType(exp.op.exp1);
             if(exp.op.exp1.destType && exp.op.op != '=') exp.op.exp1.destType.count--;
 
             exp.op.exp1.opDestType = false;
@@ -8388,7 +8497,7 @@ void ProcessExpressionType(Expression exp)
                   if(!exp.op.exp1.expType)
                      ProcessExpressionType(exp.op.exp1);
                   else
-                     CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false);
+                     CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false);
                   FreeType(exp.op.exp1.expType);
                   exp.op.exp1.expType = MkClassType("bool");
                   exp.op.exp1.expType.truth = true;
@@ -8401,7 +8510,7 @@ void ProcessExpressionType(Expression exp)
                   if(!exp.op.exp2.expType)
                      ProcessExpressionType(exp.op.exp2);
                   else
-                     CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false);
+                     CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false, false);
                   FreeType(exp.op.exp2.expType);
                   exp.op.exp2.expType = MkClassType("bool");
                   exp.op.exp2.expType.truth = true;
@@ -8528,7 +8637,7 @@ void ProcessExpressionType(Expression exp)
                         else if(exp.op.op == '-')
                         {
                            // Pointer Subtraction gives integer
-                           if(MatchTypes(type1.type, type2.type, null, null, null, false, false, false, false))
+                           if(MatchTypes(type1.type, type2.type, null, null, null, false, false, false, false, false))
                            {
                               exp.expType = Type
                               {
@@ -8581,14 +8690,14 @@ void ProcessExpressionType(Expression exp)
                      if(!success && exp.op.exp1.type == constantExp)
                      {
                         // If first expression is constant, try to match that first
-                        if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
+                        if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false))
                         {
                            if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp1.destType;
                            if(exp.op.exp1.destType) exp.op.exp1.destType.refCount++;
                            success = true;
                         }
-                        else if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
+                        else if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false, false))
                         {
                            if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp2.destType;
@@ -8598,14 +8707,14 @@ void ProcessExpressionType(Expression exp)
                      }
                      else if(!success)
                      {
-                        if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
+                        if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false, false))
                         {
                            if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp2.destType;
                            if(exp.op.exp2.destType) exp.op.exp2.destType.refCount++;
                            success = true;
                         }
-                        else if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
+                        else if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false))
                         {
                            if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp1.destType;
@@ -8645,7 +8754,7 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp1.destType = type2._class.registered.dataType;
                   if(type2._class.registered.dataType)
                      type2._class.registered.dataType.refCount++;
-                  CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false);
+                  CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false);
                   exp.expType = type2;
                   if(type2) type2.refCount++;
                }
@@ -8656,7 +8765,7 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp2.destType = type1._class.registered.dataType;
                   if(type1._class.registered.dataType)
                      type1._class.registered.dataType.refCount++;
-                  CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false);
+                  CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false, false);
                   exp.expType = type1;
                   if(type1) type1.refCount++;
                }
@@ -8673,7 +8782,7 @@ void ProcessExpressionType(Expression exp)
                      exp.op.exp2.destType = type1._class.registered.dataType;
                      exp.op.exp2.destType.refCount++;
 
-                     CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false);
+                     CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false, false);
                      if(type2)
                         FreeType(type2);
                      type2 = exp.op.exp2.destType;
@@ -8692,7 +8801,7 @@ void ProcessExpressionType(Expression exp)
                      exp.op.exp1.destType = type2._class.registered.dataType;
                      exp.op.exp1.destType.refCount++;
 
-                     CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false);
+                     CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false);
                      type1 = exp.op.exp1.destType;
                      exp.expType = type1;
                      type1.refCount++;
@@ -8708,7 +8817,7 @@ void ProcessExpressionType(Expression exp)
                         // Convert the enum to an int instead for these operators
                         if(op1IsEnum && exp.op.exp2.expType)
                         {
-                           if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false))
+                           if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false, false))
                            {
                               if(exp.expType) FreeType(exp.expType);
                               exp.expType = exp.op.exp2.expType;
@@ -8718,7 +8827,7 @@ void ProcessExpressionType(Expression exp)
                         }
                         else if(op2IsEnum && exp.op.exp1.expType)
                         {
-                           if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false))
+                           if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false, false))
                            {
                               if(exp.expType) FreeType(exp.expType);
                               exp.expType = exp.op.exp1.expType;
@@ -8731,7 +8840,7 @@ void ProcessExpressionType(Expression exp)
                      {
                         if(op1IsEnum && exp.op.exp2.expType)
                         {
-                           if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false))
+                           if(CheckExpressionType(exp.op.exp1, exp.op.exp2.expType, false, false))
                            {
                               if(exp.expType) FreeType(exp.expType);
                               exp.expType = exp.op.exp1.expType;
@@ -8741,7 +8850,7 @@ void ProcessExpressionType(Expression exp)
                         }
                         else if(op2IsEnum && exp.op.exp1.expType)
                         {
-                           if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false))
+                           if(CheckExpressionType(exp.op.exp2, exp.op.exp1.expType, false, false))
                            {
                               if(exp.expType) FreeType(exp.expType);
                               exp.expType = exp.op.exp2.expType;
@@ -8762,7 +8871,7 @@ void ProcessExpressionType(Expression exp)
                         exp.op.exp1.destType = type2;
                         type2.refCount++;
 
-                        if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
+                        if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false))
                         {
                            if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp1.destType;
@@ -8815,7 +8924,7 @@ void ProcessExpressionType(Expression exp)
                      }
                      */
 
-                        if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false))
+                        if(CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false, false))
                         {
                            if(exp.expType) FreeType(exp.expType);
                            exp.expType = exp.op.exp2.destType;
@@ -8864,7 +8973,7 @@ void ProcessExpressionType(Expression exp)
                   {
                      Type oldType = exp.op.exp1.expType;
                      exp.op.exp1.expType = null;
-                     if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
+                     if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false))
                         FreeType(oldType);
                      else
                         exp.op.exp1.expType = oldType;
@@ -8893,7 +9002,7 @@ void ProcessExpressionType(Expression exp)
                   }
                   */
 
-                  if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false))
+                  if(CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false))
                   {
                      if(exp.expType) FreeType(exp.expType);
                      exp.expType = exp.op.exp1.destType;
@@ -8910,7 +9019,7 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp1.destType = type2._class.registered.dataType;
                   if(type2._class.registered.dataType)
                      type2._class.registered.dataType.refCount++;
-                  CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false);
+                  CheckExpressionType(exp.op.exp1, exp.op.exp1.destType, false, false);
                }
                if(exp.op.op == '!')
                {
@@ -8932,7 +9041,7 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp2.destType = type1._class.registered.dataType;
                   if(type1._class.registered.dataType)
                      type1._class.registered.dataType.refCount++;
-                  CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false);
+                  CheckExpressionType(exp.op.exp2, exp.op.exp2.destType, false, false);
                }
                exp.expType = type1;
                if(type1) type1.refCount++;
@@ -9060,7 +9169,17 @@ void ProcessExpressionType(Expression exp)
 
                   if(exp.index.index && exp.index.index->last)
                   {
-                     ((Expression)exp.index.index->last).destType = ProcessTypeString(_class.templateArgs[1].dataTypeString, false);
+                     Type type = ProcessTypeString(_class.templateArgs[1].dataTypeString, false);
+
+                     if(type.kind == classType) type.constant = true;
+                     else if(type.kind == pointerType)
+                     {
+                        Type t = type;
+                        while(t.kind == pointerType) t = t.type;
+                        t.constant = true;
+                     }
+
+                     ((Expression)exp.index.index->last).destType = type;
                   }
                }
             }
@@ -9444,6 +9563,7 @@ void ProcessExpressionType(Expression exp)
                   }
                   if(curParam && _class.templateArgs[id].dataTypeString)
                   {
+                     bool constant = type.constant;
                      ClassTemplateArgument arg = _class.templateArgs[id];
                      {
                         Context context = SetupTemplatesContext(_class);
@@ -9453,6 +9573,15 @@ void ProcessExpressionType(Expression exp)
                         templatedType = ProcessTypeString(arg.dataTypeString, false);
                         FinishTemplatesContext(context);
                      }
+
+                     if(templatedType.kind == classType && constant) templatedType.constant = true;
+                     else if(templatedType.kind == pointerType)
+                     {
+                        Type t = templatedType.type;
+                        while(t.kind == pointerType) t = t.type;
+                        if(constant) t.constant = constant;
+                     }
+
                      e.destType = templatedType;
                      if(templatedType)
                      {
@@ -9890,28 +10019,39 @@ void ProcessExpressionType(Expression exp)
                   // Prioritize properties over data members otherwise
                   else
                   {
+                     bool useMemberForNonConst = false;
                      // First look for Public Members (Unless class specifier is provided, which skips public priority)
                      if(!id.classSym)
                      {
                         prop = eClass_FindProperty(_class, id.string, null);
-                        if(!id._class || !id._class.name || strcmp(id._class.name, "property"))
+
+                        useMemberForNonConst = prop && exp.destType &&
+                           ( (exp.destType.kind == classType && !exp.destType.constant) || ((exp.destType.kind == pointerType || exp.destType.kind == arrayType) && exp.destType.type && !exp.destType.type.constant) ) &&
+                              !strncmp(prop.dataTypeString, "const ", 6);
+
+                        if(useMemberForNonConst || !id._class || !id._class.name || strcmp(id._class.name, "property"))
                            member = eClass_FindDataMember(_class, id.string, null, null, null);
                      }
 
-                     if(!prop && !member)
+                     if((!prop || useMemberForNonConst) && !member)
                      {
-                        method = eClass_FindMethod(_class, id.string, null);
+                        method = useMemberForNonConst ? null : eClass_FindMethod(_class, id.string, null);
                         if(!method)
                         {
                            prop = eClass_FindProperty(_class, id.string, privateModule);
-                           if(!id._class || !id._class.name || strcmp(id._class.name, "property"))
+
+                           useMemberForNonConst |= prop && exp.destType &&
+                              ( (exp.destType.kind == classType && !exp.destType.constant) || ((exp.destType.kind == pointerType || exp.destType.kind == arrayType) && exp.destType.type && !exp.destType.type.constant) ) &&
+                                 !strncmp(prop.dataTypeString, "const ", 6);
+
+                           if(useMemberForNonConst || !id._class || !id._class.name || strcmp(id._class.name, "property"))
                               member = eClass_FindDataMember(_class, id.string, privateModule, null, null);
                         }
                      }
 
                      if(member && prop)
                      {
-                        if(member._class != prop._class && !id._class && eClass_IsDerived(member._class, prop._class))
+                        if(useMemberForNonConst || (member._class != prop._class && !id._class && eClass_IsDerived(member._class, prop._class)))
                            prop = null;
                         else
                            member = null;
@@ -10093,10 +10233,19 @@ void ProcessExpressionType(Expression exp)
                      {
                         ClassTemplateArgument arg = tClass.templateArgs[id];
                         Context context = SetupTemplatesContext(tClass);
+                        bool constant = exp.expType.constant;
                         /*if(!arg.dataType)
                            arg.dataType = ProcessTypeString(arg.dataTypeString, false);*/
                         FreeType(exp.expType);
+
                         exp.expType = ProcessTypeString(arg.dataTypeString, false);
+                        if(exp.expType.kind == classType && constant) exp.expType.constant = true;
+                        else if(exp.expType.kind == pointerType)
+                        {
+                           Type t = exp.expType.type;
+                           while(t.kind == pointerType) t = t.type;
+                           if(constant) t.constant = constant;
+                        }
                         if(exp.expType)
                         {
                            if(exp.expType.kind == thisClassType)
@@ -10111,6 +10260,14 @@ void ProcessExpressionType(Expression exp)
                            if(!exp.destType)
                            {
                               exp.destType = ProcessTypeString(arg.dataTypeString, false);
+                              if(exp.destType.kind == classType && constant) exp.destType.constant = true;
+                              else if(exp.destType.kind == pointerType)
+                              {
+                                 Type t = exp.destType.type;
+                                 while(t.kind == pointerType) t = t.type;
+                                 if(constant) t.constant = constant;
+                              }
+
                               //exp.destType.refCount++;
 
                               if(exp.destType.kind == thisClassType)
@@ -10454,7 +10611,9 @@ void ProcessExpressionType(Expression exp)
          FreeType(exp.cast.exp.destType);
          exp.cast.exp.destType = type;
          type.refCount++;
+         type.casted = true;
          ProcessExpressionType(exp.cast.exp);
+         type.casted = false;
          type.count = 0;
          exp.expType = type;
          //type.refCount++;
@@ -10620,7 +10779,7 @@ void ProcessExpressionType(Expression exp)
       case arrayExp:
       {
          Type type = null;
-         char * typeString = null;
+         const char * typeString = null;
          char typeStringBuf[1024];
          if(exp.destType && exp.destType.kind == classType && exp.destType._class && exp.destType._class.registered &&
             exp.destType._class.registered != containerClass && eClass_IsDerived(exp.destType._class.registered, containerClass))
@@ -10641,7 +10800,7 @@ void ProcessExpressionType(Expression exp)
                   else
                   {
                      // if(!MatchType(e.expType, type, null, null, null, false, false, false))
-                     if(!MatchTypeExpression(e, type, null, false))
+                     if(!MatchTypeExpression(e, type, null, false, true))
                      {
                         FreeType(type);
                         type = e.expType;
@@ -10652,7 +10811,7 @@ void ProcessExpressionType(Expression exp)
                         if(e.expType)
                         {
                            //if(!MatchTypes(e.expType, type, null, null, null, false, false, false))
-                           if(!MatchTypeExpression(e, type, null, false))
+                           if(!MatchTypeExpression(e, type, null, false, true))
                            {
                               FreeType(e.expType);
                               e.expType = null;
@@ -10796,7 +10955,7 @@ void ProcessExpressionType(Expression exp)
    if(exp.destType && (exp.destType.kind == voidType || exp.destType.kind == dummyType) );
    else if(exp.destType && !exp.destType.keepCast)
    {
-      if(!CheckExpressionType(exp, exp.destType, false))
+      if(!CheckExpressionType(exp, exp.destType, false, !exp.destType.casted))
       {
          if(!exp.destType.count || unresolved)
          {
@@ -10857,7 +11016,7 @@ void ProcessExpressionType(Expression exp)
                   if(inCompiler) { PrintExpression(exp, expString); ChangeCh(expString, '\n', ' '); }
 
 #ifdef _DEBUG
-                  CheckExpressionType(exp, exp.destType, false);
+                  CheckExpressionType(exp, exp.destType, false, true);
 #endif
                   // Flex & Bison generate code that triggers this, so we ignore it for a quiet sdk build:
                   if(!sourceFile || (strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec") && strcmp(sourceFile, "src\\grammar.ec") && strcmp(sourceFile, "src/grammar.ec")))
@@ -11212,6 +11371,8 @@ static void ProcessDeclarator(Declarator decl)
                            qualifiers = MkListOne(MkSpecifier(VOID));
                            declarator = MkDeclaratorPointer(MkPointer(null,null), d);
                         };
+                        if(d.type != pointerDeclarator)
+                           newParam.qualifiers->Insert(null, MkSpecifier(CONST));
 
                         FreeList(param.qualifiers, FreeSpecifier);
 
@@ -11228,6 +11389,8 @@ static void ProcessDeclarator(Declarator decl)
                         FreeList(param.qualifiers, FreeSpecifier);
 
                         param.qualifiers = MkListOne(MkSpecifier(VOID));
+                        if(d.type != pointerDeclarator)
+                           param.qualifiers->Insert(null, MkSpecifier(CONST));
                         param.declarator = MkDeclaratorPointer(MkPointer(null,null), d);
                      }
                      else if(spec.specifier == THISCLASS)
@@ -11621,7 +11784,7 @@ static void ProcessStatement(Statement stmt)
             (((Expression)exp->last).type == ExpressionType::arrayExp ||
               (((Expression)exp->last).type == castExp && ((Expression)exp->last).cast.exp.type == ExpressionType::arrayExp));
          Expression arrayExp;
-         char * typeString = null;
+         const char * typeString = null;
          int builtinCount = 0;
 
          for(e = exp ? exp->first : null; e; e = e.next)
@@ -11716,7 +11879,7 @@ static void ProcessStatement(Statement stmt)
                         else
                         {
                            // if(!MatchType(e.expType, type, null, null, null, false, false, false))
-                           if(!MatchTypeExpression(e, type, null, false))
+                           if(!MatchTypeExpression(e, type, null, false, true))
                            {
                               FreeType(type);
                               type = e.expType;
@@ -11727,7 +11890,7 @@ static void ProcessStatement(Statement stmt)
                               if(e.expType)
                               {
                                  //if(!MatchTypes(e.expType, type, null, null, null, false, false, false, false))
-                                 if(!MatchTypeExpression(e, type, null, false))
+                                 if(!MatchTypeExpression(e, type, null, false, true))
                                  {
                                     FreeType(e.expType);
                                     e.expType = null;
@@ -12825,7 +12988,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
    }
 }
 
-void DeclareFunctionUtil(String s)
+void DeclareFunctionUtil(const String s)
 {
    GlobalFunction function = eSystem_FindFunction(privateModule, s);
    if(function)

@@ -117,7 +117,7 @@ public class Button : CommonControl
    {
       ButtonState state = this.state;
       Bitmap buttonBitmap = GetButtonBitmap();
-      char * text = this.text;
+      const char * text = this.text;
       int offset = (state == down && buttonStyle.offset) ? 1 : 0;
       Color backColor = colors[(int)checked*4 + state];
       int isDefault = this.isDefault;

@@ -6,38 +6,38 @@ import "CalendarControl"
 
 #define ISLEAP(y) (!((y)%4) && (((y) % 100) || (!((y)% 400))))
 
-/*static */Array<String> enLongDaysNames
+/*static */Array<const String> enLongDaysNames
 { [
    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
 ] };
-/*static */Array<String> enLongMonthsNames
+/*static */Array<const String> enLongMonthsNames
 { [
    "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"
 ] };
 
-/*static */Array<String> enShortDaysNames
+/*static */Array<const String> enShortDaysNames
 { [
    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 ] };
-/*static */Array<String> enShortMonthsNames
+/*static */Array<const String> enShortMonthsNames
 { [
    "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ] };
 
-/*static */Array<String> longDaysNames
+/*static */Array<const String> longDaysNames
 { [
    $"Sunday", $"Monday", $"Tuesday", $"Wednesday", $"Thursday", $"Friday", $"Saturday"
 ] };
-/*static */Array<String> longMonthsNames
+/*static */Array<const String> longMonthsNames
 { [
    $"January", $"February", $"March", $"April", $"LongMonthNames"."May", $"June", $"July", $"August", $"September", $"October", $"November", $"December"
 ] };
 
-/*static */Array<String> shortDaysNames
+/*static */Array<const String> shortDaysNames
 { [
    $"Sun", $"Mon", $"Tue", $"Wed", $"Thu", $"Fri", $"Sat"
 ] };
-/*static */Array<String> shortMonthsNames
+/*static */Array<const String> shortMonthsNames
 { [
    $"Jan", $"Feb", $"Mar", $"Apr", $"ShortMonthNames"."May", $"Jun", $"Jul", $"Aug", $"Sep", $"Oct", $"Nov", $"Dec"
 ] };
@@ -50,7 +50,7 @@ public enum Month
 {
    january, february, march, april, may, june, july, august, september, october, november, december;
 
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       Month m = this;
       if(m >= january && m <= december)
@@ -63,7 +63,7 @@ public enum Month
       return null;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       if(string)
       {
@@ -92,7 +92,7 @@ public struct Date
    Month month;
    int day;
 
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       if(stringOutput)
       {
@@ -105,7 +105,7 @@ public struct Date
       return stringOutput;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       char value[256];
       bool gotAlphaMonth = false;
@@ -325,7 +325,7 @@ public struct Date
 
    Window OnEdit(DataBox dataBox, Window obsolete, int x, int y, int w, int h, void * fieldData)
    {
-      char * string = "";
+      const char * string = "";
       DateDropBox comboBox
       {
          dataBox,
@@ -339,7 +339,7 @@ public struct Date
       {
          char tempString[MAX_F_STRING] = "";
          bool needClass = false;
-         char * result = OnGetString(tempString, null, &needClass);
+         const char * result = OnGetString(tempString, null, &needClass);
          if(result) string = result;
 
          comboBox.calendar.dateValue = this;
@@ -456,7 +456,7 @@ class DateDropBox : DropBox
       calendar.Destroy(0);
    }
 
-   bool DataBox::NotifyTextEntry(DateDropBox dropBox, char * string, bool save)
+   bool DataBox::NotifyTextEntry(DateDropBox dropBox, const char * string, bool save)
    {
       CalendarControl calendar = (CalendarControl)dropBox.calendar;
       Date date = calendar.dateValue;
@@ -489,7 +489,7 @@ class DateDropBox : DropBox
          char tempString[1024] = "";
          bool needClass = false;
          // char * string = date.OnGetString(tempString, null, &needClass);
-         char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &date, tempString, null, &needClass);
+         const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &date, tempString, null, &needClass);
          dropBox.contents = string;
       }
       return true;

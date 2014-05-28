@@ -205,12 +205,12 @@ void CocoaDispatch_OnDrawOverChildren(Window window, Surface surface)
     window.OnDrawOverChildren(surface);
 }
 
-bool CocoaDispatch_OnFileModified(Window window, FileChange fileChange, char * param)
+bool CocoaDispatch_OnFileModified(Window window, FileChange fileChange, const char * param)
 {
     return window.OnFileModified(fileChange, param);
 }
 
-bool CocoaDispatch_OnSaveFile(Window window, char *fileName)
+bool CocoaDispatch_OnSaveFile(Window window, const char *fileName)
 {
     return window.OnSaveFile(fileName);
 }

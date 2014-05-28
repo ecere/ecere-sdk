@@ -30,7 +30,7 @@ static bool editing = true;
 
 enum CodeObjectType { typeClass, typeData, typeMethod, typeEvent, typeProperty, typeNameSpace, typeDataType, typeEnumValue, typeDataPrivate, typeMethodPrivate, typePropertyPrivate };
 
-static char * iconNames[CodeObjectType] =
+static const char * iconNames[CodeObjectType] =
 {
    "<:ecere>constructs/class.png",
    "<:ecere>constructs/data.png",
@@ -57,7 +57,7 @@ IDESettingsContainer settingsContainer
 void GetTemplateString(Class c, char * templateString)
 {
    Module m = c.module.application;
-   char * n = c.name;
+   const char * n = c.name;
    char * lt = strchr(n, '<');
    char * s;
    char ch;
@@ -110,6 +110,8 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
 {
    if(type)
    {
+      if(type.constant && (type.kind != pointerType && type.kind != arrayType))
+         strcat(string, "const ");
       switch(type.kind)
       {
          case classType:
@@ -122,7 +124,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                   if(type._class.registered)
                   {
                      char hex[20];
-                     char * s = type._class.registered.name;
+                     const char * s = type._class.registered.name;
                      sprintf(hex, "%p", type._class.registered.templateClass ? type._class.registered.templateClass : type._class.registered);
                      strcat(string, "<a href=\"api://");
                      strcat(string, hex);
@@ -444,12 +446,12 @@ void AddComponents(Module module, bool isDll)
 class APIPage
 {
 public:
-   char * name;
+   const char * name;
    APIPage page;
-   char * label;
+   const char * label;
    bool showPrivate;
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       return name;
    }
@@ -548,7 +550,7 @@ static void FigureFileName(char * fileName, Module module, DocumentationType typ
    }
    else if(function)
    {
-      char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
+      const char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
       if(name) name += 2; else name = function.name;
       strcat(fileName, "functions/");
       strcat(fileName, name);
@@ -573,7 +575,7 @@ static void FigureFileName(char * fileName, Module module, DocumentationType typ
          break;
       case conversion:
       {
-         char * name = RSearchString(((Property)data).name, "::", strlen(((Property)data).name), true, false);
+         const char * name = RSearchString(((Property)data).name, "::", strlen(((Property)data).name), true, false);
          if(name) name += 2; else name = ((Property)data).name;
          strcat(fileName, "conversions/");
          strcat(fileName, name);
@@ -795,7 +797,7 @@ class APIPageNameSpace : APIPage
          {
             GlobalFunction function = link.data;
             char * desc = ReadDoc(module, functionDoc, function, description, null);
-            char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
+            const char * name = RSearchString(function.name, "::", strlen(function.name), true, false);
             if(name) name += 2; else name = function.name;
             if(first)
             {
@@ -907,7 +909,7 @@ class APIPageClass : APIPage
          f.Printf($"Namespace: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", cl.nameSpace, nsName);
 
       {
-         char * classType = null;
+         const char * classType = null;
          switch(cl.type)
          {
             case bitClass:
@@ -1052,7 +1054,7 @@ class APIPageClass : APIPage
             {
                char * desc = ReadDoc(module, classDoc, cl, conversion, prop);
                DataRow mRow;
-               char * name;
+               const char * name;
                Type type = ProcessTypeString(prop.name, false);
                name = RSearchString(prop.name, "::", strlen(prop.name), true, false);
                if(name) name += 2; else name = prop.name;
@@ -1793,7 +1795,7 @@ class APIPageFunction : APIPage
    }
 }
 
-static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpace, NameSpace comNameSpace, char * parentName, bool showPrivate)
+static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpace, NameSpace comNameSpace, const char * parentName, bool showPrivate)
 {
    char nsName[1024];
    NameSpace * ns;
@@ -1880,7 +1882,7 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
                fn = link.data;
                if(!module || fn.module == module || (!fn.module.name && !strcmp(module.name, "ecere")))
                {
-                  char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
+                  const char * name = ( name = RSearchString(fn.name, "::", strlen(fn.name), false, false), name ? name + 2 : fn.name);
                   DataRow fnRow;
                   if(!functionsRow) { functionsRow = row.AddRow(); functionsRow.SetData(null, APIPage { $"Functions", page = page }); functionsRow.collapsed = true; functionsRow.icon = mainForm.icons[typeMethod];  functionsRow.tag = 2; };
                   fnRow = functionsRow.AddRow(); fnRow.SetData(null, APIPageFunction { name, function = fn }); fnRow.icon = mainForm.icons[typeMethod]; fnRow.tag = (int64)fn;
@@ -2071,7 +2073,7 @@ static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, 
       for(prop = cl.conversions.first; prop; prop = prop.next)
       {
          DataRow mRow;
-         char * name;
+         const char * name;
          if(!conversionsRow) { conversionsRow = row.AddRow(); conversionsRow.SetData(null, APIPage { $"Conversions", page = page }); conversionsRow.collapsed = true; conversionsRow.icon = mainForm.icons[typeDataType]; conversionsRow.tag = 7; }
          name = RSearchString(prop.name, "::", strlen(prop.name), true, false);
          if(name) name += 2; else name = prop.name;
@@ -2242,7 +2244,7 @@ class MainForm : Window
    MenuDivider { fileMenu };
    MenuItem fileExit { fileMenu, $"Exit", x, altF4, NotifySelect = MenuFileExit };
 
-   void OpenModule(char * filePath)
+   void OpenModule(const char * filePath)
    {
       char moduleName[MAX_LOCATION];
       char extension[MAX_EXTENSION];

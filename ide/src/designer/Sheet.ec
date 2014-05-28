@@ -797,7 +797,7 @@ class Sheet : Window
                      {
                         DataRow row;
                         PropertyInfo info { prop, disabled, bold ? codeEditor.boldFont : codeEditor.normalFont };
-                        char * name = prop.category ? prop.category : $"Misc";
+                        const char * name = prop.category ? prop.category : $"Misc";
                         Category category = categories.FindName(name, false);
 
                         // Hide properties like this for now..
@@ -928,7 +928,7 @@ class Sheet : Window
                         if(_class.defaultProperty && !strcmp(prop.name, _class.defaultProperty))
                         {
                            DataRow row;
-                           char * name = prop.category ? prop.category : $"Misc";
+                           const char * name = prop.category ? prop.category : $"Misc";
                            Category category = categories.FindName(name, false);
                            row = category ? (categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop)) : null;
                            properties.currentRow = row;
@@ -952,7 +952,7 @@ class Sheet : Window
       }
    }
 
-   void AddObject(ObjectInfo object, char * name, CodeObjectType type, bool select)
+   void AddObject(ObjectInfo object, const char * name, CodeObjectType type, bool select)
    {
       DataRow after = null;
       DataRow row;
@@ -1024,7 +1024,7 @@ class Sheet : Window
       }
    }
 
-   void RenameObject(ObjectInfo object, char * name)
+   void RenameObject(ObjectInfo object, const char * name)
    {
       DataRow row = dropBox.FindRow((int64)object);
       CodeObject codeObject = row.GetData(null);
@@ -1390,7 +1390,7 @@ class Sheet : Window
    int selectedScroll;
 }
 
-static int String_OnCompare(char ** string1, char ** string2)
+static int String_OnCompare(const char ** string1, const char ** string2)
 {
    int result = 0;
    if(*string1 && *string2)
@@ -1437,7 +1437,7 @@ public:
    Property prop;
    bool disabled;
    FontResource font;
-   char * categoryName;
+   const char * categoryName;
    DataMember subMember;
    Property subProperty;
    uint extraOffset;
@@ -1663,8 +1663,8 @@ public:
 
    int OnCompare(PropertyInfo data2)
    {
-      char * category1 = prop ? prop.category : categoryName;
-      char * category2 = data2.prop ? data2.prop.category : data2.categoryName;
+      const char * category1 = prop ? prop.category : categoryName;
+      const char * category2 = data2.prop ? data2.prop.category : data2.categoryName;
       int result;
 
       if(!category1) category1 = $"Misc";
@@ -1672,7 +1672,6 @@ public:
 
       if(!prop)
       {
-         // result = String::OnCompare((String)category1, (String)category2);
          result = String_OnCompare(&category1, &category2);
       }
       else
@@ -1719,7 +1718,7 @@ public:
          else
             // result = ((String)prop.name).OnCompare(data2.prop.name);
             // result = String::OnCompare((String)prop.name, (String)data2.prop.name);
-            result = String_OnCompare(&prop.name, &data2.prop.name);
+            result = String_OnCompare((const char **)&prop.name, (const char **)&data2.prop.name);
       }
       return result;
    }
@@ -1882,7 +1881,7 @@ public:
 class Category : struct
 {
    Category prev, next;
-   char * name;
+   const char * name;
    DataRow row;
    bool collapsed;
 };

@@ -13,7 +13,7 @@ default:
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit;
 private:
 
-static char * iconNames[] =
+static const char * iconNames[] =
 {
    "<:ecere>places/folder.png",
    "<:ecere>status/folderOpen.png",
@@ -71,7 +71,7 @@ public enum FileNameType     // Had to be private, since icons member of FileDia
       get { return this >= normalFile && this <= opticalMediaImageFile; }
    }
 
-   FileNameType ::SelectByExtension(char * extension)
+   FileNameType ::SelectByExtension(const char * extension)
    {
       if(!strcmpi(extension, "ews"))
          return ewsFile;
@@ -128,9 +128,10 @@ public enum FileNameType     // Had to be private, since icons member of FileDia
 public enum FileDialogType { open, save, selectDir, multiOpen };
 public struct FileFilter
 {
-   char * name, * extensions;
+   const char * name;
+   const char * extensions;
 
-   bool ValidateFileName(char * name)
+   bool ValidateFileName(const char * name)
    {
       if(strcmp(name, "..") && strcmp(name, ".") && strcmp(name, ""))
       {
@@ -162,7 +163,7 @@ public struct FileFilter
 public enum FileForceExtension { never, always, whenNoneGiven };
 public struct FileType
 {
-   char * name, * typeExtension;
+   const char * name, * typeExtension;
    FileForceExtension forceExtension;
 };
 
@@ -170,7 +171,7 @@ static enum FileDialogSelectFrom { fromEditBox, fromListBox, fromDropBox };
 
 public struct FileName
 {
-   char * name;
+   const char * name;
    FileNameType type;
    int indent;
 
@@ -217,24 +218,26 @@ public struct FileName
       {
          int len = strlen(newData.name) + 1;
          name = new char[len];
-         CopyBytes(name, newData.name, len);
+         CopyBytes((char *)name, newData.name, len);
       }
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       int len = strlen(string) + 1;
       name = new char[len];
-      CopyBytes(name, string, len);
+      CopyBytes((char *)name, string, len);
       return true;
    }
 
    void OnFree()
    {
-      delete name;
+      char * n = (char *)name;
+      delete n;
+      name = null;
    }
 
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       return name;
    }
@@ -311,8 +314,8 @@ public:
    };
 
    // Stuff currently in config moving to FileDialog:
-   property char * filePath { set { strcpy(filePath, value); } get { return (char *)filePath; } };
-   property char * currentDirectory
+   property const char * filePath { set { strcpy(filePath, value); } get { return (char *)filePath; } };
+   property const char * currentDirectory
    {
       set
       {
@@ -320,7 +323,7 @@ public:
          PathCat(currentDirectory, value);
          FileFixCase(currentDirectory);
       }
-      get { return (char *)currentDirectory; }
+      get { return currentDirectory; }
    };
    property FileFilter * filters { set { filters = value; } get { return filters; } };
    property FileType * types { set { types = value; } get { return types; } };
@@ -413,7 +416,7 @@ public:
 
    // Get only
    property int numSelections { get { return numSelections; } };
-   property char ** multiFilePaths { get { return multiFilePaths; } };
+   property const char * const * multiFilePaths { get { return multiFilePaths; } };
 
 private:
    FileDialog()
@@ -440,7 +443,9 @@ private:
 
    ~FileDialog()
    {
-      delete customFilter.extensions;
+      char * customExtensions = (char *)customFilter.extensions;
+      delete customExtensions;
+      customFilter.extensions = null;
       if(multiFilePaths)
       {
          int c;
@@ -779,7 +784,7 @@ private:
       return false;
    }
 
-   bool SelectFile(char * fileName, FileDialogSelectFrom from, bool isOK)
+   bool SelectFile(const char * fileName, FileDialogSelectFrom from, bool isOK)
    {
       bool result = true;
       FileAttribs exists = 0;
@@ -877,8 +882,9 @@ private:
                char extension[MAX_EXTENSION];
                int c;
                char * name = new char[numExtensions * (4 + MAX_EXTENSION)];
-
-               delete customFilter.extensions;
+               char * customExtensions = (char *)customFilter.extensions;
+               delete customExtensions;
+               customFilter.extensions = null;
 
                if(!strcmp(wildcardPointer, "*") || strstr(wildcardPointer, "*.*"))
                {
@@ -888,7 +894,7 @@ private:
                else
                {
                   customFilter.extensions = new char[numExtensions * (2 + MAX_EXTENSION)];
-                  customFilter.extensions[0] = '\0';
+                  ((char *)customFilter.extensions)[0] = '\0';
                   name[0] = '\0';
 
                   numExtensions = 0;
@@ -907,14 +913,14 @@ private:
                      if(numExtensions)
                      {
                         strcat(name, ", ");
-                        strcat(customFilter.extensions, ", ");
+                        strcat((char *)customFilter.extensions, ", ");
                      }
                      strcat(name, "*.");
                      strcat(name, extension);
                      if(!extension[0])
-                        strcat(customFilter.extensions, ".");
+                        strcat((char *)customFilter.extensions, ".");
                      else
-                        strcat(customFilter.extensions, extension);
+                        strcat((char *)customFilter.extensions, extension);
 
                      numExtensions++;
                   }
@@ -1199,7 +1205,7 @@ private:
             }
             else
             {
-               char * fileName = this.fileName.line.text;
+               const char * fileName = this.fileName.line.text;
                //selectedFileName = new char[strlen(fileName)+1];      // Room to change extension???
                selectedFileName = new char[MAX_FILENAME];
                strcpy(selectedFileName, fileName);
@@ -1237,7 +1243,7 @@ private:
          }
          else
          {
-            char * fileName = this.fileName.line.text;
+            const char * fileName = this.fileName.line.text;
             selectedFileName = new char[strlen(fileName)+1];
             strcpy(selectedFileName, fileName);
             result = SelectFile(selectedFileName, fromEditBox, control.id == DialogResult::ok);
@@ -1451,7 +1457,7 @@ private:
          if(active)
          {
             char * selectedFileName = null;
-            char * editText;
+            const char * editText;
             if(getNameFromListBox)
             {
                DataRow row = listBox.currentRow;
@@ -1496,7 +1502,7 @@ public class CreateDirectoryDialog : Window
 
 public:
 
-   property char * currentDirectory
+   property const char * currentDirectory
    {
       set
       {

@@ -969,7 +969,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       LFBDisplayDriver::UnloadFont(displaySystem, font);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       Font font = LFBDisplayDriver::LoadFont(displaySystem, faceName, size, flags);
 
@@ -978,13 +978,13 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       return font;
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
       printf("CocoaOpenGLDisplayDriver:FontExtent() %s:%i\n", __FILE__, __LINE__);
       LFBDisplayDriver::FontExtent(displaySystem, font, text, len, width, height);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       SurfaceData surfaceData = surface.driverData;
       SystemData systemData = display.displaySystem.driverData;
@@ -1028,7 +1028,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       printf("CocoaOpenGLDisplayDriver:TextOpacity(%i) %s:%i\n", opaque, __FILE__, __LINE__);
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       SurfaceData surfaceData = surface.driverData;
       SystemData systemData = display.displaySystem.driverData;

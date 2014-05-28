@@ -93,7 +93,7 @@ static ColorKey gradientInactive[] =
    { ColorAlpha { 255, Color { 192, 192, 192 } }, 1.00f }
 };
 */
-char * cursorsBitmaps[] =
+static const char * cursorsBitmaps[] =
 {
    "<:ecere>cursors/arrow.png",
    "<:ecere>cursors/iBeam.png",
@@ -118,7 +118,7 @@ static Point cursorsHotSpots[] =
    { 5, 0 }
 };
 
-static char * skinBitmaps[SkinBitmap] =
+static const char * skinBitmaps[SkinBitmap] =
 {
    "<:ecere>elements/areaMinimize.png",
    "<:ecere>elements/areaMaximize.png",
@@ -152,7 +152,7 @@ class WindowsSkin : Skin
 #endif
    }
 
-   char * ::CursorsBitmaps(uint id, int * hotSpotX, int *hotSpotY, byte ** paletteShades)
+   const char * ::CursorsBitmaps(uint id, int * hotSpotX, int *hotSpotY, byte ** paletteShades)
    {
       *hotSpotX = cursorsHotSpots[id].x;
       *hotSpotY = cursorsHotSpots[id].y;
@@ -332,7 +332,7 @@ public class WindowsSkin_Window : Window
       *ch = Max(*ch, 0);
    }
 
-   void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving)
+   void ShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving)
    {
       bool isNormal = (state == normal);
       int top = 0, border = 0, bottom = 0;
@@ -632,7 +632,7 @@ public class WindowsSkin_Button : Button
       {
          ButtonState state = this.buttonState;
          Bitmap buttonBitmap = bitmap ? bitmap.bitmap : null;
-         char * text = this.text;
+         const char * text = this.text;
          int offset = (state == down && this.offset) ? 1 : 0;
          Color backColor = background;
          int isDefault = this.isDefault;

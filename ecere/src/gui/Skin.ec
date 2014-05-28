@@ -7,7 +7,7 @@ public enum SkinBitmap { minimize, maximize, restore, close };
 public class Skin
 {
 public:
-   class_data char * name;
+   class_data const char * name;
    class_data bool textMode;
    class_data Color selectionColor;
    class_data Color selectionText;
@@ -17,7 +17,7 @@ public:
    class_property(disabledFrontColor) = Color { 128,128,128 };
    class_property(disabledBackColor) = (Color)white;
 
-   class_property char * name
+   class_property const char * name
    {
       set { class_data(name) = value; }
       get { return class_data(name); }
@@ -58,10 +58,10 @@ public:
    virtual void ::GetDecorationsSize(Window, MinMaxValue *, MinMaxValue *);
    virtual void ::SetWindowMinimum(Window, MinMaxValue *, MinMaxValue *);
    virtual void ::SetWindowArea(Window, int *, int *, MinMaxValue *, MinMaxValue *, MinMaxValue *, MinMaxValue *);
-   virtual void ::ShowDecorations(void *, Surface, Window, char *, bool, bool);
+   virtual void ::ShowDecorations(void *, Surface, Window, const char *, bool, bool);
    virtual bool ::IsMouseMoving(Window, int, int, int, int);
    virtual bool ::IsMouseResizing(Window, int, int, int, int, bool *, bool *, bool *, bool *);
-   virtual char * ::CursorsBitmaps(uint id, int *hotSpotX, int *hotSpotY, byte ** paletteShades);
+   virtual const char * ::CursorsBitmaps(uint id, int *hotSpotX, int *hotSpotY, byte ** paletteShades);
    virtual BitmapResource ::GetBitmap(SkinBitmap);
    virtual void ::UpdateNonClient(void *);
    virtual int ::VerticalSBW();

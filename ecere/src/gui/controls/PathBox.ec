@@ -115,18 +115,9 @@ public class PathBox : CommonControl
    watch(selectionText)  { editBox.selectionText = selectionText; };
    watch(opacity)        { editBox.opacity = opacity; };
 
-#if defined(__WIN32__)
-   PathBox()
-   {
-      path[0] = '\0';
-   }
-#endif
-
    PathTypeExpected typeExpected;
    FileDialog browseDialog;
-#if defined(__WIN32__)
    char path[MAX_LOCATION];
-#endif
 
    BitmapResource file { "<:ecere>mimeTypes/file.png", transparent = true, alphaBlend = true };
    BitmapResource brokenFile { "<:ecere>mimeTypes/brokenFile.png", transparent = true, alphaBlend = true };
@@ -198,7 +189,7 @@ public class PathBox : CommonControl
             DataBox dataBox = pathBoxDataBox;
             ListBox listBox;
             DirectoriesBox dirsBox = pathBoxDirsBox;
-            char * ebContents = editBox.contents;
+            const char * ebContents = editBox.contents;
             String backFilePath = CopyString(browseDialog.filePath);
             char * baseBrowsePath = dirsBox ? dirsBox.baseBrowsePath : null;
 
@@ -346,7 +337,7 @@ public:
    void SelectAll() { editBox.SelectAll(); }
    void Deselect() { editBox.Deselect(); }
 
-   property String path
+   property const String path
    {
       set
       {
@@ -416,7 +407,7 @@ public:
          DataRow row;
          for(row = list.firstRow; row; row = row.next)
          {
-            String string = row.string;
+            const String string = row.string;
             if(string && string[0])
                array.Add(CopyUnixPath(string));
          }

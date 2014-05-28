@@ -69,7 +69,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Method
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__Method * parent;
 struct __ecereNameSpace__ecere__com__Method * left;
 struct __ecereNameSpace__ecere__com__Method * right;
@@ -79,7 +79,7 @@ int vid;
 int type;
 struct __ecereNameSpace__ecere__com__Class * _class;
 void *  symbol;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 int memberAccess;
 } __attribute__ ((gcc_struct));
@@ -90,12 +90,12 @@ struct __ecereNameSpace__ecere__com__Property
 {
 struct __ecereNameSpace__ecere__com__Property * prev;
 struct __ecereNameSpace__ecere__com__Property * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 void (*  Set)(void * , int);
@@ -106,7 +106,7 @@ void *  symbol;
 int vid;
 unsigned int conversion;
 unsigned int watcherOffset;
-char *  category;
+const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
@@ -465,7 +465,7 @@ struct TemplateDatatype * dataType;
 int memberType;
 } __attribute__ ((gcc_struct));
 struct TemplateArgument * defaultArgument;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * baseType;
 } __attribute__ ((gcc_struct));
 
@@ -740,6 +740,7 @@ unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
 unsigned int declaredWithStruct : 1;
 unsigned int typedByReference : 1;
+unsigned int casted : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -748,7 +749,7 @@ struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
 struct __ecereNameSpace__ecere__com__Class * next;
-char *  name;
+const char *  name;
 int offset;
 int structSize;
 int (* *  _vTbl)();
@@ -769,16 +770,16 @@ int startMemberID;
 int type;
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 int typeSize;
 int defaultAlignment;
 void (*  Initialize)();
 int memberOffset;
 struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-char *  designerClass;
+const char *  designerClass;
 unsigned int noExpansion;
-char *  defaultProperty;
+const char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
 int isRemote;
@@ -790,7 +791,7 @@ int destructionWatchOffset;
 unsigned int fixed;
 struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
 int inheritanceAccess;
-char *  fullName;
+const char *  fullName;
 void *  symbol;
 struct __ecereNameSpace__ecere__sys__OldList conversions;
 struct __ecereNameSpace__ecere__sys__OldList templateParams;
@@ -802,13 +803,13 @@ unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -833,12 +834,12 @@ struct __ecereNameSpace__ecere__com__DataMember
 {
 struct __ecereNameSpace__ecere__com__DataMember * prev;
 struct __ecereNameSpace__ecere__com__DataMember * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 int type;
@@ -868,13 +869,13 @@ union
 {
 struct
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
-char *  memberString;
+const char *  memberString;
 union
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
@@ -1033,7 +1034,7 @@ extern struct External * curExternal;
 
 extern struct __ecereNameSpace__ecere__sys__OldList *  MkList(void);
 
-extern struct Declarator * SpecDeclFromString(char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
+extern struct Declarator * SpecDeclFromString(const char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
@@ -1043,19 +1044,23 @@ extern void FreeSpecifier(struct Specifier * spec);
 
 extern void FreeDeclarator(struct Declarator * decl);
 
-extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
+extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
 
-extern struct Symbol * FindClass(char *  name);
+extern struct Symbol * FindClass(const char *  name);
 
 extern void FreeSpecifierContents(struct Specifier * spec);
 
-extern void FullClassNameCat(char *  output, char *  className, unsigned int includeTemplateParams);
+extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
-extern struct Identifier * MkIdentifier(char *  string);
+extern struct Identifier * MkIdentifier(const char *  string);
 
 extern int strcmp(const char * , const char * );
 
-extern struct Type * ProcessTypeString(char *  string, unsigned int staticMethod);
+extern struct Type * ProcessTypeString(const char *  string, unsigned int staticMethod);
+
+extern struct Specifier * MkSpecifier(int specifier);
+
+void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
 static int ReplaceClassSpec(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Specifier * spec, unsigned int param)
 {
@@ -1209,7 +1214,8 @@ else if(spec->type == 0)
 {
 if(spec->specifier == ANY_OBJECT)
 {
-spec->specifier = VOID;
+spec->specifier = CONST;
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(specs, MkSpecifier(VOID));
 return 1;
 }
 }
@@ -1256,7 +1262,7 @@ static void InstDeclPassIdentifier(struct Identifier * id);
 
 extern int targetPlatform;
 
-static void InstDeclPassSpecifier(struct Specifier * spec)
+static void InstDeclPassSpecifier(struct Specifier * spec, unsigned int byRefTypedObject)
 {
 switch(spec->type)
 {
@@ -1264,7 +1270,7 @@ case 0:
 if(spec->specifier == TYPED_OBJECT)
 {
 spec->type = 5;
-spec->extDecl = MkExtDeclString(__ecereNameSpace__ecere__sys__CopyString("struct __ecereNameSpace__ecere__com__Class * class, void *"));
+spec->extDecl = MkExtDeclString(__ecereNameSpace__ecere__sys__CopyString(byRefTypedObject ? "struct __ecereNameSpace__ecere__com__Class * class, void *" : "struct __ecereNameSpace__ecere__com__Class * class, const void *"));
 }
 break;
 case 1:
@@ -1448,7 +1454,7 @@ struct Symbol * classSym = (spec->type == 1) ? spec->symbol : (((void *)0));
 if(type->classObjectType && (!classSym || (classSym && classSym->registered && (classSym->registered->type == 4 || classSym->registered->type == 2 || classSym->registered->type == 3))))
 ReplaceByInstancePtr(spec, &type->declarator, 2);
 }
-InstDeclPassSpecifier(spec);
+InstDeclPassSpecifier(spec, type->declarator && type->declarator->type == 5);
 }
 }
 if(type->declarator)
@@ -1656,7 +1662,7 @@ for(d = (*decl->declarators).first; d; d = d->next)
 ReplaceByInstancePtr(spec, &d->declarator, type);
 }
 }
-InstDeclPassSpecifier(spec);
+InstDeclPassSpecifier(spec, 0x0);
 }
 }
 if(decl->declarators)
@@ -1692,7 +1698,7 @@ for(d = (*decl->declarators).first; d; d = d->next)
 ReplaceByInstancePtr(spec, &d, type);
 }
 }
-InstDeclPassSpecifier(spec);
+InstDeclPassSpecifier(spec, 0x0);
 }
 }
 if(decl->declarators)
@@ -1899,7 +1905,7 @@ int type;
 
 if((type = ReplaceClassSpec(func->specifiers, spec, 0x0)))
 ReplaceByInstancePtr(spec, &func->declarator, type);
-InstDeclPassSpecifier(spec);
+InstDeclPassSpecifier(spec, 0x0);
 }
 }
 InstDeclPassDeclarator(func->declarator);
@@ -1918,7 +1924,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
 
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 void __ecereRegisterModule_pass3(struct __ecereNameSpace__ecere__com__Instance * module)
 {

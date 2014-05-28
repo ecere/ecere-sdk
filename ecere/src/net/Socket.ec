@@ -179,7 +179,7 @@ public:
       get { return this ? service : null; }
    };
 
-   property char * inetAddress { get { return (char *)inetAddress; } };
+   property const char * inetAddress { get { return (char *)inetAddress; } };
    property int inetPort { get { return inetPort; } }
    property Socket next { get { return next; } };
    property bool connected { get { return _connected == 1 || _connected == -2; } };
@@ -217,7 +217,7 @@ public:
    virtual void OnDisconnect(int code);
    virtual void OnReceivePacket(Packet packet);
 
-   bool Connect(char * address, int port)
+   bool Connect(const char * address, int port)
    {
       bool result = false;
    #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
@@ -303,7 +303,7 @@ public:
    }
 
    // --- Transfer ---
-   bool Send(void * buffer, int size)
+   bool Send(const void * buffer, int size)
    {
    #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
       if(this)
@@ -352,12 +352,12 @@ public:
       return false;
    }
 
-   bool SendString(char * string)
+   bool SendString(const char * string)
    {
       return Send(string, (int)strlen(string));
    }
 
-   bool Sendf(char * format, ...)
+   bool Sendf(const char * format, ...)
    {
       bool result;
       va_list args;
@@ -370,7 +370,7 @@ public:
       return result;
    }
 
-   bool DatagramConnect(char * sendAddress, int port)
+   bool DatagramConnect(const char * sendAddress, int port)
    {
       SOCKET s = socket(AF_INET,SOCK_DGRAM,0);
       if(s != -1)
@@ -424,9 +424,9 @@ public:
    {
       return (int)recv(s, (char *)buffer, count, flags);
    }
-   virtual int SendData(byte * buffer, int count, uint flags)
+   virtual int SendData(const byte * buffer, int count, uint flags)
    {
-      return (int)send(s, (char *)buffer, count, flags);
+      return (int)send(s, (const char *)buffer, count, flags);
    }
    virtual bool OnEstablishConnection(int s);
 
@@ -513,7 +513,7 @@ private:
       network.mutex.Release();
    }
 
-   bool _Connect(SOCKET s, char * address, int port)
+   bool _Connect(SOCKET s, const char * address, int port)
    {
       bool result = false;
       if(this)

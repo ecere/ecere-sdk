@@ -112,7 +112,7 @@ class ThreadsView : Window
    bool MenuEditFind(MenuItem selection, Modifiers mods)
    {
       int64 id = selection.id;
-      char * searchString = findDialog.searchString;
+      const char * searchString = findDialog.searchString;
       if(id != 2 && searchString[0])
       {
          editBox.Find(searchString, findDialog.wholeWord, findDialog.matchCase, id != 0);
@@ -122,7 +122,7 @@ class ThreadsView : Window
       return true;
    }
 
-   void Logf(char * format, ...)
+   void Logf(const char * format, ...)
    {
       char string[MAX_F_STRING*10];
       va_list args;
@@ -133,17 +133,17 @@ class ThreadsView : Window
 
       Log(string);
    }
-   void LogSprintf(char * entry)
+   void LogSprintf(const char * entry)
    {
       char string[MAX_F_STRING];
       sprintf(string, entry);
       Log(string);
    }
-   void LogRaw(char * entry)
+   void LogRaw(const char * entry)
    {
       Log(entry);
    }
-   void Log(char * string)
+   void Log(const char * string)
    {
       EditLine line1;
       EditLine line2;

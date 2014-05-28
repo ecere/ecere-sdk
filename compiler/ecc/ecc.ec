@@ -292,7 +292,7 @@ class CompilerApp : Application
 
       for(c = 1; c<argc; c++)
       {
-         char * arg = argv[c];
+         const char * arg = argv[c];
          if(arg[0] == '-')
          {
             if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
@@ -366,7 +366,7 @@ class CompilerApp : Application
                if(c + 1 < argc)
                {
                   char * buf;
-                  char * arg1 = argv[++c];
+                  const char * arg1 = argv[++c];
                   int size = cppOptionsLen + 1 + strlen(arg) * 2 + strlen(arg1) * 2 + 1;
                   cppOptions = renew cppOptions char[size];
                   buf = cppOptions + cppOptionsLen;

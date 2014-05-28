@@ -110,7 +110,7 @@ public class GuiApplication : Application
    PixelFormat pixelFormat;
    int refreshRate;
 
-   char * defaultDisplayDriver;
+   const char * defaultDisplayDriver;
 
    Cursor systemCursors[SystemCursor];
 
@@ -467,7 +467,7 @@ public class GuiApplication : Application
       desktop.active = state;
    }
 
-   bool SelectSkin(char * skinName)
+   bool SelectSkin(const char * skinName)
    {
       bool result = false;
       subclass(Skin) skin;
@@ -530,7 +530,7 @@ public class GuiApplication : Application
       // if(!initialized && eClass_IsDerived(__ecereModule->app->module.inst.class, guiApplicationClass))
       if(!guiApplicationInitialized)
       {
-         char * defaultDriver = null;
+         const char * defaultDriver = null;
 #if defined(ECERE_VANILLA) || defined(ECERE_ONEDRIVER)
          char * driver = null;
 #else
@@ -1091,11 +1091,11 @@ public:
    }
 
    // TODO: Might want to make this private with simpler public version?
-   bool SwitchMode(bool fullScreen, char * driverName, Resolution resolution, PixelFormat colorDepth, int refreshRate, char * skinName, bool fallBack)
+   bool SwitchMode(bool fullScreen, const char * driverName, Resolution resolution, PixelFormat colorDepth, int refreshRate, const char * skinName, bool fallBack)
    {
       bool result = false;
       OldLink link;
-      char * fbDriver;
+      const char * fbDriver;
       bool fbFullScreen = 0;
       Resolution fbResolution = 0;
       PixelFormat fbColorDepth = 0;
@@ -1133,7 +1133,7 @@ public:
          {
             bool foundDriver = false;
             int c, numDrivers;
-            char ** graphicsDrivers;
+            const char ** graphicsDrivers;
             inter = link.data;
 
             graphicsDrivers = inter.GraphicsDrivers(&numDrivers);
@@ -1380,7 +1380,7 @@ public:
    }
 
    // Properties
-   property char * appName
+   property const char * appName
    {
       set
       {
@@ -1389,7 +1389,7 @@ public:
       }
       get
       {
-         return (char *)(this ? appName : null);
+         return (const char *)(this ? appName : null);
       }
    };
    property Semaphore semaphore { get { return globalSystem.eventSemaphore; } };
@@ -1403,7 +1403,7 @@ public:
       }
       get { return this ? fullScreen : false; }
    };
-   property char * driver
+   property const char * driver
    {
       set
       {
@@ -1439,7 +1439,7 @@ public:
       }
       get { return this ? refreshRate : 0; }
    };
-   property char * skin
+   property const char * skin
    {
       set { SelectSkin(value); }
       get { return (this && currentSkin) ? currentSkin.name : null; }
@@ -1450,8 +1450,8 @@ public:
       get { return this ? textMode : false; }
    };
    property Window desktop { get { return this ? desktop : null; } };
-   property char ** drivers { get { return null; } };
-   property char ** skins { get { return null; } };
+   property const char ** drivers { get { return null; } };
+   property const char * const * skins { get { return null; } };
    property subclass(Skin) currentSkin { get { return this ? currentSkin : null; } };
    property int numDrivers { get { return 0; } };
    property int numSkins { get { return 0; } };

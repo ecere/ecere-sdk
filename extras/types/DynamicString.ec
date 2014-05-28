@@ -31,18 +31,18 @@ public class DynamicString : Array<char>
       get { return array; }
    }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       return array;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
-      this = (DynamicString)string;
+      this = (DynamicString)(char *)string;
       return true;
    }
 
-   void concat(String s)
+   void concat(const String s)
    {
       int len = strlen(s);
       if(len)
@@ -54,7 +54,7 @@ public class DynamicString : Array<char>
       }
    }
 
-   void concatf(char * format, ...)
+   void concatf(const char * format, ...)
    {
       // TODO: improve this to vsprinf directly in the Array<char> instead of calling concat
       char string[MAX_F_STRING];

@@ -642,25 +642,25 @@ bool WriteNumber(File f, Class type, DataValue value, int indent)
    bool needClass = false;
    buffer[0] = 0;
    if(type == class(double) || !strcmp(type.dataTypeString, "double"))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.d, buffer, 0, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.d, buffer, 0, &needClass);
    else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.f, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.f, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "int64"))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i64, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i64, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64") || type.typeSize == sizeof(int64))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui64, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "int"))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.i, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint") || type.typeSize == sizeof(int))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.ui, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "short") || !strcmp(type.dataTypeString, "int16"))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.s, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.s, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") || type.typeSize == sizeof(short int))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.us, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.us, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "char"))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.c, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.c, buffer, null, &needClass);
    else if(!strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte") || type.typeSize == sizeof(byte))
-      ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
+      ((const char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &value.uc, buffer, null, &needClass);
    f.Puts(buffer);
    return true;
 }
@@ -762,13 +762,13 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
 {
    if(object)
    {
-      char * string = null;
+      const char * string = null;
 
       if(objectType._vTbl[__ecereVMethodID_class_OnGetString] != objectType.base._vTbl[__ecereVMethodID_class_OnGetString])
       {
          char buffer[1024];
          buffer[0] = 0;
-         string = ((char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, null);
+         string = ((const char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, null);
       }
       if(string)
       {
@@ -802,51 +802,55 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                   Class type = eSystem_FindClass(__thisModule, prop.dataTypeString);
                   if(!type)
                      type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
-
-                  // TOFIX: How to swiftly handle classes with base data type?
-                  if(type == class(double) || !strcmp(type.dataTypeString, "double"))
-                  {
-                     value.d = ((double (*)(void *))(void *)prop.Get)(object);
-                  }
-                  else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
-                  {
-                     value.f = ((float (*)(void *))(void *)prop.Get)(object);
-                  }
-                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
-                     !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
-                  {
-                     value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
-                  }
-                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
-                     !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
-                  {
-                     value.i = ((int (*)(void *))(void *)prop.Get)(object);
-                  }
-                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
-                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
-                     !strcmp(type.dataTypeString, "int16"))
-                  {
-                     value.s = ((short (*)(void *))(void *)prop.Get)(object);
-                  }
-                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
-                     !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
-                  {
-                     value.c = ((char (*)(void *))(void *)prop.Get)(object);
-                  }
+                  if(!type)
+                     PrintLn("warning: Unresolved data type ", (String)prop.dataTypeString);
                   else
                   {
-                     value.p = ((void *(*)(void *))(void *)prop.Get)(object);
+                     // TOFIX: How to swiftly handle classes with base data type?
+                     if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                     {
+                        value.d = ((double (*)(void *))(void *)prop.Get)(object);
+                     }
+                     else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
+                     {
+                        value.f = ((float (*)(void *))(void *)prop.Get)(object);
+                     }
+                     else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
+                        !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
+                     {
+                        value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
+                     }
+                     else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
+                        !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
+                     {
+                        value.i = ((int (*)(void *))(void *)prop.Get)(object);
+                     }
+                     else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                        !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
+                        !strcmp(type.dataTypeString, "int16"))
+                     {
+                        value.s = ((short (*)(void *))(void *)prop.Get)(object);
+                     }
+                     else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
+                        !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
+                     {
+                        value.c = ((char (*)(void *))(void *)prop.Get)(object);
+                     }
+                     else
+                     {
+                        value.p = ((void *(*)(void *))(void *)prop.Get)(object);
+                     }
+
+                     if(!isFirst) f.Puts(",\n");
+                     for(c = 0; c<indent; c++) f.Puts("   ");
+
+                     f.Puts("\"");
+                     f.Putc((char)toupper(prop.name[0]));
+                     f.Puts(prop.name+1);
+                     f.Puts("\" : ");
+                     WriteValue(f, type, value, indent);
+                     isFirst = false;
                   }
-
-                  if(!isFirst) f.Puts(",\n");
-                  for(c = 0; c<indent; c++) f.Puts("   ");
-
-                  f.Puts("\"");
-                  f.Putc((char)toupper(prop.name[0]));
-                  f.Puts(prop.name+1);
-                  f.Puts("\" : ");
-                  WriteValue(f, type, value, indent);
-                  isFirst = false;
                }
             }
             else

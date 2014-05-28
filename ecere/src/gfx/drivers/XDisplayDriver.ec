@@ -1635,7 +1635,7 @@ class XDisplayDriver : DisplayDriver
       }
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       Font font;
       font = ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
@@ -1662,7 +1662,7 @@ class XDisplayDriver : DisplayDriver
    #define CHAR_WIDTH   6
    #define CHAR_HEIGHT  14
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       XSurface xSurface = surface.driverData;
       XDisplay xDisplay = display.driverData;
@@ -1700,7 +1700,7 @@ class XDisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len);
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       XSurface xSurface = surface.driverData;
       /*
@@ -1713,7 +1713,7 @@ class XDisplayDriver : DisplayDriver
       FontExtent(display.displaySystem, xSurface.font, text, len, width, height);
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
       /*
       if(width) *width = len * CHAR_WIDTH;

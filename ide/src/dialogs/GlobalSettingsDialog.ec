@@ -343,7 +343,7 @@ class CompilersTab : GlobalSettingsSubTab
       }
    };
 
-   void FindUniqueCompilerName(char * baseName, CompilerConfig compiler/*, bool startWithNumber*/, char * output)
+   void FindUniqueCompilerName(const char * baseName, CompilerConfig compiler/*, bool startWithNumber*/, char * output)
    {
       int num = 0;
       char tmp[MAX_F_STRING];
@@ -556,7 +556,7 @@ class CompilersTab : GlobalSettingsSubTab
    }
 }
 
-Array<String> displayDirectoryNames
+Array<const String> displayDirectoryNames
 { [
    $"Include Files",
    $"Library Files",

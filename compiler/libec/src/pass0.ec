@@ -10,7 +10,10 @@ public void MangleClassName(char * className)
    char output[1024];
    int c, d = 0;
    char ch;
-   for(c = 0; (ch = className[c]); c++)
+   c = 0;
+   if(!strncmp(className, "const ", 6)) c += 6;
+
+   for(; (ch = className[c]); c++)
    {
       if(ch == ' ')
          output[d++] = '_';
@@ -24,6 +27,7 @@ public void MangleClassName(char * className)
       }
       else if(ch == '<')
       {
+         if(!strncmp(className + c + 1, "const ", 6)) c += 6;
          output[d++] = '_';
          output[d++] = 'T';
          output[d++] = 'P';
@@ -44,6 +48,7 @@ public void MangleClassName(char * className)
       }
       else if(ch == ',')
       {
+         if(!strncmp(className + c + 1, "const ", 6)) c += 6;
          output[d++] = '_';
       }
       else
@@ -54,7 +59,7 @@ public void MangleClassName(char * className)
    // ChangeCh(className, '*', '_');
 }
 
-public void FullClassNameCat(char * output, char * className, bool includeTemplateParams)
+public void FullClassNameCat(char * output, const char * className, bool includeTemplateParams)
 {
    int c;
    char ch;
@@ -77,7 +82,11 @@ public void FullClassNameCat(char * output, char * className, bool includeTempla
    }
 
    len = strlen(output);
-   for(c = 0; (ch = className[c]); c++)
+
+   c = 0;
+   if(!strncmp(className, "const ", 6)) c += 6;
+
+   for(; (ch = className[c]); c++)
    {
       if(ch == ':')
          output[len++] = '_';
@@ -102,6 +111,7 @@ public void FullClassNameCat(char * output, char * className, bool includeTempla
       else if(ch == '<')
       {
          if(!includeTemplateParams) break;
+         if(!strncmp(className + c + 1, "const ", 6)) c += 6;
          output[len++] = '_';
          output[len++] = 'T';
          output[len++] = 'P';
@@ -114,6 +124,7 @@ public void FullClassNameCat(char * output, char * className, bool includeTempla
       }
       else if(ch == ',')
       {
+         if(!strncmp(className + c + 1, "const ", 6)) c += 6;
          output[len++] = '_';
       }
       else
@@ -140,7 +151,7 @@ static bool NameSpaceContained(NameSpace * ns, NameSpace * parent)
       return false;
 }
 
-static void CheckPublicClass(Symbol classSym, AccessMode access, char * word)
+static void CheckPublicClass(Symbol classSym, AccessMode access, const char * word)
 {
    Class regClass = classSym ? classSym.registered : null;
    if(regClass)
@@ -302,7 +313,7 @@ static void CheckPublicExpression(Expression exp, AccessMode access)
    }
 }
 
-static void CheckPublicDataType(Type type, AccessMode access, char * word)
+static void CheckPublicDataType(Type type, AccessMode access, const char * word)
 {
    if(type)
    {

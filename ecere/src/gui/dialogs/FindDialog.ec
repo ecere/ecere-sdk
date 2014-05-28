@@ -13,7 +13,7 @@ public class FindDialog : Window
 
 public:
    property EditBox editBox { set { editBox = value; } };
-   property char * searchString { set { findWhat.contents = value; } get { return findWhat.contents; } };
+   property const char * searchString { set { findWhat.contents = value; } get { return findWhat.contents; } };
    property bool wholeWord { set { wholeWord.checked = value; } get { return wholeWord.checked; } };
    property bool matchCase { set { matchCase.checked = value; } get { return matchCase.checked; } };
    property bool searchUp { set { (value ? searchUp : searchDown).checked = true; } get { return searchUp.checked; } };
@@ -52,7 +52,7 @@ private:
 
       bool NotifyClicked(Button control, int x, int y, Modifiers mods)
       {
-         char * searchString = findWhat.contents;
+         const char * searchString = findWhat.contents;
          bool searchUp = this.searchUp.checked;
          bool wholeWord = this.wholeWord.checked;
          bool matchCase = this.matchCase.checked;

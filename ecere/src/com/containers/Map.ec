@@ -17,7 +17,7 @@ class_fixed
 public:
    // public(key)
    // THIS IS MISSING CODE FOR struct KEYS
-   property KT key
+   property const KT key
    {
       get { return AVLNode::key; }
       set { AVLNode::key = value; }
@@ -43,7 +43,7 @@ public struct MapIterator<class KT, class V> : Iterator<V, IT = KT>
       set { container = (Container<V, IT>)value; }
       get { return (Map<KT, V>)container; }
    }
-   property KT key
+   property const KT key
    {
       get { return ((Map<KT, V>)container).GetKey((MapNode<KT, V>)pointer); }
    }
@@ -173,7 +173,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       return (MapNode<MT, V>)Container::Find(value);
    }
 
-   MapNode<MT, V> GetAtPosition(MT pos, bool create)
+   MapNode<MT, V> GetAtPosition(const MT pos, bool create)
    {
       MapNode<MT, V> node = root ? root.Find(class(MT), pos) : null;
       if(!node && create)

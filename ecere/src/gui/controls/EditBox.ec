@@ -17,7 +17,7 @@ char * strchrmax(const char * s, int c, int max)
    char ch;
    for(i = 0; i < max && (ch = s[i]); i++)
       if(ch == c)
-         return s + i;
+         return (char *)s + i;
    return null;
 }
 
@@ -538,7 +538,7 @@ public class EditLine : struct
    int length;
    EditBox editBox;
 public:
-   property char * text
+   property const char * text
    {
       set
       {
@@ -668,7 +668,7 @@ public struct BufferLocation
 
 public enum EditBoxFindResult { notFound, found, wrapped };
 
-static char * keyWords1[] =
+static const char * keyWords1[] =
 {
    // C
    "return","break","continue","default","switch","case","if","else","for","while", "do","long","short",
@@ -706,12 +706,12 @@ static char * keyWords1[] =
    null
 };
 
-static char * keyWords2[] =
+static const char * keyWords2[] =
 {
    "defined", "warning", null
 };
 
-static char ** keyWords[] = { keyWords1, keyWords2 };
+static const char ** keyWords[] = { keyWords1, keyWords2 };
 #define NUM_KEYWORD_GROUPS (sizeof(keyWords) / sizeof(char **))
 //static int * keyLen[NUM_KEYWORD_GROUPS];
 static int keyLen[NUM_KEYWORD_GROUPS][sizeof(keyWords1)];
@@ -804,7 +804,7 @@ public:
    property EditLine firstLine { get { return lines.first; } };      // Change these to a List<EditLine>... (this.lines[10].text)
    property EditLine lastLine  { get { return lines.last; } };
    property EditLine line { get { return this.line; } }; // TODO: Add Set   this.line = this.lines[10]
-   property char * contents
+   property const char * contents
    {
       property_category $"Data"
       set
@@ -896,7 +896,7 @@ public:
       return null;
    }
 
-   void SetLineText(char * text)
+   void SetLineText(const char * text)
    {
       if(this)
       {
@@ -973,7 +973,7 @@ private:
 
    bool modified;
 
-   void (* FontExtent)(Display display, Font font, char * text, int len, int * width, int * height);
+   void (* FontExtent)(Display display, Font font, const char * text, int len, int * width, int * height);
 
    Color backColor;
    bool rightButtonDown;
@@ -1140,7 +1140,7 @@ private:
             void NotifyDestroyed(Window window, DialogResult result)
             {
                ReplaceDialog dialog = (ReplaceDialog)window;
-               char * replace = dialog.replaceString;
+               const char * replace = dialog.replaceString;
                if(replace)
                   strcpy(replaceString, replace);
                strcpy(searchString, dialog.searchString);
@@ -1876,7 +1876,7 @@ private:
                            {
                               for(g = 0; g < ((inPrep && word[0] != '#') ? 2 : 1); g++)
                               {
-                                 char ** keys = keyWords[g];
+                                 const char ** keys = keyWords[g];
                                  int * len = keyLen[g];
                                  for(ccc = 0; keys[ccc]; ccc++)
                                  {
@@ -2479,7 +2479,7 @@ private:
       return false;
    }
 
-   bool AddToLine(char * stringLine, int count, bool LFComing, int * addedSpacesPtr, int * addedTabsPtr)
+   bool AddToLine(const char * stringLine, int count, bool LFComing, int * addedSpacesPtr, int * addedTabsPtr)
    {
       bool hadComment = false;
       // Add the line here
@@ -2505,7 +2505,7 @@ private:
          {
             int w;
             int numBytes = 1;
-            char * string;
+            const char * string;
             if(c < Min(this.x, line.count))
                string = line.buffer + c;
             else if(c < endX)
@@ -3111,7 +3111,7 @@ private:
    }
 
    /*
-   bool SaveFile(char * fileName)
+   bool SaveFile(const char * fileName)
    {
       File f = eFile_Open(fileName, FO_WRITE);
       if(f)
@@ -5243,12 +5243,12 @@ public:
    }
 
    // BASIC OUTPUT
-   bool AddS(char * string)
+   bool AddS(const char * string)
    {
       if(this)
       {
          bool ret = true;
-         char * line;
+         const char * line;
          int c, count;
          int addedSpaces = 0, addedTabs = 0;
          AddTextAction action = null;
@@ -5495,7 +5495,7 @@ public:
       }
    }
 
-   void PutS(char * string)
+   void PutS(const char * string)
    {
       if(this)
       {
@@ -5505,7 +5505,7 @@ public:
       }
    }
 
-   void Printf(char * format, ...)
+   void Printf(const char * format, ...)
    {
       if(this)
       {
@@ -5519,7 +5519,7 @@ public:
       }
    }
 
-   void SetContents(char * format, ...)
+   void SetContents(const char * format, ...)
    {
       if(this)
       {
@@ -6243,7 +6243,7 @@ public:
       itemEditRedo.disabled = undoBuffer.curAction == undoBuffer.count;
    }
 
-   EditBoxFindResult Find(char * text, bool matchWord, bool matchCase, bool isSearchDown)
+   EditBoxFindResult Find(const char * text, bool matchWord, bool matchCase, bool isSearchDown)
    {
       EditLine line;
       int num;
@@ -6301,7 +6301,7 @@ public:
       return notFound;
    }
 
-   EditBoxFindResult FindInSelection(char * text, bool matchWord, bool matchCase, EditLine l2, int y2, int x2)
+   EditBoxFindResult FindInSelection(const char * text, bool matchWord, bool matchCase, EditLine l2, int y2, int x2)
    {
       EditLine line;
       int y;
@@ -6536,7 +6536,7 @@ public:
       return result;
    }
 
-   bool Puts(char * string)
+   bool Puts(const char * string)
    {
       EditBox editBox = this.editBox;
       BufferLocation start { editBox.line, editBox.y, editBox.x };
@@ -6566,7 +6566,7 @@ public:
       {
          utf8Bytes[numBytes++] = ch;
          utf8Bytes[numBytes] = 0;
-         if(UTF8Validate(utf8Bytes))
+         if(UTF8Validate((char *)utf8Bytes))
          {
             editBox.AddCh(UTF8_GET_CHAR(utf8Bytes, numBytes));
             numBytes = 0;

@@ -994,7 +994,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).UnloadFont(displaySystem, font);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       return ((subclass(DisplayDriver))class(LFBDisplayDriver)).LoadFont(displaySystem, faceName, size, flags);
    }
@@ -1010,12 +1010,12 @@ class Direct3D9DisplayDriver : DisplayDriver
       d3dSurface.opaqueText = opaque;
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       DisplaySystem displaySystem = display.displaySystem;
       D3DSystem d3dSystem = displaySystem.driverData;
@@ -1054,7 +1054,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       IDirect3DDevice9_SetSamplerState(d3dSystem.d3dDevice, 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, width, height);
    }

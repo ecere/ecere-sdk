@@ -47,14 +47,14 @@ public class AVLTree<class AT> : CustomAVLTree<BT = AVLNode<AT>, KT = AT, T = AT
       delete node;
    }
 
-   AVLNode<AT> Find(AT key)
+   AVLNode<AT> Find(const AT key)
    {
       AVLNode<AT> root = this.root;
       return root ? root.Find(class(AT), key) : null;
    }
 
    // *** FIND ALL COMPARES KEY FOR EQUALITY, NOT USING OnCompare ***
-   AVLNode<AT> FindAll(AT key)
+   AVLNode<AT> FindAll(const AT key)
    {
       AVLNode<AT> root = this.root;
       return root ? root.FindAll(key) : null;

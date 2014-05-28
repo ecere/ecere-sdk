@@ -19,7 +19,7 @@ public class MessageBox : Window
 
 public:
    property MessageBoxType type { set { style = value; } };
-   property char * contents
+   property const char * contents
    {
       set
       {

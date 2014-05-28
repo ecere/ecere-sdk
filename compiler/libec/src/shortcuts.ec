@@ -51,20 +51,20 @@ Declarator PlugDeclarator(Declarator decl, Declarator baseDecl)
 
 
 // *** Shortcut Functions ***
-Declarator QMkPtrDecl(char * id)
+Declarator QMkPtrDecl(const char * id)
 {
    Declarator declarator = id ? MkDeclaratorIdentifier(MkIdentifier(id)) : null;
    return MkDeclaratorPointer(MkPointer(null,null), declarator);
 }
 
-TypeName QMkType(char * spec, Declarator decl)
+TypeName QMkType(const char * spec, Declarator decl)
 {
    OldList * specs = MkList();
    ListAdd(specs, MkSpecifierName(spec));
    return MkTypeName(specs, decl);
 }
 
-TypeName QMkClass(char * spec, Declarator decl)
+TypeName QMkClass(const char * spec, Declarator decl)
 {
    OldList * specs = MkList();
    ListAdd(specs, MkSpecifierName/*MkClassName*/(spec));
@@ -78,7 +78,7 @@ Expression QBrackets(Expression exp)
    return MkExpBrackets(expList);
 }
 
-Expression QMkExpId(char * id)
+Expression QMkExpId(const char * id)
 {
    return MkExpIdentifier(MkIdentifier(id));
 }
@@ -90,7 +90,7 @@ Expression QMkExpCond(Expression cond, Expression exp, Expression elseExp)
    return MkExpCondition(cond, expList, elseExp);
 }
 
-Declaration QMkDeclaration(char * name, InitDeclarator initDecl)
+Declaration QMkDeclaration(const char * name, InitDeclarator initDecl)
 {
    OldList * specs = MkList(), * initDecls = null;
    ListAdd(specs, MkSpecifierName(name));
@@ -114,7 +114,7 @@ Declaration QMkDeclarationBase(int base, InitDeclarator initDecl)
    return MkDeclaration(specs, initDecls);
 }
 
-char * QMkString(char * source)
+char * QMkString(const char * source)
 {
    char * string;
    if(source)
@@ -161,7 +161,7 @@ public Declarator GetFuncDecl(Declarator decl)
 
 bool parseTypeError;
 
-public Declarator SpecDeclFromString(char * string, OldList * specs, Declarator baseDecl)
+public Declarator SpecDeclFromString(const char * string, OldList * specs, Declarator baseDecl)
 {
    Location oldLocation = yylloc;
    Declarator decl = null;

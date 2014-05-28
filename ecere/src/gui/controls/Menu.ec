@@ -27,7 +27,7 @@ class InsertedFlags { bool deleteLink:1, deleteItem:1, cleanItem:1, placed:1; };
 #define INTERIM_MENU (isMenuBar || interim)
 //#define INTERIM_MENU interim
 
-static int strcmpTillTab(char * a, char * b)
+static int strcmpTillTab(const char * a, const char * b)
 {
    if(a && !b) return 1;
    else if(b && !a) return -1;
@@ -59,13 +59,13 @@ public:
          }
       }
    };
-   property char * text
+   property const char * text
    {
       set
       {
          if(copyText)
          {
-            delete text;
+            delete (char *)text;
             text = CopyString(value);
          }
          else
@@ -107,7 +107,7 @@ public:
                Key accel = value.code;
                bool needClass = false;
                char tempString[50];
-               char * result = accel.OnGetString(tempString, null, &needClass);
+               const char * result = accel.OnGetString(tempString, null, &needClass);
                int len = strlen(accelString);
                if(result) strcpy(accelString + len, result);
                // accelString[len] = toupper(accelString[len]);
@@ -123,7 +123,7 @@ public:
             memcpy(newText, text, length);
             newText[length] = 0;
             strcat(newText, accelString);
-            if(copyText) delete text;
+            if(copyText) delete (void *)text;
             text = newText;
             copyText = true;
          }
@@ -199,8 +199,8 @@ public:
          }
          else
          {
-            if(text && copyText)
-               delete text;
+            if(copyText)
+               delete (void *)text;
          }
          copyText = value;
       }
@@ -216,7 +216,7 @@ private:
    uint64 id;
    Key hotKey;
    Key accelerator;
-   char * text;
+   const char * text;
    BitmapResource bitmaps[3];
    bool checkable, radio;
    bool checked;
@@ -231,7 +231,7 @@ private:
    {
       if(copyText)
          // delete ITEM_TEXT(this);
-         delete text;
+         delete (void *)text;
       delete subMenu;
       delete bitmaps[0];
       delete bitmaps[1];
@@ -259,7 +259,7 @@ public class MenuPlacement : MenuItem
 public:
 /*
    property Menu parent { set {} };
-   property char * text { set {} };
+   property const char * text { set {} };
    property Key hotKey { set {} };
 */
 };
@@ -589,7 +589,7 @@ public:
       }
    }
 
-   Menu FindMenu(char * name)
+   Menu FindMenu(const char * name)
    {
       ItemPtr ptr;
 
@@ -604,7 +604,7 @@ public:
    }
 
    property Menu parent { set { if(value) value.AddSubMenu(this); } };
-   property char * text { set { text = value; /* CopyString(value);*/ } };
+   property const char * text { set { text = (char *)value; /* CopyString(value);*/ } };
    property Key hotKey { set { hotKey = value; } };
    property bool hasMargin { set { hasMargin = value; } };
 
@@ -645,7 +645,7 @@ public class PopupMenu : Window
    bool mouseInput;
    Time unpressedTime;
 
-   void (* FontExtent)(Display display, Font font, char * text, int len, int * width, int * height);
+   void (* FontExtent)(Display display, Font font, const char * text, int len, int * width, int * height);
 
    FontResource boldFont { faceName = font.faceName, font.size, bold = true, window = this };
    BitmapResource subArrow { fileName = "<:ecere>elements/arrowRight.png", window = this };
@@ -966,7 +966,7 @@ public class PopupMenu : Window
             }
             else
             {
-               char * text = ITEM_TEXT(item);
+               const char * text = ITEM_TEXT(item);
                FontExtent(display, fontObject, text, text ? strlen(text) : 0, &len, null);
                if((mx >= x - 16 && mx < x + len + 16))
                {

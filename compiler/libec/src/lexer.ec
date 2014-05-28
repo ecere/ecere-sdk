@@ -1222,7 +1222,7 @@ void TESTTTT()
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 File fileStack[MAX_INCLUDE_DEPTH];
 char sourceFileStack[MAX_INCLUDE_DEPTH][MAX_LOCATION];
-public void SetSomeSourceFileStack(char * fileName, int index) { strcpy(sourceFileStack[index], fileName); }
+public void SetSomeSourceFileStack(const char * fileName, int index) { strcpy(sourceFileStack[index], fileName); }
 YYLTYPE locStack[MAX_INCLUDE_DEPTH];
 AccessMode declModeStack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;

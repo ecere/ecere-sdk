@@ -689,7 +689,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
    return fullSet || convert;
 }
 
-public void DeclareClass(Symbol classSym, char * className)
+public void DeclareClass(Symbol classSym, const char * className)
 {
    /*if(classSym.registered.templateClass)
    {

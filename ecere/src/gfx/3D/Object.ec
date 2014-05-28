@@ -6,14 +6,14 @@ public enum FrustumPlacement { outside, inside, intersecting };
 
 public class ObjectFormat
 {
-   class_data char * extension;
-   class_property char * extension
+   class_data const char * extension;
+   class_property const char * extension
    {
       set { class_data(extension) = value; }
       get { return class_data(extension); }
    }
 
-   virtual bool ::Load(Object object, char * fileName, DisplaySystem displaySystem);
+   virtual bool ::Load(Object object, const char * fileName, DisplaySystem displaySystem);
 };
 
 // TODO: Review these:
@@ -654,7 +654,7 @@ public:
       }
    }
 
-   bool Load(char * fileName, char * type, DisplaySystem displaySystem)
+   bool Load(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       char ext[MAX_EXTENSION];
       subclass(ObjectFormat) format;
@@ -662,10 +662,7 @@ public:
       bool result = false;
 
       if(!type && fileName)
-      {
-         type = GetExtension(fileName, ext);
-         strlwr(type);
-      }
+         type = strlwr(GetExtension(fileName, ext));
 
       for(link = class(ObjectFormat).derivatives.first; link; link = link.next)
       {
@@ -696,7 +693,7 @@ public:
       }
    }
 
-   Object Find(char * name)
+   Object Find(const char * name)
    {
       if(this && name)
       {
@@ -750,7 +747,7 @@ public:
       return null;
    }
 
-   bool AddName(Object object, char * name)
+   bool AddName(Object object, const char * name)
    {
       bool result;
       if(this)
@@ -1267,7 +1264,7 @@ public:
    property Camera camera { get { return camera; } }; // Fix this with inheritance? camera inherit from Object?
    property Object firstChild { get { return children.first; } };
    property Object next { get { return next; } };
-   property char * name { get { return name; } };
+   property const char * name { get { return name; } };
    property Matrix matrix { get { value = matrix; } };
    property Object cameraTarget { set { cameraTarget = value; } get { return cameraTarget; } };
    property OldList * tracks { /* set { tracks = value; } */ get { return &tracks; } };

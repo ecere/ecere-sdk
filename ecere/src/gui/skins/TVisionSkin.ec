@@ -43,7 +43,7 @@ class TVisionSkin : Skin
       return { faceName = $"Tahoma", size = 8.25f, bold = true };
    }
 
-   char * ::CursorsBitmaps(uint id, int *hotSpotX, int *hotSpotY, byte ** paletteShades)
+   const char * ::CursorsBitmaps(uint id, int *hotSpotX, int *hotSpotY, byte ** paletteShades)
    {
       return null;
    }
@@ -164,7 +164,7 @@ public class TVisionSkin_Window : Window
       *ch = Max(*ch, 0);
    }
 
-   void ShowDecorations(void * displayData, Surface surface, char * name, bool active, bool moving)
+   void ShowDecorations(void * displayData, Surface surface, const char * name, bool active, bool moving)
    {
       Size size = this.size;
       int w = size.w, h = size.h;

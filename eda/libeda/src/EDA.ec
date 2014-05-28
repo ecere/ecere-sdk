@@ -37,18 +37,18 @@ public:
 public class DataSourceDriver
 {
    OldList listDB { offset = (uint)&((Database)0).prev };
-   class_data char * name;
+   class_data const char * name;
 
-   class_property char * name
+   class_property const char * name
    {
       set { class_data(name) = value; }
       get { return class_data(name); }
    }
 
-   class_data char * databaseFileExtension;
-   class_property char * databaseFileExtension { set { class_data(databaseFileExtension) = value; } get { return class_data(databaseFileExtension); } }
-   class_data char * tableFileExtension;
-   class_property char * tableFileExtension { set { class_data(tableFileExtension) = value; } get { return class_data(tableFileExtension); } }
+   class_data const char * databaseFileExtension;
+   class_property const char * databaseFileExtension { set { class_data(databaseFileExtension) = value; } get { return class_data(databaseFileExtension); } }
+   class_data const char * tableFileExtension;
+   class_property const char * tableFileExtension { set { class_data(tableFileExtension) = value; } get { return class_data(tableFileExtension); } }
 
 public:
    virtual String BuildLocator(DataSource ds);
@@ -58,7 +58,7 @@ public:
    virtual bool RenameDatabase(const String name, const String rename);
    virtual bool DeleteDatabase(const String name);
    virtual Database OpenDatabase(const String name, CreateOptions create, DataSource ds);
-   virtual Array<String> GetDatabases() { return null; } // TODO: make this Container<Database> GetDatabases(); // if supported, filled with ready to open Databases
+   virtual Array<const String> GetDatabases() { return null; } // TODO: make this Container<Database> GetDatabases(); // if supported, filled with ready to open Databases
 
    ~DataSourceDriver()
    {
@@ -72,7 +72,7 @@ public:
    }
 }
 
-static subclass(DataSourceDriver) GetDataDriver(char * driverName)
+static subclass(DataSourceDriver) GetDataDriver(const char * driverName)
 {
    subclass(DataSourceDriver) driver = null;
    driver = FindDataDriverDerivative(class(DataSourceDriver), driverName);
@@ -87,7 +87,7 @@ static subclass(DataSourceDriver) GetDataDriver(char * driverName)
    return driver;
 }
 
-static subclass(DataSourceDriver) FindDataDriverDerivative(Class dataSourceDriverClass, char * driverName)
+static subclass(DataSourceDriver) FindDataDriverDerivative(Class dataSourceDriverClass, const char * driverName)
 {
    OldLink link;
    subclass(DataSourceDriver) derivative = null;
@@ -126,7 +126,7 @@ public class DataSource
    }
 
 public:
-   property String driver
+   property const String driver
    {
       get { return ds ? ((subclass(DataSourceDriver))(ds._class)).name : null; }
       set
@@ -142,27 +142,27 @@ public:
          }
       }
    }
-   property String host
+   property const String host
    {
       set { delete host; host = CopyString(value); }
       get { return host; }
    }
-   property String port
+   property const String port
    {
       set { delete port; port = CopyString(value); }
       get { return port; }
    }
-   property String user
+   property const String user
    {
       set { delete user; user = CopyString(value); }
       get { return user; }
    }
-   property String pass
+   property const String pass
    {
       set { delete pass; pass = CopyString(value); }
       get { return pass; }
    }
-   property String locator
+   property const String locator
    {
       set
       {
@@ -177,7 +177,7 @@ public:
    }
 
    property uint databasesCount { get { return ds.GetDatabasesCount(); } }
-   property Array<String> databases { get { return ds.GetDatabases(); } } // TODO: make this Container<Database> databases { ... }
+   property Array<const String> databases { get { return ds.GetDatabases(); } } // TODO: make this Container<Database> databases { ... }
    bool Connect()
    {
       if(!locator && ds)
@@ -245,7 +245,7 @@ public:
    virtual Table OpenTable(const String name, OpenOptions open);
    virtual bool Begin();
    virtual bool Commit();
-   virtual bool CreateCustomFunction(char * name, SQLCustomFunction customFunction);
+   virtual bool CreateCustomFunction(const char * name, SQLCustomFunction customFunction);
 }
 
 public enum IndexOrder { ascending, descending };
@@ -269,7 +269,7 @@ public class Table
    OldList listRows { offset = (uint)&((Row)0).prev };
    Row cachedIdRow;
 public:
-   virtual String GetName();
+   virtual const String GetName();
    virtual Field GetFirstField();
    virtual Field GetPrimaryKey();
    virtual uint GetFieldsCount();
@@ -293,7 +293,7 @@ public:
          row.tbl = null;
    }
 public:
-   property String name { get { return GetName(); } }
+   property const String name { get { return GetName(); } }
    property Field firstField { get { return GetFirstField(); } }
    property Field primaryKey { get { return GetPrimaryKey(); } }
    property uint fieldsCount { get { return GetFieldsCount(); } }
@@ -387,14 +387,12 @@ public:
                // ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
                if(type.type == structClass)
                {
-                  void * dataPtr = (void *)data;
-                  delete dataPtr;
+                  delete (void *)data;
                }
                else if(!strcmp(type.dataTypeString, "char *"))
                {
                   // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
-                  char * string = (char *)data;
-                  delete string;
+                  delete (char *)data;
                }
             }
             dr = dr.next;
@@ -408,14 +406,14 @@ public class Field
 {
    class_no_expansion
 public:
-   virtual String GetName();
+   virtual const String GetName();
    virtual Class GetType();
    virtual int GetLength();
    virtual Field GetPrev();
    virtual Field GetNext();
    virtual Table GetTable();
 
-   property String name { get { return GetName(); } }
+   property const String name { get { return GetName(); } }
    property Class type { get { return GetType(); } }
    property int length { get { return GetLength(); } }
    property Field prev { get { return GetPrev(); } }
@@ -487,7 +485,7 @@ public:
 
    property bool nil { get { return row ? row.Nil() : true; } }
 
-   property char * query
+   property const char * query
    {
       set
       {
@@ -510,7 +508,7 @@ public:
                uint len = strlen(query);
                String countQuery = new char[len+40];
                uint count;
-               String result;
+               const String result;
                Row r { tbl = tbl };
                strcpy(countQuery, "SELECT COUNT(*) ");
                strcat(countQuery, from);
@@ -527,7 +525,7 @@ public:
      }
    }
 
-   public bool Query(char * query)  // Add printf format support
+   public bool Query(const char * query)  // Add printf format support
    {
       if(row)
          return row.Query(query);
@@ -551,11 +549,11 @@ public:
    bool Delete() { return row ? row.Delete() : false; }
    bool SetQueryParam(int paramID, int value) { return row ? row.SetQueryParam(paramID, value) : false; }
    bool SetQueryParam64(int paramID, int64 value) { return row ? row.SetQueryParam64(paramID, value) : false; }
-   bool SetQueryParamText(int paramID, char * value) { return row ? row.SetQueryParamText(paramID, value) : false; }
+   bool SetQueryParamText(int paramID, const char * value) { return row ? row.SetQueryParamText(paramID, value) : false; }
    bool SetQueryParamObject(int paramID, void * value, Class type) { return row ? row.SetQueryParamObject(paramID, value, type) : false; }
    // TOCHECK: Field is passed here to have sqlite type handy. The API might be nicer without
    bool BindQueryData(int paramID, Field fld, typed_object value) { return row ? row.BindQueryData(paramID, fld, value) : false; }
-   char * GetColumn(int paramID) { return row ? row.GetColumn(paramID) : null; }
+   const char * GetColumn(int paramID) { return row ? row.GetColumn(paramID) : null; }
 
    bool GUIDataRowSetData(DataRow dr, DataField df, Field fld)
    {
@@ -583,8 +581,7 @@ public:
       else if(!strcmp(type.dataTypeString, "char *"))
       {
          // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
-         char * string = (char *)data;
-         delete string;
+         delete (char *)data;
       }
       return true;
    }
@@ -607,12 +604,12 @@ public:
    virtual bool SetData(Field fld, typed_object data);
    virtual uint GetSysID();
    virtual bool GoToSysID(uint id);
-   virtual bool Query(char * queryString);
+   virtual bool Query(const char * queryString);
    virtual bool SetQueryParam(int paramID, int value);
    virtual bool SetQueryParam64(int paramID, int64 value);
-   virtual bool SetQueryParamText(int paramID, char * value);
-   virtual bool SetQueryParamObject(int paramID, void * data, Class type);
-   virtual char * GetColumn(int paramID);
+   virtual bool SetQueryParamText(int paramID, const char * value);
+   virtual bool SetQueryParamObject(int paramID, const void * data, Class type);
+   virtual const char * GetColumn(int paramID);
    virtual bool BindQueryData(int paramID, Field fld, typed_object value);
 };
 

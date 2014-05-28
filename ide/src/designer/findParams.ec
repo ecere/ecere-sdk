@@ -3,7 +3,7 @@ import "ide"
 //extern Class thisClass;
 extern Class insideClass;
 extern Type instanceType;
-extern char * instanceName;
+extern const char * instanceName;
 extern Expression paramsInsideExp;
 extern int paramsID;
 extern Type functionType;

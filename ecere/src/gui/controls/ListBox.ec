@@ -119,7 +119,7 @@ public:
       }
    };
    property int sortOrder { get { return this ? sortOrder : 0; } };
-   property char * header
+   property const char * header
    {
       set
       {
@@ -178,12 +178,12 @@ public:
             if(cell && cell.isSet && dataType)
             {
                static char tempString[4096];
-               String string;
+               const String string;
                int tw = 0;
                if(dataType.type == normalClass || dataType.type == noHeadClass)
-                  string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, cell.data[0], tempString, userData, null);
+                  string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, cell.data[0], tempString, userData, null);
                else
-                  string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, cell.data, tempString, userData, null);
+                  string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, cell.data, tempString, userData, null);
                if(string)
                   display.FontExtent(row.header ? boldFont : font, string, strlen(string), &tw, null);
                else
@@ -232,7 +232,7 @@ private:
    }
 
    DataField prev, next;
-   char * header;
+   const char * header;
    Class dataType;
    int width;
    uint index;
@@ -259,7 +259,7 @@ public:
    property DataRow previous { get { return prev; } };
    property DataRow next { get { return next; } };
    property int index { get { return (this && (!parent || parent.IsExpanded())) ? index : -1; } };
-   property char * string
+   property const char * string
    {
       set { SetData(listBox.fields.first, value); }
       get { return GetData(listBox.fields.first); }
@@ -747,7 +747,7 @@ public:
       return null;
    }
 
-   DataRow AddStringf(char * format, ...)
+   DataRow AddStringf(const char * format, ...)
    {
       if(this)
       {
@@ -766,7 +766,7 @@ public:
       return null;
    }
 
-   DataRow AddString(char * string)
+   DataRow AddString(const char * string)
    {
       if(this)
       {
@@ -1433,7 +1433,7 @@ public:
       return null;
    }
 
-   DataRow AddStringf(char * format, ...)
+   DataRow AddStringf(const char * format, ...)
    {
       if(this)
       {
@@ -1454,7 +1454,7 @@ public:
       return null;
    }
 
-   DataRow AddString(char * string)
+   DataRow AddString(const char * string)
    {
       if(this)
       {
@@ -1553,7 +1553,7 @@ public:
       return null;
    }
 
-   DataRow FindString(char * searchedString)
+   DataRow FindString(const char * searchedString)
    {
       DataField field;
       bool checkNextField = true;
@@ -1570,7 +1570,7 @@ public:
                   void * data = row.GetData(field);
                   char tempString[1024] = "";
                   bool needClass = false;
-                  char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                  const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                   if(string && string[0])
                      checkNextField = false;
@@ -1584,7 +1584,7 @@ public:
       return null;
    }
 
-   DataRow FindSubString(char * subString)
+   DataRow FindSubString(const char * subString)
    {
       DataField field;
       bool checkNextField = true;
@@ -1604,7 +1604,7 @@ public:
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
                      bool needClass = false;
-                     char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                     const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -1619,13 +1619,13 @@ public:
       return null;
    }
 
-   DataRow FindSubStringi(char * subString)
+   DataRow FindSubStringi(const char * subString)
    {
       DataField field;
       bool checkNextField = true;
       int len = subString ? strlen(subString) : 0;
       DataRow result = null;
-      char * bestResult = null;
+      const char * bestResult = null;
       int bestLen = 0;
 
       if(len)
@@ -1642,7 +1642,7 @@ public:
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
                      bool needClass = false;
-                     char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                     const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -1671,7 +1671,7 @@ public:
       return result;
    }
 
-   DataRow FindSubStringAfter(DataRow after, char * subString)
+   DataRow FindSubStringAfter(DataRow after, const char * subString)
    {
       DataField field;
       bool checkNextField = true;
@@ -1691,7 +1691,7 @@ public:
                      void * data = row.GetData(field);
                      char tempString[1024] = "";
                      bool needClass = false;
-                     char * string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
+                     const char * string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass);
 
                      if(string && string[0])
                         checkNextField = false;
@@ -2425,7 +2425,7 @@ private:
             surface.SetForeground(foreground);
             surface.SetBackground(background);
 
-            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)class(String)._vTbl[__ecereVMethodID_class_OnDisplay])(class(String), "(none)", surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, null, Alignment::left, dataDisplayFlags);
+            ((void (*)(void *, const void *, void *, int, int, int, void *, uint, uint))(void *)class(String)._vTbl[__ecereVMethodID_class_OnDisplay])(class(String), "(none)", surface, x, y - 1 + (rowHeight - fontH)/2, width - EXTRA_SPACE/2, null, Alignment::left, dataDisplayFlags);
          }
          else
          {
@@ -3066,12 +3066,12 @@ private:
                      if(cell && cell.isSet && field.dataType)
                      {
                         static char tempString[4096];
-                        char * string;
+                        const char * string;
                         int tw, th;
                         if(field.dataType.type == normalClass || field.dataType.type == noHeadClass)
-                           string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, cell.data[0], tempString, field.userData, null);
+                           string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, cell.data[0], tempString, field.userData, null);
                         else
-                           string = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, cell.data, tempString, field.userData, null);
+                           string = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, cell.data, tempString, field.userData, null);
                         /* GCC-4.4 Bug!
 			if(!string) string = "";
                         display.FontExtent(row.header ? boldFont : font, string, strlen(string), &tw, &th);
@@ -4052,7 +4052,7 @@ private:
                void * data = row.GetData(field);
                char tempString[1024] = "";
                bool needClass = false;
-               char * string = data ? ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass) : null;
+               const char * string = data ? ((const char *(*)(void *, void *, char *, void *, bool *))(void *)field.dataType._vTbl[__ecereVMethodID_class_OnGetString])(field.dataType, data, tempString, null, &needClass) : null;
 
                if(string && string[0])
                   checkNextField = false;

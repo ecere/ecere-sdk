@@ -81,7 +81,7 @@ struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
 struct __ecereNameSpace__ecere__com__Class * next;
-char *  name;
+const char *  name;
 int offset;
 int structSize;
 int (* *  _vTbl)();
@@ -102,16 +102,16 @@ int startMemberID;
 int type;
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int typeSize;
 int defaultAlignment;
 void (*  Initialize)();
 int memberOffset;
 struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-char *  designerClass;
+const char *  designerClass;
 unsigned int noExpansion;
-char *  defaultProperty;
+const char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
 int isRemote;
@@ -123,7 +123,7 @@ int destructionWatchOffset;
 unsigned int fixed;
 struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
 int inheritanceAccess;
-char *  fullName;
+const char *  fullName;
 void *  symbol;
 struct __ecereNameSpace__ecere__sys__OldList conversions;
 struct __ecereNameSpace__ecere__sys__OldList templateParams;
@@ -135,9 +135,9 @@ unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
@@ -145,12 +145,12 @@ struct __ecereNameSpace__ecere__com__Property
 {
 struct __ecereNameSpace__ecere__com__Property * prev;
 struct __ecereNameSpace__ecere__com__Property * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 void (*  Set)(void * , int);
@@ -161,7 +161,7 @@ void *  symbol;
 int vid;
 unsigned int conversion;
 unsigned int watcherOffset;
-char *  category;
+const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
@@ -169,7 +169,7 @@ unsigned int isWatchable;
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -194,12 +194,12 @@ struct __ecereNameSpace__ecere__com__DataMember
 {
 struct __ecereNameSpace__ecere__com__DataMember * prev;
 struct __ecereNameSpace__ecere__com__DataMember * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int type;
@@ -215,7 +215,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Method
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__Method * parent;
 struct __ecereNameSpace__ecere__com__Method * left;
 struct __ecereNameSpace__ecere__com__Method * right;
@@ -225,7 +225,7 @@ int vid;
 int type;
 struct __ecereNameSpace__ecere__com__Class * _class;
 void *  symbol;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int memberAccess;
 } __attribute__ ((gcc_struct));
@@ -268,13 +268,13 @@ union
 {
 struct
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
-char *  memberString;
+const char *  memberString;
 union
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
@@ -295,13 +295,13 @@ void DualPipe_CloseOutput(struct __ecereNameSpace__ecere__com__Instance ** dp);
 
 int DualPipe_Read(struct __ecereNameSpace__ecere__com__Instance ** dp, unsigned char * buffer, unsigned int size, unsigned int count);
 
-int DualPipe_Write(struct __ecereNameSpace__ecere__com__Instance ** dp, unsigned char * buffer, unsigned int size, unsigned int count);
+int DualPipe_Write(struct __ecereNameSpace__ecere__com__Instance ** dp, const unsigned char * buffer, unsigned int size, unsigned int count);
 
 unsigned int DualPipe_Getc(struct __ecereNameSpace__ecere__com__Instance ** dp, char * ch);
 
 unsigned int DualPipe_Putc(struct __ecereNameSpace__ecere__com__Instance ** dp, char ch);
 
-unsigned int DualPipe_Puts(struct __ecereNameSpace__ecere__com__Instance ** dp, char * string);
+unsigned int DualPipe_Puts(struct __ecereNameSpace__ecere__com__Instance ** dp, const char * string);
 
 unsigned int DualPipe_Seek(struct __ecereNameSpace__ecere__com__Instance ** dp, int pos, int mode);
 
@@ -321,7 +321,7 @@ int DualPipe_GetProcessID(struct __ecereNameSpace__ecere__com__Instance ** dp);
 
 void DualPipe_Wait(struct __ecereNameSpace__ecere__com__Instance ** dp);
 
-struct __ecereNameSpace__ecere__com__Instance ** _DualPipeOpen(unsigned int mode, char * commandLine, char * env, void ** inputPtr, void ** outputPtr);
+struct __ecereNameSpace__ecere__com__Instance ** _DualPipeOpen(unsigned int mode, const char * commandLine, const char * env, void ** inputPtr, void ** outputPtr);
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__PipeOpenMode;
 
@@ -382,11 +382,11 @@ return DualPipe_Read(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp, 
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Write(struct __ecereNameSpace__ecere__com__Instance * this, unsigned char * buffer, unsigned int size, unsigned int count)
+int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Write(struct __ecereNameSpace__ecere__com__Instance * this, const unsigned char * buffer, unsigned int size, unsigned int count)
 {
 struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
-return __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this) ? ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, buffer, size, count) : DualPipe_Write(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp, buffer, size, count);
+return __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(this) ? ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__ecereClass___ecereNameSpace__ecere__sys__File->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, buffer, size, count) : DualPipe_Write(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp, buffer, size, count);
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc;
@@ -411,7 +411,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Flush(struct __ecereNameSpace__ecere__com__Instance * this);
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Puts(struct __ecereNameSpace__ecere__com__Instance * this, char * string)
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Puts(struct __ecereNameSpace__ecere__com__Instance * this, const char * string)
 {
 struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
 
@@ -489,9 +489,9 @@ DualPipe_Wait(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 
 extern int vsnprintf(char * , size_t, const char * , __builtin_va_list);
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char *  commandLine);
+struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, const char *  commandLine);
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenf(unsigned int mode, char * command, ...)
+struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenf(unsigned int mode, const char * command, ...)
 {
 char commandLine[1025];
 va_list args;
@@ -505,7 +505,7 @@ return __ecereNameSpace__ecere__sys__DualPipeOpen(mode, commandLine);
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, char * commandLine)
+struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, const char * commandLine)
 {
 void * input, * output;
 void * f = _DualPipeOpen(mode, commandLine, (((void *)0)), &input, &output);
@@ -519,9 +519,9 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereInstance1 = __ecereNameSp
 return (((void *)0));
 }
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenEnv(unsigned int mode, char *  env, char *  commandLine);
+struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenEnv(unsigned int mode, const char *  env, const char *  commandLine);
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenEnvf(unsigned int mode, char * env, char * command, ...)
+struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenEnvf(unsigned int mode, const char * env, const char * command, ...)
 {
 char commandLine[1025];
 va_list args;
@@ -533,7 +533,7 @@ __builtin_va_end(args);
 return __ecereNameSpace__ecere__sys__DualPipeOpenEnv(mode, env, commandLine);
 }
 
-struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenEnv(unsigned int mode, char * env, char * commandLine)
+struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpenEnv(unsigned int mode, const char * env, const char * commandLine)
 {
 void * input, * output;
 void * f = _DualPipeOpen(mode, commandLine, env, &input, &output);
@@ -547,13 +547,13 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereInstance1 = __ecereNameSp
 return (((void *)0));
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
 struct __ecereNameSpace__ecere__com__NameSpace
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
 struct __ecereNameSpace__ecere__com__NameSpace *  left;
 struct __ecereNameSpace__ecere__com__NameSpace *  right;
@@ -576,7 +576,7 @@ struct __ecereNameSpace__ecere__sys__OldList functions;
 struct __ecereNameSpace__ecere__sys__OldList modules;
 struct __ecereNameSpace__ecere__com__Instance * prev;
 struct __ecereNameSpace__ecere__com__Instance * next;
-char *  name;
+const char *  name;
 void *  library;
 void *  Unload;
 int importType;
@@ -591,15 +591,15 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__BitMember;
 
-extern struct __ecereNameSpace__ecere__com__BitMember * __ecereNameSpace__ecere__com__eClass_AddBitMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, int bitSize, int bitPos, int declMode);
+extern struct __ecereNameSpace__ecere__com__BitMember * __ecereNameSpace__ecere__com__eClass_AddBitMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, int bitSize, int bitPos, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
 
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 void __ecereRegisterModule_DualPipe(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -631,10 +631,10 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetProcessID", "int GetPr
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Peek", "bool Peek()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Peek, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Terminate", "void Terminate()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Terminate, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Wait", "void Wait()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Wait, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenf", "ecere::sys::DualPipe ecere::sys::DualPipeOpenf(ecere::sys::PipeOpenMode mode, char * command, ...)", __ecereNameSpace__ecere__sys__DualPipeOpenf, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpen", "ecere::sys::DualPipe ecere::sys::DualPipeOpen(ecere::sys::PipeOpenMode mode, char * commandLine)", __ecereNameSpace__ecere__sys__DualPipeOpen, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenEnvf", "ecere::sys::DualPipe ecere::sys::DualPipeOpenEnvf(ecere::sys::PipeOpenMode mode, char * env, char * command, ...)", __ecereNameSpace__ecere__sys__DualPipeOpenEnvf, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenEnv", "ecere::sys::DualPipe ecere::sys::DualPipeOpenEnv(ecere::sys::PipeOpenMode mode, char * env, char * commandLine)", __ecereNameSpace__ecere__sys__DualPipeOpenEnv, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenf", "ecere::sys::DualPipe ecere::sys::DualPipeOpenf(ecere::sys::PipeOpenMode mode, const char * command, ...)", __ecereNameSpace__ecere__sys__DualPipeOpenf, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpen", "ecere::sys::DualPipe ecere::sys::DualPipeOpen(ecere::sys::PipeOpenMode mode, const char * commandLine)", __ecereNameSpace__ecere__sys__DualPipeOpen, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenEnvf", "ecere::sys::DualPipe ecere::sys::DualPipeOpenEnvf(ecere::sys::PipeOpenMode mode, const char * env, const char * command, ...)", __ecereNameSpace__ecere__sys__DualPipeOpenEnvf, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DualPipeOpenEnv", "ecere::sys::DualPipe ecere::sys::DualPipeOpenEnv(ecere::sys::PipeOpenMode mode, const char * env, const char * commandLine)", __ecereNameSpace__ecere__sys__DualPipeOpenEnv, module, 1);
 }
 
 void __ecereUnregisterModule_DualPipe(struct __ecereNameSpace__ecere__com__Instance * module)

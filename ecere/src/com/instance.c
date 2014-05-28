@@ -98,10 +98,10 @@ void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
 void * __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
 void * __ecereNameSpace__ecere__com__eSystem_Renew(void * memory, unsigned int size);
 void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, unsigned int size);
-unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(char * source, int * wordCount);
-unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(char * source, uint16 * dest, int max);
+unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(const char * source, int * wordCount);
+unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(const char * source, uint16 * dest, int max);
 char * __ecereNameSpace__ecere__sys__UTF16toUTF8(uint16 * source);
-char * __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(uint16 * source, byte * dest, int max);
+char * __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(uint16 * source, char * dest, int max);
 
 #define eSystem_Delete     __ecereNameSpace__ecere__com__eSystem_Delete
 #define eSystem_New0       __ecereNameSpace__ecere__com__eSystem_New0
@@ -118,10 +118,10 @@ static char exeLocation[MAX_LOCATION];
 
 #define forArgsPassing 2
 int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char* tokens[], int esc);
-char * __ecereNameSpace__ecere__sys__RSearchString(char * buffer, char * subStr, int maxLen, bool matchCase, bool matchWord);
-char * __ecereNameSpace__ecere__sys__GetLastDirectory(char * string, char * output);
-char * __ecereNameSpace__ecere__sys__PathCat(char * string, char * addedPath);
-char * __ecereNameSpace__ecere__sys__GetExtension(char * string, char * output);
+char * __ecereNameSpace__ecere__sys__RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord);
+char * __ecereNameSpace__ecere__sys__GetLastDirectory(const char * string, char * output);
+char * __ecereNameSpace__ecere__sys__PathCat(char * string, const char * addedPath);
+char * __ecereNameSpace__ecere__sys__GetExtension(const char * string, char * output);
 
 #define Tokenize           __ecereNameSpace__ecere__sys__Tokenize
 #define RSearchString      __ecereNameSpace__ecere__sys__RSearchString
@@ -184,7 +184,7 @@ static bool DualPipe_GetLine(FILE * p, char *s, int max)
 
 #endif
 
-bool Instance_LocateModule(char * name, char * fileName)
+bool Instance_LocateModule(const char * name, char * fileName)
 {
 #if defined(__WIN32__)
    HMODULE hModule = null;
@@ -202,7 +202,7 @@ bool Instance_LocateModule(char * name, char * fileName)
       {
          uint16 _wfileName[MAX_LOCATION];
          GetModuleFileNameW(hModule, _wfileName, MAX_LOCATION);
-         UTF16toUTF8Buffer(_wfileName, (byte *)fileName, MAX_LOCATION);
+         UTF16toUTF8Buffer(_wfileName, fileName, MAX_LOCATION);
          return true;
       }
    }
@@ -210,7 +210,7 @@ bool Instance_LocateModule(char * name, char * fileName)
    {
       uint16 _wfileName[MAX_LOCATION];
       GetModuleFileNameW(null, _wfileName, MAX_LOCATION);
-      UTF16toUTF8Buffer(_wfileName, (byte *)fileName, MAX_LOCATION);
+      UTF16toUTF8Buffer(_wfileName, fileName, MAX_LOCATION);
       return true;
    }
 #elif defined(__APPLE__)
@@ -398,7 +398,7 @@ bool Instance_LocateModule(char * name, char * fileName)
    return false;
 }
 
-void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, char *** argvPtr)
+void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, const char *** argvPtr)
 {
 #if !defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
    // Disable stdout buffering on Unix

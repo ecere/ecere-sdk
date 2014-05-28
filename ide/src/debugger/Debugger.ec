@@ -65,7 +65,7 @@ static enum dplchan { none, gdbProtoIgnored=0/*1*/, gdbProtoUnknown=2, gdbOutput
 static enum dplchan { none, gdbProtoIgnored=0, gdbProtoUnknown=0, gdbOutput=0, gdbCommand=0, debuggerCall=0, debuggerProblem=0,
                         debuggerUserAction=0,debuggerState=0, debuggerBreakpoints=0, debuggerWatches=0, debuggerTemp=0 };
 #endif
-static char * _dpct[] = {
+static const char * _dpct[] = {
    null,
    "GDB Protocol Ignored",
    "GDB Protocol ***Unknown***",
@@ -89,7 +89,7 @@ static char * _dpct[] = {
 #else
 #define _dpl2(...)
 #endif
-static void __dpl2(char * file, int line, char ** channels, int channel, int indent, typed_object object, ...)
+static void __dpl2(const char * file, int line, const char ** channels, int channel, int indent, typed_object object, ...)
 {
    bool chan = channel && channels && channels[channel];
    if(chan || !channels)
@@ -110,7 +110,7 @@ static void __dpl2(char * file, int line, char ** channels, int channel, int ind
 }
 
 #define _dpl(...) __dpl(__FILE__, __LINE__, ##__VA_ARGS__)
-static void __dpl(char * file, int line, int indent, char * format, ...)
+static void __dpl(const char * file, int line, int indent, const char * format, ...)
 {
    va_list args;
    char string[MAX_F_STRING];
@@ -705,7 +705,7 @@ class Debugger
 
 #ifdef _DEBUG_INST
 #define _ChangeUserAction(value) ChangeUserAction(__FILE__, __LINE__, value)
-   void ChangeUserAction(char * file, int line, DebuggerUserAction value)
+   void ChangeUserAction(const char * file, int line, DebuggerUserAction value)
    {
       bool same = value == userAction;
 #if 0
@@ -719,7 +719,7 @@ class Debugger
 
 #ifdef _DEBUG_INST
 #define _ChangeState(value) ChangeState(__FILE__, __LINE__, value)
-   void ChangeState(char * file, int line, DebuggerState value)
+   void ChangeState(const char * file, int line, DebuggerState value)
 #else
 #define _ChangeState(value) ChangeState(value)
    void ChangeState(DebuggerState value)
@@ -1143,7 +1143,7 @@ class Debugger
       }
    }
 
-   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, char * absoluteFilePath, int lineNumber, bool ignoreBreakpoints, bool atSameLevel, bool oldImplementation)
+   void RunToCursor(CompilerConfig compiler, ProjectConfig config, int bitDepth, bool useValgrind, const char * absoluteFilePath, int lineNumber, bool ignoreBreakpoints, bool atSameLevel, bool oldImplementation)
    {
       char relativeFilePath[MAX_LOCATION];
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
@@ -1207,7 +1207,7 @@ class Debugger
       }
    }
 
-   int GetMarginIconsLineNumbers(char * fileName, int lines[], bool enabled[], int max, bool * error, int * lineCursor, int * lineTopFrame)
+   int GetMarginIconsLineNumbers(const char * fileName, int lines[], bool enabled[], int max, bool * error, int * lineCursor, int * lineTopFrame)
    {
       char winFilePath[MAX_LOCATION];
       char * absoluteFilePath = GetSlashPathBuffer(winFilePath, fileName);
@@ -1283,10 +1283,10 @@ class Debugger
          ResolveWatch(wh);
    }
 
-   void MoveIcons(char * fileName, int lineNumber, int move, bool start)
+   void MoveIcons(const char * fileName, int lineNumber, int move, bool start)
    {
       char winFilePath[MAX_LOCATION];
-      char * absoluteFilePath = GetSlashPathBuffer(winFilePath, fileName);
+      const char * absoluteFilePath = GetSlashPathBuffer(winFilePath, fileName);
 
       Link bpLink, next;
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::MoveIcons()");
@@ -1314,7 +1314,7 @@ class Debugger
       // moving code cursors is futile, on next step, stop, hit, cursors will be offset anyways
    }
 
-   bool SourceDirDialog(char * title, char * startDir, char * test, char * sourceDir)
+   bool SourceDirDialog(const char * title, const char * startDir, const char * test, char * sourceDir)
    {
       bool result;
       bool retry;
@@ -1374,7 +1374,7 @@ class Debugger
       return false;
    }
 
-   void AddSourceDir(char * sourceDir)
+   void AddSourceDir(const char * sourceDir)
    {
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::AddSourceDir(", sourceDir, ")");
       ide.workspace.sourceDirs.Add(CopyString(sourceDir));
@@ -1398,7 +1398,7 @@ class Debugger
       }
    }
 
-   void ToggleBreakpoint(char * fileName, int lineNumber)
+   void ToggleBreakpoint(const char * fileName, int lineNumber)
    {
       char absolutePath[MAX_LOCATION];
       Breakpoint bp = null;
@@ -1724,7 +1724,7 @@ class Debugger
       ide.RepositionWindows(true);
    }
 
-   bool ::GdbCommand(Time timeOut, bool focus, char * format, ...)
+   bool ::GdbCommand(Time timeOut, bool focus, const char * format, ...)
    {
       bool result = false;
       if(gdbHandle)
@@ -2177,7 +2177,7 @@ class Debugger
       ide.Update(null);
    }
 
-   void GdbExecUntil(char * absoluteFilePath, int lineNumber)
+   void GdbExecUntil(const char * absoluteFilePath, int lineNumber)
    {
       bool forceUpdate = false;
       char relativeFilePath[MAX_LOCATION];
@@ -2203,7 +2203,7 @@ class Debugger
          ForceUpdateCurrentFrame();
    }
 
-   void GdbExecAdvance(char * absoluteFilePathOrLocation, int lineNumber)
+   void GdbExecAdvance(const char * absoluteFilePathOrLocation, int lineNumber)
    {
       bool forceUpdate = false;
       char relativeFilePath[MAX_LOCATION];
@@ -2259,7 +2259,7 @@ class Debugger
    }
 
 #ifdef GDB_DEBUG_GUI
-   void SendGDBCommand(char * command)
+   void SendGDBCommand(const char * command)
    {
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SendGDBCommand()");
       DebuggerState oldState = state;
@@ -2404,11 +2404,10 @@ class Debugger
          }
          if(result)
          {
-            char * vgRedzoneSizeFlag = vgRedzoneSize == -1 ? "" : PrintString(" --redzone-size=", vgRedzoneSize);
+            char * vgRedzoneSizeFlag = PrintString(" --redzone-size=", vgRedzoneSize);
             sprintf(command, "%s --vgdb=yes --vgdb-error=0 --log-file=%s --leak-check=%s%s --track-origins=%s %s%s%s",
-                  valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSizeFlag, vgTrackOrigins ? "yes" : "no", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
-            if(vgRedzoneSize != -1)
-               delete vgRedzoneSizeFlag;
+                  valgrindCommand, vgLogPath, (char*)vgLeakCheck, vgRedzoneSize > -1 ? vgRedzoneSizeFlag : "", vgTrackOrigins ? "yes" : "no", targetFile, clArgs ? " " : "", clArgs ? clArgs : "");
+            delete vgRedzoneSizeFlag;
             vgTargetHandle = DualPipeOpen(PipeOpenMode { output = true, /*error = true, */input = true }, command);
             if(!vgTargetHandle)
             {
@@ -3348,7 +3347,7 @@ class Debugger
       else if(eval.result && strcmp(eval.result, "N/A"))
       {
          byte * result = new byte[bytes];
-         byte * string = eval.result;
+         char * string = eval.result;
          int c = 0;
          while(true)
          {
@@ -4849,13 +4848,13 @@ class Breakpoint : struct
    class_no_expansion;
 
    char * function;
-   property char * function { set { delete function; if(value) function = CopyString(value); } }
+   property const char * function { set { delete function; if(value) function = CopyString(value); } }
    char * relativeFilePath;
-   property char * relativeFilePath { set { delete relativeFilePath; if(value) relativeFilePath = CopyString(value); } }
+   property const char * relativeFilePath { set { delete relativeFilePath; if(value) relativeFilePath = CopyString(value); } }
    char * absoluteFilePath;
-   property char * absoluteFilePath { set { delete absoluteFilePath; if(value) absoluteFilePath = CopyString(value); } }
+   property const char * absoluteFilePath { set { delete absoluteFilePath; if(value) absoluteFilePath = CopyString(value); } }
    char * location;
-   property char * location { set { delete location; if(value) location = CopyString(value); } }
+   property const char * location { set { delete location; if(value) location = CopyString(value); } }
    int line;
    bool enabled;
    int hits;
@@ -4869,7 +4868,7 @@ class Breakpoint : struct
    GdbDataBreakpoint bp;
    Project project;
    char * address;
-   property char * address { set { delete address; if(value) address = CopyString(value); } }
+   property const char * address { set { delete address; if(value) address = CopyString(value); } }
 
    void ParseLocation()
    {
@@ -5129,7 +5128,7 @@ void GDBFallBack(Expression exp, String expString)
    }
 }
 
-static Project WorkspaceGetFileOwner(char * absolutePath)
+static Project WorkspaceGetFileOwner(const char * absolutePath)
 {
    Project owner = null;
    for(prj : ide.workspace.projects)
@@ -5145,7 +5144,7 @@ static Project WorkspaceGetFileOwner(char * absolutePath)
    return owner;
 }
 
-static ProjectNode WorkspaceGetObjectFileNode(char * filePath, Project * project)
+static ProjectNode WorkspaceGetObjectFileNode(const char * filePath, Project * project)
 {
    ProjectNode node = null;
    char ext[MAX_EXTENSION];
@@ -5175,7 +5174,7 @@ static ProjectNode WorkspaceGetObjectFileNode(char * filePath, Project * project
    return node;
 }
 
-static ProjectNode ProjectGetObjectFileNode(Project project, char * filePath)
+static ProjectNode ProjectGetObjectFileNode(Project project, const char * filePath)
 {
    ProjectNode node = null;
    char ext[MAX_EXTENSION];
@@ -5197,7 +5196,7 @@ static ProjectNode ProjectGetObjectFileNode(Project project, char * filePath)
    return node;
 }
 
-static void WorkspaceGetRelativePath(char * absolutePath, char * relativePath, Project * owner)
+static void WorkspaceGetRelativePath(const char * absolutePath, char * relativePath, Project * owner)
 {
    Project prj = WorkspaceGetFileOwner(absolutePath);
    if(owner)
@@ -5213,7 +5212,7 @@ static void WorkspaceGetRelativePath(char * absolutePath, char * relativePath, P
       relativePath[0] = '\0';
 }
 
-static bool ProjectGetAbsoluteFromRelativePath(Project project, char * relativePath, char * absolutePath)
+static bool ProjectGetAbsoluteFromRelativePath(Project project, const char * relativePath, char * absolutePath)
 {
    ProjectNode node = project.topNode.FindWithPath(relativePath, false);
    if(!node)

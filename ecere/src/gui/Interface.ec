@@ -39,9 +39,9 @@ public struct Joystick
 public class Interface
 {
 public:
-   class_data char * name;
+   class_data const char * name;
 
-   class_property char * name
+   class_property const char * name
    {
       set { class_data(name) = value; }
       get { return class_data(name); }
@@ -56,7 +56,7 @@ public:
    virtual void ::Unlock(Window window);
    virtual void ::SetTimerResolution(uint hertz);
 
-   virtual char ** ::GraphicsDrivers(int * numDrivers);
+   virtual const char ** ::GraphicsDrivers(int * numDrivers);
    virtual void ::EnsureFullScreen(bool * fullScreen);
    virtual void ::GetCurrentMode(bool * fullScreen, Resolution * resolution, PixelFormat * colorDepth, int * refreshRate);
    virtual bool ::ScreenMode(bool fullScreen, Resolution resolution, PixelFormat colorDepth, int refreshRate, bool * textMode);
@@ -66,7 +66,7 @@ public:
    virtual void ::DestroyRootWindow(Window window);
 
    // --- Window manipulation ---
-   virtual void ::SetRootWindowCaption(Window window, char * name);
+   virtual void ::SetRootWindowCaption(Window window, const char * name);
    virtual void ::PositionRootWindow(Window window, int x, int y, int w, int h, bool move, bool resize);
    virtual void ::OffsetWindow(Window window, int * x, int * y);
    virtual void ::UpdateRootWindow(Window window);
@@ -132,7 +132,7 @@ public:
       return 0;
    }
 
-   void ::WriteKeyedTextDisabled(Surface surface, int x, int y, char *text, Key hotKey, bool disabled)
+   void ::WriteKeyedTextDisabled(Surface surface, int x, int y, const char *text, Key hotKey, bool disabled)
    {
       if(text)
       {
@@ -249,7 +249,7 @@ public:
       }
    }
 
-   void ::WriteKeyedText(Surface surface, int x, int y, char *text, Key hotKey)
+   void ::WriteKeyedText(Surface surface, int x, int y, const char *text, Key hotKey)
    {
       WriteKeyedTextDisabled(surface, x, y, text, hotKey, false);
    }

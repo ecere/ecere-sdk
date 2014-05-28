@@ -173,7 +173,7 @@ class FormDesigner : ClassDesignerBase
       }
    }
 
-   void ::CreateNew(EditBox editBox, Size clientSize, char * name, char * inherit)
+   void ::CreateNew(EditBox editBox, Size clientSize, const char * name, const char * inherit)
    {
       int w = 632, h = 438;
       if(clientSize.w - 40 -200 < w)
@@ -447,7 +447,7 @@ class FormDesigner : ClassDesignerBase
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
-      char * objectClass = activeDesigner.objectClass;
+      const char * objectClass = activeDesigner.objectClass;
 
       if(!objectClass && selected)
       {
@@ -567,7 +567,7 @@ class FormDesigner : ClassDesignerBase
 
    void AddControl(Window parent, int x, int y)
    {
-      char * objectClass = activeDesigner.objectClass;
+      const char * objectClass = activeDesigner.objectClass;
       ObjectInfo object;
       Window control;
       Class c = eSystem_FindClass(form._class.module, objectClass);
@@ -627,7 +627,7 @@ class FormDesigner : ClassDesignerBase
       }
       else
       {
-         char * objectClass = activeDesigner.objectClass;
+         const char * objectClass = activeDesigner.objectClass;
          if(objectClass)
          {
             Window parent = FindWindow(form, activeDesigner, null, x, y, true, &x, &y);

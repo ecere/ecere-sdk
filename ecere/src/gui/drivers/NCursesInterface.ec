@@ -458,11 +458,11 @@ class NCursesInterface : Interface
 
    }
 
-   char ** GraphicsDrivers(int * numDrivers)
+   const char ** GraphicsDrivers(int * numDrivers)
    {
-      static char *graphicsDrivers[] = { "NCurses" };
+      static const char *graphicsDrivers[] = { "NCurses" };
       *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
-      return (char **)graphicsDrivers;
+      return (const char **)graphicsDrivers;
    }
 
    void GetCurrentMode(bool * fullScreen, Resolution * resolution, PixelFormat * colorDepth, int * refreshRate)
@@ -507,7 +507,7 @@ class NCursesInterface : Interface
 
    // -- Window manipulation ---
 
-   void SetRootWindowCaption(void * windowHandle, char * name)
+   void SetRootWindowCaption(void * windowHandle, const char * name)
    {
    }
 

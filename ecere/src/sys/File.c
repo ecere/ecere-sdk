@@ -45,9 +45,9 @@ void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory);
 void * __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
 void * __ecereNameSpace__ecere__com__eSystem_Renew(void * memory, unsigned int size);
 void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, unsigned int size);
-unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(char * source, int * wordCount);
-unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(char * source, uint16 * dest, int max);
-char * __ecereNameSpace__ecere__sys__UTF16toUTF8(uint16 * source);
+unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16(const char * source, int * wordCount);
+unsigned short * __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer(const char * source, uint16 * dest, int max);
+char * __ecereNameSpace__ecere__sys__UTF16toUTF8(const uint16 * source);
 void __ecereNameSpace__ecere__sys__ChangeCh(char * string, char ch1, char ch2);
 
 #if defined(__WIN32__) || defined(__WATCOMC__)
@@ -101,11 +101,11 @@ typedef struct
    SecSince1970 created;
 } FileStats;
 
-char * __ecereNameSpace__ecere__sys__GetLastDirectory(char * string, char * output);
-bool __ecereNameSpace__ecere__sys__SplitArchivePath(char * fileName, char * archiveName, char ** archiveFile);
+char * __ecereNameSpace__ecere__sys__GetLastDirectory(const char * string, char * output);
+bool __ecereNameSpace__ecere__sys__SplitArchivePath(const char * fileName, char * archiveName, char ** archiveFile);
 
 #if defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
-void __ecereMethod___ecereNameSpace__ecere__sys__EARFileSystem_FixCase(char * archive, char * name);
+void __ecereMethod___ecereNameSpace__ecere__sys__EARFileSystem_FixCase(const char * archive, char * name);
 
 static BOOL CALLBACK EnumThreadWindowsProc(HWND hwnd, LPARAM lParam)
 {
@@ -219,7 +219,7 @@ void FILE_set_buffered(FILE * input, FILE * output, bool value)
 #endif
 }
 
-FileAttribs FILE_FileExists(char * fileName)
+FileAttribs FILE_FileExists(const char * fileName)
 {
 #ifdef __WIN32__
    FileAttribs result = 0;
@@ -295,7 +295,7 @@ FileAttribs FILE_FileExists(char * fileName)
 #endif
 }
 
-bool FILE_FileGetSize(char * fileName, FileSize * size)
+bool FILE_FileGetSize(const char * fileName, FileSize * size)
 {
    bool result = false;
 #if defined(__WIN32__)
@@ -316,7 +316,7 @@ bool FILE_FileGetSize(char * fileName, FileSize * size)
    return result;
 }
 
-bool FILE_FileGetStats(char * fileName, FileStats * stats)
+bool FILE_FileGetStats(const char * fileName, FileStats * stats)
 {
    bool result = false;
 #if defined(__WIN32__)
@@ -552,7 +552,7 @@ void FILE_FileFixCase(char * file)
 #endif
 }
 
-void FILE_FileOpen(char * fileName, FileOpenMode mode, FILE ** input, FILE **output)
+void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE **output)
 {
 #if defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
    uint16 * _wfileName = __ecereNameSpace__ecere__sys__UTF8toUTF16(fileName, null);

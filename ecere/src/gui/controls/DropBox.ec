@@ -102,7 +102,7 @@ public:
             {
                char tempString[4096];
                if(currentRow)
-                  editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
+                  editBox.contents = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
                else
                   editBox.contents = "";
             }
@@ -121,7 +121,7 @@ public:
       get { return currentRow; }
    };
    property DataRow firstRow { get { return this ? listBox.firstRow : null; } };
-   property char * contents { property_category $"Data" set { if(editBox) editBox.contents = value; } get { return editBox ? editBox.contents : null; } };
+   property const char * contents { property_category $"Data" set { if(editBox) editBox.contents = value; } get { return editBox ? editBox.contents : null; } };
    property bool editText
    {
       property_category $"Behavior"
@@ -217,7 +217,7 @@ public:
    virtual bool Window::NotifySelect(DropBox dropBox, DataRow row, Modifiers mods);
    virtual bool Window::NotifyClose(DropBox dropBox);
    virtual bool Window::NotifyHighlight(DropBox dropBox, DataRow row, Modifiers mods);
-   virtual bool Window::NotifyTextEntry(DropBox dropBox, char * string, bool confirmed);
+   virtual bool Window::NotifyTextEntry(DropBox dropBox, const char * string, bool confirmed);
 
    virtual Window OnDropDown()
    {
@@ -243,7 +243,7 @@ public:
    }
 
    // Methods
-   DataRow AddStringf(char * format, ...)
+   DataRow AddStringf(const char * format, ...)
    {
       if(this)
       {
@@ -264,7 +264,7 @@ public:
       return null;
    }
 
-   DataRow AddString(char * string)
+   DataRow AddString(const char * string)
    {
       if(this)
       {
@@ -406,7 +406,7 @@ public:
          {
             char tempString[4096];
             if(currentRow)
-               editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
+               editBox.contents = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
             else
                editBox.contents = "";
          }
@@ -582,7 +582,7 @@ private:
                {
                   char tempString[4096];
                   if(currentRow)
-                     editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
+                     editBox.contents = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
                   else
                      editBox.contents = "";
                }
@@ -879,7 +879,7 @@ private:
          {
             char tempString[4096];
             if(currentRow)
-               editBox.contents = ((char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
+               editBox.contents = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)dataType._vTbl[__ecereVMethodID_class_OnGetString])(dataType, currentRow.GetData(null), tempString, null, null);
             else
                editBox.contents = "";
             if(active)

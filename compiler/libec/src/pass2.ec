@@ -1096,7 +1096,7 @@ static void ProcessExpression(Expression exp)
 
             //ProcessExpression(object);
 
-            ListAdd(exp.list, MkExpOp(CopyExpression(object), '=', MkExpConstant("0")));
+            ListAdd(exp.list, MkExpOp(CopyExpression(object.type == castExp ? object.cast.exp : object), '=', MkExpConstant("0")));
 
             exp2 = null;
 
@@ -1662,9 +1662,12 @@ static void ProcessExpression(Expression exp)
 
                   if(method.dataType.thisClass && !strcmp(method.dataType.thisClass.string, "class"))
                   {
+                     TypeName param;
                      typedObject = true;
 
-                     funcDecl.function.parameters->Insert(null, MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null)));
+                     param = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null));
+                     param.qualifiers->Insert(null, MkSpecifier(CONST));
+                     funcDecl.function.parameters->Insert(null, param);
                      // Testing this for any_object::
                      if(!method.dataType.extraParam)
                         funcDecl.function.parameters->Insert(null, MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null)), MkDeclaratorPointer(MkPointer(null,null), null)));

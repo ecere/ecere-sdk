@@ -618,7 +618,7 @@ public class CSVReport : ReportDestination
       page.Create();
    }
 
-   void PutString(File f, char * text)
+   void PutString(File f, const char * text)
    {
       char output[4096];
       int s = 0, d = 0;
@@ -675,7 +675,7 @@ public class CSVReport : ReportDestination
                      if(!first) first = label;
                      if(label._class == class(ReportTitle) || eClass_IsDerived(label._class, class(Label)))
                      {
-                        char * text = label.text;
+                        const char * text = label.text;
                         if(label != first)f.Puts(",");
                         if(text)
                            PutString(f, text);

@@ -47,7 +47,7 @@ class ModelView : Window
       }
    };
 
-   property char * modelFile
+   property const char * modelFile
    {
       set { strcpy(fileName, value); }
       get { return fileName[0] ? (char *)fileName : null; }

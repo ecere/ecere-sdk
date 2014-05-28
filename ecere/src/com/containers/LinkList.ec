@@ -32,7 +32,7 @@ public:
    LT GetNext(IteratorPointer item) { return ((LT)item).link.next; }
    LT GetData(IteratorPointer pointer) { return (LT)pointer; }
 
-   IteratorPointer GetAtPosition(I pos, bool create)
+   IteratorPointer GetAtPosition(const I pos, bool create)
    {
       int c;
       LT item;

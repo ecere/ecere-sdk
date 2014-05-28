@@ -565,7 +565,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             delete typeString;
          }
          if(param.type == type || param.type == identifier)
-            delete defaultArg.dataTypeString;
+            delete (void *)defaultArg.dataTypeString;
 
       }
       eClass_DoneAddingTemplateParameters(regClass);

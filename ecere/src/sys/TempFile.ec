@@ -31,7 +31,7 @@ public class TempFile : File
       return read / size;
    }
 
-   int Write(byte * buffer, uint size, uint count)
+   int Write(const byte * buffer, uint size, uint count)
    {
       int writeSize = size * count;
       int written = writeSize;
@@ -66,7 +66,7 @@ public class TempFile : File
       return written != 0;
    }
 
-   bool Puts(char * string)
+   bool Puts(const char * string)
    {
       int len = string ? strlen(string) : 0;
       int written = Write(string, 1, len);

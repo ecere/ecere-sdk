@@ -82,13 +82,13 @@ private:
 static void OnDisplay(Class _class, void * data, Surface surface, int x, int y, int width, void * fieldData, Alignment alignment, DataDisplayFlags displayFlags)
 {
    static char tempString[16384];
-   char * string;
+   const char * string;
    int len;
    bool needClass = false;
    int w, h;
 
    tempString[0] = '\0';
-   string = ((char * (*)(void *, void *, void *, void *, void *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
+   string = ((const char * (*)(void *, void *, void *, void *, void *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
    len = string ? strlen(string) : 0;
 
    //surface.TextOpacity(false);
@@ -173,7 +173,7 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
    {
       char tempString[MAX_F_STRING] = "";
       // Don't show the editbox right away so that the text is highlighted by default
-      char * string = "";
+      const char * string = "";
       EditBox editBox
       {
          window, master = master, visible = false, //position = { x, y },
@@ -201,7 +201,7 @@ static Window OnEdit(Class _class, void * data, Window window, Window master,
       if(data)
       {
          bool needClass = false;
-         char * result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
+         const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)_class._vTbl[__ecereVMethodID_class_OnGetString])(_class, data, tempString, fieldData, &needClass);
          if(result)
             string = result;
       }

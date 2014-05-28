@@ -116,7 +116,7 @@ class ToolBox : Window
 
    void AddControl(Class _class)
    {
-      Button control = CreateControl(&controlY, (char *)eClass_GetProperty(_class, "icon"), _class.name, _class.name);
+      Button control = CreateControl(&controlY, (const char *)eClass_GetProperty(_class, "icon"), _class.name, _class.name);
       numControls++;
       if(selectedControl && !strcmp(selectedControl, _class.name))
       {
@@ -147,7 +147,7 @@ class ToolBox : Window
       return true;
    }
 
-   Button CreateControl(int * y, char * bitmapFile, char * text, void * id)
+   Button CreateControl(int * y, const char * bitmapFile, const char * text, const void * id)
    {
       Button control
       {

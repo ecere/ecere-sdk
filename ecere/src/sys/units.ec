@@ -7,7 +7,7 @@ public struct Pointf { float x, y; };
 
 public class MinMaxValue : int
 {
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       if(this == MAXINT)
          sprintf(string, "Inf");
@@ -18,7 +18,7 @@ public class MinMaxValue : int
       return string;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       if(!strcmpi(string, "Inf"))
          this = MAXINT;

@@ -57,7 +57,7 @@ public:
          DataRow row;
          for(row = list.firstRow; row; row = row.next)
          {
-            String string = row.string;
+            const String string = row.string;
             if(string && string[0])
                array.Add(CopyUnixPath(string));
          }
@@ -175,7 +175,7 @@ public:
             if(listBox.currentRow == listBox.lastRow)
             {
                DataRow r = listBox.lastRow;
-               char * s = r.string;
+               const char * s = r.string;
                listBox.currentRow = listBox.AddString("");
             }
          }
@@ -375,7 +375,7 @@ class NamedStringsBox : CommonControl
             if(listBox.currentRow == listBox.lastRow)
             {
                DataRow r = listBox.lastRow;
-               char * s = r.string;
+               const char * s = r.string;
                listBox.currentRow = list.AddRow();
                //row.SetData(nameField, null);
                //row.SetData(stringField, null);

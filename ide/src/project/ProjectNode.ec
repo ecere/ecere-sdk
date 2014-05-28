@@ -14,7 +14,7 @@ static define app = ((GuiApplication)__thisModule);
 
 #define OPTION(x) ((uint)(&((ProjectOptions)0).x))
 
-static void OutputLog(char * string)
+static void OutputLog(const char * string)
 {
 #ifdef MAKEFILE_GENERATOR
    printf(string);
@@ -23,7 +23,7 @@ static void OutputLog(char * string)
 #endif
 }
 
-bool eString_PathInsideOfMore(char * path, char * of, char * pathRest)
+bool eString_PathInsideOfMore(const char * path, const char * of, char * pathRest)
 {
    if(!path[0] || !of[0])
       return false;  // What to do here? Ever used?
@@ -55,7 +55,7 @@ enum NodeIcons
    sFile, cFile, hFile, cppFile, hppFile, textFile, webFile, pictureFile, soundFile,
    archiveFile, packageFile, opticalMediaImageFile, mFile, mmFile;
 
-   NodeIcons ::SelectFileIcon(char * filePath)
+   NodeIcons ::SelectFileIcon(const char * filePath)
    {
       NodeIcons icon;
       if(filePath && filePath[0])
@@ -180,7 +180,7 @@ class TwoStrings : struct
 class DotMain : bool
 {
    //property char * { set { } }
-   DotMain ::FromFileName(char * fileName)
+   DotMain ::FromFileName(const char * fileName)
    {
       DotMain dotMain = false;
       if(fileName && fileName[0])
@@ -274,7 +274,7 @@ public:
       }
       isset { return nodeType == folder; }
    };
-   property String fileName
+   property const String fileName
    {
       set
       {
@@ -646,7 +646,7 @@ private:
       }
    }
 
-   void RenameConfig(char * oldName, char * newName)
+   void RenameConfig(const char * oldName, const char * newName)
    {
       if(files)
       {
@@ -794,7 +794,7 @@ private:
       }
    }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(!needClass)
       {
@@ -861,7 +861,8 @@ private:
       // note: unknown platform is for common
       Map<Platform, SetBool> exclusionInfo { };
       MapNode<Platform, SetBool> mn;
-      char * exp, * var;
+      char * exp;
+      const char * var;
       int len;
       SetBool common;
 
@@ -893,7 +894,7 @@ private:
             {
                if(mn.key != unknown)
                {
-                  char * comma = mn.next ? "," : "";
+                  const char * comma = mn.next ? "," : "";
 
                   var = PlatformToMakefileTargetVariable(mn.key);
 
@@ -1025,7 +1026,7 @@ private:
          parent.files.Delete(this);
    }
 
-   ProjectNode Find(char * name, bool includeResources)
+   ProjectNode Find(const char * name, bool includeResources)
    {
       ProjectNode result = null;
       if(files)
@@ -1048,7 +1049,7 @@ private:
       return result;
    }
 
-   ProjectNode FindWithPath(char * name, bool includeResources)
+   ProjectNode FindWithPath(const char * name, bool includeResources)
    {
       ProjectNode result = null;
       if(files)
@@ -1077,7 +1078,7 @@ private:
       return result;
    }
 
-   ProjectNode FindByFullPath(char * path, bool includeResources)
+   ProjectNode FindByFullPath(const char * path, bool includeResources)
    {
       if(files)
       {
@@ -1088,7 +1089,7 @@ private:
       return null;
    }
 
-   ProjectNode InternalFindByFullPath(char * path, bool includeResources, char * lastDirName)
+   ProjectNode InternalFindByFullPath(const char * path, bool includeResources, const char * lastDirName)
    {
       ProjectNode result = null;
       if(files)
@@ -1117,7 +1118,7 @@ private:
       return result;
    }
 
-   ProjectNode FindByObjectFileName(char * fileName, IntermediateFileType type, bool dotMain, Map<String, NameCollisionInfo> namesInfo)
+   ProjectNode FindByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, Map<String, NameCollisionInfo> namesInfo)
    {
       char p[MAX_LOCATION];
       ProjectNode result = null;
@@ -1147,7 +1148,7 @@ private:
       return result;
    }
 
-   ProjectNode FindSpecial(char * name, bool recursive, bool includeResources, bool includeFolders)
+   ProjectNode FindSpecial(const char * name, bool recursive, bool includeResources, bool includeFolders)
    {
       ProjectNode result = null;
       if(files)
@@ -1171,7 +1172,7 @@ private:
       return result;
    }
 
-   ProjectNode FindSameNameConflict(char * name, bool includeResources,
+   ProjectNode FindSameNameConflict(const char * name, bool includeResources,
       Map<Platform, SetBool> exclusionInfo, ProjectConfig prjConfig)
    {
       ProjectNode result = null;
@@ -1229,7 +1230,7 @@ private:
       return result;
    }
 
-   ProjectNode Add(Project project, char * filePath, ProjectNode after, NodeTypes type, NodeIcons icon, bool checkIfExists)
+   ProjectNode Add(Project project, const char * filePath, ProjectNode after, NodeTypes type, NodeIcons icon, bool checkIfExists)
    {
       ProjectNode node = null;
       if(!project.topNode.FindByFullPath(filePath, true))
@@ -1310,8 +1311,7 @@ private:
          {
             if(projectView.projectSettingsDialog && projectView.projectSettingsDialog.buildTab)
             {
-               char * addendum;
-               addendum = projectView.projectSettingsDialog.buildTab.selectedConfigName;
+               const char * addendum = projectView.projectSettingsDialog.buildTab.selectedConfigName;
                if(strlen(addendum))
                {
                   strcat(label, " (");
@@ -1404,7 +1404,7 @@ private:
       return result;
    }
 
-   bool ContainsFilesWithExtension(char * extension, ProjectConfig prjConfig)
+   bool ContainsFilesWithExtension(const char * extension, ProjectConfig prjConfig)
    {
       if(type == file)
       {
@@ -2412,7 +2412,7 @@ private:
          char extension[MAX_EXTENSION];
          NameCollisionInfo info;
          Project prj = property::project;
-         Map<String, String> headerToSource { [ { "eh", "ec" }, { "h", "c" }, { "hh", "cc" }, { "hpp", "cpp" }, { "hxx", "cxx" } ] };
+         Map<String, const String> headerToSource { [ { "eh", "ec" }, { "h", "c" }, { "hh", "cc" }, { "hpp", "cpp" }, { "hxx", "cxx" } ] };
 
          GetExtension(name, extension);
          strcpy(moduleName, name);
@@ -2586,7 +2586,7 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
    int priority = 0;
    int includeDirsOption = OPTION(includeDirs);
    ProjectNode n;
-   char * platformName = platform ? platform.OnGetString(0,0,0) : null;
+   const char * platformName = platform ? platform.OnGetString(0,0,0) : null;
 
    // OPTION(ProjectOptions' last member) for size
    Array<bool> optionConfigXplatformSet   { size = OPTION(installCommands) };
@@ -3014,7 +3014,7 @@ static void GetPlatformsCommonStrings(Map<String, int> counts, int goodCount, Ma
       int i = it;
       if(i == goodCount)
       {
-         char * s = &it;
+         const char * s = &it;
          strings.Add(CopyString(s));
          common[s] = true;
       }
@@ -3044,7 +3044,7 @@ static void RemovePlatformsCommonStrings(Map<String, bool> common, Array<String>
    }
 }
 
-static void GenMakePrintNodeFlagsVariable(ProjectNode node, Map<intptr, int> nodeFlagsMapping, String variableName, File f)
+static void GenMakePrintNodeFlagsVariable(ProjectNode node, Map<intptr, int> nodeFlagsMapping, const String variableName, File f)
 {
    int customFlags;
    customFlags = nodeFlagsMapping[(intptr)node];
@@ -3054,7 +3054,7 @@ static void GenMakePrintNodeFlagsVariable(ProjectNode node, Map<intptr, int> nod
       f.Printf(" $(%s)", variableName);
 }
 
-static void DynStringPrintNodeFlagsVariable(ProjectNode node, Map<intptr, int> nodeFlagsMapping, String variableName, DynamicString s)
+static void DynStringPrintNodeFlagsVariable(ProjectNode node, Map<intptr, int> nodeFlagsMapping, const String variableName, DynamicString s)
 {
    int customFlags;
    customFlags = nodeFlagsMapping[(intptr)node];
@@ -3126,7 +3126,7 @@ static void GenECFlagsFromProjectOptions(ProjectOptions options, bool prjWithEcF
 }
 
 static void ListOptionToDynamicString(DynamicString output, ToolchainFlag flag, Array<String> list, bool prioritize,
-      LineOutputMethod lineMethod, String newLineStart)
+      LineOutputMethod lineMethod, const String newLineStart)
 {
    if(list.count)
    {

@@ -125,7 +125,7 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
 
 // This should register the stuff only...
 // But also call ImportModule
-public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly)
+public bool LoadSymbols(const char * fileName, ImportType importType, bool loadDllOnly)
 {
    File f = FileOpenBuffered(fileName, read);
    bool globalInstance = false;
@@ -211,7 +211,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                         else if(regClass = eSystem_FindClass(privateModule, name), !regClass || regClass.internalDecl || regClass.isRemote)
                         {
                            Symbol existingClass = FindClass(name);
-                           char * baseName = (classType == normalClass && importType == remoteImport && isRemote) ? "DCOMClientObject" : (!strcmp(line, "[None]") ? null : line);
+                           const char * baseName = (classType == normalClass && importType == remoteImport && isRemote) ? "DCOMClientObject" : (!strcmp(line, "[None]") ? null : line);
                            //Symbol baseSymbol = baseName ? FindClass(baseName) : null;
                            //if(baseSymbol && !baseSymbol->registered)
                            /*if(classType != unitClass && classType != bitClass && classType != enumClass && baseName && !eSystem_FindClass(privateModule, baseName))
@@ -535,7 +535,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
                            if(type == TemplateParameterType::type || type == TemplateParameterType::expression)
                               delete info;
                            if(type == TemplateParameterType::type || type == TemplateParameterType::identifier)
-                              delete defaultArg.dataTypeString;
+                              delete (void *)defaultArg.dataTypeString;
                         }
                         if(regClass)
                            eClass_DoneAddingTemplateParameters(regClass);
@@ -717,7 +717,7 @@ public bool LoadSymbols(char * fileName, ImportType importType, bool loadDllOnly
 Map<String, List<Module> > loadedModules { };
 
 // (Same function as in actual compiler)
-public void ImportModule(char * name, ImportType importType, AccessMode importAccess, bool loadDllOnly)
+public void ImportModule(const char * name, ImportType importType, AccessMode importAccess, bool loadDllOnly)
 {
    ImportedModule module = null;
    char moduleName[MAX_LOCATION];
@@ -965,7 +965,7 @@ public void FreeGlobalData(NameSpace globalDataList)
    {
       FreeGlobalData(ns);
       globalDataList.nameSpaces.Remove((BTNode)ns);
-      delete ns->name;
+      delete (void *)ns->name;
       delete ns;
    }
    for(;(data = (GlobalData)globalDataList.functions.root);)

@@ -16,7 +16,7 @@ static int ReadData(GifFileType * gifFile, GifByteType * bytes, int size)
    return f.Write(bytes, 1, size);
 }
 */
-static char * extensions[] = { "gif", null };
+static const char * extensions[] = { "gif", null };
 
 class GIFFormat : BitmapFormat
 {
@@ -113,13 +113,13 @@ class GIFFormat : BitmapFormat
       return result;
    }
 
-   bool Save(Bitmap bitmap, char * filename, void * options)
+   bool Save(Bitmap bitmap, const char * filename, void * options)
    {
       bool result = false;
       return result;
    }
 
-   ColorAlpha * LoadPalette(char * fileName, char * type)
+   ColorAlpha * LoadPalette(const char * fileName, const char * type)
    {
       ColorAlpha * result = null;
       return result;

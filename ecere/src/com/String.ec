@@ -43,7 +43,7 @@ public define MAX_DIRECTORY = 534; // 8 levels + 8 separators + \0
 public define MAX_LOCATION = 797; // directory + filename + separator + \0
 
 // --- File related String functions ---
-public char * GetExtension(char * string, char * output)
+public char * GetExtension(const char * string, char * output)
 {
    int c;
    int len = strlen(string);
@@ -63,7 +63,7 @@ public char * GetExtension(char * string, char * output)
    return output;
 }
 
-public char * StripLastDirectory(char * string, char * output)
+public char * StripLastDirectory(const char * string, char * output)
 {
    int c;
    if(runtimePlatform == win32 && !strcmp(string, "\\\\"))
@@ -144,7 +144,7 @@ public char * SplitDirectory(const char * string, char * part, char * rest)
    return rest;
 }
 
-public char * GetLastDirectory(char * string, char * output)
+public char * GetLastDirectory(const char * string, char * output)
 {
    int c;
    int len = string ? strlen(string) : 0;
@@ -164,7 +164,7 @@ public char * GetLastDirectory(char * string, char * output)
    return output;
 }
 
-public bool SplitArchivePath(char * fileName, char * archiveName, char ** archiveFile)
+public bool SplitArchivePath(const char * fileName, char * archiveName, const char * * archiveFile)
 {
    // Support Archives
    if(fileName[0] == '<')
@@ -188,12 +188,13 @@ public bool SplitArchivePath(char * fileName, char * archiveName, char ** archiv
    return false;
 }
 
-public char * PathCatSlash(char * string, char * addedPath)
+public char * PathCatSlash(char * string, const char * addedPath)
 {
    bool modified = false;
    if(addedPath)
    {
-      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "", * file = null;
+      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "";
+      const char * file = null;
       int c = 0;
       bool isURL = false;
       bool isArchive = SplitArchivePath(string, archiveName, &file);
@@ -407,12 +408,13 @@ public char * PathCatSlash(char * string, char * addedPath)
    return modified ? string : null;
 }
 
-public char * PathCat(char * string, char * addedPath)
+public char * PathCat(char * string, const char * addedPath)
 {
    bool modified = false;
    if(addedPath)
    {
-      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "", * file = null;
+      char fileName[MAX_LOCATION] = "", archiveName[MAX_LOCATION] = "";
+      const char * file = null;
       int c = 0;
       bool isURL = false;
       bool isArchive = SplitArchivePath(string, archiveName, &file);
@@ -631,7 +633,7 @@ public char * PathCat(char * string, char * addedPath)
    return modified ? string : null;
 }
 
-public char * MakePathRelative(char * path, char * to, char * destination)
+public char * MakePathRelative(const char * path, const char * to, char * destination)
 {
    int len;
    // Don't process empty paths
@@ -690,7 +692,7 @@ public bool StripExtension(char * string)
    return false;
 }
 
-public char * ChangeExtension(char * string, char * ext, char * output)
+public char * ChangeExtension(const char * string, const char * ext, char * output)
 {
    if(string != output)
       strcpy(output, string);
@@ -759,12 +761,12 @@ public void PrintBigSize(char * string, double size, int prec)
       sprintf(string, "%.0f B", size);
 }
 
-public char * SearchString(char * buffer, int start, char * subStr, bool matchCase, bool matchWord)
+public char * SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord)
 {
    if(buffer && subStr)
    {
-      char * ptr;
-      char * strBuffer = buffer + start;
+      const char * ptr;
+      const char * strBuffer = buffer + start;
       int subLen = strlen(subStr);
       char beforeChar = start ? *(strBuffer-1) : 0;
       int (*strcompare)(const char *, const char *, unsigned int) = matchCase ? strncmp : strnicmp;
@@ -782,12 +784,12 @@ public char * SearchString(char * buffer, int start, char * subStr, bool matchCa
                   */
                   (!IS_ALUNDER(subStr[subLen-1]) || !IS_ALUNDER(ptr[subLen])) &&
                   (!IS_ALUNDER(subStr[0]) || !IS_ALUNDER(beforeChar)))
-                  return ptr;
+                  return (char *)ptr;
             }
             else
             {
                if(!strcompare(ptr,subStr,subLen))
-                  return ptr;
+                  return (char *)ptr;
             }
          }
          beforeChar = ptr[0];
@@ -796,13 +798,13 @@ public char * SearchString(char * buffer, int start, char * subStr, bool matchCa
    return null;
 }
 
-public char * RSearchString(char * buffer, char * subStr, int maxLen, bool matchCase, bool matchWord)
+public char * RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord)
 {
    if(buffer && subStr)
    {
       int subLen = strlen(subStr);
-      char * ptr1 = buffer + maxLen - subLen;
-      char * ptr2 = buffer + maxLen - subLen - 1;
+      const char * ptr1 = buffer + maxLen - subLen;
+      const char * ptr2 = buffer + maxLen - subLen - 1;
       int (*strcompare)(const char *, const char *, unsigned int) = matchCase ? strncmp : strnicmp;
       for(; ptr1 >=buffer; ptr1--, ptr2--)
       {
@@ -815,12 +817,12 @@ public char * RSearchString(char * buffer, char * subStr, int maxLen, bool match
                   (!IS_ALUNDER(subStr[subLen-1]) || !IS_ALUNDER(ptr1[subLen])) &&
                   (!IS_ALUNDER(subStr[0]) || !IS_ALUNDER(*ptr2)))
 
-                 return ptr1;
+                 return (char *)ptr1;
             }
             else
             {
                if(!strcompare(ptr1,subStr,subLen))
-                  return ptr1;
+                  return (char *)ptr1;
             }
          }
       }
@@ -897,7 +899,7 @@ public int Tokenize(char * string, int maxTokens, char* tokens[], BackSlashEscap
    return count;
 }
 
-public int TokenizeWith(char * string, int maxTokens, char* tokens[], char * tokenizers, bool escapeBackSlashes)
+public int TokenizeWith(char * string, int maxTokens, char* tokens[], const char * tokenizers, bool escapeBackSlashes)
 {
    int count = 0;
    bool quoted = false;
@@ -967,7 +969,7 @@ public int TokenizeWith(char * string, int maxTokens, char* tokens[], char * tok
    return count;
 }
 
-public char * TrimLSpaces(char * string, char * output)
+public char * TrimLSpaces(const char * string, char * output)
 {
    int c;
    for(c = 0; string[c] && string[c] == ' '; c++);
@@ -975,7 +977,7 @@ public char * TrimLSpaces(char * string, char * output)
    return output;
 }
 
-public char * TrimRSpaces(char * string, char * output)
+public char * TrimRSpaces(const char * string, char * output)
 {
    int c;
    for(c = strlen(string)-1; c >= 0 && string[c] == ' '; c--);
@@ -1004,7 +1006,7 @@ public void RepeatCh(char * string, int count, char ch)
    string[c] = 0;
 }
 
-public char * CopyString(char * string)
+public char * CopyString(const char * string)
 {
    if(string)
    {
@@ -1078,10 +1080,10 @@ public uint GetHexValue(char ** buffer)
    return (uint)strtoul(string, null, 16);
 }
 
-public char * StripQuotes(char * string, char * output)
+public char * StripQuotes(const char * string, char * output)
 {
    int len;
-   char * src = (string[0] == '\"') ? (string+1) : string;
+   const char * src = (string[0] == '\"') ? (string+1) : string;
    memmove(output, src, strlen(src)+1);
    len = strlen(output);
    if(len && output[len-1] == '\"')
@@ -1089,7 +1091,7 @@ public char * StripQuotes(char * string, char * output)
    return output;
 }
 
-public double FloatFromString(char * string)
+public double FloatFromString(const char * string)
 {
    int c, dig;
    float dec = 0,res = 0;
@@ -1123,7 +1125,7 @@ public double FloatFromString(char * string)
    return neg * res;
 }
 
-public bool IsPathInsideOf(char * path, char * of)
+public bool IsPathInsideOf(const char * path, const char * of)
 {
    if(!path[0] || !of[0])
       return false;  // What to do here? Ever used?

@@ -40,19 +40,19 @@ extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnFree;
 private:
 
-int CollationCompare(Class type, int count1, void * data1, int count2, void * data2)
+int CollationCompare(Class type, int count1, const void * data1, int count2, const void * data2)
 {
    if(type.type == normalClass || type.type ==  noHeadClass)
    {
       Instance inst1, inst2;
       int result;
-      SerialBuffer buffer1 { size = count1, count = count1, buffer = data1 };
-      SerialBuffer buffer2 { size = count2, count = count2, buffer = data2 };
+      SerialBuffer buffer1 { size = count1, count = count1, buffer = (char *)data1 };
+      SerialBuffer buffer2 { size = count2, count = count2, buffer = (char *)data2 };
 
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, &inst1, buffer1);
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, &inst2, buffer2);
 
-      result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, inst1, inst2);
+      result = ((int (*)(void *, const void *, const void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, inst1, inst2);
 
       buffer1.buffer = null;
       buffer2.buffer = null;
@@ -66,8 +66,8 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
    {
       void * inst1, * inst2;
       int result;
-      SerialBuffer buffer1 { size = count1, count = count1, buffer = data1 };
-      SerialBuffer buffer2 { size = count2, count = count2, buffer = data2 };
+      SerialBuffer buffer1 { size = count1, count = count1, buffer = (char *)data1 };
+      SerialBuffer buffer2 { size = count2, count = count2, buffer = (char *)data2 };
 
       inst1 = new0 byte[type.structSize];
       inst2 = new0 byte[type.structSize];
@@ -85,7 +85,7 @@ int CollationCompare(Class type, int count1, void * data1, int count2, void * da
       return result;
    }
    else
-      return ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, data1, data2);
+      return ((int (*)(void *, const void *, const void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type, data1, data2);
 }
 
 public class SQLiteStaticLink { }   // Until .imp generation is fixed
@@ -180,7 +180,7 @@ class SQLiteField : Field
 class SQLiteDatabase : Database
 {
    sqlite3 * db;
-   AVLTree<String> collations { };
+   AVLTree<const String> collations { };
 
    ~SQLiteDatabase()
    {
@@ -331,8 +331,8 @@ class SQLiteDatabase : Database
 
                   while(sqlite3_step(statement) != SQLITE_DONE)
                   {
-                     char * fieldName = sqlite3_column_text(statement, 0);
-                     char * typeName = sqlite3_column_text(statement, 1);
+                     const char * fieldName = sqlite3_column_text(statement, 0);
+                     const char * typeName = sqlite3_column_text(statement, 1);
                      int length = sqlite3_column_int(statement, 2);
                      Class type = null;
                      int sqliteType = SQLITE_BLOB;
@@ -405,7 +405,7 @@ class SQLiteDatabase : Database
       return result == SQLITE_OK;
    }
 
-   bool CreateCustomFunction(char * name, SQLCustomFunction customFunction)
+   bool CreateCustomFunction(const char * name, SQLCustomFunction customFunction)
    {
       bool result = false;
       Class cfClass = customFunction._class;
@@ -422,9 +422,9 @@ class SQLiteDatabase : Database
          {
             Class type = null;
             bool pointer = false;
-            String arg = tokens[c];
+            const String arg = tokens[c];
             char * space;
-            TrimLSpaces(arg, arg);
+            TrimLSpaces(tokens[c], tokens[c]);
             if(strchr(arg, '*')) pointer = true;
             if(pointer)
                // Using String for generic pointer...
@@ -579,7 +579,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
             if(a == class(String))
             {
                int numBytes = sqlite3_value_bytes(values[i]);
-               char * text = sqlite3_value_text(values[i]);
+               const char * text = sqlite3_value_text(values[i]);
                *(char **)data = text ? new byte[numBytes+1] : null;
                if(text)
                   memcpy(*(char **)data, text, numBytes+1);
@@ -589,7 +589,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
                SerialBuffer buffer = staticBuffer; //{ };
                buffer.pos = 0;
                buffer._size = sqlite3_value_bytes(values[i]);
-               buffer._buffer = sqlite3_value_text(values[i]);
+               buffer._buffer = (char *)sqlite3_value_text(values[i]);
                //buffer._buffer = sqlite3_value_blob(curStatement);
                buffer.count = buffer._size;
                if(a.type == structClass)
@@ -1263,7 +1263,7 @@ class SQLiteRow : DriverRow
       return true;
    }
 
-   bool Query(char * queryString)
+   bool Query(const char * queryString)
    {
       bool status = true;
       int result;
@@ -1793,7 +1793,7 @@ class SQLiteRow : DriverRow
          case SQLITE_TEXT:
          {
             int numBytes = sqlite3_column_bytes(curStatement, num);
-            char * text = sqlite3_column_text(curStatement, num);
+            const char * text = sqlite3_column_text(curStatement, num);
             *(char **)data = text ? new byte[numBytes+1] : null;
             if(text)
                memcpy(*(char **)data, text, numBytes+1);
@@ -1804,7 +1804,7 @@ class SQLiteRow : DriverRow
             SerialBuffer buffer { };
             //buffer._buffer = sqlite3_column_blob(curStatement, num);
             buffer._size = sqlite3_column_bytes(curStatement, num);
-            buffer._buffer = sqlite3_column_text(curStatement, num);
+            buffer._buffer = (char *)sqlite3_column_text(curStatement, num);
             buffer.count = buffer._size;
 
             ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, buffer);
@@ -1891,7 +1891,7 @@ class SQLiteRow : DriverRow
       return !result;
    }
 
-   bool SetQueryParamText(int paramID, char * data)
+   bool SetQueryParamText(int paramID, const char * data)
    {
       int result;
       if(curStatement != queryStatement)
@@ -1907,7 +1907,7 @@ class SQLiteRow : DriverRow
       return !result;
    }
 
-   bool SetQueryParamObject(int paramID, void * data, Class type)
+   bool SetQueryParamObject(int paramID, const void * data, Class type)
    {
       int result;
       if(curStatement != queryStatement)
@@ -1918,7 +1918,7 @@ class SQLiteRow : DriverRow
       sqlite3_reset(queryStatement);
       {
          SerialBuffer buffer { };
-         ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSerialize])(type, data, buffer);
+         ((void (*)(void *, const void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSerialize])(type, data, buffer);
          result = sqlite3_bind_text(queryStatement, paramID, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
          delete buffer;
       }
@@ -1941,7 +1941,7 @@ class SQLiteRow : DriverRow
       SQLiteField lastFld = tbl._fields.last;
       return sqlite3_column_text(curStatement, lastFld.num + 1 + paramID);
    }*/
-   char * GetColumn(int paramID)
+   const char * GetColumn(int paramID)
    {
       return sqlite3_column_text(curStatement, paramID);
    }

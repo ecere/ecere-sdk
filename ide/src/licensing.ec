@@ -19,7 +19,7 @@ class LicenseTab : Tab
       readOnly = true;
       noCaret = true;
    };
-   property char * sourceFile
+   property const char * sourceFile
    {
       set
       {

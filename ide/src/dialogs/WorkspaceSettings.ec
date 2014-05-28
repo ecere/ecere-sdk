@@ -19,7 +19,7 @@ class WorkspaceTab : Tab
       bool NotifyModified(PathBox pathBox)
       {
          char path[MAX_LOCATION];
-         String debugDir = pathBox.path;
+         const String debugDir = pathBox.path;
          strcpy(path, ide.workspace.projectDir);
          if(debugDir)
             PathCat(path, debugDir);

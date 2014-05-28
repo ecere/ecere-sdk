@@ -39,19 +39,19 @@ FILE *eC_stdout(void);
 FILE *eC_stderr(void);
 
 // IMPLEMENTED IN _System.c
-bool System_MoveFile(char * source, char * dest);
-bool System_RenameFile(char * oldName, char * newName);
-bool System_DeleteFile(char * fileName);
-bool System_MakeDir(char * path);
-bool System_RemoveDir(char * path);
+bool System_MoveFile(const char * source, const char * dest);
+bool System_RenameFile(const char * oldName, const char * newName);
+bool System_DeleteFile(const char * fileName);
+bool System_MakeDir(const char * path);
+bool System_RemoveDir(const char * path);
 char * System_GetWorkingDir(char * buf, int size);
-bool System_ChangeWorkingDir(char * buf);
-char * System_GetEnvironment(char * envName, char * envValue, int max);
-void System_SetEnvironment(char * envName, char * envValue);
-void System_UnsetEnvironment(char * envName);
-bool System_Execute(char * env, char * command, va_list args, bool wait);
-bool System_ShellOpen(char * fileName, va_list args);
-void System_GetFreeSpace(char * path, FileSize64 * size);
+bool System_ChangeWorkingDir(const char * buf);
+char * System_GetEnvironment(const char * envName, char * envValue, int max);
+void System_SetEnvironment(const char * envName, const char * envValue);
+void System_UnsetEnvironment(const char * envName);
+bool System_Execute(const char * env, const char * command, va_list args, bool wait);
+bool System_ShellOpen(const char * fileName, va_list args);
+void System_GetFreeSpace(const char * path, FileSize64 * size);
 
 private:
 
@@ -116,7 +116,7 @@ public enum GuiErrorCode : ErrorCode
 
 static define DEFAULT_BUFFER_SIZE = 100 * MAX_F_STRING;
 
-static Array<String> sysErrorMessages
+static Array<const String> sysErrorMessages
 { [
    $"No error",
    $"Memory allocation failed",
@@ -127,7 +127,7 @@ static Array<String> sysErrorMessages
    $"Couldn't write to file"
 ] };
 
-static Array<String> guiErrorMessages
+static Array<const String> guiErrorMessages
 { [
    $"No error",
    $"Graphics driver not supported by any user interface system",
@@ -136,34 +136,34 @@ static Array<String> guiErrorMessages
    $"Driver/Mode switch failed"
 ] };
 
-static Array<Array<String>> errorMessages { [ sysErrorMessages, guiErrorMessages ] };
+static Array<Array<const String>> errorMessages { [ sysErrorMessages, guiErrorMessages ] };
 
 // --- File, directory & environment manipulation ---
 #undef MoveFile
 
-public bool MoveFile(char * source, char * dest)
+public bool MoveFile(const char * source, const char * dest)
 {
    return System_MoveFile(source, dest);
 }
 
-public bool RenameFile(char * oldName, char * newName)
+public bool RenameFile(const char * oldName, const char * newName)
 {
    return System_RenameFile(oldName, newName);
 }
 
 #undef DeleteFile
 
-public bool DeleteFile(char * fileName)
+public bool DeleteFile(const char * fileName)
 {
    return System_DeleteFile(fileName);
 }
 
-public bool MakeDir(char * path)
+public bool MakeDir(const char * path)
 {
    return System_MakeDir(path);
 }
 
-public bool RemoveDir(char * path)
+public bool RemoveDir(const char * path)
 {
    return System_RemoveDir(path);
 }
@@ -173,27 +173,27 @@ public char * GetWorkingDir(char * buf, int size)
    return System_GetWorkingDir(buf, size);
 }
 
-public bool ChangeWorkingDir(char * buf)
+public bool ChangeWorkingDir(const char * buf)
 {
    return System_ChangeWorkingDir(buf);
 }
 
-public char * GetEnvironment(char * envName, char * envValue, int max)
+public char * GetEnvironment(const char * envName, char * envValue, int max)
 {
    return System_GetEnvironment(envName, envValue, max);
 }
 
-public void SetEnvironment(char * envName, char * envValue)
+public void SetEnvironment(const char * envName, const char * envValue)
 {
    System_SetEnvironment(envName, envValue);
 }
 
-public void UnsetEnvironment(char * envName)
+public void UnsetEnvironment(const char * envName)
 {
    System_UnsetEnvironment(envName);
 }
 
-public bool Execute(char * command, ...)
+public bool Execute(const char * command, ...)
 {
    bool result;
    va_list args;
@@ -203,7 +203,7 @@ public bool Execute(char * command, ...)
    return result;
 }
 
-public bool ExecuteWait(char * command, ...)
+public bool ExecuteWait(const char * command, ...)
 {
    bool result;
    va_list args;
@@ -213,7 +213,7 @@ public bool ExecuteWait(char * command, ...)
    return result;
 }
 
-public bool ExecuteEnv(char * env, char * command, ...)
+public bool ExecuteEnv(const char * env, const char * command, ...)
 {
    bool result;
    va_list args;
@@ -223,7 +223,7 @@ public bool ExecuteEnv(char * env, char * command, ...)
    return result;
 }
 
-public bool ShellOpen(char * fileName, ...)
+public bool ShellOpen(const char * fileName, ...)
 {
    bool result;
    va_list args;
@@ -232,13 +232,13 @@ public bool ShellOpen(char * fileName, ...)
    return result;
 }
 
-public void GetFreeSpace(char * path, FileSize64 * size)
+public void GetFreeSpace(const char * path, FileSize64 * size)
 {
    System_GetFreeSpace(path, size);
 }
 
 // --- Uncagotegorized Functions ---
-public void Logf(char * format, ...)
+public void Logf(const char * format, ...)
 {
    va_list args;
    char string[MAX_F_STRING];
@@ -249,7 +249,7 @@ public void Logf(char * format, ...)
    va_end(args);
 }
 
-public void Log(char * text)
+public void Log(const char * text)
 {
    switch(globalSystem.errorLoggingMode)
    {
@@ -310,7 +310,7 @@ public void DumpErrors(bool display)
    }
 }
 
-public void LogErrorCode(ErrorCode errorCode, char * details)
+public void LogErrorCode(ErrorCode errorCode, const char * details)
 {
    if(errorCode.level <= globalSystem.errorLevel)
    {

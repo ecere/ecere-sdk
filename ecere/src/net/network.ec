@@ -272,7 +272,7 @@ void Network_Terminate()
 
 #ifndef ECERE_NONET
 
-public bool GetAddressFromName(char * hostName, char * inetAddress)
+public bool GetAddressFromName(const char * hostName, char * inetAddress)
 {
    HOSTENT * host;
 
@@ -288,7 +288,7 @@ public bool GetAddressFromName(char * hostName, char * inetAddress)
    return false;
 }
 
-public bool GetNameFromAddress(char * inetAddress, char * hostName)
+public bool GetNameFromAddress(const char * inetAddress, char * hostName)
 {
    struct in_addr in;
    HOSTENT * host;

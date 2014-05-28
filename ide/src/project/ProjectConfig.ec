@@ -16,7 +16,7 @@ class DirExpression : struct
       delete dir;
    }
 
-   property char * dir
+   property const char * dir
    {
       get
       {
@@ -32,10 +32,10 @@ class DirExpression : struct
       }
    }
 
-   void Evaluate(char * expression, Project project, CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void Evaluate(const char * expression, Project project, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       int len;
-      char * expr = expression;
+      const char * expr = expression;
       if(!expr || !expr[0])
       {
          char buffer[MAX_LOCATION];
@@ -52,11 +52,11 @@ class DirExpression : struct
       if((len = strlen(expr)))
       {
          int c, d;
-         char * configName = config && config.name && config.name[0] ? config.name : "Common";
-         char * projectName = project.name ? project.name : "";
-         char * moduleName = project.moduleName ? project.moduleName : "";
-         char * compilerName = (compiler && compiler.name) ? compiler.name : defaultCompilerName;
-         char * targetPlatformName = compiler && compiler.targetPlatform ? compiler.targetPlatform : "";
+         const char * configName = config && config.name && config.name[0] ? config.name : "Common";
+         const char * projectName = project.name ? project.name : "";
+         const char * moduleName = project.moduleName ? project.moduleName : "";
+         const char * compilerName = (compiler && compiler.name) ? compiler.name : defaultCompilerName;
+         const char * targetPlatformName = compiler && compiler.targetPlatform ? compiler.targetPlatform : "";
          char buffer[MAX_LOCATION];
          for(c = 0, d = 0; c < len; c++)
          {

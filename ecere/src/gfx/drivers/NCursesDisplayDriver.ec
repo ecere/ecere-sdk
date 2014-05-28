@@ -339,7 +339,7 @@ class NCursesDisplayDriver : DisplayDriver
 
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       return (void *) true;
    }
@@ -358,7 +358,7 @@ class NCursesDisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextOpacity(display, surface, opaque);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       LFBSurface lfbSurface = surface.driverData;
       int c;
@@ -383,12 +383,12 @@ class NCursesDisplayDriver : DisplayDriver
       }
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       FontExtent(display.displaySystem, null, text, len, width, height);
    }

@@ -3045,7 +3045,7 @@ class OpenGLDisplayDriver : DisplayDriver
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).UnloadFont(displaySystem, font);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       Font font;
       OGLSystem oglSystem = displaySystem.driverData;
@@ -3054,12 +3054,12 @@ class OpenGLDisplayDriver : DisplayDriver
       return font;
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).FontExtent(displaySystem, font, text, len, width, height);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       OGLSurface oglSurface = surface.driverData;
       OGLSystem oglSystem = display.displaySystem.driverData;
@@ -3101,7 +3101,7 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSurface.opaqueText = opaque;
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       OGLSurface oglSurface = surface.driverData;
       OGLSystem oglSystem = display.displaySystem.driverData;

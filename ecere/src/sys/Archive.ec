@@ -19,11 +19,11 @@ public class Archive
    FileSize totalSize;
 
 public:
-   virtual ArchiveDir OpenDirectory(char * name, FileStats stats, ArchiveAddMode addMode);
+   virtual ArchiveDir OpenDirectory(const char * name, FileStats stats, ArchiveAddMode addMode);
    virtual bool Clear(void);
 
-   virtual File FileOpen(char * fileName);
-   virtual FileAttribs FileExists(char * fileName);
+   virtual File FileOpen(const char * fileName);
+   virtual FileAttribs FileExists(const char * fileName);
    virtual File FileOpenAtPosition(uint position);
    virtual void SetBufferSize(uint bufferSize);
    virtual void SetBufferRead(uint bufferRead);
@@ -36,16 +36,16 @@ public:
 public class ArchiveDir
 {
 public:
-   virtual ArchiveDir OpenDirectory(char * name, FileStats stats, ArchiveAddMode addMode);
-   virtual bool AddFromFile(char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition);
-   virtual bool AddFromFileAtPosition(uint position, char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition);
-   virtual bool Delete(char * fileName);
-   virtual bool Move(char * name, ArchiveDir to);
-   virtual bool Rename(char * name, char * newName);
-   virtual File FileOpen(char * fileName);
-   virtual FileAttribs FileExists(char * fileName);
+   virtual ArchiveDir OpenDirectory(const char * name, FileStats stats, ArchiveAddMode addMode);
+   virtual bool AddFromFile(const char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition);
+   virtual bool AddFromFileAtPosition(uint position, const char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition);
+   virtual bool Delete(const char * fileName);
+   virtual bool Move(const char * name, ArchiveDir to);
+   virtual bool Rename(const char * name, const char * newName);
+   virtual File FileOpen(const char * fileName);
+   virtual FileAttribs FileExists(const char * fileName);
 
-   bool Add(char * name, char * path, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
+   bool Add(const char * name, const char * path, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
    {
       bool result = false;
       File file = ::FileOpen(path, read);
@@ -60,13 +60,13 @@ public:
    }
 }
 
-public Archive ArchiveOpen(char * fileName, ArchiveOpenFlags flags)
+public Archive ArchiveOpen(const char * fileName, ArchiveOpenFlags flags)
 {
    return EARFileSystem::OpenArchive(fileName, flags);
 }
 #endif
 
-public bool ArchiveQuerySize(char * fileName, FileSize * size)
+public bool ArchiveQuerySize(const char * fileName, FileSize * size)
 {
    return EARFileSystem::QuerySize(fileName, size);
 }

@@ -52,7 +52,7 @@ __attribute__((unused)) static void DummyFunction()
 public class DisplayDriver
 {
 public:
-   class_data char * name;
+   class_data const char * name;
    class_data bool textMode;
    class_data bool printer;
    class_data DisplaySystem displaySystem;
@@ -63,7 +63,7 @@ public:
       get { return class_data(displaySystem); }
    };
 
-   class_property char * name
+   class_property const char * name
    {
       set { class_data(name) = value; }
       get { return class_data(name); }
@@ -125,7 +125,7 @@ public:
    virtual bool ::MakeDDBitmap(DisplaySystem, Bitmap, bool);
 
    // Font loading
-   virtual Font ::LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags);
+   virtual Font ::LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags);
    virtual void ::UnloadFont(DisplaySystem, Font);
 
    // 2D Drawing
@@ -146,9 +146,9 @@ public:
    virtual void ::FilterDI(Display, Surface, Bitmap, int, int, int, int, int, int, int,int);
    virtual void ::TextFont(Display, Surface, Font);
    virtual void ::TextOpacity(Display, Surface, bool);
-   virtual void ::WriteText(Display, Surface, int, int, char *, int);
-   virtual void ::TextExtent(Display, Surface, char *, int, int *, int *);
-   virtual void ::FontExtent(DisplaySystem, Font, char *, int, int *, int *);
+   virtual void ::WriteText(Display, Surface, int, int, const char *, int);
+   virtual void ::TextExtent(Display, Surface, const char *, int, int *, int *);
+   virtual void ::FontExtent(DisplaySystem, Font, const char *, int, int *, int *);
    virtual void ::DrawingChar(Display, Surface, char);
    virtual void ::NextPage(Display);
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
@@ -177,7 +177,7 @@ public:
 public enum Alignment { left, right, center };
 public enum ClearType { colorBuffer, depthBuffer, colorAndDepth };
 
-subclass(DisplayDriver) GetDisplayDriver(char * driverName)
+subclass(DisplayDriver) GetDisplayDriver(const char * driverName)
 {
    if(driverName)
    {
@@ -192,7 +192,7 @@ subclass(DisplayDriver) GetDisplayDriver(char * driverName)
    return null;
 }
 
-DisplaySystem GetDisplaySystem(char * driverName)
+DisplaySystem GetDisplaySystem(const char * driverName)
 {
    subclass(DisplayDriver) displayDriver = GetDisplayDriver(driverName);
    return displayDriver ? displayDriver.displaySystem : null;
@@ -502,7 +502,7 @@ public:
       return result;
    }
 
-   void FontExtent(Font font, char * text, int len, int * width, int * height)
+   void FontExtent(Font font, const char * text, int len, int * width, int * height)
    {
       // Fix for OnLoadGraphics time alpha blended window text extent on GDI
 #if defined(__WIN32__) && !defined(ECERE_NOTRUETYPE)
@@ -1713,13 +1713,13 @@ private class Display3D
 };
 #endif
 
-bool IsDriverTextMode(char * driverName)
+bool IsDriverTextMode(const char * driverName)
 {
    subclass(DisplayDriver) driver = GetDisplayDriver(driverName);
    return driver ? driver.textMode : false;
 }
 
-bool IsDriverPrinter(char * driverName)
+bool IsDriverPrinter(const char * driverName)
 {
    subclass(DisplayDriver) driver = GetDisplayDriver(driverName);
    return driver ? driver.printer : false;

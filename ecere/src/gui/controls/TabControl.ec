@@ -301,7 +301,7 @@ public class TabControl : Window
       return false;
    }
 
-   void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving)
+   void ShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving)
    {
       if(placement == bottom && ((BorderBits)borderStyle).fixed)
       {

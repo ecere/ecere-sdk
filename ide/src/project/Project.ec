@@ -374,7 +374,7 @@ define PEEK_RESOLUTION = (18.2 * 10);
 #define SEPS    "/"
 #define SEP     '/'
 
-static Array<String> notLinkerOptions
+static Array<const String> notLinkerOptions
 { [
    "-static-libgcc",
    "-shared",
@@ -427,9 +427,10 @@ define stringFrom =               "                 from ";
 // NOTES: - this function should get only unescaped unix style paths
 //        - paths with literal $(somestring) in them are not supported
 //          my_$(messed_up)_path would likely become my__path
-void EscapeForMake(char * output, char * input, bool hideSpace, bool allowVars, bool allowDblQuote)
+void EscapeForMake(char * output, const char * input, bool hideSpace, bool allowVars, bool allowDblQuote)
 {
-   char ch, *i = input, *o = output;
+   char ch, *o = output;
+   const char *i = input;
    bool inVar = false;
 #ifdef _DEBUG
    int len = strlen(input);
@@ -482,7 +483,7 @@ void EscapeForMakeToFile(File output, char * input, bool hideSpace, bool allowVa
    delete buf;
 }
 
-void EscapeForMakeToDynString(DynamicString output, char * input, bool hideSpace, bool allowVars, bool allowDblQuote)
+void EscapeForMakeToDynString(DynamicString output, const char * input, bool hideSpace, bool allowVars, bool allowDblQuote)
 {
    char * buf = new char[strlen(input)*2+1];
    EscapeForMake(buf, input, hideSpace, allowVars, allowDblQuote);
@@ -490,7 +491,7 @@ void EscapeForMakeToDynString(DynamicString output, char * input, bool hideSpace
    delete buf;
 }
 
-int OutputFileList(File f, char * name, Array<String> list, Map<String, int> varStringLenDiffs, char * prefix)
+int OutputFileList(File f, const char * name, Array<String> list, Map<String, int> varStringLenDiffs, const char * prefix)
 {
    int numOfBreaks = 0;
    const int breakListLength = 1536;
@@ -580,7 +581,7 @@ int OutputFileList(File f, char * name, Array<String> list, Map<String, int> var
    return numOfBreaks;
 }
 
-void OutputFileListActions(File f, char * name, int parts, char * fileName)
+void OutputFileListActions(File f, const char * name, int parts, const char * fileName)
 {
    if(parts > 1)
    {
@@ -592,7 +593,7 @@ void OutputFileListActions(File f, char * name, int parts, char * fileName)
    }
 }
 
-void OutputCleanActions(File f, char * name, int parts)
+void OutputCleanActions(File f, const char * name, int parts)
 {
    if(parts > 1)
    {
@@ -608,7 +609,7 @@ enum LineOutputMethod { inPlace, newLine, lineEach };
 enum StringOutputMethod { asIs, escape, escapePath};
 
 enum ToolchainFlag { any, _D, _I, _isystem, _Wl, _L/*, _Wl-rpath*/ };
-String flagNames[ToolchainFlag] = { "", "-D", "-I", "-isystem ", "-Wl,", /*"-Wl,--library-path="*/"-L"/*, "-Wl,-rpath "*/ };
+const String flagNames[ToolchainFlag] = { "", "-D", "-I", "-isystem ", "-Wl,", /*"-Wl,--library-path="*/"-L"/*, "-Wl,-rpath "*/ };
 void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMethod lineMethod)
 {
    if(list.count)
@@ -666,9 +667,12 @@ static void OutputLibraries(File f, Array<String> libraries)
 
 void CamelCase(char * string)
 {
-   int c, len = strlen(string);
-   for(c=0; c<len && string[c] >= 'A' && string[c] <= 'Z'; c++)
-      string[c] = (char)tolower(string[c]);
+   if(string)
+   {
+      int c, len = strlen(string);
+      for(c=0; c<len && string[c] >= 'A' && string[c] <= 'Z'; c++)
+         string[c] = (char)tolower(string[c]);
+   }
 }
 
 CompilerConfig GetCompilerConfig()
@@ -744,7 +748,7 @@ define platformTargetType =
                projectPOs.options.targetType : TargetTypes::unset;
 
 
-char * PlatformToMakefileTargetVariable(Platform platform)
+const char * PlatformToMakefileTargetVariable(Platform platform)
 {
    return platform == win32 ? "WINDOWS_TARGET" :
           platform == tux   ? "LINUX_TARGET"   :
@@ -752,7 +756,7 @@ char * PlatformToMakefileTargetVariable(Platform platform)
                               "ERROR_BAD_TARGET";
 }
 
-char * TargetTypeToMakefileVariable(TargetTypes targetType)
+const char * TargetTypeToMakefileVariable(TargetTypes targetType)
 {
    return targetType == executable    ? "executable" :
           targetType == sharedLibrary ? "sharedlib"  :
@@ -761,7 +765,7 @@ char * TargetTypeToMakefileVariable(TargetTypes targetType)
 }
 
 // Move this to ProjectConfig? null vs Common to consider...
-char * GetConfigName(ProjectConfig config)
+const char * GetConfigName(ProjectConfig config)
 {
    return config ? config.name : "Common";
 }
@@ -782,28 +786,28 @@ public:
    float version;
    String moduleName;
 
-   property char * moduleVersion
+   property const char * moduleVersion
    {
       set { delete moduleVersion; if(value && value[0]) moduleVersion = CopyString(value); } // TODO: use CopyString function that filters chars
       get { return moduleVersion ? moduleVersion : ""; }                                     //       version number should only use digits and dots
       isset { return moduleVersion != null && moduleVersion[0]; }                            //       add leading/trailing 0 if value start/ends with dot(s)
    }
 
-   property char * description
+   property const char * description
    {
       set { delete description; if(value && value[0]) description = CopyString(value); }
       get { return description ? description : ""; }
       isset { return description != null && description[0]; }
    }
 
-   property char * license
+   property const char * license
    {
       set { delete license; if(value && value[0]) license = CopyString(value); }
       get { return license ? license : ""; }
       isset { return license != null && license[0]; }
    }
 
-   property char * compilerConfigsDir
+   property const char * compilerConfigsDir
    {
       set { delete compilerConfigsDir; if(value && value[0]) compilerConfigsDir = CopyString(value); }
       get { return compilerConfigsDir ? compilerConfigsDir : ""; }
@@ -872,7 +876,7 @@ private:
    FileMonitor fileMonitor
    {
       this, FileChange { modified = true };
-      bool OnFileNotify(FileChange action, char * param)
+      bool OnFileNotify(FileChange action, const char * param)
       {
          fileMonitor.StopMonitoring();
          if(OnProjectModified(action, param))
@@ -894,7 +898,7 @@ private:
       return true;
    }
 
-   bool OnProjectModified(FileChange fileChange, char * param)
+   bool OnProjectModified(FileChange fileChange, const char * param)
    {
       char temp[4096];
       sprintf(temp, $"The project %s was modified by another application.\n"
@@ -998,7 +1002,7 @@ private:
       }
    }
 
-   property char * filePath
+   property const char * filePath
    {
       set
       {
@@ -1020,7 +1024,7 @@ private:
       }
    }
 
-   ProjectConfig GetConfig(char * configName)
+   ProjectConfig GetConfig(const char * configName)
    {
       ProjectConfig result = null;
       if(configName && configName[0] && configurations.count)
@@ -1034,10 +1038,10 @@ private:
       return result;
    }
 
-   ProjectNode FindNodeByObjectFileName(char * fileName, IntermediateFileType type, bool dotMain, ProjectConfig config)
+   ProjectNode FindNodeByObjectFileName(const char * fileName, IntermediateFileType type, bool dotMain, ProjectConfig config)
    {
       ProjectNode result;
-      char * cfgName;
+      const char * cfgName;
       if(!config)
          config = this.config;
       cfgName = config ? config.name : "";
@@ -1066,10 +1070,10 @@ private:
       return false;
    }
 
-   char * GetObjDirExpression(ProjectConfig config)
+   const char * GetObjDirExpression(ProjectConfig config)
    {
       // TODO: Support platform options
-      char * expression = localObjectsDirectory;
+      const char * expression = localObjectsDirectory;
       if(!expression)
          expression = settingsObjectsDirectory;
       return expression;
@@ -1077,16 +1081,16 @@ private:
 
    DirExpression GetObjDir(CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
-      char * expression = GetObjDirExpression(config);
+      const char * expression = GetObjDirExpression(config);
       DirExpression objDir { type = intermediateObjectsDir };
       objDir.Evaluate(expression, this, compiler, config, bitDepth);
       return objDir;
    }
 
-   char * GetTargetDirExpression(ProjectConfig config)
+   const char * GetTargetDirExpression(ProjectConfig config)
    {
       // TODO: Support platform options
-      char * expression = localTargetDirectory;
+      const char * expression = localTargetDirectory;
       if(!expression)
          expression = settingsTargetDirectory;
       return expression;
@@ -1094,7 +1098,7 @@ private:
 
    DirExpression GetTargetDir(CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
-      char * expression = GetTargetDirExpression(config);
+      const char * expression = GetTargetDirExpression(config);
       DirExpression targetDir { type = DirExpressionType::targetDir /*intermediateObjectsDir*/};
       targetDir.Evaluate(expression, this, compiler, config, bitDepth);
       return targetDir;
@@ -1142,9 +1146,9 @@ private:
       return fastMath == true;
    }
 
-   String GetDefaultNameSpace(ProjectConfig config)
+   const String GetDefaultNameSpace(ProjectConfig config)
    {
-      String defaultNameSpace = localDefaultNameSpace;
+      const String defaultNameSpace = localDefaultNameSpace;
       return defaultNameSpace;
    }
 
@@ -1154,9 +1158,9 @@ private:
       return strictNameSpaces == true;
    }
 
-   String GetTargetFileName(ProjectConfig config)
+   const String GetTargetFileName(ProjectConfig config)
    {
-      String targetFileName = localTargetFileName;
+      const String targetFileName = localTargetFileName;
       return targetFileName;
    }
 
@@ -1197,7 +1201,7 @@ private:
    }
 
 #ifndef MAKEFILE_GENERATOR
-   bool Save(char * fileName)
+   bool Save(const char * fileName)
    {
       File f;
       /*char output[MAX_LOCATION];
@@ -1229,7 +1233,7 @@ private:
    void CatTargetFileName(char * string, CompilerConfig compiler, ProjectConfig config)
    {
       TargetTypes targetType = GetTargetType(config);
-      String targetFileName = GetTargetFileName(config);
+      const String targetFileName = GetTargetFileName(config);
       if(targetType == staticLibrary)
       {
          PathCatSlash(string, "lib");
@@ -1363,7 +1367,7 @@ private:
    void ModifiedAllConfigs(bool making, bool compiling, bool linking, bool symbolGen)
    {
       Map<String, NameCollisionInfo> cfgNameCollision;
-      MapIterator<String, Map<String, NameCollisionInfo>> it { map = configsNameCollisions };
+      MapIterator<const String, Map<String, NameCollisionInfo>> it { map = configsNameCollisions };
       if(it.Index("", false))
       {
          cfgNameCollision = it.data;
@@ -1475,9 +1479,9 @@ private:
       bool loggedALine = false;
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
-      char * t, * s;
+      const char * t, * s;
       char moduleName[MAX_FILENAME];
-      char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
+      const char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
 
       DynamicString test { };
       DynamicString ecp { };
@@ -1539,15 +1543,15 @@ private:
             //printf("Peeking and GetLine...\n");
             if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)) && line[0])
             {
-               char * message = null;
-               char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
-               char * from = strstr(line, stringFrom);
+               const char * message = null;
+               const char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
+               const char * from = strstr(line, stringFrom);
                test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
                if((t = strstr(line, (s=": recipe for target"))) && (t = strstr(t+strlen(s), (s=" failed"))) && (t+strlen(s))[0] == '\0')
                   ; // ignore this new gnu make error but what is it about?
                else if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                {
-                  char * module = strstr(line, "No rule to make target `");
+                  const char * module = strstr(line, "No rule to make target `");
                   if(module)
                   {
                      char * end;
@@ -1606,7 +1610,7 @@ private:
 
                   if(module)
                   {
-                     byte * tokens[1];
+                     char * tokens[1];
                      if(!compiling && !isPrecomp)
                      {
                         ide.outputView.buildBox.Logf($"Compiling...\n");
@@ -1668,13 +1672,13 @@ private:
                {
                   if(linking || compiling || precompiling)
                   {
-                     char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen(stringFrom) : line;
-                     char * colon = strstr(start, ":"); //, * bracket;
+                     const char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen(stringFrom) : line;
+                     const char * colon = strstr(start, ":"); //, * bracket;
                      if(colon && (colon[1] == '/' || colon[1] == '\\'))
                         colon = strstr(colon + 1, ":");
                      if(colon)
                      {
-                        char * sayError = "";
+                        const char * sayError = "";
                         char moduleName[MAX_LOCATION], temp[MAX_LOCATION];
                         char * pointer;
                         char * error;
@@ -1995,7 +1999,7 @@ private:
       DirExpression objDirExp = GetObjDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
       bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
-      char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
+      const char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       bool eC_Debug = mode.eC_ToolsDebug;
       bool singleProjectOnlyNode = onlyNodes && onlyNodes.count == 1 && onlyNodes[0].type == project;
@@ -2191,7 +2195,7 @@ private:
       DualPipe f;
       PathBackup pathBackup { };
       bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
-      char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
+      const char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       compilerName = CopyString(compiler.name);
       CamelCase(compilerName);
@@ -2255,7 +2259,7 @@ private:
       delete compilerName;
    }
 
-   void Run(char * args, CompilerConfig compiler, ProjectConfig config, int bitDepth)
+   void Run(const char * args, CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       String target = new char[maxPathLen];
       char oldDirectory[MAX_LOCATION];
@@ -2381,7 +2385,7 @@ private:
       char * name;
       char * compilerName;
       bool gccCompiler = compiler.ccCommand && (strstr(compiler.ccCommand, "gcc") != null || strstr(compiler.ccCommand, "g++") != null);
-      char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
+      const char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
       Platform platform = compiler.targetPlatform;
 
       compilerName = CopyString(compiler.name);
@@ -2567,7 +2571,7 @@ private:
       return result;
    }
 
-   bool GenerateMakefile(char * altMakefilePath, bool noResources, char * includemkPath, ProjectConfig config)
+   bool GenerateMakefile(const char * altMakefilePath, bool noResources, const char * includemkPath, ProjectConfig config)
    {
       bool result = false;
       char filePath[MAX_LOCATION];
@@ -2610,7 +2614,7 @@ private:
          int numRCObjects = 0;
          bool containsCXX = false; // True if the project contains a C++ file
          bool relObjDir, sameOrRelObjTargetDirs;
-         String objDirExp = GetObjDirExpression(config);
+         const String objDirExp = GetObjDirExpression(config);
          TargetTypes targetType = GetTargetType(config);
 
          char cfDir[MAX_LOCATION];
@@ -2794,7 +2798,7 @@ private:
 
          {
             int c;
-            char * map[5][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" }, { "ECOBJECTS", "O" }, { "BOWLS", "B" } };
+            const char * map[5][2] = { { "COBJECTS", "C" }, { "SYMBOLS", "S" }, { "IMPORTS", "I" }, { "ECOBJECTS", "O" }, { "BOWLS", "B" } };
 
             numCObjects = topNode.GenMakefilePrintNode(f, this, eCsources, namesInfo, listItems, config, null);
             if(numCObjects)
@@ -2890,7 +2894,7 @@ private:
 
          topNode.GenMakefilePrintNode(f, this, sources, null, listItems, config, null);
          {
-            char * prefix;
+            const char * prefix;
             if(numCObjects && numRCObjects)
                prefix = "$(ECSOURCES) $(RCSOURCES)";
             else if(numCObjects)
@@ -3522,7 +3526,7 @@ private:
       DualPipe dep;
       char command[2048];
       char objDirNoSpaces[MAX_LOCATION];
-      String objDirExp = GetObjDirExpression(config);
+      const String objDirExp = GetObjDirExpression(config);
 
       ReplaceSpaces(objDirNoSpaces, objDirExp);
       ReplaceSpaces(fixedModuleName, moduleName);
@@ -3608,7 +3612,7 @@ private:
 #endif
    }
 
-   void GenMakePrintCustomFlags(File f, String variableName, bool printNonCustom, Map<String, int> cflagsVariations)
+   void GenMakePrintCustomFlags(File f, const String variableName, bool printNonCustom, Map<String, int> cflagsVariations)
    {
       int c;
       for(c = printNonCustom ? 0 : 1; c <= cflagsVariations.count; c++)
@@ -3661,7 +3665,7 @@ private:
 
 static inline void ProjectLoadLastBuildNamesInfo(Project prj, ProjectConfig cfg)
 {
-   char * cfgName = cfg ? cfg.name : "";
+   const char * cfgName = cfg ? cfg.name : "";
    Map<String, NameCollisionInfo> cfgNameCollisions = prj.configsNameCollisions[cfgName];
    if(cfgNameCollisions)
    {
@@ -3672,7 +3676,7 @@ static inline void ProjectLoadLastBuildNamesInfo(Project prj, ProjectConfig cfg)
    prj.topNode.GenMakefileGetNameCollisionInfo(cfgNameCollisions, cfg);
 }
 
-Project LegacyBinaryLoadProject(File f, char * filePath)
+Project LegacyBinaryLoadProject(File f, const char * filePath)
 {
    Project project = null;
    char signature[sizeof(epjSignature)];
@@ -3972,7 +3976,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
    makingModified = true;
 }
 
-Project LegacyAsciiLoadProject(File f, char * filePath)
+Project LegacyAsciiLoadProject(File f, const char * filePath)
 {
    Project project = null;
    ProjectNode node = null;
@@ -4486,7 +4490,7 @@ void CombineIdenticalConfigOptions(Project project)
    }
 }
 
-Project LoadProject(char * filePath, char * activeConfigName)
+Project LoadProject(const char * filePath, const char * activeConfigName)
 {
    Project project = null;
    File f = FileOpen(filePath, read);
@@ -4578,7 +4582,7 @@ Project LoadProject(char * filePath, char * activeConfigName)
    return project;
 }
 
-static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, String compilerCommand)
+static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, const String compilerCommand)
 {
    GccVersionInfo result = unknown;
    if(compiler.ccCommand)

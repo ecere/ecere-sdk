@@ -28,7 +28,7 @@ void CocoaUnlock(WindowHandle handle);
 void CocoaGetCurrentMode(bool * fullScreen, int * resolution, int * colorDepth, int * refreshRate);
 WindowHandle CocoaCreateRootWindow(EcereWindowRef window);
 void CocoaDestroyRootWindow(WindowHandle handle);
-void CocoaSetRootWindowCaption(WindowHandle window, char *name);
+void CocoaSetRootWindowCaption(WindowHandle window, const char *name);
 void CocoaPositionRootWindow(WindowHandle handle, int x, int y, int w, int h, bool move, bool resize);
 void CocoaOffsetWindow(WindowHandle window, int *x, int *y);
 void CocoaGetMousePosition(int *x, int *y);
@@ -79,7 +79,7 @@ void CocoaDispatch_OnMouseCaptureLost(EcereWindowRef window);
 //void CocoaDispatch_OnHScroll(EcereWindowRef window, ScrollBarAction action, int position, Key key);
 //void CocoaDispatch_OnVScroll(EcereWindowRef window, ScrollBarAction action, int position, Key key);
 //void CocoaDispatch_OnDrawOverChildren(EcereWindowRef window, Surface surface);
-//bool CocoaDispatch_OnFileModified(EcereWindowRef window, FileChange fileChange, char * param);
-bool CocoaDispatch_OnSaveFile(EcereWindowRef window, char *fileName);
+//bool CocoaDispatch_OnFileModified(EcereWindowRef window, FileChange fileChange, const char * param);
+bool CocoaDispatch_OnSaveFile(EcereWindowRef window, const char *fileName);
 
 #endif // !defined(_COCOAINTERFACE_H)

@@ -831,7 +831,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       Filter(display, surface, src, dx, dy, sx, sy, w, h, sw, sh);
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
       Win32PrinterSystem gdiSystem = displaySystem.driverData;
       HDC hdc = gdiSystem.hdc;
@@ -879,7 +879,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       SetBkMode(gdiSurface.hdc, opaque ? OPAQUE : TRANSPARENT);
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, char * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       Win32PrinterSurface gdiSurface = surface.driverData;
       Win32PrinterDisplay gdiDisplay = display ? display.driverData : null;
@@ -899,7 +899,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       delete u16text;
    }
 
-   void ::_TextExtent(HDC hdc, int resX, int resY, char * text, int len, int * width, int * height)
+   void ::_TextExtent(HDC hdc, int resX, int resY, const char * text, int len, int * width, int * height)
    {
       SIZE space, size;
       uint realLen;
@@ -927,7 +927,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       }
    }
 
-   void TextExtent(Display display, Surface surface, char * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
       Win32PrinterSystem gdiSystem = (display && display.displaySystem) ? display.displaySystem.driverData : null;
       Win32PrinterSurface gdiSurface = surface.driverData;
@@ -935,7 +935,7 @@ class Win32PrinterDisplayDriver : DisplayDriver
       _TextExtent(gdiSurface.hdc, gdiSystem.resX, gdiSystem.resY, text, len, width, height);
    }
 
-   void FontExtent(DisplaySystem displaySystem, void * font, char * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, void * font, const char * text, int len, int * width, int * height)
    {
       Win32PrinterSystem gdiSystem = displaySystem.driverData;
       if(gdiSystem.hdc)

@@ -35,7 +35,7 @@ public class FileMonitor
 public:
    property void * userData { set { data = value; } };
    property FileChange fileChange { set { watchFor = value; } };
-   property char * fileName
+   property const char * fileName
    {
       set
       {
@@ -47,7 +47,7 @@ public:
       }
       get { return fileName; }
    };
-   property char * directoryName
+   property const char * directoryName
    {
       set
       {
@@ -114,12 +114,12 @@ private:
    TimeStamp modified;
    FileSize size;
    FileAttribs attribs;
-   public virtual bool any_object::OnDirNotify(FileChange action, char * fileName, char * param);
+   public virtual bool any_object::OnDirNotify(FileChange action, const char * fileName, const char * param);
 
    // For directory monitors
    bool directory;
    OldList files;
-   public virtual bool any_object::OnFileNotify(FileChange action, char * param);
+   public virtual bool any_object::OnFileNotify(FileChange action, const char * param);
 
    /*
 #if defined(__WIN32__)
@@ -139,7 +139,7 @@ private:
       globalSystem.fileMonitorMutex.Release();
    }
 
-   void MonitorFile(char * filePath)
+   void MonitorFile(const char * filePath)
    {
       FileAttribs exists = FileExists(filePath);
       FileStats stats;
@@ -182,7 +182,7 @@ private:
       }
    }
 
-   void MonitorDirectory(char * filePath)
+   void MonitorDirectory(const char * filePath)
    {
       FileStats stats;
       String oldFileName = fileName;
@@ -233,7 +233,7 @@ private:
       // delete this;
    }
 
-   bool AddFileNotify(FileChange action, char * fileName, char * param)
+   bool AddFileNotify(FileChange action, const char * fileName, const char * param)
    {
       if(watchFor & action)
       {
@@ -273,7 +273,7 @@ static int CompareFiles(FileEntry e1, FileEntry e2, void * data)
       return strcmp(e1.name, e2.name);
 }
 
-static void GetFileEntries(OldList list, char * path)
+static void GetFileEntries(OldList list, const char * path)
 {
    FileListing listing { path, null };
    while(listing.Find())

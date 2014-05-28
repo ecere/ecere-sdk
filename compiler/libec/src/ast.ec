@@ -4,9 +4,9 @@ import "ecdefs"
 #include "grammar.h"
 extern char * yytext;
 
-char * defaultNameSpace;
+const char * defaultNameSpace;
 int defaultNameSpaceLen;
-public void SetDefaultNameSpace(char * s) { defaultNameSpace = s; defaultNameSpaceLen = s ? strlen(s) : 0; }
+public void SetDefaultNameSpace(const char * s) { defaultNameSpace = s; defaultNameSpaceLen = s ? strlen(s) : 0; }
 
 bool strictNameSpaces;
 public void SetStrictNameSpaces(bool b) { strictNameSpaces = b; }
@@ -18,9 +18,9 @@ public void SetDeclMode(AccessMode accessMode) { structDeclMode = declMode = acc
 AccessMode defaultDeclMode = privateAccess;
 public void SetDefaultDeclMode(AccessMode accessMode) { defaultDeclMode = accessMode; }
 
-char * currentNameSpace;
+const char * currentNameSpace;
 int currentNameSpaceLen;
-public void SetCurrentNameSpace(char * s) { currentNameSpace = s; currentNameSpaceLen = s ? strlen(s) : 0; }
+public void SetCurrentNameSpace(const char * s) { currentNameSpace = s; currentNameSpaceLen = s ? strlen(s) : 0; }
 
 #ifdef _TIMINGS
 Time findClassTotalTime;
@@ -53,7 +53,7 @@ void ListAddFront(OldList list, void * item)
       list.Insert(null, item);
 }
 
-public Identifier MkIdentifier(char * string)
+public Identifier MkIdentifier(const char * string)
 {
    Identifier id { };
    int c;
@@ -62,7 +62,7 @@ public Identifier MkIdentifier(char * string)
 
    if(string)
    {
-      char * namePart;
+      const char * namePart;
       bool gotColon = false;
       for(c = strlen(string)-1; c >= 0; c--)
          if(string[c] == ':')
@@ -210,7 +210,7 @@ Expression MkExpExtensionInitializer(TypeName typeName, Initializer initializer)
 
 public Expression MkExpIdentifier(Identifier id)
 {
-   return { type = identifierExp, identifier = id };
+   return { type = identifierExp, identifier = id, loc = yylloc };
 }
 
 public Expression MkExpDummy()
@@ -219,14 +219,14 @@ public Expression MkExpDummy()
    return exp;
 }
 
-public Expression MkExpConstant(char * string)
+public Expression MkExpConstant(const char * string)
 {
-   return { type = constantExp, constant = CopyString(string) };
+   return { type = constantExp, constant = CopyString(string), loc = yylloc };
 }
 
-Expression MkExpString(char * string)
+Expression MkExpString(const char * string)
 {
-   return { type = stringExp, string = CopyString(string) };
+   return { type = stringExp, string = CopyString(string), loc = yylloc };
 }
 
 // TODO: String is case sensitive..
@@ -275,7 +275,7 @@ public struct ContextStringPair
 
 Map<ContextStringPair, List<Location>> intlStrings { };
 
-Expression MkExpIntlString(char * string, char * context)
+Expression MkExpIntlString(const char * string, const char * context)
 {
    if(inCompiler)
    {
@@ -371,67 +371,67 @@ Expression MkExpIndex(Expression expression, OldList index)
 
 Expression MkExpCall(Expression expression, OldList arguments)
 {
-   return { type = callExp, call.exp = expression, call.arguments = arguments };
+   return { type = callExp, call.exp = expression, call.arguments = arguments, loc = yylloc };
 }
 
 Expression MkExpMember(Expression expression, Identifier member)
 {
-   return { type = memberExp, member.exp = expression, member.member = member };
+   return { type = memberExp, member.exp = expression, member.member = member, loc = yylloc };
 }
 
 Expression MkExpPointer(Expression expression, Identifier member)
 {
-   return { type = pointerExp, member.exp = expression, member.member = member };
+   return { type = pointerExp, member.exp = expression, member.member = member, loc = yylloc };
 }
 
 Expression MkExpTypeSize(TypeName typeName)
 {
-   return { type = typeSizeExp, typeName = typeName };
+   return { type = typeSizeExp, typeName = typeName, loc = yylloc };
 }
 
 Expression MkExpTypeAlign(TypeName typeName)
 {
-   return { type = typeAlignExp, typeName = typeName };
+   return { type = typeAlignExp, typeName = typeName, loc = yylloc };
 }
 
 Expression MkExpClassSize(Specifier _class)
 {
-   return { type = classSizeExp, _class = _class };
+   return { type = classSizeExp, _class = _class, loc = yylloc };
 }
 
 Expression MkExpCast(TypeName typeName, Expression expression)
 {
-   return { type = castExp, cast.typeName = typeName, cast.exp = expression };
+   return { type = castExp, cast.typeName = typeName, cast.exp = expression, loc = yylloc };
 }
 
 Expression MkExpCondition(Expression cond, OldList expressions, Expression elseExp)
 {
-   return { type = conditionExp, cond.cond = cond, cond.exp = expressions, cond.elseExp = elseExp };
+   return { type = conditionExp, cond.cond = cond, cond.exp = expressions, cond.elseExp = elseExp, loc = yylloc };
 }
 
 Expression MkExpRenew(Expression memExp, TypeName type, Expression size)
 {
-   return { type = renewExp, _renew.exp = memExp, _renew.typeName = type, _renew.size = size };
+   return { type = renewExp, _renew.exp = memExp, _renew.typeName = type, _renew.size = size, loc = yylloc };
 }
 
 Expression MkExpRenew0(Expression memExp, TypeName type, Expression size)
 {
-   return { type = renew0Exp, _renew.exp = memExp, _renew.typeName = type, _renew.size = size };
+   return { type = renew0Exp, _renew.exp = memExp, _renew.typeName = type, _renew.size = size, loc = yylloc };
 }
 
 Expression MkExpNew(TypeName type, Expression size)
 {
-   return { type = newExp, _new.typeName = type, _new.size = size };
+   return { type = newExp, _new.typeName = type, _new.size = size, loc = yylloc };
 }
 
 Expression MkExpNew0(TypeName type, Expression size)
 {
-   return { type = new0Exp, _new.typeName = type, _new.size = size };
+   return { type = new0Exp, _new.typeName = type, _new.size = size, loc = yylloc };
 }
 
 Expression MkExpVaArg(Expression exp, TypeName type)
 {
-   return { type = vaArgExp, vaArg.exp = exp, vaArg.typeName = type };
+   return { type = vaArgExp, vaArg.exp = exp, vaArg.typeName = type, loc = yylloc };
 }
 
 Specifier MkSpecifier(int specifier)
@@ -675,7 +675,7 @@ public TypeName MkTypeNameGuessDecl(OldList qualifiers, Declarator declarator)
          next = spec.next;
          if(gotType && !declarator && ((spec.type == nameSpecifier && spec.name) || (spec.type == baseSpecifier && gotFullType)))
          {
-            String s = null;
+            const String s = null;
             if(spec.type == nameSpecifier)
             {
                char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
@@ -856,10 +856,10 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                {
                   if((spec.type == nameSpecifier && spec.name) || spec.type == baseSpecifier)
                   {
-                     String s = null;
+                     const String s = null;
                      if(spec.type == nameSpecifier)
                      {
-                        char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
+                        const char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
                         s = colon ? colon + 2 : spec.name;
                      }
                      else if(spec.type == baseSpecifier)
@@ -890,7 +890,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
          {
             if(gotType && initDeclarators == null && !spec.next && ((spec.type == nameSpecifier && spec.name) || spec.type == baseSpecifier))
             {
-               String s = null;
+               const String s = null;
                if(spec.type == nameSpecifier)
                {
                   char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
@@ -1023,10 +1023,10 @@ Declaration MkStructDeclaration(OldList specifiers, OldList declarators, Specifi
          next = spec.next;
          if(gotType && declarators == null && ((spec.type == nameSpecifier && spec.name) || spec.type == baseSpecifier))
          {
-            String s = null;
+            const String s = null;
             if(spec.type == nameSpecifier)
             {
-               char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
+               const char * colon = RSearchString(spec.name, "::", strlen(spec.name), true, false);
                s = colon ? colon + 2 : spec.name;
             }
             else if(spec.type == baseSpecifier)
@@ -1442,7 +1442,7 @@ void SetClassTemplateArgs(Specifier spec, OldList templateArgs)
       FreeList(templateArgs, FreeTemplateArgument);
 }
 
-Specifier _MkSpecifierName(char * name, Symbol symbol, OldList templateArgs)
+Specifier _MkSpecifierName(const char * name, Symbol symbol, OldList templateArgs)
 {
    Specifier spec { type = nameSpecifier };
 
@@ -1483,18 +1483,18 @@ Specifier _MkSpecifierName(char * name, Symbol symbol, OldList templateArgs)
    return spec;
 }
 
-public Specifier MkSpecifierName(char * name)
+public Specifier MkSpecifierName(const char * name)
 {
    return _MkSpecifierName(name, null, null);
 }
 
-public Specifier MkSpecifierNameArgs(char * name, OldList * templateArgs)
+public Specifier MkSpecifierNameArgs(const char * name, OldList * templateArgs)
 {
    return _MkSpecifierName(name, null, templateArgs);
 }
 
 /*
-Specifier MkClassName(char * string)
+Specifier MkClassName(const char * string)
 {
    return { type = SpecifierClass, name = CopyString(string) };
 }
@@ -1694,7 +1694,7 @@ ClassDef MkClassDefClassData(Declaration decl)
    return { type = classDataClassDef, decl = decl };
 }
 
-ClassDef MkClassDefDesigner(char * designer)
+ClassDef MkClassDefDesigner(const char * designer)
 {
    return { type = classDesignerClassDef, designer = CopyString(designer) };
 }
@@ -1740,7 +1740,7 @@ ClassDef MkClassDefFunction(ClassFunction function)
    return def;
 }
 
-Symbol DeclClassAddNameSpace(int symbolID, char * className)
+Symbol DeclClassAddNameSpace(int symbolID, const char * className)
 {
    char name[1024];
    int len = 0, stringLen;
@@ -1769,7 +1769,7 @@ Symbol DeclClassAddNameSpace(int symbolID, char * className)
    return _DeclClass(symbolID, name);
 }
 
-Symbol DeclClass(int symbolID, char * name)
+Symbol DeclClass(int symbolID, const char * name)
 {
    if(strchr(name, ':'))
       return _DeclClass(symbolID, name);
@@ -1777,7 +1777,7 @@ Symbol DeclClass(int symbolID, char * name)
       return DeclClassAddNameSpace(symbolID, name);
 }
 
-Symbol _DeclClass(int symbolID, char * name)
+Symbol _DeclClass(int symbolID, const char * name)
 {
    Symbol symbol = FindClass(name);
    if(!symbol)
@@ -1965,7 +1965,7 @@ ClassDef MkClassDefClassPropertyValue(Identifier id, Initializer initializer)
    return { type = classPropertyValueClassDef, id = id, initializer = initializer };
 }
 
-int CheckType(char * text)
+int CheckType(const char * text)
 {
 #ifdef _TIMINGS
    Time startTime = GetTime();
@@ -2014,7 +2014,7 @@ void PopContext(Context ctx)
    curContext = ctx.parent;
 }
 
-Symbol FindType(Context ctx, char * name)
+Symbol FindType(Context ctx, const char * name)
 {
    Symbol type = null;
    if(curContext)
@@ -2032,7 +2032,7 @@ Symbol FindType(Context ctx, char * name)
    return type;
 }
 
-TemplatedType FindTemplateTypeParameter(Context ctx, char * name)
+TemplatedType FindTemplateTypeParameter(Context ctx, const char * name)
 {
    TemplatedType templatedType = null;
    if(curContext)
@@ -2104,7 +2104,7 @@ static char * GetFullClassName(Class c, char * name)
 }
 */
 
-public Symbol FindClass(char * name)
+public Symbol FindClass(const char * name)
 {
 #ifdef _DEBUG
    Time startTime = GetTime();
@@ -2729,7 +2729,7 @@ public Type ProcessType(OldList specs, Declarator decl)
    return ProcessTypeDecls(specs, decl, null);
 }
 
-public Type ProcessTypeString(char * string, bool staticMethod)
+public Type ProcessTypeString(const char * string, bool staticMethod)
 {
    OldList * specs = MkList();
    Declarator decl = SpecDeclFromString(string, specs, null);
@@ -2756,7 +2756,7 @@ Type MkClassTypeSymbol(Symbol symbol)
    return null;
 }
 
-public Type MkClassType(char * name)
+public Type MkClassType(const char * name)
 {
    if(name)
    {
@@ -2875,7 +2875,7 @@ Expression MkExpArray(OldList * expressions)
    return { type = arrayExp, list = expressions };
 }
 
-Expression GetTemplateArgExpByName(char * paramName, Class curClass, TemplateParameterType tplType)
+Expression GetTemplateArgExpByName(const char * paramName, Class curClass, TemplateParameterType tplType)
 {
    Expression argExp = null;
    Class _class = curClass ? curClass : ((curExternal && curExternal.type == functionExternal && curExternal.function) ? curExternal.function._class : null);
@@ -2928,7 +2928,7 @@ Expression GetTemplateArgExp(TemplateParameter param, Class curClass, bool point
    return param.identifier ? GetTemplateArgExpByName(param.identifier.string, curClass, type) : null;
 }
 
-/*char * CreateMsgID(char * string, char * context)
+/*char * CreateMsgID(const char * string, const char * context)
 {
    int lenString = strlen(string), lenContext = strlen(context);
    char * msgid = new char[lenString + lenContext + 20];
@@ -2943,8 +2943,8 @@ public void OutputIntlStrings()
 {
    if(intlStrings.count)
    {
-      char * srcFile = GetSourceFile();
-      char * objFile = GetOutputFile();
+      const char * srcFile = GetSourceFile();
+      const char * objFile = GetOutputFile();
       char srcFileFixed[MAX_LOCATION];
       char potFile[MAX_LOCATION];
       File f;
@@ -2952,7 +2952,7 @@ public void OutputIntlStrings()
       f = FileOpen(potFile, write);
       if(f)
       {
-         char * filePrefix = "";
+         const char * filePrefix = "";
          if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
             filePrefix = "./"; //(GetRuntimePlatform() == win32) ? ".\\" : "./";
          // GetSystemPathBuffer(srcFileFixed, srcFile);

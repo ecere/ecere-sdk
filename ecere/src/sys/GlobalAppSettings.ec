@@ -24,9 +24,9 @@ public enum SettingsIOResult { error, success, fileNotFound, fileNotCompatibleWi
 
 public class GlobalSettingsDriver
 {
-   class_data char * name;
+   class_data const char * name;
 
-   class_property char * name
+   class_property const char * name
    {
       set { class_data(name) = value; }
       get { return class_data(name); }
@@ -38,7 +38,7 @@ public:
 
 }
 
-static subclass(GlobalSettingsDriver) GetGlobalSettingsDriver(char * driverName)
+static subclass(GlobalSettingsDriver) GetGlobalSettingsDriver(const char * driverName)
 {
    OldLink link;
    for(link = class(GlobalSettingsDriver).derivatives.first; link; link = link.next)
@@ -75,22 +75,22 @@ public class GlobalSettingsData
 public class GlobalSettings
 {
 public:
-   property char * settingsName
+   property const char * settingsName
    {
       set { delete settingsName; if(value && value[0]) settingsName = CopyString(value); }
       get { return settingsName; }
    };
-   property char * settingsExtension
+   property const char * settingsExtension
    {
       set { delete settingsExtension; if(value && value[0]) settingsExtension = CopyString(value); }
       get { return settingsExtension; }
    };
-   property char * settingsLocation
+   property const char * settingsLocation
    {
       set { delete settingsLocation; if(value && value[0]) settingsLocation = CopyString(value); }
       get { return settingsLocation; }
    };
-   property char * settingsFilePath
+   property const char * settingsFilePath
    {
       get { return settingsFilePath; }
    };
@@ -105,7 +105,7 @@ public:
       get { return allUsers; }
    };
 
-   property String driver
+   property const String driver
    {
       set
       {
@@ -133,7 +133,7 @@ private:
    {
       this, fileChange = { modified = true };
 
-      bool OnFileNotify(FileChange action, char * param)
+      bool OnFileNotify(FileChange action, const char * param)
       {
          OnAskReloadSettings();
          return true;
@@ -160,7 +160,7 @@ private:
       char * path = null;
       if(settingsLocation && FileExists(settingsLocation).isDirectory)
       {
-         char * extension = GetExtension();
+         const char * extension = GetExtension();
          path = new char[strlen(settingsLocation) + strlen(settingsName) + strlen(extension) + 16];
          strcpy(path, settingsLocation);
          PathCat(path, settingsName);
@@ -179,7 +179,7 @@ private:
       StripLastDirectory(location, location);
       if(location[0] && FileExists(location).isDirectory)
       {
-         char * extension = GetExtension();
+         const char * extension = GetExtension();
          char * name = new char[strlen(settingsName) + 16];
          path = new char[strlen(location) + strlen(settingsName) + strlen(extension) + 16];
          strcpy(name, settingsName);
@@ -228,7 +228,7 @@ private:
       char * profile = getenv("USERPROFILE");
       if(profile && profile[0] && FileExists(profile).isDirectory)
       {
-         char * extension = GetExtension();
+         const char * extension = GetExtension();
          path = new char[strlen(profile) + strlen(settingsName) + strlen(extension) + 16];
          strcpy(path, profile);
          PathCat(path, settingsName);
@@ -247,7 +247,7 @@ private:
          char * homepath = getenv("HOMEPATH");
          if(homepath && homepath[0])
          {
-            char * extension = GetExtension();
+            const char * extension = GetExtension();
             path = new char[strlen(homedrive) + strlen(homepath) + strlen(settingsName) + strlen(extension) + 32];
             strcpy(path, homedrive);
             PathCat(path, homepath);
@@ -267,7 +267,7 @@ private:
    char * PrepareSystemPath()
    {
       char * path = new char[MAX_LOCATION];
-      char * extension = GetExtension();
+      const char * extension = GetExtension();
       uint16 _wfilePath[MAX_LOCATION];
       GetSystemDirectory(_wfilePath, MAX_LOCATION);
       UTF16toUTF8Buffer(_wfilePath, path, MAX_LOCATION);
@@ -283,7 +283,7 @@ private:
       char * path = null;
       if(allUsers)
       {
-         char * extension = GetExtension();
+         const char * extension = GetExtension();
          path = new char[strlen(allUsers) + strlen(settingsName) + strlen(extension) + 32];
          strcpy(path, allUsers);
          PathCat(path, settingsName);
@@ -296,8 +296,8 @@ private:
    char * PrepareEtcPath()
    {
       char * path = null;
-      char * etc = "/etc/";
-      char * extension = GetExtension();
+      const char * etc = "/etc/";
+      const char * extension = GetExtension();
       path = new char[strlen(etc) + strlen(settingsName) + strlen(extension) + 16];
       strcpy(path, etc);
       PathCat(path, settingsName);
@@ -307,9 +307,9 @@ private:
    }
 #endif
 
-   char * GetExtension()
+   const char * GetExtension()
    {
-      char * extension;
+      const char * extension;
       if(settingsExtension)
          extension = settingsExtension;
       else
@@ -550,7 +550,7 @@ public:
 public class GlobalAppSettings : GlobalSettings
 {
 public:
-   bool GetGlobalValue(char * section, char * name, GlobalSettingType type, void * value)
+   bool GetGlobalValue(const char * section, const char * name, GlobalSettingType type, void * value)
    {
       bool result = false;
       if(f)
@@ -609,7 +609,7 @@ public:
       return result;
    }
 
-   bool PutGlobalValue(char * section, char * name, GlobalSettingType type, void * value)
+   bool PutGlobalValue(const char * section, const char * name, GlobalSettingType type, const void * value)
    {
       bool result = false;
       if(f)

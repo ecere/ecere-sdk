@@ -34,8 +34,7 @@ static class ServerNode : BTNode
    bool resolved;
    ~ServerNode()
    {
-      char * name = (char *)key;
-      delete name;
+      delete (char *)key;
    }
 }
 
@@ -56,7 +55,7 @@ static class ServerNameCache
          delete server;
       }
    }
-   bool Resolve(char * host, char * address)
+   bool Resolve(const char * host, char * address)
    {
       ServerNode server;
       mutex.Wait();
@@ -76,7 +75,7 @@ static class ServerNameCache
 
 static ServerNameCache serverNameCache { };
 
-static char * GetString(char * string, char * what, int count)
+static const char * GetString(const char * string, const char * what, int count)
 {
    int c;
    for(c = 0; what[c]; c++)
@@ -151,7 +150,7 @@ private class HTTPConnection : SSLSocket
             return pos;
          if(c<count)
          {
-            char * string = (char *)buffer;
+            const char * string = (const char *)buffer;
 
 #ifdef _DEBUG
             fwrite(buffer, 1, c, stdout);
@@ -166,24 +165,24 @@ private class HTTPConnection : SSLSocket
             else
             {
                //file.openStarted = true;
-               if((string = GetString((char *)buffer, "HTTP/1.1 ", count)) ||
-                  (string = GetString((char *)buffer, "HTTP/1.0 ", count)))
+               if((string = GetString((const char *)buffer, "HTTP/1.1 ", count)) ||
+                  (string = GetString((const char *)buffer, "HTTP/1.0 ", count)))
                {
                   file.status = atoi(string);
                }
-               else if((string = GetString((char *)buffer, "Transfer-Encoding: ", count)))
+               else if((string = GetString((const char *)buffer, "Transfer-Encoding: ", count)))
                {
                   if(!strnicmp(string, "chunked", strlen("chunked")))
                   {
                      file.chunked = true;
                   }
                }
-               else if((string = GetString((char *)buffer, "Content-Length: ", count)))
+               else if((string = GetString((const char *)buffer, "Content-Length: ", count)))
                {
                   file.totalSize = atoi(string);
                   file.totalSizeSet = true;
                }
-               else if((string = GetString((char *)buffer, "Content-Type: ", count)))
+               else if((string = GetString((const char *)buffer, "Content-Type: ", count)))
                {
                   char * cr = strstr(string, "\r");
                   char * lf = strstr(string, "\n");
@@ -199,7 +198,7 @@ private class HTTPConnection : SSLSocket
                   memcpy(file.contentType, string, len);
                   file.contentType[len] = 0;
                }
-               else if((string = GetString((char *)buffer, "Content-disposition: ", count)))
+               else if((string = GetString((const char *)buffer, "Content-disposition: ", count)))
                {
                   char * cr = strstr(string, "\r");
                   char * lf = strstr(string, "\n");
@@ -215,18 +214,18 @@ private class HTTPConnection : SSLSocket
                   memcpy(file.contentDisposition, string, len);
                   file.contentDisposition[len] = 0;
                }
-               else if((string = GetString((char *)buffer, "Connection: ", count)))
+               else if((string = GetString((const char *)buffer, "Connection: ", count)))
                {
                   if(!strnicmp(string, "close", strlen("close")))
                   {
                      file.close = true;
                   }
                }
-               else if((string = GetString((char *)buffer, "Location: ", count)))
+               else if((string = GetString((const char *)buffer, "Location: ", count)))
                {
                   if(file.relocation)
                   {
-                     strncpy(file.relocation, (char *)buffer + 10, c - 10);
+                     strncpy(file.relocation, (const char *)buffer + 10, c - 10);
                      file.relocation[c - 10] = '\0';
                   }
                }
@@ -255,7 +254,7 @@ private class HTTPConnection : SSLSocket
          if(file.chunked && !file.chunkSize)
          {
             int pos = 0, c = 0;
-            char * string = null;
+            const char * string = null;
             bool ready = false;
             while(pos + c < (int)count-3)
             {
@@ -277,7 +276,7 @@ private class HTTPConnection : SSLSocket
                else
                {
                   if(!string)
-                     string = buffer + pos;
+                     string = (const char *)buffer + pos;
                   c++;
                }
             }
@@ -332,17 +331,17 @@ public:
       get { return contentDisposition; }
    }
 
-   bool OpenURL(char * name, char * referer, char * relocation)
+   bool OpenURL(const char * name, const char * referer, char * relocation)
    {
       return RetrieveHead(name, referer, relocation, false);
    }
 
 private:
 
-   bool RetrieveHead(char * name, char * referer, char * relocation, bool askBody)
+   bool RetrieveHead(const char * name, const char * referer, char * relocation, bool askBody)
    {
       bool result = false;
-      String http, https;
+      const String http, https;
       if(!this || !name) return false;
       http = strstr(name, "http://");
       if(http != name) http = null;
@@ -359,7 +358,7 @@ private:
          char server[1024];
          char msg[1024];
          int len;
-         char * serverStart = http ? ecere::net::GetString(name, "http://", 0) : ecere::net::GetString(name, "https://", 0);
+         const char * serverStart = http ? ecere::net::GetString(name, "http://", 0) : ecere::net::GetString(name, "https://", 0);
          char * fileName = strstr(serverStart, "/");
          int port = https ? 443 : 80;
          char * colon;
@@ -770,7 +769,7 @@ private:
       return read / size;
    }
 
-   int Write(byte * buffer, uint size, uint count)
+   int Write(const byte * buffer, uint size, uint count)
    {
       return 0;
    }
@@ -786,7 +785,7 @@ private:
       return false;
    }
 
-   bool Puts(char * string)
+   bool Puts(const char * string)
    {
       return false;
    }
@@ -857,7 +856,7 @@ private:
    String contentDisposition;
 }
 
-public HTTPFile FileOpenURL(char * name)
+public HTTPFile FileOpenURL(const char * name)
 {
    HTTPFile f { };
    if(f.OpenURL(name, null, null))

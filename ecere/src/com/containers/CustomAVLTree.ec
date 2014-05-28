@@ -146,7 +146,7 @@ private:
       }
    }
 
-   public thisclass Find(Class Tclass, T key)
+   public thisclass Find(Class Tclass, const T key)
    {
       while(this)
       {
@@ -164,7 +164,7 @@ private:
       return this;
    }
 
-   thisclass FindAll(T key)
+   thisclass FindAll(const T key)
    {
       AVLNode<T> result = null;
       // *** FIND ALL COMPARES KEY FOR EQUALITY, NOT USING OnCompare ***

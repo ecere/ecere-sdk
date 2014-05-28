@@ -150,7 +150,7 @@ struct FileInfo
    File f;
    DisplaySystem displaySystem;
    Object rootObject;
-   String fileName;
+   const String fileName;
 
    uint16 chunkId;
    uint pos, end;
@@ -1998,6 +1998,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                {
                   object = Object { };
                   object.name  = new char[strlen(block.dummyName) + strlen(model.name) + 2];
+                  // TODO: When passing a String to a const String, use member if property is const String but member is String
                   sprintf(object.name, "%s.%s", model.name, block.dummyName);
                   object.flags = model.flags;
                   object.flags.ownMesh = false;
@@ -2085,7 +2086,7 @@ class Object3DSFormat : ObjectFormat
 {
    class_property(extension) = "3ds";
 
-   bool Load(Object object, char * fileName, DisplaySystem displaySystem)
+   bool Load(Object object, const char * fileName, DisplaySystem displaySystem)
    {
       bool result = false;
       if(fileName)

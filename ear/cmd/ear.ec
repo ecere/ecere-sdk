@@ -47,10 +47,11 @@ static void ShowSyntax()
 #define ARCHIVE_ACTION_CLEAR     9
 #define ARCHIVE_ACTION_SELFEXT   10
 
-static void ViewArchive(char * path)
+static void ViewArchive(const char * path)
 {
    FileListing listing { path };
-   char string[MAX_LOCATION], * directory;
+   char string[MAX_LOCATION];
+   const char * directory;
 
    SplitArchivePath(path, string, &directory);
 
@@ -92,7 +93,7 @@ static void ViewArchive(char * path)
 }
 #define BUFFERSIZE 0x10000
 
-static void ExtractFileFromArchive(char * path, char * outputFile)
+static void ExtractFileFromArchive(const char * path, const char * outputFile)
 {
    char fileName[MAX_LOCATION];
    FileAttribs exists = FileExists(path);
@@ -175,7 +176,7 @@ static void ExtractFileFromArchive(char * path, char * outputFile)
       FileSetTime(outputFile, stats.created, 0, stats.modified);
 }
 
-static bool AddToArchive(Archive archive, ArchiveDir parentDir, char * name, char * path, ArchiveAddMode addMode, int compression)
+static bool AddToArchive(Archive archive, ArchiveDir parentDir, const char * name, const char * path, ArchiveAddMode addMode, int compression)
 {
    bool result = true;
    FileAttribs exists = FileExists(path);
@@ -236,14 +237,15 @@ static bool AddToArchive(Archive archive, ArchiveDir parentDir, char * name, cha
    return result;
 }
 
-static void MoveFileInArchive(Archive* archive, char * sourcePath, char * outputDirectory)
+static void MoveFileInArchive(Archive* archive, const char * sourcePath, const char * outputDirectory)
 {
    // Verify if source file/directory exists and figure its kind
    FileAttribs exists = FileExists(sourcePath);
    if(exists)
    {
       char sourceFileName[MAX_FILENAME], sourceDirectory[MAX_LOCATION];
-      char archiveName[MAX_LOCATION], * source;
+      char archiveName[MAX_LOCATION];
+      const char * source;
       char existingFilePath[MAX_LOCATION], * existingFile;
       bool rootMoving = false;
       FileAttribs outputExists;
@@ -308,7 +310,8 @@ static void MoveFileInArchive(Archive* archive, char * sourcePath, char * output
                      dir = archive->OpenDirectory(outputDirectory, null, 0);
                      if(dir)
                      {
-                        char archiveName[MAX_LOCATION], * archiveFile;
+                        char archiveName[MAX_LOCATION];
+                        const char * archiveFile;
                         delete dir;
                         delete *archive;
                         SplitArchivePath(sourcePath, archiveName, &archiveFile);
@@ -566,7 +569,8 @@ class EARApp : Application
                {
                   for(c = firstFileArg; c<numFiles + firstFileArg; c++)
                   {
-                     char *name, archive[MAX_LOCATION], fileName[MAX_LOCATION];
+                     char archive[MAX_LOCATION], fileName[MAX_LOCATION];
+                     const char * name;
                      FileAttribs exists;
 
                      strcpy(fileName, archivePath);

@@ -21,8 +21,8 @@ class OutputView : Window
    size.h = 240;
    background = formColor;
 
-   virtual void OnGotoError(char * line, bool noParsing);
-   virtual void OnCodeLocationParseAndGoTo(char * line);
+   virtual void OnGotoError(const char * line, bool noParsing);
+   virtual void OnCodeLocationParseAndGoTo(const char * line);
 
    FindDialog findDialog { master = this, editBox = buildBox, isModal = true, autoCreate = false, text = "Find" };
 
@@ -230,7 +230,7 @@ class OutputView : Window
    bool MenuEditFind(MenuItem selection, Modifiers mods)
    {
       int64 id = selection.id;
-      char * searchString = findDialog.searchString;
+      const char * searchString = findDialog.searchString;
       if(id != 2 && searchString[0])
       {
          activeBox.Find(searchString, findDialog.wholeWord, findDialog.matchCase, id != 0);
@@ -313,7 +313,7 @@ class LogBox : EditBox
 {
    bool moved, logging, tell;
 
-   void Logf(char * format, ...)
+   void Logf(const char * format, ...)
    {
       char string[MAX_F_STRING*10];
       va_list args;
@@ -325,14 +325,14 @@ class LogBox : EditBox
       LogRaw(string);
    }
 
-   void LogSprintf(char * entry)
+   void LogSprintf(const char * entry)
    {
       char string[MAX_F_STRING];
       sprintf(string, entry);
       LogRaw(string);
    }
 
-   void LogRaw(char * entry)
+   void LogRaw(const char * entry)
    {
       // Cut the line longer than 1024 because Logf prints to a buffer (and we don't want to output crazy long lines either)
       //if(len > 1023) line[1023] = '\0';
@@ -360,7 +360,7 @@ class LogBox : EditBox
          Log(entry);
    }
 
-   void Log(char * string)
+   void Log(const char * string)
    {
       int x1, y1, x2, y2;
       Point scrl;
@@ -388,7 +388,7 @@ class LogBox : EditBox
       logging = false;
    }
 
-   void Tellf(char * format, ...)
+   void Tellf(const char * format, ...)
    {
       char string[MAX_F_STRING*10];
       va_list args;
@@ -400,7 +400,7 @@ class LogBox : EditBox
       Tell(string);
    }
 
-   void Tell(char * string)
+   void Tell(const char * string)
    {
       Log(string);
       if(!moved)

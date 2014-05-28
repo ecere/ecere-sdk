@@ -109,7 +109,7 @@ static byte key2VK[256] =
    VK_NUMPAD2,VK_NUMPAD3,VK_NUMPAD0,VK_DELETE,0,0,0,VK_F11,VK_F12,0,0,0,0,0,0,0,
    0,VK_RCONTROL,0,0,VK_RMENU,0,VK_HOME,VK_UP,VK_PRIOR,VK_LEFT,VK_RIGHT,VK_END,VK_DOWN,VK_NEXT,VK_INSERT,VK_DELETE
 };
-static uint16 className[] = L"Ecere Application";
+static const uint16 className[] = L"Ecere Application";
 static HINSTANCE hInstance;
 
 static DEVMODE devMode;
@@ -1261,11 +1261,11 @@ class Win32Interface : Interface
 
    }
 
-   char ** GraphicsDrivers(int * numDrivers)
+   const char ** GraphicsDrivers(int * numDrivers)
    {
-      static char *graphicsDrivers[] = { "GDI", "DirectDraw", "OpenGL", "Direct3D", "Direct3D8", "Direct3D9" };
+      static const char *graphicsDrivers[] = { "GDI", "DirectDraw", "OpenGL", "Direct3D", "Direct3D8", "Direct3D9" };
       *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
-      return (char **)graphicsDrivers;
+      return (const char **)graphicsDrivers;
    }
 
    void GetCurrentMode(bool * fullScreen, Resolution * resolution, PixelFormat * colorDepth, int * refreshRate)
@@ -1453,7 +1453,7 @@ class Win32Interface : Interface
 
    // -- Window manipulation ---
 
-   void SetRootWindowCaption(Window window, char * name)
+   void SetRootWindowCaption(Window window, const char * name)
    {
       uint16 * text = UTF8toUTF16(name, null);
       guiApp.Unlock();

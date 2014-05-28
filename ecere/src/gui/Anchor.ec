@@ -27,7 +27,7 @@ public struct AnchorValue
       get { return (double) percent; }
    }
 
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       if(type == offset)
       {
@@ -60,7 +60,7 @@ public struct AnchorValue
       return stringOutput;
    }
 
-   bool OnGetDataFromString(char * stringOutput)
+   bool OnGetDataFromString(const char * stringOutput)
    {
       char * end;
       if(strchr(stringOutput, '.'))
@@ -119,7 +119,7 @@ public struct MiddleAnchorValue
       get { return (double) percent; }
    }
 
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       if(type == middleRelative)
       {
@@ -152,7 +152,7 @@ public struct MiddleAnchorValue
       return stringOutput;
    }
 
-   bool OnGetDataFromString(char * stringOutput)
+   bool OnGetDataFromString(const char * stringOutput)
    {
       if(strchr(stringOutput, '.'))
       {
@@ -176,10 +176,10 @@ public struct Anchor
    union { AnchorValue top; MiddleAnchorValue vert; };
    AnchorValue right, bottom;
 
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       char tempString[256];
-      char * anchorValue;
+      const char * anchorValue;
       bool subNeedClass;
 
       tempString[0] = '\0';
@@ -217,7 +217,7 @@ public struct Anchor
       return stringOutput;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       this = Anchor {};
       return class::OnGetDataFromString(string);
@@ -230,7 +230,7 @@ public struct Anchor
 
    Window OnEdit(Window listBox, Window master, int x, int y, int w, int h, Window control)
    {
-      char * string = "";
+      const char * string = "";
       AnchorDropBox comboBox
       {
          editText = true;
@@ -250,7 +250,7 @@ public struct Anchor
       {
          char tempString[MAX_F_STRING] = "";
          bool needClass = false;
-         char * result = OnGetString(tempString, null, &needClass);
+         const char * result = OnGetString(tempString, null, &needClass);
          if(result) string = result;
       }
       comboBox.contents = string;
@@ -368,7 +368,7 @@ private class AnchorButton : Button
       {
          char tempString[1024] = "";
          bool needClass = false;
-         char * string = anchor.OnGetString(tempString, null, &needClass);
+         const char * string = anchor.OnGetString(tempString, null, &needClass);
          anchorDropBox.contents = string;
       }
 
@@ -491,7 +491,7 @@ private class AnchorRelButton : Button
       {
          char tempString[1024] = "";
          bool needClass = false;
-         char * string = anchor.OnGetString(tempString, null, &needClass);
+         const char * string = anchor.OnGetString(tempString, null, &needClass);
          anchorDropBox.contents = string;
       }
 
@@ -591,7 +591,7 @@ private class AnchorDropBox : DropBox
       anchorEditor.Destroy(0);
    }
 
-   bool DataBox::NotifyTextEntry(AnchorDropBox dropBox, char * string, bool save)
+   bool DataBox::NotifyTextEntry(AnchorDropBox dropBox, const char * string, bool save)
    {
       Anchor anchor = dropBox.anchorValue;
 
@@ -607,7 +607,7 @@ private class AnchorDropBox : DropBox
       {
          char tempString[1024] = "";
          bool needClass = false;
-         char * string = anchor.OnGetString(tempString, null, &needClass);
+         const char * string = anchor.OnGetString(tempString, null, &needClass);
          dropBox.contents = string;
       }
       return true;

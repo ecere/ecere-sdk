@@ -58,21 +58,21 @@ class OldIDESettings : GlobalAppSettings
    //numJobs = 1;
 
    char * projectDefaultTargetDir;
-   property char * projectDefaultTargetDir
+   property const char * projectDefaultTargetDir
    {
       set { delete projectDefaultTargetDir; if(value && value[0]) projectDefaultTargetDir = CopyString(value); }
       get { return projectDefaultTargetDir ? projectDefaultTargetDir : ""; }
    }
    char * projectDefaultIntermediateObjDir;
-   property char * projectDefaultIntermediateObjDir
+   property const char * projectDefaultIntermediateObjDir
    {
       set { delete projectDefaultIntermediateObjDir; if(value && value[0]) projectDefaultIntermediateObjDir = CopyString(value); }
       get { return projectDefaultIntermediateObjDir ? projectDefaultIntermediateObjDir : ""; }
    }
 
-   CompilerConfig GetCompilerConfig(String compilerName)
+   CompilerConfig GetCompilerConfig(const String compilerName)
    {
-      char * name = compilerName && compilerName[0] ? compilerName : defaultCompilerName;
+      const char * name = compilerName && compilerName[0] ? compilerName : defaultCompilerName;
       CompilerConfig compilerConfig = null;
       for(compiler : compilerConfigs)
       {
@@ -251,8 +251,8 @@ class OldIDESettings : GlobalAppSettings
             int len = strlen(compiler.name);
             if(len)
             {
-               char * section, * platform;
-               section = new char[len + 17];
+               char * section = new char[len + 17];
+               const char * platform;
                sprintf(section, "%s Compiler Config", compiler.name);
                platform = compiler.targetPlatform.OnGetString(null, null, null);
                PutGlobalValue(section, "Target Platform", singleString, platform);

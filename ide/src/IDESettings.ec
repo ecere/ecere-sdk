@@ -23,7 +23,7 @@ define defaultCompilerName = "Default";
 
 define defaultObjDirExpression = "obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)";
 
-char * settingsDirectoryNames[DirTypes] =
+const char * settingsDirectoryNames[DirTypes] =
 {
    "Include Files",
    "Library Files",
@@ -32,7 +32,7 @@ char * settingsDirectoryNames[DirTypes] =
 
 // This function cannot accept same pointer for source and output
 // todo: rename ReplaceSpaces to EscapeSpaceAndSpecialChars or something
-void ReplaceSpaces(char * output, char * source)
+void ReplaceSpaces(char * output, const char * source)
 {
    int c, dc;
    char ch, pch = 0;
@@ -58,7 +58,7 @@ void ReplaceSpaces(char * output, char * source)
 enum GlobalSettingsChange { none, editorSettings, projectOptions, compilerSettings };
 
 enum PathRelationship { unrelated, identical, siblings, subPath, parentPath, insuficientInput, pathEmpty, toEmpty, pathNull, toNull, bothEmpty, bothNull };
-PathRelationship eString_PathRelated(char * path, char * to, char * pathDiff)
+PathRelationship eString_PathRelated(const char * path, const char * to, char * pathDiff)
 {
    PathRelationship result;
    if(pathDiff) *pathDiff = '\0';
@@ -99,7 +99,7 @@ PathRelationship eString_PathRelated(char * path, char * to, char * pathDiff)
    return result;
 }
 
-char * CopyValidateMakefilePath(char * path)
+char * CopyValidateMakefilePath(const char * path)
 {
    const int map[]  =    {           0,           1,             2,             3,           4,                    5,                 6,            0,                   1,                    2,        7 };
    const char * vars[] = { "$(MODULE)", "$(CONFIG)", "$(PLATFORM)", "$(COMPILER)", "$(TARGET)", "$(COMPILER_SUFFIX)", "$(DEBUG_SUFFIX)", "$(PROJECT)",  "$(CONFIGURATION)", "$(TARGET_PLATFORM)",(char *)0 };
@@ -115,7 +115,7 @@ char * CopyValidateMakefilePath(char * path)
          int c;
          char * tmp = copy;
          char * start = tmp;
-         Array<char *> parts { };
+         Array<const char *> parts { };
 
          for(c=0; c<len; c++)
          {
@@ -157,7 +157,7 @@ char * CopyValidateMakefilePath(char * path)
    return copy;
 }
 
-void ValidPathBufCopy(char *output, char *input)
+void ValidPathBufCopy(char *output, const char *input)
 {
 #ifdef __WIN32__
    bool volumePath = false;
@@ -174,7 +174,7 @@ void ValidPathBufCopy(char *output, char *input)
    }
 #endif
    {
-      char * chars = "*|:\",<>?";
+      const char * chars = "*|:\",<>?";
       char ch, * s = output, * o = output;
       while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
       *o = '\0';
@@ -201,7 +201,7 @@ void BasicValidatePathBoxPath(PathBox pathBox)
    pathBox.path = path;
 }
 
-CompilerConfig MakeDefaultCompiler(char * name, bool readOnly)
+CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
 {
    CompilerConfig defaultCompiler
    {
@@ -418,19 +418,19 @@ public:
    List<CompilerConfig> compilerConfigs { };
    Array<String> recentFiles { };
    Array<String> recentProjects { };
-   property char * docDir
+   property const char * docDir
    {
       set { delete docDir; if(value && value[0]) docDir = CopyString(value); }
       get { return docDir ? docDir : ""; }
       isset { return docDir && docDir[0]; }
    }
-   property char * ideFileDialogLocation
+   property const char * ideFileDialogLocation
    {
       set { delete ideFileDialogLocation; if(value && value[0]) ideFileDialogLocation = CopyString(value); }
       get { return ideFileDialogLocation ? ideFileDialogLocation : ""; }
       isset { return ideFileDialogLocation && ideFileDialogLocation[0]; }
    }
-   property char * ideProjectFileDialogLocation
+   property const char * ideProjectFileDialogLocation
    {
       set { delete ideProjectFileDialogLocation; if(value && value[0]) ideProjectFileDialogLocation = CopyString(value); }
       get { return ideProjectFileDialogLocation ? ideProjectFileDialogLocation : ""; }
@@ -444,34 +444,34 @@ public:
    // TODO: Classify settings
    //EditorSettings editor { };
 
-   property char * projectDefaultTargetDir
+   property const char * projectDefaultTargetDir
    {
       set { delete projectDefaultTargetDir; if(value && value[0]) projectDefaultTargetDir = CopyValidateMakefilePath(value); }
       get { return projectDefaultTargetDir ? projectDefaultTargetDir : ""; }
       isset { return projectDefaultTargetDir && projectDefaultTargetDir[0]; }
    }
-   property char * projectDefaultIntermediateObjDir
+   property const char * projectDefaultIntermediateObjDir
    {
       set { delete projectDefaultIntermediateObjDir; if(value && value[0]) projectDefaultIntermediateObjDir = CopyValidateMakefilePath(value); }
       get { return projectDefaultIntermediateObjDir ? projectDefaultIntermediateObjDir : ""; }
       isset { return projectDefaultIntermediateObjDir && projectDefaultIntermediateObjDir[0]; }
    }
 
-   property char * compilerConfigsDir
+   property const char * compilerConfigsDir
    {
       set { delete compilerConfigsDir; if(value && value[0]) compilerConfigsDir = CopyString(value); }
       get { return compilerConfigsDir ? compilerConfigsDir : ""; }
       isset { return compilerConfigsDir && compilerConfigsDir[0]; }
    }
 
-   property char * defaultCompiler
+   property const char * defaultCompiler
    {
       set { delete defaultCompiler; if(value && value[0]) defaultCompiler = CopyString(value); }
       get { return defaultCompiler && defaultCompiler[0] ? defaultCompiler : defaultCompilerName; }
       isset { return defaultCompiler && defaultCompiler[0]; }
    }
 
-   property String language
+   property const String language
    {
       set
       {
@@ -492,9 +492,9 @@ private:
    char * defaultCompiler;
    String language;
 
-   CompilerConfig GetCompilerConfig(String compilerName)
+   CompilerConfig GetCompilerConfig(const String compilerName)
    {
-      char * name = compilerName && compilerName[0] ? compilerName : defaultCompilerName;
+      const char * name = compilerName && compilerName[0] ? compilerName : defaultCompilerName;
       CompilerConfig compilerConfig = null;
       for(compiler : compilerConfigs)
       {
@@ -661,7 +661,7 @@ private:
          compilerConfigsDir = UpdatePortablePath(compilerConfigsDir, location, makeAbsolute);
    }
 
-   char * UpdatePortablePath(char * path, char * location, bool makeAbsolute)
+   char * UpdatePortablePath(char * path, const char * location, bool makeAbsolute)
    {
       char * output;
       if(makeAbsolute)
@@ -690,7 +690,7 @@ private:
       return output;
    }
 
-   void AddRecentFile(char * fileName)
+   void AddRecentFile(const char * fileName)
    {
       int c;
       char * filePath = CopyString(fileName);
@@ -709,7 +709,7 @@ private:
       //UpdateRecentMenus(owner);
    }
 
-   void AddRecentProject(char * projectName)
+   void AddRecentProject(const char * projectName)
    {
       int c;
       char * filePath = CopyString(projectName);
@@ -735,7 +735,7 @@ static const char * compilerTypeSolutionFileVersionString[CompilerType] = { "", 
 static const char * compilerTypeYearString[CompilerType] = { "", "", "", "2005", "2008", "2010" };
 static const char * compilerTypeProjectFileExtension[CompilerType] = { "", "", "", "vcproj", "vcproj", "vcxproj" };
 // TODO: i18n with Array
-static Array<String> compilerTypeLongNames
+static Array<const String> compilerTypeLongNames
 { [
    $"GNU Compiler Collection (GCC) / GNU Make",
    $"Tiny C Compiler / GNU Make",
@@ -755,7 +755,7 @@ public enum CompilerType
       get { return this == vs8 || this == vs9 || this == vs10; }
    }
 
-   property char *
+   property const char *
    {
       get { return OnGetString(null, null, null); }
       set
@@ -771,13 +771,13 @@ public enum CompilerType
       }
    };
 
-   property char * longName { get { return OnGetString(null, (void*)1, null); } };
-   property char * versionString { get { return OnGetString(null, (void*)2, null); } };
-   property char * yearString { get { return OnGetString(null, (void*)3, null); } };
-   property char * projectFileExtension { get { return OnGetString(null, (void*)4, null); } };
-   property char * solutionFileVersionString { get { return OnGetString(null, (void*)5, null); } };
+   property const char * longName { get { return OnGetString(null, (void*)1, null); } };
+   property const char * versionString { get { return OnGetString(null, (void*)2, null); } };
+   property const char * yearString { get { return OnGetString(null, (void*)3, null); } };
+   property const char * projectFileExtension { get { return OnGetString(null, (void*)4, null); } };
+   property const char * solutionFileVersionString { get { return OnGetString(null, (void*)5, null); } };
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(this >= firstCompilerType && this <= lastCompilerType)
       {
@@ -806,7 +806,7 @@ class CompilerConfig
 
    numJobs = 1;
 public:
-   property char * name
+   property const char * name
    {
       set
       {
@@ -820,55 +820,55 @@ public:
    CompilerType type;
    Platform targetPlatform;
    int numJobs;
-   property char * makeCommand
+   property const char * makeCommand
    {
       set { delete makeCommand; if(value && value[0]) makeCommand = CopyString(value); }
       get { return makeCommand; }
       isset { return makeCommand && makeCommand[0]; }
    }
-   property char * ecpCommand
+   property const char * ecpCommand
    {
       set { delete ecpCommand; if(value && value[0]) ecpCommand = CopyString(value); }
       get { return ecpCommand; }
       isset { return ecpCommand && ecpCommand[0]; }
    }
-   property char * eccCommand
+   property const char * eccCommand
    {
       set { delete eccCommand; if(value && value[0]) eccCommand = CopyString(value); }
       get { return eccCommand; }
       isset { return eccCommand && eccCommand[0]; }
    }
-   property char * ecsCommand
+   property const char * ecsCommand
    {
       set { delete ecsCommand; if(value && value[0]) ecsCommand = CopyString(value); }
       get { return ecsCommand; }
       isset { return ecsCommand && ecsCommand[0]; }
    }
-   property char * earCommand
+   property const char * earCommand
    {
       set { delete earCommand; if(value && value[0]) earCommand = CopyString(value); }
       get { return earCommand; }
       isset { return earCommand && earCommand[0]; }
    }
-   property char * cppCommand
+   property const char * cppCommand
    {
       set { delete cppCommand; if(value && value[0]) cppCommand = CopyString(value); }
       get { return cppCommand; }
       isset { return cppCommand && cppCommand[0]; }
    }
-   property char * ccCommand
+   property const char * ccCommand
    {
       set { delete ccCommand; if(value && value[0]) ccCommand = CopyString(value); }
       get { return ccCommand; }
       isset { return ccCommand && ccCommand[0]; }
    }
-   property char * cxxCommand
+   property const char * cxxCommand
    {
       set { delete cxxCommand; if(value && value[0]) cxxCommand = CopyString(value); }
       get { return cxxCommand; }
       isset { return cxxCommand && cxxCommand[0]; }
    }
-   property char * execPrefixCommand // <-- old name for json ide settings file compatibility
+   property const char * execPrefixCommand // <-- old name for json ide settings file compatibility
    {
       set { delete executableLauncher; if(value && value[0]) executableLauncher = CopyString(value); }
       get { return executableLauncher; }
@@ -880,19 +880,19 @@ public:
    // deprecated
    property bool supportsBitDepth { set { } get { return true; } isset { return false; } }
 
-   property char * distccHosts
+   property const char * distccHosts
    {
       set { delete distccHosts; if(value && value[0]) distccHosts = CopyString(value); }
       get { return distccHosts; }
       isset { return distccHosts && distccHosts[0]; }
    }
-   property char * gccPrefix // <-- old name for json ide settings file compatibility
+   property const char * gccPrefix // <-- old name for json ide settings file compatibility
    {
       set { delete gnuToolchainPrefix; if(value && value[0]) gnuToolchainPrefix = CopyString(value); }
       get { return gnuToolchainPrefix; }
       isset { return gnuToolchainPrefix && gnuToolchainPrefix[0]; }
    }
-   property char * sysroot
+   property const char * sysroot
    {
       set { delete sysroot; if(value && value[0]) sysroot = CopyString(value); }
       get { return sysroot; }
@@ -1122,12 +1122,12 @@ private:
 
 struct LanguageOption
 {
-   String name;
-   String bitmap;
-   String code;
+   const String name;
+   const String bitmap;
+   const String code;
    BitmapResource res;
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       return name;
    }
@@ -1156,11 +1156,11 @@ Array<LanguageOption> languages
    { "Magyar (8%)",        ":countryCode/hu.png", "hu" }
 ] };
 
-String GetLanguageString()
+const String GetLanguageString()
 {
    char * dot, * colon;
    static char lang[256];
-   String language = getenv("ECERE_LANGUAGE");
+   const String language = getenv("ECERE_LANGUAGE");
    if(!language) language = getenv("LANGUAGE");
    if(!language) language = getenv("LC_ALL");
    if(!language) language = getenv("LC_MESSAGES");
@@ -1185,7 +1185,7 @@ String GetLanguageString()
    return language;
 }
 
-bool LanguageRestart(char * code, Application app, IDESettings settings, IDESettingsContainer settingsContainer, Window ide, Window projectView, bool wait)
+bool LanguageRestart(const char * code, Application app, IDESettings settings, IDESettingsContainer settingsContainer, Window ide, Window projectView, bool wait)
 {
    bool restart = true;
    String command = null;
@@ -1218,7 +1218,7 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
                restart = false;
             if(projectView.fileName)
             {
-               char * name = projectView.fileName;
+               const char * name = projectView.fileName;
                if(name)
                {
                   for(j = 0; (ch = name[j]); j++)
@@ -1258,7 +1258,7 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
                }
                if(w.fileName)
                {
-                  char * name = w.fileName;
+                  const char * name = w.fileName;
                   len++;
                   for(j = 0; (ch = name[j]); j++)
                      len += (ch == ' ' || ch == '\"' || ch == '&' || ch == '$' || ch == '(' || ch == ')') ? 2 : 1;
@@ -1276,7 +1276,7 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
             {
                if(w.isActiveClient && w.isDocument)
                {
-                  char * name = w.fileName;
+                  const char * name = w.fileName;
                   if(name)
                   {
                      strcat(command, " ");
@@ -1307,7 +1307,7 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
             HRESULT status;
             wLanguage[0] = 0;
 
-            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+            RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
             if(key)
             {
                UTF8toUTF16Buffer(code, wLanguage, sizeof(wLanguage) / sizeof(uint16));
@@ -1329,7 +1329,7 @@ bool LanguageRestart(char * code, Application app, IDESettings settings, IDESett
       int i;
       for(i = 1; i < app.argc; i++)
       {
-         char * arg = app.argv[i];
+         const char * arg = app.argv[i];
          len++;
          for(j = 0; (ch = arg[j]); j++)
             len += (ch == ' ' || ch == '\"' || ch == '&' || ch == '$' || ch == '(' || ch == ')') ? 2 : 1;

@@ -92,11 +92,11 @@ FILE *eC_stdout(void);
 uint FILE_GetSize(FILE * input);
 bool FILE_Lock(FILE * input, FILE * output, FileLock type, uint64 start, uint64 length, bool wait);
 void FILE_set_buffered(FILE * input, FILE * output, bool value);
-FileAttribs FILE_FileExists(char * fileName);
-bool FILE_FileGetSize(char * fileName, FileSize * size);
-bool FILE_FileGetStats(char * fileName, FileStats stats);
+FileAttribs FILE_FileExists(const char * fileName);
+bool FILE_FileGetSize(const char * fileName, FileSize * size);
+bool FILE_FileGetStats(const char * fileName, FileStats stats);
 void FILE_FileFixCase(char * file);
-void FILE_FileOpen(char * fileName, FileOpenMode mode, FILE ** input, FILE **output);
+void FILE_FileOpen(const char * fileName, FileOpenMode mode, FILE ** input, FILE **output);
 
 private:
 
@@ -128,13 +128,13 @@ public class FileSize : uint
       return result;
    }
 
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       PrintSize(string, this, 2);
       return string;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       char * end;
       double value = strtod(string, &end);
@@ -163,13 +163,13 @@ public class FileSize64 : uint64
       return result;
    }
 
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       PrintBigSize(string, this, 2);
       return string;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       char * end;
       double value = strtod(string, &end);
@@ -187,22 +187,22 @@ public class FileSize64 : uint64
 
 class FileSystem
 {
-   virtual File ::Open(char * archive, char * name, FileOpenMode mode);
+   virtual File ::Open(const char * archive, const char * name, FileOpenMode mode);
 
    // Query on names
-   virtual FileAttribs ::Exists(char * archive, char * fileName);
-   virtual bool ::GetSize(char * archive, char * fileName, FileSize * size);
-   virtual bool ::Stats(char * archive, char * fileName, FileStats stats);
-   virtual void ::FixCase(char * archive, char * fileName);
+   virtual FileAttribs ::Exists(const char * archive, const char * fileName);
+   virtual bool ::GetSize(const char * archive, const char * fileName, FileSize * size);
+   virtual bool ::Stats(const char * archive, const char * fileName, FileStats stats);
+   virtual void ::FixCase(const char * archive, char * fileName);
 
    // File Listing
-   virtual bool ::Find(FileDesc file, char * archive, char * name);
+   virtual bool ::Find(FileDesc file, const char * archive, const char * name);
    virtual bool ::FindNext(FileDesc file);
    virtual void ::CloseDir(FileDesc file);
 
    // Archive manipulation
-   virtual Archive ::OpenArchive(char * fileName, ArchiveOpenFlags create);
-   virtual bool ::QuerySize(char * fileName, FileSize * size);
+   virtual Archive ::OpenArchive(const char * fileName, ArchiveOpenFlags create);
+   virtual bool ::QuerySize(const char * fileName, FileSize * size);
 };
 
 public enum FileOpenMode { read = 1, write, append, readWrite, writeRead, appendRead };
@@ -228,7 +228,7 @@ public class File : IOChannel
       return Read(bytes, 1, numBytes);
    }
 
-   uint WriteData(byte * bytes, uint numBytes)
+   uint WriteData(const byte * bytes, uint numBytes)
    {
       return Write(bytes, 1, numBytes);
    }
@@ -249,7 +249,7 @@ public class File : IOChannel
       output = null;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       if(!string[0])
       {
@@ -275,7 +275,7 @@ public class File : IOChannel
       return false;
    }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(this)
       {
@@ -302,7 +302,7 @@ public class File : IOChannel
 
             if(fileDialog.Modal() == ok)
             {
-               char * filePath = fileDialog.filePath;
+               const char * filePath = fileDialog.filePath;
                File output = null;
                if(output.OnGetDataFromString(filePath))
                {
@@ -325,7 +325,7 @@ public class File : IOChannel
             fileDialog.filePath = "";
             if(fileDialog.Modal() == ok)
             {
-               char * filePath = fileDialog.filePath;
+               const char * filePath = fileDialog.filePath;
                File f = FileOpen(filePath, write);
                if(f)
                {
@@ -370,7 +370,7 @@ public class File : IOChannel
 
                   size.OnSerialize(channel);
                   cSize.OnSerialize(channel);
-                  channel.WriteData(compressed, cSize);
+                  channel.WriteData(compressed, (uint)cSize);
 
                   delete compressed;
                }
@@ -422,7 +422,7 @@ public class File : IOChannel
                {
                   this = TempFile { };
                   uncompress(uncompressed, &size, compressed, cSize);
-                  Write(uncompressed, 1, size);
+                  Write(uncompressed, 1, (uint)size);
                   Seek(0, start);
 
                   delete uncompressed;
@@ -479,7 +479,7 @@ public:
       return input ? (int)fread(buffer, size, count, input) : 0;
    }
 
-   virtual int Write(void * buffer, uint size, uint count)
+   virtual int Write(const void * buffer, uint size, uint count)
    {
       return output ? (int)fwrite(buffer, size, count, output) : 0;
    }
@@ -572,7 +572,7 @@ public:
    }
 
    // Normal Methods
-   int Printf(char * format, ...)
+   int Printf(const char * format, ...)
    {
       int result = 0;
       if(format)
@@ -756,7 +756,7 @@ public:
       return c;
    }
 
-   bool CopyTo(char * outputFileName)
+   bool CopyTo(const char * outputFileName)
    {
       bool result = false;
       File f = FileOpen(outputFileName, write);
@@ -782,7 +782,7 @@ public:
    }
 
 #if 0
-   virtual bool Open(char * fileName, FileOpenMode mode)
+   virtual bool Open(const char * fileName, FileOpenMode mode)
    {
       bool result = false;
       if(this)
@@ -930,9 +930,10 @@ default bool WinReviveNetworkResource(uint16 * _wfileName);
 
 #endif
 
-public FileAttribs FileExists(char * fileName)
+public FileAttribs FileExists(const char * fileName)
 {
-   char archiveName[MAX_LOCATION], * archiveFile;
+   char archiveName[MAX_LOCATION];
+   const char * archiveFile;
 #if !defined(ECERE_BOOTSTRAP)
    if(SplitArchivePath(fileName, archiveName, &archiveFile))
    {
@@ -949,12 +950,13 @@ public FileAttribs FileExists(char * fileName)
 
 static int openCount;
 
-public File FileOpen(char * fileName, FileOpenMode mode)
+public File FileOpen(const char * fileName, FileOpenMode mode)
 {
    File result = null;
    if(fileName)
    {
-      char archiveName[MAX_LOCATION], * archiveFile;
+      char archiveName[MAX_LOCATION];
+      const char * archiveFile;
 #if !defined(ECERE_BOOTSTRAP)
       if(SplitArchivePath(fileName, archiveName, &archiveFile))
       {
@@ -1024,7 +1026,7 @@ public void FileFixCase(char * file)
 }
 
 #if !defined(ECERE_BOOTSTRAP)
-public bool FileTruncate(char * fileName, FileSize size)
+public bool FileTruncate(const char * fileName, FileSize size)
 {
 #if defined(__WIN32__)
    uint16 * _wfileName = UTF8toUTF16(fileName, null);
@@ -1044,7 +1046,7 @@ public bool FileTruncate(char * fileName, FileSize size)
 }
 #endif
 
-public bool FileGetSize(char * fileName, FileSize * size)
+public bool FileGetSize(const char * fileName, FileSize * size)
 {
    bool result = false;
    if(size)
@@ -1053,7 +1055,8 @@ public bool FileGetSize(char * fileName, FileSize * size)
       if(fileName)
       {
 #if !defined(ECERE_BOOTSTRAP)
-         char archiveName[MAX_LOCATION], * archiveFile;
+         char archiveName[MAX_LOCATION];
+         const char * archiveFile;
          if(SplitArchivePath(fileName, archiveName, &archiveFile))
             return EARFileSystem::GetSize(archiveName, archiveFile, size);
          else
@@ -1064,13 +1067,14 @@ public bool FileGetSize(char * fileName, FileSize * size)
    return result;
 }
 
-public bool FileGetStats(char * fileName, FileStats stats)
+public bool FileGetStats(const char * fileName, FileStats stats)
 {
    bool result = false;
    if(stats && fileName)
    {
 #if !defined(ECERE_BOOTSTRAP)
-      char archiveName[MAX_LOCATION], * archiveFile;
+      char archiveName[MAX_LOCATION];
+      const char * archiveFile;
       if(SplitArchivePath(fileName, archiveName, &archiveFile))
          result = EARFileSystem::Stats(archiveName, archiveFile, stats);
       else
@@ -1082,7 +1086,7 @@ public bool FileGetStats(char * fileName, FileStats stats)
 
 #ifndef ECERE_BOOTSTRAP
 
-public bool FileSetAttribs(char * fileName, FileAttribs attribs)
+public bool FileSetAttribs(const char * fileName, FileAttribs attribs)
 {
 #ifdef __WIN32__
    uint winAttribs = 0;
@@ -1097,7 +1101,7 @@ public bool FileSetAttribs(char * fileName, FileAttribs attribs)
    return true;
 }
 
-public bool FileSetTime(char * fileName, TimeStamp created, TimeStamp accessed, TimeStamp modified)
+public bool FileSetTime(const char * fileName, TimeStamp created, TimeStamp accessed, TimeStamp modified)
 {
    bool result = false;
    TimeStamp currentTime = time(null);
@@ -1165,14 +1169,15 @@ private class Dir : struct
    char name[MAX_LOCATION];
 };
 
-static FileDesc FileFind(char * path, char * extensions)
+static FileDesc FileFind(const char * path, const char * extensions)
 {
    FileDesc result = null;
    FileDesc file;
 
    if((file = FileDesc {}))
    {
-      char archiveName[MAX_LOCATION], * archiveFile;
+      char archiveName[MAX_LOCATION];
+      const char * archiveFile;
       if(SplitArchivePath(path, archiveName, &archiveFile))
       {
          if(EARFileSystem::Find(file, archiveName, archiveFile))
@@ -1287,7 +1292,7 @@ static FileDesc FileFind(char * path, char * extensions)
                d.fHandle = null;
                nr.dwScope       = RESOURCE_GLOBALNET;
                nr.dwType        = RESOURCETYPE_DISK;
-               nr.lpProvider = L"Microsoft Windows Network";
+               nr.lpProvider = (uint16 *)L"Microsoft Windows Network";
 
                strcpy(d.name, path);
                if(path[2])
@@ -1336,7 +1341,7 @@ static FileDesc FileFind(char * path, char * extensions)
                else
                {
                   int c;
-                  nr.lpProvider = L"Microsoft Windows Network";
+                  nr.lpProvider = (uint16 *)L"Microsoft Windows Network";
 
                   // Entire Network
                   WNetOpenEnum(RESOURCE_GLOBALNET, RESOURCETYPE_DISK, 0, &nr, &handle);
@@ -1451,7 +1456,7 @@ private class FileDesc : struct
    subclass(FileSystem) system;
    Dir dir;
 
-   bool Validate(char * extensions)
+   bool Validate(const char * extensions)
    {
       if(strcmp(name, "..") && strcmp(name, ".") && strcmp(name, ""))
       {
@@ -1480,7 +1485,7 @@ private class FileDesc : struct
       return false;
    }
 
-   FileDesc FindNext(char * extensions)
+   FileDesc FindNext(const char * extensions)
    {
       FileDesc result = null;
 
@@ -1736,8 +1741,8 @@ private class FileDesc : struct
 public struct FileListing
 {
 public:
-   char * directory;
-   char * extensions;
+   const char * directory;
+   const char * extensions;
 
    bool Find()
    {
@@ -1757,8 +1762,8 @@ public:
       desc = null;
    }
 
-   property char * name { get { return (char *)(desc ? desc.name : null); } };
-   property char * path { get { return (char *)(desc ? desc.path : null); } };
+   property const char * name { get { return desc ? desc.name : null; } };
+   property const char * path { get { return desc ? desc.path : null; } };
    property FileStats stats { get { value = desc ? desc.stats : FileStats { }; } };
 
 private:
@@ -1766,7 +1771,7 @@ private:
 };
 #endif
 
-public File CreateTemporaryFile(char * tempFileName, char * template)
+public File CreateTemporaryFile(char * tempFileName, const char * template)
 {
 #ifndef ECERE_BOOTSTRAP // quick fix for now
    File f;
@@ -1794,7 +1799,7 @@ public File CreateTemporaryFile(char * tempFileName, char * template)
 
 #undef DeleteFile
 
-public void CreateTemporaryDir(char * tempFileName, char * template)
+public void CreateTemporaryDir(char * tempFileName, const char * template)
 {
 #ifndef ECERE_BOOTSTRAP // quick fix for now
 #if defined(__unix__) || defined(__APPLE__)
@@ -1829,7 +1834,7 @@ public void MakeSystemPath(char * p)
    FileFixCase(p);
 }
 
-public char * CopySystemPath(char * p)
+public char * CopySystemPath(const char * p)
 {
    char * d = CopyString(p);
    if(d)
@@ -1837,7 +1842,7 @@ public char * CopySystemPath(char * p)
    return d;
 }
 
-public char * CopyUnixPath(char * p)
+public char * CopyUnixPath(const char * p)
 {
    char * d = CopyString(p);
    if(d)
@@ -1845,7 +1850,7 @@ public char * CopyUnixPath(char * p)
    return d;
 }
 
-public char * GetSystemPathBuffer(char * d, char * p)
+public char * GetSystemPathBuffer(char * d, const char * p)
 {
    if(d != p)
       strcpy(d, p ? p : "");
@@ -1853,7 +1858,7 @@ public char * GetSystemPathBuffer(char * d, char * p)
    return d;
 }
 
-public char * GetSlashPathBuffer(char * d, char * p)
+public char * GetSlashPathBuffer(char * d, const char * p)
 {
    if(d != p)
       strcpy(d, p ? p : "");

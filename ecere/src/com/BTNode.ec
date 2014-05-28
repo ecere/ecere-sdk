@@ -7,7 +7,7 @@ import "instance"
 public enum TreePrintStyle { inOrder, postOrder, preOrder, depthOrder };
 
 // WARNING: This function has no boundary check!
-public void strcatf(char * string, char * format, ...)
+public void strcatf(char * string, const char * format, ...)
 {
    va_list args;
    va_start(args, format);
@@ -216,13 +216,13 @@ private:
       return this;
    }
 
-   public BTNode FindString(char * key)
+   public BTNode FindString(const char * key)
    {
       while(this)
       {
          int result;
          if(key && this.key)
-            result = strcmp(key, (char *)this.key);
+            result = strcmp(key, (const char *)this.key);
          else if(key && !this.key)
             result = 1;
          else if(!key && this.key)
@@ -240,7 +240,7 @@ private:
       return this;
    }
 
-   public BTNode FindPrefix(char * key)
+   public BTNode FindPrefix(const char * key)
    {
       BTNode subString = null;
       int len = key ? strlen(key) : 0;
@@ -248,7 +248,7 @@ private:
       {
          int result;
          if(key && this.key)
-            result = strcmp(key, (char *)this.key);
+            result = strcmp(key, (const char *)this.key);
          else if(key && !this.key)
             result = 1;
          else if(!key && this.key)
@@ -258,7 +258,7 @@ private:
 
          if(result < 0)
          {
-            if(!strncmp(key, (char *)this.key, len))
+            if(!strncmp(key, (const char *)this.key, len))
                subString = this;
             this = left;
          }

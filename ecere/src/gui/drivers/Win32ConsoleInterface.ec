@@ -278,11 +278,11 @@ class Win32ConsoleInterface : Interface
 
    }
 
-   char ** GraphicsDrivers(int * numDrivers)
+   const char ** GraphicsDrivers(int * numDrivers)
    {
-      static char *graphicsDrivers[] = { "Win32Console" };
+      static const char *graphicsDrivers[] = { "Win32Console" };
       *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
-      return (char **)graphicsDrivers;
+      return (const char **)graphicsDrivers;
    }
 
    void GetCurrentMode(bool * fullScreen, Resolution * resolution, PixelFormat * colorDepth, int * refreshRate)
@@ -332,7 +332,7 @@ class Win32ConsoleInterface : Interface
 
    // -- Window manipulation ---
 
-   void SetRootWindowCaption(void * windowHandle, char * name)
+   void SetRootWindowCaption(void * windowHandle, const char * name)
    {
       if(windowHandle == guiApp.desktop)
          SetConsoleTitle(name);

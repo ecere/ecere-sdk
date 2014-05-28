@@ -47,7 +47,7 @@ public:
          }
       }
    };
-   property char * searchString
+   property const char * searchString
    {
       set
       {
@@ -58,7 +58,7 @@ public:
       }
       get { return findWhat.contents; }
    };
-   property char * replaceString { set { replaceWith.contents = replaceString; } get { return replaceWith.contents; } }
+   property const char * replaceString { set { replaceWith.contents = replaceString; } get { return replaceWith.contents; } }
    property bool wholeWord { set { wholeWord.checked = value; } get { return wholeWord.checked; } };
    property bool matchCase { set { matchCase.checked = value; } get { return matchCase.checked; } };
 
@@ -75,8 +75,8 @@ private:
       bool selectionOnly = selection.checked;
       bool wholeWord = this.wholeWord.checked;
       bool matchCase = this.matchCase.checked;
-      char * searchString = findWhat.contents;
-      char * replaceString = replaceWith.contents;
+      const char * searchString = findWhat.contents;
+      const char * replaceString = replaceWith.contents;
 
       if(!editBox) return false;
       if(!continued)
@@ -275,8 +275,8 @@ private:
          bool selectionOnly = selection.checked;
          bool wholeWord = this.wholeWord.checked;
          bool matchCase = this.matchCase.checked;
-         char * searchString = findWhat.contents;
-         char * replaceString = replaceWith.contents;
+         const char * searchString = findWhat.contents;
+         const char * replaceString = replaceWith.contents;
 
          if(!editBox) return false;
          if(!continued)

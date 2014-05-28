@@ -7,7 +7,7 @@ class ImportFolderFSI : NormalFileSystemIterator
    ProjectView projectView;
    Array<ProjectNode> stack { };
 
-   bool OnFolder(char * folderPath)
+   bool OnFolder(const char * folderPath)
    {
       char name[MAX_LOCATION];
       ProjectNode parentNode = stack.lastIterator.data;
@@ -20,12 +20,12 @@ class ImportFolderFSI : NormalFileSystemIterator
       return true;
    }
 
-   void OutFolder(char * folderPath, bool isRoot)
+   void OutFolder(const char * folderPath, bool isRoot)
    {
       stack.lastIterator.Remove(); //stack.Remove();
    }
 
-   bool OnFile(char * filePath)
+   bool OnFile(const char * filePath)
    {
       ProjectNode parentNode = stack.lastIterator.data;
       if(!projectView.AddFile(parentNode, filePath, parentNode.isInResources, false))
@@ -67,7 +67,7 @@ static Array<FileType> projectTypes
    { $"Ecere IDE Workspace", WorkspaceExtension }
 ] };
 
-static char * iconNames[] =
+static const char * iconNames[] =
 {
    "<:ecere>mimeTypes/file.png",                   /*genFile*/
    "<:ecere>mimeTypes/textEcereWorkspace.png",     /*ewsFile*/
@@ -554,7 +554,7 @@ class ProjectView : Window
       ide.outputView.ShowClearSelectTab(find); // why this?
    }
 
-   bool OnSaveFile(char * fileName)
+   bool OnSaveFile(const char * fileName)
    {
       for(prj : ide.workspace.projects)
       {
@@ -571,7 +571,7 @@ class ProjectView : Window
       return true;
    }
 
-   bool IsModuleInProject(char * filePath)
+   bool IsModuleInProject(const char * filePath)
    {
       char moduleName[MAX_FILENAME]; //, modulePath[MAX_LOCATION];
       GetLastDirectory(filePath, moduleName);
@@ -719,8 +719,8 @@ class ProjectView : Window
            (method == forceExists && exists) ||
            (method == normal && (!exists || (config && config.makingModified))))
          {
-            char * reason;
-            char * action;
+            const char * reason;
+            const char * action;
             ide.statusBar.text = $"Generating Makefile & Dependencies..."; // Dependencies?
             app.UpdateDisplay();
 
@@ -1030,7 +1030,7 @@ class ProjectView : Window
       return true;
    }
 
-   void CleanProject(char * terminateDebugSessionMessage, char * cleaningMessageLogFormat, MenuItem selection, CleanType cleanType, bool justPrint)
+   void CleanProject(const char * terminateDebugSessionMessage, const char * cleaningMessageLogFormat, MenuItem selection, CleanType cleanType, bool justPrint)
    {
       Project prj = project;
       Array<Project> projects { };
@@ -1679,9 +1679,9 @@ class ProjectView : Window
             ProjectNode node = null;
             if(colon)
             {
-               char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
-               char * from = strstr(line, "from ");
-               char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen("from ") : line;
+               const char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
+               const char * from = strstr(line, "from ");
+               const char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen("from ") : line;
                int len;
                if(colon < start)
                   start = line;
@@ -2173,13 +2173,13 @@ class ProjectView : Window
          ProjectNode parentNode = (ProjectNode)row.tag;
          bool addFailed = false;
          int numSelections = fileDialog.numSelections;
-         char ** multiFilePaths = fileDialog.multiFilePaths;
+         const char * const * multiFilePaths = fileDialog.multiFilePaths;
 
          Array<String> nameConflictFiles { };
 
          for(c = 0; c < numSelections; c++)
          {
-            char * filePath = multiFilePaths[c];
+            const char * filePath = multiFilePaths[c];
             FileAttribs exists = FileExists(filePath);
             bool addThisFile = true;
 
@@ -2217,10 +2217,10 @@ class ProjectView : Window
          if(addFailed)
          {
             int len = 0;
-            char * part1 = $"The following file";
-            char * opt1 = $" was ";
-            char * opt2 = $"s were ";
-            char * part2 = $"not added because of identical file name conflict within the project.\n\n";
+            const char * part1 = $"The following file";
+            const char * opt1 = $" was ";
+            const char * opt2 = $"s were ";
+            const char * part2 = $"not added because of identical file name conflict within the project.\n\n";
             char * message;
             len += strlen(part1);
             len += strlen(part2);
@@ -2245,7 +2245,7 @@ class ProjectView : Window
       }
    }
 
-   ProjectNode AddFile(ProjectNode parentNode, char * filePath, bool resources, bool isTemporary)
+   ProjectNode AddFile(ProjectNode parentNode, const char * filePath, bool resources, bool isTemporary)
    {
       ProjectNode result = null;
       ProjectNode after = null;
@@ -2274,7 +2274,7 @@ class ProjectView : Window
       return result;
    }
 
-   CodeEditor CreateNew(char * upper, char * lower, char * base, char * className)
+   CodeEditor CreateNew(const char * upper, const char * lower, const char * base, char * className)
    {
       CodeEditor codeEditor = null;
       ProjectNode projectNode;

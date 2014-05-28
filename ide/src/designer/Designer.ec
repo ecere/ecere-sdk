@@ -97,13 +97,13 @@ class Designer : DesignerBase
          codeEditor.DeleteObject(object);
    }
 
-   void RenameObject(ObjectInfo object, char * name)
+   void RenameObject(ObjectInfo object, const char * name)
    {
       if(object && (name || !object.classDefinition))
          codeEditor.RenameObject(object, name);
    }
 
-   bool FindObject(Instance * object, char * string)
+   bool FindObject(Instance * object, const char * string)
    {
       ObjectInfo classObject;
       for(classObject = codeEditor.classes.first; classObject; classObject = classObject.next)

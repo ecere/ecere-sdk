@@ -26,12 +26,12 @@ enum ValgrindLeakCheck
 {
    no, summary, yes, full;
 
-   property char *
+   property const char *
    {
       get { return OnGetString(null, null, null); }
    }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(this >= no && this <= full)
       {
@@ -108,13 +108,13 @@ public:
    char * workspaceFile;
    char * workspaceDir;
    char * commandLineArgs;
-   property char * commandLineArgs { set { delete commandLineArgs; if(value) commandLineArgs = CopyString(value); } }
+   property const char * commandLineArgs { set { delete commandLineArgs; if(value) commandLineArgs = CopyString(value); } }
    char * debugDir;
-   property char * debugDir { set { delete debugDir; if(value) debugDir = CopyString(value); } }
+   property const char * debugDir { set { delete debugDir; if(value) debugDir = CopyString(value); } }
 
    int bpCount;
 
-   property char * compiler
+   property const char * compiler
    {
       set { delete compiler; if(value && value[0]) compiler = CopyString(value); }
       get { return compiler && compiler[0] ? compiler : null; }
@@ -143,7 +143,7 @@ public:
       }
    };
 
-   property char * workspaceFile
+   property const char * workspaceFile
    {
       set
       {
@@ -157,7 +157,7 @@ public:
       get { return workspaceFile; }
    }
 
-   property char * projectDir
+   property const char * projectDir
    {
       get
       {
@@ -358,7 +358,7 @@ public:
       }
    }
 
-   char * GetAbsolutePathFromRelative(char * relative)
+   char * GetAbsolutePathFromRelative(const char * relative)
    {
       char name[MAX_LOCATION];
       char absolute[MAX_LOCATION];
@@ -412,7 +412,7 @@ public:
       return null;
    }
 
-   char * GetPathWorkspaceRelativeOrAbsolute(char * path)
+   char * GetPathWorkspaceRelativeOrAbsolute(const char * path)
    {
       if(IsPathInsideOf(path, workspaceDir))
       {
@@ -424,7 +424,7 @@ public:
          return CopyUnixPath(path);
    }
 
-   Array<ProjectNode> GetAllProjectNodes(char *fullPath, bool skipExcluded)
+   Array<ProjectNode> GetAllProjectNodes(const char *fullPath, bool skipExcluded)
    {
       Array<ProjectNode> nodes = null;
       for(project : projects)
@@ -442,7 +442,7 @@ public:
       return nodes;
    }
 
-   OpenedFileInfo UpdateOpenedFileInfo(char * fileName, OpenedFileState state)
+   OpenedFileInfo UpdateOpenedFileInfo(const char * fileName, OpenedFileState state)
    {
       char filePath[MAX_LOCATION];
       OpenedFileInfo ofi = null;
@@ -508,7 +508,7 @@ public:
       delete project;
    }
 
-   void SelectActiveConfig(char * configName)
+   void SelectActiveConfig(const char * configName)
    {
       bool change = false;
       for(prj : ide.workspace.projects)
@@ -532,7 +532,7 @@ public:
       }
    }
 
-   bool FindPath(ProjectNode node, char * path)
+   bool FindPath(ProjectNode node, const char * path)
    {
       if(node.type == file)
       {
@@ -556,7 +556,7 @@ public:
       return false;
    }
 
-   void ChangeBreakpoint(DataRow row, char * location)
+   void ChangeBreakpoint(DataRow row, const char * location)
    {
       Breakpoint bp = (Breakpoint)row.tag;
       if(bp)
@@ -611,7 +611,7 @@ public:
       }
    }
 
-   void ChangeBreakpointCondition(DataRow row, char * condition)
+   void ChangeBreakpointCondition(DataRow row, const char * condition)
    {
       Breakpoint bp = (Breakpoint)row.tag;
       if(bp && !(!bp.condition && !(condition && condition[0])))
@@ -652,11 +652,11 @@ public:
          Window document;
          for(document = ide.firstChild; document; document = document.next)
          {
-            char * fileName = document.fileName;
+            const char * fileName = document.fileName;
             if(document.isDocument && fileName && document.created)
             {
                char winFilePath[MAX_LOCATION];
-               char * slashPath = GetSlashPathBuffer(winFilePath, fileName);
+               const char * slashPath = GetSlashPathBuffer(winFilePath, fileName);
 
                if(!fstrcmp(slashPath, bp.absoluteFilePath))
                {
@@ -793,7 +793,7 @@ public:
 
 }
 
-Workspace LoadWorkspace(char * filePath, char * fromProjectFile)
+Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
 {
    File file;
    Workspace workspace = null;

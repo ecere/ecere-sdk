@@ -36,7 +36,7 @@ static Module privateModule;
 
 static char mainModuleName[MAX_LOCATION];
 static char projectName[MAX_LOCATION];
-static void LoadImports(char * fileName)
+static void LoadImports(const char * fileName)
 {
    File f = FileOpen(fileName, read);
    if(f)
@@ -246,7 +246,7 @@ static bool SeardchModuleName(Module searchIn, char * name)
    return false;
 }
 */
-static void WriteMain(char * fileName)
+static void WriteMain(const char * fileName)
 {
    File f = FileOpen(fileName, write);
    if(f)
@@ -1613,7 +1613,7 @@ class SymbolgenApp : Application
       */
       int c;
       bool valid = true;
-      char * output = null;
+      const char * output = null;
 
       outputPot = false;
       disabledPooling = false;
@@ -1660,7 +1660,7 @@ class SymbolgenApp : Application
 
       for(c = 1; c<argc; c++)
       {
-         char * arg = argv[c];
+         const char * arg = argv[c];
          if(arg[0] == '-')
          {
             if(!strcmp(arg + 1, "m32") || !strcmp(arg + 1, "m64"))
@@ -1757,7 +1757,7 @@ class SymbolgenApp : Application
 
          //if(!strcmp(ext, "c"))
          {
-            String symbolsDir = GetSymbolsDir();
+            const String symbolsDir = GetSymbolsDir();
             // Only generating .pot files when building from release.* directory for now
             //bool outputPot = symbolsDir && SearchString(symbolsDir, 0, "release.", false, false);
             Map<ContextStringPair, List<String> > intlStrings { };
@@ -1765,7 +1765,7 @@ class SymbolgenApp : Application
 
             for(c = 1; c<argc; c++)
             {
-               char * file = argv[c];
+               const char * file = argv[c];
                File f = null;
                char line[16384];
                int count = 0;
@@ -1780,7 +1780,7 @@ class SymbolgenApp : Application
                else
                {
                   count = 1;
-                  tokens[0] = file;
+                  tokens[0] = (char *)file;
                }
                while(count || f)
                {
@@ -1807,7 +1807,7 @@ class SymbolgenApp : Application
             // What is this supposed to do?
             for(c = 1; c<argc; c++)
             {
-               char * file = argv[c];
+               const char * file = argv[c];
                if(file[0] == '-')
                {
                   if(!strcmp(file, "-c"))
@@ -1817,7 +1817,7 @@ class SymbolgenApp : Application
 
             for(c = 1; c<argc; c++)
             {
-               char * file = argv[c];
+               const char * file = argv[c];
                File f = null;
                char line[16384];
                int count = 0;
@@ -1833,7 +1833,7 @@ class SymbolgenApp : Application
                else
                {
                   count = 1;
-                  tokens[0] = file;
+                  tokens[0] = (char *)file;
                }
 
                while(count || f)

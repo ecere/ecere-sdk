@@ -88,7 +88,7 @@ struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
 struct __ecereNameSpace__ecere__com__Class * next;
-char *  name;
+const char *  name;
 int offset;
 int structSize;
 int (* *  _vTbl)();
@@ -109,16 +109,16 @@ int startMemberID;
 int type;
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int typeSize;
 int defaultAlignment;
 void (*  Initialize)();
 int memberOffset;
 struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-char *  designerClass;
+const char *  designerClass;
 unsigned int noExpansion;
-char *  defaultProperty;
+const char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
 int isRemote;
@@ -130,7 +130,7 @@ int destructionWatchOffset;
 unsigned int fixed;
 struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
 int inheritanceAccess;
-char *  fullName;
+const char *  fullName;
 void *  symbol;
 struct __ecereNameSpace__ecere__sys__OldList conversions;
 struct __ecereNameSpace__ecere__sys__OldList templateParams;
@@ -142,9 +142,9 @@ unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
@@ -152,12 +152,12 @@ struct __ecereNameSpace__ecere__com__Property
 {
 struct __ecereNameSpace__ecere__com__Property * prev;
 struct __ecereNameSpace__ecere__com__Property * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 void (*  Set)(void * , int);
@@ -168,7 +168,7 @@ void *  symbol;
 int vid;
 unsigned int conversion;
 unsigned int watcherOffset;
-char *  category;
+const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
@@ -176,7 +176,7 @@ unsigned int isWatchable;
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -201,12 +201,12 @@ struct __ecereNameSpace__ecere__com__DataMember
 {
 struct __ecereNameSpace__ecere__com__DataMember * prev;
 struct __ecereNameSpace__ecere__com__DataMember * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int type;
@@ -222,7 +222,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Method
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__Method * parent;
 struct __ecereNameSpace__ecere__com__Method * left;
 struct __ecereNameSpace__ecere__com__Method * right;
@@ -232,7 +232,7 @@ int vid;
 int type;
 struct __ecereNameSpace__ecere__com__Class * _class;
 void *  symbol;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int memberAccess;
 } __attribute__ ((gcc_struct));
@@ -275,13 +275,13 @@ union
 {
 struct
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
-char *  memberString;
+const char *  memberString;
 union
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
@@ -298,7 +298,7 @@ static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSp
 
 static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_last, * __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_last;
 
-void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * data);
+void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data);
 
 void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
@@ -324,7 +324,7 @@ return (a > b) ? 1 : ((a < b) ? -1 : 0);
 
 extern int strcmp(const char * , const char * );
 
-int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char * a, char * b)
+int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * a, const char * b)
 {
 return (a && b) ? strcmp(a, b) : -1;
 }
@@ -371,16 +371,16 @@ this->CompareKey = __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Compar
 return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(this->root, this, key) : (((void *)0));
 }
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString(struct __ecereNameSpace__ecere__sys__BTNode * this, char *  key);
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString(struct __ecereNameSpace__ecere__sys__BTNode * this, const char *  key);
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char * key)
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * key)
 {
 return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString(this->root, key) : (((void *)0));
 }
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(struct __ecereNameSpace__ecere__sys__BTNode * this, char *  key);
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(struct __ecereNameSpace__ecere__sys__BTNode * this, const char *  key);
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char * key)
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * key)
 {
 return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(this->root, key) : (((void *)0));
 }
@@ -475,13 +475,13 @@ __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ece
 (*this).count = root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count((*this).root) : 0;
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
 
 struct __ecereNameSpace__ecere__com__NameSpace
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
 struct __ecereNameSpace__ecere__com__NameSpace *  left;
 struct __ecereNameSpace__ecere__com__NameSpace *  right;
@@ -504,7 +504,7 @@ struct __ecereNameSpace__ecere__sys__OldList functions;
 struct __ecereNameSpace__ecere__sys__OldList modules;
 struct __ecereNameSpace__ecere__com__Instance * prev;
 struct __ecereNameSpace__ecere__com__Instance * next;
-char *  name;
+const char *  name;
 void *  library;
 void *  Unload;
 int importType;
@@ -515,11 +515,11 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, unsigned int size, unsigned int alignment, int declMode);
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  dataType, void *  setStmt, void *  getStmt, int declMode);
+extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
 
 void __ecereRegisterModule_BinaryTree(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -533,12 +533,12 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnUnserialize", 0, __ecer
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Add", "bool Add(ecere::sys::BTNode node)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Check", "bool Check()", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Check, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "CompareInt", "int CompareInt(uintptr a, uintptr b)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "CompareString", "int CompareString(char * a, char * b)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "CompareString", "int CompareString(const char * a, const char * b)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Delete", "void Delete(ecere::sys::BTNode node)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", "ecere::sys::BTNode Find(uintptr key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindAll", "ecere::sys::BTNode FindAll(uintptr key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindAll, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindPrefix", "ecere::sys::BTNode FindPrefix(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindString", "ecere::sys::BTNode FindString(char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindPrefix", "ecere::sys::BTNode FindPrefix(const char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "FindString", "ecere::sys::BTNode FindString(const char * key)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", "void Free()", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Free, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "FreeString", "void ::FreeString(char * string)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FreeString, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Print", "char * Print(char * output, ecere::sys::TreePrintStyle tps)", __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Print, 1);

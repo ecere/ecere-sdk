@@ -75,7 +75,7 @@ public class SSLSocket : Socket
       return n;
    }
 
-   int SendData(unsigned char * buffer, int count, unsigned int flags)
+   int SendData(const unsigned char * buffer, int count, unsigned int flags)
    {
       int n = ssl ? SSL_write(ssl, buffer, count) : Socket::SendData(buffer, count, flags);
       return n;

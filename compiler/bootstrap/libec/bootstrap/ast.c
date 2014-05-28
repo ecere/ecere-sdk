@@ -81,7 +81,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Method
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__Method * parent;
 struct __ecereNameSpace__ecere__com__Method * left;
 struct __ecereNameSpace__ecere__com__Method * right;
@@ -91,7 +91,7 @@ int vid;
 int type;
 struct __ecereNameSpace__ecere__com__Class * _class;
 void *  symbol;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 int memberAccess;
 } __attribute__ ((gcc_struct));
@@ -102,12 +102,12 @@ struct __ecereNameSpace__ecere__com__Property
 {
 struct __ecereNameSpace__ecere__com__Property * prev;
 struct __ecereNameSpace__ecere__com__Property * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 void (*  Set)(void * , int);
@@ -118,7 +118,7 @@ void *  symbol;
 int vid;
 unsigned int conversion;
 unsigned int watcherOffset;
-char *  category;
+const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
@@ -537,7 +537,7 @@ struct TemplateDatatype * dataType;
 int memberType;
 } __attribute__ ((gcc_struct));
 struct TemplateArgument * defaultArgument;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * baseType;
 } __attribute__ ((gcc_struct));
 
@@ -834,6 +834,7 @@ unsigned int dllExport : 1;
 unsigned int attrStdcall : 1;
 unsigned int declaredWithStruct : 1;
 unsigned int typedByReference : 1;
+unsigned int casted : 1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
@@ -842,7 +843,7 @@ struct __ecereNameSpace__ecere__com__Class
 {
 struct __ecereNameSpace__ecere__com__Class * prev;
 struct __ecereNameSpace__ecere__com__Class * next;
-char *  name;
+const char *  name;
 int offset;
 int structSize;
 int (* *  _vTbl)();
@@ -863,16 +864,16 @@ int startMemberID;
 int type;
 struct __ecereNameSpace__ecere__com__Instance * module;
 struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct Type * dataType;
 int typeSize;
 int defaultAlignment;
 void (*  Initialize)();
 int memberOffset;
 struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-char *  designerClass;
+const char *  designerClass;
 unsigned int noExpansion;
-char *  defaultProperty;
+const char *  defaultProperty;
 unsigned int comRedefinition;
 int count;
 int isRemote;
@@ -884,7 +885,7 @@ int destructionWatchOffset;
 unsigned int fixed;
 struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
 int inheritanceAccess;
-char *  fullName;
+const char *  fullName;
 void *  symbol;
 struct __ecereNameSpace__ecere__sys__OldList conversions;
 struct __ecereNameSpace__ecere__sys__OldList templateParams;
@@ -896,13 +897,13 @@ unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
 
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name);
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, long long value);
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, char *  name, void *  function);
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -927,12 +928,12 @@ struct __ecereNameSpace__ecere__com__DataMember
 {
 struct __ecereNameSpace__ecere__com__DataMember * prev;
 struct __ecereNameSpace__ecere__com__DataMember * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 int type;
@@ -962,13 +963,13 @@ union
 {
 struct
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
-char *  memberString;
+const char *  memberString;
 union
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
@@ -1222,13 +1223,13 @@ extern struct Location yylloc;
 
 extern char * yytext;
 
-char * defaultNameSpace;
+const char * defaultNameSpace;
 
 int defaultNameSpaceLen;
 
 extern size_t strlen(const char * );
 
-void SetDefaultNameSpace(char * s)
+void SetDefaultNameSpace(const char * s)
 {
 defaultNameSpace = s;
 defaultNameSpaceLen = s ? strlen(s) : 0;
@@ -1257,11 +1258,11 @@ void SetDefaultDeclMode(int accessMode)
 defaultDeclMode = accessMode;
 }
 
-char * currentNameSpace;
+const char * currentNameSpace;
 
 int currentNameSpaceLen;
 
-void SetCurrentNameSpace(char * s)
+void SetCurrentNameSpace(const char * s)
 {
 currentNameSpace = s;
 currentNameSpaceLen = s ? strlen(s) : 0;
@@ -1300,9 +1301,9 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 extern int strcmp(const char * , const char * );
 
-struct Specifier * MkSpecifierName(char *  name);
+struct Specifier * MkSpecifierName(const char *  name);
 
-extern char *  __ecereNameSpace__ecere__sys__CopyString(char *  string);
+extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplatedType;
 
@@ -1316,17 +1317,17 @@ int depth;
 struct TemplateParameter * param;
 } __attribute__ ((gcc_struct));
 
-struct TemplatedType * FindTemplateTypeParameter(struct Context * ctx, char *  name);
+struct TemplatedType * FindTemplateTypeParameter(struct Context * ctx, const char *  name);
 
 extern struct Context * curContext;
 
-struct Symbol * FindClass(char *  name);
+struct Symbol * FindClass(const char *  name);
 
-struct Specifier * _MkSpecifierName(char *  name, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * templateArgs);
+struct Specifier * _MkSpecifierName(const char *  name, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * templateArgs);
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
-struct Identifier * MkIdentifier(char * string)
+struct Identifier * MkIdentifier(const char * string)
 {
 struct Identifier * id = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Identifier);
 int c;
@@ -1334,7 +1335,7 @@ int c;
 id->_class = (((void *)0));
 if(string)
 {
-char * namePart;
+const char * namePart;
 unsigned int gotColon = 0x0;
 
 for(c = strlen(string) - 1; c >= 0; c--)
@@ -1510,7 +1511,7 @@ struct Expression * MkExpIdentifier(struct Identifier * id)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 0, __ecereInstance1->identifier = id, __ecereInstance1;
+__ecereInstance1->type = 0, __ecereInstance1->identifier = id, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1521,21 +1522,21 @@ struct Expression * exp = (exp = __ecereNameSpace__ecere__com__eInstance_New(__e
 return exp;
 }
 
-struct Expression * MkExpConstant(char * string)
+struct Expression * MkExpConstant(const char * string)
 {
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 2, __ecereInstance1->constant = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
+__ecereInstance1->type = 2, __ecereInstance1->constant = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
-struct Expression * MkExpString(char * string)
+struct Expression * MkExpString(const char * string)
 {
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 3, __ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
+__ecereInstance1->type = 3, __ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1567,11 +1568,11 @@ struct __ecereNameSpace__ecere__com__Instance * intlStrings;
 
 extern unsigned int inCompiler;
 
-extern char *  QMkString(char *  source);
+extern char *  QMkString(const char *  source);
 
-extern char *  i18nModuleName;
+extern const char *  i18nModuleName;
 
-extern struct Expression * QMkExpId(char *  id);
+extern struct Expression * QMkExpId(const char *  id);
 
 struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
 
@@ -1587,7 +1588,7 @@ struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 } __attribute__ ((gcc_struct));
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 index, unsigned int create);
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, const uint64 index, unsigned int create);
 
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
 
@@ -1599,7 +1600,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
-struct Expression * MkExpIntlString(char * string, char * context)
+struct Expression * MkExpIntlString(const char * string, const char * context)
 {
 if(inCompiler)
 {
@@ -1726,7 +1727,7 @@ struct Expression * MkExpCall(struct Expression * expression, struct __ecereName
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 7, __ecereInstance1->call.exp = expression, __ecereInstance1->call.arguments = arguments, __ecereInstance1;
+__ecereInstance1->type = 7, __ecereInstance1->call.exp = expression, __ecereInstance1->call.arguments = arguments, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1735,7 +1736,7 @@ struct Expression * MkExpMember(struct Expression * expression, struct Identifie
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 8, __ecereInstance1->member.exp = expression, __ecereInstance1->member.member = member, __ecereInstance1;
+__ecereInstance1->type = 8, __ecereInstance1->member.exp = expression, __ecereInstance1->member.member = member, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1744,7 +1745,7 @@ struct Expression * MkExpPointer(struct Expression * expression, struct Identifi
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 9, __ecereInstance1->member.exp = expression, __ecereInstance1->member.member = member, __ecereInstance1;
+__ecereInstance1->type = 9, __ecereInstance1->member.exp = expression, __ecereInstance1->member.member = member, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1753,7 +1754,7 @@ struct Expression * MkExpTypeSize(struct TypeName * typeName)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 10, __ecereInstance1->typeName = typeName, __ecereInstance1;
+__ecereInstance1->type = 10, __ecereInstance1->typeName = typeName, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1762,7 +1763,7 @@ struct Expression * MkExpTypeAlign(struct TypeName * typeName)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 36, __ecereInstance1->typeName = typeName, __ecereInstance1;
+__ecereInstance1->type = 36, __ecereInstance1->typeName = typeName, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1771,7 +1772,7 @@ struct Expression * MkExpClassSize(struct Specifier * _class)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 15, __ecereInstance1->_class = _class, __ecereInstance1;
+__ecereInstance1->type = 15, __ecereInstance1->_class = _class, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1780,7 +1781,7 @@ struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * ex
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 11, __ecereInstance1->cast.typeName = typeName, __ecereInstance1->cast.exp = expression, __ecereInstance1;
+__ecereInstance1->type = 11, __ecereInstance1->cast.typeName = typeName, __ecereInstance1->cast.exp = expression, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1789,7 +1790,7 @@ struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameS
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 12, __ecereInstance1->cond.cond = cond, __ecereInstance1->cond.exp = expressions, __ecereInstance1->cond.elseExp = elseExp, __ecereInstance1;
+__ecereInstance1->type = 12, __ecereInstance1->cond.cond = cond, __ecereInstance1->cond.exp = expressions, __ecereInstance1->cond.elseExp = elseExp, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1798,7 +1799,7 @@ struct Expression * MkExpRenew(struct Expression * memExp, struct TypeName * typ
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 14, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1;
+__ecereInstance1->type = 14, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1807,7 +1808,7 @@ struct Expression * MkExpRenew0(struct Expression * memExp, struct TypeName * ty
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 27, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1;
+__ecereInstance1->type = 27, __ecereInstance1->_renew.exp = memExp, __ecereInstance1->_renew.typeName = type, __ecereInstance1->_renew.size = size, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1816,7 +1817,7 @@ struct Expression * MkExpNew(struct TypeName * type, struct Expression * size)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 13, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1;
+__ecereInstance1->type = 13, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1825,7 +1826,7 @@ struct Expression * MkExpNew0(struct TypeName * type, struct Expression * size)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 26, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1;
+__ecereInstance1->type = 26, __ecereInstance1->_new.typeName = type, __ecereInstance1->_new.size = size, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1834,7 +1835,7 @@ struct Expression * MkExpVaArg(struct Expression * exp, struct TypeName * type)
 return __extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 34, __ecereInstance1->vaArg.exp = exp, __ecereInstance1->vaArg.typeName = type, __ecereInstance1;
+__ecereInstance1->type = 34, __ecereInstance1->vaArg.exp = exp, __ecereInstance1->vaArg.typeName = type, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -1931,7 +1932,7 @@ FreeType(type);
 return spec;
 }
 
-struct Symbol * FindType(struct Context * ctx, char *  name);
+struct Symbol * FindType(struct Context * ctx, const char *  name);
 
 struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions)
 {
@@ -2144,7 +2145,7 @@ __ecereInstance1->declarator = declarator, __ecereInstance1->initializer = initi
 });
 }
 
-int CheckType(char *  text);
+int CheckType(const char *  text);
 
 extern void FreeDeclarator(struct Declarator * decl);
 
@@ -2187,7 +2188,7 @@ __ecereInstance1->qualifiers = qualifiers, __ecereInstance1->declarator = declar
 });
 }
 
-extern char *  __ecereNameSpace__ecere__sys__RSearchString(char *  buffer, char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
+extern char *  __ecereNameSpace__ecere__sys__RSearchString(const char *  buffer, const char *  subStr, int maxLen, unsigned int matchCase, unsigned int matchWord);
 
 extern void FreeSpecifier(struct Specifier * spec);
 
@@ -2206,7 +2207,7 @@ for(spec = qualifiers->first; spec; spec = next)
 next = spec->next;
 if(gotType && !declarator && ((spec->type == 1 && spec->name) || (spec->type == 0 && gotFullType)))
 {
-char * s = (((void *)0));
+const char * s = (((void *)0));
 
 if(spec->type == 1)
 {
@@ -2325,17 +2326,17 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__DefinedExpression;
 
-extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_FindDefine(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_FindDefine(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
 
 extern struct __ecereNameSpace__ecere__com__Instance * privateModule;
 
-extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_RegisterDefine(char *  name, char *  value, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_RegisterDefine(const char *  name, const char *  value, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 extern unsigned int buildingECERECOMModule;
 
-extern void Compiler_Warning(char *  format, ...);
+extern void Compiler_Warning(const char *  format, ...);
 
-extern char *  __ecereNameSpace__ecere__GetTranslatedString(char * name, char *  string, char *  stringAndContext);
+extern const char *  __ecereNameSpace__ecere__GetTranslatedString(const char * name, const char *  string, const char *  stringAndContext);
 
 struct Declaration * MkDeclarationDefine(struct Identifier * id, struct Expression * exp)
 {
@@ -2377,9 +2378,9 @@ Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "Redefinitio
 return decl;
 }
 
-extern int sprintf(char * , char * , ...);
+extern int sprintf(char * , const char * , ...);
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char *  key);
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  key);
 
 struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators)
 {
@@ -2419,11 +2420,11 @@ spec = specifiers->last;
 {
 if((spec->type == 1 && spec->name) || spec->type == 0)
 {
-char * s = (((void *)0));
+const char * s = (((void *)0));
 
 if(spec->type == 1)
 {
-char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
+const char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
 
 s = colon ? colon + 2 : spec->name;
 }
@@ -2456,7 +2457,7 @@ else
 {
 if(gotType && initDeclarators == (((void *)0)) && !spec->next && ((spec->type == 1 && spec->name) || spec->type == 0))
 {
-char * s = (((void *)0));
+const char * s = (((void *)0));
 
 if(spec->type == 1)
 {
@@ -2597,11 +2598,11 @@ for(spec = specifiers->first; spec; spec = next)
 next = spec->next;
 if(gotType && declarators == (((void *)0)) && ((spec->type == 1 && spec->name) || spec->type == 0))
 {
-char * s = (((void *)0));
+const char * s = (((void *)0));
 
 if(spec->type == 1)
 {
-char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
+const char * colon = __ecereNameSpace__ecere__sys__RSearchString(spec->name, "::", strlen(spec->name), 0x1, 0x0);
 
 s = colon ? colon + 2 : spec->name;
 }
@@ -2771,7 +2772,7 @@ return _MkFunction(specifiers, declarator, declarationList, 0x1);
 
 extern struct Declarator * GetFuncDecl(struct Declarator * decl);
 
-extern void Compiler_Error(char *  format, ...);
+extern void Compiler_Error(const char *  format, ...);
 
 struct FunctionDefinition * _MkFunction(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct Declarator * declarator, struct __ecereNameSpace__ecere__sys__OldList * declarationList, unsigned int errorOnOmit)
 {
@@ -3011,7 +3012,7 @@ extern struct __ecereNameSpace__ecere__com__Class * thisClass;
 
 extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
-struct Symbol * _DeclClass(int symbolID, char *  name);
+struct Symbol * _DeclClass(int symbolID, const char *  name);
 
 extern void FreeList(struct __ecereNameSpace__ecere__sys__OldList * list, void (*  FreeFunction)(void * ));
 
@@ -3115,7 +3116,7 @@ FreeList(templateArgs, FreeTemplateArgument);
 
 extern int strncmp(const char * , const char * , size_t n);
 
-struct Specifier * _MkSpecifierName(char * name, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * templateArgs)
+struct Specifier * _MkSpecifierName(const char * name, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * templateArgs)
 {
 struct Specifier * spec = (spec = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Specifier), spec->type = 1, spec);
 
@@ -3158,12 +3159,12 @@ SetClassTemplateArgs(spec, templateArgs);
 return spec;
 }
 
-struct Specifier * MkSpecifierName(char * name)
+struct Specifier * MkSpecifierName(const char * name)
 {
 return _MkSpecifierName(name, (((void *)0)), (((void *)0)));
 }
 
-struct Specifier * MkSpecifierNameArgs(char * name, struct __ecereNameSpace__ecere__sys__OldList * templateArgs)
+struct Specifier * MkSpecifierNameArgs(const char * name, struct __ecereNameSpace__ecere__sys__OldList * templateArgs)
 {
 return _MkSpecifierName(name, (((void *)0)), templateArgs);
 }
@@ -3387,7 +3388,7 @@ __ecereInstance1->type = 9, __ecereInstance1->decl = decl, __ecereInstance1;
 });
 }
 
-struct ClassDef * MkClassDefDesigner(char * designer)
+struct ClassDef * MkClassDefDesigner(const char * designer)
 {
 return __extension__ ({
 struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
@@ -3457,7 +3458,7 @@ def->function = function;
 return def;
 }
 
-struct Symbol * DeclClassAddNameSpace(int symbolID, char * className)
+struct Symbol * DeclClassAddNameSpace(int symbolID, const char * className)
 {
 char name[1024];
 int len = 0, stringLen;
@@ -3489,7 +3490,7 @@ return _DeclClass(symbolID, name);
 
 extern char *  strchr(const char * , int);
 
-struct Symbol * DeclClass(int symbolID, char * name)
+struct Symbol * DeclClass(int symbolID, const char * name)
 {
 if(strchr(name, ':'))
 return _DeclClass(symbolID, name);
@@ -3497,7 +3498,7 @@ else
 return DeclClassAddNameSpace(symbolID, name);
 }
 
-struct Symbol * _DeclClass(int symbolID, char * name)
+struct Symbol * _DeclClass(int symbolID, const char * name)
 {
 struct Symbol * symbol = FindClass(name);
 
@@ -3540,11 +3541,11 @@ struct __ecereNameSpace__ecere__com__ClassTemplateParameter
 {
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * prev;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter * next;
-char *  name;
+const char *  name;
 int type;
 union
 {
-char *  dataTypeString;
+const char *  dataTypeString;
 int memberType;
 } __attribute__ ((gcc_struct));
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg;
@@ -3731,7 +3732,7 @@ __ecereInstance1->type = 11, __ecereInstance1->id = id, __ecereInstance1->initia
 });
 }
 
-int CheckType(char * text)
+int CheckType(const char * text)
 {
 if(FindTemplateTypeParameter(curContext, text))
 {
@@ -3766,7 +3767,7 @@ void PopContext(struct Context * ctx)
 curContext = ctx->parent;
 }
 
-struct Symbol * FindType(struct Context * ctx, char * name)
+struct Symbol * FindType(struct Context * ctx, const char * name)
 {
 struct Symbol * type = (((void *)0));
 
@@ -3779,7 +3780,7 @@ type = FindType(ctx->parent, name);
 return type;
 }
 
-struct TemplatedType * FindTemplateTypeParameter(struct Context * ctx, char * name)
+struct TemplatedType * FindTemplateTypeParameter(struct Context * ctx, const char * name)
 {
 struct TemplatedType * templatedType = (((void *)0));
 
@@ -3796,7 +3797,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__NameSpace
 {
-char *  name;
+const char *  name;
 struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
 struct __ecereNameSpace__ecere__com__NameSpace *  left;
 struct __ecereNameSpace__ecere__com__NameSpace *  right;
@@ -3819,7 +3820,7 @@ struct __ecereNameSpace__ecere__sys__OldList functions;
 struct __ecereNameSpace__ecere__sys__OldList modules;
 struct __ecereNameSpace__ecere__com__Instance * prev;
 struct __ecereNameSpace__ecere__com__Instance * next;
-char *  name;
+const char *  name;
 void *  library;
 void *  Unload;
 int importType;
@@ -3880,9 +3881,9 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*imports), module);
 return module;
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, char *  name);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
 
-struct Symbol * FindClass(char * name)
+struct Symbol * FindClass(const char * name)
 {
 struct Symbol * cl = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -4026,9 +4027,9 @@ extern int targetBits;
 
 extern int targetPlatform;
 
-extern int strtol(char * , char * * , int base);
+extern int strtol(const char * , char * * , int base);
 
-extern struct Symbol * FindSymbol(char *  name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace);
+extern struct Symbol * FindSymbol(const char *  name, struct Context * startContext, struct Context * endContext, unsigned int isStruct, unsigned int globalNameSpace);
 
 static struct Type * ProcessTypeSpecs(struct __ecereNameSpace__ecere__sys__OldList * specs, unsigned int assumeEllipsis, unsigned int keepTypeName)
 {
@@ -4344,7 +4345,7 @@ extern void ComputeExpression(struct Expression * exp);
 
 extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
 
-extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, void * object, ...);
+extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
 
@@ -4563,9 +4564,9 @@ struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, 
 return ProcessTypeDecls(specs, decl, (((void *)0)));
 }
 
-extern struct Declarator * SpecDeclFromString(char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
+extern struct Declarator * SpecDeclFromString(const char *  string, struct __ecereNameSpace__ecere__sys__OldList *  specs, struct Declarator * baseDecl);
 
-struct Type * ProcessTypeString(char * string, unsigned int staticMethod)
+struct Type * ProcessTypeString(const char * string, unsigned int staticMethod)
 {
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Declarator * decl = SpecDeclFromString(string, specs, (((void *)0)));
@@ -4595,7 +4596,7 @@ return type;
 return (((void *)0));
 }
 
-struct Type * MkClassType(char * name)
+struct Type * MkClassType(const char * name)
 {
 if(name)
 {
@@ -4793,13 +4794,13 @@ __ecereInstance1->type = 35, __ecereInstance1->list = expressions, __ecereInstan
 
 extern struct External * curExternal;
 
-extern void FullClassNameCat(char *  output, char *  className, unsigned int includeTemplateParams);
+extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
 extern void MangleClassName(char *  className);
 
-extern void DeclareClass(struct Symbol * classSym, char *  className);
+extern void DeclareClass(struct Symbol * classSym, const char *  className);
 
-struct Expression * GetTemplateArgExpByName(char * paramName, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType)
+struct Expression * GetTemplateArgExpByName(const char * paramName, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType)
 {
 struct Expression * argExp = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * _class = curClass ? curClass : ((curExternal && curExternal->type == 0 && curExternal->function) ? curExternal->function->_class : (((void *)0)));
@@ -4850,15 +4851,15 @@ struct Expression * GetTemplateArgExp(struct TemplateParameter * param, struct _
 return param->identifier ? GetTemplateArgExpByName(param->identifier->string, curClass, 0) : (((void *)0));
 }
 
-extern char *  GetSourceFile(void);
+extern const char *  GetSourceFile(void);
 
-extern char *  GetOutputFile(void);
+extern const char *  GetOutputFile(void);
 
-extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(char *  string, char *  ext, char *  output);
+extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(const char *  string, const char *  ext, char *  output);
 
-extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(char *  fileName, int mode);
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
 
-extern char *  __ecereNameSpace__ecere__sys__GetSlashPathBuffer(char *  d, char *  p);
+extern char *  __ecereNameSpace__ecere__sys__GetSlashPathBuffer(char *  d, const char *  p);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
 
@@ -4886,11 +4887,11 @@ extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameS
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
-uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
+const uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
 extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
 
-int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, char *  format, ...);
+int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char *  format, ...);
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
@@ -4902,8 +4903,8 @@ void OutputIntlStrings()
 {
 if(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)intlStrings + structSize_Instance)))->count)
 {
-char * srcFile = GetSourceFile();
-char * objFile = GetOutputFile();
+const char * srcFile = GetSourceFile();
+const char * objFile = GetOutputFile();
 char srcFileFixed[797];
 char potFile[797];
 struct __ecereNameSpace__ecere__com__Instance * f;
@@ -4912,7 +4913,7 @@ __ecereNameSpace__ecere__sys__ChangeExtension(objFile, "bowl", potFile);
 f = __ecereNameSpace__ecere__sys__FileOpen(potFile, 2);
 if(f)
 {
-char * filePrefix = "";
+const char * filePrefix = "";
 
 if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
 filePrefix = "./";
@@ -4982,30 +4983,30 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
 
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(char *  name, char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, char *  name, char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, void *  function, int declMode);
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, char *  name, char *  type, unsigned int size, unsigned int alignment, int declMode);
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
 
 void __ecereRegisterModule_ast(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDefaultNameSpace", "void SetDefaultNameSpace(char * s)", SetDefaultNameSpace, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDefaultNameSpace", "void SetDefaultNameSpace(const char * s)", SetDefaultNameSpace, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetStrictNameSpaces", "void SetStrictNameSpaces(bool b)", SetStrictNameSpaces, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDeclMode", "void SetDeclMode(ecere::com::AccessMode accessMode)", SetDeclMode, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDefaultDeclMode", "void SetDefaultDeclMode(ecere::com::AccessMode accessMode)", SetDefaultDeclMode, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetCurrentNameSpace", "void SetCurrentNameSpace(char * s)", SetCurrentNameSpace, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetCurrentNameSpace", "void SetCurrentNameSpace(const char * s)", SetCurrentNameSpace, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkList", "ecere::sys::OldList * MkList(void)", MkList, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkListOne", "ecere::sys::OldList * MkListOne(void * item)", MkListOne, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ListAdd", "void ListAdd(ecere::sys::OldList list, void * item)", ListAdd, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ListAddFront", "void ListAddFront(ecere::sys::OldList list, void * item)", ListAddFront, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkIdentifier", "Identifier MkIdentifier(char * string)", MkIdentifier, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkIdentifier", "Identifier MkIdentifier(const char * string)", MkIdentifier, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkTypeTemplateParameter", "TemplateParameter MkTypeTemplateParameter(Identifier identifier, TemplateDatatype baseTplDatatype, TemplateArgument defaultArgument)", MkTypeTemplateParameter, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkIdentifierTemplateParameter", "TemplateParameter MkIdentifierTemplateParameter(Identifier identifier, ecere::com::TemplateMemberType memberType, TemplateArgument defaultArgument)", MkIdentifierTemplateParameter, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpressionTemplateParameter", "TemplateParameter MkExpressionTemplateParameter(Identifier identifier, TemplateDatatype dataType, TemplateArgument defaultArgument)", MkExpressionTemplateParameter, module, 1);
@@ -5018,8 +5019,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpExtensionExpression
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpExtensionInitializer", "Expression MkExpExtensionInitializer(TypeName typeName, Initializer initializer)", MkExpExtensionInitializer, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIdentifier", "Expression MkExpIdentifier(Identifier id)", MkExpIdentifier, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDummy", "Expression MkExpDummy(void)", MkExpDummy, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpConstant", "Expression MkExpConstant(char * string)", MkExpConstant, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expression MkExpString(char * string)", MkExpString, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpConstant", "Expression MkExpConstant(const char * string)", MkExpConstant, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expression MkExpString(const char * string)", MkExpString, module, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ContextStringPair = class;
@@ -5027,7 +5028,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMet
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnFree", 0, __ecereMethod_ContextStringPair_OnFree, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "String", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "context", "String", arch_PointerSize, arch_PointerSize, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIntlString", "Expression MkExpIntlString(char * string, char * context)", MkExpIntlString, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIntlString", "Expression MkExpIntlString(const char * string, const char * context)", MkExpIntlString, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpOp", "Expression MkExpOp(Expression exp1, int op, Expression exp2)", MkExpOp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpBrackets", "Expression MkExpBrackets(ecere::sys::OldList expressions)", MkExpBrackets, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIndex", "Expression MkExpIndex(Expression expression, ecere::sys::OldList index)", MkExpIndex, module, 2);
@@ -5100,9 +5101,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExternalImport", "Exte
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExternalDeclaration", "External MkExternalDeclaration(Declaration declaration)", MkExternalDeclaration, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExternalNameSpace", "External MkExternalNameSpace(Identifier identifier)", MkExternalNameSpace, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetClassTemplateArgs", "void SetClassTemplateArgs(Specifier spec, ecere::sys::OldList templateArgs)", SetClassTemplateArgs, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_MkSpecifierName", "Specifier _MkSpecifierName(char * name, Symbol symbol, ecere::sys::OldList templateArgs)", _MkSpecifierName, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierName", "Specifier MkSpecifierName(char * name)", MkSpecifierName, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierNameArgs", "Specifier MkSpecifierNameArgs(char * name, ecere::sys::OldList * templateArgs)", MkSpecifierNameArgs, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_MkSpecifierName", "Specifier _MkSpecifierName(const char * name, Symbol symbol, ecere::sys::OldList templateArgs)", _MkSpecifierName, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierName", "Specifier MkSpecifierName(const char * name)", MkSpecifierName, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecifierNameArgs", "Specifier MkSpecifierNameArgs(const char * name, ecere::sys::OldList * templateArgs)", MkSpecifierNameArgs, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassFunction", "ClassFunction MkClassFunction(ecere::sys::OldList specifiers, Specifier _class, Declarator decl, ecere::sys::OldList declList)", MkClassFunction, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessClassFunctionBody", "void ProcessClassFunctionBody(ClassFunction func, Statement body)", ProcessClassFunctionBody, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkSpecsClass", "ecere::sys::OldList * MkSpecsClass(Specifier _class)", MkSpecsClass, module, 2);
@@ -5116,15 +5117,15 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefAccessOverride
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefMemberAccess", "ClassDef MkClassDefMemberAccess(void)", MkClassDefMemberAccess, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDeclaration", "ClassDef MkClassDefDeclaration(Declaration decl)", MkClassDefDeclaration, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefClassData", "ClassDef MkClassDefClassData(Declaration decl)", MkClassDefClassData, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDesigner", "ClassDef MkClassDefDesigner(char * designer)", MkClassDefDesigner, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDesigner", "ClassDef MkClassDefDesigner(const char * designer)", MkClassDefDesigner, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefNoExpansion", "ClassDef MkClassDefNoExpansion(void)", MkClassDefNoExpansion, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefFixed", "ClassDef MkClassDefFixed(void)", MkClassDefFixed, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDesignerDefaultProperty", "ClassDef MkClassDefDesignerDefaultProperty(Identifier id)", MkClassDefDesignerDefaultProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDefaultProperty", "ClassDef MkClassDefDefaultProperty(ecere::sys::OldList defProperties)", MkClassDefDefaultProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefFunction", "ClassDef MkClassDefFunction(ClassFunction function)", MkClassDefFunction, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClassAddNameSpace", "Symbol DeclClassAddNameSpace(int symbolID, char * className)", DeclClassAddNameSpace, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClass", "Symbol DeclClass(int symbolID, char * name)", DeclClass, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_DeclClass", "Symbol _DeclClass(int symbolID, char * name)", _DeclClass, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClassAddNameSpace", "Symbol DeclClassAddNameSpace(int symbolID, const char * className)", DeclClassAddNameSpace, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClass", "Symbol DeclClass(int symbolID, const char * name)", DeclClass, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_DeclClass", "Symbol _DeclClass(int symbolID, const char * name)", _DeclClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetupBaseSpecs", "void SetupBaseSpecs(Symbol symbol, ecere::sys::OldList baseSpecs)", SetupBaseSpecs, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClass", "ClassDefinition MkClass(Symbol symbol, ecere::sys::OldList baseSpecs, ecere::sys::OldList definitions)", MkClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpInstance", "Expression MkExpInstance(Instantiation inst)", MkExpInstance, module, 2);
@@ -5133,20 +5134,20 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkProperty", "PropertyDe
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefProperty", "ClassDef MkClassDefProperty(PropertyDef propertyDef)", MkClassDefProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefClassProperty", "ClassDef MkClassDefClassProperty(PropertyDef propertyDef)", MkClassDefClassProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefClassPropertyValue", "ClassDef MkClassDefClassPropertyValue(Identifier id, Initializer initializer)", MkClassDefClassPropertyValue, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CheckType", "int CheckType(char * text)", CheckType, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CheckType", "int CheckType(const char * text)", CheckType, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("check_type", "int check_type(void)", check_type, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PushContext", "Context PushContext(void)", PushContext, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PopContext", "void PopContext(Context ctx)", PopContext, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindType", "Symbol FindType(Context ctx, char * name)", FindType, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindTemplateTypeParameter", "TemplatedType FindTemplateTypeParameter(Context ctx, char * name)", FindTemplateTypeParameter, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindType", "Symbol FindType(Context ctx, const char * name)", FindType, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindTemplateTypeParameter", "TemplatedType FindTemplateTypeParameter(Context ctx, const char * name)", FindTemplateTypeParameter, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ModuleAccess", "bool ModuleAccess(ecere::com::Module searchIn, ecere::com::Module searchFor)", ModuleAccess, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindModule", "ModuleImport FindModule(ecere::com::Module moduleToFind)", FindModule, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindClass", "Symbol FindClass(char * name)", FindClass, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindClass", "Symbol FindClass(const char * name)", FindClass, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyTypeInto", "void CopyTypeInto(Type type, Type src)", CopyTypeInto, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessType", "Type ProcessType(ecere::sys::OldList specs, Declarator decl)", ProcessType, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessTypeString", "Type ProcessTypeString(char * string, bool staticMethod)", ProcessTypeString, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessTypeString", "Type ProcessTypeString(const char * string, bool staticMethod)", ProcessTypeString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassTypeSymbol", "Type MkClassTypeSymbol(Symbol symbol)", MkClassTypeSymbol, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassType", "Type MkClassType(char * name)", MkClassType, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassType", "Type MkClassType(const char * name)", MkClassType, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkAsmField", "AsmField MkAsmField(char * command, Expression expression, Identifier symbolic)", MkAsmField, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkAsmStmt", "Statement MkAsmStmt(Specifier spec, char * statements, ecere::sys::OldList inputFields, ecere::sys::OldList outputFields, ecere::sys::OldList clobberedFields)", MkAsmStmt, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefPropertyWatch", "ClassDef MkClassDefPropertyWatch(PropertyWatch watcher)", MkClassDefPropertyWatch, module, 2);
@@ -5167,7 +5168,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDBField", "Expressi
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDBIndex", "Expression MkExpDBIndex(char * table, Identifier id)", MkExpDBIndex, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDBTable", "Expression MkExpDBTable(char * table)", MkExpDBTable, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpArray", "Expression MkExpArray(ecere::sys::OldList * expressions)", MkExpArray, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExpByName", "Expression GetTemplateArgExpByName(char * paramName, ecere::com::Class curClass, ecere::com::TemplateParameterType tplType)", GetTemplateArgExpByName, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExpByName", "Expression GetTemplateArgExpByName(const char * paramName, ecere::com::Class curClass, ecere::com::TemplateParameterType tplType)", GetTemplateArgExpByName, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTemplateArgExp", "Expression GetTemplateArgExp(TemplateParameter param, ecere::com::Class curClass, bool pointer)", GetTemplateArgExp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputIntlStrings", "void OutputIntlStrings(void)", OutputIntlStrings, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetAST", "void SetAST(ecere::sys::OldList * list)", SetAST, module, 1);

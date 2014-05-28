@@ -62,7 +62,7 @@ public:
       return container.SetData(pointer, value);
    };
 
-   bool Find(T value)
+   bool Find(const T value)
    {
       if(container)
       {
@@ -85,7 +85,7 @@ public:
          container.FreeIterator(pointer);
    }
 
-   bool Index(IT index, bool create)
+   bool Index(const IT index, bool create)
    {
       if(container)
       {
@@ -111,7 +111,7 @@ public:
    virtual IteratorPointer GetNext(IteratorPointer pointer) { return null; }
    virtual D GetData(IteratorPointer pointer) { return (D)0; }
    virtual bool SetData(IteratorPointer pointer, D data);
-   virtual IteratorPointer GetAtPosition(I pos, bool create) { return null; }
+   virtual IteratorPointer GetAtPosition(const I pos, bool create) { return null; }
 
    virtual IteratorPointer Insert(IteratorPointer after, T value);
    virtual IteratorPointer Add(T value);
@@ -163,7 +163,7 @@ public:
       }
    }
 
-   virtual IteratorPointer Find(D value)
+   virtual IteratorPointer Find(const D value)
    {
       IteratorPointer i;
       Class Dclass = class(D);
@@ -172,7 +172,7 @@ public:
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = ((int (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, &value,&data);
+            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, &value,&data);
             if(!result)
                return i;
          }
@@ -182,7 +182,7 @@ public:
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = ((int (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, (void *)value, (void *)data);
+            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, (const void *) value, (const void *)data);
             if(!result)
                return i;
          }
@@ -214,7 +214,7 @@ public:
       Remove(i);
    }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(this)
       {
@@ -226,11 +226,11 @@ public:
          {
             Class Dclass = class(D);
             D data = GetData(i);
-            char * result;
+            const char * result;
 
             itemString[0] = '\0';
 
-            result = ((char *(*)(void *, void *, char *, void *, bool *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnGetString])(Dclass,
+            result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnGetString])(Dclass,
                ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data, itemString, null, null);
             if(!first) strcat(tempString, ", ");
 
@@ -243,7 +243,7 @@ public:
       return tempString;
    }
 
-   void TakeOut(D d)
+   void TakeOut(const D d)
    {
       IteratorPointer i = Find(d);
       if(i) Remove(i);

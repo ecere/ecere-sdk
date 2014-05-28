@@ -73,7 +73,7 @@ public class Id : uint
                return true;
             }
 
-            bool DataBox::NotifyTextEntry(DropBox _dropBox, char * string, bool confirmed)
+            bool DataBox::NotifyTextEntry(DropBox _dropBox, const char * string, bool confirmed)
             {
                TableDropBox dropBox = (TableDropBox)_dropBox;
                //Table tbl = dropBox.table.db.OpenTable(dropBox.table.name, { tableRows });
@@ -125,7 +125,7 @@ public class Id : uint
                   {
                      for(row = dropBox.firstRow; row; row = row.next)
                      {
-                        char * string = row.string;
+                        const char * string = row.string;
                         if(string && !strcmp(trimmed, string))
                            break;
                      }
@@ -165,7 +165,7 @@ public class Id : uint
       return dropBox;
    }
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(&this)
       {
@@ -192,7 +192,7 @@ public class Id : uint
                   if(nameField)
                   {
    #ifdef _DEBUG
-                     char * fn = nameField->name;
+                     const char * fn = nameField->name;
    #endif
                      // Get name data from row
                      int64 data = 0;
@@ -350,7 +350,7 @@ public:
    }
    */
 
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       stringOutput[0] = 0;
       if(this)
@@ -372,7 +372,7 @@ public:
       return stringOutput;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       char value[256];
       this = IdList { };
@@ -704,7 +704,7 @@ public class FixedMultiLineString : String
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
       // Don't show the editbox right away so that the text is highlighted by default
-      char * string = "";
+      const char * string = "";
       EditBox editBox
       {
          dataBox, visible = false,

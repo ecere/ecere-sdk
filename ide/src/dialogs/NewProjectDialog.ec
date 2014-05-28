@@ -40,7 +40,7 @@ class NewProjectDialog : Window
       parent = this, isDefault = true, disabled = true, position = { 170, 130 }, size = { 60 }, text = $"OK";
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         char * prjName = projectName.contents;
+         const char * prjName = projectName.contents;
          char filePath[MAX_LOCATION];
          char extension[MAX_EXTENSION];
          ProjectConfig debug, release;
@@ -244,7 +244,7 @@ class NewProjectDialog : Window
          char name[MAX_FILENAME];
          char tmp[MAX_FILENAME];
          char lastPart[MAX_LOCATION];
-         char * text = editBox.contents;
+         const char * text = editBox.contents;
 
          // drop leading path stuff that has no business here
          GetLastDirectory(text, tmp);
@@ -487,7 +487,7 @@ class QuickProjectDialog : Window
             {
                if(document.created && document.isDocument && document._class == class(CodeEditor))
                {
-                  char * fileName = document.fileName;
+                  const char * fileName = document.fileName;
                   if(strstr(fileName, "http://") == fileName)
                   {
                      char name[MAX_LOCATION];
@@ -608,14 +608,14 @@ class QuickProjectDialog : Window
    }
 }
 
-void ValidProjectNameBufCopy(char *output, char *input)
+void ValidProjectNameBufCopy(char *output, const char *input)
 {
    strcpy(output, input);
    TrimLSpaces(output, output);
    TrimRSpaces(output, output);
    {
       // todo: support '&', '.' and ' ' in project name on windows so that it may be used by all platforms.
-      char * chars = "*|:\",<>?\\/&. ";
+      const char * chars = "*|:\",<>?\\/&. ";
       char ch, * s = output, * o = output;
       while((ch = *s++)) { if(!strchr(chars, ch)) *o++ = ch; }
       *o = '\0';

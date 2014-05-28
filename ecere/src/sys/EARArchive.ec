@@ -39,13 +39,13 @@ static struct EAREntry
    // null terminated file name follows
 };
 
-static File EAROpenArchive(char * archive, EARHeader header)
+static File EAROpenArchive(const char * archive, EARHeader header)
 {
    File f = null;
    if(archive[0] == ':')
    {
       char moduleName[MAX_LOCATION];
-      char * name = archive + 1;
+      const char * name = archive + 1;
 #if defined(__ANDROID__)
       if(!name[0])
          name = ((SubModule)__thisModule.application.modules.first).next.module.name;
@@ -78,7 +78,7 @@ static File EAROpenArchive(char * archive, EARHeader header)
    return null;
 }
 
-static FileAttribs EARGetEntry(File f, EAREntry entry, char * name, char * path)
+static FileAttribs EARGetEntry(File f, EAREntry entry, const char * name, char * path)
 {
    uint first = 0, last = 0;
    if(!name[0])
@@ -192,7 +192,7 @@ class EARArchive : Archive
       return true;
    }
 
-   ArchiveDir OpenDirectory(char * name, FileStats stats, ArchiveAddMode addMode)
+   ArchiveDir OpenDirectory(const char * name, FileStats stats, ArchiveAddMode addMode)
    {
       ArchiveDir result = null;
       EARArchiveDir dir { readOnly = addMode == readOnlyDir };
@@ -370,7 +370,7 @@ class EARArchive : Archive
       }
    }
 
-   uint Find(EARArchiveDir directory, char * namePart, EAREntry entry)
+   uint Find(EARArchiveDir directory, const char * namePart, EAREntry entry)
    {
       uint position;
       for(position = directory.first; position; position = entry.next)
@@ -513,7 +513,7 @@ class EARArchive : Archive
       // bf.handle = f;
    }
 
-   File FileOpen(char * name)
+   File FileOpen(const char * name)
    {
       File result = null;
       EARFile file {};
@@ -609,7 +609,7 @@ class EARArchive : Archive
       return file;
    }
 
-   FileAttribs FileExists(char * fileName)
+   FileAttribs FileExists(const char * fileName)
    {
       FileAttribs result;
       EAREntry entry { };
@@ -698,7 +698,7 @@ class EARArchiveDir : ArchiveDir
       }
    }
 
-   File FileOpen(char * name)
+   File FileOpen(const char * name)
    {
       File result = null;
       EARFile file {};
@@ -750,7 +750,7 @@ class EARArchiveDir : ArchiveDir
       return result;
    }
 
-   FileAttribs FileExists(char * fileName)
+   FileAttribs FileExists(const char * fileName)
    {
       FileAttribs result;
       EAREntry entry { };
@@ -759,7 +759,7 @@ class EARArchiveDir : ArchiveDir
       return result;
    }
 
-   ArchiveDir OpenDirectory(char * name, FileStats stats, ArchiveAddMode addMode)
+   ArchiveDir OpenDirectory(const char * name, FileStats stats, ArchiveAddMode addMode)
    {
       ArchiveDir result = null;
       EARArchiveDir dir { readOnly = addMode == readOnlyDir };
@@ -852,7 +852,7 @@ class EARArchiveDir : ArchiveDir
       return result;
    }
 
-   bool Delete(char * name)
+   bool Delete(const char * name)
    {
       EAREntry entry { };
       uint position;
@@ -871,7 +871,7 @@ class EARArchiveDir : ArchiveDir
       return false;
    }
 
-   bool Move(char * name, EARArchiveDir to)
+   bool Move(const char * name, EARArchiveDir to)
    {
       bool result = false;
       if(position != to.position)
@@ -924,7 +924,7 @@ class EARArchiveDir : ArchiveDir
       return result;
    }
 
-   bool Rename(char * name, char * newName)
+   bool Rename(const char * name, const char * newName)
    {
       bool result = false;
       EAREntry entry { };
@@ -1029,7 +1029,7 @@ class EARArchiveDir : ArchiveDir
       return result;
    }
 
-   bool AddFromFile(char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
+   bool AddFromFile(const char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
    {
       // Search for identical entry
       EAREntry oldEntry;
@@ -1037,7 +1037,7 @@ class EARArchiveDir : ArchiveDir
       return _AddFromFileAtPosition(oldEntry, oldPosition, name, input, stats, addMode, compression, ratio, newPosition);
    }
 
-   bool AddFromFileAtPosition(uint oldPosition, char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
+   bool AddFromFileAtPosition(uint oldPosition, const char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
    {
       EAREntry oldEntry;
       if(oldPosition)
@@ -1048,7 +1048,7 @@ class EARArchiveDir : ArchiveDir
       return _AddFromFileAtPosition(oldEntry, oldPosition, name, input, stats, addMode, compression, ratio, newPosition);
    }
 
-   bool _AddFromFileAtPosition(EAREntry oldEntry, uint oldPosition, char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
+   bool _AddFromFileAtPosition(EAREntry oldEntry, uint oldPosition, const char * name, File input, FileStats stats, ArchiveAddMode addMode, int compression, int * ratio, uint * newPosition)
    {
       bool skip = false;
       FileStats oldStats { };
@@ -1253,7 +1253,7 @@ class EARFile : File
       return read;
    }
 
-   int Write(byte * buffer, uint size, uint count)
+   int Write(const byte * buffer, uint size, uint count)
    {
       return 0;
    }
@@ -1283,7 +1283,7 @@ class EARFile : File
       return false;
    }
 
-   bool Puts(char * string)
+   bool Puts(const char * string)
    {
       return false;
    }
@@ -1345,7 +1345,7 @@ class EARFile : File
 
 class EARFileSystem : FileSystem
 {
-   File ::Open(char * archive, char * name, FileOpenMode mode)
+   File ::Open(const char * archive, const char * name, FileOpenMode mode)
    {
       File result = null;
       if(mode == read)
@@ -1417,7 +1417,7 @@ class EARFileSystem : FileSystem
       return result;
    }
 
-   FileAttribs ::Exists(char * archive, char * fileName)
+   FileAttribs ::Exists(const char * archive, const char * fileName)
    {
       uint result = 0;
       EARHeader header;
@@ -1431,7 +1431,7 @@ class EARFileSystem : FileSystem
       return result;
    }
 
-   bool ::GetSize(char * archive, char * fileName, FileSize * size)
+   bool ::GetSize(const char * archive, const char * fileName, FileSize * size)
    {
       bool result = false;
       EARHeader header;
@@ -1447,7 +1447,7 @@ class EARFileSystem : FileSystem
       return result;
    }
 
-   bool ::Stats(char * archive, char * fileName, FileStats stats)
+   bool ::Stats(const char * archive, const char * fileName, FileStats stats)
    {
       bool result = false;
       EARHeader header;
@@ -1468,7 +1468,7 @@ class EARFileSystem : FileSystem
       return result;
    }
 
-   void ::FixCase(char * archive, char * name)
+   void ::FixCase(const char * archive, char * name)
    {
    #ifdef __WIN32__
       EARHeader header;
@@ -1484,7 +1484,7 @@ class EARFileSystem : FileSystem
    #endif
    }
 
-   bool ::Find(FileDesc file, char * archive, char * name)
+   bool ::Find(FileDesc file, const char * archive, const char * name)
    {
       bool result = false;
       EARDir d {};
@@ -1569,7 +1569,7 @@ class EARFileSystem : FileSystem
    }
 
 #if !defined(ECERE_NOARCHIVE) && !defined(ECERE_VANILLA)
-   Archive ::OpenArchive(char * fileName, ArchiveOpenFlags flags)
+   Archive ::OpenArchive(const char * fileName, ArchiveOpenFlags flags)
    {
       Archive result = null;
       EARArchive archive { writeAccess = flags.writeAccess };
@@ -1691,7 +1691,7 @@ class EARFileSystem : FileSystem
       return result;
    }
 #endif
-   bool ::QuerySize(char * archive, FileSize * size)
+   bool ::QuerySize(const char * archive, FileSize * size)
    {
       bool result = false;
       EARHeader header;

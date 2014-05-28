@@ -14,14 +14,14 @@ import "Map"
 #define FileOpen FileOpenBuffered
 #endif
 
-static Map<String, Map<String, String>> moduleMaps { };
+static Map<const String, Map<const String, const String>> moduleMaps { };
 
 #define SWAP_DWORD(dword) ((((unsigned int)(dword) & 0x000000ff) << 24) \
                          | (((unsigned int)(dword) & 0x0000ff00) <<  8) \
                          | (((unsigned int)(dword) & 0x00ff0000) >>  8) \
                          | (((unsigned int)(dword) & 0xff000000) >> 24))
 
-public dllexport void LoadTranslatedStrings(String moduleName, char * name)
+public dllexport void LoadTranslatedStrings(const String moduleName, const char * name)
 {
 #ifndef ECERE_NOFILE
    File f;
@@ -133,7 +133,7 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
       f.Read(&magic, sizeof(uint), 1);
       if(magic == 0x950412de || magic == 0xde120495)
       {
-         Map<String, String> textMap;
+         Map<const String, const String> textMap;
          bool swap = magic != 0x950412de;
          uint revision = 0;
          uint numStrings = 0;
@@ -150,7 +150,7 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
          if(!moduleMaps)
             moduleMaps = { };
          {
-            MapIterator<String, Map<String, String>> it { map = moduleMaps };
+            MapIterator<const String, Map<const String, const String>> it { map = moduleMaps };
             if(it.Index(name, false))
                delete it.data;
             // TOFIX: delete moduleMaps[module];
@@ -201,9 +201,9 @@ public dllexport void LoadTranslatedStrings(String moduleName, char * name)
 #endif
 }
 
-public dllexport void UnloadTranslatedStrings(String name)
+public dllexport void UnloadTranslatedStrings(const String name)
 {
-   MapIterator<String, Map<String, String>> it { map = moduleMaps };
+   MapIterator<const String, Map<const String, const String>> it { map = moduleMaps };
    if(it.Index(name, false))
    {
       it.data.Free();
@@ -211,9 +211,9 @@ public dllexport void UnloadTranslatedStrings(String name)
    }
 }
 
-public dllexport char * GetTranslatedString(String name, char * string, char * stringAndContext)
+public dllexport const char * GetTranslatedString(const String name, const char * string, const char * stringAndContext)
 {
-   Map<String, String> textMap = moduleMaps ? moduleMaps[name] : null;
-   char * result = textMap ? textMap[stringAndContext ? stringAndContext : string] : string;
+   Map<const String, const String> textMap = moduleMaps ? moduleMaps[name] : null;
+   const char * result = textMap ? textMap[stringAndContext ? stringAndContext : string] : string;
    return (result && result[0]) ? result : string;
 }

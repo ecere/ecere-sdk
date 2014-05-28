@@ -11,7 +11,7 @@ enum CodeObjectType { typeClass, typeData, typeMethod, typeEvent, typeProperty, 
 
 class CodeObject : struct
 {
-   char * name;
+   const char * name;
    bool bold;
    CodeObjectType type;
    int indent;
@@ -29,7 +29,7 @@ class CodeObject : struct
    {
       int indent = displayFlags.dropBox ? 0 : 10;
       int textOffset;
-      char * name = object ? (object.name ? object.name : $"(unnamed)") : this.name;
+      const char * name = object ? (object.name ? object.name : $"(unnamed)") : this.name;
       int nameLen = strlen(name);
 
       Bitmap icon = bitmap ? bitmap.bitmap : editor.icons[type].bitmap;
@@ -61,7 +61,7 @@ class CodeObject : struct
       if(overriden == 2 /*&& codeObject.function*/)
       {
          int w, nameW;
-         char * text = function ? function.declarator.symbol.string : "";
+         const char * text = function ? function.declarator.symbol.string : "";
          int len = strlen(text);
          int start;
          if(!text[0])
@@ -109,7 +109,7 @@ class CodeObject : struct
       delete this;
    }
 
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       return name ? name : "";
    }

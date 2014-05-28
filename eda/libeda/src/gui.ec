@@ -8,9 +8,9 @@ extern int __ecereVMethodID_class_OnFree;
 extern int __ecereVMethodID_class_OnGetString;
 private:
 
-char * defaultNameField = "Name";
-char * defaultIdField = "Id";
-char * defaultActiveField = "Active";
+const char * defaultNameField = "Name";
+const char * defaultIdField = "Id";
+const char * defaultActiveField = "Active";
 
 public void SetDefaultIdField(char * value) { defaultIdField = value; }
 public void SetDefaultNameField(char * value) { defaultNameField = value; }
@@ -148,7 +148,7 @@ public:
                {
                   FieldIndex indexedFields[1];
                   // Table tbl = table.db.OpenTable(table.name, { tableRows });
-                  char * name = table.name;
+                  const char * name = table.name;
                   Database db = table.db;
                   Table tbl = db.OpenTable(name, { tableRows });
                   if(tbl)
@@ -262,7 +262,7 @@ public:
    void EditNotifyUpdate(EditBox editBox)
    {
       DataRow row;
-      char * contents = editBox.contents;
+      const char * contents = editBox.contents;
       int len = strlen(contents);
       if(len && editBox.charPos == len)
       {
@@ -274,7 +274,7 @@ public:
          {
             for(row = firstRow; row; row = row.next)
             {
-               char * string = row.string;
+               const char * string = row.string;
                if(string && SearchString(string, 0, contents, false, false) == string)
                {
                   // SelectRow(row);
@@ -636,7 +636,7 @@ public:
       FieldDataBox::Save();
    }
 
-   virtual bool OnAddTextEntry(Row row, TableDropBox dropBox, char * entry)
+   virtual bool OnAddTextEntry(Row row, TableDropBox dropBox, const char * entry)
    {
       row.Add();
       row.SetData(dropBox.nameField, entry);

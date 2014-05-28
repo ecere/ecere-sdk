@@ -490,12 +490,12 @@ private class HotKeySlot : struct
 public class Window
 {
 private:
-   class_data char * icon;
+   class_data const char * icon;
    class_no_expansion
    class_default_property caption;
    // class_initialize GuiApplication::Initialize;
    class_designer FormDesigner;
-   class_property char * icon
+   class_property const char * icon
    {
       set { class_data(icon) = value; }
       get { return class_data(icon); }
@@ -701,20 +701,20 @@ private:
    }
 
 //#if !defined(ECERE_VANILLA)
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       if(this == activeDesigner)
          return "(Desktop)";
       else
       {
-         char * name = property::name;
+         const char * name = property::name;
          return name ? name : "";
       }
    }
 //#endif
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NOTRUETYPE)
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       FormDesigner designer = (FormDesigner)activeDesigner.classDesigner;
       if(string[0])
@@ -6085,7 +6085,7 @@ private:
          {
             this, FileChange { modified = true };
 
-            bool OnFileNotify(FileChange action, char * param)
+            bool OnFileNotify(FileChange action, const char * param)
             {
                incref this;
                fileMonitor.StopMonitoring();
@@ -7057,7 +7057,7 @@ public:
       }
    }
 
-   private void _SetCaption(char * format, va_list args)
+   private void _SetCaption(const char * format, va_list args)
    {
       if(this)
       {
@@ -7077,7 +7077,7 @@ public:
       }
    }
 
-   /*deprecated*/ void SetText(char * format, ...)
+   /*deprecated*/ void SetText(const char * format, ...)
    {
       va_list args;
       va_start(args, format);
@@ -7085,7 +7085,7 @@ public:
       va_end(args);
    }
 
-   void SetCaption(char * format, ...)
+   void SetCaption(const char * format, ...)
    {
       va_list args;
       va_start(args, format);
@@ -7412,7 +7412,7 @@ public:
             fileDialog.master = master.parent ? master : this;
             if(fileDialog.Modal() == ok)
             {
-               char * filePath = fileDialog.filePath;
+               const char * filePath = fileDialog.filePath;
                saving = true;
                if(OnSaveFile(filePath))
                {
@@ -7831,8 +7831,8 @@ public:
    virtual void OnHScroll(ScrollBarAction action, int position, Key key);
    virtual void OnVScroll(ScrollBarAction action, int position, Key key);
    virtual void OnDrawOverChildren(Surface surface);
-   virtual bool OnFileModified(FileChange fileChange, char * param);
-   virtual bool OnSaveFile(char * fileName);
+   virtual bool OnFileModified(FileChange fileChange, const char * param);
+   virtual bool OnSaveFile(const char * fileName);
 
    // Virtual Methods -- Children management (To support Stacker, for lack of built-in auto-layout)
    // Note: A 'client' would refer to isActiveClient, rather than
@@ -7849,8 +7849,8 @@ public:
       *cw = *w;
       *ch = *h;
    }
-   virtual void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving);
-   virtual void PreShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving);
+   virtual void ShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving);
+   virtual void PreShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving);
    virtual bool IsMouseMoving(int x, int y, int w, int h)
    {
       return false;
@@ -7873,7 +7873,7 @@ public:
    // Notifications
    virtual bool Window::NotifyActivate(Window window, bool active, Window previous);
    virtual void Window::NotifyDestroyed(Window window, DialogResult result);
-   virtual void Window::NotifySaved(Window window, char * filePath);
+   virtual void Window::NotifySaved(Window window, const char * filePath);
 
    // Public Methods
 
@@ -8149,7 +8149,7 @@ public:
       get { return master ? master : parent; }
    };
 
-   property char * caption
+   property const char * caption
    {
       property_category $"Appearance"
       watchable
@@ -9246,7 +9246,7 @@ public:
       get { return (bool)noAutoScrollArea; }
    };
 
-   property char * fileName
+   property const char * fileName
    {
       property_category $"Document"
       set
@@ -9349,7 +9349,7 @@ public:
    };
 
 //#if !defined(ECERE_VANILLA)
-   property char * name
+   property const char * name
    {
       property_category $"Design"
       get
@@ -9363,7 +9363,7 @@ public:
       }
    };
 //#endif
-   property char * displayDriver
+   property const char * displayDriver
    {
       property_category $"Behavior"
       set
@@ -9482,7 +9482,7 @@ public:
    };
    property bool manageDisplay { get { return (bool)manageDisplay; } set { manageDisplay = value; } };
 
-   property char * text
+   property const char * text
    {
       property_category $"Deprecated"
       watchable
@@ -9647,7 +9647,7 @@ public class CommonControl : Window
    // creationActivation = doNothing;
 
    ToolTip toolTip;
-   public property String toolTip
+   public property const String toolTip
    {
       property_category $"Appearance"
       set
@@ -9684,7 +9684,7 @@ public class CommonControl : Window
 
 public class Percentage : float
 {
-   char * OnGetString(char * string, float * fieldData, bool * needClass)
+   const char * OnGetString(char * string, float * fieldData, bool * needClass)
    {
       int c;
       int last = 0;
@@ -9707,7 +9707,7 @@ public class Percentage : float
    }
 };
 
-public void ApplySkin(Class c, char * name, void ** vTbl)
+public void ApplySkin(Class c, const char * name, void ** vTbl)
 {
    char className[1024];
    Class sc;

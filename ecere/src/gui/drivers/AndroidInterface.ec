@@ -640,11 +640,11 @@ class AndroidInterface : Interface
 
    }
 
-   char ** GraphicsDrivers(int * numDrivers)
+   const char ** GraphicsDrivers(int * numDrivers)
    {
-      static char *graphicsDrivers[] = { "OpenGL" };
+      static const char *graphicsDrivers[] = { "OpenGL" };
       *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
-      return (char **)graphicsDrivers;
+      return (const char **)graphicsDrivers;
    }
 
    void GetCurrentMode(bool * fullScreen, int * resolution, int * colorDepth, int * refreshRate)
@@ -677,7 +677,7 @@ class AndroidInterface : Interface
 
    // -- Window manipulation ---
 
-   void SetRootWindowCaption(Window window, char * name)
+   void SetRootWindowCaption(Window window, const char * name)
    {
 
    }

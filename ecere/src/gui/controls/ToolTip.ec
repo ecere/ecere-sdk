@@ -30,7 +30,7 @@ public class ToolTip : Window
    int margin; margin = 2;
    Point offset; offset = { 0, 20 };
 
-   public property String tip
+   public property const String tip
    {
       set
       {

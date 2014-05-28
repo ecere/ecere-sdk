@@ -72,8 +72,8 @@ void GenerateVSSolutionFile(Project project, CompilerConfig compiler)
    f = FileOpen(filePath, write);
    if(f)
    {
-      char * slnGUID = "8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942";
-      char * prjGUID = "3A1E5467-4EE2-4299-8F0C-7D26CC8C24BA";
+      const char * slnGUID = "8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942";
+      const char * prjGUID = "3A1E5467-4EE2-4299-8F0C-7D26CC8C24BA";
       //char * relPathToVCProjFile = "win32ProjectConsoleApp\\win32ProjectConsoleApp";
 
       f.Print(""); f.Printf("\r\n");
@@ -122,8 +122,8 @@ void GenerateVCProjectFile(Project project, CompilerConfig compiler, int bitDept
    f = FileOpen(filePath, write);
    if(f)
    {
-      char * targetFrameworkVersion = "196613";
-      char * prjGUID = "3A1E5467-4EE2-4299-8F0C-7D26CC8C24BA";
+      const char * targetFrameworkVersion = "196613";
+      const char * prjGUID = "3A1E5467-4EE2-4299-8F0C-7D26CC8C24BA";
       char * rootNamespace = projectName;
       Map<String, NameCollisionInfo> namesInfo { };
       // TOFIX: Collision and Config-specific!
@@ -223,12 +223,12 @@ void PrintConfiguration(File f, Project project, CompilerConfig compiler, Projec
    SetBool consoleSet = localConsole;
    SetBool debugSet = localDebug;
    OptimizationStrategy optimizationSet = localOptimization;
-   String targetFileName = localTargetFileName;
+   const String targetFileName = localTargetFileName;
    bool console = consoleSet == true;
    bool debug = debugSet == true;
    bool optimize = optimizationSet == speed;
-   char * objDirExpr = localObjectsDirectory;
-   char * targetDirExpr = localTargetDirectory;
+   const char * objDirExpr = localObjectsDirectory;
+   const char * targetDirExpr = localTargetDirectory;
    DirExpression objDir { type = intermediateObjectsDir };
    DirExpression targetDir { type = DirExpressionType::targetDir };
    TargetTypes targetType = project.GetTargetType(config);

@@ -573,7 +573,7 @@ class DirectDrawDisplayDriver : DisplayDriver
    #endif
    }
 
-   Font LoadFont(DisplaySystem displaySystem, char * faceName, float size, FontFlags flags)
+   Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags)
    {
    #ifdef USE_GDI_FONT
       void * font;
@@ -633,7 +633,7 @@ class DirectDrawDisplayDriver : DisplayDriver
    #endif
    }
 
-   void WriteText(Display display, Surface surface, int x, int y, byte * text, int len)
+   void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
    #ifdef USE_GDI_FONT
       DDrawDisplay ddrawDisplay = display.driverData;
@@ -686,7 +686,7 @@ class DirectDrawDisplayDriver : DisplayDriver
    #endif
    }
 
-   void FontExtent(DisplaySystem displaySystem, Font font, byte * text, int len, int * width, int * height)
+   void FontExtent(DisplaySystem displaySystem, Font font, const char * text, int len, int * width, int * height)
    {
    #ifdef USE_GDI_FONT
       if(false) //display.alphaBlend)
@@ -728,7 +728,7 @@ class DirectDrawDisplayDriver : DisplayDriver
    #endif
    }
 
-   void TextExtent(Display display, Surface surface, byte * text, int len, int * width, int * height)
+   void TextExtent(Display display, Surface surface, const char * text, int len, int * width, int * height)
    {
    #ifdef USE_GDI_FONT
       /*if(display && display.alphaBlend)

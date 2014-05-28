@@ -6,7 +6,7 @@ import "ecere"
 
 public class Condition : struct
 {
-   char * name;
+   const char * name;
    Mutex lock { };
    int waiting;
    int signals;
@@ -14,7 +14,7 @@ public class Condition : struct
    Semaphore waitDone { };
 
 public:
-   property char * name
+   property const char * name
    {
       set { name = value; }
       get { return name; }

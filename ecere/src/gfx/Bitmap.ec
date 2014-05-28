@@ -4,27 +4,27 @@ import "Display"
 
 public class BitmapFormat
 {
-   class_data char ** extensions;
+   class_data const char ** extensions;
 
-   class_property char ** extensions
+   class_property const char ** extensions
    {
       get { return class_data(extensions); }
       set { class_data(extensions) = value; }   }
 
 
    virtual bool ::Load(Bitmap bitmap, File f);
-   virtual bool ::Save(Bitmap bitmap, char * fileName, void * options);
-   virtual ColorAlpha * ::LoadPalette(char * fileName, char * type);
+   virtual bool ::Save(Bitmap bitmap, const char * fileName, void * options);
+   virtual ColorAlpha * ::LoadPalette(const char * fileName, const char * type);
 };
 
-static char * typesToTry[] =
+static const char * typesToTry[] =
 {
    "gif", "jpg", "png", "bmp", "pcx", "memorybmp"
 };
 
 #define NUM_TYPES_TO_TRY   ((int)(sizeof(typesToTry) / sizeof(char *)))
 
-static subclass(BitmapFormat) FindFormat(char * type)
+static subclass(BitmapFormat) FindFormat(const char * type)
 {
    subclass(BitmapFormat) format = null;
    if(type)
@@ -32,7 +32,7 @@ static subclass(BitmapFormat) FindFormat(char * type)
       OldLink link;
       for(link = class(BitmapFormat).derivatives.first; link; link = link.next)
       {
-         char ** extensions;
+         const char ** extensions;
          format = link.data;
          extensions = format.extensions;
          if(extensions)
@@ -50,7 +50,7 @@ static subclass(BitmapFormat) FindFormat(char * type)
    return format;
 }
 
-public ColorAlpha * LoadPalette(char * fileName, char * type)
+public ColorAlpha * LoadPalette(const char * fileName, const char * type)
 {
    char ext[MAX_EXTENSION];
    subclass(BitmapFormat) format;
@@ -59,10 +59,7 @@ public ColorAlpha * LoadPalette(char * fileName, char * type)
    Bitmap bitmap { };
 
    if(!type)
-   {
-      type = GetExtension(fileName, ext);
-      strlwr(type);
-   }
+      type = strlwr(GetExtension(fileName, ext));
 
    if(type)
       format = FindFormat(type);
@@ -465,7 +462,7 @@ public:
    }
 
    // --- Bitmap loading ---
-   bool LoadFromFile(File file, char * type, DisplaySystem displaySystem)
+   bool LoadFromFile(File file, const char * type, DisplaySystem displaySystem)
    {
       bool result = false;
       if(file)
@@ -510,20 +507,17 @@ public:
       return result;
    }
 
-   bool Load(char * fileName, char * type, DisplaySystem displaySystem)
+   bool Load(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = false;
       char ext[MAX_EXTENSION];
       subclass(BitmapFormat) format;
       int typeToTry = -1;
-      char * guessedType = type;
+      const char * guessedType = type;
 
       if(!fileName) return false;
       if(!guessedType)
-      {
-         guessedType = GetExtension(fileName, ext);
-         strlwr(guessedType);
-      }
+         guessedType = strlwr(GetExtension(fileName, ext));
 
       if(guessedType)
          format = FindFormat(guessedType);
@@ -568,7 +562,7 @@ public:
       return result;
    }
 
-   bool LoadT(char * fileName, char * type, DisplaySystem displaySystem)
+   bool LoadT(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = Load(fileName, type, null);
       if(result)
@@ -586,7 +580,7 @@ public:
 
    #define TRESHOLD  384
 
-   bool LoadGrayed(char * fileName, char * type, DisplaySystem displaySystem)
+   bool LoadGrayed(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = Load(fileName, type, null);
       if(result)
@@ -712,7 +706,7 @@ public:
       return result;
    }
 
-   bool LoadMonochrome(char * fileName, char * type, DisplaySystem displaySystem)
+   bool LoadMonochrome(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = Load(fileName, type, null);
       if(result)
@@ -765,7 +759,7 @@ public:
       return result;
    }
 
-   bool LoadMipMaps(char * fileName, char * type, DisplaySystem displaySystem)
+   bool LoadMipMaps(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = Load(fileName, type, null);
       if(result)
@@ -777,7 +771,7 @@ public:
       return result;
    }
 
-   bool LoadTMipMaps(char * fileName, char * type, DisplaySystem displaySystem)
+   bool LoadTMipMaps(const char * fileName, const char * type, DisplaySystem displaySystem)
    {
       bool result = Load(fileName, type, null);
       if(result)
@@ -790,16 +784,13 @@ public:
       return result;
    }
 
-   bool Save(char * fileName, char * type, void * options)
+   bool Save(const char * fileName, const char * type, void * options)
    {
       char ext[MAX_EXTENSION];
       subclass(BitmapFormat) format;
 
       if(!type)
-      {
-         type = GetExtension(fileName, ext);
-         strlwr(type);
-      }
+         type = strlwr(GetExtension(fileName, ext));
 
       if(type)
          format = FindFormat(type);
@@ -840,7 +831,7 @@ public:
       return result;
    }
 
-   bool Allocate(char * driverName, int width, int height, int stride, PixelFormat format, bool allocatePalette)
+   bool Allocate(const char * driverName, int width, int height, int stride, PixelFormat format, bool allocatePalette)
    {
       bool result = false;
       subclass(DisplayDriver) displayDriver = driverName ? GetDisplayDriver(driverName) : ((subclass(DisplayDriver))class(LFBDisplayDriver));

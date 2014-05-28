@@ -392,7 +392,7 @@ public:
       }
    }
 
-   void * FindName(char * name, bool warn)
+   void * FindName(const char * name, bool warn)
    {
       void * result = null;
       if(name)
@@ -415,7 +415,7 @@ public:
       return result;
    }
 
-   bool PlaceName(char * name, void ** place)
+   bool PlaceName(const char * name, void ** place)
    {
       bool result = true;
       void * item;
@@ -468,7 +468,7 @@ public:
       return item;
    }
 
-   void * FindNamedLink(char * name, bool warn)
+   void * FindNamedLink(const char * name, bool warn)
    {
       if(name)
       {
