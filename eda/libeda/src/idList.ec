@@ -355,18 +355,19 @@ public:
       stringOutput[0] = 0;
       if(this)
       {
-         int c;
-         for(c = 0; c<count; c++)
+         Class type = class_data(type);
+         if(type)
          {
             char tempString[256];
-            Class type = class_data(type);
-            String s;
-            if(c) strcat(stringOutput, ", ");
+            int c;
+            for(c = 0; c<count; c++)
+            {
+               String s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &ids[c], tempString, null, null);
+               if(c) strcat(stringOutput, ", ");
 
-            if(type)
-               s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, &ids[c], tempString, null, null);
-            // strcatf(stringOutput, "%d", ids[c]);
-            strcat(stringOutput, s);
+               // strcatf(stringOutput, "%d", ids[c]);
+               strcat(stringOutput, s);
+            }
          }
       }
       return stringOutput;

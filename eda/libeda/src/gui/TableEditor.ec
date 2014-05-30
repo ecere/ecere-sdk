@@ -731,7 +731,7 @@ public:
 
    bool Filter(Id id)
    {
-      bool result;
+      bool result = false;
       DebugLn("TableEditor::Filter");
       if(selectedId && index && indexFilterField)
       {
@@ -747,8 +747,6 @@ public:
             }
          }
       }
-      else
-         result = false;
       return result;
    }
 
@@ -1714,8 +1712,8 @@ private:
                {
                   for(i = 0; i<entries[c].items.count; i++)
                   {
-                     int count = uniques[entries[c].items.ids[i]];
 #ifdef _DEBUG
+                     int count = uniques[entries[c].items.ids[i]];
                      if(count != 0)
                         DebugLn("Problem");
 #endif

@@ -16,7 +16,7 @@ public import "EDA"
 #include "ffi.h"
 #undef uint
 
-static void UnusedFunction()
+__attribute__((unused)) static void UnusedFunction()
 {
    int a;
    a.OnGetString(0,0,0);
@@ -46,8 +46,8 @@ int CollationCompare(Class type, int count1, const void * data1, int count2, con
    {
       Instance inst1, inst2;
       int result;
-      SerialBuffer buffer1 { size = count1, count = count1, buffer = (char *)data1 };
-      SerialBuffer buffer2 { size = count2, count = count2, buffer = (char *)data2 };
+      SerialBuffer buffer1 { size = count1, count = count1, buffer = (byte *)data1 };
+      SerialBuffer buffer2 { size = count2, count = count2, buffer = (byte *)data2 };
 
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, &inst1, buffer1);
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, &inst2, buffer2);
@@ -66,8 +66,8 @@ int CollationCompare(Class type, int count1, const void * data1, int count2, con
    {
       void * inst1, * inst2;
       int result;
-      SerialBuffer buffer1 { size = count1, count = count1, buffer = (char *)data1 };
-      SerialBuffer buffer2 { size = count2, count = count2, buffer = (char *)data2 };
+      SerialBuffer buffer1 { size = count1, count = count1, buffer = (byte *)data1 };
+      SerialBuffer buffer2 { size = count2, count = count2, buffer = (byte *)data2 };
 
       inst1 = new0 byte[type.structSize];
       inst2 = new0 byte[type.structSize];
@@ -209,7 +209,7 @@ class SQLiteDatabase : Database
    Table OpenTable(const String name, OpenOptions options)
    {
       char command[1024];
-      int result;
+      //int result;
       int nRows = 0, nCols = 0;
       char ** t;
       SQLiteTable table = null;
@@ -245,7 +245,7 @@ class SQLiteDatabase : Database
          bool addFields = false;
 
          sprintf(command, "SELECT Name FROM eda_table_fields WHERE Table_Name='%s';", name);
-         result = sqlite3_get_table(db, command, &t, &nRows, &nCols, null);
+         /*result = */sqlite3_get_table(db, command, &t, &nRows, &nCols, null);
          if(!nRows && !nCols)
             addFields = true;
 
@@ -253,7 +253,7 @@ class SQLiteDatabase : Database
 
          sprintf(command, "SELECT sql FROM sqlite_master WHERE type='table' AND name='%s';", name);
          nCols = 0, nRows = 0;
-         result = sqlite3_get_table(db, command, &t, &nRows, &nCols, null);
+         /*result = */sqlite3_get_table(db, command, &t, &nRows, &nCols, null);
 
          if((nCols || nRows) || options.create)
          {
@@ -308,7 +308,7 @@ class SQLiteDatabase : Database
 
                            sprintf(command, "INSERT INTO eda_table_fields (Table_Name, Name, Type, Length) VALUES ('%s', '%s', '%s', %d);", name,
                               fieldName, type.name, 0);
-                           result = sqlite3_exec(db, command, null, null, null);
+                           /*result = */sqlite3_exec(db, command, null, null, null);
 
                            {
                               SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, num = table._fields.count, sqliteType = sqliteType };
@@ -327,12 +327,12 @@ class SQLiteDatabase : Database
                   sqlite3_stmt * statement;
 
                   sprintf(command, "SELECT Name, Type, Length FROM eda_table_fields WHERE Table_Name='%s';", name);
-                  result = sqlite3_prepare_v2(db, command, -1, &statement, null);
+                  /*result = */sqlite3_prepare_v2(db, command, -1, &statement, null);
 
                   while(sqlite3_step(statement) != SQLITE_DONE)
                   {
-                     const char * fieldName = sqlite3_column_text(statement, 0);
-                     const char * typeName = sqlite3_column_text(statement, 1);
+                     const char * fieldName = (const char *)sqlite3_column_text(statement, 0);
+                     const char * typeName = (const char *)sqlite3_column_text(statement, 1);
                      int length = sqlite3_column_int(statement, 2);
                      Class type = null;
                      int sqliteType = SQLITE_BLOB;
@@ -483,7 +483,7 @@ class SQLiteDatabase : Database
 
 static class FFITypesHolder : Map<Class, String> { ~FFITypesHolder() { Free(); } }
 FFITypesHolder structFFITypes { };
-static Iterator dummy; // TOFIX: forward struct declaration issues on Clang
+__attribute__((unused)) static Iterator dummy; // TOFIX: forward struct declaration issues on Clang
 
 public ffi_type * FFIGetType(Class type, bool structByValue)
 {
@@ -579,7 +579,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
             if(a == class(String))
             {
                int numBytes = sqlite3_value_bytes(values[i]);
-               const char * text = sqlite3_value_text(values[i]);
+               const char * text = (const char *)sqlite3_value_text(values[i]);
                *(char **)data = text ? new byte[numBytes+1] : null;
                if(text)
                   memcpy(*(char **)data, text, numBytes+1);
@@ -589,7 +589,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
                SerialBuffer buffer = staticBuffer; //{ };
                buffer.pos = 0;
                buffer._size = sqlite3_value_bytes(values[i]);
-               buffer._buffer = (char *)sqlite3_value_text(values[i]);
+               buffer._buffer = (byte *)sqlite3_value_text(values[i]);
                //buffer._buffer = sqlite3_value_blob(curStatement);
                buffer.count = buffer._size;
                if(a.type == structClass)
@@ -698,7 +698,7 @@ void SQLiteFunctionProcessor(sqlite3_context* context, int n, sqlite3_value** va
             {
                SerialBuffer buffer { };
                ((void (*)(void *, void *, void *))(void *)r._vTbl[__ecereVMethodID_class_OnSerialize])(r, data, buffer);
-               sqlite3_result_text(context, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+               sqlite3_result_text(context, (char *)buffer._buffer, buffer.count, SQLITE_TRANSIENT);
                delete buffer;
 
                // Avoid destroying Strings for now... (Returning memory owned by the Custom Function)
@@ -1230,7 +1230,6 @@ class SQLiteRow : DriverRow
                }
                else
                {
-                  int bindId = findBindId;
                   sqlite3_reset((move == next) ? findStatement : lastFindStatement);
                   sqlite3_reset(curStatement);
                   curStatement = (move == next) ? findStatement : lastFindStatement;
@@ -1363,7 +1362,7 @@ class SQLiteRow : DriverRow
             {
                buffer = SerialBuffer { };
                ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnSerialize])(dataType, data, buffer);
-               result = sqlite3_bind_text(statement, pos, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+               result = sqlite3_bind_text(statement, pos, (char *)buffer._buffer, buffer.count, SQLITE_TRANSIENT);
             }
             else
                result = sqlite3_bind_null(statement, pos);
@@ -1457,7 +1456,7 @@ class SQLiteRow : DriverRow
                // Reuse the buffer for Blobs...
                if(fld.sqliteType == SQLITE_BLOB || fld.sqliteType == SQLITE_NULL)
                {
-                  sqlite3_bind_text(stmt, (*bindId)++, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+                  sqlite3_bind_text(stmt, (*bindId)++, (char *)buffer._buffer, buffer.count, SQLITE_TRANSIENT);
                   delete buffer;
                }
                else
@@ -1793,7 +1792,7 @@ class SQLiteRow : DriverRow
          case SQLITE_TEXT:
          {
             int numBytes = sqlite3_column_bytes(curStatement, num);
-            const char * text = sqlite3_column_text(curStatement, num);
+            const char * text = (const char *)sqlite3_column_text(curStatement, num);
             *(char **)data = text ? new byte[numBytes+1] : null;
             if(text)
                memcpy(*(char **)data, text, numBytes+1);
@@ -1804,7 +1803,7 @@ class SQLiteRow : DriverRow
             SerialBuffer buffer { };
             //buffer._buffer = sqlite3_column_blob(curStatement, num);
             buffer._size = sqlite3_column_bytes(curStatement, num);
-            buffer._buffer = (char *)sqlite3_column_text(curStatement, num);
+            buffer._buffer = (byte *)sqlite3_column_text(curStatement, num);
             buffer.count = buffer._size;
 
             ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnUnserialize])(dataType, data, buffer);
@@ -1821,7 +1820,6 @@ class SQLiteRow : DriverRow
    {
       SQLiteField sqlFld = (SQLiteField)fld;
       int result;
-      int num = sqlFld.num + 1;
       char command[1024];
 
       if(updateStatement)
@@ -1919,7 +1917,7 @@ class SQLiteRow : DriverRow
       {
          SerialBuffer buffer { };
          ((void (*)(void *, const void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnSerialize])(type, data, buffer);
-         result = sqlite3_bind_text(queryStatement, paramID, buffer._buffer, buffer.count, SQLITE_TRANSIENT);
+         result = sqlite3_bind_text(queryStatement, paramID, (char *)buffer._buffer, buffer.count, SQLITE_TRANSIENT);
          delete buffer;
       }
       return !result;
@@ -1943,6 +1941,6 @@ class SQLiteRow : DriverRow
    }*/
    const char * GetColumn(int paramID)
    {
-      return sqlite3_column_text(curStatement, paramID);
+      return (const char *)sqlite3_column_text(curStatement, paramID);
    }
 }
