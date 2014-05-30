@@ -4053,10 +4053,14 @@ while(*curMember && ((*curMember)->memberAccess == 2))
 else
 while(*curMember && (*curMember)->name)
 {
-struct __ecereNameSpace__ecere__com__DataMember * dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMember(_class, (*curMember)->name, (((void *)0)), (((void *)0)), (((void *)0)));
+struct __ecereNameSpace__ecere__com__DataMember * dataMember = (((void *)0));
 
+if(((*curMember)->memberAccess != 2))
+{
+dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMember(_class, (*curMember)->name, (((void *)0)), (((void *)0)), (((void *)0)));
 if(!dataMember)
 dataMember = (struct __ecereNameSpace__ecere__com__DataMember *)__ecereNameSpace__ecere__com__eClass_FindProperty(_class, (*curMember)->name, (((void *)0)));
+}
 if(dataMember && dataMember->memberAccess != 2 && dataMember->id >= 0)
 {
 *curMember = dataMember;

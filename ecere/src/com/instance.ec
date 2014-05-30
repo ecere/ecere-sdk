@@ -4968,8 +4968,12 @@ public dllexport void eClass_FindNextMember(Class _class, Class * curClass, Data
          else
             while(*curMember && (*curMember).name)      // ADDED THIS HERE for eComPacket packet { Connect, 0, { ECOMMUNICATOR_PROTOCOL_VERSION } };
             {
-               DataMember dataMember = eClass_FindDataMember(_class, curMember->name, null, null, null);
-               if(!dataMember) dataMember = (DataMember)eClass_FindProperty(_class, curMember->name, null);
+               DataMember dataMember = null;
+               if(((*curMember).memberAccess != privateAccess))
+               {
+                  dataMember = eClass_FindDataMember(_class, curMember->name, null, null, null);
+                  if(!dataMember) dataMember = (DataMember)eClass_FindProperty(_class, curMember->name, null);
+               }
                if(dataMember && dataMember.memberAccess != privateAccess && dataMember.id >= 0) // Skip _vTbl, _refCount and _class in Instance
                {
                   *curMember = dataMember;
