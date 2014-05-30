@@ -3304,38 +3304,31 @@ OutputInitializer(decl->initializer, f);
 }
 }
 
+extern char *  strcpy(char * , const char * );
+
 static void OutputDeclaration(struct Declaration * decl, struct __ecereNameSpace__ecere__com__Instance * f)
 {
 struct Specifier * spec;
-char origName[274] = "";
-
-switch(decl->type)
-{
-case 1:
-{
-struct InitDeclarator * d;
+char origName[274];
+char name[274];
 
 if(inCompiler)
 {
-__ecereNameSpace__ecere__sys__PathCat(origName, outputFile);
+strcpy(origName, outputFile);
 __ecereNameSpace__ecere__sys__ChangeCh(origName, '\\', '/');
 }
-if(decl->declarators && (*decl->declarators).first)
-{
-for(d = (*decl->declarators).first; d; d = d->next)
-if(d->initializer)
-{
-char name[274] = "";
-
 GetSourceName(name, decl->loc.start.included ? GetIncludeFileFromID(decl->loc.start.included) : (((void *)0)));
 if(inCompiler && outputLineNumbers && decl->loc.start.line)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n#line %d \"%s\"\n", decl->loc.start.line, name);
 outputLine += 2;
 }
-break;
-}
-}
+switch(decl->type)
+{
+case 1:
+{
+struct InitDeclarator * d;
+
 if(decl->specifiers)
 {
 unsigned int inTypeDef = 0x0;
@@ -3434,7 +3427,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ";\n");
 outputLine++;
-if(inCompiler && outputLineNumbers && decl->loc.start.line && decl->type == 1)
+if(inCompiler && outputLineNumbers && decl->loc.start.line)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n#line %d \"%s\"\n", outputLine + 2, origName);
 outputLine += 2;

@@ -1164,7 +1164,21 @@ static void OutputInitDeclarator(InitDeclarator decl, File f)
 static void OutputDeclaration(Declaration decl, File f)
 {
    Specifier spec;
-   char origName[MAX_FILENAME] = "";
+   char origName[MAX_FILENAME];
+   char name[MAX_FILENAME];
+
+   if(inCompiler)
+   {
+      strcpy(origName, outputFile);
+      ChangeCh(origName, '\\', '/');
+   }
+   GetSourceName(name, decl.loc.start.included ? GetIncludeFileFromID(decl.loc.start.included) : null);
+
+   if(inCompiler && outputLineNumbers && decl.loc.start.line)
+   {
+      f.Printf("\n#line %d \"%s\"\n", decl.loc.start.line, name);
+      outputLine += 2;
+   }
 
    switch(decl.type)
    {
@@ -1173,13 +1187,8 @@ static void OutputDeclaration(Declaration decl, File f)
          InitDeclarator d;
 
          //GetWorkingDir(origName, sizeof(origName));
-         if(inCompiler)
-         {
-            PathCat(origName, outputFile);
-            ChangeCh(origName, '\\', '/');
-         }
 
-         if(decl.declarators && decl.declarators->first)
+         /*if(decl.declarators && decl.declarators->first)
          {
             for(d = decl.declarators->first; d; d = d.next)
                if(d.initializer)
@@ -1190,15 +1199,12 @@ static void OutputDeclaration(Declaration decl, File f)
 
                   if(inCompiler && outputLineNumbers && decl.loc.start.line)
                   {
-                     /*if(decl.loc.start.line == 1)
-                        printf("bug");*/
-
                      f.Printf("\n#line %d \"%s\"\n", decl.loc.start.line, name);
                      outputLine += 2;
                   }
                   break;
                }
-         }
+         }*/
 
          if(decl.specifiers)
          {
@@ -1262,7 +1268,7 @@ static void OutputDeclaration(Declaration decl, File f)
    }
    f.Puts(";\n");
    outputLine ++;
-   if(inCompiler && outputLineNumbers && decl.loc.start.line && decl.type == initDeclaration)
+   if(inCompiler && outputLineNumbers && decl.loc.start.line)
    {
       f.Printf("\n#line %d \"%s\"\n", outputLine+2, origName);
       outputLine += 2;
