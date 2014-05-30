@@ -155,7 +155,6 @@ public class FieldBox : DataBox
 
    virtual void Save()
    {
-      bool result;
       Row row = this.row;
       if(visible && row)
       {

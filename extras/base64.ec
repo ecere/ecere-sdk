@@ -19,7 +19,6 @@ int Base64Encode(byte * input, int len, byte * encoded)
    int encLen = 0;
    while(c < len)
    {
-      int b;
       if(len - c < 3)
       {
          remaining = len - c;
@@ -40,7 +39,7 @@ int Base64Encode(byte * input, int len, byte * encoded)
    return encLen;
 }
 
-int Base64Decode(byte * input, int len, byte * decoded)
+int Base64Decode(const byte * input, int len, byte * decoded)
 {
    uint buffer;
    int c = 0;

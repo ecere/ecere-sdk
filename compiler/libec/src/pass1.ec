@@ -1959,6 +1959,9 @@ public void ProcessClassDefinitions()
          Statement compoundStmt;
          String s;
 
+         if(v.exp)
+            yylloc = v.exp.loc;
+
          ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
          s = QMkString(v.regClass.name);
          ListAdd(findClassArgs, MkExpString(s));

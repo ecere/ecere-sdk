@@ -49,7 +49,7 @@ public:
       OnMessage(buffer);
    }
 
-   virtual bool OnMessage(String message)
+   virtual void OnMessage(const String message)
    {
       ::PrintLn(this._class.name, ": ", message,
             " lineNum=", info.lineNum,

@@ -606,14 +606,12 @@ public class CSVReport : ReportDestination
 
    void AddPage(Page page)
    {
-      int h;
       if(pageCount && display)
          display.NextPage();
       lastPage = page;
       page.master = this;
       page.parent = this;
       page.size = { MAXINT - 10, MAXINT - 10 };
-      h = page.size.h;
       pageCount++;
       page.Create();
    }
@@ -862,7 +860,7 @@ public:
 
    Array<Grouping> groupings { };
 
-   property String title
+   property const String title
    {
       set
       {

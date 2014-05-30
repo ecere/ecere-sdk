@@ -1204,6 +1204,19 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         PlugDeclarator(propertyDef.declarator,
                            MkDeclaratorIdentifier(MkIdentifier("value")))));
 
+                     // Add const to DB table rows properties Set
+                     if(propertyDef.isDBProp)
+                     {
+                        Specifier spec;
+                        OldList * specs = ((TypeName)params->last).qualifiers;
+
+                        for(spec = specs->first; spec; spec = spec.next)
+                           if(spec.type == baseSpecifier && spec.specifier == CONST)
+                              break;
+                        if(!spec)
+                           specs->Insert(null, MkSpecifier(CONST));
+                     }
+
                      // Take it out here...
                      //propertyDef.specifiers = null;
 

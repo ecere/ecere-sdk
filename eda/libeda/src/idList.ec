@@ -14,7 +14,7 @@ extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnSerialize;
 extern int __ecereVMethodID_class_OnFree;
 
-static void UnusedFunction()
+__attribute__((unused)) static void UnusedFunction()
 {
    int a;
    a.OnGetString(0,0,0);
@@ -192,7 +192,7 @@ public class Id : uint
                   if(nameField)
                   {
    #ifdef _DEBUG
-                     const char * fn = nameField->name;
+                     //const char * fn = nameField->name;
    #endif
                      // Get name data from row
                      int64 data = 0;
@@ -704,7 +704,6 @@ public class FixedMultiLineString : String
    Window OnEdit(DataBox dataBox, DataBox obsolete, int x, int y, int w, int h, void * userData)
    {
       // Don't show the editbox right away so that the text is highlighted by default
-      const char * string = "";
       EditBox editBox
       {
          dataBox, visible = false,
@@ -971,7 +970,7 @@ public struct DataList : OldList
             // if(type.type != normalClass || strcmp(type.dataTypeString, "char *"))
             if(type)
             {
-               void * data = ((type.type == normalClass || type.type == noHeadClass || type.type == structClass) ? row.GetData(null) : *(uint *)row.GetData(null));
+               void * data = ((type.type == normalClass || type.type == noHeadClass || type.type == structClass) ? row.GetData(null) : (void *)(uintptr)*(uint *)row.GetData(null));
                if(!data)
                {
                   //if(strcmp(type.dataTypeString, char *"))
@@ -1071,9 +1070,9 @@ public struct DataList : OldList
             }
             else
             {
-               uint i = r.GetData(null);
+               void * i = r.GetData(null);
                if(i)
-                  Add(OldLink { data = (void *)i });
+                  Add(OldLink { data = i });
             }
          }
          return true;
@@ -1089,7 +1088,7 @@ public struct DataList : OldList
       if(!class_data(type))
          class_data(type) = eSystem_FindClass(__thisModule.application, class_data(typeName));
       type = class_data(type);
-      while(node = first)
+      while((node = first))
       {
          // TO STUDY: ONFREE SHOULD BE USED ONLY FOR LISTBOX?
          if(type)

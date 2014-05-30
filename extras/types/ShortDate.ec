@@ -4,14 +4,14 @@ public import static "ecere"
 public import "ecere"
 #endif
 
-static Array<String> shortMonths
+static Array<const String> shortMonths
 { [
    $"Jan", $"Feb", $"Mar", $"Apr", $"May", $"Jun", $"Jul", $"Aug", $"Sep", $"Oct", $"Nov", $"Dec"
 ] };
 
 public struct ShortDate : Date
 {
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       if(day || month || year)
       {

@@ -3100,6 +3100,16 @@ struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 struct Statement * compoundStmt;
 char * s;
 
+if(__extension__ ({
+char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+
+((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
+})->exp)
+yylloc = __extension__ ({
+char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+
+((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
+})->exp->loc;
 ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
 s = QMkString(__extension__ ({
 char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));

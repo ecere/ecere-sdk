@@ -1782,15 +1782,18 @@ static void ProcessExpression(Expression exp)
                      // ({ Instance __internal_ClassInst = e; __internal_ClassInst ? __internal_ClassInst._vTbl : __ecereClass_...; })
                      Expression c;
                      Context context = PushContext();
+                     OldList * specs;
                      c = MkExpExtensionCompound(MkCompoundStmt(
                            MkListOne(MkDeclaration(
-                              MkListOne(MkSpecifierName("Instance")),
+                              (specs = MkListOne(MkSpecifierName("Instance"))),
                               MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
                                  MkInitializerAssignment(CopyExpression(memberExp.member.exp)))))),
                            MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
                               MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
                               MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))),
                               MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+                     if(type.specConst)
+                        specs->Insert(null, MkSpecifier(CONST));
                      c.loc = exp.loc;
                      c.compound.compound.context = context;
                      PopContext(context);
@@ -1986,9 +1989,11 @@ static void ProcessExpression(Expression exp)
                               // ({ Instance __internal_ClassInst = e; __internal_ClassInst ? __internal_ClassInst._class : __ecereClass_...; })
                               Expression c;
                               Context context = PushContext();
+                              OldList * specs;
+
                               c = MkExpExtensionCompound(MkCompoundStmt(
                                     MkListOne(MkDeclaration(
-                                       MkListOne(MkSpecifierName("Instance")),
+                                       (specs = MkListOne(MkSpecifierName("Instance"))),
                                        MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
                                           MkInitializerAssignment(memberExpMemberExp))))),
                                     MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
@@ -1997,6 +2002,9 @@ static void ProcessExpression(Expression exp)
                                        MkExpIdentifier(MkIdentifier(className))))))));
                               c.compound.compound.context = context;
                               PopContext(context);
+
+                              if(type.specConst)
+                                 specs->Insert(null, MkSpecifier(CONST));
 
                               exp.call.arguments->Insert(null, c);
 
@@ -2319,9 +2327,10 @@ static void ProcessExpression(Expression exp)
                            }
                            else
                            {
+                              OldList * specs;
                               c = MkExpExtensionCompound(MkCompoundStmt(
                                     MkListOne(MkDeclaration(
-                                       MkListOne(MkSpecifierName("Instance")),
+                                       (specs = MkListOne(MkSpecifierName("Instance"))),
                                        MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
                                           MkInitializerAssignment(CopyExpression(e)))))),
                                     MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
@@ -2330,6 +2339,9 @@ static void ProcessExpression(Expression exp)
                                        MkExpIdentifier(MkIdentifier(className))))))));
                               c.compound.compound.context = context;
                               PopContext(context);
+
+                              if(type.specConst)
+                                 specs->Insert(null, MkSpecifier(CONST));
 
                               exp.call.arguments->Insert(e.prev, c);
                            }

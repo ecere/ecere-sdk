@@ -69,12 +69,12 @@ public:
 
    virtual uint stdcall AddRef()
    {
-      return (uint)InterlockedIncrement(&_refCount);
+      return (uint)InterlockedIncrement((void *)&_refCount);
    }
 
    virtual uint stdcall Release()
    {
-      uint cRef = InterlockedDecrement(&_refCount);
+      uint cRef = InterlockedDecrement((void *)&_refCount);
       if(cRef == 0)
          delete this;
       return cRef;
@@ -219,7 +219,7 @@ class WiaItem
 {
    IWiaItem *pWiaItem;
 
-   HRESULT DeviceDlg(HWND hWndParent, uint lFlags, uint lIntent, int * count, void * images)
+   HRESULT DeviceDlg(HWND hWndParent, uint lFlags, uint lIntent, LONG * count, void * images)
    {
       return (HRESULT)IWiaItem_DeviceDlg(pWiaItem, hWndParent, lFlags, lIntent, count, images);
    }
@@ -268,7 +268,7 @@ public:
    {
       List<Bitmap> result = null;
       IWiaItem ** ppIWiaItem;
-      int count;
+      LONG count;
       Window window = ((GuiApplication)__thisModule.application).desktop.activeChild;
       if(window) window = window.rootWindow;
 
@@ -286,13 +286,13 @@ public:
             GET_STIDEVICE_TYPE(nDevType) == StiDeviceTypeScanner)
          {
             PROPSPEC specDocumentHandlingSelect;
-            LONG nDocumentHandlingSelect;
+            uint nDocumentHandlingSelect;
 
             specDocumentHandlingSelect.ulKind = PRSPEC_PROPID;
             specDocumentHandlingSelect.propid = WIA_DPS_DOCUMENT_HANDLING_SELECT;
 
             if(scannerProp.ReadLong(&specDocumentHandlingSelect, &nDocumentHandlingSelect) &&
-               nDocumentHandlingSelect & FEEDER)
+               (nDocumentHandlingSelect & FEEDER))
             {
                PROPSPEC specPages;
                PROPVARIANT varPages;
@@ -336,7 +336,7 @@ public:
                   {
                      GUID guidFormat = WiaImgFmt_BMP;
                      GUID preferredFormat;
-                     String format = "bmp";
+                     const String format = "bmp";
                      PROPSPEC specPreferredFormat;
 
                      specPreferredFormat.ulKind = PRSPEC_PROPID;

@@ -2951,7 +2951,7 @@ return external;
 
 extern char *  strncpy(char * , const char * , size_t n);
 
-extern void ImportModule(char *  name, int importType, int importAccess, unsigned int loadDllOnly);
+extern void ImportModule(const char *  name, int importType, int importAccess, unsigned int loadDllOnly);
 
 struct External * MkExternalImport(char * name, int importType, int importAccess)
 {
@@ -3710,7 +3710,7 @@ struct ClassDef * MkClassDefProperty(struct PropertyDef * propertyDef)
 return __extension__ ({
 struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-__ecereInstance1->type = 3, __ecereInstance1->propertyDef = propertyDef, __ecereInstance1;
+__ecereInstance1->type = 3, __ecereInstance1->propertyDef = propertyDef, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -3719,7 +3719,7 @@ struct ClassDef * MkClassDefClassProperty(struct PropertyDef * propertyDef)
 return __extension__ ({
 struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-__ecereInstance1->type = 10, __ecereInstance1->propertyDef = propertyDef, __ecereInstance1;
+__ecereInstance1->type = 10, __ecereInstance1->propertyDef = propertyDef, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 
@@ -3728,7 +3728,7 @@ struct ClassDef * MkClassDefClassPropertyValue(struct Identifier * id, struct In
 return __extension__ ({
 struct ClassDef * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassDef);
 
-__ecereInstance1->type = 11, __ecereInstance1->id = id, __ecereInstance1->initializer = initializer, __ecereInstance1;
+__ecereInstance1->type = 11, __ecereInstance1->id = id, __ecereInstance1->initializer = initializer, __ecereInstance1->loc = yylloc, __ecereInstance1;
 });
 }
 

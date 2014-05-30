@@ -1327,6 +1327,16 @@ public:
    {
 
    }
+
+   property bool specConst
+   {
+      get
+      {
+         Type t = this;
+         while((t.kind == pointerType || t.kind == arrayType) && t.type) t = t.type;
+         return t.constant;
+      }
+   }
 };
 
 public struct Operand

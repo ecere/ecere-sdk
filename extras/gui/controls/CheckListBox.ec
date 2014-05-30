@@ -180,7 +180,6 @@ class CheckListBox : ListBox
          CheckListBoxButton button = buttonMaps[(uintptr)row];
          if(button)
          {
-            bool wasChecked = button.checked;
             button.checked = false;
             button.buttonState = up;
          }

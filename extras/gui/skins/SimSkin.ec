@@ -49,7 +49,7 @@ ColorKey skinGradient[3] =
 
 class SimSkin_Window : Window
 {
-   void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving)
+   void ShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving)
    {
       bool isNormal = (state == normal || state == maximized);
       int top = 0, border = 0, bottom = 0;
@@ -265,7 +265,7 @@ class SimSkin_Window : Window
 
    void SetWindowMinimum(MinMaxValue * mw, MinMaxValue * mh)
    {
-      bool isNormal = (state == normal || state == maximized);
+      //bool isNormal = (state == normal || state == maximized);
       if(nativeDecorations && rootWindow == this) return;
       if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
       {
@@ -524,9 +524,9 @@ static void Button::Close_OnRedraw(Surface surface)
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnApplyGraphics;
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw;
 
-static void Dummy()
+__attribute__((unused)) static void Dummy()
 {
-   Window a;
+   Window a = null;
    a.OnApplyGraphics();
    a.OnRedraw(null);
 }
@@ -636,9 +636,9 @@ class SimSkin_Button : Button
       {
          ButtonState state = this.buttonState;
          Bitmap buttonBitmap = bitmap ? bitmap.bitmap : null;
-         char * text = this.text;
+         const char * text = this.text;
          int offset = (state == down && this.offset) ? 1 : 0;
-         Color backColor = background;
+         //Color backColor = background;
          int isDefault = this.isDefault;
          Font font;
 
@@ -942,7 +942,7 @@ public class SimSkin : Skin
       return { faceName = "Verdana", size = 6.5f };
    }
 
-   char * ::CursorsBitmaps(uint id, int *hotSpotX, int *hotSpotY, byte ** paletteShades)
+   const char * ::CursorsBitmaps(uint id, int *hotSpotX, int *hotSpotY, byte ** paletteShades)
    {
       return null;
    }

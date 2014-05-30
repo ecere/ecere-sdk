@@ -4,7 +4,7 @@ public import "CSVParser"
 import "timeTools"
 
 public enum ColumnType { null = 1, string = 2, number = 4, floater = 8, date = 12 };
-public String columnTypeNames[ColumnType] = { "", "Null", "String", "", "Number", "", "", "", "Float", "", "", "", "Date" };
+public const String columnTypeNames[ColumnType] = { "", "Null", "String", "", "Number", "", "", "", "Float", "", "", "", "Date" };
 
 public class Column : struct
 {

@@ -154,7 +154,7 @@ class SQLiteField : Field
       delete name;
    }
 
-   String GetName()
+   const String GetName()
    {
       return name;
    }
@@ -983,7 +983,7 @@ class SQLiteTable : Table
       return result == SQLITE_OK;
    }
 
-   String GetName()
+   const String GetName()
    {
       return name;
    }

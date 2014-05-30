@@ -1515,6 +1515,10 @@ void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecer
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
+unsigned int __ecereProp_Type_Get_specConst(struct Type * this);
+
+extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_Type_specConst;
+
 static void ProcessExpression(struct Expression * exp)
 {
 struct Location oldyylloc = yylloc;
@@ -2710,8 +2714,11 @@ else
 {
 struct Expression * c;
 struct Context * context = PushContext();
+struct __ecereNameSpace__ecere__sys__OldList * specs;
 
-c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(memberExp->member.exp)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))), MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration((specs = MkListOne(MkSpecifierName("Instance"))), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(memberExp->member.exp)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))), MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+if(__ecereProp_Type_Get_specConst(type))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specs), (((void *)0)), MkSpecifier(CONST));
 c->loc = exp->loc;
 c->compound->compound.context = context;
 PopContext(context);
@@ -2856,10 +2863,13 @@ if(memberExp && cl && cl->type == 0 && (!type || type->byReference == 0x0) && st
 {
 struct Expression * c;
 struct Context * context = PushContext();
+struct __ecereNameSpace__ecere__sys__OldList * specs;
 
-c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(memberExpMemberExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))), MkExpIdentifier(MkIdentifier(className))))))));
+c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration((specs = MkListOne(MkSpecifierName("Instance"))), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(memberExpMemberExp))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))), MkExpIdentifier(MkIdentifier(className))))))));
 c->compound->compound.context = context;
 PopContext(context);
+if(__ecereProp_Type_Get_specConst(type))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specs), (((void *)0)), MkSpecifier(CONST));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), (((void *)0)), c);
 memberExpMemberExp = (((void *)0));
 }
@@ -3117,9 +3127,13 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.argument
 }
 else
 {
-c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("Instance")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(e)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))), MkExpIdentifier(MkIdentifier(className))))))));
+struct __ecereNameSpace__ecere__sys__OldList * specs;
+
+c = MkExpExtensionCompound(MkCompoundStmt(MkListOne(MkDeclaration((specs = MkListOne(MkSpecifierName("Instance"))), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")), MkInitializerAssignment(CopyExpression(e)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_class"))), MkExpIdentifier(MkIdentifier(className))))))));
 c->compound->compound.context = context;
 PopContext(context);
+if(__ecereProp_Type_Get_specConst(type))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specs), (((void *)0)), MkSpecifier(CONST));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->call.arguments), e->prev, c);
 }
 }

@@ -6,7 +6,7 @@ public import "ecere"
 
 default:
 
-static void _WorkAround()
+__attribute__((unused)) static void _WorkAround()
 {
    int a;
    a.OnGetDataFromString(null);
@@ -17,7 +17,7 @@ private:
 
 public class Currency : double
 {
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       char number[256];
       int len;
@@ -60,7 +60,7 @@ public class Currency : double
       return tempString;
    }
 
-   bool OnGetDataFromString(char * string)
+   bool OnGetDataFromString(const char * string)
    {
       int c;
       char ch;

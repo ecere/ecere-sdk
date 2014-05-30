@@ -14,7 +14,7 @@ public void SetEDBIndexOptions(EDBIndexOptions options)
 
 EDBIndexOptions indexOptions { saveIndex = true, deleteIndex = false; };
 
-static void UnusedFunction()
+__attribute__((unused)) static void UnusedFunction()
 {
    int a;
    a.OnGetString(0,0,0);
@@ -45,7 +45,6 @@ void RowsCountFileEdit(Archive archive, const String apath, const RowsCountFileA
    int temp;
    if(!*rowsCountPosition)
    {
-      int c;
       File f = ((EDBArchive)archive).f;
       EDBArchiveDir dir = (EDBArchiveDir) archive.OpenDirectory(apath, FileStats { }, readOnlyDir);
       uint position;
@@ -189,7 +188,7 @@ static class DBTable : struct
    String apath;
    String apathFields;
    OldList indexes;
-   OldList fields { offset = (uint)&((EDBField)0).prev; };
+   OldList fields { offset = (uint)(uintptr)&((EDBField)0).prev; };
    ArchiveDir dir;
 
    uint rowsCountPosition;
@@ -328,7 +327,6 @@ class EDBDatabase : Database
          dbTbl.rowsCount = dbTbl.allocatedRowsCount - dbTbl.deletedRowsCount;
 
          {
-            int c;
             File f = ((EDBArchive)archive).f;
             EDBArchiveDir dir = (EDBArchiveDir) dbTbl.dir;
             uint position;
@@ -779,7 +777,7 @@ static class EDBTable : Table
       return true;
    }
 
-   String GetName()
+   const String GetName()
    {
       return dbTable.apath;
    }
@@ -828,7 +826,7 @@ public:
    String apath;
    String aname;
 
-   String GetName() { return name; }
+   const String GetName() { return name; }
    Class GetType() { return type; }
    int GetLength() { return length; }
    Field GetNext() { return next; }
@@ -1104,7 +1102,6 @@ static class EDBRow : DriverRow
 
    bool Select(MoveOptions move)
    {
-      EDBDatabase edb = tbl.db;
       if(tbl.rowsCount)
       {
          if(index)
@@ -1220,7 +1217,6 @@ static class EDBRow : DriverRow
 
    bool Find(EDBField field, MoveOptions move, MatchOptions match, typed_object data)
    {
-      EDBDatabase edb = tbl.db;
       if(tbl == field.tbl)
       {
          if(tbl.rowsCount)
@@ -1428,7 +1424,6 @@ static class EDBRow : DriverRow
 
    bool FindMultiple(FieldFindData * findData, MoveOptions move, int numFields)
    {
-      EDBDatabase edb = tbl.db;
       int c;
       for(c = 0; c<numFields; c++)
          if(tbl != ((EDBField)findData[c].field).tbl)

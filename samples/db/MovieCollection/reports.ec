@@ -2,7 +2,7 @@ import "EDA"
 
 struct ShortDate : Date
 {
-   char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
+   const char * OnGetString(char * stringOutput, void * fieldData, bool * needClass)
    {
       static const char months[12][4] =
       {

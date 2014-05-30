@@ -6,9 +6,10 @@ public import "ecere"
 
 public enum Trim { no, left = 1, right = 2, ends = 3, middle = 4, all = 7 };
 
-void TrimChars(char * string, char * output, char * chars, Trim trim, bool squash, char alt)
+void TrimChars(const char * string, char * output, const char * chars, Trim trim, bool squash, char alt)
 {
-   char * s = string, * o = output;
+   const char * s = string;
+   char * o = output;
    char ch;
    bool keepChar = (trim & left) != left;
    bool keepMiddleChars = (trim & middle) != middle;
@@ -35,7 +36,7 @@ void TrimChars(char * string, char * output, char * chars, Trim trim, bool squas
    *o = '\0';
 }
 
-char * TrimCharsCopy(char * string, char * chars, Trim trim, bool squash, char alt)
+char * TrimCharsCopy(const char * string, const char * chars, Trim trim, bool squash, char alt)
 {
    int len = strlen(string);
    char * output = new char[len+1];
@@ -45,9 +46,10 @@ char * TrimCharsCopy(char * string, char * chars, Trim trim, bool squash, char a
    return output;
 }
 
-void TrimTestChars(char * string, char * output, int (*CharTest)(char), Trim trim, bool squash, char alt)
+void TrimTestChars(const char * string, char * output, int (*CharTest)(char), Trim trim, bool squash, char alt)
 {
-   char * s = string, * o = output;
+   const char * s = string;
+   char * o = output;
    char ch;
    bool keepChar = (trim & left) != left;
    bool keepMiddleChars = (trim & middle) != middle;
@@ -74,7 +76,7 @@ void TrimTestChars(char * string, char * output, int (*CharTest)(char), Trim tri
    *o = '\0';
 }
 
-char * TrimTestCharsCopy(char * string, int (*CharTest)(char), Trim trim, bool squash, char alt)
+char * TrimTestCharsCopy(const char * string, int (*CharTest)(char), Trim trim, bool squash, char alt)
 {
    int len = strlen(string);
    char * output = new char[len+1];

@@ -319,12 +319,12 @@ class RoundedSquare : Window
       *ch = Max(*ch, 0);
    }
 
-   void PreShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving)
+   void PreShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving)
    {
       bmps.RenderBack(surface, size, { (byte)(opacity * 255), background });
    }
 
-   void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving)
+   void ShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving)
    {
       //if(borderStyle == contour)
          bmps.RenderBorder(surface, size, borderColor);

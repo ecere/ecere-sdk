@@ -1684,6 +1684,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_MethodImport;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeKind;
 
+static struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst, * __ecerePropM_Type_specConst;
+
 extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 const char * __ecereMethod_Type_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct Type * this, char * tempString, void * fieldData, unsigned int * needClass)
@@ -1698,6 +1700,15 @@ return tempString;
 
 void __ecereMethod_Type_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct Type * this)
 {
+}
+
+unsigned int __ecereProp_Type_Get_specConst(struct Type * this)
+{
+struct Type * t = this;
+
+while((t->kind == 13 || t->kind == 12) && t->type)
+t = t->type;
+return t->constant;
 }
 
 struct OpTable
@@ -2009,6 +2020,8 @@ extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere
 extern unsigned int __ecereNameSpace__ecere__com__eClass_AddMember(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__DataMember * dataMember);
 
 extern unsigned int __ecereNameSpace__ecere__com__eMember_AddMember(struct __ecereNameSpace__ecere__com__DataMember * addTo, struct __ecereNameSpace__ecere__com__DataMember * dataMember);
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
 
@@ -3107,6 +3120,9 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attrStdcall", "bool:1
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declaredWithStruct", "bool:1", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "typedByReference", "bool:1", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "casted", "bool:1", 4, 4, 1);
+__ecerePropM_Type_specConst = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "specConst", "bool", 0, __ecereProp_Type_Get_specConst, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
+__ecereProp_Type_specConst = __ecerePropM_Type_specConst, __ecerePropM_Type_specConst = (void *)0;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Operand", 0, sizeof(struct Operand), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Operand = class;
@@ -3181,5 +3197,6 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetTargetBits", "int Get
 void __ecereUnregisterModule_ecdefs(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 
+__ecerePropM_Type_specConst = (void *)0;
 }
 

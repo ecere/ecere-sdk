@@ -114,7 +114,7 @@ class BorrowerGroupFooter : Detail
 
    void OnRedraw(Surface surface)
    {
-      int x = clientSize.w - 1, y = clientSize.h - 1;
+      int x = clientSize.w - 1;
       surface.HLine(0, x, 5);
    }
 }

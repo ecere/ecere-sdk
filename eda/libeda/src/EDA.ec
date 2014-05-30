@@ -36,7 +36,7 @@ public:
 
 public class DataSourceDriver
 {
-   OldList listDB { offset = (uint)&((Database)0).prev };
+   OldList listDB { offset = (uint)(uintptr)&((Database)0).prev };
    class_data const char * name;
 
    class_property const char * name
@@ -81,7 +81,7 @@ static subclass(DataSourceDriver) GetDataDriver(const char * driverName)
       Module module;
       char moduleName[MAX_LOCATION];
       sprintf(moduleName, "EDA%s", driverName);
-      if(module = eModule_Load(__thisModule.application, moduleName, publicAccess))
+      if((module = eModule_Load(__thisModule.application, moduleName, publicAccess)))
          driver = FindDataDriverDerivative(eSystem_FindClass(module /*__thisModule.application*/, "DataSourceDriver"), driverName);
    }
    return driver;
@@ -209,7 +209,7 @@ public class Database
 {
    Database prev, next;
    DataSourceDriver ds;
-   OldList listTbl { offset = (uint)&((Table)0).prev };
+   OldList listTbl { offset = (uint)(uintptr)&((Table)0).prev };
    public virtual String GetName();
    public virtual Array<String> GetTables(); // TODO: make this Container<Table> GetTables(); // if supported, filled with ready to open Tables
 

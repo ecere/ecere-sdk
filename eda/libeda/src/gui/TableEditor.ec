@@ -275,7 +275,7 @@ public:
       }
    }
 
-   property String searchString
+   property const String searchString
    {
       set
       {
@@ -547,7 +547,6 @@ public:
 
          EditClear();
          {
-            bool active = true;
             r.Add();
             {
                // Patch for SQLite driver which auto-increments IDs
@@ -691,7 +690,6 @@ public:
       DebugLn("TableEditor::ListSelect");
       if(/*-row && -*/row != lastRow)
       {
-         uint id;
          if(modifiedDocument)
          {
             if(row)
@@ -910,7 +908,7 @@ private:
          Time lastTime = GetTime();
          static int slice = 128;
 
-         static int wordListPrepRowCount = 0, wordListPrepRowNum = 0, ticks = 0;
+         static int ticks = 0;
          ticks++;
          if(ticks % 10 == 0)
             PrintLn("listing... ");
@@ -973,8 +971,6 @@ private:
                   st = sqliteSearchTables[listEnumerationTimer.tablesIndex];
                   if(st.table && st.idField && st.searchFields && st.searchFields.count)
                   {
-                     wordListPrepRowNum = 0;
-                     wordListPrepRowCount = st.table.rowsCount;
 
                      if(st.table && st.idField && st.searchFields && st.searchFields.count &&
                            st.searchFields[0].field)
@@ -1298,7 +1294,6 @@ private:
                      //PrintLn("todo: support other field types for string search");
                   else if(field && field.type)
                   {
-                     const char * n = field.name;
                      char tempString[MAX_F_STRING];
                      int64 data = 0;
                      Class type = field.type;
@@ -1324,7 +1319,7 @@ private:
                      if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                      if(type.type == structClass)
-                        delete data;
+                        delete (void *)data;
                   }
                }
             }
@@ -1388,7 +1383,6 @@ private:
       DebugLn("TableEditor::ResetListFields");
       if(list && listFields && listFields.count)
       {
-         bool c = list.created;
          list.ClearFields();
          for(lf : listFields)
          {
@@ -1603,7 +1597,6 @@ private:
             }
             else if(lf.CustomLookup && lf.field.type)
             {
-               const char * n = lf.field.name;
                int64 data = 0;
                String s = null;
                Class type = lf.field.type;
@@ -1621,12 +1614,11 @@ private:
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                if(type.type == structClass)
-                  delete data;
+                  delete (void *)data;
                delete s; // ?
             }
             else if(lf.field.type && eClass_IsDerived(lf.dataField.dataType, class(char*)))
             {
-               const char * n = lf.field.name;
                char tempString[MAX_F_STRING];
                int64 data = 0;
                Class type = lf.field.type;
@@ -1650,11 +1642,10 @@ private:
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                if(type.type == structClass)
-                  delete data;
+                  delete (void *)data;
             }
             else if(lf.field.type)
             {
-               const char * n = lf.field.name;
                //char tempString[256];
                int64 data = 0;
                Class type = lf.field.type;
@@ -1674,7 +1665,7 @@ private:
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
                   ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
                if(type.type == structClass)
-                  delete data;
+                  delete (void *)data;
             }
          }
       }
@@ -1693,7 +1684,6 @@ private:
    {
       int c;
       int numTokens = 0;
-      int len[256];
       char * words[256];
       WordEntry entries[256];
       Array<Id> results = null;
@@ -1703,7 +1693,6 @@ private:
          numTokens = TokenizeWith(searchCopy, sizeof(words) / sizeof(char *), words, " ',/-;[]{}", false);
          for(c = 0; c<numTokens; c++)
          {
-            len[c] = strlen(words[c]);
             strlwr(words[c]);
             entries[c] = (WordEntry)wordTree.FindString(words[c]);
          }
@@ -1775,7 +1764,7 @@ private:
       File f;
 
       sprintf(filePath, "%s.search", table.name);
-      f = filePath ? FileOpenBuffered(filePath, read) : null;
+      f = FileOpenBuffered(filePath, read);
       if(f)
       {
          int a;
@@ -1908,7 +1897,6 @@ private:
 
             for(l = count-s; l>0; l--)
             {
-               uint wid;
                WordEntry start = null, wordEntry;
 
                while(l > 0 && !UTF8_IS_FIRST(subWord[l])) l--;
@@ -2098,7 +2086,6 @@ struct WordEntryBinaryTree : BinaryTree
    {
       WordEntry node;
       uint id;
-      uint count = this.count;
       DebugLn("WordEntryBinaryTree::OnSerialize");
       for(id = 1, node = (WordEntry)root; node;)
       {
@@ -2243,7 +2230,6 @@ class WordEntry : struct
       channel.Unserialize(id);
       if(id)
       {
-         uint count;
          WordEntry entry;
          // TODO: Fix typed_object issues
          entry = btnodes[id - 1] = eInstance_New(class(WordEntry));

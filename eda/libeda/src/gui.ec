@@ -12,8 +12,8 @@ const char * defaultNameField = "Name";
 const char * defaultIdField = "Id";
 const char * defaultActiveField = "Active";
 
-public void SetDefaultIdField(char * value) { defaultIdField = value; }
-public void SetDefaultNameField(char * value) { defaultNameField = value; }
+public void SetDefaultIdField(const char * value) { defaultIdField = value; }
+public void SetDefaultNameField(const char * value) { defaultNameField = value; }
 
 public class ButtonStyle : Button
 {
@@ -468,7 +468,6 @@ public:
 
    virtual void Save()
    {
-      bool result;
       if(field && row)
       {
          Class type = field.type;
@@ -853,7 +852,6 @@ public:
          bool result = true;
          if(/*row && */row != lastRow)
          {
-            uint id;
             if(editor.modifiedDocument)
             {
                if(row)
@@ -910,10 +908,10 @@ public:
    {
       if(editor)
       {
-         editor.btnSave.disabled = !(bool)list.currentRow;
-         editor.btnReload.disabled = !(bool)list.currentRow;
-         btnDelete.disabled = !(bool)list.currentRow;
-         editor.disabled = !(bool)list.firstRow;
+         editor.btnSave.disabled = !list.currentRow;
+         editor.btnReload.disabled = !list.currentRow;
+         btnDelete.disabled = !list.currentRow;
+         editor.disabled = !list.firstRow;
       }
    }
 

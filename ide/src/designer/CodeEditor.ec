@@ -205,10 +205,13 @@ static void OutputString(File f, const char * string)
    }
 }
 
+// Consider merging with PrintType ?
 void OutputType(File f, Type type, bool outputName)
 {
    if(type)
    {
+      if(type.kind != pointerType && type.constant)
+         f.Printf("const ");
       switch(type.kind)
       {
          case voidType:
@@ -273,6 +276,8 @@ void OutputType(File f, Type type, bool outputName)
          case pointerType:
             OutputType(f, type.type, false);
             f.Printf(" *");
+            if(type.constant)
+               f.Printf(" const");
             break;
          case ellipsisType:
             f.Printf("...");

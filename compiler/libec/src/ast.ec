@@ -1952,17 +1952,17 @@ PropertyDef MkProperty(OldList specs, Declarator decl, Identifier id, Statement 
 
 ClassDef MkClassDefProperty(PropertyDef propertyDef)
 {
-   return { type = propertyClassDef, propertyDef = propertyDef };
+   return { type = propertyClassDef, propertyDef = propertyDef, loc = yylloc };
 }
 
 ClassDef MkClassDefClassProperty(PropertyDef propertyDef)
 {
-   return { type = classPropertyClassDef, propertyDef = propertyDef };
+   return { type = classPropertyClassDef, propertyDef = propertyDef, loc = yylloc };
 }
 
 ClassDef MkClassDefClassPropertyValue(Identifier id, Initializer initializer)
 {
-   return { type = classPropertyValueClassDef, id = id, initializer = initializer };
+   return { type = classPropertyValueClassDef, id = id, initializer = initializer, loc = yylloc };
 }
 
 int CheckType(const char * text)

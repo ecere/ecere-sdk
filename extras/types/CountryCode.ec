@@ -6,7 +6,7 @@ public import "ecere"
 
 extern int __ecereVMethodID_class_OnGetString;
 
-static String countryNames[CountryCode] =
+static const String countryNames[CountryCode] =
 {
    "(none)",
    "Andorra", // 1974
@@ -316,7 +316,7 @@ public enum CountryCode
    //static const CountryCode ::first = AD;
    //static const CountryCode ::last = ZW;
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       return name;
    }
@@ -331,8 +331,8 @@ public enum CountryCode
    }
 
 public:
-   property char * { get { char * s = OnGetString(null, null, null); return s; } }
-   property char * name { get { return countryNames[this]; } }
+   property const char * { get { const char * s = OnGetString(null, null, null); return s; } }
+   property const char * name { get { return countryNames[this]; } }
    // ATTENTION: allocated memory must be freed by caller
    property char * code
    {
@@ -348,7 +348,7 @@ public:
    }
 };
 
-static String subdivisionCategoryNames[SubdivisionCategory] =
+static const String subdivisionCategoryNames[SubdivisionCategory] =
 {
    "(none)",
    "Administration", "Metropolitan Administration",
@@ -448,10 +448,10 @@ public enum SubdivisionCategory
    territorialUnit, autonomousTerritorialUnit;
 
 public:
-   property char * name { get { return subdivisionCategoryNames[this]; } }
+   property const char * name { get { return subdivisionCategoryNames[this]; } }
 };
 
-static String caSubdivisionNames[CASubdivisionCode] =
+static const String caSubdivisionNames[CASubdivisionCode] =
 {
    "(none)",
    "Alberta",
@@ -478,16 +478,16 @@ public enum CASubdivisionCode
 {
    none, AB, BC, MB, NB, NL, NS, ON, PE, QC, SK, NT, NU, YT;
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       return name;
    }
 
 public:
-   property char * { get { char * s = OnGetString(null, null, null); return s; } }
+   property const char * { get { const char * s = OnGetString(null, null, null); return s; } }
    // ATTENTION: allocated memory must be freed by caller
    property char * completeCode { get { return PrintString(CountryCode::CA, "-", this); } }
-   property char * name { get { return caSubdivisionNames[this]; } }
+   property const char * name { get { return caSubdivisionNames[this]; } }
    // ATTENTION: allocated memory must be freed by caller
    property char * code
    {
@@ -505,7 +505,7 @@ public:
    // TODO: OnDisplay and flag resources
 };
 
-static String usSubdivisionNames[USSubdivisionCode] =
+static const String usSubdivisionNames[USSubdivisionCode] =
 {
    "(none)",
    "Alaska",
@@ -584,16 +584,16 @@ public enum USSubdivisionCode
    NE, NH, NJ, NM, NV, NY, OH, OK, OR, PA, PR, RI, SC, SD, TN, TX,
    UM, UT, VA, VI, VT, WA, WI, WV, WY;
 
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       return name;
    }
 
 public:
-   property char * { get { char * s = OnGetString(null, null, null); return s; } }
+   property const char * { get { const char * s = OnGetString(null, null, null); return s; } }
    // ATTENTION: allocated memory must be freed by caller
    property char * completeCode { get { return PrintString(CountryCode::US, "-", this); } }
-   property char * name { get { return usSubdivisionNames[this]; } }
+   property const char * name { get { return usSubdivisionNames[this]; } }
    // ATTENTION: allocated memory must be freed by caller
    property char * code
    {

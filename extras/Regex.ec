@@ -126,7 +126,7 @@ public:
 
    property int matchCount { get { return matchCount; } }
 
-   char * Match(String string)
+   char * Match(const String string)
    {
       if(valid)
       {
@@ -145,7 +145,7 @@ public:
             }
             if(c == maxMatchCount)
                matchCount = maxMatchCount;
-            return string + matches[0].rm_so;
+            return (char *)string + matches[0].rm_so;
          }
          else
             matchCount = 0;

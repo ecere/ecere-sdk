@@ -24,7 +24,7 @@ class EDABetterTestForm : Window
 
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
-         char * select = row.string;
+         const char * select = row.string;
          if(!strcmp(select, "EDB") || !strcmp(select, "SQLite"))
          {
             char path[MAX_LOCATION];

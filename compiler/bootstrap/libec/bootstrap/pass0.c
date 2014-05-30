@@ -2280,6 +2280,17 @@ FullClassNameCat(name, propertyDef->id->string, 0x1);
 MangleClassName(name);
 params = MkList();
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
+if(propertyDef->isDBProp)
+{
+struct Specifier * spec;
+struct __ecereNameSpace__ecere__sys__OldList * specs = ((struct TypeName *)(*params).last)->qualifiers;
+
+for(spec = (*specs).first; spec; spec = spec->next)
+if(spec->type == 0 && spec->specifier == CONST)
+break;
+if(!spec)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specs), (((void *)0)), MkSpecifier(CONST));
+}
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
 {
 unsigned int isConversion = propertyDef->symbol->_property && propertyDef->symbol->_property->conversion;

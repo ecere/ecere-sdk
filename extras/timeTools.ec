@@ -6,7 +6,7 @@ public import "ecere"
 
 Time QuickTime()
 {
-   DateTime time, t;
+   DateTime time;
    time.GetLocalTime();
    return time.hour * 60 * 60 + time.minute * 60 + time.second;
 }

@@ -1245,13 +1245,13 @@ void DeclareStruct(const char * name, bool skipNoHead)
 void DeclareProperty(Property prop, char * setName, char * getName)
 {
    Symbol symbol = prop.symbol;
-   char propName[1024];
 
    strcpy(setName, "__ecereProp_");
    FullClassNameCat(setName, prop._class.fullName, false);
    strcat(setName, "_Set_");
    // strcat(setName, prop.name);
    FullClassNameCat(setName, prop.name, true);
+   MangleClassName(setName);
 
    strcpy(getName, "__ecereProp_");
    FullClassNameCat(getName, prop._class.fullName, false);
@@ -1259,16 +1259,8 @@ void DeclareProperty(Property prop, char * setName, char * getName)
    FullClassNameCat(getName, prop.name, true);
    // strcat(getName, prop.name);
 
-   strcpy(propName, "__ecereProp_");
-   FullClassNameCat(propName, prop._class.fullName, false);
-   strcat(propName, "_");
-   FullClassNameCat(propName, prop.name, true);
-   // strcat(propName, prop.name);
-
    // To support "char *" property
    MangleClassName(getName);
-   MangleClassName(setName);
-   MangleClassName(propName);
 
    if(prop._class.type == structClass)
       DeclareStruct(prop._class.fullName, false);
@@ -1277,6 +1269,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
    {
       bool imported = false;
       bool dllImport = false;
+
       if(!symbol || symbol._import)
       {
          if(!symbol)
@@ -1447,6 +1440,9 @@ void DeclareProperty(Property prop, char * setName, char * getName)
                   MkDeclaratorIdentifier(MkIdentifier("value")));
                FinishTemplatesContext(context);
             }
+            if(!strcmp(prop._class.base.fullName, "eda::Row") || !strcmp(prop._class.base.fullName, "eda::Id"))
+               specifiers->Insert(null, MkSpecifier(CONST));
+
             ListAdd(params, MkTypeName(specifiers, d));
 
             d = MkDeclaratorIdentifier(MkIdentifier(setName));
@@ -1507,6 +1503,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
          Declaration decl;
          External external;
          OldList * specifiers = MkList();
+         char propName[1024];
 
          if(imported)
             specifiers->Insert(null, MkSpecifier(EXTERN));
@@ -1514,6 +1511,13 @@ void DeclareProperty(Property prop, char * setName, char * getName)
             specifiers->Insert(null, MkSpecifier(STATIC));
 
          ListAdd(specifiers, MkSpecifierName("Property"));
+
+         strcpy(propName, "__ecereProp_");
+         FullClassNameCat(propName, prop._class.fullName, false);
+         strcat(propName, "_");
+         FullClassNameCat(propName, prop.name, true);
+         // strcat(propName, prop.name);
+         MangleClassName(propName);
 
          {
             OldList * list = MkList();
@@ -2922,27 +2926,38 @@ class Conversion : struct
    Type resultType;
 };
 
+static bool CheckConstCompatibility(Type source, Type dest, bool warn)
+{
+   bool status = true;
+   if(((source.kind == classType && source._class && source._class.registered) || source.kind == arrayType || source.kind == pointerType) &&
+      ((dest.kind == classType && dest._class && dest._class.registered) || /*dest.kind == arrayType || */dest.kind == pointerType))
+   {
+      Class sourceClass = source.kind == classType ? source._class.registered : null;
+      Class destClass = dest.kind == classType ? dest._class.registered : null;
+      if((!sourceClass || (sourceClass && sourceClass.type == normalClass && !sourceClass.structSize)) &&
+         (!destClass || (destClass && destClass.type == normalClass && !destClass.structSize)))
+      {
+         Type sourceType = source, destType = dest;
+         while((sourceType.kind == pointerType || sourceType.kind == arrayType) && sourceType.type) sourceType = sourceType.type;
+         while((destType.kind == pointerType || destType.kind == arrayType) && destType.type) destType = destType.type;
+         if(!destType.constant && sourceType.constant)
+         {
+            status = false;
+            if(warn)
+               Compiler_Warning($"discarding const qualifier\n");
+         }
+      }
+   }
+   return status;
+}
+
 public bool MatchTypes(Type source, Type dest, OldList conversions, Class owningClassSource, Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams,
                        bool isConversionExploration, bool warnConst)
 {
    if(source && dest)
    {
-      if(warnConst &&
-         ((source.kind == classType && source._class && source._class.registered) || source.kind == arrayType || source.kind == pointerType) &&
-         ((dest.kind == classType && dest._class && dest._class.registered) || /*dest.kind == arrayType || */dest.kind == pointerType))
-      {
-         Class sourceClass = source.kind == classType ? source._class.registered : null;
-         Class destClass = dest.kind == classType ? dest._class.registered : null;
-         if((!sourceClass || (sourceClass && sourceClass.type == normalClass && !sourceClass.structSize)) &&
-            (!destClass || (destClass && destClass.type == normalClass && !destClass.structSize)))
-         {
-            Type sourceType = source, destType = dest;
-            while(sourceType.type && (sourceType.kind == pointerType || sourceType.kind == arrayType)) sourceType = sourceType.type;
-            while(destType.type && (destType.kind == pointerType || destType.kind == arrayType)) destType = destType.type;
-            if(!destType.constant && sourceType.constant)
-               Compiler_Warning($"discarding const qualifier\n");
-         }
-      }
+      if(warnConst)
+         CheckConstCompatibility(source, dest, true);
       // Property convert;
 
       if(source.kind == templateType && dest.kind != templateType)
@@ -2957,7 +2972,7 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          if(type) dest = type;
       }
 
-      if(dest.classObjectType == typedObject)
+      if(dest.classObjectType == typedObject && dest.kind != functionType)
       {
          if(source.classObjectType != anyObject)
             return true;
@@ -2972,9 +2987,9 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       }
       else
       {
-         if(source.classObjectType == anyObject)
+         if(source.kind != functionType && source.classObjectType == anyObject)
             return true;
-         if(dest.classObjectType == anyObject && source.classObjectType != typedObject)
+         if(dest.kind != functionType && dest.classObjectType == anyObject && source.classObjectType != typedObject)
             return true;
       }
 
@@ -3358,6 +3373,9 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
             Compiler_Warning($"incompatible return type for function\n");
             return false;
          }
+         // The const check is backwards from the MatchTypes above (for derivative classes checks)
+         else
+            CheckConstCompatibility(dest.returnType, source.returnType, true);
 
          // Check parameters
 
@@ -10121,7 +10139,16 @@ void ProcessExpressionType(Expression exp)
                   if(!prop.dataType)
                      ProcessPropertyType(prop);
                   exp.expType = prop.dataType;
-                  if(prop.dataType) prop.dataType.refCount++;
+                  if(!strcmp(_class.base.fullName, "eda::Row") && !exp.expType.constant && !exp.destType)
+                  {
+                     Type type { };
+                     CopyTypeInto(type, exp.expType);
+                     type.refCount = 1;
+                     type.constant = true;
+                     exp.expType = type;
+                  }
+                  else if(prop.dataType)
+                     prop.dataType.refCount++;
                }
                else if(member)
                {

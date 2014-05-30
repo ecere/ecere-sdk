@@ -3272,23 +3272,17 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameS
 void DeclareProperty(struct __ecereNameSpace__ecere__com__Property * prop, char * setName, char * getName)
 {
 struct Symbol * symbol = prop->symbol;
-char propName[1024];
 
 strcpy(setName, "__ecereProp_");
 FullClassNameCat(setName, prop->_class->fullName, 0x0);
 strcat(setName, "_Set_");
 FullClassNameCat(setName, prop->name, 0x1);
+MangleClassName(setName);
 strcpy(getName, "__ecereProp_");
 FullClassNameCat(getName, prop->_class->fullName, 0x0);
 strcat(getName, "_Get_");
 FullClassNameCat(getName, prop->name, 0x1);
-strcpy(propName, "__ecereProp_");
-FullClassNameCat(propName, prop->_class->fullName, 0x0);
-strcat(propName, "_");
-FullClassNameCat(propName, prop->name, 0x1);
 MangleClassName(getName);
-MangleClassName(setName);
-MangleClassName(propName);
 if(prop->_class->type == 1)
 DeclareStruct(prop->_class->fullName, 0x0);
 if(!symbol || curExternal->symbol->idCode < symbol->id)
@@ -3437,6 +3431,8 @@ struct Context * context = SetupTemplatesContext(prop->_class);
 typeDecl = d = SpecDeclFromString(prop->dataTypeString, specifiers, MkDeclaratorIdentifier(MkIdentifier("value")));
 FinishTemplatesContext(context);
 }
+if(!strcmp(prop->_class->base->fullName, "eda::Row") || !strcmp(prop->_class->base->fullName, "eda::Id"))
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(CONST));
 ListAdd(params, MkTypeName(specifiers, d));
 d = MkDeclaratorIdentifier(MkIdentifier(setName));
 if(dllImport)
@@ -3483,12 +3479,18 @@ if(!symbol->externalPtr)
 struct Declaration * decl;
 struct External * external;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
+char propName[1024];
 
 if(imported)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(EXTERN));
 else
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(STATIC));
 ListAdd(specifiers, MkSpecifierName("Property"));
+strcpy(propName, "__ecereProp_");
+FullClassNameCat(propName, prop->_class->fullName, 0x0);
+strcat(propName, "_");
+FullClassNameCat(propName, prop->name, 0x1);
+MangleClassName(propName);
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
@@ -4802,15 +4804,11 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Conversion;
 
 extern void Compiler_Warning(const char *  format, ...);
 
-extern void CopyTypeInto(struct Type * type, struct Type * src);
-
-void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
-
-unsigned int MatchTypes(struct Type * source, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, struct __ecereNameSpace__ecere__com__Class * owningClassSource, struct __ecereNameSpace__ecere__com__Class * owningClassDest, unsigned int doConversion, unsigned int enumBaseType, unsigned int acceptReversedParams, unsigned int isConversionExploration, unsigned int warnConst)
+static unsigned int CheckConstCompatibility(struct Type * source, struct Type * dest, unsigned int warn)
 {
-if(source && dest)
-{
-if(warnConst && ((source->kind == 8 && source->_class && source->_class->registered) || source->kind == 12 || source->kind == 13) && ((dest->kind == 8 && dest->_class && dest->_class->registered) || dest->kind == 13))
+unsigned int status = 0x1;
+
+if(((source->kind == 8 && source->_class && source->_class->registered) || source->kind == 12 || source->kind == 13) && ((dest->kind == 8 && dest->_class && dest->_class->registered) || dest->kind == 13))
 {
 struct __ecereNameSpace__ecere__com__Class * sourceClass = source->kind == 8 ? source->_class->registered : (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * destClass = dest->kind == 8 ? dest->_class->registered : (((void *)0));
@@ -4819,14 +4817,31 @@ if((!sourceClass || (sourceClass && sourceClass->type == 0 && !sourceClass->stru
 {
 struct Type * sourceType = source, * destType = dest;
 
-while(sourceType->type && (sourceType->kind == 13 || sourceType->kind == 12))
+while((sourceType->kind == 13 || sourceType->kind == 12) && sourceType->type)
 sourceType = sourceType->type;
-while(destType->type && (destType->kind == 13 || destType->kind == 12))
+while((destType->kind == 13 || destType->kind == 12) && destType->type)
 destType = destType->type;
 if(!destType->constant && sourceType->constant)
+{
+status = 0x0;
+if(warn)
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "discarding const qualifier\n", (((void *)0))));
 }
 }
+}
+return status;
+}
+
+extern void CopyTypeInto(struct Type * type, struct Type * src);
+
+void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+
+unsigned int MatchTypes(struct Type * source, struct Type * dest, struct __ecereNameSpace__ecere__sys__OldList * conversions, struct __ecereNameSpace__ecere__com__Class * owningClassSource, struct __ecereNameSpace__ecere__com__Class * owningClassDest, unsigned int doConversion, unsigned int enumBaseType, unsigned int acceptReversedParams, unsigned int isConversionExploration, unsigned int warnConst)
+{
+if(source && dest)
+{
+if(warnConst)
+CheckConstCompatibility(source, dest, 0x1);
 if(source->kind == 20 && dest->kind != 20)
 {
 struct Type * type = ProcessTemplateParameterType(source->templateParameter);
@@ -4841,7 +4856,7 @@ struct Type * type = ProcessTemplateParameterType(dest->templateParameter);
 if(type)
 dest = type;
 }
-if(dest->classObjectType == 2)
+if(dest->classObjectType == 2 && dest->kind != 11)
 {
 if(source->classObjectType != 3)
 return 0x1;
@@ -4855,9 +4870,9 @@ return 0x1;
 }
 else
 {
-if(source->classObjectType == 3)
+if(source->kind != 11 && source->classObjectType == 3)
 return 0x1;
-if(dest->classObjectType == 3 && source->classObjectType != 2)
+if(dest->kind != 11 && dest->classObjectType == 3 && source->classObjectType != 2)
 return 0x1;
 }
 if((dest->kind == 9 && source->kind == 9) || (dest->kind == 10 && source->kind == 10))
@@ -5167,6 +5182,8 @@ if(!MatchTypes(source->returnType, dest->returnType, (((void *)0)), (((void *)0)
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatible return type for function\n", (((void *)0))));
 return 0x0;
 }
+else
+CheckConstCompatibility(dest->returnType, source->returnType, 0x1);
 for(; paramDest; paramDest = paramDest->next)
 {
 if(!paramSource)
@@ -16139,7 +16156,16 @@ exp->member.memberType = 1;
 if(!prop->dataType)
 ProcessPropertyType(prop);
 exp->expType = prop->dataType;
-if(prop->dataType)
+if(!strcmp(_class->base->fullName, "eda::Row") && !exp->expType->constant && !exp->destType)
+{
+struct Type * type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+CopyTypeInto(type, exp->expType);
+type->refCount = 1;
+type->constant = 0x1;
+exp->expType = type;
+}
+else if(prop->dataType)
 prop->dataType->refCount++;
 }
 else if(member)
