@@ -603,7 +603,7 @@ static void ProcessExpression(Expression exp)
 
             if(memberExp && memberExp.type != ExpressionType::memberExp) memberExp = null;
 
-            if(memberExp && memberExp.type == ExpressionType::memberExp)
+            if(memberExp && memberExp.type == ExpressionType::memberExp && memberExp.member.member)
             {
                Type type = memberExp.member.exp.expType;
                if(type)

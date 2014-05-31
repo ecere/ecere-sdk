@@ -1870,7 +1870,7 @@ memberExp = (*memberExp->list).last;
 }
 if(memberExp && memberExp->type != 8)
 memberExp = (((void *)0));
-if(memberExp && memberExp->type == 8)
+if(memberExp && memberExp->type == 8 && memberExp->member.member)
 {
 struct Type * type = memberExp->member.exp->expType;
 
