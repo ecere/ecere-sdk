@@ -2175,7 +2175,7 @@ public struct StaticString
 
    const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      return (const char *)(this ? string : null); // Cast for memguard
+      return this ? string : null;
    }
 
    void OnFree()

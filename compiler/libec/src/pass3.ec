@@ -177,7 +177,7 @@ static int ReplaceClassSpec(OldList specs, Specifier spec, bool param)
    }
    else if(spec.type == baseSpecifier)
    {
-      if(spec.specifier == ANY_OBJECT)
+      if(spec.specifier == ANY_OBJECT || spec.specifier == CLASS)
       {
          spec.specifier = CONST;
          specs.Add(MkSpecifier(VOID));

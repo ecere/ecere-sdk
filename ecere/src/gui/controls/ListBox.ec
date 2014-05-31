@@ -569,7 +569,7 @@ public:
             if((field.dataType.type == normalClass || field.dataType.type == noHeadClass))
                return cell.data[0];
             else
-               return (void *)cell.data;   // Cast for MemoryGuard
+               return cell.data;
          }
       }
       return null;
@@ -607,7 +607,7 @@ public:
             listBox.modifiedDocument = true;
             listBox.Update(null);
             if(dataType && (dataType.type == normalClass || dataType.type == noHeadClass))
-               return (void *)cell.data;     // Cast for MemoryGuard
+               return cell.data;
             else
                return &cell.data;
          }

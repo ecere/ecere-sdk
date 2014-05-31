@@ -1212,7 +1212,7 @@ return 2;
 }
 else if(spec->type == 0)
 {
-if(spec->specifier == ANY_OBJECT)
+if(spec->specifier == ANY_OBJECT || spec->specifier == CLASS)
 {
 spec->specifier = CONST;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(specs, MkSpecifier(VOID));

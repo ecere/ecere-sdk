@@ -1962,7 +1962,7 @@ extern void ListAdd(struct __ecereNameSpace__ecere__sys__OldList * list, void * 
 
 extern struct Specifier * MkSpecifierName(const char *  name);
 
-extern void PrintTypeNoConst(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
 
@@ -2361,24 +2361,25 @@ struct Expression * exp;
 if(inCompiler && memoryGuard)
 {
 struct Expression * exp = stmt->expressions ? (*stmt->expressions).last : (((void *)0));
+struct Type * returnType = exp ? (exp->destType ? exp->destType : exp->expType) : (((void *)0));
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "{ ");
-if(exp && exp->expType && exp->expType->kind != 0)
+if(returnType && returnType->kind != 0)
 {
 char string[1024] = "";
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Declarator * decl;
 struct TypeName * typeName;
 
-if(exp->expType->kind == 20)
+if(returnType->kind == 20)
 {
-if(exp->expType->templateParameter->dataTypeString)
-decl = SpecDeclFromString(exp->expType->templateParameter->dataTypeString, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
-else if(exp->expType->templateParameter->dataType)
+if(returnType->templateParameter->dataTypeString)
+decl = SpecDeclFromString(returnType->templateParameter->dataTypeString, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
+else if(returnType->templateParameter->dataType)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(specs), specs = 0);
-specs = CopyList(exp->expType->templateParameter->dataType->specifiers, CopySpecifier);
-decl = PlugDeclarator(exp->expType->templateParameter->dataType->decl, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
+specs = CopyList(returnType->templateParameter->dataType->specifiers, CopySpecifier);
+decl = PlugDeclarator(returnType->templateParameter->dataType->decl, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
 }
 else
 {
@@ -2388,7 +2389,7 @@ decl = MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal"));
 }
 else
 {
-PrintTypeNoConst(exp->expType, string, exp->expType->kind == 18 ? 0x1 : 0x0, 0x1);
+PrintType(returnType, string, returnType->kind == 18 ? 0x1 : 0x0, 0x1);
 decl = SpecDeclFromString(string, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
 }
 typeName = MkTypeName(specs, decl);

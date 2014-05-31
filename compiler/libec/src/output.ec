@@ -595,23 +595,25 @@ static void OutputStatement(Statement stmt, File f)
          if(inCompiler && memoryGuard)
          {
             Expression exp = stmt.expressions ? stmt.expressions->last : null;
+            Type returnType = exp ? (exp.destType ? exp.destType : exp.expType) : null;
             f.Printf("{ ");
-            if(exp && exp.expType && exp.expType.kind != voidType)
+            if(returnType && returnType.kind != voidType)
             {
                char string[1024] = "";
                OldList * specs = MkList();
                Declarator decl;
                TypeName typeName;
-               if(exp.expType.kind == templateType)
+
+               if(returnType.kind == templateType)
                {
-                  if(exp.expType.templateParameter.dataTypeString)
-                     decl = SpecDeclFromString(exp.expType.templateParameter.dataTypeString, specs,
+                  if(returnType.templateParameter.dataTypeString)
+                     decl = SpecDeclFromString(returnType.templateParameter.dataTypeString, specs,
                         MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
-                  else if(exp.expType.templateParameter.dataType)
+                  else if(returnType.templateParameter.dataType)
                   {
                      delete specs;
-                     specs = CopyList(exp.expType.templateParameter.dataType.specifiers, CopySpecifier);
-                     decl = PlugDeclarator(/*CopyDeclarator(*/exp.expType.templateParameter.dataType.decl/*)*/,
+                     specs = CopyList(returnType.templateParameter.dataType.specifiers, CopySpecifier);
+                     decl = PlugDeclarator(/*CopyDeclarator(*/returnType.templateParameter.dataType.decl/*)*/,
                         MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
                   }
                   else
@@ -623,7 +625,7 @@ static void OutputStatement(Statement stmt, File f)
                else
                {
                   // Printing 'name' as a hack when we're dealing with typedefs with extended attributes
-                  PrintTypeNoConst(exp.expType, string, exp.expType.kind == dummyType ? true : false, true);
+                  PrintType /*NoConst*/(returnType, string, returnType.kind == dummyType ? true : false, true);
                   decl = SpecDeclFromString(string, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
                }
 

@@ -304,12 +304,7 @@ public:
 
    any_object GetData(DataField field)
    {
-      if(this)
-      {
-         // TODO: Fix this shouldn't be required (memguard?)
-         return (void *)currentRow.GetData(field);
-      }
-      return null;
+      return this ? currentRow.GetData(field) : null;
    }
 
    void Sort(DataField field, int order)
