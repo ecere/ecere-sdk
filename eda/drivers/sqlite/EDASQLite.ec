@@ -185,6 +185,8 @@ class SQLiteDatabase : Database
    ~SQLiteDatabase()
    {
       sqlite3_exec(db, "PRAGMA locking_mode=normal", null, null, null);
+      // "Simply setting the locking-mode to NORMAL is not enough - locks are not released until the next time the database file is accessed."
+      sqlite3_exec(db, "SELECT COUNT(*) from eda_table_fields", null, null, null);
       sqlite3_close(db);
    }
 
