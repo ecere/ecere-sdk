@@ -193,7 +193,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -210,14 +210,14 @@ struct
 {
 char *  constant;
 struct Identifier * identifier;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct Statement * compound;
 struct Instantiation * instance;
 struct
 {
 char *  string;
 unsigned int intlString;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
@@ -296,7 +296,7 @@ struct
 struct Expression * exp;
 struct TypeName * typeName;
 } __attribute__ ((gcc_struct)) vaArg;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
 uint64 address;
@@ -376,7 +376,7 @@ union
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 struct __ecereNameSpace__ecere__com__Class * registered;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int id;
 int idCode;
 union
@@ -385,20 +385,20 @@ struct
 {
 struct External * pointerExternal;
 struct External * structExternal;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct External * externalGet;
 struct External * externalSet;
 struct External * externalPtr;
 struct External * externalIsSet;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct External * methodExternal;
 struct External * methodCodeExternal;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
+} __attribute__ ((gcc_struct)) __anon2;
 unsigned int imported;
 unsigned int declaredStructSym;
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -559,7 +559,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -569,9 +569,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern int yychar;
@@ -907,7 +907,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct OpTable ops;
 } __attribute__ ((gcc_struct));
 
@@ -1124,7 +1124,7 @@ for(link = existingClass->templatedClasses.first; link; link = link->next)
 {
 struct Symbol * symbol = link->data;
 
-symbol->registered = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, symbol->string);
+symbol->__anon1.registered = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, symbol->string);
 }
 }
 if(fixed)
@@ -1138,7 +1138,7 @@ regClass->structSize = regClass->offset;
 }
 if(regClass && existingClass)
 {
-existingClass->registered = regClass;
+existingClass->__anon1.registered = regClass;
 regClass->symbol = existingClass;
 existingClass->id = (((int)0x7fffffff));
 existingClass->idCode = (((int)0x7fffffff));
@@ -1342,7 +1342,13 @@ char name[1024];
 int type = 0;
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument defaultArg =
 {
-.member = 0
+
+.__anon1 = {
+
+.__anon1 = {
+.dataTypeString = 0
+}
+}
 };
 void * info = (((void *)0));
 
@@ -1370,7 +1376,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line))
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
-defaultArg.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(line);
+defaultArg.__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(line);
 }
 break;
 case 2:
@@ -1397,7 +1403,7 @@ exp->destType = ProcessTypeString(info, 0x0);
 ProcessExpressionType(exp);
 ComputeExpression(exp);
 op = GetOperand(exp);
-defaultArg.expression.ui64 = op.ui64;
+defaultArg.__anon1.expression.__anon1.ui64 = op.__anon1.ui64;
 FreeExpression(exp);
 }
 skipErrors = 0x0;
@@ -1417,7 +1423,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line))
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass && strcmp(line, "[None]"))
 {
-defaultArg.memberString = __ecereNameSpace__ecere__sys__CopyString(line);
+defaultArg.__anon1.__anon2.memberString = __ecereNameSpace__ecere__sys__CopyString(line);
 }
 break;
 }
@@ -1426,7 +1432,7 @@ __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(regClass, name, type, 
 if(type == 0 || type == 2)
 (__ecereNameSpace__ecere__com__eSystem_Delete(info), info = 0);
 if(type == 0 || type == 1)
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)defaultArg.dataTypeString), defaultArg.dataTypeString = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)defaultArg.__anon1.__anon1.dataTypeString), defaultArg.__anon1.__anon1.dataTypeString = 0);
 }
 if(regClass)
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(regClass);

@@ -489,13 +489,13 @@ public:
          ExtDecl extDecl;
          char * name;
          Symbol symbol;
-         OldList * templateArgs;
+         OldList/*<TemplateArgument>*/ * templateArgs;
       };
       struct
       {
          Identifier id;
-         OldList * list;
-         OldList * baseSpecs;
+         OldList/*<Enumerator>*/ * list;
+         OldList/*<Specifier>*/ * baseSpecs;
          OldList/*<ClassDef>*/ * definitions;
          bool addNameSpace;
          Context ctx;

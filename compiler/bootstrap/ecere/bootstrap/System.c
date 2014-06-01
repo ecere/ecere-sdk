@@ -258,7 +258,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
@@ -271,7 +271,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -281,9 +281,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 typedef __builtin_va_list va_list;
@@ -503,6 +503,7 @@ unsigned int __ecereNameSpace__ecere__sys__ShellOpen(const char * fileName, ...)
 unsigned int result;
 va_list args;
 
+__builtin_va_start(args, fileName);
 result = System_ShellOpen(fileName, args);
 __builtin_va_end(args);
 return result;

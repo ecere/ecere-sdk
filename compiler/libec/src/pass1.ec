@@ -22,7 +22,6 @@ public void SetBuildingEcereComModule(bool b) { buildingECERECOMModule = b; } pu
 // This will also be called by the instance processer to make the instance methods... (pass 1.5)
 External ProcessClassFunction(Class owningClass, ClassFunction func, OldList defs, External after, bool makeStatic)
 {
-   Identifier id = GetDeclId(func.declarator);
    Type type = null;
    Symbol symbol;
    External external = null;

@@ -247,7 +247,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
@@ -260,7 +260,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -270,9 +270,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern int runtimePlatform;
@@ -682,8 +682,8 @@ else
 {
 struct __ecereNameSpace__ecere__com__DataValue value1, value2;
 
-value1.i = *(int *)((unsigned char *)data1 + member->offset);
-value2.i = *(int *)((unsigned char *)data2 + member->offset);
+value1.__anon1.i = *(int *)((unsigned char *)data1 + member->offset);
+value2.__anon1.i = *(int *)((unsigned char *)data2 + member->offset);
 memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
 if(memberResult)
 return memberResult;
@@ -758,13 +758,13 @@ struct __ecereNameSpace__ecere__com__DataValue value1, value2;
 
 if(!strcmp(memberType->dataTypeString, "float"))
 {
-value1.f = ((float (*)(void *))(void *)prop->Get)(data1);
-value2.f = ((float (*)(void *))(void *)prop->Get)(data2);
+value1.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data1);
+value2.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data2);
 }
 else
 {
-value1.i = ((int (*)(void *))(void *)prop->Get)(data1);
-value2.i = ((int (*)(void *))(void *)prop->Get)(data2);
+value1.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data1);
+value2.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data2);
 }
 memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
 }
@@ -789,13 +789,13 @@ struct __ecereNameSpace__ecere__com__DataValue value1, value2;
 
 if(memberType->typeSize == 8)
 {
-value1.ui64 = *(uint64 *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-value2.ui64 = *(uint64 *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+value1.__anon1.ui64 = *(uint64 *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+value2.__anon1.ui64 = *(uint64 *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
 }
 else
 {
-value1.i = *(int *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-value2.i = *(int *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+value1.__anon1.i = *(int *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+value2.__anon1.i = *(int *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
 }
 memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
 }
@@ -1009,13 +1009,16 @@ if(memberType->type != 1 && (memberType->type != 0 || !strcmp(memberType->dataTy
 {
 struct __ecereNameSpace__ecere__com__DataValue value =
 {
+
+.__anon1 = {
 .c = 0
+}
 };
 
 if(!strcmp(prop->dataTypeString, "float"))
 {
-value.f = ((float (*)(void *))(void *)prop->Get)(data);
-if(value.f)
+value.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data);
+if(value.__anon1.f)
 {
 unsigned int needClass = 0x1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
@@ -1028,11 +1031,11 @@ strcat(memberString, "f");
 }
 else if(memberType->type == 0 || memberType->type == 5)
 {
-value.p = ((void * (*)(void *))(void *)prop->Get)(data);
-if(value.p || prop->IsSet)
+value.__anon1.p = ((void * (*)(void *))(void *)prop->Get)(data);
+if(value.__anon1.p || prop->IsSet)
 {
 unsigned int needClass = 0x1;
-const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, (memberType->type == 0) ? value.p : &value, memberString, (((void *)0)), &needClass);
+const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, (memberType->type == 0) ? value.__anon1.p : &value, memberString, (((void *)0)), &needClass);
 
 if(result && result != memberString)
 strcpy(memberString, result);
@@ -1040,8 +1043,8 @@ strcpy(memberString, result);
 }
 else
 {
-value.i = ((int (*)(void *))(void *)prop->Get)(data);
-if(value.i || prop->IsSet)
+value.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data);
+if(value.__anon1.i || prop->IsSet)
 {
 unsigned int needClass = 0x1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
@@ -1091,15 +1094,18 @@ else
 {
 struct __ecereNameSpace__ecere__com__DataValue value =
 {
+
+.__anon1 = {
 .c = 0
+}
 };
 
 if(_class->type == 2)
 {
 struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)member;
 
-value.ui64 = ((*(unsigned int *)data & bitMember->mask) >> bitMember->pos);
-if(value.ui64)
+value.__anon1.ui64 = ((*(unsigned int *)data & bitMember->mask) >> bitMember->pos);
+if(value.__anon1.ui64)
 {
 unsigned int needClass = 0x1;
 char internalMemberString[1024];
@@ -1120,8 +1126,8 @@ else if(!memberType->noExpansion)
 {
 if(memberType->typeSize <= 4)
 {
-value.i = *(int *)((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-if(value.i)
+value.__anon1.i = *(int *)((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+if(value.__anon1.i)
 {
 unsigned int needClass = 0x1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
@@ -1450,7 +1456,10 @@ else
 {
 struct __ecereNameSpace__ecere__com__DataValue value =
 {
+
+.__anon1 = {
 .c = 0
+}
 };
 
 if(memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString] == _class->_vTbl[__ecereVMethodID_class_OnGetDataFromString])
@@ -1466,17 +1475,17 @@ if(_class->type == 2)
 {
 struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)thisMember;
 
-*(unsigned int *)data = (unsigned int)(((*(unsigned int *)data & ~bitMember->mask)) | ((value.ui64 << bitMember->pos) & bitMember->mask));
+*(unsigned int *)data = (unsigned int)(((*(unsigned int *)data & ~bitMember->mask)) | ((value.__anon1.ui64 << bitMember->pos) & bitMember->mask));
 }
 else
-*(int *)((unsigned char *)data + (((thisMember->_class->type == 0) ? thisMember->_class->offset : 0) + thisMember->offset)) = value.i;
+*(int *)((unsigned char *)data + (((thisMember->_class->type == 0) ? thisMember->_class->offset : 0) + thisMember->offset)) = value.__anon1.i;
 }
 else if(thisMember->isProperty && ((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)
 {
 if(memberType->type == 5 || memberType->type == 0 || memberType->type == 1)
-((void (*)(void *, void *))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.p);
+((void (*)(void *, void *))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.p);
 else
-((void (*)(void *, int))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.i);
+((void (*)(void *, int))(void *)((struct __ecereNameSpace__ecere__com__Property *)thisMember)->Set)(data, value.__anon1.i);
 }
 }
 }
@@ -1531,7 +1540,7 @@ else
 {
 struct __ecereNameSpace__ecere__com__DataValue value;
 
-value.i = *(int *)((unsigned char *)data + member->offset);
+value.__anon1.i = *(int *)((unsigned char *)data + member->offset);
 ((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnSerialize])(memberType, &value, channel);
 }
 }
@@ -1630,7 +1639,7 @@ else
 struct __ecereNameSpace__ecere__com__DataValue value;
 
 ((void (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnUnserialize])(memberType, &value, channel);
-*(int *)((unsigned char *)data + member->offset) = value.i;
+*(int *)((unsigned char *)data + member->offset) = value.__anon1.i;
 }
 }
 else
@@ -2783,7 +2792,7 @@ return result;
 
 const char * __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, char * tempString, void * fieldData, unsigned int * needClass)
 {
-return (const char *)(this ? this->string : (((void *)0)));
+return this ? this->string : (((void *)0));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this)

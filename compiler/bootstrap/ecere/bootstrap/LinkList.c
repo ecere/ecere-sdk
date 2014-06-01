@@ -258,7 +258,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
@@ -271,7 +271,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -281,9 +281,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__com__LinkElement
@@ -301,8 +301,8 @@ struct __ecereNameSpace__ecere__com__LinkElement link;
 struct
 {
 struct __ecereNameSpace__ecere__com__ListItem * prev, * next;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ListItem;
@@ -333,14 +333,14 @@ void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetPrev(struct __ece
 {
 struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
-return (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)((void *)item)) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev;
+return (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)((void *)item)) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev;
 }
 
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetNext(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * item)
 {
 struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
-return (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)((void *)item)) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next;
+return (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)((void *)item)) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next;
 }
 
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)
@@ -356,7 +356,7 @@ struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace_
 int c;
 void * item;
 
-for(c = 0, item = __ecerePointer___ecereNameSpace__ecere__com__LinkList->first; c < (int)pos && item; c++, item = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next)
+for(c = 0, item = __ecerePointer___ecereNameSpace__ecere__com__LinkList->first; c < (int)pos && item; c++, item = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next)
 ;
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)item;
 }
@@ -374,15 +374,15 @@ struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace_
 
 if(item)
 {
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = __ecerePointer___ecereNameSpace__ecere__com__LinkList->last;
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = item;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = __ecerePointer___ecereNameSpace__ecere__com__LinkList->last;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = item;
 if(!__ecerePointer___ecereNameSpace__ecere__com__LinkList->first)
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->first = item;
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->last = item;
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = (*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]) ? __ecerePointer___ecereNameSpace__ecere__com__LinkList->first : (uint64)(((uint64)(((uint64)((void *)0)))));
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = (*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]) ? __ecerePointer___ecereNameSpace__ecere__com__LinkList->first : (uint64)(((uint64)(((uint64)((void *)0)))));
 if((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]))
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)__ecerePointer___ecereNameSpace__ecere__com__LinkList->first) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = item;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)__ecerePointer___ecereNameSpace__ecere__com__LinkList->first) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = item;
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->count++;
 }
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)item;
@@ -395,28 +395,28 @@ void * prevItem = (void *)_prevItem;
 
 if(item && prevItem != item)
 {
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = prevItem ? prevItem : ((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]) ? __ecerePointer___ecereNameSpace__ecere__com__LinkList->last : (uint64)(((uint64)(((uint64)((void *)0))))));
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = prevItem ? prevItem : ((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]) ? __ecerePointer___ecereNameSpace__ecere__com__LinkList->last : (uint64)(((uint64)(((uint64)((void *)0))))));
 if(prevItem)
 {
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next;
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = item;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = item;
 }
 else
 {
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = __ecerePointer___ecereNameSpace__ecere__com__LinkList->first;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = __ecerePointer___ecereNameSpace__ecere__com__LinkList->first;
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->first = item;
 if((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]))
 {
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = item;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = item;
 else
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = item;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = item;
 }
 }
 if(prevItem == __ecerePointer___ecereNameSpace__ecere__com__LinkList->last)
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->last = item;
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = item;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = item;
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->count++;
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)item;
 }
@@ -430,21 +430,21 @@ void * item = (void *)_item;
 
 if(item)
 {
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next;
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev;
 if((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]) && __ecerePointer___ecereNameSpace__ecere__com__LinkList->last == __ecerePointer___ecereNameSpace__ecere__com__LinkList->first)
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->last = __ecerePointer___ecereNameSpace__ecere__com__LinkList->first = (uint64)(((uint64)(((uint64)((void *)0)))));
 else
 {
 if(__ecerePointer___ecereNameSpace__ecere__com__LinkList->last == item)
-__ecerePointer___ecereNameSpace__ecere__com__LinkList->last = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev;
+__ecerePointer___ecereNameSpace__ecere__com__LinkList->last = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev;
 if(__ecerePointer___ecereNameSpace__ecere__com__LinkList->first == item)
-__ecerePointer___ecereNameSpace__ecere__com__LinkList->first = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next;
+__ecerePointer___ecereNameSpace__ecere__com__LinkList->first = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next;
 }
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = (uint64)(((uint64)(((uint64)((void *)0)))));
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = (uint64)(((uint64)(((uint64)((void *)0)))));
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = (uint64)(((uint64)(((uint64)((void *)0)))));
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = (uint64)(((uint64)(((uint64)((void *)0)))));
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->count--;
 }
 }
@@ -459,36 +459,36 @@ if(item)
 {
 if(prevItem != item && (__ecerePointer___ecereNameSpace__ecere__com__LinkList->first != item || prevItem))
 {
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next;
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev;
 if(item == __ecerePointer___ecereNameSpace__ecere__com__LinkList->first)
-__ecerePointer___ecereNameSpace__ecere__com__LinkList->first = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next;
+__ecerePointer___ecereNameSpace__ecere__com__LinkList->first = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next;
 if(item == __ecerePointer___ecereNameSpace__ecere__com__LinkList->last)
-__ecerePointer___ecereNameSpace__ecere__com__LinkList->last = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev;
+__ecerePointer___ecereNameSpace__ecere__com__LinkList->last = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev;
 if(prevItem == __ecerePointer___ecereNameSpace__ecere__com__LinkList->last)
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->last = item;
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = prevItem ? prevItem : ((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]) ? __ecerePointer___ecereNameSpace__ecere__com__LinkList->last : (uint64)(((uint64)(((uint64)((void *)0))))));
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = prevItem ? prevItem : ((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]) ? __ecerePointer___ecereNameSpace__ecere__com__LinkList->last : (uint64)(((uint64)(((uint64)((void *)0))))));
 if(prevItem)
 {
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next;
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = item;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = (*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)prevItem) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = item;
 }
 else
 {
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = __ecerePointer___ecereNameSpace__ecere__com__LinkList->first;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = __ecerePointer___ecereNameSpace__ecere__com__LinkList->first;
 __ecerePointer___ecereNameSpace__ecere__com__LinkList->first = item;
 if((*(unsigned int *)&((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4]))
 {
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = item;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = item;
 else
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next = item;
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next = item;
 }
 }
-if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next)
-(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].member->_class->offset)).prev = item;
+if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next)
+(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)(*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)item) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev = item;
 }
 }
 }
@@ -516,7 +516,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].dataTypeClass, item), item = 0);
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, item), item = 0);
 }
 }
 
@@ -529,7 +529,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].dataTypeClass, item), item = 0);
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, item), item = 0);
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
@@ -596,19 +596,40 @@ void __ecereRegisterModule_LinkList(struct __ecereNameSpace__ecere__com__Instanc
 {
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct3 =
 {
+
+.__anon1 = {
+
+.__anon1 = {
 .dataTypeString = "LT::link"
+}
+}
 };
 struct __ecereNameSpace__ecere__com__DataValue __simpleStruct2 =
 {
+
+.__anon1 = {
 .c = 0
+}
 };
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct1 =
 {
-.expression = (__simpleStruct2.ui64 = 0LL, __simpleStruct2)
+
+.__anon1 = {
+
+.__anon1 = {
+.dataTypeString = 0
+}, .expression = (__simpleStruct2.__anon1.ui64 = 0LL, __simpleStruct2)
+}
 };
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 {
+
+.__anon1 = {
+
+.__anon1 = {
 .dataTypeString = "ecere::com::ListItem"
+}
+}
 };
 struct __ecereNameSpace__ecere__com__Class * class;
 

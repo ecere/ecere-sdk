@@ -2528,7 +2528,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
          }
          else if(spec.type == subClassSpecifier)
          {
-            specType.kind = specType.kind = subClassType;
+            specType.kind = subClassType;
             specType._class = spec._class.symbol;
          }
       }

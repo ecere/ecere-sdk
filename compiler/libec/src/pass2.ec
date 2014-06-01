@@ -1082,6 +1082,7 @@ static void ProcessExpression(Expression exp)
                   typeName = MkTypeName(qualifiers, declarator);
 
                   ProcessExpressionType(classExp);
+                  ProcessExpression(classExp);
                   args->Insert(null, CopyExpression(classExp));
                   DeclareMethod(eClass_FindMethod(eSystem_FindClass(privateModule, "class"), "OnFree", privateModule), "__ecereVMethodID_class_OnFree");
                   ListAdd(exp.list, MkExpCall(
@@ -1118,7 +1119,12 @@ static void ProcessExpression(Expression exp)
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
                   OldList * args = MkList();
                   Expression derefExp = exp.op.exp1;
-                  Expression sizeExp = MkExpCondition(MkExpBrackets(MkListOne(
+                  Expression sizeExp;
+
+                  ProcessExpressionType(classExp);
+                  ProcessExpression(classExp);
+
+                  sizeExp = MkExpCondition(MkExpBrackets(MkListOne(
                         MkExpOp(
                            MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))),
                            OR_OP,
@@ -1190,7 +1196,12 @@ static void ProcessExpression(Expression exp)
                if(argExp)
                {
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
-                  Expression sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
+                  Expression sizeExp;
+
+                  ProcessExpressionType(classExp);
+                  ProcessExpression(classExp);
+
+                  sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 
                   exp.type = bracketsExp;
                   exp.list = MkListOne(
@@ -1328,6 +1339,10 @@ static void ProcessExpression(Expression exp)
                {
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
                   Expression e;
+
+                  ProcessExpressionType(classExp);
+                  ProcessExpression(classExp);
+
                   exp.type = bracketsExp;
                   exp.list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)),
                                  MkExpOp(null, '&', exp2)), '+',
@@ -1435,7 +1450,12 @@ static void ProcessExpression(Expression exp)
             if(argExp)
             {
                Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
-               Expression sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
+               Expression sizeExp;
+
+               ProcessExpressionType(classExp);
+               ProcessExpression(classExp);
+
+               sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 
                exp.type = bracketsExp;
                exp.list = MkListOne(
@@ -2393,6 +2413,8 @@ static void ProcessExpression(Expression exp)
             Method method = null;
             Class convertTo = null;
             DataMember member = null;
+            DataMember subMemberStack[256];
+            int subMemberStackPos = 0;
             bool thisPtr = exp.member.thisPtr;
             if(type.kind == subClassType && exp.member.exp.type == classExp)
                _class = eSystem_FindClass(privateModule, "ecere::com::Class");
@@ -2412,9 +2434,9 @@ static void ProcessExpression(Expression exp)
             if(_class && exp.member.memberType == dataMember)
             {
                if(!thisPtr && !exp.member.member.classSym)
-                  member = eClass_FindDataMember(_class, exp.member.member.string, null, null, null);
+                  member = eClass_FindDataMember(_class, exp.member.member.string, null, subMemberStack, &subMemberStackPos);
                if(!member)
-                  member = eClass_FindDataMember(_class, exp.member.member.string, privateModule, null, null);
+                  member = eClass_FindDataMember(_class, exp.member.member.string, privateModule, subMemberStack, &subMemberStackPos);
             }
             else if(_class && exp.member.memberType == propertyMember)
             {
@@ -2426,7 +2448,7 @@ static void ProcessExpression(Expression exp)
                   (exp.usage.usageGet && !prop.Get && !prop.conversion) ||
                   (exp.usage.usageDelete && !prop.Set && !prop.conversion)))
                {
-                  member = eClass_FindDataMember(_class, exp.member.member.string, privateModule, null, null);
+                  member = eClass_FindDataMember(_class, exp.member.member.string, privateModule, subMemberStack, &subMemberStackPos);
                   if(member)
                   {
                      exp.member.memberType = dataMember;
@@ -2710,6 +2732,41 @@ static void ProcessExpression(Expression exp)
             }
             else if(member)
             {
+               if(subMemberStackPos)
+               {
+                  int i;
+                  DataMember parentMember = null;
+                  String s, prefix = null;
+                  for(i = 0; i < subMemberStackPos; i++)
+                  {
+                     DataMember curMember = subMemberStack[i];
+                     DataMember m;
+                     int anonID = 1;
+                     for(m = parentMember ? parentMember.members.first : _class.membersAndProperties.first; m; m = m.next)
+                     {
+                        if(m && !m.isProperty && (m.type == unionMember || m.type == structMember) && !m.name)
+                        {
+                           if(m == curMember)
+                              break;
+                           anonID++;
+                        }
+                     }
+
+                     if(prefix)
+                     {
+                        s = prefix;
+                        prefix = PrintString(prefix, ".__anon", anonID);
+                        delete s;
+                     }
+                     else
+                        prefix = PrintString("__anon", anonID);
+                     parentMember = curMember;
+                  }
+
+                  s = exp.member.member.string;
+                  exp.member.member.string = PrintString(prefix, ".", s);
+                  delete s;
+               }
                // Process this here since it won't be processed at the end...
                if(exp.usage.usageGet)
                {
@@ -2930,6 +2987,9 @@ static void ProcessExpression(Expression exp)
 
                classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
 
+               ProcessExpressionType(classExp);
+               ProcessExpression(classExp);
+
                exp.type = bracketsExp;
                exp.list = MkListOne(
                   MkExpCondition(MkExpBrackets(MkListOne(
@@ -3003,8 +3063,10 @@ static void ProcessExpression(Expression exp)
                exp.type = memberExp; //pointerExp;
                exp.member.exp = argExp;
                exp.member.member = MkIdentifier("dataTypeClass");
+               exp.member.memberType = dataMember;
 
                ProcessExpressionType(argExp);
+               ProcessExpressionType(exp);
                ProcessExpression(exp);
             }
          }

@@ -149,7 +149,7 @@ union
 {
 char * s;
 struct Attrib * attr;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
@@ -207,14 +207,14 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
 struct __ecereNameSpace__ecere__sys__OldList *  declarators;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct Instantiation * inst;
 struct
 {
 struct Identifier * id;
 struct Expression * exp;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 struct Specifier * extStorage;
 struct Symbol * symbol;
 int declMode;
@@ -302,7 +302,7 @@ struct __ecereNameSpace__ecere__sys__OldList * filter;
 struct Statement * stmt;
 } __attribute__ ((gcc_struct)) forEachStmt;
 struct Declaration * decl;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
@@ -330,7 +330,7 @@ union
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 unsigned int isConstant;
 struct Identifier * id;
 } __attribute__ ((gcc_struct));
@@ -352,7 +352,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -369,14 +369,14 @@ struct
 {
 char *  constant;
 struct Identifier * identifier;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct Statement * compound;
 struct Instantiation * instance;
 struct
 {
 char *  string;
 unsigned int intlString;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
@@ -455,7 +455,7 @@ struct
 struct Expression * exp;
 struct TypeName * typeName;
 } __attribute__ ((gcc_struct)) vaArg;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
 uint64 address;
@@ -497,7 +497,7 @@ union
 {
 struct TemplateDatatype * dataType;
 int memberType;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct TemplateArgument * defaultArgument;
 const char *  dataTypeString;
 struct Type * baseType;
@@ -520,7 +520,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct Identifier * id;
@@ -530,11 +530,11 @@ struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
 struct ExtDecl * extDeclStruct;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct Expression * expression;
 struct Specifier * _class;
 struct TemplateParameter * templateParameter;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
@@ -597,7 +597,7 @@ struct
 {
 struct ExtDecl * extended;
 } __attribute__ ((gcc_struct)) extended;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
@@ -641,7 +641,7 @@ struct Declaration * declaration;
 char *  importString;
 struct Identifier * id;
 struct DBTableDef * table;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int importType;
 } __attribute__ ((gcc_struct));
 
@@ -668,7 +668,7 @@ union
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 struct __ecereNameSpace__ecere__com__Class * registered;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int id;
 int idCode;
 union
@@ -677,20 +677,20 @@ struct
 {
 struct External * pointerExternal;
 struct External * structExternal;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct External * externalGet;
 struct External * externalSet;
 struct External * externalPtr;
 struct External * externalIsSet;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct External * methodExternal;
 struct External * methodCodeExternal;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
+} __attribute__ ((gcc_struct)) __anon2;
 unsigned int imported;
 unsigned int declaredStructSym;
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -733,7 +733,7 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList members;
 char *  enumName;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct Type * returnType;
@@ -741,13 +741,13 @@ struct __ecereNameSpace__ecere__sys__OldList params;
 struct Symbol * thisClass;
 unsigned int staticMethod;
 struct TemplateParameter * thisClassTemplate;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Class * methodClass;
 struct __ecereNameSpace__ecere__com__Class * usedClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
 struct
 {
 struct Type * arrayType;
@@ -755,10 +755,10 @@ int arraySize;
 struct Expression * arraySizeExp;
 unsigned int freeExp;
 struct Symbol * enumClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon4;
 struct Type * type;
 struct TemplateParameter * templateParameter;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int kind;
 unsigned int size;
 char *  name;
@@ -912,7 +912,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -922,9 +922,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 enum yytokentype
@@ -1055,7 +1055,7 @@ union
 {
 struct __ecereNameSpace__ecere__sys__OldList *  dataMembers;
 struct ClassFunction * function;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
@@ -1102,8 +1102,8 @@ struct
 {
 struct Identifier * id;
 struct Initializer * initializer;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon1;
 int memberAccess;
 void *  object;
 } __attribute__ ((gcc_struct));
@@ -1148,18 +1148,18 @@ if(id->_class)
 {
 if(id->_class->type == 8)
 {
-if(id->_class->templateParameter && id->_class->templateParameter->identifier && id->_class->templateParameter->identifier->string)
+if(id->_class->__anon1.templateParameter && id->_class->__anon1.templateParameter->identifier && id->_class->__anon1.templateParameter->identifier->string)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, id->_class->templateParameter->identifier->string);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, id->_class->__anon1.templateParameter->identifier->string);
 }
 else
 {
-if(id->_class->name)
+if(id->_class->__anon1.__anon1.name)
 {
-if(!strcmp(id->_class->name, "class"))
+if(!strcmp(id->_class->__anon1.__anon1.name, "class"))
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1170,7 +1170,7 @@ else
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, id->_class->name);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, id->_class->__anon1.__anon1.name);
 }
 }
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -1433,11 +1433,11 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "class(");
-if(exp->_classExp.specifiers)
+if(exp->__anon1._classExp.specifiers)
 {
 struct Specifier * spec;
 
-for(spec = (*exp->_classExp.specifiers).first; spec; spec = spec->next)
+for(spec = (*exp->__anon1._classExp.specifiers).first; spec; spec = spec->next)
 {
 OutputSpecifier(spec, f, 0x0);
 if(spec->next)
@@ -1447,14 +1447,14 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
-if(exp->_classExp.decl)
+if(exp->__anon1._classExp.decl)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputDeclarator(exp->_classExp.decl, f);
+OutputDeclarator(exp->__anon1._classExp.decl, f);
 }
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
@@ -1469,7 +1469,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__extension__ (");
-OutputStatement(exp->compound, f);
+OutputStatement(exp->__anon1.compound, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1495,13 +1495,13 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f, 0x0);
+OutputTypeName(exp->__anon1._renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
-OutputExpression(exp->_renew.size, f);
+OutputExpression(exp->__anon1._renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1519,13 +1519,13 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f, 0x0);
+OutputTypeName(exp->__anon1._renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
-OutputExpression(exp->_renew.size, f);
+OutputExpression(exp->__anon1._renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1538,19 +1538,19 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "renew ");
-OutputExpression(exp->_renew.exp, f);
+OutputExpression(exp->__anon1._renew.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f, 0x0);
+OutputTypeName(exp->__anon1._renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
-OutputExpression(exp->_renew.size, f);
+OutputExpression(exp->__anon1._renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1563,19 +1563,19 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "renew0 ");
-OutputExpression(exp->_renew.exp, f);
+OutputExpression(exp->__anon1._renew.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputTypeName(exp->_renew.typeName, f, 0x0);
+OutputTypeName(exp->__anon1._renew.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
-OutputExpression(exp->_renew.size, f);
+OutputExpression(exp->__anon1._renew.size, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1583,50 +1583,50 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "]");
 break;
 case 0:
-if(exp->identifier)
-OutputIdentifier(exp->identifier, f);
+if(exp->__anon1.__anon1.identifier)
+OutputIdentifier(exp->__anon1.__anon1.identifier, f);
 break;
 case 1:
-if(exp->instance)
-OutputInstance(exp->instance, f);
+if(exp->__anon1.instance)
+OutputInstance(exp->__anon1.instance, f);
 break;
 case 2:
-if(exp->constant)
+if(exp->__anon1.__anon1.constant)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, exp->constant);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, exp->__anon1.__anon1.constant);
 break;
 case 3:
-if(exp->string)
+if(exp->__anon1.__anon2.string)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, exp->string);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, exp->__anon1.__anon2.string);
 break;
 case 4:
-if(exp->op.exp1)
+if(exp->__anon1.op.exp1)
 {
-OutputExpression(exp->op.exp1, f);
-if(exp->op.exp2)
+OutputExpression(exp->__anon1.op.exp1, f);
+if(exp->__anon1.op.exp2)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
-OutputOperator(exp->op.op, f);
-if(exp->op.exp2)
+OutputOperator(exp->__anon1.op.op, f);
+if(exp->__anon1.op.exp2)
 {
-if(exp->op.exp1 || (exp->op.exp2->type == 4 && !exp->op.exp2->op.exp1 && exp->op.exp2->op.op == exp->op.op))
+if(exp->__anon1.op.exp1 || (exp->__anon1.op.exp2->type == 4 && !exp->__anon1.op.exp2->__anon1.op.exp1 && exp->__anon1.op.exp2->__anon1.op.op == exp->__anon1.op.op))
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputExpression(exp->op.exp2, f);
+OutputExpression(exp->__anon1.op.exp2, f);
 }
 break;
 case 32:
@@ -1645,9 +1645,9 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "(");
-if(exp->list)
+if(exp->__anon1.list)
 {
-for(expression = (*exp->list).first; expression; expression = expression->next)
+for(expression = (*exp->__anon1.list).first; expression; expression = expression->next)
 {
 OutputExpression(expression, f);
 if(expression->next)
@@ -1669,15 +1669,15 @@ case 6:
 {
 struct Expression * expression;
 
-if(exp->index.exp)
-OutputExpression(exp->index.exp, f);
+if(exp->__anon1.index.exp)
+OutputExpression(exp->__anon1.index.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
-if(exp->index.index)
-for(expression = (*exp->index.index).first; expression; expression = expression->next)
+if(exp->__anon1.index.index)
+for(expression = (*exp->__anon1.index.index).first; expression; expression = expression->next)
 {
 OutputExpression(expression, f);
 if(expression->next)
@@ -1696,17 +1696,17 @@ break;
 }
 case 7:
 {
-OutputExpression(exp->call.exp, f);
+OutputExpression(exp->__anon1.call.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "(");
-if(exp->call.arguments)
+if(exp->__anon1.call.arguments)
 {
 struct Expression * expression;
 
-for(expression = (*exp->call.arguments).first; expression; expression = expression->next)
+for(expression = (*exp->__anon1.call.arguments).first; expression; expression = expression->next)
 {
 OutputExpression(expression, f);
 if(expression->next)
@@ -1725,24 +1725,24 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 break;
 }
 case 8:
-if(exp->member.exp)
-OutputExpression(exp->member.exp, f);
+if(exp->__anon1.member.exp)
+OutputExpression(exp->__anon1.member.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ".");
-if(exp->member.member)
-OutputIdentifier(exp->member.member, f);
+if(exp->__anon1.member.member)
+OutputIdentifier(exp->__anon1.member.member, f);
 break;
 case 9:
-OutputExpression(exp->member.exp, f);
+OutputExpression(exp->__anon1.member.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "->");
-OutputIdentifier(exp->member.member, f);
+OutputIdentifier(exp->__anon1.member.member, f);
 break;
 case 10:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -1750,7 +1750,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "sizeof(");
-OutputTypeName(exp->typeName, f, 0x0);
+OutputTypeName(exp->__anon1.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1763,7 +1763,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__alignof__(");
-OutputTypeName(exp->typeName, f, 0x0);
+OutputTypeName(exp->__anon1.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1776,15 +1776,15 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__extension__ (");
-if(exp->initializer.typeName)
-OutputTypeName(exp->initializer.typeName, f, 0x0);
+if(exp->__anon1.initializer.typeName)
+OutputTypeName(exp->__anon1.initializer.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
-if(exp->initializer.initializer)
-OutputInitializer(exp->initializer.initializer, f);
+if(exp->__anon1.initializer.initializer)
+OutputInitializer(exp->__anon1.initializer.initializer, f);
 break;
 case 11:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -1792,17 +1792,17 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "(");
-OutputTypeName(exp->cast.typeName, f, 0x0);
+OutputTypeName(exp->__anon1.cast.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
-if(exp->cast.exp)
-OutputExpression(exp->cast.exp, f);
+if(exp->__anon1.cast.exp)
+OutputExpression(exp->__anon1.cast.exp, f);
 break;
 case 12:
-OutputExpression(exp->cond.cond, f);
+OutputExpression(exp->__anon1.cond.cond, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1811,7 +1811,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 {
 struct Expression * expression;
 
-for(expression = (*exp->cond.exp).first; expression; expression = expression->next)
+for(expression = (*exp->__anon1.cond.exp).first; expression; expression = expression->next)
 {
 OutputExpression(expression, f);
 if(expression->next)
@@ -1827,8 +1827,8 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " : ");
-if(exp->cond.elseExp)
-OutputExpression(exp->cond.elseExp, f);
+if(exp->__anon1.cond.elseExp)
+OutputExpression(exp->__anon1.cond.elseExp, f);
 break;
 case 34:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -1836,13 +1836,13 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__builtin_va_arg(");
-OutputExpression(exp->vaArg.exp, f);
+OutputExpression(exp->__anon1.vaArg.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ", ");
-OutputTypeName(exp->vaArg.typeName, f, 0x0);
+OutputTypeName(exp->__anon1.vaArg.typeName, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -1855,11 +1855,11 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
-if(exp->list)
+if(exp->__anon1.list)
 {
 struct Expression * expression;
 
-for(expression = (*exp->list).first; expression; expression = expression->next)
+for(expression = (*exp->__anon1.list).first; expression; expression = expression->next)
 {
 OutputExpression(expression, f);
 if(expression->next)
@@ -1989,36 +1989,36 @@ outputLine += 2;
 switch(stmt->type)
 {
 case 14:
-OutputDeclaration(stmt->decl, f);
+OutputDeclaration(stmt->__anon1.decl, f);
 break;
 case 0:
-OutputIdentifier(stmt->labeled.id, f);
+OutputIdentifier(stmt->__anon1.labeled.id, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ":\n");
 outputLine++;
-if(stmt->labeled.stmt)
+if(stmt->__anon1.labeled.stmt)
 {
-if(stmt->labeled.stmt->type == 14)
+if(stmt->__anon1.labeled.stmt->type == 14)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "; ");
-OutputStatement(stmt->labeled.stmt, f);
+OutputStatement(stmt->__anon1.labeled.stmt, f);
 }
 break;
 case 1:
-if(stmt->caseStmt.exp)
+if(stmt->__anon1.caseStmt.exp)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "case ");
-OutputExpression(stmt->caseStmt.exp, f);
+OutputExpression(stmt->__anon1.caseStmt.exp, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -2035,15 +2035,15 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "default:\n");
 outputLine++;
 }
-if(stmt->caseStmt.stmt)
+if(stmt->__anon1.caseStmt.stmt)
 {
-if(stmt->caseStmt.stmt->type == 14)
+if(stmt->__anon1.caseStmt.stmt->type == 14)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "; ");
-OutputStatement(stmt->caseStmt.stmt, f);
+OutputStatement(stmt->__anon1.caseStmt.stmt, f);
 }
 break;
 case 2:
@@ -2054,20 +2054,20 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "{\n");
 outputLine++;
-if(stmt->compound.declarations)
+if(stmt->__anon1.compound.declarations)
 {
 struct Declaration * decl;
 
-for(decl = (*stmt->compound.declarations).first; decl; decl = decl->next)
+for(decl = (*stmt->__anon1.compound.declarations).first; decl; decl = decl->next)
 {
 OutputDeclaration(decl, f);
 }
 }
-if(stmt->compound.statements)
+if(stmt->__anon1.compound.statements)
 {
 struct Statement * statement;
 
-if(stmt->compound.declarations)
+if(stmt->__anon1.compound.declarations)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
@@ -2076,7 +2076,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n");
 outputLine++;
 }
-for(statement = (*stmt->compound.statements).first; statement; statement = statement->next)
+for(statement = (*stmt->__anon1.compound.statements).first; statement; statement = statement->next)
 {
 OutputStatement(statement, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -2101,11 +2101,11 @@ break;
 }
 case 3:
 {
-if(stmt->expressions)
+if(stmt->__anon1.expressions)
 {
 struct Expression * exp;
 
-for(exp = (*stmt->expressions).first; exp; exp = exp->next)
+for(exp = (*stmt->__anon1.expressions).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
 if(exp->next)
@@ -2132,7 +2132,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "if(");
-for(exp = (*stmt->ifStmt.exp).first; exp; exp = exp->next)
+for(exp = (*stmt->__anon1.ifStmt.exp).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
 if(exp->next)
@@ -2148,9 +2148,9 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")\n");
 outputLine++;
-if(stmt->ifStmt.stmt)
-OutputStatement(stmt->ifStmt.stmt, f);
-if(stmt->ifStmt.elseStmt)
+if(stmt->__anon1.ifStmt.stmt)
+OutputStatement(stmt->__anon1.ifStmt.stmt, f);
+if(stmt->__anon1.ifStmt.elseStmt)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
@@ -2163,7 +2163,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "else");
-if(stmt->ifStmt.elseStmt->type != 4)
+if(stmt->__anon1.ifStmt.elseStmt->type != 4)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
@@ -2178,7 +2178,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputStatement(stmt->ifStmt.elseStmt, f);
+OutputStatement(stmt->__anon1.ifStmt.elseStmt, f);
 }
 break;
 }
@@ -2191,9 +2191,9 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "switch(");
-if(stmt->switchStmt.exp)
+if(stmt->__anon1.switchStmt.exp)
 {
-for(exp = (*stmt->switchStmt.exp).first; exp; exp = exp->next)
+for(exp = (*stmt->__anon1.switchStmt.exp).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
 if(exp->next)
@@ -2210,7 +2210,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")\n");
 outputLine++;
-OutputStatement(stmt->switchStmt.stmt, f);
+OutputStatement(stmt->__anon1.switchStmt.stmt, f);
 break;
 }
 case 6:
@@ -2222,9 +2222,9 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "while(");
-if(stmt->switchStmt.exp)
+if(stmt->__anon1.switchStmt.exp)
 {
-for(exp = (*stmt->switchStmt.exp).first; exp; exp = exp->next)
+for(exp = (*stmt->__anon1.switchStmt.exp).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
 if(exp->next)
@@ -2241,7 +2241,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")\n");
 outputLine++;
-OutputStatement(stmt->whileStmt.stmt, f);
+OutputStatement(stmt->__anon1.whileStmt.stmt, f);
 break;
 }
 case 7:
@@ -2254,13 +2254,13 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "do\n");
 outputLine++;
-OutputStatement(stmt->whileStmt.stmt, f);
+OutputStatement(stmt->__anon1.whileStmt.stmt, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "while(");
-for(exp = (*stmt->switchStmt.exp).first; exp; exp = exp->next)
+for(exp = (*stmt->__anon1.switchStmt.exp).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
 if(exp->next)
@@ -2286,26 +2286,26 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "for(");
-OutputStatement(stmt->forStmt.init, f);
+OutputStatement(stmt->__anon1.forStmt.init, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputStatement(stmt->forStmt.check, f);
+OutputStatement(stmt->__anon1.forStmt.check, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-if(stmt->forStmt.increment)
+if(stmt->__anon1.forStmt.increment)
 {
 if(inCompiler && outputLineNumbers && stmt->loc.end.line)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n#line %d \"%s\"\n", stmt->loc.end.line, name);
 outputLine += 2;
 }
-for(exp = (*stmt->forStmt.increment).first; exp; exp = exp->next)
+for(exp = (*stmt->__anon1.forStmt.increment).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
 if(exp->next)
@@ -2322,7 +2322,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")\n");
 outputLine++;
-OutputStatement(stmt->forStmt.stmt, f);
+OutputStatement(stmt->__anon1.forStmt.stmt, f);
 break;
 }
 case 9:
@@ -2332,7 +2332,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "goto ");
-OutputIdentifier(stmt->gotoStmt.id, f);
+OutputIdentifier(stmt->__anon1.gotoStmt.id, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -2360,7 +2360,7 @@ struct Expression * exp;
 
 if(inCompiler && memoryGuard)
 {
-struct Expression * exp = stmt->expressions ? (*stmt->expressions).last : (((void *)0));
+struct Expression * exp = stmt->__anon1.expressions ? (*stmt->__anon1.expressions).last : (((void *)0));
 struct Type * returnType = exp ? (exp->destType ? exp->destType : exp->expType) : (((void *)0));
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "{ ");
@@ -2373,13 +2373,13 @@ struct TypeName * typeName;
 
 if(returnType->kind == 20)
 {
-if(returnType->templateParameter->dataTypeString)
-decl = SpecDeclFromString(returnType->templateParameter->dataTypeString, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
-else if(returnType->templateParameter->dataType)
+if(returnType->__anon1.templateParameter->dataTypeString)
+decl = SpecDeclFromString(returnType->__anon1.templateParameter->dataTypeString, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
+else if(returnType->__anon1.templateParameter->__anon1.dataType)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(specs), specs = 0);
-specs = CopyList(returnType->templateParameter->dataType->specifiers, CopySpecifier);
-decl = PlugDeclarator(returnType->templateParameter->dataType->decl, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
+specs = CopyList(returnType->__anon1.templateParameter->__anon1.dataType->specifiers, CopySpecifier);
+decl = PlugDeclarator(returnType->__anon1.templateParameter->__anon1.dataType->decl, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
 }
 else
 {
@@ -2407,14 +2407,14 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "return ");
 else
 {
-struct Expression * exp = stmt->expressions ? (*stmt->expressions).last : (((void *)0));
+struct Expression * exp = stmt->__anon1.expressions ? (*stmt->__anon1.expressions).last : (((void *)0));
 
 if(exp && exp->expType && exp->expType->kind != 0)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__ecereReturnVal = ");
 }
-if(stmt->expressions)
+if(stmt->__anon1.expressions)
 {
-for(exp = (*stmt->expressions).first; exp; exp = exp->next)
+for(exp = (*stmt->__anon1.expressions).first; exp; exp = exp->next)
 {
 OutputExpression(exp, f);
 if(exp->next)
@@ -2432,7 +2432,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ";");
 if(inCompiler && memoryGuard)
 {
-struct Expression * exp = stmt->expressions ? (struct Expression *)(*stmt->expressions).last : (((void *)0));
+struct Expression * exp = stmt->__anon1.expressions ? (struct Expression *)(*stmt->__anon1.expressions).last : (((void *)0));
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " __ecereNameSpace__ecere__com__MemoryGuard_PopLoc();");
 if(exp && exp->expType && exp->expType->kind != 0)
@@ -2452,8 +2452,8 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__asm__ ");
-if(stmt->asmStmt.spec)
-OutputSpecifier(stmt->asmStmt.spec, f, 0x0);
+if(stmt->__anon1.asmStmt.spec)
+OutputSpecifier(stmt->__anon1.asmStmt.spec, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -2463,17 +2463,17 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, stmt->asmStmt.statements);
-if(stmt->asmStmt.inputFields || stmt->asmStmt.outputFields || stmt->asmStmt.clobberedFields)
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, stmt->__anon1.asmStmt.statements);
+if(stmt->__anon1.asmStmt.inputFields || stmt->__anon1.asmStmt.outputFields || stmt->__anon1.asmStmt.clobberedFields)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ":");
-if(stmt->asmStmt.inputFields)
+if(stmt->__anon1.asmStmt.inputFields)
 {
-for(field = (*stmt->asmStmt.inputFields).first; field; field = field->next)
+for(field = (*stmt->__anon1.asmStmt.inputFields).first; field; field = field->next)
 {
 if(field->prev)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -2485,16 +2485,16 @@ OutputAsmField(field, f);
 }
 }
 }
-if(stmt->asmStmt.outputFields || stmt->asmStmt.clobberedFields)
+if(stmt->__anon1.asmStmt.outputFields || stmt->__anon1.asmStmt.clobberedFields)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ":");
-if(stmt->asmStmt.outputFields)
+if(stmt->__anon1.asmStmt.outputFields)
 {
-for(field = (*stmt->asmStmt.outputFields).first; field; field = field->next)
+for(field = (*stmt->__anon1.asmStmt.outputFields).first; field; field = field->next)
 {
 if(field->prev)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -2506,14 +2506,14 @@ OutputAsmField(field, f);
 }
 }
 }
-if(stmt->asmStmt.clobberedFields)
+if(stmt->__anon1.asmStmt.clobberedFields)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ":");
-for(field = (*stmt->asmStmt.clobberedFields).first; field; field = field->next)
+for(field = (*stmt->__anon1.asmStmt.clobberedFields).first; field; field = field->next)
 {
 if(field->prev)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -2590,36 +2590,36 @@ if(decl->declarator)
 {
 OutputDeclarator(decl->declarator, f);
 }
-if(decl->structDecl.exp)
+if(decl->__anon1.structDecl.exp)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " : ");
-OutputExpression(decl->structDecl.exp, f);
+OutputExpression(decl->__anon1.structDecl.exp, f);
 }
-if(decl->structDecl.posExp)
+if(decl->__anon1.structDecl.posExp)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " : ");
-OutputExpression(decl->structDecl.posExp, f);
+OutputExpression(decl->__anon1.structDecl.posExp, f);
 }
-if(decl->structDecl.attrib)
+if(decl->__anon1.structDecl.attrib)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputAttrib(decl->structDecl.attrib, f);
+OutputAttrib(decl->__anon1.structDecl.attrib, f);
 }
 break;
 case 1:
-OutputIdentifier(decl->identifier, f);
+OutputIdentifier(decl->__anon1.identifier, f);
 break;
 case 2:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -2635,8 +2635,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 break;
 case 6:
-if(decl->extended.extended)
-OutputExtDecl(decl->extended.extended, f);
+if(decl->__anon1.extended.extended)
+OutputExtDecl(decl->__anon1.extended.extended, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -2651,8 +2651,8 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-if(decl->extended.extended)
-OutputExtDecl(decl->extended.extended, f);
+if(decl->__anon1.extended.extended)
+OutputExtDecl(decl->__anon1.extended.extended, f);
 break;
 case 3:
 if(decl->declarator)
@@ -2664,19 +2664,19 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "[");
-if(decl->array.exp)
+if(decl->__anon1.array.exp)
 {
-ProcessExpressionType(decl->array.exp);
-ComputeExpression(decl->array.exp);
-OutputExpression(decl->array.exp, f);
+ProcessExpressionType(decl->__anon1.array.exp);
+ComputeExpression(decl->__anon1.array.exp);
+OutputExpression(decl->__anon1.array.exp, f);
 }
-else if(decl->array.enumClass)
+else if(decl->__anon1.array.enumClass)
 {
-struct Symbol * _class = decl->array.enumClass->symbol;
+struct Symbol * _class = decl->__anon1.array.enumClass->__anon1.__anon1.symbol;
 
-if(_class && _class->registered)
+if(_class && _class->__anon1.registered)
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%d", (int)__ecereNameSpace__ecere__com__eClass_GetProperty(_class->registered, "enumSize"));
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%d", (int)__ecereNameSpace__ecere__com__eClass_GetProperty(_class->__anon1.registered, "enumSize"));
 }
 }
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -2696,9 +2696,9 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "(");
-if(decl->function.parameters && (*decl->function.parameters).first)
+if(decl->__anon1.function.parameters && (*decl->__anon1.function.parameters).first)
 {
-for(param = (*decl->function.parameters).first; param; param = param->next)
+for(param = (*decl->__anon1.function.parameters).first; param; param = param->next)
 {
 OutputTypeName(param, f, 0x0);
 if(param->next)
@@ -2717,8 +2717,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 break;
 }
 case 5:
-if(decl->pointer.pointer)
-OutputPointer(decl->pointer.pointer, f);
+if(decl->__anon1.pointer.pointer)
+OutputPointer(decl->__anon1.pointer.pointer, f);
 if(decl->declarator)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -2815,14 +2815,14 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 
 static void OutputExtDecl(struct ExtDecl * extDecl, struct __ecereNameSpace__ecere__com__Instance * f)
 {
-if(extDecl->type == 0 && extDecl->s)
+if(extDecl->type == 0 && extDecl->__anon1.s)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, extDecl->s);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, extDecl->__anon1.s);
 else if(extDecl->type == 1)
-OutputAttrib(extDecl->attr, f);
+OutputAttrib(extDecl->__anon1.attr, f);
 }
 
 extern struct Symbol * FindClass(const char *  name);
@@ -2834,7 +2834,7 @@ static void OutputSpecifier(struct Specifier * spec, struct __ecereNameSpace__ec
 switch(spec->type)
 {
 case 0:
-switch(spec->specifier)
+switch(spec->__anon1.specifier)
 {
 case TYPEDEF:
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -3036,11 +3036,11 @@ break;
 }
 break;
 case 5:
-if(spec->extDecl)
-OutputExtDecl(spec->extDecl, f);
+if(spec->__anon1.__anon1.extDecl)
+OutputExtDecl(spec->__anon1.__anon1.extDecl, f);
 break;
 case 1:
-if(spec->name && !strcmp(spec->name, "class"))
+if(spec->__anon1.__anon1.name && !strcmp(spec->__anon1.__anon1.name, "class"))
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
@@ -3050,10 +3050,10 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 }
 else
 {
-struct Symbol * symbol = spec->symbol;
+struct Symbol * symbol = spec->__anon1.__anon1.symbol;
 
-if(!symbol && spec->name)
-symbol = FindClass(spec->name);
+if(!symbol && spec->__anon1.__anon1.name)
+symbol = FindClass(spec->__anon1.__anon1.name);
 if(symbol)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -3062,12 +3062,12 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, symbol->string ? symbol->string : "(null)");
 }
-else if(spec->name)
+else if(spec->__anon1.__anon1.name)
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, spec->name);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, spec->__anon1.__anon1.name);
 }
 break;
 case 2:
@@ -3077,16 +3077,16 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "enum");
-if(spec->id)
+if(spec->__anon1.__anon2.id)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputIdentifier(spec->id, f);
+OutputIdentifier(spec->__anon1.__anon2.id, f);
 }
-if(spec->list)
+if(spec->__anon1.__anon2.list)
 {
 struct Enumerator * enumerator;
 
@@ -3096,7 +3096,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n{\n");
 outputLine += 2;
-for(enumerator = (*spec->list).first; enumerator; enumerator = enumerator->next)
+for(enumerator = (*spec->__anon1.__anon2.list).first; enumerator; enumerator = enumerator->next)
 {
 OutputEnumerator(enumerator, f);
 if(enumerator->next)
@@ -3123,25 +3123,25 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, (spec->type == 3) ? "struct" : "union");
-if(spec->extDeclStruct)
+if(spec->__anon1.__anon2.extDeclStruct)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputExtDecl(spec->extDeclStruct, f);
+OutputExtDecl(spec->__anon1.__anon2.extDeclStruct, f);
 }
-if(spec->id)
+if(spec->__anon1.__anon2.id)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-OutputIdentifier(spec->id, f);
+OutputIdentifier(spec->__anon1.__anon2.id, f);
 }
-if(spec->definitions)
+if(spec->__anon1.__anon2.definitions)
 {
 struct ClassDef * def;
 
@@ -3151,7 +3151,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "\n{\n");
 outputLine += 2;
-for(def = (*spec->definitions).first; def; def = def->next)
+for(def = (*spec->__anon1.__anon2.definitions).first; def; def = def->next)
 {
 OutputClassDef(def, f);
 }
@@ -3169,7 +3169,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "__typeof(");
-OutputExpression(spec->expression, f);
+OutputExpression(spec->__anon1.expression, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -3182,7 +3182,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "subclass(");
-OutputSpecifier(spec->_class, f, 0x0);
+OutputSpecifier(spec->__anon1._class, f, 0x0);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -3190,7 +3190,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, ")");
 break;
 case 8:
-OutputIdentifier(spec->templateParameter->identifier, f);
+OutputIdentifier(spec->__anon1.templateParameter->identifier, f);
 break;
 }
 }
@@ -3249,7 +3249,7 @@ if(inCompiler && outputLineNumbers && initializer->loc.start.line)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n#line %d \"%s\"\n", initializer->loc.start.line, name);
 outputLine += 2;
 }
-for(init = (*initializer->list).first; init; init = init->next)
+for(init = (*initializer->__anon1.list).first; init; init = init->next)
 {
 OutputInitializer(init, f);
 if(init->next)
@@ -3279,8 +3279,8 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-if(initializer->exp)
-OutputExpression(initializer->exp, f);
+if(initializer->__anon1.exp)
+OutputExpression(initializer->__anon1.exp, f);
 break;
 }
 }
@@ -3330,13 +3330,13 @@ case 1:
 {
 struct InitDeclarator * d;
 
-if(decl->specifiers)
+if(decl->__anon1.__anon1.specifiers)
 {
 unsigned int inTypeDef = 0x0;
 
-for(spec = (*decl->specifiers).first; spec; spec = spec->next)
+for(spec = (*decl->__anon1.__anon1.specifiers).first; spec; spec = spec->next)
 {
-if(spec->type == 0 && spec->specifier == TYPEDEF)
+if(spec->type == 0 && spec->__anon1.specifier == TYPEDEF)
 inTypeDef = 0x1;
 OutputSpecifier(spec, f, inTypeDef && !spec->next);
 if(spec->next)
@@ -3347,14 +3347,14 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
 }
-if(decl->declarators && (*decl->declarators).first)
+if(decl->__anon1.__anon1.declarators && (*decl->__anon1.__anon1.declarators).first)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-for(d = (*decl->declarators).first; d; d = d->next)
+for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
 {
 OutputInitDeclarator(d, f);
 if(d->next)
@@ -3369,9 +3369,9 @@ break;
 }
 case 0:
 {
-if(decl->specifiers)
+if(decl->__anon1.__anon1.specifiers)
 {
-for(spec = (*decl->specifiers).first; spec; spec = spec->next)
+for(spec = (*decl->__anon1.__anon1.specifiers).first; spec; spec = spec->next)
 {
 OutputSpecifier(spec, f, 0x0);
 if(spec->next)
@@ -3382,7 +3382,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
 }
 }
-if(decl->declarators)
+if(decl->__anon1.__anon1.declarators)
 {
 struct Declarator * d;
 
@@ -3391,7 +3391,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, " ");
-for(d = (*decl->declarators).first; d; d = d->next)
+for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
 {
 OutputDeclarator(d, f);
 if(d->next)
@@ -3414,9 +3414,9 @@ OutputSpecifier(decl->extStorage, f, 0x0);
 break;
 }
 case 2:
-if(decl->inst)
+if(decl->__anon1.inst)
 {
-OutputInstance(decl->inst, f);
+OutputInstance(decl->__anon1.inst, f);
 }
 break;
 case 3:
@@ -3563,9 +3563,9 @@ case 0:
 {
 struct MemberInit * member;
 
-if(init->dataMembers)
+if(init->__anon1.dataMembers)
 {
-for(member = (*init->dataMembers).first; member; member = member->next)
+for(member = (*init->__anon1.dataMembers).first; member; member = member->next)
 {
 OutputMemberInit(member, f);
 if(member->next)
@@ -3579,7 +3579,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 break;
 }
 case 1:
-OutputClassFunction(init->function, f);
+OutputClassFunction(init->__anon1.function, f);
 break;
 }
 }
@@ -3718,9 +3718,9 @@ static void OutputClassDef(struct ClassDef * def, struct __ecereNameSpace__ecere
 switch(def->type)
 {
 case 2:
-if(def->decl)
+if(def->__anon1.decl)
 {
-OutputDeclaration(def->decl, f);
+OutputDeclaration(def->__anon1.decl, f);
 if(def->next && def->next->type != 2)
 {
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
@@ -3736,7 +3736,7 @@ case 1:
 {
 struct MemberInit * init;
 
-for(init = (*def->defProperties).first; init; init = init->next)
+for(init = (*def->__anon1.defProperties).first; init; init = init->next)
 {
 OutputMemberInit(init, f);
 if(init->next)
@@ -3755,7 +3755,7 @@ outputLine += 2;
 break;
 }
 case 0:
-OutputClassFunction(def->function, f);
+OutputClassFunction(def->__anon1.function, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -3827,7 +3827,7 @@ for(external = ast->first; external; external = external->next)
 switch(external->type)
 {
 case 0:
-OutputFunction(external->function, f);
+OutputFunction(external->__anon1.function, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -3836,8 +3836,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 outputLine++;
 break;
 case 1:
-if(external->declaration)
-OutputDeclaration(external->declaration, f);
+if(external->__anon1.declaration)
+OutputDeclaration(external->__anon1.declaration, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
@@ -3846,7 +3846,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 outputLine++;
 break;
 case 2:
-OutputClass(external->_class, f);
+OutputClass(external->__anon1._class, f);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 

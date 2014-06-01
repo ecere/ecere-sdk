@@ -183,7 +183,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -374,7 +374,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -384,9 +384,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Instance * __currentModule;
@@ -474,6 +474,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Specifier;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Statement;
+
+struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
 
@@ -823,6 +825,7 @@ __ecereClass_PropertyImport = __ecereNameSpace__ecere__com__eSystem_FindClass(mo
 __ecereClass_PropertyWatch = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "PropertyWatch");
 __ecereClass_Specifier = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Specifier");
 __ecereClass_Statement = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Statement");
+__ecereClass_String = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "String");
 __ecereClass_Symbol = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Symbol");
 __ecereClass_TemplateArgument = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "TemplateArgument");
 __ecereClass_TemplateDatatype = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "TemplateDatatype");

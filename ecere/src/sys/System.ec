@@ -227,6 +227,7 @@ public bool ShellOpen(const char * fileName, ...)
 {
    bool result;
    va_list args;
+   va_start(args, fileName);
    result = System_ShellOpen(fileName, args);
    va_end(args);
    return result;

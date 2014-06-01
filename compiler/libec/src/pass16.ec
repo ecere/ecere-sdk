@@ -1598,6 +1598,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
    Symbol classSym = inst._class.symbol; // FindClass(inst._class.name);
    DataMember dataMember = null;
    bool someMemberSet = false;
+   int anonID = 1;
 
    // For simple classes, ensure all members are initialized
    for(dataMember = parentMember.members.first; dataMember; dataMember = dataMember.next)
@@ -1607,9 +1608,9 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
 
       if(!dataMember.name && (dataMember.type == unionMember || dataMember.type == structMember))
       {
-         OldList * subList = 0; //(dataMember.type == structMember) ? MkList() : null;
+         OldList * subList = MkList(); //(dataMember.type == structMember) ? MkList() : null;
 
-         if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember.name ? dataMember : namedParentMember, someMemberSet || parentMemberSet))
+         if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember.name ? dataMember : namedParentMember, someMemberSet || parentMemberSet || dataMember.prev))
          {
             if(subList)
                FreeList(subList, FreeInitializer);
@@ -1618,7 +1619,11 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
          }
          if(subList && subList->count)
          {
-            ListAdd(list, MkInitializerList(subList));
+            Initializer init = MkInitializerList(subList);
+            char id[100];
+            sprintf(id, "__anon%d", anonID);
+            init.id = MkIdentifier(id);
+            ListAdd(list, init);
             someMemberSet = true;
          }
          else
@@ -1627,6 +1632,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                someMemberSet = true;
             delete subList;
          }
+         anonID++;
       }
       else
       {
@@ -1862,7 +1868,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
       */
    }
    // TESTING THIS NEW CODE FOR ANCHORS...
-   if(parentMember.type == unionMember && !someMemberSet && !parentMemberSet)
+   if(/*parentMember.type == unionMember && */!someMemberSet && !parentMemberSet)
    {
       Symbol classSym;
       Initializer init { loc = yylloc };
@@ -1900,6 +1906,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
    static int recursionCount = 0;
    Symbol classSym = inst._class.symbol; // FindClass(inst._class.name);
    Class _class = null;
+   int anonID = 1;
 
    if(recursionCount > 500) return false;
    recursionCount++;
@@ -1915,7 +1922,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
       {
          if(!dataMember.isProperty && !dataMember.name && (dataMember.type == unionMember || dataMember.type == structMember))
          {
-            OldList * subList = 0 /*(dataMember.type == structMember ? MkList() : null)*/;
+            OldList * subList = MkList(); //(dataMember.type == structMember ? MkList() : null);
 
             if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember, false))
             {
@@ -1925,9 +1932,16 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                return false;
             }
             if(dataMember.type == structMember || (subList && subList->count))
-               ListAdd(list, MkInitializerList(subList));
+            {
+               Initializer init = MkInitializerList(subList);
+               char id[100];
+               sprintf(id, "__anon%d", anonID);
+               init.id = MkIdentifier(id);
+               ListAdd(list, init);
+            }
             else
                delete subList;
+            anonID ++;
          }
          else
          {

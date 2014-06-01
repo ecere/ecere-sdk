@@ -211,14 +211,14 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
 struct __ecereNameSpace__ecere__sys__OldList *  declarators;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct Instantiation * inst;
 struct
 {
 struct Identifier * id;
 struct Expression * exp;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 struct Specifier * extStorage;
 struct Symbol * symbol;
 int declMode;
@@ -306,7 +306,7 @@ struct __ecereNameSpace__ecere__sys__OldList * filter;
 struct Statement * stmt;
 } __attribute__ ((gcc_struct)) forEachStmt;
 struct Declaration * decl;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
@@ -325,7 +325,7 @@ union
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 unsigned int isConstant;
 struct Identifier * id;
 } __attribute__ ((gcc_struct));
@@ -347,7 +347,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -364,14 +364,14 @@ struct
 {
 char *  constant;
 struct Identifier * identifier;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct Statement * compound;
 struct Instantiation * instance;
 struct
 {
 char *  string;
 unsigned int intlString;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
@@ -450,7 +450,7 @@ struct
 struct Expression * exp;
 struct TypeName * typeName;
 } __attribute__ ((gcc_struct)) vaArg;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
 uint64 address;
@@ -485,7 +485,7 @@ union
 struct Expression * expression;
 struct Identifier * identifier;
 struct TemplateDatatype * templateDatatype;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateParameter;
@@ -509,7 +509,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct Identifier * id;
@@ -519,11 +519,11 @@ struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
 struct ExtDecl * extDeclStruct;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct Expression * expression;
 struct Specifier * _class;
 struct TemplateParameter * templateParameter;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
@@ -579,7 +579,7 @@ struct
 {
 struct ExtDecl * extended;
 } __attribute__ ((gcc_struct)) extended;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
@@ -629,7 +629,7 @@ struct Declaration * declaration;
 char *  importString;
 struct Identifier * id;
 struct DBTableDef * table;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int importType;
 } __attribute__ ((gcc_struct));
 
@@ -656,7 +656,7 @@ union
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 struct __ecereNameSpace__ecere__com__Class * registered;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int id;
 int idCode;
 union
@@ -665,20 +665,20 @@ struct
 {
 struct External * pointerExternal;
 struct External * structExternal;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct External * externalGet;
 struct External * externalSet;
 struct External * externalPtr;
 struct External * externalIsSet;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct External * methodExternal;
 struct External * methodCodeExternal;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
+} __attribute__ ((gcc_struct)) __anon2;
 unsigned int imported;
 unsigned int declaredStructSym;
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -839,7 +839,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -849,9 +849,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 enum yytokentype
@@ -975,7 +975,7 @@ union
 {
 struct __ecereNameSpace__ecere__sys__OldList *  dataMembers;
 struct ClassFunction * function;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
@@ -1013,7 +1013,7 @@ struct
 unsigned int conversion : 1;
 unsigned int isWatchable : 1;
 unsigned int isDBProp : 1;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1041,8 +1041,8 @@ struct
 {
 struct Identifier * id;
 struct Initializer * initializer;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon1;
 int memberAccess;
 void *  object;
 } __attribute__ ((gcc_struct));
@@ -3110,7 +3110,7 @@ if(yyvsp[(1) - (2)].id->_class)
 {
 char name[1024];
 
-strcpy(name, yyvsp[(1) - (2)].id->_class->name ? yyvsp[(1) - (2)].id->_class->name : "");
+strcpy(name, yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (2)].id->string);
 _DeclClass(0, name);
@@ -3150,7 +3150,7 @@ if(yyvsp[(1) - (2)].id->_class)
 {
 char name[1024];
 
-strcpy(name, yyvsp[(1) - (2)].id->_class->name ? yyvsp[(1) - (2)].id->_class->name : "");
+strcpy(name, yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (2)].id->string);
 _DeclClass(0, name);
@@ -3203,7 +3203,7 @@ if(yyvsp[(1) - (2)].id->_class)
 {
 char name[1024];
 
-strcpy(name, yyvsp[(1) - (2)].id->_class->name ? yyvsp[(1) - (2)].id->_class->name : "");
+strcpy(name, yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (2)].id->string);
 _DeclClass(0, name);
@@ -3407,7 +3407,7 @@ case 27:
 if(yyvsp[(1) - (3)].classFunction->declarator)
 {
 yyvsp[(1) - (3)].classFunction->declarator = MkStructDeclarator(yyvsp[(1) - (3)].classFunction->declarator, (((void *)0)));
-yyvsp[(1) - (3)].classFunction->declarator->structDecl.attrib = yyvsp[(2) - (3)].attrib;
+yyvsp[(1) - (3)].classFunction->declarator->__anon1.structDecl.attrib = yyvsp[(2) - (3)].attrib;
 }
 ProcessClassFunctionBody(yyvsp[(1) - (3)].classFunction, (((void *)0)));
 yyval.classFunction->loc = (yyloc);
@@ -4385,7 +4385,7 @@ yyvsp[(1) - (3)].prop->issetStmt = yyvsp[(3) - (3)].stmt;
 break;
 case 132:
 {
-yyvsp[(1) - (2)].prop->isWatchable = 0x1;
+yyvsp[(1) - (2)].prop->__anon1.isWatchable = 0x1;
 ;
 }
 break;
@@ -4681,7 +4681,7 @@ break;
 case 176:
 {
 yyval.classDef = MkClassDefDeclaration(MkStructDeclaration(yyvsp[(1) - (1)].list, (((void *)0)), (((void *)0))));
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->loc = (yyloc);
 yyval.classDef->memberAccess = memberAccessStack[defaultMemberAccess];
 ;
@@ -4690,7 +4690,7 @@ break;
 case 177:
 {
 yyval.classDef = MkClassDefDeclaration(MkStructDeclaration(yyvsp[(1) - (2)].list, yyvsp[(2) - (2)].list, (((void *)0))));
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->loc = (yyloc);
 yyval.classDef->memberAccess = memberAccessStack[defaultMemberAccess];
 ;
@@ -4699,7 +4699,7 @@ break;
 case 178:
 {
 yyval.classDef = MkClassDefDeclaration(MkStructDeclaration(yyvsp[(2) - (3)].list, yyvsp[(3) - (3)].list, (((void *)0))));
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->loc = (yyloc);
 yyval.classDef->memberAccess = yyvsp[(1) - (3)].declMode;
 ;
@@ -4708,7 +4708,7 @@ break;
 case 179:
 {
 yyval.classDef = MkClassDefDeclaration(MkStructDeclaration(yyvsp[(2) - (2)].list, (((void *)0)), (((void *)0))));
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->loc = (yyloc);
 yyval.classDef->memberAccess = yyvsp[(1) - (2)].declMode;
 ;
@@ -4718,7 +4718,7 @@ case 180:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(2) - (2)].instance));
 yyval.classDef->loc = (yyloc);
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->memberAccess = yyvsp[(1) - (2)].declMode;
 ;
 }
@@ -4727,7 +4727,7 @@ case 181:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(2) - (2)].instance));
 yyval.classDef->loc = (yyloc);
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->memberAccess = yyvsp[(1) - (2)].declMode;
 ;
 }
@@ -4735,7 +4735,7 @@ break;
 case 182:
 {
 yyval.classDef = MkClassDefClassData(MkStructDeclaration(yyvsp[(2) - (3)].list, yyvsp[(3) - (3)].list, (((void *)0))));
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->loc = (yyloc);
 ;
 }
@@ -4757,7 +4757,7 @@ FreeIdentifier(yyvsp[(2) - (2)].id);
 break;
 case 185:
 {
-yyval.classDef = MkClassDefDesigner(yyvsp[(2) - (2)].specifier->name);
+yyval.classDef = MkClassDefDesigner(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -4772,7 +4772,7 @@ case 187:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(1) - (1)].instance));
 yyval.classDef->loc = (yyloc);
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->memberAccess = memberAccessStack[defaultMemberAccess];
 ;
 }
@@ -4781,7 +4781,7 @@ case 188:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(1) - (1)].instance));
 yyval.classDef->loc = (yyloc);
-yyval.classDef->decl->loc = (yyloc);
+yyval.classDef->__anon1.decl->loc = (yyloc);
 yyval.classDef->memberAccess = memberAccessStack[defaultMemberAccess];
 ;
 }
@@ -4799,7 +4799,7 @@ case 190:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(1) - (2)].instance));
 yyval.classDef->loc = yyvsp[(1) - (2)].instance->loc;
-yyval.classDef->decl->loc = yyval.classDef->loc;
+yyval.classDef->__anon1.decl->loc = yyval.classDef->loc;
 yyval.classDef->memberAccess = memberAccessStack[defaultMemberAccess];
 ;
 }
@@ -4808,7 +4808,7 @@ case 191:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(1) - (2)].instance));
 yyval.classDef->loc = yyvsp[(1) - (2)].instance->loc;
-yyval.classDef->decl->loc = yyval.classDef->loc;
+yyval.classDef->__anon1.decl->loc = yyval.classDef->loc;
 yyval.classDef->memberAccess = memberAccessStack[defaultMemberAccess];
 ;
 }
@@ -4827,7 +4827,7 @@ case 193:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(2) - (3)].instance));
 yyval.classDef->loc = (yyloc);
-yyval.classDef->decl->loc = yyval.classDef->loc;
+yyval.classDef->__anon1.decl->loc = yyval.classDef->loc;
 yyval.classDef->memberAccess = yyvsp[(1) - (3)].declMode;
 ;
 }
@@ -4836,7 +4836,7 @@ case 194:
 {
 yyval.classDef = MkClassDefDeclaration(MkDeclarationClassInst(yyvsp[(2) - (3)].instance));
 yyval.classDef->loc = (yyloc);
-yyval.classDef->decl->loc = yyval.classDef->loc;
+yyval.classDef->__anon1.decl->loc = yyval.classDef->loc;
 yyval.classDef->memberAccess = yyvsp[(1) - (3)].declMode;
 ;
 }
@@ -5076,7 +5076,7 @@ break;
 case 237:
 {
 yyvsp[(1) - (2)].context;
-yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(2) - (2)].specifier->name);
+yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 yyval.symbol->nameLoc = (yylsp[(2) - (2)]);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ++defaultMemberAccess;
@@ -5099,7 +5099,7 @@ break;
 case 239:
 {
 yyvsp[(2) - (3)].context;
-yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (3)].specifier->name);
+yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
 FreeIdentifier(yyvsp[(1) - (3)].id);
 yyval.symbol->nameLoc = (yylsp[(3) - (3)]);
 yyval.symbol->isRemote = 0x1;
@@ -5122,7 +5122,7 @@ break;
 case 241:
 {
 yyvsp[(1) - (5)].context;
-yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(2) - (5)].specifier->name);
+yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
 yyval.symbol->templateParams = yyvsp[(4) - (5)].list;
 yyval.symbol->nameLoc = (yylsp[(2) - (5)]);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
@@ -5147,7 +5147,7 @@ break;
 case 243:
 {
 yyvsp[(2) - (6)].context;
-yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (6)].specifier->name);
+yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
 yyval.symbol->templateParams = yyvsp[(5) - (6)].list;
 FreeIdentifier(yyvsp[(1) - (6)].id);
 yyval.symbol->nameLoc = (yylsp[(3) - (6)]);
@@ -5216,7 +5216,7 @@ break;
 case 249:
 {
 yyvsp[(1) - (3)].context;
-yyval._class = MkClass(DeclClass(0, yyvsp[(2) - (3)].specifier->name), (((void *)0)), (((void *)0)));
+yyval._class = MkClass(DeclClass(0, yyvsp[(2) - (3)].specifier->__anon1.__anon1.name), (((void *)0)), (((void *)0)));
 FreeSpecifier(yyvsp[(2) - (3)].specifier);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -5419,7 +5419,7 @@ yyval.exp->loc = (yyloc);
 break;
 case 270:
 {
-char * constant = yyvsp[(1) - (2)].exp->constant;
+char * constant = yyvsp[(1) - (2)].exp->__anon1.__anon1.constant;
 int len = strlen(constant);
 
 if(constant[len - 1] == '.')
@@ -5659,8 +5659,8 @@ break;
 case 308:
 {
 yyval.exp = MkExpCall(yyvsp[(1) - (3)].exp, MkList());
-yyval.exp->call.argLoc.start = (yylsp[(2) - (3)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(3) - (3)]).end;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (3)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(3) - (3)]).end;
 yyval.exp->loc = (yyloc);
 ;
 }
@@ -5668,8 +5668,8 @@ break;
 case 309:
 {
 yyval.exp = MkExpCall(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list);
-yyval.exp->call.argLoc.start = (yylsp[(2) - (4)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(4) - (4)]).end;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (4)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(4) - (4)]).end;
 yyval.exp->loc = (yyloc);
 ;
 }
@@ -5677,8 +5677,8 @@ break;
 case 310:
 {
 yyval.exp = MkExpCall(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list);
-yyval.exp->call.argLoc.start = (yylsp[(2) - (4)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(4) - (4)]).end;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (4)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(4) - (4)]).end;
 yyval.exp->loc = (yyloc);
 if((*yyvsp[(3) - (4)].list).last)
 ((struct Expression *)(*yyvsp[(3) - (4)].list).last)->loc.end = (yylsp[(4) - (4)]).start;
@@ -5730,8 +5730,8 @@ break;
 case 317:
 {
 yyval.exp = MkExpCall(yyvsp[(1) - (3)].exp, MkList());
-yyval.exp->call.argLoc.start = (yylsp[(2) - (3)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(3) - (3)]).end;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (3)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(3) - (3)]).end;
 yyval.exp->loc = (yyloc);
 ;
 }
@@ -5739,8 +5739,8 @@ break;
 case 318:
 {
 yyval.exp = MkExpCall(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list);
-yyval.exp->call.argLoc.start = (yylsp[(2) - (4)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(4) - (4)]).end;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (4)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(4) - (4)]).end;
 yyval.exp->loc = (yyloc);
 ;
 }
@@ -6606,20 +6606,20 @@ case 461:
 {
 yyerror();
 yyval.exp = MkExpCall(yyvsp[(1) - (3)].exp, yyvsp[(3) - (3)].list);
-yyval.exp->call.argLoc.start = (yylsp[(2) - (3)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(3) - (3)]).end;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (3)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(3) - (3)]).end;
 yyval.exp->loc = (yyloc);
-yyval.exp->call.argLoc.end.charPos++;
+yyval.exp->__anon1.call.argLoc.end.charPos++;
 ;
 }
 break;
 case 462:
 {
 yyval.exp = MkExpCall(yyvsp[(1) - (3)].exp, yyvsp[(3) - (3)].list);
-yyval.exp->call.argLoc.start = (yylsp[(2) - (3)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(3) - (3)]).end;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (3)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(3) - (3)]).end;
 yyval.exp->loc = (yyloc);
-yyval.exp->call.argLoc.end.charPos++;
+yyval.exp->__anon1.call.argLoc.end.charPos++;
 ;
 }
 break;
@@ -6634,9 +6634,9 @@ case 464:
 {
 yyval.exp = MkExpCall(yyvsp[(1) - (3)].exp, yyvsp[(3) - (3)].list);
 yyval.exp->loc = (yyloc);
-yyval.exp->call.argLoc.start = (yylsp[(2) - (3)]).start;
-yyval.exp->call.argLoc.end = (yylsp[(3) - (3)]).end;
-yyval.exp->call.argLoc.end.charPos++;
+yyval.exp->__anon1.call.argLoc.start = (yylsp[(2) - (3)]).start;
+yyval.exp->__anon1.call.argLoc.end = (yylsp[(3) - (3)]).end;
+yyval.exp->__anon1.call.argLoc.end.charPos++;
 ;
 }
 break;
@@ -6826,16 +6826,16 @@ case 498:
 {
 if(yyvsp[(1) - (2)].exp->type == 0)
 {
-if(yyvsp[(1) - (2)].exp->identifier->_class && !yyvsp[(1) - (2)].exp->identifier->_class->name)
+if(yyvsp[(1) - (2)].exp->__anon1.__anon1.identifier->_class && !yyvsp[(1) - (2)].exp->__anon1.__anon1.identifier->_class->__anon1.__anon1.name)
 {
 char name[1024];
 
 strcpy(name, "::");
-strcat(name, yyvsp[(1) - (2)].exp->identifier->string);
+strcat(name, yyvsp[(1) - (2)].exp->__anon1.__anon1.identifier->string);
 _DeclClass(0, name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (2)].exp->identifier->string);
+_DeclClass(0, yyvsp[(1) - (2)].exp->__anon1.__anon1.identifier->string);
 skipErrors = 0x0;
 FreeExpression(yyvsp[(1) - (2)].exp);
 FreeExpression(yyvsp[(2) - (2)].exp);
@@ -7121,7 +7121,7 @@ case 541:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7129,7 +7129,7 @@ case 542:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7137,7 +7137,7 @@ case 543:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7145,7 +7145,7 @@ case 544:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7181,7 +7181,7 @@ case 549:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7189,7 +7189,7 @@ case 550:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7197,7 +7197,7 @@ case 551:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7205,7 +7205,7 @@ case 552:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (4)].exp, yyvsp[(3) - (4)].list, MkExpDummy());
 yyval.exp->loc = (yyloc);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (4)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (4)]);
 ;
 }
 break;
@@ -7270,8 +7270,8 @@ case 561:
 yyerror();
 yyval.exp = MkExpCondition(yyvsp[(1) - (3)].exp, MkListOne(MkExpDummy()), MkExpDummy());
 yyval.exp->loc = (yyloc);
-((struct Expression *)(*yyval.exp->cond.exp).last)->loc = (yylsp[(2) - (3)]);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (3)]);
+((struct Expression *)(*yyval.exp->__anon1.cond.exp).last)->loc = (yylsp[(2) - (3)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (3)]);
 ;
 }
 break;
@@ -7279,8 +7279,8 @@ case 562:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (3)].exp, MkListOne(MkExpDummy()), MkExpDummy());
 yyval.exp->loc = (yyloc);
-((struct Expression *)(*yyval.exp->cond.exp).last)->loc = (yylsp[(2) - (3)]);
-yyval.exp->cond.elseExp->loc = (yylsp[(3) - (3)]);
+((struct Expression *)(*yyval.exp->__anon1.cond.exp).last)->loc = (yylsp[(2) - (3)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(3) - (3)]);
 ;
 }
 break;
@@ -7289,8 +7289,8 @@ case 563:
 yyerror();
 yyval.exp = MkExpCondition(yyvsp[(1) - (2)].exp, MkListOne(MkExpDummy()), MkExpDummy());
 yyval.exp->loc = (yyloc);
-((struct Expression *)(*yyval.exp->cond.exp).last)->loc = (yylsp[(2) - (2)]);
-yyval.exp->cond.elseExp->loc = (yylsp[(2) - (2)]);
+((struct Expression *)(*yyval.exp->__anon1.cond.exp).last)->loc = (yylsp[(2) - (2)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(2) - (2)]);
 ;
 }
 break;
@@ -7298,8 +7298,8 @@ case 564:
 {
 yyval.exp = MkExpCondition(yyvsp[(1) - (2)].exp, MkListOne(MkExpDummy()), MkExpDummy());
 yyval.exp->loc = (yyloc);
-((struct Expression *)(*yyval.exp->cond.exp).last)->loc = (yylsp[(2) - (2)]);
-yyval.exp->cond.elseExp->loc = (yylsp[(2) - (2)]);
+((struct Expression *)(*yyval.exp->__anon1.cond.exp).last)->loc = (yylsp[(2) - (2)]);
+yyval.exp->__anon1.cond.elseExp->loc = (yylsp[(2) - (2)]);
 ;
 }
 break;
@@ -7543,7 +7543,7 @@ defaultMemberAccess--;
 break;
 case 605:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (2)].specifier->name), (((void *)0)));
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name), (((void *)0)));
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -7569,7 +7569,7 @@ defaultMemberAccess--;
 break;
 case 608:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (4)].specifier->name), (((void *)0)));
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (4)].specifier->__anon1.__anon1.name), (((void *)0)));
 FreeSpecifier(yyvsp[(2) - (4)].specifier);
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
@@ -7626,7 +7626,7 @@ case 614:
 {
 yyval.specifier = MkEnum(yyvsp[(2) - (6)].id, yyvsp[(4) - (6)].list);
 yyval.specifier->loc = (yyloc);
-yyval.specifier->definitions = yyvsp[(6) - (6)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (6)].list;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -7636,7 +7636,7 @@ case 615:
 {
 yyval.specifier = MkEnum(yyvsp[(2) - (6)].id, yyvsp[(4) - (6)].list);
 yyval.specifier->loc = (yyloc);
-yyval.specifier->definitions = yyvsp[(6) - (6)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (6)].list;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -7644,7 +7644,7 @@ defaultMemberAccess--;
 break;
 case 616:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (4)].specifier->name), yyvsp[(4) - (4)].list);
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (4)].specifier->__anon1.__anon1.name), yyvsp[(4) - (4)].list);
 yyval.specifier->loc = (yyloc);
 FreeSpecifier(yyvsp[(2) - (4)].specifier);
 if(defaultMemberAccess > -1)
@@ -7654,7 +7654,7 @@ defaultMemberAccess--;
 break;
 case 617:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (5)].specifier->name), yyvsp[(4) - (5)].list);
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name), yyvsp[(4) - (5)].list);
 yyval.specifier->loc = (yyloc);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
 if(defaultMemberAccess > -1)
@@ -7664,7 +7664,7 @@ defaultMemberAccess--;
 break;
 case 618:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (4)].specifier->name), (((void *)0)));
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (4)].specifier->__anon1.__anon1.name), (((void *)0)));
 yyval.specifier->loc = (yyloc);
 FreeSpecifier(yyvsp[(2) - (4)].specifier);
 if(defaultMemberAccess > -1)
@@ -7674,9 +7674,9 @@ defaultMemberAccess--;
 break;
 case 619:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (6)].specifier->name), yyvsp[(4) - (6)].list);
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (6)].specifier->__anon1.__anon1.name), yyvsp[(4) - (6)].list);
 yyval.specifier->loc = (yyloc);
-yyval.specifier->definitions = yyvsp[(6) - (6)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (6)].list;
 FreeSpecifier(yyvsp[(2) - (6)].specifier);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7685,9 +7685,9 @@ defaultMemberAccess--;
 break;
 case 620:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (6)].specifier->name), yyvsp[(4) - (6)].list);
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (6)].specifier->__anon1.__anon1.name), yyvsp[(4) - (6)].list);
 yyval.specifier->loc = (yyloc);
-yyval.specifier->definitions = yyvsp[(6) - (6)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (6)].list;
 FreeSpecifier(yyvsp[(2) - (6)].specifier);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7705,7 +7705,7 @@ defaultMemberAccess--;
 break;
 case 622:
 {
-yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (5)].specifier->name), yyvsp[(4) - (5)].list);
+yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name), yyvsp[(4) - (5)].list);
 yyval.specifier->loc = (yyloc);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
 if(defaultMemberAccess > -1)
@@ -7723,9 +7723,9 @@ DeclClassAddNameSpace(globalContext->nextID++, yyvsp[(2) - (2)].id->string);
 break;
 case 624:
 {
-yyval.id = MkIdentifier(yyvsp[(2) - (2)].specifier->name);
+yyval.id = MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 if(declMode)
-DeclClass(globalContext->nextID++, yyvsp[(2) - (2)].specifier->name);
+DeclClass(globalContext->nextID++, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -7740,7 +7740,7 @@ break;
 case 626:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (5)].id, (((void *)0)));
-yyval.specifier->baseSpecs = yyvsp[(3) - (5)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (5)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7758,7 +7758,7 @@ break;
 case 628:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (5)].id, yyvsp[(5) - (5)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (5)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (5)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7768,7 +7768,7 @@ break;
 case 629:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (6)].id, yyvsp[(5) - (6)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (6)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (6)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7778,7 +7778,7 @@ break;
 case 630:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (5)].id, (((void *)0)));
-yyval.specifier->baseSpecs = yyvsp[(3) - (5)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (5)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7788,8 +7788,8 @@ break;
 case 631:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (7)].id, yyvsp[(5) - (7)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (7)].list;
-yyval.specifier->definitions = yyvsp[(7) - (7)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (7)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(7) - (7)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7799,8 +7799,8 @@ break;
 case 632:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (7)].id, yyvsp[(5) - (7)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (7)].list;
-yyval.specifier->definitions = yyvsp[(7) - (7)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (7)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(7) - (7)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7810,8 +7810,8 @@ break;
 case 633:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (8)].id, yyvsp[(5) - (8)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (8)].list;
-yyval.specifier->definitions = yyvsp[(8) - (8)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (8)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(8) - (8)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7821,8 +7821,8 @@ break;
 case 634:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (8)].id, yyvsp[(5) - (8)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (8)].list;
-yyval.specifier->definitions = yyvsp[(8) - (8)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (8)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(8) - (8)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7832,8 +7832,8 @@ break;
 case 635:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (7)].id, (((void *)0)));
-yyval.specifier->baseSpecs = yyvsp[(3) - (7)].list;
-yyval.specifier->definitions = yyvsp[(7) - (7)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (7)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(7) - (7)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7843,8 +7843,8 @@ break;
 case 636:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (7)].id, (((void *)0)));
-yyval.specifier->baseSpecs = yyvsp[(3) - (7)].list;
-yyval.specifier->definitions = yyvsp[(7) - (7)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (7)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(7) - (7)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7899,7 +7899,7 @@ break;
 case 642:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (5)].id, yyvsp[(3) - (5)].list);
-yyval.specifier->definitions = yyvsp[(5) - (5)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(5) - (5)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7909,7 +7909,7 @@ break;
 case 643:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (5)].id, yyvsp[(3) - (5)].list);
-yyval.specifier->definitions = yyvsp[(5) - (5)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(5) - (5)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7919,7 +7919,7 @@ break;
 case 644:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (6)].id, yyvsp[(5) - (6)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (6)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (6)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7929,7 +7929,7 @@ break;
 case 645:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (7)].id, yyvsp[(5) - (7)].list);
-yyval.specifier->baseSpecs = yyvsp[(3) - (7)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (7)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -7939,7 +7939,7 @@ break;
 case 646:
 {
 yyval.specifier = MkEnum(yyvsp[(1) - (6)].id, (((void *)0)));
-yyval.specifier->baseSpecs = yyvsp[(3) - (6)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (6)].list;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -8271,7 +8271,7 @@ break;
 case 709:
 {
 yyval.declarator = MkStructDeclarator(yyvsp[(1) - (2)].declarator, (((void *)0)));
-yyval.declarator->structDecl.attrib = yyvsp[(2) - (2)].attrib;
+yyval.declarator->__anon1.structDecl.attrib = yyvsp[(2) - (2)].attrib;
 yyval.declarator->loc = (yyloc);
 ;
 }
@@ -8293,7 +8293,7 @@ break;
 case 712:
 {
 yyval.declarator = MkStructDeclarator(yyvsp[(1) - (5)].declarator, yyvsp[(3) - (5)].exp);
-yyval.declarator->structDecl.posExp = yyvsp[(5) - (5)].exp;
+yyval.declarator->__anon1.structDecl.posExp = yyvsp[(5) - (5)].exp;
 yyval.declarator->loc = (yyloc);
 ;
 }
@@ -8315,7 +8315,7 @@ break;
 case 715:
 {
 yyval.declarator = MkStructDeclarator(yyvsp[(1) - (5)].declarator, yyvsp[(3) - (5)].exp);
-yyval.declarator->structDecl.posExp = yyvsp[(5) - (5)].exp;
+yyval.declarator->__anon1.structDecl.posExp = yyvsp[(5) - (5)].exp;
 yyval.declarator->loc = (yyloc);
 ;
 }
@@ -8323,7 +8323,7 @@ break;
 case 716:
 {
 yyval.declarator = MkStructDeclarator(yyvsp[(1) - (5)].declarator, yyvsp[(3) - (5)].exp);
-yyval.declarator->structDecl.posExp = yyvsp[(5) - (5)].exp;
+yyval.declarator->__anon1.structDecl.posExp = yyvsp[(5) - (5)].exp;
 yyval.declarator->loc = (yyloc);
 ;
 }
@@ -8331,7 +8331,7 @@ break;
 case 717:
 {
 yyval.declarator = MkStructDeclarator(yyvsp[(1) - (5)].declarator, yyvsp[(3) - (5)].exp);
-yyval.declarator->structDecl.posExp = yyvsp[(5) - (5)].exp;
+yyval.declarator->__anon1.structDecl.posExp = yyvsp[(5) - (5)].exp;
 yyval.declarator->loc = (yyloc);
 ;
 }
@@ -8353,15 +8353,15 @@ break;
 case 720:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (2)].specifierType, yyvsp[(2) - (2)].id, (((void *)0)));
-yyval.specifier->addNameSpace = 0x1;
-yyval.specifier->ctx = PushContext();
+yyval.specifier->__anon1.__anon2.addNameSpace = 0x1;
+yyval.specifier->__anon1.__anon2.ctx = PushContext();
 ;
 }
 break;
 case 721:
 {
-yyval.specifier = MkStructOrUnion(yyvsp[(1) - (2)].specifierType, MkIdentifier(yyvsp[(2) - (2)].specifier->name), (((void *)0)));
-yyval.specifier->ctx = PushContext();
+yyval.specifier = MkStructOrUnion(yyvsp[(1) - (2)].specifierType, MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name), (((void *)0)));
+yyval.specifier->__anon1.__anon2.ctx = PushContext();
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -8369,17 +8369,17 @@ break;
 case 722:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifierType, yyvsp[(3) - (3)].id, (((void *)0)));
-yyval.specifier->extDeclStruct = yyvsp[(2) - (3)].extDecl;
-yyval.specifier->addNameSpace = 0x1;
-yyval.specifier->ctx = PushContext();
+yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (3)].extDecl;
+yyval.specifier->__anon1.__anon2.addNameSpace = 0x1;
+yyval.specifier->__anon1.__anon2.ctx = PushContext();
 ;
 }
 break;
 case 723:
 {
-yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifierType, MkIdentifier(yyvsp[(3) - (3)].specifier->name), (((void *)0)));
-yyval.specifier->extDeclStruct = yyvsp[(2) - (3)].extDecl;
-yyval.specifier->ctx = PushContext();
+yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifierType, MkIdentifier(yyvsp[(3) - (3)].specifier->__anon1.__anon1.name), (((void *)0)));
+yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (3)].extDecl;
+yyval.specifier->__anon1.__anon2.ctx = PushContext();
 FreeSpecifier(yyvsp[(3) - (3)].specifier);
 ;
 }
@@ -8413,7 +8413,7 @@ break;
 case 727:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (4)].specifierType, (((void *)0)), (((void *)0)));
-yyval.specifier->extDeclStruct = yyvsp[(2) - (4)].extDecl;
+yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (4)].extDecl;
 yyval.specifier->loc = (yyloc);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -8476,7 +8476,7 @@ break;
 case 734:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (4)].specifierType, (((void *)0)), yyvsp[(4) - (4)].list);
-yyval.specifier->extDeclStruct = yyvsp[(2) - (4)].extDecl;
+yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (4)].extDecl;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -8485,7 +8485,7 @@ break;
 case 735:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (4)].specifierType, (((void *)0)), yyvsp[(4) - (4)].list);
-yyval.specifier->extDeclStruct = yyvsp[(2) - (4)].extDecl;
+yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (4)].extDecl;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -8494,7 +8494,7 @@ break;
 case 736:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (4)].specifierType, (((void *)0)), (((void *)0)));
-yyval.specifier->extDeclStruct = yyvsp[(2) - (4)].extDecl;
+yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (4)].extDecl;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -8514,14 +8514,14 @@ case 738:
 yyval.specifier = yyvsp[(1) - (1)].specifier;
 if(declMode)
 {
-(yyvsp[(1) - (1)].specifier->addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext->nextID++, yyvsp[(1) - (1)].specifier->id->string);
+(yyvsp[(1) - (1)].specifier->__anon1.__anon2.addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext->nextID++, yyvsp[(1) - (1)].specifier->__anon1.__anon2.id->string);
 }
 ;
 }
 break;
 case 739:
 {
-struct Symbol * symbol = (yyvsp[(1) - (4)].specifier->addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext->nextID++, yyvsp[(1) - (4)].specifier->id->string);
+struct Symbol * symbol = (yyvsp[(1) - (4)].specifier->__anon1.__anon2.addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext->nextID++, yyvsp[(1) - (4)].specifier->__anon1.__anon2.id->string);
 
 yyval.specifier = yyvsp[(1) - (4)].specifier;
 symbol->templateParams = yyvsp[(3) - (4)].list;
@@ -8531,7 +8531,7 @@ break;
 case 740:
 {
 yyval.specifier = yyvsp[(1) - (3)].specifier;
-yyval.specifier->baseSpecs = yyvsp[(3) - (3)].list;
+yyval.specifier->__anon1.__anon2.baseSpecs = yyvsp[(3) - (3)].list;
 SetupBaseSpecs((((void *)0)), yyvsp[(3) - (3)].list);
 ;
 }
@@ -8572,7 +8572,7 @@ break;
 case 745:
 {
 yyval.specifier = yyvsp[(1) - (3)].specifier;
-yyval.specifier->definitions = yyvsp[(3) - (3)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(3) - (3)].list;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 PopContext(curContext);
@@ -8582,7 +8582,7 @@ break;
 case 746:
 {
 yyval.specifier = yyvsp[(1) - (3)].specifier;
-yyval.specifier->definitions = yyvsp[(3) - (3)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(3) - (3)].list;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 PopContext(curContext);
@@ -8603,12 +8603,12 @@ case 748:
 PopContext(curContext);
 if(!declMode)
 {
-yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifier->type, yyvsp[(1) - (3)].specifier->id, yyvsp[(3) - (3)].list);
-yyvsp[(1) - (3)].specifier->id = (((void *)0));
+yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifier->type, yyvsp[(1) - (3)].specifier->__anon1.__anon2.id, yyvsp[(3) - (3)].list);
+yyvsp[(1) - (3)].specifier->__anon1.__anon2.id = (((void *)0));
 FreeSpecifier(yyvsp[(1) - (3)].specifier);
 }
 else
-yyval.specifier->definitions = yyvsp[(3) - (3)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(3) - (3)].list;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -8619,12 +8619,12 @@ case 749:
 PopContext(curContext);
 if(!declMode)
 {
-yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifier->type, yyvsp[(1) - (3)].specifier->id, yyvsp[(3) - (3)].list);
-yyvsp[(1) - (3)].specifier->id = (((void *)0));
+yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifier->type, yyvsp[(1) - (3)].specifier->__anon1.__anon2.id, yyvsp[(3) - (3)].list);
+yyvsp[(1) - (3)].specifier->__anon1.__anon2.id = (((void *)0));
 FreeSpecifier(yyvsp[(1) - (3)].specifier);
 }
 else
-yyval.specifier->definitions = yyvsp[(3) - (3)].list;
+yyval.specifier->__anon1.__anon2.definitions = yyvsp[(3) - (3)].list;
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
 ;
@@ -9120,7 +9120,7 @@ if(yyvsp[(1) - (4)].id->_class)
 {
 char name[1024];
 
-strcpy(name, yyvsp[(1) - (4)].id->_class->name ? yyvsp[(1) - (4)].id->_class->name : "");
+strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
 _DeclClass(0, name);
@@ -9136,7 +9136,7 @@ break;
 case 819:
 {
 yyval.list = yyvsp[(1) - (5)].list;
-if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->name)
+if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->__anon1.__anon1.name)
 {
 char name[1024];
 
@@ -9221,7 +9221,7 @@ if(yyvsp[(1) - (4)].id->_class)
 {
 char name[1024];
 
-strcpy(name, yyvsp[(1) - (4)].id->_class->name ? yyvsp[(1) - (4)].id->_class->name : "");
+strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
 _DeclClass(0, name);
@@ -9236,7 +9236,7 @@ FreeIdentifier(yyvsp[(1) - (4)].id);
 break;
 case 831:
 {
-if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->name)
+if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->__anon1.__anon1.name)
 {
 char name[1024];
 
@@ -9341,7 +9341,7 @@ if(yyvsp[(1) - (4)].id->_class)
 {
 char name[1024];
 
-strcpy(name, yyvsp[(1) - (4)].id->_class->name ? yyvsp[(1) - (4)].id->_class->name : "");
+strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
 _DeclClass(0, name);
@@ -9356,7 +9356,7 @@ FreeIdentifier(yyvsp[(1) - (4)].id);
 break;
 case 845:
 {
-if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->name)
+if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->__anon1.__anon1.name)
 {
 char name[1024];
 
@@ -9461,7 +9461,7 @@ if(yyvsp[(1) - (4)].id->_class)
 {
 char name[1024];
 
-strcpy(name, yyvsp[(1) - (4)].id->_class->name ? yyvsp[(1) - (4)].id->_class->name : "");
+strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
 _DeclClass(0, name);
@@ -9476,7 +9476,7 @@ FreeIdentifier(yyvsp[(1) - (4)].id);
 break;
 case 859:
 {
-if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->name)
+if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->__anon1.__anon1.name)
 {
 char name[1024];
 
@@ -9542,8 +9542,8 @@ ListAdd(yyvsp[(1) - (3)].list, MkTypeName((((void *)0)), MkDeclaratorIdentifier(
 break;
 case 868:
 {
-char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (1)].specifier->name, "::", strlen(yyvsp[(1) - (1)].specifier->name), 0x1, 0x0);
-char * s = colon ? colon + 2 : yyvsp[(1) - (1)].specifier->name;
+char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (1)].specifier->__anon1.__anon1.name, "::", strlen(yyvsp[(1) - (1)].specifier->__anon1.__anon1.name), 0x1, 0x0);
+char * s = colon ? colon + 2 : yyvsp[(1) - (1)].specifier->__anon1.__anon1.name;
 
 yyval.declarator = MkDeclaratorIdentifier(MkIdentifier(s));
 FreeSpecifier(yyvsp[(1) - (1)].specifier);
@@ -9559,8 +9559,8 @@ break;
 case 870:
 {
 struct Declarator * decl;
-char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (4)].specifier->name, "::", strlen(yyvsp[(1) - (4)].specifier->name), 0x1, 0x0);
-char * s = colon ? colon + 2 : yyvsp[(1) - (4)].specifier->name;
+char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (4)].specifier->__anon1.__anon1.name, "::", strlen(yyvsp[(1) - (4)].specifier->__anon1.__anon1.name), 0x1, 0x0);
+char * s = colon ? colon + 2 : yyvsp[(1) - (4)].specifier->__anon1.__anon1.name;
 
 decl = MkDeclaratorIdentifier(MkIdentifier(s));
 FreeSpecifier(yyvsp[(1) - (4)].specifier);
@@ -9571,8 +9571,8 @@ break;
 case 871:
 {
 struct Declarator * decl;
-char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (4)].specifier->name, "::", strlen(yyvsp[(1) - (4)].specifier->name), 0x1, 0x0);
-char * s = colon ? colon + 2 : yyvsp[(1) - (4)].specifier->name;
+char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (4)].specifier->__anon1.__anon1.name, "::", strlen(yyvsp[(1) - (4)].specifier->__anon1.__anon1.name), 0x1, 0x0);
+char * s = colon ? colon + 2 : yyvsp[(1) - (4)].specifier->__anon1.__anon1.name;
 
 decl = MkDeclaratorIdentifier(MkIdentifier(s));
 FreeSpecifier(yyvsp[(1) - (4)].specifier);
@@ -9583,8 +9583,8 @@ break;
 case 872:
 {
 struct Declarator * decl;
-char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (4)].specifier->name, "::", strlen(yyvsp[(1) - (4)].specifier->name), 0x1, 0x0);
-char * s = colon ? colon + 2 : yyvsp[(1) - (4)].specifier->name;
+char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (4)].specifier->__anon1.__anon1.name, "::", strlen(yyvsp[(1) - (4)].specifier->__anon1.__anon1.name), 0x1, 0x0);
+char * s = colon ? colon + 2 : yyvsp[(1) - (4)].specifier->__anon1.__anon1.name;
 
 decl = MkDeclaratorIdentifier(MkIdentifier(s));
 FreeSpecifier(yyvsp[(1) - (4)].specifier);
@@ -9595,8 +9595,8 @@ break;
 case 873:
 {
 struct Declarator * decl;
-char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (3)].specifier->name, "::", strlen(yyvsp[(1) - (3)].specifier->name), 0x1, 0x0);
-char * s = colon ? colon + 2 : yyvsp[(1) - (3)].specifier->name;
+char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (3)].specifier->__anon1.__anon1.name, "::", strlen(yyvsp[(1) - (3)].specifier->__anon1.__anon1.name), 0x1, 0x0);
+char * s = colon ? colon + 2 : yyvsp[(1) - (3)].specifier->__anon1.__anon1.name;
 
 decl = MkDeclaratorIdentifier(MkIdentifier(s));
 FreeSpecifier(yyvsp[(1) - (3)].specifier);
@@ -10563,8 +10563,8 @@ ListAdd(yyval.list, yyvsp[(3) - (3)].initDeclarator);
 break;
 case 1024:
 {
-char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (3)].specifier->name, "::", strlen(yyvsp[(1) - (3)].specifier->name), 0x1, 0x0);
-char * s = colon ? colon + 2 : yyvsp[(1) - (3)].specifier->name;
+char * colon = __ecereFunction___ecereNameSpace__ecere__sys__RSearchString(yyvsp[(1) - (3)].specifier->__anon1.__anon1.name, "::", strlen(yyvsp[(1) - (3)].specifier->__anon1.__anon1.name), 0x1, 0x0);
+char * s = colon ? colon + 2 : yyvsp[(1) - (3)].specifier->__anon1.__anon1.name;
 
 yyval.list = MkList();
 ListAdd(yyval.list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), (((void *)0))));
@@ -11089,9 +11089,9 @@ break;
 case 1112:
 {
 yyval.stmt = MkCaseStmt(MkExpDummy(), yyvsp[(3) - (3)].stmt);
-yyval.stmt->caseStmt.exp->loc = (yylsp[(2) - (3)]);
+yyval.stmt->__anon1.caseStmt.exp->loc = (yylsp[(2) - (3)]);
 yyval.stmt->loc = (yyloc);
-yyval.stmt->caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
+yyval.stmt->__anon1.caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
 ;
 }
 break;
@@ -11144,9 +11144,9 @@ struct Statement * stmt = MkBadDeclStmt(yyvsp[(3) - (3)].declaration);
 stmt->loc = (yylsp[(3) - (3)]);
 Compiler_Warning("eC expects all declarations to precede statements in the block (C89 style)\n");
 yyval.stmt = MkCaseStmt(MkExpDummy(), stmt);
-yyval.stmt->caseStmt.exp->loc = (yylsp[(2) - (3)]);
+yyval.stmt->__anon1.caseStmt.exp->loc = (yylsp[(2) - (3)]);
 yyval.stmt->loc = (yyloc);
-yyval.stmt->caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
+yyval.stmt->__anon1.caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
 ;
 }
 break;
@@ -11187,18 +11187,18 @@ break;
 case 1122:
 {
 yyval.stmt = MkCaseStmt(MkExpDummy(), yyvsp[(3) - (3)].stmt);
-yyval.stmt->caseStmt.exp->loc = (yylsp[(2) - (3)]);
+yyval.stmt->__anon1.caseStmt.exp->loc = (yylsp[(2) - (3)]);
 yyval.stmt->loc = (yyloc);
-yyval.stmt->caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
+yyval.stmt->__anon1.caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
 ;
 }
 break;
 case 1123:
 {
 yyval.stmt = MkCaseStmt(MkExpDummy(), (((void *)0)));
-yyval.stmt->caseStmt.exp->loc = (yylsp[(2) - (2)]);
+yyval.stmt->__anon1.caseStmt.exp->loc = (yylsp[(2) - (2)]);
 yyval.stmt->loc = (yyloc);
-yyval.stmt->caseStmt.exp->loc.start = (yylsp[(1) - (2)]).end;
+yyval.stmt->__anon1.caseStmt.exp->loc.start = (yylsp[(1) - (2)]).end;
 ;
 }
 break;
@@ -11258,9 +11258,9 @@ struct Statement * stmt = MkBadDeclStmt(yyvsp[(3) - (3)].declaration);
 stmt->loc = (yylsp[(3) - (3)]);
 Compiler_Warning("eC expects all declarations to precede statements in the block (C89 style)\n");
 yyval.stmt = MkCaseStmt(MkExpDummy(), stmt);
-yyval.stmt->caseStmt.exp->loc = (yylsp[(2) - (3)]);
+yyval.stmt->__anon1.caseStmt.exp->loc = (yylsp[(2) - (3)]);
 yyval.stmt->loc = (yyloc);
-yyval.stmt->caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
+yyval.stmt->__anon1.caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
 ;
 }
 break;
@@ -11616,7 +11616,7 @@ break;
 case 1178:
 {
 yyval.stmt = yyvsp[(2) - (2)].stmt;
-yyval.stmt->compound.context = yyvsp[(1) - (2)].context;
+yyval.stmt->__anon1.compound.context = yyvsp[(1) - (2)].context;
 PopContext(yyvsp[(1) - (2)].context);
 yyval.stmt->loc = (yyloc);
 yyval.stmt->loc.end.charPos++;
@@ -11627,7 +11627,7 @@ break;
 case 1179:
 {
 yyval.stmt = MkCompoundStmt((((void *)0)), (((void *)0)));
-yyval.stmt->compound.context = yyvsp[(1) - (1)].context;
+yyval.stmt->__anon1.compound.context = yyvsp[(1) - (1)].context;
 PopContext(yyvsp[(1) - (1)].context);
 yyval.stmt->loc = (yyloc);
 yyval.stmt->loc.end.charPos++;
@@ -11638,7 +11638,7 @@ break;
 case 1180:
 {
 yyval.stmt = yyvsp[(2) - (2)].stmt;
-yyval.stmt->compound.context = yyvsp[(1) - (2)].context;
+yyval.stmt->__anon1.compound.context = yyvsp[(1) - (2)].context;
 PopContext(yyvsp[(1) - (2)].context);
 yyval.stmt->loc = (yyloc);
 yyval.stmt->loc.end.charPos++;
@@ -11813,7 +11813,7 @@ break;
 case 1205:
 {
 yyval.stmt = MkForStmt(MkExpressionStmt(yyvsp[(3) - (4)].list), (((void *)0)), (((void *)0)), (((void *)0)));
-yyval.stmt->forStmt.init->loc = (yylsp[(3) - (4)]);
+yyval.stmt->__anon1.forStmt.init->loc = (yylsp[(3) - (4)]);
 yyval.stmt->loc = (yyloc);
 ;
 }
@@ -11829,7 +11829,7 @@ case 1207:
 {
 yyval.stmt = MkForStmt(yyvsp[(3) - (5)].stmt, MkExpressionStmt(yyvsp[(4) - (5)].list), (((void *)0)), (((void *)0)));
 yyval.stmt->loc = (yyloc);
-yyval.stmt->forStmt.check->loc = (yylsp[(4) - (5)]);
+yyval.stmt->__anon1.forStmt.check->loc = (yylsp[(4) - (5)]);
 ;
 }
 break;
@@ -12308,7 +12308,7 @@ yyval.external->loc = (yyloc);
 break;
 case 1267:
 {
-yyval.external = MkExternalNameSpace(MkIdentifier(yyvsp[(2) - (2)].specifier->name));
+yyval.external = MkExternalNameSpace(MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name));
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 yyval.external->loc = (yyloc);
 ;
@@ -12481,7 +12481,7 @@ yyval.dbtableDef = MkDBTableDef(yyvsp[(2) - (6)].string, symbol, yyvsp[(5) - (6)
 break;
 case 1290:
 {
-struct Symbol * symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (6)].specifier->name);
+struct Symbol * symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
 
 FreeSpecifier(yyvsp[(3) - (6)].specifier);
 yyval.dbtableDef = MkDBTableDef(yyvsp[(2) - (6)].string, symbol, yyvsp[(5) - (6)].list);

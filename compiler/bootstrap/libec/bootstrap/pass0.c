@@ -217,14 +217,14 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
 struct __ecereNameSpace__ecere__sys__OldList *  declarators;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct Instantiation * inst;
 struct
 {
 struct Identifier * id;
 struct Expression * exp;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 struct Specifier * extStorage;
 struct Symbol * symbol;
 int declMode;
@@ -312,7 +312,7 @@ struct __ecereNameSpace__ecere__sys__OldList * filter;
 struct Statement * stmt;
 } __attribute__ ((gcc_struct)) forEachStmt;
 struct Declaration * decl;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
@@ -340,7 +340,7 @@ union
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 unsigned int isConstant;
 struct Identifier * id;
 } __attribute__ ((gcc_struct));
@@ -362,7 +362,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -379,14 +379,14 @@ struct
 {
 char *  constant;
 struct Identifier * identifier;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct Statement * compound;
 struct Instantiation * instance;
 struct
 {
 char *  string;
 unsigned int intlString;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
@@ -465,7 +465,7 @@ struct
 struct Expression * exp;
 struct TypeName * typeName;
 } __attribute__ ((gcc_struct)) vaArg;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
 uint64 address;
@@ -511,7 +511,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct Identifier * id;
@@ -521,11 +521,11 @@ struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 unsigned int addNameSpace;
 struct Context * ctx;
 struct ExtDecl * extDeclStruct;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct Expression * expression;
 struct Specifier * _class;
 struct TemplateParameter * templateParameter;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
@@ -581,7 +581,7 @@ struct
 {
 struct ExtDecl * extended;
 } __attribute__ ((gcc_struct)) extended;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
@@ -625,7 +625,7 @@ struct Declaration * declaration;
 char *  importString;
 struct Identifier * id;
 struct DBTableDef * table;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int importType;
 } __attribute__ ((gcc_struct));
 
@@ -652,7 +652,7 @@ union
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 struct __ecereNameSpace__ecere__com__Class * registered;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int id;
 int idCode;
 union
@@ -661,20 +661,20 @@ struct
 {
 struct External * pointerExternal;
 struct External * structExternal;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct External * externalGet;
 struct External * externalSet;
 struct External * externalPtr;
 struct External * externalIsSet;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct External * methodExternal;
 struct External * methodCodeExternal;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
+} __attribute__ ((gcc_struct)) __anon2;
 unsigned int imported;
 unsigned int declaredStructSym;
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -717,7 +717,7 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList members;
 char *  enumName;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct Type * returnType;
@@ -725,13 +725,13 @@ struct __ecereNameSpace__ecere__sys__OldList params;
 struct Symbol * thisClass;
 unsigned int staticMethod;
 struct TemplateParameter * thisClassTemplate;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Class * methodClass;
 struct __ecereNameSpace__ecere__com__Class * usedClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
 struct
 {
 struct Type * arrayType;
@@ -739,10 +739,10 @@ int arraySize;
 struct Expression * arraySizeExp;
 unsigned int freeExp;
 struct Symbol * enumClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon4;
 struct Type * type;
 struct TemplateParameter * templateParameter;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int kind;
 unsigned int size;
 char *  name;
@@ -896,7 +896,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -906,9 +906,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 enum yytokentype
@@ -1010,7 +1010,7 @@ union
 {
 struct __ecereNameSpace__ecere__sys__OldList *  dataMembers;
 struct ClassFunction * function;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
@@ -1048,7 +1048,7 @@ struct
 unsigned int conversion : 1;
 unsigned int isWatchable : 1;
 unsigned int isDBProp : 1;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
@@ -1076,8 +1076,8 @@ struct
 {
 struct Identifier * id;
 struct Initializer * initializer;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon1;
 int memberAccess;
 void *  object;
 } __attribute__ ((gcc_struct));
@@ -1302,7 +1302,7 @@ extern struct __ecereNameSpace__ecere__com__Instance * privateModule;
 
 static void CheckPublicClass(struct Symbol * classSym, int access, const char * word)
 {
-struct __ecereNameSpace__ecere__com__Class * regClass = classSym ? classSym->registered : (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * regClass = classSym ? classSym->__anon1.registered : (((void *)0));
 
 if(regClass)
 {
@@ -1333,7 +1333,7 @@ for(spec = (*type->qualifiers).first; spec; spec = spec->next)
 {
 if(spec->type == 1)
 {
-struct Symbol * classSym = spec->symbol;
+struct Symbol * classSym = spec->__anon1.__anon1.symbol;
 
 CheckPublicClass(classSym, access, "define");
 }
@@ -1348,13 +1348,13 @@ static void CheckPublicInitializer(struct Initializer * init, int access)
 switch(init->type)
 {
 case 0:
-CheckPublicExpression(init->exp, access);
+CheckPublicExpression(init->__anon1.exp, access);
 break;
 case 1:
 {
 struct Initializer * i;
 
-for(i = (*init->list).first; i; i = i->next)
+for(i = (*init->__anon1.list).first; i; i = i->next)
 CheckPublicInitializer(i, access);
 break;
 }
@@ -1374,16 +1374,16 @@ break;
 case 3:
 break;
 case 4:
-if(exp->op.exp1)
-CheckPublicExpression(exp->op.exp1, access);
-if(exp->op.exp2)
-CheckPublicExpression(exp->op.exp2, access);
+if(exp->__anon1.op.exp1)
+CheckPublicExpression(exp->__anon1.op.exp1, access);
+if(exp->__anon1.op.exp2)
+CheckPublicExpression(exp->__anon1.op.exp2, access);
 break;
 case 5:
 {
 struct Expression * e;
 
-for(e = (*exp->list).first; e; e = e->next)
+for(e = (*exp->__anon1.list).first; e; e = e->next)
 CheckPublicExpression(e, access);
 break;
 }
@@ -1391,8 +1391,8 @@ case 6:
 {
 struct Expression * e;
 
-CheckPublicExpression(exp->index.exp, access);
-for(e = (*exp->index.index).first; e; e = e->next)
+CheckPublicExpression(exp->__anon1.index.exp, access);
+for(e = (*exp->__anon1.index.index).first; e; e = e->next)
 CheckPublicExpression(e, access);
 break;
 }
@@ -1400,67 +1400,67 @@ case 7:
 {
 struct Expression * e;
 
-CheckPublicExpression(exp->call.exp, access);
-if(exp->call.arguments)
+CheckPublicExpression(exp->__anon1.call.exp, access);
+if(exp->__anon1.call.arguments)
 {
-for(e = (*exp->call.arguments).first; e; e = e->next)
+for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
 CheckPublicExpression(e, access);
 }
 break;
 }
 case 8:
 {
-CheckPublicExpression(exp->member.exp, access);
+CheckPublicExpression(exp->__anon1.member.exp, access);
 break;
 }
 case 9:
 {
-CheckPublicExpression(exp->member.exp, access);
+CheckPublicExpression(exp->__anon1.member.exp, access);
 break;
 }
 case 10:
-CheckPublicTypeName(exp->typeName, access);
+CheckPublicTypeName(exp->__anon1.typeName, access);
 break;
 case 11:
 {
 struct Type * type = exp->expType;
 
-CheckPublicTypeName(exp->cast.typeName, access);
-if(exp->cast.exp)
-CheckPublicExpression(exp->cast.exp, access);
+CheckPublicTypeName(exp->__anon1.cast.typeName, access);
+if(exp->__anon1.cast.exp)
+CheckPublicExpression(exp->__anon1.cast.exp, access);
 break;
 }
 case 12:
 {
 struct Expression * e;
 
-CheckPublicExpression(exp->cond.cond, access);
-for(e = (*exp->cond.exp).first; e; e = e->next)
+CheckPublicExpression(exp->__anon1.cond.cond, access);
+for(e = (*exp->__anon1.cond.exp).first; e; e = e->next)
 CheckPublicExpression(e, access);
-CheckPublicExpression(exp->cond.elseExp, access);
+CheckPublicExpression(exp->__anon1.cond.elseExp, access);
 break;
 }
 case 13:
 case 26:
-CheckPublicExpression(exp->_new.size, access);
+CheckPublicExpression(exp->__anon1._new.size, access);
 break;
 case 14:
 case 27:
-CheckPublicExpression(exp->_renew.size, access);
-CheckPublicExpression(exp->_renew.exp, access);
+CheckPublicExpression(exp->__anon1._renew.size, access);
+CheckPublicExpression(exp->__anon1._renew.exp, access);
 break;
 case 1:
 {
 struct MembersInit * members;
 
-CheckPublicClass(exp->instance->_class->symbol, access, "define");
-for(members = (*exp->instance->members).first; members; members = members->next)
+CheckPublicClass(exp->__anon1.instance->_class->__anon1.__anon1.symbol, access, "define");
+for(members = (*exp->__anon1.instance->members).first; members; members = members->next)
 {
 if(members->type == 0)
 {
 struct MemberInit * member;
 
-for(member = (*members->dataMembers).first; member; member = member->next)
+for(member = (*members->__anon1.dataMembers).first; member; member = member->next)
 {
 CheckPublicInitializer(member->initializer, access);
 }
@@ -1480,7 +1480,7 @@ switch(type->kind)
 {
 case 8:
 {
-CheckPublicClass(type->_class, access, word);
+CheckPublicClass(type->__anon1._class, access, word);
 break;
 }
 case 9:
@@ -1492,20 +1492,20 @@ case 11:
 {
 struct Type * param;
 
-CheckPublicDataType(type->returnType, access, word);
-for(param = type->params.first; param; param = param->next)
+CheckPublicDataType(type->__anon1.__anon2.returnType, access, word);
+for(param = type->__anon1.__anon2.params.first; param; param = param->next)
 CheckPublicDataType(param, access, word);
-CheckPublicClass(type->thisClass, access, word);
+CheckPublicClass(type->__anon1.__anon2.thisClass, access, word);
 break;
 }
 case 12:
-CheckPublicDataType(type->arrayType, access, word);
-if(type->enumClass)
-CheckPublicClass(type->enumClass, access, word);
+CheckPublicDataType(type->__anon1.__anon4.arrayType, access, word);
+if(type->__anon1.__anon4.enumClass)
+CheckPublicClass(type->__anon1.__anon4.enumClass, access, word);
 break;
 case 13:
 {
-CheckPublicDataType(type->type, access, word);
+CheckPublicDataType(type->__anon1.type, access, word);
 break;
 }
 case 16:
@@ -1514,7 +1514,7 @@ break;
 }
 case 19:
 {
-CheckPublicClass(type->_class, access, word);
+CheckPublicClass(type->__anon1._class, access, word);
 break;
 }
 }
@@ -1549,7 +1549,7 @@ for(def = definitions->first; def; def = def->next)
 {
 if(def->type == 2)
 {
-struct Declaration * decl = def->decl;
+struct Declaration * decl = def->__anon1.decl;
 struct __ecereNameSpace__ecere__com__DataMember * dataMember;
 
 yylloc = def->loc;
@@ -1557,9 +1557,9 @@ if(decl->type == 0)
 {
 struct Declarator * d;
 
-if(decl->declarators)
+if(decl->__anon1.__anon1.declarators)
 {
-for(d = (*decl->declarators).first; d; d = d->next)
+for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
 {
 struct Identifier * declId = GetDeclId(d);
 
@@ -1578,28 +1578,28 @@ CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access,
 }
 }
 }
-else if(decl->specifiers)
+else if(decl->__anon1.__anon1.specifiers)
 {
 struct Specifier * spec;
 
-for(spec = (*decl->specifiers).first; spec; spec = spec->next)
+for(spec = (*decl->__anon1.__anon1.specifiers).first; spec; spec = spec->next)
 {
 if(spec->type == 3 || spec->type == 4)
 {
-if(spec->definitions && !spec->id)
+if(spec->__anon1.__anon2.definitions && !spec->__anon1.__anon2.id)
 {
-CheckMembersDefinitions(regClass, member, spec->definitions, (def->memberAccess == 2) ? 2 : access);
+CheckMembersDefinitions(regClass, member, spec->__anon1.__anon2.definitions, (def->memberAccess == 2) ? 2 : access);
 }
-else if(spec->definitions && spec->id)
+else if(spec->__anon1.__anon2.definitions && spec->__anon1.__anon2.id)
 {
 if(member)
 {
-struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&member->membersAlpha, spec->id->string);
+struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&member->membersAlpha, spec->__anon1.__anon2.id->string);
 
 dataMember = link ? link->data : (((void *)0));
 }
 else
-dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMember(regClass, spec->id->string, privateModule, (((void *)0)), (((void *)0)));
+dataMember = __ecereNameSpace__ecere__com__eClass_FindDataMember(regClass, spec->__anon1.__anon2.id->string, privateModule, (((void *)0)), (((void *)0)));
 if(dataMember)
 CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access, __ecereNameSpace__ecere__GetTranslatedString("ec", "class data member", (((void *)0))));
 }
@@ -1609,7 +1609,7 @@ CheckPublicDataType(dataMember->dataType, (def->memberAccess == 2) ? 2 : access,
 }
 else if(decl->type == 2)
 {
-CheckPublicClass(decl->inst->_class->symbol, (def->memberAccess == 2) ? 2 : access, __ecereNameSpace__ecere__GetTranslatedString("ec", "class member instance", (((void *)0))));
+CheckPublicClass(decl->__anon1.inst->_class->__anon1.__anon1.symbol, (def->memberAccess == 2) ? 2 : access, __ecereNameSpace__ecere__GetTranslatedString("ec", "class member instance", (((void *)0))));
 }
 }
 }
@@ -1814,22 +1814,22 @@ struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
 
-if((prop = __ecereNameSpace__ecere__com__eClass_FindProperty(regClass, def->id->string, privateModule)))
+if((prop = __ecereNameSpace__ecere__com__eClass_FindProperty(regClass, def->__anon1.__anon1.id->string, privateModule)))
 {
-__ecereNameSpace__ecere__com__eClass_AddProperty(regClass, def->id->string, (((void *)0)), (((void *)0)), (((void *)0)), def->memberAccess);
+__ecereNameSpace__ecere__com__eClass_AddProperty(regClass, def->__anon1.__anon1.id->string, (((void *)0)), (((void *)0)), (((void *)0)), def->memberAccess);
 }
-else if((member = __ecereNameSpace__ecere__com__eClass_FindDataMember(regClass, def->id->string, privateModule, (((void *)0)), (((void *)0)))))
+else if((member = __ecereNameSpace__ecere__com__eClass_FindDataMember(regClass, def->__anon1.__anon1.id->string, privateModule, (((void *)0)), (((void *)0)))))
 {
-__ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, def->id->string, (((void *)0)), 0, 0, def->memberAccess);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(regClass, def->__anon1.__anon1.id->string, (((void *)0)), 0, 0, def->memberAccess);
 }
-else if((method = __ecereNameSpace__ecere__com__eClass_FindMethod(regClass, def->id->string, privateModule)))
+else if((method = __ecereNameSpace__ecere__com__eClass_FindMethod(regClass, def->__anon1.__anon1.id->string, privateModule)))
 {
-__ecereNameSpace__ecere__com__eClass_AddMethod(regClass, def->id->string, (((void *)0)), (((void *)0)), def->memberAccess);
+__ecereNameSpace__ecere__com__eClass_AddMethod(regClass, def->__anon1.__anon1.id->string, (((void *)0)), (((void *)0)), def->memberAccess);
 }
 else
 {
 yylloc = def->loc;
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Couldn't find member %s to override\n", (((void *)0))), def->id->string);
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Couldn't find member %s to override\n", (((void *)0))), def->__anon1.__anon1.id->string);
 }
 }
 }
@@ -1858,19 +1858,19 @@ for(def = definitions->first; def; def = def->next)
 {
 if(def->type == 2)
 {
-struct Declaration * decl = def->decl;
+struct Declaration * decl = def->__anon1.decl;
 
 if(decl->type == 0)
 {
 if(inCompiler && classType != 2)
 {
 ListAdd(list, MkClassDefDeclaration(decl));
-def->decl = (((void *)0));
+def->__anon1.decl = (((void *)0));
 }
 }
 else if(decl->type == 2)
 {
-struct Instantiation * inst = decl->inst;
+struct Instantiation * inst = decl->__anon1.inst;
 struct Expression * exp = inst->exp;
 struct Symbol * classSym;
 
@@ -1879,8 +1879,8 @@ if(exp)
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
 struct Declarator * d;
 
-ListAdd(specifiers, MkSpecifierName(inst->_class->name));
-d = MkDeclaratorIdentifier(MkIdentifier(exp->identifier->string));
+ListAdd(specifiers, MkSpecifierName(inst->_class->__anon1.__anon1.name));
+d = MkDeclaratorIdentifier(MkIdentifier(exp->__anon1.__anon1.identifier->string));
 if(inCompiler)
 {
 struct __ecereNameSpace__ecere__sys__OldList * declarators = MkList();
@@ -1889,10 +1889,10 @@ ListAdd(declarators, d);
 decl = MkStructDeclaration(specifiers, declarators, (((void *)0)));
 ListAdd(list, MkClassDefDeclaration(decl));
 exp->type = 8;
-exp->member.member = exp->identifier;
-exp->member.exp = QMkExpId("this");
-exp->member.memberType = 3;
-exp->member.thisPtr = 0x1;
+exp->__anon1.member.member = exp->__anon1.__anon1.identifier;
+exp->__anon1.member.exp = QMkExpId("this");
+exp->__anon1.member.memberType = 3;
+exp->__anon1.member.thisPtr = 0x1;
 }
 else
 {
@@ -1900,8 +1900,8 @@ FreeDeclarator(d);
 FreeList(specifiers, FreeSpecifier);
 }
 }
-classSym = inst->_class->symbol;
-if(classSym && classSym->registered && (classSym->registered->type == 1 || classSym->registered->type == 2 || classSym->registered->type == 3))
+classSym = inst->_class->__anon1.__anon1.symbol;
+if(classSym && classSym->__anon1.registered && (classSym->__anon1.registered->type == 1 || classSym->__anon1.registered->type == 2 || classSym->__anon1.registered->type == 3))
 {
 if(inst->members && (*inst->members).count)
 symbol->needConstructor = 0x1;
@@ -1915,14 +1915,14 @@ symbol->needDestructor = 0x1;
 }
 else if(def->type == 9)
 {
-struct Declaration * decl = def->decl;
+struct Declaration * decl = def->__anon1.decl;
 
 if(decl->type == 0)
 {
 if(inCompiler && classType != 2)
 {
 ListAdd(classDataList, MkClassDefDeclaration(decl));
-def->decl = (((void *)0));
+def->__anon1.decl = (((void *)0));
 }
 }
 }
@@ -1932,7 +1932,7 @@ else if(def->type == 4)
 symbol->needConstructor = 0x1;
 else if(def->type == 0)
 {
-struct ClassFunction * func = def->function;
+struct ClassFunction * func = def->__anon1.function;
 
 if(func->isDestructor)
 {
@@ -1949,7 +1949,7 @@ if(!inCompiler && func->body)
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(regClass->fullName), thisSymbol);
 
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&func->body->compound.context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&func->body->__anon1.compound.context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
 }
 }
 }
@@ -1968,7 +1968,7 @@ if(!inCompiler && func->body)
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(regClass->fullName), thisSymbol);
 
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&func->body->compound.context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&func->body->__anon1.compound.context->symbols, (struct __ecereNameSpace__ecere__sys__BTNode *)thisSymbol);
 }
 }
 }
@@ -1988,12 +1988,12 @@ symbol->structName = __ecereNameSpace__ecere__sys__CopyString(structName);
 {
 struct Specifier * spec = MkStructOrUnion(3, MkIdentifier(structName), isUnion ? MkListOne(MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkStructOrUnion(4, (((void *)0)), list)), (((void *)0)), (((void *)0))))) : list);
 
-spec->extDeclStruct = extDecl;
+spec->__anon1.__anon2.extDeclStruct = extDecl;
 ListAdd(specs, spec);
 }
 external->symbol = symbol;
-symbol->structExternal = external;
-external->declaration = MkDeclaration(specs, declarators);
+symbol->__anon2.__anon1.structExternal = external;
+external->__anon1.declaration = MkDeclaration(specs, declarators);
 after = external;
 symbol->declaredStruct = 0x1;
 }
@@ -2035,9 +2035,9 @@ if(!strstr(sourceFile, ".main.ec"))
 ListAdd(specs, MkSpecifier(STATIC));
 ListAdd(specs, MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
 ListAdd(declarators, MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(className))), (((void *)0))));
-symbol->methodExternal = MkExternalDeclaration(MkDeclaration(specs, declarators));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, symbol->methodExternal);
-after = symbol->methodExternal;
+symbol->__anon2.__anon3.methodExternal = MkExternalDeclaration(MkDeclaration(specs, declarators));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, symbol->__anon2.__anon3.methodExternal);
+after = symbol->__anon2.__anon3.methodExternal;
 }
 if(symbol->needDestructor)
 {
@@ -2058,18 +2058,18 @@ if(definitions != (((void *)0)))
 {
 for(def = definitions->first; def; def = def->next)
 {
-if(def->type == 2 && def->decl && def->decl->type == 2)
+if(def->type == 2 && def->__anon1.decl && def->__anon1.decl->type == 2)
 {
-struct Instantiation * inst = def->decl->inst;
-struct Symbol * classSym = inst->_class->symbol;
+struct Instantiation * inst = def->__anon1.decl->__anon1.inst;
+struct Symbol * classSym = inst->_class->__anon1.__anon1.symbol;
 
-if(inst->exp && (!classSym || !classSym->registered || classSym->registered->type == 0))
+if(inst->exp && (!classSym || !classSym->__anon1.registered || classSym->__anon1.registered->type == 0))
 {
 struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
 ListAdd(statements, MkExpressionStmt(MkListOne(exp)));
 }
-if(inst->exp && (!classSym || !classSym->registered || classSym->registered->type == 5))
+if(inst->exp && (!classSym || !classSym->__anon1.registered || classSym->__anon1.registered->type == 5))
 {
 struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
@@ -2081,12 +2081,12 @@ ListAdd(statements, MkExpressionStmt(MkListOne(exp)));
 if(destructor && destructor->body)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*statements), (((void *)0)), destructor->body);
-destructor->body->compound.context->parent = context;
+destructor->body->__anon1.compound.context->parent = context;
 destructor->body = (((void *)0));
 }
 body = MkCompoundStmt(declarations, statements);
 PopContext(context);
-body->compound.context = context;
+body->__anon1.compound.context = context;
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(destructorName)), (((void *)0)));
 decl->symbol = __extension__ ({
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
@@ -2120,12 +2120,12 @@ if(definitions != (((void *)0)))
 {
 for(def = definitions->first; def; def = def->next)
 {
-if(def->type == 2 && def->decl && def->decl->type == 2)
+if(def->type == 2 && def->__anon1.decl && def->__anon1.decl->type == 2)
 {
-struct Instantiation * inst = def->decl->inst;
-struct Symbol * classSym = inst->_class->symbol;
+struct Instantiation * inst = def->__anon1.decl->__anon1.inst;
+struct Symbol * classSym = inst->_class->__anon1.__anon1.symbol;
 
-if(inst->exp && (!classSym || !classSym->registered || classSym->registered->type == 0 || classSym->registered->type == 5))
+if(inst->exp && (!classSym || !classSym->__anon1.registered || classSym->__anon1.registered->type == 0 || classSym->__anon1.registered->type == 5))
 {
 struct Instantiation * newInst = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Instantiation);
 
@@ -2136,7 +2136,7 @@ newInst->_class = CopySpecifier(inst->_class);
 ListAdd(statements, MkExpressionStmt(MkListOne(MkExpInstance(newInst))));
 inst->built = 0x1;
 }
-if(inst->exp && (!classSym || !classSym->registered || classSym->registered->type == 0))
+if(inst->exp && (!classSym || !classSym->__anon1.registered || classSym->__anon1.registered->type == 0))
 {
 ListAdd(statements, MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_IncRef")), MkListOne(CopyExpression(inst->exp))))));
 }
@@ -2144,11 +2144,11 @@ ListAdd(statements, MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdent
 }
 for(def = definitions->first; def; def = def->next)
 {
-if(def->type == 1 && def->defProperties)
+if(def->type == 1 && def->__anon1.defProperties)
 {
 struct MemberInit * propertyDef;
 
-for(propertyDef = (*def->defProperties).first; propertyDef; propertyDef = propertyDef->next)
+for(propertyDef = (*def->__anon1.defProperties).first; propertyDef; propertyDef = propertyDef->next)
 {
 struct Expression * memberExp;
 struct Identifier * id = (*propertyDef->identifiers).first;
@@ -2158,12 +2158,12 @@ if(id)
 memberExp = MkExpMember(MkExpIdentifier(MkIdentifier("this")), id);
 for(id = id->next; id; id = id->next)
 memberExp = MkExpMember(memberExp, id);
-ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(memberExp, '=', (propertyDef->initializer && propertyDef->initializer->type == 0 ? propertyDef->initializer->exp : (((void *)0)))))));
+ListAdd(statements, MkExpressionStmt(MkListOne(MkExpOp(memberExp, '=', (propertyDef->initializer && propertyDef->initializer->type == 0 ? propertyDef->initializer->__anon1.exp : (((void *)0)))))));
 }
 if(propertyDef->initializer)
 {
 if(propertyDef->initializer->type == 0)
-propertyDef->initializer->exp = (((void *)0));
+propertyDef->initializer->__anon1.exp = (((void *)0));
 FreeInitializer(propertyDef->initializer);
 }
 propertyDef->initializer = (((void *)0));
@@ -2173,16 +2173,16 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear((&*propertyDef->identi
 }
 for(def = definitions->first; def; def = def->next)
 {
-if(def->type == 2 && def->decl && def->decl->type == 2)
+if(def->type == 2 && def->__anon1.decl && def->__anon1.decl->type == 2)
 {
-struct Instantiation * inst = def->decl->inst;
-struct Symbol * classSym = inst->_class->symbol;
+struct Instantiation * inst = def->__anon1.decl->__anon1.inst;
+struct Symbol * classSym = inst->_class->__anon1.__anon1.symbol;
 
-if(inst->exp || (!classSym || !classSym->registered || classSym->registered->type == 0 || classSym->registered->type == 5))
+if(inst->exp || (!classSym || !classSym->__anon1.registered || classSym->__anon1.registered->type == 0 || classSym->__anon1.registered->type == 5))
 {
-if(!(inst->exp && (!classSym || !classSym->registered || classSym->registered->type == 0 || classSym->registered->type == 5)) || (inst->members && (*inst->members).count))
+if(!(inst->exp && (!classSym || !classSym->__anon1.registered || classSym->__anon1.registered->type == 0 || classSym->__anon1.registered->type == 5)) || (inst->members && (*inst->members).count))
 {
-def->decl->inst = (((void *)0));
+def->__anon1.decl->__anon1.inst = (((void *)0));
 ListAdd(statements, MkExpressionStmt(MkListOne(MkExpInstance(inst))));
 }
 }
@@ -2192,13 +2192,13 @@ ListAdd(statements, MkExpressionStmt(MkListOne(MkExpInstance(inst))));
 if(constructor && constructor->body)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*statements), constructor->body);
-constructor->body->compound.context->parent = context;
+constructor->body->__anon1.compound.context->parent = context;
 constructor->body = (((void *)0));
 }
 ListAdd(statements, MkReturnStmt(MkListOne(MkExpIdentifier(MkIdentifier("true")))));
 body = MkCompoundStmt(declarations, statements);
 PopContext(context);
-body->compound.context = context;
+body->__anon1.compound.context = context;
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(constructorName)), (((void *)0)));
 decl->symbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), decl->symbol);
@@ -2217,9 +2217,9 @@ if(definitions != (((void *)0)))
 {
 for(def = definitions->first; def; def = def->next)
 {
-if(def->type == 3 && def->propertyDef)
+if(def->type == 3 && def->__anon1.propertyDef)
 {
-struct PropertyDef * propertyDef = def->propertyDef;
+struct PropertyDef * propertyDef = def->__anon1.propertyDef;
 struct ClassDef * after = def;
 struct ClassDef * newDef;
 
@@ -2246,7 +2246,7 @@ strcat(name, "_Get_");
 FullClassNameCat(name, propertyDef->id->string, 0x1);
 MangleClassName(name);
 params = MkList();
-if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->_class && propertyDef->symbol->type->_class->registered && propertyDef->symbol->type->_class->registered->type == 1)
+if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->__anon1._class && propertyDef->symbol->type->__anon1._class->__anon1.registered && propertyDef->symbol->type->__anon1._class->__anon1.registered->type == 1)
 {
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), MkDeclaratorIdentifier(MkIdentifier("value"))));
 decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params));
@@ -2259,7 +2259,7 @@ func = MkClassFunction(CopyList(propertyDef->specifiers, CopySpecifier), (((void
 }
 ProcessClassFunctionBody(func, propertyDef->getStmt);
 func->declarator->symbol = propertyDef->symbol;
-propertyDef->symbol->externalGet = (struct External *)func;
+propertyDef->symbol->__anon2.__anon2.externalGet = (struct External *)func;
 func->dontMangle = 0x1;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
@@ -2280,20 +2280,20 @@ FullClassNameCat(name, propertyDef->id->string, 0x1);
 MangleClassName(name);
 params = MkList();
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
-if(propertyDef->isDBProp)
+if(propertyDef->__anon1.isDBProp)
 {
 struct Specifier * spec;
 struct __ecereNameSpace__ecere__sys__OldList * specs = ((struct TypeName *)(*params).last)->qualifiers;
 
 for(spec = (*specs).first; spec; spec = spec->next)
-if(spec->type == 0 && spec->specifier == CONST)
+if(spec->type == 0 && spec->__anon1.specifier == CONST)
 break;
 if(!spec)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specs), (((void *)0)), MkSpecifier(CONST));
 }
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
 {
-unsigned int isConversion = propertyDef->symbol->_property && propertyDef->symbol->_property->conversion;
+unsigned int isConversion = propertyDef->symbol->__anon1._property && propertyDef->symbol->__anon1._property->conversion;
 unsigned int useVoid = 0x0;
 
 switch(regClass->type)
@@ -2308,7 +2308,7 @@ useVoid = !isConversion;
 break;
 default:
 useVoid = !isConversion;
-if(useVoid && !propertyDef->isDBProp)
+if(useVoid && !propertyDef->__anon1.isDBProp)
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "set defined on type without storage for non-conversion property\n", (((void *)0))));
 }
 ListAdd(specifiers, useVoid ? MkSpecifier(VOID) : MkSpecifierName(regClass->fullName));
@@ -2317,8 +2317,8 @@ func = MkClassFunction(specifiers, (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propertyDef->setStmt);
 func->dontMangle = 0x1;
 func->declarator->symbol = propertyDef->symbol;
-propertyDef->symbol->externalSet = (struct External *)func;
-if(!propertyDef->conversion && regClass->type == 0)
+propertyDef->symbol->__anon2.__anon2.externalSet = (struct External *)func;
+if(!propertyDef->__anon1.conversion && regClass->type == 0)
 func->propSet = propertyDef->symbol;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
@@ -2344,7 +2344,7 @@ func = MkClassFunction(specifiers, (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propertyDef->issetStmt);
 func->dontMangle = 0x1;
 func->declarator->symbol = propertyDef->symbol;
-propertyDef->symbol->externalIsSet = (struct External *)func;
+propertyDef->symbol->__anon2.__anon2.externalIsSet = (struct External *)func;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
 after = newDef;
@@ -2355,7 +2355,7 @@ func->body = (((void *)0));
 }
 if(propertyDef->id && inCompiler)
 {
-struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_FindProperty(symbol->registered, propertyDef->id->string, privateModule);
+struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_FindProperty(symbol->__anon1.registered, propertyDef->id->string, privateModule);
 struct Declaration * decl;
 struct External * external;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
@@ -2382,16 +2382,16 @@ decl = MkDeclaration(specifiers, list);
 external = MkExternalDeclaration(decl);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*ast), curExternal ? curExternal->prev : (((void *)0)), external);
 external->symbol = propertyDef->symbol;
-propertyDef->symbol->externalPtr = external;
+propertyDef->symbol->__anon2.__anon2.externalPtr = external;
 if(inCompiler && prop && prop->symbol)
-((struct Symbol *)prop->symbol)->externalPtr = external;
+((struct Symbol *)prop->symbol)->__anon2.__anon2.externalPtr = external;
 }
 }
 }
 }
-else if(def->type == 10 && def->propertyDef)
+else if(def->type == 10 && def->__anon1.propertyDef)
 {
-struct PropertyDef * propertyDef = def->propertyDef;
+struct PropertyDef * propertyDef = def->__anon1.propertyDef;
 struct ClassDef * after = def;
 struct ClassDef * newDef;
 
@@ -2427,7 +2427,7 @@ func = MkClassFunction(MkListOne(MkSpecifierName("uint64")), (((void *)0)), decl
 }
 ProcessClassFunctionBody(func, propertyDef->getStmt);
 func->declarator->symbol = propertyDef->symbol;
-propertyDef->symbol->externalGet = (struct External *)func;
+propertyDef->symbol->__anon2.__anon2.externalGet = (struct External *)func;
 func->dontMangle = 0x1;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
@@ -2436,8 +2436,8 @@ decl = MkDeclaratorFunction(propertyDef->declarator, (((void *)0)));
 func->type = ProcessType(propertyDef->specifiers, decl);
 decl->declarator = (((void *)0));
 FreeDeclarator(decl);
-if(func->type->returnType->kind == 8 && func->type->returnType->_class && func->type->returnType->_class->registered && func->type->returnType->_class->registered->type == 1)
-func->type->returnType->byReference = 0x1;
+if(func->type->__anon1.__anon2.returnType->kind == 8 && func->type->__anon1.__anon2.returnType->__anon1._class && func->type->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && func->type->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 1)
+func->type->__anon1.__anon2.returnType->byReference = 0x1;
 if(inCompiler)
 propertyDef->getStmt = (((void *)0));
 else
@@ -2457,16 +2457,16 @@ strcat(name, propertyDef->id->string);
 MangleClassName(name);
 params = MkList();
 prevCurContext = curContext;
-curContext = body->compound.context;
+curContext = body->__anon1.compound.context;
 ListAdd(params, MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorIdentifier(MkIdentifier("_value"))));
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
-if(!body->compound.declarations)
-body->compound.declarations = MkList();
-if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->_class && propertyDef->symbol->type->_class->registered && propertyDef->symbol->type->_class->registered->type == 1)
+if(!body->__anon1.compound.declarations)
+body->__anon1.compound.declarations = MkList();
+if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->__anon1._class && propertyDef->symbol->type->__anon1._class->__anon1.registered && propertyDef->symbol->type->__anon1._class->__anon1.registered->type == 1)
 ptrDecl = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value"))));
 else
 ptrDecl = PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")));
-ListAdd(body->compound.declarations, MkDeclaration(CopyList(propertyDef->specifiers, CopySpecifier), MkListOne(MkInitDeclarator(ptrDecl, MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), CopyDeclarator(propertyDef->declarator)), MkExpIdentifier(MkIdentifier("_value"))))))));
+ListAdd(body->__anon1.compound.declarations, MkDeclaration(CopyList(propertyDef->specifiers, CopySpecifier), MkListOne(MkInitDeclarator(ptrDecl, MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), CopyDeclarator(propertyDef->declarator)), MkExpIdentifier(MkIdentifier("_value"))))))));
 curContext = prevCurContext;
 {
 struct Symbol * sym = ptrDecl->symbol;
@@ -2480,7 +2480,7 @@ func = MkClassFunction(specifiers, (((void *)0)), decl, (((void *)0)));
 ProcessClassFunctionBody(func, propertyDef->setStmt);
 func->dontMangle = 0x1;
 func->declarator->symbol = propertyDef->symbol;
-propertyDef->symbol->externalSet = (struct External *)func;
+propertyDef->symbol->__anon2.__anon2.externalSet = (struct External *)func;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
 after = newDef;
@@ -2492,9 +2492,9 @@ func->body = (((void *)0));
 }
 }
 }
-else if(def->type == 0 && def->function->declarator)
+else if(def->type == 0 && def->__anon1.function->declarator)
 {
-struct ClassFunction * func = def->function;
+struct ClassFunction * func = def->__anon1.function;
 
 func->_class = regClass;
 if(!func->dontMangle)
@@ -2503,11 +2503,11 @@ struct Declarator * funcDecl = GetFuncDecl(func->declarator);
 struct Identifier * id = GetDeclId(funcDecl);
 struct __ecereNameSpace__ecere__com__Method * method;
 
-if(!funcDecl->function.parameters || !(*funcDecl->function.parameters).first)
+if(!funcDecl->__anon1.function.parameters || !(*funcDecl->__anon1.function.parameters).first)
 {
-if(!funcDecl->function.parameters)
-funcDecl->function.parameters = MkList();
-ListAdd(funcDecl->function.parameters, MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0))));
+if(!funcDecl->__anon1.function.parameters)
+funcDecl->__anon1.function.parameters = MkList();
+ListAdd(funcDecl->__anon1.function.parameters, MkTypeName(MkListOne(MkSpecifier(VOID)), (((void *)0))));
 }
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(regClass, id->string, privateModule);
 FreeSpecifier(id->_class);
@@ -2557,7 +2557,7 @@ next = external->next;
 curExternal = external;
 if(external->type == 2)
 {
-struct ClassDefinition * _class = external->_class;
+struct ClassDefinition * _class = external->__anon1._class;
 
 if(_class->definitions)
 {
@@ -2566,32 +2566,32 @@ ProcessClass(0, _class->definitions, _class->symbol, _class->baseSpecs, (((void 
 }
 else if(external->type == 1)
 {
-struct Declaration * declaration = external->declaration;
+struct Declaration * declaration = external->__anon1.declaration;
 
 if(declaration->type == 1)
 {
-if(declaration->specifiers)
+if(declaration->__anon1.__anon1.specifiers)
 {
 struct Specifier * specifier;
 
-for(specifier = (*declaration->specifiers).first; specifier; specifier = specifier->next)
+for(specifier = (*declaration->__anon1.__anon1.specifiers).first; specifier; specifier = specifier->next)
 {
-if((specifier->type == 2 || specifier->type == 3 || specifier->type == 4) && specifier->id && specifier->id->string && (declaration->declMode || specifier->baseSpecs || (specifier->type == 2 && specifier->definitions)))
+if((specifier->type == 2 || specifier->type == 3 || specifier->type == 4) && specifier->__anon1.__anon2.id && specifier->__anon1.__anon2.id->string && (declaration->declMode || specifier->__anon1.__anon2.baseSpecs || (specifier->type == 2 && specifier->__anon1.__anon2.definitions)))
 {
-struct Symbol * symbol = FindClass(specifier->id->string);
+struct Symbol * symbol = FindClass(specifier->__anon1.__anon2.id->string);
 
 if(symbol)
 {
 struct __ecereNameSpace__ecere__sys__OldList * initDeclarators = (((void *)0));
-struct ExtDecl * extDecl = specifier->extDeclStruct;
+struct ExtDecl * extDecl = specifier->__anon1.__anon2.extDeclStruct;
 
-specifier->extDeclStruct = (((void *)0));
+specifier->__anon1.__anon2.extDeclStruct = (((void *)0));
 if(inCompiler)
 {
-initDeclarators = declaration->declarators;
-declaration->declarators = (((void *)0));
+initDeclarators = declaration->__anon1.__anon1.declarators;
+declaration->__anon1.__anon1.declarators = (((void *)0));
 }
-ProcessClass((specifier->type == 4) ? 6 : 0, specifier->definitions, symbol, specifier->baseSpecs, specifier->list, &specifier->loc, ast, external->prev, initDeclarators, extDecl);
+ProcessClass((specifier->type == 4) ? 6 : 0, specifier->__anon1.__anon2.definitions, symbol, specifier->__anon1.__anon2.baseSpecs, specifier->__anon1.__anon2.list, &specifier->loc, ast, external->prev, initDeclarators, extDecl);
 }
 }
 }
@@ -2601,9 +2601,9 @@ else if(inCompiler && declaration->type == 3)
 {
 yylloc = declaration->loc;
 if(declaration->declMode == 1)
-CheckPublicExpression(declaration->exp, 1);
+CheckPublicExpression(declaration->__anon1.__anon2.exp, 1);
 else if(declaration->declMode != 3)
-CheckPublicExpression(declaration->exp, 2);
+CheckPublicExpression(declaration->__anon1.__anon2.exp, 2);
 }
 }
 else if(external->type == 3)
@@ -2611,13 +2611,13 @@ else if(external->type == 3)
 }
 else if(inCompiler && external->type == 0)
 {
-yylloc = external->function->loc;
-if(!external->function->type)
-external->function->type = ProcessType(external->function->specifiers, external->function->declarator);
-if(external->function->declMode == 1)
-CheckPublicDataType(external->function->type, 1, "function");
-else if(external->function->declMode != 3)
-CheckPublicDataType(external->function->type, 2, "function");
+yylloc = external->__anon1.function->loc;
+if(!external->__anon1.function->type)
+external->__anon1.function->type = ProcessType(external->__anon1.function->specifiers, external->__anon1.function->declarator);
+if(external->__anon1.function->declMode == 1)
+CheckPublicDataType(external->__anon1.function->type, 1, "function");
+else if(external->__anon1.function->declMode != 3)
+CheckPublicDataType(external->__anon1.function->type, 2, "function");
 }
 }
 }

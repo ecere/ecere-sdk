@@ -889,6 +889,7 @@ public int ComputeTypeSize(Type type)
    int alignment;
    uint size;
    DataMember member;
+   int anonID = 1;
    Context context = isMember ? null : SetupTemplatesContext(_class);
    if(addedPadding)
       *addedPadding = false;
@@ -963,12 +964,14 @@ public int ComputeTypeSize(Type type)
             case structMember:
             {
                OldList * specs = MkList(), * list = MkList();
+               char id[100];
+               sprintf(id, "__anon%d", anonID++);
 
                size = 0;
                AddMembers(list, (Class)member, true, &size, topClass, null);
                ListAdd(specs,
                   MkStructOrUnion((member.type == unionMember)?unionSpecifier:structSpecifier, null, list));
-               ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(specs, null, null)));
+               ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(specs, MkListOne(MkDeclaratorIdentifier(MkIdentifier(id))),null)));
                alignment = member.structAlignment;
 
                if(alignment)
@@ -1051,6 +1054,54 @@ static int DeclareMembers(Class _class, bool isMember)
       FinishTemplatesContext(context);
 
    return topMember ? topMember.memberID : _class.memberID;
+}
+
+static void IdentifyAnonStructs(OldList/*<ClassDef>*/ *  definitions)
+{
+   ClassDef def;
+   int anonID = 1;
+   for(def = definitions->first; def; def = def.next)
+   {
+      if(def.type == declarationClassDef)
+      {
+         Declaration decl = def.decl;
+         if(decl && decl.specifiers)
+         {
+            Specifier spec;
+            bool isStruct = false;
+            for(spec = decl.specifiers->first; spec; spec = spec.next)
+            {
+               if(spec.type == structSpecifier || spec.type == unionSpecifier)
+               {
+                  if(spec.definitions)
+                     IdentifyAnonStructs(spec.definitions);
+                  isStruct = true;
+               }
+            }
+            if(isStruct)
+            {
+               Declarator d = null;
+               if(decl.declarators)
+               {
+                  for(d = decl.declarators->first; d; d = d.next)
+                  {
+                     Identifier idDecl = GetDeclId(d);
+                     if(idDecl)
+                        break;
+                  }
+               }
+               if(!d)
+               {
+                  char id[100];
+                  sprintf(id, "__anon%d", anonID++);
+                  if(!decl.declarators)
+                     decl.declarators = MkList();
+                  ListAdd(decl.declarators, MkDeclaratorIdentifier(MkIdentifier(id)));
+               }
+            }
+         }
+      }
+   }
 }
 
 void DeclareStruct(const char * name, bool skipNoHead)
@@ -1207,37 +1258,49 @@ void DeclareStruct(const char * name, bool skipNoHead)
 
       classSym.declaring--;
    }
-   else if(curExternal && curExternal.symbol && curExternal.symbol.idCode < classSym.id)
+   else
    {
-      // TEMPORARY HACK: Pass 3 will move up struct declarations without moving members
-      // Moved this one up because DeclareClass done later will need it
-
-      // TESTING THIS:
-      classSym.declaring++;
-
-      //if(!skipNoHead)
+      if(classSym.structExternal && classSym.structExternal.declaration && classSym.structExternal.declaration.specifiers)
       {
-         if(classSym.registered)
-            DeclareMembers(classSym.registered, false);
+         Specifier spec;
+         for(spec = classSym.structExternal.declaration.specifiers->first; spec; spec = spec.next)
+         {
+            IdentifyAnonStructs(spec.definitions);
+         }
       }
 
-      if(classSym.registered && (classSym.registered.type == structClass || classSym.registered.type == noHeadClass))
+      if(curExternal && curExternal.symbol && curExternal.symbol.idCode < classSym.id)
       {
-         // TODO: Fix this
-         //ast->Move(classSym.structExternal ? classSym.structExternal : classSym.pointerExternal, curExternal.prev);
+         // TEMPORARY HACK: Pass 3 will move up struct declarations without moving members
+         // Moved this one up because DeclareClass done later will need it
 
-         // DANGER
-         if(classSym.structExternal)
-            ast->Move(classSym.structExternal, curExternal.prev);
-         ast->Move(classSym.pointerExternal, curExternal.prev);
+         // TESTING THIS:
+         classSym.declaring++;
 
-         classSym.id = curExternal.symbol.idCode;
-         classSym.idCode = curExternal.symbol.idCode;
-         // external = classSym.pointerExternal;
-         // external = classSym.structExternal ? classSym.structExternal : classSym.pointerExternal;
+         //if(!skipNoHead)
+         {
+            if(classSym.registered)
+               DeclareMembers(classSym.registered, false);
+         }
+
+         if(classSym.registered && (classSym.registered.type == structClass || classSym.registered.type == noHeadClass))
+         {
+            // TODO: Fix this
+            //ast->Move(classSym.structExternal ? classSym.structExternal : classSym.pointerExternal, curExternal.prev);
+
+            // DANGER
+            if(classSym.structExternal)
+               ast->Move(classSym.structExternal, curExternal.prev);
+            ast->Move(classSym.pointerExternal, curExternal.prev);
+
+            classSym.id = curExternal.symbol.idCode;
+            classSym.idCode = curExternal.symbol.idCode;
+            // external = classSym.pointerExternal;
+            // external = classSym.structExternal ? classSym.structExternal : classSym.pointerExternal;
+         }
+
+         classSym.declaring--;
       }
-
-      classSym.declaring--;
    }
    //return external;
 }

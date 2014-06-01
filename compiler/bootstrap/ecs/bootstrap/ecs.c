@@ -101,12 +101,12 @@ struct __ecereNameSpace__ecere__com__Property
 {
 struct __ecereNameSpace__ecere__com__Property * prev;
 struct __ecereNameSpace__ecere__com__Property * next;
-char *  name;
+const char *  name;
 unsigned int isProperty;
 int memberAccess;
 int id;
 struct __ecereNameSpace__ecere__com__Class * _class;
-char *  dataTypeString;
+const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
 struct Type * dataType;
 void (*  Set)(void * , int);
@@ -194,7 +194,7 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -278,7 +278,7 @@ union
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 struct __ecereNameSpace__ecere__com__Class * registered;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int id;
 int idCode;
 union
@@ -287,20 +287,20 @@ struct
 {
 struct External * pointerExternal;
 struct External * structExternal;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct External * externalGet;
 struct External * externalSet;
 struct External * externalPtr;
 struct External * externalIsSet;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct External * methodExternal;
 struct External * methodCodeExternal;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
+} __attribute__ ((gcc_struct)) __anon2;
 unsigned int imported;
 unsigned int declaredStructSym;
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -343,7 +343,7 @@ struct
 {
 struct __ecereNameSpace__ecere__sys__OldList members;
 char *  enumName;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct
 {
 struct Type * returnType;
@@ -351,13 +351,13 @@ struct __ecereNameSpace__ecere__sys__OldList params;
 struct Symbol * thisClass;
 unsigned int staticMethod;
 struct TemplateParameter * thisClassTemplate;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon2;
 struct
 {
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Class * methodClass;
 struct __ecereNameSpace__ecere__com__Class * usedClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon3;
 struct
 {
 struct Type * arrayType;
@@ -365,10 +365,10 @@ int arraySize;
 struct Expression * arraySizeExp;
 unsigned int freeExp;
 struct Symbol * enumClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon4;
 struct Type * type;
 struct TemplateParameter * templateParameter;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 int kind;
 unsigned int size;
 char *  name;
@@ -522,7 +522,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -532,9 +532,9 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
-} __attribute__ ((gcc_struct));
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
 
@@ -1795,7 +1795,7 @@ if(method->dataType && method->dataType->name)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         case %d:\n", vid - _class->base->vTblSize);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         {\n");
 {
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 struct TypeName * resultType;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -1804,11 +1804,11 @@ char type[1024] = "";
 char className[1024];
 struct Symbol * classSym;
 
-if(method->dataType->returnType->kind == 8)
-classSym = method->dataType->returnType->_class;
+if(method->dataType->__anon1.__anon2.returnType->kind == 8)
+classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -1816,16 +1816,16 @@ strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
 MangleClassName(className);
 DeclareClass(classSym, className);
-PrintType(method->dataType->returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
 OutputTypeName(resultType, f, 0x0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && !strcmp(param->_class->string, "String"))
+if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            char %s[1024];\n", param->name);
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
@@ -1841,7 +1841,7 @@ char className[1024];
 struct Symbol * classSym;
 
 if(param->kind == 8)
-classSym = param->_class;
+classSym = param->__anon1._class;
 else
 {
 PrintTypeNoConst(param, type, 0x0, 0x1);
@@ -1861,10 +1861,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Unserialize(");
-if(param->kind == 8 && !strcmp(param->_class->string, "String"))
+if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "(StaticString)");
@@ -1877,21 +1877,21 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__ecereResult = ");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%s(", method->name);
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
 if(param->prev)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ", ");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%s", param->name);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && ((param->_class && param->_class->registered && param->_class->registered->type == 1) || !strcmp(param->_class->string, "String")) && !param->constant)
+if(param->kind == 8 && ((param->__anon1._class && param->__anon1._class->__anon1.registered && param->__anon1._class->__anon1.registered->type == 1) || !strcmp(param->__anon1._class->string, "String")) && !param->constant)
 {
-if(!strcmp(param->_class->string, "String"))
+if(!strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Serialize((StaticString)%s);\n", param->name);
@@ -1900,18 +1900,18 @@ else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Serialize(%s);\n", param->name);
 }
 }
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Serialize(__ecereResult);\n");
 }
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && strcmp(param->_class->string, "String") && param->_class->registered && (param->_class->registered->type == 0 || param->_class->registered->type == 5))
+if(param->kind == 8 && strcmp(param->__anon1._class->string, "String") && param->__anon1._class->__anon1.registered && (param->__anon1._class->__anon1.registered->type == 0 || param->__anon1._class->__anon1.registered->type == 5))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            delete %s;\n", param->name);
 }
 }
-if(method->dataType->returnType->kind == 8 && strcmp(method->dataType->returnType->_class->string, "String") && method->dataType->returnType->_class->registered && (method->dataType->returnType->_class->registered->type == 0 || method->dataType->returnType->_class->registered->type == 5))
+if(method->dataType->__anon1.__anon2.returnType->kind == 8 && strcmp(method->dataType->__anon1.__anon2.returnType->__anon1._class->string, "String") && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && (method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 0 || method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 5))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            delete __ecereResult;\n");
 }
@@ -1967,7 +1967,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%s\n", method->dataT
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   {\n");
 if(method->dataType)
 {
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 struct TypeName * resultType;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -1976,11 +1976,11 @@ char type[1024] = "";
 char className[1024];
 struct Symbol * classSym;
 
-if(method->dataType->returnType->kind == 8)
-classSym = method->dataType->returnType->_class;
+if(method->dataType->__anon1.__anon2.returnType->kind == 8)
+classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -1988,28 +1988,28 @@ strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
 MangleClassName(className);
 DeclareClass(classSym, className);
-PrintType(method->dataType->returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      ");
 OutputTypeName(resultType, f, 0x0);
-if(method->dataType->returnType->kind == 9)
+if(method->dataType->__anon1.__anon2.returnType->kind == 9)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = { 0 }");
-else if(method->dataType->returnType->kind == 8 && method->dataType->returnType->_class->registered && method->dataType->returnType->_class->registered->type == 1)
+else if(method->dataType->__anon1.__anon2.returnType->kind == 8 && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 1)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " { }");
 else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = 0");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      incref this;\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
 char type[1024] = "";
 char className[1024];
 struct Symbol * classSym;
 
 if(param->kind == 8)
-classSym = param->_class;
+classSym = param->__anon1._class;
 else
 {
 PrintTypeNoConst(param, type, 0x0, 0x1);
@@ -2020,7 +2020,7 @@ strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
 MangleClassName(className);
 DeclareClass(classSym, className);
-if(param->kind == 8 && !strcmp(param->_class->string, "String"))
+if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereBuffer.Serialize((StaticString)%s);\n", param->name);
@@ -2031,11 +2031,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereBuffer.
 DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::net::DCOMClientObject"), "CallMethod", privateModule), "__ecereMethod___ecereNameSpace__ecere__net__DCOMClientObject_CallMethod");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      if(DCOMClientObject::CallMethod(%d))\n", id++);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      {\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && ((param->_class && param->_class->registered && param->_class->registered->type == 1) || !strcmp(param->_class->string, "String")) && !param->constant)
+if(param->kind == 8 && ((param->__anon1._class && param->__anon1._class->__anon1.registered && param->__anon1._class->__anon1.registered->type == 1) || !strcmp(param->__anon1._class->string, "String")) && !param->constant)
 {
-if(!strcmp(param->_class->string, "String"))
+if(!strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereBuffer.Unserialize((StaticString)%s);\n", param->name);
@@ -2044,9 +2044,9 @@ else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereBuffer.Unserialize(%s);\n", param->name);
 }
 }
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
-if(method->dataType->returnType->kind == 8 && !strcmp(method->dataType->returnType->_class->string, "String"))
+if(method->dataType->__anon1.__anon2.returnType->kind == 8 && !strcmp(method->dataType->__anon1.__anon2.returnType->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereBuffer.Unserialize((StaticString)__ecereResult);\n");
@@ -2057,7 +2057,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereBuff
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      }\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereBuffer.Free();\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      delete this;\n");
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      return __ecereResult;\n");
 }
@@ -2133,7 +2133,7 @@ if(method->dataType && method->dataType->name)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         case %d:\n", id++);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         {\n");
 {
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 struct TypeName * resultType;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -2142,11 +2142,11 @@ char type[1024] = "";
 char className[1024];
 struct Symbol * classSym;
 
-if(method->dataType->returnType->kind == 8)
-classSym = method->dataType->returnType->_class;
+if(method->dataType->__anon1.__anon2.returnType->kind == 8)
+classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -2154,16 +2154,16 @@ strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
 MangleClassName(className);
 DeclareClass(classSym, className);
-PrintType(method->dataType->returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
 OutputTypeName(resultType, f, 0x0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && !strcmp(param->_class->string, "String"))
+if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            char %s[1024];\n", param->name);
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
@@ -2179,7 +2179,7 @@ char className[1024];
 struct Symbol * classSym;
 
 if(param->kind == 8)
-classSym = param->_class;
+classSym = param->__anon1._class;
 else
 {
 PrintTypeNoConst(param, type, 0x0, 0x1);
@@ -2199,10 +2199,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Unserialize(");
-if(param->kind == 8 && !strcmp(param->_class->string, "String"))
+if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "(StaticString)");
@@ -2215,21 +2215,21 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "__ecereResult = ");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "((%s)instance).%s(", _class->fullName, method->name);
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
 if(param->prev)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ", ");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%s", param->name);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && ((param->_class && param->_class->registered && param->_class->registered->type == 1) || !strcmp(param->_class->string, "String")) && !param->constant)
+if(param->kind == 8 && ((param->__anon1._class && param->__anon1._class->__anon1.registered && param->__anon1._class->__anon1.registered->type == 1) || !strcmp(param->__anon1._class->string, "String")) && !param->constant)
 {
-if(!strcmp(param->_class->string, "String"))
+if(!strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Serialize((StaticString)%s);\n", param->name);
@@ -2238,18 +2238,18 @@ else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Serialize(%s);\n", param->name);
 }
 }
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            __ecereBuffer.Serialize(__ecereResult);\n");
 }
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && strcmp(param->_class->string, "String") && param->_class->registered && (param->_class->registered->type == 0 || param->_class->registered->type == 5))
+if(param->kind == 8 && strcmp(param->__anon1._class->string, "String") && param->__anon1._class->__anon1.registered && (param->__anon1._class->__anon1.registered->type == 0 || param->__anon1._class->__anon1.registered->type == 5))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            delete %s;\n", param->name);
 }
 }
-if(method->dataType->returnType->kind == 8 && strcmp(method->dataType->returnType->_class->string, "String") && method->dataType->returnType->_class->registered && (method->dataType->returnType->_class->registered->type == 0 || method->dataType->returnType->_class->registered->type == 5))
+if(method->dataType->__anon1.__anon2.returnType->kind == 8 && strcmp(method->dataType->__anon1.__anon2.returnType->__anon1._class->string, "String") && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && (method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 0 || method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 5))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            delete __ecereResult;\n");
 }
@@ -2288,7 +2288,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   {\n");
 if(method->dataType)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      DCOM%s __ecereObject = (void *)_vTbl[-1];\n", _class->fullName);
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 struct TypeName * resultType;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -2297,11 +2297,11 @@ char type[1024] = "";
 char className[1024];
 struct Symbol * classSym;
 
-if(method->dataType->returnType->kind == 8)
-classSym = method->dataType->returnType->_class;
+if(method->dataType->__anon1.__anon2.returnType->kind == 8)
+classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
@@ -2309,14 +2309,14 @@ strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
 MangleClassName(className);
 DeclareClass(classSym, className);
-PrintType(method->dataType->returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      ");
 OutputTypeName(resultType, f, 0x0);
-if(method->dataType->returnType->kind == 9)
+if(method->dataType->__anon1.__anon2.returnType->kind == 9)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = { 0 }");
-else if(method->dataType->returnType->kind == 8 && method->dataType->returnType->_class->registered && method->dataType->returnType->_class->registered->type == 1)
+else if(method->dataType->__anon1.__anon2.returnType->kind == 8 && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 1)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " { }");
 else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = 0");
@@ -2324,14 +2324,14 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      incref __ecereObject;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait(__ecereObject.mutex);\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
 char type[1024] = "";
 char className[1024];
 struct Symbol * classSym;
 
 if(param->kind == 8)
-classSym = param->_class;
+classSym = param->__anon1._class;
 else
 {
 PrintTypeNoConst(param, type, 0x0, 0x1);
@@ -2342,7 +2342,7 @@ strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
 MangleClassName(className);
 DeclareClass(classSym, className);
-if(param->kind == 8 && !strcmp(param->_class->string, "String"))
+if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.argsBuffer.Serialize((StaticString)%s);\n", param->name);
@@ -2352,13 +2352,13 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.
 }
 DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::net::DCOMServerObject"), "CallVirtualMethod", privateModule), "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirtualMethod");
 {
-unsigned int hasReturnValue = method->dataType->returnType->kind != 0;
+unsigned int hasReturnValue = method->dataType->__anon1.__anon2.returnType->kind != 0;
 
 if(!hasReturnValue)
 {
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && ((param->_class && param->_class->registered && param->_class->registered->type == 1) || !strcmp(param->_class->string, "String")) && !param->constant)
+if(param->kind == 8 && ((param->__anon1._class && param->__anon1._class->__anon1.registered && param->__anon1._class->__anon1.registered->type == 1) || !strcmp(param->__anon1._class->string, "String")) && !param->constant)
 {
 hasReturnValue = 0x1;
 break;
@@ -2368,11 +2368,11 @@ break;
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      if(__ecereObject.CallVirtualMethod(%d, %s))\n", vid - _class->base->vTblSize, hasReturnValue ? "true" : "false");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      {\n");
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
-if(param->kind == 8 && ((param->_class && param->_class->registered && param->_class->registered->type == 1) || !strcmp(param->_class->string, "String")) && !param->constant)
+if(param->kind == 8 && ((param->__anon1._class && param->__anon1._class->__anon1.registered && param->__anon1._class->__anon1.registered->type == 1) || !strcmp(param->__anon1._class->string, "String")) && !param->constant)
 {
-if(!strcmp(param->_class->string, "String"))
+if(!strcmp(param->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.returnBuffer.Unserialize((StaticString)%s);\n", param->name);
@@ -2381,9 +2381,9 @@ else
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.returnBuffer.Unserialize(%s);\n", param->name);
 }
 }
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
-if(method->dataType->returnType->kind == 8 && !strcmp(method->dataType->returnType->_class->string, "String"))
+if(method->dataType->__anon1.__anon2.returnType->kind == 8 && !strcmp(method->dataType->__anon1.__anon2.returnType->__anon1._class->string, "String"))
 {
 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObject.returnBuffer.Unserialize((StaticString)__ecereResult);\n");
@@ -2394,7 +2394,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         __ecereObje
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      }\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         ((%s)this).%s::%s(", _class->fullName, _class->fullName, method->name);
-for(param = method->dataType->params.first; param; param = param->next)
+for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "%s", param->name);
 if(param->next)
@@ -2404,7 +2404,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ");\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereObject.returnBuffer.Free();\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      __ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release(__ecereObject.mutex);\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      delete __ecereObject;\n");
-if(method->dataType->returnType->kind != 0)
+if(method->dataType->__anon1.__anon2.returnType->kind != 0)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      return __ecereResult;\n");
 }
