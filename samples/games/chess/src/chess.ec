@@ -3,7 +3,7 @@
 
    Copyright (c) 2001 Jerome Jacovella-St-Louis
    All Rights Reserved.
-   
+
    chess.ec - Chess Main Window
 ****************************************************************************/
 #ifdef ECERE_STATIC
@@ -81,7 +81,7 @@ class Chess : Window
    MenuItem * driverItems;
 
    ChessState chessState;
-   
+
    StatusField stateField { statusBar, width = stateWidth};
    StatusField turnField { statusBar, width = turnWidth };
 
@@ -91,7 +91,7 @@ class Chess : Window
    AIThread aiThread { chess = this };
 
    // Windows
-   
+
    ListBox moveList
    {
       parent = this,
@@ -112,7 +112,7 @@ class Chess : Window
       text = "2D Chess Board",
       chessState = &chessState
    };
-    
+
    Chess3D chess3D
    {
       parent = this,
@@ -148,9 +148,9 @@ class Chess : Window
             chessState.isLocalPlayer[Black] = false;
 
             EnableMenus();
-         
+
             RandomSeed((int)(GetTime() * 10000));
-         
+
             NewGame();
          }
          return true;
@@ -268,7 +268,7 @@ class Chess : Window
 
    //  Help Menu
    MenuItem aboutItem
-   { 
+   {
       helpMenu, "About...\tF1", a, f1;
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
@@ -276,12 +276,12 @@ class Chess : Window
          return true;
       }
    };
-         
+
    // --- Chess Utilities ---
    bool MakeMove(int x1, int y1, int x2, int y2, PieceType promotion)
    {
       bool valid = false;
-      
+
       PieceType type = chessState.board[y1][x1].type;
       Player player = chessState.board[y1][x1].player;
 
@@ -296,15 +296,15 @@ class Chess : Window
             promotion = (PieceType)Promotion { master = this }.Modal();
          }
       }
-      
+
       if(StateMakeMove(chessState, x1,y1,x2,y2, promotion, true, null))
       {
          valid = true;
-         
+
          if(chessState.isLocalPlayer[player] && !local && !ai)
          {
             ChessPacket packet
-            { 
+            {
                type = Position,
                player = player,
                x1 = (byte)x1,
@@ -334,7 +334,7 @@ class Chess : Window
             GenerateMoveList(chessState, stack);
 
             delete stack.moves;
-            
+
             if(Check(chessState, chessState.turn, -1, -1))
             {
                if(stack.count)
@@ -367,10 +367,10 @@ class Chess : Window
                turnField.text = "";
          }
       }
-   
+
       chess2D.Update(null);
       chess3D.Update(null);
-      return valid;   
+      return valid;
    }
 
    void ProcessUserMove(int x1, int y1, int x2, int y2)
@@ -479,7 +479,7 @@ class Chess : Window
    #endif
       chessState.turn = White;
 
-      chessState.castled[White] = 
+      chessState.castled[White] =
       chessState.castled[Black] = false;
 
       // EN PASSANT STATUS
@@ -555,7 +555,7 @@ class Chess : Window
       MakeMoveChar('f',7, 'h',8);
       // 14
       MakeMoveChar('d',1, 'd',2);
-      MakeMoveChar('e',7, 'e',6);      
+      MakeMoveChar('e',7, 'e',6);
    */
    }
 
@@ -563,7 +563,7 @@ class Chess : Window
    {
       MakeMove(x1 - 'a', y1 - 1, x2 - 'a', y2 - 1, Queen);
    }
-   
+
    void EnableMenus()
    {
       stopItem.disabled = !hosting;
@@ -593,7 +593,7 @@ class Chess : Window
       {
          driverItems[c] = MenuItem { viewMenu, app.drivers[c], NotifySelect = SetDisplayDriver };
          driverItems[c].id = c;
-         driverItems[c].isRadio = true;         
+         driverItems[c].isRadio = true;
       }
       // this.SetPalette(palette, true);
 
@@ -606,12 +606,12 @@ class Chess : Window
 
    bool EndGame()
    {
-      if(chessState.gameRunning && 
+      if(chessState.gameRunning &&
          (chessState.state == Normal || chessState.state == Check))
       {
-         if(MessageBox { type = okCancel, contents = "Quit current game?", 
+         if(MessageBox { type = okCancel, contents = "Quit current game?",
             master = this, text = "ECERE Chess" }.Modal() == cancel)
-            return false;   
+            return false;
       }
       if(sockets[SERVER_COLOR])
          sockets[SERVER_COLOR].Disconnect(0);
@@ -642,8 +642,8 @@ class Chess : Window
       delete sockets[White];
       delete driverItems;
    }
-            
-   void Connect(char * address)
+
+   void Connect(const char * address)
    {
       ChessSocket socket { chess = this };
       if(socket.Connect(address, CHESS_PORT))
@@ -684,7 +684,7 @@ class ChessSocket : Socket
       chess.chess2D.Update(null);
       chess.chess3D.Update(null);
    }
-   
+
    uint OnReceive(const byte * buffer, uint count)
    {
       if(count >= sizeof(ChessPacket))
@@ -719,7 +719,7 @@ class ChessService : Service
 {
    Chess chess;
    property Chess chess { set { chess = value; } }
-   
+
    void OnAccept()
    {
       if(!chess.chessState->gameRunning)

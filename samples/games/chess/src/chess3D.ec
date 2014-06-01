@@ -1,6 +1,6 @@
 import "chess.ec"
 
-static char * names[Player][PieceType] =
+static const char * names[Player][PieceType] =
 {
    { "", "WhitePawn", "WhiteKnigh", "WhiteBisho", "WhiteRook", "WhiteQueen", "WhiteKing" },
    { "", "BlackPawn", "BlackKnigh", "BlackBisho", "BlackRook", "BlackQueen", "BlackKing" }
@@ -64,7 +64,7 @@ class Chess3D : Window
 
       if(type)
       {
-         char * name = names[player][type];
+         const char * name = names[player][type];
          Object object = chessSet.Find(name);
          if(object)
          {
@@ -77,7 +77,7 @@ class Chess3D : Window
                PieceType overType = overAtBoard.type;
                if(overType)
                {
-                  char * name = names[overPlayer][overType];
+                  const char * name = names[overPlayer][overType];
                   Object over = chessSet.Find(name);
                   if(over)
                      height = over.max.y - over.min.y;
@@ -93,7 +93,7 @@ class Chess3D : Window
 
             object.UpdateTransform();
 
-            object.tag = (void *)(((y)*8)+(x)+1);
+            object.tag = (void *)(intptr)(((y)*8)+(x)+1);
             display.DrawObject(object);
          }
       }
@@ -172,7 +172,7 @@ class Chess3D : Window
       if(display.GetHits(list))
       {
          HitRecord hit = list.first;
-         int tag = ((int)hit.tags[0]) - 1;
+         int tag = ((int)(intptr)hit.tags[0]) - 1;
          int sx = tag & 7, sy = tag >> 3;
 
          if(pieceSelected)

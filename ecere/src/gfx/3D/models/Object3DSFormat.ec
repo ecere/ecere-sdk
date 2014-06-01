@@ -1685,7 +1685,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
       case FRM_MESHINFO:
       {
          ObjectInfoBlock block { };
-         Object object;
+         Object object = null;
 
          ReadChunks(ReadFrameInfoBlock, info, &block);
 
@@ -1719,7 +1719,8 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                }
                delete block.dummyName;
             }
-            object.parent = info->rootObject;
+            if(object)
+               object.parent = info->rootObject;
          }
          else
             object = info->rootObject.Find(block.name);
@@ -1770,7 +1771,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
       case FRM_CAMERA:
       {
          ObjectInfoBlock block { };
-         Object object;
+         Object object = null;
 
          ReadChunks(ReadFrameInfoBlock, info, &block);
 
@@ -1800,7 +1801,8 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                }
                delete block.dummyName;
             }
-            object.parent = info->rootObject;
+            if(object)
+               object.parent = info->rootObject;
          }
          else
             object = info->rootObject.Find(block.name);
@@ -1834,7 +1836,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
       case FRM_CAMERATARGET:
       {
          ObjectInfoBlock block { };
-         Object object;
+         Object object = null;
          char targetName[MAXNAMELEN];
 
          ReadChunks(ReadFrameInfoBlock, info, &block);
@@ -1866,7 +1868,8 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                }
                delete block.dummyName;
             }
-            object.parent = info->rootObject;
+            if(object)
+               object.parent = info->rootObject;
          }
          else
             object = info->rootObject.Find(targetName);
@@ -1910,7 +1913,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
       case FRM_SPOTLIGHT:
       {
          ObjectInfoBlock block { };
-         Object object;
+         Object object = null;
 
          ReadChunks(ReadFrameInfoBlock, info, &block);
 
@@ -1940,7 +1943,8 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                }
                delete block.dummyName;
             }
-            object.parent = info->rootObject;
+            if(object)
+               object.parent = info->rootObject;
          }
          else
             object = info->rootObject.Find(block.name);
@@ -1974,7 +1978,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
       case FRM_SPOTLIGHTTARGET:
       {
          ObjectInfoBlock block { };
-         Object object;
+         Object object = null;
          char targetName[MAXNAMELEN];
 
          ReadChunks(ReadFrameInfoBlock, info, &block);
@@ -2007,7 +2011,8 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                }
                delete block.dummyName;
             }
-            object.parent = info->rootObject;
+            if(object)
+               object.parent = info->rootObject;
          }
          else
             object = info->rootObject.Find(targetName);

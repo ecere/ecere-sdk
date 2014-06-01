@@ -1999,7 +1999,7 @@ public class LFBDisplayDriver : DisplayDriver
                            int c;
                            for(c = 0; c < w; c++, dest++)
                            {
-                              Color destColor;
+                              Color destColor = 0;
                               if(pixelFormat == pixelFormat565)      { destColor = (Color)*(Color565 *)dest; }
                               else if(pixelFormat == pixelFormat555) { destColor = (Color)*(Color555 *)dest; }
                               else if(pixelFormat == pixelFormat444) { destColor = (Color)*(Color444 *)dest; }
@@ -3181,8 +3181,8 @@ public class LFBDisplayDriver : DisplayDriver
          int c, nb, glyphIndex = 0;
          unichar lastPack = 0;
          GlyphPack pack = font.asciiPack;
-         int wc;
-         uint * glyphs;
+         int wc = 0;
+         uint * glyphs = null;
          int numGlyphs = 0;
          bool rightToLeft = false;
          int fontEntryNum = 0;
@@ -3193,7 +3193,7 @@ public class LFBDisplayDriver : DisplayDriver
 
          for(c = 0; c < len || (numGlyphs && (rightToLeft ? (glyphIndex >= 0) : (glyphIndex < numGlyphs)));)
          {
-            uint glyphNo;
+            uint glyphNo = 0;
             uint packNo;
             if(numGlyphs && (rightToLeft ? (glyphIndex >= 0) : (glyphIndex < numGlyphs)))
             {

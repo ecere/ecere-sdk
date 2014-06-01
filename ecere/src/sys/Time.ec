@@ -682,7 +682,7 @@ public struct DateTime
       int c;
       bool foundDayOfTheWeek = false;
       bool foundDate = false;
-      DayOfTheWeek dayOfTheWeek;
+      DayOfTheWeek dayOfTheWeek = 0;
       int day = 0;
       int minute = 0;
       int second = 0;

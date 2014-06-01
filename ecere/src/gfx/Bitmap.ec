@@ -53,7 +53,7 @@ static subclass(BitmapFormat) FindFormat(const char * type)
 public ColorAlpha * LoadPalette(const char * fileName, const char * type)
 {
    char ext[MAX_EXTENSION];
-   subclass(BitmapFormat) format;
+   subclass(BitmapFormat) format = null;
    ColorAlpha * palette = null;
    int typeToTry = -1;
    Bitmap bitmap { };
@@ -511,7 +511,7 @@ public:
    {
       bool result = false;
       char ext[MAX_EXTENSION];
-      subclass(BitmapFormat) format;
+      subclass(BitmapFormat) format = null;
       int typeToTry = -1;
       const char * guessedType = type;
 
@@ -787,7 +787,7 @@ public:
    bool Save(const char * fileName, const char * type, void * options)
    {
       char ext[MAX_EXTENSION];
-      subclass(BitmapFormat) format;
+      subclass(BitmapFormat) format = null;
 
       if(!type)
          type = strlwr(GetExtension(fileName, ext));

@@ -631,7 +631,7 @@ public:
          {
             case stringList:
             {
-               Container<String> list = value;
+               Container<String> list = (void *)value;
                Iterator<String> item { list };
                item.Next();
                while(item.pointer)

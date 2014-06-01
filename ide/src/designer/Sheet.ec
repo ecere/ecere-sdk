@@ -1079,7 +1079,7 @@ class Sheet : Window
                      BitMember bitMember = (BitMember) member;
                      if(subDataType)
                      {
-                        DataValue value = { 0 };
+                        DataValue value { 0 };
                         value.ui = ((uint (*)(void *))(void *)prop.Get)(object);
                         value.ui &= ~ (uint)bitMember.mask;
                         value.ui |= *(uint32 *)setValue << bitMember.pos;
@@ -1735,7 +1735,8 @@ public:
          bool result = false;
          void * dataPtr, * data = null, * subData = null;
          void * propObject = null;
-         DataValue valueData = { 0 }, valueSubData = { 0 };
+         DataValue valueData { 0 };
+         DataValue valueSubData { 0 };
          uint bitValue;
 
          if(!mainDataType)

@@ -111,7 +111,7 @@ public struct Date
       bool gotAlphaMonth = false;
       DateTime time;
       int year, day;
-      Month month;
+      Month month = 0;
       int numerics[3];
       int len[3];
       int count = 0;

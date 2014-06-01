@@ -17,7 +17,7 @@ define SQUARE_H = 90;
 define BOARD_WIDTH = SQUARE_W * 8;
 define BOARD_HEIGHT = SQUARE_H * 8;
 
-static char * names[12] =
+static const char * names[12] =
 {
    "whitePawn", "whiteKnight", "whiteBishop", "whiteRook", "whiteQueen", "whiteKing",
    "blackPawn", "blackKnight", "blackBishop", "blackRook", "blackQueen", "blackKing"

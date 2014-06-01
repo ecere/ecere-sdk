@@ -749,7 +749,7 @@ public:
 
    bool AddName(Object object, const char * name)
    {
-      bool result;
+      bool result = false;
       if(this)
       {
          char * newName = CopyString(name);
@@ -854,7 +854,7 @@ public:
             while(true)
             {
                int nIndices = 0;
-               PrimitiveGroupType type;
+               PrimitiveGroupType type = (PrimitiveGroupType)-1;
                Material material = null;
                bool foundGroup = false;
 
@@ -1273,7 +1273,7 @@ public:
 private:
    Object()
    {
-      children.offset = (uint)&((Object)0).prev;
+      children.offset = (uint)(uintptr)&((Object)0).prev;
       transform.scaling = { 1, 1, 1 };
       transform.orientation = { 1,0,0,0 };
       flags.transform = true;
