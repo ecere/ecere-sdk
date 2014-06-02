@@ -3197,7 +3197,6 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                         Type ptrType { };
                         constType = { kind = pointerType, refCount = 1, type = ptrType };
                         CopyTypeInto(ptrType, convert.dataType.type);
-                        ptrType.refCount++;
                         ptrType.constant = true;
                      }
 
@@ -3223,10 +3222,10 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
                            }
                         }
                      }
-                     if(success)
-                        return true;
                      if(constType)
                         FreeType(constType);
+                     if(success)
+                        return true;
                   }
                }
             }

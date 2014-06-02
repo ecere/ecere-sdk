@@ -2765,6 +2765,7 @@ static void ProcessExpression(Expression exp)
 
                   s = exp.member.member.string;
                   exp.member.member.string = PrintString(prefix, ".", s);
+                  delete prefix;
                   delete s;
                }
                // Process this here since it won't be processed at the end...

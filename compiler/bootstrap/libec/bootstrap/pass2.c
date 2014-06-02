@@ -3507,6 +3507,7 @@ parentMember = curMember;
 }
 s = exp->__anon1.member.member->string;
 exp->__anon1.member.member->string = __ecereNameSpace__ecere__com__PrintString(__ecereClass_String, prefix, __ecereClass_char__PTR_, ".", __ecereClass_String, s, (void *)0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(prefix), prefix = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 }
 if(((unsigned int)((exp->usage & 0x1) >> 0)))

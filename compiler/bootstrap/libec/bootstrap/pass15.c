@@ -5057,7 +5057,6 @@ struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__e
 __ecereInstance1->kind = 13, __ecereInstance1->refCount = 1, __ecereInstance1->__anon1.type = ptrType, __ecereInstance1;
 });
 CopyTypeInto(ptrType, convert->dataType->__anon1.type);
-ptrType->refCount++;
 ptrType->constant = 0x1;
 }
 if((constType || convert->dataType != dest) && MatchTypes(source, constType ? constType : convert->dataType, conversions, (((void *)0)), (((void *)0)), 0x1, 0x0, 0x0, 0x1, warnConst))
@@ -5077,10 +5076,10 @@ success = 0x1;
 }
 }
 }
-if(success)
-return 0x1;
 if(constType)
 FreeType(constType);
+if(success)
+return 0x1;
 }
 }
 }
