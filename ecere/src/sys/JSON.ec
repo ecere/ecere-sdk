@@ -60,7 +60,7 @@ public:
             {
                value.p = string;
             }
-            else if(type && type.type == enumClass)
+            else if(type && (type.type == enumClass || type.type == unitClass))
             {
                if(((bool (*)(void *, void *, const char *))(void *)type._vTbl[__ecereVMethodID_class_OnGetDataFromString])(type, &value.i, string))
                   result = success;
@@ -492,7 +492,7 @@ public:
                               {
                                  // TOFIX: How to swiftly handle classes with base data type?
                                  if(type.type == structClass)
-                                    ; // Unhandled
+                                    ;
                                  else if(type.type == normalClass || type.type == noHeadClass)
                                  {
                                     void ** ptr = (void**)((byte *)*object + member._class.offset + member.offset);
@@ -795,46 +795,51 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
 {
    if(!strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *"))
    {
-      f.Puts("\"");
-      //if(strchr(value.p, '\"') || strchr(value.p, '\\'))
+      if(!value.p)
+         f.Puts("null");
+      else
       {
-         int c = 0;
-         int b = 0;
-         char buffer[1024];
-         char * string = value.p;
-         char ch;
-         while(true)
+         f.Puts("\"");
+         //if(strchr(value.p, '\"') || strchr(value.p, '\\'))
          {
-            ch = string[c++];
-            if(ch == '\"')
+            int c = 0;
+            int b = 0;
+            char buffer[1024];
+            char * string = value.p;
+            char ch;
+            while(true)
             {
-               buffer[b] = 0;
-               f.Puts(buffer);
-               f.Puts("\\\"");
-               b = 0;
+               ch = string[c++];
+               if(ch == '\"')
+               {
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\\"");
+                  b = 0;
+               }
+               else if(ch == '\\')
+               {
+                  buffer[b] = 0;
+                  f.Puts(buffer);
+                  f.Puts("\\\\");
+                  b = 0;
+               }
+               else if(b == sizeof(buffer)-2 || !ch)
+               {
+                  buffer[b++] = ch;
+                  if(ch) buffer[b] = 0;
+                  f.Puts(buffer);
+                  b = 0;
+                  if(!ch) break;
+               }
+               else
+                  buffer[b++] = ch;
             }
-            else if(ch == '\\')
-            {
-               buffer[b] = 0;
-               f.Puts(buffer);
-               f.Puts("\\\\");
-               b = 0;
-            }
-            else if(b == sizeof(buffer)-2 || !ch)
-            {
-               buffer[b++] = ch;
-               if(ch) buffer[b] = 0;
-               f.Puts(buffer);
-               b = 0;
-               if(!ch) break;
-            }
-            else
-               buffer[b++] = ch;
          }
+         /*else
+            f.Puts(value.p);*/
+         f.Puts("\"");
       }
-      /*else
-         f.Puts(value.p);*/
-      f.Puts("\"");
    }
    else if(!strcmp(type.name, "bool"))
    {
@@ -852,7 +857,7 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
       else
          f.Puts("unset");
    }
-   else if(type.type == enumClass)
+   else if(type.type == enumClass || type.type == unitClass)
    {
       f.Puts("\"");
       WriteNumber(f, type, value, indent);
