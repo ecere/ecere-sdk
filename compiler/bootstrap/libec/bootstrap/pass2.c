@@ -1915,7 +1915,7 @@ exp->__anon1.op.exp2 = MkExpOp(MkExpBrackets(MkListOne(MkExpCast(type, exp->__an
 }
 else
 {
-exp->__anon1.op.exp2 = MkExpOp(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(memberExp->__anon1.member.exp), '&', MkExpOp((((void *)0)), '~', MkExpConstant(mask))))), '|', MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(type, exp->__anon1.op.exp2))), LEFT_OP, MkExpConstant(shift)))));
+exp->__anon1.op.exp2 = MkExpOp(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(memberExp->__anon1.member.exp), '&', MkExpOp((((void *)0)), '~', MkExpConstant(mask))))), '|', MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(type, MkExpBrackets(MkListOne(exp->__anon1.op.exp2))))), LEFT_OP, MkExpConstant(shift)))));
 }
 memberExp->__anon1.member.exp = (((void *)0));
 FreeExpression(memberExp);

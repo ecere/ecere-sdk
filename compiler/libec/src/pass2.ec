@@ -659,7 +659,7 @@ static void ProcessExpression(Expression exp)
                                MkExpBrackets(MkListOne(MkExpOp(CopyExpression(memberExp.member.exp), '&',
                                  MkExpOp(null, '~', MkExpConstant(mask))))), '|',
                                MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(
-                                 MkListOne(MkExpCast(type, exp.op.exp2))), LEFT_OP, MkExpConstant(shift)))));
+                                 MkListOne(MkExpCast(type, MkExpBrackets(MkListOne(exp.op.exp2))))), LEFT_OP, MkExpConstant(shift)))));
                          }
 
                          memberExp.member.exp = null;
