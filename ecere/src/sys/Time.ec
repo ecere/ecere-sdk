@@ -296,6 +296,17 @@ public class SecSince1970 : int64
       return ((DateTime)this).OnGetString(tempString, fieldData, needClass);
    }
 
+   bool OnGetDataFromString(const char * string)
+   {
+      DateTime dt { };
+      if(dt.OnGetDataFromString(string))
+      {
+         this = dt;
+         return true;
+      }
+      return false;
+   }
+
    // Is this required?
    int OnCompare(SecSince1970 data2)
    {
