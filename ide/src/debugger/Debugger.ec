@@ -1063,7 +1063,7 @@ class Debugger
       char relativeFilePath[MAX_LOCATION];
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::RunToCursor()");
       _ChangeUserAction(runToCursor);
-      WorkspaceGetRelativePath(absoluteFilePath, relativeFilePath, null);
+      ide.workspace.GetRelativePath(absoluteFilePath, relativeFilePath, null);
 
       if(bpRunToCursor && bpRunToCursor.inserted && symbols)
       {
@@ -1340,7 +1340,7 @@ class Debugger
          Project owner;
          char relativePath[MAX_LOCATION];
 
-         WorkspaceGetRelativePath(absolutePath, relativePath, &owner);
+         ide.workspace.GetRelativePath(absolutePath, relativePath, &owner);
 
          if(!owner && !FileExists(absolutePath))
          {
@@ -2100,7 +2100,7 @@ class Debugger
       GdbExecCommon();
       if(absoluteFilePath)
       {
-         WorkspaceGetRelativePath(absoluteFilePath, relativeFilePath, null);
+         ide.workspace.GetRelativePath(absoluteFilePath, relativeFilePath, null);
          if(!GdbCommand(0.1, true, "-exec-until %s:%d", relativeFilePath, lineNumber))
          {
             GetLastDirectory(relativeFilePath, relativeFilePath);
@@ -2126,7 +2126,7 @@ class Debugger
       GdbExecCommon();
       if(lineNumber)
       {
-         WorkspaceGetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null);
+         ide.workspace.GetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null);
          if(!GdbCommand(0.1, true, "advance %s:%d", relativeFilePath, lineNumber)) // should use -exec-advance -- GDB/MI implementation missing
          {
             GetLastDirectory(relativeFilePath, relativeFilePath);
@@ -4822,7 +4822,7 @@ class Breakpoint : struct
          {
             if(!strcmp(prjName, prj.name))
             {
-               if(ProjectGetAbsoluteFromRelativePath(prj, filePath, fullPath))
+               if(prj.GetAbsoluteFromRelativePath(filePath, fullPath))
                {
                   property::absoluteFilePath = fullPath;
                   project = prj;
@@ -4836,7 +4836,7 @@ class Breakpoint : struct
       else
       {
          Project prj = ide.project;
-         if(ProjectGetAbsoluteFromRelativePath(prj, filePath, fullPath))
+         if(prj.GetAbsoluteFromRelativePath(filePath, fullPath))
          {
             property::absoluteFilePath = fullPath;
             project = prj;
@@ -5046,102 +5046,4 @@ void GDBFallBack(Expression exp, String expString)
       exp.constant = result;
       exp.type = constantExp;
    }
-}
-
-static Project WorkspaceGetFileOwner(const char * absolutePath)
-{
-   Project owner = null;
-   for(prj : ide.workspace.projects)
-   {
-      if(prj.topNode.FindByFullPath(absolutePath, false))
-      {
-         owner = prj;
-         break;
-      }
-   }
-   if(!owner)
-      WorkspaceGetObjectFileNode(absolutePath, &owner);
-   return owner;
-}
-
-static ProjectNode WorkspaceGetObjectFileNode(const char * filePath, Project * project)
-{
-   ProjectNode node = null;
-   char ext[MAX_EXTENSION];
-   GetExtension(filePath, ext);
-   if(ext[0])
-   {
-      IntermediateFileType type = IntermediateFileType::FromExtension(ext);
-      if(type)
-      {
-         char fileName[MAX_FILENAME];
-         GetLastDirectory(filePath, fileName);
-         if(fileName[0])
-         {
-            DotMain dotMain = DotMain::FromFileName(fileName);
-            for(prj : ide.workspace.projects)
-            {
-               if((node = prj.FindNodeByObjectFileName(fileName, type, dotMain, null)))
-               {
-                  if(project)
-                     *project = prj;
-                  break;
-               }
-            }
-         }
-      }
-   }
-   return node;
-}
-
-static ProjectNode ProjectGetObjectFileNode(Project project, const char * filePath)
-{
-   ProjectNode node = null;
-   char ext[MAX_EXTENSION];
-   GetExtension(filePath, ext);
-   if(ext[0])
-   {
-      IntermediateFileType type = IntermediateFileType::FromExtension(ext);
-      if(type)
-      {
-         char fileName[MAX_FILENAME];
-         GetLastDirectory(filePath, fileName);
-         if(fileName[0])
-         {
-            DotMain dotMain = DotMain::FromFileName(fileName);
-            node = project.FindNodeByObjectFileName(fileName, type, dotMain, null);
-         }
-      }
-   }
-   return node;
-}
-
-static void WorkspaceGetRelativePath(const char * absolutePath, char * relativePath, Project * owner)
-{
-   Project prj = WorkspaceGetFileOwner(absolutePath);
-   if(owner)
-      *owner = prj;
-   if(!prj)
-      prj = ide.workspace.projects.firstIterator.data;
-   if(prj)
-   {
-      MakePathRelative(absolutePath, prj.topNode.path, relativePath);
-      MakeSlashPath(relativePath);
-   }
-   else
-      relativePath[0] = '\0';
-}
-
-static bool ProjectGetAbsoluteFromRelativePath(Project project, const char * relativePath, char * absolutePath)
-{
-   ProjectNode node = project.topNode.FindWithPath(relativePath, false);
-   if(!node)
-      node = ProjectGetObjectFileNode(project, relativePath);
-   if(node)
-   {
-      strcpy(absolutePath, node.project.topNode.path);
-      PathCat(absolutePath, relativePath);
-      MakeSlashPath(absolutePath);
-   }
-   return node != null;
 }

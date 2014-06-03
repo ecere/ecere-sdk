@@ -1349,6 +1349,42 @@ private:
    }
 
 #ifndef MAKEFILE_GENERATOR
+   ProjectNode GetObjectFileNode(const char * filePath)
+   {
+      ProjectNode node = null;
+      char ext[MAX_EXTENSION];
+      GetExtension(filePath, ext);
+      if(ext[0])
+      {
+         IntermediateFileType type = IntermediateFileType::FromExtension(ext);
+         if(type)
+         {
+            char fileName[MAX_FILENAME];
+            GetLastDirectory(filePath, fileName);
+            if(fileName[0])
+            {
+               DotMain dotMain = DotMain::FromFileName(fileName);
+               node = FindNodeByObjectFileName(fileName, type, dotMain, null);
+            }
+         }
+      }
+      return node;
+   }
+
+   bool GetAbsoluteFromRelativePath(const char * relativePath, char * absolutePath)
+   {
+      ProjectNode node = topNode.FindWithPath(relativePath, false);
+      if(!node)
+         node = GetObjectFileNode(relativePath);
+      if(node)
+      {
+         strcpy(absolutePath, node.project.topNode.path);
+         PathCat(absolutePath, relativePath);
+         MakeSlashPath(absolutePath);
+      }
+      return node != null;
+   }
+
    void MarkChanges(ProjectNode node)
    {
       for(cfg : topNode.configurations)

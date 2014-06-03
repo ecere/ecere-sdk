@@ -2681,7 +2681,7 @@ class IDEWorkSpace : Window
       FileAttribs fileAttribs;
 
       // support for valgrind output
-      if((s = strstr(text, "==")) && (s = strstr(s+2, "==")) && (s = strstr(s+2, ":")) && (s = strstr(s+1, ":")))
+      if((s = strstr(text, "==")) && s == text && (s = strstr(s+2, "==")) && (s = strstr(s+2, ":")) && (s = strstr(s+1, ":")))
       {
          colon = s;
          for(; s>text; s--)
@@ -2791,10 +2791,11 @@ class IDEWorkSpace : Window
             }
             if(!done)
             {
+               Project project;
+               ProjectNode node;
                for(p : ide.workspace.projects)
                {
-                  ProjectNode node = p.topNode.Find(filePath, false);
-                  if(node)
+                  if((node = p.topNode.Find(filePath, false)))
                   {
                      node.GetFullFilePath(completePath);
                      if((fileAttribs = FileExists(completePath)).isFile)
@@ -2804,6 +2805,9 @@ class IDEWorkSpace : Window
                      }
                   }
                }
+               if(!node && (node = workspace.GetObjectFileNode(filePath, &project, completePath)) && project &&
+                     (fileAttribs = FileExists(completePath)).isFile)
+                  CodeLocationGoTo(completePath, fileAttribs, line, col);
             }
          }
       }

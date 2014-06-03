@@ -442,6 +442,81 @@ public:
       return nodes;
    }
 
+   Project GetFileOwner(const char * absolutePath)
+   {
+      Project owner = null;
+      for(prj : projects)
+      {
+         if(prj.topNode.FindByFullPath(absolutePath, false))
+         {
+            owner = prj;
+            break;
+         }
+      }
+      if(!owner)
+         GetObjectFileNode(absolutePath, &owner, null);
+      return owner;
+   }
+
+   void GetRelativePath(const char * absolutePath, char * relativePath, Project * owner)
+   {
+      Project prj = GetFileOwner(absolutePath);
+      if(owner)
+         *owner = prj;
+      if(!prj)
+         prj = projects.firstIterator.data;
+      if(prj)
+      {
+         MakePathRelative(absolutePath, prj.topNode.path, relativePath);
+         MakeSlashPath(relativePath);
+      }
+      else
+         relativePath[0] = '\0';
+   }
+
+   ProjectNode GetObjectFileNode(const char * filePath, Project * project, char * fullPath)
+   {
+      ProjectNode node = null;
+      char ext[MAX_EXTENSION];
+      GetExtension(filePath, ext);
+      if(ext[0])
+      {
+         IntermediateFileType type = IntermediateFileType::FromExtension(ext);
+         if(type)
+         {
+            char fileName[MAX_FILENAME];
+            GetLastDirectory(filePath, fileName);
+            if(fileName[0])
+            {
+               DotMain dotMain = DotMain::FromFileName(fileName);
+               for(prj : ide.workspace.projects)
+               {
+                  if((node = prj.FindNodeByObjectFileName(fileName, type, dotMain, null)))
+                  {
+                     if(project)
+                        *project = prj;
+                     if(fullPath)
+                     {
+                        const char * cfgName = prj.config ? prj.config.name : "";
+                        char name[MAX_FILENAME];
+                        CompilerConfig compiler = ideSettings.GetCompilerConfig(prj.lastBuildCompilerName);
+                        DirExpression objDir = prj.GetObjDir(compiler, prj.config, bitDepth);
+                        strcpy(fullPath, prj.topNode.path);
+                        PathCatSlash(fullPath, objDir.dir);
+                        node.GetObjectFileName(name, prj.configsNameCollisions[cfgName], type, dotMain);
+                        PathCatSlash(fullPath, name);
+                        delete objDir;
+                        delete compiler;
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      return node;
+   }
+
    OpenedFileInfo UpdateOpenedFileInfo(const char * fileName, OpenedFileState state)
    {
       char filePath[MAX_LOCATION];
