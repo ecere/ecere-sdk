@@ -14084,8 +14084,6 @@ extern struct Expression * GetTemplateArgExp(struct TemplateParameter * param, s
 
 extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
 
-extern struct Expression * MkExpTypeSize(struct TypeName * typeName);
-
 extern struct Expression * MkExpClass(struct __ecereNameSpace__ecere__sys__OldList *  specifiers, struct Declarator * decl);
 
 static void ProcessStatement(struct Statement * stmt);
@@ -14896,7 +14894,7 @@ ProcessExpressionType(exp->__anon1.op.exp1);
 if(type2->kind != 13)
 {
 ProcessExpressionType(classExp);
-exp->__anon1.op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp->__anon1.op.exp2, '*', MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("5")), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("0"))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))))))));
+exp->__anon1.op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp->__anon1.op.exp2, '*', MkExpMember(classExp, MkIdentifier("typeSize")))));
 if(!exp->__anon1.op.exp2->expType)
 {
 if(type2)
@@ -14956,7 +14954,7 @@ struct Expression * classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass")
 
 ProcessExpressionType(classExp);
 exp->type = 5;
-exp->__anon1.list = MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->__anon1.op.exp1))), exp->__anon1.op.op, MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->__anon1.op.exp2)))))), '/', MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize")))))));
+exp->__anon1.list = MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->__anon1.op.exp1))), exp->__anon1.op.op, MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(exp->__anon1.op.exp2)))))), '/', MkExpMember(classExp, MkIdentifier("typeSize"))));
 ProcessExpressionType(((struct Expression *)(*exp->__anon1.list).first)->__anon1.op.exp2);
 FreeType(dummy);
 return ;

@@ -2,8 +2,6 @@ namespace com;
 
 import "Container"
 
-#define Tsize ((class(T).type == noHeadClass || class(T).type == normalClass) ? sizeof(void *) : class(T).typeSize)
-
 public class Array : Container
 {
    class_fixed
@@ -62,7 +60,7 @@ public:
          array = renew array T[count + 1];
          if(after) after = array + offset;
       }
-      memmove(after ? (after + 2) : (array + 1), after ? (after + 1) : array, (count - offset) * Tsize);
+      memmove(after ? (after + 2) : (array + 1), after ? (after + 1) : array, (count - offset) * class(T).typeSize);
       if(after)
          after[1] = value;
       else
@@ -70,7 +68,7 @@ public:
       count++;
       return (IteratorPointer)(after ? (after + 1) : array);
 */
-      uint tsize = Tsize;
+      uint tsize = class(T).typeSize;
       byte * pos = ip ? ((byte *)ip + tsize) : (byte *)array;
       if(count+1 > minAllocSize)
       {
@@ -94,7 +92,7 @@ public:
    void Remove(IteratorPointer ip)
    {
       T * it = (T *)ip;
-      memmove(it, it + 1, (count - (it - array) - 1) * Tsize);
+      memmove(it, it + 1, (count - (it - array) - 1) * class(T).typeSize);
       count--;
       if(count + 1 > minAllocSize)
          array = renew array T[count];
@@ -129,7 +127,7 @@ public:
             if(value > minAllocSize)
                array = renew0 array T[value];
             else if(value > count)
-               memset(array + count, 0, (value - count) * Tsize);
+               memset(array + count, 0, (value - count) * class(T).typeSize);
             count = value;
          }
       }
@@ -159,7 +157,7 @@ public:
       if((source._class == class(BuiltInContainer) && ((struct BuiltInContainer *)source)->type.type != structClass ) ||
          eClass_IsDerived(source._class, class(Array)))
       {
-         memcpy(array, ((Array)source).array, count * Tsize);
+         memcpy(array, ((Array)source).array, count * class(T).typeSize);
       }
       else
       {

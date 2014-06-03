@@ -1114,7 +1114,7 @@ static void ProcessExpression(Expression exp)
                Expression argExp = GetTemplateArgExp(exp.op.exp1.expType.templateParameter, thisClass, false);
                if(argExp)
                {
-                  // memcpy((byte *)array + (count * dataTypeClass.size), dataTypeClass.type == structClass) ? value : &value, dataTypeClass.size);
+                  // memcpy((byte *)array + (count * dataTypeClass.size), (dataTypeClass.type == structClass) ? value : &value, dataTypeClass.size);
 
                   Expression classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
                   OldList * args = MkList();
@@ -1124,13 +1124,7 @@ static void ProcessExpression(Expression exp)
                   ProcessExpressionType(classExp);
                   ProcessExpression(classExp);
 
-                  sizeExp = MkExpCondition(MkExpBrackets(MkListOne(
-                        MkExpOp(
-                           MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))),
-                           OR_OP,
-                           MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))),
-                           MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)))),
-                           MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize")));
+                  sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 
                   if(exp.op.exp1.type == indexExp)
                   {
@@ -1214,16 +1208,6 @@ static void ProcessExpression(Expression exp)
                         MkListOne(
                            MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), CopyExpression(exp.op.exp2))))),
 
-                     // ((class.type == normalClass || class.type == noHeadClass) ?
-                     MkExpCondition(MkExpBrackets(MkListOne(
-                        MkExpOp(
-                           MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))),
-                           OR_OP,
-                           MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))),
-                        // *((void **)array)
-                        MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpOp(null, '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, MkPointer(null, null)), null)),
-                           CopyExpression(exp.op.exp2))))))),
-
                      // ((class.size == 1) ?
                      MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))),
                         // *((byte *)array)
@@ -1244,7 +1228,7 @@ static void ProcessExpression(Expression exp)
 
                      // *((uint64 *)array)
                      MkExpOp(null, '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)),
-                        exp.op.exp2)))))))))))))))))))));
+                        exp.op.exp2))))))))))))))))))));
 
                   // Add this to the context
                   thisClass = curExternal.function ? curExternal.function._class : null;
@@ -1347,20 +1331,9 @@ static void ProcessExpression(Expression exp)
                   exp.list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)),
                                  MkExpOp(null, '&', exp2)), '+',
                                     MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")),
-                                       MkListOne((e = MkExpCondition(MkExpBrackets(MkListOne(
+                                       MkListOne((e = MkExpMember(classExp, MkIdentifier("typeSize")))))));
 
-                              MkExpOp(
-                                 MkExpOp(
-                                    MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))),
-                                       OR_OP,
-                                       MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))),
-                                       OR_OP,
-                                       MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass"))))
-                             )),
-                           MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)))),
-                           MkExpMember(classExp, MkIdentifier("typeSize"))))))));
-
-                  // Add this to the context
+                                             // Add this to the context
                   thisClass = curExternal.function ? curExternal.function._class : null;
                   {
                      /*Symbol thisSymbol
@@ -1469,16 +1442,6 @@ static void ProcessExpression(Expression exp)
                         MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), CopyExpression(exp.index.exp)))), '+',
                         MkExpOp(MkExpBrackets(CopyList(exp.index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))),
 
-                  // ((class.type == normalClass || class.type == noHeadClass) ?
-                  MkExpCondition(MkExpBrackets(MkListOne(
-                     MkExpOp(
-                        MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))),
-                        OR_OP,
-                        MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))),
-                     // ((void **)array)[i]
-                     MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, MkPointer(null, null)), null)),
-                        CopyExpression(exp.index.exp)))), CopyList(exp.index.index, CopyExpression)))),
-
                   // ((class.size == 1) ?
                   MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))),
                      // ((byte *)array)[i]
@@ -1499,7 +1462,7 @@ static void ProcessExpression(Expression exp)
 
                   // ((uint64 *)array)[i]
                   MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)),
-                     exp.index.exp))), exp.index.index))))))))))))))))));
+                     exp.index.exp))), exp.index.index)))))))))))))))));
 
                // Add this to the context
                thisClass = curExternal.function ? curExternal.function._class : null;
@@ -2992,20 +2955,7 @@ static void ProcessExpression(Expression exp)
                ProcessExpression(classExp);
 
                exp.type = bracketsExp;
-               exp.list = MkListOne(
-                  MkExpCondition(MkExpBrackets(MkListOne(
-                     MkExpOp(
-                        MkExpOp(
-                           MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP,
-                              MkExpIdentifier(MkIdentifier("normalClass"))),
-                        OR_OP,
-                        MkExpOp(
-                           MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP,
-                              MkExpIdentifier(MkIdentifier("noHeadClass"))
-                            )))),
-                     MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)))),
-                     MkExpMember(classExp, MkIdentifier("typeSize")))
-                  );
+               exp.list = MkListOne(MkExpMember(classExp, MkIdentifier("typeSize")));
 
                ProcessExpressionType(exp);
                ProcessExpression(exp);

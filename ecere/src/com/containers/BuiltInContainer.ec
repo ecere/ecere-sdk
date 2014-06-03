@@ -29,19 +29,17 @@ public:
    virtual IteratorPointer GetPrev(IteratorPointer pointer)
    {
       return (IteratorPointer)((pointer && (byte *)pointer > (byte *)data) ?
-         ((byte *)pointer - ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize)) : null);
+         ((byte *)pointer - type.typeSize) : null);
    }
    virtual IteratorPointer GetNext(IteratorPointer pointer)
    {
-      return (IteratorPointer)((pointer && (byte *)pointer < (byte *)data + (count - 1) *
-         ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize)) ?
-         ((byte *)pointer + ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize)) : null);
+      return (IteratorPointer)((pointer && (byte *)pointer < (byte *)data + (count - 1) * type.typeSize) ?
+         ((byte *)pointer + type.typeSize) : null);
    }
    virtual uint64 GetData(IteratorPointer pointer)
    {
       uint64 * item = (uint64 *)pointer;
       return ((((type.type == structClass) ? ((uint64)item) :
-         (type.type == normalClass || type.type == noHeadClass) ? (uint64)*((void **)item) :
             ((type.typeSize == 1) ? *((unsigned char *)item) :
                ((type.typeSize == 2) ? *((unsigned short *)item) :
                   ((type.typeSize == 4) ? *((unsigned int *)item) : *((uint64 *)item)))))));
@@ -52,8 +50,7 @@ public:
    }
    virtual IteratorPointer GetAtPosition(const uint64 pos, bool create)
    {
-      return data ? (IteratorPointer)((byte *)data +
-         ((type.type == noHeadClass || type.type == normalClass) ? sizeof(void *) : type.typeSize)) : null;
+      return data ? (IteratorPointer)((byte *)data + type.typeSize) : null;
    }
    virtual IteratorPointer Insert(IteratorPointer after, uint64 value)
    {

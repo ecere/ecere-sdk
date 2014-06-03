@@ -1644,7 +1644,7 @@ switch(exp->__anon1.op.op)
 {
 case '=':
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 break;
 case MUL_ASSIGN:
 case DIV_ASSIGN:
@@ -1656,19 +1656,19 @@ case RIGHT_ASSIGN:
 case AND_ASSIGN:
 case XOR_ASSIGN:
 case OR_ASSIGN:
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 break;
 case INC_OP:
 case DEC_OP:
 case '&':
 if(exp->__anon1.op.exp1 && exp->__anon1.op.exp2)
 {
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 }
 else if(exp->__anon1.op.exp2)
 {
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x40) | (((unsigned int)0x1) << 6);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x40) | (((unsigned int)(0x1)) << 6);
 }
 break;
 case '*':
@@ -1676,12 +1676,12 @@ case '+':
 case '-':
 if(exp->__anon1.op.exp1)
 {
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 }
 case '~':
 case '!':
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 break;
 case '/':
 case '%':
@@ -1698,9 +1698,9 @@ case '^':
 case AND_OP:
 case OR_OP:
 if(exp->__anon1.op.exp1)
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 break;
 }
 if(exp->__anon1.op.op == '=' || exp->__anon1.op.op == MUL_ASSIGN || exp->__anon1.op.op == DIV_ASSIGN || exp->__anon1.op.op == ADD_ASSIGN || exp->__anon1.op.op == MOD_ASSIGN || exp->__anon1.op.op == SUB_ASSIGN || exp->__anon1.op.op == LEFT_ASSIGN || exp->__anon1.op.op == RIGHT_ASSIGN || exp->__anon1.op.op == AND_ASSIGN || exp->__anon1.op.op == OR_ASSIGN || exp->__anon1.op.op == XOR_ASSIGN || exp->__anon1.op.op == INC_OP || exp->__anon1.op.op == DEC_OP)
@@ -1789,8 +1789,8 @@ tempExp->expType = MkClassType(propertyClass->fullName);
 parentExp->__anon1.member.exp = tempExp;
 value = MkExpBrackets(MkList());
 copy = CopyExpression(topExp);
-copy->usage = (copy->usage & ~0x1) | (((unsigned int)0x1) << 0);
-copy->usage = (copy->usage & ~0x20) | (((unsigned int)0x1) << 5);
+copy->usage = (copy->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+copy->usage = (copy->usage & ~0x20) | (((unsigned int)(0x1)) << 5);
 ListAdd(value->__anon1.list, copy);
 ListAdd(value->__anon1.list, MkExpOp(exp->__anon1.op.exp1, exp->__anon1.op.op, exp->__anon1.op.exp2));
 ListAdd(value->__anon1.list, CopyExpression(tempExp));
@@ -1815,8 +1815,8 @@ tempExp->expType = MkClassType(propertyClass->fullName);
 parentExp->__anon1.member.exp = tempExp;
 value = MkExpBrackets(MkList());
 copy = CopyExpression(topExp);
-copy->usage = (copy->usage & ~0x1) | (((unsigned int)0x1) << 0);
-copy->usage = (copy->usage & ~0x20) | (((unsigned int)0x1) << 5);
+copy->usage = (copy->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+copy->usage = (copy->usage & ~0x20) | (((unsigned int)(0x1)) << 5);
 ListAdd(value->__anon1.list, copy);
 ListAdd(value->__anon1.list, MkExpOp(exp->__anon1.op.exp1, exp->__anon1.op.op, exp->__anon1.op.exp2));
 ListAdd(value->__anon1.list, CopyExpression(tempExp));
@@ -2027,14 +2027,14 @@ exp2 = (((void *)0));
 }
 value->expType = memberExp->expType;
 memberExp->expType->refCount++;
-value->usage = (value->usage & ~0x4) | (((unsigned int)0x1) << 2);
+value->usage = (value->usage & ~0x4) | (((unsigned int)(0x1)) << 2);
 }
 else if(value)
 {
 exp2 = (((void *)0));
 }
 if(value)
-value->usage = (value->usage & ~0x4) | (((unsigned int)0x1) << 2);
+value->usage = (value->usage & ~0x4) | (((unsigned int)(0x1)) << 2);
 DeclareProperty(prop, setName, getName);
 if(memberExp->__anon1.member.exp)
 ProcessExpression(memberExp->__anon1.member.exp);
@@ -2210,7 +2210,7 @@ struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 
 exp->type = 5;
 exp->__anon1.list = MkList();
-object->usage = (object->usage & ~0x80) | (((unsigned int)0x1) << 7);
+object->usage = (object->usage & ~0x80) | (((unsigned int)(0x1)) << 7);
 ProcessExpression(object);
 ListAdd(args, object);
 if(exp->expType && exp->expType->kind == 8 && exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered && exp->expType->__anon1._class->__anon1.registered->type == 0 && strcmp(exp->expType->__anon1._class->__anon1.registered->dataTypeString, "char *"))
@@ -2282,7 +2282,7 @@ struct Expression * sizeExp;
 
 ProcessExpressionType(classExp);
 ProcessExpression(classExp);
-sizeExp = MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize")));
+sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 if(exp->__anon1.op.exp1->type == 6)
 {
 struct Expression * indexExp = derefExp->__anon1.index.exp;
@@ -2338,7 +2338,7 @@ ProcessExpressionType(classExp);
 ProcessExpression(classExp);
 sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 exp->type = 5;
-exp->__anon1.list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), CopyExpression(exp->__anon1.op.exp2))))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), MkPointer((((void *)0)), (((void *)0)))), (((void *)0)))), CopyExpression(exp->__anon1.op.exp2))))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.op.exp2)))))), MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->__anon1.op.exp2)))))))))))))))))))));
+exp->__anon1.list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), CopyExpression(exp->__anon1.op.exp2))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.op.exp2)))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.op.exp2)))))), MkExpOp((((void *)0)), '*', MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->__anon1.op.exp2))))))))))))))))))));
 thisClass = curExternal->__anon1.function ? curExternal->__anon1.function->_class : (((void *)0));
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(thisClass->fullName), thisSymbol);
@@ -2406,7 +2406,7 @@ struct Expression * e;
 ProcessExpressionType(classExp);
 ProcessExpression(classExp);
 exp->type = 5;
-exp->__anon1.list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpOp((((void *)0)), '&', exp2)), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne((e = MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))))))));
+exp->__anon1.list = MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpOp((((void *)0)), '&', exp2)), '+', MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne((e = MkExpMember(classExp, MkIdentifier("typeSize")))))));
 thisClass = curExternal->__anon1.function ? curExternal->__anon1.function->_class : (((void *)0));
 {
 ProcessExpressionType(e);
@@ -2466,7 +2466,7 @@ else
 checkedExp = checkedExp->__anon1.cast.exp;
 }
 exp->__anon1.index.exp->tempCount = exp->tempCount;
-exp->__anon1.index.exp->usage = (exp->__anon1.index.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.index.exp->usage = (exp->__anon1.index.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.index.exp);
 if(exp->__anon1.index.exp->expType && exp->__anon1.index.exp->expType->kind == 13 && exp->__anon1.index.exp->expType->__anon1.type && exp->__anon1.index.exp->expType->__anon1.type->kind == 20)
 {
@@ -2481,7 +2481,7 @@ ProcessExpressionType(classExp);
 ProcessExpression(classExp);
 sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 exp->type = 5;
-exp->__anon1.list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), '+', MkExpOp(MkExpBrackets(CopyList(exp->__anon1.index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), MkPointer((((void *)0)), (((void *)0)))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression)))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->__anon1.index.exp))), exp->__anon1.index.index))))))))))))))))));
+exp->__anon1.list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), '+', MkExpOp(MkExpBrackets(CopyList(exp->__anon1.index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->__anon1.index.exp))), exp->__anon1.index.index)))))))))))))))));
 thisClass = curExternal->__anon1.function ? curExternal->__anon1.function->_class : (((void *)0));
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(thisClass->fullName), thisSymbol);
@@ -2499,7 +2499,7 @@ return ;
 for(e = (*exp->__anon1.index.index).first; e; e = e->next)
 {
 if(!e->next)
-e->usage = (e->usage & ~0x1) | (((unsigned int)0x1) << 0);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(e);
 }
 exp->tempCount = exp->__anon1.index.exp->tempCount;
@@ -2579,15 +2579,15 @@ for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
 int __simpleStruct2, __simpleStruct3;
 int __simpleStruct0, __simpleStruct1;
 
-e->usage = (e->usage & ~0x1) | (((unsigned int)0x1) << 0);
-e->usage = (e->usage & ~0x4) | (((unsigned int)0x1) << 2);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+e->usage = (e->usage & ~0x4) | (((unsigned int)(0x1)) << 2);
 e->tempCount = (__simpleStruct0 = e->tempCount, __simpleStruct1 = exp->tempCount, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
 ProcessExpression(e);
 exp->tempCount = (__simpleStruct2 = exp->tempCount, __simpleStruct3 = e->tempCount, (__simpleStruct2 > __simpleStruct3) ? __simpleStruct2 : __simpleStruct3);
 }
 }
-exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
-exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x8) | (((unsigned int)0x1) << 3);
+exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x8) | (((unsigned int)(0x1)) << 3);
 exp->__anon1.call.exp->tempCount = exp->tempCount;
 ProcessExpression(exp->__anon1.call.exp);
 if(exp->__anon1.call.exp->expType && exp->__anon1.call.exp->expType->kind == 16)
@@ -3274,7 +3274,7 @@ struct __ecereNameSpace__ecere__com__Class * propertyClass;
 char * nameToUse = convertTo ? setName : getName;
 
 FreeIdentifier(exp->__anon1.member.member);
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.member.exp);
 DeclareProperty(prop, setName, getName);
 propertyClass = convertTo ? _class : ((((struct Symbol *)prop->symbol)->type && ((struct Symbol *)prop->symbol)->type->kind == 8) ? ((struct Symbol *)prop->symbol)->type->__anon1._class->__anon1.registered : ((struct Symbol *)prop->symbol)->_class);
@@ -3424,7 +3424,7 @@ if((((unsigned int)((exp->usage & 0x1) >> 0)) || exp->__anon1.member.exp->expTyp
 char name[1024];
 
 FreeIdentifier(exp->__anon1.member.member);
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.member.exp);
 if(method->type == 1)
 {
@@ -3512,7 +3512,7 @@ exp->__anon1.member.member->string = __ecereNameSpace__ecere__com__PrintString(_
 }
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
 {
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 }
 ProcessExpression(exp->__anon1.member.exp);
 if(type->kind == 8 && type->__anon1._class && type->__anon1._class->__anon1.registered)
@@ -3647,8 +3647,8 @@ exp->type = 9;
 FreeSpecifier(memberClassSpecifier);
 if(exp->__anon1.member.exp && (exp->type == 8 || exp->type == 9))
 {
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x10) | (((unsigned int)0x1) << 4);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x10) | (((unsigned int)(0x1)) << 4);
 exp->__anon1.member.exp->tempCount = exp->tempCount;
 ProcessExpression(exp->__anon1.member.exp);
 exp->tempCount = exp->__anon1.member.exp->tempCount;
@@ -3668,7 +3668,7 @@ break;
 }
 case 9:
 {
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.member.exp);
 break;
 }
@@ -3689,7 +3689,7 @@ classExp = MkExpMember(argExp, MkIdentifier("dataTypeClass"));
 ProcessExpressionType(classExp);
 ProcessExpression(classExp);
 exp->type = 5;
-exp->__anon1.list = MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass"))), OR_OP, MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass")))))), MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))))), MkExpMember(classExp, MkIdentifier("typeSize"))));
+exp->__anon1.list = MkListOne(MkExpMember(classExp, MkIdentifier("typeSize")));
 ProcessExpressionType(exp);
 ProcessExpression(exp);
 }
@@ -3714,16 +3714,16 @@ case 12:
 struct Expression * e;
 
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
-exp->__anon1.cond.cond->usage = (exp->__anon1.cond.cond->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.cond.cond->usage = (exp->__anon1.cond.cond->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.cond.cond);
 for(e = (*exp->__anon1.cond.exp).first; e; e = e->next)
 {
 if(!e->next && ((unsigned int)((exp->usage & 0x1) >> 0)))
-e->usage = (e->usage & ~0x1) | (((unsigned int)0x1) << 0);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(e);
 }
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
-exp->__anon1.cond.elseExp->usage = (exp->__anon1.cond.elseExp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.cond.elseExp->usage = (exp->__anon1.cond.elseExp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.cond.elseExp);
 break;
 }
@@ -3789,7 +3789,7 @@ switch(init->type)
 case 0:
 if(init->__anon1.exp)
 {
-init->__anon1.exp->usage = (init->__anon1.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+init->__anon1.exp->usage = (init->__anon1.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(init->__anon1.exp);
 if(init->__anon1.exp->destType && init->__anon1.exp->destType->kind == 8 && init->__anon1.exp->destType->__anon1._class && init->__anon1.exp->destType->__anon1._class->__anon1.registered && init->__anon1.exp->destType->__anon1._class->__anon1.registered->type == 5)
 {
@@ -3844,7 +3844,7 @@ break;
 case 1:
 if(stmt->__anon1.caseStmt.exp)
 {
-stmt->__anon1.caseStmt.exp->usage = (stmt->__anon1.caseStmt.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+stmt->__anon1.caseStmt.exp->usage = (stmt->__anon1.caseStmt.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(stmt->__anon1.caseStmt.exp);
 }
 if(stmt->__anon1.caseStmt.stmt)
@@ -3898,7 +3898,7 @@ if(stmt->__anon1.ifStmt.exp)
 {
 struct Expression * exp;
 
-((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.ifStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -3916,7 +3916,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.switchStmt.exp && (*stmt->__anon1.switchStmt.exp).last)
 {
-((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.switchStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -3931,7 +3931,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.whileStmt.exp && (*stmt->__anon1.whileStmt.exp).last)
 {
-((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.whileStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -3946,7 +3946,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.doWhile.exp && (*stmt->__anon1.doWhile.exp).last)
 {
-((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.doWhile.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -3966,7 +3966,7 @@ if(stmt->__anon1.forStmt.check)
 {
 if(stmt->__anon1.forStmt.check->__anon1.expressions)
 {
-((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 }
 ProcessStatement(stmt->__anon1.forStmt.check);
 }
@@ -3993,7 +3993,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.expressions)
 {
-((struct Expression *)(*stmt->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.expressions).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);

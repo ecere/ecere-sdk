@@ -8663,17 +8663,7 @@ void ProcessExpressionType(Expression exp)
                         {
                            ProcessExpressionType(classExp);
 
-                           exp.op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp.op.exp2, '*',
-                              // ((_class.type == noHeadClass || _class.type == normalClass) ? sizeof(void *) : type.size)
-                              MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(
-                                 // noHeadClass
-                                 MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("5")),
-                                    OR_OP,
-                                 // normalClass
-                                 MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpConstant("0"))))),
-                                    MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(
-                                       MkPointer(null, null), null)))),
-                                       MkExpMember(classExp, MkIdentifier("typeSize"))))))));
+                           exp.op.exp2 = MkExpBrackets(MkListOne(MkExpOp(exp.op.exp2, '*', MkExpMember(classExp, MkIdentifier("typeSize")) )));
 
                            if(!exp.op.exp2.expType)
                            {
@@ -8741,22 +8731,7 @@ void ProcessExpressionType(Expression exp)
                                              MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpBrackets(MkListOne(exp.op.exp1)))
                                              , exp.op.op,
                                              MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpBrackets(MkListOne(exp.op.exp2)))))), '/',
-
-                                             //MkExpMember(classExp, MkIdentifier("typeSize"))
-
-                                             // ((_class.type == noHeadClass || _class.type == normalClass) ? sizeof(void *) : type.size)
-                                             MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(
-                                                // noHeadClass
-                                                MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("noHeadClass"))),
-                                                   OR_OP,
-                                                // normalClass
-                                                MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("normalClass")))))),
-                                                   MkListOne(MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(
-                                                      MkPointer(null, null), null)))),
-                                                      MkExpMember(classExp, MkIdentifier("typeSize")))))
-
-
-                                             ));
+                                             MkExpMember(classExp, MkIdentifier("typeSize"))));
 
                                     ProcessExpressionType(((Expression)exp.list->first).op.exp2);
                                     FreeType(dummy);

@@ -1362,7 +1362,7 @@ struct Expression * value = MkExpConstant("0");
 
 memberExp = MkExpMember(instExpCopy, MkIdentifier(dataMember->name));
 memberExp->__anon1.member.memberType = 3;
-value->usage = (value->usage & ~0x1) | (((unsigned int)0x1) << 0);
+value->usage = (value->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 setExp = MkExpOp(memberExp, '=', value);
 value->loc = inst->loc;
 setExp->loc = inst->loc;
@@ -1729,7 +1729,7 @@ struct Expression * value = MkExpConstant("0");
 
 memberExp = MkExpMember(instExpCopy, MkIdentifier(dataMember->name));
 memberExp->__anon1.member.memberType = 3;
-value->usage = (value->usage & ~0x1) | (((unsigned int)0x1) << 0);
+value->usage = (value->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 setExp = MkExpOp(memberExp, '=', value);
 value->loc = inst->loc;
 setExp->loc = inst->loc;
@@ -1826,7 +1826,7 @@ else
 memberExp = MkExpMember(instExpCopy, ident);
 if(member->initializer && member->initializer->type == 0 && member->initializer->__anon1.exp)
 {
-member->initializer->__anon1.exp->usage = (member->initializer->__anon1.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+member->initializer->__anon1.exp->usage = (member->initializer->__anon1.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 setExp = MkExpOp(memberExp, '=', member->initializer->__anon1.exp);
 member->initializer->__anon1.exp = (((void *)0));
 FreeInitializer(member->initializer);
@@ -2321,9 +2321,9 @@ switch(exp->__anon1.op.op)
 {
 case '=':
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 if(exp->__anon1.op.exp1)
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x2) | (((unsigned int)(0x1)) << 1);
 break;
 case MUL_ASSIGN:
 case DIV_ASSIGN:
@@ -2336,19 +2336,19 @@ case AND_ASSIGN:
 case XOR_ASSIGN:
 case OR_ASSIGN:
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 if(exp->__anon1.op.exp1)
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x2) | (((unsigned int)(0x1)) << 1);
 break;
 case INC_OP:
 case DEC_OP:
 if(exp->__anon1.op.exp1)
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x2) | (((unsigned int)0x1) << 1);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x2) | (((unsigned int)(0x1)) << 1);
 case '&':
 if(exp->__anon1.op.exp1 && exp->__anon1.op.exp2)
 {
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 }
 break;
 case '*':
@@ -2356,12 +2356,12 @@ case '+':
 case '-':
 if(exp->__anon1.op.exp1)
 {
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 }
 case '~':
 case '!':
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 break;
 case '/':
 case '%':
@@ -2378,9 +2378,9 @@ case '^':
 case AND_OP:
 case OR_OP:
 if(exp->__anon1.op.exp1)
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 break;
 }
 if(exp->__anon1.op.exp1)
@@ -2419,12 +2419,12 @@ case 6:
 {
 struct Expression * e;
 
-exp->__anon1.index.exp->usage = (exp->__anon1.index.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.index.exp->usage = (exp->__anon1.index.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.index.exp);
 for(e = (*exp->__anon1.index.index).first; e; e = e->next)
 {
 if(!e->next)
-e->usage = (e->usage & ~0x1) | (((unsigned int)0x1) << 0);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(e);
 }
 exp->tempCount = exp->__anon1.index.exp->tempCount;
@@ -2439,8 +2439,8 @@ if(exp->__anon1.call.arguments)
 {
 for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
 {
-e->usage = (e->usage & ~0x1) | (((unsigned int)0x1) << 0);
-e->usage = (e->usage & ~0x4) | (((unsigned int)0x1) << 2);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+e->usage = (e->usage & ~0x4) | (((unsigned int)(0x1)) << 2);
 ProcessExpression(e);
 }
 }
@@ -2448,7 +2448,7 @@ break;
 }
 case 8:
 {
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.member.exp);
 if(!exp->__anon1.member.memberType)
 {
@@ -2543,7 +2543,7 @@ case 10:
 break;
 case 11:
 {
-exp->__anon1.cast.exp->usage = (exp->__anon1.cast.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.cast.exp->usage = (exp->__anon1.cast.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.cast.exp);
 break;
 }
@@ -2552,18 +2552,18 @@ case 12:
 struct Expression * e;
 
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
-exp->__anon1.cond.cond->usage = (exp->__anon1.cond.cond->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.cond.cond->usage = (exp->__anon1.cond.cond->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.cond.cond);
 for(e = (*exp->__anon1.cond.exp).first; e; e = e->next)
 {
 if(!e->next && ((unsigned int)((exp->usage & 0x1) >> 0)))
-e->usage = (e->usage & ~0x1) | (((unsigned int)0x1) << 0);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(e);
 }
 if(exp->__anon1.cond.elseExp)
 {
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
-exp->__anon1.cond.elseExp->usage = (exp->__anon1.cond.elseExp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+exp->__anon1.cond.elseExp->usage = (exp->__anon1.cond.elseExp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(exp->__anon1.cond.elseExp);
 }
 break;
@@ -2596,7 +2596,7 @@ static void ProcessInitializer(struct Initializer * init)
 switch(init->type)
 {
 case 0:
-init->__anon1.exp->usage = (init->__anon1.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+init->__anon1.exp->usage = (init->__anon1.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(init->__anon1.exp);
 break;
 case 1:
@@ -2830,7 +2830,7 @@ init = (((void *)0));
 }
 else
 {
-member->initializer->__anon1.exp->usage = (member->initializer->__anon1.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+member->initializer->__anon1.exp->usage = (member->initializer->__anon1.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(member->initializer->__anon1.exp);
 init->type = 0;
 init->__anon1.exp = member->initializer->__anon1.exp;
@@ -3101,7 +3101,7 @@ ListAdd(list, MkInitializerList(subList));
 }
 else
 {
-member->initializer->__anon1.exp->usage = (member->initializer->__anon1.exp->usage & ~0x1) | (((unsigned int)0x1) << 0);
+member->initializer->__anon1.exp->usage = (member->initializer->__anon1.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 ProcessExpression(member->initializer->__anon1.exp);
 ListAdd(list, MkInitializerAssignment(CopyExpression(member->initializer->__anon1.exp)));
 }
@@ -3457,7 +3457,7 @@ case 4:
 {
 struct Expression * exp;
 
-((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.ifStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -3472,7 +3472,7 @@ case 5:
 {
 struct Expression * exp;
 
-((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.switchStmt.exp).first; exp; exp = exp->next)
 ProcessExpression(exp);
 ProcessStatement(stmt->__anon1.switchStmt.stmt);
@@ -3484,7 +3484,7 @@ if(stmt->__anon1.whileStmt.exp)
 {
 struct Expression * exp;
 
-((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.whileStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -3500,7 +3500,7 @@ if(stmt->__anon1.doWhile.exp)
 {
 struct Expression * exp;
 
-((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.doWhile.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -3518,7 +3518,7 @@ if(stmt->__anon1.forStmt.init)
 ProcessStatement(stmt->__anon1.forStmt.init);
 if(stmt->__anon1.forStmt.check && stmt->__anon1.forStmt.check->__anon1.expressions)
 {
-((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 }
 if(stmt->__anon1.forStmt.check)
 ProcessStatement(stmt->__anon1.forStmt.check);
@@ -3543,7 +3543,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.expressions && (*stmt->__anon1.expressions).last)
 {
-((struct Expression *)(*stmt->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)0x1) << 0);
+((struct Expression *)(*stmt->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
 for(exp = (*stmt->__anon1.expressions).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);

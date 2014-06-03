@@ -324,19 +324,19 @@ return (struct __ecereNameSpace__ecere__com__IteratorPointer *)(this->data ? ((u
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetPrev(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)
 {
-return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((pointer && (unsigned char *)pointer > (unsigned char *)this->data) ? ((unsigned char *)pointer - ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize)) : (((void *)0)));
+return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((pointer && (unsigned char *)pointer > (unsigned char *)this->data) ? ((unsigned char *)pointer - this->type->typeSize) : (((void *)0)));
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetNext(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)
 {
-return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((pointer && (unsigned char *)pointer < (unsigned char *)this->data + (this->count - 1) * ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize)) ? ((unsigned char *)pointer + ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize)) : (((void *)0)));
+return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((pointer && (unsigned char *)pointer < (unsigned char *)this->data + (this->count - 1) * this->type->typeSize) ? ((unsigned char *)pointer + this->type->typeSize) : (((void *)0)));
 }
 
 uint64 __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)
 {
 uint64 * item = (uint64 *)pointer;
 
-return ((((this->type->type == 1) ? ((uint64)item) : (this->type->type == 0 || this->type->type == 5) ? (uint64)*((void **)item) : ((this->type->typeSize == 1) ? *((unsigned char *)item) : ((this->type->typeSize == 2) ? *((unsigned short *)item) : ((this->type->typeSize == 4) ? *((unsigned int *)item) : *(item)))))));
+return ((((this->type->type == 1) ? ((uint64)item) : ((this->type->typeSize == 1) ? *((unsigned char *)item) : ((this->type->typeSize == 2) ? *((unsigned short *)item) : ((this->type->typeSize == 4) ? *((unsigned int *)item) : *(item)))))));
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_SetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data)
@@ -346,7 +346,7 @@ return 0x0;
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, const uint64 pos, unsigned int create)
 {
-return this->data ? (struct __ecereNameSpace__ecere__com__IteratorPointer *)((unsigned char *)this->data + ((this->type->type == 5 || this->type->type == 0) ? sizeof(void *) : this->type->typeSize)) : (((void *)0));
+return this->data ? (struct __ecereNameSpace__ecere__com__IteratorPointer *)((unsigned char *)this->data + this->type->typeSize) : (((void *)0));
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Insert(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value)
