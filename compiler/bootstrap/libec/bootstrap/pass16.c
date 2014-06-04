@@ -2291,11 +2291,15 @@ PopContext(exp->__anon1.compound->__anon1.compound.context);
 }
 else
 {
+struct Expression * prev = exp->prev, * next = exp->next;
+
 FreeType(newCall->destType);
 FreeType(newCall->expType);
 newCall->destType = exp->destType;
 newCall->expType = exp->expType;
 *exp = *newCall;
+exp->prev = prev;
+exp->next = next;
 ((newCall ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newCall) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newCall)) : 0), newCall = 0);
 }
 }

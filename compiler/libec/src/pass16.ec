@@ -1149,11 +1149,14 @@ static void ProcessExpression(Expression exp)
                   }
                   else
                   {
+                     Expression prev = exp.prev, next = exp.next;
                      FreeType(newCall.destType);
                      FreeType(newCall.expType);
                      newCall.destType = exp.destType;
                      newCall.expType = exp.expType;
                      *exp = *newCall;
+                     exp.prev = prev;
+                     exp.next = next;
                      delete newCall;
                   }
                }
