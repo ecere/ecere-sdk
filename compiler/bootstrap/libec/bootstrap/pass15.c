@@ -15329,6 +15329,8 @@ if(exp->__anon1.op.op == SIZEOF && exp->__anon1.op.exp2->expType)
 {
 DeclareType(exp->__anon1.op.exp2->expType, 0x0, 0x0);
 }
+if(exp->__anon1.op.op == DELETE && exp->__anon1.op.exp2 && exp->__anon1.op.exp2->expType && __ecereProp_Type_Get_specConst(exp->__anon1.op.exp2->expType))
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "deleting const qualified object\n", (((void *)0))));
 yylloc = oldyylloc;
 FreeType(dummy);
 if(type2)

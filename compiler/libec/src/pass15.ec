@@ -9152,6 +9152,9 @@ void ProcessExpressionType(Expression exp)
             DeclareType(exp.op.exp2.expType, false, false);
          }
 
+         if(exp.op.op == DELETE && exp.op.exp2 && exp.op.exp2.expType && exp.op.exp2.expType.specConst)
+            Compiler_Warning($"deleting const qualified object\n");
+
          yylloc = oldyylloc;
 
          FreeType(dummy);
