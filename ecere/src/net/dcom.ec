@@ -360,7 +360,7 @@ class DCOMClientThread : Thread
 
             if(!hasReturnValue)
             {
-               size = (uint)&((MethodReturnedPacket)0).args;
+               size = (uint)(uintptr)&((MethodReturnedPacket)0).args;
                packet = (MethodReturnedPacket)new0 byte[size];
                packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_MethodReturned);
                packet.size = size;
@@ -742,7 +742,7 @@ public:
          bool result;
          CallAck ack = null;
          int callID = nextCallID++;
-         unsigned int size = (uint)&((CallMethodPacket)0).args + __ecereBuffer.size; // sizeof(class CallMethodPacket) + __ecereBuffer.size - 1;
+         unsigned int size = (uint)(uintptr)&((CallMethodPacket)0).args + __ecereBuffer.size; // sizeof(class CallMethodPacket) + __ecereBuffer.size - 1;
          CallMethodPacket packet = (CallMethodPacket)new0 byte[size];
          packet.type = (DCOMPacketType)htoled((DCOMPacketType)dcom_CallMethod);
          packet.size = size;

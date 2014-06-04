@@ -95,13 +95,12 @@ static void __dpl2(const char * file, int line, const char ** channels, int chan
    if(chan || !channels)
    {
       char string[MAX_F_STRING];
-      int len;
       char * time = PrintNow();
       va_list args;
       //ide.outputView.debugBox.Logf();
       Logf("%s %s:% 5d: %s%s", time, file, line, chan ? channels[channel] : "", chan && channels[channel][0] ? ": " : "");
       va_start(args, object);
-      len = PrintStdArgsToBuffer(string, sizeof(string), object, args);
+      PrintStdArgsToBuffer(string, sizeof(string), object, args);
       Log(string);
       va_end(args);
       Log("\n");
@@ -147,7 +146,7 @@ public char * StripQuotes2(char * string, char * output)
    int d = 0;
    bool quoted = false, escaped = false;
    char ch;
-   for(c = 0; ch = string[c]; c++)
+   for(c = 0; (ch = string[c]); c++)
    {
       if(quoted)
       {
@@ -707,8 +706,8 @@ class Debugger
 #define _ChangeUserAction(value) ChangeUserAction(__FILE__, __LINE__, value)
    void ChangeUserAction(const char * file, int line, DebuggerUserAction value)
    {
-      bool same = value == userAction;
 #if 0
+      bool same = value == userAction;
       __dpl2(file, line, _dpct, dplchan::debuggerUserAction, 0, userAction, /*same ? " *** == *** " : */" -> ", value);
 #endif
       userAction = value;
@@ -888,7 +887,6 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GoToStackFrameLine(", stackLevel, ", ", askForLocation, ")");
       if(ide)
       {
-         char filePath[MAX_LOCATION];
          char sourceDir[MAX_LOCATION];
          Frame frame;
          CodeEditor editor = null;
@@ -984,7 +982,6 @@ class Debugger
 
    void HandleExit(char * reason, char * code)
    {
-      bool returnedExitCode = false;
       char verboseExitCode[128];
 
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::HandleExit(", reason, ", ", code, ")");
@@ -1317,7 +1314,6 @@ class Debugger
    bool SourceDirDialog(const char * title, const char * startDir, const char * test, char * sourceDir)
    {
       bool result;
-      bool retry;
       String srcDir = null;
 
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::SourceDirDialog()");
@@ -2951,7 +2947,6 @@ class Debugger
                      break;
                   case memberSymbolErrorExp:
                   {
-                     Class _class;
                      Expression memberExp = exp.member.exp;
                      Identifier memberID = exp.member.member;
                      Type type = memberExp.expType;
@@ -2994,8 +2989,6 @@ class Debugger
                      Identifier memberID = exp.member.member;
                      Type type = memberExp.expType;
                      Class _class = (type && memberID) ? (memberID && memberID.classSym) ? memberID.classSym.registered : ((type.kind == classType && type._class) ? type._class.registered : null) : null;
-                     char string[1024];
-                     string[0] = 0;
                      if(_class && memberID && memberID.string)
                         snprintf(watchmsg, sizeof(watchmsg), $"Missing property evaluation for \"%s\" in class \"%s\"", memberID.string, _class.name);
                      else
@@ -3047,7 +3040,7 @@ class Debugger
                            char value[4196];
                            //char temp[MAX_F_STRING * 32];
 
-                           ExpressionType evalError = dummyExp;
+                           //ExpressionType evalError = dummyExp;
                            /*if(exp.expType.kind == arrayType)
                               sprintf(temp, "(char*)0x%x", exp.address);
                            else
@@ -3077,7 +3070,7 @@ class Debugger
 
                               for(start = 0; !done && start + size <= 4096; start += size)
                               {
-                                 String s = null;
+                                 byte * s = null;
                                  while(!done && !s)
                                  {
                                     // Try to read 256 bytes at a time, then half if that fails
@@ -4139,7 +4132,7 @@ class Debugger
    {
       char path[MAX_LOCATION] = "";
       char file[MAX_FILENAME] = "";
-      bool symbolsLoaded = false;
+      //bool symbolsLoaded = false;
       DebugListItem item { };
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::FGODetectLoadedLibraryForAddedProjectIssues()");
       for(token : outTokens)
@@ -4154,7 +4147,7 @@ class Debugger
             }
             else if(!strcmp(item.name, "symbols-loaded"))
             {
-               symbolsLoaded = (atoi(item.value) == 1);
+               //symbolsLoaded = (atoi(item.value) == 1);
             }
             else if(!strcmp(item.name, "shlib-info"))
             {
@@ -4171,7 +4164,7 @@ class Debugger
                         StripQuotes(subItem.value, path);
                         MakeSystemPath(path);
                         GetLastDirectory(path, file);
-                        symbolsLoaded = true;
+                        //symbolsLoaded = true;
                      }
                   }
                }
@@ -5081,7 +5074,7 @@ class CodeLocation : struct
          char * temp;
          char loc[MAX_LOCATION];
          strcpy(loc, location);
-         for(temp = loc; temp = strstr(temp, ":"); temp++)
+         for(temp = loc; (temp = strstr(temp, ":")); temp++)
             colon = temp;
          if(colon)
          {

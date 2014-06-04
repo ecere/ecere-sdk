@@ -40,6 +40,8 @@ typedef unsigned __int64 uint64;
 #define arch_PointerSize                  sizeof(void *)
 #define structSize_Instance               (_64BIT ? 24 : 12)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1255,7 +1257,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line))
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass)
 {
-struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_AddProperty(regClass, conversion ? (((void *)0)) : name, line[0] ? line : 0, (void *)setStmt, (void *)getStmt, memberAccess);
+struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__com__eClass_AddProperty(regClass, conversion ? (((void *)0)) : name, line[0] ? line : 0, (void *)(uintptr_t)setStmt, (void *)(uintptr_t)getStmt, memberAccess);
 
 if(prop)
 {
@@ -1312,7 +1314,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line))
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(regClass)
 {
-__ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, name, line, (void *)setStmt, (void *)getStmt);
+__ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, name, line, (void *)(uintptr_t)setStmt, (void *)(uintptr_t)getStmt);
 }
 }
 else if(!strcmp(line, "[Set]"))
@@ -2042,7 +2044,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&dataRedefinitions, (((
 
 void __ecereRegisterModule_loadSymbols(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetGlobalData", "void SetGlobalData(ecere::com::NameSpace * nameSpace)", SetGlobalData, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInIDE", "void SetInIDE(bool b)", SetInIDE, module, 1);

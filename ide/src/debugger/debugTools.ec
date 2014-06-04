@@ -411,7 +411,6 @@ void DebugComputeExpression(Expression exp)
 
                            Property prop = null;
                            DataMember dataMember = null;
-                           Method method = null;
                            uint dataMemberOffset;
 
                            if(!ident)
@@ -1278,7 +1277,6 @@ void DebugComputeExpression(Expression exp)
                      bool op2IsPointer = exp2.expType.kind == pointerType || exp2.expType.kind == arrayType;
                      bool addressResult = !op1IsPointer || !op2IsPointer;
                      uint size;
-                     int op = exp.op.op;
                      valid = true;
                      if(op1IsPointer)
                         size = ComputeTypeSize(exp1.expType.type);
@@ -1786,7 +1784,7 @@ void DebugComputeExpression(Expression exp)
                            case floatType:
                            {
                               float value;
-                              float (*Get)(float) = (void *) (convertTo ? prop.Set : prop.Get);
+                              float (*Get)(float) = (convertTo ? (void *)prop.Set : (void *)prop.Get);
                               GetFloat(memberExp, &value);
 
                               FreeExpContents(exp);
@@ -1799,7 +1797,7 @@ void DebugComputeExpression(Expression exp)
                            case doubleType:
                            {
                               double value;
-                              double (*Get)(double) = (void *) (convertTo ? prop.Set : prop.Get);
+                              double (*Get)(double) = (convertTo ? (void *)prop.Set : (void *)prop.Get);
                               GetDouble(memberExp, &value);
 
                               FreeExpContents(exp);
@@ -2004,7 +2002,7 @@ void DebugComputeExpression(Expression exp)
                            }
                            else if(_class.type == structClass)
                            {
-                              char * value = (memberExp.type == instanceExp ) ? memberExp.instance.data : null;
+                              byte * value = (memberExp.type == instanceExp ) ? memberExp.instance.data : null;
                               if(value)
                                  memberExp.instance.data = null;
 
@@ -2107,7 +2105,6 @@ void DebugComputeExpression(Expression exp)
                         char format;
                         int size;
                         Expression expNew;
-                        TypeKind kind = dummyType;
                         Type dataType = member.dataType;
 
                         if(!dataType)
@@ -2280,7 +2277,6 @@ void DebugComputeExpression(Expression exp)
                         int size = memberType.size;
                         Expression expNew;
                         Type dataType = memberType;
-                        TypeKind kind = dummyType;
 
                         if(dataType.kind == classType && dataType._class.registered &&
                               (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
@@ -2866,7 +2862,7 @@ void ApplyUnitConverters(Expression exp)
             {
                if(convert)
                {
-                  float (*convertFn)(float) = (void *)(useGet ? convert.Get : convert.Set);
+                  float (*convertFn)(float) = (useGet ? (void *)convert.Get : (void *)convert.Set);
                   if(convertFn)
                      value = convertFn(value);
                }
@@ -2897,7 +2893,7 @@ void ApplyUnitConverters(Expression exp)
             {
                if(convert)
                {
-                  double (*convertFn)(double) = (void *)(useGet ? convert.Get : convert.Set);
+                  double (*convertFn)(double) = (useGet ? (void *)convert.Get : (void *)convert.Set);
                   if(convertFn)
                      value = convertFn(value);
                }

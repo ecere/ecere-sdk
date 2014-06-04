@@ -63,7 +63,7 @@ class PictureEdit : Window
             {
                if(bitmap)
                {
-                  ColorAlpha * palette = bitmap.Quantize(0, 255);
+                  //ColorAlpha * palette = bitmap.Quantize(0, 255);
                   bitmapNotIndexed = { };
                   bitmapNotIndexed.Copy(bitmap);
                   bitmapNotIndexed.Convert(null, pixelFormat888, null);

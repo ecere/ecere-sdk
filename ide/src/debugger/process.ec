@@ -51,7 +51,7 @@ import "ide"
 #ifdef __WIN32__
 static bool CALLBACK EnumWindowsBringToTop(HWND hwnd, LPARAM lParam)
 {
-   int pid;
+   DWORD pid;
    GetWindowThreadProcessId(hwnd, &pid);
    if(pid == lParam)
       BringWindowToTop(hwnd);
@@ -60,7 +60,7 @@ static bool CALLBACK EnumWindowsBringToTop(HWND hwnd, LPARAM lParam)
 
 static bool CALLBACK EnumWindowsSetForeground(HWND hwnd, LPARAM lParam)
 {
-   int pid;
+   DWORD pid;
    GetWindowThreadProcessId(hwnd, &pid);
    if(pid == lParam)
    {

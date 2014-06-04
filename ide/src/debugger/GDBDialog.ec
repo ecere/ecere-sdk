@@ -347,7 +347,6 @@ class GDBDialog : Window
    {
       if(lastCommand && lastCommand.outputs.first)
       {
-         int c;
          char * s, * t;
          int i, j, outTksCount, subTksCount;
          char * outTokens[3200], * subTokens[3200];

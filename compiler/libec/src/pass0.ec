@@ -5,7 +5,7 @@ import "ecdefs"
 
 extern External curExternal;
 
-public void MangleClassName(char * className)
+/*public void MangleClassName(char * className)
 {
    char output[1024];
    int c, d = 0;
@@ -58,7 +58,7 @@ public void MangleClassName(char * className)
    // ChangeCh(className, ' ', '_');
    // ChangeCh(className, '*', '_');
 }
-
+*/
 public void FullClassNameCat(char * output, const char * className, bool includeTemplateParams)
 {
    int c;
@@ -268,7 +268,6 @@ static void CheckPublicExpression(Expression exp, AccessMode access)
             break;
          case castExp:
          {
-            Type type = exp.expType;
             CheckPublicTypeName(exp.cast.typeName, access);
             if(exp.cast.exp)
                CheckPublicExpression(exp.cast.exp, access);
@@ -454,7 +453,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
    char destructorName[1024];
    Class regClass;
    ClassFunction destructor = null, constructor = null;
-   bool redefinition = false;
+   //bool redefinition = false;
    bool isUnion = classType == unionClass;
 
    External external = null;
@@ -609,9 +608,11 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       }
       for(def = definitions.first; def; def = def.next)
       {
+         yylloc = def.loc;
          if(def.type == declarationClassDef)
          {
             Declaration decl = def.decl;
+            yylloc = decl.loc;
 
             if(decl.type == structDeclaration)
             {
@@ -823,7 +824,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          strcpy(className, "__ecereClass_");
          FullClassNameCat(className, symbol.string, true);
 
-         MangleClassName(className);
+         //MangleClassName(className);
 
          symbol.className = CopyString(className);
 
@@ -1147,7 +1148,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_Get_");
                      // strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     MangleClassName(name);
+                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1196,7 +1197,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_Set_");
                      //strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     MangleClassName(name);
+                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1271,7 +1272,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_IsSet_");
                      //strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     MangleClassName(name);
+                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1316,7 +1317,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_");
                      //strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     MangleClassName(name);
+                     //MangleClassName(name);
 
                      {
                         OldList * list = MkList();
@@ -1328,7 +1329,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         strcat(name, "_");
                         //strcat(name, propertyDef.id.string);
                         FullClassNameCat(name, propertyDef.id.string, true);
-                        MangleClassName(name);
+                        //MangleClassName(name);
 
                         ListAdd(list, MkInitDeclarator(/*MkDeclaratorPointer(MkPointer(null, null), */
                               MkDeclaratorIdentifier(MkIdentifier(name))/*)*/, null));
@@ -1378,7 +1379,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      FullClassNameCat(name, symbol.string, false);
                      strcat(name, "_Get_");
                      strcat(name, propertyDef.id.string);
-                     MangleClassName(name);
+                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1455,7 +1456,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      FullClassNameCat(name, symbol.string, false);
                      strcat(name, "_Set_");
                      strcat(name, propertyDef.id.string);
-                     MangleClassName(name);
+                     //MangleClassName(name);
 
                      params = MkList();
                      /*

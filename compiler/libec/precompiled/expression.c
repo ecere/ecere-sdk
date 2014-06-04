@@ -1065,7 +1065,7 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
-int vsnprintf(char *, size_t, const char *, ...);
+int vsnprintf(char *, size_t, const char *, va_list args);
 
 int snprintf(char * str, size_t, const char * format, ...);
 
@@ -4981,7 +4981,7 @@ return (yyresult);
 
 void __ecereRegisterModule_expression(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 }
 

@@ -64,8 +64,6 @@ class CodeObject : struct
          const char * text = function ? function.declarator.symbol.string : "";
          int len = strlen(text);
          int start;
-         if(!text[0])
-            printf("");
          surface.TextExtent(name, nameLen, &nameW, null);
          surface.TextExtent(text, len, &w, null);
 
@@ -97,7 +95,7 @@ class CodeObject : struct
          delete attachBtn;
       }
 
-      while(compatible = this.compatible.first)
+      while((compatible = this.compatible.first))
       {
          ClassFunction function = compatible.data;
 

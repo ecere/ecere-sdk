@@ -92,9 +92,22 @@ private:
       while(true)
       {
          // *** NEED COMPARISON OPERATOR SUPPORT HERE INVOKING OnCompare, AS WELL AS TYPE INFORMATION PASSED ***
-         int result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass,
-            ((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass) ? (((byte *)&(uint64)node.key) + __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize)) : (void *)node.key,
-            ((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass) ? (((byte *)&(uint64)key) + __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize)) : (void *)key);
+         int result;
+         byte * a, * b;
+         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass)
+         {
+            a = (byte *)&node.key;
+            b = (byte *)&key;
+            a += __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize);
+            b += __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize);
+         }
+         else
+         {
+            a = (byte *)node.key;
+            b = (byte *)key;
+         }
+
+         result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
          if(!result)
          {
             return false;
@@ -151,9 +164,26 @@ private:
       while(this)
       {
          // *** NEED COMPARISON OPERATOR SUPPORT HERE INVOKING OnCompare, AS WELL AS TYPE INFORMATION PASSED ***
-         int result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass,
-            ((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass) ? (((byte *)&(uint64)key) + __ENDIAN_PAD(Tclass.typeSize)) : (void *)key,
-            ((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass) ? (((byte *)&(uint64)this.key) + __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize)) : (void *)this.key);
+         int result;
+         byte * a, * b;
+         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
+         {
+            a = (byte *)&(uint64)key;
+            a += __ENDIAN_PAD(Tclass.typeSize);
+         }
+         else
+            a = (byte *)key;
+
+         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass)
+         {
+            b = (byte *)&this.key;
+            b += __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize);
+         }
+         else
+            b = (byte *)this.key;
+
+         result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
+
          if(result < 0)
             this = left;
          else if(result > 0)

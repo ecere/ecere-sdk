@@ -40,6 +40,8 @@ typedef unsigned __int64 uint64;
 #define arch_PointerSize                  sizeof(void *)
 #define structSize_Instance               (_64BIT ? 24 : 12)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -680,7 +682,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_i18n(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::LoadTranslatedStrings", "void ecere::LoadTranslatedStrings(const String moduleName, const char * name)", __ecereNameSpace__ecere__LoadTranslatedStrings, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::UnloadTranslatedStrings", "void ecere::UnloadTranslatedStrings(const String name)", __ecereNameSpace__ecere__UnloadTranslatedStrings, module, 4);

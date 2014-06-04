@@ -41,6 +41,8 @@ typedef unsigned __int64 uint64;
 #define structSize_Instance               (_64BIT ? 24 : 12)
 #define structSize_AVLNode                (_64BIT ? 40 : 24)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -441,7 +443,7 @@ extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(st
 
 void __ecereRegisterModule_AVLTree(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::AVLTree", "ecere::com::CustomAVLTree<BT = ecere::com::AVLNode<AT>, KT = AT, T = AT, D = AT>", 0, 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)

@@ -43,7 +43,6 @@ public:
          {
             for(s : value)
             {
-               char temp[MAX_LOCATION];
                list.AddString(s);
             }
          }
@@ -174,8 +173,6 @@ public:
          {
             if(listBox.currentRow == listBox.lastRow)
             {
-               DataRow r = listBox.lastRow;
-               const char * s = r.string;
                listBox.currentRow = listBox.AddString("");
             }
          }
@@ -241,7 +238,6 @@ class NamedStringsBox : CommonControl
          {
             for(s : value)
             {
-               char temp[MAX_LOCATION];
                row = list.AddRow();
                row.SetData(nameField, s.name);
                row.SetData(stringField, s.string);
@@ -374,8 +370,6 @@ class NamedStringsBox : CommonControl
          {
             if(listBox.currentRow == listBox.lastRow)
             {
-               DataRow r = listBox.lastRow;
-               const char * s = r.string;
                listBox.currentRow = list.AddRow();
                //row.SetData(nameField, null);
                //row.SetData(stringField, null);

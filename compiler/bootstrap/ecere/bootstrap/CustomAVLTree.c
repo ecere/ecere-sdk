@@ -43,6 +43,8 @@ typedef unsigned __int64 uint64;
 #define _STR(x) #x
 #define _XSTR(x) _STR(x)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -397,8 +399,22 @@ if(!Tclass)
 Tclass = __ecereClass_uint64;
 while(0x1)
 {
-int result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&node->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&node->key), ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&this->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&this->key));
+int result;
+unsigned char * a, * b;
 
+if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1)
+{
+a = (unsigned char *)&node->key;
+b = (unsigned char *)&this->key;
+a += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
+b += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
+}
+else
+{
+a = (unsigned char *)*(uint64 *)(&node->key);
+b = (unsigned char *)*(uint64 *)(&this->key);
+}
+result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 if(!result)
 {
 return 0x0;
@@ -460,8 +476,24 @@ struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__e
 {
 while(this)
 {
-int result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3) ? (((unsigned char *)&key) + __ENDIAN_PAD(Tclass->typeSize)) : (void *)key, ((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1) ? (((unsigned char *)&this->key) + __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize)) : (void *)*(uint64 *)(&this->key));
+int result;
+unsigned char * a, * b;
 
+if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
+{
+a = (unsigned char *)&key;
+a += __ENDIAN_PAD(Tclass->typeSize);
+}
+else
+a = (unsigned char *)key;
+if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1)
+{
+b = (unsigned char *)&this->key;
+b += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
+}
+else
+b = (unsigned char *)*(uint64 *)(&this->key);
+result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 if(result < 0)
 this = this->left;
 else if(result > 0)
@@ -937,7 +969,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 }
 }
 };
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::AVLNode", "ecere::com::IteratorPointer", sizeof(struct __ecereNameSpace__ecere__com__AVLNode), 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)

@@ -5512,7 +5512,7 @@ static void Application_Destructor(Application app)
 {
    if(app.parsedCommand)
    {
-      delete app.argv;
+      delete (void *)app.argv;
       delete app.parsedCommand;
    }
 }

@@ -446,7 +446,6 @@ private:
 
    bool OnPostCreate()
    {
-      bool disabled;
       bool withWorkspace = ide.workspace != null;
       DataRow row;
       if(!inDirectoryRow)
@@ -507,8 +506,6 @@ private:
 
    void SearchStart()
    {
-      char text[2048];
-
       searchThread.active = true;
       searchThread.project = null;
       searchThread.projectNode = null;
@@ -528,7 +525,7 @@ private:
       {
          searchThread.mode = project;
          searchThread.project = (Project)findIn.currentRow.tag;
-         searchThread.projectNode = (ProjectNode)(findWherePrjNode.currentRow ? findWherePrjNode.currentRow.tag : null);
+         searchThread.projectNode = (ProjectNode)(findWherePrjNode.currentRow ? (void *)(intptr)findWherePrjNode.currentRow.tag : null);
       }
       //searchThread.nameMatchCase = nameMatchCase.checked;
       //searchThread.nameWholeWord = nameWholeWord.checked;
@@ -649,7 +646,7 @@ private:
 
    unsigned int Main()
    {
-      int frame, treeTop = 0;
+      int frame;
       int globalFindCount = 0, filesSearchedCount = 0, filesMatchedCount = 0, dirsMatchedCount = 0;
       //double lastTime = GetTime();
       SearchStackFrame stack[stackSize];
@@ -826,8 +823,6 @@ private:
       }
       else if(mode == workspace || mode == project)
       {
-         int len;
-         char path[MAX_LOCATION];
          bool firtIteration = true;
          Project prj = project;
          ProjectNode stack[1024];
@@ -1078,8 +1073,6 @@ private:
          while(f.GetLine(line, 65536/* should there be a - 1 here? */) && !abortNow)
          {
             int col = 0;
-            char * find = null;
-            int inLineFindCount = 0;
             if(SearchString(line, 0, contentCriteria, contentMatchCase, contentWholeWord) && !abortNow)
             {
                int lastLineNum = 0;

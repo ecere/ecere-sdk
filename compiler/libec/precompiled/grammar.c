@@ -1209,7 +1209,7 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
-int vsnprintf(char *, size_t, const char *, ...);
+int vsnprintf(char *, size_t, const char *, va_list args);
 
 int snprintf(char * str, size_t, const char * format, ...);
 
@@ -5066,7 +5066,7 @@ yyval.context = PushContext();
 break;
 case 236:
 {
-yyvsp[(1) - (2)].context;
+(void)yyvsp[(1) - (2)].context;
 yyval.symbol = DeclClassAddNameSpace(globalContext->nextID++, yyvsp[(2) - (2)].id->string);
 FreeIdentifier(yyvsp[(2) - (2)].id);
 yyval.symbol->nameLoc = (yylsp[(2) - (2)]);
@@ -5076,7 +5076,7 @@ memberAccessStack[++defaultMemberAccess] = 2;
 break;
 case 237:
 {
-yyvsp[(1) - (2)].context;
+(void)yyvsp[(1) - (2)].context;
 yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 yyval.symbol->nameLoc = (yylsp[(2) - (2)]);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
@@ -5087,7 +5087,7 @@ memberAccessStack[defaultMemberAccess] = 2;
 break;
 case 238:
 {
-yyvsp[(2) - (3)].context;
+(void)yyvsp[(2) - (3)].context;
 yyval.symbol = DeclClassAddNameSpace(globalContext->nextID++, yyvsp[(3) - (3)].id->string);
 FreeIdentifier(yyvsp[(1) - (3)].id);
 FreeIdentifier(yyvsp[(3) - (3)].id);
@@ -5099,7 +5099,7 @@ memberAccessStack[++defaultMemberAccess] = 2;
 break;
 case 239:
 {
-yyvsp[(2) - (3)].context;
+(void)yyvsp[(2) - (3)].context;
 yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
 FreeIdentifier(yyvsp[(1) - (3)].id);
 yyval.symbol->nameLoc = (yylsp[(3) - (3)]);
@@ -5111,7 +5111,7 @@ memberAccessStack[++defaultMemberAccess] = 2;
 break;
 case 240:
 {
-yyvsp[(1) - (5)].context;
+(void)yyvsp[(1) - (5)].context;
 yyval.symbol = DeclClassAddNameSpace(globalContext->nextID++, yyvsp[(2) - (5)].id->string);
 yyval.symbol->templateParams = yyvsp[(4) - (5)].list;
 FreeIdentifier(yyvsp[(2) - (5)].id);
@@ -5122,7 +5122,7 @@ memberAccessStack[++defaultMemberAccess] = 2;
 break;
 case 241:
 {
-yyvsp[(1) - (5)].context;
+(void)yyvsp[(1) - (5)].context;
 yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
 yyval.symbol->templateParams = yyvsp[(4) - (5)].list;
 yyval.symbol->nameLoc = (yylsp[(2) - (5)]);
@@ -5134,7 +5134,7 @@ memberAccessStack[defaultMemberAccess] = 2;
 break;
 case 242:
 {
-yyvsp[(2) - (6)].context;
+(void)yyvsp[(2) - (6)].context;
 yyval.symbol = DeclClassAddNameSpace(globalContext->nextID++, yyvsp[(3) - (6)].id->string);
 yyval.symbol->templateParams = yyvsp[(5) - (6)].list;
 FreeIdentifier(yyvsp[(1) - (6)].id);
@@ -5147,7 +5147,7 @@ memberAccessStack[++defaultMemberAccess] = 2;
 break;
 case 243:
 {
-yyvsp[(2) - (6)].context;
+(void)yyvsp[(2) - (6)].context;
 yyval.symbol = DeclClass(globalContext->nextID++, yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
 yyval.symbol->templateParams = yyvsp[(5) - (6)].list;
 FreeIdentifier(yyvsp[(1) - (6)].id);
@@ -5205,7 +5205,7 @@ PopContext(curContext);
 break;
 case 248:
 {
-yyvsp[(1) - (3)].context;
+(void)yyvsp[(1) - (3)].context;
 yyval._class = MkClass(DeclClassAddNameSpace(0, yyvsp[(2) - (3)].id->string), (((void *)0)), (((void *)0)));
 FreeIdentifier(yyvsp[(2) - (3)].id);
 if(defaultMemberAccess > -1)
@@ -5216,7 +5216,7 @@ PopContext(curContext);
 break;
 case 249:
 {
-yyvsp[(1) - (3)].context;
+(void)yyvsp[(1) - (3)].context;
 yyval._class = MkClass(DeclClass(0, yyvsp[(2) - (3)].specifier->__anon1.__anon1.name), (((void *)0)), (((void *)0)));
 FreeSpecifier(yyvsp[(2) - (3)].specifier);
 if(defaultMemberAccess > -1)
@@ -12730,7 +12730,7 @@ return (yyresult);
 
 void __ecereRegisterModule_grammar(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 }
 

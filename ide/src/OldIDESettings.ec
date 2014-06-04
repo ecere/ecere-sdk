@@ -230,11 +230,11 @@ class OldIDESettings : GlobalAppSettings
          PutGlobalValue("FileOpenLocations", "Files", singleString, ideFileDialogLocation);
          PutGlobalValue("FileOpenLocations", "Projects", singleString, ideProjectFileDialogLocation);
 
-         PutGlobalValue("Editing", "UseFreeCaret", integer, (void *)useFreeCaret);
-         PutGlobalValue("Editing", "CaretFollowsScrolling", integer, (void *)caretFollowsScrolling);
-         PutGlobalValue("Editing", "ShowLineNumbers", integer, (void *)showLineNumbers);
+         PutGlobalValue("Editing", "UseFreeCaret", integer, (void *)(intptr)useFreeCaret);
+         PutGlobalValue("Editing", "CaretFollowsScrolling", integer, (void *)(intptr)caretFollowsScrolling);
+         PutGlobalValue("Editing", "ShowLineNumbers", integer, (void *)(intptr)showLineNumbers);
 
-         PutGlobalValue("Building", "NumParallelJobs", integer, (void *)(compiler.numJobs));
+         PutGlobalValue("Building", "NumParallelJobs", integer, (void *)(intptr)(compiler.numJobs));
          PutGlobalValue("View", "DisplayDriver", singleString, displayDriver);
          PutGlobalValue("Documentor", "Files", singleString, docDir);
 

@@ -265,10 +265,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                if(propertyDef.isWatchable)
                   eProperty_Watchable(prop);
             }
-            else
-               // TODO: What happens here?
-               printf("");
-
+            // TODO: else:  What happens here?
 
             // Testing this... wasn't found anywhere, seems to be useful
             // (Determining if it's a conversion property in ProcessClassFunction)
@@ -280,13 +277,13 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
          else if(def.type == classPropertyClassDef && def.propertyDef)
          {
             PropertyDef propertyDef = def.propertyDef;
-            ClassProperty prop;
+            //ClassProperty prop;
 
             // Register the property in the list
             // MOVED THIS UP HERE BEFORE NEXT BLOCK BECAUSE WE NULL OUT SPECIFIERS/DECLARATORS... OK?
 
             char * dataTypeString = StringFromSpecDecl(propertyDef.specifiers, propertyDef.declarator);
-            prop = eClass_AddClassProperty(regClass, propertyDef.id.string, dataTypeString,
+            /*prop = */eClass_AddClassProperty(regClass, propertyDef.id.string, dataTypeString,
                inCompiler ? propertyDef.setStmt : null, inCompiler ? propertyDef.getStmt : null);
 
             delete dataTypeString;
@@ -556,7 +553,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          }
          if(param.type == identifier)
          {
-            eClass_AddTemplateParameter(regClass, param.identifier.string, identifier, (void *)param.memberType, defaultArg);
+            eClass_AddTemplateParameter(regClass, param.identifier.string, identifier, (void *)(uintptr)param.memberType, defaultArg);
          }
          else
          {

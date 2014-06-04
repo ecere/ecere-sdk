@@ -30,6 +30,8 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -454,8 +456,6 @@ void resetScannerPos(struct CodePosition * pos);
 
 extern struct Declarator * CopyDeclarator(struct Declarator * declarator);
 
-extern int printf(const char * , ...);
-
 extern void FreeDeclarator(struct Declarator * decl);
 
 struct Declarator * PlugDeclarator(struct Declarator * decl, struct Declarator * baseDecl)
@@ -470,7 +470,6 @@ if(base->type != 1)
 {
 for(; base->declarator && base->declarator->type != 1; base = base->declarator)
 {
-printf("");
 }
 }
 if(baseDecl)
@@ -746,7 +745,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_shortcuts(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetParsingType", "void SetParsingType(bool b)", SetParsingType, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PlugDeclarator", "Declarator PlugDeclarator(Declarator decl, Declarator baseDecl)", PlugDeclarator, module, 2);

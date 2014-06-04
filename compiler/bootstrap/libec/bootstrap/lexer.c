@@ -40,6 +40,8 @@ typedef unsigned __int64 uint64;
 #define arch_PointerSize                  sizeof(void *)
 #define structSize_Instance               (_64BIT ? 24 : 12)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -443,7 +445,7 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
-int vsnprintf(char *, size_t, const char *, ...);
+int vsnprintf(char *, size_t, const char *, va_list args);
 
 int snprintf(char * str, size_t, const char * format, ...);
 
@@ -726,8 +728,6 @@ int declModeStack[30];
 int include_stack_ptr = 0;
 
 extern int yywrap(void);
-
-static void yyunput(int c, char * buf_ptr);
 
 static int input(void);
 
@@ -2127,31 +2127,6 @@ yy_is_jam = (yy_current_state == 719);
 return yy_is_jam ? 0 : yy_current_state;
 }
 
-static void yyunput(int c, register char * yy_bp)
-{
-register char * yy_cp = yy_c_buf_p;
-
-*yy_cp = yy_hold_char;
-if(yy_cp < (*yy_current_buffer).yy_ch_buf + 2)
-{
-register int number_to_move = yy_n_chars + 2;
-register char * dest = &(*yy_current_buffer).yy_ch_buf[(*yy_current_buffer).yy_buf_size + 2];
-register char * source = &(*yy_current_buffer).yy_ch_buf[number_to_move];
-
-while(source > (*yy_current_buffer).yy_ch_buf)
-*--dest = *--source;
-yy_cp += (int)(dest - source);
-yy_bp += (int)(dest - source);
-(*yy_current_buffer).yy_n_chars = yy_n_chars = (*yy_current_buffer).yy_buf_size;
-if(yy_cp < (*yy_current_buffer).yy_ch_buf + 2)
-yy_fatal_error("flex scanner push-back overflow");
-}
-*--yy_cp = (char)c;
-yytext = yy_bp;
-yy_hold_char = *yy_cp;
-yy_c_buf_p = yy_cp;
-}
-
 static int input()
 {
 int c;
@@ -2343,7 +2318,7 @@ static void yy_flex_free(void * ptr)
 free(ptr);
 }
 
-yywrap()
+int yywrap()
 {
 return (1);
 }
@@ -2383,7 +2358,7 @@ return 0;
 
 int commentCPP()
 {
-int c, last = 0;
+int c;
 
 for(; ; )
 {
@@ -2407,7 +2382,6 @@ else
 yylloc.end.charPos++;
 yylloc.end.pos++;
 }
-last = c;
 }
 yylloc.start = yylloc.end;
 return 0;
@@ -2576,8 +2550,6 @@ fileInput = file;
 yy_switch_to_buffer(yy_create_buffer(fileInput, 16384));
 yy_start = 1 + 2 * (0);
 }
-else
-printf("");
 }
 }
 return 0;
@@ -2761,7 +2733,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_lexer(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "yy_buffer_state", 0, sizeof(struct yy_buffer_state), 0, 0, 0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)

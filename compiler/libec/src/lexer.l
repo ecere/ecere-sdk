@@ -7,6 +7,8 @@ FS         (f|F|l|L|i|I|j|J)*
 IS         (u|U|l|L|i|I|j|J)*
 IDENT    {L}({L}|{D})*
 
+%option nounput
+
 %{
 import "ecdefs"
 #define YYLTYPE Location
@@ -48,7 +50,7 @@ void TESTTTT()
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 File fileStack[MAX_INCLUDE_DEPTH];
 char sourceFileStack[MAX_INCLUDE_DEPTH][MAX_LOCATION];
-public void SetSomeSourceFileStack(char * fileName, int index) { strcpy(sourceFileStack[index], fileName); }
+public void SetSomeSourceFileStack(const char * fileName, int index) { strcpy(sourceFileStack[index], fileName); }
 YYLTYPE locStack[MAX_INCLUDE_DEPTH];
 AccessMode declModeStack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
@@ -326,7 +328,7 @@ L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
 
 private:
 
-yywrap()
+int yywrap()
 {
    return(1);
 }
@@ -367,7 +369,7 @@ int comment()
 
 int commentCPP()
 {
-   int c, last = 0;
+   int c; //, last = 0;
    for(;;)
    {
       c = input();
@@ -392,7 +394,7 @@ int commentCPP()
          yylloc.end.charPos++;
          yylloc.end.pos++;
       }
-      last = c;
+      //last = c;
    }
    yylloc.start = yylloc.end;
    return 0;
@@ -558,8 +560,6 @@ int preprocessor()
             yy_switch_to_buffer( yy_create_buffer( fileInput, YY_BUF_SIZE ) );
             BEGIN(INITIAL);
          }
-         else
-            printf("");
       }
    }
    return 0;

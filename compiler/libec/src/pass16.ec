@@ -698,7 +698,7 @@ public void DeclareClass(Symbol classSym, const char * className)
       strcpy(className, "__ecereClass_");
       templateSym = FindClass(classSym.registered.templateClass.fullName);
       FullClassNameCat(className, templateSym.string, true);
-      MangleClassName(className);
+      //MangleClassName(className);
 
       DeclareClass(templateSym, className);
    }*/
@@ -1049,7 +1049,7 @@ static void ProcessExpression(Expression exp)
                   else
                      FullClassNameCat(className, inst._class.name, true);
 
-                  MangleClassName(className);
+                  //MangleClassName(className);
                   DeclareClass(classSym, className);
                   newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
                   newCall.usage = exp.usage;
@@ -2310,7 +2310,7 @@ static void ProcessDeclaration(Declaration decl)
                   /*{
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, classSym.string, true);
-                     MangleClassName(className);
+                     //MangleClassName(className);
                      DeclareClass(classSym, className);
                   }*/
 
@@ -2369,7 +2369,7 @@ static void ProcessDeclaration(Declaration decl)
                   }
                   else
                      FullClassNameCat(className, inst._class.name, true);
-                  MangleClassName(className);
+                  //MangleClassName(className);
 
                   if(classSym)
                      DeclareClass(classSym, className);

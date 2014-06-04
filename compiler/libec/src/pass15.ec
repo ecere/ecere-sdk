@@ -1228,7 +1228,7 @@ void DeclareStruct(const char * name, bool skipNoHead)
                char className[1024];
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, classSym.string, true);
-               MangleClassName(className);
+               //MangleClassName(className);
 
                // Testing This
                DeclareClass(classSym, className);
@@ -1243,7 +1243,7 @@ void DeclareStruct(const char * name, bool skipNoHead)
                char className[1024];
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, classSym.string, true);
-               MangleClassName(className);
+               //MangleClassName(className);
 
                // TOFIX: TESTING THIS...
                classSym.structExternal = external;
@@ -1314,7 +1314,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
    strcat(setName, "_Set_");
    // strcat(setName, prop.name);
    FullClassNameCat(setName, prop.name, true);
-   MangleClassName(setName);
+   //MangleClassName(setName);
 
    strcpy(getName, "__ecereProp_");
    FullClassNameCat(getName, prop._class.fullName, false);
@@ -1323,7 +1323,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
    // strcat(getName, prop.name);
 
    // To support "char *" property
-   MangleClassName(getName);
+   //MangleClassName(getName);
 
    if(prop._class.type == structClass)
       DeclareStruct(prop._class.fullName, false);
@@ -1580,7 +1580,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
          strcat(propName, "_");
          FullClassNameCat(propName, prop.name, true);
          // strcat(propName, prop.name);
-         MangleClassName(propName);
+         //MangleClassName(propName);
 
          {
             OldList * list = MkList();
@@ -1595,7 +1595,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
                // strcat(propName, prop.name);
                FullClassNameCat(propName, prop.name, true);
 
-               MangleClassName(propName);
+               //MangleClassName(propName);
 
                ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null),
                      MkDeclaratorIdentifier(MkIdentifier(propName))), null));
@@ -1830,7 +1830,6 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
       {
          Class expClass = type._class.registered;
          Class cClass = null;
-         int c;
          int paramCount = 0;
          int lastParam = -1;
 
@@ -2481,7 +2480,7 @@ public void DeclareMethod(Method method, const char * name)
    Symbol symbol = method.symbol;
    if(!symbol || (!symbol.pointerExternal && method.type == virtualMethod) || symbol.id > (curExternal ? curExternal.symbol.idCode : -1))
    {
-      bool imported = false;
+      //bool imported = false;
       bool dllImport = false;
 
       if(!method.dataType)
@@ -2548,7 +2547,7 @@ public void DeclareMethod(Method method, const char * name)
          }
          if(!method.dataType.dllExport)
          {
-            imported = true;
+            //imported = true;
             if((method._class.module != privateModule || !strcmp(method._class.name, "float") || !strcmp(method._class.name, "double")) && method._class.module.importType != staticImport)
                dllImport = true;
          }
@@ -4913,7 +4912,6 @@ void ComputeInstantiation(Expression exp)
 
                      Property prop = null;
                      DataMember dataMember = null;
-                     Method method = null;
                      uint dataMemberOffset;
 
                      if(!ident)
@@ -5238,12 +5236,12 @@ void ComputeInstantiation(Expression exp)
                               {
                                  case _BoolType:
                                  case charType:       { byte v; type.isSigned ? GetChar(value, (char *)&v) : GetUChar(value, &v); part = (uint64)v; break; }
-                                 case shortType:      { uint16 v; type.isSigned ? GetShort(value, (uint16 *)&v) : GetUShort(value, &v); part = (uint64)v; break; }
+                                 case shortType:      { uint16 v; type.isSigned ? GetShort(value, (short *)&v) : GetUShort(value, &v); part = (uint64)v; break; }
                                  case intType:
-                                 case longType:       { uint v; type.isSigned ? GetInt(value, (uint *)&v) : GetUInt(value, &v); part = (uint64)v; break; }
-                                 case int64Type:      { uint64 v; type.isSigned ? GetInt64(value, (uint64 *)&v) : GetUInt64(value, &v); part = (uint64)v; break; }
-                                 case intPtrType:     { uintptr v; type.isSigned ? GetIntPtr(value, (uintptr *)&v) : GetUIntPtr(value, &v); part = (uint64)v; break; }
-                                 case intSizeType:    { uintsize v; type.isSigned ? GetIntSize(value, (uintsize *)&v) : GetUIntSize(value, &v); part = (uint64)v; break; }
+                                 case longType:       { uint v; type.isSigned ? GetInt(value, (int *)&v) : GetUInt(value, &v); part = (uint64)v; break; }
+                                 case int64Type:      { uint64 v; type.isSigned ? GetInt64(value, (int64 *)&v) : GetUInt64(value, &v); part = (uint64)v; break; }
+                                 case intPtrType:     { uintptr v; type.isSigned ? GetIntPtr(value, (intptr *)&v) : GetUIntPtr(value, &v); part = (uint64)v; break; }
+                                 case intSizeType:    { uintsize v; type.isSigned ? GetIntSize(value, (intsize *)&v) : GetUIntSize(value, &v); part = (uint64)v; break; }
                               }
                               bits |= part << bitMember.pos;
                            }
@@ -5319,11 +5317,11 @@ static bool Promote(Operand op, TypeKind kind, bool isSigned)
          break;
       case intPtrType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == longType || op.kind == enumType || op.kind == _BoolType)
-            result = isSigned ? GetOpIntPtr(op, &op.i64) : GetOpUIntPtr(op, &op.i64);
+            result = isSigned ? GetOpIntPtr(op, &op.i64) : GetOpUIntPtr(op, &op.ui64);
          break;
       case intSizeType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == longType || op.kind == enumType || op.kind == _BoolType)
-            result = isSigned ? GetOpIntSize(op, &op.ui64) : GetOpUIntSize(op, &op.ui64);
+            result = isSigned ? GetOpIntSize(op, &op.i64) : GetOpUIntSize(op, &op.ui64);
          break;
    }
    return result;
@@ -6087,7 +6085,7 @@ void ComputeExpression(Expression exp)
                         }
                         else if(_class.type == structClass)
                         {
-                           char * value = (exp.member.exp.type == instanceExp ) ? exp.member.exp.instance.data : null;
+                           byte * value = (exp.member.exp.type == instanceExp ) ? exp.member.exp.instance.data : null;
                            switch(type.kind)
                            {
                               case classType:
@@ -6177,7 +6175,7 @@ void ComputeExpression(Expression exp)
                char className[1024];
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, classSym.string, true);
-               MangleClassName(className);
+               //MangleClassName(className);
 
                DeclareClass(classSym, className);
 
@@ -6601,7 +6599,6 @@ void CheckTemplateTypes(Expression exp)
    else if(exp.expType && exp.expType.passAsTemplate && exp.destType && exp.usage.usageGet && exp.destType.kind != templateType && !exp.destType.passAsTemplate)
    {
       Expression newExp { };
-      Statement compound;
       Context context;
       *newExp = *exp;
       if(exp.destType) exp.destType.refCount++;
@@ -7024,7 +7021,6 @@ static void PrePrintType(Type type, char * string, bool fullName, Type parentTyp
 {
    if(type.kind == arrayType || type.kind == pointerType || type.kind == functionType || type.kind == methodType)
    {
-      Type attrType = null;
       if((type.kind == functionType || type.kind == methodType) && (!parentType || parentType.kind != pointerType))
          PrintAttribs(type, string);
       if(printConst && type.constant && (type.kind == functionType || type.kind == methodType))
@@ -8036,7 +8032,7 @@ void ProcessExpressionType(Expression exp)
       }
       case instanceExp:
       {
-         Class _class;
+         // Class _class;
          // Symbol classSym;
 
          if(!exp.instance._class)
@@ -9762,10 +9758,7 @@ void ProcessExpressionType(Expression exp)
          if(exp.call.arguments)
          {
             for(e = exp.call.arguments->first; e; e = e.next)
-            {
-               Type destType = e.destType;
                ProcessExpressionType(e);
-            }
          }
          break;
       }
@@ -9840,9 +9833,6 @@ void ProcessExpressionType(Expression exp)
                      char * colon = strstr(param.defaultArg.memberString, "::");
                      if(colon)
                      {
-                        char className[1024];
-                        Class sClass;
-
                         memcpy(thisClassTypeString, param.defaultArg.memberString, colon - param.defaultArg.memberString);
                         thisClassTypeString[colon - param.defaultArg.memberString] = '\0';
                      }
@@ -9857,7 +9847,6 @@ void ProcessExpressionType(Expression exp)
                   {
                      Class expClass = exp.expType._class.registered;
                      Class cClass = null;
-                     int c;
                      int paramCount = 0;
                      int lastParam = -1;
 
@@ -10436,7 +10425,6 @@ void ProcessExpressionType(Expression exp)
                      if(expClass)
                      {
                         Class cClass = null;
-                        int c;
                         int p = 0;
                         int paramCount = 0;
                         int lastParam = -1;
@@ -10452,7 +10440,6 @@ void ProcessExpressionType(Expression exp)
                            for(param = cClass.templateParams.first; param; param = param.next)
                            {
                               Class cClassCur = null;
-                              int c;
                               int cp = 0;
                               ClassTemplateParameter paramCur = null;
                               ClassTemplateArgument arg;
@@ -10643,7 +10630,7 @@ void ProcessExpressionType(Expression exp)
                   char className[1024];
                   strcpy(className, "__ecereClass_");
                   FullClassNameCat(className, classSym.string, true);
-                  MangleClassName(className);
+                  //MangleClassName(className);
 
                   DeclareClass(classSym, className);
 
@@ -10937,7 +10924,7 @@ void ProcessExpressionType(Expression exp)
             {
                Expression e;
                type = ProcessTypeString(typeString, false);
-               while(e = exp.list->first)
+               while((e = exp.list->first))
                {
                   exp.list->Remove(e);
                   e.destType = type;
@@ -11367,7 +11354,7 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct)
       {
          if(spec.definitions)
          {
-            ClassDef def;
+            //ClassDef def;
             Symbol symbol = spec.id ? FindClass(spec.id.string) : null;
             //if(symbol)
                ProcessClass(spec.definitions, symbol);
@@ -11634,14 +11621,14 @@ static void CreateFireWatcher(Property prop, Expression object, Statement stmt)
    strcat(propName, "_");
    // strcat(propName, prop.name);
    FullClassNameCat(propName, prop.name, true);
-   MangleClassName(propName);
+   //MangleClassName(propName);
 
    strcpy(propNameM, "__ecerePropM_");
    FullClassNameCat(propNameM, prop._class.fullName, false);
    strcat(propNameM, "_");
    // strcat(propNameM, prop.name);
    FullClassNameCat(propNameM, prop.name, true);
-   MangleClassName(propNameM);
+   //MangleClassName(propNameM);
 
    if(prop.isWatchable)
    {
@@ -12005,7 +11992,7 @@ static void ProcessStatement(Statement stmt)
 
                      builtinCount = arrayExp.list->count;
                      type = ProcessTypeString(typeString, false);
-                     while(e = arrayExp.list->first)
+                     while((e = arrayExp.list->first))
                      {
                         arrayExp.list->Remove(e);
                         e.destType = type;
@@ -12564,7 +12551,7 @@ static void ProcessStatement(Statement stmt)
                            strcat(propName, "_");
                            // strcat(propName, prop.name);
                            FullClassNameCat(propName, prop.name, true);
-                           MangleClassName(propName);
+                           //MangleClassName(propName);
 
                            ListAdd(args, CopyExpression(object));
                            ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
@@ -12652,7 +12639,7 @@ static void ProcessFunction(FunctionDefinition function)
          strcpy(className, "__ecereClass_");
          FullClassNameCat(className, _class.fullName, true);
 
-         MangleClassName(className);
+         //MangleClassName(className);
 
          structName[0] = 0;
          FullClassNameCat(structName, _class.fullName, false);
@@ -12797,7 +12784,7 @@ static void ProcessFunction(FunctionDefinition function)
                char className[1024];
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, classSym.string, true);
-               MangleClassName(className);
+               //MangleClassName(className);
 
                // Testing This
                DeclareClass(classSym, className);
@@ -13120,6 +13107,13 @@ void ComputeDataTypes()
             }
          }
        }
+   }
+
+   {
+      // Workaround until we have proper toposort for declarations reordering
+      External e = MkExternalDeclaration(MkDeclaration(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Instance"), null)), null));
+      ast->Insert(after, e);
+      after = e;
    }
 
    temp.symbol = Symbol { id = -1000, idCode = -1000 };

@@ -266,7 +266,7 @@ public class Table
    class_no_expansion;
    Table prev, next;
    Database db;
-   OldList listRows { offset = (uint)&((Row)0).prev };
+   OldList listRows { offset = (uint)(uintptr)&((Row)0).prev };
    Row cachedIdRow;
 public:
    virtual const String GetName();

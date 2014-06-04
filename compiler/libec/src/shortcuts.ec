@@ -29,7 +29,7 @@ Declarator PlugDeclarator(Declarator decl, Declarator baseDecl)
       {
          for(; base.declarator && base.declarator.type != identifierDeclarator; base = base.declarator)
          {
-            printf("");
+            //printf("");
          }
       }
       if(baseDecl)

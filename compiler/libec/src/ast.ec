@@ -1312,7 +1312,6 @@ External MkExternalImport(char * name, ImportType importType, AccessMode importA
 External MkExternalDeclaration(Declaration declaration)
 {
    External external { type = declarationExternal, declaration = declaration, symbol = declaration ? declaration.symbol : null };
-   InitDeclarator d = (declaration && declaration.declarators) ? declaration.declarators->last : null;
    if(declaration && declaration.type == initDeclaration && declaration.specifiers)
    {
       Specifier spec;
@@ -2106,7 +2105,7 @@ static char * GetFullClassName(Class c, char * name)
 
 public Symbol FindClass(const char * name)
 {
-#ifdef _DEBUG
+#ifdef _TIMINGS
    Time startTime = GetTime();
 #endif
    Symbol cl = null;
@@ -2281,7 +2280,6 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             ExtDecl extDecl = spec.extDecl;
             if(extDecl.type == extDeclString)
             {
-               String s = spec.extDecl.s;
                if(!strcmp(spec.extDecl.s, "__declspec(dllexport)") || !strcmp(spec.extDecl.s, "dllexport"))
                   specType.dllExport = true;
                else if(!strcmp(spec.extDecl.s, "__declspec(stdcall)") || !strcmp(spec.extDecl.s, "stdcall"))
@@ -2410,7 +2408,6 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
             if(spec.list)
             {
                Enumerator e;
-               int nextValue = 0;
                for(e = spec.list->first; e; e = e.next)
                {
                   NamedLink i { name = CopyString(e.id.string) };
@@ -2907,12 +2904,11 @@ Expression GetTemplateArgExpByName(const char * paramName, Class curClass, Templ
       {
          char idString[32];
          char className[1024];
-         Expression classExp;
 
          sprintf(idString, "%d", id);
          strcpy(className, "__ecereClass_");
          FullClassNameCat(className, _class.fullName, true);
-         MangleClassName(className);
+         //MangleClassName(className);
          DeclareClass(FindClass(_class.fullName), className);
 
          argExp = MkExpIndex((/*pointer ? MkExpPointer : */MkExpMember)
@@ -2957,6 +2953,7 @@ public void OutputIntlStrings()
             filePrefix = "./"; //(GetRuntimePlatform() == win32) ? ".\\" : "./";
          // GetSystemPathBuffer(srcFileFixed, srcFile);
          GetSlashPathBuffer(srcFileFixed, srcFile);
+
          for(s : intlStrings)
          {
             // TOFIX: (#654) ContextStringPair * pair = &s;

@@ -97,7 +97,7 @@ void FreeDataMemberDefine(DataMemberDefine dataMember)
 void FreeDataDefine(DataDefine data)
 {
    delete data.name;
-   delete data.type;
+   delete data.dataType;
 }
 
 void FreeDefinition(Definition definition)
@@ -129,7 +129,7 @@ static bool globalInstance = false;
 static Context globalContext { };
 static OldList defines, imports, precompDefines;
 static Module privateModule;
-static OldList _excludedSymbols { offset = (uint)&((Symbol)0).left };
+static OldList _excludedSymbols { offset = (uint)(uintptr)&((Symbol)0).left };
 static NameSpace globalData
 {
    classes.CompareKey = (void *)BinaryTree::CompareString;
@@ -431,7 +431,6 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
          {
             DataMember member;
             Property prop;
-            Method method;
             if((prop = eClass_FindProperty(regClass, def.id.string, privateModule)))
             {
                PropertyDefine propDefine;
@@ -725,7 +724,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          }
          if(param.type == identifier)
          {
-            eClass_AddTemplateParameter(regClass, param.identifier.string, param.type, (void *)param.memberType, defaultArg);
+            eClass_AddTemplateParameter(regClass, param.identifier.string, param.type, (void *)(uintptr)param.memberType, defaultArg);
          }
          else
          {
@@ -1283,7 +1282,6 @@ static void OutputSymbols(const char * fileName)
          }
          else if(definition.type == defineDefinition)
          {
-            DefinedExpression defExp = eSystem_FindDefine(privateModule, definition.name);
             Define defineDefine = (Define) definition;
             f.Printf("   %s\n", definition.name);
             f.Printf("      [Value]\n");

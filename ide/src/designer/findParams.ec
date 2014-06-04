@@ -29,11 +29,11 @@ static bool Inside(Location loc, int line, int charPos)
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos > charPos));
 }
 
-static bool InsideEndIncl(Location loc, int line, int charPos)
+/*static bool InsideEndIncl(Location loc, int line, int charPos)
 {
    return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
           (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
-}
+}*/
 
 Identifier FindParamsIdentifier(Identifier id, int line, int charPos)
 {
@@ -611,6 +611,7 @@ static Identifier FindParamsSpecifier(Specifier spec, int line, int charPos)
                            if(idResult)
                               return idResult;
                            SetThisClass(oldThisClass);
+                           SetTopContext(oldTopContext);
                         }
                      }
                      break;
@@ -644,6 +645,7 @@ static Identifier FindParamsSpecifier(Specifier spec, int line, int charPos)
                         idResult = FindParamsStatement(def.propertyWatch.compound, line, charPos);
                         if(idResult) return idResult;
                         SetThisClass(oldThisClass);
+                        SetTopContext(oldTopContext);
                      }
                      break;
                }
@@ -722,9 +724,6 @@ static Identifier FindParamsFunction(FunctionDefinition func, int line, int char
    {
       Identifier idResult;
 
-      Identifier id = GetDeclId(func.declarator);
-      Symbol symbol = func.declarator.symbol;
-      Type type = symbol.type;
       Class oldThisClass = GetThisClass();
       Context oldTopContext = GetTopContext();
 
@@ -934,7 +933,6 @@ static Identifier FindParamsClassFunction(ClassFunction func, int line, int char
    {
       Identifier idResult;
 
-      Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol ? symbol.type : null;
       Class oldThisClass = GetThisClass();
@@ -962,6 +960,7 @@ static Identifier FindParamsProperty(PropertyDef def, int line, int charPos)
       result = FindParamsStatement(def.getStmt, line, charPos);
       if(result) return result;
       SetThisClass(oldThisClass);
+      SetTopContext(oldTopContext);
    }
    if(def.setStmt && Inside(&def.setStmt.loc, line, charPos))
    {
@@ -971,6 +970,7 @@ static Identifier FindParamsProperty(PropertyDef def, int line, int charPos)
       result = FindParamsStatement(def.setStmt, line, charPos);
       if(result) return result;
       SetThisClass(oldThisClass);
+      SetTopContext(oldTopContext);
    }
    return null;
 }
@@ -1002,6 +1002,7 @@ static Identifier FindParamsClassDef(ClassDef def, int line, int charPos)
                if(idResult)
                   return idResult;
                SetThisClass(oldThisClass);
+               SetTopContext(oldTopContext);
             }
          }
          break;
@@ -1034,6 +1035,7 @@ static Identifier FindParamsClassDef(ClassDef def, int line, int charPos)
             idResult = FindParamsStatement(def.propertyWatch.compound, line, charPos);
             if(idResult) return idResult;
             SetThisClass(oldThisClass);
+            SetTopContext(oldTopContext);
          }
          break;
    }
@@ -1082,6 +1084,7 @@ Identifier FindParamsTree(OldList ast, int line, int charPos)
    insideClass = null;
    paramsInsideExp = null;
    SetThisClass(null);
+   SetTopContext(GetGlobalContext());
    paramsID = -1;
    functionType = null;
    instanceType = null;

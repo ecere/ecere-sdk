@@ -481,7 +481,6 @@ class QuickProjectDialog : Window
          projectWindow = ide.CreateProjectView(workspace, filePath);
 
          {
-            char extension[MAX_EXTENSION];
             Window document = null;
             for(document = ide.firstChild; document; document = document.next)
             {

@@ -41,6 +41,7 @@ class AboutIDE : Window
       versionCopyright.contents = message;
       delete message;
       delete shortVersion;
+      return true;
    }
 
    Label { this, text = $"Lead Architect and Developer", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 194 } };

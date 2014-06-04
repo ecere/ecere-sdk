@@ -42,7 +42,6 @@ class Designer : DesignerBase
    void AddDefaultMethod(Instance instance, Instance classInstance)
    {
       Class _class = instance._class;
-      int minID = MAXINT;
       Method defaultMethod = null;
 
       for( ; _class; _class = _class.base)

@@ -1336,30 +1336,30 @@ class_entry:
    };
 
 class_decl:
-     class_entry identifier { $1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+     class_entry identifier { (void)$1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type
    {
-      $1; $$ = DeclClass(globalContext.nextID++, $2.name);
+      (void)$1; $$ = DeclClass(globalContext.nextID++, $2.name);
       $$.nameLoc = @2;
       FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier { $2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type { $2; $$ = DeclClass(globalContext.nextID++, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier { (void)$2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type { (void)$2; $$ = DeclClass(globalContext.nextID++, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
 
-   | class_entry identifier '<' template_parameters_list '>' { $1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | class_entry identifier '<' template_parameters_list '>' { (void)$1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type '<' template_parameters_list '>'
    {
-      $1; $$ = DeclClass(globalContext.nextID++, $2.name);
+      (void)$1; $$ = DeclClass(globalContext.nextID++, $2.name);
       $$.templateParams = $4;
       $$.nameLoc = @2;
       FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier '<' template_parameters_list '>' { $2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type '<' template_parameters_list '>' { $2; $$ = DeclClass(globalContext.nextID++, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier '<' template_parameters_list '>' { (void)$2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type '<' template_parameters_list '>' { (void)$2; $$ = DeclClass(globalContext.nextID++, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
    ;
 
 class:
@@ -1392,13 +1392,13 @@ class:
 
 	| class_entry identifier ';'
       {
-         $1; $$ = MkClass(DeclClassAddNameSpace(0, $2.string), null, null); FreeIdentifier($2);
+         (void)$1; $$ = MkClass(DeclClassAddNameSpace(0, $2.string), null, null); FreeIdentifier($2);
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_entry type ';'
       {
-         $1; $$ = MkClass(DeclClass(0, $2.name), null, null); FreeSpecifier($2);
+         (void)$1; $$ = MkClass(DeclClass(0, $2.name), null, null); FreeSpecifier($2);
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }

@@ -378,7 +378,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                  TrimLSpaces(line, line);
                                  if(regClass)
                                  {
-                                    Property prop = eClass_AddProperty(regClass, conversion ? null : name, line[0] ? line : 0, (void *)setStmt, (void *)getStmt, memberAccess);
+                                    Property prop = eClass_AddProperty(regClass, conversion ? null : name, line[0] ? line : 0, (void *)(uintptr)setStmt, (void *)(uintptr)getStmt, memberAccess);
                                     if(prop)
                                     {
                                        prop.compiled = false;
@@ -432,7 +432,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                  TrimLSpaces(line, line);
                                  if(regClass)
                                  {
-                                    eClass_AddClassProperty(regClass, name, line, (void *)setStmt, (void *)getStmt);
+                                    eClass_AddClassProperty(regClass, name, line, (void *)(uintptr)setStmt, (void *)(uintptr)getStmt);
                                  }
                               }
                               else if(!strcmp(line, "[Set]"))

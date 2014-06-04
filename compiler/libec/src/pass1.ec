@@ -277,8 +277,10 @@ void CreateRegisterModuleBody()
                        MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("class"))), null))));
       #endif
       ListAdd(registerModuleBody.compound.declarations,
-         MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")),
+         MkDeclaration((specifiers = MkListOne(MkSpecifierName("ecere::com::Class"))),
                        MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), null))));
+      // Avoid unused warning here
+      specifiers->Add(MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(CopyString("unused"), null))))));
 
       specifiers = MkList();
       ListAdd(specifiers, MkSpecifier(VOID));
@@ -382,7 +384,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             strcat(name, "_Set_");
             // strcat(name, prop.name);
             FullClassNameCat(name, prop.name, true);
-            MangleClassName(name);
+            //MangleClassName(name);
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }
          else
@@ -395,7 +397,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             strcat(name, "_Get_");
             // strcat(name, prop.name);
             FullClassNameCat(name, prop.name, true);
-            MangleClassName(name);
+            //MangleClassName(name);
 
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }
@@ -423,7 +425,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
          strcat(name, "_");
          FullClassNameCat(name, prop.name, true);
          // strcat(name, prop.name);
-         MangleClassName(name);
+         //MangleClassName(name);
 
          stmt = MkExpressionStmt(MkListOne(
             MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=',
@@ -463,7 +465,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                strcat(name, "_Set_");
                FullClassNameCat(name, prop.name, true);
                // strcat(name, prop.name);
-               MangleClassName(name);
+               //MangleClassName(name);
                ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
             }
             else
@@ -476,7 +478,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                strcat(name, "_Get_");
                FullClassNameCat(name, prop.name, true);
                // strcat(name, prop.name);
-               MangleClassName(name);
+               //MangleClassName(name);
                ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
             }
             else
@@ -502,14 +504,14 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             strcat(name, "_");
             FullClassNameCat(name, prop.name, true);
             // strcat(name, prop.name);
-            MangleClassName(name);
+            //MangleClassName(name);
 
             strcpy(nameM, "__ecerePropM_");
             FullClassNameCat(nameM, regClass.fullName, false);
             strcat(nameM, "_");
             FullClassNameCat(nameM, prop.name, true);
             // strcat(nameM, prop.name);
-            MangleClassName(nameM);
+            //MangleClassName(nameM);
 
             if(prop.dataTypeString)
             {
@@ -531,7 +533,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                strcat(name, "_IsSet_");
                FullClassNameCat(name, prop.name, false);
                // strcat(name, prop.name);
-               MangleClassName(name);
+               //MangleClassName(name);
 
                stmt = MkExpressionStmt(MkListOne(
                   MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=',
@@ -807,14 +809,14 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             strcat(name, "_");
             FullClassNameCat(name, prop.name, false);
             // strcat(name, prop.name);
-            MangleClassName(name);
+            //MangleClassName(name);
 
             strcpy(nameM, "__ecerePropM_");
             FullClassNameCat(nameM, regClass.fullName, true);
             strcat(nameM, "_");
             FullClassNameCat(nameM, prop.name, false);
             // strcat(nameM, prop.name);
-            MangleClassName(nameM);
+            //MangleClassName(nameM);
 
             args = MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier(nameM)), MkListOne(MkExpIdentifier(MkIdentifier(nameM))), MkExpIdentifier(MkIdentifier(name))));
             stmt = MkExpressionStmt(MkListOne(
@@ -850,7 +852,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             FullClassNameCat(name, regClass.fullName, true);
             strcat(name, "_Set_");
             strcat(name, classProperty.name);
-            MangleClassName(name);
+            //MangleClassName(name);
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }
          else
@@ -862,7 +864,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             FullClassNameCat(name, regClass.fullName, true);
             strcat(name, "_Get_");
             strcat(name, classProperty.name);
-            MangleClassName(name);
+            //MangleClassName(name);
 
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }

@@ -155,8 +155,8 @@ class BreakpointsView : Window
       bool error;
       int lineActive, lineUser;
       int lineH;
-      int scrollY = listBox.scroll.y;
-      int boxH = clientSize.h;
+      //int scrollY = listBox.scroll.y;
+      //int boxH = clientSize.h;
 
       displaySystem.FontExtent(listBox.font.font, " ", 1, null, &lineH);
       //Window::OnRedraw(surface);
@@ -194,7 +194,6 @@ class BreakpointsView : Window
 
    void AddBreakpoint(Breakpoint bp)
    {
-      char string[32];
       DataRow row = listBox.AddRow();
       row.tag = (int64)bp;
       bp.row = row;

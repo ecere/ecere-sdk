@@ -681,7 +681,7 @@ class CodeEditor : Window
 
    OldList * ast;
    Context globalContext { };
-   OldList excludedSymbols { offset = (uint)&((Symbol)0).left };
+   OldList excludedSymbols { offset = (uint)(uintptr)&((Symbol)0).left };
 
    OldList defines;
    OldList imports;
@@ -796,7 +796,6 @@ class CodeEditor : Window
                   hide = true;
                else
                {
-                  const char * buffer = membersLine.text;
                   int c;
 
                   if(charPos - 1 < membersLoc.start.charPos)
@@ -2383,7 +2382,7 @@ class CodeEditor : Window
 
       if(editBox.syntaxHighlighting && fileName && ide.projectView)
       {
-         bool error, bpOnCursor, bpOnTopFrame, breakpointEnabled[128];
+         bool error, bpOnTopFrame, breakpointEnabled[128];
          int lineCursor, lineTopFrame, breakpointLines[128];
          int count, i, lineH, boxH, scrollY; //, firstLine; firstLine = editBox.firstLine;
          Debugger debugger = ide.debugger;
@@ -2393,7 +2392,7 @@ class CodeEditor : Window
          scrollY = editBox.scroll.y;
          displaySystem.FontExtent(editBox.font.font, " ", 1, null, &lineH);
 
-         bpOnCursor = bpOnTopFrame = false;
+         bpOnTopFrame = false;
          count = debugger.GetMarginIconsLineNumbers(fileName, breakpointLines, breakpointEnabled, 128, &error, &lineCursor, &lineTopFrame);
          if(count)
          {
@@ -2402,8 +2401,6 @@ class CodeEditor : Window
                if(breakpointLines[i] == lineCursor || breakpointLines[i] == lineTopFrame)
                {
                   bmpRes = breakpointEnabled[i] ? ide.bmpBpHalf : ide.bmpBpHalfDisabled;
-                  if(breakpointLines[i] == lineCursor)
-                     bpOnCursor = true;
                   if(breakpointLines[i] == lineTopFrame)
                      bpOnTopFrame = true;
                }
@@ -2548,7 +2545,6 @@ class CodeEditor : Window
    CodeEditor()
    {
       CodeObjectType c;
-      ProjectView projectView = ide.projectView;
 
       globalData.classes.CompareKey = (void *)BinaryTree::CompareString;
       globalData.defines.CompareKey = (void *)BinaryTree::CompareString;
@@ -2759,7 +2755,7 @@ class CodeEditor : Window
 
             next = _class.next;
 
-            for(;object = _class.instances.first;)
+            while((object = _class.instances.first))
             {
                if(object.instance)
                {
@@ -3092,7 +3088,6 @@ class CodeEditor : Window
                            classDefinition = _class;
                            oClass = classObject;
                         };
-                        Symbol symbol;
                         classes.Add(classObject);
 
                         incref instance;
@@ -3559,7 +3554,6 @@ class CodeEditor : Window
          if(selectedName)
          {
             ObjectInfo check;
-            int pos = 0;
 
             for(check = this.oClass.instances.first; check; check = check.next)
             {
@@ -3884,9 +3878,7 @@ class CodeEditor : Window
       Window control = (Window)object.instance;
       bool prev = false;
       bool methodPresent = false;
-      Class _class;
       bool lastIsMethod = true;
-      ObjectInfo classObject = object.oClass;
 
       if(inst)
       {
@@ -3968,7 +3960,7 @@ class CodeEditor : Window
                {
                   int count = 0;
                   int toDelete = 0;
-                  int toAdd = 0;
+                  //int toAdd = 0;
 
                   f.Seek(-1, current);
                   DeleteJunkBefore(f, position, &position);
@@ -3994,8 +3986,8 @@ class CodeEditor : Window
                            toDelete += count - 6;
                            count = 6;
                         }
-                        else
-                           toAdd = 6 - count;
+                        /*else
+                           toAdd = 6 - count;*/
                         break;
                      }
                   }
@@ -4144,7 +4136,6 @@ class CodeEditor : Window
                   if(!keptMember || !members.next)
                   {
                      char ch = 0;
-                     int count = 0;
 
                      if(keptMember && lastKept != members.dataMembers->last)
                      {
@@ -4605,7 +4596,6 @@ class CodeEditor : Window
 
          for(classObject = classes.first; classObject; classObject = classObject.next)
          {
-            Class _class;
             ClassDefinition classDef = classObject.classDefinition;
             Class regClass = eSystem_FindClass(this.privateModule, ((Specifier)classDef.baseSpecs->first).name);
             Instance test;
@@ -4724,7 +4714,6 @@ class CodeEditor : Window
                      if(!keptMember)
                      {
                         char ch = 0;
-                        int count = 0;
                         f.Seek(def.loc.end.pos - position - 1, current);
                         f.Getc(&ch);
 
@@ -5815,8 +5804,6 @@ class CodeEditor : Window
       for(_class = whatClass; _class && _class.type != systemClass; _class = _class.base)
       {
          Method method;
-         Property prop;
-         DataMember member;
 
          for(method = (Method)_class.methods.first; method; method = (Method)((BTNode)method).next)
          {
@@ -5854,7 +5841,6 @@ class CodeEditor : Window
       for(_class = whatClass; _class /*&& _class.type != systemClass*/; _class = _class.base)
       {
          Method method;
-         Property prop;
          DataMember member;
 
          for(method = (Method)_class.methods.first; method; method = (Method)((BTNode)method).next)
@@ -5924,8 +5910,6 @@ class CodeEditor : Window
    {
       if(type && (type.kind == classType || type.kind == structType || type.kind == unionType))
       {
-         Class _class;
-
          if(type.kind == classType)
          {
             if(type._class)
@@ -5981,14 +5965,14 @@ class CodeEditor : Window
 
       for(link = (BTNamedLink)nameSpace.defines.first; link; link = (BTNamedLink)((BTNode)link).next )
       {
-         DefinedExpression definedExp = link.data;
+         //DefinedExpression definedExp = link.data;
          DataRow row = membersList.AddString(link /*definedExp*/.name);
          row.icon = icons[typeData];
       }
 
       for(link = (BTNamedLink)nameSpace.functions.first; link; link = (BTNamedLink)((BTNode)link).next)
       {
-         GlobalFunction function = link.data;
+         //GlobalFunction function = link.data;
          DataRow row = membersList.AddString(link /*function*/.name);
          row.icon = icons[typeMethod];
       }
@@ -6336,7 +6320,7 @@ class CodeEditor : Window
    void OverrideVirtualFunction(ClassFunction function, Method method, Class _class, bool isInstance, bool extraIndent)
    {
       EditBoxStream f { editBox = editBox };
-      uint position = 0;
+      int position = 0;
       EditLine l1, l2;
       int x1,y1,x2,y2;
 
@@ -6444,7 +6428,6 @@ class CodeEditor : Window
    {
       bool didOverride = false;
       EditLine line = editBox.line;
-      const char * text = line.text;
       int lineNum, charPos;
       Expression exp = null;
       EditLine l1, l2;
@@ -6821,10 +6804,7 @@ class CodeEditor : Window
 
    void InvokeParameters(bool exact, bool reposition, bool caretMove)
    {
-      EditLine line = editBox.line;
-      const char * text = line.text;
       int lineNum, charPos;
-      Expression exp = null;
       EditLine l1, l2;
       int x1,y1, x2,y2;
 

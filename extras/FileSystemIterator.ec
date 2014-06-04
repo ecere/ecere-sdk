@@ -54,13 +54,11 @@ public:
       {
          if(frame.listing.Find())
          {
-            const char * name = frame.listing.name;
-            bool isDirectory = frame.listing.stats.attribs.isDirectory;
             bool peek = frame.listing.stats.attribs.isDirectory && OnFolder(frame.listing.path);
             if(!frame.listing.stats.attribs.isDirectory)
             {
                const char * path = frame.listing.path;
-               OnFile(frame.listing.path);
+               OnFile(path);
             }
             else if(peek)
             {
@@ -114,7 +112,7 @@ public:
    {
    }
 }
-
+/*
 static class IteratorThread : Thread
 {
    void Temp()
@@ -122,7 +120,7 @@ static class IteratorThread : Thread
       //listing = FileListing { dir, extensions = filter.extensions };  // there should be a sorted = true/false
    }
 }
-
+*/
 public class StackFrame
 {
    int tag;

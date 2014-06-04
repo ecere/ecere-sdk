@@ -40,6 +40,8 @@ typedef unsigned __int64 uint64;
 #define arch_PointerSize                  sizeof(void *)
 #define structSize_Instance               (_64BIT ? 24 : 12)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1382,6 +1384,16 @@ extern struct Declarator * MkDeclaratorIdentifier(struct Identifier * id);
 
 extern struct Identifier * MkIdentifier(const char *  string);
 
+extern struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl);
+
+extern struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr);
+
+extern struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList *  attribs);
+
+extern struct Attribute * MkAttribute(char * attr, struct Expression * exp);
+
+extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
+
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
 
 extern char *  __ecereNameSpace__ecere__sys__GetLastDirectory(const char *  string, char *  output);
@@ -1415,7 +1427,8 @@ struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(
 
 __ecereInstance1->parent = globalContext, __ecereInstance1;
 });
-ListAdd(registerModuleBody->__anon1.compound.declarations, MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), (((void *)0))))));
+ListAdd(registerModuleBody->__anon1.compound.declarations, MkDeclaration((specifiers = MkListOne(MkSpecifierName("ecere::com::Class"))), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), (((void *)0))))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*specifiers), MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(__ecereNameSpace__ecere__sys__CopyString("unused"), (((void *)0))))))));
 specifiers = MkList();
 ListAdd(specifiers, MkSpecifier(VOID));
 moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")), MkDeclaratorIdentifier(MkIdentifier("module")));
@@ -1480,8 +1493,6 @@ extern char *  strcpy(char * , const char * );
 extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
 extern char *  strcat(char * , const char * );
-
-extern void MangleClassName(char *  className);
 
 extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
 
@@ -1591,7 +1602,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x0);
 strcat(name, "_Set_");
 FullClassNameCat(name, prop->name, 0x1);
-MangleClassName(name);
 ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
 }
 else
@@ -1602,7 +1612,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x0);
 strcat(name, "_Get_");
 FullClassNameCat(name, prop->name, 0x1);
-MangleClassName(name);
 ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
 }
 else
@@ -1624,7 +1633,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x0);
 strcat(name, "_");
 FullClassNameCat(name, prop->name, 0x1);
-MangleClassName(name);
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', MkExpCall(MkExpIdentifier(MkIdentifier("eClass_AddProperty")), args))));
 ListAdd(registerModuleBody->__anon1.compound.statements, stmt);
 }
@@ -1654,7 +1662,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x0);
 strcat(name, "_Set_");
 FullClassNameCat(name, prop->name, 0x1);
-MangleClassName(name);
 ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
 }
 else
@@ -1665,7 +1672,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x0);
 strcat(name, "_Get_");
 FullClassNameCat(name, prop->name, 0x1);
-MangleClassName(name);
 ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
 }
 else
@@ -1687,12 +1693,10 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x0);
 strcat(name, "_");
 FullClassNameCat(name, prop->name, 0x1);
-MangleClassName(name);
 strcpy(nameM, "__ecerePropM_");
 FullClassNameCat(nameM, regClass->fullName, 0x0);
 strcat(nameM, "_");
 FullClassNameCat(nameM, prop->name, 0x1);
-MangleClassName(nameM);
 if(prop->dataTypeString)
 {
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(nameM)), '=', MkExpCall(MkExpIdentifier(MkIdentifier("eClass_AddProperty")), args))));
@@ -1710,7 +1714,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x1);
 strcat(name, "_IsSet_");
 FullClassNameCat(name, prop->name, 0x0);
-MangleClassName(name);
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(name))))));
 ListAdd(registerModuleBody->__anon1.compound.statements, stmt);
 }
@@ -1920,12 +1923,10 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, regClass->fullName, 0x1);
 strcat(name, "_");
 FullClassNameCat(name, prop->name, 0x0);
-MangleClassName(name);
 strcpy(nameM, "__ecerePropM_");
 FullClassNameCat(nameM, regClass->fullName, 0x1);
 strcat(nameM, "_");
 FullClassNameCat(nameM, prop->name, 0x0);
-MangleClassName(nameM);
 args = MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier(nameM)), MkListOne(MkExpIdentifier(MkIdentifier(nameM))), MkExpIdentifier(MkIdentifier(name))));
 stmt = MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("eProperty_Watchable")), args)));
 ListAdd(registerModuleBody->__anon1.compound.statements, stmt);
@@ -1952,7 +1953,6 @@ strcpy(name, "__ecereClassProp_");
 FullClassNameCat(name, regClass->fullName, 0x1);
 strcat(name, "_Set_");
 strcat(name, classProperty->name);
-MangleClassName(name);
 ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
 }
 else
@@ -1963,7 +1963,6 @@ strcpy(name, "__ecereClassProp_");
 FullClassNameCat(name, regClass->fullName, 0x1);
 strcat(name, "_Get_");
 strcat(name, classProperty->name);
-MangleClassName(name);
 ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
 }
 else
@@ -3183,7 +3182,7 @@ extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 void __ecereRegisterModule_pass1(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetBuildingEcereCom", "void SetBuildingEcereCom(bool b)", SetBuildingEcereCom, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetBuildingEcereCom", "bool GetBuildingEcereCom(void)", GetBuildingEcereCom, module, 1);

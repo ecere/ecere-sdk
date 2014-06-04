@@ -12,7 +12,7 @@ import "Project"
 static define app = ((GuiApplication)__thisModule);
 #endif
 
-#define OPTION(x) ((uint)(&((ProjectOptions)0).x))
+#define OPTION(x) ((uint)(uintptr)(&((ProjectOptions)0).x))
 
 static void OutputLog(const char * string)
 {
@@ -608,7 +608,6 @@ private:
       // TODO: Check how to fix duplication of following options when configuration is made per-config-per-file
       while((node = nodeStack.lastIterator.data))
       {
-         ProjectConfig config = GetMatchingNodeConfig(prjConfig);
          ProjectOptions nodeOptions = node.property::options;
          if(nodeOptions && nodeOptions.preprocessorDefinitions)
          {
@@ -982,7 +981,6 @@ private:
       ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       ProjectOptions options = property::options;
       Array<PlatformOptions> platforms = property::platforms;
-      List<ProjectConfig> configurations = property::configurations;
 
       if(parent)
          parent.CollectExclusionInfo(output, prjConfig);
@@ -1288,7 +1286,6 @@ private:
    void OnDisplay(Surface surface, int x, int y, int width, ProjectView projectView, Alignment alignment, DataDisplayFlags displayFlags)
    {
       char label[MAX_FILENAME];
-      int indent = 16;
       int xStart;
       int len;
       int w, h;
@@ -1302,7 +1299,7 @@ private:
       }
 
       bmp = projectView.icons[icon].bitmap;
-      xStart = /*indent * indent + */x + (bmp ? (bmp.width + 5) : 0);
+      xStart = x + (bmp ? (bmp.width + 5) : 0);
 
       GetLastDirectory(name, label);
       if(!showConfig || projectView.drawingInProjectSettingsDialogHeader)
@@ -1599,8 +1596,8 @@ private:
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec"))
          {
-            DualPipe dep;
-            char command[2048];
+            //DualPipe dep;
+            //char command[2048];
 
             ReplaceSpaces(moduleName, name);
             StripExtension(moduleName);
@@ -1720,7 +1717,6 @@ private:
          Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       Array<Platform> platforms = GetPlatformsArrayFromExclusionInfo(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
@@ -1736,9 +1732,6 @@ private:
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec"))
          {
-            DualPipe dep;
-            char command[2048];
-
             ReplaceSpaces(moduleName, name);
             StripExtension(moduleName);
 
@@ -1784,7 +1777,6 @@ private:
       Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       Array<Platform> platforms = GetPlatformsArrayFromExclusionInfo(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
@@ -1799,8 +1791,8 @@ private:
          GetExtension(name, extension);
          if(!strcmpi(extension, "ec"))
          {
-            DualPipe dep;
-            char command[2048];
+            //DualPipe dep;
+            //char command[2048];
 
             ReplaceSpaces(moduleName, name);
             StripExtension(moduleName);
@@ -1930,7 +1922,6 @@ private:
       Map<intptr, int> nodeCFlagsMapping, Map<intptr, int> nodeECFlagsMapping)
    {
       int ifCount = 0;
-      ProjectConfig config = GetMatchingNodeConfig(prjConfig);
       Array<Platform> platforms = GetPlatformsArrayFromExclusionInfo(prjConfig);
       //ProjectNode child;
       //char objDir[MAX_LOCATION];
@@ -1948,8 +1939,8 @@ private:
                !strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx") ||
                !strcmpi(extension, "m") || !strcmpi(extension, "mm") || !strcmpi(extension, "ec"))
          {
-            DualPipe dep;
-            char command[2048];
+            //DualPipe dep;
+            //char command[2048];
             NameCollisionInfo info;
 
             ReplaceSpaces(moduleName, name);
@@ -2581,7 +2572,6 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
    //         p Platform
    //         u Utility (GenericOptionTools)
 
-   int e;
    int o;
    int priority = 0;
    int includeDirsOption = OPTION(includeDirs);
@@ -2806,8 +2796,6 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
 
 static void CollectPlatformsCommonOptions(Map<Platform, ProjectOptions> byPlatformOptions, ProjectOptions * platformsCommonOptions)
 {
-   char * s;
-   int i;
    ProjectOptions first;
    ProjectOptions commonOptions;
 

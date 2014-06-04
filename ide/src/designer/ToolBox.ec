@@ -2,9 +2,9 @@ import "ide"
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp;
 
-static void Dummy()
+static __attribute__((unused)) void Dummy()
 {
-   Window a;
+   Window a = 0;
    a.OnLeftButtonUp(0,0,0);
 }
 

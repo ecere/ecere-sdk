@@ -30,6 +30,8 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1586,7 +1588,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_copy(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyIdentifier", "Identifier CopyIdentifier(Identifier id)", CopyIdentifier, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyExpContents", "Expression CopyExpContents(Expression exp)", CopyExpContents, module, 2);

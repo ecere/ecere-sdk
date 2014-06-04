@@ -65,6 +65,8 @@ typedef unsigned __int64 uint64;
 #define structSize_Property               (_64BIT ? 152 : 88)
 #define structSize_Class                  (_64BIT ? 624 : 376)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -319,7 +321,7 @@ size_t fread(void * ptr, size_t size, size_t nmemb, FILE * stream);
 
 size_t fwrite(const void * ptr, size_t size, size_t nmemb, FILE * stream);
 
-int vsnprintf(char *, size_t, const char *, ...);
+int vsnprintf(char *, size_t, const char *, va_list args);
 
 int snprintf(char * str, size_t, const char * format, ...);
 
@@ -6200,7 +6202,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__ClassDesignerBase_CreateNew;
 
 void __ecereRegisterModule_instance(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::null", "((void *)0)", module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::com::Angle", "double", 0, 0, 0, 0, module, 4, 1);

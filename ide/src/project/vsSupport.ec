@@ -699,7 +699,6 @@ void PrintFile(File f, Project prj, ProjectNode node, Map<String, NameCollisionI
    char modulePath[MAX_LOCATION];
    char moduleName[MAX_FILENAME];
    char relativePath[MAX_LOCATION];
-   ProjectConfig config = null;
    Array<String> perFilePreprocessorDefs { };
    Array<DirPath> perFileIncludeDirs { };
 

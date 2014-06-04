@@ -404,7 +404,6 @@ static Expression FindExpStatement(Statement stmt, int line, int charPos)
       case fireWatchersStmt:
       case stopWatchingStmt:
       {
-         Identifier _watch;
          if(stmt._watch.watcher && Inside(&stmt._watch.watcher.loc, line, charPos))
          {
             expResult = FindExpExpression(stmt._watch.watcher, line, charPos);
@@ -523,6 +522,7 @@ static Expression FindExpSpecifier(Specifier spec, int line, int charPos)
                            if(expResult)
                               return expResult;
                            SetThisClass(oldThisClass);
+                           SetTopContext(oldTopContext);
                         }
                      }
                      break;
@@ -556,6 +556,7 @@ static Expression FindExpSpecifier(Specifier spec, int line, int charPos)
                         expResult = FindExpStatement(def.propertyWatch.compound, line, charPos);
                         if(expResult) return expResult;
                         SetThisClass(oldThisClass);
+                        SetTopContext(oldTopContext);
                      }
                      break;
                }
@@ -634,9 +635,6 @@ static Expression FindExpFunction(FunctionDefinition func, int line, int charPos
    {
       Expression result;
 
-      Identifier id = GetDeclId(func.declarator);
-      Symbol symbol = func.declarator.symbol;
-      Type type = symbol.type;
       Class oldThisClass = GetThisClass();
       Context oldTopContext = GetTopContext();
 
@@ -707,7 +705,6 @@ static Expression FindExpClassFunction(ClassFunction func, int line, int charPos
    {
       Expression result;
 
-      Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol?symbol.type:null;
       Class oldThisClass = GetThisClass();
@@ -820,6 +817,8 @@ Expression FindExpTree(OldList ast, int line, int charPos)
 {
    Expression expResult;
    External external;
+   SetThisClass(null);
+   SetTopContext(GetGlobalContext());
    if(ast != null)
    {
       for(external = ast.first; external; external = external.next)

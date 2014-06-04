@@ -13,13 +13,13 @@ static bool InsideIncl(Location loc, int line, int charPos)
    //       (loc.end.line > line || (loc.end.line == line && loc.end.charPos >= charPos));
    return !loc.start.included && loc.start.line <= line && loc.end.line >= line;
 }
-
+/*
 static bool Inside(Location loc, int line, int charPos)
 {
    //return !loc.start.included && (loc.start.line < line || (loc.start.line == line && loc.start.charPos < charPos)) &&
    //       (loc.end.line > line || (loc.end.line == line && loc.end.charPos > charPos));
    return !loc.start.included && loc.start.line < line &&  loc.end.line > line;
-}
+}*/
 
 static bool InsideEndIncl(Location loc, int line, int charPos)
 {
@@ -70,6 +70,7 @@ static Identifier DebugFindCtxSpecifier(Specifier spec, int line, int charPos)
                            if(idResult)
                               return idResult;
                            SetThisClass(oldThisClass);
+                           SetTopContext(oldTopContext);
                         }
                      }
                      break;
@@ -103,6 +104,7 @@ static Identifier DebugFindCtxSpecifier(Specifier spec, int line, int charPos)
                         idResult = DebugFindCtxStatement(def.propertyWatch.compound, line, charPos);
                         if(idResult) return idResult;
                         SetThisClass(oldThisClass);
+                        SetTopContext(oldTopContext);
                      }
                      break;
                }
@@ -227,8 +229,6 @@ Identifier DebugFindCtxExpression(Expression exp, int line, int charPos)
       case callExp:
       {
          int arg;
-         Type type = exp.call.exp.expType;
-
          if(InsideIncl(&exp.call.exp.loc, line, charPos))
          {
             idResult = DebugFindCtxExpression(exp.call.exp, line, charPos);
@@ -708,9 +708,6 @@ static Identifier DebugFindCtxFunction(FunctionDefinition func, int line, int ch
    {
       Identifier idResult;
 
-      Identifier id = GetDeclId(func.declarator);
-      Symbol symbol = func.declarator.symbol;
-      Type type = symbol.type;
       Class oldThisClass = GetThisClass();
       Context oldTopContext = GetTopContext();
 
@@ -756,7 +753,7 @@ static Identifier DebugFindCtxInstance(Instantiation inst, int line, int charPos
    Identifier idResult = null;
    Class oldThisClass = GetThisClass();
    Symbol sym = inst._class ? FindClass(inst._class.name) : null;
-   bool insideSomething = false;
+   //bool insideSomething = false;
    bool insideBrackets;
 
    if(sym)
@@ -794,9 +791,9 @@ static Identifier DebugFindCtxInstance(Instantiation inst, int line, int charPos
 
          if(InsideIncl(&init.loc, line, charPos))
          {
-            if(InsideIncl(&init.loc, line, charPos))
+            /*if(InsideIncl(&init.loc, line, charPos))
                if(init.type == methodMembersInit)
-                  insideSomething = true;
+                  insideSomething = true;*/
 
             if(init.type == methodMembersInit && InsideIncl(&init.function.loc, line, charPos))
             {
@@ -824,7 +821,6 @@ static Identifier DebugFindCtxClassFunction(ClassFunction func, int line, int ch
    {
       Identifier idResult;
 
-      Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol ? symbol.type : null;
       Class oldThisClass = GetThisClass();
@@ -867,6 +863,7 @@ static Identifier DebugFindCtxProperty(PropertyDef def, int line, int charPos)
       result = DebugFindCtxStatement(def.getStmt, line, charPos);
       if(result) return result;
       SetThisClass(oldThisClass);
+      SetTopContext(oldTopContext);
    }
    if(def.setStmt && InsideIncl(&def.setStmt.loc, line, charPos))
    {
@@ -876,6 +873,7 @@ static Identifier DebugFindCtxProperty(PropertyDef def, int line, int charPos)
       result = DebugFindCtxStatement(def.setStmt, line, charPos);
       if(result) return result;
       SetThisClass(oldThisClass);
+      SetTopContext(oldTopContext);
    }
    return null;
 }
@@ -907,6 +905,7 @@ static Identifier DebugFindCtxClassDef(ClassDef def, int line, int charPos)
                if(idResult)
                   return idResult;
                SetThisClass(oldThisClass);
+               SetTopContext(oldTopContext);
             }
          }
          break;
@@ -944,6 +943,7 @@ static Identifier DebugFindCtxClassDef(ClassDef def, int line, int charPos)
             if(idResult)
                return idResult;
             SetThisClass(oldThisClass);
+            SetTopContext(oldTopContext);
          }
          break;
    }
@@ -983,6 +983,7 @@ Identifier DebugFindCtxTree(OldList ast, int line, int charPos)
    External external;
 
    SetThisClass(null);
+   SetTopContext(GetGlobalContext());
    if(ast != null)
    {
       for(external = ast.first; external; external = external.next)

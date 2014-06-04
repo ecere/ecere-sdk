@@ -40,6 +40,8 @@ typedef unsigned __int64 uint64;
 #define arch_PointerSize                  sizeof(void *)
 #define structSize_Instance               (_64BIT ? 24 : 12)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -592,7 +594,7 @@ extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__
 
 void __ecereRegisterModule_TempFile(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::TempFile", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__TempFile), 0, __ecereConstructor___ecereNameSpace__ecere__sys__TempFile, __ecereDestructor___ecereNameSpace__ecere__sys__TempFile, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)

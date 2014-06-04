@@ -801,7 +801,7 @@ void FreeStatement(Statement stmt)
          if(stmt._watch.object)
             FreeExpression(stmt._watch.object);
          if(stmt._watch.watches)
-            FreeList(stmt._watch.watches, (stmt.type == watchStmt) ? FreePropertyWatch : FreeIdentifier);
+            FreeList(stmt._watch.watches, (stmt.type == watchStmt) ? (void *)FreePropertyWatch : (void *)FreeIdentifier);
          break;
       }
    }

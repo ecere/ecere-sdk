@@ -30,6 +30,8 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1354,8 +1356,6 @@ extern struct __ecereNameSpace__ecere__sys__OldList *  MkListOne(void *  item);
 
 extern struct Specifier * MkSpecifierName(const char *  name);
 
-extern void MangleClassName(char *  className);
-
 extern struct Symbol * FindClass(const char *  name);
 
 extern void DeclareClass(struct Symbol * classSym, const char *  className);
@@ -1625,7 +1625,6 @@ char className[1024];
 
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, _class->fullName, 0x1);
-MangleClassName(className);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
@@ -2289,7 +2288,6 @@ if(_class->templateClass)
 _class = _class->templateClass;
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, _class->fullName, 0x0);
-MangleClassName(className);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
@@ -2442,7 +2440,6 @@ if(exp->__anon1.op.op == '*' && !exp->__anon1.op.exp1 && exp->__anon1.op.exp2 &&
 struct Expression * next = exp->next, * prev = exp->prev;
 struct Expression * derefExp = exp->__anon1.op.exp2;
 struct Expression * refExp = exp->__anon1.op.exp2->__anon1.op.exp2;
-struct Type * expType = exp->expType, * destType = exp->destType;
 
 derefExp->__anon1.op.exp2 = (((void *)0));
 FreeExpression(derefExp);
@@ -2755,7 +2752,6 @@ argClass = classSym->__anon1.registered;
 struct Type * type = memberExp ? memberExp->__anon1.member.exp->expType : (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * regClass = (type && type->kind == 8 && type->__anon1._class) ? type->__anon1._class->__anon1.registered : (((void *)0));
 char className[1024];
-unsigned int useInstance = 0x0;
 
 if(!exp->__anon1.call.exp->expType->__anon1.__anon3.methodClass && !_class && type && type->classObjectType)
 strcpy(className, "class");
@@ -2773,7 +2769,6 @@ if(cl->templateClass && !_class && exp->__anon1.call.exp->expType->__anon1._clas
 cl = cl->templateClass;
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, cl->fullName, 0x1);
-MangleClassName(className);
 if(!cl->symbol)
 cl->symbol = FindClass(cl->fullName);
 DeclareClass(cl->symbol, className);
@@ -2930,7 +2925,6 @@ else if(cl)
 {
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, cl->fullName, 0x1);
-MangleClassName(className);
 if(!cl->symbol)
 cl->symbol = FindClass(cl->fullName);
 DeclareClass(cl->symbol, className);
@@ -3189,7 +3183,6 @@ else
 {
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, _class->fullName, 0x1);
-MangleClassName(className);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
@@ -3499,7 +3492,6 @@ char className[1024];
 
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, _class->fullName, 0x1);
-MangleClassName(className);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
@@ -3622,14 +3614,12 @@ exp->__anon1.member.exp->__anon1.__anon1.identifier = MkIdentifier(pointerName);
 else
 {
 struct Expression * bytePtr, * e;
-struct Expression * classExp;
 struct Expression * checkedExp;
 char structName[1024];
 char className[1024];
 
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, member->_class->fullName, 0x1);
-MangleClassName(className);
 if(!member->_class->symbol)
 member->_class->symbol = FindClass(member->_class->fullName);
 DeclareClass(member->_class->symbol, className);
@@ -3816,7 +3806,6 @@ struct Symbol * classSym = FindClass(string);
 
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 (__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 FreeList(exp->__anon1._classExp.specifiers, FreeSpecifier);
@@ -4309,7 +4298,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_pass2(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNonBracketsExp", "Expression GetNonBracketsExp(Expression exp)", GetNonBracketsExp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessMemberAccess", "void ProcessMemberAccess(void)", ProcessMemberAccess, module, 1);

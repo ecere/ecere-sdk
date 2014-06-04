@@ -41,6 +41,8 @@ typedef unsigned __int64 uint64;
 #define structSize_Instance               (_64BIT ? 24 : 12)
 #define structSize_Module                 (_64BIT ? 560 : 300)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1097,66 +1099,11 @@ extern struct Location yylloc;
 
 extern struct External * curExternal;
 
-extern int strncmp(const char * , const char * , size_t n);
-
-void MangleClassName(char * className)
-{
-char output[1024];
-int c, d = 0;
-char ch;
-
-c = 0;
-if(!strncmp(className, "const ", 6))
-c += 6;
-for(; (ch = className[c]); c++)
-{
-if(ch == ' ')
-output[d++] = '_';
-else if(ch == '*')
-{
-output[d++] = '_';
-output[d++] = 'P';
-output[d++] = 'T';
-output[d++] = 'R';
-output[d++] = '_';
-}
-else if(ch == '<')
-{
-if(!strncmp(className + c + 1, "const ", 6))
-c += 6;
-output[d++] = '_';
-output[d++] = 'T';
-output[d++] = 'P';
-output[d++] = 'L';
-output[d++] = '_';
-}
-else if(ch == '=')
-{
-output[d++] = '_';
-output[d++] = 'E';
-output[d++] = 'Q';
-output[d++] = 'U';
-output[d++] = '_';
-}
-else if(ch == '>')
-{
-output[d++] = '_';
-}
-else if(ch == ',')
-{
-if(!strncmp(className + c + 1, "const ", 6))
-c += 6;
-output[d++] = '_';
-}
-else
-output[d++] = ch;
-}
-output[d] = (char)0;
-}
-
 extern char *  strcat(char * , const char * );
 
 extern size_t strlen(const char * );
+
+extern int strncmp(const char * , const char * , size_t n);
 
 void FullClassNameCat(char * output, const char * className, unsigned int includeTemplateParams)
 {
@@ -1424,8 +1371,6 @@ CheckPublicTypeName(exp->__anon1.typeName, access);
 break;
 case 11:
 {
-struct Type * type = exp->expType;
-
 CheckPublicTypeName(exp->__anon1.cast.typeName, access);
 if(exp->__anon1.cast.exp)
 CheckPublicExpression(exp->__anon1.cast.exp, access);
@@ -1773,7 +1718,6 @@ char constructorName[1024];
 char destructorName[1024];
 struct __ecereNameSpace__ecere__com__Class * regClass;
 struct ClassFunction * destructor = (((void *)0)), * constructor = (((void *)0));
-unsigned int redefinition = 0x0;
 unsigned int isUnion = classType == 6;
 struct External * external = (((void *)0));
 struct ClassDef * def;
@@ -1857,10 +1801,12 @@ CheckMembersDefinitions(regClass, (((void *)0)), definitions, 2);
 }
 for(def = definitions->first; def; def = def->next)
 {
+yylloc = def->loc;
 if(def->type == 2)
 {
 struct Declaration * decl = def->__anon1.decl;
 
+yylloc = decl->loc;
 if(decl->type == 0)
 {
 if(inCompiler && classType != 2)
@@ -2030,7 +1976,6 @@ struct __ecereNameSpace__ecere__sys__OldList * specs = MkList(), * declarators =
 
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, symbol->string, 0x1);
-MangleClassName(className);
 symbol->className = __ecereNameSpace__ecere__sys__CopyString(className);
 if(!strstr(sourceFile, ".main.ec"))
 ListAdd(specs, MkSpecifier(STATIC));
@@ -2245,7 +2190,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, symbol->string, 0x0);
 strcat(name, "_Get_");
 FullClassNameCat(name, propertyDef->id->string, 0x1);
-MangleClassName(name);
 params = MkList();
 if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->__anon1._class && propertyDef->symbol->type->__anon1._class->__anon1.registered && propertyDef->symbol->type->__anon1._class->__anon1.registered->type == 1)
 {
@@ -2278,7 +2222,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, symbol->string, 0x0);
 strcat(name, "_Set_");
 FullClassNameCat(name, propertyDef->id->string, 0x1);
-MangleClassName(name);
 params = MkList();
 ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
 if(propertyDef->__anon1.isDBProp)
@@ -2337,7 +2280,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, symbol->string, 0x0);
 strcat(name, "_IsSet_");
 FullClassNameCat(name, propertyDef->id->string, 0x1);
-MangleClassName(name);
 params = MkList();
 decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params);
 ListAdd(specifiers, MkSpecifierName("bool"));
@@ -2367,7 +2309,6 @@ strcpy(name, "__ecereProp_");
 FullClassNameCat(name, symbol->string, 0x0);
 strcat(name, "_");
 FullClassNameCat(name, propertyDef->id->string, 0x1);
-MangleClassName(name);
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
@@ -2376,7 +2317,6 @@ strcpy(name, "__ecerePropM_");
 FullClassNameCat(name, symbol->string, 0x0);
 strcat(name, "_");
 FullClassNameCat(name, propertyDef->id->string, 0x1);
-MangleClassName(name);
 ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), (((void *)0))));
 decl = MkDeclaration(specifiers, list);
 }
@@ -2419,7 +2359,6 @@ sprintf(name, "class::__ecereClassProp_");
 FullClassNameCat(name, symbol->string, 0x0);
 strcat(name, "_Get_");
 strcat(name, propertyDef->id->string);
-MangleClassName(name);
 params = MkList();
 declId = MkDeclaratorIdentifier(MkIdentifier(name));
 {
@@ -2455,7 +2394,6 @@ strcpy(name, "class::__ecereClassProp_");
 FullClassNameCat(name, symbol->string, 0x0);
 strcat(name, "_Set_");
 strcat(name, propertyDef->id->string);
-MangleClassName(name);
 params = MkList();
 prevCurContext = curContext;
 curContext = body->__anon1.compound.context;
@@ -2632,9 +2570,8 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_pass0(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MangleClassName", "void MangleClassName(char * className)", MangleClassName, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FullClassNameCat", "void FullClassNameCat(char * output, const char * className, bool includeTemplateParams)", FullClassNameCat, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PreProcessClassDefinitions", "void PreProcessClassDefinitions(void)", PreProcessClassDefinitions, module, 1);
 }

@@ -30,6 +30,8 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1041,8 +1043,6 @@ extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
 
 extern void __ecereNameSpace__ecere__com__eProperty_Watchable(struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern int printf(const char * , ...);
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassProperty;
 
 struct __ecereNameSpace__ecere__com__ClassProperty;
@@ -1265,8 +1265,6 @@ propertyDef->category = (((void *)0));
 if(propertyDef->__anon1.isWatchable)
 __ecereNameSpace__ecere__com__eProperty_Watchable(prop);
 }
-else
-printf("");
 propertyDef->symbol->__anon1._property = prop;
 if(propertyDef->symbol->type)
 propertyDef->symbol->type->refCount++;
@@ -1274,10 +1272,9 @@ propertyDef->symbol->type->refCount++;
 else if(def->type == 10 && def->__anon1.propertyDef)
 {
 struct PropertyDef * propertyDef = def->__anon1.propertyDef;
-struct __ecereNameSpace__ecere__com__ClassProperty * prop;
 char * dataTypeString = StringFromSpecDecl(propertyDef->specifiers, propertyDef->declarator);
 
-prop = __ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, propertyDef->id->string, dataTypeString, inCompiler ? propertyDef->setStmt : (((void *)0)), inCompiler ? propertyDef->getStmt : (((void *)0)));
+__ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, propertyDef->id->string, dataTypeString, inCompiler ? propertyDef->setStmt : (((void *)0)), inCompiler ? propertyDef->getStmt : (((void *)0)));
 (__ecereNameSpace__ecere__com__eSystem_Delete(dataTypeString), dataTypeString = 0);
 }
 }
@@ -1637,7 +1634,7 @@ break;
 }
 if(param->type == 1)
 {
-__ecereNameSpace__ecere__com__eClass_AddTemplateParameter(regClass, param->identifier->string, 1, (void *)param->__anon1.memberType, &defaultArg);
+__ecereNameSpace__ecere__com__eClass_AddTemplateParameter(regClass, param->identifier->string, 1, (void *)(uintptr_t)param->__anon1.memberType, &defaultArg);
 }
 else
 {
@@ -1810,7 +1807,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_firstPass(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PrePreProcessClassDefinitions", "void PrePreProcessClassDefinitions(void)", PrePreProcessClassDefinitions, module, 1);
 }

@@ -631,7 +631,6 @@ class ProjectView : Window
          {
             for(p : ide.workspace.projects)
             {
-               Project pr = p;
                prj = project ? project : p;
                if((n = prj.topNode.FindByFullPath(documentFileName, false)))
                {
@@ -665,10 +664,6 @@ class ProjectView : Window
    bool ProjectPrepareForToolchain(Project project, PrepareMakefileMethod method, bool cleanLog, bool displayCompiler,
       CompilerConfig compiler, ProjectConfig config)
    {
-      bool isReady = true;
-      char message[MAX_F_STRING];
-      LogBox logBox = ide.outputView.buildBox;
-
       ShowOutputBuildLog(cleanLog);
 
       if(displayCompiler)
@@ -1040,11 +1035,9 @@ class ProjectView : Window
       {
          OldLink item;
          OldList selectedRows;
-         List<ProjectNode> nodes { };
          fileList.GetMultiSelection(selectedRows);
          for(item = selectedRows.first; item; item = item.next)
          {
-            OldLink i;
             DataRow row = item.data;
             ProjectNode node = (ProjectNode)row.tag;
             if(node.type == project)
@@ -1122,7 +1115,6 @@ class ProjectView : Window
    bool Compile(Project project, List<ProjectNode> nodes, bool justPrint, SingleFileCompileMode mode)
    {
       bool result = true;
-      char fileName[MAX_LOCATION];
       Window document;
       ProjectConfig config = project.config;
 
@@ -1173,7 +1165,6 @@ class ProjectView : Window
    bool Clean(Project project, List<ProjectNode> nodes, bool justPrint)
    {
       bool result = true;
-      char fileName[MAX_LOCATION];
       Window document;
       ProjectConfig config = project.config;
 
@@ -1383,7 +1374,6 @@ class ProjectView : Window
       fileList.GetMultiSelection(selectedRows);
       for(item = selectedRows.first; item; item = item.next)
       {
-         OldLink i;
          DataRow row = item.data;
          ProjectNode node = (ProjectNode)row.tag;
          if(!project)
@@ -1413,7 +1403,6 @@ class ProjectView : Window
       fileList.GetMultiSelection(selectedRows);
       for(item = selectedRows.first; item; item = item.next)
       {
-         OldLink i;
          DataRow row = item.data;
          ProjectNode node = (ProjectNode)row.tag;
          if(!project)
@@ -1675,7 +1664,6 @@ class ProjectView : Window
          {
             char moduleName[MAX_LOCATION], filePath[MAX_LOCATION] = "";
             char ext[MAX_EXTENSION] = "";
-            char * bracket;
             ProjectNode node = null;
             if(colon)
             {
@@ -1930,7 +1918,7 @@ class ProjectView : Window
       if(projectNode.files)
       {
          ProjectNode child;
-         while(child = projectNode.files.first)
+         while((child = projectNode.files.first))
             DeleteNode(child);
       }
       fileList.DeleteRow(projectNode.row);

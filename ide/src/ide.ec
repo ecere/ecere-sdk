@@ -523,7 +523,7 @@ class IDEWorkSpace : Window
          if(activeFrame)
          {
             bool error;
-            int lineCursor, lineTopFrame, activeThread, hitThread;
+            int lineCursor, lineTopFrame;
             int lineH, scrollY, boxH;
             BitmapResource bmp;
             Breakpoint bp = null;
@@ -531,8 +531,8 @@ class IDEWorkSpace : Window
             boxH = clientSize.h;
             scrollY = editBox.scroll.y;
             displaySystem.FontExtent(editBox.font.font, " ", 1, null, &lineH);
-            activeThread = debugger.activeThread;
-            hitThread = debugger.hitThread;
+            //activeThread = debugger.activeThread;
+            //hitThread = debugger.hitThread;
             debugger.GetCallStackCursorLine(&error, &lineCursor, &lineTopFrame);
 
             // TODO: improve bp drawing... it should be visible even if it's not on the activeFrame
@@ -1757,7 +1757,6 @@ class IDEWorkSpace : Window
       if(this)
       {
          Window child;
-         bool inDebugMode = debugger.isActive;
          bool callStackVisible = expand ? false : callStackView.visible;
          bool threadsVisible = expand ? false : threadsView.visible;
          bool watchesVisible = expand ? false : watchesView.visible;
@@ -2125,7 +2124,6 @@ class IDEWorkSpace : Window
       bool running = isDebuggerRunning;
       bool stopped = isDebuggerStopped;
       bool active = debugger.isActive;
-      bool noBreakpointToggle = !project;
 
       bool isNotRunning    = unavailable || !running;
       bool isNotNotRunning = unavailable || running;
@@ -2288,7 +2286,6 @@ class IDEWorkSpace : Window
                {
                   for(;;)
                   {
-                     Project project;
                      Workspace workspace = null;
 
                      if(FileExists(filePath))
@@ -2304,12 +2301,10 @@ class IDEWorkSpace : Window
                            workspace = LoadWorkspace(filePath, null);
                         else
                            return null;
-                        //project = LoadProject(filePath, null);
                      }
 
                      if(workspace)
                      {
-                        char absolutePath[MAX_LOCATION];
                         CreateProjectView(workspace, filePath);
                         document = projectView;
 
@@ -3419,7 +3414,6 @@ class IDEWorkSpace : Window
    IDEWorkSpace()
    {
       // Graphics Driver Menu
-      int c;
 
       /*
       app.currentSkin.selectionColor = selectionColor;
@@ -3472,7 +3466,6 @@ class IDEWorkSpace : Window
       Menu recentProjects = fileMenu.FindMenu($"Recent Projects");
       char * itemPath = new char[MAX_LOCATION];
       char * itemName = new char[MAX_LOCATION+4];
-      MenuItem item;
 
       recentFiles.Clear();
       c = 0;

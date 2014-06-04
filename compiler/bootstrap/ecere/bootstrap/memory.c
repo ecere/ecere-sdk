@@ -30,6 +30,8 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -332,7 +334,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_memory(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::MoveBytes", "void ecere::sys::MoveBytes(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__MoveBytes, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyBytes", "void ecere::sys::CopyBytes(void * dest, const void * source, uint count)", __ecereNameSpace__ecere__sys__CopyBytes, module, 1);

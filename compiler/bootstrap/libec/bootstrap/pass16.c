@@ -30,6 +30,8 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1965,8 +1967,6 @@ extern struct Symbol * FindClass(const char *  name);
 
 extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
-extern void MangleClassName(char *  className);
-
 static struct Declaration * curDecl;
 
 static int declTempCount;
@@ -2198,7 +2198,6 @@ FullClassNameCat(className, classSym->string, 0x1);
 }
 else
 FullClassNameCat(className, inst->_class->__anon1.__anon1.name, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
 newCall->usage = exp->usage;
@@ -3361,7 +3360,6 @@ FullClassNameCat(className, classSym->string, 0x1);
 }
 else
 FullClassNameCat(className, inst->_class->__anon1.__anon1.name, 0x1);
-MangleClassName(className);
 if(classSym)
 DeclareClass(classSym, className);
 if(classSym && classSym->__anon1.registered && classSym->__anon1.registered->type == 5 && (classSym->__anon1.registered->templateClass ? classSym->__anon1.registered->templateClass->fixed : classSym->__anon1.registered->fixed))
@@ -3728,7 +3726,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_pass16(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareClass", "void DeclareClass(Symbol classSym, const char * className)", DeclareClass, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessExpressionInstPass", "void ProcessExpressionInstPass(Expression exp)", ProcessExpressionInstPass, module, 2);

@@ -71,8 +71,6 @@ class GlobalSettingsDialog : Window
             bool editorSettingsChanged = false;
             bool compilerSettingsChanged = false;
             bool projectOptionsChanged = false;
-            bool workspaceOptionsChanged = false;
-
             if(editorTab.modifiedDocument)
             {
                if(editorTab.useFreeCaret.checked != ideSettings.useFreeCaret ||
@@ -88,7 +86,6 @@ class GlobalSettingsDialog : Window
 
             if(compilersTab.modifiedDocument)
             {
-               Workspace workspace = ide.workspace;
                if(strcmp(compilersTab.compilerConfigsDir.path, ideSettings.compilerConfigsDir))
                   ideSettings.compilerConfigsDir = compilersTab.compilerConfigsDir.path;
                ideSettings.compilerConfigs.Free();
@@ -119,7 +116,6 @@ class GlobalSettingsDialog : Window
                   if(!ideSettings.defaultCompiler || strcmp(row.string, ideSettings.defaultCompiler))
                   {
                      ideSettings.defaultCompiler = row.string;
-                     workspaceOptionsChanged = true;
                   }
                }
             }

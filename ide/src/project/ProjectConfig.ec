@@ -38,7 +38,6 @@ class DirExpression : struct
       const char * expr = expression;
       if(!expr || !expr[0])
       {
-         char buffer[MAX_LOCATION];
          if(ideSettings)
          {
          if(type == targetDir)
@@ -53,7 +52,6 @@ class DirExpression : struct
       {
          int c, d;
          const char * configName = config && config.name && config.name[0] ? config.name : "Common";
-         const char * projectName = project.name ? project.name : "";
          const char * moduleName = project.moduleName ? project.moduleName : "";
          const char * compilerName = (compiler && compiler.name) ? compiler.name : defaultCompilerName;
          const char * targetPlatformName = compiler && compiler.targetPlatform ? compiler.targetPlatform : "";

@@ -397,7 +397,6 @@ private:
       SettingsIOResult result;
 
       IDESettings data = (IDESettings)this.data;
-      Platform runtimePlatform = GetRuntimePlatform();
       if(portable && moduleLocation[0] && FileExists(moduleLocation).isDirectory)
          data.ManagePortablePaths(moduleLocation, false);
       data.ForcePathSeparatorStyle(true);
@@ -1304,7 +1303,7 @@ bool LanguageRestart(const char * code, Application app, IDESettings settings, I
          {
             HKEY key = null;
             uint16 wLanguage[256];
-            HRESULT status;
+            DWORD status;
             wLanguage[0] = 0;
 
             RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);

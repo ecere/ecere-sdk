@@ -31,7 +31,7 @@ class CompilersDetectionDialog : Window
             char compilerPath[MAX_LOCATION];
             compilerPath[0] = '\0';
             GetEnvironment(compilerSignatureEnvVars[selectedCompilerType], compilerPath, sizeof(compilerPath));
-            if(compilerPath && compilerPath[0] && FileExists(compilerPath).isDirectory)
+            if(compilerPath[0] && FileExists(compilerPath).isDirectory)
             {
                PathCat(compilerPath, "vsvars32.bat"); // is this file name constant and this file always present?
                if(FileExists(compilerPath).isFile)
@@ -155,7 +155,7 @@ class CompilersDetectionDialog : Window
          {
             compilerPath[0] = '\0';
             GetEnvironment(varName, compilerPath, sizeof(compilerPath));
-            if(compilerPath && compilerPath[0] && FileExists(compilerPath).isDirectory)
+            if(compilerPath[0] && FileExists(compilerPath).isDirectory)
             {
                PathCat(compilerPath, "vsvars32.bat"); // is this file name constant and this file always present?
                if(FileExists(compilerPath).isFile)

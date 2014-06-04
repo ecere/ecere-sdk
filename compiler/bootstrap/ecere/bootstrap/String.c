@@ -40,6 +40,8 @@ typedef unsigned __int64 uint64;
 #define arch_PointerSize                  sizeof(void *)
 #define structSize_Instance               (_64BIT ? 24 : 12)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1494,7 +1496,7 @@ extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereName
 
 void __ecereRegisterModule_String(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::DIR_SEP", "(GetRuntimePlatform() == win32) ? '\\\\' : '/'", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::DIR_SEPS", "(GetRuntimePlatform() == win32) ? \"\\\\\" : \"/\"", module, 4);

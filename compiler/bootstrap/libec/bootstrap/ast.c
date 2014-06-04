@@ -42,6 +42,8 @@ typedef unsigned __int64 uint64;
 #define structSize_OldLink                (_64BIT ? 24 : 12)
 #define structSize_NamedLink              (_64BIT ? 32 : 16)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -2973,7 +2975,6 @@ return external;
 struct External * MkExternalDeclaration(struct Declaration * declaration)
 {
 struct External * external = (external = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_External), external->type = 1, external->__anon1.declaration = declaration, external->symbol = declaration ? declaration->symbol : (((void *)0)), external);
-struct InitDeclarator * d = (declaration && declaration->__anon1.__anon1.declarators) ? (*declaration->__anon1.__anon1.declarators).last : (((void *)0));
 
 if(declaration && declaration->type == 1 && declaration->__anon1.__anon1.specifiers)
 {
@@ -4050,8 +4051,6 @@ struct ExtDecl * extDecl = spec->__anon1.__anon1.extDecl;
 
 if(extDecl->type == 0)
 {
-char * s = spec->__anon1.__anon1.extDecl->__anon1.s;
-
 if(!strcmp(spec->__anon1.__anon1.extDecl->__anon1.s, "__declspec(dllexport)") || !strcmp(spec->__anon1.__anon1.extDecl->__anon1.s, "dllexport"))
 specType->dllExport = 0x1;
 else if(!strcmp(spec->__anon1.__anon1.extDecl->__anon1.s, "__declspec(stdcall)") || !strcmp(spec->__anon1.__anon1.extDecl->__anon1.s, "stdcall"))
@@ -4205,7 +4204,6 @@ specType->__anon1.__anon1.enumName = spec->__anon1.__anon2.id ? __ecereNameSpace
 if(spec->__anon1.__anon2.list)
 {
 struct Enumerator * e;
-int nextValue = 0;
 
 for(e = (*spec->__anon1.__anon2.list).first; e; e = e->next)
 {
@@ -4797,8 +4795,6 @@ extern struct External * curExternal;
 
 extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
-extern void MangleClassName(char *  className);
-
 extern void DeclareClass(struct Symbol * classSym, const char *  className);
 
 struct Expression * GetTemplateArgExpByName(const char * paramName, struct __ecereNameSpace__ecere__com__Class * curClass, int tplType)
@@ -4834,12 +4830,10 @@ if(curParam)
 {
 char idString[32];
 char className[1024];
-struct Expression * classExp;
 
 sprintf(idString, "%d", id);
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, _class->fullName, 0x1);
-MangleClassName(className);
 DeclareClass(FindClass(_class->fullName), className);
 argExp = MkExpIndex((MkExpMember)(MkExpMember(MkExpIdentifier(MkIdentifier("this")), MkIdentifier("_class")), MkIdentifier("templateArgs")), MkListOne(MkExpConstant(idString)));
 }
@@ -4996,7 +4990,7 @@ extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere
 
 void __ecereRegisterModule_ast(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDefaultNameSpace", "void SetDefaultNameSpace(const char * s)", SetDefaultNameSpace, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetStrictNameSpaces", "void SetStrictNameSpaces(bool b)", SetStrictNameSpaces, module, 1);

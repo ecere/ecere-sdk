@@ -71,6 +71,7 @@ static Identifier FindCtxSpecifier(Specifier spec, int line, int charPos)
                            if(idResult)
                               return idResult;
                            SetThisClass(oldThisClass);
+                           SetTopContext(oldTopContext);
                         }
                      }
                      break;
@@ -104,6 +105,7 @@ static Identifier FindCtxSpecifier(Specifier spec, int line, int charPos)
                         idResult = FindCtxStatement(def.propertyWatch.compound, line, charPos);
                         if(idResult) return idResult;
                         SetThisClass(oldThisClass);
+                        SetTopContext(oldTopContext);
                      }
                      break;
                }
@@ -738,9 +740,6 @@ static Identifier FindCtxFunction(FunctionDefinition func, int line, int charPos
    {
       Identifier idResult;
 
-      Identifier id = GetDeclId(func.declarator);
-      Symbol symbol = func.declarator.symbol;
-      Type type = symbol.type;
       Class oldThisClass = GetThisClass();
       Context oldTopContext = GetTopContext();
 
@@ -941,7 +940,6 @@ static Identifier FindCtxClassFunction(ClassFunction func, int line, int charPos
    {
       Identifier idResult;
 
-      Identifier id = GetDeclId(func.declarator);
       Symbol symbol = func.declarator ? func.declarator.symbol : null;
       Type type = symbol ? symbol.type : null;
       Class oldThisClass = GetThisClass();
@@ -1006,6 +1004,7 @@ static Identifier FindCtxProperty(PropertyDef def, int line, int charPos)
       result = FindCtxStatement(def.getStmt, line, charPos);
       if(result) return result;
       SetThisClass(oldThisClass);
+      SetTopContext(oldTopContext);
    }
    if(def.setStmt && Inside(&def.setStmt.loc, line, charPos))
    {
@@ -1015,6 +1014,7 @@ static Identifier FindCtxProperty(PropertyDef def, int line, int charPos)
       result = FindCtxStatement(def.setStmt, line, charPos);
       if(result) return result;
       SetThisClass(oldThisClass);
+      SetTopContext(oldTopContext);
    }
    return null;
 }
@@ -1046,6 +1046,7 @@ static Identifier FindCtxClassDef(ClassDef def, int line, int charPos)
                if(idResult)
                   return idResult;
                SetThisClass(oldThisClass);
+               SetTopContext(oldTopContext);
             }
          }
          break;
@@ -1081,6 +1082,7 @@ static Identifier FindCtxClassDef(ClassDef def, int line, int charPos)
             idResult = FindCtxStatement(def.propertyWatch.compound, line, charPos);
             if(idResult) return idResult;
             SetThisClass(oldThisClass);
+            SetTopContext(oldTopContext);
          }
          break;
    }
@@ -1109,7 +1111,7 @@ static Identifier FindCtxClass(ClassDefinition _class, int line, int charPos)
          }
       }
    }
-   if(!insideSomething && line > _class.blockStart.start.line || (line == _class.blockStart.start.line && charPos >= _class.blockStart.start.charPos) )
+   if(!insideSomething && (line > _class.blockStart.start.line || (line == _class.blockStart.start.line && charPos >= _class.blockStart.start.charPos)) )
    {
       insideClass = _class.symbol.registered;
       return (void *)-1;
@@ -1131,6 +1133,7 @@ Identifier FindCtxTree(OldList ast, int line, int charPos)
    insideClass = null;
    ctxInsideExp = null;
    SetThisClass(null);
+   SetTopContext(GetGlobalContext());
    insideFunction = null;
    insideInstance = false;
    isAfterEqual = false;

@@ -368,7 +368,7 @@ public:
       GetLastDirectory(relative, name);
       for(p : projects)
       {
-         if(node = p.topNode.Find(name, false))
+         if((node = p.topNode.Find(name, false)))
          {
             prj = p;
             break;
@@ -479,9 +479,6 @@ public:
 
    void UpdateSourceDirsArray(Array<String> dirs)
    {
-      byte * tokens[256];
-      int c, numTokens;
-
       sourceDirs.Free();
 
       for(s : dirs)
@@ -813,7 +810,6 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
       {
          char buffer[65536];
          char * equal;
-         int len;
 
          Watch wh;
          Breakpoint bp;
@@ -1278,8 +1274,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
    else if(fromProjectFile)
    {
       //MessageBox { type = Ok, master = ide, contents = "Worspace load file failed", text = "Worspace Load File Error" }.Modal();
-
-      char projectFile[MAX_LOCATION];
+      //char projectFile[MAX_LOCATION];
       Project newProject;
 
       //strcpy(projectFile, filePath);

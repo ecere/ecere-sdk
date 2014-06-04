@@ -2,10 +2,10 @@ import "ide"
 
 import "CodeObject"
 
-static void UnusedFunction()
+static __attribute__((unused)) void UnusedFunction()
 {
-   int a;
-   Module b;
+   int a = 0;
+   Module b = 0;
    a.OnGetString(0,0,0);
    a.OnFree();
    a.OnCopy(null);
@@ -301,7 +301,7 @@ class Sheet : Window
 
       bool NotifySelect(DropBox control, DataRow row, Modifiers keyFlags)
       {
-         ObjectInfo selected = (ObjectInfo)(row ? row.tag : null);
+         ObjectInfo selected = (ObjectInfo)(row ? (void *)(intptr)row.tag : null);
          ToolBox toolBox = ((IDEWorkSpace)parent).toolBox;
 
          if(codeEditor && selected)
@@ -326,7 +326,6 @@ class Sheet : Window
          if(selected && selected.instance && codeEditor)
          {
             Class _class;
-            int c = 0;
             int rowHeight = methods.rowHeight;
 
             propertyValue.userData = (void *)selected.instance;
@@ -507,7 +506,6 @@ class Sheet : Window
          CodeObject object = control.GetData(methodName);
          Menu menu { };
          PopupMenu popupMenu;
-         MenuItem item;
          if(object.overriden == 0)
          {
             MenuItem { menu, $"Override", o, enter, bold = true, NotifySelect = OverrideMethodSelected };
@@ -769,7 +767,6 @@ class Sheet : Window
          // Fill up the properties
          while(_class != selected.instance._class)
          {
-            BitMember bitMember = null;
             Class lastClass = _class;
             Property propIt;
 
@@ -1199,14 +1196,12 @@ class Sheet : Window
    bool ReattachMethodSelected(MenuItem selection, Modifiers mods)
    {
       ClassFunction function = (ClassFunction)selection.id;
-      CodeObject object = methods.GetData(methodName);
       codeEditor.ReAttachMethod(attachMethod, function);
       return true;
    }
 
    bool OverrideMethodSelected(MenuItem selection, Modifiers mods)
    {
-      ClassFunction function = (ClassFunction)selection.id;
       CodeObject object = methods.GetData(methodName);
       if(object)
          codeEditor.AddMethod(object.method);
@@ -1215,7 +1210,6 @@ class Sheet : Window
 
    bool GotoMethodSelected(MenuItem selection, Modifiers mods)
    {
-      ClassFunction function = (ClassFunction)selection.id;
       CodeObject object = methods.GetData(methodName);
       if(object)
          codeEditor.GoToMethod(object.method.name);
@@ -1224,7 +1218,6 @@ class Sheet : Window
 
    bool DetachMethodSelected(MenuItem selection, Modifiers mods)
    {
-      ClassFunction function = (ClassFunction)selection.id;
       CodeObject object = methods.GetData(methodName);
       if(object)
          codeEditor.DetachMethod(object.method, object.function, object.overriden);
@@ -1233,7 +1226,6 @@ class Sheet : Window
 
    bool DeleteMethodSelected(MenuItem selection, Modifiers mods)
    {
-      ClassFunction function = (ClassFunction)selection.id;
       CodeObject object = methods.GetData(methodName);
       if(object)
          object.deleteBtn.NotifyClicked(this, object.deleteBtn, 0,0,0);
@@ -1250,8 +1242,6 @@ class Sheet : Window
 
    void CreateButtons(CodeObject codeObject, int y, int h, DataRow row)
    {
-      BitmapResource bitmap;
-
       if(codeObject.overriden)
       {
          if(codeObject.overriden == 1)
@@ -1568,7 +1558,7 @@ public:
             }
             else
             {
-               bool freeDataForm = false, freeDataTest = false;
+               //bool freeDataForm = false, freeDataTest = false;
                // Because contents property is broken for mutiline EditBox at the moment
                if(!strcmp(prop.name, "contents") && !strcmp(prop._class.name, "EditBox") && ((EditBox)object).multiLine)
                {
@@ -1762,7 +1752,6 @@ public:
 
             if(this.subMember || this.subProperty)
             {
-               Class _class;
                Instance current = (Instance)((void *(*)(void *))(void *)prop.Get)(object);
                propObject = valueData.p = eInstance_New(dataType);
                CopyInstanceData(dataType, propObject, current);

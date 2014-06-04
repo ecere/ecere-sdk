@@ -1479,7 +1479,7 @@ private:
       bool loggedALine = false;
       int lenMakeCommand = strlen(compiler.makeCommand);
       int testLen = 0;
-      const char * t, * s;
+      const char * t, * s, * s2;
       char moduleName[MAX_FILENAME];
       const char * gnuToolchainPrefix = compiler.gnuToolchainPrefix ? compiler.gnuToolchainPrefix : "";
 
@@ -1547,7 +1547,7 @@ private:
                const char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
                const char * from = strstr(line, stringFrom);
                test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
-               if((t = strstr(line, (s=": recipe for target"))) && (t = strstr(t+strlen(s), (s=" failed"))) && (t+strlen(s))[0] == '\0')
+               if((t = strstr(line, (s=": recipe for target"))) && (t = strstr(t+strlen(s), (s2 = " failed"))) && (t+strlen(s2))[0] == '\0')
                   ; // ignore this new gnu make error but what is it about?
                else if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                {
@@ -1650,7 +1650,7 @@ private:
                   if(module) module++;
                   if(module)
                   {
-                     byte * tokens[1];
+                     char * tokens[1];
                      char * dashF = strstr(module, "-F ");
                      if(dashF)
                      {
@@ -1801,7 +1801,7 @@ private:
                         {
                            char fullModuleName[MAX_LOCATION];
                            FileAttribs found = 0;
-                           Project foundProject = this;
+                           //Project foundProject = this;
                            if(moduleName[0])
                            {
                               char * loc = strstr(moduleName, ":");
@@ -1833,7 +1833,7 @@ private:
                                           found = FileExists(fullModuleName);
                                           if(found)
                                           {
-                                             foundProject = prj;
+                                             //foundProject = prj;
                                              break;
                                           }
                                        }
@@ -1851,7 +1851,7 @@ private:
                                              found = FileExists(fullModuleName);
                                              if(found)
                                              {
-                                                foundProject = prj;
+                                                //foundProject = prj;
                                                 break;
                                              }
                                           }
@@ -1911,7 +1911,7 @@ private:
       {
          if(f.GetExitCode() && !numErrors)
          {
-            bool result = f.GetLine(line, sizeof(line)-1);
+            /*bool result = */f.GetLine(line, sizeof(line)-1);
             ide.outputView.buildBox.Logf($"Fatal Error: child process terminated unexpectedly\n");
          }
          else if(buildType != install)
@@ -2037,7 +2037,6 @@ private:
          }
          else
          {
-            int len;
             char pushD[MAX_LOCATION];
             char cfDir[MAX_LOCATION];
             GetIDECompilerConfigsDir(cfDir, true, true);
@@ -2046,7 +2045,7 @@ private:
             // Create object dir if it does not exist already
             if(!FileExists(objDirExp.dir).isDirectory)
             {
-               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s COMPILER=%s objdir -C \"%s\"%s -f \"%s\"",
+               sprintf(command, "%s CF_DIR=\"%s\"%s%s%s%s%s COMPILER=%s objdir -C \"%s\"%s -f \"%s\"",
                      compiler.makeCommand, cfDir,
                      crossCompiling ? " TARGET_PLATFORM=" : "",
                      targetPlatform,
@@ -2077,7 +2076,7 @@ private:
 
       if(compiler.type.isVC)
       {
-         bool result = false;
+         //bool result = false;
          char oldwd[MAX_LOCATION];
          GetWorkingDir(oldwd, sizeof(oldwd));
          ChangeWorkingDir(topNode.path);
@@ -2090,7 +2089,7 @@ private:
          {
             ProcessPipeOutputRaw(f);
             delete f;
-            result = true;
+            //result = true;
          }
          ChangeWorkingDir(oldwd);
       }
@@ -2208,7 +2207,7 @@ private:
 
       if(compiler.type.isVC)
       {
-         bool result = false;
+         //bool result = false;
          char oldwd[MAX_LOCATION];
          GetWorkingDir(oldwd, sizeof(oldwd));
          ChangeWorkingDir(topNode.path);
@@ -2221,7 +2220,7 @@ private:
          {
             ProcessPipeOutputRaw(f);
             delete f;
-            result = true;
+            //result = true;
          }
          ChangeWorkingDir(oldwd);
          //return result;
@@ -2605,7 +2604,7 @@ private:
          char targetDirExpNoSpaces[MAX_LOCATION];
          char fixedModuleName[MAX_FILENAME];
          char fixedConfigName[MAX_FILENAME];
-         int c, len;
+         int c;
          int lenObjDirExpNoSpaces, lenTargetDirExpNoSpaces;
          // Non-zero if we're building eC code
          // We'll have to be careful with this when merging configs where eC files can be excluded in some configs and included in others
@@ -2721,7 +2720,7 @@ private:
          if(compilerConfigsDir && compilerConfigsDir[0])
          {
             strcpy(cfDir, compilerConfigsDir);
-            if(cfDir && cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
+            if(cfDir[0] && cfDir[strlen(cfDir)-1] != '/')
                strcat(cfDir, "/");
          }
          else
@@ -3521,10 +3520,10 @@ private:
    void GenMakefilePrintMainObjectRule(File f, ProjectConfig config)
    {
       char extension[MAX_EXTENSION] = "c";
-      char modulePath[MAX_LOCATION];
+      //char modulePath[MAX_LOCATION];
       char fixedModuleName[MAX_FILENAME];
-      DualPipe dep;
-      char command[2048];
+      //DualPipe dep;
+      //char command[2048];
       char objDirNoSpaces[MAX_LOCATION];
       const String objDirExp = GetObjDirExpression(config);
 
@@ -3843,7 +3842,6 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
       char section[128];
       char subSection[128];
       char * equal;
-      int len;
       uint pos;
 
       pos = f.Tell();
@@ -3979,7 +3977,7 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
 Project LegacyAsciiLoadProject(File f, const char * filePath)
 {
    Project project = null;
-   ProjectNode node = null;
+   //ProjectNode node = null;
    int pos;
    char parentPath[MAX_LOCATION];
    char section[128] = "";
@@ -4047,7 +4045,7 @@ Project LegacyAsciiLoadProject(File f, const char * filePath)
                   child.type = file;
                   child.icon = NodeIcons::SelectFileIcon(child.name);
                   parent.files.Add(child);
-                  node = child;
+                  //node = child;
                   //child = null;
                }
                else
@@ -4081,7 +4079,7 @@ Project LegacyAsciiLoadProject(File f, const char * filePath)
                PathCatSlash(parentPath, child.name);
                parent.files.Add(child);
                parent = child;
-               node = child;
+               //node = child;
                //child = null;
             }
             else if(!strcmpi(section, "Configurations"))
@@ -4125,7 +4123,7 @@ Project LegacyAsciiLoadProject(File f, const char * filePath)
             project.filePath = topNodePath;
             parentPath[0] = '\0';
             parent = project.topNode;
-            node = parent;
+            //node = parent;
             strcpy(section, "Target");
             equal = &buffer[6];
             if(equal[0] == ' ')
@@ -4162,7 +4160,7 @@ Project LegacyAsciiLoadProject(File f, const char * filePath)
             child.icon = archiveFile;
             project.resNode = child;
             parent = child;
-            node = child;
+            //node = child;
             strcpy(subSection, buffer);
          }
          else
@@ -4500,7 +4498,7 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
       if(!project)
       {
          JSONParser parser { f = f };
-         JSONResult result = parser.GetObject(class(Project), &project);
+         /*JSONResult result = */parser.GetObject(class(Project), &project);
          if(project)
          {
             char insidePath[MAX_LOCATION];

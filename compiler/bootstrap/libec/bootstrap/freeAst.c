@@ -41,6 +41,8 @@ typedef unsigned __int64 uint64;
 #define structSize_Instance               (_64BIT ? 24 : 12)
 #define structSize_Module                 (_64BIT ? 560 : 300)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1956,7 +1958,7 @@ FreeExpression(stmt->__anon1._watch.watcher);
 if(stmt->__anon1._watch.object)
 FreeExpression(stmt->__anon1._watch.object);
 if(stmt->__anon1._watch.watches)
-FreeList(stmt->__anon1._watch.watches, (stmt->type == 17) ? FreePropertyWatch : FreeIdentifier);
+FreeList(stmt->__anon1._watch.watches, (stmt->type == 17) ? (void *)FreePropertyWatch : (void *)FreeIdentifier);
 break;
 }
 }
@@ -2741,7 +2743,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_freeAst(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeList", "void FreeList(ecere::sys::OldList list, void (* FreeFunction)(void *))", FreeList, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeType", "void FreeType(Type type)", FreeType, module, 1);

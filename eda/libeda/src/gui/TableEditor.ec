@@ -1949,18 +1949,18 @@ private:
                   sEntry = wordEntry;
                   lEntry = wordEntry;
                   if(!wordEntry.words) wordEntry.words = IdList { };
-                  wordEntry.words.Add((Id)mainEntry);
+                  wordEntry.words.Add((Id)(uintptr)mainEntry);
                }
                else if(!lEntry)
                {
                   lEntry = wordEntry;
                   if(!wordEntry.words) wordEntry.words = IdList { };
-                  wordEntry.words.Add((Id)sEntry);
+                  wordEntry.words.Add((Id)(uintptr)sEntry);
                }
                else
                {
                   if(!wordEntry.words) wordEntry.words = IdList { };
-                  wordEntry.words.Add((Id)lEntry);
+                  wordEntry.words.Add((Id)(uintptr)lEntry);
                }
                if(!wordEntry.items) wordEntry.items = IdList { };
                wordEntry.items.Add(id);
@@ -2136,7 +2136,7 @@ struct WordEntryBinaryTree : BinaryTree
          {
             int c;
             for(c = 0; c<node.words.count; c++)
-               node.words.ids[c] = (Id)btnodes[node.words.ids[c] - 1];
+               node.words.ids[c] = (Id)(uintptr)btnodes[node.words.ids[c] - 1];
          }
          if(node.left)
             node = node.left;
@@ -2199,7 +2199,7 @@ class WordEntry : struct
             channel.Serialize(words.count);
             for(c = 0; c < words.count; c++)
             {
-               uint id = ((WordEntry)words.ids[c]).id;
+               uint id = (uint)((WordEntry)(uintptr)words.ids[c]).id;
                channel.Serialize(id);
             }
          }

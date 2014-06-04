@@ -261,7 +261,7 @@ class ProjectSettings : Window
    }
 }
 
-#define OPTION(x) ((uint)(&((ProjectOptions)0).x))
+#define OPTION(x) ((uint)(uintptr)(&((ProjectOptions)0).x))
 
 // TOFIX: USING T INSTEAD OF Z HERE CAUSED US SOME CONFLICTS WITH T IN Array TEMPLATES
 
@@ -839,7 +839,6 @@ class MultiStringOptionBox : OptionBox<Array<String>>
 
          if(tempStrings)
          {
-            Array<String> ts = tempStrings;
             while(it.Next())
             {
                String s = it.data;
@@ -965,7 +964,6 @@ bool eString_IsPathRelatedTo(char * path, char * to)
 {
    if(path[0] && to[0])
    {
-      char rest[MAX_FILENAME];
       char pathPart[MAX_FILENAME], pathRest[MAX_LOCATION] = "";
       char toPart[MAX_FILENAME], toRest[MAX_LOCATION] = "";
       SplitDirectory(path, pathPart, pathRest);
@@ -1420,7 +1418,7 @@ class BuildTab : Tab
             String msg = PrintString($"Are you sure you wish to delete the ", config.name, $" configuration?");
             if(MessageBox { type = okCancel, text = title, contents = msg }.Modal() == ok)
             {
-               Iterator<Window> it { configSelector.controls };
+               //Iterator<Window> it { configSelector.controls };
                ProjectConfig configToDelete = config;
                /*
                while(it.Next())
@@ -1719,10 +1717,8 @@ class BuildTab : Tab
 
    void CreateConfigButtons()
    {
-      SelectorButton commonButton;
-
       // Create Config Buttons
-      commonButton = SelectorButton
+      SelectorButton
       {
          configSelector, master = this, text = $"Common", id = (int64)null; font = { font.faceName, font.size, true };
          checked = true;
@@ -1791,7 +1787,7 @@ class BuildTab : Tab
             {
                configButton.Activate();
                configButton.checked = true;
-               ConfigClicked(configButton, 0, 0, (Modifiers)null);
+               ConfigClicked(configButton, 0, 0, 0);
                break;
             }
          }
@@ -2247,7 +2243,6 @@ class BuilderTab : Tab
 
    void LoadSettings()
    {
-      bool disabled = strlen(((BuildTab)master).selectedPlatformName) > 0;
       OptionBox ob;
       for(ob = (OptionBox)firstSlave; ob; ob = (OptionBox)ob.nextSlave)
          if(eClass_IsDerived(ob._class, class(OptionBox)))

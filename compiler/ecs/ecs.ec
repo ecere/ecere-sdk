@@ -22,7 +22,7 @@ static File dcomSymbols;
 
 static OldList _defines { };
 static OldList _imports { };
-static OldList _excludedSymbols { offset = (uint)&((Symbol)0).left };
+static OldList _excludedSymbols { offset = (uint)(uintptr)&((Symbol)0).left };
 static NameSpace globalData
 {
    classes.CompareKey = (void *)BinaryTree::CompareString;
@@ -253,7 +253,7 @@ static void WriteMain(const char * fileName)
    {
       ModuleImport module;
       ModuleInfo defModule;
-      bool nonInst = false, anyMethod = false, anyProp = false, anyFunction = false;
+      bool /*nonInst = false, */anyMethod = false, anyProp = false, anyFunction = false;
       ImportedModule importedModule;
 
       GetLastDirectory(fileName, mainModuleName);
@@ -322,12 +322,12 @@ static void WriteMain(const char * fileName)
             Class regClass = eSystem_FindClass(privateModule, _class.name);
 
             FullClassNameCat(className, _class.name, true);
-            MangleClassName(className);
+            //MangleClassName(className);
 
             if(_class.itself)
                f.Printf("Class __ecereClass_%s;\n", className);
-            else
-               nonInst = true;
+            /*else
+               nonInst = true;*/
             //if(!_class.isRemote)
             {
                //if(strcmp(_class.name, "SerialBuffer"))
@@ -374,7 +374,7 @@ static void WriteMain(const char * fileName)
                   propName[0] = 0;
                   FullClassNameCat(propName, prop.name, true);
                   // strcpy(propName, prop.name);
-                  MangleClassName(propName);
+                  //MangleClassName(propName);
 
                   if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                   {
@@ -559,7 +559,7 @@ static void WriteMain(const char * fileName)
                   char classID[1024];
                   char className[1024] = "";
                   FullClassNameCat(className, _class.name, true);
-                  MangleClassName(className);
+                  //MangleClassName(className);
 
                   if(_class.itself)
                      sprintf(classID, "__ecereClass_%s", className);
@@ -594,7 +594,7 @@ static void WriteMain(const char * fileName)
                      propName[0] = 0;
                      FullClassNameCat(propName, prop.name, true);
                      // strcpy(propName, prop.name);
-                     MangleClassName(propName);
+                     //MangleClassName(propName);
 
                      f.Printf("   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n",
                         className, propName, classID, prop.name);
@@ -902,7 +902,7 @@ static void BindDCOMClient()
                            }
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           MangleClassName(className);
+                           //MangleClassName(className);
                            DeclareClass(classSym, className);
 
                            PrintType(method.dataType.returnType, type, true, true);
@@ -944,7 +944,7 @@ static void BindDCOMClient()
 
                               strcpy(className, "__ecereClass_");
                               FullClassNameCat(className, classSym.string, true);
-                              MangleClassName(className);
+                              //MangleClassName(className);
                               DeclareClass(classSym, className);
 
                               PrintType(param, type, true, true);
@@ -1096,7 +1096,7 @@ static void BindDCOMClient()
 
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, classSym.string, true);
-                     MangleClassName(className);
+                     //MangleClassName(className);
                      DeclareClass(classSym, className);
 
                      PrintType(method.dataType.returnType, type, true, true);
@@ -1132,7 +1132,7 @@ static void BindDCOMClient()
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, classSym.string, true);
 
-                     MangleClassName(className);
+                     //MangleClassName(className);
                      DeclareClass(classSym, className);
 
                      if(param.kind == classType && !strcmp(param._class.string, "String"))
@@ -1290,7 +1290,7 @@ static void BindDCOMServer()
                         }
                         strcpy(className, "__ecereClass_");
                         FullClassNameCat(className, classSym.string, true);
-                        MangleClassName(className);
+                        //MangleClassName(className);
                         DeclareClass(classSym, className);
 
                         PrintType(method.dataType.returnType, type, true, true);
@@ -1332,7 +1332,7 @@ static void BindDCOMServer()
 
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           MangleClassName(className);
+                           //MangleClassName(className);
                            DeclareClass(classSym, className);
 
                            PrintType(param, type, true, true);
@@ -1474,7 +1474,7 @@ static void BindDCOMServer()
 
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           MangleClassName(className);
+                           //MangleClassName(className);
                            DeclareClass(classSym, className);
 
                            PrintType(method.dataType.returnType, type, true, true);
@@ -1513,7 +1513,7 @@ static void BindDCOMServer()
                            }
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           MangleClassName(className);
+                           //MangleClassName(className);
                            DeclareClass(classSym, className);
 
                            if(param.kind == classType && !strcmp(param._class.string, "String"))
@@ -1757,7 +1757,7 @@ class SymbolgenApp : Application
 
          //if(!strcmp(ext, "c"))
          {
-            const String symbolsDir = GetSymbolsDir();
+            //const String symbolsDir = GetSymbolsDir();
             // Only generating .pot files when building from release.* directory for now
             //bool outputPot = symbolsDir && SearchString(symbolsDir, 0, "release.", false, false);
             Map<ContextStringPair, List<String> > intlStrings { };

@@ -273,7 +273,7 @@ static void ProcessExpression(Expression exp)
                   // Need the class itself here...
                   strcpy(className, "__ecereClass_");
                   FullClassNameCat(className, _class.fullName, true);
-                  MangleClassName(className);
+                  //MangleClassName(className);
 
                   if(!_class.symbol)
                      _class.symbol = FindClass(_class.fullName);
@@ -1027,7 +1027,7 @@ static void ProcessExpression(Expression exp)
 
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, exp.expType._class.string, true);
-               MangleClassName(className);
+               //MangleClassName(className);
 
                DeclareClass(exp.expType._class, className);
 
@@ -1054,7 +1054,7 @@ static void ProcessExpression(Expression exp)
                   if(_class.templateClass) _class = _class.templateClass;
                   strcpy(className, "__ecereClass_");
                   FullClassNameCat(className, _class.fullName, false /*true*/);
-                  MangleClassName(className);
+                  //MangleClassName(className);
 
                   if(!_class.symbol)
                      _class.symbol = FindClass(_class.fullName);
@@ -1332,7 +1332,6 @@ static void ProcessExpression(Expression exp)
                Expression next = exp.next, prev = exp.prev;
                Expression derefExp = exp.op.exp2;
                Expression refExp = exp.op.exp2.op.exp2;
-               Type expType = exp.expType, destType = exp.destType;
 
                derefExp.op.exp2 = null;
                FreeExpression(derefExp);
@@ -1742,7 +1741,6 @@ static void ProcessExpression(Expression exp)
                   Type type = memberExp ? memberExp.member.exp.expType : null;
                   Class regClass = (type && type.kind == classType && type._class) ? type._class.registered : null;
                   char className[1024];
-                  bool useInstance = false;
 
                   if(!exp.call.exp.expType.methodClass && !_class && type && type.classObjectType)
                      strcpy(className, "class");
@@ -1766,7 +1764,7 @@ static void ProcessExpression(Expression exp)
                      // Need the class itself here...
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, cl.fullName, true);
-                     MangleClassName(className);
+                     //MangleClassName(className);
 
                      if(!cl.symbol)
                         cl.symbol = FindClass(cl.fullName);
@@ -1990,7 +1988,7 @@ static void ProcessExpression(Expression exp)
                            // Need the class itself here...
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, cl.fullName, true);
-                           MangleClassName(className);
+                           //MangleClassName(className);
 
                            if(!cl.symbol)
                               cl.symbol = FindClass(cl.fullName);
@@ -2313,7 +2311,7 @@ static void ProcessExpression(Expression exp)
                         {
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, _class.fullName, true);
-                           MangleClassName(className);
+                           //MangleClassName(className);
 
                            if(!_class.symbol)
                               _class.symbol = FindClass(_class.fullName);
@@ -2690,7 +2688,7 @@ static void ProcessExpression(Expression exp)
                         // Need the class itself here...
                         strcpy(className, "__ecereClass_");
                         FullClassNameCat(className, _class.fullName, true);
-                        MangleClassName(className);
+                        //MangleClassName(className);
 
                         if(!_class.symbol)
                            _class.symbol = FindClass(_class.fullName);
@@ -2827,13 +2825,12 @@ static void ProcessExpression(Expression exp)
                   else
                   {
                      Expression bytePtr, e;
-                     Expression classExp;
                      Expression checkedExp;
                      char structName[1024];
                      char className[1024];
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, member._class.fullName, true);
-                     MangleClassName(className);
+                     //MangleClassName(className);
 
                      // classExp = QMkExpId(className);
 
@@ -3061,7 +3058,7 @@ static void ProcessExpression(Expression exp)
 
             strcpy(className, "__ecereClass_");
             FullClassNameCat(className, string, true);      // TODO: Verify this
-            MangleClassName(className);
+            //MangleClassName(className);
             DeclareClass(classSym, className);
             delete string;
 
@@ -3456,14 +3453,12 @@ public void ProcessMemberAccess()
       }
       else if(external.type == declarationExternal)
       {
-         //currentClass = external.function._class;
          if(external.declaration)
             ProcessDeclaration(external.declaration);
       }
       else if(external.type == classExternal)
       {
          ClassDefinition _class = external._class;
-         //currentClass = external.symbol.registered;
          if(_class.definitions)
          {
             ClassDef def;

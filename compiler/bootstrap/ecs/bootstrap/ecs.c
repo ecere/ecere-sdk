@@ -41,6 +41,8 @@ typedef unsigned __int64 uint64;
 #define structSize_Instance               (_64BIT ? 24 : 12)
 #define structSize_Module                 (_64BIT ? 560 : 300)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -570,7 +572,7 @@ struct __ecereNameSpace__ecere__sys__OldList _imports =
 
 struct __ecereNameSpace__ecere__sys__OldList _excludedSymbols =
 {
-0, 0, 0, (unsigned int)&((struct Symbol *)(void * )0)->left, 0
+0, 0, 0, (unsigned int)(uintptr_t)&((struct Symbol *)(void * )0)->left, 0
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
@@ -910,8 +912,6 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com
 
 extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
-extern void MangleClassName(char *  className);
-
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_FindMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, struct __ecereNameSpace__ecere__com__Instance * module);
 
 extern struct Context * SetupTemplatesContext(struct __ecereNameSpace__ecere__com__Class * _class);
@@ -963,7 +963,7 @@ if(f)
 {
 struct ModuleImport * module;
 struct ModuleInfo * defModule;
-unsigned int nonInst = 0x0, anyMethod = 0x0, anyProp = 0x0, anyFunction = 0x0;
+unsigned int anyMethod = 0x0, anyProp = 0x0, anyFunction = 0x0;
 struct ImportedModule * importedModule;
 
 __ecereNameSpace__ecere__sys__GetLastDirectory(fileName, mainModuleName);
@@ -1037,11 +1037,8 @@ char className[1024] = "";
 struct __ecereNameSpace__ecere__com__Class * regClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, _class->name);
 
 FullClassNameCat(className, _class->name, 0x1);
-MangleClassName(className);
 if(_class->itself)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "Class __ecereClass_%s;\n", className);
-else
-nonInst = 0x1;
 {
 {
 for(method = _class->methods.first; method; method = method->next)
@@ -1070,7 +1067,6 @@ char propName[1024];
 
 propName[0] = (char)0;
 FullClassNameCat(propName, prop->name, 0x1);
-MangleClassName(propName);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
@@ -1337,7 +1333,6 @@ char classID[1024];
 char className[1024] = "";
 
 FullClassNameCat(className, _class->name, 0x1);
-MangleClassName(className);
 if(_class->itself)
 sprintf(classID, "__ecereClass_%s", className);
 else
@@ -1368,7 +1363,6 @@ char propName[1024];
 
 propName[0] = (char)0;
 FullClassNameCat(propName, prop->name, 0x1);
-MangleClassName(propName);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n", className, propName, classID, prop->name);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
@@ -1814,7 +1808,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
@@ -1850,7 +1843,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 PrintType(param, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier(param->name)));
@@ -1986,7 +1978,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
@@ -2018,7 +2009,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
@@ -2152,7 +2142,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
@@ -2188,7 +2177,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 PrintType(param, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier(param->name)));
@@ -2307,7 +2295,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
@@ -2340,7 +2327,6 @@ type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 0x1);
-MangleClassName(className);
 DeclareClass(classSym, className);
 if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
@@ -2456,8 +2442,6 @@ extern void SetInSymbolGen(unsigned int b);
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char *  argv[]);
 
 extern void SetPrivateModule(struct __ecereNameSpace__ecere__com__Instance * module);
-
-extern const char *  GetSymbolsDir(void);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
@@ -2694,7 +2678,6 @@ mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImpo
 SetMainModule(mainModule);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_imports, mainModule);
 {
-const char * symbolsDir = GetSymbolsDir();
 struct __ecereNameSpace__ecere__com__Instance * intlStrings = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_ContextStringPair__ecere__com__List_TPL_String___);
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, intlStrings), it);
 
@@ -3124,7 +3107,7 @@ extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__co
 
 void __ecereRegisterModule_ecs(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ModuleInfo", 0, sizeof(struct ModuleInfo), 0, 0, 0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
