@@ -72,6 +72,7 @@ void SetPropValue(Property prop, void * object, any_object value)
    }
 }
 
+/*
 any_object GetPropValue(Property prop, Instance object)
 {
    if(object)
@@ -89,11 +90,13 @@ any_object GetPropValue(Property prop, Instance object)
       // TOFIX: How to swiftly handle classes with base data type?
       else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
       {
+         // NOTE: must return double by reference
          double d = ((double(*)(void *))(void *)prop.Get)(object);
          return d;
       }
       else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
       {
+         // NOTE: must return float by reference
          float f =((float(*)(void *))(void *)prop.Get)(object);
          return f;
       }
@@ -121,7 +124,7 @@ any_object GetPropValue(Property prop, Instance object)
    else
       return 0;
 }
-
+*/
 void CopyProperty(Property prop, Instance dest, Instance src)
 {
    Class type = prop.dataTypeClass;
