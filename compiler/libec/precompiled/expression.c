@@ -451,6 +451,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;

@@ -105,6 +105,18 @@ static Instantiation CopyInstantiation(Instantiation inst)
    return copy;
 }
 
+Expression CopyExpContents(Expression exp)
+{
+   Expression newExp { };
+   *newExp = *exp;
+   newExp.prev = null;
+   newExp.next = null;
+   newExp.destType = null;
+   if(exp.expType)
+      exp.expType.refCount++;
+   return newExp;
+}
+
 /*static */public Expression CopyExpression(Expression exp)
 {
    Expression result = null;
@@ -211,6 +223,7 @@ static Instantiation CopyInstantiation(Instantiation inst)
       result.isConstant = exp.isConstant;
       result.byReference = exp.byReference;
       result.opDestType = exp.opDestType;
+      result.needTemplateCast = exp.needTemplateCast;
    }
 
    return result;

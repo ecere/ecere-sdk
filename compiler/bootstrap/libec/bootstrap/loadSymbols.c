@@ -311,6 +311,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -1802,8 +1803,8 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 loadedModules, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(name))), 0x1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, list);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 0x1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(list)));
 });
 }
 else
@@ -1866,7 +1867,7 @@ while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&dir))
 {
 char configDir[274];
 
-strcpy(symFile, __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&dir));
+strcpy(symFile, ((char * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&dir))));
 __ecereNameSpace__ecere__sys__PathCat(symFile, "obj");
 sprintf(configDir, "debug.%s", (__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "win32" : "linux");
 __ecereNameSpace__ecere__sys__PathCat(symFile, configDir);

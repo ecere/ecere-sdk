@@ -456,6 +456,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -1025,6 +1026,21 @@ copy->isConstant = inst->isConstant;
 return copy;
 }
 
+extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
+
+struct Expression * CopyExpContents(struct Expression * exp)
+{
+struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
+
+*newExp = *exp;
+newExp->prev = (((void *)0));
+newExp->next = (((void *)0));
+newExp->destType = (((void *)0));
+if(exp->expType)
+exp->expType->refCount++;
+return newExp;
+}
+
 extern struct Expression * MkExpDummy(void);
 
 extern struct Expression * MkExpIdentifier(struct Identifier * id);
@@ -1179,6 +1195,7 @@ result->loc = exp->loc;
 result->isConstant = exp->isConstant;
 result->byReference = exp->byReference;
 result->opDestType = exp->opDestType;
+result->needTemplateCast = exp->needTemplateCast;
 }
 return result;
 }
@@ -1190,8 +1207,6 @@ struct Declaration * CopyDeclaration(struct Declaration * decl);
 extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
 
 extern struct Statement * MkBadDeclStmt(struct Declaration * decl);
-
-extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 static struct Statement * CopyStatement(struct Statement * stmt)
 {
@@ -1574,6 +1589,7 @@ void __ecereRegisterModule_copy(struct __ecereNameSpace__ecere__com__Instance * 
 struct __ecereNameSpace__ecere__com__Class * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyIdentifier", "Identifier CopyIdentifier(Identifier id)", CopyIdentifier, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyExpContents", "Expression CopyExpContents(Expression exp)", CopyExpContents, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyExpression", "Expression CopyExpression(Expression exp)", CopyExpression, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyClassDef", "ClassDef CopyClassDef(ClassDef def)", CopyClassDef, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopySpecifier", "Specifier CopySpecifier(Specifier spec)", CopySpecifier, module, 2);

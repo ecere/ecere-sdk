@@ -436,6 +436,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -1567,7 +1568,7 @@ case 11:
 {
 struct Type * type = exp->expType;
 
-if(type && type->kind == 8 && type->__anon1._class->__anon1.registered && type->__anon1._class->__anon1.registered->type == 1)
+if(type && type->kind == 8 && type->__anon1._class->__anon1.registered && type->__anon1._class->__anon1.registered->type == 1 && !exp->needCast)
 {
 struct Expression * castExp = exp->__anon1.cast.exp;
 struct Expression * prev = exp->prev, * next = exp->next;
@@ -1584,7 +1585,7 @@ InstDeclPassExpression(exp);
 }
 else
 {
-InstDeclPassTypeName(exp->__anon1.cast.typeName, 0x0);
+InstDeclPassTypeName(exp->__anon1.cast.typeName, ((unsigned int)((exp->usage & 0x4) >> 2)));
 if(exp->__anon1.cast.exp)
 InstDeclPassExpression(exp->__anon1.cast.exp);
 }

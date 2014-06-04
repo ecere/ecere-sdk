@@ -469,11 +469,16 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
 
-struct TemplateDatatype;
+struct TemplateDatatype
+{
+struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
+struct Declarator * decl;
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateArgument;
 
@@ -481,7 +486,22 @@ struct TemplateArgument;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateParameter;
 
-struct TemplateParameter;
+struct TemplateParameter
+{
+struct TemplateParameter * prev;
+struct TemplateParameter * next;
+struct Location loc;
+int type;
+struct Identifier * identifier;
+union
+{
+struct TemplateDatatype * dataType;
+int memberType;
+} __attribute__ ((gcc_struct)) __anon1;
+struct TemplateArgument * defaultArgument;
+const char *  dataTypeString;
+struct Type * baseType;
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Specifier;
 
@@ -1257,6 +1277,29 @@ e = FixRefExp(e);
 return e;
 }
 
+static struct Expression * GetInnerExp(struct Expression * exp)
+{
+struct Expression * e = exp;
+
+while(e && (e->type == 5 || e->type == 11))
+{
+if(e->type == 5)
+e = e->__anon1.list ? (*e->__anon1.list).last : (((void *)0));
+else if(e->type == 11)
+e = e->__anon1.cast.exp;
+}
+return e;
+}
+
+struct Expression * GetNonBracketsExp(struct Expression * exp)
+{
+struct Expression * e = exp;
+
+while(e && e->type == 5)
+e = e->__anon1.list ? (*e->__anon1.list).last : (((void *)0));
+return e;
+}
+
 static unsigned int FixMember(struct Expression * exp)
 {
 unsigned int byReference = 0x0;
@@ -1508,6 +1551,14 @@ extern void FreeDeclarator(struct Declarator * decl);
 extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
 static void ProcessInitializer(struct Initializer * init);
+
+extern struct Expression * CopyExpContents(struct Expression * exp);
+
+extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+
+extern struct Specifier * CopySpecifier(struct Specifier * spec);
+
+extern struct Declarator * CopyDeclarator(struct Declarator * declarator);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(struct __ecereNameSpace__ecere__sys__OldList * this, void *  prevItem, void *  item);
 
@@ -1841,6 +1892,10 @@ memberExp = (*memberExp->__anon1.list).last;
 }
 if(memberExp && memberExp->type == 6 && memberExp->__anon1.index.exp && memberExp->__anon1.index.exp->expType && memberExp->__anon1.index.exp->expType->kind == 8 && memberExp->__anon1.index.exp->expType->__anon1._class && memberExp->__anon1.index.exp->expType->__anon1._class->__anon1.registered && memberExp->__anon1.index.exp->expType->__anon1._class->__anon1.registered != containerClass && __ecereNameSpace__ecere__com__eClass_IsDerived(memberExp->__anon1.index.exp->expType->__anon1._class->__anon1.registered, containerClass))
 {
+struct __ecereNameSpace__ecere__com__Class * c = memberExp->__anon1.index.exp->expType->__anon1._class->__anon1.registered;
+
+if(strcmp((c->templateClass ? c->templateClass : c)->name, "Array"))
+exp->__anon1.op.exp2 = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(exp->__anon1.op.exp2)))));
 ProcessExpression(memberExp);
 while(memberExp && ((memberExp->type == 5 && (*memberExp->__anon1.list).count == 1) || memberExp->type == 32 || memberExp->type == 23))
 {
@@ -2224,6 +2279,7 @@ else if(exp->expType && exp->expType->kind == 8 && exp->expType->__anon1._class 
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 struct __ecereNameSpace__ecere__com__Class * _class;
+struct Expression * o;
 
 for(_class = exp->expType->__anon1._class->__anon1.registered; _class && _class->type == 5; _class = _class->base)
 {
@@ -2240,7 +2296,11 @@ DeclareClass(_class->symbol, className);
 ListAdd(list, MkExpCondition(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCall(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0)))), CopyExpression((*args).first))))), MkExpConstant("0")));
 }
 ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
-ListAdd(exp->__anon1.list, MkExpBrackets(MkListOne(MkExpCondition(CopyExpression(object), MkListOne(MkExpBrackets(list)), MkExpConstant("0")))));
+o = CopyExpression(object);
+ProcessExpressionType(o);
+o->usage = (o->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+ProcessExpression(o);
+ListAdd(exp->__anon1.list, MkExpBrackets(MkListOne(MkExpCondition(o, MkListOne(MkExpBrackets(list)), MkExpConstant("0")))));
 }
 else if(exp->expType && exp->expType->kind == 20)
 {
@@ -2263,7 +2323,7 @@ ListAdd(exp->__anon1.list, MkExpCall(MkExpBrackets(MkListOne(MkExpCast(typeName,
 }
 else
 ListAdd(exp->__anon1.list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
-ListAdd(exp->__anon1.list, MkExpOp(CopyExpression(object->type == 11 ? object->__anon1.cast.exp : object), '=', MkExpConstant("0")));
+ListAdd(exp->__anon1.list, MkExpOp(CopyExpression(GetInnerExp(object)), '=', MkExpConstant("0")));
 exp2 = (((void *)0));
 ProcessExpression(exp);
 }
@@ -2304,7 +2364,7 @@ derefExp = indexExp;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), derefExp);
 ProcessExpressionType((*args).last);
 ProcessExpression((*args).last);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(exp->__anon1.op.exp2), MkExpOp((((void *)0)), '&', CopyExpression(exp->__anon1.op.exp2)))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), MkExpBrackets(MkListOne(exp->__anon1.op.exp2))))), MkExpOp((((void *)0)), '&', CopyExpression(exp->__anon1.op.exp2)))));
 thisClass = curExternal->__anon1.function ? curExternal->__anon1.function->_class : (((void *)0));
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(thisClass->fullName), thisSymbol);
@@ -3779,6 +3839,52 @@ break;
 }
 }
 FixRefExp(exp);
+if(exp->needTemplateCast != 2 && (exp->needTemplateCast == 1 || (exp->expType && (exp->expType->kind == 20 || exp->expType->passAsTemplate))))
+{
+struct Expression * nbExp = GetNonBracketsExp(exp);
+struct Expression * inner = GetInnerExp(nbExp);
+
+if((!exp->expType || exp->expType->kind != 20 || nbExp->type != 11) && !((unsigned int)((exp->usage & 0x40) >> 6)) && (!exp->destType || (!exp->destType->truth && (exp->destType->kind != 20 || (exp->destType->__anon1.templateParameter && (exp->destType->__anon1.templateParameter->dataTypeString || exp->destType->__anon1.templateParameter->__anon1.dataType))))) && (((unsigned int)((exp->usage & 0x80) >> 7)) || ((unsigned int)((exp->usage & 0x1) >> 0)) || ((unsigned int)((exp->usage & 0x4) >> 2))) && (!exp->destType || (!exp->destType->passAsTemplate && (exp->expType->kind != 13 || exp->destType->kind == 13) && (exp->destType->kind != 13 || exp->expType->kind == 13))) && !inner->needCast && inner->type != 4)
+{
+struct Expression * e = CopyExpContents(exp);
+struct Declarator * decl;
+struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
+char typeString[1024];
+
+typeString[0] = '\0';
+e->needTemplateCast = 2;
+inner->needTemplateCast = 2;
+nbExp->needTemplateCast = 2;
+if(((unsigned int)((exp->usage & 0x80) >> 7)))
+strcpy(typeString, "void *");
+else
+PrintType(exp->expType, typeString, 0x0, 0x0);
+decl = SpecDeclFromString(typeString, specs, (((void *)0)));
+if(specs && (*specs).first && ((struct Specifier *)(*specs).first)->type == 8 && exp->destType && !exp->destType->passAsTemplate && exp->destType->kind == 20 && exp->destType->__anon1.templateParameter && (exp->destType->__anon1.templateParameter->dataTypeString || exp->destType->__anon1.templateParameter->__anon1.dataType) && !((unsigned int)((exp->usage & 0x4) >> 2)))
+{
+if(decl)
+FreeDeclarator(decl);
+FreeList(specs, FreeSpecifier);
+if(exp->destType->__anon1.templateParameter->dataTypeString)
+{
+specs = MkList();
+strcpy(typeString, exp->destType->__anon1.templateParameter->dataTypeString);
+decl = SpecDeclFromString(typeString, specs, (((void *)0)));
+}
+else
+{
+specs = CopyList(exp->destType->__anon1.templateParameter->__anon1.dataType->specifiers, CopySpecifier);
+decl = CopyDeclarator(exp->destType->__anon1.templateParameter->__anon1.dataType->decl);
+}
+}
+e->destType = exp->destType;
+if(exp->destType)
+exp->destType->refCount++;
+exp->type = 5;
+exp->__anon1.list = MkListOne(MkExpCast(MkTypeName(specs, decl), MkExpBrackets(MkListOne(e))));
+exp->needTemplateCast = 2;
+}
+}
 yylloc = oldyylloc;
 }
 
@@ -4205,6 +4311,7 @@ void __ecereRegisterModule_pass2(struct __ecereNameSpace__ecere__com__Instance *
 {
 struct __ecereNameSpace__ecere__com__Class * class;
 
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNonBracketsExp", "Expression GetNonBracketsExp(Expression exp)", GetNonBracketsExp, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessMemberAccess", "void ProcessMemberAccess(void)", ProcessMemberAccess, module, 1);
 }
 

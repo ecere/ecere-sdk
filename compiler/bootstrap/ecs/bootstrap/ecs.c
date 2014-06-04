@@ -2882,7 +2882,7 @@ msgid, msgctxt
 };
 
 i18n = 0x1;
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (&pair), 0x0))
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(&pair), 0x0))
 {
 msgid = (((void *)0));
 msgctxt = (((void *)0));
@@ -2892,8 +2892,8 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 intlStrings, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, comments);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(&pair)), 0x1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(comments)));
 });
 comments = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_String_);
 }
@@ -3031,7 +3031,7 @@ struct __ecereNameSpace__ecere__com__Iterator s =
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
 {
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(potFile, __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(potFile, ((char * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s))));
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = potFile;
 

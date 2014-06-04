@@ -6510,13 +6510,15 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla,
                if(convert.isGet)
                {
                   exp.expType = convert.resultType ? convert.resultType : convert.convert.dataType;
-                  exp.needCast = true;
+                  if(exp.destType.casted)
+                     exp.needCast = true;
                   if(exp.expType) exp.expType.refCount++;
                }
                else
                {
                   exp.expType = convert.resultType ? convert.resultType : MkClassType(convert.convert._class.fullName);
-                  exp.needCast = true;
+                  if(exp.destType.casted)
+                     exp.needCast = true;
                   if(convert.resultType)
                      convert.resultType.refCount++;
                }
@@ -6547,7 +6549,9 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla,
 
 void CheckTemplateTypes(Expression exp)
 {
-   if(exp.destType && exp.destType.passAsTemplate && exp.expType && exp.expType.kind != templateType && !exp.expType.passAsTemplate)
+   Expression nbExp = GetNonBracketsExp(exp);
+   if(exp.destType && exp.destType.passAsTemplate && exp.expType && exp.expType.kind != templateType && !exp.expType.passAsTemplate &&
+      (nbExp == exp || nbExp.type != castExp))
    {
       Expression newExp { };
       Context context;
@@ -6590,6 +6594,7 @@ void CheckTemplateTypes(Expression exp)
             exp.type = castExp;
             exp.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), null);
             exp.cast.exp = MkExpBrackets(MkListOne(newExp));
+            exp.needCast = true;
             break;
       }
    }
@@ -6647,7 +6652,9 @@ void CheckTemplateTypes(Expression exp)
             {
                exp.type = bracketsExp;
                exp.list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp.expType._class.string)), null), newExp));
+               exp.needTemplateCast = 2;
                newExp.needCast = true;
+               newExp.needTemplateCast = 2;
                ProcessExpressionType(exp.list->first);
                break;
             }
@@ -10267,7 +10274,7 @@ void ProcessExpressionType(Expression exp)
                {
                   Class tClass;
 
-                  tClass = _class;
+                  tClass = type._class && type._class.registered ? type._class.registered : _class;
                   while(tClass && !tClass.templateClass) tClass = tClass.base;
 
                   if(tClass && exp.expType.kind == templateType && exp.expType.templateParameter.type == TemplateParameterType::type)
@@ -10318,7 +10325,7 @@ void ProcessExpressionType(Expression exp)
                               exp.expType = ReplaceThisClassType(_class);
                            }
 
-                           if(tClass.templateClass)
+                           if(tClass.templateClass && (exp.expType.kind != templateType || (!exp.expType.templateParameter || (!exp.expType.templateParameter.dataTypeString && !exp.expType.templateParameter.dataType))))
                               exp.expType.passAsTemplate = true;
                            //exp.expType.refCount++;
                            if(!exp.destType)
@@ -11016,10 +11023,14 @@ void ProcessExpressionType(Expression exp)
    }
 
    yylloc = exp.loc;
-   if(exp.destType && (exp.destType.kind == voidType || exp.destType.kind == dummyType) );
+   if(exp.destType && (/*exp.destType.kind == voidType || */exp.destType.kind == dummyType) );
    else if(exp.destType && !exp.destType.keepCast)
    {
-      if(!CheckExpressionType(exp, exp.destType, false, !exp.destType.casted))
+      if(!exp.needTemplateCast && exp.expType && (exp.expType.kind == templateType || exp.expType.passAsTemplate)) // && exp.destType && !exp.destType.passAsTemplate)
+         exp.needTemplateCast = 1;
+
+      if(exp.destType.kind == voidType);
+      else if(!CheckExpressionType(exp, exp.destType, false, !exp.destType.casted))
       {
          if(!exp.destType.count || unresolved)
          {
@@ -11094,7 +11105,7 @@ void ProcessExpressionType(Expression exp)
             }
          }
       }
-      else if(exp.destType && exp.destType.kind == ellipsisType && exp.expType && exp.expType.passAsTemplate)
+      /*else if(exp.destType && exp.destType.kind == ellipsisType && exp.expType && exp.expType.passAsTemplate)
       {
          Expression newExp { };
          char typeString[1024];
@@ -11115,7 +11126,7 @@ void ProcessExpressionType(Expression exp)
 
          exp.cast.typeName = MkTypeName(specs, decl);
          exp.cast.exp = newExp;
-      }
+      }*/
    }
    else if(unresolved)
    {

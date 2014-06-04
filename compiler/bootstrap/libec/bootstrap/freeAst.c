@@ -494,6 +494,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -2664,7 +2665,7 @@ unsigned int found = 0x0;
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&it))
 {
-if(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)) == (uint64)(module))
+if(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)) == module)
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
@@ -2679,15 +2680,15 @@ if(found)
 {
 if(((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)list + structSize_Instance)))->count == 1)
 {
-struct __ecereNameSpace__ecere__com__Instance * mod = (__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * mod = (((struct __ecereNameSpace__ecere__com__Instance *)(__extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 list, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (uint64)(((uint64)(0))), 0x0);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(0)), 0x0);
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
-}));
+}))));
 
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;

@@ -485,6 +485,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
@@ -1628,6 +1629,7 @@ this->addedThis = 0x0;
 this->needCast = 0x0;
 this->thisPtr = 0x0;
 this->opDestType = 0x0;
+this->needTemplateCast = 0;
 }
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_DeclaratorType;
@@ -2511,6 +2513,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "addedThis", "bool", 4
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "needCast", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "thisPtr", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "opDestType", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "needTemplateCast", "uint", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Enumerator", 0, sizeof(struct Enumerator), 0, 0, 0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Enumerator = class;

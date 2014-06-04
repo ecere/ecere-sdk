@@ -754,7 +754,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, i);
 
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass, data), data = 0);
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass, ((void * )(data))), data = 0);
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -853,7 +853,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, i);
-struct __ecereNameSpace__ecere__com__Class * Eclass = isNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)data))->_class : Dclass;
+struct __ecereNameSpace__ecere__com__Class * Eclass = isNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)((uint64)(data))))->_class : Dclass;
 
 ((void (*)(void *, void *, void *))(void *)Eclass->_vTbl[__ecereVMethodID_class_OnSerialize])(Eclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? ((char *)&data + __ENDIAN_PAD(class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)) : (void *)data, channel);
 }
@@ -887,7 +887,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(container, data);
 }
 if(Dclass->type == 1)
-(((void (* )(void *  _class, void *  data))class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(class->templateArgs[2].__anon1.__anon1.dataTypeClass, data), data = 0);
+(((void (* )(void *  _class, void *  data))class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(class->templateArgs[2].__anon1.__anon1.dataTypeClass, ((void * )(data))), data = 0);
 (*this) = container;
 }
 

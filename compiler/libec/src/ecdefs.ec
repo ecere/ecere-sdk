@@ -660,6 +660,7 @@ public:
    bool needCast;
    bool thisPtr;
    bool opDestType;
+   uint needTemplateCast;
 
    void Clear()
    {
@@ -679,6 +680,7 @@ public:
       needCast = false;
       thisPtr = false;
       opDestType = false;
+      needTemplateCast = 0;
    }
 };
 

@@ -495,6 +495,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -1626,15 +1627,15 @@ pair.context = __ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) *
 memcpy(pair.context, context + 1, len - 2);
 pair.context[len - 2] = '\0';
 }
-list = (__extension__ ({
+list = (((struct __ecereNameSpace__ecere__com__Instance *)(__extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 intlStrings, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x0);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(&pair)), 0x0);
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
-}));
+}))));
 if(!list)
 {
 list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_Location_);
@@ -1644,8 +1645,8 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 intlStrings, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, (((&pair))), 0x1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, list);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(&pair)), 0x1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(list)));
 });
 }
 else
@@ -1657,7 +1658,7 @@ else
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (&yylloc));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(&yylloc));
 }
 s = QMkString(i18nModuleName ? i18nModuleName : "");
 ListAdd(list, MkExpString(s));

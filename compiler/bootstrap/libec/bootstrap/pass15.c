@@ -490,6 +490,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -12836,6 +12837,7 @@ FreeType(exp->expType);
 if(convert->isGet)
 {
 exp->expType = convert->resultType ? convert->resultType : convert->convert->dataType;
+if(exp->destType->casted)
 exp->needCast = 0x1;
 if(exp->expType)
 exp->expType->refCount++;
@@ -12843,6 +12845,7 @@ exp->expType->refCount++;
 else
 {
 exp->expType = convert->resultType ? convert->resultType : MkClassType(convert->convert->_class->fullName);
+if(exp->destType->casted)
 exp->needCast = 0x1;
 if(convert->resultType)
 convert->resultType->refCount++;
@@ -12866,6 +12869,8 @@ result = 0x1;
 return result;
 }
 
+extern struct Expression * GetNonBracketsExp(struct Expression * exp);
+
 extern struct Statement * MkCompoundStmt(struct __ecereNameSpace__ecere__sys__OldList * declarations, struct __ecereNameSpace__ecere__sys__OldList * statements);
 
 extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
@@ -12874,7 +12879,9 @@ extern struct Expression * MkExpMember(struct Expression * expression, struct Id
 
 void CheckTemplateTypes(struct Expression * exp)
 {
-if(exp->destType && exp->destType->passAsTemplate && exp->expType && exp->expType->kind != 20 && !exp->expType->passAsTemplate)
+struct Expression * nbExp = GetNonBracketsExp(exp);
+
+if(exp->destType && exp->destType->passAsTemplate && exp->expType && exp->expType->kind != 20 && !exp->expType->passAsTemplate && (nbExp == exp || nbExp->type != 11))
 {
 struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 struct Context * context;
@@ -12919,6 +12926,7 @@ default:
 exp->type = 11;
 exp->__anon1.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0)));
 exp->__anon1.cast.exp = MkExpBrackets(MkListOne(newExp));
+exp->needCast = 0x1;
 break;
 }
 }
@@ -12977,7 +12985,9 @@ else
 {
 exp->type = 5;
 exp->__anon1.list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp->expType->__anon1._class->string)), (((void *)0))), newExp));
+exp->needTemplateCast = 2;
 newExp->needCast = 0x1;
+newExp->needTemplateCast = 2;
 ProcessExpressionType((*exp->__anon1.list).first);
 break;
 }
@@ -16315,7 +16325,7 @@ if(_class && exp->expType)
 {
 struct __ecereNameSpace__ecere__com__Class * tClass;
 
-tClass = _class;
+tClass = type->__anon1._class && type->__anon1._class->__anon1.registered ? type->__anon1._class->__anon1.registered : _class;
 while(tClass && !tClass->templateClass)
 tClass = tClass->base;
 if(tClass && exp->expType->kind == 20 && exp->expType->__anon1.templateParameter->type == 0)
@@ -16368,7 +16378,7 @@ if(exp->expType->kind == 21)
 FreeType(exp->expType);
 exp->expType = ReplaceThisClassType(_class);
 }
-if(tClass->templateClass)
+if(tClass->templateClass && (exp->expType->kind != 20 || (!exp->expType->__anon1.templateParameter || (!exp->expType->__anon1.templateParameter->dataTypeString && !exp->expType->__anon1.templateParameter->__anon1.dataType))))
 exp->expType->passAsTemplate = 0x1;
 if(!exp->destType)
 {
@@ -17017,11 +17027,15 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&exp->expType->__anon1._
 }
 }
 yylloc = exp->loc;
-if(exp->destType && (exp->destType->kind == 0 || exp->destType->kind == 18))
+if(exp->destType && (exp->destType->kind == 18))
 ;
 else if(exp->destType && !exp->destType->keepCast)
 {
-if(!CheckExpressionType(exp, exp->destType, 0x0, !exp->destType->casted))
+if(!exp->needTemplateCast && exp->expType && (exp->expType->kind == 20 || exp->expType->passAsTemplate))
+exp->needTemplateCast = 1;
+if(exp->destType->kind == 0)
+;
+else if(!CheckExpressionType(exp, exp->destType, 0x0, !exp->destType->casted))
 {
 if(!exp->destType->count || unresolved)
 {
@@ -17098,26 +17112,6 @@ exp->expType = exp->destType;
 }
 }
 }
-}
-else if(exp->destType && exp->destType->kind == 14 && exp->expType && exp->expType->passAsTemplate)
-{
-struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
-char typeString[1024];
-struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
-struct Declarator * decl;
-
-typeString[0] = '\0';
-*newExp = *exp;
-if(exp->expType)
-exp->expType->refCount++;
-if(exp->expType)
-exp->expType->refCount++;
-exp->type = 11;
-newExp->destType = exp->expType;
-PrintType(exp->expType, typeString, 0x0, 0x0);
-decl = SpecDeclFromString(typeString, specs, (((void *)0)));
-exp->__anon1.cast.typeName = MkTypeName(specs, decl);
-exp->__anon1.cast.exp = newExp;
 }
 }
 else if(unresolved)

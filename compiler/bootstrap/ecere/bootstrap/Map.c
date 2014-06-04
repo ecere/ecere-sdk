@@ -495,7 +495,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 struct __ecereNameSpace__ecere__com__MapNode * __ecereMethod___ecereNameSpace__ecere__com__Map_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 _newNode)
 {
-struct __ecereNameSpace__ecere__com__MapNode * newNode = (struct __ecereNameSpace__ecere__com__MapNode *)_newNode;
+struct __ecereNameSpace__ecere__com__MapNode * newNode = (struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__AVLNode *)(_newNode));
 
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1 || ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->type == 1)
 {
@@ -551,7 +551,7 @@ struct __ecereNameSpace__ecere__com__Class * Tclass = ((struct __ecereNameSpace_
 ((void (*)(void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnFree])(Tclass, (((unsigned char *)&node->key) + __ENDIAN_PAD(sizeof(void *))));
 }
 else
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(node)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(node, 0));
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass, ((void * )(__ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(node)))), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(node, 0));
 ((node ? (__ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor((void *)node) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)node) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)node) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(node)) : 0), node = 0);
 }
 
@@ -565,7 +565,7 @@ struct __ecereNameSpace__ecere__com__MapNode * n = node;
 
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1)
 n = (struct __ecereNameSpace__ecere__com__MapNode *)(((unsigned char *)node) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->structSize - sizeof node->key);
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(n)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(n, 0));
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass, ((void * )(__ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(n)))), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(n, 0));
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -580,7 +580,7 @@ struct __ecereNameSpace__ecere__com__MapNode * n = node;
 
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1)
 n = (struct __ecereNameSpace__ecere__com__MapNode *)(((unsigned char *)node) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->structSize - sizeof node->key);
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(n)), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(n, 0));
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass, ((void * )(__ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(n)))), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(n, 0));
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -665,11 +665,11 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(source, i))
 {
-struct __ecereNameSpace__ecere__com__MapNode * srcNode = (struct __ecereNameSpace__ecere__com__MapNode *)((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+struct __ecereNameSpace__ecere__com__MapNode * srcNode = (struct __ecereNameSpace__ecere__com__MapNode *)((uint64)(((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(source, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(source, i)));
 struct __ecereNameSpace__ecere__com__MapNode * destNode = (struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -770,8 +770,8 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, srcNode);
-struct __ecereNameSpace__ecere__com__Class * kEclass = kIsNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)key))->_class : Kclass;
-struct __ecereNameSpace__ecere__com__Class * dEclass = dIsNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)data))->_class : Dclass;
+struct __ecereNameSpace__ecere__com__Class * kEclass = kIsNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)((uint64)(key))))->_class : Kclass;
+struct __ecereNameSpace__ecere__com__Class * dEclass = dIsNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)((uint64)(data))))->_class : Dclass;
 
 ((void (*)(void *, void *, void *))(void *)kEclass->_vTbl[__ecereVMethodID_class_OnSerialize])(kEclass, ((Kclass->type == 1000 && !Kclass->byValueSystemClass) || Kclass->type == 2 || Kclass->type == 4 || Kclass->type == 3) ? ((char *)&key + __ENDIAN_PAD(class->templateArgs[5].__anon1.__anon1.dataTypeClass->typeSize)) : (void *)key, channel);
 ((void (*)(void *, void *, void *))(void *)dEclass->_vTbl[__ecereVMethodID_class_OnSerialize])(dEclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? ((char *)&data + __ENDIAN_PAD(class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)) : (void *)data, channel);

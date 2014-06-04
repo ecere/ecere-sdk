@@ -1052,8 +1052,10 @@ static void ProcessExpression(Expression exp)
                   MangleClassName(className);
                   DeclareClass(classSym, className);
                   newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
+                  newCall.usage = exp.usage;
 
                   ProcessExpressionType(newCall);
+                  newCall.expType.passAsTemplate = exp.expType.passAsTemplate;
                   newCall.byReference = true;
                }
 
@@ -1262,6 +1264,14 @@ static void ProcessExpression(Expression exp)
 
          if(exp.op.exp1)
          {
+            if(exp.op.exp1 && exp.op.exp2 && exp.op.exp1.destType && exp.op.exp1.destType.passAsTemplate && exp.op.exp1.expType && !exp.op.exp1.expType.passAsTemplate && !exp.op.exp1.usage.usageSet)
+            {
+               Type type { };
+               CopyTypeInto(type, exp.op.exp1.destType);
+               type.passAsTemplate = false;
+               FreeType(exp.op.exp1.destType);
+               exp.op.exp1.destType = type;
+            }
             // TEST: if(exp.op.exp2) exp.op.exp1.tempCount = Max(exp.op.exp1.tempCount, exp.op.exp2.tempCount);
             ProcessExpression(exp.op.exp1);
             // TEST: exp.tempCount = Max(exp.op.exp1.tempCount, exp.tempCount);
@@ -1269,6 +1279,15 @@ static void ProcessExpression(Expression exp)
 
          if(exp.op.exp2)
          {
+            if(exp.op.exp1 && exp.op.exp2 && exp.op.exp2.destType && exp.op.exp2.destType.passAsTemplate && exp.op.exp2.expType && !exp.op.exp2.expType.passAsTemplate && !exp.op.exp1.usage.usageSet)
+            {
+               Type type { };
+               CopyTypeInto(type, exp.op.exp2.destType);
+               type.passAsTemplate = false;
+               FreeType(exp.op.exp2.destType);
+               exp.op.exp2.destType = type;
+            }
+
             // Don't use the temporaries used by the left side...
             if(exp.op.exp1)
                // TEST: exp.op.exp2.tempCount = Max(exp.op.exp2.tempCount, exp.op.exp1.tempCount);
@@ -1480,7 +1499,8 @@ static void ProcessExpression(Expression exp)
          break;
       case castExp:
       {
-         exp.cast.exp.usage.usageGet = true;
+         //exp.cast.exp.usage.usageGet = true;
+         exp.cast.exp.usage |= exp.usage;
          ProcessExpression(exp.cast.exp);
          break;
       }

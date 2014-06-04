@@ -165,6 +165,27 @@ static Expression FixReference(Expression e, bool wantReference)
    return e;
 }
 
+static Expression GetInnerExp(Expression exp)
+{
+   Expression e = exp;
+   while(e && (e.type == bracketsExp || e.type == castExp))
+   {
+      if(e.type == bracketsExp)
+         e = e.list ? e.list->last : null;
+      else if(e.type == castExp)
+         e = e.cast.exp;
+   }
+   return e;
+}
+
+Expression GetNonBracketsExp(Expression exp)
+{
+   Expression e = exp;
+   while(e && e.type == bracketsExp)
+      e = e.list ? e.list->last : null;
+   return e;
+}
+
 static bool FixMember(Expression exp)
 {
    bool byReference = false;
@@ -566,6 +587,10 @@ static void ProcessExpression(Expression exp)
                memberExp.index.exp.expType.kind == classType && memberExp.index.exp.expType._class && memberExp.index.exp.expType._class.registered &&
                memberExp.index.exp.expType._class.registered != containerClass && eClass_IsDerived(memberExp.index.exp.expType._class.registered, containerClass))
             {
+               Class c = memberExp.index.exp.expType._class.registered;
+               if(strcmp((c.templateClass ? c.templateClass : c).name, "Array"))
+                  exp.op.exp2 = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpBrackets(MkListOne(exp.op.exp2)))));
+
                ProcessExpression(memberExp);
 
                while(memberExp && ((memberExp.type == bracketsExp && memberExp.list->count == 1) ||
@@ -1021,6 +1046,7 @@ static void ProcessExpression(Expression exp)
 
                OldList * list = MkList();
                Class _class;
+               Expression o;
                for(_class = exp.expType._class.registered; _class && _class.type == noHeadClass; _class = _class.base)
                {
                   char className[1024];
@@ -1055,11 +1081,16 @@ static void ProcessExpression(Expression exp)
                   );
                }
                ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
+               o = CopyExpression(object);
+               ProcessExpressionType(o);
+               o.usage.usageGet = true;
+               ProcessExpression(o);
+
                ListAdd(exp.list,
                   MkExpBrackets(
                      MkListOne(
                         MkExpCondition(
-                           CopyExpression(object),
+                           o,
                            MkListOne(
                               MkExpBrackets(list)
                            ),
@@ -1097,7 +1128,7 @@ static void ProcessExpression(Expression exp)
 
             //ProcessExpression(object);
 
-            ListAdd(exp.list, MkExpOp(CopyExpression(object.type == castExp ? object.cast.exp : object), '=', MkExpConstant("0")));
+            ListAdd(exp.list, MkExpOp(CopyExpression(GetInnerExp(object)), '=', MkExpConstant("0")));
 
             exp2 = null;
 
@@ -1152,7 +1183,8 @@ static void ProcessExpression(Expression exp)
 
                   args->Add(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)),
                      MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(classExp, MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))),
-                        MkListOne(exp.op.exp2), MkExpOp(null, '&', CopyExpression(exp.op.exp2)))));
+                           MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), MkExpBrackets(MkListOne(exp.op.exp2))))),
+                           MkExpOp(null, '&', CopyExpression(exp.op.exp2)))));
 
                   thisClass = curExternal.function ? curExternal.function._class : null;
                   {
@@ -3054,6 +3086,62 @@ static void ProcessExpression(Expression exp)
       }
    }
    FixRefExp(exp);
+
+   if(exp.needTemplateCast != 2 && (exp.needTemplateCast == 1 || (exp.expType && (exp.expType.kind == templateType || exp.expType.passAsTemplate))))
+   {
+      Expression nbExp = GetNonBracketsExp(exp);
+      Expression inner = GetInnerExp(nbExp);
+
+      if((!exp.expType || exp.expType.kind != templateType || nbExp.type != castExp) && !exp.usage.usageRef &&
+         (!exp.destType || (!exp.destType.truth && (exp.destType.kind != templateType || (exp.destType.templateParameter && (exp.destType.templateParameter.dataTypeString || exp.destType.templateParameter.dataType))))) &&
+         (exp.usage.usageDelete || exp.usage.usageGet || exp.usage.usageArg) &&
+         (!exp.destType || (!exp.destType.passAsTemplate && (exp.expType.kind != pointerType || exp.destType.kind == pointerType) && (exp.destType.kind != pointerType || exp.expType.kind == pointerType))) &&
+         !inner.needCast && inner.type != opExp)
+      {
+         Expression e = CopyExpContents(exp);
+         Declarator decl;
+         OldList * specs = MkList();
+         char typeString[1024];
+
+         typeString[0] = '\0';
+
+         e.needTemplateCast = 2;
+         inner.needTemplateCast = 2;
+         nbExp.needTemplateCast = 2;
+         if(exp.usage.usageDelete)
+            strcpy(typeString, "void *");
+         else
+            PrintType(exp.expType, typeString, false, false);
+
+         decl = SpecDeclFromString(typeString, specs, null);
+
+         if(specs && specs->first && ((Specifier)specs->first).type == templateTypeSpecifier &&
+            exp.destType && !exp.destType.passAsTemplate && exp.destType.kind == templateType && exp.destType.templateParameter && (exp.destType.templateParameter.dataTypeString || exp.destType.templateParameter.dataType) && !exp.usage.usageArg)
+         {
+            if(decl) FreeDeclarator(decl);
+            FreeList(specs, FreeSpecifier);
+            if(exp.destType.templateParameter.dataTypeString)
+            {
+               specs = MkList();
+               strcpy(typeString, exp.destType.templateParameter.dataTypeString);
+               decl = SpecDeclFromString(typeString, specs, null);
+            }
+            else
+            {
+               specs = CopyList(exp.destType.templateParameter.dataType.specifiers, CopySpecifier);
+               decl = CopyDeclarator(exp.destType.templateParameter.dataType.decl);
+            }
+         }
+
+         e.destType = exp.destType;
+         if(exp.destType)
+            exp.destType.refCount++;
+
+         exp.type = bracketsExp;
+         exp.list = MkListOne(MkExpCast(MkTypeName(specs, decl), MkExpBrackets(MkListOne(e))));
+         exp.needTemplateCast = 2;
+      }
+   }
    yylloc = oldyylloc;
 }
 

@@ -460,6 +460,7 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
@@ -1982,6 +1983,8 @@ extern void PopContext(struct Context * ctx);
 
 extern void FreeInstance(struct Instantiation * inst);
 
+extern void CopyTypeInto(struct Type * type, struct Type * src);
+
 extern struct Type * ProcessTypeString(const char *  string, unsigned int staticMethod);
 
 extern void ProcessMethodType(struct __ecereNameSpace__ecere__com__Method * method);
@@ -2198,7 +2201,9 @@ FullClassNameCat(className, inst->_class->__anon1.__anon1.name, 0x1);
 MangleClassName(className);
 DeclareClass(classSym, className);
 newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
+newCall->usage = exp->usage;
 ProcessExpressionType(newCall);
+newCall->expType->passAsTemplate = exp->expType->passAsTemplate;
 newCall->byReference = 0x1;
 }
 if(inst->exp)
@@ -2385,10 +2390,28 @@ break;
 }
 if(exp->__anon1.op.exp1)
 {
+if(exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && exp->__anon1.op.exp1->destType && exp->__anon1.op.exp1->destType->passAsTemplate && exp->__anon1.op.exp1->expType && !exp->__anon1.op.exp1->expType->passAsTemplate && !((unsigned int)((exp->__anon1.op.exp1->usage & 0x2) >> 1)))
+{
+struct Type * type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+CopyTypeInto(type, exp->__anon1.op.exp1->destType);
+type->passAsTemplate = 0x0;
+FreeType(exp->__anon1.op.exp1->destType);
+exp->__anon1.op.exp1->destType = type;
+}
 ProcessExpression(exp->__anon1.op.exp1);
 }
 if(exp->__anon1.op.exp2)
 {
+if(exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && exp->__anon1.op.exp2->destType && exp->__anon1.op.exp2->destType->passAsTemplate && exp->__anon1.op.exp2->expType && !exp->__anon1.op.exp2->expType->passAsTemplate && !((unsigned int)((exp->__anon1.op.exp1->usage & 0x2) >> 1)))
+{
+struct Type * type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+CopyTypeInto(type, exp->__anon1.op.exp2->destType);
+type->passAsTemplate = 0x0;
+FreeType(exp->__anon1.op.exp2->destType);
+exp->__anon1.op.exp2->destType = type;
+}
 if(exp->__anon1.op.exp1)
 exp->__anon1.op.exp2->tempCount = exp->__anon1.op.exp1->tempCount;
 ProcessExpression(exp->__anon1.op.exp2);
@@ -2543,7 +2566,7 @@ case 10:
 break;
 case 11:
 {
-exp->__anon1.cast.exp->usage = (exp->__anon1.cast.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.cast.exp->usage |= exp->usage;
 ProcessExpression(exp->__anon1.cast.exp);
 break;
 }

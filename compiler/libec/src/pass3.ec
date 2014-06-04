@@ -493,7 +493,7 @@ static void InstDeclPassExpression(Expression exp)
       {
          Type type = exp.expType;
          // Remove casts to simple structs... (Watch out for pointers later...)
-         if(type && type.kind == classType && type._class.registered && type._class.registered.type == structClass)
+         if(type && type.kind == classType && type._class.registered && type._class.registered.type == structClass && !exp.needCast)
          {
             Expression castExp = exp.cast.exp;
             Expression prev = exp.prev, next = exp.next;
@@ -509,7 +509,7 @@ static void InstDeclPassExpression(Expression exp)
          }
          else
          {
-            InstDeclPassTypeName(exp.cast.typeName, false);
+            InstDeclPassTypeName(exp.cast.typeName, exp.usage.usageArg /*false*/);
             if(exp.cast.exp)
                InstDeclPassExpression(exp.cast.exp);
          }
