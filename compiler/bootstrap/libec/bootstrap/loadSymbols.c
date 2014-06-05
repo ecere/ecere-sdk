@@ -1787,7 +1787,7 @@ if(!inCompiler && !inPreCompiler && !inSymbolGen)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, loadedModules), it);
 
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(name), 0x0))
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0x0))
 {
 struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name, importAccess);
 
@@ -1813,7 +1813,7 @@ else
 skipLoad = 0x1;
 }
 else
-list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it));
+list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it));
 }
 if(!skipLoad)
 {
@@ -2005,7 +2005,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->n
 }
 for(; (data = (struct GlobalData *)globalDataList->functions.root); )
 {
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->functions, data);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->functions, (void *)data);
 if(data->symbol)
 FreeSymbol(data->symbol);
 FreeType(data->dataType);

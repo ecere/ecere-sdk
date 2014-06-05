@@ -1634,7 +1634,7 @@ if(sc->templateClass)
 sc = sc->templateClass;
 if(dc->templateClass)
 dc = dc->templateClass;
-if(dc->base && (sc != dc || sc->base->type == 1))
+if(dc->base && sc != dc)
 {
 e->__anon1.cast.exp = CopyExpContents(e);
 e->type = 11;

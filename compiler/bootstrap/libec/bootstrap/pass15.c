@@ -4585,6 +4585,8 @@ return __ecereNameSpace__ecere__sys__CopyString(_class->fullName);
 
 struct Type * ReplaceThisClassType(struct __ecereNameSpace__ecere__com__Class * _class)
 {
+struct Type * type;
+
 if(thisClassParams && _class->templateParams.count && !_class->templateClass)
 {
 unsigned int first = 0x1;
@@ -4621,12 +4623,13 @@ className[len++] = ' ';
 className[len++] = '>';
 className[len++] = '\0';
 }
-return MkClassType(className);
+type = MkClassType(className);
 }
 else
 {
-return MkClassType(_class->fullName);
+type = MkClassType(_class->fullName);
 }
+return type;
 }
 
 void ReplaceThisClassSpecifiers(struct __ecereNameSpace__ecere__sys__OldList * specs, struct __ecereNameSpace__ecere__com__Class * _class)
@@ -16228,10 +16231,12 @@ revConvert = __ecereNameSpace__ecere__com__eClass_FindProperty(convertClass, _cl
 }
 if(!exp->__anon1.member.exp->destType)
 {
+if(method && !method->_class->symbol)
+method->_class->symbol = FindClass(method->_class->fullName);
 exp->__anon1.member.exp->destType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
-__ecereInstance1->refCount = 1, __ecereInstance1->kind = 8, __ecereInstance1->__anon1._class = _class->symbol, __ecereInstance1;
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 8, __ecereInstance1->__anon1._class = prop ? prop->_class->symbol : method ? method->_class->symbol : _class->symbol, __ecereInstance1;
 });
 }
 if(prop)

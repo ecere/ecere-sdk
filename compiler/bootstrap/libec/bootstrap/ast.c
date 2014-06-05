@@ -3571,7 +3571,7 @@ if(baseClass && baseClass->ctx)
 {
 struct TemplatedType * copy;
 
-for(copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&baseClass->ctx->templateTypes); copy; copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(copy))
+for(copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&baseClass->ctx->templateTypes); copy; copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next((void *)copy))
 {
 struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = copy->key, type->param = copy->param, type);
 
@@ -4914,11 +4914,11 @@ if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
 filePrefix = "./";
 __ecereNameSpace__ecere__sys__GetSlashPathBuffer(srcFileFixed, srcFile);
 {
-struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map((void *)&s, (intlStrings)), s);
+struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&s, (intlStrings)), s);
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)&s))
 {
-struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key((void *)&s));
+struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s));
 
 {
 struct __ecereNameSpace__ecere__com__Iterator l =

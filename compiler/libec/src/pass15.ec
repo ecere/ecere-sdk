@@ -2729,6 +2729,7 @@ char * ReplaceThisClass(Class _class)
 
 Type ReplaceThisClassType(Class _class)
 {
+   Type type;
    if(thisClassParams && _class.templateParams.count && !_class.templateClass)
    {
       bool first = true;
@@ -2762,14 +2763,16 @@ Type ReplaceThisClassType(Class _class)
          className[len++] = '>';
          className[len++] = '\0';
       }
-      return MkClassType(className);
-      //return ProcessTypeString(className, false);
+      type = MkClassType(className);
+      //type = ProcessTypeString(className, false);
    }
    else
    {
-      return MkClassType(_class.fullName);
-      //return ProcessTypeString(_class.fullName, false);
+      type = MkClassType(_class.fullName);
+      //type = ProcessTypeString(_class.fullName, false);
    }
+   //type.wasThisClass = true;
+   return type;
 }
 
 void ReplaceThisClassSpecifiers(OldList specs, Class _class)
@@ -9492,6 +9495,13 @@ void ProcessExpressionType(Expression exp)
                      functionType = ProcessType(specs, decl);
                      functionType.refCount = 0;
                      FinishTemplatesContext(context);
+
+                     // Mark parameters that were 'thisclass'
+                     /*{
+                        Type p, op;
+                        for(p = functionType.params.first, op = methodType.method.dataType.params.first; p && op; p = p.next, op = op.next)
+                           p.wasThisClass = op.kind == thisClassType;
+                     }*/
                   }
 
                   FreeList(specs, FreeSpecifier);
@@ -10171,11 +10181,15 @@ void ProcessExpressionType(Expression exp)
 
                if(!exp.member.exp.destType)
                {
+                  if(method && !method._class.symbol)
+                     method._class.symbol = FindClass(method._class.fullName);
+
                   exp.member.exp.destType = Type
                   {
                      refCount = 1;
                      kind = classType;
-                     _class = _class.symbol;
+                     _class = prop ? prop._class.symbol : method ? method._class.symbol : _class.symbol;
+                     // wasThisClass = type ? type.wasThisClass : false;
                   };
                }
 

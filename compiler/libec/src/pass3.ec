@@ -540,7 +540,7 @@ static void InstDeclPassExpression(Expression exp)
                                  Class dc = dest._class.registered;
                                  if(sc.templateClass) sc = sc.templateClass;
                                  if(dc.templateClass) dc = dc.templateClass;
-                                 if(dc.base && (sc != dc || sc.base.type == structClass))
+                                 if(dc.base && sc != dc)
                                  {
                                     e.cast.exp = CopyExpContents(e);
                                     e.type = castExp;

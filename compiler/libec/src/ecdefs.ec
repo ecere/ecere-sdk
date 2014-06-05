@@ -1313,6 +1313,7 @@ public:
    bool declaredWithStruct:1;
    bool typedByReference:1;      // Originally typed by reference, regardless of class type
    bool casted:1;
+   // bool wasThisClass:1;
    // TODO: Add _Complex & _Imaginary support
    // bool complex:1, imaginary:1;
 
