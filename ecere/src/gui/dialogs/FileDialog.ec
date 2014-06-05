@@ -461,7 +461,9 @@ private:
       char tmpDir[MAX_FILENAME];
       DataRow row;
       FileName fileName;
+#ifdef __WIN32__
       FileListing listing { "/" };
+#endif
       int c;
 
       fileName.indent = 0;

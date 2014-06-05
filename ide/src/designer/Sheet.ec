@@ -185,7 +185,7 @@ void GetProperty(Property prop, Instance object, DataValue value)
 #ifdef _DEBUG
          if(prop._class.module.application == __thisModule &&
             prop.dataTypeClass.module.application == ((Designer)GetActiveDesigner()).codeEditor.privateModule)
-            printf($"Warning");
+            printf("Warning");
 #endif
       }
 

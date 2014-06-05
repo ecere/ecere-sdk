@@ -79,7 +79,7 @@ public class Thread
 #if defined(__WIN32__)
       return returnCode;
 #else
-      return (void *)returnCode;
+      return (void *)(uintptr_t)returnCode;
 #endif
    }
 

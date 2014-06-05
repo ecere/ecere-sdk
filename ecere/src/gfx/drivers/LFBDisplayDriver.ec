@@ -2913,13 +2913,13 @@ public class LFBDisplayDriver : DisplayDriver
                // printf("Locating %s\n", faceName);
                if(matched)
                {
-                  FcPatternGetString(matched, FC_FAMILY, 0, &family);
+                  FcPatternGetString(matched, FC_FAMILY, 0, (FcChar8 **)&family);
                   //printf("Fontconfig returned %s\n", family);
                }
                if(matched && (result == FcResultMatch /*|| result == FcResultNoId*/) /*&& !strcmpi(family, faceName)*/)
                {
                   double fontSize;
-                  FcPatternGetString (matched, FC_FILE, 0, &fileName2);
+                  FcPatternGetString (matched, FC_FILE, 0, (FcChar8 **)&fileName2);
                   FcPatternGetInteger(matched, FC_INDEX, 0, &fontID);
                   FcPatternGetDouble(matched, FC_SIZE, 0, &fontSize);
                   strcpy(fileName, fileName2);
@@ -3123,14 +3123,14 @@ public class LFBDisplayDriver : DisplayDriver
                            matched = FcFontMatch (0, pattern, &result);
                            if(matched)
                            {
-                              FcPatternGetString(matched, FC_FAMILY, 0, &family);
+                              FcPatternGetString(matched, FC_FAMILY, 0, (FcChar8 **)&family);
                               // printf("Fontconfig returned %s\n", family);
                            }
                            if(matched && (result == FcResultMatch /*|| result == FcResultNoId*/) &&
-                              FcPatternGetString(matched, FC_FAMILY, 0, &family) == FcResultMatch /*&& !strcmpi(family, links + linksPos + c + 1)*/)
+                              FcPatternGetString(matched, FC_FAMILY, 0, (FcChar8 **)&family) == FcResultMatch /*&& !strcmpi(family, links + linksPos + c + 1)*/)
                            {
                               double fontSize;
-                              FcPatternGetString (matched, FC_FILE, 0, &fileName2);
+                              FcPatternGetString (matched, FC_FILE, 0, (FcChar8 **)&fileName2);
                               FcPatternGetInteger(matched, FC_INDEX, 0, &fontID);
                               FcPatternGetDouble(matched, FC_SIZE, 0, &fontSize);
                               strcpy(fileName, fileName2);
@@ -3358,7 +3358,6 @@ public class LFBDisplayDriver : DisplayDriver
                   char * family;
                   FontEntry fontEntry;
                   char * fileName = null;
-                  bool fakeItalic = false;
                   for(fontEntryNum = 0; fontEntryNum<MAX_FONT_LINK_ENTRIES; fontEntryNum++)
                      if(!font.fontEntries[fontEntryNum])
                         break;
@@ -3389,12 +3388,12 @@ public class LFBDisplayDriver : DisplayDriver
                      matched = FcFontMatch (0, pattern, &result);
                      if(matched)
                      {
-                        FcPatternGetString(matched, FC_FAMILY, 0, &family);
+                        FcPatternGetString(matched, FC_FAMILY, 0, (FcChar8 **)&family);
                         //printf("Fontconfig returned %s\n", family);
                      }
-                     if(matched && (result == FcResultMatch) && FcPatternGetString(matched, FC_FAMILY, 0, &family) == FcResultMatch)
+                     if(matched && (result == FcResultMatch) && FcPatternGetString(matched, FC_FAMILY, 0, (FcChar8 **)&family) == FcResultMatch)
                      {
-                        FcPatternGetString (matched, FC_FILE, 0, &fileName);
+                        FcPatternGetString (matched, FC_FILE, 0, (FcChar8 **)&fileName);
                         FcPatternGetInteger(matched, FC_INDEX, 0, &fontID);
                         FcPatternGetDouble(matched, FC_SIZE, 0, &fontSize);
                         // printf("\nMatched to %s, %f\n", fileName, fontSize);

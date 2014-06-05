@@ -410,7 +410,7 @@ void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int 
    *argcPtr = Tokenize(*parsedCommand, 512,(void*)(char **)(*argvPtr), forArgsPassing);
 #else
    *argcPtr = argc;
-   *argvPtr = argv;
+   *argvPtr = (const char **)argv;
 #endif
 #if defined(__unix__)
    if(!__thisModule && argv)

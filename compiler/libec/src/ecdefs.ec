@@ -1449,7 +1449,7 @@ void Compiler_Error(const char * format, ...)
             GetWorkingDir(string, sizeof(string));
             PathCat(string, sourceFile);
          }
-         printf(string);
+         printf("%s", string);
 
          /*
          yylloc.start.col = yylloc.end.col = 1;
@@ -1506,7 +1506,7 @@ void Compiler_Warning(const char * format, ...)
       GetLastDirectory(string, fileName);
       if(!strcmp(fileName, "intrin-impl.h")) return;
 
-      printf(string);
+      printf("%s", string);
 
       //printf("(%d, %d) : warning: ", yylloc.start.line, yylloc.start.charPos);
       printf($":%d:%d: warning: ", yylloc.start.line, yylloc.start.charPos);

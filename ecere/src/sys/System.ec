@@ -304,7 +304,7 @@ public void DumpErrors(bool display)
             MessageBoxA(HWND_DESKTOP, globalSystem.errorBuffer, title, MB_OK|MB_ICONWARNING);
          }
 #else
-         printf(globalSystem.errorBuffer);
+         printf("%s", globalSystem.errorBuffer);
 #endif
       }
       globalSystem.errorBuffer[0] = '\0';

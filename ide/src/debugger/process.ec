@@ -90,7 +90,7 @@ class ShowProcessWindowsThread : Thread
 }
 #else
 
-extern void * __attribute__((stdcall)) IS_XGetDisplay();
+extern void * IS_XGetDisplay();
 static Atom xa_NET_WM_PID, xa_activeWindow;
 
 static void WaitForViewableWindow(X11Display * xGlobalDisplay, X11Window window)

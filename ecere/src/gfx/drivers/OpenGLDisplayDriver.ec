@@ -1139,7 +1139,9 @@ void GLGenBuffers(int count, uint * buffer)
 #ifdef __ANDROID__
    glGenBuffers(count, buffer);
 #else
+#if defined(__WIN32__)
    if(glGenBuffersARB)
+#endif
       glGenBuffersARB(count, buffer);
 #endif
 }
@@ -1149,7 +1151,9 @@ void GLDeleteBuffers(int count, GLuint * buffer)
 #ifdef __ANDROID__
    glDeleteBuffers(count, buffer);
 #else
+#if defined(__WIN32__)
    if(glDeleteBuffersARB)
+#endif
       glDeleteBuffersARB(count, buffer);
 #endif
 }
@@ -1159,7 +1163,9 @@ void GLBindBuffer(int target, uint buffer)
 #ifdef __ANDROID__
    glBindBuffer(target, buffer);
 #else
+#if defined(__WIN32__)
    if(glBindBufferARB)
+#endif
       glBindBufferARB(target, buffer);
 #endif
 }
@@ -1174,7 +1180,10 @@ void GLBufferData(int type, GLenum target, int size, const GLvoid *data, GLenum 
    else
       glBufferData(target, size, data, usage);
 #else
+
+#if defined(__WIN32__)
    if(glBufferDataARB)
+#endif
       glBufferDataARB(target, size, data, usage);
 
 #endif
@@ -1702,12 +1711,18 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
       if(result)
       {
-#if !defined(__OLDX__)
+#if defined(__WIN32__)
          if(glBlendFuncSeparate)
             glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
          else
-#endif
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#else
+#if !defined(__OLDX__)
+          glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+#else
+         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+#endif
+#endif
          glEnable(GL_BLEND);
 
          glMatrixMode(GL_MODELVIEW);
@@ -1749,12 +1764,12 @@ class OpenGLDisplayDriver : DisplayDriver
    bool DisplaySize(Display display, int width, int height)
    {
       OGLDisplay oglDisplay = display.driverData;
-      OGLSystem oglSystem = display.displaySystem.driverData;
 
       bool result = false;
 
       //printf("Inside DisplaySize\n");
 #if defined(__WIN32__) || defined(USEPBUFFER)
+      OGLSystem oglSystem = display.displaySystem.driverData;
       if(display.alphaBlend)
       {
 #if defined(__WIN32__)
@@ -2144,7 +2159,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void Update(Display display, Box updateBox)
    {
+#if defined(__WIN32__) || defined(USEPBUFFER)
       OGLDisplay oglDisplay = display.driverData;
+#endif
       //Logf("DisplayScreen\n");
 
       glFlush();
@@ -3715,8 +3732,11 @@ class OpenGLDisplayDriver : DisplayDriver
       //Logf("SelectMesh\n");
 
 #if !defined( __ANDROID__) && !defined(__APPLE__)
-      if(display.display3D.mesh && glUnlockArraysEXT)
-         glUnlockArraysEXT();
+#if defined(__WIN32__)
+      if(glUnlockArraysEXT)
+#endif
+         if(display.display3D.mesh)
+            glUnlockArraysEXT();
 #endif
       if(mesh)
       {
@@ -3788,7 +3808,11 @@ class OpenGLDisplayDriver : DisplayDriver
          }
 
 #if !defined(__ANDROID__) && !defined(__APPLE__)
-         if(glLockArraysEXT) glLockArraysEXT(0, mesh.nVertices);
+
+#if defined(__WIN32__)
+         if(glLockArraysEXT)
+#endif
+            glLockArraysEXT(0, mesh.nVertices);
 #endif
       }
       else
@@ -3892,7 +3916,11 @@ public void UseSingleGLContext(bool useSingle)
    useSingleGLContext = useSingle;
 }
 
-default dllexport void * __attribute__((stdcall)) IS_GLGetContext(DisplaySystem displaySystem)
+default dllexport void *
+#if defined(__WIN32__)
+__attribute__((stdcall))
+#endif
+IS_GLGetContext(DisplaySystem displaySystem)
 {
    if(displaySystem)
    {

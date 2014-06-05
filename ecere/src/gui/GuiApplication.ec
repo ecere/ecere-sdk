@@ -942,7 +942,7 @@ public:
                      {
                         SOCKET s;
                         SOCKADDR_IN a;
-                        int addrLen = sizeof(a);
+                        uint addrLen = sizeof(a);
                         s = accept(service.s,(SOCKADDR *)&a,&addrLen);
                         closesocket(s);
                      }

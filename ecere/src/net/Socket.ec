@@ -132,7 +132,7 @@ public:
          {
             SOCKET s;
             SOCKADDR_IN a;
-            int addrLen = sizeof(a);
+            uint addrLen = sizeof(a);
 
             value.accepted = true;
             s = accept(value.s,(SOCKADDR *)&a, &addrLen);
@@ -626,7 +626,7 @@ private:
                count = ReceiveData(recvBuffer + recvBytes, recvBufferSize - recvBytes, 0);
             else
             {
-               int len = sizeof(a);
+               uint len = sizeof(a);
                count = (int)recvfrom(s, (char *)recvBuffer + recvBytes,
                   recvBufferSize - recvBytes, 0, (SOCKADDR *)&a, &len);
                strcpy(inetAddress, inet_ntoa(this.a.sin_addr));

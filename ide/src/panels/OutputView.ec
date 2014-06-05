@@ -325,13 +325,6 @@ class LogBox : EditBox
       LogRaw(string);
    }
 
-   void LogSprintf(const char * entry)
-   {
-      char string[MAX_F_STRING];
-      sprintf(string, entry);
-      LogRaw(string);
-   }
-
    void LogRaw(const char * entry)
    {
       // Cut the line longer than 1024 because Logf prints to a buffer (and we don't want to output crazy long lines either)

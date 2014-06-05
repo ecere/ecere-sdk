@@ -538,7 +538,7 @@ class XDisplayDriver : DisplayDriver
                         xDisplay.bitmap.height = height;
                         xDisplay.bitmap.stride = xDisplay.image->bytes_per_line >> GetColorDepthShifts(display.pixelFormat);
                         xDisplay.bitmap.pixelFormat = display.pixelFormat;
-                        xDisplay.bitmap.picture = xDisplay.shminfo.shmaddr;
+                        xDisplay.bitmap.picture = (byte *)xDisplay.shminfo.shmaddr;
                         xDisplay.bitmap.size = width * height;
                         xDisplay.bitmap.sizeBytes = (uint)xDisplay.bitmap.size << GetColorDepthShifts(display.pixelFormat);
                      }
@@ -628,7 +628,7 @@ class XDisplayDriver : DisplayDriver
 
    void RestorePalette(Display display)
    {
-      XDisplay xDisplay = display.driverData;
+
    }
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
@@ -721,7 +721,7 @@ class XDisplayDriver : DisplayDriver
       */
       // image.red_mask  = 0xFFFF0000;
 
-      image.data = bitmap.picture;
+      image.data = (char *)bitmap.picture;
       XInitImage(&image);
 
       if(bitmap.pixelFormat != pixelFormatAlpha && bitmap.alphaBlend)
@@ -839,7 +839,6 @@ class XDisplayDriver : DisplayDriver
       XSurface xSurface = surface.driverData;
       XDisplay xDisplay = display.driverData;
       bool changed = false;
-      XRectangle rectangle;
       if(clip != null)
       {
          Box box = clip;
@@ -908,7 +907,7 @@ class XDisplayDriver : DisplayDriver
          xImage = XGetImage(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), sx, sy, sw, sh, MAXDWORD, ZPixmap);
 
       source.pixelFormat = format;
-      source.picture = xImage->data;
+      source.picture = (byte *)xImage->data;
       source.width = sw;
       source.height = sh;
       source.stride = xImage->bytes_per_line / 4;
@@ -937,7 +936,6 @@ class XDisplayDriver : DisplayDriver
       XSurface xSurface = surface.driverData;
       XDisplay xDisplay = display ? display.driverData : null;
       XRenderColor renderColor = { color.color.r * color.a, color.color.g * color.a, color.color.b * color.a, color.a * 255};
-      X11Picture colorPicture;
 
       if(xSurface.colorPicture)
          XRenderFreePicture(xGlobalDisplay, xSurface.colorPicture);
@@ -1366,7 +1364,6 @@ class XDisplayDriver : DisplayDriver
 
    void Stretch(Display display, Surface surface, Bitmap src, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
-      XDisplay xDisplay = display.driverData;
       XSurface xSurface = surface.driverData;
       XBitmap xBitmap = src.driverData;
       if(xBitmap)
@@ -1438,7 +1435,7 @@ class XDisplayDriver : DisplayDriver
          image.bytes_per_line = ((src.pixelFormat == pixelFormat888) ? 4 : 2) * src.stride;
          image.bits_per_pixel = (src.pixelFormat == pixelFormat888) ? 32 : 16;
 
-         image.data = src.picture;
+         image.data = (char *)src.picture;
          XInitImage(&image);
 
          XPutImage(xGlobalDisplay, (Pixmap)xSurface.pixmap, xDisplay.gc, &image,
@@ -1461,7 +1458,7 @@ class XDisplayDriver : DisplayDriver
          image.bytes_per_line = ((temp.pixelFormat == pixelFormat888) ? 4 : 2) * temp.stride;
          image.bits_per_pixel = (temp.pixelFormat == pixelFormat888) ? 32 : 16;
 
-         image.data = temp.picture;
+         image.data = (char *)temp.picture;
 
          XInitImage(&image);
          if(!src.transparent)
@@ -1588,7 +1585,7 @@ class XDisplayDriver : DisplayDriver
          image.bytes_per_line = ((temp.pixelFormat == pixelFormat888) ? 4 : 2) * temp.stride;
          image.bits_per_pixel = (temp.pixelFormat == pixelFormat888) ? 32 : 16;
 
-         image.data = temp.picture;
+         image.data = (char *)temp.picture;
          XInitImage(&image);
 
          // printf("Blitting DI\n");
@@ -1623,7 +1620,7 @@ class XDisplayDriver : DisplayDriver
          image.bytes_per_line = ((temp.pixelFormat == pixelFormat888) ? 4 : 2) * temp.stride;
          image.bits_per_pixel = (temp.pixelFormat == pixelFormat888) ? 32 : 16;;
 
-         image.data = temp.picture;
+         image.data = (char *)temp.picture;
          XInitImage(&image);
 
          // printf("Blitting DI\n");
@@ -1665,7 +1662,7 @@ class XDisplayDriver : DisplayDriver
    void WriteText(Display display, Surface surface, int x, int y, const char * text, int len)
    {
       XSurface xSurface = surface.driverData;
-      XDisplay xDisplay = display.driverData;
+      //XDisplay xDisplay = display.driverData;
       int tw, th;
 
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).TextExtent(display, surface, text, len, &tw, &th);
@@ -1729,7 +1726,6 @@ class XDisplayDriver : DisplayDriver
 
    void LineStipple(Display display, Surface surface, uint stipple)
    {
-      XSurface xSurface = surface.driverData;
       XDisplay xDisplay = display.driverData;
       char list[32] = { 0 };
       int count = 0;
@@ -1841,13 +1837,13 @@ class XDisplayDriver : DisplayDriver
    }
 }
 
-default dllexport int __attribute__((stdcall)) IS_XGetPixmap(Bitmap bitmap)
+default dllexport long IS_XGetPixmap(Bitmap bitmap)
 {
    XBitmap xBitmap = bitmap.driverData;
    return xBitmap.pixmap;
 }
 
-default dllexport void __attribute__((stdcall)) IS_XGetSurfaceInfo(Surface surface, Pixmap * pixmap, GC * gc, int *x, int * y)
+default dllexport void IS_XGetSurfaceInfo(Surface surface, Pixmap * pixmap, GC * gc, int *x, int * y)
 {
    Display display = surface.display;
    XDisplay xDisplay = display.driverData;

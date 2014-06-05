@@ -3009,7 +3009,7 @@ class Debugger
                      snprintf(watchmsg, sizeof(watchmsg), $"Dereferencing error evaluating \"%s\"", wh.expression);
                      break;
                   case divideBy0ErrorExp:
-                     snprintf(watchmsg, sizeof(watchmsg), $"Integer division by 0");
+                     snprintf(watchmsg, sizeof(watchmsg), "%s", $"Integer division by 0");
                      break;
                   case noDebuggerErrorExp:
                      snprintf(watchmsg, sizeof(watchmsg), $"Debugger required for symbol evaluation in \"%s\"", wh.expression);
@@ -4601,9 +4601,9 @@ class ProgramThread : Thread
    bool terminate;
    unsigned int Main()
    {
-      bool result = true;
-      bool fileCreated = false;
-      mode_t mask = 0600;
+      //bool result = true;
+      //bool fileCreated = false;
+      //mode_t mask = 0600;
       static char output[1000];
       int fd;
 
@@ -4638,14 +4638,14 @@ class ProgramThread : Thread
       {
          fd_set rs, es;
          struct timeval time;
-         int selectResult;
+         //int selectResult;
          time.tv_sec = 1;
          time.tv_usec = 0;
          FD_ZERO(&rs);
          FD_ZERO(&es);
          FD_SET(fd, &rs);
          FD_SET(fd, &es);
-         selectResult = select(fd + 1, &rs, null, null, &time);
+         /*selectResult = */select(fd + 1, &rs, null, null, &time);
          if(FD_ISSET(fd, &rs))
          {
             int result = (int)read(fd, output, sizeof(output)-1);

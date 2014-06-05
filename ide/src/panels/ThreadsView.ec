@@ -133,12 +133,7 @@ class ThreadsView : Window
 
       Log(string);
    }
-   void LogSprintf(const char * entry)
-   {
-      char string[MAX_F_STRING];
-      sprintf(string, entry);
-      Log(string);
-   }
+
    void LogRaw(const char * entry)
    {
       Log(entry);

@@ -95,7 +95,7 @@ static X11Cursor nullCursor;
 static X11Window capturedWindow = None;
 static Window restrictedWindow = null;
 static bool gotAnXEvent = false;
-static XEvent xEvent;
+//static XEvent xEvent;
 static int joystickFD[4];
 static X11Window activeWindow;
 static X11Cursor systemCursors[SystemCursor];
@@ -195,10 +195,10 @@ static void SetNETWMState(X11Window windowHandle, bool throughRoot, NETWMStateAc
       int format;
       unsigned long count, fill;
       Atom type;
-      char * data = null;
-      uint state = WithdrawnState;
+      byte * data = null;
+      /*uint state = WithdrawnState;
 
-      /*if(XGetWindowProperty(xGlobalDisplay, windowHandle, atoms[wm_state], 0, 3, False,
+      if(XGetWindowProperty(xGlobalDisplay, windowHandle, atoms[wm_state], 0, 3, False,
                  atoms[wm_state], &type, &format, &count, &fill, &data) == Success && count)
       {
          state = *(uint *)data;
@@ -317,7 +317,7 @@ static void RepositionDesktop(bool updateChildren)
    Screen * x_screen = XDefaultScreenOfDisplay(xGlobalDisplay);
    X11Window x_root;
    int current = 0;
-   char *data = null;
+   byte *data = null;
    int format;
    unsigned long len, fill;
    Atom type;
@@ -342,11 +342,12 @@ static void RepositionDesktop(bool updateChildren)
 
       if(data)
       {
+         /*
          int desktops = 0;
          desktops = (int)*(long *)data;
 
-         //printf("_NET_NUMBER_OF_DESKTOPS is %d\n", desktops);
-
+         printf("_NET_NUMBER_OF_DESKTOPS is %d\n", desktops);
+         */
          XFree(data);
          data = null;
       }
@@ -927,7 +928,7 @@ static uint E_CALL XEventThread(void * data)
 
 static X11Bool EventChecker(void *display, XEvent *event, char * data)
 {
-   return (!data || (event->type == (int) data)) && event->type != NoExpose && event->type != GraphicsExpose;
+   return (!data || (event->type == (int)(intptr_t) data)) && event->type != NoExpose && event->type != GraphicsExpose;
 }
 
 static X11Bool ConfigureNotifyChecker(void *display, XConfigureEvent *event, char * data)
@@ -1097,7 +1098,6 @@ static void WaitForViewableWindow(Window window)
    while(true)
    {
       XWindowAttributes attributes = { 0 };
-      int result;
       if(!XGetWindowAttributes(xGlobalDisplay, (X11Window)window.windowHandle, &attributes))
          break;
       if(attributes.map_state == IsViewable)
@@ -1141,7 +1141,7 @@ static bool GetFrameExtents(Window window, bool update)
    int format;
    unsigned long len, fill;
    Atom type;
-   char * data = null;
+   byte * data = null;
 
    if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.windowHandle,
       atoms[_net_frame_extents], 0, 4,
@@ -1314,7 +1314,7 @@ static void X11UpdateState(Window window, bool * unmaximized)
       int format;
       unsigned long len, fill;
       Atom type;
-      char * data = null;
+      byte * data = null;
       if(XGetWindowProperty(xGlobalDisplay, (X11Window)window.systemHandle, atoms[_net_wm_state], 0, 32, False,
              XA_ATOM, &type, &format, &len, &fill, &data) == Success)
       {
@@ -1478,7 +1478,7 @@ class XInterface : Interface
             Pixmap mask = XCreatePixmap(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), 1, 1, 1);
             XSetWindowAttributes attributes = { 0 };
 
-            XkbSetDetectableAutoRepeat(xGlobalDisplay, True, &autoRepeatDetectable);
+            XkbSetDetectableAutoRepeat(xGlobalDisplay, True, (int *)&autoRepeatDetectable);
 
             XInternAtoms(xGlobalDisplay, (char**)atomNames, AtomIdents::enumSize, False, atoms);
 
@@ -1596,7 +1596,7 @@ class XInterface : Interface
 
    void Terminate()
    {
-      XEvent e = { 0 };
+      //XEvent e = { 0 };
       xTerminate = true;
 
       // WHY WAS THIS COMMENTED HERE?
@@ -1693,7 +1693,7 @@ class XInterface : Interface
                         windowData = modalRoot ? modalRoot.windowData : window.windowData;
                         if(windowData && windowData.ic)
                         {
-                           // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, 0);
+                           // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, NULL);
                            XSetICFocus(windowData.ic);
                         }
                      }
@@ -1879,7 +1879,7 @@ class XInterface : Interface
                }
                case MotionNotify:
                {
-                  static uint lastTime = 0;
+                  //static uint lastTime = 0;
                   XMotionEvent * event = (XMotionEvent *) thisEvent;
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, EventChecker, (void *)MotionNotify));
                   // if(event->time - lastTime > 15)
@@ -1905,7 +1905,7 @@ class XInterface : Interface
                         event->x_root, event->y_root, &keyFlags, false, false);
                      delete window;
                      //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
-                     lastTime = (uint)event->time;
+                     //lastTime = (uint)event->time;
                   }
                   break;
                }
@@ -1979,14 +1979,13 @@ class XInterface : Interface
                      XRaiseWindow(xGlobalDisplay, (X11Window)window.windowHandle);
                      SetNETWMState((X11Window)window.windowHandle, true, add, atoms[_net_wm_state_fullscreen], 0);
                      XGrabKeyboard(xGlobalDisplay, (X11Window)window.windowHandle, False,  GrabModeAsync, GrabModeAsync, CurrentTime);
-                        (xGlobalDisplay, (X11Window)window.windowHandle, RevertToParent, timeStamp);
+                     XSetInputFocus(xGlobalDisplay, (X11Window)window.windowHandle, RevertToParent, timeStamp);
                      XInterface::UpdateRootWindow(window);
                      break;
                   }
 
                   if(activeWindow != (X11Window)window.windowHandle)
                   {
-                     XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
                      Window modalRoot = window.FindModal();
                      XWindowData windowData;
 
@@ -2004,7 +2003,7 @@ class XInterface : Interface
                      windowData = modalRoot ? modalRoot.windowData : window.windowData;
                      if(windowData && windowData.ic)
                      {
-                        // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, 0);
+                        // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, NULL);
                         XSetICFocus(windowData.ic);
                      }
                      //delete lastActive;
@@ -2116,7 +2115,6 @@ class XInterface : Interface
                   else
 #endif
                   {
-                     XFocusChangeEvent *event = (XFocusChangeEvent *) thisEvent;
                      if(window.parent && window != window.parent.activeChild && window != guiApp.interimWindow) break;
                      incref window;
 
@@ -2324,7 +2322,7 @@ class XInterface : Interface
                               window.ExternalActivate(true, true, window, null); // lastActive);
                               if(windowData && windowData.ic)
                               {
-                                 // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, 0);
+                                 // XSetICValues(ic, XNClientWindow, window.windowHandle, XNFocusWindow, window.windowHandle, NULL);
                                  //XSetICFocus(windowData.ic);
                               }
                            }
@@ -2409,8 +2407,8 @@ class XInterface : Interface
       }
       else
       {
-         static bool firstTime = true;
-         firstTime = false;
+         //static bool firstTime = true;
+         //firstTime = false;
          desktopX = desktopY = desktopW = desktopH = 0;
 
          RepositionDesktop(false);
@@ -2734,7 +2732,7 @@ class XInterface : Interface
          int num_missing_charsets = 0;
          char *default_string;
          XFontSet fontset;
-         XRectangle area = { 0, 0,  400, 400 };
+         //XRectangle area = { 0, 0,  400, 400 };
          XVaNestedList argList;
 
          // sprintf(fontString, "-*-%s-*-r-*-*-*-%d-*-*-*-*-*-*", "Helvetica" /*window.font.faceName*/, (int)(window.font.size * 20));
@@ -2886,7 +2884,6 @@ class XInterface : Interface
       //Logf("Position root window %s\n", window.name);
       if(window.windowHandle && (!window.parent || !window.parent.display))
       {
-         bool visible = window.visible;
          if(window.visible && window.created)
             XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
          if(window.state == minimized && atomsSupported[_net_wm_state]) return;
@@ -3021,7 +3018,7 @@ class XInterface : Interface
 
             if(state == minimized && atomsSupported[_net_wm_state])
             {
-               uint iconic = IconicState;
+               //uint iconic = IconicState;
 
                // SetNETWMState(window.windowHandle, true, add, atoms[_net_wm_state_hidden], null);
                /*
@@ -3281,7 +3278,7 @@ class XInterface : Interface
                (short)(caretOwner.caretPos.y - caretOwner.scroll.y + caretOwner.absPosition.y - window.absPosition.y)
             };
             XVaNestedList argList = XVaCreateNestedList(0, XNSpotLocation, &cursor_location, NULL);
-            XSetICValues(windowData.ic, XNPreeditAttributes, argList, 0);
+            XSetICValues(windowData.ic, XNPreeditAttributes, argList, NULL);
          }
       }
    }
@@ -3385,7 +3382,7 @@ class XInterface : Interface
                               AnyPropertyType, &type,&format,&len, &dummy, &data) == Success)
                         {
                            clipBoard.text = new char[size+1];
-                           strncpy(clipBoard.text, data, size);
+                           strncpy(clipBoard.text, (char *)data, size);
                            clipBoard.text[size] = '\0';
                            XFree(data);
                            result = true;
@@ -3527,12 +3524,12 @@ class XInterface : Interface
    }
 }
 
-default dllexport void * __attribute__((stdcall)) IS_XGetDisplay()
+default dllexport void * IS_XGetDisplay()
 {
    return xGlobalDisplay;
 }
 
-default dllexport void * __attribute__((stdcall)) IS_XGetWindow(Window window)
+default dllexport void * IS_XGetWindow(Window window)
 {
    return window.windowHandle ? window.windowHandle : window.rootWindow.windowHandle;
 }

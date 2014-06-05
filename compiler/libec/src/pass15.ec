@@ -5308,7 +5308,7 @@ static bool Promote(Operand op, TypeKind kind, bool isSigned)
       case pointerType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType || op.kind == doubleType ||
             op.kind == pointerType || op.kind == enumType || op.kind == intPtrType || op.kind == intSizeType || op.kind == _BoolType)
-            result = GetOpUIntPtr(op, &op.ui64);
+            result = GetOpUInt64 /*GetOpUIntPtr*/(op, &op.ui64);
          break;
       case enumType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == int64Type || op.kind == longType || op.kind == floatType || op.kind == doubleType ||
@@ -5317,11 +5317,11 @@ static bool Promote(Operand op, TypeKind kind, bool isSigned)
          break;
       case intPtrType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == longType || op.kind == enumType || op.kind == _BoolType)
-            result = isSigned ? GetOpIntPtr(op, &op.i64) : GetOpUIntPtr(op, &op.ui64);
+            result = isSigned ? GetOpInt64 /*GetOpIntPtr*/(op, &op.i64) : GetOpUInt64 /*GetOpUIntPtr*/(op, &op.ui64);
          break;
       case intSizeType:
          if(op.kind == charType || op.kind == shortType || op.kind == intType || op.kind == longType || op.kind == enumType || op.kind == _BoolType)
-            result = isSigned ? GetOpIntSize(op, &op.i64) : GetOpUIntSize(op, &op.ui64);
+            result = isSigned ? GetOpInt64 /*GetOpIntSize*/(op, &op.i64) : GetOpUInt64 /*GetOpUIntSize*/(op, &op.ui64);
          break;
    }
    return result;
