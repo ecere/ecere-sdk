@@ -499,20 +499,17 @@ static void InstDeclPassExpression(Expression exp)
                   if(e.type != castExp || !IsVoidPtrCast(e.cast.typeName))
                   {
                      if(src) src.refCount++;
-                     if(src.kind == templateType)
+                     if(src.kind == templateType && src.templateParameter && src.templateParameter.type == type)
                      {
-                        if(src.templateParameter && src.templateParameter.type == type)
+                        Type newType = null;
+                        if(src.templateParameter.dataTypeString)
+                           newType = ProcessTypeString(src.templateParameter.dataTypeString, false);
+                        else if(src.templateParameter.dataType)
+                           newType = ProcessType(src.templateParameter.dataType.specifiers, src.templateParameter.dataType.decl);
+                        if(newType)
                         {
-                           Type newType = null;
-                           if(src.templateParameter.dataTypeString)
-                              newType = ProcessTypeString(src.templateParameter.dataTypeString, false);
-                           else if(src.templateParameter.dataType)
-                              newType = ProcessType(src.templateParameter.dataType.specifiers, src.templateParameter.dataType.decl);
-                           if(newType)
-                           {
-                              FreeType(src);
-                              src = newType;
-                           }
+                           FreeType(src);
+                           src = newType;
                         }
                      }
                      if(src && src.kind == classType && src._class)
@@ -525,7 +522,7 @@ static void InstDeclPassExpression(Expression exp)
                            {
                               if(dest) dest.refCount++;
 
-                              if(dest.templateParameter && dest.templateParameter.type == type)
+                              if(dest.kind == templateType && dest.templateParameter && dest.templateParameter.type == type)
                               {
                                  Type newType = null;
                                  if(dest.templateParameter.dataTypeString)

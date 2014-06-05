@@ -1586,9 +1586,7 @@ if(e->type != 11 || !IsVoidPtrCast(e->__anon1.cast.typeName))
 {
 if(src)
 src->refCount++;
-if(src->kind == 20)
-{
-if(src->__anon1.templateParameter && src->__anon1.templateParameter->type == 0)
+if(src->kind == 20 && src->__anon1.templateParameter && src->__anon1.templateParameter->type == 0)
 {
 struct Type * newType = (((void *)0));
 
@@ -1600,7 +1598,6 @@ if(newType)
 {
 FreeType(src);
 src = newType;
-}
 }
 }
 if(src && src->kind == 8 && src->__anon1._class)
@@ -1615,7 +1612,7 @@ if(dest && (dest->kind == 20 || dest->kind == 8))
 {
 if(dest)
 dest->refCount++;
-if(dest->__anon1.templateParameter && dest->__anon1.templateParameter->type == 0)
+if(dest->kind == 20 && dest->__anon1.templateParameter && dest->__anon1.templateParameter->type == 0)
 {
 struct Type * newType = (((void *)0));
 
