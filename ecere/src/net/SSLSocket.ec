@@ -12,6 +12,7 @@
 #undef int64
 #undef uint
 #undef set
+#endif
 
 #ifdef BUILDING_ECERE_COM
 import "Socket"
@@ -19,6 +20,7 @@ import "Socket"
 public import "ecere"
 #endif
 
+#ifndef ECERE_NOSSL
 /*
 static char * pass = "password";
 
