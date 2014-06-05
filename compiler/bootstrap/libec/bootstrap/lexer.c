@@ -2524,7 +2524,7 @@ break;
 }
 if(include_stack_ptr >= (30))
 {
-fprintf((bsl_stderr()), __ecereNameSpace__ecere__GetTranslatedString("ec", "Includes nested too deeply", (((void *)0))));
+fprintf((bsl_stderr()), "%s", __ecereNameSpace__ecere__GetTranslatedString("ec", "Includes nested too deeply", (((void *)0))));
 exit(1);
 }
 if(inCompiler || !FindIncludeFileID(includeFile))

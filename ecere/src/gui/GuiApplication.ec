@@ -33,7 +33,7 @@ namespace gui;
 
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NONET)
 #if defined(__WIN32__)
-
+#define SOCKLEN_TYPE int
 #define WIN32_LEAN_AND_MEAN
 #define String _String
 #include <winsock.h>
@@ -42,6 +42,7 @@ namespace gui;
 #elif defined(__unix__) || defined(__APPLE__)
 
 default:
+#define SOCKLEN_TYPE socklen_t
 #define uint _uint
 #define set _set
 #include <sys/time.h>
@@ -942,7 +943,7 @@ public:
                      {
                         SOCKET s;
                         SOCKADDR_IN a;
-                        uint addrLen = sizeof(a);
+                        SOCKLEN_TYPE addrLen = sizeof(a);
                         s = accept(service.s,(SOCKADDR *)&a,&addrLen);
                         closesocket(s);
                      }

@@ -604,7 +604,7 @@ if(__ecereNameSpace__ecere__sys__globalSystem.errorBuffer && __ecereNameSpace__e
 {
 if(display)
 {
-printf(__ecereNameSpace__ecere__sys__globalSystem.errorBuffer);
+printf("%s", __ecereNameSpace__ecere__sys__globalSystem.errorBuffer);
 }
 __ecereNameSpace__ecere__sys__globalSystem.errorBuffer[0] = '\0';
 }

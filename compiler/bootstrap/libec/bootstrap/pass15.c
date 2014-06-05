@@ -11761,7 +11761,7 @@ result = GetOpDouble(op, &op->__anon1.d);
 break;
 case 13:
 if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 4 || op->kind == 5 || op->kind == 6 || op->kind == 7 || op->kind == 13 || op->kind == 15 || op->kind == 22 || op->kind == 23 || op->kind == 24)
-result = GetOpUIntPtr(op, &op->__anon1.ui64);
+result = GetOpUInt64(op, &op->__anon1.ui64);
 break;
 case 15:
 if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 4 || op->kind == 5 || op->kind == 6 || op->kind == 7 || op->kind == 13 || op->kind == 15 || op->kind == 22 || op->kind == 23 || op->kind == 24)
@@ -11769,11 +11769,11 @@ result = isSigned ? GetOpInt(op, &op->__anon1.i) : GetOpUInt(op, &op->__anon1.ui
 break;
 case 22:
 if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 5 || op->kind == 15 || op->kind == 24)
-result = isSigned ? GetOpIntPtr(op, &op->__anon1.i64) : GetOpUIntPtr(op, &op->__anon1.ui64);
+result = isSigned ? GetOpInt64(op, &op->__anon1.i64) : GetOpUInt64(op, &op->__anon1.ui64);
 break;
 case 23:
 if(op->kind == 1 || op->kind == 2 || op->kind == 3 || op->kind == 5 || op->kind == 15 || op->kind == 24)
-result = isSigned ? GetOpIntSize(op, &op->__anon1.i64) : GetOpUIntSize(op, &op->__anon1.ui64);
+result = isSigned ? GetOpInt64(op, &op->__anon1.i64) : GetOpUInt64(op, &op->__anon1.ui64);
 break;
 }
 return result;

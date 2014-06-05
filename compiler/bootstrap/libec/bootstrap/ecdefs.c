@@ -1871,7 +1871,7 @@ else
 __ecereNameSpace__ecere__sys__GetWorkingDir(string, sizeof (string));
 __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 }
-printf(string);
+printf("%s", string);
 printf(__ecereNameSpace__ecere__GetTranslatedString("ec", ":%d:%d: error: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof (string), format, args);
@@ -1921,7 +1921,7 @@ __ecereNameSpace__ecere__sys__PathCat(string, sourceFile);
 __ecereNameSpace__ecere__sys__GetLastDirectory(string, fileName);
 if(!strcmp(fileName, "intrin-impl.h"))
 return ;
-printf(string);
+printf("%s", string);
 printf(__ecereNameSpace__ecere__GetTranslatedString("ec", ":%d:%d: warning: ", (((void *)0))), yylloc.start.line, yylloc.start.charPos);
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof (string), format, args);

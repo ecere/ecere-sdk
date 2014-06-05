@@ -8,10 +8,12 @@ namespace net;
 #define String _String
 #include <winsock.h>
 #undef String
+#define SOCKLEN_TYPE int
 
 #elif defined(__unix__) || defined(__APPLE__)
 
 default:
+#define SOCKLEN_TYPE socklen_t
 #define set _set
 #define uint _uint
 #include <sys/time.h>
@@ -132,7 +134,7 @@ public:
          {
             SOCKET s;
             SOCKADDR_IN a;
-            uint addrLen = sizeof(a);
+            SOCKLEN_TYPE addrLen = sizeof(a);
 
             value.accepted = true;
             s = accept(value.s,(SOCKADDR *)&a, &addrLen);
@@ -626,7 +628,7 @@ private:
                count = ReceiveData(recvBuffer + recvBytes, recvBufferSize - recvBytes, 0);
             else
             {
-               uint len = sizeof(a);
+               SOCKLEN_TYPE len = sizeof(a);
                count = (int)recvfrom(s, (char *)recvBuffer + recvBytes,
                   recvBufferSize - recvBytes, 0, (SOCKADDR *)&a, &len);
                strcpy(inetAddress, inet_ntoa(this.a.sin_addr));
