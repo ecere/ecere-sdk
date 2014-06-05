@@ -10169,6 +10169,16 @@ void ProcessExpressionType(Expression exp)
                   }
                }
 
+               if(!exp.member.exp.destType)
+               {
+                  exp.member.exp.destType = Type
+                  {
+                     refCount = 1;
+                     kind = classType;
+                     _class = _class.symbol;
+                  };
+               }
+
                if(prop)
                {
                   exp.member.memberType = propertyMember;

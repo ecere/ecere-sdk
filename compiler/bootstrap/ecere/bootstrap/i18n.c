@@ -516,10 +516,10 @@ hashingOffset = ((((hashingOffset) & 0x000000ff) << 24) | (((hashingOffset) & 0x
 if(!__ecereNameSpace__ecere__moduleMaps)
 __ecereNameSpace__ecere__moduleMaps = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__Map_TPL_String__const_String___);
 {
-struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
+struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map((void *)&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(name), 0x0))
-(__ecereNameSpace__ecere__com__eInstance_DecRef(((void * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)))), __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&it, 0));
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0x0))
+(__ecereNameSpace__ecere__com__eInstance_DecRef(((void * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it)))), __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data((void *)&it, 0));
 }
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
@@ -597,9 +597,9 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, translated, 1, len + 1);
 if(len)
 {
-struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, textMap), it);
+struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map((void *)&it, textMap), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(original), 0x0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(original), 0x0))
 (__ecereNameSpace__ecere__com__eSystem_Delete(translated), translated = 0);
 else
 __extension__ ({
@@ -633,15 +633,15 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Delete;
 
 void __ecereNameSpace__ecere__UnloadTranslatedStrings(const char * name)
 {
-struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
+struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map((void *)&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&it, (uint64)(name), 0x0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0x0))
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it));
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it));
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&it)));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it)));
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * i))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecereNameSpace__ecere__moduleMaps;
 

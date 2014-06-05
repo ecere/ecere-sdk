@@ -427,6 +427,25 @@ static void InstDeclPassIdentifier(Identifier id)
    }
 }
 
+static bool IsVoidPtrCast(TypeName typeName)
+{
+   bool result = false;
+   Declarator d = typeName.declarator;
+   if(d && d.type == pointerDeclarator && d.pointer.pointer == null)
+   {
+      if(typeName.qualifiers)
+      {
+         Specifier s;
+         for(s = typeName.qualifiers->first; s; s = s.next)
+         {
+            if(s.type == baseSpecifier && s.specifier == VOID)
+               result = true;
+         }
+      }
+   }
+   return result;
+}
+
 static void InstDeclPassExpression(Expression exp)
 {
    switch(exp.type)
@@ -470,7 +489,75 @@ static void InstDeclPassExpression(Expression exp)
          if(exp.call.arguments)
          {
             for(e = exp.call.arguments->first; e; e = e.next)
+            {
+               Type src = e.expType;
+
                InstDeclPassExpression(e);
+
+               if(src && (src.kind == templateType || src.kind == classType))
+               {
+                  if(e.type != castExp || !IsVoidPtrCast(e.cast.typeName))
+                  {
+                     if(src) src.refCount++;
+                     if(src.kind == templateType)
+                     {
+                        if(src.templateParameter && src.templateParameter.type == type)
+                        {
+                           Type newType = null;
+                           if(src.templateParameter.dataTypeString)
+                              newType = ProcessTypeString(src.templateParameter.dataTypeString, false);
+                           else if(src.templateParameter.dataType)
+                              newType = ProcessType(src.templateParameter.dataType.specifiers, src.templateParameter.dataType.decl);
+                           if(newType)
+                           {
+                              FreeType(src);
+                              src = newType;
+                           }
+                        }
+                     }
+                     if(src && src.kind == classType && src._class)
+                     {
+                        Class sc = src._class.registered;
+                        if(sc && (sc.type == structClass || sc.type == noHeadClass))
+                        {
+                           Type dest = e.destType;
+                           if(dest && (dest.kind == templateType || dest.kind == classType))
+                           {
+                              if(dest) dest.refCount++;
+
+                              if(dest.templateParameter && dest.templateParameter.type == type)
+                              {
+                                 Type newType = null;
+                                 if(dest.templateParameter.dataTypeString)
+                                    newType = ProcessTypeString(dest.templateParameter.dataTypeString, false);
+                                 else if(dest.templateParameter.dataType)
+                                    newType = ProcessType(dest.templateParameter.dataType.specifiers, dest.templateParameter.dataType.decl);
+                                 if(newType)
+                                 {
+                                    FreeType(dest);
+                                    dest = newType;
+                                 }
+                              }
+                              if(!dest.passAsTemplate && dest.kind == classType && dest._class && dest._class.registered)
+                              {
+                                 Class dc = dest._class.registered;
+                                 if(sc.templateClass) sc = sc.templateClass;
+                                 if(dc.templateClass) dc = dc.templateClass;
+                                 if(dc.base && (sc != dc || sc.base.type == structClass))
+                                 {
+                                    e.cast.exp = CopyExpContents(e);
+                                    e.type = castExp;
+                                    e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
+                                 }
+                              }
+                              FreeType(dest);
+                           }
+                        }
+                     }
+                  }
+                  FreeType(src);
+               }
+            }
          }
          break;
       }

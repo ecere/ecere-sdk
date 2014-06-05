@@ -4914,16 +4914,16 @@ if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
 filePrefix = "./";
 __ecereNameSpace__ecere__sys__GetSlashPathBuffer(srcFileFixed, srcFile);
 {
-struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&s, (intlStrings)), s);
+struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map((void *)&s, (intlStrings)), s);
 
-while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)&s))
 {
-struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s));
+struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key((void *)&s));
 
 {
 struct __ecereNameSpace__ecere__com__Iterator l =
 {
-((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s)), 0
+((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&s)), 0
 };
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&l))

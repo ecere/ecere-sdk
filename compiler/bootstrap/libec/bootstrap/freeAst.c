@@ -2654,11 +2654,11 @@ FreeSymbol(function->symbol);
 }
 if(!inCompiler)
 {
-struct __ecereNameSpace__ecere__com__MapIterator mapIt = (mapIt.container = (void *)0, mapIt.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&mapIt, loadedModules), mapIt);
+struct __ecereNameSpace__ecere__com__MapIterator mapIt = (mapIt.container = (void *)0, mapIt.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map((void *)&mapIt, loadedModules), mapIt);
 
-while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&mapIt))
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)&mapIt))
 {
-struct __ecereNameSpace__ecere__com__Instance * list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&mapIt));
+struct __ecereNameSpace__ecere__com__Instance * list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&mapIt));
 struct __ecereNameSpace__ecere__com__Iterator it =
 {
 list, 0

@@ -1154,9 +1154,6 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 unsigned int __ecereNameSpace__ecere__sys__FileExists(const char * fileName)
 {
-char archiveName[797];
-const char * archiveFile;
-
 return FILE_FileExists(fileName);
 }
 
@@ -1168,9 +1165,6 @@ struct __ecereNameSpace__ecere__com__Instance * result = (((void *)0));
 
 if(fileName)
 {
-char archiveName[797];
-const char * archiveFile;
-
 if(strstr(fileName, "File://") == fileName)
 {
 result = (struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)strtoull(fileName + 7, (((void *)0)), 16);
@@ -1248,6 +1242,7 @@ return result;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__CreateTemporaryFile(char * tempFileName, const char * template)
 {
+return (((void *)0));
 }
 
 void __ecereNameSpace__ecere__sys__CreateTemporaryDir(char * tempFileName, const char * template)

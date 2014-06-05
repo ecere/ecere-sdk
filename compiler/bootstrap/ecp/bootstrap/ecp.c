@@ -42,6 +42,8 @@ typedef unsigned __int64 uint64;
 #define structSize_Module                 (_64BIT ? 560 : 300)
 #define structSize_OldList                (_64BIT ? 32 : 20)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -1118,7 +1120,7 @@ void FreeDataMemberDefine(struct DataMemberDefine * dataMember)
 void FreeDataDefine(struct DataDefine * data)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(data->name), data->name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(data->type), data->type = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(data->dataType), data->dataType = 0);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereNameSpace__ecere__sys__OldList * this, void (*  freeFn)(void * ));
@@ -1158,7 +1160,7 @@ static struct __ecereNameSpace__ecere__com__Instance * privateModule;
 
 struct __ecereNameSpace__ecere__sys__OldList _excludedSymbols =
 {
-0, 0, 0, (unsigned int)&((struct Symbol *)(void * )0)->left, 0
+0, 0, 0, (unsigned int)(uintptr_t)&((struct Symbol *)(void * )0)->left, 0
 };
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
@@ -1508,7 +1510,6 @@ else if(def->type == 13)
 {
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
 
 if((prop = __ecereNameSpace__ecere__com__eClass_FindProperty(regClass, def->__anon1.__anon1.id->string, privateModule)))
 {
@@ -1873,7 +1874,7 @@ break;
 }
 if(param->type == 1)
 {
-__ecereNameSpace__ecere__com__eClass_AddTemplateParameter(regClass, param->identifier->string, param->type, (void *)param->__anon1.memberType, &defaultArg);
+__ecereNameSpace__ecere__com__eClass_AddTemplateParameter(regClass, param->identifier->string, param->type, (void *)(uintptr_t)param->__anon1.memberType, &defaultArg);
 }
 else
 {
@@ -2326,12 +2327,6 @@ struct __ecereNameSpace__ecere__sys__OldList values;
 int largest;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
-
-struct __ecereNameSpace__ecere__com__DefinedExpression;
-
-extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_FindDefine(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
-
 extern void OutputExpression(struct Expression * exp, struct __ecereNameSpace__ecere__com__Instance * f);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
@@ -2520,7 +2515,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         .\n");
 }
 else if(definition->type == 2)
 {
-struct __ecereNameSpace__ecere__com__DefinedExpression * defExp = __ecereNameSpace__ecere__com__eSystem_FindDefine(privateModule, definition->name);
 struct Define * defineDefine = (struct Define *)definition;
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   %s\n", definition->name);
@@ -3006,7 +3000,7 @@ extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__e
 
 void __ecereRegisterModule_ecp(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDefine", "Definition", sizeof(struct ClassDefine), 0, 0, 0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)

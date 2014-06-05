@@ -932,9 +932,9 @@ default bool WinReviveNetworkResource(uint16 * _wfileName);
 
 public FileAttribs FileExists(const char * fileName)
 {
+#if !defined(ECERE_BOOTSTRAP)
    char archiveName[MAX_LOCATION];
    const char * archiveFile;
-#if !defined(ECERE_BOOTSTRAP)
    if(SplitArchivePath(fileName, archiveName, &archiveFile))
    {
       return EARFileSystem::Exists(archiveName, archiveFile);
@@ -955,9 +955,9 @@ public File FileOpen(const char * fileName, FileOpenMode mode)
    File result = null;
    if(fileName)
    {
+#if !defined(ECERE_BOOTSTRAP)
       char archiveName[MAX_LOCATION];
       const char * archiveFile;
-#if !defined(ECERE_BOOTSTRAP)
       if(SplitArchivePath(fileName, archiveName, &archiveFile))
       {
          result = EARFileSystem::Open(archiveName, archiveFile, mode);
@@ -1794,6 +1794,8 @@ public File CreateTemporaryFile(char * tempFileName, const char * template)
    f = FileOpen(tempFileName, readWrite);
 #endif
    return f;
+#else
+   return null;
 #endif
 }
 

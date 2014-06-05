@@ -16226,6 +16226,14 @@ revConvert = __ecereNameSpace__ecere__com__eClass_FindProperty(convertClass, _cl
 }
 }
 }
+if(!exp->__anon1.member.exp->destType)
+{
+exp->__anon1.member.exp->destType = __extension__ ({
+struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 8, __ecereInstance1->__anon1._class = _class->symbol, __ecereInstance1;
+});
+}
 if(prop)
 {
 exp->__anon1.member.memberType = 1;

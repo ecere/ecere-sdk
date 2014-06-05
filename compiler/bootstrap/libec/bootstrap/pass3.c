@@ -1493,9 +1493,38 @@ id->string = __ecereNameSpace__ecere__sys__CopyString(newID);
 }
 }
 
-extern void FreeExpContents(struct Expression * exp);
+static unsigned int IsVoidPtrCast(struct TypeName * typeName)
+{
+unsigned int result = 0x0;
+struct Declarator * d = typeName->declarator;
+
+if(d && d->type == 5 && d->__anon1.pointer.pointer == (((void *)0)))
+{
+if(typeName->qualifiers)
+{
+struct Specifier * s;
+
+for(s = (*typeName->qualifiers).first; s; s = s->next)
+{
+if(s->type == 0 && s->__anon1.specifier == VOID)
+result = 0x1;
+}
+}
+}
+return result;
+}
+
+extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl);
 
 extern void FreeType(struct Type * type);
+
+extern struct Expression * CopyExpContents(struct Expression * exp);
+
+extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
+
+extern struct Declarator * QMkPtrDecl(const char *  id);
+
+extern void FreeExpContents(struct Expression * exp);
 
 static void InstDeclPassStatement(struct Statement * stmt);
 
@@ -1547,7 +1576,82 @@ InstDeclPassExpression(exp->__anon1.call.exp);
 if(exp->__anon1.call.arguments)
 {
 for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
+{
+struct Type * src = e->expType;
+
 InstDeclPassExpression(e);
+if(src && (src->kind == 20 || src->kind == 8))
+{
+if(e->type != 11 || !IsVoidPtrCast(e->__anon1.cast.typeName))
+{
+if(src)
+src->refCount++;
+if(src->kind == 20)
+{
+if(src->__anon1.templateParameter && src->__anon1.templateParameter->type == 0)
+{
+struct Type * newType = (((void *)0));
+
+if(src->__anon1.templateParameter->dataTypeString)
+newType = ProcessTypeString(src->__anon1.templateParameter->dataTypeString, 0x0);
+else if(src->__anon1.templateParameter->__anon1.dataType)
+newType = ProcessType(src->__anon1.templateParameter->__anon1.dataType->specifiers, src->__anon1.templateParameter->__anon1.dataType->decl);
+if(newType)
+{
+FreeType(src);
+src = newType;
+}
+}
+}
+if(src && src->kind == 8 && src->__anon1._class)
+{
+struct __ecereNameSpace__ecere__com__Class * sc = src->__anon1._class->__anon1.registered;
+
+if(sc && (sc->type == 1 || sc->type == 5))
+{
+struct Type * dest = e->destType;
+
+if(dest && (dest->kind == 20 || dest->kind == 8))
+{
+if(dest)
+dest->refCount++;
+if(dest->__anon1.templateParameter && dest->__anon1.templateParameter->type == 0)
+{
+struct Type * newType = (((void *)0));
+
+if(dest->__anon1.templateParameter->dataTypeString)
+newType = ProcessTypeString(dest->__anon1.templateParameter->dataTypeString, 0x0);
+else if(dest->__anon1.templateParameter->__anon1.dataType)
+newType = ProcessType(dest->__anon1.templateParameter->__anon1.dataType->specifiers, dest->__anon1.templateParameter->__anon1.dataType->decl);
+if(newType)
+{
+FreeType(dest);
+dest = newType;
+}
+}
+if(!dest->passAsTemplate && dest->kind == 8 && dest->__anon1._class && dest->__anon1._class->__anon1.registered)
+{
+struct __ecereNameSpace__ecere__com__Class * dc = dest->__anon1._class->__anon1.registered;
+
+if(sc->templateClass)
+sc = sc->templateClass;
+if(dc->templateClass)
+dc = dc->templateClass;
+if(dc->base && (sc != dc || sc->base->type == 1))
+{
+e->__anon1.cast.exp = CopyExpContents(e);
+e->type = 11;
+e->__anon1.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0))));
+}
+}
+FreeType(dest);
+}
+}
+}
+}
+FreeType(src);
+}
+}
 }
 break;
 }

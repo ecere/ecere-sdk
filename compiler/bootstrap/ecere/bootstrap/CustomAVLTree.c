@@ -929,7 +929,7 @@ struct __ecereNameSpace__ecere__com__AVLNode * item;
 
 while((item = ((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))))
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, ((struct __ecereNameSpace__ecere__com__AVLNode *)(item)));
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, (void *)((struct __ecereNameSpace__ecere__com__AVLNode *)(item)));
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, ((void * )(item))), item = 0);
 }
 }

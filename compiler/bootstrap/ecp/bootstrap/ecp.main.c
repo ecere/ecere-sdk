@@ -41,6 +41,8 @@ typedef unsigned __int64 uint64;
 #define structSize_Instance               (_64BIT ? 24 : 12)
 #define structSize_Module                 (_64BIT ? 560 : 300)
 
+struct __ecereNameSpace__ecere__com__Instance;
+
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
@@ -504,8 +506,6 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
-
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__EnumClassData;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
@@ -679,7 +679,6 @@ __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument = __ecereNameSp
 __ecereClass___ecereNameSpace__ecere__com__ClassTemplateParameter = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::ClassTemplateParameter");
 __ecereClass___ecereNameSpace__ecere__com__DataMember = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DataMember");
 __ecereClass___ecereNameSpace__ecere__com__DataValue = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DataValue");
-__ecereClass___ecereNameSpace__ecere__com__DefinedExpression = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::DefinedExpression");
 __ecereClass___ecereNameSpace__ecere__com__EnumClassData = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::EnumClassData");
 __ecereClass___ecereNameSpace__ecere__com__GlobalFunction = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::GlobalFunction");
 __ecereClass___ecereNameSpace__ecere__com__Method = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Method");
@@ -726,7 +725,7 @@ return exitCode;
 
 void __ecereRegisterModule_ecp_main(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-struct __ecereNameSpace__ecere__com__Class * class;
+struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 }
 
