@@ -162,14 +162,27 @@ class Designer : DesignerBase
       {
          return codeEditor.MenuFileSaveAs(selection, mods);
       }
-
    };
+   bool debugClosing;
 
    bool OnClose(bool parentClosing)
    {
       if(!parentClosing)
       {
-         if(codeEditor && !codeEditor.closing)
+         if(codeEditor && codeEditor.inUseDebug && !debugClosing)
+         {
+            debugClosing = true;
+            closing = false;
+            if(CloseConfirmation(false))
+            {
+               visible = false;
+               if(modifiedDocument)
+                  OnFileModified({ modified = true }, null);
+            }
+            debugClosing = false;
+            return false;
+         }
+         if(codeEditor && !codeEditor.closing && !debugClosing)
          {
             if(!codeEditor.visible)
             {
