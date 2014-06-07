@@ -1970,17 +1970,15 @@ void FreeInitializer(struct Initializer * initializer)
 switch(initializer->type)
 {
 case 1:
-{
 FreeList(initializer->__anon1.list, FreeInitializer);
 break;
-}
 case 0:
 if(initializer->__anon1.exp)
 FreeExpression(initializer->__anon1.exp);
-if(initializer->id)
-FreeIdentifier(initializer->id);
 break;
 }
+if(initializer->id)
+FreeIdentifier(initializer->id);
 ((initializer ? (__ecereClass_Initializer->Destructor ? __ecereClass_Initializer->Destructor((void *)initializer) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(initializer)) : 0), initializer = 0);
 }
 
@@ -2654,7 +2652,7 @@ FreeSymbol(function->symbol);
 }
 if(!inCompiler)
 {
-struct __ecereNameSpace__ecere__com__MapIterator mapIt = (mapIt.container = (void *)0, mapIt.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map((void *)&mapIt, loadedModules), mapIt);
+struct __ecereNameSpace__ecere__com__MapIterator mapIt = (mapIt.container = (void *)0, mapIt.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&mapIt, loadedModules), mapIt);
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)&mapIt))
 {

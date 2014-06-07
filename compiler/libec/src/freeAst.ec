@@ -813,17 +813,15 @@ void FreeInitializer(Initializer initializer)
    switch(initializer.type)
    {
       case listInitializer:
-      {
          FreeList(initializer.list, FreeInitializer);
          break;
-      }
       case expInitializer:
          if(initializer.exp)
             FreeExpression(initializer.exp);
-         if(initializer.id)
-            FreeIdentifier(initializer.id);
          break;
    }
+   if(initializer.id)
+      FreeIdentifier(initializer.id);
    delete initializer;
 }
 
