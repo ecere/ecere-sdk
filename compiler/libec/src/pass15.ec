@@ -7538,9 +7538,11 @@ void ApplyAnyObjectLogic(Expression e)
                   {
                      Expression operand { };
                      operand = *checkedExp;
-                     checkedExp.destType = null;
-                     checkedExp.expType = null;
                      checkedExp.Clear();
+                     checkedExp.destType = ProcessTypeString("void *", false);
+                     checkedExp.expType = checkedExp.destType;
+                     checkedExp.destType.refCount++;
+
                      checkedExp.type = opExp;
                      checkedExp.op.op = '&';
                      checkedExp.op.exp1 = null;

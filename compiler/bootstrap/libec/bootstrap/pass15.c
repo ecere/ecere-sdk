@@ -13882,9 +13882,10 @@ checkedExp = checkedExp->__anon1.cast.exp;
 struct Expression * operand = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
 *operand = *checkedExp;
-checkedExp->destType = (((void *)0));
-checkedExp->expType = (((void *)0));
 __ecereMethod_Expression_Clear(checkedExp);
+checkedExp->destType = ProcessTypeString("void *", 0x0);
+checkedExp->expType = checkedExp->destType;
+checkedExp->destType->refCount++;
 checkedExp->type = 4;
 checkedExp->__anon1.op.op = '&';
 checkedExp->__anon1.op.exp1 = (((void *)0));
