@@ -802,6 +802,14 @@ static Window FindWindow(Window form, Window window, Window moved, int x, int y,
 static void OnDestroy(Window window)
 {
    FormDesigner designer = activeDesigner ? (FormDesigner)activeDesigner.classDesigner : null;
+   Class c = window._class;
+   if(c.base.type != systemClass && c.base.base.type != systemClass)
+   {
+      while(c.base.base.base.type != systemClass)
+         c = c.base;
+      if(!strcmp(c.fullName, "ecere::gui::CommonControl"))
+         CommonControl::OnDestroy((CommonControl)window);
+   }
 
    if(designer && designer.form)
       activeDesigner.DeleteObject(window.object);
