@@ -466,7 +466,7 @@ static void WriteMain(const char * fileName)
       }
 
       //if(nonInst || thisAppClass)    // We use it all the time to get "Application" for the exit code now...
-         f.Puts("   Class _class;\n");
+         f.Puts("   __attribute__((unused)) Class _class;\n");
 
       if(anyMethod)
          f.Puts("   Method method;\n");

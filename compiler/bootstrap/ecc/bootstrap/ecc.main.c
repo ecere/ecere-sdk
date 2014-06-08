@@ -593,7 +593,7 @@ int main(int _argc, char * _argv[])
 {
 int exitCode;
 struct __ecereNameSpace__ecere__com__Instance * module;
-struct __ecereNameSpace__ecere__com__Class * _class;
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__Class * _class;
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 
