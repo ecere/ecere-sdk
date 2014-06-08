@@ -1432,13 +1432,15 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      definitions.Insert(after, newDef);
                      after = newDef;
 
-                     decl = MkDeclaratorFunction(propertyDef.declarator, null);
+                     decl = PlugDeclarator(propertyDef.declarator, MkDeclaratorFunction(null , null));
                      func.type = ProcessType(propertyDef.specifiers, decl);
-                     decl.declarator = null;
                      FreeDeclarator(decl);
 
                      if(func.type.returnType.kind == TypeKind::classType && func.type.returnType._class && func.type.returnType._class.registered && func.type.returnType._class.registered.type == structClass)
                         func.type.returnType.byReference = true;
+
+                     // Leverage the fact that templated types are also boxed in a 64 bit integer
+                     func.type.returnType.passAsTemplate = true;
 
                      if(inCompiler)
                         propertyDef.getStmt = null;

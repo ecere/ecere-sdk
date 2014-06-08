@@ -1538,6 +1538,8 @@ extern int printf(const char * , ...);
 
 extern struct Type * ProcessTemplateParameterType(struct TemplateParameter * param);
 
+extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+
 extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
 
 extern void DeclareStruct(const char *  name, unsigned int skipNoHead);
@@ -1553,8 +1555,6 @@ extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList *
 static void ProcessInitializer(struct Initializer * init);
 
 extern struct Expression * CopyExpContents(struct Expression * exp);
-
-extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
@@ -3453,15 +3453,28 @@ if(classProperty->Get)
 {
 struct Identifier * id = exp->__anon1.member.member;
 struct Expression * classExp = exp->__anon1.member.exp;
+struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 
-exp->type = 7;
-exp->__anon1.call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_GetProperty"));
-exp->__anon1.call.arguments = MkList();
-ListAdd(exp->__anon1.call.arguments, classExp);
+exp->type = 11;
+if(exp->expType)
+{
+char typeString[2048];
+struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
+struct Declarator * decl;
+
+typeString[0] = (char)0;
+PrintType(exp->expType, typeString, 0x0, 0x0);
+decl = SpecDeclFromString(typeString, specs, (((void *)0)));
+exp->__anon1.cast.typeName = MkTypeName(specs, decl);
+}
+else
+exp->__anon1.cast.typeName = QMkType("uint64", (((void *)0)));
+exp->__anon1.cast.exp = MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_GetProperty")), args);
+ListAdd(args, classExp);
 {
 char * s = QMkString(id->string);
 
-ListAdd(exp->__anon1.call.arguments, MkExpString(s));
+ListAdd(args, MkExpString(s));
 (__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 }
 FreeIdentifier(id);

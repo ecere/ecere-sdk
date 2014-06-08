@@ -2643,15 +2643,28 @@ static void ProcessExpression(Expression exp)
                   {
                      Identifier id = exp.member.member;
                      Expression classExp = exp.member.exp;
+                     OldList * args = MkList();
 
+                     exp.type = castExp;
                      // Class Property
-                     exp.type = callExp;
-                     exp.call.exp = MkExpIdentifier(MkIdentifier("ecere::com::eClass_GetProperty"));
-                     exp.call.arguments = MkList();
-                     ListAdd(exp.call.arguments, classExp);
+                     if(exp.expType)
+                     {
+                        char typeString[2048];
+                        OldList * specs = MkList();
+                        Declarator decl;
+                        typeString[0] = 0;
+                        PrintType(exp.expType, typeString, false, false);
+                        decl = SpecDeclFromString(typeString, specs, null);
+                        exp.cast.typeName = MkTypeName(specs, decl);
+                     }
+                     else
+                        exp.cast.typeName = QMkType("uint64", null);
+                     exp.cast.exp = MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_GetProperty")), args);
+
+                     ListAdd(args, classExp);
                      {
                         char * s = QMkString(id.string);
-                        ListAdd(exp.call.arguments, MkExpString(s));
+                        ListAdd(args, MkExpString(s));
                         delete s;
                      }
                      FreeIdentifier(id);

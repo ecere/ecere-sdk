@@ -2372,12 +2372,12 @@ func->dontMangle = 0x1;
 newDef = MkClassDefFunction(func);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(definitions, after, newDef);
 after = newDef;
-decl = MkDeclaratorFunction(propertyDef->declarator, (((void *)0)));
+decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction((((void *)0)), (((void *)0))));
 func->type = ProcessType(propertyDef->specifiers, decl);
-decl->declarator = (((void *)0));
 FreeDeclarator(decl);
 if(func->type->__anon1.__anon2.returnType->kind == 8 && func->type->__anon1.__anon2.returnType->__anon1._class && func->type->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && func->type->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 1)
 func->type->__anon1.__anon2.returnType->byReference = 0x1;
+func->type->__anon1.__anon2.returnType->passAsTemplate = 0x1;
 if(inCompiler)
 propertyDef->getStmt = (((void *)0));
 else
