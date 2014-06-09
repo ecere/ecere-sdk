@@ -422,6 +422,7 @@ static void ProcessExpression(Expression exp)
          {
             Expression memberExp;
             Expression parentExp = null; // Where to take memberExp out from
+            bool isIndexedContainerAssignment = false;
 
             // TOCHECK: See note below for this if
             if(exp.op.exp1 && exp.op.exp1.type == ExpressionType::memberExp)
@@ -589,7 +590,10 @@ static void ProcessExpression(Expression exp)
             {
                Class c = memberExp.index.exp.expType._class.registered;
                if(strcmp((c.templateClass ? c.templateClass : c).name, "Array"))
+               {
                   exp.op.exp2 = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpBrackets(MkListOne(exp.op.exp2)))));
+                  isIndexedContainerAssignment = true;
+               }
 
                ProcessExpression(memberExp);
 
@@ -897,7 +901,7 @@ static void ProcessExpression(Expression exp)
                                  value.tempCount = exp.tempCount;
                                  ProcessExpression(value);
                                  if(needAddress)
-                                    FixReference(value, true);
+                                    FixReference(isIndexedContainerAssignment ? GetInnerExp(value) : value, true);
                               }
 
                               FreeExpression(memberExp);

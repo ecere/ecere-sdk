@@ -1757,6 +1757,7 @@ if(exp->__anon1.op.op == '=' || exp->__anon1.op.op == MUL_ASSIGN || exp->__anon1
 {
 struct Expression * memberExp;
 struct Expression * parentExp = (((void *)0));
+unsigned int isIndexedContainerAssignment = 0;
 
 if(exp->__anon1.op.exp1 && exp->__anon1.op.exp1->type == 8)
 {
@@ -1894,7 +1895,10 @@ if(memberExp && memberExp->type == 6 && memberExp->__anon1.index.exp && memberEx
 struct __ecereNameSpace__ecere__com__Class * c = memberExp->__anon1.index.exp->expType->__anon1._class->__anon1.registered;
 
 if(strcmp((c->templateClass ? c->templateClass : c)->name, "Array"))
+{
 exp->__anon1.op.exp2 = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(exp->__anon1.op.exp2)))));
+isIndexedContainerAssignment = 1;
+}
 ProcessExpression(memberExp);
 while(memberExp && ((memberExp->type == 5 && (*memberExp->__anon1.list).count == 1) || memberExp->type == 32 || memberExp->type == 23))
 {
@@ -2165,7 +2169,7 @@ if(value)
 value->tempCount = exp->tempCount;
 ProcessExpression(value);
 if(needAddress)
-FixReference(value, 1);
+FixReference(isIndexedContainerAssignment ? GetInnerExp(value) : value, 1);
 }
 FreeExpression(memberExp);
 }
