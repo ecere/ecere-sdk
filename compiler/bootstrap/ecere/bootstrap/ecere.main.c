@@ -589,8 +589,6 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_QuerySize;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Stats;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
-
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
@@ -1104,7 +1102,6 @@ __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_QuerySize = method->vi
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(_class, "Stats", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__FileSystem_Stats = method->vid;
-__ecereClass___ecereNameSpace__ecere__sys__NamedLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink");
 __ecereClass___ecereNameSpace__ecere__sys__NamedLink64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink64");
 __ecereClass___ecereNameSpace__ecere__sys__OldLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldLink");
 __ecereClass___ecereNameSpace__ecere__sys__OldList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldList");
@@ -1128,7 +1125,7 @@ if(__currentModule == module)
 {
 __ecereCreateModuleInstances_System();
 }
-return 0x1;
+return 1;
 }
 
 extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(const char * name);
@@ -1164,7 +1161,7 @@ __ecereUnregisterModule_String(module);
 __ecereUnregisterModule_OldList(module);
 if(__currentModule == module)
 __currentModule = (void *)0;
-return 0x1;
+return 1;
 }
 
 void __ecereRegisterModule_ecere_main(struct __ecereNameSpace__ecere__com__Instance * module)

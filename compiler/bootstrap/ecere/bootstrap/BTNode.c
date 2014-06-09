@@ -328,7 +328,7 @@ void __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnSerialize(struct __ece
 if((struct __ecereNameSpace__ecere__sys__BTNode *)this)
 {
 unsigned int __internalValue000;
-unsigned int truth = 0x1;
+unsigned int truth = 1;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, &truth);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, __extension__ ({
@@ -466,13 +466,13 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Add(struct __ece
 {
 uintptr_t newKey = node->key;
 
-while(0x1)
+while(1)
 {
 int result = tree->CompareKey(tree, newKey, this->key);
 
 if(!result)
 {
-return 0x0;
+return 0;
 }
 else if(result > 0)
 {
@@ -496,7 +496,7 @@ break;
 n->depth = newDepth;
 }
 }
-return 0x1;
+return 1;
 }
 }
 else
@@ -521,7 +521,7 @@ break;
 n->depth = newDepth;
 }
 }
-return 0x1;
+return 1;
 }
 }
 }
@@ -530,12 +530,12 @@ return 0x1;
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindNode(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BTNode * node)
 {
 if(this == node)
-return 0x1;
+return 1;
 else if(this->left && __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindNode(this->left, node))
-return 0x1;
+return 1;
 else if(this->right && __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindNode(this->right, node))
-return 0x1;
-return 0x0;
+return 1;
+return 0;
 }
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t key)
@@ -792,7 +792,7 @@ void __ecereMethod___ecereNameSpace__ecere__sys__BTNode_SingleRotateLeft();
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Rebalance(struct __ecereNameSpace__ecere__sys__BTNode * this)
 {
-while(0x1)
+while(1)
 {
 int factor = __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_balanceFactor(this);
 
@@ -934,7 +934,7 @@ int c;
 
 for(c = 0; c < ((1 << (maxDepth - curDepth)) - 1) * 4 / 2; c++)
 strcat(output, " ");
-__ecereMethod___ecereNameSpace__ecere__sys__BTNode_PrintDepth(this, output, curDepth, 0, maxDepth, 0x1);
+__ecereMethod___ecereNameSpace__ecere__sys__BTNode_PrintDepth(this, output, curDepth, 0, maxDepth, 1);
 strcat(output, "\n");
 }
 return output;
@@ -980,7 +980,7 @@ extern int printf(const char * , ...);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree)
 {
-unsigned int valid = 0x1;
+unsigned int valid = 1;
 int leftHeight = this->left ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(this->left) + 1 : 0;
 int rightHeight = this->right ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(this->right) + 1 : 0;
 int diffHeight = rightHeight - leftHeight;
@@ -990,7 +990,7 @@ if(this->left)
 if(this->left->parent != this)
 {
 printf("Parent not set properly at node %d\n", (int)this->left->key);
-valid = 0x0;
+valid = 0;
 }
 valid *= __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->left, tree);
 }
@@ -999,7 +999,7 @@ if(this->right)
 if(this->right->parent != this)
 {
 printf("Parent not set properly at node %d\n", (int)this->right->key);
-valid = 0x0;
+valid = 0;
 }
 valid *= __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->right, tree);
 }
@@ -1020,12 +1020,12 @@ printf("Height difference %d doesnt match balance-factor of %d at node %d\n", di
 }
 if(this->left && tree->CompareKey(tree, this->left->key, this->key) > 0)
 {
-valid = 0x0;
+valid = 0;
 printf("Node %d is *smaller* than left subtree %d\n", (int)this->key, (int)this->left->key);
 }
 if(this->right && tree->CompareKey(tree, this->right->key, this->key) < 0)
 {
-valid = 0x0;
+valid = 0;
 printf("Node %d is *greater* than right subtree %d\n", (int)this->key, (int)this->right->key);
 }
 return valid;
@@ -1046,7 +1046,7 @@ void __ecereMethod___ecereNameSpace__ecere__sys__StringBTNode_OnSerialize(struct
 {
 if((struct __ecereNameSpace__ecere__sys__StringBTNode *)this)
 {
-unsigned int truth = 0x1;
+unsigned int truth = 1;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, &truth);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_String, this->key);
@@ -1126,7 +1126,7 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
-extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, int value);
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
 

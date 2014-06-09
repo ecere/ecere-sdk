@@ -687,20 +687,20 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, 0, 0);
-echoOn = 0x0;
-parseTypeError = 0x0;
+echoOn = 0;
+parseTypeError = 0;
 parsedType = (((void *)0));
 declMode = structDeclMode = 0;
 resetScanner();
 {
 unsigned int oldParsingType = parsingType;
 
-parsingType = 0x1;
+parsingType = 1;
 type_yyparse();
 parsingType = oldParsingType;
 }
 declMode = structDeclMode = 2;
-type_yydebug = 0x0;
+type_yydebug = 0;
 (__ecereNameSpace__ecere__com__eInstance_DecRef(fileInput), fileInput = 0);
 if(parsedType)
 {

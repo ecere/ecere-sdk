@@ -2228,13 +2228,13 @@ void CopyTypeInto(Type type, Type src)
 
    if(src.kind == enumType)
    {
-      NamedLink member;
+      NamedLink64 member;
 
       type.members.Clear();
       // This must have been a mistake: member = **type**.members.first
       for(member = src.members.first; member; member = member.next)
       {
-         type.members.Add(NamedLink { name = CopyString(member.name), data = member.data });
+         type.members.Add(NamedLink64 { name = CopyString(member.name), data = member.data });
       }
       type.enumName = CopyString(src.enumName);
    }
@@ -2410,9 +2410,9 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                Enumerator e;
                for(e = spec.list->first; e; e = e.next)
                {
-                  NamedLink i { name = CopyString(e.id.string) };
+                  NamedLink64 i { name = CopyString(e.id.string) };
                   if(e.exp && e.exp.type == constantExp && e.exp.constant)
-                     i.data = (void *)strtol(e.exp.constant, null, 0);
+                     i.data = strtoll(e.exp.constant, null, 0);
                   specType.members.Add(i);
                }
             }
@@ -2455,12 +2455,12 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
 
                      if(symbol.type.kind == enumType)
                      {
-                        NamedLink member;
+                        NamedLink64 member;
 
                         specType.members.Clear();
                         for(member = symbol.type.members.first; member; member = member.next)
                         {
-                           NamedLink item { name = CopyString(member.name), data = member.data };
+                           NamedLink64 item { name = CopyString(member.name), data = member.data };
                            specType.members.Add(item);
                         }
                      }

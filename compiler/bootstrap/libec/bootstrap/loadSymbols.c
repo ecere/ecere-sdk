@@ -596,7 +596,7 @@ static int numIncludes;
 
 static char ** includes;
 
-unsigned int inIDE = 0x0;
+unsigned int inIDE = 0;
 
 void SetInIDE(unsigned int b)
 {
@@ -634,14 +634,14 @@ unsigned int GetEcereImported()
 return ecereImported;
 }
 
-unsigned int inPreCompiler = 0x0;
+unsigned int inPreCompiler = 0;
 
 void SetInPreCompiler(unsigned int b)
 {
 inPreCompiler = b;
 }
 
-unsigned int inSymbolGen = 0x0;
+unsigned int inSymbolGen = 0;
 
 void SetInSymbolGen(unsigned int b)
 {
@@ -657,7 +657,7 @@ precompDefines = list;
 
 unsigned int DummyMethod()
 {
-return 0x1;
+return 1;
 }
 
 extern char *  __ecereNameSpace__ecere__sys__TrimLSpaces(const char *  string, char *  output);
@@ -826,11 +826,11 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 extern char *  __ecereNameSpace__ecere__sys__TrimRSpaces(const char *  string, char *  output);
 
-extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, int value);
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
-extern int atoi(const char * );
+extern long long strtoll(const char *  nptr, char * *  endptr, int base);
 
-extern int __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string);
+extern long long __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string);
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
@@ -1022,16 +1022,16 @@ extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpa
 unsigned int LoadSymbols(const char * fileName, int importType, unsigned int loadDllOnly)
 {
 struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys__FileOpenBuffered(fileName, 1);
-unsigned int globalInstance = 0x0;
+unsigned int globalInstance = 0;
 
 if(f)
 {
-unsigned int ecereCOMModule = 0x0;
+unsigned int ecereCOMModule = 0;
 char moduleName[797];
 
 __ecereNameSpace__ecere__sys__GetLastDirectory(fileName, moduleName);
 if(!((strcasecmp)(moduleName, "instance.sym") && (strcasecmp)(moduleName, "BinaryTree.sym") && (strcasecmp)(moduleName, "dataTypes.sym") && (strcasecmp)(moduleName, "OldList.sym") && (strcasecmp)(moduleName, "String.sym") && (strcasecmp)(moduleName, "BTNode.sym") && (strcasecmp)(moduleName, "Array.sym") && (strcasecmp)(moduleName, "AVLTree.sym") && (strcasecmp)(moduleName, "BuiltInContainer.sym") && (strcasecmp)(moduleName, "Container.sym") && (strcasecmp)(moduleName, "CustomAVLTree.sym") && (strcasecmp)(moduleName, "LinkList.sym") && (strcasecmp)(moduleName, "List.sym") && (strcasecmp)(moduleName, "Map.sym") && (strcasecmp)(moduleName, "Mutex.sym")))
-ecereCOMModule = 0x1;
+ecereCOMModule = 1;
 for(; ; )
 {
 char line[1024];
@@ -1042,17 +1042,17 @@ __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(line[0] == '[')
 {
 if(!strcmp(line, "[Global Instance]"))
-globalInstance = 0x1;
+globalInstance = 1;
 else if(!strcmp(line, "[Defined Classes]"))
 {
 struct __ecereNameSpace__ecere__com__Class * regClass = (((void *)0));
 char name[1024];
-unsigned int isRemote = 0x0;
-unsigned int isStatic = 0x0;
-unsigned int isWatchable = 0x0;
+unsigned int isRemote = 0;
+unsigned int isStatic = 0;
+unsigned int isWatchable = 0;
 int classType = 0;
-unsigned int fixed = 0x0;
-unsigned int noExpansion = 0x0;
+unsigned int fixed = 0;
+unsigned int noExpansion = 0;
 int inheritanceAccess = 1;
 
 for(; ; )
@@ -1065,15 +1065,15 @@ break;
 if(line[0] == '[')
 {
 if(!strcmp(line, "[Remote]"))
-isRemote = 0x1;
+isRemote = 1;
 else if(!strcmp(line, "[Static]"))
-isStatic = 0x1;
+isStatic = 1;
 else if(!strcmp(line, "[Fixed]"))
-fixed = 0x1;
+fixed = 1;
 else if(!strcmp(line, "[No Expansion]"))
-noExpansion = 0x1;
+noExpansion = 1;
 else if(!strcmp(line, "[Watchable]"))
-isWatchable = 0x1;
+isWatchable = 1;
 else if(!strcmp(line, "[Enum]"))
 classType = 4;
 else if(!strcmp(line, "[Bit]"))
@@ -1131,9 +1131,9 @@ symbol->__anon1.registered = __ecereNameSpace__ecere__com__eSystem_FindClass(pri
 }
 }
 if(fixed)
-regClass->fixed = 0x1;
+regClass->fixed = 1;
 if(noExpansion)
-regClass->noExpansion = 0x1;
+regClass->noExpansion = 1;
 if(isWatchable)
 {
 __ecereNameSpace__ecere__com__eClass_DestructionWatchable(regClass);
@@ -1145,7 +1145,7 @@ existingClass->__anon1.registered = regClass;
 regClass->symbol = existingClass;
 existingClass->id = (((int)0x7fffffff));
 existingClass->idCode = (((int)0x7fffffff));
-existingClass->imported = 0x1;
+existingClass->imported = 1;
 if(regClass->module)
 existingClass->module = FindModule(regClass->module);
 else
@@ -1157,10 +1157,10 @@ regClass = (((void *)0));
 }
 else
 regClass = (((void *)0));
-isRemote = 0x0;
-isWatchable = 0x0;
-fixed = 0x0;
-isStatic = 0x0;
+isRemote = 0;
+isWatchable = 0;
+fixed = 0;
+isStatic = 0;
 }
 else if(!strcmp(line, "[Enum Values]"))
 {
@@ -1184,7 +1184,7 @@ memcpy(name, line, (int)(equal - line));
 name[equal - line] = '\0';
 __ecereNameSpace__ecere__sys__TrimLSpaces(name, name);
 __ecereNameSpace__ecere__sys__TrimRSpaces(name, name);
-__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, name, atoi(equal + 1));
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(regClass, name, strtoll(equal + 1, (((void *)0)), 0));
 }
 else
 {
@@ -1196,7 +1196,7 @@ __ecereNameSpace__ecere__com__eEnum_AddValue(regClass, line);
 else if(!strcmp(line, "[Defined Methods]"))
 {
 char name[1024];
-unsigned int isVirtual = 0x0;
+unsigned int isVirtual = 0;
 int memberAccess = 1;
 
 for(; ; )
@@ -1221,7 +1221,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(regClass, name, line[0] ? line : 
 }
 }
 else if(!strcmp(line, "[Virtual]"))
-isVirtual = 0x1;
+isVirtual = 1;
 else if(!strcmp(line, "[Public]"))
 memberAccess = 1;
 else if(!strcmp(line, "[Private]"))
@@ -1230,7 +1230,7 @@ memberAccess = 2;
 else
 {
 strcpy(name, line);
-isVirtual = 0x0;
+isVirtual = 0;
 memberAccess = 1;
 }
 }
@@ -1238,8 +1238,8 @@ memberAccess = 1;
 else if(!strcmp(line, "[Defined Properties]"))
 {
 char name[1024];
-unsigned int setStmt = 0x0, getStmt = 0x0, isVirtual = 0x0, conversion = 0x0;
-unsigned int isWatchable = 0x0;
+unsigned int setStmt = 0, getStmt = 0, isVirtual = 0, conversion = 0;
+unsigned int isWatchable = 0;
 int memberAccess = 1;
 
 for(; ; )
@@ -1261,7 +1261,7 @@ struct __ecereNameSpace__ecere__com__Property * prop = __ecereNameSpace__ecere__
 
 if(prop)
 {
-prop->compiled = 0x0;
+prop->compiled = 0;
 if(isWatchable)
 {
 __ecereNameSpace__ecere__com__eProperty_Watchable(prop);
@@ -1271,25 +1271,25 @@ regClass->structSize = regClass->offset;
 }
 }
 else if(!strcmp(line, "[Set]"))
-setStmt = 0x1;
+setStmt = 1;
 else if(!strcmp(line, "[Get]"))
-getStmt = 0x1;
+getStmt = 1;
 else if(!strcmp(line, "[Watchable]"))
-isWatchable = 0x1;
+isWatchable = 1;
 else if(!strcmp(line, "[Public]"))
 memberAccess = 1;
 else if(!strcmp(line, "[Private]"))
 memberAccess = 2;
 else if(!strcmp(line, "[Conversion]"))
 {
-conversion = 0x1;
-setStmt = getStmt = isVirtual = isWatchable = 0x0;
+conversion = 1;
+setStmt = getStmt = isVirtual = isWatchable = 0;
 }
 }
 else
 {
 strcpy(name, line);
-setStmt = getStmt = isVirtual = conversion = isWatchable = 0x0;
+setStmt = getStmt = isVirtual = conversion = isWatchable = 0;
 memberAccess = 1;
 }
 }
@@ -1297,7 +1297,7 @@ memberAccess = 1;
 else if(!strcmp(line, "[Defined Class Properties]"))
 {
 char name[1024];
-unsigned int setStmt = 0x0, getStmt = 0x0;
+unsigned int setStmt = 0, getStmt = 0;
 
 for(; ; )
 {
@@ -1318,14 +1318,14 @@ __ecereNameSpace__ecere__com__eClass_AddClassProperty(regClass, name, line, (voi
 }
 }
 else if(!strcmp(line, "[Set]"))
-setStmt = 0x1;
+setStmt = 1;
 else if(!strcmp(line, "[Get]"))
-getStmt = 0x1;
+getStmt = 1;
 }
 else
 {
 strcpy(name, line);
-setStmt = getStmt = 0x0;
+setStmt = getStmt = 0;
 }
 }
 }
@@ -1397,19 +1397,19 @@ struct __ecereNameSpace__ecere__com__Instance * backup = pushLexer();
 struct Operand op;
 struct Expression * exp;
 
-skipErrors = 0x1;
+skipErrors = 1;
 exp = ParseExpressionString(line);
 if(exp)
 {
 if(info)
-exp->destType = ProcessTypeString(info, 0x0);
+exp->destType = ProcessTypeString(info, 0);
 ProcessExpressionType(exp);
 ComputeExpression(exp);
 op = GetOperand(exp);
 defaultArg.__anon1.expression.__anon1.ui64 = op.__anon1.ui64;
 FreeExpression(exp);
 }
-skipErrors = 0x0;
+skipErrors = 0;
 popLexer(backup);
 }
 break;
@@ -1445,7 +1445,7 @@ else
 {
 inheritanceAccess = 1;
 classType = 0;
-isRemote = 0x0;
+isRemote = 0;
 strcpy(name, line);
 regClass = (((void *)0));
 }
@@ -1605,7 +1605,7 @@ ImportModule(line, moduleImportType, importAccess, loadDllOnly);
 else
 ImportModule(line, 4, importAccess, loadDllOnly);
 if(!strcmp(line, "ecere"))
-ecereImported = 0x1;
+ecereImported = 1;
 moduleImportType = 0;
 importAccess = 1;
 }
@@ -1780,14 +1780,14 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName((&*defines), module)
 module->dllOnly = loadDllOnly;
 if(ext[0] || !__ecereNameSpace__ecere__sys__FileExists(symFile))
 {
-unsigned int skipLoad = 0x0;
+unsigned int skipLoad = 0;
 struct __ecereNameSpace__ecere__com__Instance * list = (((void *)0));
 
 if(!inCompiler && !inPreCompiler && !inSymbolGen)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, loadedModules), it);
 
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0x0))
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0))
 {
 struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name, importAccess);
 
@@ -1805,12 +1805,12 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 loadedModules, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 0x1);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 1);
 __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(list)));
 });
 }
 else
-skipLoad = 0x1;
+skipLoad = 1;
 }
 else
 list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it));
@@ -2027,13 +2027,13 @@ struct DataRedefinition * redefinition;
 
 for(redefinition = dataRedefinitions.first; redefinition; redefinition = redefinition->next)
 {
-struct Type * type1 = ProcessTypeString(redefinition->type1, 0x0);
-struct Type * type2 = ProcessTypeString(redefinition->type2, 0x0);
+struct Type * type1 = ProcessTypeString(redefinition->type1, 0);
+struct Type * type2 = ProcessTypeString(redefinition->type2, 0);
 char type1String[1024] = "";
 char type2String[1024] = "";
 
-PrintType(type1, type1String, 0x0, 0x1);
-PrintType(type2, type2String, 0x0, 0x1);
+PrintType(type1, type1String, 0, 1);
+PrintType(type2, type2String, 0, 1);
 if(strcmp(type1String, type2String))
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "Redefinition of %s (defining as %s, already defined as %s)\n", (((void *)0))), redefinition->name, type1String, type2String);
 FreeType(type1);

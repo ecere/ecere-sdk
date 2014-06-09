@@ -518,7 +518,7 @@ __ecereNameSpace__ecere__moduleMaps = __ecereNameSpace__ecere__com__eInstance_Ne
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0x0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0))
 (__ecereNameSpace__ecere__com__eInstance_DecRef(((void * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it)))), __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data((void *)&it, 0));
 }
 __extension__ ({
@@ -527,7 +527,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 __ecereNameSpace__ecere__moduleMaps, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 0x1);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 1);
 __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(textMap = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__const_String_))));
 });
 for(c = 0; c < numStrings; c++)
@@ -599,7 +599,7 @@ if(len)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, textMap), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(original), 0x0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(original), 0))
 (__ecereNameSpace__ecere__com__eSystem_Delete(translated), translated = 0);
 else
 __extension__ ({
@@ -608,7 +608,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 textMap, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(original)), 0x1);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(original)), 1);
 __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(translated)));
 });
 }
@@ -635,7 +635,7 @@ void __ecereNameSpace__ecere__UnloadTranslatedStrings(const char * name)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0x0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0))
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it));
@@ -658,7 +658,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 __ecereNameSpace__ecere__moduleMaps, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 0x0);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 0);
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
 })))) : (((void *)0));
 const char * result = textMap ? (((const char *)(__extension__ ({
@@ -667,7 +667,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 textMap, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(stringAndContext ? stringAndContext : string)), 0x0);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(stringAndContext ? stringAndContext : string)), 0);
 ((char *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
 })))) : string;
 

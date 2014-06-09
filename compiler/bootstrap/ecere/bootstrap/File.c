@@ -408,7 +408,7 @@ multiplier = (unsigned int)1024 * 1024;
 else if(strstr(end, "KB") || strstr(end, "kb"))
 multiplier = 1024;
 (*this) = (unsigned int)((double)multiplier * value);
-return 0x1;
+return 1;
 }
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__FileSize64;
@@ -452,7 +452,7 @@ multiplier = (uint64)1024 * 1024;
 else if(strstr(end, "KB") || strstr(end, "kb"))
 multiplier = 1024;
 (*this) = (uint64)((double)multiplier * value);
-return 0x1;
+return 1;
 }
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__FileSystem;
@@ -553,7 +553,7 @@ struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ece
 if(!string[0])
 {
 (*this) = (((void *)0));
-return 0x1;
+return 1;
 }
 else
 {
@@ -582,10 +582,10 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])((*this), buffer, 1, read);
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
-return 0x1;
+return 1;
 }
 }
-return 0x0;
+return 0;
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
@@ -656,16 +656,16 @@ if(ich != (-1))
 {
 if(ch)
 *ch = (char)ich;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Putc(struct __ecereNameSpace__ecere__com__Instance * this, char ch)
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return (fputc((int)ch, __ecerePointer___ecereNameSpace__ecere__sys__File->output) == (-1)) ? 0x0 : 0x1;
+return (fputc((int)ch, __ecerePointer___ecereNameSpace__ecere__sys__File->output) == (-1)) ? 0 : 1;
 }
 
 extern int fputs(const char * , void *  stream);
@@ -673,11 +673,11 @@ extern int fputs(const char * , void *  stream);
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Puts(struct __ecereNameSpace__ecere__com__Instance * this, const char * string)
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
-unsigned int result = 0x0;
+unsigned int result = 0;
 
 if(__ecerePointer___ecereNameSpace__ecere__sys__File->output)
 {
-result = (fputs(string, __ecerePointer___ecereNameSpace__ecere__sys__File->output) == (-1)) ? 0x0 : 0x1;
+result = (fputs(string, __ecerePointer___ecereNameSpace__ecere__sys__File->output) == (-1)) ? 0 : 1;
 }
 return result;
 }
@@ -686,7 +686,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Eof(struct __ecere
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return __ecerePointer___ecereNameSpace__ecere__sys__File->input ? feof(__ecerePointer___ecereNameSpace__ecere__sys__File->input) != 0 : 0x1;
+return __ecerePointer___ecereNameSpace__ecere__sys__File->input ? feof(__ecerePointer___ecereNameSpace__ecere__sys__File->input) != 0 : 1;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Truncate(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int size)
@@ -694,7 +694,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Truncate(struct __
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
 fprintf((bsl_stderr()), "WARNING:  File::Truncate unimplemented in ecereBootstrap.\n");
-return 0x0;
+return 0;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetSize(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -824,7 +824,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Flush(struct __ece
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
 fflush(__ecerePointer___ecereNameSpace__ecere__sys__File->output);
-return 0x1;
+return 1;
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc;
@@ -833,7 +833,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __e
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 int c = 0;
-unsigned int result = 0x1;
+unsigned int result = 1;
 
 s[c] = (char)0;
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
@@ -842,7 +842,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(this))
 {
-result = 0x0;
+result = 0;
 }
 else
 {
@@ -856,7 +856,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
 {
-result = 0x0;
+result = 0;
 break;
 }
 if(ch == '\n')
@@ -874,18 +874,18 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetString(struct _
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 int c;
 char ch;
-unsigned int quoted = 0x0;
-unsigned int result = 0x1;
+unsigned int quoted = 0;
+unsigned int result = 1;
 
 *string = (char)0;
-while(0x1)
+while(1)
 {
 if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
-result = 0x0;
+result = 0;
 if((ch != '\n') && (ch != '\r') && (ch != ' ') && (ch != ',') && (ch != '\t'))
 break;
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
@@ -901,7 +901,7 @@ for(c = 0; c < max - 1; c++)
 {
 if(!quoted && ((ch == '\n') || (ch == '\r') || (ch == ' ') || (ch == ',') || (ch == '\t')))
 {
-result = 0x1;
+result = 1;
 break;
 }
 if(ch == '\"')
@@ -918,7 +918,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
 {
 c++;
-result = 0x0;
+result = 0;
 break;
 }
 }
@@ -1057,14 +1057,14 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_CopyTo(struct __ecereNameSpace__ecere__com__Instance * this, const char * outputFileName)
 {
 struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
-unsigned int result = 0x0;
+unsigned int result = 0;
 struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys__FileOpen(outputFileName, 2);
 
 if(f)
 {
 unsigned char buffer[65536];
 
-result = 0x1;
+result = 1;
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -1088,7 +1088,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(f, buffer, 1, count))
 {
-result = 0x0;
+result = 0;
 break;
 }
 }
@@ -1128,7 +1128,7 @@ unsigned int __ecereConstructor___ecereNameSpace__ecere__sys__ConsoleFile(struct
 {
 __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(this, eC_stdin());
 __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(this, eC_stdout());
-return 0x1;
+return 1;
 }
 
 void __ecereDestructor___ecereNameSpace__ecere__sys__ConsoleFile(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -1216,7 +1216,7 @@ FILE_FileFixCase(file);
 
 unsigned int __ecereNameSpace__ecere__sys__FileGetSize(const char * fileName, unsigned int * size)
 {
-unsigned int result = 0x0;
+unsigned int result = 0;
 
 if(size)
 {
@@ -1231,7 +1231,7 @@ return result;
 
 unsigned int __ecereNameSpace__ecere__sys__FileGetStats(const char * fileName, struct __ecereNameSpace__ecere__sys__FileStats * stats)
 {
-unsigned int result = 0x0;
+unsigned int result = 0;
 
 if(stats && fileName)
 {
@@ -1372,7 +1372,7 @@ extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__co
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
-extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, int value);
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
 

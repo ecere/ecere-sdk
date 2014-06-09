@@ -367,7 +367,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__LinkList_SetData(struct
 {
 struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
-return 0x0;
+return 0;
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__LinkList_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 item)
@@ -620,7 +620,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct1 =
 
 .__anon1 = {
 .dataTypeString = 0
-}, .expression = (__simpleStruct2.__anon1.ui64 = 0LL, __simpleStruct2)
+}, .expression = (__simpleStruct2.__anon1.ui64 = 0, __simpleStruct2)
 }
 };
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =

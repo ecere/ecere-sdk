@@ -359,9 +359,9 @@ this->root = node;
 else if(__ecereMethod___ecereNameSpace__ecere__sys__BTNode_Add(this->root, this, node))
 this->root = __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Rebalance(node);
 else
-return 0x0;
+return 0;
 this->count++;
-return 0x1;
+return 1;
 }
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t key);
@@ -430,7 +430,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(struct __e
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Check(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
 {
-return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->root, this) : 0x1;
+return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->root, this) : 1;
 }
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_minimum(struct __ecereNameSpace__ecere__sys__BTNode * this);

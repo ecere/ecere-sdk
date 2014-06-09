@@ -473,7 +473,7 @@ unsigned int result;
 va_list args;
 
 __builtin_va_start(args, command);
-result = System_Execute((((void *)0)), command, args, 0x0);
+result = System_Execute((((void *)0)), command, args, 0);
 __builtin_va_end(args);
 return result;
 }
@@ -484,7 +484,7 @@ unsigned int result;
 va_list args;
 
 __builtin_va_start(args, command);
-result = System_Execute((((void *)0)), command, args, 0x1);
+result = System_Execute((((void *)0)), command, args, 1);
 __builtin_va_end(args);
 return result;
 }
@@ -495,7 +495,7 @@ unsigned int result;
 va_list args;
 
 __builtin_va_start(args, command);
-result = System_Execute(env, command, args, 0x0);
+result = System_Execute(env, command, args, 0);
 __builtin_va_end(args);
 return result;
 }
@@ -675,7 +675,7 @@ else if(mode == 3)
 }
 if(mode == (int)0)
 {
-__ecereNameSpace__ecere__sys__DumpErrors(0x1);
+__ecereNameSpace__ecere__sys__DumpErrors(1);
 if(__ecereNameSpace__ecere__sys__globalSystem.errorBuffer)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(__ecereNameSpace__ecere__sys__globalSystem.errorBuffer), __ecereNameSpace__ecere__sys__globalSystem.errorBuffer = 0);
@@ -725,7 +725,7 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
-extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, int value);
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
 

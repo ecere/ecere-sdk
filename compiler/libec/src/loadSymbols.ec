@@ -310,7 +310,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                  name[equal - line] = '\0';
                                  TrimLSpaces(name, name);
                                  TrimRSpaces(name, name);
-                                 eEnum_AddFixedValue(regClass, name, atoi(equal + 1));
+                                 eEnum_AddFixedValue(regClass, name, strtoll(equal + 1, null, 0));
                               }
                               else
                               {

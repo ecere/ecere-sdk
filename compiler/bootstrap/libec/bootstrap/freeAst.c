@@ -1008,14 +1008,14 @@ FreeFunction(item);
 }
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
-struct __ecereNameSpace__ecere__sys__NamedLink
+struct __ecereNameSpace__ecere__sys__NamedLink64
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * prev;
-struct __ecereNameSpace__ecere__sys__NamedLink * next;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * prev;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * next;
 char *  name;
-void *  data;
+long long data;
 } __attribute__ ((gcc_struct));
 
 void FreeExpression(struct Expression * exp);
@@ -1031,7 +1031,7 @@ switch(type->kind)
 {
 case 15:
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * member, * next;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * member, * next;
 
 if(type->__anon1.__anon1.enumName)
 (__ecereNameSpace__ecere__com__eSystem_Delete(type->__anon1.__anon1.enumName), type->__anon1.__anon1.enumName = 0);
@@ -1040,7 +1040,7 @@ for(member = type->__anon1.__anon1.members.first; member; member = next)
 next = member->next;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&type->__anon1.__anon1.members, member);
 (__ecereNameSpace__ecere__com__eSystem_Delete(member->name), member->name = 0);
-((member ? (__ecereClass___ecereNameSpace__ecere__sys__NamedLink->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__NamedLink->Destructor((void *)member) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(member)) : 0), member = 0);
+((member ? (__ecereClass___ecereNameSpace__ecere__sys__NamedLink64->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__NamedLink64->Destructor((void *)member) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(member)) : 0), member = 0);
 }
 break;
 }
@@ -1516,12 +1516,12 @@ static void _FreeExpression(struct Expression * exp, unsigned int freePointer);
 
 void FreeExpContents(struct Expression * exp)
 {
-_FreeExpression(exp, 0x0);
+_FreeExpression(exp, 0);
 }
 
 void FreeExpression(struct Expression * exp)
 {
-_FreeExpression(exp, 0x1);
+_FreeExpression(exp, 1);
 }
 
 void FreeInstance(struct Instantiation * inst);
@@ -2661,7 +2661,7 @@ struct __ecereNameSpace__ecere__com__Iterator it =
 {
 list, 0
 };
-unsigned int found = 0x0;
+unsigned int found = 0;
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&it))
 {
@@ -2672,7 +2672,7 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(list, it.pointer);
-found = 0x1;
+found = 1;
 break;
 }
 }
@@ -2686,7 +2686,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 list, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(0)), 0x0);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(0)), 0);
 ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&__internalIterator));
 }))));
 

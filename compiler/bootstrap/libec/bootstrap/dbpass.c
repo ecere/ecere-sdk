@@ -1913,7 +1913,7 @@ struct __ecereNameSpace__ecere__sys__OldList * rowClassDefs = MkList(), * idClas
 char tableName[1024];
 char rowClassName[1024];
 int len = strlen(table->name);
-unsigned int indexed = 0x0;
+unsigned int indexed = 0;
 char tableID[1024];
 char nameField[1024];
 struct __ecereNameSpace__ecere__sys__OldList * args;
@@ -1978,7 +1978,7 @@ switch(entry->type)
 {
 case 0:
 {
-unsigned int isIndex = 0x0;
+unsigned int isIndex = 0;
 char fieldID[1024];
 struct __ecereNameSpace__ecere__sys__OldList * args;
 struct Specifier * spec = entry->__anon1.__anon1.dataType->qualifiers ? (struct Specifier *)(*entry->__anon1.__anon1.dataType->qualifiers).first : (((void *)0));
@@ -1997,8 +1997,8 @@ char name[1024];
 struct ClassDef * def;
 
 numIndexes = ((numIndexes > 1) ? numIndexes : 1);
-isIndex = 0x1;
-indexed = 0x1;
+isIndex = 1;
+indexed = 1;
 sprintf(name, "_%s", entry->id->string);
 curContext = rowSet->__anon1.compound.context = __extension__ ({
 struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
@@ -2013,7 +2013,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifie
 curContext = globalContext;
 def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator), MkIdentifier(name), rowSet, (((void *)0))));
 def->__anon1.propertyDef->symbol->id = def->__anon1.propertyDef->symbol->idCode = symbolID;
-def->__anon1.propertyDef->__anon1.isDBProp = 0x1;
+def->__anon1.propertyDef->__anon1.isDBProp = 1;
 def->memberAccess = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowClassDefs), def);
 }
@@ -2063,7 +2063,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifie
 curContext = globalContext;
 def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), entry->__anon1.__anon1.dataType->declarator, CopyIdentifier(entry->id), rowSet, rowGet));
 def->__anon1.propertyDef->symbol->id = def->__anon1.propertyDef->symbol->idCode = symbolID;
-def->__anon1.propertyDef->__anon1.isDBProp = 0x1;
+def->__anon1.propertyDef->__anon1.isDBProp = 1;
 def->memberAccess = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowClassDefs), def);
 }
@@ -2184,7 +2184,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idSet->__anon1.compou
 curContext = globalContext;
 def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator), CopyIdentifier(entry->id), idSet, idGet));
 def->__anon1.propertyDef->symbol->id = def->__anon1.propertyDef->symbol->idCode = symbolID;
-def->__anon1.propertyDef->__anon1.isDBProp = 0x1;
+def->__anon1.propertyDef->__anon1.isDBProp = 1;
 def->memberAccess = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idClassDefs), def);
 }
@@ -2197,7 +2197,7 @@ if(entry->__anon1.items && (*entry->__anon1.items).count)
 char indexID[1024];
 struct DBIndexItem * item;
 int c;
-unsigned int needTable = 0x0;
+unsigned int needTable = 0;
 char num[16];
 
 if(entry->id || indexed)
@@ -2211,14 +2211,14 @@ sprintf(indexID, "__ecereDBIndex_%s_%s", tableName, id->string);
 external = MkExternalDeclaration(MkDeclaration(MkListOne(MkSpecifierName("Table")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(indexID)), (((void *)0))))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ast), external);
 external->__anon1.declaration->declMode = table->declMode;
-needTable = 0x1;
+needTable = 1;
 }
 else
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Multiple field index requires a name\n", (((void *)0))));
 }
 else
 {
-indexed = 0x1;
+indexed = 1;
 strcpy(indexID, tableID);
 }
 for(c = 0, item = (*entry->__anon1.items).first; item; item = item->next, c++)

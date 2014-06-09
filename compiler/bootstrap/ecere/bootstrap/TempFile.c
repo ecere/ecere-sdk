@@ -308,7 +308,7 @@ unsigned int __ecereConstructor___ecereNameSpace__ecere__sys__TempFile(struct __
 struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->openMode = 5;
-return 0x1;
+return 1;
 }
 
 void __ecereDestructor___ecereNameSpace__ecere__sys__TempFile(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -330,7 +330,7 @@ int readSize = size * count;
 int read = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size - __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position, (readSize < __simpleStruct0) ? readSize : __simpleStruct0);
 
 if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->position >= __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size)
-__ecerePointer___ecereNameSpace__ecere__sys__TempFile->eof = 0x1;
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->eof = 1;
 if(buffer)
 memcpy(buffer, __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer + __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position, read);
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position += read;
@@ -405,7 +405,7 @@ return written == len;
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Seek(struct __ecereNameSpace__ecere__com__Instance * this, int pos, int mode)
 {
 struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
-unsigned int result = 0x1;
+unsigned int result = 1;
 unsigned int increase = 0;
 
 switch(mode)
@@ -422,13 +422,13 @@ increase = pos - __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size;
 else
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size;
-result = 0x0;
+result = 0;
 }
 }
 else if(pos < 0)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = 0;
-result = 0x0;
+result = 0;
 }
 else
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = pos;
@@ -446,13 +446,13 @@ increase = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position - __e
 else
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size;
-result = 0x0;
+result = 0;
 }
 }
 else if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->position + pos < 0)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = 0;
-result = 0x0;
+result = 0;
 }
 else
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position += pos;
@@ -470,13 +470,13 @@ increase = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position - __e
 else
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size;
-result = 0x0;
+result = 0;
 }
 }
 else if((int)__ecerePointer___ecereNameSpace__ecere__sys__TempFile->size + pos < 0)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = 0;
-result = 0x0;
+result = 0;
 }
 else
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size + pos;
@@ -484,7 +484,7 @@ break;
 }
 }
 if(result)
-__ecerePointer___ecereNameSpace__ecere__sys__TempFile->eof = 0x0;
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->eof = 0;
 if(increase)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size += increase;
@@ -523,7 +523,7 @@ __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size = (unsigned int)size
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated = (unsigned int)size;
 if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->position > size)
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = (unsigned int)size;
-return 0x1;
+return 1;
 }
 
 int __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_openMode(struct __ecereNameSpace__ecere__com__Instance * this)

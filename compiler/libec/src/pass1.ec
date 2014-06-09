@@ -908,7 +908,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             {
                Type destType
                {
-                  kind = intType;
+                  kind = int64Type;
                   refCount = 1;
                };
                e.exp.destType = destType;
@@ -927,7 +927,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                if(e.exp.type == identifierExp && e.exp.expType && e.exp.identifier && e.exp.identifier.string && e.exp.expType.kind == enumType)
                {
                   // Resolve enums here
-                  NamedLink l;
+                  NamedLink64 l;
                   char * string = e.exp.identifier.string;
                   for(l = e.exp.expType.members.first; l; l = l.next)
                   {
@@ -937,9 +937,9 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         {
                            FreeExpContents(e.exp);
                            e.exp.type = constantExp;
-                           e.exp.constant = PrintUInt((uint)l.data);
+                           e.exp.constant = PrintInt64(l.data);
                            FreeType(e.exp.expType);
-                           e.exp.expType = ProcessTypeString("uint", false);
+                           e.exp.expType = ProcessTypeString("int64", false);
                         }
                         break;
                      }
@@ -947,19 +947,26 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                }
                else
                   ComputeExpression(e.exp);
-               if(e.exp.isConstant && /*e.exp.expType.kind == intType*/ e.exp.type == constantExp)
+               if(e.exp.isConstant && e.exp.type == constantExp)
                {
                   Operand op = GetOperand(e.exp);
-                  int value;
-                  // TODO: 64 BIT ENUM SUPPORT...
+                  int64 value;
                   switch(op.kind)
                   {
-                     case charType: value = op.c; break;
-                     case shortType: value = op.s; break;
-                     default: value = op.i;
+                     case charType:
+                        value = op.type.isSigned ? (int64)op.c : (int64)op.uc;
+                        break;
+                     case shortType:
+                        value = op.type.isSigned ? (int64)op.s : (int64)op.us;
+                        break;
+                     case int64Type:
+                        value = op.type.isSigned ? (int64)op.i64 : (int64)op.ui64;
+                        break;
+                     case intType:
+                     default:
+                        value = op.type.isSigned ? (int64)op.i : (int)op.ui;
                   }
 
-                  // value = op.i; //strtol(e.exp.string, null, 0);
                   eEnum_AddFixedValue(regClass, e.id.string, value);
                }
                else
@@ -1503,7 +1510,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          // Add Enumeration Values
          if(classType == enumClass)
          {
-            NamedLink value;
+            NamedLink64 value;
             Class enumClass = eSystem_FindClass(privateModule, "enum");
             EnumClassData e = ACCESS_CLASSDATA(regClass, enumClass);
 
@@ -1519,12 +1526,15 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   ListAdd(args, MkExpString(string));
                   delete string;
                }
-               // uint value
+               // int64 value
                {
-                  char temp[1024];
-                  // TODO: Support 64 bit enums
-                  sprintf(temp, "%d", (int)value.data);
+                  char * temp;
+                  if(!strcmp(regClass.dataTypeString, "uint64"))
+                     temp = PrintUInt64(value.data);
+                  else
+                     temp = PrintInt64(value.data);
                   ListAdd(args, MkExpConstant(temp));
+                  delete temp;
                }
 
                stmt = MkExpressionStmt(MkListOne(

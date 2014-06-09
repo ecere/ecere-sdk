@@ -218,7 +218,7 @@ public char * PrintUInt(uint64 result)
 {
    char temp[100];
    if(result > MAXDWORD)
-      sprintf(temp, FORMAT64HEXLL /*"0x%I64XLL"*/, result);
+      sprintf(temp, FORMAT64HEXLL /*"0x%I64X"*/, result);
    else if(result > MAXINT)
       sprintf(temp, FORMAT64HEX /*"0x%I64X"*/, result);
    else
@@ -226,20 +226,25 @@ public char * PrintUInt(uint64 result)
    return CopyString(temp);
 }
 
-public char * PrintInt64(int64 result)
+public char *  PrintInt64(int64 result)
 {
    char temp[100];
-   sprintf(temp, FORMAT64DLL /*"%I64d"*/, result);
+   if(result > MAXINT || result < MININT)
+      sprintf(temp, FORMAT64DLL /*"%I64d"*/, result);
+   else
+      sprintf(temp, FORMAT64D /*"%I64d"*/, result);
    return CopyString(temp);
 }
 
 public char * PrintUInt64(uint64 result)
 {
    char temp[100];
-   if(result > MAXINT64)
+   if(result > MAXDWORD)
       sprintf(temp, FORMAT64HEXLL /*"0x%I64XLL"*/, result);
+   else if(result > MAXINT)
+      sprintf(temp, FORMAT64HEX /*"0x%I64XLL"*/, result);
    else
-      sprintf(temp, FORMAT64DLL /*"%I64d"*/, result);
+      sprintf(temp, FORMAT64D /*"%I64d"*/, result);
    return CopyString(temp);
 }
 
@@ -379,7 +384,7 @@ public char * PrintDouble(double result)
       return GetOp##name(op2, value2); \
    }
 
-// To help the deubugger currently not preprocessing...
+// To help the debugger currently not preprocessing...
 #define HELP(x) x
 
 GETVALUE(Int, HELP(int));
@@ -3556,7 +3561,7 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
 
          if(MatchTypes(type, dest, &converts, null, null, true, false, false, false, false))
          {
-            NamedLink value;
+            NamedLink64 value;
             Class enumClass = eSystem_FindClass(privateModule, "enum");
             if(enumClass)
             {
@@ -3580,10 +3585,10 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
                      {
                         char constant[256];
                         sourceExp.type = constantExp;
-                        if(!strcmp(baseClass.dataTypeString, "int"))
-                           sprintf(constant, "%d",(int)value.data);
+                        if(!strcmp(baseClass.dataTypeString, "int") || !strcmp(baseClass.dataTypeString, "int64") || !strcmp(baseClass.dataTypeString, "short") || !strcmp(baseClass.dataTypeString, "char"))
+                           sprintf(constant, FORMAT64D, value.data);
                         else
-                           sprintf(constant, "0x%X",(int)value.data);
+                           sprintf(constant, FORMAT64HEXLL, value.data);
                         sourceExp.constant = CopyString(constant);
                         //for(;baseClass.base && baseClass.base.type != systemClass; baseClass = baseClass.base);
                      }
@@ -4159,7 +4164,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                {
                   for( ; _class && _class.type == ClassType::enumClass; _class = _class.base)
                   {
-                     NamedLink value;
+                     NamedLink64 value;
                      EnumClassData e = ACCESS_CLASSDATA(_class, enumClass);
                      for(value = e.values.first; value; value = value.next)
                      {
@@ -4175,13 +4180,11 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                         sourceExp.expType = MkClassType(_class.fullName);
                         //if(inCompiler)
                         {
-                           char constant[256];
                            sourceExp.type = constantExp;
-                           if(/*_class && */_class.dataTypeString && !strcmp(_class.dataTypeString, "int")) // _class cannot be null here!
-                              sprintf(constant, "%d", (int) value.data);
+                           if(_class.dataTypeString && (!strcmp(_class.dataTypeString, "int") || !strcmp(_class.dataTypeString, "int64") || !strcmp(_class.dataTypeString, "short") || !strcmp(_class.dataTypeString, "char"))) // _class cannot be null here!
+                              sourceExp.constant = PrintInt64(value.data);
                            else
-                              sprintf(constant, "0x%X", (int) value.data);
-                           sourceExp.constant = CopyString(constant);
+                              sourceExp.constant = PrintUInt64(value.data);
                            //for(;_class.base && _class.base.type != systemClass; _class = _class.base);
                         }
                         FreeType(dest);
@@ -4508,7 +4511,7 @@ public Operand GetOperand(Expression exp)
       else if(exp.isConstant && exp.type == constantExp)
       {
          op.kind = type.kind;
-         op.type = exp.expType;
+         op.type = type;
 
          switch(op.kind)
          {
@@ -4632,6 +4635,39 @@ public Operand GetOperand(Expression exp)
    return op;
 }
 
+static int64 GetEnumValue(Class _class, void * ptr)
+{
+   int64 v = 0;
+   switch(_class.typeSize)
+   {
+      case 8:
+         if(!strcmp(_class.dataTypeString, "uint64"))
+            v = (int64)*(uint64 *)ptr;
+         else
+            v = (int64)*(int64 *)ptr;
+         break;
+      case 4:
+         if(!strcmp(_class.dataTypeString, "uint"))
+            v = (int64)*(uint *)ptr;
+         else
+            v = (int64)*(int *)ptr;
+         break;
+      case 2:
+         if(!strcmp(_class.dataTypeString, "uint16"))
+            v = (int64)*(uint16 *)ptr;
+         else
+            v = (int64)*(short *)ptr;
+         break;
+      case 1:
+         if(!strcmp(_class.dataTypeString, "byte"))
+            v = (int64)*(byte *)ptr;
+         else
+            v = (int64)*(char *)ptr;
+         break;
+   }
+   return v;
+}
+
 static __attribute__((unused)) void UnusedFunction()
 {
    int a;
@@ -4670,10 +4706,10 @@ static void PopulateInstanceProcessMember(Instantiation inst, OldList * memberLi
                if(enumClass)
                {
                   EnumClassData e = ACCESS_CLASSDATA(_class, enumClass);
-                  NamedLink item;
+                  NamedLink64 item;
                   for(item = e.values.first; item; item = item.next)
                   {
-                     if((int)item.data == *(int *)ptr)
+                     if(item.data == GetEnumValue(_class, ptr))
                      {
                         result = item.name;
                         break;
@@ -4799,10 +4835,10 @@ void PopulateInstance(Instantiation inst)
                   if(enumClass)
                   {
                      EnumClassData e = ACCESS_CLASSDATA(_class, enumClass);
-                     NamedLink item;
+                     NamedLink64 item;
                      for(item = e.values.first; item; item = item.next)
                      {
-                        if((int)item.data == *(int *)ptr)
+                        if(item.data == GetEnumValue(_class, ptr))
                         {
                            result = item.name;
                            break;
@@ -5224,7 +5260,7 @@ void ComputeInstantiation(Expression exp)
                            {
                               BitMember bitMember = (BitMember) dataMember;
                               Type type;
-                              uint64 part;
+                              uint64 part = 0;
                               bits = (bits & ~bitMember.mask);
                               if(!bitMember.dataType)
                                  bitMember.dataType = ProcessTypeString(bitMember.dataTypeString, false);
@@ -5466,9 +5502,9 @@ void CallOperator(Expression exp, Expression exp1, Expression exp2, Operand op1,
 
 void ComputeExpression(Expression exp)
 {
+#ifdef _DEBUG
    char expString[10240];
    expString[0] = '\0';
-#ifdef _DEBUG
    PrintExpression(exp, expString);
 #endif
 
@@ -7195,7 +7231,7 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
 
    if(_class && _class.type == enumClass)
    {
-      NamedLink value = null;
+      NamedLink64 value = null;
       Class enumClass = eSystem_FindClass(privateModule, "enum");
       if(enumClass)
       {
@@ -7216,10 +7252,10 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
 
                exp.type = constantExp;
                exp.isConstant = true;
-               if(!strcmp(baseClass.dataTypeString, "int"))
-                  sprintf(constant, "%d",(int)value.data);
+               if(!strcmp(baseClass.dataTypeString, "int") || !strcmp(baseClass.dataTypeString, "int64") || !strcmp(baseClass.dataTypeString, "char") || !strcmp(baseClass.dataTypeString, "short"))
+                  sprintf(constant, FORMAT64D, value.data);
                else
-                  sprintf(constant, "0x%X",(int)value.data);
+                  sprintf(constant, FORMAT64HEX, value.data);
                exp.constant = CopyString(constant);
                //for(;_class.base && _class.base.type != systemClass; _class = _class.base);
                exp.expType = MkClassType(baseClass.fullName);
@@ -11028,10 +11064,10 @@ void ProcessExpressionType(Expression exp)
          }
          else
          {
-            NamedLink member;
+            NamedLink64 member;
             for(member = symbol.type.members.first; member; member = member.next)
             {
-               NamedLink value { name = CopyString(member.name) };
+               NamedLink64 value { name = CopyString(member.name) };
                exp.expType.members.Add(value);
             }
          }
@@ -12692,7 +12728,7 @@ static void ProcessFunction(FunctionDefinition function)
             // WAS TRYING THIS FOR CONVERSION PROPERTIES ON NOHEAD CLASSES: if((_class.type == structClass) || function != (FunctionDefinition)symbol.externalSet)
             if(!function.propertyNoThis)
             {
-               TypeName thisParam;
+               TypeName thisParam = null;
 
                if(type.classObjectType != classPointer)
                {

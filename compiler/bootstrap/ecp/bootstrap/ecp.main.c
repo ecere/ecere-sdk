@@ -538,7 +538,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldList;
 
@@ -706,7 +706,7 @@ __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek = method->vid;
 method = __ecereNameSpace__ecere__com__eClass_FindMethod(__ecereClass___ecereNameSpace__ecere__sys__File, "Write", module);
 if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write = method->vid;
-__ecereClass___ecereNameSpace__ecere__sys__NamedLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink");
+__ecereClass___ecereNameSpace__ecere__sys__NamedLink64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink64");
 __ecereClass___ecereNameSpace__ecere__sys__OldList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldList");
 __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::TempFile");
 __ecereNameSpace__ecere__LoadTranslatedStrings((((void *)0)), "ecp");

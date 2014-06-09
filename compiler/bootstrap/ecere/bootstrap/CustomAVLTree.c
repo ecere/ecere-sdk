@@ -397,7 +397,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Add(struct __ec
 {
 if(!Tclass)
 Tclass = __ecereClass_uint64;
-while(0x1)
+while(1)
 {
 int result;
 unsigned char * a, * b;
@@ -417,7 +417,7 @@ b = (unsigned char *)*(uint64 *)(&this->key);
 result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 if(!result)
 {
-return 0x0;
+return 0;
 }
 else if(result > 0)
 {
@@ -441,7 +441,7 @@ break;
 n->depth = newDepth;
 }
 }
-return 0x1;
+return 1;
 }
 }
 else
@@ -466,7 +466,7 @@ break;
 n->depth = newDepth;
 }
 }
-return 0x1;
+return 1;
 }
 }
 }
@@ -676,7 +676,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft();
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
-while(0x1)
+while(1)
 {
 int factor = __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this);
 
@@ -830,7 +830,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_SetData(s
 {
 struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
-return 0x0;
+return 0;
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);

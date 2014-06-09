@@ -1211,7 +1211,7 @@ static struct Expression * FixReference(struct Expression * e, unsigned int want
 if(e->expType && e->type != 2)
 {
 struct Type * type = e->expType;
-unsigned int isPointer = 0x0;
+unsigned int isPointer = 0;
 
 if(type->kind == 8)
 {
@@ -1304,14 +1304,14 @@ return e;
 
 static unsigned int FixMember(struct Expression * exp)
 {
-unsigned int byReference = 0x0;
+unsigned int byReference = 0;
 
 for(; exp; )
 {
 if(exp->type == 5 || exp->type == 32)
 {
 if((*exp->__anon1.list).count > 1)
-byReference = 0x1;
+byReference = 1;
 exp = (*exp->__anon1.list).last;
 }
 else if(exp->type == 11)
@@ -1321,7 +1321,7 @@ exp = exp->__anon1.cast.exp;
 else
 {
 if(byReference)
-FixReference(exp, 0x1);
+FixReference(exp, 1);
 else
 byReference = exp->byReference;
 break;
@@ -1598,7 +1598,7 @@ struct Declarator * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 
 strcpy(name, "__ecereVMethodID_");
-FullClassNameCat(name, method->_class->fullName, 0x0);
+FullClassNameCat(name, method->_class->fullName, 0);
 strcat(name, "_");
 strcat(name, method->name);
 DeclareMethod(method, name);
@@ -1624,7 +1624,7 @@ if(_class)
 char className[1024];
 
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, _class->fullName, 0x1);
+FullClassNameCat(className, _class->fullName, 1);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
@@ -1639,7 +1639,7 @@ else
 char name[1024];
 
 strcpy(name, "__ecereMethod_");
-FullClassNameCat(name, method->_class->fullName, 0x0);
+FullClassNameCat(name, method->_class->fullName, 0);
 strcat(name, "_");
 strcat(name, method->name);
 (__ecereNameSpace__ecere__com__eSystem_Delete(exp->__anon1.__anon1.identifier->string), exp->__anon1.__anon1.identifier->string = 0);
@@ -1694,7 +1694,7 @@ switch(exp->__anon1.op.op)
 {
 case '=':
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(1)) << 0);
 break;
 case MUL_ASSIGN:
 case DIV_ASSIGN:
@@ -1706,19 +1706,19 @@ case RIGHT_ASSIGN:
 case AND_ASSIGN:
 case XOR_ASSIGN:
 case OR_ASSIGN:
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(1)) << 0);
 break;
 case INC_OP:
 case DEC_OP:
 case '&':
 if(exp->__anon1.op.exp1 && exp->__anon1.op.exp2)
 {
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(1)) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(1)) << 0);
 }
 else if(exp->__anon1.op.exp2)
 {
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x40) | (((unsigned int)(0x1)) << 6);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x40) | (((unsigned int)(1)) << 6);
 }
 break;
 case '*':
@@ -1726,12 +1726,12 @@ case '+':
 case '-':
 if(exp->__anon1.op.exp1)
 {
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(1)) << 0);
 }
 case '~':
 case '!':
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(1)) << 0);
 break;
 case '/':
 case '%':
@@ -1748,9 +1748,9 @@ case '^':
 case AND_OP:
 case OR_OP:
 if(exp->__anon1.op.exp1)
-exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp1->usage = (exp->__anon1.op.exp1->usage & ~0x1) | (((unsigned int)(1)) << 0);
 if(exp->__anon1.op.exp2)
-exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.op.exp2->usage = (exp->__anon1.op.exp2->usage & ~0x1) | (((unsigned int)(1)) << 0);
 break;
 }
 if(exp->__anon1.op.op == '=' || exp->__anon1.op.op == MUL_ASSIGN || exp->__anon1.op.op == DIV_ASSIGN || exp->__anon1.op.op == ADD_ASSIGN || exp->__anon1.op.op == MOD_ASSIGN || exp->__anon1.op.op == SUB_ASSIGN || exp->__anon1.op.op == LEFT_ASSIGN || exp->__anon1.op.op == RIGHT_ASSIGN || exp->__anon1.op.op == AND_ASSIGN || exp->__anon1.op.op == OR_ASSIGN || exp->__anon1.op.op == XOR_ASSIGN || exp->__anon1.op.op == INC_OP || exp->__anon1.op.op == DEC_OP)
@@ -1767,7 +1767,7 @@ struct __ecereNameSpace__ecere__com__Class * propertyClass;
 char setName[1024], getName[1024];
 
 testExp = exp->__anon1.op.exp1->__anon1.member.exp;
-while(0x1)
+while(1)
 {
 while(testExp)
 {
@@ -1839,8 +1839,8 @@ tempExp->expType = MkClassType(propertyClass->fullName);
 parentExp->__anon1.member.exp = tempExp;
 value = MkExpBrackets(MkList());
 copy = CopyExpression(topExp);
-copy->usage = (copy->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
-copy->usage = (copy->usage & ~0x20) | (((unsigned int)(0x1)) << 5);
+copy->usage = (copy->usage & ~0x1) | (((unsigned int)(1)) << 0);
+copy->usage = (copy->usage & ~0x20) | (((unsigned int)(1)) << 5);
 ListAdd(value->__anon1.list, copy);
 ListAdd(value->__anon1.list, MkExpOp(exp->__anon1.op.exp1, exp->__anon1.op.op, exp->__anon1.op.exp2));
 ListAdd(value->__anon1.list, CopyExpression(tempExp));
@@ -1865,8 +1865,8 @@ tempExp->expType = MkClassType(propertyClass->fullName);
 parentExp->__anon1.member.exp = tempExp;
 value = MkExpBrackets(MkList());
 copy = CopyExpression(topExp);
-copy->usage = (copy->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
-copy->usage = (copy->usage & ~0x20) | (((unsigned int)(0x1)) << 5);
+copy->usage = (copy->usage & ~0x1) | (((unsigned int)(1)) << 0);
+copy->usage = (copy->usage & ~0x20) | (((unsigned int)(1)) << 5);
 ListAdd(value->__anon1.list, copy);
 ListAdd(value->__anon1.list, MkExpOp(exp->__anon1.op.exp1, exp->__anon1.op.op, exp->__anon1.op.exp2));
 ListAdd(value->__anon1.list, CopyExpression(tempExp));
@@ -2032,7 +2032,7 @@ struct Expression * value = exp->__anon1.op.exp2;
 char setName[1024], getName[1024];
 char * setToUse = convertTo ? getName : setName;
 char * getToUse = convertTo ? setName : getName;
-unsigned int needAddress = 0x0;
+unsigned int needAddress = 0;
 int operator = exp->__anon1.op.op;
 
 switch(operator)
@@ -2081,14 +2081,14 @@ exp2 = (((void *)0));
 }
 value->expType = memberExp->expType;
 memberExp->expType->refCount++;
-value->usage = (value->usage & ~0x4) | (((unsigned int)(0x1)) << 2);
+value->usage = (value->usage & ~0x4) | (((unsigned int)(1)) << 2);
 }
 else if(value)
 {
 exp2 = (((void *)0));
 }
 if(value)
-value->usage = (value->usage & ~0x4) | (((unsigned int)(0x1)) << 2);
+value->usage = (value->usage & ~0x4) | (((unsigned int)(1)) << 2);
 DeclareProperty(prop, setName, getName);
 if(memberExp->__anon1.member.exp)
 ProcessExpression(memberExp->__anon1.member.exp);
@@ -2150,14 +2150,14 @@ newExp->__anon1.call.arguments = MkList();
 if(convertTo)
 {
 ListAdd(newExp->__anon1.call.arguments, value);
-ListAdd(newExp->__anon1.call.arguments, FixReference(memberExp->__anon1.member.exp, 0x1));
+ListAdd(newExp->__anon1.call.arguments, FixReference(memberExp->__anon1.member.exp, 1));
 }
 else
 {
-ListAdd(newExp->__anon1.call.arguments, FixReference(memberExp->__anon1.member.exp, 0x1));
+ListAdd(newExp->__anon1.call.arguments, FixReference(memberExp->__anon1.member.exp, 1));
 ListAdd(newExp->__anon1.call.arguments, value);
 }
-needAddress = 0x1;
+needAddress = 1;
 }
 memberExp->__anon1.member.exp = (((void *)0));
 if(value)
@@ -2165,7 +2165,7 @@ if(value)
 value->tempCount = exp->tempCount;
 ProcessExpression(value);
 if(needAddress)
-FixReference(value, 0x1);
+FixReference(value, 1);
 }
 FreeExpression(memberExp);
 }
@@ -2264,7 +2264,7 @@ struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 
 exp->type = 5;
 exp->__anon1.list = MkList();
-object->usage = (object->usage & ~0x80) | (((unsigned int)(0x1)) << 7);
+object->usage = (object->usage & ~0x80) | (((unsigned int)(1)) << 7);
 ProcessExpression(object);
 ListAdd(args, object);
 if(exp->expType && exp->expType->kind == 8 && exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered && exp->expType->__anon1._class->__anon1.registered->type == 0 && strcmp(exp->expType->__anon1._class->__anon1.registered->dataTypeString, "char *"))
@@ -2287,7 +2287,7 @@ char className[1024];
 if(_class->templateClass)
 _class = _class->templateClass;
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, _class->fullName, 0x0);
+FullClassNameCat(className, _class->fullName, 0);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
@@ -2296,13 +2296,13 @@ ListAdd(list, MkExpCondition(MkExpPointer(QMkExpId(className), MkIdentifier("Des
 ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
 o = CopyExpression(object);
 ProcessExpressionType(o);
-o->usage = (o->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+o->usage = (o->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(o);
 ListAdd(exp->__anon1.list, MkExpBrackets(MkListOne(MkExpCondition(o, MkListOne(MkExpBrackets(list)), MkExpConstant("0")))));
 }
 else if(exp->expType && exp->expType->kind == 20)
 {
-struct Expression * argExp = GetTemplateArgExp(exp->expType->__anon1.templateParameter, thisClass, 0x0);
+struct Expression * argExp = GetTemplateArgExp(exp->expType->__anon1.templateParameter, thisClass, 0);
 
 if(argExp)
 {
@@ -2329,7 +2329,7 @@ if(exp->type == 4)
 {
 if(exp->__anon1.op.op == '=' && exp->__anon1.op.exp1 && exp->__anon1.op.exp1->expType && exp->__anon1.op.exp1->expType->kind == 20 && (exp->__anon1.op.exp1->type == 6 || (exp->__anon1.op.exp1->type == 4 && exp->__anon1.op.exp1->__anon1.op.op == '*' && !exp->__anon1.op.exp1->__anon1.op.exp1)))
 {
-struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp1->expType->__anon1.templateParameter, thisClass, 0x0);
+struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp1->expType->__anon1.templateParameter, thisClass, 0);
 
 if(argExp)
 {
@@ -2385,7 +2385,7 @@ return ;
 }
 else if(exp->__anon1.op.op == '*' && !exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && exp->__anon1.op.exp2->expType && exp->__anon1.op.exp2->expType->kind == 13 && exp->__anon1.op.exp2->expType->__anon1.type && exp->__anon1.op.exp2->expType->__anon1.type->kind == 20)
 {
-struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp2->expType->__anon1.type->__anon1.templateParameter, thisClass, 0x0);
+struct Expression * argExp = GetTemplateArgExp(exp->__anon1.op.exp2->expType->__anon1.type->__anon1.templateParameter, thisClass, 0);
 
 if(argExp)
 {
@@ -2419,7 +2419,7 @@ if(exp->__anon1.op.exp2)
 exp->__anon1.op.exp1->tempCount = exp->__anon1.op.exp2->tempCount;
 ProcessExpression(exp->__anon1.op.exp1);
 if(exp->__anon1.op.op == '=' && exp->__anon1.op.exp2 && (!exp->__anon1.op.exp2->byReference || (exp->__anon1.op.exp2->expType && exp->__anon1.op.exp2->expType->kind == 8 && exp->__anon1.op.exp2->expType->__anon1._class && exp->__anon1.op.exp2->expType->__anon1._class->__anon1.registered && exp->__anon1.op.exp2->expType->__anon1._class->__anon1.registered->type == 1)) && exp->__anon1.op.exp2->expType && (exp->__anon1.op.exp2->expType->kind != 13 && exp->__anon1.op.exp2->expType->kind != 20))
-FixReference(exp->__anon1.op.exp1, 0x0);
+FixReference(exp->__anon1.op.exp1, 0);
 }
 if(exp->__anon1.op.exp2)
 {
@@ -2430,7 +2430,7 @@ if(exp->__anon1.op.exp1 || (exp->__anon1.op.op != '*' && exp->__anon1.op.op != '
 {
 if((!exp->__anon1.op.exp1 && (!exp->__anon1.op.exp2 || !exp->__anon1.op.exp2->expType || exp->__anon1.op.exp2->expType->kind != 8 || !exp->__anon1.op.exp2->expType->__anon1._class || !exp->__anon1.op.exp2->expType->__anon1._class->__anon1.registered || (exp->__anon1.op.exp2->expType->__anon1._class->__anon1.registered->type != 0 && exp->__anon1.op.exp2->expType->__anon1._class->__anon1.registered->type != 1 && exp->__anon1.op.exp2->expType->__anon1._class->__anon1.registered->type != 5))) || (exp->__anon1.op.exp1 && exp->__anon1.op.exp1->expType && exp->__anon1.op.exp1->expType->kind != 13 && exp->__anon1.op.exp1->expType->kind != 20))
 {
-FixReference(exp->__anon1.op.exp2, exp->__anon1.op.exp1 ? exp->__anon1.op.exp1->byReference : 0x0);
+FixReference(exp->__anon1.op.exp2, exp->__anon1.op.exp1 ? exp->__anon1.op.exp1->byReference : 0);
 }
 }
 }
@@ -2453,7 +2453,7 @@ exp->next = next;
 if(exp->__anon1.op.op == '&' && !exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && exp->__anon1.op.exp2->expType && exp->__anon1.op.exp2->expType->kind == 20 && !exp->__anon1.op.exp2->expType->passAsTemplate)
 {
 struct Expression * exp2 = exp->__anon1.op.exp2;
-struct Expression * argExp = GetTemplateArgExp(exp2->expType->__anon1.templateParameter, thisClass, 0x0);
+struct Expression * argExp = GetTemplateArgExp(exp2->expType->__anon1.templateParameter, thisClass, 0);
 
 if(argExp)
 {
@@ -2493,7 +2493,7 @@ for(e = (*exp->__anon1.list).first; e; e = e->next)
 {
 if(!e->next)
 {
-e->usage |= (exp->usage & (((unsigned int)(0x1)) | (((unsigned int)(0x1)) << 2) | (((unsigned int)(0x1)) << 4)));
+e->usage |= (exp->usage & (((unsigned int)(1)) | (((unsigned int)(1)) << 2) | (((unsigned int)(1)) << 4)));
 }
 e->tempCount = exp->tempCount;
 ProcessExpression(e);
@@ -2508,13 +2508,13 @@ case 6:
 {
 struct Expression * e;
 struct Expression * checkedExp = exp->__anon1.index.exp;
-unsigned int isBuiltin = 0x0;
+unsigned int isBuiltin = 0;
 
 while(checkedExp->type == 23 || checkedExp->type == 5 || checkedExp->type == 11)
 {
 if(checkedExp->type == 23)
 {
-isBuiltin = 0x1;
+isBuiltin = 1;
 break;
 }
 else if(checkedExp->type == 5)
@@ -2523,11 +2523,11 @@ else
 checkedExp = checkedExp->__anon1.cast.exp;
 }
 exp->__anon1.index.exp->tempCount = exp->tempCount;
-exp->__anon1.index.exp->usage = (exp->__anon1.index.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.index.exp->usage = (exp->__anon1.index.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(exp->__anon1.index.exp);
 if(exp->__anon1.index.exp->expType && exp->__anon1.index.exp->expType->kind == 13 && exp->__anon1.index.exp->expType->__anon1.type && exp->__anon1.index.exp->expType->__anon1.type->kind == 20)
 {
-struct Expression * argExp = GetTemplateArgExp(exp->__anon1.index.exp->expType->__anon1.type->__anon1.templateParameter, thisClass, 0x0);
+struct Expression * argExp = GetTemplateArgExp(exp->__anon1.index.exp->expType->__anon1.type->__anon1.templateParameter, thisClass, 0);
 
 if(argExp)
 {
@@ -2556,7 +2556,7 @@ return ;
 for(e = (*exp->__anon1.index.index).first; e; e = e->next)
 {
 if(!e->next)
-e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(e);
 }
 exp->tempCount = exp->__anon1.index.exp->tempCount;
@@ -2567,11 +2567,11 @@ struct Type * source = exp->__anon1.index.exp->expType;
 if(source->kind == 8 && source->__anon1._class && source->__anon1._class->__anon1.registered && source->__anon1._class->__anon1.registered != containerClass && __ecereNameSpace__ecere__com__eClass_IsDerived(source->__anon1._class->__anon1.registered, containerClass))
 {
 struct __ecereNameSpace__ecere__com__Class * _class = source->__anon1._class->__anon1.registered;
-unsigned int isArray = 0x0;
+unsigned int isArray = 0;
 struct __ecereNameSpace__ecere__com__Class * arrayClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "Array");
 
 if(source && __ecereNameSpace__ecere__com__eClass_IsDerived(source->__anon1._class->__anon1.registered, arrayClass))
-isArray = 0x1;
+isArray = 1;
 if(isArray && _class->templateArgs)
 {
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -2625,9 +2625,9 @@ break;
 case 7:
 {
 struct Expression * e;
-unsigned int typedObject = 0x0;
+unsigned int typedObject = 0;
 struct Type * ellipsisDestType = (((void *)0));
-unsigned int usedEllipsis = 0x0;
+unsigned int usedEllipsis = 0;
 
 if(exp->__anon1.call.arguments)
 {
@@ -2636,20 +2636,20 @@ for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
 int __simpleStruct2, __simpleStruct3;
 int __simpleStruct0, __simpleStruct1;
 
-e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
-e->usage = (e->usage & ~0x4) | (((unsigned int)(0x1)) << 2);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(1)) << 0);
+e->usage = (e->usage & ~0x4) | (((unsigned int)(1)) << 2);
 e->tempCount = (__simpleStruct0 = e->tempCount, __simpleStruct1 = exp->tempCount, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
 ProcessExpression(e);
 exp->tempCount = (__simpleStruct2 = exp->tempCount, __simpleStruct3 = e->tempCount, (__simpleStruct2 > __simpleStruct3) ? __simpleStruct2 : __simpleStruct3);
 }
 }
-exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
-exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x8) | (((unsigned int)(0x1)) << 3);
+exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
+exp->__anon1.call.exp->usage = (exp->__anon1.call.exp->usage & ~0x8) | (((unsigned int)(1)) << 3);
 exp->__anon1.call.exp->tempCount = exp->tempCount;
 ProcessExpression(exp->__anon1.call.exp);
 if(exp->__anon1.call.exp->expType && exp->__anon1.call.exp->expType->kind == 16)
 {
-unsigned int nullMemberExp = 0x0;
+unsigned int nullMemberExp = 0;
 struct Expression * memberExp = (exp->__anon1.call.exp->type == 8) ? exp->__anon1.call.exp : (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * _class = exp->__anon1.call.exp->expType->__anon1.__anon3.methodClass;
 struct __ecereNameSpace__ecere__com__Class * argClass = exp->__anon1.call.exp->expType->__anon1.__anon3.methodClass;
@@ -2664,7 +2664,7 @@ struct Context * back;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 
 strcpy(name, "__ecereVMethodID_");
-FullClassNameCat(name, method->_class->fullName, 0x0);
+FullClassNameCat(name, method->_class->fullName, 0);
 strcat(name, "_");
 strcat(name, method->name);
 DeclareMethod(method, name);
@@ -2697,7 +2697,7 @@ if(method->dataType->__anon1.__anon2.thisClass && !strcmp(method->dataType->__an
 {
 struct TypeName * param;
 
-typedObject = 0x1;
+typedObject = 1;
 param = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*param->qualifiers), (((void *)0)), MkSpecifier(CONST));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*funcDecl->__anon1.function.parameters), (((void *)0)), param);
@@ -2734,15 +2734,15 @@ else if(type->kind == 13)
 {
 argClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
 FreeType(memberExp->__anon1.member.exp->expType);
-memberExp->__anon1.member.exp->expType = ProcessTypeString("uintptr", 0x0);
-memberExp->__anon1.member.exp->byReference = 0x1;
+memberExp->__anon1.member.exp->expType = ProcessTypeString("uintptr", 0);
+memberExp->__anon1.member.exp->byReference = 1;
 }
 else
 {
 char string[1024] = "";
 struct Symbol * classSym;
 
-PrintTypeNoConst(type, string, 0x0, 0x1);
+PrintTypeNoConst(type, string, 0, 1);
 classSym = FindClass(string);
 if(classSym)
 argClass = classSym->__anon1.registered;
@@ -2768,7 +2768,7 @@ cl = __ecereClass_int;
 if(cl->templateClass && !_class && exp->__anon1.call.exp->expType->__anon1._class && !exp->__anon1.call.exp->expType->__anon1.__anon3.methodClass && (type->kind == 19 || (regClass && regClass->type == 0 && strcmp(regClass->dataTypeString, "char *"))))
 cl = cl->templateClass;
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, cl->fullName, 0x1);
+FullClassNameCat(className, cl->fullName, 1);
 if(!cl->symbol)
 cl->symbol = FindClass(cl->fullName);
 DeclareClass(cl->symbol, className);
@@ -2804,7 +2804,7 @@ else
 char name[1024];
 
 strcpy(name, "__ecereMethod_");
-FullClassNameCat(name, method->_class->fullName, 0x0);
+FullClassNameCat(name, method->_class->fullName, 0);
 strcat(name, "_");
 strcat(name, method->name);
 if(!memberExp)
@@ -2825,15 +2825,15 @@ if(!exp->__anon1.call.arguments)
 exp->__anon1.call.arguments = MkList();
 if(typedObject && memberExp->__anon1.member.exp && memberExp->__anon1.member.exp->expType)
 {
-unsigned int changeReference = 0x0;
+unsigned int changeReference = 0;
 struct Expression * memberExpMemberExp = CopyExpression(memberExp->__anon1.member.exp);
 
 if(argClass && (argClass->type == 4 || argClass->type == 3 || argClass->type == 2 || argClass->type == 1000) && strcmp(argClass->fullName, "class") && strcmp(argClass->fullName, "uintptr") && strcmp(argClass->fullName, "intptr"))
-changeReference = 0x1;
+changeReference = 1;
 if(!memberExp->__anon1.member.exp->expType->classObjectType && ((((memberExp->__anon1.member.exp->expType->kind != 13 && (memberExp->__anon1.member.exp->expType->kind != 8 || !memberExp->__anon1.member.exp->expType->__anon1._class || !memberExp->__anon1.member.exp->expType->__anon1._class->__anon1.registered || memberExp->__anon1.member.exp->expType->__anon1._class->__anon1.registered->type == 1)))) || method->dataType->byReference))
-changeReference = 0x1;
+changeReference = 1;
 if(typedObject && memberExp->__anon1.member.exp->expType->classObjectType && memberExp->__anon1.member.exp->expType->byReference != method->dataType->byReference)
-changeReference = 0x1;
+changeReference = 1;
 if(changeReference)
 {
 if(memberExp->__anon1.member.exp->type == 5 && memberExp->__anon1.member.exp->__anon1.list && (*memberExp->__anon1.member.exp->__anon1.list).count == 1 && ((struct Expression *)(*memberExp->__anon1.member.exp->__anon1.list).first)->type == 4 && ((struct Expression *)(*memberExp->__anon1.member.exp->__anon1.list).first)->__anon1.op.op == '*' && !((struct Expression *)(*memberExp->__anon1.member.exp->__anon1.list).first)->__anon1.op.exp1)
@@ -2851,7 +2851,7 @@ else if(!memberExp->__anon1.member.exp->byReference)
 struct Expression * checkedExp = memberExp->__anon1.member.exp;
 struct Expression * parentExp = (((void *)0));
 struct Expression * newExp;
-unsigned int disconnected = 0x0;
+unsigned int disconnected = 0;
 
 while(((checkedExp->type == 5 || checkedExp->type == 32) && checkedExp->__anon1.list) || checkedExp->type == 11)
 {
@@ -2862,7 +2862,7 @@ checkedExp = (*checkedExp->__anon1.list).last;
 if(checkedExp && !disconnected)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*parentExp->__anon1.list), checkedExp);
-disconnected = 0x1;
+disconnected = 1;
 }
 }
 else if(checkedExp->type == 11)
@@ -2871,12 +2871,12 @@ checkedExp = checkedExp->__anon1.cast.exp;
 if(checkedExp && !disconnected)
 {
 checkedExp->__anon1.cast.exp = (((void *)0));
-disconnected = 0x1;
+disconnected = 1;
 }
 }
 }
 if(!parentExp)
-nullMemberExp = 0x1;
+nullMemberExp = 1;
 newExp = (typedObject && !memberExp->__anon1.member.exp->expType->classObjectType) ? checkedExp : MkExpOp((((void *)0)), '&', checkedExp);
 if(parentExp && (parentExp->type == 5 || parentExp->type == 32))
 {
@@ -2904,13 +2904,13 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->__anon1.call.
 else
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->__anon1.call.arguments), (((void *)0)), memberExp->__anon1.member.exp);
-nullMemberExp = 0x1;
+nullMemberExp = 1;
 }
 }
 else
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->__anon1.call.arguments), (((void *)0)), memberExp->__anon1.member.exp);
-nullMemberExp = 0x1;
+nullMemberExp = 1;
 }
 {
 char className[1024];
@@ -2924,14 +2924,14 @@ strcpy(className, "class");
 else if(cl)
 {
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, cl->fullName, 0x1);
+FullClassNameCat(className, cl->fullName, 1);
 if(!cl->symbol)
 cl->symbol = FindClass(cl->fullName);
 DeclareClass(cl->symbol, className);
 }
 if(className[0])
 {
-if(memberExp && cl && cl->type == 0 && (!type || type->byReference == 0x0) && strcmp(cl->dataTypeString, "char *"))
+if(memberExp && cl && cl->type == 0 && (!type || type->byReference == 0) && strcmp(cl->dataTypeString, "char *"))
 {
 struct Expression * c;
 struct Context * context = PushContext();
@@ -2955,7 +2955,7 @@ FreeExpression(memberExpMemberExp);
 else
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->__anon1.call.arguments), (((void *)0)), memberExp->__anon1.member.exp);
-nullMemberExp = 0x1;
+nullMemberExp = 1;
 }
 }
 }
@@ -2975,7 +2975,7 @@ struct Type * destType = (e->destType && e->destType->kind == 14) ? ellipsisDest
 if(destType && (destType->classObjectType == 2 || destType->classObjectType == 3))
 {
 if(e->destType && e->destType->kind == 14)
-usedEllipsis = 0x1;
+usedEllipsis = 1;
 ellipsisDestType = destType;
 if(e && e->expType)
 {
@@ -2998,15 +2998,15 @@ else if(type->kind == 13)
 {
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "uintptr");
 FreeType(e->expType);
-e->expType = ProcessTypeString("uintptr", 0x0);
-e->byReference = 0x1;
+e->expType = ProcessTypeString("uintptr", 0);
+e->byReference = 1;
 }
 else
 {
 char string[1024] = "";
 struct Symbol * classSym;
 
-PrintTypeNoConst(type, string, 0x0, 0x1);
+PrintTypeNoConst(type, string, 0, 1);
 classSym = FindClass(string);
 if(classSym)
 _class = classSym->__anon1.registered;
@@ -3073,7 +3073,7 @@ else if(parentExp->type == 23)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*((struct Statement *)(*parentExp->__anon1.compound->__anon1.compound.statements).last)->__anon1.expressions), checkedExp);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*((struct Statement *)(*parentExp->__anon1.compound->__anon1.compound.statements).last)->__anon1.expressions), newExp);
 }
-e->byReference = 0x1;
+e->byReference = 1;
 FreeType(checkedExp->expType);
 FreeType(checkedExp->destType);
 ((checkedExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)checkedExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(checkedExp)) : 0), checkedExp = 0);
@@ -3102,7 +3102,7 @@ exp->destType->refCount++;
 newExp->prev = (((void *)0));
 newExp->next = (((void *)0));
 newExp->expType = (((void *)0));
-PrintTypeNoConst(e->expType, typeString, 0x0, 0x1);
+PrintTypeNoConst(e->expType, typeString, 0, 1);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 newExp->destType = ProcessType(specs, decl);
 curContext = context;
@@ -3145,7 +3145,7 @@ else if(checkedExp->type == 11)
 checkedExp = checkedExp->__anon1.cast.exp;
 }
 newExp = MkExpOp((((void *)0)), '&', checkedExp);
-newExp->byReference = 0x1;
+newExp->byReference = 1;
 if(parentExp->type == 7)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->__anon1.call.arguments), e->prev, newExp);
@@ -3182,12 +3182,12 @@ strcpy(className, "class");
 else
 {
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, _class->fullName, 0x1);
+FullClassNameCat(className, _class->fullName, 1);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
 }
-if(_class->type == 0 && destType->byReference == 0x0 && strcmp(_class->dataTypeString, "char *"))
+if(_class->type == 0 && destType->byReference == 0 && strcmp(_class->dataTypeString, "char *"))
 {
 struct Expression * c;
 struct Context * context = PushContext();
@@ -3229,8 +3229,8 @@ break;
 }
 case 8:
 {
-unsigned int changeToPtr = 0x0;
-unsigned int noHead = 0x0;
+unsigned int changeToPtr = 0;
+unsigned int noHead = 0;
 struct Type * type = exp->__anon1.member.exp ? exp->__anon1.member.exp->expType : (((void *)0));
 struct Specifier * memberClassSpecifier = exp->__anon1.member.member ? exp->__anon1.member.member->_class : (((void *)0));
 
@@ -3262,7 +3262,7 @@ if(!_class)
 char string[2048] = "";
 struct Symbol * classSym;
 
-PrintTypeNoConst(type, string, 0x0, 0x1);
+PrintTypeNoConst(type, string, 0, 1);
 classSym = FindClass(string);
 _class = classSym ? classSym->__anon1.registered : (((void *)0));
 }
@@ -3327,7 +3327,7 @@ struct __ecereNameSpace__ecere__com__Class * propertyClass;
 char * nameToUse = convertTo ? setName : getName;
 
 FreeIdentifier(exp->__anon1.member.member);
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(exp->__anon1.member.exp);
 DeclareProperty(prop, setName, getName);
 propertyClass = convertTo ? _class : ((((struct Symbol *)prop->symbol)->type && ((struct Symbol *)prop->symbol)->type->kind == 8) ? ((struct Symbol *)prop->symbol)->type->__anon1._class->__anon1.registered : ((struct Symbol *)prop->symbol)->_class);
@@ -3363,13 +3363,13 @@ exp->type = 7;
 exp->__anon1.call.exp = QMkExpId(nameToUse);
 exp->__anon1.call.arguments = args;
 }
-ListAdd(args, FixReference(ptr, 0x1));
+ListAdd(args, FixReference(ptr, 1));
 }
 else if(propertyClass && propertyClass->type == 3)
 {
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 
-ListAdd(args, FixReference(ptr, 0x1));
+ListAdd(args, FixReference(ptr, 1));
 exp->type = 7;
 exp->__anon1.call.exp = QMkExpId(nameToUse);
 exp->__anon1.call.arguments = args;
@@ -3383,7 +3383,7 @@ struct __ecereNameSpace__ecere__sys__OldList * specs = MkList(), * decls = MkLis
 struct Expression * tempExp;
 
 className[0] = (char)0;
-FullClassNameCat(className, propertyClass->fullName, 0x0);
+FullClassNameCat(className, propertyClass->fullName, 0);
 ListAdd(specs, MkStructOrUnion(3, MkIdentifier(className), (((void *)0))));
 sprintf(className, "__simpleStruct%d", curContext->simpleID++);
 ListAdd(decls, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(className)), (((void *)0))));
@@ -3398,13 +3398,13 @@ tempExp = QMkExpId(className);
 tempExp->expType = MkClassType(propertyClass->fullName);
 if(convertTo)
 {
-ListAdd(args, FixReference(CopyExpression(tempExp), 0x1));
-ListAdd(args, FixReference(ptr, 0x1));
+ListAdd(args, FixReference(CopyExpression(tempExp), 1));
+ListAdd(args, FixReference(ptr, 1));
 }
 else
 {
-ListAdd(args, FixReference(ptr, 0x1));
-ListAdd(args, FixReference(CopyExpression(tempExp), 0x1));
+ListAdd(args, FixReference(ptr, 1));
+ListAdd(args, FixReference(CopyExpression(tempExp), 1));
 }
 if(((unsigned int)((exp->usage & 0x20) >> 5)))
 {
@@ -3420,8 +3420,8 @@ exp->__anon1.list = MkList();
 ListAdd(exp->__anon1.list, MkExpCall(QMkExpId(nameToUse), args));
 if(((unsigned int)((exp->usage & 0x10) >> 4)))
 {
-ListAdd(exp->__anon1.list, FixReference(tempExp, 0x1));
-exp->byReference = 0x1;
+ListAdd(exp->__anon1.list, FixReference(tempExp, 1));
+exp->byReference = 1;
 }
 else
 ListAdd(exp->__anon1.list, tempExp);
@@ -3432,7 +3432,7 @@ else
 exp->type = 7;
 exp->__anon1.call.exp = QMkExpId(nameToUse);
 exp->__anon1.call.arguments = MkList();
-ListAdd(exp->__anon1.call.arguments, FixReference(ptr, 0x1));
+ListAdd(exp->__anon1.call.arguments, FixReference(ptr, 1));
 }
 }
 else if(prop->conversion)
@@ -3463,7 +3463,7 @@ struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Declarator * decl;
 
 typeString[0] = (char)0;
-PrintType(exp->expType, typeString, 0x0, 0x0);
+PrintType(exp->expType, typeString, 0, 0);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 exp->__anon1.cast.typeName = MkTypeName(specs, decl);
 }
@@ -3490,12 +3490,12 @@ if((((unsigned int)((exp->usage & 0x1) >> 0)) || exp->__anon1.member.exp->expTyp
 char name[1024];
 
 FreeIdentifier(exp->__anon1.member.member);
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(exp->__anon1.member.exp);
 if(method->type == 1)
 {
 strcpy(name, "__ecereVMethodID_");
-FullClassNameCat(name, method->_class->fullName, 0x0);
+FullClassNameCat(name, method->_class->fullName, 0);
 strcat(name, "_");
 strcat(name, method->name);
 exp->type = 6;
@@ -3504,7 +3504,7 @@ if(memberClassSpecifier)
 char className[1024];
 
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, _class->fullName, 0x1);
+FullClassNameCat(className, _class->fullName, 1);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(_class->symbol, className);
@@ -3529,7 +3529,7 @@ else
 FreeExpression(exp->__anon1.member.exp);
 exp->type = 0;
 strcpy(name, "__ecereMethod_");
-FullClassNameCat(name, method->_class->fullName, 0x0);
+FullClassNameCat(name, method->_class->fullName, 0);
 strcat(name, "_");
 strcat(name, method->name);
 exp->__anon1.__anon1.identifier = MkIdentifier(name);
@@ -3577,18 +3577,18 @@ exp->__anon1.member.member->string = __ecereNameSpace__ecere__com__PrintString(_
 }
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
 {
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 }
 ProcessExpression(exp->__anon1.member.exp);
 if(type->kind == 8 && type->__anon1._class && type->__anon1._class->__anon1.registered)
-DeclareStruct(type->__anon1._class->__anon1.registered->fullName, 0x0);
+DeclareStruct(type->__anon1._class->__anon1.registered->fullName, 0);
 if(_class->type == 5)
 {
-noHead = 0x1;
+noHead = 1;
 }
 else if(_class->type == 1)
 {
-changeToPtr = 0x1;
+changeToPtr = 1;
 }
 else if(_class->type == 2)
 {
@@ -3619,7 +3619,7 @@ if(exp->__anon1.member.exp->type == 0 && thisPtr && type->kind == 8 && (!exp->__
 char pointerName[1024];
 
 strcpy(pointerName, "__ecerePointer_");
-FullClassNameCat(pointerName, type->__anon1._class->__anon1.registered->fullName, 0x0);
+FullClassNameCat(pointerName, type->__anon1._class->__anon1.registered->fullName, 0);
 if(exp->__anon1.member.exp->__anon1.__anon1.identifier)
 FreeIdentifier(exp->__anon1.member.exp->__anon1.__anon1.identifier);
 exp->__anon1.member.exp->__anon1.__anon1.identifier = MkIdentifier(pointerName);
@@ -3632,13 +3632,13 @@ char structName[1024];
 char className[1024];
 
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, member->_class->fullName, 0x1);
+FullClassNameCat(className, member->_class->fullName, 1);
 if(!member->_class->symbol)
 member->_class->symbol = FindClass(member->_class->fullName);
 DeclareClass(member->_class->symbol, className);
-DeclareStruct(member->_class->fullName, 0x0);
+DeclareStruct(member->_class->fullName, 0);
 structName[0] = (char)0;
-FullClassNameCat(structName, member->_class->fullName, 0x0);
+FullClassNameCat(structName, member->_class->fullName, 0);
 checkedExp = exp->__anon1.member.exp;
 while(((checkedExp->type == 5 || checkedExp->type == 32) && checkedExp->__anon1.list && (*checkedExp->__anon1.list).count == 1) || checkedExp->type == 11)
 {
@@ -3710,8 +3710,8 @@ exp->type = 9;
 FreeSpecifier(memberClassSpecifier);
 if(exp->__anon1.member.exp && (exp->type == 8 || exp->type == 9))
 {
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x10) | (((unsigned int)(0x1)) << 4);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x10) | (((unsigned int)(1)) << 4);
 exp->__anon1.member.exp->tempCount = exp->tempCount;
 ProcessExpression(exp->__anon1.member.exp);
 exp->tempCount = exp->__anon1.member.exp->tempCount;
@@ -3725,13 +3725,13 @@ case 23:
 struct Expression * e = (*((struct Statement *)(*exp->__anon1.compound->__anon1.compound.statements).last)->__anon1.expressions).last;
 
 if(e)
-e->usage |= exp->usage & (((unsigned int)(0x1)) | (((unsigned int)(0x1)) << 2) | (((unsigned int)(0x1)) << 4));
+e->usage |= exp->usage & (((unsigned int)(1)) | (((unsigned int)(1)) << 2) | (((unsigned int)(1)) << 4));
 ProcessStatement(exp->__anon1.compound);
 break;
 }
 case 9:
 {
-exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(exp->__anon1.member.exp);
 break;
 }
@@ -3741,7 +3741,7 @@ struct Specifier * spec = exp->__anon1.typeName->qualifiers ? (*exp->__anon1.typ
 
 if(spec && spec->type == 8 && !exp->__anon1.typeName->declarator)
 {
-struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, thisClass, 0x0);
+struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, thisClass, 0);
 
 if(argExp)
 {
@@ -3763,12 +3763,12 @@ case 11:
 {
 if(exp->__anon1.cast.exp)
 {
-exp->__anon1.cast.exp->usage |= exp->usage & (((unsigned int)(0x1)) | (((unsigned int)(0x1)) << 4));
+exp->__anon1.cast.exp->usage |= exp->usage & (((unsigned int)(1)) | (((unsigned int)(1)) << 4));
 ProcessExpression(exp->__anon1.cast.exp);
 if(exp->__anon1.cast.exp->byReference)
 exp->byReference = exp->__anon1.cast.exp->byReference;
 if(exp->expType && exp->expType->kind == 8 && exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered && exp->expType->__anon1._class->__anon1.registered->type == 1 && exp->__anon1.cast.exp->expType && (exp->__anon1.cast.exp->expType->kind == 13 || exp->__anon1.cast.exp->expType->kind == 12 || (exp->__anon1.cast.exp->expType->kind == 8 && exp->__anon1.cast.exp->expType->__anon1._class && exp->__anon1.cast.exp->expType->__anon1._class->__anon1.registered && !strcmp(exp->__anon1.cast.exp->expType->__anon1._class->__anon1.registered->dataTypeString, "char *"))))
-exp->byReference = 0x1;
+exp->byReference = 1;
 }
 break;
 }
@@ -3777,16 +3777,16 @@ case 12:
 struct Expression * e;
 
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
-exp->__anon1.cond.cond->usage = (exp->__anon1.cond.cond->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.cond.cond->usage = (exp->__anon1.cond.cond->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(exp->__anon1.cond.cond);
 for(e = (*exp->__anon1.cond.exp).first; e; e = e->next)
 {
 if(!e->next && ((unsigned int)((exp->usage & 0x1) >> 0)))
-e->usage = (e->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+e->usage = (e->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(e);
 }
 if(((unsigned int)((exp->usage & 0x1) >> 0)))
-exp->__anon1.cond.elseExp->usage = (exp->__anon1.cond.elseExp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+exp->__anon1.cond.elseExp->usage = (exp->__anon1.cond.elseExp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(exp->__anon1.cond.elseExp);
 break;
 }
@@ -3795,7 +3795,7 @@ case 24:
 if(exp->__anon1._classExp.specifiers && (*exp->__anon1._classExp.specifiers).first && ((struct Specifier *)(*exp->__anon1._classExp.specifiers).first)->type == 8)
 {
 struct Specifier * spec = (*exp->__anon1._classExp.specifiers).first;
-struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, thisClass, 0x1);
+struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, thisClass, 1);
 
 if(argExp)
 {
@@ -3818,7 +3818,7 @@ char * string = StringFromSpecDecl(exp->__anon1._classExp.specifiers, exp->__ano
 struct Symbol * classSym = FindClass(string);
 
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, string, 0x1);
+FullClassNameCat(className, string, 1);
 DeclareClass(classSym, className);
 (__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 FreeList(exp->__anon1._classExp.specifiers, FreeSpecifier);
@@ -3860,7 +3860,7 @@ nbExp->needTemplateCast = 2;
 if(((unsigned int)((exp->usage & 0x80) >> 7)))
 strcpy(typeString, "void *");
 else
-PrintType(exp->expType, typeString, 0x0, 0x0);
+PrintType(exp->expType, typeString, 0, 0);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 if(specs && (*specs).first && ((struct Specifier *)(*specs).first)->type == 8 && exp->destType && !exp->destType->passAsTemplate && exp->destType->kind == 20 && exp->destType->__anon1.templateParameter && (exp->destType->__anon1.templateParameter->dataTypeString || exp->destType->__anon1.templateParameter->__anon1.dataType) && !((unsigned int)((exp->usage & 0x4) >> 2)))
 {
@@ -3897,14 +3897,14 @@ switch(init->type)
 case 0:
 if(init->__anon1.exp)
 {
-init->__anon1.exp->usage = (init->__anon1.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+init->__anon1.exp->usage = (init->__anon1.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(init->__anon1.exp);
 if(init->__anon1.exp->destType && init->__anon1.exp->destType->kind == 8 && init->__anon1.exp->destType->__anon1._class && init->__anon1.exp->destType->__anon1._class->__anon1.registered && init->__anon1.exp->destType->__anon1._class->__anon1.registered->type == 5)
 {
-FixReference(init->__anon1.exp, 0x1);
+FixReference(init->__anon1.exp, 1);
 }
 else if(init->__anon1.exp->destType && init->__anon1.exp->destType->kind == 8)
-FixReference(init->__anon1.exp, 0x0);
+FixReference(init->__anon1.exp, 0);
 }
 break;
 case 1:
@@ -3952,7 +3952,7 @@ break;
 case 1:
 if(stmt->__anon1.caseStmt.exp)
 {
-stmt->__anon1.caseStmt.exp->usage = (stmt->__anon1.caseStmt.exp->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+stmt->__anon1.caseStmt.exp->usage = (stmt->__anon1.caseStmt.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(stmt->__anon1.caseStmt.exp);
 }
 if(stmt->__anon1.caseStmt.stmt)
@@ -4006,7 +4006,7 @@ if(stmt->__anon1.ifStmt.exp)
 {
 struct Expression * exp;
 
-((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.ifStmt.exp).last)->usage & ~0x1) | (((unsigned int)(1)) << 0);
 for(exp = (*stmt->__anon1.ifStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -4024,7 +4024,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.switchStmt.exp && (*stmt->__anon1.switchStmt.exp).last)
 {
-((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.switchStmt.exp).last)->usage & ~0x1) | (((unsigned int)(1)) << 0);
 for(exp = (*stmt->__anon1.switchStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -4039,7 +4039,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.whileStmt.exp && (*stmt->__anon1.whileStmt.exp).last)
 {
-((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.whileStmt.exp).last)->usage & ~0x1) | (((unsigned int)(1)) << 0);
 for(exp = (*stmt->__anon1.whileStmt.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -4054,7 +4054,7 @@ struct Expression * exp;
 
 if(stmt->__anon1.doWhile.exp && (*stmt->__anon1.doWhile.exp).last)
 {
-((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage = (((struct Expression *)(*stmt->__anon1.doWhile.exp).last)->usage & ~0x1) | (((unsigned int)(1)) << 0);
 for(exp = (*stmt->__anon1.doWhile.exp).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
@@ -4074,7 +4074,7 @@ if(stmt->__anon1.forStmt.check)
 {
 if(stmt->__anon1.forStmt.check->__anon1.expressions)
 {
-((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.forStmt.check->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(1)) << 0);
 }
 ProcessStatement(stmt->__anon1.forStmt.check);
 }
@@ -4101,12 +4101,12 @@ struct Expression * exp;
 
 if(stmt->__anon1.expressions)
 {
-((struct Expression *)(*stmt->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(0x1)) << 0);
+((struct Expression *)(*stmt->__anon1.expressions).last)->usage = (((struct Expression *)(*stmt->__anon1.expressions).last)->usage & ~0x1) | (((unsigned int)(1)) << 0);
 for(exp = (*stmt->__anon1.expressions).first; exp; exp = exp->next)
 {
 ProcessExpression(exp);
 if(!exp->next && exp->destType && exp->destType->byReference)
-FixReference(exp, 0x1);
+FixReference(exp, 1);
 }
 }
 break;

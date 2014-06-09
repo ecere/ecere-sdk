@@ -27,7 +27,7 @@ public void FreeType(Type type)
          {
             case enumType:
             {
-               NamedLink member, next;
+               NamedLink64 member, next;
                if(type.enumName)
                   delete type.enumName;
                for(member = type.members.first; member; member = next)

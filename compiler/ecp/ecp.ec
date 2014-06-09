@@ -752,7 +752,7 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
          {
             Type destType
             {
-               kind = intType;
+               kind = int64Type;
                refCount = 1;
             };
             e.exp.destType = destType;
@@ -773,7 +773,7 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                if(e.exp.type == identifierExp && e.exp.expType && e.exp.identifier && e.exp.identifier.string && e.exp.expType.kind == enumType)
                {
                   // Resolve enums here
-                  NamedLink l;
+                  NamedLink64 l;
                   char * string = e.exp.identifier.string;
                   for(l = e.exp.expType.members.first; l; l = l.next)
                   {
@@ -783,9 +783,9 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
                         {
                            FreeExpContents(e.exp);
                            e.exp.type = constantExp;
-                           e.exp.constant = PrintUInt((uint)l.data);
+                           e.exp.constant = PrintInt64(l.data);
                            FreeType(e.exp.expType);
-                           e.exp.expType = ProcessTypeString("uint", false);
+                           e.exp.expType = ProcessTypeString("int64", false);
                         }
                         break;
                      }
@@ -797,18 +797,22 @@ static void ProcessClassEnumValues(ClassType classType, OldList definitions, Sym
             if(e.exp.isConstant && e.exp.type == constantExp)
             {
                Operand op = GetOperand(e.exp);
-               int value;
+               int64 value;
                //value = strtol(e.exp.string, null, 0);
                switch(op.kind)
                {
                   case charType:
-                     value = op.type.isSigned ? (int)op.c : (int)op.uc;
+                     value = op.type.isSigned ? (int64)op.c : (int64)op.uc;
                      break;
                   case shortType:
-                     value = op.type.isSigned ? (int)op.s : (int) op.us;
+                     value = op.type.isSigned ? (int64)op.s : (int64)op.us;
                      break;
+                  case int64Type:
+                     value = op.type.isSigned ? (int64)op.i64 : (int64)op.ui64;
+                     break;
+                  case intType:
                   default:
-                     value = op.i;
+                     value = op.type.isSigned ? (int64)op.i : (int)op.ui;
                }
                eEnum_AddFixedValue(regClass, e.id.string, value);
             }
@@ -1267,14 +1271,19 @@ static void OutputSymbols(const char * fileName)
 
                if(_class.type == enumClass)
                {
-                  NamedLink value;
+                  NamedLink64 value;
                   Class enumClass = eSystem_FindClass(privateModule, "enum");
                   EnumClassData e = ACCESS_CLASSDATA(_class, enumClass);
 
                   f.Printf("      [Enum Values]\n");
                   for(value = e.values.first; value; value = value.next)
                   {
-                     f.Printf("         %s = %d\n", value.name, value.data);
+                     f.Printf("         %s = ", value.name);
+                     if(!strcmp(_class.dataTypeString, "uint64") && *(uint64 *)&value.data > MAXINT64)
+                        f.Printf(FORMAT64HEX, *(uint64 *)&value.data);
+                     else
+                        f.Printf(FORMAT64D, value.data);
+                     f.Printf("\n");
                   }
                   f.Printf("         .\n");
                }

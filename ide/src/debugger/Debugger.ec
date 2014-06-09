@@ -3126,12 +3126,21 @@ class Debugger
                      else if(wh.type && wh.type.kind == classType && wh.type._class &&
                               wh.type._class.registered && wh.type._class.registered.type == enumClass)
                      {
-                        uint64 value = strtoul(exp.constant, null, 0);
                         Class enumClass = eSystem_FindClass(GetPrivateModule(), wh.type._class.registered.name);
                         EnumClassData enumeration = (EnumClassData)enumClass.data;
-                        NamedLink item;
+                        NamedLink64 item;
+                        int64 value;
+
+                        if(!strcmp(enumClass.dataTypeString, "uint64"))
+                        {
+                           uint64 v = strtoull(exp.constant, null, 0);
+                           value = *(int64*)&v;
+                        }
+                        else
+                           value = strtoll(exp.constant, null, 0);
+
                         for(item = enumeration.values.first; item; item = item.next)
-                           if((int)item.data == value)
+                           if(item.data == value)
                               break;
                         if(item)
                            wh.value = CopyString(item.name);

@@ -2456,7 +2456,7 @@ break;
 case 13:
 {
 yyval.classFunction = MkClassFunction((((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)));
-yyval.classFunction->isConstructor = 0x1;
+yyval.classFunction->isConstructor = 1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
 FreeList(yyvsp[(1) - (3)].list, FreeSpecifier);
@@ -2466,7 +2466,7 @@ break;
 case 14:
 {
 yyval.classFunction = MkClassFunction((((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)));
-yyval.classFunction->isDestructor = 0x1;
+yyval.classFunction->isDestructor = 1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
 FreeList(yyvsp[(2) - (4)].list, FreeSpecifier);
@@ -2476,7 +2476,7 @@ break;
 case 15:
 {
 yyval.classFunction = MkClassFunction(yyvsp[(2) - (3)].list, (((void *)0)), yyvsp[(3) - (3)].declarator, (((void *)0)));
-yyval.classFunction->isVirtual = 0x1;
+yyval.classFunction->isVirtual = 1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
 ;
@@ -2485,7 +2485,7 @@ break;
 case 16:
 {
 yyval.classFunction = MkClassFunction((((void *)0)), (((void *)0)), yyvsp[(2) - (2)].declarator, (((void *)0)));
-yyval.classFunction->isVirtual = 0x1;
+yyval.classFunction->isVirtual = 1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
 ;
@@ -2879,13 +2879,13 @@ break;
 case 78:
 {
 yyval.exp = yyvsp[(1) - (2)].exp;
-skipErrors = 0x1;
+skipErrors = 1;
 ;
 }
 break;
 case 80:
 {
-skipErrors = 0x0;
+skipErrors = 0;
 yyval.exp = MkExpOp(yyvsp[(1) - (2)].exp, '<', yyvsp[(2) - (2)].exp);
 yyval.exp->loc = (yyloc);
 ;

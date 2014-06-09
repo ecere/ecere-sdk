@@ -475,7 +475,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this->container, index, create);
 return this->pointer != (((void *)0));
 }
-return 0x0;
+return 0;
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
@@ -771,7 +771,7 @@ const char * __ecereMethod___ecereNameSpace__ecere__com__Container_OnGetString(s
 if((struct __ecereNameSpace__ecere__com__Instance *)this)
 {
 char itemString[4096];
-unsigned int first = 0x1;
+unsigned int first = 1;
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 
 tempString[0] = '\0';
@@ -798,7 +798,7 @@ result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(voi
 if(!first)
 strcat(tempString, ", ");
 strcat(tempString, result);
-first = 0x0;
+first = 0;
 }
 }
 else

@@ -681,7 +681,7 @@ extern YYSTYPE yylval;
 
 extern struct Location yylloc;
 
-unsigned int echoOn = 0x1;
+unsigned int echoOn = 1;
 
 void SetEchoOn(unsigned int b)
 {

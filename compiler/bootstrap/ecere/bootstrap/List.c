@@ -327,7 +327,7 @@ if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->temp
 memcpy((void *)&link->data, (void *)value, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->structSize);
 else
 link->data = ((uint64)(value));
-return 0x1;
+return 1;
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ListItem;

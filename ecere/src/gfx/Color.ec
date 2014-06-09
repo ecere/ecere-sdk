@@ -778,7 +778,7 @@ private class ColorValue : Color
       pullDown.Create();
 
       {
-         NamedLink item;
+         NamedLink64 item;
          bool found = false;
          DataRow currentRow = null;
 
@@ -802,7 +802,7 @@ private class ColorValue : Color
       }
       {
          bool found = false;
-         NamedLink item;
+         NamedLink64 item;
          DataRow currentRow = null;
 
          system.Clear();

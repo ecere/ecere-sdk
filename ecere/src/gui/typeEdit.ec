@@ -38,7 +38,7 @@ private:
                           int x, int y, int w, int h, void * userData)
 {
    Enumeration enumeration = _class.data;
-   NamedLink item;
+   NamedLink64 item;
    DropBox dropBox
    {
       window, master = master,
@@ -68,8 +68,8 @@ private:
       for(item = enumeration.values.first; item; item = item.next)
       {
          DataRow row = dropBox.AddRow();
-         row.SetData(null, (uint)item.data); //name);
-         if(data && (int)item.data == *data)
+         row.SetData(null, item.data); //name);
+         if(data && item.data == *data)
             dropBox.currentRow = row;
       }
    }

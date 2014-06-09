@@ -1140,7 +1140,7 @@ if(_class && _class->type == 1)
 char name[1024];
 
 name[0] = (char)0;
-FullClassNameCat(name, _class->fullName, 0x0);
+FullClassNameCat(name, _class->fullName, 0);
 FreeSpecifierContents(spec);
 spec->type = 3;
 spec->__anon1.__anon2.baseSpecs = (((void *)0));
@@ -1148,20 +1148,20 @@ spec->__anon1.__anon2.id = MkIdentifier(name);
 spec->__anon1.__anon2.list = (((void *)0));
 spec->__anon1.__anon2.definitions = (((void *)0));
 spec->__anon1.__anon2.ctx = (((void *)0));
-spec->__anon1.__anon2.addNameSpace = 0x0;
+spec->__anon1.__anon2.addNameSpace = 0;
 }
 else if(_class && _class->type == 5)
 {
 char name[1024] = "";
 
-FullClassNameCat(name, _class->fullName, 0x0);
+FullClassNameCat(name, _class->fullName, 0);
 spec->type = 3;
 spec->__anon1.__anon2.baseSpecs = (((void *)0));
 spec->__anon1.__anon2.id = MkIdentifier(name);
 spec->__anon1.__anon2.list = (((void *)0));
 spec->__anon1.__anon2.definitions = (((void *)0));
 spec->__anon1.__anon2.ctx = (((void *)0));
-spec->__anon1.__anon2.addNameSpace = 0x0;
+spec->__anon1.__anon2.addNameSpace = 0;
 }
 else if(_class)
 {
@@ -1172,7 +1172,7 @@ if(_class->dataTypeString)
 if(!strcmp(_class->dataTypeString, "uint64") || !strcmp(_class->dataTypeString, "uint32") || !strcmp(_class->dataTypeString, "uint16") || !strcmp(_class->dataTypeString, "uintptr") || !strcmp(_class->dataTypeString, "intptr") || !strcmp(_class->dataTypeString, "uintsize") || !strcmp(_class->dataTypeString, "intsize") || !strcmp(_class->dataTypeString, "uint") || !strcmp(_class->dataTypeString, "byte"))
 {
 if(!_class->dataType)
-_class->dataType = ProcessTypeString(_class->dataTypeString, 0x0);
+_class->dataType = ProcessTypeString(_class->dataTypeString, 0);
 if(_class->dataType && _class->dataType->kind == 8)
 classSym = _class->dataType->__anon1._class;
 else
@@ -1203,7 +1203,7 @@ spec->__anon1.__anon2.list = (((void *)0));
 spec->__anon1.__anon2.baseSpecs = (((void *)0));
 spec->__anon1.__anon2.definitions = (((void *)0));
 spec->__anon1.__anon2.ctx = (((void *)0));
-spec->__anon1.__anon2.addNameSpace = 0x0;
+spec->__anon1.__anon2.addNameSpace = 0;
 }
 if(_class && _class->dataTypeString && !strcmp(_class->dataTypeString, "char *"))
 return 1;
@@ -1390,16 +1390,16 @@ if(decl->declarator)
 InstDeclPassDeclarator(decl->declarator);
 for(type = (*decl->__anon1.function.parameters).first; type; type = type->next)
 {
-unsigned int typedObject = 0x0;
+unsigned int typedObject = 0;
 struct Specifier * spec = (((void *)0));
 
 if(type->qualifiers)
 {
 spec = (struct Specifier *)(*type->qualifiers).first;
 if(spec && spec->type == 1 && !strcmp(spec->__anon1.__anon1.name, "class"))
-typedObject = 0x1;
+typedObject = 1;
 }
-InstDeclPassTypeName(type, 0x1);
+InstDeclPassTypeName(type, 1);
 if(typedObject)
 {
 struct TypeName * _class = (_class = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), _class->qualifiers = MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0)))), _class->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier("class"))), _class);
@@ -1495,7 +1495,7 @@ id->string = __ecereNameSpace__ecere__sys__CopyString(newID);
 
 static unsigned int IsVoidPtrCast(struct TypeName * typeName)
 {
-unsigned int result = 0x0;
+unsigned int result = 0;
 struct Declarator * d = typeName->declarator;
 
 if(d && d->type == 5 && d->__anon1.pointer.pointer == (((void *)0)))
@@ -1507,7 +1507,7 @@ struct Specifier * s;
 for(s = (*typeName->qualifiers).first; s; s = s->next)
 {
 if(s->type == 0 && s->__anon1.specifier == VOID)
-result = 0x1;
+result = 1;
 }
 }
 }
@@ -1591,7 +1591,7 @@ if(src->kind == 20 && src->__anon1.templateParameter && src->__anon1.templatePar
 struct Type * newType = (((void *)0));
 
 if(src->__anon1.templateParameter->dataTypeString)
-newType = ProcessTypeString(src->__anon1.templateParameter->dataTypeString, 0x0);
+newType = ProcessTypeString(src->__anon1.templateParameter->dataTypeString, 0);
 else if(src->__anon1.templateParameter->__anon1.dataType)
 newType = ProcessType(src->__anon1.templateParameter->__anon1.dataType->specifiers, src->__anon1.templateParameter->__anon1.dataType->decl);
 if(newType)
@@ -1617,7 +1617,7 @@ if(dest->kind == 20 && dest->__anon1.templateParameter && dest->__anon1.template
 struct Type * newType = (((void *)0));
 
 if(dest->__anon1.templateParameter->dataTypeString)
-newType = ProcessTypeString(dest->__anon1.templateParameter->dataTypeString, 0x0);
+newType = ProcessTypeString(dest->__anon1.templateParameter->dataTypeString, 0);
 else if(dest->__anon1.templateParameter->__anon1.dataType)
 newType = ProcessType(dest->__anon1.templateParameter->__anon1.dataType->specifiers, dest->__anon1.templateParameter->__anon1.dataType->decl);
 if(newType)
@@ -1665,7 +1665,7 @@ InstDeclPassExpression(exp->__anon1.member.exp);
 break;
 }
 case 10:
-InstDeclPassTypeName(exp->__anon1.typeName, 0x0);
+InstDeclPassTypeName(exp->__anon1.typeName, 0);
 break;
 case 11:
 {
@@ -1716,7 +1716,7 @@ break;
 }
 case 33:
 {
-InstDeclPassTypeName(exp->__anon1.initializer.typeName, 0x0);
+InstDeclPassTypeName(exp->__anon1.initializer.typeName, 0);
 InstDeclPassInitializer(exp->__anon1.initializer.initializer);
 break;
 }
@@ -1756,7 +1756,7 @@ for(spec = (*decl->__anon1.__anon1.specifiers).first; spec; spec = spec->next)
 {
 int type;
 
-if((type = ReplaceClassSpec(decl->__anon1.__anon1.specifiers, spec, 0x0)))
+if((type = ReplaceClassSpec(decl->__anon1.__anon1.specifiers, spec, 0)))
 {
 struct InitDeclarator * d;
 
@@ -1766,7 +1766,7 @@ for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
 ReplaceByInstancePtr(spec, &d->declarator, type);
 }
 }
-InstDeclPassSpecifier(spec, 0x0);
+InstDeclPassSpecifier(spec, 0);
 }
 }
 if(decl->__anon1.__anon1.declarators)
@@ -1792,7 +1792,7 @@ for(spec = (*decl->__anon1.__anon1.specifiers).first; spec; spec = spec->next)
 {
 int type;
 
-if((type = ReplaceClassSpec(decl->__anon1.__anon1.specifiers, spec, 0x0)))
+if((type = ReplaceClassSpec(decl->__anon1.__anon1.specifiers, spec, 0)))
 {
 if(decl->__anon1.__anon1.declarators)
 {
@@ -1802,7 +1802,7 @@ for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
 ReplaceByInstancePtr(spec, &d, type);
 }
 }
-InstDeclPassSpecifier(spec, 0x0);
+InstDeclPassSpecifier(spec, 0);
 }
 }
 if(decl->__anon1.__anon1.declarators)
@@ -2007,9 +2007,9 @@ for(spec = (*func->specifiers).first; spec; spec = spec->next)
 {
 int type;
 
-if((type = ReplaceClassSpec(func->specifiers, spec, 0x0)))
+if((type = ReplaceClassSpec(func->specifiers, spec, 0)))
 ReplaceByInstancePtr(spec, &func->declarator, type);
-InstDeclPassSpecifier(spec, 0x0);
+InstDeclPassSpecifier(spec, 0);
 }
 }
 InstDeclPassDeclarator(func->declarator);

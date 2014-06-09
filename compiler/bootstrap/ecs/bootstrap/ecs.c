@@ -729,7 +729,7 @@ if(line[0] == '[')
 {
 if(!strcmp(line, "[Instantiated]"))
 {
-_class->itself = 0x1;
+_class->itself = 1;
 }
 else if(!strcmp(line, "[Remote]"))
 {
@@ -748,7 +748,7 @@ if(!strcmp(line, "."))
 break;
 if(line[0] != '[')
 {
-if(!(method = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_class->methods, line, 0x0)))
+if(!(method = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_class->methods, line, 0)))
 {
 method = __extension__ ({
 struct MethodImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_MethodImport);
@@ -759,7 +759,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_class->methods, me
 }
 }
 else if(!strcmp(line, "[Virtual]"))
-method->isVirtual = 0x1;
+method->isVirtual = 1;
 }
 }
 else if(!strcmp(line, "[Imported Properties]"))
@@ -775,7 +775,7 @@ if(!strcmp(line, "."))
 break;
 if(line[0] != '[')
 {
-if(!(prop = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_class->properties, line, 0x0)))
+if(!(prop = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_class->properties, line, 0)))
 {
 prop = __extension__ ({
 struct PropertyImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_PropertyImport);
@@ -786,17 +786,17 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_class->properties,
 }
 }
 else if(!strcmp(line, "[Set]"))
-prop->hasSet = 0x1;
+prop->hasSet = 1;
 else if(!strcmp(line, "[Get]"))
-prop->hasGet = 0x1;
+prop->hasGet = 1;
 else if(!strcmp(line, "[Virtual]"))
-prop->isVirtual = 0x1;
+prop->isVirtual = 1;
 }
 }
 }
 else
 {
-if(!(_class = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&module->classes, line, 0x0)))
+if(!(_class = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&module->classes, line, 0)))
 {
 _class = __extension__ ({
 struct ClassImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassImport);
@@ -822,7 +822,7 @@ if(line[0] == '[')
 }
 else
 {
-if(!(function = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&module->functions, line, 0x0)))
+if(!(function = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&module->functions, line, 0)))
 {
 function = __extension__ ({
 struct FunctionImport * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_FunctionImport);
@@ -837,15 +837,15 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&module->functions, 
 }
 else
 {
-if(!(module = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_imports, line, 0x0)))
+if(!(module = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_imports, line, 0)))
 {
 if(!strcmp(line, "ecereCOM"))
 {
-module = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_imports, "ecere", 0x0);
+module = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_imports, "ecere", 0);
 }
 else if(!strcmp(line, "ecere"))
 {
-module = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_imports, "ecereCOM", 0x0);
+module = __ecereMethod___ecereNameSpace__ecere__sys__OldList_FindName(&_imports, "ecereCOM", 0);
 if(module)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(module->name), module->name = 0);
@@ -963,7 +963,7 @@ if(f)
 {
 struct ModuleImport * module;
 struct ModuleInfo * defModule;
-unsigned int anyMethod = 0x0, anyProp = 0x0, anyFunction = 0x0;
+unsigned int anyMethod = 0, anyProp = 0, anyFunction = 0;
 struct ImportedModule * importedModule;
 
 __ecereNameSpace__ecere__sys__GetLastDirectory(fileName, mainModuleName);
@@ -1036,7 +1036,7 @@ struct PropertyImport * prop;
 char className[1024] = "";
 struct __ecereNameSpace__ecere__com__Class * regClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, _class->name);
 
-FullClassNameCat(className, _class->name, 0x1);
+FullClassNameCat(className, _class->name, 1);
 if(_class->itself)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "Class __ecereClass_%s;\n", className);
 {
@@ -1049,7 +1049,7 @@ if(meth && !meth->dataType)
 {
 struct Context * context = SetupTemplatesContext(regClass);
 
-meth->dataType = ProcessTypeString(meth->dataTypeString, 0x0);
+meth->dataType = ProcessTypeString(meth->dataTypeString, 0);
 FinishTemplatesContext(context);
 }
 if(method->isVirtual)
@@ -1058,7 +1058,7 @@ else if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || mo
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "int (*__ecereMethod_%s_%s)();\n", className, method->name);
 }
-anyMethod = 0x1;
+anyMethod = 1;
 }
 }
 for(prop = _class->properties.first; prop; prop = prop->next)
@@ -1066,7 +1066,7 @@ for(prop = _class->properties.first; prop; prop = prop->next)
 char propName[1024];
 
 propName[0] = (char)0;
-FullClassNameCat(propName, prop->name, 0x1);
+FullClassNameCat(propName, prop->name, 1);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
 if(prop->hasSet)
@@ -1075,7 +1075,7 @@ if(prop->hasGet)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereProp_%s_Get_%s;\n", className, propName);
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "Property __ecereProp_%s_%s;\n", className, propName);
-anyProp = 0x1;
+anyProp = 1;
 }
 }
 }
@@ -1084,15 +1084,15 @@ for(function = module->functions.first; function; function = function->next)
 struct __ecereNameSpace__ecere__com__GlobalFunction * func = __ecereNameSpace__ecere__com__eSystem_FindFunction(privateModule, function->name);
 
 if(func && !func->dataType)
-func->dataType = ProcessTypeString(func->dataTypeString, 0x0);
+func->dataType = ProcessTypeString(func->dataTypeString, 0);
 if(module->name && module->importType != 1 && (!func || !func->dataType || !func->dataType->dllExport))
 {
 char functionName[1024];
 
 functionName[0] = (char)0;
-FullClassNameCat(functionName, function->name, 0x0);
+FullClassNameCat(functionName, function->name, 0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereFunction_%s;\n", functionName);
-anyFunction = 0x1;
+anyFunction = 1;
 }
 }
 }
@@ -1332,7 +1332,7 @@ struct PropertyImport * prop;
 char classID[1024];
 char className[1024] = "";
 
-FullClassNameCat(className, _class->name, 0x1);
+FullClassNameCat(className, _class->name, 1);
 if(_class->itself)
 sprintf(classID, "__ecereClass_%s", className);
 else
@@ -1362,7 +1362,7 @@ for(prop = _class->properties.first; prop; prop = prop->next)
 char propName[1024];
 
 propName[0] = (char)0;
-FullClassNameCat(propName, prop->name, 0x1);
+FullClassNameCat(propName, prop->name, 1);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n", className, propName, classID, prop->name);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
@@ -1387,7 +1387,7 @@ if(module->name && module->importType != 1 && (!func || !func->dataType || !func
 char functionName[1024];
 
 functionName[0] = (char)0;
-FullClassNameCat(functionName, function->name, 0x0);
+FullClassNameCat(functionName, function->name, 0);
 if(isDynamicLibrary && !isStaticLibrary)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   function = eSystem_FindFunction(__currentModule, \"%s\");\n", function->name);
 else
@@ -1512,7 +1512,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(f, "   {\n");
 }
 {
-unsigned int destroyI18n = 0x0;
+unsigned int destroyI18n = 0;
 
 if(modules.count)
 {
@@ -1523,7 +1523,7 @@ char moduleName[1024];
 
 if(!strcmp(defModule->name, "i18n"))
 {
-destroyI18n = 0x1;
+destroyI18n = 1;
 continue;
 }
 strcpy(moduleName, defModule->name);
@@ -1783,7 +1783,7 @@ if(method)
 {
 struct Type * param;
 
-method->dataType = ProcessTypeString(method->dataTypeString, 0x0);
+method->dataType = ProcessTypeString(method->dataTypeString, 0);
 if(method->dataType && method->dataType->name)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         case %d:\n", vid - _class->base->vTblSize);
@@ -1802,18 +1802,18 @@ if(method->dataType->__anon1.__anon2.returnType->kind == 8)
 classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
-PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 1, 1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(resultType, f, 0x0);
+OutputTypeName(resultType, f, 0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
@@ -1837,18 +1837,18 @@ if(param->kind == 8)
 classSym = param->__anon1._class;
 else
 {
-PrintTypeNoConst(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
-PrintType(param, type, 0x1, 0x1);
+PrintType(param, type, 1, 1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier(param->name)));
 paramTypeName = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(paramTypeName, f, 0x0);
+OutputTypeName(paramTypeName, f, 0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 }
@@ -1917,7 +1917,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      }\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   }\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
-doVirtual = 0x1;
+doVirtual = 1;
 id = 0;
 vid = _class->base->vTblSize;
 next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&_class->methods);
@@ -1928,7 +1928,7 @@ next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpa
 if(!next && doVirtual)
 {
 if(vid == _class->vTblSize)
-doVirtual = 0x0;
+doVirtual = 0;
 else
 vid++;
 id = 0;
@@ -1940,7 +1940,7 @@ for(method = next; method; method = next)
 struct Type * param;
 
 if(!method->dataType)
-method->dataType = ProcessTypeString(method->dataTypeString, 0x0);
+method->dataType = ProcessTypeString(method->dataTypeString, 0);
 if(method->dataType->name)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   ");
@@ -1949,7 +1949,7 @@ if(doVirtual)
 char name[1024];
 
 strcpy(name, "__ecereVMethodID_");
-FullClassNameCat(name, method->_class->fullName, 0x1);
+FullClassNameCat(name, method->_class->fullName, 1);
 strcat(name, "_");
 strcat(name, method->name);
 DeclareMethod(method, name);
@@ -1972,18 +1972,18 @@ if(method->dataType->__anon1.__anon2.returnType->kind == 8)
 classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
-PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 1, 1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      ");
-OutputTypeName(resultType, f, 0x0);
+OutputTypeName(resultType, f, 0);
 if(method->dataType->__anon1.__anon2.returnType->kind == 9)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = { 0 }");
 else if(method->dataType->__anon1.__anon2.returnType->kind == 8 && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 1)
@@ -2003,12 +2003,12 @@ if(param->kind == 8)
 classSym = param->__anon1._class;
 else
 {
-PrintTypeNoConst(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
 if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
@@ -2062,7 +2062,7 @@ next = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereNameSpa
 if(!next && doVirtual)
 {
 if(vid == _class->vTblSize)
-doVirtual = 0x0;
+doVirtual = 0;
 else
 vid++;
 id = 0;
@@ -2081,7 +2081,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 
 static void BindDCOMServer()
 {
-unsigned int mutexDeclared = 0x0;
+unsigned int mutexDeclared = 0;
 struct __ecereNameSpace__ecere__com__Class * _class;
 
 for(_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)privateModule + 24)))->classes.first; _class; _class = _class->next)
@@ -2117,7 +2117,7 @@ for(method = (struct __ecereNameSpace__ecere__com__Method *)__ecereProp___ecereN
 {
 struct Type * param;
 
-method->dataType = ProcessTypeString(method->dataTypeString, 0x0);
+method->dataType = ProcessTypeString(method->dataTypeString, 0);
 if(method->dataType && method->dataType->name)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         case %d:\n", id++);
@@ -2136,18 +2136,18 @@ if(method->dataType->__anon1.__anon2.returnType->kind == 8)
 classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
-PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 1, 1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(resultType, f, 0x0);
+OutputTypeName(resultType, f, 0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 for(param = method->dataType->__anon1.__anon2.params.first; param; param = param->next)
@@ -2171,18 +2171,18 @@ if(param->kind == 8)
 classSym = param->__anon1._class;
 else
 {
-PrintTypeNoConst(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
-PrintType(param, type, 0x1, 0x1);
+PrintType(param, type, 1, 1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier(param->name)));
 paramTypeName = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "            ");
-OutputTypeName(paramTypeName, f, 0x0);
+OutputTypeName(paramTypeName, f, 0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ";\n");
 }
 }
@@ -2264,11 +2264,11 @@ if(!mutexDeclared)
 DeclareClass(FindClass("ecere::sys::Mutex"), "__ecereClass___ecereNameSpace__ecere__sys__Mutex");
 DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Wait", privateModule), "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait");
 DeclareMethod(__ecereNameSpace__ecere__com__eClass_FindMethod(__ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Release", privateModule), "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release");
-mutexDeclared = 0x1;
+mutexDeclared = 1;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 if(!method->dataType)
-method->dataType = ProcessTypeString(method->dataTypeString, 0x0);
+method->dataType = ProcessTypeString(method->dataTypeString, 0);
 if(method->dataType->name)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   virtual %s\n", method->dataTypeString);
@@ -2289,18 +2289,18 @@ if(method->dataType->__anon1.__anon2.returnType->kind == 8)
 classSym = method->dataType->__anon1.__anon2.returnType->__anon1._class;
 else
 {
-PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0x0, 0x1);
+PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
-PrintType(method->dataType->__anon1.__anon2.returnType, type, 0x1, 0x1);
+PrintType(method->dataType->__anon1.__anon2.returnType, type, 1, 1);
 decl = SpecDeclFromString(type, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereResult")));
 resultType = MkTypeName(specs, decl);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "      ");
-OutputTypeName(resultType, f, 0x0);
+OutputTypeName(resultType, f, 0);
 if(method->dataType->__anon1.__anon2.returnType->kind == 9)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, " = { 0 }");
 else if(method->dataType->__anon1.__anon2.returnType->kind == 8 && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered && method->dataType->__anon1.__anon2.returnType->__anon1._class->__anon1.registered->type == 1)
@@ -2321,12 +2321,12 @@ if(param->kind == 8)
 classSym = param->__anon1._class;
 else
 {
-PrintTypeNoConst(param, type, 0x0, 0x1);
+PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
 type[0] = (char)0;
 }
 strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 0x1);
+FullClassNameCat(className, classSym->string, 1);
 DeclareClass(classSym, className);
 if(param->kind == 8 && !strcmp(param->__anon1._class->string, "String"))
 {
@@ -2346,7 +2346,7 @@ for(param = method->dataType->__anon1.__anon2.params.first; param; param = param
 {
 if(param->kind == 8 && ((param->__anon1._class && param->__anon1._class->__anon1.registered && param->__anon1._class->__anon1.registered->type == 1) || !strcmp(param->__anon1._class->string, "String")) && !param->constant)
 {
-hasReturnValue = 0x1;
+hasReturnValue = 1;
 break;
 }
 }
@@ -2575,11 +2575,11 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereName
 void __ecereMethod_SymbolgenApp_Main(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 int c;
-unsigned int valid = 0x1;
+unsigned int valid = 1;
 const char * output = (((void *)0));
 
-outputPot = 0x0;
-disabledPooling = 0x0;
+outputPot = 0;
+disabledPooling = 0;
 targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
 targetBits = GetHostBits();
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
@@ -2604,7 +2604,7 @@ output = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + s
 c++;
 }
 else
-valid = 0x0;
+valid = 0;
 }
 else if(!strcmp(arg, "-name"))
 {
@@ -2614,27 +2614,27 @@ strcpy(projectName, ((struct __ecereNameSpace__ecere__com__Application *)(((char
 c++;
 }
 else
-valid = 0x0;
+valid = 0;
 }
 else if(!strcmp(arg, "-t"))
 {
 if(++c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc)
 targetPlatform = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argv[c]);
 else
-valid = 0x0;
+valid = 0;
 }
 else if(!strcmp(arg, "-outputpot"))
-outputPot = 0x1;
+outputPot = 1;
 else if(!strcmp(arg, "-disabled-pooling"))
-disabledPooling = 0x1;
+disabledPooling = 1;
 else if(!strcmp(arg, "-console"))
-isConsole = 0x1;
+isConsole = 1;
 else if(!strcmp(arg, "-dynamiclib"))
-isDynamicLibrary = 0x1;
+isDynamicLibrary = 1;
 else if(!strcmp(arg, "-staticlib"))
 {
-isDynamicLibrary = 0x1;
-isStaticLibrary = 0x1;
+isDynamicLibrary = 1;
+isStaticLibrary = 1;
 }
 else if(!strcmp(arg, "-symbols"))
 {
@@ -2644,12 +2644,12 @@ SetSymbolsDir(((struct __ecereNameSpace__ecere__com__Application *)(((char *)thi
 c++;
 }
 else
-valid = 0x0;
+valid = 0;
 }
 }
 }
 if(!output)
-valid = 0x0;
+valid = 0;
 if(!valid)
 {
 printf(__ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
@@ -2671,8 +2671,8 @@ SetTopContext(theGlobalContext);
 SetCurrentContext(theGlobalContext);
 SetTargetPlatform(targetPlatform);
 SetTargetBits(targetBits);
-SetInSymbolGen(0x1);
-privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)(0x1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? 2 : targetBits == 32 ? 4 : (unsigned int)0) | 8), 1, (((void *)0)));
+SetInSymbolGen(1);
+privateModule = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)(1 | (targetBits == sizeof(uintptr_t) * 8 ? (unsigned int)0 : targetBits == 64 ? 2 : targetBits == 32 ? 4 : (unsigned int)0) | 8), 1, (((void *)0)));
 SetPrivateModule(privateModule);
 mainModule = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleImport);
 SetMainModule(mainModule);
@@ -2708,7 +2708,7 @@ int c;
 if(f)
 {
 while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
-count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof (tokens) / sizeof (tokens[0]), tokens, 0x2);
+count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof (tokens) / sizeof (tokens[0]), tokens, 2);
 if(!count)
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
@@ -2761,7 +2761,7 @@ int c;
 if(f)
 {
 while(!count && __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
-count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof (tokens) / sizeof (tokens[0]), tokens, 0x2);
+count = __ecereNameSpace__ecere__sys__Tokenize(line, sizeof (tokens) / sizeof (tokens[0]), tokens, 2);
 if(!count)
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
@@ -2800,7 +2800,7 @@ struct ImportedModule * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstan
 __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(module->name), __ecereInstance1->type = 0, __ecereInstance1->importType = 0, __ecereInstance1;
 });
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(&_defines, importedModule);
-module->globalInstance = LoadSymbols(file, 0, 0x0);
+module->globalInstance = LoadSymbols(file, 0, 0);
 CheckDataRedefinitions();
 }
 {
@@ -2864,8 +2864,8 @@ struct ContextStringPair pair =
 msgid, msgctxt
 };
 
-i18n = 0x1;
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(&pair), 0x0))
+i18n = 1;
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(&pair), 0))
 {
 msgid = (((void *)0));
 msgctxt = (((void *)0));
@@ -2875,7 +2875,7 @@ struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 intlStrings, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(&pair)), 0x1);
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(&pair)), 1);
 __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(comments)));
 });
 comments = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__List_TPL_String_);

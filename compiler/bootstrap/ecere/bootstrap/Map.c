@@ -478,7 +478,7 @@ if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->temp
 memcpy((void *)&node->value, (void *)value, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->structSize);
 else
 __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(node, value);
-return 0x1;
+return 1;
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition;
@@ -505,7 +505,7 @@ struct __ecereNameSpace__ecere__com__MapNode * realNode = (struct __ecereNameSpa
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(newNode), 0x1);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(newNode), 1);
 
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
@@ -676,7 +676,7 @@ struct __ecereNameSpace__ecere__com__MapNode * destNode = (struct __ecereNameSpa
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(srcNode), 0x1);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(srcNode), 1);
 
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
@@ -719,7 +719,7 @@ struct __ecereNameSpace__ecere__com__MapNode * destNode = (struct __ecereNameSpa
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(srcNode), 0x1);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(srcNode), 1);
 
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
@@ -810,7 +810,7 @@ destNode = (struct __ecereNameSpace__ecere__com__MapNode *)((struct __ecereNameS
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(container, key, 0x1);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(container, key, 1);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = container;
 

@@ -58,7 +58,6 @@ typedef unsigned __int64 uint64;
 #define structSize_GlobalFunction         (_64BIT ? 72 : 36)
 #define structSize_DefinedExpression      (_64BIT ? 40 : 20)
 #define structSize_BitMember              (_64BIT ? 96 : 64)
-#define structSize_NamedLink              (_64BIT ? 32 : 16)
 #define structSize_DataMember             (_64BIT ? 160 : 96)
 #define structSize_ClassProperty          (_64BIT ? 80 : 40)
 #define structSize_Method                 (_64BIT ? 96 : 52)
@@ -379,7 +378,7 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__unichar_OnGetDataFromSt
 int nb;
 
 (*this) = __ecereNameSpace__ecere__sys__UTF8GetChar(string, &nb);
-return 0x1;
+return 1;
 }
 
 void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
@@ -610,7 +609,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 struct __ecereNameSpace__ecere__com__EnumClassData
 {
 struct __ecereNameSpace__ecere__sys__OldList values;
-int largest;
+long long largest;
 } __attribute__ ((gcc_struct));
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__EnumClassData;
@@ -690,9 +689,9 @@ block->prev = (((void *)0));
 block->next = (((void *)0));
 this->totalSize += numBlocks;
 this->numParts++;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 struct __ecereNameSpace__ecere__com__MemBlock * __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Add(struct __ecereNameSpace__ecere__com__BlockPool * this)
@@ -827,13 +826,13 @@ unsigned int __ecereNameSpace__ecere__com__pow2i(unsigned int number)
 return 1 << __ecereNameSpace__ecere__com__log2i(number);
 }
 
-static unsigned int __ecereNameSpace__ecere__com__memoryInitialized = 0x0;
+static unsigned int __ecereNameSpace__ecere__com__memoryInitialized = 0;
 
 static void __ecereNameSpace__ecere__com__InitMemory()
 {
 int c;
 
-__ecereNameSpace__ecere__com__memoryInitialized = 0x1;
+__ecereNameSpace__ecere__com__memoryInitialized = 1;
 __ecereNameSpace__ecere__com__pools = calloc(1, sizeof(struct __ecereNameSpace__ecere__com__BlockPool) * 31);
 for(c = 0; c < 31; c++)
 {
@@ -1295,7 +1294,7 @@ for(watcher = _class->selfWatchers.first; watcher; watcher = watcher->next)
 if(watcher->_property == prop)
 watcher->_property = _property;
 }
-_property->selfWatchable = 0x1;
+_property->selfWatchable = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&_class->prop, (struct __ecereNameSpace__ecere__sys__BTNode *)link);
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->name), prop->name = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->dataTypeString), prop->dataTypeString = 0);
@@ -1419,20 +1418,20 @@ struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSyst
 {
 int start = 0, c;
 struct __ecereNameSpace__ecere__com__NameSpace * nameSpace = (((void *)0));
-unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 0x1 : 0x0;
-unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 0x1 : 0x0;
-unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 0x1 : 0x0;
+unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 1 : 0;
+unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 1 : 0;
+unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 1 : 0;
 unsigned int crossBits = force32Bits || force64Bits;
-unsigned int fixed = 0x0;
+unsigned int fixed = 0;
 
 if(inCompiler && crossBits)
 {
 struct __ecereNameSpace__ecere__com__Class * c = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name);
 
 if(c && c->fixed)
-fixed = 0x1;
+fixed = 1;
 else if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->name && !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->name, "ecereCOM"))
-fixed = 0x1;
+fixed = 1;
 }
 {
 nameSpace = (declMode == 1) ? &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->publicNameSpace : &((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->privateNameSpace;
@@ -1504,7 +1503,7 @@ dataTypeString = (baseName && baseName[0]) ? baseName : "int";
 else
 {
 base = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, baseName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
-base->internalDecl = 0x1;
+base->internalDecl = 1;
 enumBase = base;
 base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "enum");
 }
@@ -1558,7 +1557,7 @@ totalSizeClass = offsetClass + sizeClass;
 _class = __ecereNameSpace__ecere__com__eSystem_FindClass(module, name);
 if(!_class)
 {
-const char * colons = __ecereNameSpace__ecere__sys__RSearchString(name, "::", strlen(name), 0x1, 0x0);
+const char * colons = __ecereNameSpace__ecere__sys__RSearchString(name, "::", strlen(name), 1, 0);
 
 if(colons && colons)
 {
@@ -1583,7 +1582,7 @@ if(declMode != 4)
 printf("error: Redefinition of class %s\n", name);
 else
 {
-_class->comRedefinition = 0x1;
+_class->comRedefinition = 1;
 return _class;
 }
 return (((void *)0));
@@ -1692,18 +1691,18 @@ templateBase = __ecereNameSpace__ecere__com__eSystem_FindClass(module, templateC
 if(!templateBase)
 {
 templateBase = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, templateClassName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
-templateBase->internalDecl = 0x1;
+templateBase->internalDecl = 1;
 }
 base = __ecereNameSpace__ecere__com__eSystem_FindClass(module, baseName);
 }
 else
 {
 base = __ecereNameSpace__ecere__com__eSystem_RegisterClass((int)0, baseName, (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, declMode, 1);
-base->internalDecl = 0x1;
+base->internalDecl = 1;
 }
 }
 else
-_class->internalDecl = 0x0;
+_class->internalDecl = 0;
 if(totalSizeClass)
 {
 _class->data = __ecereNameSpace__ecere__com__eSystem_Renew(_class->data, sizeof(unsigned char) * (totalSizeClass));
@@ -1827,6 +1826,8 @@ else if(!strcmp(name, "ecere::sys::Item"))
 size = 0;
 else if(!strcmp(name, "ecere::sys::NamedLink"))
 size = 0;
+else if(!strcmp(name, "ecere::sys::NamedLink64"))
+size = 0;
 else if(!strcmp(name, "ecere::sys::OldLink"))
 size = 0;
 else if(!strcmp(name, "ecere::sys::NamedItem"))
@@ -1867,9 +1868,9 @@ _class->Destructor = Destructor;
 if(_class->type != 1000)
 _class->type = type;
 if(!size)
-_class->computeSize = 0x1;
+_class->computeSize = 1;
 else
-_class->computeSize = 0x0;
+_class->computeSize = 0;
 _class->inheritanceAccess = inheritanceAccess;
 if(type == 4)
 {
@@ -1938,17 +1939,17 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&parentMember->mem
 }
 }
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
-struct __ecereNameSpace__ecere__sys__NamedLink
+struct __ecereNameSpace__ecere__sys__NamedLink64
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * prev;
-struct __ecereNameSpace__ecere__sys__NamedLink * next;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * prev;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * next;
 char *  name;
-void *  data;
+long long data;
 } __attribute__ ((gcc_struct));
 
-static void __ecereNameSpace__ecere__com__FreeEnumValue(struct __ecereNameSpace__ecere__sys__NamedLink * value)
+static void __ecereNameSpace__ecere__com__FreeEnumValue(struct __ecereNameSpace__ecere__sys__NamedLink64 * value)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(value->name), value->name = 0);
 }
@@ -2236,7 +2237,7 @@ for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module
 {
 if(searchPrivate || subModule->importMode == 1)
 {
-link = __ecereNameSpace__ecere__com__SearchModule(subModule->module, name, listOffset, 0x0);
+link = __ecereNameSpace__ecere__com__SearchModule(subModule->module, name, listOffset, 0);
 if(link)
 return link;
 }
@@ -2383,7 +2384,7 @@ name += 6;
 link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->systemNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
 if(link)
 return link->data;
-link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 0x1);
+link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
 if(link)
 return link->data;
 {
@@ -2399,7 +2400,7 @@ else
 strcpy(noTemplateName, name);
 link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->systemNameSpace, noTemplateName, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
 if(!link)
-link = __ecereNameSpace__ecere__com__SearchModule(module, noTemplateName, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 0x1);
+link = __ecereNameSpace__ecere__com__SearchModule(module, noTemplateName, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
 if(link)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = link->data;
@@ -2411,7 +2412,7 @@ strcat(className, templateParams);
 link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->systemNameSpace, className, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes);
 if(link)
 return link->data;
-link = __ecereNameSpace__ecere__com__SearchModule(module, className, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 0x1);
+link = __ecereNameSpace__ecere__com__SearchModule(module, className, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).classes, 1);
 if(link)
 return link->data;
 if(_class && templateParams)
@@ -3081,21 +3082,21 @@ c--;
 
 unsigned int __ecereNameSpace__ecere__com__DefaultFunction()
 {
-return 0x1;
+return 1;
 }
 
 unsigned int __ecereNameSpace__ecere__com__eClass_IsDerived(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from)
 {
 if(!_class && !from)
-return 0x1;
+return 1;
 if(_class && from && (_class->templateClass || from->templateClass))
 {
 if(__ecereNameSpace__ecere__com__eClass_IsDerived(_class->templateClass ? _class->templateClass : _class, from->templateClass ? from->templateClass : from))
 {
 if(!from->templateClass)
-return 0x1;
+return 1;
 else if(!_class->templateClass && _class == from->templateClass)
-return 0x0;
+return 0;
 else
 {
 struct __ecereNameSpace__ecere__com__Class * sClass;
@@ -3132,10 +3133,10 @@ break;
 }
 }
 if(param)
-return 0x0;
+return 0;
 }
 }
-return 0x1;
+return 1;
 }
 }
 }
@@ -3144,10 +3145,10 @@ else
 for(; _class && from; _class = _class->base)
 {
 if(_class == from || _class->templateClass == from || ((_class->type == 1000 || (_class->type == 0 && _class->isInstanceClass)) && from->name && !strcmp(_class->name, from->name)))
-return 0x1;
+return 1;
 }
 }
-return 0x0;
+return 0;
 }
 
 static void __ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(struct __ecereNameSpace__ecere__com__Class * base, const char * name, int vid, void * origFunction, const char * type)
@@ -3347,7 +3348,7 @@ for(watcher = _class->selfWatchers.first; watcher; watcher = watcher->next)
 if(watcher->_property == prop)
 watcher->_property = _property;
 }
-_property->selfWatchable = 0x1;
+_property->selfWatchable = 1;
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->name), prop->name = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)prop->dataTypeString), prop->dataTypeString = 0);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&_class->membersAndProperties, prop);
@@ -3369,12 +3370,12 @@ struct __ecereNameSpace__ecere__com__Property * _property = (((void *)0));
 if(_class)
 {
 struct __ecereNameSpace__ecere__com__BTNamedLink * link = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->prop, name ? name : dataType);
-unsigned int isConversion = name ? 0x0 : 0x1;
+unsigned int isConversion = name ? 0 : 1;
 
 if(!name && dataType && !strncmp(dataType, "const ", 6))
 {
 name = dataType + 6;
-isConversion = 0x1;
+isConversion = 1;
 }
 if(link)
 _property = link->data;
@@ -3383,7 +3384,7 @@ if(!_property)
 _property = __extension__ ({
 struct __ecereNameSpace__ecere__com__Property * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_Property);
 
-__ecereInstance1->isProperty = 0x1, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name ? name : dataType), __ecereInstance1->id = (name && (setStmt || getStmt || dataType)) ? _class->memberID++ : 0, __ecereInstance1->Set = setStmt, __ecereInstance1->Get = getStmt, __ecereInstance1->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataType), __ecereInstance1->_class = _class, __ecereInstance1->compiled = 0x1, __ecereInstance1->conversion = isConversion, __ecereInstance1->memberAccess = declMode, __ecereInstance1;
+__ecereInstance1->isProperty = 1, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name ? name : dataType), __ecereInstance1->id = (name && (setStmt || getStmt || dataType)) ? _class->memberID++ : 0, __ecereInstance1->Set = setStmt, __ecereInstance1->Get = getStmt, __ecereInstance1->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataType), __ecereInstance1->_class = _class, __ecereInstance1->compiled = 1, __ecereInstance1->conversion = isConversion, __ecereInstance1->memberAccess = declMode, __ecereInstance1;
 });
 if(!isConversion)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, _property);
@@ -3402,16 +3403,6 @@ __ecereNameSpace__ecere__com__FixDerivativeProperty(_class, _property);
 }
 return _property;
 }
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
-
-struct __ecereNameSpace__ecere__sys__NamedLink64
-{
-struct __ecereNameSpace__ecere__sys__NamedLink64 * prev;
-struct __ecereNameSpace__ecere__sys__NamedLink64 * next;
-char *  name;
-long long data;
-} __attribute__ ((gcc_struct));
 
 static void __ecereNameSpace__ecere__com__SetDelayedCPValues(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__ClassProperty * _property)
 {
@@ -3546,7 +3537,7 @@ _class = _class->templateClass;
 if(_class->base && from != _class->base)
 {
 if(!__ecereNameSpace__ecere__com__ConstructInstance(instance, _class->base, from))
-return 0x0;
+return 0;
 }
 if(_class->Initialize)
 {
@@ -3566,11 +3557,11 @@ _class = _class->templateClass;
 if(_class->Destructor)
 _class->Destructor(instance);
 }
-return 0x0;
+return 0;
 }
 }
 (_class->templateClass ? _class->templateClass : _class)->count++;
-return 0x1;
+return 1;
 }
 
 void * __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class)
@@ -3582,8 +3573,8 @@ if(_class)
 {
 int size = _class->structSize;
 int flags = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + structSize_Instance)))->application + structSize_Module)))->isGUIApp;
-unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
-unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
+unsigned int inCompiler = (flags & 8) ? 1 : 0;
+unsigned int force32Bits = (flags & 4) ? 1 : 0;
 
 if(force32Bits && inCompiler)
 {
@@ -3614,7 +3605,7 @@ void __ecereNameSpace__ecere__com__eInstance_Evolve(struct __ecereNameSpace__ece
 {
 if(_class && instancePtr && *instancePtr)
 {
-unsigned int wasApp = 0x0, wasGuiApp = 0x0;
+unsigned int wasApp = 0, wasGuiApp = 0;
 struct __ecereNameSpace__ecere__com__Instance * instance = (struct __ecereNameSpace__ecere__com__Instance *)__ecereNameSpace__ecere__com__eSystem_Renew(*instancePtr, sizeof(unsigned char) * (_class->structSize));
 struct __ecereNameSpace__ecere__com__Class * fromClass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class;
 
@@ -4123,10 +4114,10 @@ struct __ecereNameSpace__ecere__com__Class * _class = ((struct __ecereNameSpace_
 for(; _class; _class = _class->base)
 {
 if(_class == from)
-return 0x1;
+return 1;
 }
 }
-return 0x0;
+return 0;
 }
 
 void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance)
@@ -4263,7 +4254,7 @@ if(dataMember->name && __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Fi
 {
 __ecereNameSpace__ecere__com__DataMember_Free(dataMember);
 ((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
-return 0x0;
+return 0;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&addTo->members, dataMember);
 if(dataMember->name)
@@ -4295,7 +4286,7 @@ addTo->memberOffset = dataMember->memberOffset;
 }
 else
 addTo->memberOffset += dataMember->memberOffset;
-return 0x1;
+return 1;
 }
 
 unsigned int __ecereNameSpace__ecere__com__eClass_AddMember(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__DataMember * dataMember)
@@ -4306,7 +4297,7 @@ if(!_class || _class->comRedefinition || (dataMember->name && __ecereMethod___ec
 {
 __ecereNameSpace__ecere__com__DataMember_Free(dataMember);
 ((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
-return 0x0;
+return 0;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, dataMember);
 if(dataMember->name)
@@ -4332,7 +4323,7 @@ _class->memberOffset += dataMember->structAlignment - (_class->memberOffset % da
 }
 dataMember->offset = _class->memberOffset;
 _class->memberOffset += dataMember->memberOffset;
-return 0x1;
+return 1;
 }
 
 struct __ecereNameSpace__ecere__com__BitMember * __ecereNameSpace__ecere__com__eClass_AddBitMember(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, const char * type, int bitSize, int bitPos, int declMode)
@@ -4499,12 +4490,12 @@ return module;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_Load(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char * name, int importAccess)
 {
-return __ecereNameSpace__ecere__com__Module_Load(fromModule, name, importAccess, 0x1);
+return __ecereNameSpace__ecere__com__Module_Load(fromModule, name, importAccess, 1);
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char * name, int importAccess)
 {
-return __ecereNameSpace__ecere__com__Module_Load(fromModule, name, importAccess, 0x0);
+return __ecereNameSpace__ecere__com__Module_Load(fromModule, name, importAccess, 0);
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStatic(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char * name, int importAccess, unsigned int (* Load)(struct __ecereNameSpace__ecere__com__Instance * module), unsigned int (* Unload)(struct __ecereNameSpace__ecere__com__Instance * module))
@@ -4564,12 +4555,12 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&((struct __ecereName
 }
 }
 
-void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char * string, int value)
+void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char * string, long long value)
 {
 if(_class && _class->type == 4)
 {
 struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
-struct __ecereNameSpace__ecere__sys__NamedLink * item;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * item;
 
 for(item = data->values.first; item; item = item->next)
 if(!strcmp(item->name, string))
@@ -4577,9 +4568,9 @@ break;
 if(!item)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&data->values, __extension__ ({
-struct __ecereNameSpace__ecere__sys__NamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink);
+struct __ecereNameSpace__ecere__sys__NamedLink64 * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink64);
 
-__ecereInstance1->data = (void *)value, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
+__ecereInstance1->data = value, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
 }));
 if(value > data->largest)
 data->largest = value;
@@ -4587,13 +4578,13 @@ data->largest = value;
 }
 }
 
-int __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, const char * string)
+long long __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, const char * string)
 {
 if(_class && _class->type == 4)
 {
 struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
-int value = data->largest + 1;
-struct __ecereNameSpace__ecere__sys__NamedLink * item;
+long long value = data->largest + 1;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * item;
 
 for(item = data->values.first; item; item = item->next)
 if(!strcmp(item->name, string))
@@ -4601,9 +4592,9 @@ break;
 if(!item)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&data->values, __extension__ ({
-struct __ecereNameSpace__ecere__sys__NamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink);
+struct __ecereNameSpace__ecere__sys__NamedLink64 * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(structSize_NamedLink64);
 
-__ecereInstance1->data = (void *)value, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
+__ecereInstance1->data = value, __ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(string), __ecereInstance1;
 }));
 if(value > data->largest)
 data->largest = value;
@@ -4629,7 +4620,7 @@ static void __ecereNameSpace__ecere__com__Application_Destructor(struct __ecereN
 {
 if(((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->parsedCommand)
 {
-(__ecereNameSpace__ecere__com__eSystem_Delete(((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->argv), ((struct __ecereNameSpace__ecere__com__Application * )(((char * )app + structSize_Module)))->argv = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->argv), ((struct __ecereNameSpace__ecere__com__Application * )(((char * )app + structSize_Module)))->argv = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(((struct __ecereNameSpace__ecere__com__Application *)(((char *)app + structSize_Module)))->parsedCommand), ((struct __ecereNameSpace__ecere__com__Application * )(((char * )app + structSize_Module)))->parsedCommand = 0);
 }
 }
@@ -4927,7 +4918,7 @@ struct __ecereNameSpace__ecere__com__BTNamedLink * link;
 link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->systemNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).defines);
 if(link)
 return link->data;
-link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).defines, 0x1);
+link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).defines, 1);
 if(link)
 return link->data;
 }
@@ -4943,7 +4934,7 @@ struct __ecereNameSpace__ecere__com__BTNamedLink * link;
 link = __ecereNameSpace__ecere__com__SearchNameSpace(&((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->systemNameSpace, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).functions);
 if(link)
 return link->data;
-link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).functions, 0x1);
+link = __ecereNameSpace__ecere__com__SearchModule(module, name, &(*((struct __ecereNameSpace__ecere__com__NameSpace *)0)).functions, 1);
 if(link)
 return link->data;
 }
@@ -5003,8 +4994,8 @@ if(instance && _property && _property->isWatchable)
 struct __ecereNameSpace__ecere__com__Instance * module = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->module : (((void *)0));
 struct __ecereNameSpace__ecere__com__Instance * application = module ? ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application : (((void *)0));
 int flags = application ? ((struct __ecereNameSpace__ecere__com__Application *)(((char *)application + structSize_Module)))->isGUIApp : 0;
-unsigned int inCompiler = (flags & 8) ? 0x1 : 0x0;
-unsigned int force32Bits = (flags & 4) ? 0x1 : 0x0;
+unsigned int inCompiler = (flags & 8) ? 1 : 0;
+unsigned int force32Bits = (flags & 4) ? 1 : 0;
 
 if(!force32Bits || !inCompiler)
 {
@@ -5032,7 +5023,7 @@ _property->watcherOffset = _class->structSize;
 _class->structSize += sizeof(struct __ecereNameSpace__ecere__sys__OldList);
 __ecereNameSpace__ecere__com__FixDerivativesBase(_class, _class);
 }
-_property->isWatchable = 0x1;
+_property->isWatchable = 1;
 }
 }
 
@@ -5059,7 +5050,7 @@ struct __ecereNameSpace__ecere__com__SelfWatcher * __ecereInstance1 = __ecereNam
 
 __ecereInstance1->_property = _property, __ecereInstance1->callback = callback, __ecereInstance1;
 }));
-_property->selfWatchable = 0x1;
+_property->selfWatchable = 1;
 }
 }
 
@@ -5262,9 +5253,9 @@ extern int isprint(int c);
 
 static void __ecereNameSpace__ecere__com__LoadCOM(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 0x1 : 0x0;
-unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 0x1 : 0x0;
-unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 0x1 : 0x0;
+unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 2) ? 1 : 0;
+unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 4) ? 1 : 0;
+unsigned int inCompiler = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application + structSize_Module)))->isGUIApp & 8) ? 1 : 0;
 int pointerSize = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
 struct __ecereNameSpace__ecere__com__Class * applicationClass;
 struct __ecereNameSpace__ecere__com__Class * enumClass, * structClass, * boolClass;
@@ -5280,8 +5271,8 @@ baseClass->typeSize = 0;
 struct __ecereNameSpace__ecere__com__Class * instanceClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Instance", (((void *)0)), 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
 
 instanceClass->type = 0;
-instanceClass->isInstanceClass = 0x1;
-instanceClass->fixed = 0x1;
+instanceClass->isInstanceClass = 1;
+instanceClass->fixed = 1;
 instanceClass->memberOffset = 0;
 instanceClass->offset = 0;
 instanceClass->memberID = -3;
@@ -5292,7 +5283,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(instanceClass, "_refCount", "
 }
 __ecereNameSpace__ecere__com__InitializeDataTypes1(module);
 enumClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "enum", (((void *)0)), 0, force64Bits ? 40 : sizeof(struct __ecereNameSpace__ecere__com__EnumClassData), (((void *)0)), (((void *)0)), module, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddClassProperty(enumClass, "enumSize", "int", (((void *)0)), __ecereNameSpace__ecere__com__GetEnumSize)->constant = 0x1;
+__ecereNameSpace__ecere__com__eClass_AddClassProperty(enumClass, "enumSize", "int", (((void *)0)), __ecereNameSpace__ecere__com__GetEnumSize)->constant = 1;
 enumClass->type = 1000;
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)enumClass->dataTypeString), enumClass->dataTypeString = 0);
 enumClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("int");
@@ -5325,7 +5316,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "importType", "I
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "origImportType", "ImportType", sizeof(int), 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "privateNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : force32Bits ? (16 + 4 + 4 + 4 * 16) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(moduleClass, "publicNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : force32Bits ? (16 + 4 + 4 + 4 * 16) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
-moduleClass->fixed = 0x1;
+moduleClass->fixed = 1;
 moduleClass->count++;
 if(inCompiler && force32Bits)
 moduleClass->structSize = 12 + 4 + 20 + 20 + 20 + 20 + 4 + 4 + 4 + 4 + 4 + 4 + 4 + (16 + 4 + 4 + 4 * 16) + (16 + 4 + 4 + 4 * 16);
@@ -5343,7 +5334,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "isGUIApp",
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "allModules", "OldList", force64Bits ? 32 : force32Bits ? 20 : sizeof(struct __ecereNameSpace__ecere__sys__OldList), pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "parsedCommand", "char *", pointerSize, pointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(applicationClass, "systemNameSpace", "NameSpace", force64Bits ? (32 + 8 + 8 + 4 * 32) : force32Bits ? (16 + 4 + 4 + 4 * 16) : sizeof(struct __ecereNameSpace__ecere__com__NameSpace), pointerSize, 1);
-applicationClass->fixed = 0x1;
+applicationClass->fixed = 1;
 applicationClass->count++;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("sin", "double sin(Angle number)", sin, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("sinh", "double sinh(Angle number)", sinh, module, 4);
@@ -5370,6 +5361,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("exp", "double exp(double
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("qsort", "void qsort(void *, uintsize, uintsize, int (*)(void *, void *))", qsort, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtod", "double strtod(const char*, char**)", strtod, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtol", "int strtol(const char*, char**, int base)", strtol, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoul", "unsigned long strtoul(const char * nptr, char ** endptr, int base)", strtoul, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoll", "int64 strtoll(const char * nptr, char ** endptr, int base)", strtoll, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoull", "uint64 strtoull(const char * nptr, char ** endptr, int base)", strtoull, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("system", "int system(const char*)", system, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("atoi", "int atoi(const char*)", atoi, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("atof", "double atof(const char*)", atof, module, 4);
@@ -5414,9 +5408,6 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isalpha", "int isalpha(i
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("islower", "int islower(int c)", islower, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isupper", "int isupper(int c)", isupper, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoul", "unsigned long strtoul(const char * nptr, char ** endptr, int base)", strtoul, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoll", "int64 strtoll(const char * nptr, char ** endptr, int base)", strtoul, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoull", "uint64 strtoull(const char * nptr, char ** endptr, int base)", strtoul, module, 4);
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char * argv[])
@@ -5755,14 +5746,14 @@ mask >>= 1;
 if(ch & (unsigned char)0x10)
 {
 if(ch & (unsigned char)0x08)
-return 0x0;
+return 0;
 numBytes++;
 mask >>= 1;
 }
 }
 }
 else
-return 0x0;
+return 0;
 }
 for(i = 0; i < numBytes && (ch = source[c]); i++, c++)
 {
@@ -5772,16 +5763,16 @@ mask = (unsigned char)0x3F;
 if(i > 1)
 {
 if(!(ch & (unsigned char)0x80) || (ch & (unsigned char)0x40))
-return 0x0;
+return 0;
 }
 }
 if(i < numBytes)
-return 0x0;
+return 0;
 if(codePoint > 0x10FFFF || (codePoint >= 0xD800 && codePoint <= 0xDFFF) || (codePoint < 0x80 && numBytes > 1) || (codePoint < 0x800 && numBytes > 2) || (codePoint < 0x10000 && numBytes > 3))
-return 0x0;
+return 0;
 }
 }
-return 0x1;
+return 1;
 }
 
 int __ecereNameSpace__ecere__sys__ISO8859_1toUTF8(const char * source, char * dest, int max)
@@ -5841,7 +5832,7 @@ int d = 0;
 int len;
 char * dest;
 unsigned short u16;
-unsigned int invert = 0x0;
+unsigned int invert = 0;
 
 for(len = 0; source[len]; len++)
 ;
@@ -5853,7 +5844,7 @@ unsigned int ch;
 if(!c && (u16 == (unsigned short)0xFFFE || u16 == (unsigned short)0xFEFF))
 {
 if(u16 == (unsigned short)0xFFFE)
-invert = 0x1;
+invert = 1;
 continue;
 }
 if(invert)
@@ -6566,7 +6557,7 @@ class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::Enum
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__EnumClassData = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "values", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "largest", "int", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "largest", "int64", 8, 8, 1);
 if(class)
 class->fixed = (unsigned int)1;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::Watcher", 0, sizeof(struct __ecereNameSpace__ecere__com__Watcher), 0, 0, 0, module, 2, 1);
@@ -6637,8 +6628,8 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eModule_Load
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eModule_LoadStrict", "ecere::com::Module ecere::com::eModule_LoadStrict(ecere::com::Module fromModule, const char * name, ecere::com::AccessMode importAccess)", __ecereNameSpace__ecere__com__eModule_LoadStrict, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eModule_LoadStatic", "ecere::com::Module ecere::com::eModule_LoadStatic(ecere::com::Module fromModule, const char * name, ecere::com::AccessMode importAccess, bool (* Load)(ecere::com::Module module), bool (* Unload)(ecere::com::Module module))", __ecereNameSpace__ecere__com__eModule_LoadStatic, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eModule_Unload", "void ecere::com::eModule_Unload(ecere::com::Module fromModule, ecere::com::Module module)", __ecereNameSpace__ecere__com__eModule_Unload, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eEnum_AddFixedValue", "void ecere::com::eEnum_AddFixedValue(ecere::com::Class _class, const char * string, int value)", __ecereNameSpace__ecere__com__eEnum_AddFixedValue, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eEnum_AddValue", "int ecere::com::eEnum_AddValue(ecere::com::Class _class, const char * string)", __ecereNameSpace__ecere__com__eEnum_AddValue, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eEnum_AddFixedValue", "void ecere::com::eEnum_AddFixedValue(ecere::com::Class _class, const char * string, int64 value)", __ecereNameSpace__ecere__com__eEnum_AddFixedValue, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eEnum_AddValue", "int64 ecere::com::eEnum_AddValue(ecere::com::Class _class, const char * string)", __ecereNameSpace__ecere__com__eEnum_AddValue, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_RegisterDefine", "ecere::com::DefinedExpression ecere::com::eSystem_RegisterDefine(const char * name, const char * value, ecere::com::Module module, ecere::com::AccessMode declMode)", __ecereNameSpace__ecere__com__eSystem_RegisterDefine, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_RegisterFunction", "ecere::com::GlobalFunction ecere::com::eSystem_RegisterFunction(const char * name, const char * type, void * func, ecere::com::Module module, ecere::com::AccessMode declMode)", __ecereNameSpace__ecere__com__eSystem_RegisterFunction, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_FindDefine", "ecere::com::DefinedExpression ecere::com::eSystem_FindDefine(ecere::com::Module module, const char * name)", __ecereNameSpace__ecere__com__eSystem_FindDefine, module, 4);

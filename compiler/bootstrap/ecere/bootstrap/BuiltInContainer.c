@@ -343,7 +343,7 @@ return ((((this->type->type == 1) ? ((uint64)item) : ((this->type->typeSize == 1
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_SetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data)
 {
-return 0x0;
+return 0;
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, const uint64 pos, unsigned int create)
@@ -430,7 +430,7 @@ if(this)
 {
 struct __ecereNameSpace__ecere__com__Class * Dclass = this->type;
 char itemString[4096];
-unsigned int first = 0x1;
+unsigned int first = 1;
 unsigned char * data = this->data;
 int i;
 
@@ -444,7 +444,7 @@ result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(voi
 if(!first)
 strcat(tempString, ", ");
 strcat(tempString, result);
-first = 0x0;
+first = 0;
 data += Dclass->typeSize;
 }
 }

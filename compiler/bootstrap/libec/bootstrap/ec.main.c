@@ -647,7 +647,7 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecer
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedItem;
 
-struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
 
@@ -946,7 +946,7 @@ if(method)
 __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write = method->vid;
 __ecereClass___ecereNameSpace__ecere__sys__Item = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::Item");
 __ecereClass___ecereNameSpace__ecere__sys__NamedItem = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedItem");
-__ecereClass___ecereNameSpace__ecere__sys__NamedLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink");
+__ecereClass___ecereNameSpace__ecere__sys__NamedLink64 = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::NamedLink64");
 __ecereClass___ecereNameSpace__ecere__sys__OldLink = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldLink");
 __ecereClass___ecereNameSpace__ecere__sys__OldList = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::OldList");
 __ecereClass___ecereNameSpace__ecere__sys__TempFile = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::sys::TempFile");
@@ -958,7 +958,7 @@ __ecereCreateModuleInstances_ast();
 __ecereCreateModuleInstances_loadSymbols();
 __ecereCreateModuleInstances_pass1();
 }
-return 0x1;
+return 1;
 }
 
 extern void __ecereNameSpace__ecere__UnloadTranslatedStrings(const char * name);
@@ -993,7 +993,7 @@ __ecereUnregisterModule_shortcuts(module);
 __ecereUnregisterModule_type(module);
 if(__currentModule == module)
 __currentModule = (void *)0;
-return 0x1;
+return 1;
 }
 
 void __ecereRegisterModule_ec_main(struct __ecereNameSpace__ecere__com__Instance * module)

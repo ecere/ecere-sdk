@@ -1107,7 +1107,7 @@ d->__anon1.structDecl.posExp = (((void *)0));
 d->__anon1.structDecl.exp = (((void *)0));
 }
 dataType = ProcessType(decl->__anon1.__anon1.specifiers, d);
-PrintType(dataType, dataTypeString, 0x0, 0x1);
+PrintType(dataType, dataTypeString, 0, 1);
 {
 struct __ecereNameSpace__ecere__com__BitMember * member = __ecereNameSpace__ecere__com__eClass_AddBitMember(regClass, declId->string, dataTypeString, 0, 0, def->memberAccess);
 
@@ -1133,7 +1133,7 @@ char typeString[8192];
 
 typeString[0] = (char)0;
 dataType = ProcessType(decl->__anon1.__anon1.specifiers, d);
-PrintType(dataType, typeString, 0x0, 0x1);
+PrintType(dataType, typeString, 0, 1);
 if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, declId->string, typeString, 0, 0, def->memberAccess);
@@ -1187,7 +1187,7 @@ typeString[0] = (char)0;
 spec->__anon1.__anon2.id = (((void *)0));
 decl->__anon1.__anon1.declarators = MkListOne(MkDeclaratorIdentifier(id));
 dataType = ProcessType(decl->__anon1.__anon1.specifiers, (((void *)0)));
-PrintType(dataType, typeString, 0x0, 0x1);
+PrintType(dataType, typeString, 0, 1);
 if(member)
 {
 dataMember = __ecereNameSpace__ecere__com__eMember_AddDataMember(member, id->string, typeString, 0, 0, def->memberAccess);
@@ -1254,7 +1254,7 @@ if(prop)
 {
 if(inCompiler)
 prop->IsSet = (void *)propertyDef->issetStmt;
-prop->compiled = 0x0;
+prop->compiled = 0;
 prop->symbol = __extension__ ({
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
 
@@ -1391,7 +1391,7 @@ static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__Old
 {
 struct __ecereNameSpace__ecere__com__Class * regClass;
 struct ClassDef * def;
-unsigned int redefinition = 0x0;
+unsigned int redefinition = 0;
 
 regClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, symbol->string);
 if(regClass && !regClass->internalDecl)
@@ -1401,7 +1401,7 @@ if(symbol->parent || (struct Symbol *)globalContext->classes.root == symbol)
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalContext->classes, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 }
-redefinition = 0x1;
+redefinition = 1;
 if(inCompiler)
 {
 yylloc = *loc;
@@ -1412,15 +1412,15 @@ return ;
 else
 {
 char baseName[1024] = "";
-unsigned int unitType = 0x0;
-unsigned int wouldBeEnum = 0x0;
+unsigned int unitType = 0;
+unsigned int wouldBeEnum = 0;
 int inheritanceAccess = 1;
 
 if(baseSpecs != (((void *)0)))
 {
 struct Type * baseType = ProcessType(baseSpecs, (((void *)0)));
 
-PrintType(baseType, baseName, 0x0, 0x1);
+PrintType(baseType, baseName, 0, 1);
 if(baseType->kind == 8)
 {
 if(baseType->__anon1._class->__anon1.registered && classType == 0)
@@ -1433,7 +1433,7 @@ else if(baseType->__anon1._class->__anon1.registered->type == 5)
 classType = 5;
 else if(baseType->__anon1._class->__anon1.registered->type == 4)
 {
-wouldBeEnum = 0x1;
+wouldBeEnum = 1;
 }
 }
 }
@@ -1443,7 +1443,7 @@ classType = 5;
 baseName[0] = '\0';
 }
 else
-unitType = 0x1;
+unitType = 1;
 FreeType(baseType);
 if(((struct Specifier *)baseSpecs->first)->type == 0 && ((struct Specifier *)baseSpecs->first)->__anon1.specifier == PRIVATE)
 inheritanceAccess = 2;

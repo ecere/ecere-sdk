@@ -387,6 +387,39 @@ void GetLocText(EditBox editBox, File f, int position, Location loc, char ** tex
    f.Printf(""); // Make the stream point to where the editbox is
 }
 
+static int64 GetI64EnumValue(Class dataType, DataValue dataForm)
+{
+   int64 i64Value = 0;
+   switch(dataType.typeSize)
+   {
+      case 1:
+         if(!strcmp(dataType.dataTypeString, "byte"))
+            i64Value = dataForm.uc;
+         else
+            i64Value = dataForm.c;
+         break;
+      case 2:
+         if(!strcmp(dataType.dataTypeString, "uint16"))
+            i64Value = dataForm.us;
+         else
+            i64Value = dataForm.s;
+         break;
+      case 4:
+         if(!strcmp(dataType.dataTypeString, "uint"))
+            i64Value = dataForm.ui;
+         else
+            i64Value = dataForm.i;
+         break;
+      case 8:
+         if(!strcmp(dataType.dataTypeString, "uint64"))
+            i64Value = *(int64 *)&dataForm.ui64;
+         else
+            i64Value = dataForm.i64;
+         break;
+   }
+   return i64Value;
+}
+
 void Code_FixProperty(Property prop, Instance object)
 {
    Designer::FixProperty(prop, object);
@@ -3810,13 +3843,14 @@ class CodeEditor : Window
 
                            if(dataType.type == enumClass)
                            {
-                              NamedLink value;
+                              NamedLink64 value;
                               Class enumClass = eSystem_FindClass(privateModule, "enum");
                               EnumClassData e = ACCESS_CLASSDATA(dataType, enumClass);
+                              int64 i64Value = GetI64EnumValue(dataType, dataForm);
 
                               for(value = e.values.first; value; value = value.next)
                               {
-                                 if((int)value.data == dataForm.i)
+                                 if(value.data == i64Value)
                                  {
                                     string = value.name;
                                     break;
@@ -4536,13 +4570,14 @@ class CodeEditor : Window
                         bool needClass = true;
                         if(dataType.type == enumClass)
                         {
-                           NamedLink value;
+                           NamedLink64 value;
                            Class enumClass = eSystem_FindClass(privateModule, "enum");
                            EnumClassData e = ACCESS_CLASSDATA(dataType, enumClass);
+                           int64 i64Value = GetI64EnumValue(dataType, dataForm);
 
                            for(value = e.values.first; value; value = value.next)
                            {
-                              if((int)value.data == dataForm.i)
+                              if(value.data == i64Value)
                               {
                                  string = value.name;
                                  break;

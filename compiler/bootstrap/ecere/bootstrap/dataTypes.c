@@ -558,39 +558,57 @@ __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->count = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size);
 }
 
+extern int strcmp(const char * , const char * );
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__EnumClassData;
 
 struct __ecereNameSpace__ecere__com__EnumClassData
 {
 struct __ecereNameSpace__ecere__sys__OldList values;
-int largest;
+long long largest;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedLink64;
 
-struct __ecereNameSpace__ecere__sys__NamedLink
+struct __ecereNameSpace__ecere__sys__NamedLink64
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * prev;
-struct __ecereNameSpace__ecere__sys__NamedLink * next;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * prev;
+struct __ecereNameSpace__ecere__sys__NamedLink64 * next;
 char *  name;
-void *  data;
+long long data;
 } __attribute__ ((gcc_struct));
 
 extern char *  strcpy(char * , const char * );
 
 extern int toupper(int);
 
-const char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, char * tempString, void * fieldData, unsigned int * needClass)
+const char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * needClass)
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * item = (((void *)0));
+struct __ecereNameSpace__ecere__sys__NamedLink64 * item = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * b;
+long long i64Data;
 
+switch(_class->typeSize)
+{
+case 1:
+i64Data = !strcmp(_class->dataTypeString, "byte") ? *(unsigned char *)data : *(char *)data;
+break;
+case 2:
+i64Data = !strcmp(_class->dataTypeString, "uint16") ? *(unsigned short *)data : *(short *)data;
+break;
+case 4:
+i64Data = !strcmp(_class->dataTypeString, "uint") ? *(unsigned int *)data : *(int *)data;
+break;
+case 8:
+i64Data = !strcmp(_class->dataTypeString, "uint64") ? *(long long *)data : *(long long *)data;
+break;
+}
 for(b = _class; !item && b && b->type == 4; b = b->base)
 {
 struct __ecereNameSpace__ecere__com__EnumClassData * enumeration = (struct __ecereNameSpace__ecere__com__EnumClassData *)b->data;
 
 for(item = enumeration->values.first; item; item = item->next)
-if((int)item->data == *data)
+if(item->data == i64Data)
 break;
 }
 if(item)
@@ -606,11 +624,11 @@ return (((void *)0));
 
 extern int strcasecmp(const char * , const char * );
 
-static unsigned int __ecereNameSpace__ecere__com__Integer_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, int *  data, const char *  string);
+static unsigned int __ecereNameSpace__ecere__com__Int64_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, long long *  data, const char *  string);
 
-static unsigned int __ecereNameSpace__ecere__com__Enum_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, const char * string)
+static unsigned int __ecereNameSpace__ecere__com__Enum_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, const char * string)
 {
-struct __ecereNameSpace__ecere__sys__NamedLink * item = (((void *)0));
+struct __ecereNameSpace__ecere__sys__NamedLink64 * item = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * b;
 
 for(b = _class; !item && b && b->type == 4; b = b->base)
@@ -625,12 +643,38 @@ break;
 }
 if(item)
 {
-*data = (int)item->data;
-return 0x1;
+switch(_class->typeSize)
+{
+case 1:
+if(!strcmp(_class->dataTypeString, "byte"))
+*(unsigned char *)data = (unsigned char)item->data;
+else
+*(char *)data = (char)item->data;
+break;
+case 2:
+if(!strcmp(_class->dataTypeString, "uint16"))
+*(unsigned short *)data = (unsigned short)item->data;
+else
+*(short *)data = (short)item->data;
+break;
+case 4:
+if(!strcmp(_class->dataTypeString, "uint"))
+*(unsigned int *)data = (unsigned int)item->data;
+else
+*(int *)data = (int)item->data;
+break;
+case 8:
+if(!strcmp(_class->dataTypeString, "uint64"))
+*(uint64 *)data = *(uint64 *)&item->data;
+else
+*(long long *)data = item->data;
+break;
+}
+return 1;
 }
 else
-return __ecereNameSpace__ecere__com__Integer_OnGetDataFromString(_class, data, string);
-return 0x0;
+return __ecereNameSpace__ecere__com__Int64_OnGetDataFromString(_class, data, string);
+return 0;
 }
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
@@ -700,8 +744,6 @@ return memberResult;
 }
 return 0;
 }
-
-extern int strcmp(const char * , const char * );
 
 static int __ecereNameSpace__ecere__com__OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, void * data1, void * data2)
 {
@@ -915,11 +957,11 @@ struct __ecereNameSpace__ecere__com__Property * prop;
 
 for(prop = _class->conversions.first; prop; prop = prop->next)
 {
-unsigned int refProp = 0x0;
+unsigned int refProp = 0;
 struct __ecereNameSpace__ecere__com__Class * c;
 
 if(!strcmp(prop->name, _class->base->fullName))
-refProp = 0x1;
+refProp = 1;
 else if((c = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, prop->name)))
 {
 struct __ecereNameSpace__ecere__com__Property * p;
@@ -928,7 +970,7 @@ for(p = c->conversions.first; p; p = p->next)
 {
 if(!strcmp(p->name, _class->base->fullName) && !p->Set && !p->Get)
 {
-refProp = 0x1;
+refProp = 1;
 break;
 }
 }
@@ -973,8 +1015,8 @@ return ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void 
 }
 else
 {
-unsigned int atMember = 0x1;
-unsigned int prev = 0x0;
+unsigned int atMember = 1;
+unsigned int prev = 0;
 struct __ecereNameSpace__ecere__com__Class * mainClass = _class;
 
 _class = (((void *)0));
@@ -1022,7 +1064,7 @@ if(!strcmp(prop->dataTypeString, "float"))
 value.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data);
 if(value.__anon1.f)
 {
-unsigned int needClass = 0x1;
+unsigned int needClass = 1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
 
 if(result && result != memberString)
@@ -1036,7 +1078,7 @@ else if(memberType->type == 0 || memberType->type == 5)
 value.__anon1.p = ((void * (*)(void *))(void *)prop->Get)(data);
 if(value.__anon1.p || prop->IsSet)
 {
-unsigned int needClass = 0x1;
+unsigned int needClass = 1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, (memberType->type == 0) ? value.__anon1.p : &value, memberString, (((void *)0)), &needClass);
 
 if(result && result != memberString)
@@ -1048,7 +1090,7 @@ else
 value.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data);
 if(value.__anon1.i || prop->IsSet)
 {
-unsigned int needClass = 0x1;
+unsigned int needClass = 1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
 
 if(result && result != memberString)
@@ -1074,7 +1116,7 @@ if(memberData[c])
 break;
 if(c < typeSize)
 {
-unsigned int needClass = 0x1;
+unsigned int needClass = 1;
 const char * result;
 
 if(memberType->type == 0)
@@ -1109,7 +1151,7 @@ struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereName
 value.__anon1.ui64 = ((*(unsigned int *)data & bitMember->mask) >> bitMember->pos);
 if(value.__anon1.ui64)
 {
-unsigned int needClass = 0x1;
+unsigned int needClass = 1;
 char internalMemberString[1024];
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, internalMemberString, (((void *)0)), &needClass);
 
@@ -1131,7 +1173,7 @@ if(memberType->typeSize <= 4)
 value.__anon1.i = *(int *)((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
 if(value.__anon1.i)
 {
-unsigned int needClass = 0x1;
+unsigned int needClass = 1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, (((void *)0)), &needClass);
 
 if(result && memberString != result)
@@ -1140,7 +1182,7 @@ strcpy(memberString, result);
 }
 else
 {
-unsigned int needClass = 0x1;
+unsigned int needClass = 1;
 const char * result = ((const char * (*)(void *, void *, char *, void *, unsigned int *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetString])(memberType, ((unsigned char *)data + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), memberString, (((void *)0)), &needClass);
 
 if(result && memberString != result)
@@ -1188,11 +1230,11 @@ strcat(tempString, "\"");
 }
 else
 strcat(tempString, memberString);
-atMember = 0x1;
-prev = 0x1;
+atMember = 1;
+prev = 1;
 }
 else if(member && (!member->isProperty || !((struct __ecereNameSpace__ecere__com__Property *)member)->conversion))
-atMember = 0x0;
+atMember = 0;
 }
 }
 }
@@ -1217,7 +1259,7 @@ unsigned int result;
 struct __ecereNameSpace__ecere__com__Instance * module = _class->module;
 
 if(_class->type == 4)
-result = __ecereNameSpace__ecere__com__Enum_OnGetDataFromString(_class, (int *)data, string);
+result = __ecereNameSpace__ecere__com__Enum_OnGetDataFromString(_class, (long long *)data, string);
 else if(_class->type == 3)
 {
 struct __ecereNameSpace__ecere__com__Class * dataType;
@@ -1225,11 +1267,11 @@ struct __ecereNameSpace__ecere__com__Property * prop;
 
 for(prop = _class->conversions.first; prop; prop = prop->next)
 {
-unsigned int refProp = 0x0;
+unsigned int refProp = 0;
 struct __ecereNameSpace__ecere__com__Class * c;
 
 if(!strcmp(prop->name, _class->base->fullName))
-refProp = 0x1;
+refProp = 1;
 else if((c = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, prop->name)))
 {
 struct __ecereNameSpace__ecere__com__Property * p;
@@ -1238,7 +1280,7 @@ for(p = c->conversions.first; p; p = p->next)
 {
 if(!strcmp(p->name, _class->base->fullName) && !p->Set && !p->Get)
 {
-refProp = 0x1;
+refProp = 1;
 break;
 }
 }
@@ -1292,7 +1334,7 @@ return ((unsigned int (*)(void *, void *, const char *))(void *)dataType->_vTbl[
 else if(!string[0] && _class->type == 0)
 {
 *data = (((void *)0));
-return 0x1;
+return 1;
 }
 else
 {
@@ -1300,10 +1342,10 @@ int c;
 char memberName[1024];
 char memberString[10240];
 int count = 0;
-unsigned int quoted = 0x0;
+unsigned int quoted = 0;
 int brackets = 0;
 char ch;
-unsigned int escape = 0x0;
+unsigned int escape = 0;
 unsigned int gotChar;
 unsigned int memberOffset;
 struct __ecereNameSpace__ecere__com__Class * curClass = (((void *)0));
@@ -1311,7 +1353,7 @@ struct __ecereNameSpace__ecere__com__DataMember * curMember = (((void *)0));
 struct __ecereNameSpace__ecere__com__DataMember * subMemberStack[256];
 int subMemberStackPos = 0;
 
-result = 0x1;
+result = 1;
 if(_class->type == 5 || _class->type == 0)
 {
 data = *data = __ecereNameSpace__ecere__com__eInstance_New(_class);
@@ -1323,27 +1365,27 @@ memset(data, 0, _class->structSize);
 memberName[0] = '\0';
 for(c = 0; string[c] && count < sizeof (memberString); )
 {
-unsigned int found = 0x0;
+unsigned int found = 0;
 struct __ecereNameSpace__ecere__com__DataMember * thisMember = (((void *)0));
 
 brackets = 0;
-gotChar = 0x0;
+gotChar = 0;
 for(; (ch = string[c]) && count < sizeof (memberString); c++)
 {
 if(ch == '\"' && !escape)
 {
-quoted ^= 0x1;
+quoted ^= 1;
 }
 else if(quoted)
 {
 if(!escape && ch == '\\')
 {
-escape = 0x1;
+escape = 1;
 }
 else
 {
 memberString[count++] = ch;
-escape = 0x0;
+escape = 0;
 }
 }
 else if(ch == ' ')
@@ -1368,12 +1410,12 @@ else if(ch == '{')
 if(gotChar && !brackets)
 {
 count = 0;
-gotChar = 0x0;
+gotChar = 0;
 }
 if(brackets)
 {
 memberString[count++] = ch;
-gotChar = 0x1;
+gotChar = 1;
 }
 brackets++;
 }
@@ -1382,7 +1424,7 @@ else if(ch == '}')
 brackets--;
 if(brackets)
 {
-gotChar = 0x1;
+gotChar = 1;
 memberString[count++] = ch;
 }
 }
@@ -1397,13 +1439,13 @@ else
 memberString[count] = '\0';
 __ecereNameSpace__ecere__sys__TrimRSpaces(memberString, memberName);
 count = 0;
-gotChar = 0x0;
+gotChar = 0;
 }
 }
 else
 {
 memberString[count++] = ch;
-gotChar = 0x1;
+gotChar = 1;
 }
 }
 memberString[count] = '\0';
@@ -1425,7 +1467,7 @@ curClass = thisMember->_class;
 memcpy(subMemberStack, _subMemberStack, sizeof(int) * _subMemberStackPos);
 subMemberStackPos = _subMemberStackPos;
 }
-found = 0x1;
+found = 1;
 }
 }
 else
@@ -1434,7 +1476,7 @@ __ecereNameSpace__ecere__com__eClass_FindNextMember(_class, &curClass, &curMembe
 thisMember = curMember;
 if(thisMember)
 {
-found = 0x1;
+found = 1;
 __ecereNameSpace__ecere__com__eClass_FindDataMemberAndOffset(_class, thisMember->name, &memberOffset, _class->module, (((void *)0)), (((void *)0)));
 }
 }
@@ -1451,7 +1493,7 @@ if(memberType->type == 1)
 if(thisMember)
 {
 if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, (unsigned char *)data + (((thisMember->_class->type == 0) ? thisMember->_class->offset : 0) + memberOffset), memberString))
-result = 0x0;
+result = 0;
 }
 }
 else
@@ -1467,10 +1509,10 @@ struct __ecereNameSpace__ecere__com__DataValue value =
 if(memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString] == _class->_vTbl[__ecereVMethodID_class_OnGetDataFromString])
 {
 if(!__ecereNameSpace__ecere__com__OnGetDataFromString(memberType, &value, memberString))
-result = 0x0;
+result = 0;
 }
 else if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, &value, memberString))
-result = 0x0;
+result = 0;
 if(thisMember && !thisMember->isProperty)
 {
 if(_class->type == 2)
@@ -1492,7 +1534,7 @@ else
 }
 }
 else
-result = 0x0;
+result = 0;
 count = 0;
 memberName[0] = '\0';
 }
@@ -1750,9 +1792,9 @@ int result = strtol(string, &end, 0);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 static const char * __ecereNameSpace__ecere__com__Int16_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, short * data, char * string, void * fieldData, unsigned int * needClass)
@@ -1769,9 +1811,9 @@ short result = (short)strtol(string, &end, 0);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 static int __ecereNameSpace__ecere__com__Int16_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, short * data1, short * data2)
@@ -1853,9 +1895,9 @@ unsigned int result = strtoul(string, &end, 0);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 static unsigned int __ecereNameSpace__ecere__com__UInt16_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned short * data, const char * string)
@@ -1866,9 +1908,9 @@ unsigned short result = (unsigned short)strtoul(string, &end, 0);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 static int __ecereNameSpace__ecere__com__Byte_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data1, unsigned char * data2)
@@ -1928,9 +1970,9 @@ unsigned char result = (unsigned char)strtoul(string, &end, 0);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 static int __ecereNameSpace__ecere__com__Int64_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, long long * data1, long long * data2)
@@ -2061,9 +2103,9 @@ uint64 result = __ecereNameSpace__ecere__com___strtoi64(string, &end, 0);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 extern uint64 __ecereNameSpace__ecere__com___strtoui64(const char *  string, const char * *  endString, int base);
@@ -2076,9 +2118,9 @@ uint64 result = __ecereNameSpace__ecere__com___strtoui64(string, &end, 0);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData;
@@ -2416,7 +2458,7 @@ integerClass->type = 1000;
 integerClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("uintptr_t");
 integerClass->structSize = 0;
 integerClass->typeSize = sizeof(uintptr_t);
-integerClass->byValueSystemClass = 0x1;
+integerClass->byValueSystemClass = 1;
 if(sizeof(uintptr_t) == 8)
 {
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__UIntPtr64_OnGetString, 1);
@@ -2439,7 +2481,7 @@ integerClass->type = 1000;
 integerClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("intptr_t");
 integerClass->structSize = 0;
 integerClass->typeSize = sizeof(intptr_t);
-integerClass->byValueSystemClass = 0x1;
+integerClass->byValueSystemClass = 1;
 if(sizeof(intptr_t) == 8)
 {
 __ecereNameSpace__ecere__com__eClass_AddMethod(integerClass, "OnGetString", (((void *)0)), __ecereNameSpace__ecere__com__IntPtr64_OnGetString, 1);
@@ -2544,9 +2586,9 @@ float result = (float)strtod(string, &end);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 static void __ecereNameSpace__ecere__com__Float_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, float * data, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -2685,9 +2727,9 @@ result = strtod(string, &end);
 if(end > string)
 {
 *data = result;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 static void __ecereNameSpace__ecere__com__Double_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, double * data, struct __ecereNameSpace__ecere__com__Instance * channel)
@@ -2833,7 +2875,7 @@ memcpy(*data, newData, len + 1);
 else
 *data = (((void *)0));
 }
-return 0x1;
+return 1;
 }
 
 int __ecereNameSpace__ecere__com__String_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, const char * string1, const char * string2)
@@ -2918,7 +2960,7 @@ struct __ecereNameSpace__ecere__com__Class * stringClass = __ecereNameSpace__ece
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)stringClass->dataTypeString), stringClass->dataTypeString = 0);
 stringClass->dataTypeString = __ecereNameSpace__ecere__sys__CopyString("char *");
 stringClass->structSize = 0;
-stringClass->computeSize = 0x0;
+stringClass->computeSize = 0;
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnCompare", (((void *)0)), __ecereNameSpace__ecere__com__String_OnCompare, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnCopy", (((void *)0)), __ecereNameSpace__ecere__com__String_OnCopy, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnFree", (((void *)0)), __ecereNameSpace__ecere__com__String_OnFree, 1);
@@ -2928,7 +2970,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnSerialize", (((vo
 __ecereNameSpace__ecere__com__eClass_AddMethod(stringClass, "OnUnserialize", (((void *)0)), __ecereNameSpace__ecere__com__String_OnUnserialize, 1);
 stringClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "String", "char *", 0, 0, (((void *)0)), (((void *)0)), module, 4, 1);
 stringClass->structSize = 0;
-stringClass->computeSize = 0x0;
+stringClass->computeSize = 0;
 __ecereNameSpace__ecere__com__eClass_AddProperty(stringClass, (((void *)0)), "char *", (((void *)0)), (((void *)0)), 1);
 }
 
@@ -2975,7 +3017,7 @@ len = maxLen - 1;
 if(result != buffer)
 memcpy(buffer, result, len);
 }
-while(0x1)
+while(1)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = (((void *)0));
 void * data = (((void *)0));
@@ -3183,7 +3225,7 @@ __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecerePropM___e
 __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "uint", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_size, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size = __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = (void *)0;
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, int * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, int64 * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Integer_OnGetString", "const char * ecere::com::Integer_OnGetString(ecere::com::Class _class, int * data, char * string, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Integer_OnGetString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnSerialize", "void ecere::com::Byte_OnSerialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnSerialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnUnserialize", "void ecere::com::Byte_OnUnserialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnUnserialize, module, 4);

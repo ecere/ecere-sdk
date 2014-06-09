@@ -1264,7 +1264,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Order;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableEntryType;
 
-unsigned int inCompiler = 0x0;
+unsigned int inCompiler = 0;
 
 void SetInCompiler(unsigned int b)
 {
@@ -1410,7 +1410,7 @@ void SetDefines(struct __ecereNameSpace__ecere__sys__OldList * list)
 defines = list;
 }
 
-unsigned int outputLineNumbers = 0x1;
+unsigned int outputLineNumbers = 1;
 
 void SetOutputLineNumbers(unsigned int value)
 {
@@ -1438,7 +1438,7 @@ const char * escCharsQuoted = "\"";
 const char * escChars = " !\"$&'()*:;<=>?[\\`{|";
 const char * escCharsQuoted = "\"()$";
 #endif
-unsigned int quoting = 0x0;
+unsigned int quoting = 0;
 char * o = output;
 const char * i = input, * l = input;
 
@@ -1446,7 +1446,7 @@ const char * i = input, * l = input;
 while(*l && !strchr(escChars, *l))
 l++;
 if(*l)
-quoting = 0x1;
+quoting = 1;
 #else
 if(*i == '-')
 {
@@ -1617,20 +1617,20 @@ struct __ecereNameSpace__ecere__com__DataValue __simpleStruct0 =
 }
 };
 
-this->debugValue = 0x0;
+this->debugValue = 0;
 this->val = __simpleStruct0;
 this->address = 0;
-this->hasAddress = 0x0;
+this->hasAddress = 0;
 this->expType = (((void *)0));
 this->destType = (((void *)0));
 this->usage = 0;
 this->tempCount = 0;
-this->byReference = 0x0;
-this->isConstant = 0x0;
-this->addedThis = 0x0;
-this->needCast = 0x0;
-this->thisPtr = 0x0;
-this->opDestType = 0x0;
+this->byReference = 0;
+this->isConstant = 0;
+this->addedThis = 0;
+this->needCast = 0;
+this->thisPtr = 0;
+this->opDestType = 0;
 this->needTemplateCast = 0;
 }
 
@@ -1659,7 +1659,7 @@ unsigned int __ecereConstructor_Context(struct Context * this)
 (this->symbols.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString);
 (this->structSymbols.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString);
 (this->templateTypes.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString);
-return 0x1;
+return 1;
 }
 
 struct FunctionImport
@@ -1701,7 +1701,7 @@ struct Type * type = (struct Type *)this;
 
 tempString[0] = '\0';
 if(type)
-PrintType(type, tempString, 0x0, 0x1);
+PrintType(type, tempString, 0, 1);
 return tempString;
 }
 
@@ -1882,7 +1882,7 @@ fputs(string, (bsl_stdout()));
 }
 else
 {
-parseTypeError = 0x1;
+parseTypeError = 1;
 }
 }
 }
@@ -1940,7 +1940,7 @@ int yyerror()
 {
 if(!skipErrors)
 {
-parseError = 0x1;
+parseError = 1;
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "syntax error\n", (((void *)0))));
 }
 return 0;
@@ -1964,7 +1964,7 @@ char host[256];
 
 if(!hostType)
 {
-struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(0x1))), "uname -m");
+struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(1))), "uname -m");
 
 if(f)
 {
@@ -2002,7 +2002,7 @@ return targetBits;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
-extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, int value);
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
 extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
 

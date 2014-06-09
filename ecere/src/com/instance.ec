@@ -601,7 +601,7 @@ public class EnumClassData : struct
 public:
    class_fixed
    OldList values;
-   int largest;
+   int64 largest;
 };
 
 class Watcher : struct
@@ -2668,6 +2668,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
                else if(!strcmp(name, "ecere::sys::OldList"))         size = 0; // 32
                else if(!strcmp(name, "ecere::sys::Item"))            size = 0;
                else if(!strcmp(name, "ecere::sys::NamedLink"))       size = 0;
+               else if(!strcmp(name, "ecere::sys::NamedLink64"))     size = 0;
                else if(!strcmp(name, "ecere::sys::OldLink"))         size = 0;
                else if(!strcmp(name, "ecere::sys::NamedItem"))       size = 0;
                else if(!strcmp(name, "ecere::sys::NamedItem64"))     size = 0;
@@ -2787,7 +2788,7 @@ static void DataMember_Free(DataMember parentMember)
    }
 }
 
-static void FreeEnumValue(NamedLink value)
+static void FreeEnumValue(NamedLink64 value)
 {
    delete value.name;
 }
@@ -5456,38 +5457,38 @@ public dllexport void eModule_Unload(Module fromModule, Module module)
    }
 }
 
-public dllexport void eEnum_AddFixedValue(Class _class, const char * string, int value)
+public dllexport void eEnum_AddFixedValue(Class _class, const char * string, int64 value)
 {
    if(_class && _class.type == enumClass)
    {
       EnumClassData data = (EnumClassData)_class.data;
-      NamedLink item;
+      NamedLink64 item;
 
       for(item = data.values.first; item; item = item.next)
          if(!strcmp(item.name, string))
             break;
       if(!item)
       {
-         data.values.Add(NamedLink { data = (void *)value, name = CopyString(string) });
+         data.values.Add(NamedLink64 { data = value, name = CopyString(string) });
          if(value > data.largest)
             data.largest = value;
       }
    }
 }
 
-public dllexport int eEnum_AddValue(Class _class, const char * string)
+public dllexport int64 eEnum_AddValue(Class _class, const char * string)
 {
    if(_class && _class.type == enumClass)
    {
       EnumClassData data = (EnumClassData)_class.data;
-      int value = ((int) data.largest) + 1;
-      NamedLink item;
+      int64 value = data.largest + 1;
+      NamedLink64 item;
       for(item = data.values.first; item; item = item.next)
          if(!strcmp(item.name, string))
             break;
       if(!item)
       {
-         data.values.Add(NamedLink { data = (void *)value, name = CopyString(string) });
+         data.values.Add(NamedLink64 { data = value, name = CopyString(string) });
          if(value > data.largest)
             data.largest = value;
          return value;
@@ -6199,6 +6200,9 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("qsort", "void qsort(void *, uintsize, uintsize, int (*)(void *, void *))", qsort, module, baseSystemAccess);
    eSystem_RegisterFunction("strtod", "double strtod(const char*, char**)", strtod, module, baseSystemAccess);
    eSystem_RegisterFunction("strtol", "int strtol(const char*, char**, int base)", strtol, module, baseSystemAccess);
+   eSystem_RegisterFunction("strtoul", "unsigned long strtoul(const char * nptr, char ** endptr, int base)", strtoul, module, baseSystemAccess);
+   eSystem_RegisterFunction("strtoll", "int64 strtoll(const char * nptr, char ** endptr, int base)", strtoll, module, baseSystemAccess);
+   eSystem_RegisterFunction("strtoull", "uint64 strtoull(const char * nptr, char ** endptr, int base)", strtoull, module, baseSystemAccess);
    eSystem_RegisterFunction("system", "int system(const char*)", system, module, baseSystemAccess);
    eSystem_RegisterFunction("atoi", "int atoi(const char*)", atoi, module, baseSystemAccess);
    eSystem_RegisterFunction("atof", "double atof(const char*)", atof, module, baseSystemAccess);
@@ -6261,9 +6265,6 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("islower", "int islower(int c)", islower, module, baseSystemAccess);
    eSystem_RegisterFunction("isupper", "int isupper(int c)", isupper, module, baseSystemAccess);
    eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, baseSystemAccess);
-   eSystem_RegisterFunction("strtoul", "unsigned long strtoul(const char * nptr, char ** endptr, int base)", strtoul, module, baseSystemAccess);
-   eSystem_RegisterFunction("strtoll", "int64 strtoll(const char * nptr, char ** endptr, int base)", strtoul, module, baseSystemAccess);
-   eSystem_RegisterFunction("strtoull", "uint64 strtoull(const char * nptr, char ** endptr, int base)", strtoul, module, baseSystemAccess);
 
 }
 

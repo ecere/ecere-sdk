@@ -193,15 +193,31 @@ public:
    }
 };
 
-/*static */const char * Enum_OnGetString(Class _class, int * data, char * tempString, void * fieldData, bool * needClass)
+/*static */const char * Enum_OnGetString(Class _class, void * data, char * tempString, void * fieldData, bool * needClass)
 {
-   NamedLink item = null;
+   NamedLink64 item = null;
    Class b;
+   int64 i64Data;
+   switch(_class.typeSize)
+   {
+      case 1:
+         i64Data = !strcmp(_class.dataTypeString, "byte") ? *(byte *)data : *(char *)data;
+         break;
+      case 2:
+         i64Data = !strcmp(_class.dataTypeString, "uint16") ? *(uint16 *)data : *(short *)data;
+         break;
+      case 4:
+         i64Data = !strcmp(_class.dataTypeString, "uint") ? *(uint *)data : *(int *)data;
+         break;
+      case 8:
+         i64Data = !strcmp(_class.dataTypeString, "uint64") ? *(int64 *)data : *(int64 *)data;
+         break;
+   }
    for(b = _class; !item && b && b.type == enumClass; b = b.base)
    {
       EnumClassData enumeration = (EnumClassData)b.data;
       for(item = enumeration.values.first; item; item = item.next)
-         if((int)item.data == *data)
+         if(item.data == i64Data)
             break;
    }
    if(item)
@@ -216,9 +232,9 @@ public:
       return null;
 }
 
-static bool Enum_OnGetDataFromString(Class _class, int * data, const char * string)
+static bool Enum_OnGetDataFromString(Class _class, void * data, const char * string)
 {
-   NamedLink item = null;
+   NamedLink64 item = null;
    Class b;
    for(b = _class; !item && b && b.type == enumClass; b = b.base)
    {
@@ -231,11 +247,37 @@ static bool Enum_OnGetDataFromString(Class _class, int * data, const char * stri
    }
    if(item)
    {
-      *data = (int)item.data;
+      switch(_class.typeSize)
+      {
+         case 1:
+            if(!strcmp(_class.dataTypeString, "byte"))
+               *(byte *)data = (byte)item.data;
+            else
+               *(char *)data = (char)item.data;
+            break;
+         case 2:
+            if(!strcmp(_class.dataTypeString, "uint16"))
+               *(uint16 *)data = (uint16)item.data;
+            else
+               *(short *)data = (short)item.data;
+            break;
+         case 4:
+            if(!strcmp(_class.dataTypeString, "uint"))
+               *(uint *)data = (uint)item.data;
+            else
+               *(int *)data = (int)item.data;
+            break;
+         case 8:
+            if(!strcmp(_class.dataTypeString, "uint64"))
+               *(uint64 *)data = *(uint64 *)&item.data;
+            else
+               *(int64 *)data = item.data;
+            break;
+      }
       return true;
    }
    else
-      return Integer_OnGetDataFromString(_class, data, string);
+      return Int64_OnGetDataFromString(_class, data, string);
    return false;
 }
 
@@ -776,7 +818,7 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
    bool result;
    Module module = _class.module;
    if(_class.type == enumClass)
-      result = Enum_OnGetDataFromString(_class, (int *)data, string);
+      result = Enum_OnGetDataFromString(_class, (int64 *)data, string);
    else if(_class.type == unitClass)
    {
       Class dataType;
