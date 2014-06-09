@@ -3846,7 +3846,7 @@ if(exp->needTemplateCast != 2 && (exp->needTemplateCast == 1 || (exp->expType &&
 struct Expression * nbExp = GetNonBracketsExp(exp);
 struct Expression * inner = GetInnerExp(nbExp);
 
-if((!exp->expType || exp->expType->kind != 20 || nbExp->type != 11) && !((unsigned int)((exp->usage & 0x40) >> 6)) && (!exp->destType || (!exp->destType->truth && (exp->destType->kind != 20 || (exp->destType->__anon1.templateParameter && (exp->destType->__anon1.templateParameter->dataTypeString || exp->destType->__anon1.templateParameter->__anon1.dataType))))) && (((unsigned int)((exp->usage & 0x80) >> 7)) || ((unsigned int)((exp->usage & 0x1) >> 0)) || ((unsigned int)((exp->usage & 0x4) >> 2))) && (!exp->destType || (!exp->destType->passAsTemplate && (exp->expType->kind != 13 || exp->destType->kind == 13) && (exp->destType->kind != 13 || exp->expType->kind == 13))) && !inner->needCast && inner->type != 4)
+if((!exp->expType || exp->expType->kind != 20 || nbExp->type != 11) && !((unsigned int)((exp->usage & 0x40) >> 6)) && (!exp->destType || (!exp->destType->truth && (exp->destType->kind != 20 || (exp->destType->__anon1.templateParameter && (exp->destType->__anon1.templateParameter->dataTypeString || exp->destType->__anon1.templateParameter->__anon1.dataType))))) && (((unsigned int)((exp->usage & 0x80) >> 7)) || ((unsigned int)((exp->usage & 0x1) >> 0)) || ((unsigned int)((exp->usage & 0x4) >> 2))) && (!exp->destType || (!exp->destType->passAsTemplate && exp->expType && (exp->expType->kind != 13 || exp->destType->kind == 13) && (exp->destType->kind != 13 || exp->expType->kind == 13))) && !inner->needCast && inner->type != 4)
 {
 struct Expression * e = CopyExpContents(exp);
 struct Declarator * decl;

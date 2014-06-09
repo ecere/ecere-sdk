@@ -3105,7 +3105,7 @@ static void ProcessExpression(Expression exp)
       if((!exp.expType || exp.expType.kind != templateType || nbExp.type != castExp) && !exp.usage.usageRef &&
          (!exp.destType || (!exp.destType.truth && (exp.destType.kind != templateType || (exp.destType.templateParameter && (exp.destType.templateParameter.dataTypeString || exp.destType.templateParameter.dataType))))) &&
          (exp.usage.usageDelete || exp.usage.usageGet || exp.usage.usageArg) &&
-         (!exp.destType || (!exp.destType.passAsTemplate && (exp.expType.kind != pointerType || exp.destType.kind == pointerType) && (exp.destType.kind != pointerType || exp.expType.kind == pointerType))) &&
+         (!exp.destType || (!exp.destType.passAsTemplate && exp.expType && (exp.expType.kind != pointerType || exp.destType.kind == pointerType) && (exp.destType.kind != pointerType || exp.expType.kind == pointerType))) &&
          !inner.needCast && inner.type != opExp)
       {
          Expression e = CopyExpContents(exp);
