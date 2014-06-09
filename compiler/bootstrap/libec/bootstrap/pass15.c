@@ -16267,6 +16267,8 @@ if(!exp->__anon1.member.exp->destType)
 {
 if(method && !method->_class->symbol)
 method->_class->symbol = FindClass(method->_class->fullName);
+if(prop && !prop->_class->symbol)
+prop->_class->symbol = FindClass(prop->_class->fullName);
 exp->__anon1.member.exp->destType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 

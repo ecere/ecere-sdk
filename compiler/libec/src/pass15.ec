@@ -10221,6 +10221,8 @@ void ProcessExpressionType(Expression exp)
                {
                   if(method && !method._class.symbol)
                      method._class.symbol = FindClass(method._class.fullName);
+                  if(prop && !prop._class.symbol)
+                     prop._class.symbol = FindClass(prop._class.fullName);
 
                   exp.member.exp.destType = Type
                   {

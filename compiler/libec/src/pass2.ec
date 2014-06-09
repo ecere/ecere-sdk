@@ -139,6 +139,8 @@ static Expression FixReference(Expression e, bool wantReference)
                      {
                         Expression newExp { };
                         *newExp = *exp;
+                        newExp.prev = null;
+                        newExp.next = null;
 
                         if(exp.destType) exp.destType.refCount++;
                         if(exp.expType) exp.expType.refCount++;

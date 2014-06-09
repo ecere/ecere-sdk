@@ -1254,6 +1254,8 @@ if(wantReference != (exp->byReference || isPointer))
 struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
 *newExp = *exp;
+newExp->prev = (((void *)0));
+newExp->next = (((void *)0));
 if(exp->destType)
 exp->destType->refCount++;
 if(exp->expType)
