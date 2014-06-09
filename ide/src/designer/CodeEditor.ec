@@ -6037,7 +6037,7 @@ class CodeEditor : Window
       for(_class : classes)
       {
          EnumClassData enumeration = (EnumClassData)_class.data;
-         NamedLink item;
+         NamedLink64 item;
          for(item = enumeration.values.first; item; item = item.next)
          {
             DataRow row = membersList.AddString(item.name);
@@ -6201,7 +6201,7 @@ class CodeEditor : Window
       }
       else if(destType && destType.kind == enumType)
       {
-         NamedLink value;
+         NamedLink64 value;
 
          for(value = destType.members.first; value; value = value.next)
          {
