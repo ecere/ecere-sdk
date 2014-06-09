@@ -16263,7 +16263,8 @@ revConvert = __ecereNameSpace__ecere__com__eClass_FindProperty(convertClass, _cl
 }
 }
 }
-if(!exp->__anon1.member.exp->destType)
+if(exp->__anon1.member.exp->destType)
+FreeType(exp->__anon1.member.exp->destType);
 {
 if(method && !method->_class->symbol)
 method->_class->symbol = FindClass(method->_class->fullName);

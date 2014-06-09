@@ -10217,7 +10217,9 @@ void ProcessExpressionType(Expression exp)
                   }
                }
 
-               if(!exp.member.exp.destType)
+               //if(!exp.member.exp.destType)
+               if(exp.member.exp.destType)
+                  FreeType(exp.member.exp.destType);
                {
                   if(method && !method._class.symbol)
                      method._class.symbol = FindClass(method._class.fullName);
