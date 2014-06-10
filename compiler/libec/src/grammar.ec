@@ -20971,28 +20971,28 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3422 "grammar.y"
-    { if((yyvsp[(4) - (4)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
+    { /*if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1111:
 
 /* Line 1464 of yacc.c  */
 #line 3423 "grammar.y"
-    { if((yyvsp[(4) - (4)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
+    { /*if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1112:
 
 /* Line 1464 of yacc.c  */
 #line 3424 "grammar.y"
-    { if((yyvsp[(3) - (3)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt(MkExpDummy(), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
+    { /*if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt(MkExpDummy(), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
     break;
 
   case 1113:
 
 /* Line 1464 of yacc.c  */
 #line 3425 "grammar.y"
-    { if((yyvsp[(3) - (3)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt(null, (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
+    { /*if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt(null, (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1114:
@@ -21041,21 +21041,21 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3436 "grammar.y"
-    { if((yyvsp[(4) - (4)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
+    { /*if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1121:
 
 /* Line 1464 of yacc.c  */
 #line 3437 "grammar.y"
-    { if((yyvsp[(4) - (4)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
+    { /*if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 1122:
 
 /* Line 1464 of yacc.c  */
 #line 3438 "grammar.y"
-    { if((yyvsp[(3) - (3)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt(MkExpDummy(), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
+    { /*if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt(MkExpDummy(), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).caseStmt.exp.loc = (yylsp[(2) - (3)]); (yyval.stmt).loc = (yyloc); (yyval.stmt).caseStmt.exp.loc.start = (yylsp[(1) - (3)]).end; ;}
     break;
 
   case 1123:
@@ -21069,7 +21069,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3440 "grammar.y"
-    { if((yyvsp[(3) - (3)].stmt).type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); (yyval.stmt) = MkCaseStmt(null, (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
+    { /*if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING);*/ (yyval.stmt) = MkCaseStmt(null, (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 1125:

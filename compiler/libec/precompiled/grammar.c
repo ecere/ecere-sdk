@@ -11080,8 +11080,6 @@ yyval.stmt->loc = (yyloc);
 break;
 case 1110:
 {
-if(yyvsp[(4) - (4)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt(yyvsp[(2) - (4)].exp, yyvsp[(4) - (4)].stmt);
 yyval.stmt->loc = (yyloc);
 yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
@@ -11090,8 +11088,6 @@ yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
 break;
 case 1111:
 {
-if(yyvsp[(4) - (4)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt(yyvsp[(2) - (4)].exp, yyvsp[(4) - (4)].stmt);
 yyval.stmt->loc = (yyloc);
 yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
@@ -11100,8 +11096,6 @@ yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
 break;
 case 1112:
 {
-if(yyvsp[(3) - (3)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt(MkExpDummy(), yyvsp[(3) - (3)].stmt);
 yyval.stmt->__anon1.caseStmt.exp->loc = (yylsp[(2) - (3)]);
 yyval.stmt->loc = (yyloc);
@@ -11111,8 +11105,6 @@ yyval.stmt->__anon1.caseStmt.exp->loc.start = (yylsp[(1) - (3)]).end;
 break;
 case 1113:
 {
-if(yyvsp[(3) - (3)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt((((void *)0)), yyvsp[(3) - (3)].stmt);
 yyval.stmt->loc = (yyloc);
 ;
@@ -11186,8 +11178,6 @@ yyval.stmt->loc = (yyloc);
 break;
 case 1120:
 {
-if(yyvsp[(4) - (4)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt(yyvsp[(2) - (4)].exp, yyvsp[(4) - (4)].stmt);
 yyval.stmt->loc = (yyloc);
 yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
@@ -11196,8 +11186,6 @@ yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
 break;
 case 1121:
 {
-if(yyvsp[(4) - (4)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt(yyvsp[(2) - (4)].exp, yyvsp[(4) - (4)].stmt);
 yyval.stmt->loc = (yyloc);
 yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
@@ -11206,8 +11194,6 @@ yyvsp[(2) - (4)].exp->loc.start = (yylsp[(1) - (4)]).end;
 break;
 case 1122:
 {
-if(yyvsp[(3) - (3)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt(MkExpDummy(), yyvsp[(3) - (3)].stmt);
 yyval.stmt->__anon1.caseStmt.exp->loc = (yylsp[(2) - (3)]);
 yyval.stmt->loc = (yyloc);
@@ -11226,8 +11212,6 @@ yyval.stmt->__anon1.caseStmt.exp->loc.start = (yylsp[(1) - (2)]).end;
 break;
 case 1124:
 {
-if(yyvsp[(3) - (3)].stmt->type == 0)
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "labeled statement directly within a case statement\n", (((void *)0))));
 yyval.stmt = MkCaseStmt((((void *)0)), yyvsp[(3) - (3)].stmt);
 yyval.stmt->loc = (yyloc);
 ;
