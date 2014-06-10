@@ -25,7 +25,8 @@ int defaultMemberAccess = -1;
 
 #define POP_DEFAULT_ACCESS    if(defaultMemberAccess > -1) defaultMemberAccess--;
 
-#define C89_DECL_WARNING   "eC expects all declarations to precede statements in the block (C89 style)\n"
+#define C89_DECL_WARNING            $"eC expects all declarations to precede statements in the block (C89 style)\n"
+#define CASE_LABELED_STMT_WARNING   $"labeled statement directly within a case statement\n"
 
 #define uint _uint
 default:
@@ -3418,10 +3419,10 @@ asm_statement:
 
 labeled_statement:
      identifier ':' statement                      { $$ = MkLabeledStmt($1, $3); $$.loc = @$; }
-   | CASE constant_expression ':' statement        { $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
-   | CASE constant_expression_error ':' statement  { $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
-   | CASE ':' statement                            { $$ = MkCaseStmt(MkExpDummy(), $3); $$.caseStmt.exp.loc = @2; $$.loc = @$; $$.caseStmt.exp.loc.start = @1.end; }
-   | DEFAULT ':' statement                         { $$ = MkCaseStmt(null, $3); $$.loc = @$; }
+   | CASE constant_expression ':' statement        { if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
+   | CASE constant_expression_error ':' statement  { if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
+   | CASE ':' statement                            { if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt(MkExpDummy(), $3); $$.caseStmt.exp.loc = @2; $$.loc = @$; $$.caseStmt.exp.loc.start = @1.end; }
+   | DEFAULT ':' statement                         { if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt(null, $3); $$.loc = @$; }
 
    | identifier ':' declaration                      { Statement stmt = MkBadDeclStmt($3); stmt.loc = @3; Compiler_Warning(C89_DECL_WARNING); $$ = MkLabeledStmt($1, stmt); $$.loc = @$; }
    | CASE constant_expression ':' declaration        { Statement stmt = MkBadDeclStmt($4); stmt.loc = @4; Compiler_Warning(C89_DECL_WARNING); $$ = MkCaseStmt($2, stmt); $$.loc = @$; $2.loc.start = @1.end; }
@@ -3432,11 +3433,11 @@ labeled_statement:
 
 labeled_statement_error:
 	  identifier ':' statement_error                { $$ = MkLabeledStmt($1, $3); $$.loc = @$; }
-   | CASE constant_expression ':' statement_error  { $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
-   | CASE constant_expression_error ':' statement_error  { $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
-   | CASE ':' statement_error  { $$ = MkCaseStmt(MkExpDummy(), $3); $$.caseStmt.exp.loc = @2; $$.loc = @$; $$.caseStmt.exp.loc.start = @1.end; }
+   | CASE constant_expression ':' statement_error  { if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
+   | CASE constant_expression_error ':' statement_error  { if($4.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt($2, $4); $$.loc = @$; $2.loc.start = @1.end; }
+   | CASE ':' statement_error  { if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt(MkExpDummy(), $3); $$.caseStmt.exp.loc = @2; $$.loc = @$; $$.caseStmt.exp.loc.start = @1.end; }
    | CASE ':' { $$ = MkCaseStmt(MkExpDummy(), null); $$.caseStmt.exp.loc = @2; $$.loc = @$; $$.caseStmt.exp.loc.start = @1.end; }
-	| DEFAULT ':' statement_error                   { $$ = MkCaseStmt(null, $3); $$.loc = @$; }
+	| DEFAULT ':' statement_error                   { if($3.type == labeledStmt) Compiler_Warning(CASE_LABELED_STMT_WARNING); $$ = MkCaseStmt(null, $3); $$.loc = @$; }
    | DEFAULT ':'  { $$ = MkCaseStmt(null, null); $$.loc = @$; }
 
    | identifier ':' declaration_error                      { Statement stmt = MkBadDeclStmt($3); stmt.loc = @3; Compiler_Warning(C89_DECL_WARNING); $$ = MkLabeledStmt($1, stmt); $$.loc = @$; }
