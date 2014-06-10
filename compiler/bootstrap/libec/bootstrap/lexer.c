@@ -1314,7 +1314,7 @@ break;
 case 82:
 TESTTTT();
 {
-return (EXT_DECL);
+return (CONST);
 }
 break;
 case 83:
