@@ -2897,6 +2897,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*parentExp->__anon1.li
 else if(parentExp && parentExp->type == 11)
 {
 parentExp->__anon1.cast.exp = newExp;
+if(newExp->expType && newExp->expType->classObjectType)
 parentExp->__anon1.cast.typeName->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), parentExp->__anon1.cast.typeName->declarator);
 }
 if(typedObject && !memberExp->__anon1.member.exp->expType->classObjectType)

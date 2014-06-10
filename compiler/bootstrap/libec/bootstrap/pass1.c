@@ -2891,7 +2891,7 @@ extern void FreeIdentifier(struct Identifier * id);
 
 void __ecereDestructor_ClassPropertyValue(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct ClassPropertyValue * __ecerePointer_ClassPropertyValue = (struct ClassPropertyValue *)(this ? (((char *)this) + __ecereClass_ClassPropertyValue->offset) : 0);
+__attribute__((unused)) struct ClassPropertyValue * __ecerePointer_ClassPropertyValue = (struct ClassPropertyValue *)(this ? (((char *)this) + __ecereClass_ClassPropertyValue->offset) : 0);
 
 {
 FreeIdentifier(__ecerePointer_ClassPropertyValue->id);

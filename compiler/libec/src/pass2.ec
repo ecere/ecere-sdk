@@ -1955,7 +1955,8 @@ static void ProcessExpression(Expression exp)
                            {
                               parentExp.cast.exp = newExp;
                               // Add a dereference level here
-                              parentExp.cast.typeName.declarator = MkDeclaratorPointer(MkPointer(null, null), parentExp.cast.typeName.declarator);
+                              if(newExp.expType && newExp.expType.classObjectType)
+                                 parentExp.cast.typeName.declarator = MkDeclaratorPointer(MkPointer(null, null), parentExp.cast.typeName.declarator);
                            }
                            if(typedObject && !memberExp.member.exp.expType.classObjectType)
                            {
