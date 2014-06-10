@@ -106,7 +106,7 @@ static void OutputTexture(String fileName)
 }
 */
 
-static bool LoadTerrain(Terrain terrain, char * fileName, Angle lat)
+static bool LoadTerrain(Terrain terrain, const char * fileName, Angle lat)
 {
    bool result = false;
    File f = FileOpen(fileName, read);

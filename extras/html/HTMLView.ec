@@ -124,7 +124,7 @@ class ObjectThread : Thread
 
                //((GuiApplication)__thisModule).Unlock();
 
-               if(path && strstr(path, "http://") == path)
+               if(strstr(path, "http://") == path)
                {
                   HTTPFile httpFile {};
                   file = httpFile;
@@ -225,7 +225,7 @@ static OldList imageCache;
 
 static OldList objectRequests;
 
-static void WriteBlock(File f, Block block)
+/*static void WriteBlock(File f, Block block)
 {
    static int indent = 0;
    Block child;
@@ -274,7 +274,7 @@ static void WriteBlock(File f, Block block)
       WriteBlock(f, child);
       indent --;
    }
-}
+}*/
 
 static void ComputeImageSize(Block block)
 {
@@ -427,7 +427,6 @@ class HTMLView : Window
       if(surface)
       {
          int maxH = height - BOTTOM_MARGIN;
-         int h = 0;
 
          if(html.defaultFont.font)
             surface.TextFont(html.defaultFont.font.font);
@@ -441,10 +440,7 @@ class HTMLView : Window
 
             newH = ComputeLine(surface, block, textPos, &nextBlock, &nextTextPos, &centered, &w, maxW, maxH - y, RenderFlags { lineW = true, width = true }, 0, null, null, &changeLine, true, y, LEFT_MARGIN);
             if(changeLine)
-            {
                y += newH;
-               h = 0;
-            }
             block = nextBlock;
             textPos = nextTextPos;
 
@@ -556,7 +552,7 @@ class HTMLView : Window
             block.bitmap = entry.bitmap;
          else
          {
-            if(path && (strstr(path, "http://") == path || strstr(path, "https://") == path))
+            if(strstr(path, "http://") == path || strstr(path, "https://") == path)
             {
                RequestLink request;
                objectsMutex.Wait();
@@ -691,7 +687,6 @@ class HTMLView : Window
       OldList leftObjects { };
       OldList rightObjects { };
       AlignedObject object, nextObject;
-      int h = 0;
 
       Surface surface = display.GetSurface(0,0,null);
       if(surface)
@@ -747,10 +742,7 @@ class HTMLView : Window
                left - scroll.x, right - scroll.x);
 
             if(changeLine)
-            {
                y += newH;
-               h = 0;
-            }
             block = nextBlock;
             textPos = nextTextPos;
          }
@@ -1013,7 +1005,6 @@ class HTMLView : Window
    void OpenFile(File f, char * firstReferer)
    {
       char referer[MAX_LOCATION] = "";
-      char relocation[MAX_LOCATION];
       bool opened = false;
 
       clickedLink = null;
@@ -1170,7 +1161,6 @@ class HTMLView : Window
       Font font;
 
       AlignedObject object, nextObject;
-      int h = 0;
 
       surface.SetBackground(html.background);
       if(html.background.a < 255)
@@ -1224,19 +1214,13 @@ class HTMLView : Window
 
          surface.TextFont(font);
 
-         //h = Max(h, newH);
          RenderLine(this, surface, x - scroll.x, y - scroll.y, maxW, newH, block, textPos, nextBlock, nextTextPos, left - scroll.x, right - scroll.x);
 
          if(changeLine)
-         {
-            // y += h;
             y += newH;
-            h = 0;
-         }
          block = nextBlock;
          textPos = nextTextPos;
       }
-      //y += h;
    }
 
    void OnVScroll(ScrollBarAction action, int position, Key key)
@@ -1300,7 +1284,6 @@ class HTMLView : Window
       OldList leftObjects { };
       OldList rightObjects { };
       AlignedObject object, nextObject;
-      int h = 0;
 
       Surface surface = display.GetSurface(0,0,null);
       if(surface)
@@ -1357,10 +1340,8 @@ class HTMLView : Window
             }
 
             if(changeLine)
-            {
                y += newH;
-               h = 0;
-            }
+
             block = nextBlock;
             textPos = nextTextPos;
          }

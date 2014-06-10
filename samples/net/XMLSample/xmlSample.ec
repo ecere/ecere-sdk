@@ -118,7 +118,7 @@ class MyParser : XMLParser
 
    void ProcessKeyword(char * keyWord)
    {
-      NamedLink nl;
+      NamedLink64 nl;
       EnumClassData tagData = class(MyTag).data;
       for(nl = tagData.values.first; nl; nl = nl.next)
       {

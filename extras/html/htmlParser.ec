@@ -83,7 +83,7 @@ class Block : struct
          delete entryPtr;
       }
 
-      while(child = subBlocks.first)
+      while((child = subBlocks.first))
       {
          subBlocks.Remove(child);
          delete child;
@@ -176,7 +176,7 @@ static int GetKeyWord(char ** input, char * keyWord, int maxSize)
    return GetKeyWordEx(input, keyWord, maxSize, true, false);
 }
 
-static char * GetString(char * string, char * what, int count)
+/*static char * GetString(char * string, char * what, int count)
 {
    int wc, sc;
 
@@ -192,7 +192,7 @@ static char * GetString(char * string, char * what, int count)
          return null;
    }
    return string + sc;
-}
+}*/
 
 #include <stdio.h>
 
@@ -280,7 +280,7 @@ class HTMLFile
       // Parse entire file
       while(!f.Eof() && block)
       {
-         byte ch = 0;
+         char ch = 0;
 
          f.Getc(&ch);
 #ifdef _DEBUG
@@ -724,9 +724,9 @@ class HTMLFile
                            }
                            else if(!strcmpi(keyWord, "maxlength"))
                            {
-                              int maxlength;
+                              //int maxlength;
                               GetKeyWord(&string, keyWord, sizeof(keyWord));
-                              maxlength = atoi(keyWord);
+                              //maxlength = atoi(keyWord);
                            }
                            else if(!strcmpi(keyWord, "value"))
                            {

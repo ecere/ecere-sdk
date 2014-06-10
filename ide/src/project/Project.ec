@@ -42,8 +42,8 @@ IDESettingsContainer settingsContainer
 
    void OnLoad(GlobalSettingsData data)
    {
-      IDESettings settings = (IDESettings)data;
 #ifndef MAKEFILE_GENERATOR
+      IDESettings settings = (IDESettings)data;
       globalSettingsDialog.ideSettings = settings;
       ide.UpdateRecentMenus();
       ide.UpdateCompilerConfigs(true);
@@ -1183,6 +1183,8 @@ private:
    {
 #ifndef MAKEFILE_GENERATOR
       return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isActive;
+#else
+      return false;
 #endif
    }
 
@@ -1190,6 +1192,8 @@ private:
    {
 #ifndef MAKEFILE_GENERATOR
       return ide.project == this && ide.debugger && ide.debugger.prjConfig == config && ide.debugger.isPrepared;
+#else
+      return false;
 #endif
    }
 
@@ -1787,7 +1791,53 @@ private:
                               numErrors++;
                            }
                            else if(compilingEC == 1 || (objDir && objDir == moduleName))
-                              continue;
+                           {
+                              bool skip = false;
+
+                              // Filter out these warnings caused by eC generated C code:
+
+                              // Declaration ordering bugs -- Awaiting topo sort implementation
+                                   if(strstr(line, "declared inside parameter list")) skip = true;
+                              else if(strstr(line, "its scope is only this definition")) skip = true;
+                              else if(strstr(line, "note: expected 'struct ") || strstr(line, "note: expected ‘struct "))
+                              {
+                                 #define STRUCT_A "'struct "
+                                 #define STRUCT_B "‘struct "
+                                 char * struct1, * struct2, ch1, ch2;
+                                 struct1 = strstr(line, STRUCT_A);
+                                 if(struct1) { struct1 += sizeof(STRUCT_A)-1; } else { struct1 = strstr(line, STRUCT_B); struct1 += sizeof(STRUCT_B)-1; };
+
+                                 struct2 = strstr(struct1, STRUCT_A);
+                                 if(struct2) { struct2 += sizeof(STRUCT_A)-1; } else { struct2 = strstr(struct1, STRUCT_B); if(struct2) struct2 += sizeof(STRUCT_B)-1; };
+
+                                 if(struct1 && struct2)
+                                 {
+                                    while(ch1 = *(struct1++), ch2 = *(struct2++), ch1 && ch2 && (ch1 == '_' || isalnum(ch1)) && (ch2 == '_' || isalnum(ch2)));
+                                    if(ch1 == ch2)
+                                       skip = true;
+                                 }
+                              }
+                              // Pointers warnings (eC should already warn about relevant problems, more forgiving for function pointers, should cast in generated code)
+                              else if((strstr(line, "note: expected '") || strstr(line, "note: expected ‘")) && strstr(line, "(*)")) skip = true;
+                              else if(strstr(line, "expected 'void **") || strstr(line, "expected ‘void **")) skip = true;
+                              else if(strstr(line, "from incompatible pointer type")) skip = true;
+                              else if(strstr(line, "comparison of distinct pointer types lacks a cast")) skip = true;
+
+                              // Things being defined for potential use -- Should mark as unused
+                              else if(strstr(line, "unused variable") && (strstr(line, "'__") || strstr(line, "‘__") || strstr(line, "'class'") || strstr(line, "‘class’"))) skip = true;
+                              else if(strstr(line, "defined but not used") && strstr(line, "__ecereProp")) skip = true;
+
+                              // For preprocessed code from objidl.h (MinGW-w64 headers)
+                              else if(strstr(line, "declaration does not declare anything")) skip = true;
+
+                              // Location information that could apply to ignored warnings
+                              else if(strstr(line, "In function '") || strstr(line, "In function ‘") ) skip = true;
+                              else if(strstr(line, "At top level")) skip = true;
+                              else if(strstr(line, "(near initialization for '") || strstr(line, "(near initialization for ‘")) skip = true;
+
+                              if(skip) continue;
+                              numWarnings++;
+                           }
                            else if(strstr(line, "warning:"))
                            {
                               numWarnings++;
@@ -4580,6 +4630,7 @@ Project LoadProject(const char * filePath, const char * activeConfigName)
    return project;
 }
 
+#ifndef MAKEFILE_GENERATOR
 static GccVersionInfo GetGccVersionInfo(CompilerConfig compiler, const String compilerCommand)
 {
    GccVersionInfo result = unknown;
@@ -4651,3 +4702,4 @@ static enum GccVersionInfo
       return result;
    }
 };
+#endif

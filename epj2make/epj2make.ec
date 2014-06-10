@@ -19,7 +19,7 @@ extern int getch(void);
 void ParseDirList(char * string, Container<String> list)
 {
    int c;
-   byte * tokens[256];
+   char * tokens[256];
    int numTokens = TokenizeWith(string, sizeof(tokens) / sizeof(byte *), tokens, ";", false);
    list.Free();
    for(c = 0; c < numTokens; c++)

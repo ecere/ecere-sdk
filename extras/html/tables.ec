@@ -50,7 +50,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                if(cell.type == TD)
                {
                   int c;
-                  bool centered = false;
+                  int centered = 0;
                   int minW = 0, lineW = 0;
                   Block block;
                   int textPos = 0;
@@ -587,7 +587,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
                {
                   if(cell.type == TD)
                   {
-                     bool centered = false;
+                     int centered = 0;
                      Block block;
                      int textPos = 0;
                      int c;
@@ -797,7 +797,7 @@ void ComputeTable(Surface surface, Block table, int textPos, int * width, int * 
 
 static void RenderCell(HTMLView browser, Surface surface, Block cell, int cellX, int y)
 {
-   bool centered = false;
+   int centered = 0;
    Block block = cell;
    int textPos = 0;
    Block row = cell.parent;
@@ -1024,7 +1024,7 @@ static bool PickCell(HTMLView browser, Surface surface, Block cell, int cellX, i
                      int pickX, int pickY, Block* pickBlock, int * pickTextPos)
 {
    bool result = false;
-   bool centered = false;
+   int centered = 0;
    Block block = cell;
    int textPos = 0;
    Block row = cell.parent;
@@ -1221,7 +1221,7 @@ bool PickTable(HTMLView browser, Surface surface, int x, int y, int w, int h, in
 
 static void PositionCell(HTMLView browser, Surface surface, Block cell, int cellX, int y)
 {
-   bool centered = false;
+   int centered = 0;
    Block block = cell;
    int textPos = 0;
    Block row = cell.parent;

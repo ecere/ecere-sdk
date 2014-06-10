@@ -8,7 +8,7 @@ static Context globalContext { };
 static OldList defines { };
 static OldList imports { };
 static NameSpace globalData;
-static OldList excludedSymbols { offset = (uint)&((Symbol)0).left };
+static OldList excludedSymbols { offset = (uint)(uintptr)&((Symbol)0).left };
 static bool readOnly;
 
 define app = (GuiApplication)__thisModule.application;
@@ -20,10 +20,10 @@ default:
 private:
 
 
-static void Dummy()
+static __attribute__((unused)) void Dummy()
 {
-int a;
-a.OnGetString(null, null, null);
+   int a;
+   a.OnGetString(null, null, null);
 }
 
 static bool editing = true;
@@ -270,10 +270,6 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
                      strcat(string, "</b>");
                   }
                }
-               else
-               {
-                  printf("");
-               }
             }
 
             if(printFunction)
@@ -369,7 +365,7 @@ static void _PrintType(Type type, char * string, bool printName, bool printFunct
             strcat(string, ")");
             break;
          default:
-            printf("");
+            break;
       }
       if(type.name && printName && type.kind != functionType && (type.kind != pointerType || type.type.kind != functionType))
       {
@@ -385,7 +381,6 @@ void DocPrintType(Type type, char * string, bool printName, bool fullName)
    for(funcType = type; funcType && (funcType.kind == pointerType || funcType.kind == arrayType); funcType = funcType.type);
    if(funcType && funcType.kind == functionType && type != funcType)
    {
-      char typeString[1024];
       Type param;
 
       DocPrintType(funcType.returnType, string, false, fullName);
@@ -652,11 +647,9 @@ class APIPageNameSpace : APIPage
 
    void Generate(File f)
    {
-      char string[1024];
       char nsName[1024], temp[1024];
       NameSpace * ns;
       BTNamedLink link;
-      int64 tag;
 
       nsName[0] = 0;
       ns = nameSpace;
@@ -673,14 +666,10 @@ class APIPageNameSpace : APIPage
       if(nsName[0])
       {
          f.Printf("<FONT FACE=\"Arial\" SIZE=\"6\">%s</FONT><br><br>\n", nsName );
-         tag = (int64)nameSpace;
          f.Printf($"Module: <a href=\"api://%p\" style=\"text-decoration: none;\">%s</a><br>\n", (module && module.name) ? module : null, (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
       }
       else
-      {
-         tag = (int64)(!module || !module.name || !strcmp(nsName, "ecere::com") ? null : module);
          f.Printf($"<FONT FACE=\"Arial\" SIZE=\"6\">Module %s</FONT><br>\n", (!module || !module.name || !strcmp(nsName, "ecere::com")) ? "ecereCOM" : module.name);
-      }
 
       nsName[0] = 0;
       ns = nameSpace->parent;
@@ -886,7 +875,6 @@ class APIPageClass : APIPage
       char string[1024];
       Method method;
       Property prop;
-      DataMember member;
       char nsName[1024], temp[1024];
       NameSpace * ns = cl.nameSpace;
       Module module = cl.module;
@@ -1053,7 +1041,6 @@ class APIPageClass : APIPage
             if((prop.memberAccess == publicAccess || (prop.memberAccess == privateAccess && showPrivate)) && prop.name)
             {
                char * desc = ReadDoc(module, classDoc, cl, conversion, prop);
-               DataRow mRow;
                const char * name;
                Type type = ProcessTypeString(prop.name, false);
                name = RSearchString(prop.name, "::", strlen(prop.name), true, false);
@@ -1805,8 +1792,6 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
    DataRow functionsRow = null, definesRow = null;
    APIPage page;
 
-   char fileName[MAX_LOCATION];
-
    strcpy(nsName, parentName ? parentName : "");
    if(nameSpace->name)
    {
@@ -1829,25 +1814,22 @@ static void AddNameSpace(DataRow parentRow, Module module, NameSpace mainNameSpa
       page = parentRow.GetData(null);
    }
 
+   for(ns = (NameSpace *)mainNameSpace.nameSpaces.first; ns; ns = (NameSpace *)((BTNode)ns).next)
    {
-      bool first = true;
-
-      for(ns = (NameSpace *)mainNameSpace.nameSpaces.first; ns; ns = (NameSpace *)((BTNode)ns).next)
+      NameSpace * comNS = (comNameSpace != null) ? (NameSpace *)comNameSpace.nameSpaces.FindString(ns->name) : null;
+      AddNameSpace(row, module, ns, comNS, nsName, showPrivate);
+   }
+   if(comNameSpace != null)
+   {
+      for(ns = (NameSpace *)comNameSpace.nameSpaces.first; ns; ns = (NameSpace *)((BTNode)ns).next)
       {
-         NameSpace * comNS = (comNameSpace != null) ? (NameSpace *)comNameSpace.nameSpaces.FindString(ns->name) : null;
-         AddNameSpace(row, module, ns, comNS, nsName, showPrivate);
-      }
-      if(comNameSpace != null)
-      {
-         for(ns = (NameSpace *)comNameSpace.nameSpaces.first; ns; ns = (NameSpace *)((BTNode)ns).next)
+         if(!mainNameSpace.nameSpaces.FindString(ns->name))
          {
-            if(!mainNameSpace.nameSpaces.FindString(ns->name))
-            {
-               AddNameSpace(row, module, ns, null, nsName, showPrivate);
-            }
+            AddNameSpace(row, module, ns, null, nsName, showPrivate);
          }
       }
    }
+
    if(mainNameSpace.classes.first || (comNameSpace && comNameSpace.classes.first))
    {
       for(nameSpace = mainNameSpace ; nameSpace; nameSpace = (nameSpace == mainNameSpace) ? comNameSpace : null)
@@ -1992,12 +1974,8 @@ static void AddDataMember(DataRow parentRow, APIPage page, DataMember member)
 
 static void AddClass(DataRow parentRow, Module module, Class cl, char * nsName, bool showPrivate)
 {
-   char fileName[MAX_LOCATION];
-   char string[1024];
    Method method;
    Property prop;
-   DataMember member;
-   Type param;
    DataRow row;
    DataRow methodsRow = null, virtualsRow = null, eventsRow = null;
    DataRow propertiesRow = null, membersRow = null, conversionsRow = null, enumRow = null;
@@ -2372,7 +2350,7 @@ class MainForm : Window
                   default:
                   {
                      char hex[20];
-                     sprintf(hex, "%p", row.tag);
+                     sprintf(hex, "%p", (void *)(uintptr)row.tag);
                      view.GoToAnchor(hex);
                   }
                }
@@ -2552,7 +2530,7 @@ class HelpView : HTMLView
       char archiveFile[MAX_LOCATION];
       char fileName[MAX_FILENAME];
       char directory[MAX_LOCATION];
-      char * location;
+      const char * location;
       Archive archive = null;
       if(SplitArchivePath(editString, archiveFile, &location))
       {
@@ -2750,7 +2728,7 @@ class HelpView : HTMLView
             if(block.type == BR && (!block.prev || !block.next || block.next.type != TEXT))
             {
                Block newBlock { type = TEXT, parent = block.parent, font = block.parent.font };
-               int tw = 0, th = 0;
+               int th = 0;
                display.FontExtent(block.font.font, " ", 1, null, &th);
                if(!block.prev)
                {
@@ -2997,7 +2975,7 @@ class HelpView : HTMLView
                }
 
                {
-                  int tw = 0, th = 0;
+                  int th = 0;
                   int textPos = 0;
                   int sx = textBlock.startX, sy = textBlock.startY;
                   char * text = textBlock.text;
@@ -3107,7 +3085,7 @@ class HelpView : HTMLView
             case Key { down, shift = true }:
             case down:
             {
-               int tw = 0, th = 0;
+               int th = 0;
                int textPos = 0;
                int sx = textBlock.startX, sy = textBlock.startY;
                char * text = textBlock.text;
@@ -3503,7 +3481,7 @@ class HelpView : HTMLView
                break;
             case enter:
             {
-               int tw = 0, th = 0;
+               int th = 0;
                Block block;
                Block newBlock;
                int startY, startX;
@@ -3590,7 +3568,7 @@ class HelpView : HTMLView
                               Block block { type = BR, parent = parent, font = font };
                               Block newBlock { type = TEXT, parent = parent, font = font };
                               int startY = textBlock.startY, startX = textBlock.startX;
-                              int tw = 0, th = 0;
+                              int th = 0;
 
                               display.FontExtent(textBlock.font.font, " ", 1, null, &th);
                               textBlock.parent.subBlocks.Insert(textBlock, block);
@@ -3815,7 +3793,6 @@ class HelpView : HTMLView
 
          while(textPos < textBlock.textLen)
          {
-            int startPos = textPos;
             int width = 0;
             int x = 0;
             bool lineComplete = false;
@@ -3913,12 +3890,12 @@ class Documentor : GuiApplication
                PathCat(programFilesDir, "ECERE SDK\\doc");
                settings.docDir = programFilesDir;
             }
-            else if(homeDrive && homeDrive[0])
+            else if(homeDrive[0])
             {
                PathCat(homeDrive, "ECERE SDK\\doc");
                settings.docDir = homeDrive;
             }
-            else if(winDir && winDir[0])
+            else if(winDir[0])
             {
                PathCat(winDir, "..\\ECERE SDK\\doc");
                settings.docDir = winDir;

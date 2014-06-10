@@ -316,7 +316,6 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
 {
    int textPos = startTextPos;
    Block block = startBlock;
-   bool lineComplete = false;
    int startSel, endSel;
    Block startSelBlock = null, endSelBlock = null;
    if(browser.textBlock != browser.selBlock || browser.curPosition != browser.selPosition)
@@ -457,7 +456,6 @@ void RenderLine(HTMLView browser, Surface surface, int x, int y, int w, int h, B
             break;
         case TABLE:
             RenderTable(browser, surface, x, y, w, h, left, right, block);
-            lineComplete = true;
             block = NextBlockUp(surface, block, null, RenderFlags { render = true });
             textPos = 0;
             break;
@@ -480,7 +478,6 @@ bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Blo
    bool result = false;
    int textPos = startTextPos;
    Block block = startBlock;
-   bool lineComplete = false;
 
    for(;!result;)
    {
@@ -565,7 +562,6 @@ bool PickLine(HTMLView browser, Surface surface, int x, int y, int w, int h, Blo
             break;
         case TABLE:
             result = PickTable(browser, surface, x, y, w, h, left, right, block, pickX, pickY, pickBlock, pickTextPos);
-            lineComplete = true;
             block = NextBlockUp(surface, block, null, RenderFlags { render = true });
             textPos = 0;
             break;
@@ -589,7 +585,6 @@ void PositionLine(HTMLView browser, Surface surface, int x, int y, int w, int h,
 {
    int textPos = startTextPos;
    Block block = startBlock;
-   bool lineComplete = false;
 
    for(;;)
    {
@@ -608,18 +603,14 @@ void PositionLine(HTMLView browser, Surface surface, int x, int y, int w, int h,
                   block.window.size.w, block.window.size.h);
                //block.window.visible = false;
                x += block.window.size.w;
-               if(block.inputType == text)
-               {
-                  printf("");
-               }
             }
             break;
          }
          case IMAGE:
          {
             int bw = block.pWidth ? (w * block.pWidth / 100) : block.w;
-            int bh = block.pHeight ? (h * block.pHeight / 100) : block.h;
-            int dx, dy;
+            //int bh = block.pHeight ? (h * block.pHeight / 100) : block.h;
+            int dx;//, dy;
 
             switch(block.halign)
             {
@@ -637,12 +628,14 @@ void PositionLine(HTMLView browser, Surface surface, int x, int y, int w, int h,
                   break;
             }
 
+            /*
             switch(block.valign)
             {
                case bottom: dy = y + h - bh; break;
                case top: dy = y; break;
                case middle: dy = y + (h - bh) / 2; break;
             }
+            */
 
             x += bw;
             break;
@@ -667,7 +660,6 @@ void PositionLine(HTMLView browser, Surface surface, int x, int y, int w, int h,
             break;
         case TABLE:
             PositionTable(browser, surface, x, y, w, h, left, right, block);
-            lineComplete = true;
             block = NextBlockUp(surface, block, null, RenderFlags { render = true });
             textPos = 0;
             break;

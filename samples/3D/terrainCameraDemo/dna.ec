@@ -283,7 +283,7 @@ public:
    }
 }
 
-static char * names[7] = { "Adenine", "Cytosine", "Guanine", "Thymine", "Phosphate", "Desoxyribose", "Hydrogene" };
+static const char * names[7] = { "Adenine", "Cytosine", "Guanine", "Thymine", "Phosphate", "Desoxyribose", "Hydrogene" };
 
 public class DNAModel : Object
 {
@@ -297,7 +297,7 @@ public class DNAModel : Object
    int baseHeight;
    int baseDepth;
    int desoxyriboseWidth;
-   char * textureFile;
+   const char * textureFile;
 
 public:
    bool Create(DisplaySystem displaySystem)
