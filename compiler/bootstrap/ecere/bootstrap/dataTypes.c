@@ -1,4 +1,11 @@
 /* Code generated from eC source file: dataTypes.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -2053,23 +2060,21 @@ result = -1;
 return result;
 }
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 static const char * __ecereNameSpace__ecere__com__Int64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, long long * data, char * string, void * fieldData, unsigned int * needClass)
 {
-sprintf(string, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), *data);
+sprintf(string, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), *data);
 return string;
 }
 
 static const char * __ecereNameSpace__ecere__com__UInt64_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * needClass)
 {
-sprintf(string, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64u" : "%llu"), *data);
+sprintf(string, ((__runtimePlatform == 1) ? "%I64u" : "%llu"), *data);
 return string;
 }
 
 static const char * __ecereNameSpace__ecere__com__UInt64Hex_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, uint64 * data, char * string, void * fieldData, unsigned int * needClass)
 {
-sprintf(string, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), *data);
+sprintf(string, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), *data);
 return string;
 }
 
@@ -3195,11 +3200,11 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MINFLOAT", "1.
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXFLOAT", "3.40282346638528860e+38f", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MINDOUBLE", "2.2250738585072014e-308", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::MAXDOUBLE", "1.7976931348623158e+308", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64HEXLL", "(GetRuntimePlatform() == win32) ? \"0x%I64XLL\" : \"0x%llXLL\"", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64HEX", "(GetRuntimePlatform() == win32) ? \"0x%I64X\" : \"0x%llX\"", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64DLL", "(GetRuntimePlatform() == win32) ? \"%I64dLL\" : \"%lldLL\"", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64D", "(GetRuntimePlatform() == win32) ? \"%I64d\" : \"%lld\"", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64U", "(GetRuntimePlatform() == win32) ? \"%I64u\" : \"%llu\"", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64HEXLL", "(__runtimePlatform == win32) ? \"0x%I64XLL\" : \"0x%llXLL\"", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64HEX", "(__runtimePlatform == win32) ? \"0x%I64X\" : \"0x%llX\"", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64DLL", "(__runtimePlatform == win32) ? \"%I64dLL\" : \"%lldLL\"", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64D", "(__runtimePlatform == win32) ? \"%I64d\" : \"%lld\"", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64U", "(__runtimePlatform == win32) ? \"%I64u\" : \"%llu\"", module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::IOChannel", 0, 0, 0, 0, 0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__IOChannel = class;
@@ -3225,7 +3230,7 @@ __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer = __ecerePropM___e
 __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "size", "uint", __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_size, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size = __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size = (void *)0;
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, int64 * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Enum_OnGetString", "const char * ecere::com::Enum_OnGetString(ecere::com::Class _class, void * data, char * tempString, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Enum_OnGetString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Integer_OnGetString", "const char * ecere::com::Integer_OnGetString(ecere::com::Class _class, int * data, char * string, void * fieldData, bool * needClass)", __ecereNameSpace__ecere__com__Integer_OnGetString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnSerialize", "void ecere::com::Byte_OnSerialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnSerialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Byte_OnUnserialize", "void ecere::com::Byte_OnUnserialize(ecere::com::Class _class, byte * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Byte_OnUnserialize, module, 4);

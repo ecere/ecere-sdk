@@ -1617,7 +1617,7 @@ class SymbolgenApp : Application
 
       outputPot = false;
       disabledPooling = false;
-      targetPlatform = GetRuntimePlatform();
+      targetPlatform = __runtimePlatform;
       targetBits = GetHostBits();
 
       /*

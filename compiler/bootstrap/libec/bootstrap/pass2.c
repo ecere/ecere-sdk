@@ -1,4 +1,11 @@
 /* Code generated from eC source file: pass2.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -1426,8 +1433,6 @@ int pos;
 uint64 mask;
 } __attribute__ ((gcc_struct));
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 extern struct Expression * MkExpConstant(const char *  string);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassProperty;
@@ -1964,9 +1969,9 @@ struct Declarator * decl = SpecDeclFromString(_class->dataTypeString, specs, (((
 struct TypeName * type = MkTypeName(specs, decl);
 
 if(bitMember->mask > (0xffffffff))
-sprintf(mask, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), bitMember->mask);
+sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), bitMember->mask);
 else
-sprintf(mask, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);
+sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);
 sprintf(shift, "%d", bitMember->pos);
 exp->__anon1.op.exp1 = memberExp->__anon1.member.exp;
 if(exp->__anon1.op.op == XOR_ASSIGN)
@@ -3606,9 +3611,9 @@ struct Declarator * decl = SpecDeclFromString(bitMember->dataTypeString, specs, 
 struct TypeName * type = MkTypeName(specs, decl);
 
 if(bitMember->mask > (0xffffffff))
-sprintf(mask, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), bitMember->mask);
+sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), bitMember->mask);
 else
-sprintf(mask, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);
+sprintf(mask, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), bitMember->mask);
 sprintf(shift, "%d", bitMember->pos);
 FreeIdentifier(exp->__anon1.member.member);
 ListAdd(list, MkExpCast(type, MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpOp(exp->__anon1.member.exp, '&', MkExpConstant(mask)))), RIGHT_OP, MkExpConstant(shift))))));

@@ -1,4 +1,11 @@
 /* Code generated from eC source file: loadSymbols.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -1705,8 +1712,6 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
 
 extern int sprintf(char * , const char * , ...);
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
@@ -1821,7 +1826,7 @@ loadedModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(privateModule, n
 if(loadedModule)
 {
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)loadedModule + structSize_Instance)))->importType = importType;
-module->dllOnly = 0x0;
+module->dllOnly = 0;
 if(list)
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
@@ -1871,7 +1876,7 @@ char configDir[274];
 
 strcpy(symFile, ((char * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&dir))));
 __ecereNameSpace__ecere__sys__PathCat(symFile, "obj");
-sprintf(configDir, "debug.%s", (__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "win32" : "linux");
+sprintf(configDir, "debug.%s", (__runtimePlatform == 1) ? "win32" : (__runtimePlatform == 3) ? "apple" : "linux");
 __ecereNameSpace__ecere__sys__PathCat(symFile, configDir);
 __ecereNameSpace__ecere__sys__PathCat(symFile, name);
 __ecereNameSpace__ecere__sys__ChangeExtension(symFile, "sym", symFile);
@@ -1899,7 +1904,7 @@ int FindIncludeFileID(char * includeFile)
 int c;
 
 for(c = 0; c < numIncludes; c++)
-if(!((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? (strcasecmp) : strcmp)(includes[c], includeFile))
+if(!((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(includes[c], includeFile))
 return c + 1;
 return 0;
 }

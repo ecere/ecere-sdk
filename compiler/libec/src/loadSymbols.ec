@@ -855,7 +855,7 @@ public void ImportModule(const char * name, ImportType importType, AccessMode im
                   strcpy(symFile, dir);
                   // PathCat(symFile, "Debug");
                   PathCat(symFile, "obj");
-                  sprintf(configDir, "debug.%s", (GetRuntimePlatform() == win32) ? "win32" : "linux");
+                  sprintf(configDir, "debug.%s", (__runtimePlatform == win32) ? "win32" : (__runtimePlatform == apple) ? "apple" : "linux");
                   PathCat(symFile, configDir);
 
                   PathCat(symFile, name);

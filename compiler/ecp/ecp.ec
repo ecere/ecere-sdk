@@ -1331,7 +1331,7 @@ class PrecompApp : Application
       /*char ** argv = null;
       int argc = 0;*/
 
-      Platform targetPlatform = GetRuntimePlatform();
+      Platform targetPlatform = __runtimePlatform;
       int targetBits = GetHostBits();
       /*
       for(c = 0; c<this.argc; c++)

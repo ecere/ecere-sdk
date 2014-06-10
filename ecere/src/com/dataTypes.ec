@@ -22,11 +22,11 @@ public define MAXFLOAT = 3.40282346638528860e+38f;
 public define MINDOUBLE = 2.2250738585072014e-308;
 public define MAXDOUBLE = 1.7976931348623158e+308;
 
-public define FORMAT64HEXLL  = (GetRuntimePlatform() == win32) ? "0x%I64XLL" : "0x%llXLL";
-public define FORMAT64HEX    = (GetRuntimePlatform() == win32) ? "0x%I64X" : "0x%llX";
-public define FORMAT64DLL    = (GetRuntimePlatform() == win32) ? "%I64dLL" : "%lldLL";
-public define FORMAT64D      = (GetRuntimePlatform() == win32) ? "%I64d" : "%lld";
-public define FORMAT64U      = (GetRuntimePlatform() == win32) ? "%I64u" : "%llu";
+public define FORMAT64HEXLL  = (__runtimePlatform == win32) ? "0x%I64XLL" : "0x%llXLL";
+public define FORMAT64HEX    = (__runtimePlatform == win32) ? "0x%I64X" : "0x%llX";
+public define FORMAT64DLL    = (__runtimePlatform == win32) ? "%I64dLL" : "%lldLL";
+public define FORMAT64D      = (__runtimePlatform == win32) ? "%I64d" : "%lld";
+public define FORMAT64U      = (__runtimePlatform == win32) ? "%I64u" : "%llu";
 
 #define PUTXWORD(b, w) \
    (b)[0] = (byte)(((w) >> 8) & 0xFF); \

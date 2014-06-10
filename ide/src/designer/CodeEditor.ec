@@ -2930,7 +2930,7 @@ class CodeEditor : Window
       }
       else
       {
-         switch(GetRuntimePlatform())
+         switch(__runtimePlatform)
          {
             case win32: SetSymbolsDir("obj/debug.win32"); break;
             case tux:   SetSymbolsDir("obj/debug.linux"); break;

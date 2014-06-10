@@ -1,4 +1,11 @@
 /* Code generated from eC source file: output.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -3824,7 +3831,7 @@ void OutputTree(struct __ecereNameSpace__ecere__sys__OldList * ast, struct __ece
 {
 struct External * external;
 
-outputLine = 31;
+outputLine = 38;
 for(external = ast->first; external; external = external->next)
 {
 switch(external->type)

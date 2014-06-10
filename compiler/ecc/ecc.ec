@@ -245,7 +245,7 @@ class CompilerApp : Application
       char defaultOutputFile[MAX_LOCATION];
       bool buildingBootStrap = false;
 
-      Platform targetPlatform = GetRuntimePlatform();
+      Platform targetPlatform = __runtimePlatform;
       int targetBits = GetHostBits();
 
 #ifdef _DEBUG
@@ -651,6 +651,14 @@ class CompilerApp : Application
                   if(output)
                   {
                      output.Printf("/* Code generated from eC source file: %s */\n", sourceFileName);
+                     output.Printf("#if defined(_WIN32)\n");
+                     output.Printf("#define __runtimePlatform 1\n");
+                     output.Printf("#elif defined(__APPLE__)\n");
+                     output.Printf("#define __runtimePlatform 3\n");
+                     output.Printf("#else\n");
+                     output.Printf("#define __runtimePlatform 2\n");
+                     output.Printf("#endif\n");
+
                      output.Printf("#if defined(__GNUC__)\n");
                         output.Printf("typedef long long int64;\n");
                         output.Printf("typedef unsigned long long uint64;\n");

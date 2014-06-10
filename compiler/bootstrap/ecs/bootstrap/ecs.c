@@ -1,4 +1,11 @@
 /* Code generated from eC source file: ecs.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -2407,8 +2414,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "}\n");
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_SymbolgenApp;
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 extern int GetHostBits(void);
 
 extern void SetSymbolsDir(const char *  s);
@@ -2580,7 +2585,7 @@ const char * output = (((void *)0));
 
 outputPot = 0;
 disabledPooling = 0;
-targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
+targetPlatform = __runtimePlatform;
 targetBits = GetHostBits();
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)
 {

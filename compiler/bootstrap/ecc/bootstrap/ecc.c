@@ -1,4 +1,11 @@
 /* Code generated from eC source file: ecc.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -652,8 +659,6 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   .\n");
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_CompilerApp;
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 extern int GetHostBits(void);
 
 extern void SetSymbolsDir(const char *  s);
@@ -890,7 +895,7 @@ int c;
 unsigned int valid = 1;
 char defaultOutputFile[797];
 unsigned int buildingBootStrap = 0;
-int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
+int targetPlatform = __runtimePlatform;
 int targetBits = GetHostBits();
 
 SetSymbolsDir("");
@@ -1240,6 +1245,13 @@ struct __ecereNameSpace__ecere__com__Instance * output = __ecereNameSpace__ecere
 if(output)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "/* Code generated from eC source file: %s */\n", sourceFileName);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(_WIN32)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __runtimePlatform 1\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#elif defined(__APPLE__)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __runtimePlatform 3\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __runtimePlatform 2\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__GNUC__)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef long long int64;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned long long uint64;\n");

@@ -42,8 +42,6 @@ class epj2makeApp : GuiApplication
       int argc = 0;
       */
 
-      Platform targetPlatform = GetRuntimePlatform();
-
       Project project = null;
 
       CompilerConfig optionsCompiler { };
@@ -167,8 +165,8 @@ class epj2makeApp : GuiApplication
             }
             else if(arg[1] == 't' && !arg[2])
             {
-               if(++c < argc)
-                  targetPlatform = argv[c];
+               // Obsolete target platform option
+               if(++c < argc);
                else
                   valid = false;
             }

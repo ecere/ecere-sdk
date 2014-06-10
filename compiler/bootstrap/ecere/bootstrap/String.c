@@ -1,4 +1,11 @@
 /* Code generated from eC source file: String.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -343,8 +350,6 @@ extern int strcmp(const char * , const char * );
 
 extern void *  memmove(void * , const void * , size_t size);
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 char * __ecereNameSpace__ecere__sys__StripLastDirectory(const char * string, char * output)
 {
 int c;
@@ -377,14 +382,14 @@ else
 output[c] = '\0';
 }
 else
-strcpy(output, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "\\" : "/"));
+strcpy(output, ((__runtimePlatform == 1) ? "\\" : "/"));
 return output;
 }
 else
 {
 if(c == 0)
 {
-strcpy(output, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "\\" : "/"));
+strcpy(output, ((__runtimePlatform == 1) ? "\\" : "/"));
 return output;
 }
 else
@@ -405,7 +410,7 @@ int c = 0;
 for(; (ch = string[c]) && (ch == '/' || ch == '\\'); c++)
 ;
 if(c)
-part[len++] = ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? '\\' : '/');
+part[len++] = ((__runtimePlatform == 1) ? '\\' : '/');
 else
 {
 for(; (ch = string[c]) && (ch != '/' && ch != '\\'); c++)
@@ -521,7 +526,7 @@ fileName[len] = (char)0;
 isURL = 1;
 c = len;
 }
-else if(__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1)
+else if(__runtimePlatform == 1)
 {
 if(addedPath[0] && addedPath[1] == ':' && addedPath[0] != '<')
 {
@@ -546,7 +551,7 @@ urlFileName[1] = '\0';
 }
 else if(!modified && (addedPath[0] == '\\' || addedPath[0] == '/'))
 {
-if(__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1)
+if(__runtimePlatform == 1)
 {
 if(addedPath[0] == '/' && !addedPath[1])
 {
@@ -601,7 +606,7 @@ len--;
 if(len > 0)
 {
 modified = 1;
-if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? '\\' : '/') || directory[2] == '/'))
+if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == ((__runtimePlatform == 1) ? '\\' : '/') || directory[2] == '/'))
 {
 int strLen = strlen(fileName) - 1;
 
@@ -626,7 +631,7 @@ strcat(fileName, "..");
 }
 else
 {
-if(__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1)
+if(__runtimePlatform == 1)
 {
 if(!strLen && fileName[0] == '\\' && fileName[1] == '\\')
 {
@@ -811,7 +816,7 @@ len--;
 if(len > 0)
 {
 modified = 1;
-if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? '\\' : '/')))
+if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == ((__runtimePlatform == 1) ? '\\' : '/')))
 {
 int strLen = strlen(fileName) - 1;
 
@@ -833,7 +838,7 @@ strLen = (__simpleStruct0 = urlFileName - fileName, (strLen > __simpleStruct0) ?
 }
 if(!strcmp(fileName + strLen + (separator ? 2 : 1), ".."))
 {
-strcat(fileName, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "\\" : "/"));
+strcat(fileName, ((__runtimePlatform == 1) ? "\\" : "/"));
 strcat(fileName, "..");
 }
 else
@@ -883,7 +888,7 @@ if(notZeroLen)
 if(isURL)
 fileName[strLen++] = '/';
 else
-fileName[strLen++] = ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? '\\' : '/');
+fileName[strLen++] = ((__runtimePlatform == 1) ? '\\' : '/');
 }
 fileName[strLen] = '\0';
 if(strLen + strlen(directory) > (797) - 3)
@@ -929,11 +934,11 @@ for(; toRest[0]; )
 __ecereNameSpace__ecere__sys__SplitDirectory(toRest, toPart, toRest);
 if(!different)
 __ecereNameSpace__ecere__sys__SplitDirectory(pathRest, pathPart, pathRest);
-if(different || ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? (strcasecmp) : strcmp)(toPart, pathPart))
+if(different || ((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(toPart, pathPart))
 {
 different = 1;
 strcat(destination, "..");
-strcat(destination, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "\\" : "/"));
+strcat(destination, ((__runtimePlatform == 1) ? "\\" : "/"));
 }
 }
 if(different)
@@ -1429,7 +1434,7 @@ for(; ofRest[0] && pathRest[0]; )
 {
 __ecereNameSpace__ecere__sys__SplitDirectory(ofRest, ofPart, ofRest);
 __ecereNameSpace__ecere__sys__SplitDirectory(pathRest, pathPart, pathRest);
-if(((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? (strcasecmp) : strcmp)(pathPart, ofPart))
+if(((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(pathPart, ofPart))
 return 0;
 }
 if(!ofRest[0] && !pathRest[0])
@@ -1498,8 +1503,8 @@ void __ecereRegisterModule_String(struct __ecereNameSpace__ecere__com__Instance 
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::DIR_SEP", "(GetRuntimePlatform() == win32) ? '\\\\' : '/'", module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::DIR_SEPS", "(GetRuntimePlatform() == win32) ? \"\\\\\" : \"/\"", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::DIR_SEP", "(__runtimePlatform == win32) ? '\\\\' : '/'", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::DIR_SEPS", "(__runtimePlatform == win32) ? \"\\\\\" : \"/\"", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::MAX_F_STRING", "1025", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::MAX_EXTENSION", "17", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::MAX_FILENAME", "274", module, 4);

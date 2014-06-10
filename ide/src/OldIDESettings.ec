@@ -19,7 +19,7 @@ define projectOptions = "Project Options";
 define defaultTargetDir = "Default Target Directory";
 define defaultIntermediateObjDir = "Default Intermediate Objects Directory";
 
-define makeDefaultCommand = (GetRuntimePlatform() == win32) ? "mingw32-make" :
+define makeDefaultCommand = (__runtimePlatform == win32) ? "mingw32-make" :
 #ifdef __FreeBSD__
    "gmake";
 #else
@@ -148,7 +148,7 @@ class OldIDESettings : GlobalAppSettings
                compiler = CompilerConfig { name = configName, targetPlatform = platformName };
                incref compiler;
                if(!compiler.targetPlatform)
-                  compiler.targetPlatform = GetRuntimePlatform();
+                  compiler.targetPlatform = __runtimePlatform;
                delete platformName;
                // TOCHECK these must call the property!
                GetGlobalValue(section, makeCommandSetting, singleString, &v); compiler.makeCommand = v && v[0] ? v : makeDefaultCommand; delete v;

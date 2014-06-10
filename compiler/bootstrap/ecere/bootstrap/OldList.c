@@ -1,4 +1,11 @@
 /* Code generated from eC source file: OldList.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -426,9 +433,9 @@ this->last = item;
 if(link->next)
 ((struct __ecereNameSpace__ecere__sys__Item *)((unsigned char *)link->next + this->offset))->prev = item;
 this->count++;
-return 0x1;
+return 1;
 }
-return 0x0;
+return 0;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNameSpace__ecere__sys__OldList * this, void * item)
@@ -505,7 +512,7 @@ this->count = 0;
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this)
 {
 this->offset = 0;
-this->circ = 0x0;
+this->circ = 0;
 this->count = 0;
 this->first = this->last = (((void *)0));
 }
@@ -639,7 +646,7 @@ return result;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_PlaceName(struct __ecereNameSpace__ecere__sys__OldList * this, const char * name, void ** place)
 {
-unsigned int result = 0x1;
+unsigned int result = 1;
 void * item;
 struct __ecereNameSpace__ecere__sys__NamedItem * link;
 int compare = 1;
@@ -655,7 +662,7 @@ if(!item)
 else
 *place = link->prev;
 if(compare)
-result = 0x1;
+result = 1;
 else
 ;
 return result;
@@ -663,14 +670,14 @@ return result;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(struct __ecereNameSpace__ecere__sys__OldList * this, void * item)
 {
-unsigned int result = 0x0;
+unsigned int result = 0;
 void * place;
 struct __ecereNameSpace__ecere__sys__NamedItem * link = ((struct __ecereNameSpace__ecere__sys__NamedItem *)((unsigned char *)item + this->offset));
 
 if(__ecereMethod___ecereNameSpace__ecere__sys__OldList_PlaceName(this, link->name, &place))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(this, place, item);
-result = 0x1;
+result = 1;
 }
 return result;
 }

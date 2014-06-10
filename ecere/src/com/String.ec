@@ -30,8 +30,8 @@ default extern Platform runtimePlatform;
 
 #define IS_ALUNDER(ch) ((ch) == '_' || isalnum((ch)))
 
-public define DIR_SEP   = (GetRuntimePlatform() == win32) ? '\\' : '/';
-public define DIR_SEPS  = (GetRuntimePlatform() == win32) ? "\\" : "/";
+public define DIR_SEP   = (__runtimePlatform == win32) ? '\\' : '/';
+public define DIR_SEPS  = (__runtimePlatform == win32) ? "\\" : "/";
 
 // Maximum length for a vsnprintf string
 public define MAX_F_STRING = 1025;
@@ -226,7 +226,7 @@ public char * PathCatSlash(char * string, const char * addedPath)
          isURL = true;
          c = len;
       }
-      else if(GetRuntimePlatform() == win32)
+      else if(__runtimePlatform == win32)
       {
          if(addedPath[0] && addedPath[1] == ':' && addedPath[0] != '<')
          {
@@ -257,7 +257,7 @@ public char * PathCatSlash(char * string, const char * addedPath)
       }
       else if(!modified && (addedPath[0] == '\\' || addedPath[0] == '/'))
       {
-         if(GetRuntimePlatform() == win32)
+         if(__runtimePlatform == win32)
          {
             // Entire Computer
             if(addedPath[0] == '/' && !addedPath[1])
@@ -341,7 +341,7 @@ public char * PathCatSlash(char * string, const char * addedPath)
                   }
                   else
                   {
-                     if(GetRuntimePlatform() == win32)
+                     if(__runtimePlatform == win32)
                      {
                         if(!strLen && fileName[0] == '\\' && fileName[1] == '\\')
                         {

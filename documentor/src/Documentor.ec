@@ -3885,7 +3885,7 @@ class Documentor : GuiApplication
 {
    bool Init()
    {
-      Platform os = GetRuntimePlatform();
+      Platform os = __runtimePlatform;
       componentsApp = __ecere_COM_Initialize(false, 1, null);
       SetPrivateModule(componentsApp);
       SetGlobalContext(globalContext);

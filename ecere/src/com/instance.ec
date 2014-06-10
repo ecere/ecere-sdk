@@ -6223,7 +6223,7 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("strcspn", "uintsize strcspn(const char *, const char *)", strcspn, module, baseSystemAccess);
    eSystem_RegisterFunction("strpbrk", "char * strpbrk(const char *, const char *)", strpbrk, module, baseSystemAccess);
 
-   eSystem_RegisterDefine("fstrcmp", "(GetRuntimePlatform() == win32) ? strcmpi : strcmp", module, baseSystemAccess);
+   eSystem_RegisterDefine("fstrcmp", "(__runtimePlatform == win32) ? strcmpi : strcmp", module, baseSystemAccess);
 
 //#if defined(__GNUC__)
    eSystem_RegisterDefine("strcmpi", "strcasecmp", module, baseSystemAccess);

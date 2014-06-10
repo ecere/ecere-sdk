@@ -1,4 +1,11 @@
 /* Code generated from eC source file: ecp.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -2331,8 +2338,6 @@ struct __ecereNameSpace__ecere__sys__OldList values;
 long long largest;
 } __attribute__ ((gcc_struct));
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 extern void OutputExpression(struct Expression * exp, struct __ecereNameSpace__ecere__com__Instance * f);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
@@ -2515,9 +2520,9 @@ for(value = e->values.first; value; value = value->next)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         %s = ", value->name);
 if(!strcmp(_class->dataTypeString, "uint64") && *(uint64 *)&value->data > (((long long)0x7fffffffffffffffLL)))
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), *(uint64 *)&value->data);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), *(uint64 *)&value->data);
 else
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), value->data);
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), value->data);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "\n");
 }
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "         .\n");
@@ -2680,7 +2685,7 @@ char defaultSymFile[797];
 char * cppCommand = (((void *)0));
 char * cppOptions = (((void *)0));
 int cppOptionsLen = 0;
-int targetPlatform = __ecereNameSpace__ecere__com__GetRuntimePlatform();
+int targetPlatform = __runtimePlatform;
 int targetBits = GetHostBits();
 
 for(c = 1; c < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + structSize_Module)))->argc; c++)

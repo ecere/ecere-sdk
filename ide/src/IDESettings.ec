@@ -208,7 +208,7 @@ CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
       name,
       readOnly,
       gcc,
-      GetRuntimePlatform(),
+      __runtimePlatform,
       1,
       makeDefaultCommand,
       ecpDefaultCommand,

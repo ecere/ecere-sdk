@@ -3053,9 +3053,9 @@ class Debugger
                            // snprintf(value, sizeof(value), "0x%08x ", address);
 
                            if(address > 0xFFFFFFFFLL)
-                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%016I64x " : "0x%016llx ", address);
+                              snprintf(value, sizeof(value), (__runtimePlatform == win32) ? "0x%016I64x " : "0x%016llx ", address);
                            else
-                              snprintf(value, sizeof(value), (GetRuntimePlatform() == win32) ? "0x%08I64x " : "0x%08llx ", address);
+                              snprintf(value, sizeof(value), (__runtimePlatform == win32) ? "0x%08I64x " : "0x%08llx ", address);
                            value[sizeof(value)-1] = 0;
 
                            if(!address)
@@ -3320,11 +3320,8 @@ class Debugger
       if(!size)
          _dpl(0, "GdbReadMemoryString called with size = 0!");
 #endif
-      // GdbCommand(0, false, "-data-read-memory 0x%08x %c, %d, %d, %d", address, format, size, rows, cols);
-      if(GetRuntimePlatform() == win32)
-         GdbCommand(0, false, "-data-read-memory 0x%016I64x %c, %d, %d, %d", address, format, size, rows, cols);
-      else
-         GdbCommand(0, false, "-data-read-memory 0x%016llx %c, %d, %d, %d", address, format, size, rows, cols);
+      GdbCommand(0, false,
+         (__runtimePlatform == win32) ? "-data-read-memory 0x%016I64x %c, %d, %d, %d" : "-data-read-memory 0x%016llx %c, %d, %d, %d", address, format, size, rows, cols);
       if(eval.active)
          ide.outputView.debugBox.Logf("Debugger Error: GdbReadMemoryString\n");
       return eval.result;
@@ -3335,11 +3332,9 @@ class Debugger
       _dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbReadMemory(", address, ")");
       eval.active = true;
       eval.error = none;
-      //GdbCommand(0, false, "-data-read-memory 0x%08x %c, 1, 1, %d", address, 'u', bytes);
-      if(GetRuntimePlatform() == win32)
-         GdbCommand(0, false, "-data-read-memory 0x%016I64x %c, 1, 1, %d", address, 'u', bytes);
-      else
-         GdbCommand(0, false, "-data-read-memory 0x%016llx %c, 1, 1, %d", address, 'u', bytes);
+      GdbCommand(0, false,
+         (__runtimePlatform == win32) ? "-data-read-memory 0x%016I64x %c, 1, 1, %d" : "-data-read-memory 0x%016llx %c, 1, 1, %d",
+         address, 'u', bytes);
 #ifdef _DEBUG
       if(!bytes)
          _dpl(0, "GdbReadMemory called with bytes = 0!");

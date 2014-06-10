@@ -7824,7 +7824,13 @@ void ProcessExpressionType(Expression exp)
             exp.expType = ProcessTypeString("Module", true);
             break;
          }
-         else */if(strstr(id.string, "__ecereClass") == id.string)
+         else */
+         if(!strcmp(id.string, "__runtimePlatform"))
+         {
+            exp.expType = ProcessTypeString("ecere::com::Platform", true);
+            break;
+         }
+         else if(strstr(id.string, "__ecereClass") == id.string)
          {
             exp.expType = ProcessTypeString("ecere::com::Class", true);
             break;

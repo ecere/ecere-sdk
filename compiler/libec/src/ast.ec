@@ -2950,7 +2950,7 @@ public void OutputIntlStrings()
       {
          const char * filePrefix = "";
          if(!(srcFile[0] && (srcFile[1] == ':' || srcFile[0] == '/')))
-            filePrefix = "./"; //(GetRuntimePlatform() == win32) ? ".\\" : "./";
+            filePrefix = "./"; //(__runtimePlatform == win32) ? ".\\" : "./";
          // GetSystemPathBuffer(srcFileFixed, srcFile);
          GetSlashPathBuffer(srcFileFixed, srcFile);
 

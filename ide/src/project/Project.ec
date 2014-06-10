@@ -1260,7 +1260,7 @@ private:
                strcat(string, ".dylib");
             else
                strcat(string, ".so");
-            if(compiler.targetPlatform == tux && GetRuntimePlatform() == tux && moduleVersion && moduleVersion[0])
+            if(compiler.targetPlatform == tux && __runtimePlatform == tux && moduleVersion && moduleVersion[0])
             {
                strcat(string, ".");
                strcat(string, moduleVersion);
@@ -1998,7 +1998,7 @@ private:
       char configName[MAX_LOCATION];
       DirExpression objDirExp = GetObjDir(compiler, config, bitDepth);
       PathBackup pathBackup { };
-      bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
+      bool crossCompiling = (compiler.targetPlatform != __runtimePlatform);
       const char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       bool eC_Debug = mode.eC_ToolsDebug;
@@ -2193,7 +2193,7 @@ private:
       char * compilerName;
       DualPipe f;
       PathBackup pathBackup { };
-      bool crossCompiling = (compiler.targetPlatform != GetRuntimePlatform());
+      bool crossCompiling = (compiler.targetPlatform != __runtimePlatform);
       const char * targetPlatform = crossCompiling ? (char *)compiler.targetPlatform : "";
 
       compilerName = CopyString(compiler.name);

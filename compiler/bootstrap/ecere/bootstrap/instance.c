@@ -1,4 +1,11 @@
 /* Code generated from eC source file: instance.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -5381,7 +5388,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strstr", "char * strstr(
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strspn", "uintsize strspn(const char *, const char *)", strspn, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcspn", "uintsize strcspn(const char *, const char *)", strcspn, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strpbrk", "char * strpbrk(const char *, const char *)", strpbrk, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("fstrcmp", "(GetRuntimePlatform() == win32) ? strcmpi : strcmp", module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("fstrcmp", "(__runtimePlatform == win32) ? strcmpi : strcmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("strcmpi", "strcasecmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("strnicmp", "strncasecmp", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strcasecmp", "int strcasecmp(const char *, const char *)", strcasecmp, module, 4);

@@ -1,4 +1,11 @@
 /* Code generated from eC source file: pass15.ec */
+#if defined(_WIN32)
+#define __runtimePlatform 1
+#elif defined(__APPLE__)
+#define __runtimePlatform 3
+#else
+#define __runtimePlatform 2
+#endif
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -1493,8 +1500,6 @@ exp->__anon1.list = MkListOne(MkExpOp((((void *)0)), '*', MkExpCast(MkTypeName(s
 
 extern int sprintf(char * , const char * , ...);
 
-extern int __ecereNameSpace__ecere__com__GetRuntimePlatform(void);
-
 extern char *  strcat(char * , const char * );
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
@@ -1504,9 +1509,9 @@ char * PrintInt(long long result)
 char temp[100];
 
 if(result > (((int)0x7fffffff)))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), result);
 else
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), result);
 if(result > (((int)0x7fffffff)) || result < (((int)0x80000000)))
 strcat(temp, "LL");
 return __ecereNameSpace__ecere__sys__CopyString(temp);
@@ -1517,11 +1522,11 @@ char * PrintUInt(uint64 result)
 char temp[100];
 
 if(result > (0xffffffff))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
 else if(result > (((int)0x7fffffff)))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), result);
 else
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 
@@ -1530,9 +1535,9 @@ char * PrintInt64(long long result)
 char temp[100];
 
 if(result > (((int)0x7fffffff)) || result < (((int)0x80000000)))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64dLL" : "%lldLL"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "%I64dLL" : "%lldLL"), result);
 else
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 
@@ -1541,11 +1546,11 @@ char * PrintUInt64(uint64 result)
 char temp[100];
 
 if(result > (0xffffffff))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
 else if(result > (((int)0x7fffffff)))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), result);
 else
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 
@@ -1554,9 +1559,9 @@ char * PrintHexUInt(uint64 result)
 char temp[100];
 
 if(result > (0xffffffff))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), result);
 else
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), result);
 if(result > (0xffffffff))
 strcat(temp, "LL");
 return __ecereNameSpace__ecere__sys__CopyString(temp);
@@ -1567,9 +1572,9 @@ char * PrintHexUInt64(uint64 result)
 char temp[100];
 
 if(result > (0xffffffff))
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), result);
 else
-sprintf(temp, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), result);
+sprintf(temp, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), result);
 return __ecereNameSpace__ecere__sys__CopyString(temp);
 }
 
@@ -5432,9 +5437,9 @@ char constant[256];
 
 sourceExp->type = 2;
 if(!strcmp(baseClass->dataTypeString, "int") || !strcmp(baseClass->dataTypeString, "int64") || !strcmp(baseClass->dataTypeString, "short") || !strcmp(baseClass->dataTypeString, "char"))
-sprintf(constant, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), value->data);
+sprintf(constant, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), value->data);
 else
-sprintf(constant, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64XLL" : "0x%llXLL"), value->data);
+sprintf(constant, ((__runtimePlatform == 1) ? "0x%I64XLL" : "0x%llXLL"), value->data);
 sourceExp->__anon1.__anon1.constant = __ecereNameSpace__ecere__sys__CopyString(constant);
 }
 while(converts.first)
@@ -13627,9 +13632,9 @@ FreeExpContents(exp);
 exp->type = 2;
 exp->isConstant = 1;
 if(!strcmp(baseClass->dataTypeString, "int") || !strcmp(baseClass->dataTypeString, "int64") || !strcmp(baseClass->dataTypeString, "char") || !strcmp(baseClass->dataTypeString, "short"))
-sprintf(constant, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "%I64d" : "%lld"), value->data);
+sprintf(constant, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), value->data);
 else
-sprintf(constant, ((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? "0x%I64X" : "0x%llX"), value->data);
+sprintf(constant, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), value->data);
 exp->__anon1.__anon1.constant = __ecereNameSpace__ecere__sys__CopyString(constant);
 exp->expType = MkClassType(baseClass->fullName);
 break;
@@ -14156,7 +14161,12 @@ if(id->_class && id->_class->__anon1.__anon1.name)
 {
 id->classSym = id->_class->__anon1.__anon1.symbol;
 }
-if(strstr(id->string, "__ecereClass") == id->string)
+if(!strcmp(id->string, "__runtimePlatform"))
+{
+exp->expType = ProcessTypeString("ecere::com::Platform", 1);
+break;
+}
+else if(strstr(id->string, "__ecereClass") == id->string)
 {
 exp->expType = ProcessTypeString("ecere::com::Class", 1);
 break;
