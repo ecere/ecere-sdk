@@ -181,7 +181,7 @@ default:
 "_stdcall"                 { return(EXT_DECL); }
 "stdcall"                  { return(EXT_DECL); }
 "__restrict"               { return(EXT_DECL); }
-"__const"                  { return(EXT_DECL); }
+"__const"                  { return(CONST /*EXT_DECL*/); }
 "__restrict__"             { return(EXT_DECL); }
 "public"                   { return(PUBLIC); }
 "private"                  { return(PRIVATE); }

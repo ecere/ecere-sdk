@@ -1907,7 +1907,7 @@ YY_RULE_SETUP
 case 82:
 YY_RULE_SETUP
 #line 184 "lexer.l"
-{ return(EXT_DECL); }
+{ return(CONST /*EXT_DECL*/); }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
