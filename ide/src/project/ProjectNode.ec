@@ -1420,7 +1420,7 @@ private:
 
    bool ContainsFilesWithExtension(const char * extension, ProjectConfig prjConfig)
    {
-      if(type == file)
+      if(type == file && name && name[0])
       {
          char ext[MAX_EXTENSION];
          GetExtension(name, ext);

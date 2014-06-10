@@ -43,15 +43,18 @@ class NodeProperties : Window
    {
       char filePath[MAX_LOCATION];
       char * oldName = node.name;
+      Map<Platform, SetBool> exclusionInfo { };
 
       node.name = null;
       GetLastDirectory(name.contents, filePath);
-      if(topNode.Find(filePath, false))
+      topNode.CollectExclusionInfo(exclusionInfo, null);
+      if(topNode.FindSameNameConflict(name.contents, false, exclusionInfo, null))
       {
          MessageBox { type = ok, master = this, text = filePath, contents = $"File with same name already in project." }.Modal();
          node.name = oldName;
          return false;
       }
+      delete exclusionInfo;
       delete oldName;
       node.name = CopyString(filePath);
       if(node.type == file)
