@@ -294,9 +294,9 @@ struct __ecereNameSpace__ecere__com__Method * method;
 } __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__TempFile_openMode, * __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__TempFile_openMode, * __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__TempFile_buffer, * __ecerePropM___ecereNameSpace__ecere__sys__TempFile_buffer;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__TempFile_buffer, * __ecerePropM___ecereNameSpace__ecere__sys__TempFile_buffer;
 
 struct __ecereNameSpace__ecere__sys__TempFile
 {
@@ -312,7 +312,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 unsigned int __ecereConstructor___ecereNameSpace__ecere__sys__TempFile(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->openMode = 5;
 return 1;
@@ -320,7 +320,7 @@ return 1;
 
 void __ecereDestructor___ecereNameSpace__ecere__sys__TempFile(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer), __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = 0);
@@ -332,7 +332,7 @@ extern void *  memcpy(void * , const void * , size_t size);
 int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Read(struct __ecereNameSpace__ecere__com__Instance * this, unsigned char * buffer, unsigned int size, unsigned int count)
 {
 int __simpleStruct0;
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 int readSize = size * count;
 int read = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size - __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position, (readSize < __simpleStruct0) ? readSize : __simpleStruct0);
 
@@ -346,7 +346,7 @@ return read / size;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Write(struct __ecereNameSpace__ecere__com__Instance * this, const unsigned char * buffer, unsigned int size, unsigned int count)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 int writeSize = size * count;
 int written = writeSize;
 
@@ -370,7 +370,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Getc(struct __ecereNameSpace__ecere__com__Instance * this, char * ch)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 int read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -384,7 +384,7 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Putc(struct __ecereNameSpace__ecere__com__Instance * this, char ch)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -398,7 +398,7 @@ extern size_t strlen(const char * );
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Puts(struct __ecereNameSpace__ecere__com__Instance * this, const char * string)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 int len = string ? strlen(string) : 0;
 int written = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
@@ -411,7 +411,7 @@ return written == len;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Seek(struct __ecereNameSpace__ecere__com__Instance * this, int pos, int mode)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 unsigned int result = 1;
 unsigned int increase = 0;
 
@@ -502,28 +502,28 @@ return result;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Tell(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Eof(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__sys__TempFile->eof;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_GetSize(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Truncate(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int size)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = __ecereNameSpace__ecere__com__eSystem_Renew(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer, sizeof(unsigned char) * (size));
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size = (unsigned int)size;
@@ -535,14 +535,14 @@ return 1;
 
 int __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_openMode(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__sys__TempFile->openMode;
 }
 
 void __ecereProp___ecereNameSpace__ecere__sys__TempFile_Set_openMode(struct __ecereNameSpace__ecere__com__Instance * this, int value)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->openMode = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__sys__TempFile_openMode), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__sys__TempFile_openMode);
@@ -550,7 +550,7 @@ __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ece
 
 unsigned char *  __ecereProp___ecereNameSpace__ecere__sys__TempFile_Get_buffer(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__TempFile * __ecerePointer___ecereNameSpace__ecere__sys__TempFile = (struct __ecereNameSpace__ecere__sys__TempFile *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__TempFile->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer;
 }

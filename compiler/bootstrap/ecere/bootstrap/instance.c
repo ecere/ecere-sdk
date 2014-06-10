@@ -436,7 +436,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassType;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_, * __ecerePropM___ecereNameSpace__ecere__com__Class_char__PTR_;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_, * __ecerePropM___ecereNameSpace__ecere__com__Class_char__PTR_;
 
 const char *  __ecereProp___ecereNameSpace__ecere__com__Class_Get_char__PTR_(struct __ecereNameSpace__ecere__com__Class * this)
 {
@@ -5577,7 +5577,7 @@ static const char * __ecereNameSpace__ecere__com__platformNames[4] =
 
 static const int __ecereNameSpace__ecere__com__firstPlatform = 1;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_, * __ecerePropM___ecereNameSpace__ecere__com__Platform_char__PTR_;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_, * __ecerePropM___ecereNameSpace__ecere__com__Platform_char__PTR_;
 
 static const int __ecereNameSpace__ecere__com__lastPlatform = 3;
 
@@ -5645,11 +5645,11 @@ void * i18nStrings;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ObjectInfo;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_classDesigner, * __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_classDesigner;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_classDesigner, * __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_classDesigner;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_objectClass, * __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_objectClass;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_objectClass, * __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_objectClass;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_isDragging, * __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_isDragging;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_isDragging, * __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_isDragging;
 
 struct __ecereNameSpace__ecere__com__DesignerBase
 {
@@ -5662,14 +5662,14 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Get_classDesigner(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->classDesigner;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_classDesigner(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * value)
 {
-struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->classDesigner = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_classDesigner), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_classDesigner);
@@ -5677,14 +5677,14 @@ __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ece
 
 const char *  __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Get_objectClass(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->objectClass;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_objectClass(struct __ecereNameSpace__ecere__com__Instance * this, const char *  value)
 {
-struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->objectClass = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_objectClass), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_objectClass);
@@ -5692,14 +5692,14 @@ __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ece
 
 unsigned int __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Get_isDragging(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->isDragging;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Set_isDragging(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value)
 {
-struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__DesignerBase * __ecerePointer___ecereNameSpace__ecere__com__DesignerBase = (struct __ecereNameSpace__ecere__com__DesignerBase *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__DesignerBase->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__DesignerBase->isDragging = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__DesignerBase_isDragging), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__DesignerBase_isDragging);

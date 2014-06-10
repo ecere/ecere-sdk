@@ -301,15 +301,15 @@ extern int __ecereVMethodID_class_OnCompare;
 
 extern int __ecereVMethodID_class_OnCopy;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_prev;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_prev;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_next, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_next;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_next, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_next;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_count, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_count;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_count, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_count;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_depthProp, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_depthProp;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_depthProp, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_depthProp;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_balanceFactor, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_balanceFactor, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor;
 
 struct __ecereNameSpace__ecere__com__AVLNode
 {
@@ -322,7 +322,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(struct __ecereNameSpace__ecere__com__AVLNode * this);
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_maximum;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_maximum;
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
@@ -340,7 +340,7 @@ return this;
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(struct __ecereNameSpace__ecere__com__AVLNode * this);
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_minimum;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_minimum;
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
@@ -800,42 +800,42 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetFirst(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))) : (((void *)0)));
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetLast(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))) : (((void *)0)));
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetPrev(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(((struct __ecereNameSpace__ecere__com__AVLNode *)node));
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetNext(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(((struct __ecereNameSpace__ecere__com__AVLNode *)node));
 }
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return (struct __ecereNameSpace__ecere__com__AVLNode *)node;
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_SetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node, uint64 data)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return 0;
 }
@@ -882,7 +882,7 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 node)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 if(!((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root)))
 __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root = ((struct __ecereNameSpace__ecere__com__AVLNode *)(node));
@@ -905,7 +905,7 @@ return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((struct __ecereN
 
 void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Remove(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 struct __ecereNameSpace__ecere__com__AVLNode * parent = ((struct __ecereNameSpace__ecere__com__AVLNode *)node)->parent;
 
 if(parent || ((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root)) == (struct __ecereNameSpace__ecere__com__AVLNode *)node)
@@ -922,7 +922,7 @@ int __ecereVMethodID_class_OnFree;
 
 void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Delete(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * _item)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 struct __ecereNameSpace__ecere__com__AVLNode * item = (struct __ecereNameSpace__ecere__com__AVLNode *)_item;
 
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, _item);
@@ -931,7 +931,7 @@ struct __ecereNameSpace__ecere__com__AVLNode * item = (struct __ecereNameSpace__
 
 void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Free(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 struct __ecereNameSpace__ecere__com__AVLNode * item;
 
 while((item = ((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))))
@@ -943,7 +943,7 @@ while((item = ((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer__
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Find(struct __ecereNameSpace__ecere__com__Instance * this, uint64 value)
 {
-struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((struct __ecereNameSpace__ecere__com__AVLNode *)(value));
 }

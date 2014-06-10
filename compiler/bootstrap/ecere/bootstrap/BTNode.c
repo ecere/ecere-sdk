@@ -316,13 +316,13 @@ vsprintf(string + strlen(string), format, args);
 __builtin_va_end(args);
 }
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_prev, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_prev;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_prev, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_prev;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_next;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_next;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_count, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_count;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_count, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_count;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_balanceFactor, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_balanceFactor;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_balanceFactor, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_balanceFactor;
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data);
 
@@ -359,7 +359,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(struct __
 
 int __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_depthProp(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_depthProp, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_depthProp;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_depthProp, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_depthProp;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__sys__BTNode ** this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
@@ -393,7 +393,7 @@ else
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_maximum(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_maximum, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_maximum;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_maximum, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_maximum;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_prev(struct __ecereNameSpace__ecere__sys__BTNode * this)
 {
@@ -411,7 +411,7 @@ return this;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_minimum(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_minimum, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_minimum;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_minimum, * __ecerePropM___ecereNameSpace__ecere__sys__BTNode_minimum;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this)
 {

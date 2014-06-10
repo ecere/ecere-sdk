@@ -460,9 +460,9 @@ void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(struct __ecereNam
 ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize])(class, data, this);
 }
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer, * __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer, * __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size, * __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size, * __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size;
 
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
@@ -478,7 +478,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_Free();
 
 void __ecereDestructor___ecereNameSpace__ecere__com__SerialBuffer(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 {
 __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_Free(this);
@@ -489,7 +489,7 @@ extern void *  memcpy(void * , const void * , size_t size);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_WriteData(struct __ecereNameSpace__ecere__com__Instance * this, const void * bytes, unsigned int numBytes)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 if(this != (((void *)0)))
 {
@@ -508,7 +508,7 @@ return 0;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_ReadData(struct __ecereNameSpace__ecere__com__Instance * this, void * bytes, unsigned int numBytes)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 if(this != (((void *)0)))
 {
@@ -524,7 +524,7 @@ return 0;
 
 void __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_Free(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 if(this)
 {
@@ -537,14 +537,14 @@ __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos = 0;
 
 unsigned char *  __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_buffer(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->_buffer + __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_buffer(struct __ecereNameSpace__ecere__com__Instance * this, unsigned char *  value)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->_buffer = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_buffer), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_buffer);
@@ -552,14 +552,14 @@ __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ece
 
 unsigned int __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Get_size(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 return __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->count - __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos;
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_Set_size(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value)
 {
-struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer = (struct __ecereNameSpace__ecere__com__SerialBuffer *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__com__SerialBuffer->offset) : 0);
 
 __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->count = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size);

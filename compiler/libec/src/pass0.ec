@@ -459,8 +459,8 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
    External external = null;
 
    ClassDef def;
-   OldList * list;
-   OldList * classDataList;
+   OldList * list = null;
+   OldList * classDataList = null;
 
    if(inCompiler)
    {
@@ -1311,6 +1311,8 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      External external;
                      OldList * specifiers = MkList();
                      specifiers->Insert(null, MkSpecifier(STATIC));
+                     specifiers->Add(MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(CopyString("unused"), null))))));
+
                      ListAdd(specifiers, MkSpecifierName("Property"));
                      strcpy(name, "__ecereProp_");
                      FullClassNameCat(name, symbol.string, false);

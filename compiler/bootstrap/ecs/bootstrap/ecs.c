@@ -2780,7 +2780,7 @@ __ecereNameSpace__ecere__sys__GetExtension(file, ext);
 __ecereNameSpace__ecere__sys__GetLastDirectory(file, moduleName);
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
 strcat(moduleName, ".ec");
-if(((__ecereNameSpace__ecere__com__GetRuntimePlatform() == 1) ? (strcasecmp) : strcmp)(moduleName, symbolModule) && (!strcmp(ext, "sym") || !strcmp(ext, "ec")))
+if(((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(moduleName, symbolModule) && (!strcmp(ext, "sym") || !strcmp(ext, "ec")))
 {
 struct ImportedModule * importedModule;
 struct ModuleInfo * module = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ModuleInfo);

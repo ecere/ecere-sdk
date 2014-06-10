@@ -303,9 +303,9 @@ struct __ecereNameSpace__ecere__com__Method * method;
 
 __attribute__((unused)) static struct __ecereNameSpace__ecere__sys__BinaryTree __ecereNameSpace__ecere__sys__dummy;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first, * __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first, * __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_last, * __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_last;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_last, * __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_last;
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data);
 

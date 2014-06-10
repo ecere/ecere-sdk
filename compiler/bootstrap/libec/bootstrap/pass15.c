@@ -3335,6 +3335,14 @@ extern struct InitDeclarator * MkInitDeclarator(struct Declarator * declarator, 
 
 extern void FreeDeclarator(struct Declarator * decl);
 
+extern struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl);
+
+extern struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr);
+
+extern struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList *  attribs);
+
+extern struct Attribute * MkAttribute(char * attr, struct Expression * exp);
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyImport;
 
 struct PropertyImport
@@ -3562,7 +3570,10 @@ char propName[1024];
 if(imported)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(EXTERN));
 else
+{
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(STATIC));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*specifiers), MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(__ecereNameSpace__ecere__sys__CopyString("unused"), (((void *)0))))))));
+}
 ListAdd(specifiers, MkSpecifierName("Property"));
 strcpy(propName, "__ecereProp_");
 FullClassNameCat(propName, prop->_class->fullName, 0);
@@ -18630,9 +18641,11 @@ yylloc = function->body->loc;
 initializer = MkInitializerAssignment(MkExpCast(MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier(structName), (((void *)0)))), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp));
 {
 struct Context * prevContext = curContext;
+struct __ecereNameSpace__ecere__sys__OldList * list;
 
 curContext = function->body->__anon1.compound.context;
-decl = MkDeclaration(MkListOne(MkStructOrUnion(3, MkIdentifier(structName), (((void *)0)))), MkListOne(MkInitDeclarator(QMkPtrDecl(pointerName), initializer)));
+decl = MkDeclaration((list = MkListOne(MkStructOrUnion(3, MkIdentifier(structName), (((void *)0))))), MkListOne(MkInitDeclarator(QMkPtrDecl(pointerName), initializer)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*list), (((void *)0)), MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(__ecereNameSpace__ecere__sys__CopyString("unused"), (((void *)0))))))));
 curContext = prevContext;
 }
 decl->symbol = (((void *)0));

@@ -1698,7 +1698,7 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_MethodImport;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeKind;
 
-static struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst, * __ecerePropM_Type_specConst;
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst, * __ecerePropM_Type_specConst;
 
 extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 

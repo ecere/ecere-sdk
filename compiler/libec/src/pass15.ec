@@ -1576,7 +1576,10 @@ void DeclareProperty(Property prop, char * setName, char * getName)
          if(imported)
             specifiers->Insert(null, MkSpecifier(EXTERN));
          else
+         {
             specifiers->Insert(null, MkSpecifier(STATIC));
+            specifiers->Add(MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(CopyString("unused"), null))))));
+         }
 
          ListAdd(specifiers, MkSpecifierName("Property"));
 
@@ -12900,10 +12903,12 @@ static void ProcessFunction(FunctionDefinition function)
 
                {
                   Context prevContext = curContext;
+                  OldList * list;
                   curContext = function.body.compound.context;
 
-                  decl = MkDeclaration(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null)),
+                  decl = MkDeclaration((list = MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(structName), null))),
                      MkListOne(MkInitDeclarator(QMkPtrDecl(pointerName), initializer)));
+                  list->Insert(null, MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(CopyString("unused"), null))))));
 
                   curContext = prevContext;
                }

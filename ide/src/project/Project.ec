@@ -1823,10 +1823,6 @@ private:
                               else if(strstr(line, "from incompatible pointer type")) skip = true;
                               else if(strstr(line, "comparison of distinct pointer types lacks a cast")) skip = true;
 
-                              // Things being defined for potential use -- Should mark as unused
-                              else if(strstr(line, "unused variable") && (strstr(line, "'__") || strstr(line, "‘__") || strstr(line, "'class'") || strstr(line, "‘class’"))) skip = true;
-                              else if(strstr(line, "defined but not used") && strstr(line, "__ecereProp")) skip = true;
-
                               // For preprocessed code from objidl.h (MinGW-w64 headers)
                               else if(strstr(line, "declaration does not declare anything")) skip = true;
 

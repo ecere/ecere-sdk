@@ -326,42 +326,42 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetFirst(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return ((void * )(__ecerePointer___ecereNameSpace__ecere__com__LinkList->first));
 }
 
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetLast(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return ((void * )(__ecerePointer___ecereNameSpace__ecere__com__LinkList->last));
 }
 
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetPrev(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * item)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return ((void * )((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)((void *)item)) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).prev));
 }
 
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetNext(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * item)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return ((void * )((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)((void *)item)) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->offset + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon2.__anon1.member->_class->offset)).next));
 }
 
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return (void *)pointer;
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 pos, unsigned int create)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 int c;
 void * item;
 
@@ -372,14 +372,14 @@ return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((void *)(item));
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__LinkList_SetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return 0;
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__LinkList_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 item)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 if(item)
 {
@@ -399,7 +399,7 @@ return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((void *)(item));
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__LinkList_Insert(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * _prevItem, uint64 item)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 void * prevItem = (void *)_prevItem;
 
 if(item && prevItem != ((void * )(item)))
@@ -434,7 +434,7 @@ return (((void *)0));
 
 void __ecereMethod___ecereNameSpace__ecere__com__LinkList_Remove(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * _item)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 void * item = (void *)_item;
 
 if(item)
@@ -460,7 +460,7 @@ __ecerePointer___ecereNameSpace__ecere__com__LinkList->count--;
 
 void __ecereMethod___ecereNameSpace__ecere__com__LinkList_Move(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * _item, struct __ecereNameSpace__ecere__com__IteratorPointer * _prevItem)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 void * item = (void *)_item;
 void * prevItem = (void *)_prevItem;
 
@@ -504,7 +504,7 @@ if((*(struct __ecereNameSpace__ecere__com__LinkElement *)(((unsigned char *)((vo
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__LinkList_Find(struct __ecereNameSpace__ecere__com__Instance * this, uint64 value)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((void *)(value));
 }
@@ -515,7 +515,7 @@ int __ecereVMethodID_class_OnFree;
 
 void __ecereMethod___ecereNameSpace__ecere__com__LinkList_Free(struct __ecereNameSpace__ecere__com__Instance * this)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 void * item;
 
 while((item = ((void * )(__ecerePointer___ecereNameSpace__ecere__com__LinkList->first))))
@@ -531,7 +531,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 
 void __ecereMethod___ecereNameSpace__ecere__com__LinkList_Delete(struct __ecereNameSpace__ecere__com__Instance * this, uint64 item)
 {
-struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + structSize_Instance) : 0);
 
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;

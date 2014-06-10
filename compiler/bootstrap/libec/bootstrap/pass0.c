@@ -1683,6 +1683,14 @@ extern struct Declarator * PlugDeclarator(struct Declarator * decl, struct Decla
 
 extern void Compiler_Warning(const char *  format, ...);
 
+extern struct Specifier * MkSpecifierExtended(struct ExtDecl * extDecl);
+
+extern struct ExtDecl * MkExtDeclAttrib(struct Attrib * attr);
+
+extern struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__OldList *  attribs);
+
+extern struct Attribute * MkAttribute(char * attr, struct Expression * exp);
+
 extern struct __ecereNameSpace__ecere__sys__OldList *  ast;
 
 extern int sprintf(char * , const char * , ...);
@@ -1728,8 +1736,8 @@ struct ClassFunction * destructor = (((void *)0)), * constructor = (((void *)0))
 unsigned int isUnion = classType == 6;
 struct External * external = (((void *)0));
 struct ClassDef * def;
-struct __ecereNameSpace__ecere__sys__OldList * list;
-struct __ecereNameSpace__ecere__sys__OldList * classDataList;
+struct __ecereNameSpace__ecere__sys__OldList * list = (((void *)0));
+struct __ecereNameSpace__ecere__sys__OldList * classDataList = (((void *)0));
 
 if(inCompiler)
 {
@@ -2311,6 +2319,7 @@ struct External * external;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
 
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*specifiers), (((void *)0)), MkSpecifier(STATIC));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*specifiers), MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(__ecereNameSpace__ecere__sys__CopyString("unused"), (((void *)0))))))));
 ListAdd(specifiers, MkSpecifierName("Property"));
 strcpy(name, "__ecereProp_");
 FullClassNameCat(name, symbol->string, 0);
