@@ -354,8 +354,7 @@ private:
             }
          }
       }
-
-      if(shouldDelete)       // This delete will cover both trying the next possible config location and
+      else if(shouldDelete)        // This delete will cover both trying the next possible config location and
          delete settingsFilePath;  // allow trying to save to a location where user has permission.
       return f != null;
    }
