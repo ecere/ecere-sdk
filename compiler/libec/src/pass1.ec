@@ -1238,22 +1238,22 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          if(regClass.type == normalClass || regClass.type == noHeadClass)
          {
             // Constructor
-            ListAdd(args, symbol.needConstructor ?
+            ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), symbol.needConstructor ?
                MkExpIdentifier(MkIdentifier(symbol.constructorName)) :
-               MkExpConstant("0"));
+               MkExpConstant("0")));
             // Destructor
-            ListAdd(args, symbol.needDestructor ?
+            ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), symbol.needDestructor ?
                MkExpIdentifier(MkIdentifier(symbol.destructorName)) :
-               MkExpConstant("0"));
+               MkExpConstant("0")));
          }
          else
          {
             // TODO: Support Constructors / Destructors for structs
 
             // Constructor
-            ListAdd(args, MkExpConstant("0"));
+            ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpConstant("0")));
             // Destructor
-            ListAdd(args, MkExpConstant("0"));
+            ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpConstant("0")));
          }
 
          // Module

@@ -1817,8 +1817,7 @@ private:
                                        skip = true;
                                  }
                               }
-                              // Pointers warnings (eC should already warn about relevant problems, more forgiving for function pointers, should cast in generated code)
-                              else if((strstr(line, "note: expected '") || strstr(line, "note: expected ‘")) && strstr(line, "(*)")) skip = true;
+                              // Pointers warnings (eC should already warn about relevant problems, should cast in generated code)
                               else if(strstr(line, "expected 'void **") || strstr(line, "expected ‘void **")) skip = true;
                               else if(strstr(line, "from incompatible pointer type")) skip = true;
                               else if(strstr(line, "comparison of distinct pointer types lacks a cast")) skip = true;

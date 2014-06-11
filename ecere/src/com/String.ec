@@ -769,7 +769,7 @@ public char * SearchString(const char * buffer, int start, const char * subStr, 
       const char * strBuffer = buffer + start;
       int subLen = strlen(subStr);
       char beforeChar = start ? *(strBuffer-1) : 0;
-      int (*strcompare)(const char *, const char *, unsigned int) = matchCase ? strncmp : strnicmp;
+      int (*strcompare)(const char *, const char *, uintsize) = matchCase ? strncmp : strnicmp;
 
       for(ptr = strBuffer; *ptr; ptr++)
       {
@@ -805,7 +805,7 @@ public char * RSearchString(const char * buffer, const char * subStr, int maxLen
       int subLen = strlen(subStr);
       const char * ptr1 = buffer + maxLen - subLen;
       const char * ptr2 = buffer + maxLen - subLen - 1;
-      int (*strcompare)(const char *, const char *, unsigned int) = matchCase ? strncmp : strnicmp;
+      int (*strcompare)(const char *, const char *, uintsize) = matchCase ? strncmp : strnicmp;
       for(; ptr1 >=buffer; ptr1--, ptr2--)
       {
          if(tolower(*subStr) == tolower(*ptr1))

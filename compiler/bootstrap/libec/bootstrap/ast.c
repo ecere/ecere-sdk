@@ -1604,7 +1604,7 @@ uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecer
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
@@ -2823,11 +2823,11 @@ __ecereInstance1->specifiers = specifiers, __ecereInstance1->declarator = declar
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
 void ProcessFunctionBody(struct FunctionDefinition * func, struct Statement * body)
 {
@@ -3120,7 +3120,7 @@ spec->__anon1.__anon1.name = __ecereNameSpace__ecere__sys__CopyString(symbol ? s
 }
 }
 else
-FreeList(templateArgs, FreeTemplateArgument);
+FreeList(templateArgs, (void *)(FreeTemplateArgument));
 }
 
 extern int strncmp(const char * , const char * , size_t n);
@@ -3267,7 +3267,7 @@ symbol->type = ProcessType(symbolSpecs, decl);
 symbol->idCode = symbol->id = globalContext->nextID++;
 decl->symbol = symbol;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
-FreeList(symbolSpecs, FreeSpecifier);
+FreeList(symbolSpecs, (void *)(FreeSpecifier));
 }
 }
 
@@ -3351,7 +3351,7 @@ inst->_class = spec;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(specs, spec);
 break;
 }
-FreeList(specs, FreeSpecifier);
+FreeList(specs, (void *)(FreeSpecifier));
 if(!spec)
 {
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Expecting class specifier\n", (((void *)0))));
@@ -4580,7 +4580,7 @@ struct Type * type = ProcessType(specs, decl);
 
 if(type && !type->__anon1.__anon2.thisClass && staticMethod)
 type->__anon1.__anon2.staticMethod = 1;
-FreeList(specs, FreeSpecifier);
+FreeList(specs, (void *)(FreeSpecifier));
 if(decl)
 FreeDeclarator(decl);
 return type;
@@ -4885,13 +4885,13 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ec
 
 void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
 const uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char *  format, ...);
 
@@ -5023,7 +5023,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpIdentifier", "Expre
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpDummy", "Expression MkExpDummy(void)", MkExpDummy, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpConstant", "Expression MkExpConstant(const char * string)", MkExpConstant, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpString", "Expression MkExpString(const char * string)", MkExpString, module, 2);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ContextStringPair", 0, sizeof(struct ContextStringPair), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ContextStringPair = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod_ContextStringPair_OnCompare, 1);

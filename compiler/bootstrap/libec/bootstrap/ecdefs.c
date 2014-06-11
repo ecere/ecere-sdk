@@ -2047,7 +2047,7 @@ void __ecereRegisterModule_ecdefs(struct __ecereNameSpace__ecere__com__Instance 
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "TokenType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "TokenType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_TokenType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "identifier", 258);
@@ -2165,27 +2165,27 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "complex", 369);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "imaginary", 370);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_restrict", 371);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_thread", 372);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "Order", 0, 0, 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "Order", 0, 0, 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Order = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "ascending", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "descending", 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBTableDef", 0, sizeof(struct DBTableDef), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBTableDef", 0, sizeof(struct DBTableDef), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DBTableDef = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "symbol", "Symbol", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "definitions", "ecere::sys::OldList *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declMode", "ecere::com::AccessMode", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DBTableEntryType", 0, 0, 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DBTableEntryType", 0, 0, 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DBTableEntryType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fieldEntry", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "indexEntry", 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBTableEntry", 0, sizeof(struct DBTableEntry), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBTableEntry", 0, sizeof(struct DBTableEntry), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DBTableEntry = class;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBIndexItem", 0, sizeof(struct DBIndexItem), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBIndexItem", 0, sizeof(struct DBIndexItem), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DBIndexItem = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInCompiler", "void SetInCompiler(bool b)", SetInCompiler, module, 1);
@@ -2214,7 +2214,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetDefines", "void SetDe
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetOutputLineNumbers", "void SetOutputLineNumbers(bool value)", SetOutputLineNumbers, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FixModuleName", "void FixModuleName(char * moduleName)", FixModuleName, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PassArg", "char * PassArg(char * output, const char * input)", PassArg, module, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "GlobalData", "ecere::sys::BTNode", sizeof(struct GlobalData), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "GlobalData", "ecere::sys::BTNode", sizeof(struct GlobalData), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_GlobalData = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "module", "ecere::com::Module", arch_PointerSize, arch_PointerSize, 1);
@@ -2222,14 +2222,14 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataTypeString", "cha
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "Type", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "symbol", "void *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fullName", "char *", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplatedType", "ecere::sys::BTNode", sizeof(struct TemplatedType), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplatedType", "ecere::sys::BTNode", sizeof(struct TemplatedType), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_TemplatedType = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "param", "TemplateParameter", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DataRedefinition", 0, sizeof(struct DataRedefinition), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DataRedefinition", 0, sizeof(struct DataRedefinition), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DataRedefinition = class;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "CodePosition", 0, sizeof(struct CodePosition), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "CodePosition", 0, sizeof(struct CodePosition), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_CodePosition = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "AdjustAdd", "void AdjustAdd(ecere::gui::controls::BufferLocation start, ecere::gui::controls::BufferLocation end)", __ecereMethod_CodePosition_AdjustAdd, 1);
@@ -2238,13 +2238,13 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "line", "int", 4, 4, 1
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "charPos", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pos", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "included", "int", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Location", 0, sizeof(struct Location), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Location", 0, sizeof(struct Location), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Location = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Inside", "bool Inside(int line, int charPos)", __ecereMethod_Location_Inside, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "start", "CodePosition", 16, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "end", "CodePosition", 16, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DefinitionType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DefinitionType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DefinitionType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "moduleDefinition", 0);
@@ -2252,14 +2252,14 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classDefinition", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "defineDefinition", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "functionDefinition", 3);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dataDefinition", 4);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Definition", 0, sizeof(struct Definition), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Definition", 0, sizeof(struct Definition), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Definition = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Definition", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "Definition", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "type", "DefinitionType", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ImportedModule", 0, sizeof(struct ImportedModule), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ImportedModule", 0, sizeof(struct ImportedModule), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ImportedModule = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ImportedModule", arch_PointerSize, arch_PointerSize, 1);
@@ -2270,7 +2270,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "importType", "ecere::
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "globalInstance", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dllOnly", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "importAccess", "ecere::com::AccessMode", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Identifier", 0, sizeof(struct Identifier), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Identifier", 0, sizeof(struct Identifier), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Identifier = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Identifier", arch_PointerSize, arch_PointerSize, 1);
@@ -2280,7 +2280,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classSym", "Symbol", 
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "_class", "Specifier", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "badID", "Identifier", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExpressionType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExpressionType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ExpressionType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "identifierExp", 0);
@@ -2323,7 +2323,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "typeAlignExp", 36);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "memberPropertyErrorExp", 37);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "functionCallErrorExp", 38);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "divideBy0ErrorExp", 39);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "MemberType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "MemberType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_MemberType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "unresolvedMember", 0);
@@ -2332,7 +2332,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "methodMember", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dataMember", 3);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "reverseConversionMember", 4);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classPropertyMember", 5);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ExpUsage", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ExpUsage", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ExpUsage = class;
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "usageGet", "bool", 1, 0, 1);
@@ -2343,7 +2343,7 @@ __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "usageMember", "bool", 
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "usageDeepGet", "bool", 1, 5, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "usageRef", "bool", 1, 6, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "usageDelete", "bool", 1, 7, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplateParameter", 0, sizeof(struct TemplateParameter), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplateParameter", 0, sizeof(struct TemplateParameter), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_TemplateParameter = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "TemplateParameter", arch_PointerSize, arch_PointerSize, 1);
@@ -2361,12 +2361,12 @@ __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "defaultArgument", "TemplateArgument", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataTypeString", "const char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "baseType", "Type", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplateDatatype", 0, sizeof(struct TemplateDatatype), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplateDatatype", 0, sizeof(struct TemplateDatatype), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_TemplateDatatype = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "specifiers", "ecere::sys::OldList *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "decl", "Declarator", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplateArgument", 0, sizeof(struct TemplateArgument), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TemplateArgument", 0, sizeof(struct TemplateArgument), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_TemplateArgument = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "TemplateArgument", arch_PointerSize, arch_PointerSize, 1);
@@ -2382,7 +2382,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "identifier", "
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "templateDatatype", "TemplateDatatype", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "SpecifierType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "SpecifierType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_SpecifierType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "baseSpecifier", 0);
@@ -2394,7 +2394,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extendedSpecifier", 5)
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "typeOfSpecifier", 6);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "subClassSpecifier", 7);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "templateTypeSpecifier", 8);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Specifier", 0, sizeof(struct Specifier), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Specifier", 0, sizeof(struct Specifier), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Specifier = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Specifier", arch_PointerSize, arch_PointerSize, 1);
@@ -2431,7 +2431,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "_class", "Spec
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "templateParameter", "TemplateParameter", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Attribute", 0, sizeof(struct Attribute), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Attribute", 0, sizeof(struct Attribute), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Attribute = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Attribute", arch_PointerSize, arch_PointerSize, 1);
@@ -2439,13 +2439,13 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "Attribute", a
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attr", "String", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Attrib", 0, sizeof(struct Attrib), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Attrib", 0, sizeof(struct Attrib), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Attrib = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "type", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "attribs", "ecere::sys::OldList *", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ExtDecl", 0, sizeof(struct ExtDecl), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ExtDecl", 0, sizeof(struct ExtDecl), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ExtDecl = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
@@ -2457,12 +2457,12 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "s", "String", 
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "attr", "Attrib", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExtDeclType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExtDeclType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ExtDeclType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extDeclString", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extDeclAttrib", 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Expression", 0, sizeof(struct Expression), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Expression", 0, sizeof(struct Expression), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Expression = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Clear", "void Clear()", __ecereMethod_Expression_Clear, 1);
@@ -2523,7 +2523,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "needCast", "bool", 4,
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "thisPtr", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "opDestType", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "needTemplateCast", "uint", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Enumerator", 0, sizeof(struct Enumerator), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Enumerator", 0, sizeof(struct Enumerator), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Enumerator = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Enumerator", arch_PointerSize, arch_PointerSize, 1);
@@ -2531,10 +2531,10 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "Enumerator", 
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "id", "Identifier", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Pointer", 0, sizeof(struct Pointer), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Pointer", 0, sizeof(struct Pointer), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Pointer = class;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DeclaratorType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DeclaratorType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DeclaratorType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "structDeclarator", 0);
@@ -2545,7 +2545,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "functionDeclarator", 4
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "pointerDeclarator", 5);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extendedDeclarator", 6);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "extendedDeclaratorEnd", 7);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Declarator", 0, sizeof(struct Declarator), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Declarator", 0, sizeof(struct Declarator), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Declarator = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Declarator", arch_PointerSize, arch_PointerSize, 1);
@@ -2565,12 +2565,12 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "pointer", "str
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "extended", "struct { ExtDecl extended; }", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "InitializerType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "InitializerType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_InitializerType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "expInitializer", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "listInitializer", 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Initializer", 0, sizeof(struct Initializer), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Initializer", 0, sizeof(struct Initializer), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Initializer = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Initializer", arch_PointerSize, arch_PointerSize, 1);
@@ -2586,7 +2586,7 @@ __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isConstant", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "id", "Identifier", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "InitDeclarator", 0, sizeof(struct InitDeclarator), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "InitDeclarator", 0, sizeof(struct InitDeclarator), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_InitDeclarator = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "InitDeclarator", arch_PointerSize, arch_PointerSize, 1);
@@ -2594,14 +2594,14 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "InitDeclarato
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declarator", "Declarator", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "initializer", "Initializer", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ClassObjectType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ClassObjectType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassObjectType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "none", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classPointer", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "typedObject", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "anyObject", 3);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TypeName", 0, sizeof(struct TypeName), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "TypeName", 0, sizeof(struct TypeName), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_TypeName = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "TypeName", arch_PointerSize, arch_PointerSize, 1);
@@ -2611,10 +2611,10 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "qualifiers", "ecere::
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declarator", "Declarator", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classObjectType", "ClassObjectType", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "bitCount", "Expression", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "AsmField", 0, sizeof(struct AsmField), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "AsmField", 0, sizeof(struct AsmField), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_AsmField = class;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "StmtType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "StmtType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_StmtType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "labeledStmt", 0);
@@ -2636,7 +2636,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fireWatchersStmt", 15)
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "stopWatchingStmt", 16);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "watchStmt", 17);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "forEachStmt", 18);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Statement", 0, sizeof(struct Statement), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Statement", 0, sizeof(struct Statement), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Statement = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Statement", arch_PointerSize, arch_PointerSize, 1);
@@ -2662,14 +2662,14 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "forEachStmt", 
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "decl", "Declaration", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DeclarationType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "DeclarationType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DeclarationType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "structDeclaration", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "initDeclaration", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "instDeclaration", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "defineDeclaration", 3);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Declaration", 0, sizeof(struct Declaration), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Declaration", 0, sizeof(struct Declaration), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Declaration = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Declaration", arch_PointerSize, arch_PointerSize, 1);
@@ -2699,7 +2699,7 @@ __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "extStorage", "Specifier", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "symbol", "Symbol", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declMode", "ecere::com::AccessMode", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Instantiation", 0, sizeof(struct Instantiation), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Instantiation", 0, sizeof(struct Instantiation), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Instantiation = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "Instantiation", arch_PointerSize, arch_PointerSize, 1);
@@ -2715,12 +2715,12 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "byte *", arch
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "nameLoc", "Location", 32, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "insideLoc", "Location", 32, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "built", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "MembersInitType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "MembersInitType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_MembersInitType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dataMembersInit", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "methodMembersInit", 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "FunctionDefinition", 0, sizeof(struct FunctionDefinition), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "FunctionDefinition", 0, sizeof(struct FunctionDefinition), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_FunctionDefinition = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "FunctionDefinition", arch_PointerSize, arch_PointerSize, 1);
@@ -2737,7 +2737,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "type", "Type", arch_P
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propSet", "Symbol", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "tempCount", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propertyNoThis", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassFunction", 0, sizeof(struct ClassFunction), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassFunction", 0, sizeof(struct ClassFunction), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassFunction = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ClassFunction", arch_PointerSize, arch_PointerSize, 1);
@@ -2758,7 +2758,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isDestructor", "bool"
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dontMangle", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "id", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "idCode", "int", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MembersInit", 0, sizeof(struct MembersInit), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MembersInit", 0, sizeof(struct MembersInit), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_MembersInit = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "MembersInit", arch_PointerSize, arch_PointerSize, 1);
@@ -2772,7 +2772,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "dataMembers", 
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "function", "ClassFunction", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MemberInit", 0, sizeof(struct MemberInit), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MemberInit", 0, sizeof(struct MemberInit), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_MemberInit = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "MemberInit", arch_PointerSize, arch_PointerSize, 1);
@@ -2784,7 +2784,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "initializer", "Initia
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "used", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "variable", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "takeOutExp", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDefinition", 0, sizeof(struct ClassDefinition), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDefinition", 0, sizeof(struct ClassDefinition), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassDefinition = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ClassDefinition", arch_PointerSize, arch_PointerSize, 1);
@@ -2799,7 +2799,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "nameLoc", "Location",
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "endid", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declMode", "ecere::com::AccessMode", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "deleteWatchable", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "PropertyWatch", 0, sizeof(struct PropertyWatch), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "PropertyWatch", 0, sizeof(struct PropertyWatch), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_PropertyWatch = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "PropertyWatch", arch_PointerSize, arch_PointerSize, 1);
@@ -2808,7 +2808,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "loc", "Location", 32,
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "compound", "Statement", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "properties", "ecere::sys::OldList *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "deleteWatch", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ClassDefType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ClassDefType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassDefType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "functionClassDef", 0);
@@ -2825,7 +2825,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classPropertyClassDef"
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classPropertyValueClassDef", 11);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "memberAccessClassDef", 12);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "accessOverrideClassDef", 13);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "PropertyDef", 0, sizeof(struct PropertyDef), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "PropertyDef", 0, sizeof(struct PropertyDef), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_PropertyDef = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "PropertyDef", arch_PointerSize, arch_PointerSize, 1);
@@ -2847,7 +2847,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "isWatchable", 
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "isDBProp", "bool:1", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDef", 0, sizeof(struct ClassDef), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDef", 0, sizeof(struct ClassDef), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassDef = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ClassDef", arch_PointerSize, arch_PointerSize, 1);
@@ -2875,7 +2875,7 @@ __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "memberAccess", "ecere::com::AccessMode", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "object", "void *", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExternalType", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ExternalType", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ExternalType = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "functionExternal", 0);
@@ -2884,7 +2884,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "classExternal", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "importExternal", 3);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameSpaceExternal", 4);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "dbtableExternal", 5);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "External", 0, sizeof(struct External), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "External", 0, sizeof(struct External), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_External = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "External", arch_PointerSize, arch_PointerSize, 1);
@@ -2918,7 +2918,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateTypes", "ecer
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classDef", "ClassDefinition", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templateTypesOnly", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "hasNameSpace", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Symbol", 0, sizeof(struct Symbol), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Symbol", 0, sizeof(struct Symbol), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Symbol = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "string", "char *", arch_PointerSize, arch_PointerSize, 1);
@@ -2991,7 +2991,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templatedClasses", "e
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "ctx", "Context", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isIterator", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propCategory", "Expression", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassImport", 0, sizeof(struct ClassImport), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassImport", 0, sizeof(struct ClassImport), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassImport = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ClassImport", arch_PointerSize, arch_PointerSize, 1);
@@ -3001,13 +3001,13 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "methods", "ecere::sys
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "properties", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "itself", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isRemote", "int", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "FunctionImport", 0, sizeof(struct FunctionImport), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "FunctionImport", 0, sizeof(struct FunctionImport), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_FunctionImport = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "FunctionImport", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "FunctionImport", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch_PointerSize, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ModuleImport", 0, sizeof(struct ModuleImport), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ModuleImport", 0, sizeof(struct ModuleImport), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ModuleImport = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ModuleImport", arch_PointerSize, arch_PointerSize, 1);
@@ -3017,7 +3017,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classes", "ecere::sys
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "functions", "ecere::sys::OldList", structSize_OldList, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "importType", "ecere::com::ImportType", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "importAccess", "ecere::com::AccessMode", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "PropertyImport", 0, sizeof(struct PropertyImport), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "PropertyImport", 0, sizeof(struct PropertyImport), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_PropertyImport = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "PropertyImport", arch_PointerSize, arch_PointerSize, 1);
@@ -3026,14 +3026,14 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isVirtual", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "hasSet", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "hasGet", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MethodImport", 0, sizeof(struct MethodImport), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MethodImport", 0, sizeof(struct MethodImport), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_MethodImport = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "MethodImport", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "MethodImport", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isVirtual", "bool", 4, 4, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "TypeKind", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "TypeKind", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_TypeKind = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "voidType", 0);
@@ -3061,7 +3061,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "thisClassType", 21);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intPtrType", 22);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "intSizeType", 23);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "_BoolType", 24);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Type", 0, sizeof(struct Type), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Type", 0, sizeof(struct Type), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Type = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnFree", 0, __ecereMethod_Type_OnFree, 1);
@@ -3138,7 +3138,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "casted", "bool:1", 4,
 __ecerePropM_Type_specConst = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "specConst", "bool", 0, __ecereProp_Type_Get_specConst, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp_Type_specConst = __ecerePropM_Type_specConst, __ecerePropM_Type_specConst = (void *)0;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Operand", 0, sizeof(struct Operand), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Operand", 0, sizeof(struct Operand), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Operand = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "kind", "TypeKind", 4, 4, 1);
@@ -3160,7 +3160,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember0, "ui64", "uint64
 __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "ops", "OpTable", structSize_OpTable, arch_PointerSize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "OpTable", 0, sizeof(struct OpTable), 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "OpTable", 0, sizeof(struct OpTable), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_OpTable = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "Add", "bool (*)(Expression, Operand, Operand)", arch_PointerSize, arch_PointerSize, 1);

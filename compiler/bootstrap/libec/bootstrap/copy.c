@@ -927,7 +927,7 @@ struct Initializer * copy = (((void *)0));
 if(initializer->type == 0)
 copy = MkInitializerAssignment(CopyExpression(initializer->__anon1.exp));
 else if(initializer->type == 1)
-copy = MkInitializerList(CopyList(initializer->__anon1.list, CopyInitializer));
+copy = MkInitializerList(CopyList(initializer->__anon1.list, (void *)(CopyInitializer)));
 if(copy)
 {
 copy->loc = initializer->loc;
@@ -957,7 +957,7 @@ extern struct MemberInit * MkMemberInit(struct __ecereNameSpace__ecere__sys__Old
 
 static struct MemberInit * CopyMemberInit(struct MemberInit * member)
 {
-return MkMemberInit(CopyList(member->identifiers, CopyIdentifier), CopyInitializer(member->initializer));
+return MkMemberInit(CopyList(member->identifiers, (void *)(CopyIdentifier)), CopyInitializer(member->initializer));
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
@@ -1037,7 +1037,7 @@ return copy;
 
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
-struct Expression * CopyExpContents(struct Expression * exp)
+struct Expression * MoveExpContents(struct Expression * exp)
 {
 struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
@@ -1189,7 +1189,7 @@ case 33:
 result = MkExpExtensionInitializer(CopyTypeName(exp->__anon1.initializer.typeName), CopyInitializer(exp->__anon1.initializer.initializer));
 break;
 case 24:
-result = MkExpClass(CopyList(exp->__anon1._classExp.specifiers, CopySpecifier), CopyDeclarator(exp->__anon1._classExp.decl));
+result = MkExpClass(CopyList(exp->__anon1._classExp.specifiers, (void *)(CopySpecifier)), CopyDeclarator(exp->__anon1._classExp.decl));
 break;
 }
 if(result)
@@ -1226,11 +1226,11 @@ if(stmt)
 switch(stmt->type)
 {
 case 2:
-result = MkCompoundStmt(CopyList(stmt->__anon1.compound.declarations, CopyDeclaration), CopyList(stmt->__anon1.compound.statements, CopyStatement));
+result = MkCompoundStmt(CopyList(stmt->__anon1.compound.declarations, (void *)(CopyDeclaration)), CopyList(stmt->__anon1.compound.statements, (void *)(CopyStatement)));
 result->__anon1.compound.context = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
 break;
 case 3:
-result = MkExpressionStmt(CopyList(stmt->__anon1.expressions, CopyExpression));
+result = MkExpressionStmt(CopyList(stmt->__anon1.expressions, (void *)(CopyExpression)));
 break;
 case 14:
 result = MkBadDeclStmt(CopyDeclaration(stmt->__anon1.decl));
@@ -1453,7 +1453,7 @@ extern struct Attrib * MkAttrib(int type, struct __ecereNameSpace__ecere__sys__O
 struct Attrib * CopyAttrib(struct Attrib * attrib)
 {
 if(attrib)
-return MkAttrib(attrib->type, CopyList(attrib->attribs, CopyAttribute));
+return MkAttrib(attrib->type, CopyList(attrib->attribs, (void *)(CopyAttribute)));
 return (((void *)0));
 }
 
@@ -1545,7 +1545,7 @@ struct Declaration * CopyDeclaration(struct Declaration * decl)
 {
 if(decl->type == 1)
 {
-return MkDeclaration(CopyList(decl->__anon1.__anon1.specifiers, CopySpecifier), CopyList(decl->__anon1.__anon1.declarators, CopyInitDeclarator));
+return MkDeclaration(CopyList(decl->__anon1.__anon1.specifiers, (void *)(CopySpecifier)), CopyList(decl->__anon1.__anon1.declarators, (void *)(CopyInitDeclarator)));
 }
 else
 {
@@ -1598,7 +1598,7 @@ void __ecereRegisterModule_copy(struct __ecereNameSpace__ecere__com__Instance * 
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyIdentifier", "Identifier CopyIdentifier(Identifier id)", CopyIdentifier, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyExpContents", "Expression CopyExpContents(Expression exp)", CopyExpContents, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("MoveExpContents", "Expression MoveExpContents(Expression exp)", MoveExpContents, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyExpression", "Expression CopyExpression(Expression exp)", CopyExpression, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopyClassDef", "ClassDef CopyClassDef(ClassDef def)", CopyClassDef, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CopySpecifier", "Specifier CopySpecifier(Specifier spec)", CopySpecifier, module, 2);

@@ -1368,7 +1368,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalContext->sy
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert(defs, after, external);
 external->__anon1.function->declarator = CopyDeclarator(external->__anon1.function->declarator);
-external->__anon1.function->specifiers = CopyList(external->__anon1.function->specifiers, CopySpecifier);
+external->__anon1.function->specifiers = CopyList(external->__anon1.function->specifiers, (void *)(CopySpecifier));
 external->__anon1.function->body = (((void *)0));
 }
 }
@@ -1569,11 +1569,11 @@ unsigned int constant;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
 void RegisterMembersAndProperties(struct __ecereNameSpace__ecere__com__Class * regClass, unsigned int isMember, const char * className, struct Statement * statement)
 {
@@ -2487,13 +2487,13 @@ ListAdd(args, symbol->classData ? MkExpTypeSize(MkTypeName(MkListOne(MkStructOrU
 }
 if(regClass->type == 0 || regClass->type == 5)
 {
-ListAdd(args, symbol->needConstructor ? MkExpIdentifier(MkIdentifier(symbol->constructorName)) : MkExpConstant("0"));
-ListAdd(args, symbol->needDestructor ? MkExpIdentifier(MkIdentifier(symbol->destructorName)) : MkExpConstant("0"));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), symbol->needConstructor ? MkExpIdentifier(MkIdentifier(symbol->constructorName)) : MkExpConstant("0")));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), symbol->needDestructor ? MkExpIdentifier(MkIdentifier(symbol->destructorName)) : MkExpConstant("0")));
 }
 else
 {
-ListAdd(args, MkExpConstant("0"));
-ListAdd(args, MkExpConstant("0"));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpConstant("0")));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpConstant("0")));
 }
 ListAdd(args, MkExpIdentifier(MkIdentifier("module")));
 switch(declMode)
@@ -2920,7 +2920,7 @@ uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecer
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
@@ -3207,7 +3207,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessClassFunction", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CreateRegisterModuleBody", "void CreateRegisterModuleBody(void)", CreateRegisterModuleBody, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("RegisterMembersAndProperties", "void RegisterMembersAndProperties(ecere::com::Class regClass, bool isMember, const char * className, Statement statement)", RegisterMembersAndProperties, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetNameSpaceString", "void GetNameSpaceString(ecere::com::NameSpace ns, char * string)", GetNameSpaceString, module, 2);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ClassPropertyValue", 0, sizeof(struct ClassPropertyValue), 0, 0, __ecereDestructor_ClassPropertyValue, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ClassPropertyValue", 0, sizeof(struct ClassPropertyValue), 0, (void *)0, (void *)__ecereDestructor_ClassPropertyValue, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ClassPropertyValue = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessClassDefinitions", "void ProcessClassDefinitions(void)", ProcessClassDefinitions, module, 1);

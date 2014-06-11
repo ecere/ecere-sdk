@@ -1056,7 +1056,7 @@ const char * ptr;
 const char * strBuffer = buffer + start;
 int subLen = strlen(subStr);
 char beforeChar = start ? *(strBuffer - 1) : (char)0;
-int (* strcompare)(const char *, const char *, unsigned int) = matchCase ? strncmp : (strncasecmp);
+int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
 
 for(ptr = strBuffer; *ptr; ptr++)
 {
@@ -1086,7 +1086,7 @@ if(buffer && subStr)
 int subLen = strlen(subStr);
 const char * ptr1 = buffer + maxLen - subLen;
 const char * ptr2 = buffer + maxLen - subLen - 1;
-int (* strcompare)(const char *, const char *, unsigned int) = matchCase ? strncmp : (strncasecmp);
+int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
 
 for(; ptr1 >= buffer; ptr1--, ptr2--)
 {
@@ -1524,7 +1524,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintSize", 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintBigSize", "void ecere::sys::PrintBigSize(char * string, double size, int prec)", __ecereNameSpace__ecere__sys__PrintBigSize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SearchString", "char * ecere::sys::SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__SearchString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RSearchString", "char * ecere::sys::RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__RSearchString, module, 4);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::BackSlashEscaping", "bool", 0, 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::BackSlashEscaping", "bool", 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "forArgsPassing", 2);

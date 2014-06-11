@@ -2524,15 +2524,15 @@ return result;
 
 extern unsigned int (* __ecereProp_float_Get_isInf)(float this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isInf;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
 
 extern int (* __ecereProp_float_Get_signBit)(float this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_signBit;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_signBit;
 
 extern unsigned int (* __ecereProp_float_Get_isNan)(float this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isNan;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isNan;
 
 static char * __ecereNameSpace__ecere__com__Float_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, float * data, char * string, void * fieldData, unsigned int * needClass)
 {
@@ -2668,15 +2668,15 @@ return result;
 
 extern unsigned int (* __ecereProp_double_Get_isInf)(double this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isInf;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isInf;
 
 extern int (* __ecereProp_double_Get_signBit)(double this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_signBit;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_signBit;
 
 extern unsigned int (* __ecereProp_double_Get_isNan)(double this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isNan;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
 
 static char * __ecereNameSpace__ecere__com__Double_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, double * data, char * string, void * fieldData, unsigned int * needClass)
 {
@@ -3205,7 +3205,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64HEX", 
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64DLL", "(__runtimePlatform == win32) ? \"%I64dLL\" : \"%lldLL\"", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64D", "(__runtimePlatform == win32) ? \"%I64d\" : \"%lld\"", module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::FORMAT64U", "(__runtimePlatform == win32) ? \"%I64u\" : \"%llu\"", module, 4);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::IOChannel", 0, 0, 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::IOChannel", 0, 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__IOChannel = class;
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "WriteData", "uint WriteData(const void * data, unsigned int numBytes)", 0, 1);
@@ -3214,7 +3214,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Get", "void Get(typed_obj
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Put", "void Put(typed_object data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Serialize", "void Serialize(typed_object data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Unserialize", "void Unserialize(typed_object * data)", __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::SerialBuffer", "ecere::com::IOChannel", sizeof(struct __ecereNameSpace__ecere__com__SerialBuffer), 0, 0, __ecereDestructor___ecereNameSpace__ecere__com__SerialBuffer, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::SerialBuffer", "ecere::com::IOChannel", sizeof(struct __ecereNameSpace__ecere__com__SerialBuffer), 0, (void *)0, (void *)__ecereDestructor___ecereNameSpace__ecere__com__SerialBuffer, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__SerialBuffer = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "WriteData", 0, __ecereMethod___ecereNameSpace__ecere__com__SerialBuffer_WriteData, 1);
@@ -3243,7 +3243,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnSeri
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Int64_OnUnserialize", "void ecere::com::Int64_OnUnserialize(ecere::com::Class _class, int64 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Int64_OnUnserialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Word_OnSerialize", "void ecere::com::Word_OnSerialize(ecere::com::Class _class, uint16 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Word_OnSerialize, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::Word_OnUnserialize", "void ecere::com::Word_OnUnserialize(ecere::com::Class _class, uint16 * data, ecere::com::IOChannel channel)", __ecereNameSpace__ecere__com__Word_OnUnserialize, module, 4);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::StaticString", 0, sizeof(struct __ecereNameSpace__ecere__com__StaticString), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::StaticString", 0, sizeof(struct __ecereNameSpace__ecere__com__StaticString), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__StaticString = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCompare", 0, __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnCompare, 1);

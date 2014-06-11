@@ -540,10 +540,10 @@ void __ecereRegisterModule_BuiltInContainer(struct __ecereNameSpace__ecere__com_
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::IteratorPointer", 0, 0, 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::IteratorPointer", 0, 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__IteratorPointer = class;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::BuiltInContainer", 0, sizeof(struct __ecereNameSpace__ecere__com__BuiltInContainer), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::BuiltInContainer", 0, sizeof(struct __ecereNameSpace__ecere__com__BuiltInContainer), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_OnGetString, 1);

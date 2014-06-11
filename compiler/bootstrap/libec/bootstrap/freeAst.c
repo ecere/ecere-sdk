@@ -1111,7 +1111,7 @@ while((link = symbol->templatedClasses.first))
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Delete(&symbol->templatedClasses, link);
 (__ecereNameSpace__ecere__com__eSystem_Delete(symbol->string), symbol->string = 0);
 if(symbol->templateParams)
-FreeList(symbol->templateParams, FreeTemplateParameter);
+FreeList(symbol->templateParams, (void *)(FreeTemplateParameter));
 (__ecereNameSpace__ecere__com__eSystem_Delete(symbol->constructorName), symbol->constructorName = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(symbol->structName), symbol->structName = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(symbol->className), symbol->className = 0);
@@ -1150,8 +1150,8 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereName
 void FreeClassImport(struct ClassImport * imp)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(imp->name), imp->name = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->methods, FreeMethodImport);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->properties, FreePropertyImport);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->methods, (void *)(FreeMethodImport));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->properties, (void *)(FreePropertyImport));
 }
 
 void FreeFunctionImport(struct ClassImport * imp)
@@ -1162,8 +1162,8 @@ void FreeFunctionImport(struct ClassImport * imp)
 void FreeModuleImport(struct ModuleImport * imp)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(imp->name), imp->name = 0);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->classes, FreeClassImport);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->functions, FreeFunctionImport);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->classes, (void *)(FreeClassImport));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imp->functions, (void *)(FreeFunctionImport));
 }
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Definition;
@@ -1227,7 +1227,7 @@ void FreeTemplateDataType(struct TemplateDatatype * type)
 if(type->decl)
 FreeDeclarator(type->decl);
 if(type->specifiers)
-FreeList(type->specifiers, FreeSpecifier);
+FreeList(type->specifiers, (void *)(FreeSpecifier));
 ((type ? (__ecereClass_TemplateDatatype->Destructor ? __ecereClass_TemplateDatatype->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 
@@ -1427,7 +1427,7 @@ case 1:
 (__ecereNameSpace__ecere__com__eSystem_Delete(spec->__anon1.__anon1.name), spec->__anon1.__anon1.name = 0);
 if(spec->__anon1.__anon1.templateArgs)
 {
-FreeList(spec->__anon1.__anon1.templateArgs, FreeTemplateArgument);
+FreeList(spec->__anon1.__anon1.templateArgs, (void *)(FreeTemplateArgument));
 spec->__anon1.__anon1.templateArgs = (((void *)0));
 }
 break;
@@ -1441,7 +1441,7 @@ break;
 case 2:
 if(spec->__anon1.__anon2.baseSpecs)
 {
-FreeList(spec->__anon1.__anon2.baseSpecs, FreeSpecifier);
+FreeList(spec->__anon1.__anon2.baseSpecs, (void *)(FreeSpecifier));
 spec->__anon1.__anon2.baseSpecs = (((void *)0));
 }
 if(spec->__anon1.__anon2.id)
@@ -1451,12 +1451,12 @@ spec->__anon1.__anon2.id = (((void *)0));
 }
 if(spec->__anon1.__anon2.list)
 {
-FreeList(spec->__anon1.__anon2.list, FreeEnumerator);
+FreeList(spec->__anon1.__anon2.list, (void *)(FreeEnumerator));
 spec->__anon1.__anon2.list = (((void *)0));
 }
 if(spec->__anon1.__anon2.definitions)
 {
-FreeList(spec->__anon1.__anon2.definitions, FreeClassDef);
+FreeList(spec->__anon1.__anon2.definitions, (void *)(FreeClassDef));
 spec->__anon1.__anon2.definitions = (((void *)0));
 }
 break;
@@ -1469,12 +1469,12 @@ spec->__anon1.__anon2.id = (((void *)0));
 }
 if(spec->__anon1.__anon2.definitions)
 {
-FreeList(spec->__anon1.__anon2.definitions, FreeClassDef);
+FreeList(spec->__anon1.__anon2.definitions, (void *)(FreeClassDef));
 spec->__anon1.__anon2.definitions = (((void *)0));
 }
 if(spec->__anon1.__anon2.baseSpecs)
 {
-FreeList(spec->__anon1.__anon2.baseSpecs, FreeSpecifier);
+FreeList(spec->__anon1.__anon2.baseSpecs, (void *)(FreeSpecifier));
 spec->__anon1.__anon2.baseSpecs = (((void *)0));
 }
 if(spec->__anon1.__anon2.extDeclStruct)
@@ -1511,7 +1511,7 @@ FreeSpecifier(id->_class);
 void FreeTypeName(struct TypeName * typeName)
 {
 if(typeName->qualifiers)
-FreeList(typeName->qualifiers, FreeSpecifier);
+FreeList(typeName->qualifiers, (void *)(FreeSpecifier));
 if(typeName->declarator)
 FreeDeclarator(typeName->declarator);
 if(typeName->bitCount)
@@ -1577,7 +1577,7 @@ FreeExpression(exp->__anon1.op.exp2);
 break;
 case 5:
 {
-FreeList(exp->__anon1.list, FreeExpression);
+FreeList(exp->__anon1.list, (void *)(FreeExpression));
 break;
 }
 case 6:
@@ -1585,7 +1585,7 @@ case 6:
 if(exp->__anon1.index.exp)
 FreeExpression(exp->__anon1.index.exp);
 if(exp->__anon1.index.index)
-FreeList(exp->__anon1.index.index, FreeExpression);
+FreeList(exp->__anon1.index.index, (void *)(FreeExpression));
 break;
 }
 case 7:
@@ -1593,7 +1593,7 @@ case 7:
 if(exp->__anon1.call.exp)
 FreeExpression(exp->__anon1.call.exp);
 if(exp->__anon1.call.arguments)
-FreeList(exp->__anon1.call.arguments, FreeExpression);
+FreeList(exp->__anon1.call.arguments, (void *)(FreeExpression));
 break;
 }
 case 8:
@@ -1619,7 +1619,7 @@ case 12:
 if(exp->__anon1.cond.cond)
 FreeExpression(exp->__anon1.cond.cond);
 if(exp->__anon1.cond.exp)
-FreeList(exp->__anon1.cond.exp, FreeExpression);
+FreeList(exp->__anon1.cond.exp, (void *)(FreeExpression));
 if(exp->__anon1.cond.elseExp)
 FreeExpression(exp->__anon1.cond.elseExp);
 break;
@@ -1633,7 +1633,7 @@ break;
 case 32:
 {
 if(exp->__anon1.list)
-FreeList(exp->__anon1.list, FreeExpression);
+FreeList(exp->__anon1.list, (void *)(FreeExpression));
 break;
 }
 case 33:
@@ -1648,7 +1648,7 @@ case 16:
 break;
 case 24:
 if(exp->__anon1._classExp.specifiers)
-FreeList(exp->__anon1._classExp.specifiers, FreeSpecifier);
+FreeList(exp->__anon1._classExp.specifiers, (void *)(FreeSpecifier));
 if(exp->__anon1._classExp.decl)
 FreeDeclarator(exp->__anon1._classExp.decl);
 break;
@@ -1673,7 +1673,7 @@ FreeTypeName(exp->__anon1.vaArg.typeName);
 break;
 case 35:
 if(exp->__anon1.list)
-FreeList(exp->__anon1.list, FreeExpression);
+FreeList(exp->__anon1.list, (void *)(FreeExpression));
 break;
 case 15:
 if(exp->__anon1._class)
@@ -1701,7 +1701,7 @@ case 38:
 if(exp->__anon1.call.exp)
 FreeExpression(exp->__anon1.call.exp);
 if(exp->__anon1.call.arguments)
-FreeList(exp->__anon1.call.arguments, FreeExpression);
+FreeList(exp->__anon1.call.arguments, (void *)(FreeExpression));
 break;
 case 17:
 case 21:
@@ -1723,7 +1723,7 @@ void FreePointer(struct Pointer * pointer)
 if(pointer->pointer)
 FreePointer(pointer->pointer);
 if(pointer->qualifiers)
-FreeList(pointer->qualifiers, FreeSpecifier);
+FreeList(pointer->qualifiers, (void *)(FreeSpecifier));
 ((pointer ? (__ecereClass_Pointer->Destructor ? __ecereClass_Pointer->Destructor((void *)pointer) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(pointer)) : 0), pointer = 0);
 }
 
@@ -1743,7 +1743,7 @@ void FreeAttribute(struct Attribute * attr);
 void FreeAttrib(struct Attrib * attr)
 {
 if(attr->attribs)
-FreeList(attr->attribs, FreeAttribute);
+FreeList(attr->attribs, (void *)(FreeAttribute));
 ((attr ? (__ecereClass_Attrib->Destructor ? __ecereClass_Attrib->Destructor((void *)attr) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(attr)) : 0), attr = 0);
 }
 
@@ -1790,7 +1790,7 @@ if(decl->__anon1.array.enumClass)
 FreeSpecifier(decl->__anon1.array.enumClass);
 break;
 case 4:
-FreeList(decl->__anon1.function.parameters, FreeTypeName);
+FreeList(decl->__anon1.function.parameters, (void *)(FreeTypeName));
 break;
 case 5:
 if(decl->__anon1.pointer.pointer)
@@ -1808,7 +1808,7 @@ break;
 void FreePropertyWatch(struct PropertyWatch * watcher)
 {
 if(watcher->properties)
-FreeList(watcher->properties, FreeIdentifier);
+FreeList(watcher->properties, (void *)(FreeIdentifier));
 if(watcher->compound)
 FreeStatement(watcher->compound);
 ((watcher ? (__ecereClass_PropertyWatch->Destructor ? __ecereClass_PropertyWatch->Destructor((void *)watcher) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(watcher)) : 0), watcher = 0);
@@ -1847,11 +1847,11 @@ case 13:
 if(stmt->__anon1.asmStmt.spec)
 FreeSpecifier(stmt->__anon1.asmStmt.spec);
 if(stmt->__anon1.asmStmt.inputFields)
-FreeList(stmt->__anon1.asmStmt.inputFields, FreeAsmField);
+FreeList(stmt->__anon1.asmStmt.inputFields, (void *)(FreeAsmField));
 if(stmt->__anon1.asmStmt.outputFields)
-FreeList(stmt->__anon1.asmStmt.outputFields, FreeAsmField);
+FreeList(stmt->__anon1.asmStmt.outputFields, (void *)(FreeAsmField));
 if(stmt->__anon1.asmStmt.clobberedFields)
-FreeList(stmt->__anon1.asmStmt.clobberedFields, FreeAsmField);
+FreeList(stmt->__anon1.asmStmt.clobberedFields, (void *)(FreeAsmField));
 (__ecereNameSpace__ecere__com__eSystem_Delete(stmt->__anon1.asmStmt.statements), stmt->__anon1.asmStmt.statements = 0);
 break;
 }
@@ -1872,9 +1872,9 @@ break;
 case 2:
 {
 if(stmt->__anon1.compound.declarations)
-FreeList(stmt->__anon1.compound.declarations, FreeDeclaration);
+FreeList(stmt->__anon1.compound.declarations, (void *)(FreeDeclaration));
 if(stmt->__anon1.compound.statements)
-FreeList(stmt->__anon1.compound.statements, FreeStatement);
+FreeList(stmt->__anon1.compound.statements, (void *)(FreeStatement));
 if(stmt->__anon1.compound.context)
 {
 FreeContext(stmt->__anon1.compound.context);
@@ -1885,13 +1885,13 @@ break;
 case 3:
 {
 if(stmt->__anon1.expressions)
-FreeList(stmt->__anon1.expressions, FreeExpression);
+FreeList(stmt->__anon1.expressions, (void *)(FreeExpression));
 break;
 }
 case 4:
 {
 if(stmt->__anon1.ifStmt.exp)
-FreeList(stmt->__anon1.ifStmt.exp, FreeExpression);
+FreeList(stmt->__anon1.ifStmt.exp, (void *)(FreeExpression));
 if(stmt->__anon1.ifStmt.stmt)
 FreeStatement(stmt->__anon1.ifStmt.stmt);
 if(stmt->__anon1.ifStmt.elseStmt)
@@ -1901,7 +1901,7 @@ break;
 case 5:
 {
 if(stmt->__anon1.switchStmt.exp)
-FreeList(stmt->__anon1.switchStmt.exp, FreeExpression);
+FreeList(stmt->__anon1.switchStmt.exp, (void *)(FreeExpression));
 if(stmt->__anon1.switchStmt.stmt)
 FreeStatement(stmt->__anon1.switchStmt.stmt);
 break;
@@ -1909,7 +1909,7 @@ break;
 case 6:
 {
 if(stmt->__anon1.whileStmt.exp)
-FreeList(stmt->__anon1.whileStmt.exp, FreeExpression);
+FreeList(stmt->__anon1.whileStmt.exp, (void *)(FreeExpression));
 if(stmt->__anon1.whileStmt.stmt)
 FreeStatement(stmt->__anon1.whileStmt.stmt);
 break;
@@ -1919,7 +1919,7 @@ case 7:
 if(stmt->__anon1.doWhile.stmt)
 FreeStatement(stmt->__anon1.doWhile.stmt);
 if(stmt->__anon1.doWhile.exp)
-FreeList(stmt->__anon1.doWhile.exp, FreeExpression);
+FreeList(stmt->__anon1.doWhile.exp, (void *)(FreeExpression));
 break;
 }
 case 8:
@@ -1929,7 +1929,7 @@ FreeStatement(stmt->__anon1.forStmt.init);
 if(stmt->__anon1.forStmt.check)
 FreeStatement(stmt->__anon1.forStmt.check);
 if(stmt->__anon1.forStmt.increment)
-FreeList(stmt->__anon1.forStmt.increment, FreeExpression);
+FreeList(stmt->__anon1.forStmt.increment, (void *)(FreeExpression));
 if(stmt->__anon1.forStmt.stmt)
 FreeStatement(stmt->__anon1.forStmt.stmt);
 break;
@@ -1939,9 +1939,9 @@ case 18:
 if(stmt->__anon1.forEachStmt.id)
 FreeIdentifier(stmt->__anon1.forEachStmt.id);
 if(stmt->__anon1.forEachStmt.exp)
-FreeList(stmt->__anon1.forEachStmt.exp, FreeExpression);
+FreeList(stmt->__anon1.forEachStmt.exp, (void *)(FreeExpression));
 if(stmt->__anon1.forEachStmt.filter)
-FreeList(stmt->__anon1.forEachStmt.filter, FreeExpression);
+FreeList(stmt->__anon1.forEachStmt.filter, (void *)(FreeExpression));
 if(stmt->__anon1.forEachStmt.stmt)
 FreeStatement(stmt->__anon1.forEachStmt.stmt);
 break;
@@ -1954,7 +1954,7 @@ case 11:
 break;
 case 12:
 if(stmt->__anon1.expressions)
-FreeList(stmt->__anon1.expressions, FreeExpression);
+FreeList(stmt->__anon1.expressions, (void *)(FreeExpression));
 break;
 case 17:
 case 15:
@@ -1977,7 +1977,7 @@ void FreeInitializer(struct Initializer * initializer)
 switch(initializer->type)
 {
 case 1:
-FreeList(initializer->__anon1.list, FreeInitializer);
+FreeList(initializer->__anon1.list, (void *)(FreeInitializer));
 break;
 case 0:
 if(initializer->__anon1.exp)
@@ -2019,9 +2019,9 @@ switch(decl->type)
 case 0:
 {
 if(decl->__anon1.__anon1.specifiers)
-FreeList(decl->__anon1.__anon1.specifiers, FreeSpecifier);
+FreeList(decl->__anon1.__anon1.specifiers, (void *)(FreeSpecifier));
 if(decl->__anon1.__anon1.declarators)
-FreeList(decl->__anon1.__anon1.declarators, FreeDeclarator);
+FreeList(decl->__anon1.__anon1.declarators, (void *)(FreeDeclarator));
 if(decl->extStorage)
 FreeSpecifier(decl->extStorage);
 break;
@@ -2029,9 +2029,9 @@ break;
 case 1:
 {
 if(decl->__anon1.__anon1.specifiers)
-FreeList(decl->__anon1.__anon1.specifiers, FreeSpecifier);
+FreeList(decl->__anon1.__anon1.specifiers, (void *)(FreeSpecifier));
 if(decl->__anon1.__anon1.declarators)
-FreeList(decl->__anon1.__anon1.declarators, FreeInitDeclarator);
+FreeList(decl->__anon1.__anon1.declarators, (void *)(FreeInitDeclarator));
 break;
 }
 case 2:
@@ -2057,9 +2057,9 @@ FreeStatement(func->body);
 if(func->declarator)
 FreeDeclarator(func->declarator);
 if(func->specifiers)
-FreeList(func->specifiers, FreeSpecifier);
+FreeList(func->specifiers, (void *)(FreeSpecifier));
 if(func->declarations)
-FreeList(func->declarations, FreeDeclaration);
+FreeList(func->declarations, (void *)(FreeDeclaration));
 if(func->type)
 FreeType(func->type);
 ((func ? (__ecereClass_FunctionDefinition->Destructor ? __ecereClass_FunctionDefinition->Destructor((void *)func) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(func)) : 0), func = 0);
@@ -2085,7 +2085,7 @@ void FreeMemberInit(struct MemberInit * init)
 if(init->initializer)
 FreeInitializer(init->initializer);
 if(init->identifiers)
-FreeList(init->identifiers, FreeIdentifier);
+FreeList(init->identifiers, (void *)(FreeIdentifier));
 ((init ? (__ecereClass_MemberInit->Destructor ? __ecereClass_MemberInit->Destructor((void *)init) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(init)) : 0), init = 0);
 }
 
@@ -2109,7 +2109,7 @@ void FreeClassFunction(struct ClassFunction * func);
 void FreeMembersInit(struct MembersInit * init)
 {
 if(init->type == 0 && init->__anon1.dataMembers)
-FreeList(init->__anon1.dataMembers, FreeMemberInit);
+FreeList(init->__anon1.dataMembers, (void *)(FreeMemberInit));
 if(init->type == 1 && init->__anon1.function)
 {
 FreeClassFunction(init->__anon1.function);
@@ -2125,7 +2125,7 @@ void FreeInstance(struct Instantiation * inst)
 {
 if(inst->members)
 {
-FreeList(inst->members, FreeMembersInit);
+FreeList(inst->members, (void *)(FreeMembersInit));
 }
 if(inst->exp)
 FreeExpression(inst->exp);
@@ -2177,9 +2177,9 @@ FreeStatement(func->body);
 if(func->declarator)
 FreeDeclarator(func->declarator);
 if(func->specifiers)
-FreeList(func->specifiers, FreeSpecifier);
+FreeList(func->specifiers, (void *)(FreeSpecifier));
 if(func->declarations)
-FreeList(func->declarations, FreeDeclaration);
+FreeList(func->declarations, (void *)(FreeDeclaration));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&func->attached, (((void *)0)));
 ((func ? (__ecereClass_ClassFunction->Destructor ? __ecereClass_ClassFunction->Destructor((void *)func) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(func)) : 0), func = 0);
 }
@@ -2187,7 +2187,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&func->attached, (((voi
 void FreeProperty(struct PropertyDef * def)
 {
 if(def->specifiers)
-FreeList(def->specifiers, FreeSpecifier);
+FreeList(def->specifiers, (void *)(FreeSpecifier));
 if(def->declarator)
 FreeDeclarator(def->declarator);
 if(def->id)
@@ -2216,7 +2216,7 @@ FreeDeclaration(def->__anon1.decl);
 break;
 case 1:
 {
-FreeList(def->__anon1.defProperties, FreeMemberInit);
+FreeList(def->__anon1.defProperties, (void *)(FreeMemberInit));
 break;
 }
 case 0:
@@ -2275,11 +2275,11 @@ break;
 void FreeClass(struct ClassDefinition * _class)
 {
 if(_class->definitions)
-FreeList(_class->definitions, FreeClassDef);
+FreeList(_class->definitions, (void *)(FreeClassDef));
 if(_class->_class)
 FreeSpecifier(_class->_class);
 if(_class->baseSpecs)
-FreeList(_class->baseSpecs, FreeSpecifier);
+FreeList(_class->baseSpecs, (void *)(FreeSpecifier));
 ((_class ? (__ecereClass_ClassDefinition->Destructor ? __ecereClass_ClassDefinition->Destructor((void *)_class) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(_class)) : 0), _class = 0);
 }
 
@@ -2333,7 +2333,7 @@ if(entry->__anon1.__anon1.name)
 break;
 case 1:
 if(entry->__anon1.items)
-FreeList(entry->__anon1.items, FreeDBIndexItem);
+FreeList(entry->__anon1.items, (void *)(FreeDBIndexItem));
 break;
 }
 ((entry ? (__ecereClass_DBTableEntry->Destructor ? __ecereClass_DBTableEntry->Destructor((void *)entry) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(entry)) : 0), entry = 0);
@@ -2342,7 +2342,7 @@ break;
 void FreeDBTable(struct DBTableDef * table)
 {
 if(table->definitions)
-FreeList(table->definitions, FreeDBTableEntry);
+FreeList(table->definitions, (void *)(FreeDBTableEntry));
 if(table->name)
 (__ecereNameSpace__ecere__com__eSystem_Delete(table->name), table->name = 0);
 ((table ? (__ecereClass_DBTableDef->Destructor ? __ecereClass_DBTableDef->Destructor((void *)table) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(table)) : 0), table = 0);
@@ -2536,17 +2536,17 @@ extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
 void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
@@ -2554,7 +2554,7 @@ uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecer
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 

@@ -3115,7 +3115,7 @@ static void ProcessExpression(Expression exp)
          (!exp.destType || (!exp.destType.passAsTemplate && exp.expType && (exp.expType.kind != pointerType || exp.destType.kind == pointerType) && (exp.destType.kind != pointerType || exp.expType.kind == pointerType))) &&
          !inner.needCast && inner.type != opExp)
       {
-         Expression e = CopyExpContents(exp);
+         Expression e = MoveExpContents(exp);
          Declarator decl;
          OldList * specs = MkList();
          char typeString[1024];

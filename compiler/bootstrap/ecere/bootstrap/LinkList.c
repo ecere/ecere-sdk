@@ -642,14 +642,14 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 };
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::LinkElement", 0, sizeof(struct __ecereNameSpace__ecere__com__LinkElement), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::LinkElement", 0, sizeof(struct __ecereNameSpace__ecere__com__LinkElement), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__LinkElement = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "T", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "T", arch_PointerSize, arch_PointerSize, 1);
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, "void *", (((void *)0)));
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::ListItem", "ecere::com::IteratorPointer", sizeof(struct __ecereNameSpace__ecere__com__ListItem), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::ListItem", "ecere::com::IteratorPointer", sizeof(struct __ecereNameSpace__ecere__com__ListItem), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__ListItem = class;
 {
@@ -667,7 +667,7 @@ __ecereNameSpace__ecere__com__eClass_AddMember(class, dataMember0);
 }
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::LinkList", "ecere::com::Container<LT>", sizeof(struct __ecereNameSpace__ecere__com__LinkList), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::LinkList", "ecere::com::Container<LT>", sizeof(struct __ecereNameSpace__ecere__com__LinkList), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__LinkList = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetFirst", 0, __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetFirst, 1);

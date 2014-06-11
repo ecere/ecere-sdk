@@ -1592,8 +1592,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
 
          {
             OldList * list = MkList();
-            ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null),
-                  MkDeclaratorIdentifier(MkIdentifier(propName))), null));
+            ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), null));
 
             if(!imported)
             {
@@ -1605,8 +1604,7 @@ void DeclareProperty(Property prop, char * setName, char * getName)
 
                //MangleClassName(propName);
 
-               ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null),
-                     MkDeclaratorIdentifier(MkIdentifier(propName))), null));
+               ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), null));
             }
             decl = MkDeclaration(specifiers, list);
          }
@@ -11159,7 +11157,10 @@ void ProcessExpressionType(Expression exp)
                   CheckExpressionType(exp, exp.destType, false, true);
 #endif
                   // Flex & Bison generate code that triggers this, so we ignore it for a quiet sdk build:
-                  if(!sourceFile || (strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec") && strcmp(sourceFile, "src\\grammar.ec") && strcmp(sourceFile, "src/grammar.ec")))
+                  if(!sourceFile || (!strstr(sourceFile, "src\\lexer.ec") && !strstr(sourceFile, "src/lexer.ec") &&
+                                     !strstr(sourceFile, "src\\grammar.ec") && !strstr(sourceFile, "src/grammar.ec") &&
+                                     !strstr(sourceFile, "src\\type.ec") && !strstr(sourceFile, "src/type.ec") &&
+                                     !strstr(sourceFile, "src\\expression.ec") && !strstr(sourceFile, "src/expression.ec")))
                      Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
 
                   // TO CHECK: FORCING HERE TO HELP DEBUGGER
@@ -11170,28 +11171,21 @@ void ProcessExpressionType(Expression exp)
             }
          }
       }
-      /*else if(exp.destType && exp.destType.kind == ellipsisType && exp.expType && exp.expType.passAsTemplate)
+      // Cast function pointers to void * as eC already checked compatibility
+      else if(exp.destType && exp.destType.kind == pointerType && exp.destType.type && exp.destType.type.kind == functionType &&
+              exp.expType && (exp.expType.kind == functionType || exp.expType.kind == methodType))
       {
-         Expression newExp { };
-         char typeString[1024];
-         OldList * specs = MkList();
-         Declarator decl;
-
-         typeString[0] = '\0';
-
-         *newExp = *exp;
-
-         if(exp.expType)  exp.expType.refCount++;
-         if(exp.expType)  exp.expType.refCount++;
-         exp.type = castExp;
-         newExp.destType = exp.expType;
-
-         PrintType(exp.expType, typeString, false, false);
-         decl = SpecDeclFromString(typeString, specs, null);
-
-         exp.cast.typeName = MkTypeName(specs, decl);
-         exp.cast.exp = newExp;
-      }*/
+         Expression nbExp = GetNonBracketsExp(exp);
+         if(nbExp.type != castExp || !IsVoidPtrCast(nbExp.cast.typeName))
+         {
+            Expression e = MoveExpContents(exp);
+            exp.cast.exp = MkExpBrackets(MkListOne(e));
+            exp.type = castExp;
+            exp.cast.exp.destType = exp.destType;
+            if(exp.destType) exp.destType.refCount++;
+            exp.cast.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null));
+         }
+      }
    }
    else if(unresolved)
    {
@@ -12468,7 +12462,7 @@ static void ProcessStatement(Statement stmt)
                               ListAdd(args, CopyExpression(object));
                               ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
                               ListAdd(args, watcher ? CopyExpression(watcher) : MkExpIdentifier(MkIdentifier("this")));
-                              ListAdd(args, MkExpIdentifier(MkIdentifier(watcherName)));
+                              ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpIdentifier(MkIdentifier(watcherName))));
 
                               ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_Watch")), args));
                            }

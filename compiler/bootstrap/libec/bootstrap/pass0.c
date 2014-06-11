@@ -1859,7 +1859,7 @@ exp->__anon1.member.thisPtr = 1;
 else
 {
 FreeDeclarator(d);
-FreeList(specifiers, FreeSpecifier);
+FreeList(specifiers, (void *)(FreeSpecifier));
 }
 }
 classSym = inst->_class->__anon1.__anon1.symbol;
@@ -2208,14 +2208,14 @@ FullClassNameCat(name, propertyDef->id->string, 1);
 params = MkList();
 if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && propertyDef->symbol->type->__anon1._class && propertyDef->symbol->type->__anon1._class->__anon1.registered && propertyDef->symbol->type->__anon1._class->__anon1.registered->type == 1)
 {
-ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), MkDeclaratorIdentifier(MkIdentifier("value"))));
+ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), MkDeclaratorIdentifier(MkIdentifier("value"))));
 decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params));
 func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), decl, (((void *)0)));
 }
 else
 {
 decl = PlugDeclarator(propertyDef->declarator, MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(name)), params));
-func = MkClassFunction(CopyList(propertyDef->specifiers, CopySpecifier), (((void *)0)), decl, (((void *)0)));
+func = MkClassFunction(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), (((void *)0)), decl, (((void *)0)));
 }
 ProcessClassFunctionBody(func, propertyDef->getStmt);
 func->declarator->symbol = propertyDef->symbol;
@@ -2238,7 +2238,7 @@ FullClassNameCat(name, symbol->string, 0);
 strcat(name, "_Set_");
 FullClassNameCat(name, propertyDef->id->string, 1);
 params = MkList();
-ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
+ListAdd(params, MkTypeName(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")))));
 if(propertyDef->__anon1.isDBProp)
 {
 struct Specifier * spec;
@@ -2421,7 +2421,7 @@ if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && property
 ptrDecl = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value"))));
 else
 ptrDecl = PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")));
-ListAdd(body->__anon1.compound.declarations, MkDeclaration(CopyList(propertyDef->specifiers, CopySpecifier), MkListOne(MkInitDeclarator(ptrDecl, MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef->specifiers, CopySpecifier), CopyDeclarator(propertyDef->declarator)), MkExpIdentifier(MkIdentifier("_value"))))))));
+ListAdd(body->__anon1.compound.declarations, MkDeclaration(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(ptrDecl, MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), CopyDeclarator(propertyDef->declarator)), MkExpIdentifier(MkIdentifier("_value"))))))));
 curContext = prevCurContext;
 {
 struct Symbol * sym = ptrDecl->symbol;
@@ -2496,7 +2496,7 @@ if(method->symbol)
 }
 }
 if(initDeclarators != (((void *)0)))
-FreeList(initDeclarators, FreeInitDeclarator);
+FreeList(initDeclarators, (void *)(FreeInitDeclarator));
 }
 
 void PreProcessClassDefinitions()

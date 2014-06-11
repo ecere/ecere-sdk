@@ -105,7 +105,7 @@ static Instantiation CopyInstantiation(Instantiation inst)
    return copy;
 }
 
-Expression CopyExpContents(Expression exp)
+Expression MoveExpContents(Expression exp)
 {
    Expression newExp { };
    *newExp = *exp;

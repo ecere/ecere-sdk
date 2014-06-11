@@ -2718,7 +2718,7 @@ struct __ecereNameSpace__ecere__sys__OldList * subList = MkList();
 if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember->name ? dataMember : namedParentMember, someMemberSet || parentMemberSet || dataMember->prev))
 {
 if(subList)
-FreeList(subList, FreeInitializer);
+FreeList(subList, (void *)(FreeInitializer));
 return 0;
 }
 if(subList && (*subList).count)
@@ -2985,7 +2985,7 @@ struct __ecereNameSpace__ecere__sys__OldList * subList = MkList();
 if(!ProcessBracketInst_DataMember(dataMember, inst, subList ? subList : list, dataMember, 0))
 {
 if(subList)
-FreeList(subList, FreeInitializer);
+FreeList(subList, (void *)(FreeInitializer));
 recursionCount--;
 return 0;
 }
@@ -3344,7 +3344,7 @@ inst->exp->__anon1.__anon1.identifier = (((void *)0));
 }
 else
 {
-FreeList(list, FreeInitializer);
+FreeList(list, (void *)(FreeInitializer));
 exp = MkExpBrackets(MkList());
 ProcessInstMembers(inst, inst->exp, exp->__anon1.list, 1);
 ListAdd(exp->__anon1.list, CopyExpression(inst->exp));

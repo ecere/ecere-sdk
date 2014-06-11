@@ -2018,7 +2018,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifie
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("nil")));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("value")));
 curContext = globalContext;
-def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator), MkIdentifier(name), rowSet, (((void *)0))));
+def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, (void *)(CopySpecifier)), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator), MkIdentifier(name), rowSet, (((void *)0))));
 def->__anon1.propertyDef->symbol->id = def->__anon1.propertyDef->symbol->idCode = symbolID;
 def->__anon1.propertyDef->__anon1.isDBProp = 1;
 def->memberAccess = 1;
@@ -2043,7 +2043,7 @@ else
 {
 struct Expression * exp;
 
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowGet->__anon1.compound.declarations), MkDeclaration(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowGet->__anon1.compound.declarations), MkDeclaration(CopyList(entry->__anon1.__anon1.dataType->qualifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
 exp->destType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
@@ -2068,7 +2068,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowSet->__anon1.compo
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier(fieldID)));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("value")));
 curContext = globalContext;
-def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), entry->__anon1.__anon1.dataType->declarator, CopyIdentifier(entry->id), rowSet, rowGet));
+def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, (void *)(CopySpecifier)), entry->__anon1.__anon1.dataType->declarator, CopyIdentifier(entry->id), rowSet, rowGet));
 def->__anon1.propertyDef->symbol->id = def->__anon1.propertyDef->symbol->idCode = symbolID;
 def->__anon1.propertyDef->__anon1.isDBProp = 1;
 def->memberAccess = 1;
@@ -2086,7 +2086,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpString(en
 args = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*addFieldStatements), MkIfStmt(MkListOne(MkExpOp((((void *)0)), '!', MkExpIdentifier(MkIdentifier(fieldID)))), MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier(fieldID)), '=', MkExpCall(MkExpMember(MkExpIdentifier(MkIdentifier(tableID)), MkIdentifier("AddField")), args)))), (((void *)0))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpString(entry->__anon1.__anon1.name));
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpClass(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator)));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpClass(CopyList(entry->__anon1.__anon1.dataType->qualifiers, (void *)(CopySpecifier)), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator)));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpConstant("0"));
 }
 if(isIndex)
@@ -2161,7 +2161,7 @@ else
 {
 struct Expression * exp;
 
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idGet->__anon1.compound.declarations), MkDeclaration(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idGet->__anon1.compound.declarations), MkDeclaration(CopyList(entry->__anon1.__anon1.dataType->qualifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("d")), MkInitializerAssignment(exp = MkExpConstant("0"))))));
 exp->destType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
@@ -2189,7 +2189,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifie
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*args), MkExpIdentifier(MkIdentifier("value")));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*idSet->__anon1.compound.statements), MkExpressionStmt(MkListOne(MkExpOp((((void *)0)), DELETE, MkExpIdentifier(MkIdentifier("r"))))));
 curContext = globalContext;
-def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, CopySpecifier), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator), CopyIdentifier(entry->id), idSet, idGet));
+def = MkClassDefProperty(MkProperty(CopyList(entry->__anon1.__anon1.dataType->qualifiers, (void *)(CopySpecifier)), CopyDeclarator(entry->__anon1.__anon1.dataType->declarator), CopyIdentifier(entry->id), idSet, idGet));
 def->__anon1.propertyDef->symbol->id = def->__anon1.propertyDef->symbol->idCode = symbolID;
 def->__anon1.propertyDef->__anon1.isDBProp = 1;
 def->memberAccess = 1;

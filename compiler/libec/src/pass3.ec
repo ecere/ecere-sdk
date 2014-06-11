@@ -427,11 +427,11 @@ static void InstDeclPassIdentifier(Identifier id)
    }
 }
 
-static bool IsVoidPtrCast(TypeName typeName)
+/*static */bool IsVoidPtrCast(TypeName typeName)
 {
    bool result = false;
    Declarator d = typeName.declarator;
-   if(d && d.type == pointerDeclarator && d.pointer.pointer == null)
+   if(d && d.type == pointerDeclarator && d.pointer.pointer && !d.pointer.pointer.pointer)
    {
       if(typeName.qualifiers)
       {
@@ -542,7 +542,7 @@ static void InstDeclPassExpression(Expression exp)
                                  if(dc.templateClass) dc = dc.templateClass;
                                  if(dc.base && sc != dc)
                                  {
-                                    e.cast.exp = CopyExpContents(e);
+                                    e.cast.exp = MoveExpContents(e);
                                     e.type = castExp;
                                     e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
                                  }

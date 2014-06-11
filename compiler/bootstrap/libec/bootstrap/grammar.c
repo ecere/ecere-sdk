@@ -1479,37 +1479,37 @@ FreeMemberInit((*yyvaluep).memberInit);
 break;
 case 163:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
 case 164:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
 case 165:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
 case 166:
 {
-FreeList((*yyvaluep).list, FreeMembersInit);
+FreeList((*yyvaluep).list, (void *)(FreeMembersInit));
 }
 ;
 break;
 case 167:
 {
-FreeList((*yyvaluep).list, FreeMembersInit);
+FreeList((*yyvaluep).list, (void *)(FreeMembersInit));
 }
 ;
 break;
 case 168:
 {
-FreeList((*yyvaluep).list, FreeMembersInit);
+FreeList((*yyvaluep).list, (void *)(FreeMembersInit));
 }
 ;
 break;
@@ -1551,13 +1551,13 @@ FreeMemberInit((*yyvaluep).memberInit);
 break;
 case 180:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
 case 181:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
@@ -1581,13 +1581,13 @@ FreeClassDef((*yyvaluep).classDef);
 break;
 case 197:
 {
-FreeList((*yyvaluep).list, FreeClassDef);
+FreeList((*yyvaluep).list, (void *)(FreeClassDef));
 }
 ;
 break;
 case 198:
 {
-FreeList((*yyvaluep).list, FreeClassDef);
+FreeList((*yyvaluep).list, (void *)(FreeClassDef));
 }
 ;
 break;
@@ -1641,7 +1641,7 @@ FreeTemplateParameter((*yyvaluep).templateParameter);
 break;
 case 207:
 {
-FreeList((*yyvaluep).list, FreeTemplateParameter);
+FreeList((*yyvaluep).list, (void *)(FreeTemplateParameter));
 }
 ;
 break;
@@ -1653,7 +1653,7 @@ FreeTemplateArgument((*yyvaluep).templateArgument);
 break;
 case 209:
 {
-FreeList((*yyvaluep).list, FreeTemplateArgument);
+FreeList((*yyvaluep).list, (void *)(FreeTemplateArgument));
 }
 ;
 break;
@@ -1727,13 +1727,13 @@ FreeExpression((*yyvaluep).exp);
 break;
 case 224:
 {
-FreeList((*yyvaluep).list, FreeExpression);
+FreeList((*yyvaluep).list, (void *)(FreeExpression));
 }
 ;
 break;
 case 225:
 {
-FreeList((*yyvaluep).list, FreeExpression);
+FreeList((*yyvaluep).list, (void *)(FreeExpression));
 }
 ;
 break;
@@ -1823,7 +1823,7 @@ FreeExpression((*yyvaluep).exp);
 break;
 case 244:
 {
-FreeList((*yyvaluep).list, FreeExpression);
+FreeList((*yyvaluep).list, (void *)(FreeExpression));
 }
 ;
 break;
@@ -1919,7 +1919,7 @@ FreeExpression((*yyvaluep).exp);
 break;
 case 262:
 {
-FreeList((*yyvaluep).list, FreeExpression);
+FreeList((*yyvaluep).list, (void *)(FreeExpression));
 }
 ;
 break;
@@ -1955,7 +1955,7 @@ FreeEnumerator((*yyvaluep).enumerator);
 break;
 case 269:
 {
-FreeList((*yyvaluep).list, FreeEnumerator);
+FreeList((*yyvaluep).list, (void *)(FreeEnumerator));
 }
 ;
 break;
@@ -2015,7 +2015,7 @@ FreeSpecifier((*yyvaluep).specifier);
 break;
 case 281:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
@@ -2039,7 +2039,7 @@ FreeDeclarator((*yyvaluep).declarator);
 break;
 case 285:
 {
-FreeList((*yyvaluep).list, FreeDeclarator);
+FreeList((*yyvaluep).list, (void *)(FreeDeclarator));
 }
 ;
 break;
@@ -2093,61 +2093,61 @@ FreeSpecifier((*yyvaluep).specifier);
 break;
 case 295:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 296:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 297:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 298:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 299:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 300:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 301:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 302:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 306:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
 case 307:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
@@ -2231,7 +2231,7 @@ FreeAttribute((*yyvaluep).attribute);
 break;
 case 322:
 {
-FreeList((*yyvaluep).list, FreeAttribute);
+FreeList((*yyvaluep).list, (void *)(FreeAttribute));
 }
 ;
 break;
@@ -2339,7 +2339,7 @@ FreeInitializer((*yyvaluep).initializer);
 break;
 case 340:
 {
-FreeList((*yyvaluep).list, FreeInitializer);
+FreeList((*yyvaluep).list, (void *)(FreeInitializer));
 }
 ;
 break;
@@ -2357,13 +2357,13 @@ FreeInitDeclarator((*yyvaluep).initDeclarator);
 break;
 case 343:
 {
-FreeList((*yyvaluep).list, FreeInitDeclarator);
+FreeList((*yyvaluep).list, (void *)(FreeInitDeclarator));
 }
 ;
 break;
 case 344:
 {
-FreeList((*yyvaluep).list, FreeInitDeclarator);
+FreeList((*yyvaluep).list, (void *)(FreeInitDeclarator));
 }
 ;
 break;
@@ -2393,25 +2393,25 @@ FreeTypeName((*yyvaluep).typeName);
 break;
 case 349:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
 case 350:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
 case 351:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
 case 352:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
@@ -2452,25 +2452,25 @@ FreeDeclaration((*yyvaluep).declaration);
 break;
 case 366:
 {
-FreeList((*yyvaluep).list, FreeDeclaration);
+FreeList((*yyvaluep).list, (void *)(FreeDeclaration));
 }
 ;
 break;
 case 367:
 {
-FreeList((*yyvaluep).list, FreeDeclaration);
+FreeList((*yyvaluep).list, (void *)(FreeDeclaration));
 }
 ;
 break;
 case 368:
 {
-FreeList((*yyvaluep).list, FreeStatement);
+FreeList((*yyvaluep).list, (void *)(FreeStatement));
 }
 ;
 break;
 case 369:
 {
-FreeList((*yyvaluep).list, FreeStatement);
+FreeList((*yyvaluep).list, (void *)(FreeStatement));
 }
 ;
 break;
@@ -2581,14 +2581,14 @@ break;
 case 387:
 {
 if((*yyvaluep).list != ast)
-FreeList((*yyvaluep).list, FreeExternal);
+FreeList((*yyvaluep).list, (void *)(FreeExternal));
 }
 ;
 break;
 case 388:
 {
 if((*yyvaluep).list != ast)
-FreeList((*yyvaluep).list, FreeExternal);
+FreeList((*yyvaluep).list, (void *)(FreeExternal));
 }
 ;
 break;
@@ -7373,21 +7373,21 @@ case 574:
 {
 yyerror();
 yyval.list = yyvsp[(1) - (2)].list;
-FreeList(yyvsp[(2) - (2)].list, FreeExpression);
+FreeList(yyvsp[(2) - (2)].list, (void *)(FreeExpression));
 ;
 }
 break;
 case 575:
 {
 yyval.list = yyvsp[(1) - (2)].list;
-FreeList(yyvsp[(2) - (2)].list, FreeExpression);
+FreeList(yyvsp[(2) - (2)].list, (void *)(FreeExpression));
 ;
 }
 break;
 case 576:
 {
 yyval.list = yyvsp[(1) - (2)].list;
-FreeList(yyvsp[(2) - (2)].list, FreeExpression);
+FreeList(yyvsp[(2) - (2)].list, (void *)(FreeExpression));
 ;
 }
 break;
@@ -9779,7 +9779,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 resetScannerPos(&(yylsp[(1) - (4)]).end);
 (yyloc.start = (yylsp[(1) - (4)]).start);
 (yyloc.end = (yylsp[(1) - (4)]).end);
-FreeList(yyvsp[(2) - (4)].list, FreeSpecifier);
+FreeList(yyvsp[(2) - (4)].list, (void *)(FreeSpecifier));
 FreeIdentifier(yyvsp[(3) - (4)].id);
 ;
 }
@@ -9871,7 +9871,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 resetScannerPos(&(yylsp[(1) - (4)]).end);
 (yyloc.start = (yylsp[(1) - (4)]).start);
 (yyloc.end = (yylsp[(1) - (4)]).end);
-FreeList(yyvsp[(2) - (4)].list, FreeSpecifier);
+FreeList(yyvsp[(2) - (4)].list, (void *)(FreeSpecifier));
 FreeIdentifier(yyvsp[(3) - (4)].id);
 ;
 }
@@ -12194,7 +12194,7 @@ yyval.external = MkExternalClass(yyvsp[(2) - (2)]._class);
 yyval.external->loc = (yyloc);
 yyvsp[(2) - (2)]._class->declMode = (declMode != 0) ? declMode : 2;
 structDeclMode = declMode = defaultDeclMode;
-FreeList(yyvsp[(1) - (2)].list, FreeSpecifier);
+FreeList(yyvsp[(1) - (2)].list, (void *)(FreeSpecifier));
 ;
 }
 break;
@@ -12355,7 +12355,7 @@ break;
 case 1271:
 {
 yyerror();
-FreeList(yyvsp[(1) - (2)].list, FreeSpecifier);
+FreeList(yyvsp[(1) - (2)].list, (void *)(FreeSpecifier));
 yyval.external = MkExternalClass(yyvsp[(2) - (2)]._class);
 yyval.external->loc = yyvsp[(2) - (2)]._class->loc;
 yyvsp[(2) - (2)]._class->declMode = (declMode != 0) ? declMode : 2;

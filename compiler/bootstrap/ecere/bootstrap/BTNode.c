@@ -1151,7 +1151,7 @@ void __ecereRegisterModule_BTNode(struct __ecereNameSpace__ecere__com__Instance 
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::TreePrintStyle", 0, 0, 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::TreePrintStyle", 0, 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__TreePrintStyle = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "inOrder", 0);
@@ -1159,7 +1159,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "postOrder", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "preOrder", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "depthOrder", 3);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::strcatf", "void ecere::sys::strcatf(char * string, const char * format, ...)", __ecereNameSpace__ecere__sys__strcatf, module, 4);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::BTNode", 0, sizeof(struct __ecereNameSpace__ecere__sys__BTNode), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::BTNode", 0, sizeof(struct __ecereNameSpace__ecere__sys__BTNode), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BTNode = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnSerialize, 1);
@@ -1194,7 +1194,7 @@ if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize
 __ecereProp___ecereNameSpace__ecere__sys__BTNode_balanceFactor = __ecerePropM___ecereNameSpace__ecere__sys__BTNode_balanceFactor, __ecerePropM___ecereNameSpace__ecere__sys__BTNode_balanceFactor = (void *)0;
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::StringBTNode", 0, sizeof(struct __ecereNameSpace__ecere__sys__StringBTNode), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::StringBTNode", 0, sizeof(struct __ecereNameSpace__ecere__sys__StringBTNode), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__StringBTNode = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnSerialize", 0, __ecereMethod___ecereNameSpace__ecere__sys__StringBTNode_OnSerialize, 1);

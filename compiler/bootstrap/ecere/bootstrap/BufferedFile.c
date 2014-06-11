@@ -785,7 +785,7 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 
 void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__File_buffered;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_buffered;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
 
@@ -876,7 +876,7 @@ void __ecereRegisterModule_BufferedFile(struct __ecereNameSpace__ecere__com__Ins
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::BufferedFile", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__BufferedFile), 0, __ecereConstructor___ecereNameSpace__ecere__sys__BufferedFile, __ecereDestructor___ecereNameSpace__ecere__sys__BufferedFile, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::BufferedFile", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__BufferedFile), 0, (void *)__ecereConstructor___ecereNameSpace__ecere__sys__BufferedFile, (void *)__ecereDestructor___ecereNameSpace__ecere__sys__BufferedFile, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BufferedFile = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Seek", 0, __ecereMethod___ecereNameSpace__ecere__sys__BufferedFile_Seek, 1);

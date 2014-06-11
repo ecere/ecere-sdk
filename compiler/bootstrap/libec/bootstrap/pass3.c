@@ -528,7 +528,14 @@ struct Identifier * badID;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Pointer;
 
-struct Pointer;
+struct Pointer
+{
+struct Pointer * prev;
+struct Pointer * next;
+struct Location loc;
+struct __ecereNameSpace__ecere__sys__OldList *  qualifiers;
+struct Pointer * pointer;
+} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declarator;
 
@@ -1090,7 +1097,7 @@ struct Specifier * newSpec = CopySpecifier((*newSpecs).first);
 *spec = *newSpec;
 ((newSpec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)newSpec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newSpec)) : 0), newSpec = 0);
 }
-FreeList(newSpecs, FreeSpecifier);
+FreeList(newSpecs, (void *)(FreeSpecifier));
 if(decl)
 {
 unsigned int isPointer = decl->type == 5;
@@ -1500,12 +1507,12 @@ id->string = __ecereNameSpace__ecere__sys__CopyString(newID);
 }
 }
 
-static unsigned int IsVoidPtrCast(struct TypeName * typeName)
+unsigned int IsVoidPtrCast(struct TypeName * typeName)
 {
 unsigned int result = 0;
 struct Declarator * d = typeName->declarator;
 
-if(d && d->type == 5 && d->__anon1.pointer.pointer == (((void *)0)))
+if(d && d->type == 5 && d->__anon1.pointer.pointer && !d->__anon1.pointer.pointer->pointer)
 {
 if(typeName->qualifiers)
 {
@@ -1525,7 +1532,7 @@ extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * 
 
 extern void FreeType(struct Type * type);
 
-extern struct Expression * CopyExpContents(struct Expression * exp);
+extern struct Expression * MoveExpContents(struct Expression * exp);
 
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
 
@@ -1643,7 +1650,7 @@ if(dc->templateClass)
 dc = dc->templateClass;
 if(dc->base && sc != dc)
 {
-e->__anon1.cast.exp = CopyExpContents(e);
+e->__anon1.cast.exp = MoveExpContents(e);
 e->type = 11;
 e->__anon1.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0))));
 }
@@ -2042,6 +2049,7 @@ void __ecereRegisterModule_pass3(struct __ecereNameSpace__ecere__com__Instance *
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("InstDeclPassTypeName", "void InstDeclPassTypeName(TypeName type, bool param)", InstDeclPassTypeName, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("IsVoidPtrCast", "bool IsVoidPtrCast(TypeName typeName)", IsVoidPtrCast, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessInstanceDeclarations", "void ProcessInstanceDeclarations(void)", ProcessInstanceDeclarations, module, 1);
 }
 

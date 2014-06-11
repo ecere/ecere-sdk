@@ -1323,8 +1323,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
                      {
                         OldList * list = MkList();
-                        ListAdd(list, MkInitDeclarator(/*MkDeclaratorPointer(MkPointer(null, null), */
-                              MkDeclaratorIdentifier(MkIdentifier(name))/*)*/, null));
+                        ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null));
 
                         strcpy(name, "__ecerePropM_");
                         FullClassNameCat(name, symbol.string, false);
@@ -1333,8 +1332,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         FullClassNameCat(name, propertyDef.id.string, true);
                         //MangleClassName(name);
 
-                        ListAdd(list, MkInitDeclarator(/*MkDeclaratorPointer(MkPointer(null, null), */
-                              MkDeclaratorIdentifier(MkIdentifier(name))/*)*/, null));
+                        ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null));
                         decl = MkDeclaration(specifiers, list);
                      }
                      external = MkExternalDeclaration(decl);

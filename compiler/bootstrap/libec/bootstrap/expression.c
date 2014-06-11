@@ -1225,7 +1225,7 @@ FreeExpression((*yyvaluep).exp);
 break;
 case 149:
 {
-FreeList((*yyvaluep).list, FreeExpression);
+FreeList((*yyvaluep).list, (void *)(FreeExpression));
 }
 ;
 break;
@@ -1315,7 +1315,7 @@ FreeExpression((*yyvaluep).exp);
 break;
 case 167:
 {
-FreeList((*yyvaluep).list, FreeExpression);
+FreeList((*yyvaluep).list, (void *)(FreeExpression));
 }
 ;
 break;
@@ -1333,19 +1333,19 @@ FreeDeclaration((*yyvaluep).declaration);
 break;
 case 170:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 171:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
 case 174:
 {
-FreeList((*yyvaluep).list, FreeInitDeclarator);
+FreeList((*yyvaluep).list, (void *)(FreeInitDeclarator));
 }
 ;
 break;
@@ -1381,7 +1381,7 @@ FreeAttribute((*yyvaluep).attribute);
 break;
 case 181:
 {
-FreeList((*yyvaluep).list, FreeAttribute);
+FreeList((*yyvaluep).list, (void *)(FreeAttribute));
 }
 ;
 break;
@@ -1435,7 +1435,7 @@ FreeSpecifier((*yyvaluep).specifier);
 break;
 case 191:
 {
-FreeList((*yyvaluep).list, FreeClassDef);
+FreeList((*yyvaluep).list, (void *)(FreeClassDef));
 }
 ;
 break;
@@ -1447,7 +1447,7 @@ FreeMemberInit((*yyvaluep).memberInit);
 break;
 case 193:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
@@ -1465,7 +1465,7 @@ FreeClassDef((*yyvaluep).classDef);
 break;
 case 196:
 {
-FreeList((*yyvaluep).list, FreeDeclarator);
+FreeList((*yyvaluep).list, (void *)(FreeDeclarator));
 }
 ;
 break;
@@ -1489,7 +1489,7 @@ FreeSpecifier((*yyvaluep).specifier);
 break;
 case 200:
 {
-FreeList((*yyvaluep).list, FreeEnumerator);
+FreeList((*yyvaluep).list, (void *)(FreeEnumerator));
 }
 ;
 break;
@@ -1561,7 +1561,7 @@ FreeDeclarator((*yyvaluep).declarator);
 break;
 case 212:
 {
-FreeList((*yyvaluep).list, FreeSpecifier);
+FreeList((*yyvaluep).list, (void *)(FreeSpecifier));
 }
 ;
 break;
@@ -1573,13 +1573,13 @@ FreePointer((*yyvaluep).pointer);
 break;
 case 214:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
 case 215:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
@@ -1591,7 +1591,7 @@ FreeTypeName((*yyvaluep).typeName);
 break;
 case 217:
 {
-FreeList((*yyvaluep).list, FreeTypeName);
+FreeList((*yyvaluep).list, (void *)(FreeTypeName));
 }
 ;
 break;
@@ -1615,7 +1615,7 @@ FreeInitializer((*yyvaluep).initializer);
 break;
 case 221:
 {
-FreeList((*yyvaluep).list, FreeInitializer);
+FreeList((*yyvaluep).list, (void *)(FreeInitializer));
 }
 ;
 break;
@@ -1633,13 +1633,13 @@ FreeStatement((*yyvaluep).stmt);
 break;
 case 224:
 {
-FreeList((*yyvaluep).list, FreeDeclaration);
+FreeList((*yyvaluep).list, (void *)(FreeDeclaration));
 }
 ;
 break;
 case 225:
 {
-FreeList((*yyvaluep).list, FreeStatement);
+FreeList((*yyvaluep).list, (void *)(FreeStatement));
 }
 ;
 break;
@@ -1755,25 +1755,25 @@ FreeMemberInit((*yyvaluep).memberInit);
 break;
 case 245:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
 case 246:
 {
-FreeList((*yyvaluep).list, FreeMemberInit);
+FreeList((*yyvaluep).list, (void *)(FreeMemberInit));
 }
 ;
 break;
 case 247:
 {
-FreeList((*yyvaluep).list, FreeMembersInit);
+FreeList((*yyvaluep).list, (void *)(FreeMembersInit));
 }
 ;
 break;
 case 248:
 {
-FreeList((*yyvaluep).list, FreeMembersInit);
+FreeList((*yyvaluep).list, (void *)(FreeMembersInit));
 }
 ;
 break;
@@ -4655,7 +4655,7 @@ yyval.classFunction = MkClassFunction((((void *)0)), (((void *)0)), (((void *)0)
 yyval.classFunction->isConstructor = 1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
-FreeList(yyvsp[(1) - (3)].list, FreeSpecifier);
+FreeList(yyvsp[(1) - (3)].list, (void *)(FreeSpecifier));
 ;
 }
 break;
@@ -4665,7 +4665,7 @@ yyval.classFunction = MkClassFunction((((void *)0)), (((void *)0)), (((void *)0)
 yyval.classFunction->isDestructor = 1;
 yyval.classFunction->loc = (yyloc);
 yyval.classFunction->id = ++globalContext->nextID;
-FreeList(yyvsp[(2) - (4)].list, FreeSpecifier);
+FreeList(yyvsp[(2) - (4)].list, (void *)(FreeSpecifier));
 ;
 }
 break;

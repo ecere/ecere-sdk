@@ -771,7 +771,7 @@ void __ecereRegisterModule_OldList(struct __ecereNameSpace__ecere__com__Instance
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::Item", 0, sizeof(struct __ecereNameSpace__ecere__sys__Item), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::Item", 0, sizeof(struct __ecereNameSpace__ecere__sys__Item), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__Item = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Copy", "void Copy(ecere::sys::Item src, int size)", __ecereMethod___ecereNameSpace__ecere__sys__Item_Copy, 1);
@@ -779,7 +779,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ecere::sys::I
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "ecere::sys::Item", arch_PointerSize, arch_PointerSize, 1);
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::NamedItem", 0, sizeof(struct __ecereNameSpace__ecere__sys__NamedItem), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::NamedItem", 0, sizeof(struct __ecereNameSpace__ecere__sys__NamedItem), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__NamedItem = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ecere::sys::NamedItem", arch_PointerSize, arch_PointerSize, 1);
@@ -787,7 +787,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "ecere::sys::N
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch_PointerSize, arch_PointerSize, 1);
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::OldLink", 0, sizeof(struct __ecereNameSpace__ecere__sys__OldLink), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::OldLink", 0, sizeof(struct __ecereNameSpace__ecere__sys__OldLink), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__OldLink = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Free", "void Free()", __ecereMethod___ecereNameSpace__ecere__sys__OldLink_Free, 1);
@@ -796,7 +796,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "next", "ecere::sys::O
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "void *", arch_PointerSize, arch_PointerSize, 1);
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::NamedLink", 0, sizeof(struct __ecereNameSpace__ecere__sys__NamedLink), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::NamedLink", 0, sizeof(struct __ecereNameSpace__ecere__sys__NamedLink), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__NamedLink = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ecere::sys::NamedLink", arch_PointerSize, arch_PointerSize, 1);
@@ -805,7 +805,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "void *", arch_PointerSize, arch_PointerSize, 1);
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::NamedLink64", 0, sizeof(struct __ecereNameSpace__ecere__sys__NamedLink64), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::sys::NamedLink64", 0, sizeof(struct __ecereNameSpace__ecere__sys__NamedLink64), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__NamedLink64 = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "prev", "ecere::sys::NamedLink64", arch_PointerSize, arch_PointerSize, 1);
@@ -814,7 +814,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", arch
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "data", "int64", 8, 8, 1);
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::OldList", 0, sizeof(struct __ecereNameSpace__ecere__sys__OldList), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::OldList", 0, sizeof(struct __ecereNameSpace__ecere__sys__OldList), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__OldList = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Add", "void Add(void * item)", __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add, 1);

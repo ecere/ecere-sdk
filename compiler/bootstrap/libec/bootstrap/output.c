@@ -2388,7 +2388,7 @@ decl = SpecDeclFromString(returnType->__anon1.templateParameter->dataTypeString,
 else if(returnType->__anon1.templateParameter->__anon1.dataType)
 {
 (__ecereNameSpace__ecere__com__eSystem_Delete(specs), specs = 0);
-specs = CopyList(returnType->__anon1.templateParameter->__anon1.dataType->specifiers, CopySpecifier);
+specs = CopyList(returnType->__anon1.templateParameter->__anon1.dataType->specifiers, (void *)(CopySpecifier));
 decl = PlugDeclarator(returnType->__anon1.templateParameter->__anon1.dataType->decl, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
 }
 else

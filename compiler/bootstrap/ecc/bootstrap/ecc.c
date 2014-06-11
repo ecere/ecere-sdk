@@ -862,7 +862,7 @@ const char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(
 
 int __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(const char *  value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
 
@@ -1301,8 +1301,8 @@ FreeASTTree(ast);
 }
 FreeContext(globalContext);
 FreeExcludedSymbols(&_excludedSymbols);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&defines, FreeModuleDefine);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imports, FreeModuleImport);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&defines, (void *)(FreeModuleDefine));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&imports, (void *)(FreeModuleImport));
 FreeTypeData(privateModule);
 FreeIncludeFiles();
 FreeGlobalData(&globalData);
@@ -1344,7 +1344,7 @@ void __ecereRegisterModule_ecc(struct __ecereNameSpace__ecere__com__Instance * m
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "CompilerApp", "ecere::com::Application", 0, 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "CompilerApp", "ecere::com::Application", 0, 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_CompilerApp = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Main", 0, __ecereMethod_CompilerApp_Main, 1);

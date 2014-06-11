@@ -758,7 +758,7 @@ void __ecereRegisterModule_System(struct __ecereNameSpace__ecere__com__Instance 
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::LoggingMode", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::LoggingMode", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__LoggingMode = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "noLogging", 0);
@@ -768,7 +768,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "debug", 3);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "logFile", 4);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "msgBox", 5);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "buffer", 6);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::ErrorLevel", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::ErrorLevel", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ErrorLevel = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "veryFatal", 0);
@@ -776,12 +776,12 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fatal", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "major", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "minor", 3);
 __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::AllErrors", "ecere::sys::ErrorLevel::Minor", module, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::ErrorCode", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::ErrorCode", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ErrorCode = class;
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "level", "ecere::sys::ErrorLevel", 2, 12, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "code", "uint", 12, 0, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::SysErrorCode", "ecere::sys::ErrorCode", 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::SysErrorCode", "ecere::sys::ErrorCode", 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__SysErrorCode = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "allocationFailed", 4097);
@@ -790,7 +790,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "nameExists", 4099);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "missingLibrary", 4100);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fileNotFound", 12293);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "writeFailed", 8198);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::GuiErrorCode", "ecere::sys::ErrorCode", 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::GuiErrorCode", "ecere::sys::ErrorCode", 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__GuiErrorCode = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "driverNotSupported", 257);
@@ -820,7 +820,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetLastError
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ResetError", "void ecere::sys::ResetError(void)", __ecereNameSpace__ecere__sys__ResetError, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SetErrorLevel", "void ecere::sys::SetErrorLevel(ecere::sys::ErrorLevel level)", __ecereNameSpace__ecere__sys__SetErrorLevel, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SetLoggingMode", "void ecere::sys::SetLoggingMode(ecere::sys::LoggingMode mode, void * where)", __ecereNameSpace__ecere__sys__SetLoggingMode, module, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::System", 0, sizeof(struct __ecereNameSpace__ecere__sys__System), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::sys::System", 0, sizeof(struct __ecereNameSpace__ecere__sys__System), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__System = class;
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorLoggingMode", "ecere::sys::LoggingMode", 4, 4, 1);
@@ -849,7 +849,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 void __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Container_copySrc;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Container_copySrc;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 

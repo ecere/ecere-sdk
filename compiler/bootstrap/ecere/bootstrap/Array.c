@@ -634,7 +634,7 @@ void __ecereRegisterModule_Array(struct __ecereNameSpace__ecere__com__Instance *
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Array", "ecere::com::Container", sizeof(struct __ecereNameSpace__ecere__com__Array), 0, 0, __ecereDestructor___ecereNameSpace__ecere__com__Array, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Array", "ecere::com::Container", sizeof(struct __ecereNameSpace__ecere__com__Array), 0, (void *)0, (void *)__ecereDestructor___ecereNameSpace__ecere__com__Array, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Array = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetFirst", 0, __ecereMethod___ecereNameSpace__ecere__com__Array_GetFirst, 1);

@@ -354,7 +354,7 @@ void *  __ecereProp___ecereNameSpace__ecere__sys__File_Get_input(struct __ecereN
 
 void __ecereProp___ecereNameSpace__ecere__sys__File_Set_input(struct __ecereNameSpace__ecere__com__Instance * this, void *  value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__File_input;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_input;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput;
 
@@ -371,7 +371,7 @@ void *  __ecereProp___ecereNameSpace__ecere__sys__File_Get_output(struct __ecere
 
 void __ecereProp___ecereNameSpace__ecere__sys__File_Set_output(struct __ecereNameSpace__ecere__com__Instance * this, void *  value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__File_output;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_output;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput;
 
@@ -614,14 +614,14 @@ void __ecereRegisterModule_DualPipe(struct __ecereNameSpace__ecere__com__Instanc
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::PipeOpenMode", 0, 0, 0, 0, 0, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::PipeOpenMode", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__PipeOpenMode = class;
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "output", "bool", 1, 0, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "error", "bool", 1, 1, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "input", "bool", 1, 2, 1);
 __ecereNameSpace__ecere__com__eClass_AddBitMember(class, "showWindow", "bool", 1, 3, 1);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::DualPipe", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__DualPipe), 0, 0, __ecereDestructor___ecereNameSpace__ecere__sys__DualPipe, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::DualPipe", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__DualPipe), 0, (void *)0, (void *)__ecereDestructor___ecereNameSpace__ecere__sys__DualPipe, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__DualPipe = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Seek", 0, __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Seek, 1);

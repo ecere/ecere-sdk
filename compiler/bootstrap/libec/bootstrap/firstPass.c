@@ -1527,7 +1527,7 @@ if(!spec || spec->type != 1 || !spec->__anon1.__anon1.name || (strcmp(spec->__an
 yylloc = def->__anon1.function->loc;
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "wrong class name specified for %s\n", (((void *)0))), def->__anon1.function->isConstructor ? __ecereNameSpace__ecere__GetTranslatedString("ec", "constructor", (((void *)0))) : __ecereNameSpace__ecere__GetTranslatedString("ec", "destructor", (((void *)0))));
 }
-FreeList(def->__anon1.function->specifiers, FreeSpecifier);
+FreeList(def->__anon1.function->specifiers, (void *)(FreeSpecifier));
 def->__anon1.function->specifiers = (((void *)0));
 }
 if(def->type == 0 && def->__anon1.function->declarator)

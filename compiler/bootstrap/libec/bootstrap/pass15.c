@@ -1624,15 +1624,15 @@ extern char *  strcpy(char * , const char * );
 
 extern unsigned int (* __ecereProp_float_Get_isInf)(float this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isInf;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isInf;
 
 extern int (* __ecereProp_float_Get_signBit)(float this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_signBit;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_signBit;
 
 extern unsigned int (* __ecereProp_float_Get_isNan)(float this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_float_isNan;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_float_isNan;
 
 char * PrintFloat(float result)
 {
@@ -1659,15 +1659,15 @@ return __ecereNameSpace__ecere__sys__CopyString(temp);
 
 extern unsigned int (* __ecereProp_double_Get_isInf)(double this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isInf;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isInf;
 
 extern int (* __ecereProp_double_Get_signBit)(double this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_signBit;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_signBit;
 
 extern unsigned int (* __ecereProp_double_Get_isNan)(double this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_double_isNan;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
 
 char * PrintDouble(double result)
 {
@@ -3232,7 +3232,7 @@ declarations = MkList();
 AddMembers(declarations, classSym->__anon1.registered, 0, (((void *)0)), classSym->__anon1.registered, &addedPadding);
 if(!(*declarations).count || ((*declarations).count == 1 && addedPadding))
 {
-FreeList(declarations, FreeClassDef);
+FreeList(declarations, (void *)(FreeClassDef));
 declarations = (((void *)0));
 }
 }
@@ -3582,14 +3582,14 @@ FullClassNameCat(propName, prop->name, 1);
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 
-ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(propName))), (((void *)0))));
+ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), (((void *)0))));
 if(!imported)
 {
 strcpy(propName, "__ecerePropM_");
 FullClassNameCat(propName, prop->_class->fullName, 0);
 strcat(propName, "_");
 FullClassNameCat(propName, prop->name, 1);
-ListAdd(list, MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(propName))), (((void *)0))));
+ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), (((void *)0))));
 }
 decl = MkDeclaration(specifiers, list);
 }
@@ -4143,7 +4143,7 @@ if(createdExternal->__anon1.function)
 {
 ProcessFunction(createdExternal->__anon1.function);
 {
-struct Declaration * decl = MkDeclaration(CopyList(createdExternal->__anon1.function->specifiers, CopySpecifier), MkListOne(MkInitDeclarator(CopyDeclarator(declarator), (((void *)0)))));
+struct Declaration * decl = MkDeclaration(CopyList(createdExternal->__anon1.function->specifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(CopyDeclarator(declarator), (((void *)0)))));
 
 externalDecl->__anon1.declaration = decl;
 if(decl->symbol && !decl->symbol->__anon2.__anon1.pointerExternal)
@@ -5391,11 +5391,11 @@ extern void FreeExpContents(struct Expression * exp);
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereNameSpace__ecere__sys__OldList * this, void (*  freeFn)(void * ));
 
@@ -5467,7 +5467,7 @@ return 1;
 }
 }
 if(converts.first)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&converts, FreeConvert);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&converts, (void *)(FreeConvert));
 ((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
 }
 }
@@ -5921,7 +5921,7 @@ sourceExp->type = 11;
 if(realDest->kind == 8)
 {
 sourceExp->__anon1.cast.typeName = QMkClass(realDest->__anon1._class->string, (((void *)0)));
-FreeList(specs, FreeSpecifier);
+FreeList(specs, (void *)(FreeSpecifier));
 }
 else
 sourceExp->__anon1.cast.typeName = MkTypeName(specs, (((void *)0)));
@@ -5936,7 +5936,7 @@ sourceExp->expType = (((void *)0));
 ProcessExpressionType(sourceExp);
 }
 else
-FreeList(specs, FreeSpecifier);
+FreeList(specs, (void *)(FreeSpecifier));
 FreeType(dest);
 FreeType(source);
 if(backupSourceExpType)
@@ -10700,52 +10700,52 @@ return 1;
 
 struct OpTable intOps =
 {
-IntAdd, IntSub, IntMul, IntDiv, IntMod, IntNeg, IntInc, IntDec, IntAsign, IntAddAsign, IntSubAsign, IntMulAsign, IntDivAsign, IntModAsign, IntBitAnd, IntBitOr, IntBitXor, IntLShift, IntRShift, IntBitNot, IntAndAsign, IntOrAsign, IntXorAsign, IntLShiftAsign, IntRShiftAsign, IntNot, IntEqu, IntNqu, IntAnd, IntOr, IntGrt, IntSma, IntGrtEqu, IntSmaEqu, IntCond
+(void *)(IntAdd), (void *)(IntSub), (void *)(IntMul), (void *)(IntDiv), (void *)(IntMod), (void *)(IntNeg), (void *)(IntInc), (void *)(IntDec), (void *)(IntAsign), (void *)(IntAddAsign), (void *)(IntSubAsign), (void *)(IntMulAsign), (void *)(IntDivAsign), (void *)(IntModAsign), (void *)(IntBitAnd), (void *)(IntBitOr), (void *)(IntBitXor), (void *)(IntLShift), (void *)(IntRShift), (void *)(IntBitNot), (void *)(IntAndAsign), (void *)(IntOrAsign), (void *)(IntXorAsign), (void *)(IntLShiftAsign), (void *)(IntRShiftAsign), (void *)(IntNot), (void *)(IntEqu), (void *)(IntNqu), (void *)(IntAnd), (void *)(IntOr), (void *)(IntGrt), (void *)(IntSma), (void *)(IntGrtEqu), (void *)(IntSmaEqu), (void *)(IntCond)
 };
 
 struct OpTable uintOps =
 {
-UIntAdd, UIntSub, UIntMul, UIntDiv, UIntMod, UIntNeg, UIntInc, UIntDec, UIntAsign, UIntAddAsign, UIntSubAsign, UIntMulAsign, UIntDivAsign, UIntModAsign, UIntBitAnd, UIntBitOr, UIntBitXor, UIntLShift, UIntRShift, UIntBitNot, UIntAndAsign, UIntOrAsign, UIntXorAsign, UIntLShiftAsign, UIntRShiftAsign, UIntNot, UIntEqu, UIntNqu, UIntAnd, UIntOr, UIntGrt, UIntSma, UIntGrtEqu, UIntSmaEqu, UIntCond
+(void *)(UIntAdd), (void *)(UIntSub), (void *)(UIntMul), (void *)(UIntDiv), (void *)(UIntMod), (void *)(UIntNeg), (void *)(UIntInc), (void *)(UIntDec), (void *)(UIntAsign), (void *)(UIntAddAsign), (void *)(UIntSubAsign), (void *)(UIntMulAsign), (void *)(UIntDivAsign), (void *)(UIntModAsign), (void *)(UIntBitAnd), (void *)(UIntBitOr), (void *)(UIntBitXor), (void *)(UIntLShift), (void *)(UIntRShift), (void *)(UIntBitNot), (void *)(UIntAndAsign), (void *)(UIntOrAsign), (void *)(UIntXorAsign), (void *)(UIntLShiftAsign), (void *)(UIntRShiftAsign), (void *)(UIntNot), (void *)(UIntEqu), (void *)(UIntNqu), (void *)(UIntAnd), (void *)(UIntOr), (void *)(UIntGrt), (void *)(UIntSma), (void *)(UIntGrtEqu), (void *)(UIntSmaEqu), (void *)(UIntCond)
 };
 
 struct OpTable int64Ops =
 {
-Int64Add, Int64Sub, Int64Mul, Int64Div, Int64Mod, Int64Neg, Int64Inc, Int64Dec, Int64Asign, Int64AddAsign, Int64SubAsign, Int64MulAsign, Int64DivAsign, Int64ModAsign, Int64BitAnd, Int64BitOr, Int64BitXor, Int64LShift, Int64RShift, Int64BitNot, Int64AndAsign, Int64OrAsign, Int64XorAsign, Int64LShiftAsign, Int64RShiftAsign, Int64Not, Int64Equ, Int64Nqu, Int64And, Int64Or, Int64Grt, Int64Sma, Int64GrtEqu, Int64SmaEqu, Int64Cond
+(void *)(Int64Add), (void *)(Int64Sub), (void *)(Int64Mul), (void *)(Int64Div), (void *)(Int64Mod), (void *)(Int64Neg), (void *)(Int64Inc), (void *)(Int64Dec), (void *)(Int64Asign), (void *)(Int64AddAsign), (void *)(Int64SubAsign), (void *)(Int64MulAsign), (void *)(Int64DivAsign), (void *)(Int64ModAsign), (void *)(Int64BitAnd), (void *)(Int64BitOr), (void *)(Int64BitXor), (void *)(Int64LShift), (void *)(Int64RShift), (void *)(Int64BitNot), (void *)(Int64AndAsign), (void *)(Int64OrAsign), (void *)(Int64XorAsign), (void *)(Int64LShiftAsign), (void *)(Int64RShiftAsign), (void *)(Int64Not), (void *)(Int64Equ), (void *)(Int64Nqu), (void *)(Int64And), (void *)(Int64Or), (void *)(Int64Grt), (void *)(Int64Sma), (void *)(Int64GrtEqu), (void *)(Int64SmaEqu), (void *)(Int64Cond)
 };
 
 struct OpTable uint64Ops =
 {
-UInt64Add, UInt64Sub, UInt64Mul, UInt64Div, UInt64Mod, UInt64Neg, UInt64Inc, UInt64Dec, UInt64Asign, UInt64AddAsign, UInt64SubAsign, UInt64MulAsign, UInt64DivAsign, UInt64ModAsign, UInt64BitAnd, UInt64BitOr, UInt64BitXor, UInt64LShift, UInt64RShift, UInt64BitNot, UInt64AndAsign, UInt64OrAsign, UInt64XorAsign, UInt64LShiftAsign, UInt64RShiftAsign, UInt64Not, UInt64Equ, UInt64Nqu, UInt64And, UInt64Or, UInt64Grt, UInt64Sma, UInt64GrtEqu, UInt64SmaEqu, UInt64Cond
+(void *)(UInt64Add), (void *)(UInt64Sub), (void *)(UInt64Mul), (void *)(UInt64Div), (void *)(UInt64Mod), (void *)(UInt64Neg), (void *)(UInt64Inc), (void *)(UInt64Dec), (void *)(UInt64Asign), (void *)(UInt64AddAsign), (void *)(UInt64SubAsign), (void *)(UInt64MulAsign), (void *)(UInt64DivAsign), (void *)(UInt64ModAsign), (void *)(UInt64BitAnd), (void *)(UInt64BitOr), (void *)(UInt64BitXor), (void *)(UInt64LShift), (void *)(UInt64RShift), (void *)(UInt64BitNot), (void *)(UInt64AndAsign), (void *)(UInt64OrAsign), (void *)(UInt64XorAsign), (void *)(UInt64LShiftAsign), (void *)(UInt64RShiftAsign), (void *)(UInt64Not), (void *)(UInt64Equ), (void *)(UInt64Nqu), (void *)(UInt64And), (void *)(UInt64Or), (void *)(UInt64Grt), (void *)(UInt64Sma), (void *)(UInt64GrtEqu), (void *)(UInt64SmaEqu), (void *)(UInt64Cond)
 };
 
 struct OpTable shortOps =
 {
-ShortAdd, ShortSub, ShortMul, ShortDiv, ShortMod, ShortNeg, ShortInc, ShortDec, ShortAsign, ShortAddAsign, ShortSubAsign, ShortMulAsign, ShortDivAsign, ShortModAsign, ShortBitAnd, ShortBitOr, ShortBitXor, ShortLShift, ShortRShift, ShortBitNot, ShortAndAsign, ShortOrAsign, ShortXorAsign, ShortLShiftAsign, ShortRShiftAsign, ShortNot, ShortEqu, ShortNqu, ShortAnd, ShortOr, ShortGrt, ShortSma, ShortGrtEqu, ShortSmaEqu, ShortCond
+(void *)(ShortAdd), (void *)(ShortSub), (void *)(ShortMul), (void *)(ShortDiv), (void *)(ShortMod), (void *)(ShortNeg), (void *)(ShortInc), (void *)(ShortDec), (void *)(ShortAsign), (void *)(ShortAddAsign), (void *)(ShortSubAsign), (void *)(ShortMulAsign), (void *)(ShortDivAsign), (void *)(ShortModAsign), (void *)(ShortBitAnd), (void *)(ShortBitOr), (void *)(ShortBitXor), (void *)(ShortLShift), (void *)(ShortRShift), (void *)(ShortBitNot), (void *)(ShortAndAsign), (void *)(ShortOrAsign), (void *)(ShortXorAsign), (void *)(ShortLShiftAsign), (void *)(ShortRShiftAsign), (void *)(ShortNot), (void *)(ShortEqu), (void *)(ShortNqu), (void *)(ShortAnd), (void *)(ShortOr), (void *)(ShortGrt), (void *)(ShortSma), (void *)(ShortGrtEqu), (void *)(ShortSmaEqu), (void *)(ShortCond)
 };
 
 struct OpTable ushortOps =
 {
-UShortAdd, UShortSub, UShortMul, UShortDiv, UShortMod, UShortNeg, UShortInc, UShortDec, UShortAsign, UShortAddAsign, UShortSubAsign, UShortMulAsign, UShortDivAsign, UShortModAsign, UShortBitAnd, UShortBitOr, UShortBitXor, UShortLShift, UShortRShift, UShortBitNot, UShortAndAsign, UShortOrAsign, UShortXorAsign, UShortLShiftAsign, UShortRShiftAsign, UShortNot, UShortEqu, UShortNqu, UShortAnd, UShortOr, UShortGrt, UShortSma, UShortGrtEqu, UShortSmaEqu, UShortCond
+(void *)(UShortAdd), (void *)(UShortSub), (void *)(UShortMul), (void *)(UShortDiv), (void *)(UShortMod), (void *)(UShortNeg), (void *)(UShortInc), (void *)(UShortDec), (void *)(UShortAsign), (void *)(UShortAddAsign), (void *)(UShortSubAsign), (void *)(UShortMulAsign), (void *)(UShortDivAsign), (void *)(UShortModAsign), (void *)(UShortBitAnd), (void *)(UShortBitOr), (void *)(UShortBitXor), (void *)(UShortLShift), (void *)(UShortRShift), (void *)(UShortBitNot), (void *)(UShortAndAsign), (void *)(UShortOrAsign), (void *)(UShortXorAsign), (void *)(UShortLShiftAsign), (void *)(UShortRShiftAsign), (void *)(UShortNot), (void *)(UShortEqu), (void *)(UShortNqu), (void *)(UShortAnd), (void *)(UShortOr), (void *)(UShortGrt), (void *)(UShortSma), (void *)(UShortGrtEqu), (void *)(UShortSmaEqu), (void *)(UShortCond)
 };
 
 struct OpTable floatOps =
 {
-FloatAdd, FloatSub, FloatMul, FloatDiv, (((void *)0)), FloatNeg, FloatInc, FloatDec, FloatAsign, FloatAddAsign, FloatSubAsign, FloatMulAsign, FloatDivAsign, (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), FloatEqu, FloatNqu, FloatAnd, FloatOr, FloatGrt, FloatSma, FloatGrtEqu, FloatSmaEqu
+(void *)(FloatAdd), (void *)(FloatSub), (void *)(FloatMul), (void *)(FloatDiv), (((void *)0)), (void *)(FloatNeg), (void *)(FloatInc), (void *)(FloatDec), (void *)(FloatAsign), (void *)(FloatAddAsign), (void *)(FloatSubAsign), (void *)(FloatMulAsign), (void *)(FloatDivAsign), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (void *)(FloatEqu), (void *)(FloatNqu), (void *)(FloatAnd), (void *)(FloatOr), (void *)(FloatGrt), (void *)(FloatSma), (void *)(FloatGrtEqu), (void *)(FloatSmaEqu)
 };
 
 struct OpTable doubleOps =
 {
-DoubleAdd, DoubleSub, DoubleMul, DoubleDiv, (((void *)0)), DoubleNeg, DoubleInc, DoubleDec, DoubleAsign, DoubleAddAsign, DoubleSubAsign, DoubleMulAsign, DoubleDivAsign, (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), DoubleEqu, DoubleNqu, DoubleAnd, DoubleOr, DoubleGrt, DoubleSma, DoubleGrtEqu, DoubleSmaEqu
+(void *)(DoubleAdd), (void *)(DoubleSub), (void *)(DoubleMul), (void *)(DoubleDiv), (((void *)0)), (void *)(DoubleNeg), (void *)(DoubleInc), (void *)(DoubleDec), (void *)(DoubleAsign), (void *)(DoubleAddAsign), (void *)(DoubleSubAsign), (void *)(DoubleMulAsign), (void *)(DoubleDivAsign), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (((void *)0)), (void *)(DoubleEqu), (void *)(DoubleNqu), (void *)(DoubleAnd), (void *)(DoubleOr), (void *)(DoubleGrt), (void *)(DoubleSma), (void *)(DoubleGrtEqu), (void *)(DoubleSmaEqu)
 };
 
 struct OpTable charOps =
 {
-CharAdd, CharSub, CharMul, CharDiv, CharMod, CharNeg, CharInc, CharDec, CharAsign, CharAddAsign, CharSubAsign, CharMulAsign, CharDivAsign, CharModAsign, CharBitAnd, CharBitOr, CharBitXor, CharLShift, CharRShift, CharBitNot, CharAndAsign, CharOrAsign, CharXorAsign, CharLShiftAsign, CharRShiftAsign, CharNot, CharEqu, CharNqu, CharAnd, CharOr, CharGrt, CharSma, CharGrtEqu, CharSmaEqu, CharCond
+(void *)(CharAdd), (void *)(CharSub), (void *)(CharMul), (void *)(CharDiv), (void *)(CharMod), (void *)(CharNeg), (void *)(CharInc), (void *)(CharDec), (void *)(CharAsign), (void *)(CharAddAsign), (void *)(CharSubAsign), (void *)(CharMulAsign), (void *)(CharDivAsign), (void *)(CharModAsign), (void *)(CharBitAnd), (void *)(CharBitOr), (void *)(CharBitXor), (void *)(CharLShift), (void *)(CharRShift), (void *)(CharBitNot), (void *)(CharAndAsign), (void *)(CharOrAsign), (void *)(CharXorAsign), (void *)(CharLShiftAsign), (void *)(CharRShiftAsign), (void *)(CharNot), (void *)(CharEqu), (void *)(CharNqu), (void *)(CharAnd), (void *)(CharOr), (void *)(CharGrt), (void *)(CharSma), (void *)(CharGrtEqu), (void *)(CharSmaEqu), (void *)(CharCond)
 };
 
 struct OpTable ucharOps =
 {
-UCharAdd, UCharSub, UCharMul, UCharDiv, UCharMod, UCharNeg, UCharInc, UCharDec, UCharAsign, UCharAddAsign, UCharSubAsign, UCharMulAsign, UCharDivAsign, UCharModAsign, UCharBitAnd, UCharBitOr, UCharBitXor, UCharLShift, UCharRShift, UCharBitNot, UCharAndAsign, UCharOrAsign, UCharXorAsign, UCharLShiftAsign, UCharRShiftAsign, UCharNot, UCharEqu, UCharNqu, UCharAnd, UCharOr, UCharGrt, UCharSma, UCharGrtEqu, UCharSmaEqu, UCharCond
+(void *)(UCharAdd), (void *)(UCharSub), (void *)(UCharMul), (void *)(UCharDiv), (void *)(UCharMod), (void *)(UCharNeg), (void *)(UCharInc), (void *)(UCharDec), (void *)(UCharAsign), (void *)(UCharAddAsign), (void *)(UCharSubAsign), (void *)(UCharMulAsign), (void *)(UCharDivAsign), (void *)(UCharModAsign), (void *)(UCharBitAnd), (void *)(UCharBitOr), (void *)(UCharBitXor), (void *)(UCharLShift), (void *)(UCharRShift), (void *)(UCharBitNot), (void *)(UCharAndAsign), (void *)(UCharOrAsign), (void *)(UCharXorAsign), (void *)(UCharLShiftAsign), (void *)(UCharRShiftAsign), (void *)(UCharNot), (void *)(UCharEqu), (void *)(UCharNqu), (void *)(UCharAnd), (void *)(UCharOr), (void *)(UCharGrt), (void *)(UCharSma), (void *)(UCharGrtEqu), (void *)(UCharSmaEqu), (void *)(UCharCond)
 };
 
 void ReadString(char * output, char * string)
@@ -12895,7 +12895,7 @@ convert->resultType->refCount++;
 }
 if(exp->isConstant && inCompiler)
 ComputeExpression(exp);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&converts, FreeConvert);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&converts, (void *)(FreeConvert));
 }
 if(!result && exp->expType && converts.count)
 {
@@ -13187,7 +13187,7 @@ struct FunctionDefinition * function = symbol->__anon2.__anon1.pointerExternal->
 struct Context * tmpContext = curContext;
 
 curContext = (((void *)0));
-symbol->__anon2.__anon1.pointerExternal = MkExternalDeclaration(MkDeclaration(CopyList(function->specifiers, CopySpecifier), MkListOne(MkInitDeclarator(CopyDeclarator(function->declarator), (((void *)0))))));
+symbol->__anon2.__anon1.pointerExternal = MkExternalDeclaration(MkDeclaration(CopyList(function->specifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(CopyDeclarator(function->declarator), (((void *)0))))));
 curContext = tmpContext;
 symbol->__anon2.__anon1.pointerExternal->symbol = symbol;
 DeclareType(symbol->type, 1, 1);
@@ -14145,9 +14145,13 @@ extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace
 
 extern const char *  sourceFile;
 
+extern unsigned int IsVoidPtrCast(struct TypeName * typeName);
+
+extern struct Expression * MoveExpContents(struct Expression * exp);
+
 unsigned int __ecereProp_Type_Get_specConst(struct Type * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_Type_specConst;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
 
@@ -15681,7 +15685,7 @@ functionType = ProcessType(specs, decl);
 functionType->refCount = 0;
 FinishTemplatesContext(context);
 }
-FreeList(specs, FreeSpecifier);
+FreeList(specs, (void *)(FreeSpecifier));
 FreeDeclarator(decl);
 }
 }
@@ -17023,7 +17027,7 @@ struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_N
 __ecereInstance1->type = 2, __ecereInstance1->__anon1.__anon1.constant = __ecereNameSpace__ecere__com__PrintString(__ecereClass_int, &(*initializers).count, (void *)0), __ecereInstance1;
 })));
 ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->__anon1.exp);
-ListAdd(structInitializers, MkInitializerAssignment(MkExpClass(CopyList(specs, CopySpecifier), CopyDeclarator(decl))));
+ListAdd(structInitializers, MkInitializerAssignment(MkExpClass(CopyList(specs, (void *)(CopySpecifier)), CopyDeclarator(decl))));
 ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->__anon1.exp);
 exp->expType = ProcessTypeString(templateString, 0);
 exp->type = 5;
@@ -17154,13 +17158,29 @@ if(inCompiler)
 PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
-if(!sourceFile || (strcmp(sourceFile, "src\\lexer.ec") && strcmp(sourceFile, "src/lexer.ec") && strcmp(sourceFile, "src\\grammar.ec") && strcmp(sourceFile, "src/grammar.ec")))
+if(!sourceFile || (!strstr(sourceFile, "src\\lexer.ec") && !strstr(sourceFile, "src/lexer.ec") && !strstr(sourceFile, "src\\grammar.ec") && !strstr(sourceFile, "src/grammar.ec") && !strstr(sourceFile, "src\\type.ec") && !strstr(sourceFile, "src/type.ec") && !strstr(sourceFile, "src\\expression.ec") && !strstr(sourceFile, "src/expression.ec")))
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatible expression %s (%s); expected %s\n", (((void *)0))), expString, type1, type2);
 FreeType(exp->expType);
 exp->destType->refCount++;
 exp->expType = exp->destType;
 }
 }
+}
+}
+else if(exp->destType && exp->destType->kind == 13 && exp->destType->__anon1.type && exp->destType->__anon1.type->kind == 11 && exp->expType && (exp->expType->kind == 11 || exp->expType->kind == 16))
+{
+struct Expression * nbExp = GetNonBracketsExp(exp);
+
+if(nbExp->type != 11 || !IsVoidPtrCast(nbExp->__anon1.cast.typeName))
+{
+struct Expression * e = MoveExpContents(exp);
+
+exp->__anon1.cast.exp = MkExpBrackets(MkListOne(e));
+exp->type = 11;
+exp->__anon1.cast.exp->destType = exp->destType;
+if(exp->destType)
+exp->destType->refCount++;
+exp->__anon1.cast.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0))));
 }
 }
 }
@@ -17451,7 +17471,7 @@ struct TypeName * newParam = (newParam = __ecereNameSpace__ecere__com__eInstance
 
 if(d->type != 5)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*newParam->qualifiers), (((void *)0)), MkSpecifier(CONST));
-FreeList(param->qualifiers, FreeSpecifier);
+FreeList(param->qualifiers, (void *)(FreeSpecifier));
 param->qualifiers = MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
 param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier("class")));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->__anon1.function.parameters), param, newParam);
@@ -17461,7 +17481,7 @@ else if(spec && spec->__anon1.specifier == ANY_OBJECT)
 {
 struct Declarator * d = param->declarator;
 
-FreeList(param->qualifiers, FreeSpecifier);
+FreeList(param->qualifiers, (void *)(FreeSpecifier));
 param->qualifiers = MkListOne(MkSpecifier(VOID));
 if(d->type != 5)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*param->qualifiers), (((void *)0)), MkSpecifier(CONST));
@@ -17522,8 +17542,8 @@ struct Instantiation * inst = d->initializer->__anon1.exp->__anon1.instance;
 inst->exp = MkExpIdentifier(CopyIdentifier(GetDeclId(d->declarator)));
 d->initializer->__anon1.exp->__anon1.instance = (((void *)0));
 if(decl->__anon1.__anon1.specifiers)
-FreeList(decl->__anon1.__anon1.specifiers, FreeSpecifier);
-FreeList(decl->__anon1.__anon1.declarators, FreeInitDeclarator);
+FreeList(decl->__anon1.__anon1.specifiers, (void *)(FreeSpecifier));
+FreeList(decl->__anon1.__anon1.declarators, (void *)(FreeInitDeclarator));
 d = (((void *)0));
 decl->type = 2;
 decl->__anon1.inst = inst;
@@ -17983,9 +18003,9 @@ FreeType(type);
 (__ecereNameSpace__ecere__com__eSystem_Delete(arrayExp->__anon1.list), arrayExp->__anon1.list = 0);
 }
 decl = SpecDeclFromString(typeString, specs, MkDeclaratorIdentifier(id));
-stmt->__anon1.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, CopySpecifier), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), decl), (((void *)0))))));
+stmt->__anon1.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), decl), (((void *)0))))));
 ListAdd(stmt->__anon1.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(PlugDeclarator(decl, MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__internalArray")), (((void *)0)))), MkInitializerList(initializers)))));
-FreeList(exp, FreeExpression);
+FreeList(exp, (void *)(FreeExpression));
 }
 else
 {
@@ -18219,7 +18239,7 @@ createdExternal->symbol->idCode = external->symbol->idCode;
 curExternal = createdExternal;
 ProcessFunction(createdExternal->__anon1.function);
 {
-struct Declaration * decl = MkDeclaration(CopyList(createdExternal->__anon1.function->specifiers, CopySpecifier), MkListOne(MkInitDeclarator(CopyDeclarator(createdExternal->__anon1.function->declarator), (((void *)0)))));
+struct Declaration * decl = MkDeclaration(CopyList(createdExternal->__anon1.function->specifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(CopyDeclarator(createdExternal->__anon1.function->declarator), (((void *)0)))));
 
 externalDecl->__anon1.declaration = decl;
 if(decl->symbol && !decl->symbol->__anon2.__anon1.pointerExternal)
@@ -18257,7 +18277,7 @@ FullClassNameCat(propName, prop->name, 1);
 ListAdd(args, CopyExpression(object));
 ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
 ListAdd(args, watcher ? CopyExpression(watcher) : MkExpIdentifier(MkIdentifier("this")));
-ListAdd(args, MkExpIdentifier(MkIdentifier(watcherName)));
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(watcherName))));
 ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_Watch")), args));
 }
 else
@@ -18274,7 +18294,7 @@ if(watcher)
 FreeExpression(watcher);
 if(object)
 FreeExpression(object);
-FreeList(watches, FreePropertyWatch);
+FreeList(watches, (void *)(FreePropertyWatch));
 }
 else
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "No observer specified and not inside a _class\n", (((void *)0))));
@@ -18344,7 +18364,7 @@ CreateFireWatcher(prop, object, stmt);
 }
 if(object)
 FreeExpression(object);
-FreeList(watches, FreeIdentifier);
+FreeList(watches, (void *)(FreeIdentifier));
 }
 else
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Invalid object specified and not inside a class\n", (((void *)0))));
@@ -18413,7 +18433,7 @@ if(object)
 FreeExpression(object);
 if(watcher)
 FreeExpression(watcher);
-FreeList(watches, FreeIdentifier);
+FreeList(watches, (void *)(FreeIdentifier));
 }
 else
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Invalid object specified and not inside a class\n", (((void *)0))));
@@ -19028,7 +19048,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceThisClassType", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceThisClassSpecifiers", "void ReplaceThisClassSpecifiers(ecere::sys::OldList specs, ecere::com::Class _class)", ReplaceThisClassSpecifiers, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareFunction", "bool DeclareFunction(ecere::com::GlobalFunction function, char * name)", DeclareFunction, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareGlobalData", "void DeclareGlobalData(GlobalData data)", DeclareGlobalData, module, 2);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Conversion", 0, sizeof(struct Conversion), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Conversion", 0, sizeof(struct Conversion), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Conversion = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypes", "bool MatchTypes(Type source, Type dest, ecere::sys::OldList conversions, ecere::com::Class owningClassSource, ecere::com::Class owningClassDest, bool doConversion, bool enumBaseType, bool acceptReversedParams, bool isConversionExploration, bool warnConst)", MatchTypes, module, 1);

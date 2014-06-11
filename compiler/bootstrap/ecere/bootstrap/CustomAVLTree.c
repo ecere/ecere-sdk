@@ -978,7 +978,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 };
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::AVLNode", "ecere::com::IteratorPointer", sizeof(struct __ecereNameSpace__ecere__com__AVLNode), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::AVLNode", "ecere::com::IteratorPointer", sizeof(struct __ecereNameSpace__ecere__com__AVLNode), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__AVLNode = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", "thisclass Find(ecere::com::Class Tclass, const T key)", __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find, 1);
@@ -1009,7 +1009,7 @@ __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, 0, (((v
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::CustomAVLTree", "ecere::com::Container<BT>", sizeof(struct __ecereNameSpace__ecere__com__CustomAVLTree), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::CustomAVLTree", "ecere::com::Container<BT>", sizeof(struct __ecereNameSpace__ecere__com__CustomAVLTree), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetFirst", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetFirst, 1);

@@ -1561,7 +1561,7 @@ extern char *  StringFromSpecDecl(struct __ecereNameSpace__ecere__sys__OldList *
 
 static void ProcessInitializer(struct Initializer * init);
 
-extern struct Expression * CopyExpContents(struct Expression * exp);
+extern struct Expression * MoveExpContents(struct Expression * exp);
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
@@ -1577,7 +1577,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
 unsigned int __ecereProp_Type_Get_specConst(struct Type * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp_Type_specConst;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 
@@ -2549,7 +2549,7 @@ ProcessExpressionType(classExp);
 ProcessExpression(classExp);
 sizeExp = MkExpMember(CopyExpression(classExp), MkIdentifier("typeSize"));
 exp->type = 5;
-exp->__anon1.list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), '+', MkExpOp(MkExpBrackets(CopyList(exp->__anon1.index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, CopyExpression))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->__anon1.index.exp))), exp->__anon1.index.index)))))))))))))))));
+exp->__anon1.list = MkListOne(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0))), MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), '+', MkExpOp(MkExpBrackets(CopyList(exp->__anon1.index.index, (void *)(CopyExpression))), '*', CopyExpression(sizeExp))))))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, (void *)(CopyExpression)))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("2")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint16")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, (void *)(CopyExpression)))), MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(sizeExp, EQ_OP, MkExpConstant("4")))), MkListOne(MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint32")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), CopyExpression(exp->__anon1.index.exp)))), CopyList(exp->__anon1.index.index, (void *)(CopyExpression)))), MkExpIndex(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), exp->__anon1.index.exp))), exp->__anon1.index.index)))))))))))))))));
 thisClass = curExternal->__anon1.function ? curExternal->__anon1.function->_class : (((void *)0));
 {
 struct Symbol * thisSymbol = (thisSymbol = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol), thisSymbol->string = __ecereNameSpace__ecere__sys__CopyString("this"), thisSymbol->type = MkClassType(thisClass->fullName), thisSymbol);
@@ -3811,7 +3811,7 @@ struct Expression * argExp = GetTemplateArgExp(spec->__anon1.templateParameter, 
 
 if(argExp)
 {
-FreeList(exp->__anon1._classExp.specifiers, FreeSpecifier);
+FreeList(exp->__anon1._classExp.specifiers, (void *)(FreeSpecifier));
 if(exp->__anon1._classExp.decl)
 FreeDeclarator(exp->__anon1._classExp.decl);
 exp->type = 8;
@@ -3833,7 +3833,7 @@ strcpy(className, "__ecereClass_");
 FullClassNameCat(className, string, 1);
 DeclareClass(classSym, className);
 (__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
-FreeList(exp->__anon1._classExp.specifiers, FreeSpecifier);
+FreeList(exp->__anon1._classExp.specifiers, (void *)(FreeSpecifier));
 if(exp->__anon1._classExp.decl)
 FreeDeclarator(exp->__anon1._classExp.decl);
 exp->type = 0;
@@ -3860,7 +3860,7 @@ struct Expression * inner = GetInnerExp(nbExp);
 
 if((!exp->expType || exp->expType->kind != 20 || nbExp->type != 11) && !((unsigned int)((exp->usage & 0x40) >> 6)) && (!exp->destType || (!exp->destType->truth && (exp->destType->kind != 20 || (exp->destType->__anon1.templateParameter && (exp->destType->__anon1.templateParameter->dataTypeString || exp->destType->__anon1.templateParameter->__anon1.dataType))))) && (((unsigned int)((exp->usage & 0x80) >> 7)) || ((unsigned int)((exp->usage & 0x1) >> 0)) || ((unsigned int)((exp->usage & 0x4) >> 2))) && (!exp->destType || (!exp->destType->passAsTemplate && exp->expType && (exp->expType->kind != 13 || exp->destType->kind == 13) && (exp->destType->kind != 13 || exp->expType->kind == 13))) && !inner->needCast && inner->type != 4)
 {
-struct Expression * e = CopyExpContents(exp);
+struct Expression * e = MoveExpContents(exp);
 struct Declarator * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 char typeString[1024];
@@ -3878,7 +3878,7 @@ if(specs && (*specs).first && ((struct Specifier *)(*specs).first)->type == 8 &&
 {
 if(decl)
 FreeDeclarator(decl);
-FreeList(specs, FreeSpecifier);
+FreeList(specs, (void *)(FreeSpecifier));
 if(exp->destType->__anon1.templateParameter->dataTypeString)
 {
 specs = MkList();
@@ -3887,7 +3887,7 @@ decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 }
 else
 {
-specs = CopyList(exp->destType->__anon1.templateParameter->__anon1.dataType->specifiers, CopySpecifier);
+specs = CopyList(exp->destType->__anon1.templateParameter->__anon1.dataType->specifiers, (void *)(CopySpecifier));
 decl = CopyDeclarator(exp->destType->__anon1.templateParameter->__anon1.dataType->decl);
 }
 }

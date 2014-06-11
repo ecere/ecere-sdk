@@ -635,8 +635,8 @@ struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 
 __thisModule = __currentModule = module = __ecereNameSpace__ecere__com____ecere_COM_Initialize((unsigned int)1, _argc, (void *)_argv);
-__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ec", 2, __ecereDll_Load_ec, __ecereDll_Unload_ec);
-__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 2, __ecereDll_Load_ecere, __ecereDll_Unload_ecere);
+__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ec", 2, (void *)(__ecereDll_Load_ec), (void *)(__ecereDll_Unload_ec));
+__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 2, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere));
 __ecereRegisterModule_ecp(module);
 __ecereClass___ecereNameSpace__ecere__com__Application = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Application");
 __ecereClass___ecereNameSpace__ecere__com__Instance = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "ecere::com::Instance");

@@ -1627,11 +1627,11 @@ void *  data;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
 static struct __ecereNameSpace__ecere__com__Class * FindAppClass(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace, unsigned int thisModule)
 {
@@ -1696,10 +1696,10 @@ static struct __ecereNameSpace__ecere__com__Class * SearchAppClass_Module(struct
 struct __ecereNameSpace__ecere__com__Class * appClass;
 struct __ecereNameSpace__ecere__com__SubModule * subModule;
 
-appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->publicNameSpace, 0x0);
+appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->publicNameSpace, 0);
 if(appClass)
 return appClass;
-appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->privateNameSpace, 0x0);
+appClass = FindAppClass(&((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->privateNameSpace, 0);
 if(appClass)
 return appClass;
 for(subModule = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->modules.first; subModule; subModule = subModule->next)
@@ -2533,7 +2533,7 @@ const char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(
 
 int __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(const char *  value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Platform_char__PTR_;
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
@@ -2541,7 +2541,7 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ec
 
 void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
@@ -2553,7 +2553,7 @@ uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecer
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
 
@@ -2571,7 +2571,7 @@ int count;
 
 const uint64 __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(struct __ecereNameSpace__ecere__com__MapIterator * this);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_key;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map;
 
@@ -3094,8 +3094,8 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 }
 FreeContext(theGlobalContext);
 FreeExcludedSymbols(&_excludedSymbols);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_defines, FreeModuleDefine);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_imports, FreeModuleImport);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_defines, (void *)(FreeModuleDefine));
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&_imports, (void *)(FreeModuleImport));
 FreeTypeData(privateModule);
 FreeIncludeFiles();
 FreeGlobalData(&globalData);
@@ -3114,10 +3114,10 @@ void __ecereRegisterModule_ecs(struct __ecereNameSpace__ecere__com__Instance * m
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ModuleInfo", 0, sizeof(struct ModuleInfo), 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ModuleInfo", 0, sizeof(struct ModuleInfo), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_ModuleInfo = class;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "SymbolgenApp", "ecere::com::Application", 0, 0, 0, 0, module, 2, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "SymbolgenApp", "ecere::com::Application", 0, 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_SymbolgenApp = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Main", 0, __ecereMethod_SymbolgenApp_Main, 1);

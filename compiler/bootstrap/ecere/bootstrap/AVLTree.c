@@ -452,7 +452,7 @@ void __ecereRegisterModule_AVLTree(struct __ecereNameSpace__ecere__com__Instance
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::AVLTree", "ecere::com::CustomAVLTree<BT = ecere::com::AVLNode<AT>, KT = AT, T = AT, D = AT>", 0, 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::AVLTree", "ecere::com::CustomAVLTree<BT = ecere::com::AVLNode<AT>, KT = AT, T = AT, D = AT>", 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__AVLTree = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetData", 0, __ecereMethod___ecereNameSpace__ecere__com__AVLTree_GetData, 1);

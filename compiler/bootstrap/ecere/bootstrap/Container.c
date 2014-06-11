@@ -872,7 +872,7 @@ const char *  __ecereProp___ecereNameSpace__ecere__com__Class_Get_char__PTR_(str
 
 struct __ecereNameSpace__ecere__com__Class * __ecereProp___ecereNameSpace__ecere__com__Class_Set_char__PTR_(const char *  value);
 
-extern struct __ecereNameSpace__ecere__com__Property ** __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_;
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Class_char__PTR_;
 
 void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * *  data);
 
@@ -994,7 +994,7 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 };
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::Iterator", 0, sizeof(struct __ecereNameSpace__ecere__com__Iterator), 0, 0, 0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "ecere::com::Iterator", 0, sizeof(struct __ecereNameSpace__ecere__com__Iterator), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Iterator = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", "bool Find(const T value)", __ecereMethod___ecereNameSpace__ecere__com__Iterator_Find, 1);
@@ -1013,7 +1013,7 @@ __ecereProp___ecereNameSpace__ecere__com__Iterator_data = __ecerePropM___ecereNa
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, 0, (((void *)0)));
 __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "IT", 0, 0, &__simpleStruct0);
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Container", 0, 0, 0, 0, __ecereDestructor___ecereNameSpace__ecere__com__Container, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::Container", 0, 0, 0, (void *)0, (void *)__ecereDestructor___ecereNameSpace__ecere__com__Container, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Container = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnCopy", 0, __ecereMethod___ecereNameSpace__ecere__com__Container_OnCopy, 1);

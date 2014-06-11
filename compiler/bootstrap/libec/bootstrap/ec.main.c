@@ -770,7 +770,7 @@ if(!__currentModule)
 {
 __currentModule = module;
 }
-__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 1, __ecereDll_Load_ecere, __ecereDll_Unload_ecere);
+__ecereNameSpace__ecere__com__eModule_LoadStatic(module, "ecere", 1, (void *)(__ecereDll_Load_ecere), (void *)(__ecereDll_Unload_ecere));
 __ecereRegisterModule_ast(module);
 __ecereRegisterModule_copy(module);
 __ecereRegisterModule_dbpass(module);

@@ -603,7 +603,7 @@ void __ecereRegisterModule_TempFile(struct __ecereNameSpace__ecere__com__Instanc
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::TempFile", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__TempFile), 0, __ecereConstructor___ecereNameSpace__ecere__sys__TempFile, __ecereDestructor___ecereNameSpace__ecere__sys__TempFile, module, 1, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::sys::TempFile", "ecere::sys::File", sizeof(struct __ecereNameSpace__ecere__sys__TempFile), 0, (void *)__ecereConstructor___ecereNameSpace__ecere__sys__TempFile, (void *)__ecereDestructor___ecereNameSpace__ecere__sys__TempFile, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__TempFile = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Seek", 0, __ecereMethod___ecereNameSpace__ecere__sys__TempFile_Seek, 1);
