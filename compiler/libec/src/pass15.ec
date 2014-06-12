@@ -3586,7 +3586,8 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
             _class.symbol = FindClass(_class.fullName);
          type._class = _class.symbol;
 
-         if(MatchTypes(type, dest, &converts, null, null, true, false, false, false, false))
+         if(MatchTypes(type, dest, &converts, null, null, dest.kind != classType || !dest._class || strcmp(dest._class.string, "bool"),
+               false, false, false, false))
          {
             NamedLink64 value;
             Class enumClass = eSystem_FindClass(privateModule, "enum");

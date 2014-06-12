@@ -6090,7 +6090,7 @@ class CodeEditor : Window
       for(link = (BTNamedLink)nameSpace.classes.first; link; link = (BTNamedLink)((BTNode)link).next)
       {
          Class _class = link.data;
-         if(_class.type == enumClass && (dest.kind != classType || ((!dest._class || !dest._class.registered || (dest._class.registered != _class && strcmp(dest._class.registered.dataTypeString, "char *"))) && !dest.classObjectType)) &&
+         if(_class.type == enumClass && (dest.kind != classType || ((!dest._class || !dest._class.registered || (dest._class.registered != _class && strcmp(dest._class.registered.dataTypeString, "char *") && strcmp(dest._class.string, "bool"))) && !dest.classObjectType)) &&
             dest.kind != pointerType && dest.kind != ellipsisType)
          {
             OldList conversions { };
