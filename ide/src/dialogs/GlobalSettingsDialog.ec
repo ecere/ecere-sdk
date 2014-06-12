@@ -993,7 +993,7 @@ class CompilerOptionsTab : CompilersSubTab
    StringListBox prepDefs
    {
       this, text = $"Preprocessor directives", hotKey = altP;
-      position = { 148, 124 }, size = { 300, 22 }, anchor = { left = 148, top = 124, right = 8 };
+      position = { 168, 124 }, size = { 280, 22 }, anchor = { left = 168, top = 124, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1012,7 +1012,7 @@ class CompilerOptionsTab : CompilersSubTab
    StringListBox eCcompilerFlags
    {
       this, text = $"Additional eC compiler flags", hotKey = altG;
-      position = { 148, 154 }, size = { 300, 22 }, anchor = { left = 148, top = 154, right = 8 };
+      position = { 168, 154 }, size = { 280, 22 }, anchor = { left = 168, top = 154, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1031,7 +1031,7 @@ class CompilerOptionsTab : CompilersSubTab
    StringListBox compilerFlags
    {
       this, text = $"Additional compiler flags", hotKey = altR;
-      position = { 148, 184 }, size = { 300, 22 }, anchor = { left = 148, top = 184, right = 8 };
+      position = { 168, 184 }, size = { 280, 22 }, anchor = { left = 168, top = 184, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1050,7 +1050,7 @@ class CompilerOptionsTab : CompilersSubTab
    StringListBox linkerFlags
    {
       this, text = $"Additional linker flags", hotKey = altL;
-      position = { 148, 214 }, size = { 300, 22 }, anchor = { left = 148, top = 214, right = 8 };
+      position = { 168, 214 }, size = { 280, 22 }, anchor = { left = 168, top = 214, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
@@ -1069,7 +1069,7 @@ class CompilerOptionsTab : CompilersSubTab
    StringListBox excludedLibraries
    {
       this, text = $"Libraries to exclude", hotKey = altX;
-      position = { 148, 244 }, size = { 300, 22 }, anchor = { left = 148, top = 244, right = 8 };
+      position = { 168, 244 }, size = { 280, 22 }, anchor = { left = 168, top = 244, right = 8 };
 
       bool NotifyModified(EditBox editBox)
       {
