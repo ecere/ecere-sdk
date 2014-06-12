@@ -2657,7 +2657,7 @@ if(!output)
 valid = 0;
 if(!valid)
 {
-printf(__ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
+printf("%s", __ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n", (((void *)0))));
 }
 else
 {

@@ -593,7 +593,7 @@ const char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSp
 {
 struct __ecereNameSpace__ecere__sys__NamedLink64 * item = (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * b;
-long long i64Data;
+long long i64Data = 0;
 
 switch(_class->typeSize)
 {

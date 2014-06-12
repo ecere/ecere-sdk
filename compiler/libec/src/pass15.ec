@@ -3553,10 +3553,15 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       else if((dest.kind == pointerType || dest.kind == arrayType) &&
          (source.kind == arrayType || source.kind == pointerType))
       {
-         ComputeTypeSize(source.type);
-         ComputeTypeSize(dest.type);
-         if(source.type.size == dest.type.size && MatchTypes(source.type, dest.type, null, null, null, true, true, false, false, warnConst))
-            return true;
+         // Pointers to pointer is incompatible with non normal/nohead classes
+         if(!(dest.type && dest.type.kind == pointerType && source.type.kind == classType && source.type._class &&
+            source.type._class.registered && (source.type._class.registered.type != normalClass && source.type._class.registered.type != noHeadClass) && !source.type.byReference))
+         {
+            ComputeTypeSize(source.type);
+            ComputeTypeSize(dest.type);
+            if(source.type.size == dest.type.size && MatchTypes(source.type, dest.type, null, null, null, true, true, false, false, warnConst))
+               return true;
+         }
       }
    }
    return false;

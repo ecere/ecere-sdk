@@ -1065,7 +1065,7 @@ SetOutputFile(defaultOutputFile);
 }
 if(!valid)
 {
-printf(__ecereNameSpace__ecere__GetTranslatedString("ecc", "Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-module <module>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
+printf("%s", __ecereNameSpace__ecere__GetTranslatedString("ecc", "Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-module <module>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
 }
 else
 {

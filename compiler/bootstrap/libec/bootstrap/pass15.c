@@ -5373,10 +5373,13 @@ return 1;
 }
 else if((dest->kind == 13 || dest->kind == 12) && (source->kind == 12 || source->kind == 13))
 {
+if(!(dest->__anon1.type && dest->__anon1.type->kind == 13 && source->__anon1.type->kind == 8 && source->__anon1.type->__anon1._class && source->__anon1.type->__anon1._class->__anon1.registered && (source->__anon1.type->__anon1._class->__anon1.registered->type != 0 && source->__anon1.type->__anon1._class->__anon1.registered->type != 5) && !source->__anon1.type->byReference))
+{
 ComputeTypeSize(source->__anon1.type);
 ComputeTypeSize(dest->__anon1.type);
 if(source->__anon1.type->size == dest->__anon1.type->size && MatchTypes(source->__anon1.type, dest->__anon1.type, (((void *)0)), (((void *)0)), (((void *)0)), 1, 1, 0, 0, warnConst))
 return 1;
+}
 }
 }
 return 0;
@@ -5450,7 +5453,7 @@ type->kind = 8;
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 type->__anon1._class = _class->symbol;
-if(MatchTypes(type, dest, &converts, (((void *)0)), (((void *)0)), 1, 0, 0, 0, 0))
+if(MatchTypes(type, dest, &converts, (((void *)0)), (((void *)0)), dest->kind != 8 || !dest->__anon1._class || strcmp(dest->__anon1._class->string, "bool"), 0, 0, 0, 0))
 {
 struct __ecereNameSpace__ecere__sys__NamedLink64 * value;
 struct __ecereNameSpace__ecere__com__Class * enumClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "enum");

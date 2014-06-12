@@ -2838,7 +2838,7 @@ SetOutputFile(defaultSymFile);
 }
 if(!valid)
 {
-printf(__ecereNameSpace__ecere__GetTranslatedString("ecp", "Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
+printf("%s", __ecereNameSpace__ecere__GetTranslatedString("ecp", "Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n", (((void *)0))));
 }
 else
 {
