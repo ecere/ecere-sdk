@@ -199,7 +199,7 @@ public struct FileName
 
    int OnCompare(FileName b)
    {
-      int result;
+      int result = 0;
       if(type == b.type || (type >= normalFile && b.type >= normalFile) || (type >= drive && type <= share))
          result = strcmpi(name, b.name);
       else

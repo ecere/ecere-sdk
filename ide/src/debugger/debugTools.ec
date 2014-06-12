@@ -156,7 +156,7 @@ void DebugComputeExpression(Expression exp)
          Type dataType = exp.expType;
 
          char temp[1024];
-         uint64 address;
+         uint64 address = 0;
          bool hasAddress;
          bool isPointer = false;
 
@@ -1276,7 +1276,7 @@ void DebugComputeExpression(Expression exp)
                      bool op1IsPointer = exp1.expType.kind == pointerType || exp1.expType.kind == arrayType;
                      bool op2IsPointer = exp2.expType.kind == pointerType || exp2.expType.kind == arrayType;
                      bool addressResult = !op1IsPointer || !op2IsPointer;
-                     uint size;
+                     uint size = 0;
                      valid = true;
                      if(op1IsPointer)
                         size = ComputeTypeSize(exp1.expType.type);

@@ -1491,7 +1491,7 @@ private:
 
       // Overwrite Caret Stuff
       int overWrite = 0;
-      int overWriteX, overWriteY;
+      int overWriteX = 0, overWriteY = 0;
       char overWriteCh;
 
       // ****** SYNTAX STATES ******
@@ -3606,7 +3606,7 @@ private:
                int y;
                bool done = false;
                EditLine line = this.line;
-               int c;
+               int c = 0;
                for(y = this.y; y>= 0; y--)
                {
                   c = (y == this.y) ? (Min(this.x-1, line.count-1)) : line.count-1;
@@ -3854,8 +3854,8 @@ private:
                bool foundAlpha = false;
                bool found = false;
                int y = this.y;
-               EditLine line, lastLine;
-               int lastC, lastY;
+               EditLine line, lastLine = null;
+               int lastC = 0, lastY = 0;
 
                for(line = this.line; (line && !found); line = line.prev, y--)
                {
@@ -3976,9 +3976,9 @@ private:
                {
                   bool foundAlpha = false;
                   bool found = false;
-                  EditLine line, lastLine;
+                  EditLine line = null, lastLine = null;
                   int y = this.y;
-                  int lastC, lastY, lastNumBytes;
+                  int lastC = 0, lastY = 0, lastNumBytes = 0;
 
                   for(line = this.line; (line && !found); line = line.next, y++)
                   {
@@ -4825,7 +4825,7 @@ private:
                         char * newline;
                         int putsize;
 
-                        int indentwidth;
+                        int indentwidth = 0;
                         EditLine line = this.line;
 
                         //Only remove one tab if there is nothing else on the line.
@@ -4982,7 +4982,7 @@ private:
    bool _AddCh(unichar ch, int * addedSpacesPtr, int * addedTabsPtr)
    {
       EditLine line;
-      int length, endX;
+      int length, endX = 0;
       bool result;
       ReplaceTextAction replaceAction = null;
       AddCharAction addCharAction = null;

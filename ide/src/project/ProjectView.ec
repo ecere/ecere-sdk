@@ -603,7 +603,7 @@ class ProjectView : Window
       ProjectNode node = null;
       if(document.fileName)
       {
-         bool excluded;
+         bool excluded = false;
          char winFileName[MAX_LOCATION];
          char * documentFileName = GetSlashPathBuffer(winFileName, document.fileName);
          Project prj;

@@ -197,7 +197,7 @@ public:
 {
    NamedLink64 item = null;
    Class b;
-   int64 i64Data;
+   int64 i64Data = 0;
    switch(_class.typeSize)
    {
       case 1:

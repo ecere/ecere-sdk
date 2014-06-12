@@ -37,7 +37,7 @@
       {
          "Name" : "Release",
          "Options" : {
-            "Warnings" : "None",
+            "Warnings" : "All",
             "Debug" : false,
             "NoLineNumbers" : true,
             "Optimization" : "Speed",

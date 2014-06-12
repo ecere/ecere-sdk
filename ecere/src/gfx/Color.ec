@@ -148,7 +148,7 @@ public struct ColorHSV
          float r = value.r, g = value.g, b = value.b;
          float minV, maxV, diff,dr,dg,db;
 
-         float h, s, v;
+         float h = 0, s, v;
 
          minV = Min(r, g);
          minV = Min(minV, b);
@@ -209,7 +209,7 @@ public struct ColorHSV
             case 2: r = p; g = v; b = t; break;
             case 3: r = p; g = q; b = v; break;
             case 4: r = t; g = p; b = v; break;
-            case 5: r = v; g = p; b = q; break;
+            case 5: default: r = v; g = p; b = q; break;
          }
          // TODO: Figure out where this is needed
          r = Max(Min(r, 1),0);

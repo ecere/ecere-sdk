@@ -499,7 +499,7 @@ private:
    {
       get
       {
-         bool result;
+         bool result = false;
          if(files)
          {
             for(child : files)
@@ -1390,7 +1390,7 @@ private:
 
    int OnCompare(ProjectNode b)
    {
-      int result;
+      int result = 0;
       if(type == b.type /*|| type >= TYPE_DRIVE*/)
          result = strcmpi(name, b.name);
       else
@@ -2796,7 +2796,7 @@ static ProjectOptions BlendFileConfigPlatformProjectOptions(ProjectNode node, Pr
 
 static void CollectPlatformsCommonOptions(Map<Platform, ProjectOptions> byPlatformOptions, ProjectOptions * platformsCommonOptions)
 {
-   ProjectOptions first;
+   ProjectOptions first = null;
    ProjectOptions commonOptions;
 
    Map<String, int> countIncludeDirs { };
@@ -2806,7 +2806,7 @@ static void CollectPlatformsCommonOptions(Map<Platform, ProjectOptions> byPlatfo
 
    for(options : byPlatformOptions) { first = options; break; }
 
-   *platformsCommonOptions = commonOptions = first.Copy();
+   *platformsCommonOptions = commonOptions = first ? first.Copy() : { };
 
    if(commonOptions.includeDirs)
       commonOptions.includeDirs.Free();

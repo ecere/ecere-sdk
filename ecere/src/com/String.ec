@@ -198,7 +198,7 @@ public char * PathCatSlash(char * string, const char * addedPath)
       int c = 0;
       bool isURL = false;
       bool isArchive = SplitArchivePath(string, archiveName, &file);
-      char * urlFileName;
+      char * urlFileName = null;
       char * protocolSymbol;
 
       strcpy(fileName, isArchive ? file : string);
@@ -418,7 +418,7 @@ public char * PathCat(char * string, const char * addedPath)
       int c = 0;
       bool isURL = false;
       bool isArchive = SplitArchivePath(string, archiveName, &file);
-      char * urlFileName;
+      char * urlFileName = null;
       char * protocolSymbol;
 
       strcpy(fileName, isArchive ? file : string);

@@ -415,7 +415,8 @@ void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int 
 #if defined(__unix__)
    if(!__thisModule && argv)
    {
-      getcwd(exeLocation, MAX_LOCATION);
+      if(!getcwd(exeLocation, MAX_LOCATION))
+         exeLocation[0] = 0;
       PathCat(exeLocation, argv[0]);
    }
 #endif

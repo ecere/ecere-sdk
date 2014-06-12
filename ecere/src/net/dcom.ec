@@ -672,7 +672,7 @@ public:
             case dcom_CallVirtualMethod:
             {
                CallVirtualMethodPacket callMethod = (CallVirtualMethodPacket)p;
-               VirtualMethodReturnedPacket packet;
+               VirtualMethodReturnedPacket packet = null;
                unsigned int size = (uint)(uintptr)&((VirtualMethodReturnedPacket)0).args; // sizeof(class VirtualMethodReturnedPacket);
                SerialBuffer buffer { };
                bool hasReturnValue = callMethod.hasReturnValue;

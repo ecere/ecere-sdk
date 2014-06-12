@@ -297,96 +297,112 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, const char * commandLine, const cha
       FILE * input = null, * output = null;
       int hInput[2] = { 0 }, hOutput[2] = { 0 };
       pid_t pid;
+      bool result = true;
 
       if((mode & POM_error) || (mode & POM_output))
-         pipe(hOutput);
+         if(pipe(hOutput))
+            result = false;
 
       if((mode & POM_input))
-         pipe(hInput);
-
-      pid = fork();
-      if(pid > 0)
+         if(pipe(hInput))
+            result = false;
+      if(result)
       {
-         // This process
-         if(hInput[PIPE_READ])
+         pid = fork();
+         if(pid > 0)
          {
-            close(hInput[PIPE_READ]);
-            output = fdopen(hInput[PIPE_WRITE],"w");
-         }
-         if(hOutput[PIPE_WRITE])
-         {
-            close(hOutput[PIPE_WRITE]);
-            input = fdopen(hOutput[PIPE_READ],"r");
-         }
-      }
-      else if(pid == 0)
-      {
-         // Child process
-         char * tokens[129];
-         int numTokens;
-         char * commandLineCopy = __ecereNameSpace__ecere__sys__CopyString(commandLine);
-
-         if(hInput[PIPE_WRITE])
-            close(hInput[PIPE_WRITE]);
-         if(hOutput[PIPE_READ])
-            close(hOutput[PIPE_READ]);
-
-         if((mode & POM_error) && hOutput[PIPE_WRITE] != STDERR_FILENO)
-            dup2(hOutput[PIPE_WRITE], STDERR_FILENO);
-
-         if((mode & POM_output) && hOutput[PIPE_WRITE] != STDOUT_FILENO)
-            dup2(hOutput[PIPE_WRITE], STDOUT_FILENO);
-         if(hOutput[PIPE_WRITE] && hOutput[PIPE_WRITE] != STDOUT_FILENO)
-            close(hOutput[PIPE_WRITE]);
-
-         if((mode & POM_input) && hInput[PIPE_READ] != STDIN_FILENO)
-         {
-            dup2(hInput[PIPE_READ], STDIN_FILENO);
-            close(hInput[PIPE_READ]);
-         }
-
-#if 0 //#ifdef _DEBUG
-         fprintf(stderr, "\n_DualPipeOpen (in child): %s\n\n", commandLineCopy);
-#endif
-         numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, sizeof(tokens) / sizeof(tokens[0]) - 1, tokens, forArgsPassing);
-#if 0 //#ifdef _DEBUG
-         { int c; for(c=0; c<numTokens; c++) fprintf(stderr, "argv[%d]: %s\n", c, tokens[c]); fprintf(stderr, "\n"); }
-#endif
-         tokens[numTokens] = null;
-         if(env)
-         {
-            char * envTokens[129];
-            char * envCopy = __ecereNameSpace__ecere__sys__CopyString(env);
-            int numEnvTokens = __ecereNameSpace__ecere__sys__Tokenize(envCopy, sizeof(envTokens) / sizeof(envTokens[0]) - 1, envTokens, false);
-            envTokens[numEnvTokens] = null;
-
-            if(execve(tokens[0], tokens, envTokens) < 0)
+            // This process
+            if(hInput[PIPE_READ])
             {
+               close(hInput[PIPE_READ]);
+               output = fdopen(hInput[PIPE_WRITE],"w");
+            }
+            if(hOutput[PIPE_WRITE])
+            {
+               close(hOutput[PIPE_WRITE]);
+               input = fdopen(hOutput[PIPE_READ],"r");
+            }
+         }
+         else if(pid == 0)
+         {
+            // Child process
+            char * tokens[129];
+            int numTokens;
+            char * commandLineCopy = __ecereNameSpace__ecere__sys__CopyString(commandLine);
+
+            if(hInput[PIPE_WRITE])
+               close(hInput[PIPE_WRITE]);
+            if(hOutput[PIPE_READ])
+               close(hOutput[PIPE_READ]);
+
+            if((mode & POM_error) && hOutput[PIPE_WRITE] != STDERR_FILENO)
+               dup2(hOutput[PIPE_WRITE], STDERR_FILENO);
+
+            if((mode & POM_output) && hOutput[PIPE_WRITE] != STDOUT_FILENO)
+               dup2(hOutput[PIPE_WRITE], STDOUT_FILENO);
+            if(hOutput[PIPE_WRITE] && hOutput[PIPE_WRITE] != STDOUT_FILENO)
+               close(hOutput[PIPE_WRITE]);
+
+            if((mode & POM_input) && hInput[PIPE_READ] != STDIN_FILENO)
+            {
+               dup2(hInput[PIPE_READ], STDIN_FILENO);
+               close(hInput[PIPE_READ]);
+            }
+
+   #if 0 //#ifdef _DEBUG
+            fprintf(stderr, "\n_DualPipeOpen (in child): %s\n\n", commandLineCopy);
+   #endif
+            numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, sizeof(tokens) / sizeof(tokens[0]) - 1, tokens, forArgsPassing);
+   #if 0 //#ifdef _DEBUG
+            { int c; for(c=0; c<numTokens; c++) fprintf(stderr, "argv[%d]: %s\n", c, tokens[c]); fprintf(stderr, "\n"); }
+   #endif
+            tokens[numTokens] = null;
+            if(env)
+            {
+               char * envTokens[129];
+               char * envCopy = __ecereNameSpace__ecere__sys__CopyString(env);
+               int numEnvTokens = __ecereNameSpace__ecere__sys__Tokenize(envCopy, sizeof(envTokens) / sizeof(envTokens[0]) - 1, envTokens, false);
+               envTokens[numEnvTokens] = null;
+
+               if(execve(tokens[0], tokens, envTokens) < 0)
+               {
+                  __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
+                  __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
+                  exit(1);
+               }
                __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
                __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
-               exit(1);
+               exit(0);
             }
-            __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
-            __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
-            exit(0);
-         }
-         else
-         {
-            if(execvp(tokens[0], (char **)tokens) < 0)
+            else
             {
+               if(execvp(tokens[0], (char **)tokens) < 0)
+               {
+                  __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
+                  exit(1);
+               }
                __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
-               exit(1);
+               exit(0);
             }
-            __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
-            exit(0);
+         }
+         if(input || output)
+         {
+            f = calloc(1, sizeof(_DualPipe));
+            *inputPtr = f->input = input;
+            *outputPtr = f->output = output;
+            f->pid = pid;
          }
       }
-      if(input || output)
+      else
       {
-         f = calloc(1, sizeof(_DualPipe));
-         *inputPtr = f->input = input;
-         *outputPtr = f->output = output;
-         f->pid = pid;
+         if(hInput[PIPE_READ])
+            close(hInput[PIPE_READ]);
+         if(hInput[PIPE_WRITE])
+            close(hInput[PIPE_WRITE]);
+         if(hOutput[PIPE_WRITE])
+            close(hOutput[PIPE_WRITE]);
+         if(hOutput[PIPE_READ])
+            close(hOutput[PIPE_READ]);
       }
    }
 #else

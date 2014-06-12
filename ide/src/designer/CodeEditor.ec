@@ -3833,7 +3833,7 @@ class CodeEditor : Window
 
                      if((prop.IsSet && !prop.IsSet(test)) || ((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, &dataForm, &dataTest))
                      {
-                        char * string;
+                        char * string = null;
                         char tempString[1024] = "";
                         SetProperty(prop, test, dataForm);
 
@@ -4451,7 +4451,7 @@ class CodeEditor : Window
             {
                Class dataType = prop.dataTypeClass;
                char tempString[1024] = "";
-               char * string;
+               char * string = null;
                bool specify = false;
                DataMember member;
 
@@ -4512,7 +4512,7 @@ class CodeEditor : Window
                   if(((int (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCompare])(dataType, dataForm, dataTest))
                   {
                      char tempString[1024] = "";
-                     char * string;
+                     char * string = null;
                      ((void (*)(void *, void *))(void *)prop.Set)(test, dataForm);
 
                      if(eClass_IsDerived(classObject.instance._class, dataType) && classObject.instance == dataForm)
@@ -6564,7 +6564,8 @@ class CodeEditor : Window
          int rowCount;
          char tempString[1024];
          char * string = null;
-         CodePosition idStart, idEnd;
+         CodePosition idStart { };
+         CodePosition idEnd { };
 
          if(membersListShown)
          {
@@ -6600,7 +6601,7 @@ class CodeEditor : Window
             }
             string[len] = 0;
             */
-            int x, y;
+            int x = 0, y;
             int len = 0;
             EditLine editLine = editBox.line;
             bool firstChar = true;

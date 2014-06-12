@@ -309,7 +309,7 @@ bool System_Execute(const char * env, const char * command, va_list args, bool w
 #ifndef __WIN32__
    {
       if(!wait) strcat(commandLine, "&");
-      system(commandLine);
+      result = system(commandLine) != -1;
    }
 #else
    {

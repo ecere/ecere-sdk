@@ -959,12 +959,12 @@ private:
       int ph = parent ? parent.clientSize.h : 0;
       int w = sizeAnchor.size.w, h = sizeAnchor.size.h;
       int x = anchor.left.distance, y = anchor.top.distance;
-      float ex, ey;
+      float ex = 0, ey = 0;
       MinMaxValue ew = 0, eh = 0;
       int numCascade;
       float cascadeW, cascadeH;
       int numTiling;
-      int tilingW, tilingH, tilingSplit, tilingLastH;
+      int tilingW, tilingH, tilingSplit, tilingLastH = 0;
       int addX = 0, addY = 0;
 
       if(parent && rootWindow == this && guiApp && guiApp.interfaceDriver)
@@ -1853,8 +1853,8 @@ private:
       {
          MinMaxValue cw = 0, ch = 0;
          bool sbvVisible, sbhVisible;
-         int rangeH, rangeV;
-         int positionH, positionV;
+         int rangeH = 0, rangeV = 0;
+         int positionH = 0, positionV;
 
          // First get client area with no respect to scroll bars
 

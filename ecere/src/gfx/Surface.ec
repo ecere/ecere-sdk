@@ -19,7 +19,7 @@ public void PaletteGradient(ColorAlpha * palette, int numColors, ColorKey * keys
    float inc = 1.0f/(numColors-1);
    float percent = 0;
    int start;
-   ColorAlpha color;
+   ColorAlpha color = 0;
    int c;
 
    for(c = start = 0; c<numColors; c++)

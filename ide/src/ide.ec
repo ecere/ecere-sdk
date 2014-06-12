@@ -3864,7 +3864,7 @@ class IDEApp : GuiApplication
             char genericLocale[256];
             i = 0;
             strncpy(genericLocale, language, sizeof(genericLocale));
-            genericLocale[sizeof(genericLocale)] = 0;
+            genericLocale[sizeof(genericLocale)-1] = 0;
 
             under = strchr(genericLocale, '_');
             if(under)

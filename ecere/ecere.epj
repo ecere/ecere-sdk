@@ -245,7 +245,7 @@ from wherever you obtained them.
       {
          "Name" : "Release",
          "Options" : {
-            "Warnings" : "None",
+            "Warnings" : "All",
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "FastMath" : true,

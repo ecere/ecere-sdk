@@ -1586,7 +1586,7 @@ private:
                   else if(strstr(test, strip) == test);
                   else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
                   {
-                     char * module;
+                     char * module = null;
                      bool isPrecomp = false;
                      bool gotCC = false;
 
@@ -4029,7 +4029,7 @@ Project LegacyAsciiLoadProject(File f, const char * filePath)
    char parentPath[MAX_LOCATION];
    char section[128] = "";
    char subSection[128] = "";
-   ProjectNode parent;
+   ProjectNode parent = project.topNode;
    bool configurationsPresent = false;
 
    f.Seek(0, start);

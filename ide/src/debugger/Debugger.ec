@@ -61,10 +61,6 @@ char * PrintNow()
 #ifdef _DEBUG_INST
 static enum dplchan { none, gdbProtoIgnored=0/*1*/, gdbProtoUnknown=2, gdbOutput=3/*3*/, gdbCommand=4/*4*/, debuggerCall=0/*5*/, debuggerProblem=6,
                         debuggerUserAction=7,debuggerState=8, debuggerBreakpoints=9, debuggerWatches=0/*10*/, debuggerTemp=0 };
-#else
-static enum dplchan { none, gdbProtoIgnored=0, gdbProtoUnknown=0, gdbOutput=0, gdbCommand=0, debuggerCall=0, debuggerProblem=0,
-                        debuggerUserAction=0,debuggerState=0, debuggerBreakpoints=0, debuggerWatches=0, debuggerTemp=0 };
-#endif
 static const char * _dpct[] = {
    null,
    "GDB Protocol Ignored",
@@ -81,14 +77,16 @@ static const char * _dpct[] = {
    null
 };
 
+#else
+static enum dplchan { none, gdbProtoIgnored=0, gdbProtoUnknown=0, gdbOutput=0, gdbCommand=0, debuggerCall=0, debuggerProblem=0,
+                        debuggerUserAction=0,debuggerState=0, debuggerBreakpoints=0, debuggerWatches=0, debuggerTemp=0 };
+#endif
+
 // TODO if(strlen(item.value) < MAX_F_STRING)
 
 // Debug Print Line
 #ifdef _DEBUG_INST
 #define _dpl2(...) __dpl2(__FILE__, __LINE__, ##__VA_ARGS__)
-#else
-#define _dpl2(...)
-#endif
 static void __dpl2(const char * file, int line, const char ** channels, int channel, int indent, typed_object object, ...)
 {
    bool chan = channel && channels && channels[channel];
@@ -107,6 +105,9 @@ static void __dpl2(const char * file, int line, const char ** channels, int chan
       delete time;
    }
 }
+#else
+#define _dpl2(...)
+#endif
 
 #define _dpl(...) __dpl(__FILE__, __LINE__, ##__VA_ARGS__)
 static void __dpl(const char * file, int line, int indent, const char * format, ...)
@@ -4609,7 +4610,7 @@ class ProgramThread : Thread
       //bool fileCreated = false;
       //mode_t mask = 0600;
       static char output[1000];
-      int fd;
+      int fd = 0;
 
       /*if(!mkfifo(progFifoPath, mask))
       {

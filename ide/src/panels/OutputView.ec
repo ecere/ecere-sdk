@@ -270,7 +270,7 @@ class OutputView : Window
       {
          case shiftTab:
          {
-            OutputViewTab switchTo;
+            OutputViewTab switchTo = build;
             if(activeBox == buildBox)
 #ifdef GDB_DEBUG_OUTPUT
                switchTo = gdb;

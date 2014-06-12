@@ -2018,7 +2018,7 @@ private:
          int height = rowHeight - (style.alwaysEdit ? 1 : 0);
          int x = 0;
          int y = currentRow.index * rowHeight + (style.header ? rowHeight : 0);
-         int width;
+         int width = 0;
          DataField field;
 
          if(style.collapse && !(style.treeBranch))
@@ -2054,7 +2054,7 @@ private:
             int height = rowHeight - (style.alwaysEdit ? 1 : 0);
             int x = 0;
             int y = currentRow.index * rowHeight + (style.header ? rowHeight : 0);
-            int width;
+            int width = 0;
             //void * data = currentRow.GetData(whichField);
             DataField field;
             DataRow row = null;
@@ -2312,7 +2312,7 @@ private:
          int indent = 0;
          DataRow parent;
          Bitmap icon = row.icon ? row.icon.bitmap : null;
-         int collapseRowStart;
+         int collapseRowStart = 0;
          bool lastWasHeader = row.header;
 
          for(parent = row.parent; parent; parent = parent.parent)

@@ -812,7 +812,7 @@ Workspace LoadWorkspace(const char * filePath, const char * fromProjectFile)
          char * equal;
 
          Watch wh;
-         Breakpoint bp;
+         Breakpoint bp = null;
 
          file.GetLine(buffer, 65536 - 1);
          TrimLSpaces(buffer, buffer);
