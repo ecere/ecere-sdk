@@ -3673,7 +3673,7 @@ exp->tempCount++;
 curExternal->__anon1.function->tempCount = (__simpleStruct0 = curExternal->__anon1.function->tempCount, __simpleStruct1 = exp->tempCount, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
 sprintf(ecereTemp, "__ecTemp%d", exp->tempCount);
 curContext = context;
-compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))), MkInitializerAssignment(QBrackets(exp->__anon1.member.exp)))))), (((void *)0)));
+compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))), MkInitializerAssignment(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), QBrackets(exp->__anon1.member.exp))))))), (((void *)0)));
 if(member->_class->fixed)
 {
 if(member->_class->templateClass ? member->_class->templateClass->offset : member->_class->offset)

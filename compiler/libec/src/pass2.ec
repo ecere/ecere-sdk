@@ -2890,7 +2890,7 @@ static void ProcessExpression(Expression exp)
                         compound = MkCompoundStmt(
                            MkListOne(MkDeclaration(MkListOne(MkSpecifier(CHAR)), MkListOne(MkInitDeclarator(
                               MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(MkIdentifier(ecereTemp))),
-                                 MkInitializerAssignment(QBrackets(exp.member.exp)))))), null);
+                                 MkInitializerAssignment(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), QBrackets(exp.member.exp))))))), null);
                         if(member._class.fixed)
                         {
                            if(member._class.templateClass ? member._class.templateClass.offset : member._class.offset)
