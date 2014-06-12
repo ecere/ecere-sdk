@@ -1470,6 +1470,7 @@ void Compiler_Error(const char * format, ...)
          string[sizeof(string)-1] = 0;
          va_end(args);
          fputs(string, stdout);
+         fflush(stdout);
          __thisModule.application.exitCode = 1;
       }
       else
@@ -1517,6 +1518,7 @@ void Compiler_Warning(const char * format, ...)
       string[sizeof(string)-1] = 0;
       va_end(args);
       fputs(string, stdout);
+      fflush(stdout);
       numWarnings++;
    }
 }

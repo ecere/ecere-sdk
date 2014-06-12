@@ -52,6 +52,19 @@ public:
    int GetExitCode() { return DualPipe_GetExitCode(dp); }
    int GetProcessID() { return DualPipe_GetProcessID(dp); }
    void Wait() { DualPipe_Wait(dp); }
+
+   // Return true on getting EOF or new line
+   bool GetLinePeek(char * s, int max, int * charsRead)
+   {
+      char ch = 0;
+      int c = 0;
+      while(c < max-1 && Peek() && Getc(&ch) && ch != '\n')
+         if(ch != '\r')
+            s[c++] = ch;
+      s[c] = '\0';
+      *charsRead = c;
+      return Eof() || ch == '\n';
+   }
 };
 
 public DualPipe DualPipeOpenf(PipeOpenMode mode, const char * command, ...)

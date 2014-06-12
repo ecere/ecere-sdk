@@ -1885,6 +1885,7 @@ vsnprintf(string, sizeof (string), format, args);
 string[sizeof (string) - 1] = (char)0;
 __builtin_va_end(args);
 fputs(string, (bsl_stdout()));
+fflush((bsl_stdout()));
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application + structSize_Module)))->exitCode = 1;
 }
 else
@@ -1935,6 +1936,7 @@ vsnprintf(string, sizeof (string), format, args);
 string[sizeof (string) - 1] = (char)0;
 __builtin_va_end(args);
 fputs(string, (bsl_stdout()));
+fflush((bsl_stdout()));
 numWarnings++;
 }
 }

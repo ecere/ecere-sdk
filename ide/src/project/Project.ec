@@ -1477,6 +1477,7 @@ private:
       CompilerConfig compiler, ProjectConfig config, int bitDepth)
    {
       char line[65536];
+      int linePos = 0;
       bool compiling = false, linking = false, precompiling = false;
       int compilingEC = 0;
       int numErrors = 0, numWarnings = 0;
@@ -1539,356 +1540,342 @@ private:
 
       while(!f.Eof() && !ide.projectView.stopBuild)
       {
-         bool result = true;
          double lastTime = GetTime();
          bool wait = true;
-         while(result)
+         while(!f.Eof() && !ide.projectView.stopBuild)
          {
-            //printf("Peeking and GetLine...\n");
-            if((result = f.Peek()) && (result = f.GetLine(line, sizeof(line)-1)) && line[0])
+            int nChars;
+            bool lineDone = f.GetLinePeek(line + linePos, sizeof(line)-linePos-1, &nChars);
+            if(!lineDone) linePos += nChars;
+            else
             {
-               const char * message = null;
-               const char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
-               const char * from = strstr(line, stringFrom);
-               test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
-               if((t = strstr(line, (s=": recipe for target"))) && (t = strstr(t+strlen(s), (s2 = " failed"))) && (t+strlen(s2))[0] == '\0')
-                  ; // ignore this new gnu make error but what is it about?
-               else if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
+               linePos = 0;
+               if(line[0])
                {
-                  const char * module = strstr(line, "No rule to make target `");
-                  if(module)
+                  const char * message = null;
+                  const char * inFileIncludedFrom = strstr(line, stringInFileIncludedFrom);
+                  const char * from = strstr(line, stringFrom);
+                  test.copyLenSingleBlankReplTrim(line, ' ', true, testLen);
+                  if((t = strstr(line, (s=": recipe for target"))) && (t = strstr(t+strlen(s), (s2 = " failed"))) && (t+strlen(s2))[0] == '\0')
+                     ; // ignore this new gnu make error but what is it about?
+                  else if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                   {
-                     char * end;
-                     module = strchr(module, '`') + 1;
-                     end = strchr(module, '\'');
-                     if(end)
+                     const char * module = strstr(line, "No rule to make target `");
+                     if(module)
                      {
-                        *end = '\0';
-                        ide.outputView.buildBox.Logf($"   %s: No such file or directory\n", module);
-                        // ide.outputView.buildBox.Logf("error: %s\n   No such file or directory\n", module);
-                        numErrors++;
+                        char * end;
+                        module = strchr(module, '`') + 1;
+                        end = strchr(module, '\'');
+                        if(end)
+                        {
+                           *end = '\0';
+                           ide.outputView.buildBox.Logf($"   %s: No such file or directory\n", module);
+                           // ide.outputView.buildBox.Logf("error: %s\n   No such file or directory\n", module);
+                           numErrors++;
+                        }
+                     }
+                     //else
+                     //{
+                        //ide.outputView.buildBox.Logf("error: %s\n", line);
+                        //numErrors++;
+                     //}
+                  }
+                  else if(strstr(test, "mkdir ") == test);
+                  else if((t = strstr(line, "cd ")) && (t = strstr(line, "type ")) && (t = strstr(line, "nul ")) && (t = strstr(line, "copy ")) && (t = strstr(line, "cd ")));
+                  else if(strstr(test, ear) == test);
+                  else if(strstr(test, strip) == test);
+                  else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
+                  {
+                     char * module;
+                     bool isPrecomp = false;
+                     bool gotCC = false;
+
+                     if(strstr(test, cc) == test || strstr(test, cxx) == test)
+                     {
+                        module = strstr(line, " -c ");
+                        if(module) module += 4;
+                        gotCC = true;
+                     }
+                     else if(strstr(test, ecc) == test)
+                     {
+                        module = strstr(line, " -c ");
+                        if(module) module += 4;
+                        //module = line + 3;
+                        // Don't show GCC warnings about generated C code because it does not compile clean yet...
+                        compilingEC = 3;//2;
+                        gotCC = true;
+                     }
+                     else if(strstr(test, ecp) == test)
+                     {
+                        // module = line + 8;
+                        module = strstr(line, " -c ");
+                        if(module) module += 4;
+                        isPrecomp = true;
+                        compilingEC = 0;
+                        gotCC = true;
+                     }
+
+                     loggedALine = true;
+
+                     if(module)
+                     {
+                        char * tokens[1];
+                        if(!compiling && !isPrecomp)
+                        {
+                           ide.outputView.buildBox.Logf($"Compiling...\n");
+                           compiling = true;
+                        }
+                        else if(!precompiling && isPrecomp)
+                        {
+                           ide.outputView.buildBox.Logf($"Generating symbols...\n");
+                           precompiling = true;
+                        }
+                        Tokenize(module, 1, tokens, forArgsPassing/*(BackSlashEscaping)true*/);
+                        GetLastDirectory(tokens[0], moduleName);
+                        ide.outputView.buildBox.Logf("%s\n", moduleName);
+                     }
+                     else if((module = strstr(line, " -o ")))
+                     {
+                        compiling = false;
+                        precompiling = false;
+                        linking = true;
+                        ide.outputView.buildBox.Logf($"Linking...\n");
+                     }
+                     else
+                     {
+                        ide.outputView.buildBox.Logf("%s\n", line);
+                        if(strstr(line, "warning:") || strstr(line, "note:"))
+                           numWarnings++;
+                        else if(!gotCC && !strstr(line, "At top level") && !strstr(line, "In file included from") && !strstr(line, stringFrom))
+                           numErrors++;
+                     }
+
+                     if(compilingEC) compilingEC--;
+                  }
+                  else if(strstr(test, windres) == test)
+                  {
+                     char * module;
+                     module = strstr(line, " ");
+                     if(module) module++;
+                     if(module)
+                     {
+                        char * tokens[1];
+                        char * dashF = strstr(module, "-F ");
+                        if(dashF)
+                        {
+                           dashF+= 3;
+                           while(*dashF && *dashF != ' ') dashF++;
+                           while(*dashF && *dashF == ' ') dashF++;
+                           module = dashF;
+                        }
+                        Tokenize(module, 1, tokens, forArgsPassing/*(BackSlashEscaping)true*/);
+                        GetLastDirectory(module, moduleName);
+                        ide.outputView.buildBox.Logf("%s\n", moduleName);
                      }
                   }
-                  //else
-                  //{
-                     //ide.outputView.buildBox.Logf("error: %s\n", line);
-                     //numErrors++;
-                  //}
-               }
-               else if(strstr(test, "mkdir ") == test);
-               else if((t = strstr(line, "cd ")) && (t = strstr(line, "type ")) && (t = strstr(line, "nul ")) && (t = strstr(line, "copy ")) && (t = strstr(line, "cd ")));
-               else if(strstr(test, ear) == test);
-               else if(strstr(test, strip) == test);
-               else if(strstr(test, cc) == test || strstr(test, cxx) == test || strstr(test, ecp) == test || strstr(test, ecc) == test)
-               {
-                  char * module;
-                  bool isPrecomp = false;
-                  bool gotCC = false;
-
-                  if(strstr(test, cc) == test || strstr(test, cxx) == test)
-                  {
-                     module = strstr(line, " -c ");
-                     if(module) module += 4;
-                     gotCC = true;
-                  }
-                  else if(strstr(test, ecc) == test)
-                  {
-                     module = strstr(line, " -c ");
-                     if(module) module += 4;
-                     //module = line + 3;
-                     // Don't show GCC warnings about generated C code because it does not compile clean yet...
-                     compilingEC = 3;//2;
-                     gotCC = true;
-                  }
-                  else if(strstr(test, ecp) == test)
-                  {
-                     // module = line + 8;
-                     module = strstr(line, " -c ");
-                     if(module) module += 4;
-                     isPrecomp = true;
-                     compilingEC = 0;
-                     gotCC = true;
-                  }
-
-                  loggedALine = true;
-
-                  if(module)
-                  {
-                     char * tokens[1];
-                     if(!compiling && !isPrecomp)
-                     {
-                        ide.outputView.buildBox.Logf($"Compiling...\n");
-                        compiling = true;
-                     }
-                     else if(!precompiling && isPrecomp)
-                     {
-                        ide.outputView.buildBox.Logf($"Generating symbols...\n");
-                        precompiling = true;
-                     }
-                     Tokenize(module, 1, tokens, forArgsPassing/*(BackSlashEscaping)true*/);
-                     GetLastDirectory(tokens[0], moduleName);
-                     ide.outputView.buildBox.Logf("%s\n", moduleName);
-                  }
-                  else if((module = strstr(line, " -o ")))
-                  {
-                     compiling = false;
-                     precompiling = false;
-                     linking = true;
-                     ide.outputView.buildBox.Logf($"Linking...\n");
-                  }
+                  else if(strstr(test, ar) == test)
+                     ide.outputView.buildBox.Logf($"Building library...\n");
+                  else if(strstr(test, ecs) == test)
+                     ide.outputView.buildBox.Logf($"Writing symbol loader...\n");
                   else
                   {
-                     ide.outputView.buildBox.Logf("%s\n", line);
-                     if(strstr(line, "warning:") || strstr(line, "note:"))
-                        numWarnings++;
-                     else if(!gotCC && !strstr(line, "At top level") && !strstr(line, "In file included from") && !strstr(line, stringFrom))
-                        numErrors++;
-                  }
-
-                  if(compilingEC) compilingEC--;
-               }
-               else if(strstr(test, windres) == test)
-               {
-                  char * module;
-                  module = strstr(line, " ");
-                  if(module) module++;
-                  if(module)
-                  {
-                     char * tokens[1];
-                     char * dashF = strstr(module, "-F ");
-                     if(dashF)
+                     if(linking || compiling || precompiling)
                      {
-                        dashF+= 3;
-                        while(*dashF && *dashF != ' ') dashF++;
-                        while(*dashF && *dashF == ' ') dashF++;
-                        module = dashF;
-                     }
-                     Tokenize(module, 1, tokens, forArgsPassing/*(BackSlashEscaping)true*/);
-                     GetLastDirectory(module, moduleName);
-                     ide.outputView.buildBox.Logf("%s\n", moduleName);
-                  }
-               }
-               else if(strstr(test, ar) == test)
-                  ide.outputView.buildBox.Logf($"Building library...\n");
-               else if(strstr(test, ecs) == test)
-                  ide.outputView.buildBox.Logf($"Writing symbol loader...\n");
-               else
-               {
-                  if(linking || compiling || precompiling)
-                  {
-                     const char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen(stringFrom) : line;
-                     const char * colon = strstr(start, ":"); //, * bracket;
-                     if(colon && (colon[1] == '/' || colon[1] == '\\'))
-                        colon = strstr(colon + 1, ":");
-                     if(colon)
-                     {
-                        const char * sayError = "";
-                        char moduleName[MAX_LOCATION], temp[MAX_LOCATION];
-                        char * pointer;
-                        char * error;
-                        int len = (int)(colon - start);
-                        char ext[MAX_EXTENSION];
-                        len = Min(len, MAX_LOCATION-1);
-                        // Don't be mistaken by the drive letter colon
-                        // Cut module name
-                        // TODO: need to fix colon - line gives char *
-                        // warning: incompatible expression colon - line (char *); expected int
-                        /*
-                        strncpy(moduleName, line, (int)(colon - line));
-                        moduleName[colon - line] = '\0';
-                        */
-                        strncpy(moduleName, start, len);
-                        moduleName[len] = '\0';
-                        // Remove stuff in brackets
-                        //bracket = strstr(moduleName, "(");
-                        //if(bracket) *bracket = '\0';
-
-                        GetLastDirectory(moduleName, temp);
-                        GetExtension(temp, ext);
-
-                        if(linking && (!strcmp(ext, "o") || !strcmp(ext, "a") || !strcmp(ext, "lib")))
+                        const char * start = inFileIncludedFrom ? inFileIncludedFrom + strlen(stringInFileIncludedFrom) : from ? from + strlen(stringFrom) : line;
+                        const char * colon = strstr(start, ":"); //, * bracket;
+                        if(colon && (colon[1] == '/' || colon[1] == '\\'))
+                           colon = strstr(colon + 1, ":");
+                        if(colon)
                         {
-                           char * cColon = strstr(colon+1, ":");
-                           if(cColon && (cColon[1] == '/' || cColon[1] == '\\'))
-                              cColon = strstr(cColon + 1, ":");
-                           if(cColon)
+                           const char * sayError = "";
+                           char moduleName[MAX_LOCATION], temp[MAX_LOCATION];
+                           char * pointer;
+                           char * error;
+                           int len = (int)(colon - start);
+                           char ext[MAX_EXTENSION];
+                           len = Min(len, MAX_LOCATION-1);
+                           // Don't be mistaken by the drive letter colon
+                           // Cut module name
+                           // TODO: need to fix colon - line gives char *
+                           // warning: incompatible expression colon - line (char *); expected int
+                           /*
+                           strncpy(moduleName, line, (int)(colon - line));
+                           moduleName[colon - line] = '\0';
+                           */
+                           strncpy(moduleName, start, len);
+                           moduleName[len] = '\0';
+                           // Remove stuff in brackets
+                           //bracket = strstr(moduleName, "(");
+                           //if(bracket) *bracket = '\0';
+
+                           GetLastDirectory(moduleName, temp);
+                           GetExtension(temp, ext);
+
+                           if(linking && (!strcmp(ext, "o") || !strcmp(ext, "a") || !strcmp(ext, "lib")))
                            {
-                              int len = (int)(cColon - (colon+1));
-                              char mName[MAX_LOCATION];
-                              len = Min(len, MAX_LOCATION-1);
-                              strncpy(mName, colon+1, len);
-                              mName[len] = '\0';
-                              GetLastDirectory(mName, temp);
-                              GetExtension(temp, ext);
-                              if(!strcmp(ext, "c") || !strcmp(ext, "cpp") || !strcmp(ext, "cxx") || !strcmp(ext, "ec"))
+                              char * cColon = strstr(colon+1, ":");
+                              if(cColon && (cColon[1] == '/' || cColon[1] == '\\'))
+                                 cColon = strstr(cColon + 1, ":");
+                              if(cColon)
                               {
-                                 colon = cColon;
-                                 strcpy(moduleName, mName);
+                                 int len = (int)(cColon - (colon+1));
+                                 char mName[MAX_LOCATION];
+                                 len = Min(len, MAX_LOCATION-1);
+                                 strncpy(mName, colon+1, len);
+                                 mName[len] = '\0';
+                                 GetLastDirectory(mName, temp);
+                                 GetExtension(temp, ext);
+                                 if(!strcmp(ext, "c") || !strcmp(ext, "cpp") || !strcmp(ext, "cxx") || !strcmp(ext, "ec"))
+                                 {
+                                    colon = cColon;
+                                    strcpy(moduleName, mName);
+                                 }
                               }
                            }
-                        }
-                        if(linking && (!strcmp(temp, "ld") || !strcmp(temp, "ld.exe")))
-                        {
-                           moduleName[0] = 0;
-                           if(strstr(colon, "skipping incompatible") || strstr(colon, "Recognised but unhandled"))
+                           if(linking && (!strcmp(temp, "ld") || !strcmp(temp, "ld.exe")))
                            {
-                              message = $"Linker Message: ";
+                              moduleName[0] = 0;
+                              if(strstr(colon, "skipping incompatible") || strstr(colon, "Recognised but unhandled"))
+                              {
+                                 message = $"Linker Message: ";
+                                 colon = line;
+                              }
+                              else
+                              {
+                                 numErrors++;
+                                 message = $"Linker Error: ";
+                              }
+                           }
+                           else if(linking && (!strcmp(ext, "") || !strcmp(ext, "exe")))
+                           {
+                              moduleName[0] = 0;
                               colon = line;
+                              if(strstr(colon, "Warning:") == colon)
+                              {
+                                 message = $"Linker ";
+                                 numWarnings++;
+                              }
+                              else if(!strstr(line, "error:"))
+                              {
+                                 message = $"Linker Error: ";
+                                 numErrors++;
+                              }
                            }
                            else
                            {
+                              strcpy(temp, topNode.path);
+                              PathCatSlash(temp, moduleName);
+                              MakePathRelative(temp, topNode.path, moduleName);
+                           }
+                           error = strstr(line, "error:");
+                           if(!message && error && error > colon)
                               numErrors++;
-                              message = $"Linker Error: ";
-                           }
-                        }
-                        else if(linking && (!strcmp(ext, "") || !strcmp(ext, "exe")))
-                        {
-                           moduleName[0] = 0;
-                           colon = line;
-                           if(strstr(colon, "Warning:") == colon)
+                           else
                            {
-                              message = $"Linker ";
-                              numWarnings++;
-                           }
-                           else if(!strstr(line, "error:"))
-                           {
-                              message = $"Linker Error: ";
-                              numErrors++;
-                           }
-                        }
-                        else
-                        {
-                           strcpy(temp, topNode.path);
-                           PathCatSlash(temp, moduleName);
-                           MakePathRelative(temp, topNode.path, moduleName);
-                        }
-                        error = strstr(line, "error:");
-                        if(!message && error && error > colon)
-                           numErrors++;
-                        else
-                        {
-                           // Silence warnings for compiled eC
-                           char * objDir = strstr(moduleName, objDirExp.dir);
+                              // Silence warnings for compiled eC
+                              char * objDir = strstr(moduleName, objDirExp.dir);
 
-                           if(linking)
-                           {
-                              if((pointer = strstr(line, "undefined"))  ||
-                                   (pointer = strstr(line, "multiple definition")) ||
-                                   (pointer = strstr(line, "No such file")) ||
-                                   (pointer = strstr(line, "token")))
+                              if(linking)
+                              {
+                                 if((pointer = strstr(line, "undefined"))  ||
+                                      (pointer = strstr(line, "multiple definition")) ||
+                                      (pointer = strstr(line, "No such file")) ||
+                                      (pointer = strstr(line, "token")))
+                                 {
+                                    strncat(moduleName, colon, pointer - colon);
+                                    sayError = "error: ";
+                                    colon = pointer;
+                                    numErrors++;
+                                 }
+                              }
+                              else if((pointer = strstr(line, "No such file")))
                               {
                                  strncat(moduleName, colon, pointer - colon);
                                  sayError = "error: ";
                                  colon = pointer;
                                  numErrors++;
                               }
-                           }
-                           else if((pointer = strstr(line, "No such file")))
-                           {
-                              strncat(moduleName, colon, pointer - colon);
-                              sayError = "error: ";
-                              colon = pointer;
-                              numErrors++;
-                           }
-                           else if(compilingEC == 1 || (objDir && objDir == moduleName))
-                           {
-                              bool skip = false;
-
-                              // Filter out these warnings caused by eC generated C code:
-
-                              // Declaration ordering bugs -- Awaiting topo sort implementation
-                                   if(strstr(line, "declared inside parameter list")) skip = true;
-                              else if(strstr(line, "its scope is only this definition")) skip = true;
-                              else if(strstr(line, "note: expected 'struct ") || strstr(line, "note: expected ‘struct "))
+                              else if(compilingEC == 1 || (objDir && objDir == moduleName))
                               {
-                                 #define STRUCT_A "'struct "
-                                 #define STRUCT_B "‘struct "
-                                 char * struct1, * struct2, ch1, ch2;
-                                 struct1 = strstr(line, STRUCT_A);
-                                 if(struct1) { struct1 += sizeof(STRUCT_A)-1; } else { struct1 = strstr(line, STRUCT_B); struct1 += sizeof(STRUCT_B)-1; };
+                                 bool skip = false;
 
-                                 struct2 = strstr(struct1, STRUCT_A);
-                                 if(struct2) { struct2 += sizeof(STRUCT_A)-1; } else { struct2 = strstr(struct1, STRUCT_B); if(struct2) struct2 += sizeof(STRUCT_B)-1; };
+                                 // Filter out these warnings caused by eC generated C code:
 
-                                 if(struct1 && struct2)
+                                 // Declaration ordering bugs -- Awaiting topo sort implementation
+                                      if(strstr(line, "declared inside parameter list")) skip = true;
+                                 else if(strstr(line, "its scope is only this definition")) skip = true;
+                                 else if(strstr(line, "note: expected 'struct ") || strstr(line, "note: expected ‘struct "))
                                  {
-                                    while(ch1 = *(struct1++), ch2 = *(struct2++), ch1 && ch2 && (ch1 == '_' || isalnum(ch1)) && (ch2 == '_' || isalnum(ch2)));
-                                    if(ch1 == ch2)
-                                       skip = true;
-                                 }
-                              }
-                              // Pointers warnings (eC should already warn about relevant problems, should cast in generated code)
-                              else if(strstr(line, "expected 'void **") || strstr(line, "expected ‘void **")) skip = true;
-                              else if(strstr(line, "from incompatible pointer type")) skip = true;
-                              else if(strstr(line, "comparison of distinct pointer types lacks a cast")) skip = true;
+                                    #define STRUCT_A "'struct "
+                                    #define STRUCT_B "‘struct "
+                                    char * struct1, * struct2, ch1, ch2;
+                                    struct1 = strstr(line, STRUCT_A);
+                                    if(struct1) { struct1 += sizeof(STRUCT_A)-1; } else { struct1 = strstr(line, STRUCT_B); struct1 += sizeof(STRUCT_B)-1; };
 
-                              // For preprocessed code from objidl.h (MinGW-w64 headers)
-                              else if(strstr(line, "declaration does not declare anything")) skip = true;
+                                    struct2 = strstr(struct1, STRUCT_A);
+                                    if(struct2) { struct2 += sizeof(STRUCT_A)-1; } else { struct2 = strstr(struct1, STRUCT_B); if(struct2) struct2 += sizeof(STRUCT_B)-1; };
 
-                              // Location information that could apply to ignored warnings
-                              else if(strstr(line, "In function '") || strstr(line, "In function ‘") ) skip = true;
-                              else if(strstr(line, "At top level")) skip = true;
-                              else if(strstr(line, "(near initialization for '") || strstr(line, "(near initialization for ‘")) skip = true;
-
-                              if(skip) continue;
-                              numWarnings++;
-                           }
-                           else if(strstr(line, "warning:"))
-                           {
-                              numWarnings++;
-                           }
-                        }
-                        if(message)
-                           ide.outputView.buildBox.Logf("   %s%s\n", message, colon);
-                        /*else if(this == ide.workspace.projects.firstIterator.data)
-                           ide.outputView.buildBox.Logf("   %s%s%s\n", moduleName, sayError, colon);*/
-                        else
-                        {
-                           char fullModuleName[MAX_LOCATION];
-                           FileAttribs found = 0;
-                           //Project foundProject = this;
-                           if(moduleName[0])
-                           {
-                              char * loc = strstr(moduleName, ":");
-                              if(loc) *loc = 0;
-                              strcpy(fullModuleName, topNode.path);
-                              PathCat(fullModuleName, moduleName);
-                              found = FileExists(fullModuleName);
-                              if(!found && !strcmp(ext, "c"))
-                              {
-                                 char ecName[MAX_LOCATION];
-                                 ChangeExtension(fullModuleName, "ec", ecName);
-                                 found = FileExists(ecName);
-                              }
-                              if(!found)
-                              {
-                                 char path[MAX_LOCATION];
-                                 if(ide && ide.workspace)
-                                 {
-                                    for(prj : ide.workspace.projects)
+                                    if(struct1 && struct2)
                                     {
-                                       ProjectNode node;
-                                       MakePathRelative(fullModuleName, prj.topNode.path, path);
-
-                                       if((node = prj.topNode.FindWithPath(path, false)))
-                                       {
-                                          strcpy(fullModuleName, prj.topNode.path);
-                                          PathCatSlash(fullModuleName, node.path);
-                                          PathCatSlash(fullModuleName, node.name);
-                                          found = FileExists(fullModuleName);
-                                          if(found)
-                                          {
-                                             //foundProject = prj;
-                                             break;
-                                          }
-                                       }
+                                       while(ch1 = *(struct1++), ch2 = *(struct2++), ch1 && ch2 && (ch1 == '_' || isalnum(ch1)) && (ch2 == '_' || isalnum(ch2)));
+                                       if(ch1 == ch2)
+                                          skip = true;
                                     }
-                                    if(!found && !strchr(moduleName, '/') && !strchr(moduleName, '\\'))
+                                 }
+                                 // Pointers warnings (eC should already warn about relevant problems, should cast in generated code)
+                                 else if(strstr(line, "expected 'void **") || strstr(line, "expected ‘void **")) skip = true;
+                                 else if(strstr(line, "from incompatible pointer type")) skip = true;
+                                 else if(strstr(line, "comparison of distinct pointer types lacks a cast")) skip = true;
+
+                                 // For preprocessed code from objidl.h (MinGW-w64 headers)
+                                 else if(strstr(line, "declaration does not declare anything")) skip = true;
+
+                                 // Location information that could apply to ignored warnings
+                                 else if(strstr(line, "In function '") || strstr(line, "In function ‘") ) skip = true;
+                                 else if(strstr(line, "At top level")) skip = true;
+                                 else if(strstr(line, "(near initialization for '") || strstr(line, "(near initialization for ‘")) skip = true;
+
+                                 if(skip) continue;
+                                 numWarnings++;
+                              }
+                              else if(strstr(line, "warning:"))
+                              {
+                                 numWarnings++;
+                              }
+                           }
+                           if(message)
+                              ide.outputView.buildBox.Logf("   %s%s\n", message, colon);
+                           /*else if(this == ide.workspace.projects.firstIterator.data)
+                              ide.outputView.buildBox.Logf("   %s%s%s\n", moduleName, sayError, colon);*/
+                           else
+                           {
+                              char fullModuleName[MAX_LOCATION];
+                              FileAttribs found = 0;
+                              //Project foundProject = this;
+                              if(moduleName[0])
+                              {
+                                 char * loc = strstr(moduleName, ":");
+                                 if(loc) *loc = 0;
+                                 strcpy(fullModuleName, topNode.path);
+                                 PathCat(fullModuleName, moduleName);
+                                 found = FileExists(fullModuleName);
+                                 if(!found && !strcmp(ext, "c"))
+                                 {
+                                    char ecName[MAX_LOCATION];
+                                    ChangeExtension(fullModuleName, "ec", ecName);
+                                    found = FileExists(ecName);
+                                 }
+                                 if(!found)
+                                 {
+                                    char path[MAX_LOCATION];
+                                    if(ide && ide.workspace)
                                     {
                                        for(prj : ide.workspace.projects)
                                        {
                                           ProjectNode node;
-                                          if((node = prj.topNode.Find(moduleName, false)))
+                                          MakePathRelative(fullModuleName, prj.topNode.path, path);
+
+                                          if((node = prj.topNode.FindWithPath(path, false)))
                                           {
                                              strcpy(fullModuleName, prj.topNode.path);
                                              PathCatSlash(fullModuleName, node.path);
@@ -1901,39 +1888,57 @@ private:
                                              }
                                           }
                                        }
+                                       if(!found && !strchr(moduleName, '/') && !strchr(moduleName, '\\'))
+                                       {
+                                          for(prj : ide.workspace.projects)
+                                          {
+                                             ProjectNode node;
+                                             if((node = prj.topNode.Find(moduleName, false)))
+                                             {
+                                                strcpy(fullModuleName, prj.topNode.path);
+                                                PathCatSlash(fullModuleName, node.path);
+                                                PathCatSlash(fullModuleName, node.name);
+                                                found = FileExists(fullModuleName);
+                                                if(found)
+                                                {
+                                                   //foundProject = prj;
+                                                   break;
+                                                }
+                                             }
+                                          }
+                                       }
                                     }
                                  }
-                              }
-                              if(found)
-                              {
-                                 MakePathRelative(fullModuleName, ide.workspace.projects.firstIterator.data.topNode.path, fullModuleName);
-                                 MakeSystemPath(fullModuleName);
+                                 if(found)
+                                 {
+                                    MakePathRelative(fullModuleName, ide.workspace.projects.firstIterator.data.topNode.path, fullModuleName);
+                                    MakeSystemPath(fullModuleName);
+                                 }
+                                 else
+                                    strcpy(fullModuleName, moduleName);
+                                 if(loc)
+                                 {
+                                    strcat(fullModuleName, ":");
+                                    strcat(fullModuleName, loc + 1);
+                                 }
                               }
                               else
-                                 strcpy(fullModuleName, moduleName);
-                              if(loc)
-                              {
-                                 strcat(fullModuleName, ":");
-                                 strcat(fullModuleName, loc + 1);
-                              }
+                                 fullModuleName[0] = 0;
+                              ide.outputView.buildBox.Logf("   %s%s%s%s\n", inFileIncludedFrom ? stringInFileIncludedFrom : from ? stringFrom : "", fullModuleName, sayError, colon);
                            }
-                           else
-                              fullModuleName[0] = 0;
-                           ide.outputView.buildBox.Logf("   %s%s%s%s\n", inFileIncludedFrom ? stringInFileIncludedFrom : from ? stringFrom : "", fullModuleName, sayError, colon);
+                        }
+                        else
+                        {
+                           ide.outputView.buildBox.Logf("%s\n", line);
+                           linking = compiling = precompiling = false;
                         }
                      }
                      else
-                     {
                         ide.outputView.buildBox.Logf("%s\n", line);
-                        linking = compiling = precompiling = false;
-                     }
                   }
-                  else
-                     ide.outputView.buildBox.Logf("%s\n", line);
+                  wait = false;
                }
-               wait = false;
             }
-            //printf("Done getting line\n");
             if(GetTime() - lastTime > 1.0 / PEEK_RESOLUTION) break;
          }
          //printf("Processing Input...\n");

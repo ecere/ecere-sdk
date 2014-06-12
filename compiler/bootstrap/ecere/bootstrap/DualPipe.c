@@ -496,6 +496,30 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecereP
 DualPipe_Wait(__ecerePointer___ecereNameSpace__ecere__sys__DualPipe->dp);
 }
 
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetLinePeek(struct __ecereNameSpace__ecere__com__Instance * this, char * s, int max, int * charsRead)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
+char ch = (char)0;
+int c = 0;
+
+while(c < max - 1 && __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Peek(this) && ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__DualPipe->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch) && ch != '\n')
+if(ch != '\r')
+s[c++] = ch;
+s[c] = '\0';
+*charsRead = c;
+return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__DualPipe->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(this) || ch == '\n';
+}
+
 extern int vsnprintf(char * , size_t, const char * , __builtin_va_list);
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__DualPipeOpen(unsigned int mode, const char *  commandLine);
@@ -636,6 +660,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetSize", 0, __ecereMetho
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "CloseInput", 0, __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_CloseInput, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "CloseOutput", 0, __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_CloseOutput, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetExitCode", "int GetExitCode()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetLinePeek", "bool GetLinePeek(char * s, int max, int * charsRead)", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetLinePeek, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetProcessID", "int GetProcessID()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetProcessID, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Peek", "bool Peek()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Peek, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Terminate", "void Terminate()", __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Terminate, 1);
