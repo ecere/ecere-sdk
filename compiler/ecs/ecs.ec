@@ -1728,7 +1728,7 @@ class SymbolgenApp : Application
 
       if(!valid)
       {
-         printf($"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
+         printf("%s", $"Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n");
       }
       else
       {

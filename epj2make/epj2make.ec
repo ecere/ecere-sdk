@@ -226,24 +226,24 @@ class epj2makeApp : GuiApplication
 
       if(!valid)
       {
-         printf($"Syntax:\n");
-         printf($"   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n");
-         printf($"      toolchain:\n");
-         printf($"         [-make <make tool>]\n");
-         printf($"         [-cpp <c preprocessor>]\n");
-         printf($"         [-cc <c compiler>]\n");
-         printf($"         [-ecp <eC preprocessor>]\n");
-         printf($"         [-ecc <eC compiler>]\n");
-         printf($"         [-ecs <eC symbol generator>]\n");
-         printf($"         [-ear <Ecere Archiver>]\n");
-         printf($"      directories:\n");
-         printf($"         [-i <include dir[;inc dir[...]]>]\n");
-         printf($"         [-l <library dir[;lib dir[...]]>]\n");
-         printf($"      options:\n");
-         printf($"         [-noglobalsettings]\n");
-         printf($"         [-noresources]\n");
-         printf($"         [-d <intermediate objects directory>]\n");
-         printf($"         [-includemk <crossplatform.mk path>]\n");
+         printf("%s", $"Syntax:\n");
+         printf("%s", $"   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n");
+         printf("%s", $"      toolchain:\n");
+         printf("%s", $"         [-make <make tool>]\n");
+         printf("%s", $"         [-cpp <c preprocessor>]\n");
+         printf("%s", $"         [-cc <c compiler>]\n");
+         printf("%s", $"         [-ecp <eC preprocessor>]\n");
+         printf("%s", $"         [-ecc <eC compiler>]\n");
+         printf("%s", $"         [-ecs <eC symbol generator>]\n");
+         printf("%s", $"         [-ear <Ecere Archiver>]\n");
+         printf("%s", $"      directories:\n");
+         printf("%s", $"         [-i <include dir[;inc dir[...]]>]\n");
+         printf("%s", $"         [-l <library dir[;lib dir[...]]>]\n");
+         printf("%s", $"      options:\n");
+         printf("%s", $"         [-noglobalsettings]\n");
+         printf("%s", $"         [-noresources]\n");
+         printf("%s", $"         [-d <intermediate objects directory>]\n");
+         printf("%s", $"         [-includemk <crossplatform.mk path>]\n");
       }
       else
       {
