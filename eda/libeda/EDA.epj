@@ -48,7 +48,7 @@
       {
          "Name" : "Release",
          "Options" : {
-            "Warnings" : "None",
+            "Warnings" : "All",
             "NoLineNumbers" : true,
             "Optimization" : "Speed",
             "LibraryDirs" : [

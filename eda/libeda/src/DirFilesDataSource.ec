@@ -142,7 +142,7 @@ private:
    {
       if(name && path && FileExists(path))
       {
-         bool deleted;
+         bool deleted = false;
          Iterator<const String> it { databases };
          if(it.Find(name))
          {

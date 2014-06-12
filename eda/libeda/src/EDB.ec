@@ -1227,7 +1227,7 @@ static class EDBRow : DriverRow
             if(index && index.fieldIndexes[0].field == field && !index.fieldIndexes[0].memberField)
             {
                BTNode node = this.node, lastNode = null;
-               int result;
+               int result = 0;
                int order = (index.fieldIndexes[0].order == ascending) ? 1 : -1;
 
                if(move == next || move == nil)
@@ -1448,7 +1448,7 @@ static class EDBRow : DriverRow
             if(indexedFind)
             {
                BTNode node = this.node, lastNode = null;
-               int result;
+               int result = 0;
 
                if(move == next || move == nil)
                {

@@ -234,12 +234,12 @@ class Win32Interface : Interface
       int c;
       static double lastTime = 0, time;
       int x = 0, y = 0;
-      int w, h;
+      int w = 0, h = 0;
       //static Size lastScreen;
       //static Point lastScreenPos;
       static double lastAutoHideCheck = 0;
       int newTaskBarState = taskBarState;
-      HMONITOR primaryMonitor;
+      HMONITOR primaryMonitor = 0;
 
       time = GetTime();
       if(time - lastTime < 0.1) return;
@@ -638,7 +638,7 @@ class Win32Interface : Interface
             //case WM_DEADCHAR:
             {
                MSG charMsg;
-               DWORD min, max;
+               DWORD min = 0, max = 0;
 
                if(msg != WM_CHAR && window.composing)
                   break;
@@ -647,7 +647,7 @@ class Win32Interface : Interface
                {
                   case WM_SYSKEYDOWN: min = max = WM_SYSCHAR; break;
                   case WM_KEYDOWN: min = max = WM_CHAR; break;
-                  case WM_SYSKEYUP: min = WM_SYSCHAR;  max = WM_SYSDEADCHAR; break;
+                  case WM_SYSKEYUP: min = WM_SYSCHAR; max = WM_SYSDEADCHAR; break;
                   case WM_KEYUP: min = WM_CHAR; max = WM_DEADCHAR; break;
                }
 
