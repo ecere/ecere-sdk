@@ -228,7 +228,8 @@ L?'(\\.|[^\\'])+'       { return(CONSTANT); }
 {D}*"."{D}+({E})?{FS}?  { return(CONSTANT); }
 {D}+"."{D}*({E})?{FS}?  { return(CONSTANT); }
 
-L?\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
+\"(\\.|[^\\"])*\"     { return(STRING_LITERAL); }
+L\"(\\.|[^\\"])*\"     { return(WIDE_STRING_LITERAL); }
 
 "..."       { return(ELLIPSIS); }
 ">>="       { return(RIGHT_ASSIGN); }

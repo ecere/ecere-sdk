@@ -151,6 +151,7 @@ default:
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 %token ALIGNOF ATTRIB_DEP __ATTRIB
 %token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT THREAD
+%token WIDE_STRING_LITERAL
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -227,6 +228,7 @@ simple_primary_expression:
       { $$ = MkExpInstance($1); $$.loc = @$; }
 	| CONSTANT
       { $$ = MkExpConstant(yytext); $$.loc = @$; }
+   | WIDE_STRING_LITERAL { $$ = MkExpWideString(yytext); $$.loc = @$; }
 	| string_literal
       { $$ = MkExpString($1); delete $1; $$.loc = @$; }
    | '$' string_literal     { $$ = MkExpIntlString($2, null); delete $2; $$.loc = @$; }

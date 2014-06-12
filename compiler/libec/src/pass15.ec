@@ -8229,9 +8229,9 @@ void ProcessExpressionType(Expression exp)
             type = Type
             {
                refCount = 1;
-               kind = charType;
+               kind = exp.wideString ? shortType : charType;
                constant = true;
-               isSigned = true;
+               isSigned = exp.wideString ? false : true;
             }
          };
          break;

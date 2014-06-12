@@ -229,6 +229,11 @@ Expression MkExpString(const char * string)
    return { type = stringExp, string = CopyString(string), loc = yylloc };
 }
 
+Expression MkExpWideString(const char * string)
+{
+   return { type = stringExp, string = CopyString(string), loc = yylloc, wideString = true };
+}
+
 // TODO: String is case sensitive..
 //       What should we do about it?
 /*public class CaseSensitiveString : String

@@ -560,6 +560,7 @@ public:
       {
          char * string;
          bool intlString;
+         bool wideString;
       };
       OldList * list;
       struct

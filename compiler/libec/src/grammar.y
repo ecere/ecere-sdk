@@ -195,6 +195,7 @@ default:
 %token DBTABLE DBFIELD DBINDEX DATABASE_OPEN
 %token ALIGNOF ATTRIB_DEP __ATTRIB
 %token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT THREAD
+%token WIDE_STRING_LITERAL
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -1496,6 +1497,7 @@ simple_primary_expression:
    }
 	| constant { $$ = $1; }
    | i18n_string
+   | WIDE_STRING_LITERAL { $$ = MkExpWideString(yytext); $$.loc = @$; }
    | '(' ')' { Expression exp = MkExpDummy(); exp.loc.start = @1.end; exp.loc.end = @2.start; $$ = MkExpBrackets(MkListOne(exp)); $$.loc = @$; yyerror(); }
    | NEWOP new_specifiers abstract_declarator_noarray '[' constant_expression ']' { $$ = MkExpNew(MkTypeName($2,$3), $5); $$.loc = @$; }
    | NEWOP new_specifiers abstract_declarator_noarray '[' constant_expression_error ']' { $$ = MkExpNew(MkTypeName($2,$3), $5); $$.loc = @$; }

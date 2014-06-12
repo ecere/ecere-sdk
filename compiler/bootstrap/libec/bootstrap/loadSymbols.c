@@ -226,6 +226,7 @@ struct
 {
 char *  string;
 unsigned int intlString;
+unsigned int wideString;
 } __attribute__ ((gcc_struct)) __anon2;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
