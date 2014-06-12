@@ -2021,7 +2021,7 @@ void PopContext(Context ctx)
 Symbol FindType(Context ctx, const char * name)
 {
    Symbol type = null;
-   if(curContext)
+   if(ctx)
    {
       //char output[8192];
       type = (Symbol)ctx.types.FindString(name);
@@ -2032,6 +2032,18 @@ Symbol FindType(Context ctx, const char * name)
       }*/
       if(!type && ctx.parent)
          type = FindType(ctx.parent, name);
+   }
+   return type;
+}
+
+Symbol FindStruct(Context ctx, const char * name)
+{
+   Symbol type = null;
+   if(ctx)
+   {
+      type = (Symbol)ctx.structSymbols.FindString(name);
+      if(!type && ctx.parent)
+         type = FindStruct(ctx.parent, name);
    }
    return type;
 }

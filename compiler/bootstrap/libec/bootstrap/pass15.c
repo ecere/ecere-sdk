@@ -2751,6 +2751,8 @@ extern void Compiler_Error(const char *  format, ...);
 
 extern const char *  __ecereNameSpace__ecere__GetTranslatedString(const char * name, const char *  string, const char *  stringAndContext);
 
+extern struct Symbol * FindStruct(struct Context * ctx, const char *  name);
+
 int ComputeTypeSize(struct Type * type)
 {
 unsigned int size = type ? type->size : 0;
@@ -2855,6 +2857,18 @@ type->alignment = type->__anon1.type->alignment;
 break;
 case 9:
 {
+if(!type->__anon1.__anon1.members.first && type->__anon1.__anon1.enumName)
+{
+struct Symbol * symbol = FindStruct(curContext, type->__anon1.__anon1.enumName);
+
+if(symbol && symbol->type)
+{
+ComputeTypeSize(symbol->type);
+size = symbol->type->size;
+}
+}
+else
+{
 struct Type * member;
 
 for(member = type->__anon1.__anon1.members.first; member; member = member->next)
@@ -2871,9 +2885,22 @@ size += addSize;
 }
 if(type->alignment && size % type->alignment)
 size += type->alignment - (size % type->alignment);
+}
 break;
 }
 case 10:
+{
+if(!type->__anon1.__anon1.members.first && type->__anon1.__anon1.enumName)
+{
+struct Symbol * symbol = FindStruct(curContext, type->__anon1.__anon1.enumName);
+
+if(symbol && symbol->type)
+{
+ComputeTypeSize(symbol->type);
+size = symbol->type->size;
+}
+}
+else
 {
 struct Type * member;
 
@@ -2891,6 +2918,7 @@ size = ((size > addSize) ? size : addSize);
 }
 if(type->alignment && size % type->alignment)
 size += type->alignment - (size % type->alignment);
+}
 break;
 }
 case 20:
@@ -5345,7 +5373,9 @@ return 1;
 }
 else if((dest->kind == 13 || dest->kind == 12) && (source->kind == 12 || source->kind == 13))
 {
-if(MatchTypes(source->__anon1.type, dest->__anon1.type, (((void *)0)), (((void *)0)), (((void *)0)), 1, 1, 0, 0, warnConst))
+ComputeTypeSize(source->__anon1.type);
+ComputeTypeSize(dest->__anon1.type);
+if(source->__anon1.type->size == dest->__anon1.type->size && MatchTypes(source->__anon1.type, dest->__anon1.type, (((void *)0)), (((void *)0)), (((void *)0)), 1, 1, 0, 0, warnConst))
 return 1;
 }
 }

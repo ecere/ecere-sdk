@@ -818,40 +818,64 @@ public int ComputeTypeSize(Type type)
             break;
          case structType:
          {
-            Type member;
-            for(member = type.members.first; member; member = member.next)
+            if(!type.members.first && type.enumName)
             {
-               uint addSize = ComputeTypeSize(member);
-
-               member.offset = size;
-               if(member.alignment && size % member.alignment)
-                  member.offset += member.alignment - (size % member.alignment);
-               size = member.offset;
-
-               type.alignment = Max(type.alignment, member.alignment);
-               size += addSize;
+               Symbol symbol = FindStruct(curContext, type.enumName);
+               if(symbol && symbol.type)
+               {
+                  ComputeTypeSize(symbol.type);
+                  size = symbol.type.size;
+               }
             }
-            if(type.alignment && size % type.alignment)
-               size += type.alignment - (size % type.alignment);
+            else
+            {
+               Type member;
+               for(member = type.members.first; member; member = member.next)
+               {
+                  uint addSize = ComputeTypeSize(member);
+
+                  member.offset = size;
+                  if(member.alignment && size % member.alignment)
+                     member.offset += member.alignment - (size % member.alignment);
+                  size = member.offset;
+
+                  type.alignment = Max(type.alignment, member.alignment);
+                  size += addSize;
+               }
+               if(type.alignment && size % type.alignment)
+                  size += type.alignment - (size % type.alignment);
+            }
             break;
          }
          case unionType:
          {
-            Type member;
-            for(member = type.members.first; member; member = member.next)
+            if(!type.members.first && type.enumName)
             {
-               uint addSize = ComputeTypeSize(member);
-
-               member.offset = size;
-               if(member.alignment && size % member.alignment)
-                  member.offset += member.alignment - (size % member.alignment);
-               size = member.offset;
-
-               type.alignment = Max(type.alignment, member.alignment);
-               size = Max(size, addSize);
+               Symbol symbol = FindStruct(curContext, type.enumName);
+               if(symbol && symbol.type)
+               {
+                  ComputeTypeSize(symbol.type);
+                  size = symbol.type.size;
+               }
             }
-            if(type.alignment && size % type.alignment)
-               size += type.alignment - (size % type.alignment);
+            else
+            {
+               Type member;
+               for(member = type.members.first; member; member = member.next)
+               {
+                  uint addSize = ComputeTypeSize(member);
+
+                  member.offset = size;
+                  if(member.alignment && size % member.alignment)
+                     member.offset += member.alignment - (size % member.alignment);
+                  size = member.offset;
+
+                  type.alignment = Max(type.alignment, member.alignment);
+                  size = Max(size, addSize);
+               }
+               if(type.alignment && size % type.alignment)
+                  size += type.alignment - (size % type.alignment);
+            }
             break;
          }
          case templateType:
@@ -3529,7 +3553,9 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
       else if((dest.kind == pointerType || dest.kind == arrayType) &&
          (source.kind == arrayType || source.kind == pointerType))
       {
-         if(MatchTypes(source.type, dest.type, null, null, null, true, true, false, false, warnConst))
+         ComputeTypeSize(source.type);
+         ComputeTypeSize(dest.type);
+         if(source.type.size == dest.type.size && MatchTypes(source.type, dest.type, null, null, null, true, true, false, false, warnConst))
             return true;
       }
    }

@@ -3790,11 +3790,24 @@ struct Symbol * FindType(struct Context * ctx, const char * name)
 {
 struct Symbol * type = (((void *)0));
 
-if(curContext)
+if(ctx)
 {
 type = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&ctx->types, name);
 if(!type && ctx->parent)
 type = FindType(ctx->parent, name);
+}
+return type;
+}
+
+struct Symbol * FindStruct(struct Context * ctx, const char * name)
+{
+struct Symbol * type = (((void *)0));
+
+if(ctx)
+{
+type = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&ctx->structSymbols, name);
+if(!type && ctx->parent)
+type = FindStruct(ctx->parent, name);
 }
 return type;
 }
@@ -5152,6 +5165,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("check_type", "int check_
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PushContext", "Context PushContext(void)", PushContext, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("PopContext", "void PopContext(Context ctx)", PopContext, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindType", "Symbol FindType(Context ctx, const char * name)", FindType, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindStruct", "Symbol FindStruct(Context ctx, const char * name)", FindStruct, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindTemplateTypeParameter", "TemplatedType FindTemplateTypeParameter(Context ctx, const char * name)", FindTemplateTypeParameter, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ModuleAccess", "bool ModuleAccess(ecere::com::Module searchIn, ecere::com::Module searchFor)", ModuleAccess, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FindModule", "ModuleImport FindModule(ecere::com::Module moduleToFind)", FindModule, module, 2);
