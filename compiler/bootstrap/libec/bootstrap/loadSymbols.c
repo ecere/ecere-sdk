@@ -451,10 +451,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -522,7 +522,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -1793,7 +1793,7 @@ if(!inCompiler && !inPreCompiler && !inSymbolGen)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, loadedModules), it);
 
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0))
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)(&it), (uint64)(name), 0))
 {
 struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name, importAccess);
 
@@ -1819,7 +1819,7 @@ else
 skipLoad = 1;
 }
 else
-list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it));
+list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it)));
 }
 if(!skipLoad)
 {
@@ -2011,7 +2011,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->n
 }
 for(; (data = (struct GlobalData *)globalDataList->functions.root); )
 {
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->functions, (void *)data);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->functions, (void *)(data));
 if(data->symbol)
 FreeSymbol(data->symbol);
 FreeType(data->dataType);

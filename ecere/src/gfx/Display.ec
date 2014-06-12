@@ -1203,7 +1203,7 @@ private class Display3D
       int strip = 1;
       Vector3Df tmp;
       bool i32bit = primitive.type.indices32bit;
-      uint32 * indices32 = primitive.indices;
+      uint32 * indices32 = primitive.indices32;
       uint16 * indices16 = primitive.indices;
 
       switch(primitive.type.primitiveType)

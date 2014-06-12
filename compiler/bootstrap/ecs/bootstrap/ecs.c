@@ -412,10 +412,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -483,7 +483,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -2895,10 +2895,10 @@ struct __ecereNameSpace__ecere__com__Iterator s =
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&s))
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it));
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it)));
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it)), __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it))), __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&s));
 }
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = comments;
@@ -3006,10 +3006,10 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 {
 struct __ecereNameSpace__ecere__com__MapIterator i = (i.container = (void *)0, i.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&i, (intlStrings)), i);
 
-while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)&i))
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)(&i)))
 {
 struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&i));
-struct __ecereNameSpace__ecere__com__Instance * comments = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&i));
+struct __ecereNameSpace__ecere__com__Instance * comments = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&i)));
 
 {
 struct __ecereNameSpace__ecere__com__Iterator s =

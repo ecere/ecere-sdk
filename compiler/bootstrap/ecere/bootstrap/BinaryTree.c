@@ -100,10 +100,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -199,7 +199,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -322,7 +322,7 @@ extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSp
 
 void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*this).root);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, (void *)&(*this).root);
 (*this).count = (*this).root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count((*this).root) : 0;
 }
 
@@ -479,7 +479,7 @@ void __ecereMethod___ecereNameSpace__ecere__sys__StringBinaryTree_OnUnserialize(
 {
 struct __ecereNameSpace__ecere__sys__StringBTNode * root = (((void *)0));
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &root);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, (void *)&root);
 (*this).root = (struct __ecereNameSpace__ecere__sys__BTNode *)root;
 (*this).count = root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count((*this).root) : 0;
 }

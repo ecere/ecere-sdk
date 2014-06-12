@@ -93,10 +93,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -192,7 +192,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -310,11 +310,11 @@ static __attribute__((unused)) void UnusedFunction()
 {
 int a;
 
-((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, &a, (((void *)0)));
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, &a, (((void *)0)));
-((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &a, (((void *)0)), (((void *)0)), (((void *)0)));
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSerialize])(__ecereClass_int, &a, (((void *)0)));
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnUnserialize])(__ecereClass_int, &a, (((void *)0)));
+((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, (void *)&a, (((void *)0)));
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, (void *)&a, (((void *)0)));
+((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, (void *)&a, (((void *)0)), (((void *)0)), (((void *)0)));
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSerialize])(__ecereClass_int, (void *)&a, (((void *)0)));
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnUnserialize])(__ecereClass_int, (void *)&a, (((void *)0)));
 }
 
 extern int __ecereVMethodID_class_OnCompare;
@@ -846,7 +846,7 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
 unsigned int isNormalClass = (Dclass->type == 0) && Dclass->structSize;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(channel, __ecereClass_uint, &count);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(channel, __ecereClass_uint, (void *)&count);
 for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -883,7 +883,7 @@ unsigned int count, c;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
 uint64 data;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_uint, &count);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_uint, (void *)&count);
 if(Dclass->type == 1)
 data = (uint64)(__ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (Dclass->structSize)));
 for(c = 0; c < count; c++)

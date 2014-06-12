@@ -1804,6 +1804,7 @@ private:
                                  // Declaration ordering bugs -- Awaiting topo sort implementation
                                       if(strstr(line, "declared inside parameter list")) skip = true;
                                  else if(strstr(line, "its scope is only this definition")) skip = true;
+                                 else if(strstr(line, "from incompatible pointer type")) skip = true;
                                  else if(strstr(line, "note: expected 'struct ") || strstr(line, "note: expected ‘struct "))
                                  {
                                     #define STRUCT_A "'struct "
@@ -1822,10 +1823,6 @@ private:
                                           skip = true;
                                     }
                                  }
-                                 // Pointers warnings (eC should already warn about relevant problems, should cast in generated code)
-                                 else if(strstr(line, "expected 'void **") || strstr(line, "expected ‘void **")) skip = true;
-                                 else if(strstr(line, "from incompatible pointer type")) skip = true;
-                                 else if(strstr(line, "comparison of distinct pointer types lacks a cast")) skip = true;
 
                                  // For preprocessed code from objidl.h (MinGW-w64 headers)
                                  else if(strstr(line, "declaration does not declare anything")) skip = true;

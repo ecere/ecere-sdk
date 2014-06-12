@@ -288,7 +288,7 @@ public:
             int strip = 0;
             int nPoints, nIndex;
             uint16 * indices16 = group.indices;
-            uint32 * indices32 = group.indices;
+            uint32 * indices32 = group.indices32;
             bool i32bit = group.type.indices32bit;
 
             if(group.type.primitiveType == triangles)

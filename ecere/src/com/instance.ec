@@ -224,7 +224,7 @@ class SelfWatcher : struct
 {
    class_fixed
    SelfWatcher prev, next;
-   void (*callback)(Instance);
+   void (*callback)(void *);
    Property _property;
 };
 
@@ -267,10 +267,10 @@ public:
    Class prev, next;
    const char * name;
    int offset, structSize;
-   int (** _vTbl)();
+   void ** _vTbl;
    int vTblSize;
-   int (*Constructor)(Instance);
-   void (*Destructor)(Instance);
+   bool (*Constructor)(void *);
+   void (*Destructor)(void *);
 
    int offsetClass, sizeClass;
    Class base;
@@ -608,7 +608,7 @@ class Watcher : struct
 {
    class_fixed
    Watcher prev, next;
-   void (*callback)(Instance, Instance);
+   void (*callback)(void *, void *);
    Instance object;
 };
 
@@ -2198,7 +2198,7 @@ static void FixDerivativesBase(Class base, Class mod)
 }
 
 public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, const char * baseName, int size, int sizeClass,
-                             bool (* Constructor)(void *),void (* Destructor)(void *),
+                             bool (* Constructor)(void *), void (* Destructor)(void *),
                              Module module, AccessMode declMode, AccessMode inheritanceAccess)
 {
    int start = 0, c;
@@ -2701,7 +2701,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
          }
          _class.offsetClass = offsetClass;
          _class.sizeClass = totalSizeClass;
-         _class.Constructor = (void *)Constructor;
+         _class.Constructor = Constructor;
          _class.Destructor = Destructor;
          if(_class.type != systemClass)
             _class.type = type;
@@ -5980,7 +5980,7 @@ public dllexport void eInstance_Watch(void * instance, Property _property, void 
    }
 }
 
-public dllexport void eInstance_WatchDestruction(Instance instance, Instance object, void (*callback)(Instance, Instance))
+public dllexport void eInstance_WatchDestruction(Instance instance, Instance object, void (*callback)(void *, void *))
 {
    OldList * watchers = (OldList *)((byte *)instance + instance._class.destructionWatchOffset);
    watchers->Add(Watcher { callback = callback, object = object });
@@ -6091,7 +6091,7 @@ static void LoadCOM(Module module)
       instanceClass.memberID = -3;
       instanceClass.startMemberID = -3;
 
-      eClass_AddDataMember(instanceClass, "_vTbl", "int (**)()", pointerSize, pointerSize, publicAccess);
+      eClass_AddDataMember(instanceClass, "_vTbl", "void **", pointerSize, pointerSize, publicAccess);
       eClass_AddDataMember(instanceClass, "_class", "ecere::com::Class", pointerSize, pointerSize, publicAccess);
       eClass_AddDataMember(instanceClass, "_refCount", "int", sizeof(int), sizeof(int), publicAccess);
    }

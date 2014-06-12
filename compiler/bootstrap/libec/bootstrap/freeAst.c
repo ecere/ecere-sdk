@@ -865,10 +865,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -936,7 +936,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -2662,9 +2662,9 @@ if(!inCompiler)
 {
 struct __ecereNameSpace__ecere__com__MapIterator mapIt = (mapIt.container = (void *)0, mapIt.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&mapIt, loadedModules), mapIt);
 
-while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)&mapIt))
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)(&mapIt)))
 {
-struct __ecereNameSpace__ecere__com__Instance * list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&mapIt));
+struct __ecereNameSpace__ecere__com__Instance * list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&mapIt)));
 struct __ecereNameSpace__ecere__com__Iterator it =
 {
 list, 0

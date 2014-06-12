@@ -98,10 +98,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -197,7 +197,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -337,10 +337,10 @@ if((struct __ecereNameSpace__ecere__sys__BTNode *)this)
 unsigned int __internalValue000;
 unsigned int truth = 1;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, &truth);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, (void *)&truth);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, __extension__ ({
 __internalValue000 = (unsigned int)this->key;
-&__internalValue000;
+(void *)&__internalValue000;
 }));
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, this->left);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, this->right);
@@ -349,7 +349,7 @@ else
 {
 unsigned int nothing = 0;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, &nothing);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, (void *)&nothing);
 }
 }
 
@@ -365,22 +365,22 @@ void __ecereMethod___ecereNameSpace__ecere__sys__BTNode_OnUnserialize(struct __e
 {
 unsigned int truth;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_bool, &truth);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_bool, (void *)&truth);
 if(truth)
 {
 (*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__BTNode);
 {
 unsigned int k;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uint, &k);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_uint, (void *)&k);
 (*this)->key = k;
 }
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*this)->left);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, (void *)&(*this)->left);
 if((*this)->left)
 {
 (*this)->left->parent = *(struct __ecereNameSpace__ecere__sys__BTNode **)this;
 }
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, &(*this)->right);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, (void *)&(*this)->right);
 if((*this)->right)
 {
 (*this)->right->parent = *(struct __ecereNameSpace__ecere__sys__BTNode **)this;
@@ -1055,7 +1055,7 @@ if((struct __ecereNameSpace__ecere__sys__StringBTNode *)this)
 {
 unsigned int truth = 1;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, &truth);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_bool, (void *)&truth);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_String, this->key);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, this->left);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, this->right);
@@ -1064,7 +1064,7 @@ else
 {
 unsigned int nothing = 0;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, &nothing);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass_uint, (void *)&nothing);
 }
 }
 
@@ -1072,17 +1072,17 @@ void __ecereMethod___ecereNameSpace__ecere__sys__StringBTNode_OnUnserialize(stru
 {
 unsigned int truth;
 
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_bool, &truth);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_bool, (void *)&truth);
 if(truth)
 {
 (*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__StringBTNode);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_String, &(*this)->key);
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &(*this)->left);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_String, (void *)&(*this)->key);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, (void *)&(*this)->left);
 if((*this)->left)
 {
 (*this)->left->parent = *(struct __ecereNameSpace__ecere__sys__StringBTNode **)this;
 }
-__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, &(*this)->right);
+__ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, (void *)&(*this)->right);
 if((*this)->right)
 {
 (*this)->right->parent = *(struct __ecereNameSpace__ecere__sys__StringBTNode **)this;

@@ -96,10 +96,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -195,7 +195,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -816,14 +816,14 @@ struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereName
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
-return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(((struct __ecereNameSpace__ecere__com__AVLNode *)node));
+return (void *)(__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(((struct __ecereNameSpace__ecere__com__AVLNode *)node)));
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetNext(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + structSize_Instance) : 0);
 
-return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(((struct __ecereNameSpace__ecere__com__AVLNode *)node));
+return (void *)(__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(((struct __ecereNameSpace__ecere__com__AVLNode *)node)));
 }
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetData(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
@@ -936,7 +936,7 @@ struct __ecereNameSpace__ecere__com__AVLNode * item;
 
 while((item = ((struct __ecereNameSpace__ecere__com__AVLNode *)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))))
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, (void *)((struct __ecereNameSpace__ecere__com__AVLNode *)(item)));
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, (void *)(((struct __ecereNameSpace__ecere__com__AVLNode *)(item))));
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, ((void * )(item))), item = 0);
 }
 }

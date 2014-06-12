@@ -835,10 +835,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -906,7 +906,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -11129,7 +11129,7 @@ static __attribute__((unused)) void UnusedFunction()
 {
 int a;
 
-((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &a, 0, 0, 0);
+((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, (void *)&a, 0, 0, 0);
 }
 
 extern int __ecereVMethodID_class_OnGetString;
@@ -17055,7 +17055,7 @@ ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->__anon
 ListAdd(structInitializers, MkInitializerAssignment(__extension__ ({
 struct Expression * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 
-__ecereInstance1->type = 2, __ecereInstance1->__anon1.__anon1.constant = __ecereNameSpace__ecere__com__PrintString(__ecereClass_int, &(*initializers).count, (void *)0), __ecereInstance1;
+__ecereInstance1->type = 2, __ecereInstance1->__anon1.__anon1.constant = __ecereNameSpace__ecere__com__PrintString(__ecereClass_int, (void *)&(*initializers).count, (void *)0), __ecereInstance1;
 })));
 ProcessExpressionType(((struct Initializer *)(*structInitializers).last)->__anon1.exp);
 ListAdd(structInitializers, MkInitializerAssignment(MkExpClass(CopyList(specs, (void *)(CopySpecifier)), CopyDeclarator(decl))));

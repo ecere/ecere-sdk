@@ -857,10 +857,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -928,7 +928,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -3588,7 +3588,7 @@ if(baseClass && baseClass->ctx)
 {
 struct TemplatedType * copy;
 
-for(copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&baseClass->ctx->templateTypes); copy; copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next((void *)copy))
+for(copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&baseClass->ctx->templateTypes); copy; copy = (struct TemplatedType *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next((void *)(copy)))
 {
 struct TemplatedType * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TemplatedType), type->key = copy->key, type->param = copy->param, type);
 
@@ -4567,7 +4567,7 @@ type->classObjectType = 2;
 break;
 }
 default:
-__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "Unhandled Declarator Type: ", __ecereClass_DeclaratorType, &decl->type, (void *)0);
+__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "Unhandled Declarator Type: ", __ecereClass_DeclaratorType, (void *)&decl->type, (void *)0);
 }
 }
 if(subDecl)
@@ -4946,14 +4946,14 @@ __ecereNameSpace__ecere__sys__GetSlashPathBuffer(srcFileFixed, srcFile);
 {
 struct __ecereNameSpace__ecere__com__MapIterator s = (s.container = (void *)0, s.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&s, (intlStrings)), s);
 
-while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)&s))
+while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next((void *)(&s)))
 {
 struct ContextStringPair pair = (*(struct ContextStringPair *)__ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_key(&s));
 
 {
 struct __ecereNameSpace__ecere__com__Iterator l =
 {
-((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&s)), 0
+((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&s))), 0
 };
 
 while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&l))

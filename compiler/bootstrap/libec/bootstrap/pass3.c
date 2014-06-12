@@ -770,10 +770,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -841,7 +841,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -1533,68 +1533,18 @@ extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * 
 
 extern void FreeType(struct Type * type);
 
+extern struct Expression * MkExpBrackets(struct __ecereNameSpace__ecere__sys__OldList * expressions);
+
 extern struct Expression * MoveExpContents(struct Expression * exp);
 
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
 
 extern struct Declarator * QMkPtrDecl(const char *  id);
 
-extern void FreeExpContents(struct Expression * exp);
-
-static void InstDeclPassStatement(struct Statement * stmt);
-
-static void InstDeclPassInitializer(struct Initializer * init);
-
-static void InstDeclPassExpression(struct Expression * exp)
-{
-switch(exp->type)
-{
-case 0:
-{
-if(exp->__anon1.__anon1.identifier)
-InstDeclPassIdentifier(exp->__anon1.__anon1.identifier);
-break;
-}
-case 2:
-break;
-case 3:
-break;
-case 4:
-if(exp->__anon1.op.exp1)
-InstDeclPassExpression(exp->__anon1.op.exp1);
-if(exp->__anon1.op.exp2)
-InstDeclPassExpression(exp->__anon1.op.exp2);
-break;
-case 32:
-case 5:
-{
-struct Expression * e;
-
-for(e = (*exp->__anon1.list).first; e; e = e->next)
-InstDeclPassExpression(e);
-break;
-}
-case 6:
-{
-struct Expression * e;
-
-InstDeclPassExpression(exp->__anon1.index.exp);
-for(e = (*exp->__anon1.index.index).first; e; e = e->next)
-InstDeclPassExpression(e);
-break;
-}
-case 7:
-{
-struct Expression * e;
-
-InstDeclPassExpression(exp->__anon1.call.exp);
-if(exp->__anon1.call.arguments)
-{
-for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
+static void AddPointerCast(struct Expression * e)
 {
 struct Type * src = e->expType;
 
-InstDeclPassExpression(e);
 if(src && (src->kind == 20 || src->kind == 8))
 {
 if(e->type != 11 || !IsVoidPtrCast(e->__anon1.cast.typeName))
@@ -1651,7 +1601,7 @@ if(dc->templateClass)
 dc = dc->templateClass;
 if(dc->base && sc != dc)
 {
-e->__anon1.cast.exp = MoveExpContents(e);
+e->__anon1.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
 e->type = 11;
 e->__anon1.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0))));
 }
@@ -1660,8 +1610,87 @@ FreeType(dest);
 }
 }
 }
-}
 FreeType(src);
+}
+}
+}
+
+extern void FreeExpContents(struct Expression * exp);
+
+static void InstDeclPassStatement(struct Statement * stmt);
+
+static void InstDeclPassInitializer(struct Initializer * init);
+
+static void InstDeclPassExpression(struct Expression * exp)
+{
+switch(exp->type)
+{
+case 0:
+{
+if(exp->__anon1.__anon1.identifier)
+InstDeclPassIdentifier(exp->__anon1.__anon1.identifier);
+break;
+}
+case 2:
+break;
+case 3:
+break;
+case 4:
+if(exp->__anon1.op.exp1)
+InstDeclPassExpression(exp->__anon1.op.exp1);
+if(exp->__anon1.op.exp2)
+{
+InstDeclPassExpression(exp->__anon1.op.exp2);
+if(exp->__anon1.op.op != '=' && exp->__anon1.op.exp1 && exp->__anon1.op.exp1->expType && exp->__anon1.op.exp1->expType->kind == 13 && exp->__anon1.op.exp1->expType->__anon1.type && exp->__anon1.op.exp1->expType->__anon1.type->kind == 20 && exp->__anon1.op.exp2->expType && exp->__anon1.op.exp2->expType->kind == 13 && exp->__anon1.op.exp2->expType->__anon1.type && exp->__anon1.op.exp2->expType->__anon1.type->kind == 20)
+{
+struct Expression * e = exp->__anon1.op.exp2;
+
+e->__anon1.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+e->type = 11;
+e->__anon1.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0))));
+e = exp->__anon1.op.exp1;
+e->__anon1.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+e->type = 11;
+e->__anon1.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0))));
+}
+else if(exp->__anon1.op.exp1 && (exp->__anon1.op.op == '=' || exp->__anon1.op.op == EQ_OP || exp->__anon1.op.op == NE_OP))
+AddPointerCast(exp->__anon1.op.exp2);
+}
+break;
+case 32:
+case 5:
+{
+struct Expression * e;
+
+for(e = (*exp->__anon1.list).first; e; e = e->next)
+InstDeclPassExpression(e);
+break;
+}
+case 6:
+{
+struct Expression * e;
+
+InstDeclPassExpression(exp->__anon1.index.exp);
+for(e = (*exp->__anon1.index.index).first; e; e = e->next)
+InstDeclPassExpression(e);
+break;
+}
+case 7:
+{
+struct Expression * e;
+
+InstDeclPassExpression(exp->__anon1.call.exp);
+if(exp->__anon1.call.arguments)
+{
+for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
+{
+InstDeclPassExpression(e);
+AddPointerCast(e);
+if(e->expType && e->expType->kind == 13 && e->expType->__anon1.type && (e->expType->__anon1.type->kind == 8 || (e->expType->__anon1.type->kind == 13 && e->expType->__anon1.type->__anon1.type && e->expType->__anon1.type->__anon1.type->kind != 0)) && e->destType && e->destType->kind == 13 && e->destType->__anon1.type && e->destType->__anon1.type->kind == 13 && e->destType->__anon1.type->__anon1.type && e->destType->__anon1.type->__anon1.type->kind == 0 && (e->type != 11 || !IsVoidPtrCast(e->__anon1.cast.typeName)))
+{
+e->__anon1.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+e->type = 11;
+e->__anon1.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0))));
 }
 }
 }
@@ -1968,6 +1997,7 @@ if(stmt->__anon1.expressions)
 {
 for(exp = (*stmt->__anon1.expressions).first; exp; exp = exp->next)
 InstDeclPassExpression(exp);
+AddPointerCast((*stmt->__anon1.expressions).last);
 }
 break;
 }

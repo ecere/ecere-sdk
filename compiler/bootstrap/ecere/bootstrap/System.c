@@ -94,10 +94,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -193,7 +193,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -626,13 +626,13 @@ int code = ((unsigned int)((errorCode & 0xFFF) >> 0)) & 0xFF;
 
 if(details)
 __ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s (%s).\n", ((int)((errorCode & 0x3000) >> 12)), ((const char **)__extension__ ({
-char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[cat]);
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[cat]);
 
 ((struct __ecereNameSpace__ecere__com__Array *)(__ecTemp1 + structSize_Instance));
 })->array)[code], details);
 else
 __ecereNameSpace__ecere__sys__Logf("System Error [%d]: %s.\n", ((int)((errorCode & 0x3000) >> 12)), ((const char **)__extension__ ({
-char * __ecTemp1 = (((struct __ecereNameSpace__ecere__com__Instance **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[cat]);
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance **)((struct __ecereNameSpace__ecere__com__Array *)(((char *)__ecereNameSpace__ecere__sys__errorMessages + structSize_Instance)))->array)[cat]);
 
 ((struct __ecereNameSpace__ecere__com__Array *)(__ecTemp1 + structSize_Instance));
 })->array)[code]);

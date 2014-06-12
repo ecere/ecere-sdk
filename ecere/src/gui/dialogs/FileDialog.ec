@@ -416,7 +416,7 @@ public:
 
    // Get only
    property int numSelections { get { return numSelections; } };
-   property const char * const * multiFilePaths { get { return multiFilePaths; } };
+   property const char * const * multiFilePaths { get { return (const char * const *)multiFilePaths; } };
 
 private:
    FileDialog()

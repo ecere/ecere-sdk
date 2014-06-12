@@ -2277,7 +2277,7 @@ static void ProcessExpression(Expression exp)
                                  else if(checkedExp.type == castExp)
                                     checkedExp = checkedExp.cast.exp;
                               }
-                              newExp = MkExpOp(null, '&', checkedExp);
+                              newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpOp(null, '&', checkedExp));
                               newExp.byReference = true;
                               if(parentExp.type == callExp)
                               {

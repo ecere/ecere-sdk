@@ -446,6 +446,72 @@ static void InstDeclPassIdentifier(Identifier id)
    return result;
 }
 
+static void AddPointerCast(Expression e)
+{
+   Type src = e.expType;
+
+   if(src && (src.kind == templateType || src.kind == classType))
+   {
+      if(e.type != castExp || !IsVoidPtrCast(e.cast.typeName))
+      {
+         if(src) src.refCount++;
+         if(src.kind == templateType && src.templateParameter && src.templateParameter.type == type)
+         {
+            Type newType = null;
+            if(src.templateParameter.dataTypeString)
+               newType = ProcessTypeString(src.templateParameter.dataTypeString, false);
+            else if(src.templateParameter.dataType)
+               newType = ProcessType(src.templateParameter.dataType.specifiers, src.templateParameter.dataType.decl);
+            if(newType)
+            {
+               FreeType(src);
+               src = newType;
+            }
+         }
+         if(src && src.kind == classType && src._class)
+         {
+            Class sc = src._class.registered;
+            if(sc && (sc.type == structClass || sc.type == noHeadClass))
+            {
+               Type dest = e.destType;
+               if(dest && (dest.kind == templateType || dest.kind == classType))
+               {
+                  if(dest) dest.refCount++;
+
+                  if(dest.kind == templateType && dest.templateParameter && dest.templateParameter.type == type)
+                  {
+                     Type newType = null;
+                     if(dest.templateParameter.dataTypeString)
+                        newType = ProcessTypeString(dest.templateParameter.dataTypeString, false);
+                     else if(dest.templateParameter.dataType)
+                        newType = ProcessType(dest.templateParameter.dataType.specifiers, dest.templateParameter.dataType.decl);
+                     if(newType)
+                     {
+                        FreeType(dest);
+                        dest = newType;
+                     }
+                  }
+                  if(!dest.passAsTemplate && dest.kind == classType && dest._class && dest._class.registered)
+                  {
+                     Class dc = dest._class.registered;
+                     if(sc.templateClass) sc = sc.templateClass;
+                     if(dc.templateClass) dc = dc.templateClass;
+                     if(dc.base && sc != dc)
+                     {
+                        e.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+                        e.type = castExp;
+                        e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
+                     }
+                  }
+                  FreeType(dest);
+               }
+            }
+         }
+         FreeType(src);
+      }
+   }
+}
+
 static void InstDeclPassExpression(Expression exp)
 {
    switch(exp.type)
@@ -464,7 +530,25 @@ static void InstDeclPassExpression(Expression exp)
          if(exp.op.exp1)
             InstDeclPassExpression(exp.op.exp1);
          if(exp.op.exp2)
+         {
             InstDeclPassExpression(exp.op.exp2);
+            if(exp.op.op != '=' && exp.op.exp1 && exp.op.exp1.expType && exp.op.exp1.expType.kind == pointerType && exp.op.exp1.expType.type && exp.op.exp1.expType.type.kind == templateType &&
+               exp.op.exp2.expType && exp.op.exp2.expType.kind == pointerType && exp.op.exp2.expType.type && exp.op.exp2.expType.type.kind == templateType)
+            {
+               Expression e = exp.op.exp2;
+               e.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+               e.type = castExp;
+               e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
+
+               e = exp.op.exp1;
+               e.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+               e.type = castExp;
+               e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
+            }
+            else if(exp.op.exp1 && (exp.op.op == '=' || exp.op.op == EQ_OP || exp.op.op == NE_OP))
+               AddPointerCast(exp.op.exp2);
+
+         }
          break;
       case extensionExpressionExp:
       case bracketsExp:
@@ -490,69 +574,16 @@ static void InstDeclPassExpression(Expression exp)
          {
             for(e = exp.call.arguments->first; e; e = e.next)
             {
-               Type src = e.expType;
-
                InstDeclPassExpression(e);
+               AddPointerCast(e);
 
-               if(src && (src.kind == templateType || src.kind == classType))
+               if(e.expType && e.expType.kind == pointerType && e.expType.type && (e.expType.type.kind == classType || (e.expType.type.kind == pointerType && e.expType.type.type && e.expType.type.type.kind != voidType)) &&
+                  e.destType && e.destType.kind == pointerType && e.destType.type && e.destType.type.kind == pointerType && e.destType.type.type && e.destType.type.type.kind == voidType &&
+                  (e.type != castExp || !IsVoidPtrCast(e.cast.typeName)))
                {
-                  if(e.type != castExp || !IsVoidPtrCast(e.cast.typeName))
-                  {
-                     if(src) src.refCount++;
-                     if(src.kind == templateType && src.templateParameter && src.templateParameter.type == type)
-                     {
-                        Type newType = null;
-                        if(src.templateParameter.dataTypeString)
-                           newType = ProcessTypeString(src.templateParameter.dataTypeString, false);
-                        else if(src.templateParameter.dataType)
-                           newType = ProcessType(src.templateParameter.dataType.specifiers, src.templateParameter.dataType.decl);
-                        if(newType)
-                        {
-                           FreeType(src);
-                           src = newType;
-                        }
-                     }
-                     if(src && src.kind == classType && src._class)
-                     {
-                        Class sc = src._class.registered;
-                        if(sc && (sc.type == structClass || sc.type == noHeadClass))
-                        {
-                           Type dest = e.destType;
-                           if(dest && (dest.kind == templateType || dest.kind == classType))
-                           {
-                              if(dest) dest.refCount++;
-
-                              if(dest.kind == templateType && dest.templateParameter && dest.templateParameter.type == type)
-                              {
-                                 Type newType = null;
-                                 if(dest.templateParameter.dataTypeString)
-                                    newType = ProcessTypeString(dest.templateParameter.dataTypeString, false);
-                                 else if(dest.templateParameter.dataType)
-                                    newType = ProcessType(dest.templateParameter.dataType.specifiers, dest.templateParameter.dataType.decl);
-                                 if(newType)
-                                 {
-                                    FreeType(dest);
-                                    dest = newType;
-                                 }
-                              }
-                              if(!dest.passAsTemplate && dest.kind == classType && dest._class && dest._class.registered)
-                              {
-                                 Class dc = dest._class.registered;
-                                 if(sc.templateClass) sc = sc.templateClass;
-                                 if(dc.templateClass) dc = dc.templateClass;
-                                 if(dc.base && sc != dc)
-                                 {
-                                    e.cast.exp = MoveExpContents(e);
-                                    e.type = castExp;
-                                    e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
-                                 }
-                              }
-                              FreeType(dest);
-                           }
-                        }
-                     }
-                  }
-                  FreeType(src);
+                  e.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+                  e.type = castExp;
+                  e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
                }
             }
          }
@@ -844,6 +875,7 @@ static void InstDeclPassStatement(Statement stmt)
          {
             for(exp = stmt.expressions->first; exp; exp = exp.next)
                InstDeclPassExpression(exp);
+            AddPointerCast(stmt.expressions->last);
          }
          break;
       }

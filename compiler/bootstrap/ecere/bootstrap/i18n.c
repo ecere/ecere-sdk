@@ -93,10 +93,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -192,7 +192,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -525,8 +525,8 @@ __ecereNameSpace__ecere__moduleMaps = __ecereNameSpace__ecere__com__eInstance_Ne
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0))
-(__ecereNameSpace__ecere__com__eInstance_DecRef(((void * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it)))), __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data((void *)&it, 0));
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)(&it), (uint64)(name), 0))
+(__ecereNameSpace__ecere__com__eInstance_DecRef(((void * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it))))), __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data((void *)(&it), 0));
 }
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
@@ -606,7 +606,7 @@ if(len)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, textMap), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(original), 0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)(&it), (uint64)(original), 0))
 (__ecereNameSpace__ecere__com__eSystem_Delete(translated), translated = 0);
 else
 __extension__ ({
@@ -642,13 +642,13 @@ void __ecereNameSpace__ecere__UnloadTranslatedStrings(const char * name)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, __ecereNameSpace__ecere__moduleMaps), it);
 
-if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)&it, (uint64)(name), 0))
+if(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)(&it), (uint64)(name), 0))
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it));
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it)));
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)&it)));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it))));
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * i))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecereNameSpace__ecere__moduleMaps;
 

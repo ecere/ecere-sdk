@@ -796,10 +796,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -867,7 +867,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -3157,7 +3157,7 @@ checkedExp = (*checkedExp->__anon1.list).last;
 else if(checkedExp->type == 11)
 checkedExp = checkedExp->__anon1.cast.exp;
 }
-newExp = MkExpOp((((void *)0)), '&', checkedExp);
+newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpOp((((void *)0)), '&', checkedExp));
 newExp->byReference = 1;
 if(parentExp->type == 7)
 {
@@ -3576,11 +3576,11 @@ anonID++;
 if(prefix)
 {
 s = prefix;
-prefix = __ecereNameSpace__ecere__com__PrintString(__ecereClass_String, prefix, __ecereClass_char__PTR_, ".__anon", __ecereClass_int, &anonID, (void *)0);
+prefix = __ecereNameSpace__ecere__com__PrintString(__ecereClass_String, prefix, __ecereClass_char__PTR_, ".__anon", __ecereClass_int, (void *)&anonID, (void *)0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 }
 else
-prefix = __ecereNameSpace__ecere__com__PrintString(__ecereClass_char__PTR_, "__anon", __ecereClass_int, &anonID, (void *)0);
+prefix = __ecereNameSpace__ecere__com__PrintString(__ecereClass_char__PTR_, "__anon", __ecereClass_int, (void *)&anonID, (void *)0);
 parentMember = curMember;
 }
 s = exp->__anon1.member.member->string;

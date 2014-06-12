@@ -93,10 +93,10 @@ struct __ecereNameSpace__ecere__com__Class * next;
 const char *  name;
 int offset;
 int structSize;
-int (* *  _vTbl)();
+void * *  _vTbl;
 int vTblSize;
-int (*  Constructor)(struct __ecereNameSpace__ecere__com__Instance *);
-void (*  Destructor)(struct __ecereNameSpace__ecere__com__Instance *);
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
 int offsetClass;
 int sizeClass;
 struct __ecereNameSpace__ecere__com__Class * base;
@@ -192,7 +192,7 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 struct __ecereNameSpace__ecere__com__Instance
 {
-int (* *  _vTbl)();
+void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
 } __attribute__ ((gcc_struct));
@@ -325,19 +325,19 @@ int __internalValue001;
 int __internalValue000;
 int a;
 
-((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, &a, 0, 0, 0);
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnFree])(__ecereClass_int, &a);
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, &a, __extension__ ({
+((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, (void *)&a, 0, 0, 0);
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnFree])(__ecereClass_int, (void *)&a);
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, (void *)&a, __extension__ ({
 __internalValue000 = 0;
 &__internalValue000;
 }));
-((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, &a, __extension__ ({
+((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, (void *)&a, __extension__ ({
 __internalValue001 = 0;
 &__internalValue001;
 }));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * window, void *  object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSaveEdit])(__ecereClass_int, &a, (((void *)0)), 0);
-((struct __ecereNameSpace__ecere__com__Instance * (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnEdit])(__ecereClass_int, &a, (((void *)0)), (((void *)0)), 0, 0, 0, 20, 0);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, &a, (((void *)0)));
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * window, void *  object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSaveEdit])(__ecereClass_int, (void *)&a, (((void *)0)), 0);
+((struct __ecereNameSpace__ecere__com__Instance * (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * dataBox, struct __ecereNameSpace__ecere__com__Instance * obsolete, int x, int y, int w, int h, void *  userData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnEdit])(__ecereClass_int, (void *)&a, (((void *)0)), (((void *)0)), 0, 0, 0, 20, 0);
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(__ecereClass_int, (void *)&a, (((void *)0)));
 }
 
 typedef __builtin_va_list va_list;
@@ -1515,7 +1515,7 @@ struct __ecereNameSpace__ecere__com__DataValue value =
 
 if(memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString] == _class->_vTbl[__ecereVMethodID_class_OnGetDataFromString])
 {
-if(!__ecereNameSpace__ecere__com__OnGetDataFromString(memberType, &value, memberString))
+if(!__ecereNameSpace__ecere__com__OnGetDataFromString(memberType, (void **)&value, memberString))
 result = 0;
 }
 else if(!((unsigned int (*)(void *, void *, const char *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, &value, memberString))
