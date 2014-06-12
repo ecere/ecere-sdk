@@ -3611,7 +3611,7 @@ bool GetInstalledFileOrFolder(const char * subDir, const char * name, char * pat
 #else
    if(!found)
    {
-      byte * tokens[256];
+      char * tokens[256];
       int c, numTokens;
 
       GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
