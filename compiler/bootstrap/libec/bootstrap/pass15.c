@@ -18887,6 +18887,8 @@ DeclareFunction(function, name);
 
 extern struct __ecereNameSpace__ecere__com__Instance * GetPrivateModule(void);
 
+extern unsigned int memoryGuard;
+
 void ComputeDataTypes()
 {
 struct External * external;
@@ -18957,6 +18959,11 @@ DeclareFunctionUtil("eInstance_IncRef");
 DeclareFunctionUtil("eInstance_StopWatching");
 DeclareFunctionUtil("eInstance_Watch");
 DeclareFunctionUtil("eInstance_FireWatchers");
+if(memoryGuard)
+{
+DeclareFunctionUtil("MemoryGuard_PushLoc");
+DeclareFunctionUtil("MemoryGuard_PopLoc");
+}
 DeclareStruct("ecere::com::Class", 0);
 DeclareStruct("ecere::com::Instance", 0);
 DeclareStruct("ecere::com::Property", 0);

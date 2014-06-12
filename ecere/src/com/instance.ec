@@ -32,10 +32,11 @@ import "Mutex"
 #ifdef MEMINFO
 import "Thread"
 static define MAX_MEMORY_LOC = 40;
+static define MAX_STACK_FRAMES = 1000;
 
 static class MemStack : BTNode
 {
-   const char * frames[1000];
+   const char * frames[MAX_STACK_FRAMES];
    int pos;
    bool recurse;
 };
@@ -153,10 +154,8 @@ public dllexport void MemoryGuard_PushLoc(const char * loc)
       stack.key = GetCurrentThreadID();
       memStacks.Add(stack);
    }
-   if(stack.pos < 1000)
+   if(stack.pos < MAX_STACK_FRAMES)
       stack.frames[stack.pos++] = loc;
-   else
-      printf("");
    memMutex.Release();
 #endif
 }
@@ -171,8 +170,6 @@ public dllexport void MemoryGuard_PopLoc()
    {
       stack.pos--;
    }
-   else
-      printf("");
    memMutex.Release();
 #endif
 }
@@ -628,8 +625,8 @@ static class MemInfo : BTNode //struct
    bool freed;
    const char * _class;
    uint id;
-   const char * allocLoc[MAX_MEMORY_LOC];
-   const char * freeLoc[MAX_MEMORY_LOC];
+   char * allocLoc[MAX_MEMORY_LOC];
+   char * freeLoc[MAX_MEMORY_LOC];
    bool internal;
 
    void OutputStacks(bool showFree)
@@ -663,13 +660,15 @@ static BinaryTree memBlocks;
 bool recurse = false;
 static int blockID;
 //Class allocateClass;
-const char * allocateClass;
+char * allocateClass;
 bool allocateInternal;
 
 #endif
 
 static uint TOTAL_MEM = 0;
+#ifndef MEMINFO
 static uint OUTSIDE_MEM = 0;
+#endif
 
 #if !defined(ECERE_BOOTSTRAP)
 static Mutex memMutex { };
@@ -1046,6 +1045,7 @@ private struct BlockPool
    }
 };
 
+#ifndef MEMINFO
 static BlockPool * pools; //[NUM_POOLS];
 
 /*static uint PosFibonacci(uint number)
@@ -1096,6 +1096,7 @@ static uint NextFibonacci(uint number)
    }
 }
 */
+
 static uint log1_5i(uint number)
 {
    uint pos;
@@ -1137,6 +1138,7 @@ static uint pow1_5i(uint number)
    }
    return (uint)current;
 }
+#endif
 
 // -- Math Helpers ---
 public uint log2i(uint number)
@@ -1154,6 +1156,7 @@ public uint pow2i(uint number)
    return 1<<log2i(number);
 }
 
+#ifndef MEMINFO
 static bool memoryInitialized = false;
 static void InitMemory()
 {
@@ -1177,7 +1180,9 @@ static void InitMemory()
          pools[c].Expand(Max(1, expansion));
    }
 }
+#endif
 
+#ifndef MEMINFO
 static void * _mymalloc(unsigned int size)
 {
    MemBlock block = null;
@@ -1216,6 +1221,7 @@ static void * _mycalloc(int n, unsigned int size)
       memset(pointer, 0, n*size);
    return pointer;
 }
+
 
 static void _myfree(void * pointer)
 {
@@ -1346,6 +1352,7 @@ static void * _mycrealloc(void * pointer, unsigned int size)
    }
    return newPointer;
 }
+#endif
 
 #ifndef MEMINFO
 #undef realloc
@@ -1858,7 +1865,7 @@ public void CheckMemory()
       }
    }
 
-   while(block = (MemInfo)memBlocks.root)
+   while((block = (MemInfo)memBlocks.root))
    {
       byte * address;
       int c;
@@ -1906,7 +1913,7 @@ public void CheckMemory()
    printf("Memory Check Completed.\n");
 #if defined(__WIN32__) && !defined(ECERE_BOOTSTRAP)
    if(memoryErrorsCount)
-      getch();
+      system("pause");
 #endif
 #endif
 }

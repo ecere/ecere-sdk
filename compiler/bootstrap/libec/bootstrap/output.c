@@ -1973,6 +1973,8 @@ extern void ListAdd(struct __ecereNameSpace__ecere__sys__OldList * list, void * 
 
 extern struct Specifier * MkSpecifierName(const char *  name);
 
+extern char *  strcpy(char * , const char * );
+
 extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 extern struct TypeName * MkTypeName(struct __ecereNameSpace__ecere__sys__OldList * qualifiers, struct Declarator * declarator);
@@ -2400,6 +2402,9 @@ decl = MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal"));
 }
 else
 {
+if(returnType->passAsTemplate)
+strcpy(string, "uint64");
+else
 PrintType(returnType, string, returnType->kind == 18 ? 1 : 0, 1);
 decl = SpecDeclFromString(string, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
 }
@@ -3315,8 +3320,6 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 OutputInitializer(decl->initializer, f);
 }
 }
-
-extern char *  strcpy(char * , const char * );
 
 static void OutputDeclaration(struct Declaration * decl, struct __ecereNameSpace__ecere__com__Instance * f)
 {

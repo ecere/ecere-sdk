@@ -13236,6 +13236,11 @@ void ComputeDataTypes()
    DeclareFunctionUtil("eInstance_StopWatching");
    DeclareFunctionUtil("eInstance_Watch");
    DeclareFunctionUtil("eInstance_FireWatchers");
+   if(memoryGuard)
+   {
+      DeclareFunctionUtil("MemoryGuard_PushLoc");
+      DeclareFunctionUtil("MemoryGuard_PopLoc");
+   }
 
    DeclareStruct("ecere::com::Class", false);
    DeclareStruct("ecere::com::Instance", false);

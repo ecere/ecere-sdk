@@ -625,7 +625,10 @@ static void OutputStatement(Statement stmt, File f)
                else
                {
                   // Printing 'name' as a hack when we're dealing with typedefs with extended attributes
-                  PrintType /*NoConst*/(returnType, string, returnType.kind == dummyType ? true : false, true);
+                  if(returnType.passAsTemplate)
+                     strcpy(string, "uint64");
+                  else
+                     PrintType /*NoConst*/(returnType, string, returnType.kind == dummyType ? true : false, true);
                   decl = SpecDeclFromString(string, specs, MkDeclaratorIdentifier(MkIdentifier("__ecereReturnVal")));
                }
 
