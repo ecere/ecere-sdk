@@ -1253,7 +1253,7 @@ class Debugger
 
    void ChangeWatch(DataRow row, char * expression)
    {
-      Watch wh = (Watch)row.tag;
+      Watch wh = (Watch)(intptr)row.tag;
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::ChangeWatch(", expression, ")");
       if(wh)
       {
@@ -1270,7 +1270,7 @@ class Debugger
       else if(expression)
       {
          wh = Watch { };
-         row.tag = (int64)wh;
+         row.tag = (int64)(intptr)wh;
          ide.workspace.watches.Add(wh);
          wh.row = row;
          wh.expression = CopyString(expression);
@@ -1290,7 +1290,7 @@ class Debugger
       //_dpl2(_dpct, dplchan::debuggerCall, 0, "Debugger::MoveIcons()");
       for(bpLink = ide.workspace.breakpoints.first; bpLink; bpLink = next)
       {
-         Breakpoint bp = (Breakpoint)bpLink.data;
+         Breakpoint bp = (Breakpoint)(intptr)bpLink.data;
          next = bpLink.next;
 
          if(bp.type == user && bp.absoluteFilePath && !fstrcmp(bp.absoluteFilePath, absoluteFilePath))

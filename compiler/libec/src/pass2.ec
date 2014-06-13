@@ -593,6 +593,7 @@ static void ProcessExpression(Expression exp)
                Class c = memberExp.index.exp.expType._class.registered;
                if(strcmp((c.templateClass ? c.templateClass : c).name, "Array"))
                {
+                  exp.op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), MkExpBrackets(MkListOne(exp.op.exp2)));
                   exp.op.exp2 = MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpBrackets(MkListOne(exp.op.exp2)))));
                   isIndexedContainerAssignment = true;
                }
@@ -749,6 +750,8 @@ static void ProcessExpression(Expression exp)
                                  ListAdd(exp.call.arguments, MkExpString(s));
                                  delete s;
                               }
+                              if(value.expType.isPointerType)
+                                 value = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("intptr")), null), value);
                               ListAdd(exp.call.arguments, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), value));
 
                               FreeIdentifier(id);
@@ -1244,7 +1247,7 @@ static void ProcessExpression(Expression exp)
                      MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))),
                         // array
                         MkListOne(
-                           MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), CopyExpression(exp.op.exp2))))),
+                           MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), CopyExpression(exp.op.exp2)))))),
 
                      // ((class.size == 1) ?
                      MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))),
@@ -1475,9 +1478,9 @@ static void ProcessExpression(Expression exp)
                   // ((class.type == structClass) ?
                   MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(MkExpMember(CopyExpression(classExp), MkIdentifier("type")), EQ_OP, MkExpIdentifier(MkIdentifier("structClass"))))),
                      // ((byte *)array) + (i) * class.size
-                     MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpBrackets(MkListOne(MkExpOp(
+                     MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), null), MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), MkExpBrackets(MkListOne(MkExpOp(
                         MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), CopyExpression(exp.index.exp)))), '+',
-                        MkExpOp(MkExpBrackets(CopyList(exp.index.index, CopyExpression)), '*', CopyExpression(sizeExp))))))),
+                        MkExpOp(MkExpBrackets(CopyList(exp.index.index, CopyExpression)), '*', CopyExpression(sizeExp)))))))),
 
                   // ((class.size == 1) ?
                   MkExpBrackets(MkListOne(MkExpCondition(MkExpBrackets(MkListOne(MkExpOp(CopyExpression(sizeExp), EQ_OP, MkExpConstant("1")))),
@@ -2667,6 +2670,8 @@ static void ProcessExpression(Expression exp)
                      else
                         exp.cast.typeName = QMkType("uint64", null);
                      exp.cast.exp = MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_GetProperty")), args);
+                     if(exp.expType.isPointerType)
+                        exp.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), exp.cast.exp);
 
                      ListAdd(args, classExp);
                      {
@@ -3112,13 +3117,15 @@ static void ProcessExpression(Expression exp)
       if((!exp.expType || exp.expType.kind != templateType || nbExp.type != castExp) && !exp.usage.usageRef &&
          (!exp.destType || (!exp.destType.truth && (exp.destType.kind != templateType || (exp.destType.templateParameter && (exp.destType.templateParameter.dataTypeString || exp.destType.templateParameter.dataType))))) &&
          (exp.usage.usageDelete || exp.usage.usageGet || exp.usage.usageArg) &&
-         (!exp.destType || (!exp.destType.passAsTemplate && exp.expType && (exp.expType.kind != pointerType || exp.destType.kind == pointerType) && (exp.destType.kind != pointerType || exp.expType.kind == pointerType))) &&
+         (!exp.destType || (!exp.destType.passAsTemplate && exp.expType && (exp.expType.kind != pointerType || (exp.destType.kind == pointerType || exp.destType.kind == intPtrType)) && ((exp.destType.kind != pointerType && exp.destType.kind != intPtrType) || exp.expType.kind == pointerType))) &&
          !inner.needCast && inner.type != opExp)
       {
          Expression e = MoveExpContents(exp);
          Declarator decl;
          OldList * specs = MkList();
          char typeString[1024];
+         bool castingToDest = false;
+         bool pointerCastExp;
 
          typeString[0] = '\0';
 
@@ -3148,6 +3155,8 @@ static void ProcessExpression(Expression exp)
                specs = CopyList(exp.destType.templateParameter.dataType.specifiers, CopySpecifier);
                decl = CopyDeclarator(exp.destType.templateParameter.dataType.decl);
             }
+
+            castingToDest = true;
          }
 
          e.destType = exp.destType;
@@ -3155,7 +3164,28 @@ static void ProcessExpression(Expression exp)
             exp.destType.refCount++;
 
          exp.type = bracketsExp;
+
+         {
+            Specifier spec = specs ? specs->first : null;
+            TemplateParameter tp = (spec && spec.type == templateTypeSpecifier) ? spec.templateParameter : null;
+            pointerCastExp =
+               (spec.type == nameSpecifier && strcmp(spec.name, "uint64")) ||
+               (decl && decl.type == pointerDeclarator) ||
+               (tp && tp.dataType &&
+                  ( (tp.dataType.decl && tp.dataType.decl.type == pointerDeclarator) ||
+                    (tp.dataType.specifiers && ((Specifier)tp.dataType.specifiers->first).type == nameSpecifier && strcmp(((Specifier)tp.dataType.specifiers->first).name, "uint64")) ) )  ||
+               (castingToDest ? exp.destType.isPointerType : exp.expType.isPointerType);
+         }
+
+         if(pointerCastExp)
+         {
+            e = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), MkExpBrackets(MkListOne(e)));
+            e.needTemplateCast = 2;
+         }
          exp.list = MkListOne(MkExpCast(MkTypeName(specs, decl), MkExpBrackets(MkListOne(e))));
+         if(exp.destType && pointerCastExp == (exp.destType.passAsTemplate ||
+            (!exp.destType.isPointerType || (exp.destType.kind == templateType && (!exp.destType.templateParameter || (!exp.destType.templateParameter.dataType && !exp.destType.templateParameter.dataTypeString))))))
+            exp.list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), decl), MkExpBrackets(exp.list)));
          exp.needTemplateCast = 2;
       }
    }

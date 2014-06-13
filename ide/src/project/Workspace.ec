@@ -555,7 +555,7 @@ public:
 
    void ChangeBreakpoint(DataRow row, const char * location)
    {
-      Breakpoint bp = (Breakpoint)row.tag;
+      Breakpoint bp = (Breakpoint)(intptr)row.tag;
       if(bp)
       {
          char * currentLoc = bp.CopyUserLocationString();
@@ -590,7 +590,7 @@ public:
 
    void ChangeBreakpointIgnore(DataRow row, int ignore)
    {
-      Breakpoint bp = (Breakpoint)row.tag;
+      Breakpoint bp = (Breakpoint)(intptr)row.tag;
       if(bp)
       {
          bp.ignore = ignore;
@@ -600,7 +600,7 @@ public:
 
    void ChangeBreakpointLevel(DataRow row, int level)
    {
-      Breakpoint bp = (Breakpoint)row.tag;
+      Breakpoint bp = (Breakpoint)(intptr)row.tag;
       if(bp)
       {
          bp.level = level;
@@ -610,7 +610,7 @@ public:
 
    void ChangeBreakpointCondition(DataRow row, const char * condition)
    {
-      Breakpoint bp = (Breakpoint)row.tag;
+      Breakpoint bp = (Breakpoint)(intptr)row.tag;
       if(bp && !(!bp.condition && !(condition && condition[0])))
       {
          if(!bp.condition)
@@ -684,7 +684,7 @@ public:
       Link bpLink, next;
       for(bpLink = breakpoints.first; bpLink; bpLink = next)
       {
-         Breakpoint bp = (Breakpoint)bpLink.data;
+         Breakpoint bp = (Breakpoint)(intptr)bpLink.data;
          next = bpLink.next;
 
          if(bp.type == user)

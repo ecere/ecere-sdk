@@ -1617,9 +1617,17 @@ FreeType(src);
 
 extern void FreeExpContents(struct Expression * exp);
 
+extern struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression);
+
+extern struct Specifier * MkSpecifierName(const char *  name);
+
 static void InstDeclPassStatement(struct Statement * stmt);
 
 static void InstDeclPassInitializer(struct Initializer * init);
+
+unsigned int __ecereProp_Type_Get_isPointerType(struct Type * this);
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType;
 
 static void InstDeclPassExpression(struct Expression * exp)
 {
@@ -1732,9 +1740,18 @@ InstDeclPassExpression(exp);
 }
 else
 {
+if(exp->expType && exp->expType->kind == 13)
+{
+if(exp->__anon1.cast.exp && exp->__anon1.cast.exp->expType && exp->__anon1.cast.exp->expType->kind == 20 && !__ecereProp_Type_Get_isPointerType(exp->__anon1.cast.exp->expType))
+exp->__anon1.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), exp->__anon1.cast.exp);
+}
 InstDeclPassTypeName(exp->__anon1.cast.typeName, ((unsigned int)((exp->usage & 0x4) >> 2)));
 if(exp->__anon1.cast.exp)
+{
+if(exp->expType && exp->expType->kind == 20 && exp->destType && (exp->destType->passAsTemplate || (!exp->destType->__anon1.templateParameter || (!exp->destType->__anon1.templateParameter->__anon1.dataType && !exp->destType->__anon1.templateParameter->dataTypeString))) && exp->__anon1.cast.exp->expType && !exp->__anon1.cast.exp->expType->passAsTemplate && __ecereProp_Type_Get_isPointerType(exp->__anon1.cast.exp->expType))
+exp->__anon1.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), exp->__anon1.cast.exp);
 InstDeclPassExpression(exp->__anon1.cast.exp);
+}
 }
 break;
 }
@@ -1773,7 +1790,10 @@ switch(init->type)
 {
 case 0:
 if(init->__anon1.exp)
+{
 InstDeclPassExpression(init->__anon1.exp);
+AddPointerCast(init->__anon1.exp);
+}
 break;
 case 1:
 {

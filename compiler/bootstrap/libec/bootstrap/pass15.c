@@ -5748,7 +5748,7 @@ tempType->truth = source->truth;
 tempType->classObjectType = source->classObjectType;
 if(tempType->__anon1._class)
 MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 1, 1, 0, 0, warnConst);
-if(conversions->last)
+if(conversions && conversions->last)
 {
 ((struct Conversion *)conversions->last)->resultType = dest;
 dest->refCount++;
@@ -10956,7 +10956,7 @@ type = type->__anon1._class->__anon1.registered->dataType;
 }
 if(exp->type == 3 && op.kind == 13)
 {
-op.__anon1.ui64 = (uint64)exp->__anon1.__anon2.string;
+op.__anon1.ui64 = (uint64)(uintptr_t)exp->__anon1.__anon2.string;
 op.kind = 13;
 op.ops = uint64Ops;
 }
@@ -12952,6 +12952,10 @@ extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__
 
 extern struct Expression * MkExpMember(struct Expression * expression, struct Identifier * member);
 
+unsigned int __ecereProp_Type_Get_isPointerType(struct Type * this);
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType;
+
 void CheckTemplateTypes(struct Expression * exp)
 {
 struct Expression * nbExp = GetNonBracketsExp(exp);
@@ -13000,6 +13004,9 @@ break;
 default:
 exp->type = 11;
 exp->__anon1.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0)));
+if(__ecereProp_Type_Get_isPointerType(exp->expType))
+exp->__anon1.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), MkExpBrackets(MkListOne(newExp)));
+else
 exp->__anon1.cast.exp = MkExpBrackets(MkListOne(newExp));
 exp->needCast = 1;
 break;
@@ -13051,6 +13058,8 @@ case 8:
 if(exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered && exp->expType->__anon1._class->__anon1.registered->type == 1)
 {
 exp->type = 5;
+if(__ecereProp_Type_Get_isPointerType(exp->expType))
+newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), newExp);
 exp->__anon1.list = MkListOne(MkExpOp((((void *)0)), '*', MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp->expType->__anon1._class->string)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), newExp)));
 ProcessExpressionType((*exp->__anon1.list).first);
 break;
@@ -13058,6 +13067,13 @@ break;
 else
 {
 exp->type = 5;
+if(__ecereProp_Type_Get_isPointerType(exp->expType))
+{
+exp->needTemplateCast = 2;
+newExp->needCast = 1;
+newExp->needTemplateCast = 2;
+newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), newExp);
+}
 exp->__anon1.list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp->expType->__anon1._class->string)), (((void *)0))), newExp));
 exp->needTemplateCast = 2;
 newExp->needCast = 1;
@@ -13728,7 +13744,7 @@ exp->isConstant = 1;
 if(classProp->dataType->kind == 13 && classProp->dataType->__anon1.type->kind == 1)
 {
 exp->type = 3;
-exp->__anon1.__anon1.constant = QMkString((char *)classProp->Get(_class));
+exp->__anon1.__anon1.constant = QMkString((char *)(uintptr_t)classProp->Get(_class));
 }
 else
 {
@@ -16164,6 +16180,8 @@ exp->expType = ProcessTypeString(templateString, 0);
 FinishTemplatesContext(context);
 }
 }
+if(!__ecereProp_Type_Get_isPointerType(expMember->expType))
+expMember = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), expMember);
 exp->type = 5;
 exp->__anon1.list = MkListOne(MkExpOp((((void *)0)), '*', MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), decl)), MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), expMember))), '+', MkExpOp(MkExpMember(MkExpMember(argExp, MkIdentifier("member")), MkIdentifier("offset")), '+', MkExpMember(MkExpMember(MkExpMember(CopyExpression(argExp), MkIdentifier("member")), MkIdentifier("_class")), MkIdentifier("offset")))))))));
 }

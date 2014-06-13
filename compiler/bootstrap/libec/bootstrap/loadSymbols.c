@@ -1793,7 +1793,7 @@ if(!inCompiler && !inPreCompiler && !inSymbolGen)
 {
 struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0, it.pointer = (void *)0, __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(&it, loadedModules), it);
 
-if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)(&it), (uint64)(name), 0))
+if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)(&it), (uint64)(uintptr_t)(name), 0))
 {
 struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name, importAccess);
 
@@ -1804,22 +1804,22 @@ list = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(firstModule));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(uintptr_t)(firstModule));
 __extension__ ({
 struct __ecereNameSpace__ecere__com__Iterator __internalIterator =
 {
 loadedModules, 0
 };
 
-__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(name)), 1);
-__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)(list)));
+__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(&__internalIterator, ((uint64)(uintptr_t)(name)), 1);
+__ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(&__internalIterator, ((uint64)((uintptr_t)(list))));
 });
 }
 else
 skipLoad = 1;
 }
 else
-list = ((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it)));
+list = ((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data((void *)(&it)));
 }
 if(!skipLoad)
 {
@@ -1833,7 +1833,7 @@ if(list)
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = list;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(loadedModule));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(list, (uint64)(uintptr_t)(loadedModule));
 }
 }
 }
@@ -1875,7 +1875,7 @@ while(__ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(&dir))
 {
 char configDir[274];
 
-strcpy(symFile, ((char * )(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&dir))));
+strcpy(symFile, ((char * )((uintptr_t)(__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&dir)))));
 __ecereNameSpace__ecere__sys__PathCat(symFile, "obj");
 sprintf(configDir, "debug.%s", (__runtimePlatform == 1) ? "win32" : (__runtimePlatform == 3) ? "apple" : "linux");
 __ecereNameSpace__ecere__sys__PathCat(symFile, configDir);

@@ -547,21 +547,21 @@ static int IndexCompareRows(IndexBinaryTree tree, uint r1, uint r2)
          int fieldResult = 0;
          if(type.type == structClass)
          {
-            data1 = (int64)new0 byte[type.structSize];
-            data2 = (int64)new0 byte[type.structSize];
+            data1 = (int64)(intptr)new0 byte[type.structSize];
+            data2 = (int64)(intptr)new0 byte[type.structSize];
          }
-         ((bool (*)())(void *)row1.GetData)(row1, field, type, (type.type == structClass) ? (void *)data1 : &data1);
-         ((bool (*)())(void *)row2.GetData)(row2, field, type, (type.type == structClass) ? (void *)data2 : &data2);
+         ((bool (*)())(void *)row1.GetData)(row1, field, type, (type.type == structClass) ? (void *)(intptr)data1 : &data1);
+         ((bool (*)())(void *)row2.GetData)(row2, field, type, (type.type == structClass) ? (void *)(intptr)data2 : &data2);
          fieldResult = order * ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
-            (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &data1 : (void *)data1,
-            (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &data2 : (void *)data2);
-         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data1);
-         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data2);
+            (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &data1 : (void *)(intptr)data1,
+            (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &data2 : (void *)(intptr)data2);
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data1);
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data2);
          if(field.type.type == structClass)
          {
-            void * dataPtr = (void *)data1;
+            void * dataPtr = (void *)(intptr)data1;
             delete dataPtr;
-            dataPtr = (void *)data2;
+            dataPtr = (void *)(intptr)data2;
             delete dataPtr;
          }
          if(fieldResult)
@@ -1188,18 +1188,18 @@ static class EDBRow : DriverRow
             {
                f.Seek(offsets[field.num-1], start);
                if(type.type == structClass)
-                  read = (int64)new0 byte[type.structSize];
-               ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, (type.type == structClass) ? (void *)read : &read, f);
+                  read = (int64)(intptr)new0 byte[type.structSize];
+               ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, (type.type == structClass) ? (void *)(intptr)read : &read, f);
             }
             //if(data._class == type)
             {
                result = ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
-                     (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &read : (void *)read, data);
+                     (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &read : (void *)(intptr)read, data);
             }
-            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)read);
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)read);
             if(type.type == structClass)
             {
-               void * dataPtr = (void *)read;
+               void * dataPtr = (void *)(intptr)read;
                delete dataPtr;
             }
             delete offsets;
@@ -1392,19 +1392,19 @@ static class EDBRow : DriverRow
                   f.Seek(offsets[field.num-1], start);
 
                   if(type.type == structClass)
-                     read = (int64)new0 byte[type.structSize];
-                  ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, (type.type == structClass) ? (void *)read : &read, f);
+                     read = (int64)(intptr)new0 byte[type.structSize];
+                  ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, (type.type == structClass) ? (void *)(intptr)read : &read, f);
                }
                //if(data._class == type)
                {
                   result = order * ((int (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnCompare])(type,
-                        (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &read : (void *)read,
-                        (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &findData[c].value.i64 : (void *)findData[c].value.i64);
+                        (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &read : (void *)(intptr)read,
+                        (type.type == systemClass || type.type == bitClass || type.type == enumClass || type.type == unitClass) ? &findData[c].value.i64 : (void *)(intptr)findData[c].value.i64);
                }
-               ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)read);
+               ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)read);
                if(type.type == structClass)
                {
-                  void * dataPtr = (void *)read;
+                  void * dataPtr = (void *)(intptr)read;
                   delete dataPtr;
                }
 

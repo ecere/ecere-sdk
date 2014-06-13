@@ -76,7 +76,7 @@ class ToolBox : Window
                if(control != arrowControl && !control.nonClient)
                {
                   if(control.checked)
-                     selectedControl = (char *)control.id;
+                     selectedControl = (char *)(intptr)control.id;
                   control.Destroy(0);
                }
             }
@@ -116,7 +116,7 @@ class ToolBox : Window
 
    void AddControl(Class _class)
    {
-      Button control = CreateControl(&controlY, (const char *)eClass_GetProperty(_class, "icon"), _class.name, _class.name);
+      Button control = CreateControl(&controlY, (const char *)(intptr)eClass_GetProperty(_class, "icon"), _class.name, _class.name);
       numControls++;
       if(selectedControl && !strcmp(selectedControl, _class.name))
       {
@@ -160,7 +160,7 @@ class ToolBox : Window
          anchor = Anchor { left = 5, top = *y, right = 5 };
          alignment = left;
          bitmap = { bitmapFile };
-         id = (int64)id;
+         id = (int64)(intptr)id;
 
          bool NotifyPushed(Button control, int x, int y, Modifiers mods)
          {

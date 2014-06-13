@@ -345,7 +345,7 @@ uint64 __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetData(stru
 {
 uint64 * item = (uint64 *)pointer;
 
-return ((((this->type->type == 1) ? ((uint64)item) : ((this->type->typeSize == 1) ? *((unsigned char *)item) : ((this->type->typeSize == 2) ? *((unsigned short *)item) : ((this->type->typeSize == 4) ? *((unsigned int *)item) : *(item)))))));
+return ((((this->type->type == 1) ? ((uint64)(uintptr_t)item) : ((this->type->typeSize == 1) ? *((unsigned char *)item) : ((this->type->typeSize == 2) ? *((unsigned short *)item) : ((this->type->typeSize == 4) ? *((unsigned int *)item) : *(item)))))));
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_SetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data)
@@ -404,7 +404,7 @@ for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ec
 {
 uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData])(this, i);
 struct __ecereNameSpace__ecere__com__Class * Dclass = this->type;
-int result = ((int (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare])(Dclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &value : (void *)value, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &data : (void *)data);
+int result = ((int (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare])(Dclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &value : (void *)(uintptr_t)value, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &data : (void *)(uintptr_t)data);
 
 if(!result)
 return i;
@@ -422,7 +422,7 @@ void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Free(struct __
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 
 for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext])(this, i))
-((void (*)(void *, void *))(void *)this->type->_vTbl[__ecereVMethodID_class_OnFree])(this->type, (void *)((uint64 (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData])(this, i));
+((void (*)(void *, void *))(void *)this->type->_vTbl[__ecereVMethodID_class_OnFree])(this->type, (void *)(uintptr_t)((uint64 (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData])(this, i));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it)

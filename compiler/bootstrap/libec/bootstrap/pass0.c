@@ -1700,9 +1700,9 @@ extern struct Type * ProcessType(struct __ecereNameSpace__ecere__sys__OldList * 
 
 extern struct Context * curContext;
 
-extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
-
 extern struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression);
+
+extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
 
 extern struct Declarator * CopyDeclarator(struct Declarator * declarator);
 
@@ -1725,6 +1725,10 @@ void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(struct __ecereNa
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
 
 void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Clear(struct __ecereNameSpace__ecere__sys__OldList * this);
+
+unsigned int __ecereProp_Type_Get_isPointerType(struct Type * this);
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType;
 
 static void ProcessClass(int classType, struct __ecereNameSpace__ecere__sys__OldList * definitions, struct Symbol * symbol, struct __ecereNameSpace__ecere__sys__OldList * baseSpecs, struct __ecereNameSpace__ecere__sys__OldList * enumValues, struct Location * loc, struct __ecereNameSpace__ecere__sys__OldList * defs, void * after, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators, struct ExtDecl * extDecl)
 {
@@ -2406,6 +2410,7 @@ struct Context * prevCurContext;
 struct __ecereNameSpace__ecere__sys__OldList * specifiers = MkList();
 struct Statement * body = propertyDef->setStmt;
 struct Declarator * ptrDecl;
+struct Expression * e;
 
 strcpy(name, "class::__ecereClassProp_");
 FullClassNameCat(name, symbol->string, 0);
@@ -2422,7 +2427,10 @@ if(propertyDef->symbol->type && propertyDef->symbol->type->kind == 8 && property
 ptrDecl = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value"))));
 else
 ptrDecl = PlugDeclarator(propertyDef->declarator, MkDeclaratorIdentifier(MkIdentifier("value")));
-ListAdd(body->__anon1.compound.declarations, MkDeclaration(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(ptrDecl, MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), CopyDeclarator(propertyDef->declarator)), MkExpIdentifier(MkIdentifier("_value"))))))));
+e = MkExpIdentifier(MkIdentifier("_value"));
+if(__ecereProp_Type_Get_isPointerType(propertyDef->symbol->type))
+e = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), e);
+ListAdd(body->__anon1.compound.declarations, MkDeclaration(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), MkListOne(MkInitDeclarator(ptrDecl, MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef->specifiers, (void *)(CopySpecifier)), CopyDeclarator(propertyDef->declarator)), e))))));
 curContext = prevCurContext;
 {
 struct Symbol * sym = ptrDecl->symbol;

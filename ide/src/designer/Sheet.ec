@@ -519,7 +519,7 @@ class Sheet : Window
                for(compatible = object.compatible.first; compatible; compatible = compatible.next)
                {
                   ClassFunction function = compatible.data;
-                  MenuItem { attachMenu, function.declarator.symbol.string, id = (int64)function, NotifySelect = AttachMethodSelected };
+                  MenuItem { attachMenu, function.declarator.symbol.string, id = (int64)(intptr)function, NotifySelect = AttachMethodSelected };
                }
             }
          }
@@ -542,7 +542,7 @@ class Sheet : Window
                   ClassFunction function = compatible.data;
                   if(function != object.function)
                   {
-                     MenuItem { attachMenu, function.declarator.symbol.string, id = (int64)function, NotifySelect = ReattachMethodSelected };
+                     MenuItem { attachMenu, function.declarator.symbol.string, id = (int64)(intptr)function, NotifySelect = ReattachMethodSelected };
                   }
                }
             }
@@ -721,7 +721,7 @@ class Sheet : Window
    void ListProperties(bool clear)
    {
       DataRow row = dropBox.currentRow;
-      ObjectInfo selected = row ? (ObjectInfo)row.tag : null;
+      ObjectInfo selected = row ? (ObjectInfo)(intptr)row.tag : null;
 
       //int scroll = 0;
       bool categorized = this.categorized.checked;
@@ -824,13 +824,13 @@ class Sheet : Window
 
                         if(clear)
                         {
-                           row = categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop);
+                           row = categorized ? category.row.FindRow((int64)(intptr)prop) : properties.FindRow((int64)(intptr)prop);
                            if(!row)
                               row = categorized ? category.row.AddRow() : properties.AddRow();
-                           row.tag = (int64)prop;
+                           row.tag = (int64)(intptr)prop;
                         }
                         else
-                           row = categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop);
+                           row = categorized ? category.row.FindRow((int64)(intptr)prop) : properties.FindRow((int64)(intptr)prop);
 
                         row.SetData(propertyName, prop.name);
                         row.SetData(propertyValue, info);
@@ -858,10 +858,10 @@ class Sheet : Window
                                     if(clear)
                                     {
                                        subRow = row.AddRow();
-                                       subRow.tag = (int64)subProp;
+                                       subRow.tag = (int64)(intptr)subProp;
                                     }
                                     else
-                                       subRow = row.FindRow((int64)subProp);
+                                       subRow = row.FindRow((int64)(intptr)subProp);
 
                                     subRow.SetData(propertyName, subProp.name);
                                     subRow.SetData(propertyValue, info);
@@ -874,10 +874,10 @@ class Sheet : Window
                                  if(clear)
                                  {
                                     subRow = row.AddRow();
-                                    subRow.tag = (int64)member;
+                                    subRow.tag = (int64)(intptr)member;
                                  }
                                  else
-                                    subRow = row.FindRow((int64)member);
+                                    subRow = row.FindRow((int64)(intptr)member);
 
                                  subRow.SetData(propertyName, member.name);
                                  subRow.SetData(propertyValue, info);
@@ -892,10 +892,10 @@ class Sheet : Window
                                     if(clear)
                                     {
                                        subRow = row.AddRow();
-                                       subRow.tag = (int64)subMember;
+                                       subRow.tag = (int64)(intptr)subMember;
                                     }
                                     else
-                                       subRow = row.FindRow((int64)subMember);
+                                       subRow = row.FindRow((int64)(intptr)subMember);
 
                                     subRow.SetData(propertyName, subMember.name);
                                     subRow.SetData(propertyValue, info);
@@ -930,7 +930,7 @@ class Sheet : Window
                            DataRow row;
                            const char * name = prop.category ? prop.category : $"Misc";
                            Category category = categories.FindName(name, false);
-                           row = category ? (categorized ? category.row.FindRow((int64)prop) : properties.FindRow((int64)prop)) : null;
+                           row = category ? (categorized ? category.row.FindRow((int64)(intptr)prop) : properties.FindRow((int64)(intptr)prop)) : null;
                            properties.currentRow = row;
                            found = true;
                            break;
@@ -972,7 +972,7 @@ class Sheet : Window
 
       row = (DataRow)dropBox.AddRowAfter(after);
 
-      row.tag = (int64)object;
+      row.tag = (int64)(intptr)object;
 
       codeObject =
       {
@@ -983,7 +983,7 @@ class Sheet : Window
       };
 
       if(type != typeClass)
-         bitmap = (char *)eClass_GetProperty(object.instance._class, "icon");
+         bitmap = (char *)(intptr)eClass_GetProperty(object.instance._class, "icon");
       if(bitmap)
       {
          codeObject.bitmap = { bitmap };
@@ -1002,7 +1002,7 @@ class Sheet : Window
 
    void DeleteObject(ObjectInfo object)
    {
-      DataRow row = dropBox.FindRow((int64)object);
+      DataRow row = dropBox.FindRow((int64)(intptr)object);
       if(row)
       {
          CodeObject codeObject = row.GetData(null);
@@ -1017,7 +1017,7 @@ class Sheet : Window
    {
       if(this)
       {
-         DataRow row = dropBox.FindRow((int64)object);
+         DataRow row = dropBox.FindRow((int64)(intptr)object);
          this.object = object ? object.instance : null;
          propertyValue.userData = object ? (void *)object.instance : null;
          dropBox.SelectRow(row);
@@ -1026,7 +1026,7 @@ class Sheet : Window
 
    void RenameObject(ObjectInfo object, const char * name)
    {
-      DataRow row = dropBox.FindRow((int64)object);
+      DataRow row = dropBox.FindRow((int64)(intptr)object);
       CodeObject codeObject = row.GetData(null);
       // Isn't this useless? Shouldn't it be after?
       codeObject.name = name;
@@ -1191,14 +1191,14 @@ class Sheet : Window
 
    bool AttachMethodSelected(MenuItem selection, Modifiers mods)
    {
-      ClassFunction function = (ClassFunction)selection.id;
+      ClassFunction function = (ClassFunction)(intptr)selection.id;
       codeEditor.AttachMethod(attachMethod, function);
       return true;
    }
 
    bool ReattachMethodSelected(MenuItem selection, Modifiers mods)
    {
-      ClassFunction function = (ClassFunction)selection.id;
+      ClassFunction function = (ClassFunction)(intptr)selection.id;
       codeEditor.ReAttachMethod(attachMethod, function);
       return true;
    }
@@ -1237,7 +1237,7 @@ class Sheet : Window
 
    bool AddMethodClicked(Button button, int x, int y, Modifiers mods)
    {
-      DataRow row = (DataRow)button.id;
+      DataRow row = (DataRow)(intptr)button.id;
       CodeObject object = row.GetData(methodName);
       codeEditor.AddMethod(object.method);
       return true;
@@ -1256,11 +1256,11 @@ class Sheet : Window
                bitmap = { ":actions/delete.png", alphaBlend = true },
                anchor = { right = 16, top = y },
                size = { 16, h },
-               id = (int64)row;
+               id = (int64)(intptr)row;
 
                bool NotifyClicked(Button button, int x, int y, Modifiers mods)
                {
-                  CodeObject codeObject = ((DataRow)button.id).GetData(null);
+                  CodeObject codeObject = ((DataRow)(intptr)button.id).GetData(null);
                   bool confirmation = !Code_IsFunctionEmpty(codeObject.function, codeObject.method, codeEditor.selected);
 
                   if(confirmation)
@@ -1309,11 +1309,11 @@ class Sheet : Window
                bitmap = { ":actions/detach.png" },
                anchor = { right = 0, top = y },
                size = { 16, h },
-               id = (int64)row;
+               id = (int64)(intptr)row;
 
                bool NotifyClicked(Button button, int x, int y, Modifiers mods)
                {
-                  DataRow row = (DataRow)button.id;
+                  DataRow row = (DataRow)(intptr)button.id;
                   CodeObject object = row.GetData(methodName);
 
                   codeEditor.DetachMethod(object.method, object.function, object.overriden);
@@ -1335,12 +1335,12 @@ class Sheet : Window
                bitmap = { ":actions/attach.png" },
                anchor = { right = 0, top = y },
                size = { 16, h },
-               id = (int64)row;
+               id = (int64)(intptr)row;
 
                bool NotifyPushed(Button button, int x, int y, Modifiers mods)
                {
                   // Create menu
-                  DataRow row = (DataRow)button.id;
+                  DataRow row = (DataRow)(intptr)button.id;
                   CodeObject object = row.GetData(methodName);
                   OldLink compatible;
                   PopupMenu popupMenu;
@@ -1350,7 +1350,7 @@ class Sheet : Window
                   for(compatible = object.compatible.first; compatible; compatible = compatible.next)
                   {
                      ClassFunction function = compatible.data;
-                     MenuItem { menu, function.declarator.symbol.string, id = (int64)function, NotifySelect = AttachMethodSelected };
+                     MenuItem { menu, function.declarator.symbol.string, id = (int64)(intptr)function, NotifySelect = AttachMethodSelected };
                   }
                   attachMethod = object.method;
 

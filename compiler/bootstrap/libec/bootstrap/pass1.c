@@ -2874,7 +2874,7 @@ else if(def->type == 11)
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = classPropValues;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(classPropValues, (uint64)(__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(classPropValues, (uint64)(uintptr_t)(__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassPropertyValue);
 
 ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->regClass = regClass, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->id = def->__anon1.__anon1.id, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->exp = def->__anon1.__anon1.initializer->__anon1.exp, __ecereInstance1;
@@ -2922,6 +2922,10 @@ uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecer
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
+
+unsigned int __ecereProp_Type_Get_isPointerType(struct Type * this);
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
@@ -3117,20 +3121,21 @@ struct __ecereNameSpace__ecere__sys__OldList * findClassArgs = MkList();
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
 struct Statement * compoundStmt;
 char * s;
+struct Expression * e;
 
 if(__extension__ ({
-char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
 })->exp)
 yylloc = __extension__ ({
-char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
 })->exp->loc;
 ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
 s = QMkString(__extension__ ({
-char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
 })->regClass->name);
@@ -3138,17 +3143,21 @@ ListAdd(findClassArgs, MkExpString(s));
 (__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 ListAdd(args, MkExpIdentifier(MkIdentifier("_class")));
 s = QMkString(__extension__ ({
-char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
 })->id->string);
 ListAdd(args, MkExpString(s));
 (__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
-ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), (((void *)0))), __extension__ ({
-char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+e = __extension__ ({
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
-})->exp));
+})->exp;
+ProcessExpressionType(e);
+if(__ecereProp_Type_Get_isPointerType(e->expType))
+e = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("intptr")), (((void *)0))), e);
+ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), (((void *)0))), e));
 compoundStmt = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("_class")), MkInitializerAssignment(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eSystem_FindClass")), findClassArgs)))))), MkListOne(MkExpressionStmt(MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eClass_SetProperty")), args)))));
 compoundStmt->__anon1.compound.context = __extension__ ({
 struct Context * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);

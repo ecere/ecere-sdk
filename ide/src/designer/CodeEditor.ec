@@ -5710,7 +5710,7 @@ class CodeEditor : Window
 
                if(subMember.dataType && subMember.dataType.kind == classType && subMember.dataType._class)
                {
-                  char * bitmapName = (char *)eClass_GetProperty(subMember.dataType._class.registered, "icon");
+                  char * bitmapName = (char *)(intptr)eClass_GetProperty(subMember.dataType._class.registered, "icon");
                   if(bitmapName)
                   {
                      bitmap = { bitmapName };
@@ -5808,7 +5808,7 @@ class CodeEditor : Window
 
                      if(member.dataType && member.dataType.kind == classType && member.dataType._class)
                      {
-                        char * bitmapName = (char *)eClass_GetProperty(member.dataType._class.registered, "icon");
+                        char * bitmapName = (char *)(intptr)eClass_GetProperty(member.dataType._class.registered, "icon");
                         if(bitmapName)
                         {
                            bitmap = { bitmapName };
@@ -5920,7 +5920,7 @@ class CodeEditor : Window
 
                   if(member.dataType && member.dataType.kind == classType && member.dataType._class)
                   {
-                     char * bitmapName = (char *)eClass_GetProperty(member.dataType._class.registered, "icon");
+                     char * bitmapName = (char *)(intptr)eClass_GetProperty(member.dataType._class.registered, "icon");
                      if(bitmapName)
                      {
                         bitmap = { bitmapName };
@@ -6263,7 +6263,7 @@ class CodeEditor : Window
                         BitmapResource bitmap = null;
                         if(symbol.type && symbol.type.kind == classType && symbol.type._class && symbol.type._class)
                         {
-                           char * bitmapName = (char *)eClass_GetProperty(symbol.type._class.registered, "icon");
+                           char * bitmapName = (char *)(intptr)eClass_GetProperty(symbol.type._class.registered, "icon");
                            if(bitmapName)
                            {
                               bitmap = { bitmapName };

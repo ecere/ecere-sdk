@@ -1701,6 +1701,8 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeKind;
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst, * __ecerePropM_Type_specConst;
 
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType, * __ecerePropM_Type_isPointerType;
+
 extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
 
 const char * __ecereMethod_Type_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct Type * this, char * tempString, void * fieldData, unsigned int * needClass)
@@ -1724,6 +1726,50 @@ struct Type * t = this;
 while((t->kind == 13 || t->kind == 12) && t->__anon1.type)
 t = t->__anon1.type;
 return t->constant;
+}
+
+extern int strcmp(const char * , const char * );
+
+unsigned int __ecereProp_Type_Get_isPointerType(struct Type * this)
+{
+if(this)
+{
+if(this->kind == 13 || this->kind == 16 || this->kind == 11 || this->kind == 12 || this->kind == 19)
+return 1;
+else if(this->kind == 8)
+{
+if(this->__anon1._class && this->__anon1._class->__anon1.registered)
+{
+struct __ecereNameSpace__ecere__com__Class * c = this->__anon1._class->__anon1.registered;
+
+if(c->type == 2 || c->type == 3 || c->type == 4 || c->type == 1000)
+return 0;
+}
+return 1;
+}
+else if(this->kind == 20)
+{
+if(this->passAsTemplate)
+return 0;
+if(this->__anon1.templateParameter)
+{
+if(this->__anon1.templateParameter->__anon1.dataType)
+{
+struct Specifier * spec = this->__anon1.templateParameter->__anon1.dataType->specifiers ? (*this->__anon1.templateParameter->__anon1.dataType->specifiers).first : (((void *)0));
+
+if(this->__anon1.templateParameter->__anon1.dataType->decl && this->__anon1.templateParameter->__anon1.dataType->decl->type == 5)
+return 1;
+if(spec && spec->type == 1 && strcmp(spec->__anon1.__anon1.name, "uint64"))
+return 1;
+}
+if(this->__anon1.templateParameter->dataTypeString)
+return 1;
+}
+}
+else
+return 0;
+}
+return 0;
 }
 
 struct OpTable
@@ -1904,8 +1950,6 @@ return numWarnings;
 }
 
 extern char *  __ecereNameSpace__ecere__sys__GetLastDirectory(const char *  string, char *  output);
-
-extern int strcmp(const char * , const char * );
 
 void Compiler_Warning(const char * format, ...)
 {
@@ -3142,6 +3186,9 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "casted", "bool:1", 4,
 __ecerePropM_Type_specConst = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "specConst", "bool", 0, __ecereProp_Type_Get_specConst, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
 __ecereProp_Type_specConst = __ecerePropM_Type_specConst, __ecerePropM_Type_specConst = (void *)0;
+__ecerePropM_Type_isPointerType = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "isPointerType", "bool", 0, __ecereProp_Type_Get_isPointerType, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application)
+__ecereProp_Type_isPointerType = __ecerePropM_Type_isPointerType, __ecerePropM_Type_isPointerType = (void *)0;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "Operand", 0, sizeof(struct Operand), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_Operand = class;
@@ -3217,5 +3264,6 @@ void __ecereUnregisterModule_ecdefs(struct __ecereNameSpace__ecere__com__Instanc
 {
 
 __ecerePropM_Type_specConst = (void *)0;
+__ecerePropM_Type_isPointerType = (void *)0;
 }
 

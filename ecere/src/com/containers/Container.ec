@@ -172,7 +172,7 @@ public:
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, &value,&data);
+            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, &value, &data);
             if(!result)
                return i;
          }
@@ -182,7 +182,7 @@ public:
          for(i = GetFirst(); i; i = GetNext(i))
          {
             D data = GetData(i);
-            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, (const void *) value, (const void *)data);
+            int result = ((int (*)(void *, const void *, const void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass, (const void *)(uintptr) value, (const void *)(uintptr) data);
             if(!result)
                return i;
          }
@@ -280,7 +280,7 @@ public:
 
       channel.Get(count);
       if(Dclass.type == structClass)
-         data = (D)(new byte[Dclass.structSize]);
+         data = (D)(uintptr)(new byte[Dclass.structSize]);
       for(c = 0; c < count; c++)
       {
          ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])

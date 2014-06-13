@@ -498,6 +498,8 @@ struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplatedType;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
 
+struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_isPointerType;
+
 struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst;
 
 struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
@@ -841,6 +843,7 @@ __ecereClass_TemplateDatatype = __ecereNameSpace__ecere__com__eSystem_FindClass(
 __ecereClass_TemplateParameter = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "TemplateParameter");
 __ecereClass_TemplatedType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "TemplatedType");
 __ecereClass_Type = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "Type");
+__ecereProp_Type_isPointerType = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_Type, "isPointerType", module);
 __ecereProp_Type_specConst = _property = __ecereNameSpace__ecere__com__eClass_FindProperty(__ecereClass_Type, "specConst", module);
 __ecereClass_TypeName = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "TypeName");
 __ecereClass_char__PTR_ = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "char *");

@@ -1969,6 +1969,7 @@ public void ProcessClassDefinitions()
          OldList * args = MkList();
          Statement compoundStmt;
          String s;
+         Expression e;
 
          if(v.exp)
             yylloc = v.exp.loc;
@@ -1982,7 +1983,14 @@ public void ProcessClassDefinitions()
          s = QMkString(v.id.string);
          ListAdd(args, MkExpString(s));
          delete s;
-         ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), v.exp));
+         e = v.exp;
+
+         // TOFIX: We're probably missing a dest type here, and might want to handle through same pathway as in pass2's opExp
+         ProcessExpressionType(e);
+         if(e.expType.isPointerType)
+            e = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("intptr")), null), e);
+
+         ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(INT64)), null), e));
          compoundStmt = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifierName("ecere::com::Class")),
                        MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("_class")),
                         MkInitializerAssignment(MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eSystem_FindClass")), findClassArgs)))))),

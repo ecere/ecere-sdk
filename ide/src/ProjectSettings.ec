@@ -292,7 +292,7 @@ class OptionBox<class Z> : CommonControl
    }
 
    property bool visible { set { editor.visible = value; } get { return editor.visible; } }
-   property Window parent { set { editor.parent = value; Window::parent = value; master = value; editor.id = (int64)this; } }
+   property Window parent { set { editor.parent = value; Window::parent = value; master = value; editor.id = (int64)(intptr)this; } }
    property Point position { set { editor.position = value; } }
    property Size size { set { editor.size = value; } }
    property Anchor anchor { set { editor.anchor = value; } }
@@ -309,7 +309,7 @@ class OptionBox<class Z> : CommonControl
 
       bool NotifySelect(MenuItem selection, Modifiers mods)
       {
-         OptionBox ob = (OptionBox)id;
+         OptionBox ob = (OptionBox)(intptr)id;
          if(eClass_IsDerived(ob._class, class(CheckBoxForEnumOptionBox)))
          {
             Window slave;
@@ -328,7 +328,7 @@ class OptionBox<class Z> : CommonControl
 
    bool Window::OptionBox_OnRightButtonDown(int x, int y, Modifiers mods)
    {
-      OptionBox ob = (OptionBox)id;
+      OptionBox ob = (OptionBox)(intptr)id;
       GuiApplication app = ((GuiApplication)__thisModule.application);
       Activate();
       PopupMenu { null, this, menu = ob.clearMenu,
@@ -338,7 +338,7 @@ class OptionBox<class Z> : CommonControl
 
    bool Window::OptionBox_OnKeyDown(Key key, unichar ch)
    {
-      OptionBox ob = (OptionBox)id;
+      OptionBox ob = (OptionBox)(intptr)id;
       if(key == Key { del, ctrl = true } || key == Key { keyPadDelete, ctrl = true })
       {
          ob.Unset();
@@ -732,7 +732,7 @@ class StringOptionBox : OptionBox<String>
    {
       bool NotifyModified(EditBox editBox)
       {
-         ((OptionBox)editBox.id).Retrieve();
+         ((OptionBox)(intptr)editBox.id).Retrieve();
          return true;
       }
 
@@ -782,7 +782,7 @@ class PathOptionBox : OptionBox<String>
       bool NotifyModified(PathBox pathBox)
       {
          FixPathOnPathBoxNotifyModified(pathBox);
-         ((OptionBox)pathBox.id).Retrieve();
+         ((OptionBox)(intptr)pathBox.id).Retrieve();
          return true;
       }
    };
@@ -927,7 +927,7 @@ class StringArrayOptionBox : MultiStringOptionBox
    {
       bool NotifyModified(EditBox editBox)
       {
-         ((OptionBox)editBox.id).Retrieve();
+         ((OptionBox)(intptr)editBox.id).Retrieve();
          return true;
       }
    };
@@ -951,7 +951,7 @@ class StringsArrayOptionBox : MultiStringOptionBox
 
       bool NotifyModified(StringsBox stringsBox)
       {
-         ((OptionBox)stringsBox.id).Retrieve();
+         ((OptionBox)(intptr)stringsBox.id).Retrieve();
          return true;
       }
    };
@@ -1023,11 +1023,11 @@ private:
       browseDialog = { };
       bool NotifyModified(DirectoriesBox dirsBox)
       {
-         const char * switchToKeep = ((DirsArrayOptionBox)dirsBox.id).switchToKeep;
+         const char * switchToKeep = ((DirsArrayOptionBox)(intptr)dirsBox.id).switchToKeep;
          if(switchToKeep && switchToKeep[0])
          {
             bool change = false;
-            int lenSwitchToKeep = ((DirsArrayOptionBox)dirsBox.id).lenSwitchToKeep;
+            int lenSwitchToKeep = ((DirsArrayOptionBox)(intptr)dirsBox.id).lenSwitchToKeep;
             Array<String> dirs { };
             Array<String> previousDirs = dirsBox.strings;
             for(d : previousDirs)
@@ -1059,7 +1059,7 @@ private:
             previousDirs.Free();
             delete previousDirs;
          }
-         ((OptionBox)dirsBox.id).Retrieve();
+         ((OptionBox)(intptr)dirsBox.id).Retrieve();
          return true;
       }
 
@@ -1082,7 +1082,7 @@ class BoolOptionBox : OptionBox<SetBool>
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         ((OptionBox)button.id).Retrieve();
+         ((OptionBox)(intptr)button.id).Retrieve();
          return true;
       }
    };
@@ -1113,14 +1113,14 @@ class CheckBoxForEnumOptionBox : OptionBox
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         ((OptionBox)button.id).Retrieve();
+         ((OptionBox)(intptr)button.id).Retrieve();
          {
             Window slave;
             for(slave = master.firstSlave; slave; slave = slave.nextSlave)
             {
                if(eClass_IsDerived(slave._class, class(CheckBoxForEnumOptionBox)) &&
-                     slave != (Window)button.id &&
-                     ((OptionBox)slave).option == ((OptionBox)button.id).option)
+                     slave != (Window)(intptr)button.id &&
+                     ((OptionBox)slave).option == ((OptionBox)(intptr)button.id).option)
                   ((OptionBox)slave).Load();
             }
          }
@@ -1151,7 +1151,7 @@ class DropOptionBox : OptionBox
    {
       bool NotifySelect(DropBox dropBox, DataRow row, Modifiers mods)
       {
-         ((OptionBox)dropBox.id).Retrieve();
+         ((OptionBox)(intptr)dropBox.id).Retrieve();
          return true;
       }
    };
@@ -1282,7 +1282,7 @@ class BuildTab : Tab
             SelectorButton button = (SelectorButton)configSelector.selectedButton;
             if(button && button.id)
             {
-               ProjectConfig config = (ProjectConfig)button.id;
+               ProjectConfig config = (ProjectConfig)(intptr)button.id;
                return config.name;
             }
          }
@@ -1387,7 +1387,7 @@ class BuildTab : Tab
 
          button =
          {
-            configSelector, renameable = true, master = this, text = config.name, id = (int64)config;
+            configSelector, renameable = true, master = this, text = config.name, id = (int64)(intptr)config;
             NotifyClicked = ConfigClicked, OnRename = ConfigOnRename;
          };
 
@@ -1439,7 +1439,7 @@ class BuildTab : Tab
                   }
                }
                */
-               SelectorButton button = configSelector.FindButtonByID((int64)configToDelete);
+               SelectorButton button = configSelector.FindButtonByID((int64)(intptr)configToDelete);
                if(button)
                   configSelector.RemoveButton(button);
 
@@ -1600,7 +1600,7 @@ class BuildTab : Tab
    {
       if(!eClass_IsDerived(clickedButton._class, class(EditableSelectorButton)) || !((EditableSelectorButton)clickedButton).editBox)
       {
-         config = (ProjectConfig)clickedButton.id;
+         config = (ProjectConfig)(intptr)clickedButton.id;
 
          // Load Settings Into Dialog
          compilerTab.LoadSettings();
@@ -1643,13 +1643,13 @@ class BuildTab : Tab
          }
          else
          {
-            compilerTab.rightPaneHeader.id = (int64)node;
+            compilerTab.rightPaneHeader.id = (int64)(intptr)node;
             compilerTab.rightPaneHeader.Update(null);
             compilerTab.rightPaneHeader.visible = true;
          }
 
          {
-            DataRow row = compilerTab.fileList.FindSubRow((int64)currentNode);
+            DataRow row = compilerTab.fileList.FindSubRow((int64)(intptr)currentNode);
             if(row)
             {
                compilerTab.fileList.currentRow = row;
@@ -1720,7 +1720,7 @@ class BuildTab : Tab
       // Create Config Buttons
       SelectorButton
       {
-         configSelector, master = this, text = $"Common", id = (int64)null; font = { font.faceName, font.size, true };
+         configSelector, master = this, text = $"Common", id = 0; font = { font.faceName, font.size, true };
          checked = true;
          NotifyClicked = ConfigClicked;
       };
@@ -1733,7 +1733,7 @@ class BuildTab : Tab
          {
             EditableSelectorButton button
             {
-               configSelector, master = this, renameable = true, text = c.name, id = (int64)c;
+               configSelector, master = this, renameable = true, text = c.name, id = (int64)(intptr)c;
                NotifyClicked = ConfigClicked, OnRename = ConfigOnRename;
             };
          }
@@ -1782,7 +1782,7 @@ class BuildTab : Tab
          while(it.Next())
          {
             SelectorButton configButton = (SelectorButton)it.data;
-            ProjectConfig buttonConfig = (ProjectConfig)configButton.id;
+            ProjectConfig buttonConfig = (ProjectConfig)(intptr)configButton.id;
             if(buttonConfig == project.config)
             {
                configButton.Activate();
@@ -1852,7 +1852,7 @@ class BuildTab : Tab
          while(it.Next())
          {
             Button button = (Button)it.data;
-            ProjectConfig c = (ProjectConfig)button.id;
+            ProjectConfig c = (ProjectConfig)(intptr)button.id;
             if(c && !strcmp(c.name, configName))
             {
                config = c;
@@ -1919,7 +1919,7 @@ class CompilerTab : Tab
       bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
       {
          BuildTab buildTab = (BuildTab)master;
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          buildTab.SelectNode(node, false);
          return true;
       }
@@ -1971,7 +1971,7 @@ class CompilerTab : Tab
          {
             ide.projectView.drawingInProjectSettingsDialogHeader = true;
             ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)class(ProjectNode)._vTbl[__ecereVMethodID_class_OnDisplay])(class(ProjectNode),
-               (void *)id, surface, 8, 2, clientSize.w, ide.projectView, Alignment::left, DataDisplayFlags { selected = true });
+               (void *)(intptr)id, surface, 8, 2, clientSize.w, ide.projectView, Alignment::left, DataDisplayFlags { selected = true });
             ide.projectView.drawingInProjectSettingsDialogHeader = false;
          }
       }
@@ -2090,7 +2090,7 @@ class CompilerTab : Tab
    {
       DataRow row = addTo ? addTo.AddRow() : fileList.AddRow();
 
-      row.tag = (int64)node;
+      row.tag = (int64)(intptr)node;
 
       row.SetData(null, node);
 

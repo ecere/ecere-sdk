@@ -5352,7 +5352,7 @@ static Module Module_Load(Module fromModule, const char * name, AccessMode impor
    {
       name = !strcmp(module.name, "ecereCOM") ? "ecere" : "ecereCOM";
       if((!Load && !strcmp(module.name, "ecereCOM")) ||
-         (Load && (!__thisModule || !__thisModule.name || !strcmp(__thisModule.name, "ecereCOM")) && Load != COM_LOAD_FUNCTION))
+         (Load && (!__thisModule || !__thisModule.name || !strcmp(__thisModule.name, "ecereCOM")) && Load != (void *)COM_LOAD_FUNCTION))
       {
          Module module;
          for(module = fromModule.application.allModules.first; module; module = module.next)

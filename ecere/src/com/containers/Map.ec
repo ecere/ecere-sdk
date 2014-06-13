@@ -105,14 +105,12 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          if(!node)
          {
             Class Tclass = class(MT);
+            void (* onCopy)(void *, void *, void *) = Tclass._vTbl[__ecereVMethodID_class_OnCopy];
             // Copy key here
             if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
-            {
-               ((void (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((byte *)&(uint64)newNode.key) + __ENDIAN_PAD(Tclass.typeSize)),
-                  (((byte *)&(uint64)newNode.key) + __ENDIAN_PAD(Tclass.typeSize)));
-            }
+               onCopy(Tclass, (byte *)&newNode.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&newNode.key + __ENDIAN_PAD(Tclass.typeSize));
             else
-               ((void (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((byte *)&(uint64)newNode.key) + __ENDIAN_PAD(sizeof(void *))), (void *)newNode.key);
+               onCopy(Tclass, (byte *)&newNode.key + __ENDIAN_PAD(sizeof(void *)), (void *)newNode.key);
 
             CustomAVLTree::Add((T)newNode);
             return newNode;
@@ -132,7 +130,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       {
          // TODO: Make this easier...
          Class Tclass = class(MT);
-         ((void (*)(void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnFree])(Tclass, (((byte *)&(uint64)node.key) + __ENDIAN_PAD(sizeof(void *))));
+         ((void (*)(void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnFree])(Tclass, (((byte *)&node.key) + __ENDIAN_PAD(sizeof(void *))));
       }
       else
          delete node.key;
@@ -179,6 +177,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       if(!node && create)
       {
          Class Tclass = class(MT);
+         void (* onCopy)(void *, void *, void *) = Tclass._vTbl[__ecereVMethodID_class_OnCopy];
          if(class(MT).type == structClass || class(V).type == structClass)
          {
             uint size = sizeof(class MapNode<MT, V>);
@@ -192,12 +191,9 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             node = MapNode<MT, V> { key = pos };
          }
          if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
-         {
-            ((void (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((byte *)&(uint64)node.key) + __ENDIAN_PAD(Tclass.typeSize)),
-              (((byte *)&(uint64)pos) + __ENDIAN_PAD(Tclass.typeSize)));
-         }
+            onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize));
          else
-            ((void (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCopy])(Tclass, (((byte *)&(uint64)node.key) + __ENDIAN_PAD(sizeof(void *))), (void *)pos);
+            onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(sizeof(void *)), (void *)pos);
          CustomAVLTree::Add((T)node);
       }
       return node;

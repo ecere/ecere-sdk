@@ -22,7 +22,7 @@ public class List<class LLT> : LinkList<Link, T = LLT, D = LLT>
    bool SetData(Link link, LLT value)
    {
       if(class(LLT).type == structClass)
-         memcpy((void *)&link.data, (void *)value, class(LLT).structSize);
+         memcpy((void *)&link.data, (void *)(uintptr)value, class(LLT).structSize);
       else
          link.data = (uint64)value;
       return true;

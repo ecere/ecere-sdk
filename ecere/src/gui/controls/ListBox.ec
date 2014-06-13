@@ -1154,7 +1154,7 @@ public:
                stayOnTop = true;
                inactive = true;
                dontScrollVert = true;
-               id = (uint64)addedField;
+               id = (int64)(intptr)addedField;
                text = addedField.header;
                bevel = (!guiApp.textMode && !style.clearHeader);
                ellipsis = true;
@@ -2728,7 +2728,7 @@ private:
 
    bool HeaderPushed(Button control, int x, int y, Modifiers mods)
    {
-      DataField field = (DataField)control.id;
+      DataField field = (DataField)(intptr)control.id;
       // false: dont destroy edit box
       HideEditBox(true, false, true);
       if(style.resizable && ((!field && x < RESIZE_BORDER && fields.last) ||
@@ -2841,7 +2841,7 @@ private:
       }
       else if(style.resizable)
       {
-         DataField field = (DataField)control.id;
+         DataField field = (DataField)(intptr)control.id;
          if(field)
          {
             if(x < RESIZE_BORDER && field.prev)
@@ -2931,7 +2931,7 @@ private:
    {
       if(style.header && !this.dropField && style.sortable)
       {
-         DataField field = (DataField)control.id;
+         DataField field = (DataField)(intptr)control.id;
          if(sortField == field)
             field.sortOrder *= -1;
          else
@@ -2949,7 +2949,7 @@ private:
    {
       if(style.resizable)
       {
-         DataField field = (DataField)control.id;
+         DataField field = (DataField)(intptr)control.id;
          if(field)
          {
             if(x < RESIZE_BORDER && field.prev)

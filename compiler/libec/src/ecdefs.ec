@@ -1341,6 +1341,48 @@ public:
          return t.constant;
       }
    }
+
+   property bool isPointerType
+   {
+      get
+      {
+         if(this)
+         {
+            if(kind == pointerType || kind == methodType || kind == functionType || kind == arrayType || kind == subClassType)
+               return true;
+            else if(kind == classType)
+            {
+               if(_class && _class.registered)
+               {
+                  Class c = _class.registered;
+                  if(c.type == bitClass || c.type == unitClass || c.type == enumClass || c.type == systemClass)
+                     return false;
+               }
+               return true;
+            }
+            else if(kind == templateType)
+            {
+               if(passAsTemplate) return false;
+               if(templateParameter)
+               {
+                  if(templateParameter.dataType)
+                  {
+                     Specifier spec = templateParameter.dataType.specifiers ? templateParameter.dataType.specifiers->first : null;
+                     if(templateParameter.dataType.decl && templateParameter.dataType.decl.type == pointerDeclarator)
+                        return true;
+                     if(spec && spec.type == nameSpecifier && strcmp(spec.name, "uint64"))
+                        return true;
+                  }
+                  if(templateParameter.dataTypeString)
+                     return true;
+               }
+            }
+            else
+               return false;
+         }
+         return false;
+      }
+   }
 };
 
 public struct Operand

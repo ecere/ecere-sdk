@@ -142,7 +142,7 @@ public:
          DataRow row;
          sprintf(label, $"%s Project", project.name);
          row = findIn.AddString(label);
-         row.tag = (int64)project;
+         row.tag = (int64)(intptr)project;
       }
    }
 
@@ -153,7 +153,7 @@ public:
       {
          for(row = inWorkspaceRow.next; row; row = row.next)
          {
-            if((Project)row.tag == project)
+            if((Project)(intptr)row.tag == project)
             {
                findIn.DeleteRow(row);
                break;
@@ -250,7 +250,7 @@ private:
          {
             Project prj;
             lastSelectionMode = mode;
-            prj = lastSelectionMode == project ? (Project)row.tag : null;
+            prj = lastSelectionMode == project ? (Project)(intptr)row.tag : null;
             delete lastSelectionProject;
             if(prj)
             {
@@ -269,7 +269,7 @@ private:
                }
 
                for(r = findWherePrjNode.firstRow; r; r = r.next)
-                  if((ProjectNode)r.tag == node)
+                  if((ProjectNode)(intptr)r.tag == node)
                      break;
                if(r)
                   findWherePrjNode.SelectRow(r);
@@ -286,7 +286,7 @@ private:
          row = findWherePrjNode/*parentRow*/.AddRow();
       else
          row = findWherePrjNode.AddRow();
-      row.tag = (int64)node;
+      row.tag = (int64)(intptr)node;
       row.SetData(null, node);
       if(node.files)
       {
@@ -311,7 +311,7 @@ private:
       {
          if(row)
          {
-            ProjectNode node = (ProjectNode)row.tag;
+            ProjectNode node = (ProjectNode)(intptr)row.tag;
             delete lastSelectionProjectNode;
             if(node)
             {
@@ -461,7 +461,7 @@ private:
             for(row = findIn.firstRow; row; row = row.next)
             {
                char filePath[MAX_LOCATION];
-               Project p = (Project)row.tag;
+               Project p = (Project)(intptr)row.tag;
                if(p)
                {
                   p.topNode.GetFullFilePath(filePath);
@@ -480,7 +480,7 @@ private:
             {
                Project prj = ide.workspace.projects.firstIterator.data;
                for(row = findIn.firstRow; row; row = row.next)
-                  if((Project)row.tag == prj)
+                  if((Project)(intptr)row.tag == prj)
                      break;
                if(row)
                   findIn.SelectRow(row);
@@ -524,7 +524,7 @@ private:
       else
       {
          searchThread.mode = project;
-         searchThread.project = (Project)findIn.currentRow.tag;
+         searchThread.project = (Project)(intptr)findIn.currentRow.tag;
          searchThread.projectNode = (ProjectNode)(findWherePrjNode.currentRow ? (void *)(intptr)findWherePrjNode.currentRow.tag : null);
       }
       //searchThread.nameMatchCase = nameMatchCase.checked;

@@ -547,7 +547,6 @@ static void InstDeclPassExpression(Expression exp)
             }
             else if(exp.op.exp1 && (exp.op.op == '=' || exp.op.op == EQ_OP || exp.op.op == NE_OP))
                AddPointerCast(exp.op.exp2);
-
          }
          break;
       case extensionExpressionExp:
@@ -624,9 +623,21 @@ static void InstDeclPassExpression(Expression exp)
          }
          else
          {
+            if(exp.expType && exp.expType.kind == pointerType)
+            {
+               if(exp.cast.exp && exp.cast.exp.expType && exp.cast.exp.expType.kind == templateType && !exp.cast.exp.expType.isPointerType)
+                  exp.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), exp.cast.exp);
+            }
+
             InstDeclPassTypeName(exp.cast.typeName, exp.usage.usageArg /*false*/);
             if(exp.cast.exp)
+            {
+               if(exp.expType && exp.expType.kind == templateType && exp.destType &&
+                  (exp.destType.passAsTemplate || (!exp.destType.templateParameter || (!exp.destType.templateParameter.dataType && !exp.destType.templateParameter.dataTypeString))) &&
+                  exp.cast.exp.expType && !exp.cast.exp.expType.passAsTemplate && exp.cast.exp.expType.isPointerType)
+                  exp.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), exp.cast.exp);
                InstDeclPassExpression(exp.cast.exp);
+            }
          }
          break;
       }
@@ -664,7 +675,10 @@ static void InstDeclPassInitializer(Initializer init)
    {
       case expInitializer:
          if(init.exp)
+         {
             InstDeclPassExpression(init.exp);
+            AddPointerCast(init.exp);
+         }
          break;
       case listInitializer:
       {

@@ -498,7 +498,7 @@ const char * file = (((void *)0));
 int c = 0;
 unsigned int isURL = 0;
 unsigned int isArchive = __ecereNameSpace__ecere__sys__SplitArchivePath(string, archiveName, &file);
-char * urlFileName;
+char * urlFileName = (((void *)0));
 char * protocolSymbol;
 
 strcpy(fileName, isArchive ? file : string);
@@ -706,7 +706,7 @@ const char * file = (((void *)0));
 int c = 0;
 unsigned int isURL = 0;
 unsigned int isArchive = __ecereNameSpace__ecere__sys__SplitArchivePath(string, archiveName, &file);
-char * urlFileName;
+char * urlFileName = (((void *)0));
 char * protocolSymbol;
 
 strcpy(fileName, isArchive ? file : string);

@@ -39,7 +39,7 @@ public:
    virtual uint64 GetData(IteratorPointer pointer)
    {
       uint64 * item = (uint64 *)pointer;
-      return ((((type.type == structClass) ? ((uint64)item) :
+      return ((((type.type == structClass) ? ((uint64)(uintptr)item) :
             ((type.typeSize == 1) ? *((unsigned char *)item) :
                ((type.typeSize == 2) ? *((unsigned short *)item) :
                   ((type.typeSize == 4) ? *((unsigned int *)item) : *((uint64 *)item)))))));
@@ -85,8 +85,8 @@ public:
          uint64 data = GetData(i);
          Class Dclass = type;
          int result = ((int (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnCompare])(Dclass,
-            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &value : (void *)value,
-            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)data);
+            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &value : (void *)(uintptr)value,
+            ((Dclass.type == systemClass && !Dclass.byValueSystemClass) || Dclass.type == bitClass || Dclass.type == enumClass || Dclass.type == unitClass) ? &data : (void *)(uintptr)data);
          if(!result)
             return i;
       }
@@ -100,7 +100,7 @@ public:
    {
       IteratorPointer i;
       for(i = GetFirst(); i; i = GetNext(i))
-         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)GetData(i));
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(uintptr)GetData(i));
    }
 
    virtual void Delete(IteratorPointer it) { }

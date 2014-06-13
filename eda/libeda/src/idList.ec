@@ -204,18 +204,18 @@ public class Id : uint
                            type = dataType;
                      }
                      if(type.type == structClass)
-                        data = (int64)new0 byte[type.structSize];
-                     ((bool (*)())(void *)r.GetData)(r, *nameField, type, (type.type == structClass) ? (void *)data : &data);
+                        data = (int64)(intptr)new0 byte[type.structSize];
+                     ((bool (*)())(void *)r.GetData)(r, *nameField, type, (type.type == structClass) ? (void *)(intptr)data : &data);
 
                      if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
                         name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)&data, tempString, null, null);
                      else
-                        name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)data, tempString, null, null);
+                        name = ((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)(intptr)data, tempString, null, null);
 
                      if(name && name != tempString)
                         strcpy(tempString, name ? name : "");
                      if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                        ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
+                        ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data);
                   }
                   else
                   {

@@ -585,8 +585,8 @@ public:
 
                            if(dataType && dataType.type == structClass)
                            {
-                              dataHolder = (int64)new0 byte[dataType.structSize];
-                              data = (void *)dataHolder;
+                              dataHolder = (int64)(intptr)new0 byte[dataType.structSize];
+                              data = (void *)(intptr)dataHolder;
                            }
                            /*else if(dataType && (dataType.type == noHeadClass || dataType.type == normalClass))
                            {
@@ -1303,21 +1303,21 @@ private:
                            type = dataType;
                      }
                      if(type.type == structClass)
-                        data = (int64)new0 byte[type.structSize];
-                     ((bool (*)())(void *)row.GetData)(row, field, type, (type.type == structClass) ? (void *)data : &data);
+                        data = (int64)(intptr)new0 byte[type.structSize];
+                     ((bool (*)())(void *)row.GetData)(row, field, type, (type.type == structClass) ? (void *)(intptr)data : &data);
 
                      if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
                         s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.type._vTbl[__ecereVMethodID_class_OnGetString])(field.type, &data, tempString, null, null);
                      else
-                        s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.type._vTbl[__ecereVMethodID_class_OnGetString])(field.type, (void *)data, tempString, null, null);
+                        s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)field.type._vTbl[__ecereVMethodID_class_OnGetString])(field.type, (void *)(intptr)data, tempString, null, null);
 
                      if(s && s[0])
                         ProcessWordListString(s, method, id);
 
                      if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                        ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
+                        ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data);
                      if(type.type == structClass)
-                        delete (void *)data;
+                        delete (void *)(intptr)data;
                   }
                }
             }
@@ -1605,14 +1605,14 @@ private:
                      type = dataType;
                }
                if(type.type == structClass)
-                  data = (int64)new0 byte[type.structSize];
-               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
+                  data = (int64)(intptr)new0 byte[type.structSize];
+               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)(intptr)data : &data);
                s = lf.CustomLookup((int)data);
                listRow.SetData(lf.dataField, s);
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
+                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data);
                if(type.type == structClass)
-                  delete (void *)data;
+                  delete (void *)(intptr)data;
                delete s; // ?
             }
             else if(lf.field.type && eClass_IsDerived(lf.dataField.dataType, class(char*)))
@@ -1628,19 +1628,19 @@ private:
                      type = dataType;
                }
                if(type.type == structClass)
-                  data = (int64)new0 byte[type.structSize];
-               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
+                  data = (int64)(intptr)new0 byte[type.structSize];
+               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)(intptr)data : &data);
                if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
                   s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)lf.field.type._vTbl[__ecereVMethodID_class_OnGetString])(lf.field.type, &data, tempString, null, null);
                else
-                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)lf.field.type._vTbl[__ecereVMethodID_class_OnGetString])(lf.field.type, (void*)data, tempString, null, null);
+                  s = ((char *(*)(void *, void *, char *, void *, bool *))(void *)lf.field.type._vTbl[__ecereVMethodID_class_OnGetString])(lf.field.type, (void*)(intptr)data, tempString, null, null);
 
                listRow.SetData(lf.dataField, s);
 
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
+                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data);
                if(type.type == structClass)
-                  delete (void *)data;
+                  delete (void *)(intptr)data;
             }
             else if(lf.field.type)
             {
@@ -1654,16 +1654,16 @@ private:
                      type = dataType;
                }
                if(type.type == structClass)
-                  data = (int64)new0 byte[type.structSize];
-               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)data : &data);
+                  data = (int64)(intptr)new0 byte[type.structSize];
+               ((bool (*)())(void *)dbRow.GetData)(dbRow, lf.field, type, (type.type == structClass) ? (void *)(intptr)data : &data);
                if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
                   listRow.SetData(lf.dataField, (void *)&data);
                else
-                  listRow.SetData(lf.dataField, (void *)data);
+                  listRow.SetData(lf.dataField, (void *)(intptr)data);
                if(!(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
-                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
+                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data);
                if(type.type == structClass)
-                  delete (void *)data;
+                  delete (void *)(intptr)data;
             }
          }
       }

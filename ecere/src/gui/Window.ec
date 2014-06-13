@@ -5881,7 +5881,7 @@ private:
          if(child.cycle && !child.style.nonClient && child.style.isActiveClient && child.visible)
          {
             DataRow row = listBox.AddRow();
-            row.tag = (int64)child;
+            row.tag = (int64)(intptr)child;
             child.FigureCaption(caption);
             row.SetData(null, caption);
          }
@@ -7780,7 +7780,7 @@ public:
    bool MenuWindowWindows(MenuItem selection, Modifiers mods)
    {
       WindowList dialog { master = this };
-      Window document = (Window)dialog.Modal();
+      Window document = (Window)(intptr)dialog.Modal();
       if(document)
       {
          if(activeChild.state == maximized)

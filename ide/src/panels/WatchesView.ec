@@ -125,7 +125,7 @@ class WatchesView : Window
    void AddWatch(Watch wh)
    {
       DataRow row = listBox.AddRowAfter(listBox.lastRow.previous);
-      row.tag = (int64)wh;
+      row.tag = (int64)(intptr)wh;
       wh.row = row;
       UpdateWatch(wh);
    }

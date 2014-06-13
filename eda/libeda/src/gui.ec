@@ -92,13 +92,13 @@ String GetNameString(Row r, Field nameField)
       Class type = nameField.type;
       int64 data = 0;
       if(type.type == structClass)
-         data = (int64)new0 byte[type.structSize];
-      ((bool (*)())(void *)r.GetData)(r, nameField, type, (type.type == structClass) ? (void *)data : &data);
-      s = CopyString(((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)data, tempString, null, null));
-      ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)data);
+         data = (int64)(intptr)new0 byte[type.structSize];
+      ((bool (*)())(void *)r.GetData)(r, nameField, type, (type.type == structClass) ? (void *)(intptr)data : &data);
+      s = CopyString(((char *(*)(void *, void *, char *, void *, bool *))(void *)type._vTbl[__ecereVMethodID_class_OnGetString])(type, (void *)(intptr)data, tempString, null, null));
+      ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)data);
       if(type.type == structClass)
       {
-         void * _data = (void *)data;
+         void * _data = (void *)(intptr)data;
          delete _data;
       }
    }
@@ -389,10 +389,10 @@ public:
 
          if(dataHolder)
          {
-            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)dataHolder);
             if(type.type == structClass)
             {
-               void * dataPtr = (void *)dataHolder;
+               void * dataPtr = (void *)(intptr)dataHolder;
                delete dataPtr;
             }
             dataHolder = 0;
@@ -405,15 +405,15 @@ public:
 
          if(dataType && dataType.type == structClass)
          {
-            dataHolder = (int64)new0 byte[dataType.structSize];
-            data = (void *)dataHolder;
+            dataHolder = (int64)(intptr)new0 byte[dataType.structSize];
+            data = (void *)(intptr)dataHolder;
          }
          else if(dataType && (dataType.type == noHeadClass || dataType.type == normalClass))
          {
             if(eClass_IsDerived(dataType, class(String)))
-               dataHolder = (int64)CopyString("");
+               dataHolder = (int64)(intptr)CopyString("");
             else
-               dataHolder = (int64)eInstance_New(dataType);
+               dataHolder = (int64)(intptr)eInstance_New(dataType);
             data = (void *)&dataHolder;
          }
          else
@@ -433,9 +433,9 @@ public:
       if(type && (type.type == noHeadClass || type.type == normalClass))
       {
          if(eClass_IsDerived(type, class(String)))
-            dataHolder = (int64)CopyString("");
+            dataHolder = (int64)(intptr)CopyString("");
          else
-            dataHolder = (int64)eInstance_New(type);
+            dataHolder = (int64)(intptr)eInstance_New(type);
          data = (void *)&dataHolder;
       }
 
@@ -455,9 +455,9 @@ public:
          if(!dataHolder && type && (type.type == noHeadClass || type.type == normalClass))
          {
             if(eClass_IsDerived(type, class(String)))
-               dataHolder = (int64)CopyString("");
+               dataHolder = (int64)(intptr)CopyString("");
             else
-               dataHolder = (int64)eInstance_New(type);
+               dataHolder = (int64)(intptr)eInstance_New(type);
             data = (void *)&dataHolder;
          }
 
@@ -533,10 +533,10 @@ public:
 
       if(dataHolder)
       {
-         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)dataHolder);
          if(type.type == structClass)
          {
-            void * dataPtr = (void *)dataHolder;
+            void * dataPtr = (void *)(intptr)dataHolder;
             delete dataPtr;
          }
          dataHolder = 0;

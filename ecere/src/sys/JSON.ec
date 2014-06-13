@@ -113,11 +113,12 @@ public:
       }
       else if(ch == '{')
       {
-         void * object;
+         void * object = value.p;
          result = GetObject(type, &object);
          if(result)
          {
-            if(type && (type.type == normalClass || type.type == structClass || type.type == noHeadClass || type.type == bitClass))
+            if(type.type == structClass);
+            else if(type && (type.type == normalClass || type.type == noHeadClass || type.type == bitClass))
             {
                value.p = object;
             }
@@ -323,7 +324,8 @@ public:
    public JSONResult GetObject(Class objectType, void ** object)
    {
       JSONResult result = syntaxError;
-      *object = null;
+      if(objectType.type != structClass)
+         *object = null;
       SkipEmpty();
       if(ch == '{')
       {
@@ -332,7 +334,7 @@ public:
          {
             *object = eInstance_New(objectType);
          }
-         else if(objectType)
+         else if(objectType && objectType.type != structClass)
          {
             *object = eSystem_New(objectType.typeSize);
          }

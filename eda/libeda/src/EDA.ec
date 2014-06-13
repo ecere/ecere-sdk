@@ -371,28 +371,28 @@ public:
                      type = dataType;
                }
                if(type.type == structClass)
-                  data = (int64)new0 byte[type.structSize];
+                  data = (int64)(intptr)new0 byte[type.structSize];
                if(!df.prev)
                {
                   dr = list.AddRow();
                   dr.tag = r.sysID;
                }
-               ((bool (*)())(void *)r.GetData)(r, fld, type, (type.type == structClass) ? (void *)data : &data);
+               ((bool (*)())(void *)r.GetData)(r, fld, type, (type.type == structClass) ? (void *)(intptr)data : &data);
                if(type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass)
                   dr.SetData(df, (void *)&data);
                else
-                  dr.SetData(df, (void *)data);
+                  dr.SetData(df, (void *)(intptr)data);
 
                // Is this missing some frees here? strings? Probably not: freeData = true?
                // ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, data);
                if(type.type == structClass)
                {
-                  delete (void *)data;
+                  delete (void *)(intptr)data;
                }
                else if(!strcmp(type.dataTypeString, "char *"))
                {
                   // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
-                  delete (char *)data;
+                  delete (char *)(intptr)data;
                }
             }
             dr = dr.next;
@@ -566,22 +566,22 @@ public:
             type = dataType;
       }
       if(type.type == structClass)
-         data = (int64)new0 byte[type.structSize];
-      ((bool (*)())(void *)GetData)(this, fld, type, (type.type == structClass) ? (void *)data : &data);
+         data = (int64)(intptr)new0 byte[type.structSize];
+      ((bool (*)())(void *)GetData)(this, fld, type, (type.type == structClass) ? (void *)(intptr)data : &data);
 
       if((type.type == systemClass || type.type == unitClass || type.type == bitClass || type.type == enumClass))
          dr.SetData(df, (void *)&data);
       else
-         dr.SetData(df, (void *)data);
+         dr.SetData(df, (void *)(intptr)data);
       if(type.type == structClass)
       {
-         void * dataPtr = (void *)data;
+         void * dataPtr = (void *)(intptr)data;
          delete dataPtr;
       }
       else if(!strcmp(type.dataTypeString, "char *"))
       {
          // Strings are handled as a special case in ListBox -- normalClass, but copied when freeData = true
-         delete (char *)data;
+         delete (char *)(intptr)data;
       }
       return true;
    }

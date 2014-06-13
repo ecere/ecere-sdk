@@ -540,7 +540,7 @@ public class TabControl : Window
 
    bool NotifyClicked(Button button, int x, int y, Modifiers mods)
    {
-      if(curTab == (Tab)button.id)
+      if(curTab == (Tab)(intptr)button.id)
          return true;
       //curButton.Activate();
       curButton.MakeActive();
@@ -549,7 +549,7 @@ public class TabControl : Window
       {
          curButton.checked = false;
          button.checked = true;
-         curTab = (Tab)button.id;
+         curTab = (Tab)(intptr)button.id;
 
          if(curButton)
             PlaceButton(curButton, placement, false, buttonsOffset);
@@ -579,7 +579,7 @@ public class TabControl : Window
       {
          parent = tabButtons,
          master = this, stayDown = true,
-         text = tab.text, id = (int64)tab, NotifyClicked = NotifyClicked,
+         text = tab.text, id = (int64)(intptr)tab, NotifyClicked = NotifyClicked,
          tab = tab,
          background = background;
       };
@@ -620,7 +620,7 @@ public class TabControl : Window
          if(child._class == class(TabButton))
          {
             TabButton button = (TabButton)child;
-            if(button.id == (int64)tab)
+            if(button.id == (int64)(intptr)tab)
             {
                if(button.created)
                   button.Destroy(0);

@@ -366,7 +366,7 @@ class SQLiteDatabase : Database
                      }
 
                      {
-                        Table * fTable = (Table *)eClass_GetProperty(type, "table");
+                        Table * fTable = (Table *)(intptr)eClass_GetProperty(type, "table");
                         SQLiteField field { tbl = table, name = CopyString(fieldName), type = type, length = length, num = table._fields.count, sqliteType = sqliteType };
                         incref field;
                         if(fTable) refTable = *fTable;
@@ -838,7 +838,7 @@ class SQLiteTable : Table
       }
       if(sqliteType != SQLITE_BLOB && eClass_IsDerived(type, class(eda::Id)))
       {
-         Table * table = (Table *)eClass_GetProperty(type, "table");
+         Table * table = (Table *)(intptr)eClass_GetProperty(type, "table");
          if(table) refTable = *table;
          if(refTable)
          {
@@ -927,7 +927,7 @@ class SQLiteTable : Table
             if(f.sqliteType != SQLITE_BLOB && eClass_IsDerived(f.type, class(eda::Id)))
             {
 
-               Table * tablePtr = (Table *)eClass_GetProperty(f.type, "table");
+               Table * tablePtr = (Table *)(intptr)eClass_GetProperty(f.type, "table");
                if(tablePtr && *tablePtr == this)
                   primaryKey = f;
             }
@@ -1444,13 +1444,13 @@ class SQLiteRow : DriverRow
                }
                if(type.type == structClass)
                {
-                  data = (int64)new0 byte[type.structSize];
-                  dataPtr = (void *) data;
+                  data = (int64)(intptr)new0 byte[type.structSize];
+                  dataPtr = (void *)(intptr)data;
                }
                // ((bool (*)())(void *)dataRow.GetData)(dataRow, fld, type, (type.type == structClass) ? (void *)data : &data);
-               ((bool (*)())(void *)this.GetData)(this, fld, type, (type.type == structClass) ? (void *)data : &data);
+               ((bool (*)())(void *)this.GetData)(this, fld, type, (type.type == structClass) ? (void *)(intptr)data : &data);
                if(type.type == normalClass || type.type == noHeadClass)
-                  dataPtr = (void *) data;
+                  dataPtr = (void *)(intptr)data;
                else
                   dataPtr = &data;
                ((bool (*)())(void *)this.BindData)(this, stmt, (*bindId)++, fld, type, dataPtr, &buffer);

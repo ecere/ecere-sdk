@@ -1453,6 +1453,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      OldList * specifiers = MkList();
                      Statement body = propertyDef.setStmt;
                      Declarator ptrDecl;
+                     Expression e;
 
                      strcpy(name, "class::__ecereClassProp_");
                      FullClassNameCat(name, symbol.string, false);
@@ -1482,10 +1483,15 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      else
                         ptrDecl = PlugDeclarator(propertyDef.declarator, MkDeclaratorIdentifier(MkIdentifier("value")));
 
+
+                     e = MkExpIdentifier(MkIdentifier("_value"));
+                     if(propertyDef.symbol.type.isPointerType)
+                        e = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), e);
+
                      ListAdd(body.compound.declarations,
                         MkDeclaration(CopyList(propertyDef.specifiers, CopySpecifier), MkListOne(MkInitDeclarator(ptrDecl,
                               MkInitializerAssignment(MkExpCast(MkTypeName(CopyList(propertyDef.specifiers, CopySpecifier), CopyDeclarator(propertyDef.declarator)),
-                              MkExpIdentifier(MkIdentifier("_value"))))))));
+                              e))))));
 
                      curContext = prevCurContext;
 

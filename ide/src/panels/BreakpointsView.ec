@@ -45,7 +45,7 @@ class BreakpointsView : Window
             }
             else
             {
-               ide.workspace.RemoveBreakpoint((Breakpoint)row.tag);
+               ide.workspace.RemoveBreakpoint((Breakpoint)(intptr)row.tag);
                // This is already done by Workspace::RemoveBreakpoint!
                // listBox.DeleteRow(null);
             }
@@ -102,7 +102,7 @@ class BreakpointsView : Window
          if(row && (SmartKey)key == del)
          {
             listBox.StopEditing(true);
-            ide.workspace.RemoveBreakpoint((Breakpoint)row.tag);
+            ide.workspace.RemoveBreakpoint((Breakpoint)(intptr)row.tag);
          }
          return true;
       }
@@ -195,7 +195,7 @@ class BreakpointsView : Window
    void AddBreakpoint(Breakpoint bp)
    {
       DataRow row = listBox.AddRow();
-      row.tag = (int64)bp;
+      row.tag = (int64)(intptr)bp;
       bp.row = row;
       UpdateBreakpoint(row);
       ide.callStackView.Update(null);
@@ -215,7 +215,7 @@ class BreakpointsView : Window
       {
          char string[32];
          char * location;
-         Breakpoint bp = (Breakpoint)row.tag;
+         Breakpoint bp = (Breakpoint)(intptr)row.tag;
          location = bp.CopyUserLocationString();
 #if defined(__WIN32__)
          ChangeCh(location, '/', '\\');

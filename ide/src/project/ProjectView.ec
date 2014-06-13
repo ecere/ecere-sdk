@@ -216,7 +216,7 @@ class ProjectView : Window
          {
             bool showDebuggingMenuItems = mods.ctrl && mods.shift;
             bool showInstallMenuItem = mods.ctrl && mods.shift;
-            ProjectNode node = (ProjectNode)row.tag;
+            ProjectNode node = (ProjectNode)(intptr)row.tag;
 #ifdef IDE_SHOW_INSTALL_MENU_BUTTON
             showInstallMenuItem = true;
 #endif
@@ -372,7 +372,7 @@ class ProjectView : Window
       {
          if(row)
          {
-            ProjectNode node = (ProjectNode)row.tag;
+            ProjectNode node = (ProjectNode)(intptr)row.tag;
             switch(key)
             {
                case altEnter: case Key { keyPadEnter, alt = true }:
@@ -472,7 +472,7 @@ class ProjectView : Window
 
       bool NotifyCollapse(ListBox listBox, DataRow row, bool collapsed)
       {
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          if(node.type == folder)
             node.icon = collapsed ? folder : openFolder;
          return true;
@@ -882,7 +882,7 @@ class ProjectView : Window
          if(selection || !ide.activeClient)
          {
             DataRow row = fileList.currentRow;
-            ProjectNode node = row ? (ProjectNode)row.tag : null;
+            ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
             if(node) prj = node.project;
          }
          else
@@ -912,7 +912,7 @@ class ProjectView : Window
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
          if(node) prj = node.project;
       }
       else
@@ -945,7 +945,7 @@ class ProjectView : Window
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
          if(node) prj = node.project;
       }
       else
@@ -979,7 +979,7 @@ class ProjectView : Window
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
          if(node) prj = node.project;
       }
       else
@@ -1039,7 +1039,7 @@ class ProjectView : Window
          for(item = selectedRows.first; item; item = item.next)
          {
             DataRow row = item.data;
-            ProjectNode node = (ProjectNode)row.tag;
+            ProjectNode node = (ProjectNode)(intptr)row.tag;
             if(node.type == project)
                projects.Add(node.project);
          }
@@ -1048,7 +1048,7 @@ class ProjectView : Window
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
          if(node) prj = node.project;
          if(projects.count == 0)
             projects.Add(prj);
@@ -1094,7 +1094,7 @@ class ProjectView : Window
       if(selection || !ide.activeClient)
       {
          DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
          if(node)
             prj = node.project;
       }
@@ -1228,7 +1228,7 @@ class ProjectView : Window
       {
          char fileName[1024];
          char filePath[MAX_LOCATION];
-         ProjectNode parentNode = (ProjectNode)row.tag;
+         ProjectNode parentNode = (ProjectNode)(intptr)row.tag;
          ProjectNode n, fileNode;
          parentNode.GetFileSysMatchingPath(filePath);
          MakePathRelative(filePath, parentNode.project.topNode.path, filePath);
@@ -1256,7 +1256,7 @@ class ProjectView : Window
       DataRow row = fileList.currentRow;
       if(row)
       {
-         ProjectNode parentNode = (ProjectNode)row.tag;
+         ProjectNode parentNode = (ProjectNode)(intptr)row.tag;
          NewFolder(parentNode, null, true);
       }
       return true;
@@ -1279,7 +1279,7 @@ class ProjectView : Window
       DataRow row = fileList.currentRow;
       if(row)
       {
-         ProjectNode toNode = (ProjectNode)row.tag;
+         ProjectNode toNode = (ProjectNode)(intptr)row.tag;
          ImportFolder(toNode);
       }
       return true;
@@ -1306,7 +1306,7 @@ class ProjectView : Window
       DataRow row = fileList.currentRow;
       if(row)
       {
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          if(node.type == project)
             RemoveSelectedNodes();
       }
@@ -1346,7 +1346,7 @@ class ProjectView : Window
       DataRow row = fileList.currentRow;
       if(row)
       {
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          NodeProperties { parent = parent, master = this, node = node,
                position = { position.x + 100, position.y + 100 } }.Create();
       }
@@ -1375,7 +1375,7 @@ class ProjectView : Window
       for(item = selectedRows.first; item; item = item.next)
       {
          DataRow row = item.data;
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          if(!project)
             project = node.project;
          else if(node.project != project)
@@ -1404,7 +1404,7 @@ class ProjectView : Window
       for(item = selectedRows.first; item; item = item.next)
       {
          DataRow row = item.data;
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          if(!project)
             project = node.project;
          else if(node.project != project)
@@ -1426,7 +1426,7 @@ class ProjectView : Window
    bool FileDebugPrecompile(MenuItem selection, Modifiers mods)
    {
       DataRow row = fileList.currentRow;
-      ProjectNode node = row ? (ProjectNode)row.tag : null;
+      ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
       if(node)
       {
          List<ProjectNode> nodes { };
@@ -1444,7 +1444,7 @@ class ProjectView : Window
    bool FileDebugCompile(MenuItem selection, Modifiers mods)
    {
       DataRow row = fileList.currentRow;
-      ProjectNode node = row ? (ProjectNode)row.tag : null;
+      ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
       if(node)
       {
          List<ProjectNode> nodes { };
@@ -1463,7 +1463,7 @@ class ProjectView : Window
    bool FileDebugGenerateSymbols(MenuItem selection, Modifiers mods)
    {
       DataRow row = fileList.currentRow;
-      ProjectNode node = row ? (ProjectNode)row.tag : null;
+      ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
       if(node)
       {
          List<ProjectNode> nodes { };
@@ -1485,7 +1485,7 @@ class ProjectView : Window
       if(useSelection)
       {
          DataRow row = fileList.currentRow;
-         ProjectNode node = row ? (ProjectNode)row.tag : null;
+         ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
          if(node)
             prj = node.project;
       }
@@ -1496,7 +1496,7 @@ class ProjectView : Window
    {
       DataRow row = fileList.currentRow;
       DataRow currentRow = row;
-      ProjectNode node = (ProjectNode)row.tag;
+      ProjectNode node = (ProjectNode)(intptr)row.tag;
       if(node.type != project)
          row = node.project.topNode.row;
       else if(backwards)
@@ -1517,7 +1517,7 @@ class ProjectView : Window
       {
          DataRow row = fileList.currentRow;
          if(row)
-            node = (ProjectNode)row.tag;
+            node = (ProjectNode)(intptr)row.tag;
       }
       return node;
    }
@@ -1890,7 +1890,7 @@ class ProjectView : Window
    {
       DataRow row = addTo ? addTo.AddRow() : fileList.AddRow();
 
-      row.tag = (int64)node;
+      row.tag = (int64)(intptr)node;
       node.row = row;
 
       if(node.type == resources)
@@ -1928,7 +1928,7 @@ class ProjectView : Window
    bool ProjectSave(MenuItem selection, Modifiers mods)
    {
       DataRow row = fileList.currentRow;
-      ProjectNode node = row ? (ProjectNode)row.tag : null;
+      ProjectNode node = row ? (ProjectNode)(intptr)row.tag : null;
       Project prj = node ? node.project : null;
       if(prj)
       {
@@ -2127,7 +2127,7 @@ class ProjectView : Window
             }
             Update(null);
             folderNode.row = parentNode.row.AddRowAfter(after ? after.row : null);
-            folderNode.row.tag = (int64)folderNode;
+            folderNode.row.tag = (int64)(intptr)folderNode;
 
             folderNode.row.SetData(null, folderNode);
             fileList.currentRow = folderNode.row;
@@ -2158,7 +2158,7 @@ class ProjectView : Window
       {
          int c;
          DataRow row = fileList.currentRow;
-         ProjectNode parentNode = (ProjectNode)row.tag;
+         ProjectNode parentNode = (ProjectNode)(intptr)row.tag;
          bool addFailed = false;
          int numSelections = fileDialog.numSelections;
          const char * const * multiFilePaths = fileDialog.multiFilePaths;
@@ -2256,7 +2256,7 @@ class ProjectView : Window
          }
          Update(null);
          result.row = parentNode.row.AddRowAfter(after ? after.row : null);
-         result.row.tag = (int64)result;
+         result.row.tag = (int64)(intptr)result;
          result.row.SetData(null, result);
       }
       return result;
@@ -2273,7 +2273,7 @@ class ProjectView : Window
 
       if(!row) row = project.topNode.row;
 
-      parentNode = (ProjectNode)row.tag;
+      parentNode = (ProjectNode)(intptr)row.tag;
 
       for(node : parentNode.files)
       {
@@ -2298,7 +2298,7 @@ class ProjectView : Window
          Update(null);
          project.ModifiedAllConfigs(true, false, false, true);
          projectNode.row = parentNode.row.AddRowAfter(after ? after.row : null);
-         projectNode.row.tag =(int64)projectNode;
+         projectNode.row.tag = (int64)(intptr)projectNode;
 
          projectNode.row.SetData(null, projectNode);
          fileList.currentRow = projectNode.row;
@@ -2355,7 +2355,7 @@ class ProjectView : Window
       for(item = selection.first; item; item = item.next)
       {
          DataRow row = item.data;
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          if(node.type == file)
          {
             OpenNode(node, noParsing);
@@ -2379,13 +2379,13 @@ class ProjectView : Window
       {
          OldLink i;
          DataRow row = item.data;
-         ProjectNode n, node = (ProjectNode)row.tag;
+         ProjectNode n, node = (ProjectNode)(intptr)row.tag;
          bool remove = false;
 
          next = item.next;
          for(i = selection.first; i && !remove; i = i.next)
          {
-            ProjectNode iNode = (ProjectNode)((DataRow)i.data).tag;
+            ProjectNode iNode = (ProjectNode)(intptr)((DataRow)i.data).tag;
             for(n = node.parent; n; n = n.parent)
             {
                if(iNode == n)
@@ -2402,7 +2402,7 @@ class ProjectView : Window
       for(item = selection.first; item; item = item.next)
       {
          DataRow row = item.data;
-         ProjectNode node = (ProjectNode)row.tag;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
          ProjectNode resNode;
          for(resNode = node.parent; resNode; resNode = resNode.parent)
             if(resNode.type == resources)

@@ -249,7 +249,7 @@ class GDBDialog : Window
       {
          if(row)
          {
-            lastCommand = (Command)row.tag;
+            lastCommand = (Command)(intptr)row.tag;
             command.contents = lastCommand.command;
             UpdateOutput();
          }
@@ -654,7 +654,7 @@ class GDBDialog : Window
       {
          Command cmd = Command { command = CopyString(string) };
          commands.Add(cmd);
-         history.AddString(string).tag = (uint64)cmd;
+         history.AddString(string).tag = (uint64)(uintptr)cmd;
          lastCommand = commands.last;
 
          if(created)

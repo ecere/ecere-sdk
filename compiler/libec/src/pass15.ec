@@ -3910,7 +3910,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                   MatchTypes(tempSource, tempDest, conversions, null, null, true, true, false, false, warnConst);
 
                // PUT THIS BACK TESTING UNITS?
-               if(conversions.last)
+               if(conversions && conversions.last)
                {
                   ((Conversion)(conversions.last)).resultType = dest;
                   dest.refCount++;
@@ -4537,7 +4537,7 @@ public Operand GetOperand(Expression exp)
       }
       if(exp.type == stringExp && op.kind == pointerType)
       {
-         op.ui64 = (uint64)exp.string;
+         op.ui64 = (uint64)(uintptr)exp.string;
          op.kind = pointerType;
          op.ops = uint64Ops;
       }
@@ -6663,7 +6663,10 @@ void CheckTemplateTypes(Expression exp)
          default:
             exp.type = castExp;
             exp.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), null);
-            exp.cast.exp = MkExpBrackets(MkListOne(newExp));
+            if(exp.expType.isPointerType)
+               exp.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), MkExpBrackets(MkListOne(newExp)));
+            else
+               exp.cast.exp = MkExpBrackets(MkListOne(newExp));
             exp.needCast = true;
             break;
       }
@@ -6712,6 +6715,9 @@ void CheckTemplateTypes(Expression exp)
             if(exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass)
             {
                exp.type = bracketsExp;
+
+               if(exp.expType.isPointerType)
+                  newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), newExp);
                exp.list = MkListOne(MkExpOp(null, '*', MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp.expType._class.string)),
                   MkDeclaratorPointer(MkPointer(null, null), null)), newExp)));
                ProcessExpressionType(exp.list->first);
@@ -6720,6 +6726,14 @@ void CheckTemplateTypes(Expression exp)
             else
             {
                exp.type = bracketsExp;
+               if(exp.expType.isPointerType)
+               {
+                  exp.needTemplateCast = 2;
+                  newExp.needCast = true;
+                  newExp.needTemplateCast = 2;
+                  newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), newExp);
+               }
+
                exp.list = MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp.expType._class.string)), null), newExp));
                exp.needTemplateCast = 2;
                newExp.needCast = true;
@@ -7345,7 +7359,7 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
          {
             //char constant[256];
             exp.type = stringExp;
-            exp.constant = QMkString((char *)classProp.Get(_class));
+            exp.constant = QMkString((char *)(uintptr)classProp.Get(_class));
          }
          else
          {
@@ -10050,7 +10064,9 @@ void ProcessExpressionType(Expression exp)
                      }
                   }
 
-                  // *([expType] *)(((byte *)[exp.member.exp]) + [argExp].member.offset)
+                  if(!expMember.expType.isPointerType)
+                     expMember = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), expMember);
+                  // *([expType] *)(((byte *)(uintptr)[exp.member.exp]) + [argExp].member.offset)
                   exp.type = bracketsExp;
                   exp.list = MkListOne(MkExpOp(null, '*',
                   /*opExp;
@@ -10059,11 +10075,12 @@ void ProcessExpressionType(Expression exp)
                   exp.op.exp2 = */
                   MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl)), MkExpBrackets(MkListOne(MkExpOp(
                      MkExpBrackets(MkListOne(
-                        MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)), expMember))),
-                           '+',
-                           MkExpOp(MkExpMember(MkExpMember(argExp, MkIdentifier("member")), MkIdentifier("offset")),
-                           '+',
-                           MkExpMember(MkExpMember(MkExpMember(CopyExpression(argExp), MkIdentifier("member")), MkIdentifier("_class")), MkIdentifier("offset")))))))
+                        MkExpCast(MkTypeName(MkListOne(MkSpecifierName("byte")), MkDeclaratorPointer(MkPointer(null, null), null)),
+                           expMember))),
+                              '+',
+                              MkExpOp(MkExpMember(MkExpMember(argExp, MkIdentifier("member")), MkIdentifier("offset")),
+                              '+',
+                              MkExpMember(MkExpMember(MkExpMember(CopyExpression(argExp), MkIdentifier("member")), MkIdentifier("_class")), MkIdentifier("offset")))))))
 
                            ));
                }

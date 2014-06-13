@@ -103,8 +103,8 @@ private:
          }
          else
          {
-            a = (byte *)node.key;
-            b = (byte *)key;
+            a = (byte *)(uintptr)node.key;
+            b = (byte *)(uintptr)key;
          }
 
          result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
@@ -172,7 +172,7 @@ private:
             a += __ENDIAN_PAD(Tclass.typeSize);
          }
          else
-            a = (byte *)key;
+            a = (byte *)(uintptr)key;
 
          if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass)
          {
@@ -180,7 +180,7 @@ private:
             b += __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize);
          }
          else
-            b = (byte *)this.key;
+            b = (byte *)(uintptr)this.key;
 
          result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 

@@ -72,10 +72,10 @@ public class FieldBox : DataBox
 
          if(dataHolder)
          {
-            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
+            ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)dataHolder);
             if(type.type == structClass)
             {
-               void * dataPtr = (void *)dataHolder;
+               void * dataPtr = (void *)(intptr)dataHolder;
                delete dataPtr;
             }
             dataHolder = 0;
@@ -88,15 +88,15 @@ public class FieldBox : DataBox
 
          if(dataType && dataType.type == structClass)
          {
-            dataHolder = (int64)new0 byte[dataType.structSize];
-            data = (void *)dataHolder;
+            dataHolder = (int64)(intptr)new0 byte[dataType.structSize];
+            data = (void *)(intptr)dataHolder;
          }
          else if(dataType && (dataType.type == noHeadClass || dataType.type == normalClass))
          {
             if(eClass_IsDerived(dataType, class(String)))
-               dataHolder = (int64)CopyString("");
+               dataHolder = (int64)(intptr)CopyString("");
             else
-               dataHolder = (int64)eInstance_New(dataType);
+               dataHolder = (int64)(intptr)eInstance_New(dataType);
             data = (void *)&dataHolder;
          }
          else
@@ -118,9 +118,9 @@ public class FieldBox : DataBox
          if(type && (type.type == noHeadClass || type.type == normalClass))
          {
             if(eClass_IsDerived(type, class(String)))
-               dataHolder = (int64)CopyString("");
+               dataHolder = (int64)(intptr)CopyString("");
             else
-               dataHolder = (int64)eInstance_New(type);
+               dataHolder = (int64)(intptr)eInstance_New(type);
             data = (void *)&dataHolder;
          }
 
@@ -142,9 +142,9 @@ public class FieldBox : DataBox
          if(!dataHolder && type && (type.type == noHeadClass || type.type == normalClass))
          {
             if(eClass_IsDerived(type, class(String)))
-               dataHolder = (int64)CopyString("");
+               dataHolder = (int64)(intptr)CopyString("");
             else
-               dataHolder = (int64)eInstance_New(type);
+               dataHolder = (int64)(intptr)eInstance_New(type);
             data = (void *)&dataHolder;
          }
 
@@ -225,10 +225,10 @@ public class FieldBox : DataBox
 
       if(dataHolder)
       {
-         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)dataHolder);
+         ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, (void *)(intptr)dataHolder);
          if(type.type == structClass)
          {
-            void * dataPtr = (void *)dataHolder;
+            void * dataPtr = (void *)(intptr)dataHolder;
             delete dataPtr;
          }
          dataHolder = 0;
