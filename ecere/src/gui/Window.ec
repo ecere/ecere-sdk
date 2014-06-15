@@ -5454,6 +5454,15 @@ private:
          guiApp.prevWindow = null;
          OnMouseLeave(0);
       }
+      else
+      {
+         for(w : guiApp.overWindows; w == this)
+         {
+            OnMouseLeave(0);
+            guiApp.overWindows.TakeOut(w);
+            break;
+         }
+      }
       if(guiApp.caretOwner == this)
       {
          guiApp.interfaceDriver.SetCaret(0,0,0);
