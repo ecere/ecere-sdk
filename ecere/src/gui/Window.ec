@@ -4269,14 +4269,37 @@ private:
          if(guiApp.windowCaptured || trueWindow)
          {
             Window prevWindow = guiApp.prevWindow;
-            if(guiApp.prevWindow && trueWindow != guiApp.prevWindow)
+            List<Window> overWindows = guiApp.overWindows;
+            Iterator<Window> it { overWindows };
+
+            while(it.Next())
+            {
+               Window w = it.data;
+               if(trueWindow != w && !trueWindow.IsDescendantOf(w))
+               {
+                  it.pointer = null;
+                  result = w.OnMouseLeave(*mods);
+                  if(!result) break;
+                  overWindows.TakeOut(w);
+               }
+            }
+
+            if(result && guiApp.prevWindow && trueWindow != guiApp.prevWindow)
             {
                guiApp.prevWindow.mouseInside = false;
                guiApp.prevWindow = null;
 
-               // Eventually fix this not to include captured?
-               if(!trueWindow.IsDescendantOf(prevWindow) && !prevWindow.OnMouseLeave(*mods))
-                  result = false;
+               if(result)
+               {
+                  if(trueWindow.IsDescendantOf(prevWindow))
+                  {
+                     if(!overWindows.Find(prevWindow))
+                        overWindows.Add(prevWindow);
+                  }
+                  // Eventually fix this not to include captured?
+                  else if(!prevWindow.OnMouseLeave(*mods))
+                     result = false;
+               }
             }
             if(result && trueWindow && !trueWindow.destroyed/* && trueWindow == window*/)
             {

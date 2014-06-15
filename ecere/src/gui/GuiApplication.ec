@@ -82,6 +82,7 @@ import "XInterface"
 #endif
 
 import "Window"
+import "List"
 
 /*static */bool guiApplicationInitialized = false;
 GuiApplication guiApp;
@@ -123,7 +124,8 @@ public class GuiApplication : Application
    OldList windowTimers;
 
    // Mouse events
-   Window prevWindow;     // Used for OnMouseLeave
+   Window prevWindow;            // Used for OnMouseLeave
+   List<Window> overWindows { }; // Used for OnMouseLeave
    Window windowCaptured;
 
    // Mouse based moving & resizing
