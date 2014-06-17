@@ -20,6 +20,8 @@ import "Socket"
 public import "ecere"
 #endif
 
+namespace net;
+
 #ifndef ECERE_NOSSL
 /*
 static char * pass = "password";
@@ -81,6 +83,13 @@ public class SSLSocket : Socket
    {
       int n = ssl ? SSL_write(ssl, buffer, count) : Socket::SendData(buffer, count, flags);
       return n;
+   }
+
+public:
+   property bool autoEstablish
+   {
+      set { autoEstablish = value; }
+      get { return autoEstablish; }
    }
 
    bool EstablishConnection()

@@ -169,6 +169,7 @@ _ECSOURCES3 = \
 	src/net/NetworkClientFile.ec \
 	src/net/Service.ec \
 	src/net/Socket.ec \
+	$(if $(ENABLE_SSL),src/net/SSLSocket.ec,) \
 	src/com/containers/Array.ec \
 	src/com/containers/AVLTree.ec \
 	src/com/containers/BuiltInContainer.ec \
@@ -455,7 +456,9 @@ LIBS += \
 	$(call _L,shell32) \
 	$(call _L,winspool) \
 	$(call _L,imm32) \
-	$(call _L,ungif)
+	$(call _L,ungif) \
+	$(if $(ENABLE_SSL),$(call _L,eay32)) \
+	$(if $(ENABLE_SSL),$(call _L,ssleay32))
 endif
 
 else
@@ -474,7 +477,9 @@ LIBS += \
 	$(call _L,X11) \
 	$(call _L,Xext) \
 	$(call _L,Xrender) \
-	$(if $(DISABLE_GL),,$(call _L,GL))
+	$(if $(DISABLE_GL),,$(call _L,GL)) \
+	$(if $(ENABLE_SSL),$(call _L,ssl)) \
+	$(if $(ENABLE_SSL),$(call _L,crypto))
 endif
 
 else
@@ -497,7 +502,9 @@ LIBS += \
 	$(call _L,X11) \
 	$(call _L,Xext) \
 	$(call _L,Xrender) \
-	$(call _L,GL)
+	$(call _L,GL) \
+	$(if $(ENABLE_SSL),$(call _L,ssl)) \
+	$(if $(ENABLE_SSL),$(call _L,crypto))
 endif
 
 endif
@@ -965,6 +972,9 @@ $(OBJ)Service.sym: src/net/Service.ec
 $(OBJ)Socket.sym: src/net/Socket.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/net/Socket.ec -o $(OBJ)Socket.sym
 
+$(OBJ)SSLSocket.sym: src/net/SSLSocket.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/net/SSLSocket.ec -o $(OBJ)SSLSocket.sym
+
 $(OBJ)Array.sym: src/com/containers/Array.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.sym
 
@@ -1373,6 +1383,9 @@ $(OBJ)Service.c: src/net/Service.ec $(OBJ)Service.sym | $(SYMBOLS)
 
 $(OBJ)Socket.c: src/net/Socket.ec $(OBJ)Socket.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/net/Socket.ec -o $(OBJ)Socket.c -symbols $(OBJ)
+
+$(OBJ)SSLSocket.c: src/net/SSLSocket.ec $(OBJ)SSLSocket.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/net/SSLSocket.ec -o $(OBJ)SSLSocket.c -symbols $(OBJ)
 
 $(OBJ)Array.c: src/com/containers/Array.ec $(OBJ)Array.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Array.ec -o $(OBJ)Array.c -symbols $(OBJ)
@@ -1858,6 +1871,9 @@ $(OBJ)Service.o: $(OBJ)Service.c
 
 $(OBJ)Socket.o: $(OBJ)Socket.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Socket.c -o $(OBJ)Socket.o
+
+$(OBJ)SSLSocket.o: $(OBJ)SSLSocket.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)SSLSocket.c -o $(OBJ)SSLSocket.o
 
 $(OBJ)Array.o: $(OBJ)Array.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(OBJ)Array.c -o $(OBJ)Array.o
