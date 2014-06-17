@@ -1914,6 +1914,18 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
          init.type = listInitializer;
          init.list = subList;
       }
+      else if(dataMember.dataType && dataMember.dataType.kind == arrayType)
+      {
+         Type t = dataMember.dataType.type;
+         Initializer i = MkInitializerAssignment(MkExpConstant("0"));
+         while(t && t.kind == arrayType)
+         {
+            i = MkInitializerList(MkListOne(i));
+            t = t.type;
+         }
+         init.type = listInitializer;
+         init.list = MkListOne(i);
+      }
       else
       {
          init.type = expInitializer;

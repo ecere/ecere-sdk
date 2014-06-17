@@ -2946,6 +2946,19 @@ FreeInstance(inst);
 init->type = 1;
 init->__anon1.list = subList;
 }
+else if(dataMember->dataType && dataMember->dataType->kind == 12)
+{
+struct Type * t = dataMember->dataType->__anon1.type;
+struct Initializer * i = MkInitializerAssignment(MkExpConstant("0"));
+
+while(t && t->kind == 12)
+{
+i = MkInitializerList(MkListOne(i));
+t = t->__anon1.type;
+}
+init->type = 1;
+init->__anon1.list = MkListOne(i);
+}
 else
 {
 init->type = 0;
