@@ -2259,14 +2259,14 @@ static void ProcessDeclaration(Declaration decl)
                      // We'd like the = 0 as well...
                      {
                         Expression exp = MkExpOp(null, DELETE, CopyExpression(inst.exp));
-                        ListAdd(destroyInstancesBody.compound.statements, MkExpressionStmt(MkListOne(exp)));
+                        ListAddFront(destroyInstancesBody.compound.statements, MkExpressionStmt(MkListOne(exp)));
                         ProcessExpressionType(exp);
                      }
                   }
                   else if(classSym && classSym.registered && (classSym.registered.type == noHeadClass))
                   {
                      Expression exp = MkExpOp(null, DELETE, CopyExpression(inst.exp));
-                     ListAdd(destroyInstancesBody.compound.statements, MkExpressionStmt(MkListOne(exp)));
+                     ListAddFront(destroyInstancesBody.compound.statements, MkExpressionStmt(MkListOne(exp)));
                      ProcessExpressionType(exp);
                   }
                   break;

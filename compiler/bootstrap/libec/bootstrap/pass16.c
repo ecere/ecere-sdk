@@ -3208,6 +3208,8 @@ recursionCount--;
 return 1;
 }
 
+extern void ListAddFront(struct __ecereNameSpace__ecere__sys__OldList * list, void *  item);
+
 static void ProcessDeclaration(struct Declaration * decl)
 {
 yylloc = decl->loc;
@@ -3282,7 +3284,7 @@ ListAdd(createInstancesBody->__anon1.compound.statements, MkExpressionStmt(MkLis
 {
 struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
-ListAdd(destroyInstancesBody->__anon1.compound.statements, MkExpressionStmt(MkListOne(exp)));
+ListAddFront(destroyInstancesBody->__anon1.compound.statements, MkExpressionStmt(MkListOne(exp)));
 ProcessExpressionType(exp);
 }
 }
@@ -3290,7 +3292,7 @@ else if(classSym && classSym->__anon1.registered && (classSym->__anon1.registere
 {
 struct Expression * exp = MkExpOp((((void *)0)), DELETE, CopyExpression(inst->exp));
 
-ListAdd(destroyInstancesBody->__anon1.compound.statements, MkExpressionStmt(MkListOne(exp)));
+ListAddFront(destroyInstancesBody->__anon1.compound.statements, MkExpressionStmt(MkListOne(exp)));
 ProcessExpressionType(exp);
 }
 break;
