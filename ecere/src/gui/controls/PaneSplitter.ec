@@ -69,8 +69,8 @@ public class PaneSplitter : Window
             x += absPosition.x;
             x -= startPos;
             x += startX;
-            x = Max(x, 20);
-            x = Min(x, parent.clientSize.w - 20);
+            x = Max(x, leftPane ? leftPane.minClientSize.w : 20);
+            x = Min(x, parent.clientSize.w - (rightPane ? rightPane.minClientSize.w : 20) - toolGap - toolSize);
 
             property::split = x;
 
@@ -81,8 +81,8 @@ public class PaneSplitter : Window
             y += absPosition.y;
             y -= startPos;
             y += startX;
-            y = Max(y, 20);
-            y = Min(y, parent.clientSize.h - 20);
+            y = Max(y, leftPane ? leftPane.minClientSize.h : 20);
+            y = Min(y, parent.clientSize.h - (rightPane ? rightPane.minClientSize.h : 20) - toolGap - toolSize);
 
             property::split = y;
 
@@ -172,6 +172,8 @@ public:
             int w = size.w;
             int pw = parent.clientSize.w;
             int x = value;
+            x = Max(x, leftPane ? leftPane.minClientSize.w : 20);
+            x = Min(x, parent.clientSize.w - (rightPane ? rightPane.minClientSize.w : 20) - toolGap - toolSize);
 
             if(leftPane) leftPane.anchor.right = pw - x + toolGap;
             if(rightPane) rightPane.anchor.left = x + w + toolGap;
@@ -184,6 +186,8 @@ public:
             int h = size.h;
             int ph = parent.clientSize.h;
             int y = value;
+            y = Max(y, leftPane ? leftPane.minClientSize.h : 20);
+            y = Min(y, parent.clientSize.h - (rightPane ? rightPane.minClientSize.h : 20) - toolGap - toolSize);
 
             if(leftPane)  leftPane.anchor.bottom = ph - y + toolGap;
             if(rightPane) rightPane.anchor.top = y + h + toolGap;
