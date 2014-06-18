@@ -484,13 +484,13 @@ public:
                //if(!f && (settingsFilePath = PreparePortablePath(extension, true)))
                //   FileOpenTryWrite(true);
 #if defined(__WIN32__)
-               if(!f && (settingsFilePath = PrepareAllUsersPath(extension, true)))
+               if(!f && allUSers && (settingsFilePath = PrepareAllUsersPath()))
                   FileOpenTryWrite(true, &locked);
 #else
-               if(!f && (settingsFilePath = PrepareEtcPath(extension, true)))
+               if(!f && allUSers && (settingsFilePath = PrepareEtcPath()))
                   FileOpenTryWrite(true, &locked);
 #endif
-               if(!f && allUsers)
+               if(!f && !allUsers)
                {
                   globalPath = false;
                   if(!f && (settingsFilePath = PrepareHomePath(extension, true,
