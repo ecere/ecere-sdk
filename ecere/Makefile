@@ -404,7 +404,8 @@ PRJ_CFLAGS += \
 			 -I../deps/libpng-1.4.0 \
 			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib \
-			 -I../deps/freetype-2.3.12/include,) \
+			 -I../deps/freetype-2.3.12/include \
+			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2,) \
 	 $(if $(OSX_TARGET), \
@@ -440,7 +441,8 @@ OFLAGS += \
 	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
-	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
+	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 $(if $(ENABLE_SSL),-L$(OPENSSL_LIB_DIR) -L$(OPENSSL_BIN_DIR))
 LIBS += \
 	$(call _L,dxguid) \
 	$(call _L,ddraw) \
@@ -1969,3 +1971,16 @@ realclean: cleantarget
 
 distclean: cleantarget
 	$(call rmrq,obj/)
+
+#troubleshoot:
+#	@$(call echo,OBJECTS = $(OBJECTS))
+
+#ifdef WINDOWS
+.PHONY: debug_openssl
+debug_openssl:
+	@$(call echo,OPENSSL_CONF = $(OPENSSL_CONF))
+	@$(call echo,_OPENSSL_CONF = $(_OPENSSL_CONF))
+	@$(call echo,OPENSSL_INCLUDE_DIR = $(OPENSSL_INCLUDE_DIR))
+	@$(call echo,OPENSSL_LIB_DIR = $(OPENSSL_LIB_DIR))
+	@$(call echo,OPENSSL_BIN_DIR = $(OPENSSL_BIN_DIR))
+#endif

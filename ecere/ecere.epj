@@ -124,7 +124,8 @@ from wherever you obtained them.
                "../deps/libungif-4.1.1/lib",
                "../deps/zlib",
                "../deps/freetype-2.3.12/include",
-               "../deps/glext"
+               "../deps/glext",
+               "$(OPENSSL_INCLUDE_DIR)"
             ],
             "Libraries" : [
                "dxguid",
@@ -150,7 +151,9 @@ from wherever you obtained them.
                "../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
-               "../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
+               "../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "$(OPENSSL_BIN_DIR)",
+               "$(OPENSSL_LIB_DIR)"
             ]
          }
       },
