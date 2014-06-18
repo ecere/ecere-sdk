@@ -4323,7 +4323,15 @@ private:
                }
             }
             if(trueWindow && trueWindow._refCount > 1 && !trueWindow.destroyed)
+            {
+               for(w : guiApp.overWindows; w == trueWindow)
+               {
+                  OnMouseLeave(0);
+                  guiApp.overWindows.TakeOut(w);
+                  break;
+               }
                guiApp.prevWindow = trueWindow;
+            }
             else
                guiApp.prevWindow = null;
          }
