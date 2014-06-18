@@ -36,6 +36,8 @@ bool inPreCompiler = false;
 public void SetInPreCompiler(bool b) {inPreCompiler = b; }
 bool inSymbolGen = false;
 public void SetInSymbolGen(bool b) {inSymbolGen = b; }
+bool inDocumentor = false;
+public void SetInDocumentor(bool b) { inDocumentor = b; }
 OldList * precompDefines;
 public void SetPrecompDefines(OldList * list) { precompDefines = list; }
 
@@ -784,7 +786,12 @@ public void ImportModule(const char * name, ImportType importType, AccessMode im
 
                // Load an extra instance of any shared module to ensure freeing up a
                // module loaded in another file will not invalidate our objects.
-               if(!inCompiler && !inPreCompiler && !inSymbolGen)
+
+               // Don't do this for Documentor, because files are loaded with full paths
+               // and won't be recognized as the same libecere that Documentor is actually using,
+               // and since this is loaded from the Documentor app module, it will invalidate classes in use.
+               // We only load one component app at a time for Documentor, so we do not need this trick.
+               if(!inCompiler && !inPreCompiler && !inSymbolGen && !inDocumentor)
                {
                   MapIterator<String, List<Module> > it { map = loadedModules };
                   if(!it.Index(name /*file*/, false))

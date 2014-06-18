@@ -2237,11 +2237,13 @@ class MainForm : Window
       imports.Free(FreeModuleImport);
 
       FreeGlobalData(globalData);
-      FreeTypeData(componentsApp);
       FreeIncludeFiles();
-      delete componentsApp;
+      if(componentsApp)
+      {
+         FreeTypeData(componentsApp);
+         delete componentsApp;
+      }
 
-      SetGlobalContext(globalContext);
       componentsApp = __ecere_COM_Initialize(false, 1, null);
       SetPrivateModule(componentsApp);
 
@@ -3863,12 +3865,11 @@ class Documentor : GuiApplication
    bool Init()
    {
       Platform os = __runtimePlatform;
-      componentsApp = __ecere_COM_Initialize(false, 1, null);
-      SetPrivateModule(componentsApp);
       SetGlobalContext(globalContext);
       SetExcludedSymbols(&excludedSymbols);
       SetDefines(&::defines);
       SetImports(&imports);
+      SetInDocumentor(true);
 
       SetGlobalData(globalData);
 
