@@ -93,9 +93,12 @@ public:
       else if(ch == '[')
       {
          Container array;
-         result = GetArray(type, &array);
+         if(type && eClass_IsDerived(type, class(Map)))
+            result = GetMap(type, (Map *)&array);
+         else
+            result = GetArray(type, &array);
 
-         if(type && eClass_IsDerived(type, class(Container)))
+         if(result == success && type && eClass_IsDerived(type, class(Container)))
          {
             value.p = array;
          }
@@ -104,7 +107,8 @@ public:
             if(array)
                array.Free();
             delete array;
-            result = typeMismatch;
+            if(result != success)
+               result = typeMismatch;
          }
       }
       else if(ch == '-' || isdigit(ch))
@@ -117,7 +121,7 @@ public:
          result = GetObject(type, &object);
          if(result)
          {
-            if(type.type == structClass);
+            if(type && type.type == structClass);
             else if(type && (type.type == normalClass || type.type == noHeadClass || type.type == bitClass))
             {
                value.p = object;
@@ -125,7 +129,8 @@ public:
             else
             {
                result = typeMismatch;
-               ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, object);
+               if(type)
+                  ((void (*)(void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnFree])(type, object);
             }
          }
       }
@@ -199,7 +204,7 @@ public:
                uint64 t;
                if(arrayType.type == structClass)
                {
-                  t = (uint64) value.p;
+                  t = (uint64)(uintptr)value.p;
                }
                else if(arrayType == class(double) || !strcmp(arrayType.dataTypeString, "double"))
                {
@@ -232,7 +237,7 @@ public:
                }
                else
                {
-                  t = (uint64)value.p;
+                  t = (uint64)(uintptr)value.p;
                }
                ((void *(*)(void *, uint64))(void *)array->Add)(*array, t);
             }
@@ -242,6 +247,69 @@ public:
                {
                   if(arrayType)
                      PrintLn("Warning: Incompatible value for array value, expected ", (String)arrayType.name);
+               }
+               else if(itemResult == noItem)
+                  result = success;
+               else
+                  result = itemResult;
+            }
+
+            if(result != syntaxError)
+            {
+               if(ch != ']' && ch != ',')
+               {
+                  ch = 0;
+                  SkipEmpty();
+               }
+               if(ch == ']')
+               {
+                  break;
+               }
+               else if(ch != ',')
+                  result = syntaxError;
+            }
+         }
+      }
+      ch = 0;
+      return result;
+   }
+
+   JSONResult GetMap(Class type, Map * map)
+   {
+      JSONResult result = syntaxError;
+      SkipEmpty();
+      *map = null;
+      if(ch == '[')
+      {
+         Class mapNodeType = type.templateArgs[0].dataTypeClass;
+         Class keyType = mapNodeType.templateArgs[0].dataTypeClass;
+         Property keyProp = null;
+         if(keyType && !strcmp(keyType.dataTypeString, "char *"))
+            keyProp = eClass_FindProperty(mapNodeType, "key", mapNodeType.module);
+
+         *map = eInstance_New(type);
+         result = success;
+
+         while(result)
+         {
+            DataValue value { };
+
+            JSONResult itemResult;
+
+            itemResult = GetValue(mapNodeType, value);
+            if(itemResult == success)
+            {
+               String s = keyProp ? ((void * (*)(void *))(void *)keyProp.Get)(value.p) : null;
+               ((void *(*)(void *, uint64))(void *)map->Add)(*map, (uint64)(uintptr)value.p);
+               // Must free String keys here
+               delete s;
+            }
+            else
+            {
+               if(itemResult == typeMismatch)
+               {
+                  if(mapNodeType)
+                     PrintLn("Warning: Incompatible value for array value, expected ", (String)mapNodeType.name);
                }
                else if(itemResult == noItem)
                   result = success;
@@ -317,18 +385,27 @@ public:
          result = success;
       }
       delete buffer;
-      ch = 0;
+      if(ch != ',' && ch != '}')
+         ch = 0;
       return result;
    }
 
    public JSONResult GetObject(Class objectType, void ** object)
    {
       JSONResult result = syntaxError;
-      if(objectType.type != structClass)
+      if(!objectType || objectType.type != structClass)
          *object = null;
       SkipEmpty();
       if(ch == '{')
       {
+         Class mapKeyClass = null, mapDataClass = null;
+
+         if(objectType && objectType.templateClass && eClass_IsDerived(objectType.templateClass, class(MapNode)))
+         {
+            mapKeyClass = objectType.templateArgs[0].dataTypeClass;
+            mapDataClass = objectType.templateArgs[2].dataTypeClass;
+         }
+
          result = success;
          if(objectType && (objectType.type == noHeadClass || objectType.type == normalClass))
          {
@@ -348,28 +425,43 @@ public:
                DataMember member = null;
                Property prop = null;
                Class type = null;
+               bool isKey = false;
 
                if(objectType)
                {
                   string[0] = (char)tolower(string[0]);
-                  member = eClass_FindDataMember(objectType, string, objectType.module, null, null);
-                  if(member)
+                  if(mapKeyClass && !strcmp(string, "key"))
                   {
-                     type = eSystem_FindClass(__thisModule, member.dataTypeString);
-                     if(!type)
-                        type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
+                     prop = eClass_FindProperty(objectType, "key", objectType.module);
+                     type = mapKeyClass;
+                     isKey = true;
                   }
-                  else if(!member)
+                  else if(mapDataClass && !strcmp(string, "value"))
                   {
-                     prop = eClass_FindProperty(objectType, string, objectType.module);
-                     if(prop)
+                     prop = eClass_FindProperty(objectType, "value", objectType.module);
+                     type = mapDataClass;
+                  }
+                  else
+                  {
+                     member = eClass_FindDataMember(objectType, string, objectType.module, null, null);
+                     if(member)
                      {
-                        type = eSystem_FindClass(__thisModule, prop.dataTypeString);
+                        type = eSystem_FindClass(__thisModule, member.dataTypeString);
                         if(!type)
-                           type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
+                           type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
                      }
-                     else
-                        PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                     else if(!member)
+                     {
+                        prop = eClass_FindProperty(objectType, string, objectType.module);
+                        if(prop)
+                        {
+                           type = eSystem_FindClass(__thisModule, prop.dataTypeString);
+                           if(!type)
+                              type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
+                        }
+                        else
+                           PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name);
+                     }
                   }
                }
                // Find Member in Object Class
@@ -451,7 +543,8 @@ public:
                                  if(!strcmp(type.dataTypeString, "char *"))
                                  {
                                     ((void (*)(void *, void *))(void *)prop.Set)(*object, value.p);
-                                    delete value.p;
+                                    if(!isKey)
+                                       delete value.p;
                                  }
                                  // TOFIX: How to swiftly handle classes with base data type?
                                  else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
@@ -501,7 +594,7 @@ public:
                      result = syntaxError;
                }
             }
-            else if(ch)
+            else if(ch && ch != '}' && ch != ',')
                result = syntaxError;
             delete string;
 
@@ -566,6 +659,37 @@ public:
    }
 }
 
+bool WriteMap(File f, Class type, Map map, int indent)
+{
+   if(map)
+   {
+      int i;
+      bool isFirst = true;
+      MapIterator it { map = map };
+      Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
+      f.Puts("[\n");
+      indent++;
+
+      while(it.Next())
+      {
+         MapNode n = (MapNode)it.pointer;
+         if(!isFirst)
+            f.Puts(",\n");
+         else
+            isFirst = false;
+         for(i = 0; i<indent; i++) f.Puts("   ");
+         _WriteJSONObject(f, mapNodeClass, n, indent);
+      }
+      f.Puts("\n");
+      indent--;
+      for(i = 0; i<indent; i++) f.Puts("   ");
+      f.Puts("]");
+   }
+   else
+      f.Puts("null");
+   return true;
+}
+
 bool WriteArray(File f, Class type, Container array, int indent)
 {
    if(array)
@@ -590,7 +714,7 @@ bool WriteArray(File f, Class type, Container array, int indent)
          // TODO: Verify the matching between template type and uint64
          if(arrayType.type == structClass)
          {
-            value.p = (void *)t;
+            value.p = (void *)(uintptr)t;
          }
          else if(arrayType == class(double) || !strcmp(arrayType.dataTypeString, "double"))
          {
@@ -623,7 +747,7 @@ bool WriteArray(File f, Class type, Container array, int indent)
          }
          else
          {
-            value.p = (void *)t;
+            value.p = (void *)(uintptr)t;
          }
          for(i = 0; i<indent; i++) f.Puts("   ");
          WriteValue(f, arrayType, value, indent);
@@ -734,6 +858,10 @@ bool WriteValue(File f, Class type, DataValue value, int indent)
       WriteNumber(f, type, value, indent);
       f.Puts("\"");
    }
+   else if(eClass_IsDerived(type, class(Map)))
+   {
+      WriteMap(f, type, value.p, indent);
+   }
    else if(eClass_IsDerived(type, class(Container)))
    {
       WriteArray(f, type, value.p, indent);
@@ -789,6 +917,13 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
          Property prop;
          int c;
          bool isFirst = true;
+         Class mapKeyClass = null, mapDataClass = null;
+
+         if(objectType.templateClass && eClass_IsDerived(objectType.templateClass, class(MapNode)))
+         {
+            mapKeyClass = objectType.templateArgs[0].dataTypeClass;
+            mapDataClass = objectType.templateArgs[2].dataTypeClass;
+         }
 
          f.Puts("{\n");
          indent++;
@@ -801,7 +936,14 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                if(!prop.conversion && (!prop.IsSet || prop.IsSet(object)))
                {
                   DataValue value { };
-                  Class type = eSystem_FindClass(__thisModule, prop.dataTypeString);
+                  Class type;
+
+                  if(mapKeyClass && !strcmp(prop.name, "key"))
+                     type = mapKeyClass;
+                  else if(mapDataClass && !strcmp(prop.name, "value"))
+                     type = mapDataClass;
+                  else
+                     type = eSystem_FindClass(__thisModule, prop.dataTypeString);
                   if(!type)
                      type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
                   if(!type)
