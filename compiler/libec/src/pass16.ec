@@ -1055,7 +1055,8 @@ static void ProcessExpression(Expression exp)
                   newCall.usage = exp.usage;
 
                   ProcessExpressionType(newCall);
-                  newCall.expType.passAsTemplate = exp.expType.passAsTemplate;
+                  if(newCall.expType && exp.expType)
+                     newCall.expType.passAsTemplate = exp.expType.passAsTemplate;
                   newCall.byReference = true;
                }
 

@@ -5108,8 +5108,7 @@ void ComputeInstantiation(Expression exp)
                            if(type.kind == classType)
                            {
                               Class _class = type._class.registered;
-                              if(_class.type == bitClass || _class.type == unitClass ||
-                                 _class.type == enumClass)
+                              if(_class && (_class.type == bitClass || _class.type == unitClass || _class.type == enumClass))
                               {
                                  if(!_class.dataType)
                                     _class.dataType = ProcessTypeString(_class.dataTypeString, false);

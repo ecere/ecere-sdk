@@ -2120,7 +2120,7 @@ static void ProcessExpression(Expression exp)
 
                            checkedExp = e;
                            parentExp = exp;
-                           while(((checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp || checkedExp.type == extensionCompoundExp) && checkedExp.list) || checkedExp.type == castExp)
+                           while(checkedExp && (((checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp || checkedExp.type == extensionCompoundExp) && checkedExp.list) || checkedExp.type == castExp))
                            {
                               parentExp = checkedExp;
                               if(checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp || checkedExp.type == extensionCompoundExp)
@@ -2265,7 +2265,7 @@ static void ProcessExpression(Expression exp)
                               // TODO: INTEGRATE THIS WITH VERSION ABOVE WHICH WAS ADDED TO ENCOMPASS OTHER CASE (*pointer)
                               checkedExp = e;
                               parentExp = exp;
-                              while(((checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp || checkedExp.type == extensionCompoundExp) && checkedExp.list) || checkedExp.type == castExp)
+                              while(checkedExp && (((checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp || checkedExp.type == extensionCompoundExp) && checkedExp.list) || checkedExp.type == castExp))
                               {
                                  parentExp = checkedExp;
                                  if(checkedExp.type == bracketsExp || checkedExp.type == extensionExpressionExp || checkedExp.type == extensionCompoundExp)

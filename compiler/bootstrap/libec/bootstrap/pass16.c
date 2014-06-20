@@ -2210,6 +2210,7 @@ DeclareClass(classSym, className);
 newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
 newCall->usage = exp->usage;
 ProcessExpressionType(newCall);
+if(newCall->expType && exp->expType)
 newCall->expType->passAsTemplate = exp->expType->passAsTemplate;
 newCall->byReference = 1;
 }

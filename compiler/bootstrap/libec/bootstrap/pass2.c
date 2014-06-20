@@ -3040,7 +3040,7 @@ struct Expression * newExp;
 
 checkedExp = e;
 parentExp = exp;
-while(((checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23) && checkedExp->__anon1.list) || checkedExp->type == 11)
+while(checkedExp && (((checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23) && checkedExp->__anon1.list) || checkedExp->type == 11))
 {
 parentExp = checkedExp;
 if(checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23)
@@ -3149,7 +3149,7 @@ curContext = context->parent;
 }
 checkedExp = e;
 parentExp = exp;
-while(((checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23) && checkedExp->__anon1.list) || checkedExp->type == 11)
+while(checkedExp && (((checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23) && checkedExp->__anon1.list) || checkedExp->type == 11))
 {
 parentExp = checkedExp;
 if(checkedExp->type == 5 || checkedExp->type == 32 || checkedExp->type == 23)
