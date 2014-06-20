@@ -11499,7 +11499,9 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct)
                   ProcessExpressionType(e.exp);
             }
          }
-         break;
+         // Fall through for IDE type processing
+         if(inCompiler)
+            break;
       }
       case structSpecifier:
       case unionSpecifier:
@@ -12026,11 +12028,15 @@ static void ProcessStatement(Statement stmt)
             Class arrayClass = eSystem_FindClass(privateModule, "Array");
             Class linkListClass = eSystem_FindClass(privateModule, "LinkList");
             Class customAVLTreeClass = eSystem_FindClass(privateModule, "CustomAVLTree");
-            stmt.type = compoundStmt;
 
-            stmt.compound.context = Context { };
-            stmt.compound.context.parent = curContext;
-            curContext = stmt.compound.context;
+            if(inCompiler)
+            {
+               stmt.type = compoundStmt;
+
+               stmt.compound.context = Context { };
+               stmt.compound.context.parent = curContext;
+               curContext = stmt.compound.context;
+            }
 
             if(source && eClass_IsDerived(source._class.registered, customAVLTreeClass))
             {
@@ -12050,7 +12056,7 @@ static void ProcessStatement(Statement stmt)
                isList = eClass_IsDerived(source._class.registered, listClass);
             }
 
-            if(isArray)
+            if(inCompiler && isArray)
             {
                Declarator decl;
                OldList * specs = MkList();
@@ -12135,35 +12141,52 @@ static void ProcessStatement(Statement stmt)
                }
                if(typeString)
                {
-                  OldList * initializers = MkList();
-                  Declarator decl;
-                  OldList * specs = MkList();
-                  if(arrayExp.list)
+                  if(inCompiler)
+                  {
+                     OldList * initializers = MkList();
+                     Declarator decl;
+                     OldList * specs = MkList();
+                     if(arrayExp.list)
+                     {
+                        Expression e;
+
+                        builtinCount = arrayExp.list->count;
+                        type = ProcessTypeString(typeString, false);
+                        while((e = arrayExp.list->first))
+                        {
+                           arrayExp.list->Remove(e);
+                           e.destType = type;
+                           type.refCount++;
+                           ProcessExpressionType(e);
+                           if(inCompiler)
+                              ListAdd(initializers, MkInitializerAssignment(e));
+                        }
+                        FreeType(type);
+                        delete arrayExp.list;
+                     }
+                     decl = SpecDeclFromString(typeString, specs, MkDeclaratorIdentifier(id));
+
+                     stmt.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, CopySpecifier),
+                        MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), /*CopyDeclarator(*/decl/*)*/), null))));
+
+                     ListAdd(stmt.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(
+                        PlugDeclarator(
+                           /*CopyDeclarator(*/decl/*)*/, MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__internalArray")), null)
+                           ), MkInitializerList(initializers)))));
+                     FreeList(exp, FreeExpression);
+                  }
+                  else if(arrayExp.list)
                   {
                      Expression e;
-
-                     builtinCount = arrayExp.list->count;
                      type = ProcessTypeString(typeString, false);
-                     while((e = arrayExp.list->first))
+                     for(e = arrayExp.list->first; e; e = e.next)
                      {
-                        arrayExp.list->Remove(e);
                         e.destType = type;
                         type.refCount++;
                         ProcessExpressionType(e);
-                        ListAdd(initializers, MkInitializerAssignment(e));
                      }
                      FreeType(type);
-                     delete arrayExp.list;
                   }
-                  decl = SpecDeclFromString(typeString, specs, MkDeclaratorIdentifier(id));
-                  stmt.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, CopySpecifier),
-                     MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), /*CopyDeclarator(*/decl/*)*/), null))));
-
-                  ListAdd(stmt.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(
-                     PlugDeclarator(
-                        /*CopyDeclarator(*/decl/*)*/, MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__internalArray")), null)
-                        ), MkInitializerList(initializers)))));
-                  FreeList(exp, FreeExpression);
                }
                else
                {
@@ -12184,7 +12207,7 @@ static void ProcessStatement(Statement stmt)
                      MkInitializerAssignment(MkExpBrackets(exp))))));
                */
             }
-            else if(isLinkList && !isList)
+            else if(inCompiler && isLinkList && !isList)
             {
                Declarator decl;
                OldList * specs = MkList();
@@ -12204,7 +12227,7 @@ static void ProcessStatement(Statement stmt)
                   MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalTree")),
                      MkInitializerAssignment(MkExpBrackets(exp))))));
             }*/
-            else if(_class.templateArgs)
+            else if(inCompiler && _class.templateArgs)
             {
                if(isMap)
                   sprintf(iteratorType, "MapIterator<%s, %s >", _class.templateArgs[5].dataTypeString, _class.templateArgs[6].dataTypeString);
@@ -12216,159 +12239,166 @@ static void ProcessStatement(Statement stmt)
                   MkExpIdentifier(id), MkListOne(MkMembersInitList(MkListOne(MkMemberInit(isMap ? MkListOne(MkIdentifier("map")) : null,
                   MkInitializerAssignment(MkExpBrackets(exp)))))))));
             }
-            symbol = FindSymbol(id.string, curContext, curContext, false, false);
-
-            if(block)
+            if(inCompiler)
             {
-               // Reparent sub-contexts in this statement
-               switch(block.type)
+               symbol = FindSymbol(id.string, curContext, curContext, false, false);
+
+               if(block)
                {
-                  case compoundStmt:
-                     if(block.compound.context)
-                        block.compound.context.parent = stmt.compound.context;
-                     break;
-                  case ifStmt:
-                     if(block.ifStmt.stmt && block.ifStmt.stmt.type == compoundStmt && block.ifStmt.stmt.compound.context)
-                        block.ifStmt.stmt.compound.context.parent = stmt.compound.context;
-                     if(block.ifStmt.elseStmt && block.ifStmt.elseStmt.type == compoundStmt && block.ifStmt.elseStmt.compound.context)
-                        block.ifStmt.elseStmt.compound.context.parent = stmt.compound.context;
-                     break;
-                  case switchStmt:
-                     if(block.switchStmt.stmt && block.switchStmt.stmt.type == compoundStmt && block.switchStmt.stmt.compound.context)
-                        block.switchStmt.stmt.compound.context.parent = stmt.compound.context;
-                     break;
-                  case whileStmt:
-                     if(block.whileStmt.stmt && block.whileStmt.stmt.type == compoundStmt && block.whileStmt.stmt.compound.context)
-                        block.whileStmt.stmt.compound.context.parent = stmt.compound.context;
-                     break;
-                  case doWhileStmt:
-                     if(block.doWhile.stmt && block.doWhile.stmt.type == compoundStmt && block.doWhile.stmt.compound.context)
-                        block.doWhile.stmt.compound.context.parent = stmt.compound.context;
-                     break;
-                  case forStmt:
-                     if(block.forStmt.stmt && block.forStmt.stmt.type == compoundStmt && block.forStmt.stmt.compound.context)
-                        block.forStmt.stmt.compound.context.parent = stmt.compound.context;
-                     break;
-                  case forEachStmt:
-                     if(block.forEachStmt.stmt && block.forEachStmt.stmt.type == compoundStmt && block.forEachStmt.stmt.compound.context)
-                        block.forEachStmt.stmt.compound.context.parent = stmt.compound.context;
-                     break;
-                  /* Only handle those with compound blocks for now... (Potential limitation on compound statements within expressions)
-                  case labeledStmt:
-                  case caseStmt
-                  case expressionStmt:
-                  case gotoStmt:
-                  case continueStmt:
-                  case breakStmt
-                  case returnStmt:
-                  case asmStmt:
-                  case badDeclarationStmt:
-                  case fireWatchersStmt:
-                  case stopWatchingStmt:
-                  case watchStmt:
-                  */
+                  // Reparent sub-contexts in this statement
+                  switch(block.type)
+                  {
+                     case compoundStmt:
+                        if(block.compound.context)
+                           block.compound.context.parent = stmt.compound.context;
+                        break;
+                     case ifStmt:
+                        if(block.ifStmt.stmt && block.ifStmt.stmt.type == compoundStmt && block.ifStmt.stmt.compound.context)
+                           block.ifStmt.stmt.compound.context.parent = stmt.compound.context;
+                        if(block.ifStmt.elseStmt && block.ifStmt.elseStmt.type == compoundStmt && block.ifStmt.elseStmt.compound.context)
+                           block.ifStmt.elseStmt.compound.context.parent = stmt.compound.context;
+                        break;
+                     case switchStmt:
+                        if(block.switchStmt.stmt && block.switchStmt.stmt.type == compoundStmt && block.switchStmt.stmt.compound.context)
+                           block.switchStmt.stmt.compound.context.parent = stmt.compound.context;
+                        break;
+                     case whileStmt:
+                        if(block.whileStmt.stmt && block.whileStmt.stmt.type == compoundStmt && block.whileStmt.stmt.compound.context)
+                           block.whileStmt.stmt.compound.context.parent = stmt.compound.context;
+                        break;
+                     case doWhileStmt:
+                        if(block.doWhile.stmt && block.doWhile.stmt.type == compoundStmt && block.doWhile.stmt.compound.context)
+                           block.doWhile.stmt.compound.context.parent = stmt.compound.context;
+                        break;
+                     case forStmt:
+                        if(block.forStmt.stmt && block.forStmt.stmt.type == compoundStmt && block.forStmt.stmt.compound.context)
+                           block.forStmt.stmt.compound.context.parent = stmt.compound.context;
+                        break;
+                     case forEachStmt:
+                        if(block.forEachStmt.stmt && block.forEachStmt.stmt.type == compoundStmt && block.forEachStmt.stmt.compound.context)
+                           block.forEachStmt.stmt.compound.context.parent = stmt.compound.context;
+                        break;
+                     /* Only handle those with compound blocks for now... (Potential limitation on compound statements within expressions)
+                     case labeledStmt:
+                     case caseStmt
+                     case expressionStmt:
+                     case gotoStmt:
+                     case continueStmt:
+                     case breakStmt
+                     case returnStmt:
+                     case asmStmt:
+                     case badDeclarationStmt:
+                     case fireWatchersStmt:
+                     case stopWatchingStmt:
+                     case watchStmt:
+                     */
+                  }
                }
-            }
-            if(filter)
-            {
-               block = MkIfStmt(filter, block, null);
-            }
-            if(isArray)
-            {
-               stmt.compound.statements = MkListOne(MkForStmt(
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array"))))),
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
-                     MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array")), '+', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))),
-                  MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
-                  block));
-              ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
-              ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
-              ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
-            }
-            else if(isBuiltin)
-            {
-               char count[128];
-               //OldList * specs = MkList();
-               // Declarator decl = SpecDeclFromString(typeString, specs, MkDeclaratorPointer(MkPointer(null, null), null));
 
-               sprintf(count, "%d", builtinCount);
-
-               stmt.compound.statements = MkListOne(MkForStmt(
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpIdentifier(MkIdentifier("__internalArray"))))),
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
-                     MkExpOp(MkExpIdentifier(MkIdentifier("__internalArray")), '+', MkExpConstant(count))))),
-                  MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
-                  block));
-
-               /*
-               Declarator decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, MkDeclaratorPointer(MkPointer(null, null), null));
-               stmt.compound.statements = MkListOne(MkForStmt(
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("data"))))),
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
-                     MkExpOp(MkExpCast(MkTypeName(specs, decl), MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("data"))), '+', MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))),
-                  MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
-                  block));
-              */
-              ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
-              ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
-              ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
-            }
-            else if(isLinkList && !isList)
-            {
-               Class typeClass = eSystem_FindClass(_class.module, _class.templateArgs[3].dataTypeString);
-               Class listItemClass = eSystem_FindClass(_class.module, "ListItem");
-               if(typeClass && eClass_IsDerived(typeClass, listItemClass) && _class.templateArgs[5].dataTypeString &&
-                  !strcmp(_class.templateArgs[5].dataTypeString, "LT::link"))
+               if(filter)
+               {
+                  block = MkIfStmt(filter, block, null);
+               }
+               if(isArray)
                {
                   stmt.compound.statements = MkListOne(MkForStmt(
-                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalLinkList")), MkIdentifier("first"))))),
+                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array"))))),
+                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
+                        MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("array")), '+', MkExpMember(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))),
+                     MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
+                     block));
+                 ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
+                 ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
+                 ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
+               }
+               else if(isBuiltin)
+               {
+                  char count[128];
+                  //OldList * specs = MkList();
+                  // Declarator decl = SpecDeclFromString(typeString, specs, MkDeclaratorPointer(MkPointer(null, null), null));
+
+                  sprintf(count, "%d", builtinCount);
+
+                  stmt.compound.statements = MkListOne(MkForStmt(
+                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpIdentifier(MkIdentifier("__internalArray"))))),
+                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
+                        MkExpOp(MkExpIdentifier(MkIdentifier("__internalArray")), '+', MkExpConstant(count))))),
+                     MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
+                     block));
+
+                  /*
+                  Declarator decl = SpecDeclFromString(_class.templateArgs[2].dataTypeString, specs, MkDeclaratorPointer(MkPointer(null, null), null));
+                  stmt.compound.statements = MkListOne(MkForStmt(
+                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("data"))))),
+                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '<',
+                        MkExpOp(MkExpCast(MkTypeName(specs, decl), MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("data"))), '+', MkExpPointer(MkExpIdentifier(MkIdentifier("__internalArray")), MkIdentifier("count")))))),
+                     MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), INC_OP, null)),
+                     block));
+                 */
+                 ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
+                 ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
+                 ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
+               }
+               else if(isLinkList && !isList)
+               {
+                  Class typeClass = eSystem_FindClass(_class.module, _class.templateArgs[3].dataTypeString);
+                  Class listItemClass = eSystem_FindClass(_class.module, "ListItem");
+                  if(typeClass && eClass_IsDerived(typeClass, listItemClass) && _class.templateArgs[5].dataTypeString &&
+                     !strcmp(_class.templateArgs[5].dataTypeString, "LT::link"))
+                  {
+                     stmt.compound.statements = MkListOne(MkForStmt(
+                        MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalLinkList")), MkIdentifier("first"))))),
+                        MkExpressionStmt(MkListOne(MkExpIdentifier(CopyIdentifier(id)))),
+                        MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(CopyIdentifier(id)), MkIdentifier("next")))),
+                        block));
+                  }
+                  else
+                  {
+                     OldList * specs = MkList();
+                     Declarator decl = SpecDeclFromString(_class.templateArgs[3].dataTypeString, specs, null);
+                     stmt.compound.statements = MkListOne(MkForStmt(
+                        MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalLinkList")), MkIdentifier("first"))))),
+                        MkExpressionStmt(MkListOne(MkExpIdentifier(CopyIdentifier(id)))),
+                        MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpCast(MkTypeName(specs, decl), MkExpCall(
+                           MkExpMember(MkExpIdentifier(MkIdentifier("__internalLinkList")), MkIdentifier("GetNext")),
+                              MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("IteratorPointer")), null), MkExpIdentifier(CopyIdentifier(id)))))))),
+                        block));
+                  }
+                  ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
+                  ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
+                  ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
+               }
+               /*else if(isCustomAVLTree)
+               {
+                  stmt.compound.statements = MkListOne(MkForStmt(
+                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpMember(MkExpIdentifier(
+                        MkIdentifier("__internalTree")), MkIdentifier("root")), MkIdentifier("minimum"))))),
                      MkExpressionStmt(MkListOne(MkExpIdentifier(CopyIdentifier(id)))),
                      MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(CopyIdentifier(id)), MkIdentifier("next")))),
                      block));
-               }
+
+                  ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
+                  ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
+                  ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
+               }*/
                else
                {
-                  OldList * specs = MkList();
-                  Declarator decl = SpecDeclFromString(_class.templateArgs[3].dataTypeString, specs, null);
-                  stmt.compound.statements = MkListOne(MkForStmt(
-                     MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(MkIdentifier("__internalLinkList")), MkIdentifier("first"))))),
-                     MkExpressionStmt(MkListOne(MkExpIdentifier(CopyIdentifier(id)))),
-                     MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpCast(MkTypeName(specs, decl), MkExpCall(
-                        MkExpMember(MkExpIdentifier(MkIdentifier("__internalLinkList")), MkIdentifier("GetNext")),
-                           MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifierName("IteratorPointer")), null), MkExpIdentifier(CopyIdentifier(id)))))))),
-                     block));
+                  stmt.compound.statements = MkListOne(MkWhileStmt(MkListOne(MkExpCall(MkExpMember(expIt = MkExpIdentifier(CopyIdentifier(id)),
+                     MkIdentifier("Next")), null)), block));
                }
-               ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
-               ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
-               ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
-            }
-            /*else if(isCustomAVLTree)
-            {
-               stmt.compound.statements = MkListOne(MkForStmt(
-                  MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpMember(MkExpIdentifier(
-                     MkIdentifier("__internalTree")), MkIdentifier("root")), MkIdentifier("minimum"))))),
-                  MkExpressionStmt(MkListOne(MkExpIdentifier(CopyIdentifier(id)))),
-                  MkListOne(MkExpOp(MkExpIdentifier(CopyIdentifier(id)), '=', MkExpMember(MkExpIdentifier(CopyIdentifier(id)), MkIdentifier("next")))),
-                  block));
+               ProcessExpressionType(expIt);
+               if(stmt.compound.declarations->first)
+                  ProcessDeclaration(stmt.compound.declarations->first);
 
-               ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.init);
-               ProcessStatement(((Statement)stmt.compound.statements->first).forStmt.check);
-               ProcessExpressionType(((Statement)stmt.compound.statements->first).forStmt.increment->first);
-            }*/
+               if(symbol)
+                  symbol.isIterator = isMap ? 2 : ((isArray || isBuiltin) ? 3 : (isLinkList ? (isList ? 5 : 4) : (isCustomAVLTree ? 6 : 1)));
+
+               ProcessStatement(stmt);
+            }
             else
-            {
-               stmt.compound.statements = MkListOne(MkWhileStmt(MkListOne(MkExpCall(MkExpMember(expIt = MkExpIdentifier(CopyIdentifier(id)),
-                  MkIdentifier("Next")), null)), block));
-            }
-            ProcessExpressionType(expIt);
-            if(stmt.compound.declarations->first)
-               ProcessDeclaration(stmt.compound.declarations->first);
-
-            if(symbol)
-               symbol.isIterator = isMap ? 2 : ((isArray || isBuiltin) ? 3 : (isLinkList ? (isList ? 5 : 4) : (isCustomAVLTree ? 6 : 1)));
-
-            ProcessStatement(stmt);
-            curContext = stmt.compound.context.parent;
+               ProcessStatement(stmt.forEachStmt.stmt);
+            if(inCompiler)
+               curContext = stmt.compound.context.parent;
             break;
          }
          else
@@ -12396,6 +12426,7 @@ static void ProcessStatement(Statement stmt)
                      curFunction.type = ProcessType(
                         curFunction.specifiers, curFunction.declarator);
                   FreeType(exp.destType);
+                  // TODO: current property if not compiling
                   exp.destType = (curFunction && curFunction.type && curFunction.type.kind == functionType) ? curFunction.type.returnType : null;
                   if(exp.destType) exp.destType.refCount++;
                }

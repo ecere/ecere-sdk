@@ -17464,6 +17464,7 @@ if(e->exp)
 ProcessExpressionType(e->exp);
 }
 }
+if(inCompiler)
 break;
 }
 case 3:
@@ -17940,10 +17941,13 @@ struct __ecereNameSpace__ecere__com__Class * arrayClass = __ecereNameSpace__ecer
 struct __ecereNameSpace__ecere__com__Class * linkListClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "LinkList");
 struct __ecereNameSpace__ecere__com__Class * customAVLTreeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "CustomAVLTree");
 
+if(inCompiler)
+{
 stmt->type = 2;
 stmt->__anon1.compound.context = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context);
 stmt->__anon1.compound.context->parent = curContext;
 curContext = stmt->__anon1.compound.context;
+}
 if(source && __ecereNameSpace__ecere__com__eClass_IsDerived(source->__anon1._class->__anon1.registered, customAVLTreeClass))
 {
 struct __ecereNameSpace__ecere__com__Class * mapClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, "Map");
@@ -17961,7 +17965,7 @@ struct __ecereNameSpace__ecere__com__Class * listClass = __ecereNameSpace__ecere
 isLinkList = 1;
 isList = __ecereNameSpace__ecere__com__eClass_IsDerived(source->__anon1._class->__anon1.registered, listClass);
 }
-if(isArray)
+if(inCompiler && isArray)
 {
 struct Declarator * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -18042,6 +18046,8 @@ FreeType(type);
 }
 if(typeString)
 {
+if(inCompiler)
+{
 struct __ecereNameSpace__ecere__sys__OldList * initializers = MkList();
 struct Declarator * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -18058,6 +18064,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*arrayExp->__anon1.
 e->destType = type;
 type->refCount++;
 ProcessExpressionType(e);
+if(inCompiler)
 ListAdd(initializers, MkInitializerAssignment(e));
 }
 FreeType(type);
@@ -18068,13 +18075,27 @@ stmt->__anon1.compound.declarations = MkListOne(MkDeclaration(CopyList(specs, (v
 ListAdd(stmt->__anon1.compound.declarations, MkDeclaration(specs, MkListOne(MkInitDeclarator(PlugDeclarator(decl, MkDeclaratorArray(MkDeclaratorIdentifier(MkIdentifier("__internalArray")), (((void *)0)))), MkInitializerList(initializers)))));
 FreeList(exp, (void *)(FreeExpression));
 }
+else if(arrayExp->__anon1.list)
+{
+struct Expression * e;
+
+type = ProcessTypeString(typeString, 0);
+for(e = (*arrayExp->__anon1.list).first; e; e = e->next)
+{
+e->destType = type;
+type->refCount++;
+ProcessExpressionType(e);
+}
+FreeType(type);
+}
+}
 else
 {
 arrayExp->expType = ProcessTypeString("Container", 0);
 Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Couldn't determine type of array elements\n", (((void *)0))));
 }
 }
-else if(isLinkList && !isList)
+else if(inCompiler && isLinkList && !isList)
 {
 struct Declarator * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
@@ -18083,7 +18104,7 @@ decl = SpecDeclFromString(_class->templateArgs[3].__anon1.__anon1.dataTypeString
 stmt->__anon1.compound.declarations = MkListOne(MkDeclaration(specs, MkListOne(MkInitDeclarator(decl, (((void *)0))))));
 ListAdd(stmt->__anon1.compound.declarations, MkDeclaration(MkListOne(MkSpecifierName(source->__anon1._class->__anon1.registered->fullName)), MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internalLinkList")), MkInitializerAssignment(MkExpBrackets(exp))))));
 }
-else if(_class->templateArgs)
+else if(inCompiler && _class->templateArgs)
 {
 if(isMap)
 sprintf(iteratorType, "MapIterator<%s, %s >", _class->templateArgs[5].__anon1.__anon1.dataTypeString, _class->templateArgs[6].__anon1.__anon1.dataTypeString);
@@ -18091,6 +18112,8 @@ else
 sprintf(iteratorType, "Iterator<%s, %s >", _class->templateArgs[2].__anon1.__anon1.dataTypeString, _class->templateArgs[1].__anon1.__anon1.dataTypeString);
 stmt->__anon1.compound.declarations = MkListOne(MkDeclarationInst(MkInstantiationNamed(MkListOne(MkSpecifierName(iteratorType)), MkExpIdentifier(id), MkListOne(MkMembersInitList(MkListOne(MkMemberInit(isMap ? MkListOne(MkIdentifier("map")) : (((void *)0)), MkInitializerAssignment(MkExpBrackets(exp)))))))));
 }
+if(inCompiler)
+{
 symbol = FindSymbol(id->string, curContext, curContext, 0, 0);
 if(block)
 {
@@ -18179,6 +18202,10 @@ ProcessDeclaration((*stmt->__anon1.compound.declarations).first);
 if(symbol)
 symbol->isIterator = isMap ? 2 : ((isArray || isBuiltin) ? 3 : (isLinkList ? (isList ? 5 : 4) : (isCustomAVLTree ? 6 : 1)));
 ProcessStatement(stmt);
+}
+else
+ProcessStatement(stmt->__anon1.forEachStmt.stmt);
+if(inCompiler)
 curContext = stmt->__anon1.compound.context->parent;
 break;
 }
