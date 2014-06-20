@@ -10,7 +10,7 @@ class CheckListBoxButton : Button
 
    bool CheckListBox::NotifyPushed(Button button, int x, int y, Modifiers mods)
    {
-      currentRow = (DataRow)button.id;
+      currentRow = (DataRow)(intptr)button.id;
       ToggleCheck(currentRow);
       return false;
    }

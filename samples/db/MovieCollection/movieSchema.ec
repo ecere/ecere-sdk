@@ -1,7 +1,5 @@
 import "EDA"
 
-MediaType workAround; // A work around to use enums defined in this module in the schema.
-                      // A future version of the SDK will remove the need for this.
 enum MediaType { unknown, tape, dvd, bluRay };
 
 dbtable "Borrowers" Borrower

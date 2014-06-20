@@ -17,19 +17,19 @@ public:
       form1.btnSend.disabled = false;
    }
 
-   void SendMessage(String msg)
+   void SendMessage(const String msg)
    {
       form1.log.PutS(" < ");
       form1.log.PutS(msg);
       form1.log.PutS("\n");
    }
 
-   virtual void NotifyMessage(String msg);
+   virtual void NotifyMessage(const String msg);
 
 private:
 }
 
-void SendBackMessage(String msg)
+void SendBackMessage(const String msg)
 {
    serverConnection.NotifyMessage(msg);
 }

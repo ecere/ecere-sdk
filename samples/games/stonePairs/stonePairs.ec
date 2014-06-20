@@ -59,6 +59,7 @@ class MainWindow : Window
       player2.Join();
 
       player1.NewGame();
+      return true;
    }
 
    void DrawBitmap(Surface surface, BitmapResource res, int x, int y, float s)

@@ -6,25 +6,26 @@ ChatConnection connection;
 
 class Form1 : Window
 {
-   text = "Server";
-   background = activeBorder;
+   caption = $"Server";
+   background = formColor;
    borderStyle = sizable;
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
+   minClientSize = { 340, 200 };
    clientSize = { 640, 460 };
 
-   EditBox log { this, size = { 598, 323 }, position = { 16, 56 }, multiLine = true };
-   EditBox serverAddress { this, contents = "localhost", size = { 182, 27 }, position = { 360, 16 } };
+   EditBox log { this, anchor = { left = 16, top = 56, right = 26, bottom = 81 }, multiLine = true };
+   EditBox serverAddress { this, size = { 182, 27 }, anchor = { top = 16, right = 98 }, contents = "localhost" };
    Button btnConnect
    {
-      this, text = "Connect", position = { 560, 24 };
+      this, caption = $"Connect", anchor = { top = 24, right = 28 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          connection = ChatConnection
          {
-            void NotifyMessage(String msg)
+            void NotifyMessage(const String msg)
             {
                form1.log.PutS(" < ");
                form1.log.PutS(msg);
@@ -56,11 +57,10 @@ class Form1 : Window
          return true;
       }
    };
-   EditBox message { this, size = { 510, 43 }, position = { 16, 400 } };
+   EditBox message { this, size = { 510, 43 }, anchor = { left = 16, right = 114, bottom = 17 } };
    Button btnSend
    {
-      this, text = "Send", isDefault = true, size = { 60, 37 }, position = { 552, 400 };
-      disabled = true;
+      this, caption = $"Send", isDefault = true, size = { 60, 37 }, anchor = { right = 28, bottom = 23 }, disabled = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

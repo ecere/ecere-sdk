@@ -58,8 +58,8 @@ static WordStatus GetKeyWord(char ** input, char * keyWord, int maxSize)
 
 class XMLParser
 {
-   virtual void ProcessKeyword(char * keyWord);
-   virtual void ProcessCharacterData(char * data);
+   virtual void ProcessKeyword(const char * keyWord);
+   virtual void ProcessCharacterData(const char * data);
 
    char keyWord[1024];
    char * string;
@@ -77,15 +77,15 @@ class XMLParser
       return false;
    }
 
-   bool Parse(char * inputString, int count)
+   bool Parse(const char * inputString, int count)
    {
       bool insideTag = false;
       char tag[MAX_TAG_LEN];
-      int tagLen;
+      int tagLen = 0;
       bool commented = false;
       byte lastCh = ' ';
       int stringPos;
-      byte characterData[CHARBUFSIZE];
+      char characterData[CHARBUFSIZE];
       int charLen = 0;
       int oldDepth = xmlDepth;
       tag[0] = 0;
@@ -187,7 +187,7 @@ class XMLParser
       // Parse entire file
       for(stringPos = 0; stringPos < count; stringPos++)
       {
-         byte ch = inputString[stringPos];
+         char ch = inputString[stringPos];
 
          if(commented)
          {

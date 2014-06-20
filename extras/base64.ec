@@ -11,7 +11,7 @@ static char base64inv[128] =
    41,42,43,44,45,46,47,48,49,50,51, 0, 0, 0, 0, 0
 };
 
-int Base64Encode(byte * input, int len, byte * encoded)
+int Base64Encode(const byte * input, int len, char * encoded)
 {
    uint buffer;
    int c = 0;
