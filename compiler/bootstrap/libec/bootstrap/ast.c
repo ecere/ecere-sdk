@@ -4012,6 +4012,7 @@ void CopyTypeInto(struct Type * type, struct Type * src)
 {
 *type = *src;
 type->name = __ecereNameSpace__ecere__sys__CopyString(src->name);
+type->typeName = __ecereNameSpace__ecere__sys__CopyString(src->typeName);
 type->refCount = 1;
 if(src->kind == 15)
 {

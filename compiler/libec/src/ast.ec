@@ -2241,6 +2241,7 @@ void CopyTypeInto(Type type, Type src)
 {
    type = *src;
    type.name = CopyString(src.name);
+   type.typeName = CopyString(src.typeName);
    type.refCount = 1;
 
    if(src.kind == enumType)
@@ -2278,7 +2279,6 @@ void CopyTypeInto(Type type, Type src)
          if(type.arraySizeExp)
             type.arraySizeExp = CopyExpression(type.arraySizeExp);
       }
-
    }
 }
 
