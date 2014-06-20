@@ -381,6 +381,38 @@ static Expression FindExpStatement(Statement stmt, int line, int charPos)
             return FindExpStatement(stmt.forStmt.stmt, line, charPos);
          break;
       }
+      case forEachStmt:
+      {
+         Expression exp;
+
+         if(stmt.forEachStmt.exp)
+         {
+            for(exp = stmt.forEachStmt.exp->first; exp; exp = exp.next)
+            {
+               if(Inside(&exp.loc, line, charPos))
+               {
+                  expResult = FindExpExpression(exp, line, charPos);
+                  if(expResult) return expResult;
+               }
+            }
+         }
+
+         if(stmt.forEachStmt.filter)
+         {
+            for(exp = stmt.forEachStmt.filter->first; exp; exp = exp.next)
+            {
+               if(Inside(&exp.loc, line, charPos))
+               {
+                  expResult = FindExpExpression(exp, line, charPos);
+                  if(expResult) return expResult;
+               }
+            }
+         }
+
+         if(stmt.forEachStmt.stmt)
+            return FindExpStatement(stmt.forEachStmt.stmt, line, charPos);
+         break;
+      }
       case gotoStmt:
          break;
       case continueStmt:

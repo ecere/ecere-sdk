@@ -546,6 +546,44 @@ static Identifier FindCtxStatement(Statement stmt, int line, int charPos)
             return FindCtxStatement(stmt.forStmt.stmt, line, charPos);
          break;
       }
+      case forEachStmt:
+      {
+         Expression exp;
+
+         if(stmt.forEachStmt.id && InsideIncl(&stmt.forEachStmt.id.loc, line, charPos))
+         {
+            idResult = FindCtxIdentifier(stmt.forEachStmt.id, line, charPos);
+            if(idResult) return idResult;
+         }
+
+         if(stmt.forEachStmt.exp)
+         {
+            for(exp = stmt.forEachStmt.exp->first; exp; exp = exp.next)
+            {
+               if(InsideIncl(&exp.loc, line, charPos))
+               {
+                  idResult = FindCtxExpression(exp, line, charPos);
+                  if(idResult) return idResult;
+               }
+            }
+         }
+
+         if(stmt.forEachStmt.filter)
+         {
+            for(exp = stmt.forEachStmt.filter->first; exp; exp = exp.next)
+            {
+               if(InsideIncl(&exp.loc, line, charPos))
+               {
+                  idResult = FindCtxExpression(exp, line, charPos);
+                  if(idResult) return idResult;
+               }
+            }
+         }
+
+         if(stmt.forEachStmt.stmt)
+            return FindCtxStatement(stmt.forEachStmt.stmt, line, charPos);
+         break;
+      }
       case gotoStmt:
          break;
       case continueStmt:
