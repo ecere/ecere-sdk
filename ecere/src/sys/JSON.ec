@@ -94,7 +94,9 @@ public:
       {
          Container array;
          if(type && eClass_IsDerived(type, class(Map)))
+         {
             result = GetMap(type, (Map *)&array);
+         }
          else
             result = GetArray(type, &array);
 
