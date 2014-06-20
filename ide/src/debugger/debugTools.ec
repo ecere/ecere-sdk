@@ -310,7 +310,7 @@ void DebugComputeExpression(Expression exp)
          switch(evalError)
          {
             case dummyExp:
-               if(evaluation && !strchr(evaluation, '<'))
+               if(evaluation && !strchr(evaluation, '<') && (exp.type != symbolErrorExp || !exp.identifier || !exp.identifier.string || strcmp(evaluation, exp.identifier.string)))
                {
                   // Going back to parsing the expression string so as to catch inf/-inf/nan/-nan etc.
                   expNew = ParseExpressionString(evaluation);
