@@ -5171,7 +5171,7 @@ void ComputeInstantiation(Expression exp)
                                  }
                               }
                            }
-                           else if(prop)
+                           else if(prop && prop.Set != (void *)(intptr)1)
                            {
                               if(value.type == instanceExp && value.instance.data)
                               {
