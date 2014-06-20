@@ -39,7 +39,7 @@ KnownColor GetOperand()
    gets(input);
    while(!operand.OnGetDataFromString(input))
    {
-      Print("Please enter a known color (black, red, green, blue, yellow, magenta, cyan or white)");
+      PrintLn("Please enter a known color (black, red, green, blue, yellow, magenta, cyan or white)");
       gets(input);
    }
    return operand;
@@ -50,8 +50,9 @@ KnownColor ComputeOperation(char operation, KnownColor operand1, KnownColor oper
    switch(operation)
    {
       case '+': return operand1 + operand2;
-      case '-': return operand1 - operand2;
+      case '-': return (KnownColor)(operand1 - operand2);
    }
+   return 0;
 }
 
 class Lab5ColorsApp : Application

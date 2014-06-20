@@ -90,7 +90,7 @@ class Lab5VectorApp : Application
                case '-': PrintLn(vector1, " - ", vector2, " = ", Vector { vector1.x - vector2.x, vector1.y - vector2.y }); break;
                case '*': PrintLn(vector1, " * ", scalar, " = ", Vector { vector1.x * scalar, vector1.y * scalar }); break;
                case '/': PrintLn(vector1, " / ", scalar, " = ", Vector { vector1.x / scalar, vector1.y / scalar }); break;
-               case 'm': PrintLn("|",vector1,"| = ", sqrt(vector1.x * vector1.x + vector2.y * vector2.y)); break;
+               case 'm': PrintLn("|",vector1,"| = ", sqrt(vector1.x * vector1.x + vector1.y * vector1.y)); break;
             }
          }
       }
