@@ -9358,17 +9358,17 @@ void ProcessExpressionType(Expression exp)
          exp.isConstant = true;
          for(e = exp.list->first; e; e = e.next)
          {
-            bool inced = false;
+            //bool inced = false;
             if(!e.next)
             {
                FreeType(e.destType);
                e.opDestType = exp.opDestType;
                e.destType = exp.destType;
-               if(e.destType) { exp.destType.refCount++; e.destType.count++; inced = true; }
+               if(e.destType) { exp.destType.refCount++; /*e.destType.count++; inced = true;*/ }
             }
             ProcessExpressionType(e);
-            if(inced)
-               exp.destType.count--;
+            /*if(inced)
+               exp.destType.count--;*/
             if(!exp.expType && !e.next)
             {
                exp.expType = e.expType;
@@ -10952,6 +10952,16 @@ void ProcessExpressionType(Expression exp)
       case conditionExp:
       {
          Expression e;
+         Type t = exp.destType;
+         if(t && !exp.destType.casted)
+         {
+            t = { };
+            CopyTypeInto(t, exp.destType);
+            t.count = 0;
+         }
+         else if(t)
+            t.refCount++;
+
          exp.isConstant = true;
 
          FreeType(exp.cond.cond.destType);
@@ -10965,7 +10975,7 @@ void ProcessExpressionType(Expression exp)
             if(!e.next)
             {
                FreeType(e.destType);
-               e.destType = exp.destType;
+               e.destType = t;
                if(e.destType) e.destType.refCount++;
             }
             ProcessExpressionType(e);
@@ -10983,7 +10993,7 @@ void ProcessExpressionType(Expression exp)
          // exp.cond.elseExp.destType = exp.expType ? exp.expType : exp.destType;
 
          // Reversed it...
-         exp.cond.elseExp.destType = exp.destType ? exp.destType : exp.expType;
+         exp.cond.elseExp.destType = t ? t : exp.expType;
 
          if(exp.cond.elseExp.destType)
             exp.cond.elseExp.destType.refCount++;
@@ -10992,6 +11002,8 @@ void ProcessExpressionType(Expression exp)
          // FIXED THIS: Was done before calling process on elseExp
          if(!exp.cond.elseExp.isConstant)
             exp.isConstant = false;
+
+         FreeType(t);
          break;
       }
       case extensionCompoundExp:

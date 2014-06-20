@@ -1301,7 +1301,7 @@ public:
    int alignment;
    uint offset;
    int bitFieldCount;
-   int count;
+   int count;  // This is used to avoid outputting warnings when non-zero
 
    bool isSigned:1;
    bool constant:1;

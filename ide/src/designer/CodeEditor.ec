@@ -2867,7 +2867,7 @@ class CodeEditor : Window
          SetTargetBits(ide.workspace.bitDepth ? ide.workspace.bitDepth : GetHostBits());
          delete compiler;
       }
-      this.privateModule = __ecere_COM_Initialize(false | ((GetTargetBits() == sizeof(uintptr) *8) ? 0 : GetTargetBits() == 64 ? 2 : 4), 1, null);
+      this.privateModule = __ecere_COM_Initialize((bool)(false | ((GetTargetBits() == sizeof(uintptr) *8) ? 0 : GetTargetBits() == 64 ? 2 : 4)), 1, null);
 
       SetPrivateModule(privateModule);
 

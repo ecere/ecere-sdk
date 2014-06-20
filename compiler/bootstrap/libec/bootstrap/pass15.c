@@ -15509,8 +15509,6 @@ struct Expression * e;
 exp->isConstant = 1;
 for(e = (*exp->__anon1.list).first; e; e = e->next)
 {
-unsigned int inced = 0;
-
 if(!e->next)
 {
 FreeType(e->destType);
@@ -15519,13 +15517,9 @@ e->destType = exp->destType;
 if(e->destType)
 {
 exp->destType->refCount++;
-e->destType->count++;
-inced = 1;
 }
 }
 ProcessExpressionType(e);
-if(inced)
-exp->destType->count--;
 if(!exp->expType && !e->next)
 {
 exp->expType = e->expType;
@@ -16942,7 +16936,16 @@ break;
 case 12:
 {
 struct Expression * e;
+struct Type * t = exp->destType;
 
+if(t && !exp->destType->casted)
+{
+t = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+CopyTypeInto(t, exp->destType);
+t->count = 0;
+}
+else if(t)
+t->refCount++;
 exp->isConstant = 1;
 FreeType(exp->__anon1.cond.cond->destType);
 exp->__anon1.cond.cond->destType = MkClassType("bool");
@@ -16955,7 +16958,7 @@ for(e = (*exp->__anon1.cond.exp).first; e; e = e->next)
 if(!e->next)
 {
 FreeType(e->destType);
-e->destType = exp->destType;
+e->destType = t;
 if(e->destType)
 e->destType->refCount++;
 }
@@ -16970,12 +16973,13 @@ if(!e->isConstant)
 exp->isConstant = 0;
 }
 FreeType(exp->__anon1.cond.elseExp->destType);
-exp->__anon1.cond.elseExp->destType = exp->destType ? exp->destType : exp->expType;
+exp->__anon1.cond.elseExp->destType = t ? t : exp->expType;
 if(exp->__anon1.cond.elseExp->destType)
 exp->__anon1.cond.elseExp->destType->refCount++;
 ProcessExpressionType(exp->__anon1.cond.elseExp);
 if(!exp->__anon1.cond.elseExp->isConstant)
 exp->isConstant = 0;
+FreeType(t);
 break;
 }
 case 23:
