@@ -5690,8 +5690,17 @@ tempType->truth = dest->truth;
 if(tempType->__anon1._class)
 MatchTypes(tempSource, tempDest, conversions, (((void *)0)), (((void *)0)), 1, 1, 0, 0, warnConst);
 backupSourceExpType = sourceExp->expType;
+if(dest->passAsTemplate)
+{
+sourceExp->expType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+CopyTypeInto(sourceExp->expType, dest);
+sourceExp->expType->passAsTemplate = 0;
+}
+else
+{
 sourceExp->expType = dest;
 dest->refCount++;
+}
 flag = 1;
 ((tempType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)tempType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(tempType)) : 0), tempType = 0);
 }
@@ -12970,6 +12979,7 @@ if(exp->destType && exp->destType->passAsTemplate && exp->expType && exp->expTyp
 {
 struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 struct Context * context;
+int kind = exp->expType->kind;
 
 *newExp = *exp;
 if(exp->destType)
@@ -12978,7 +12988,18 @@ if(exp->expType)
 exp->expType->refCount++;
 newExp->prev = (((void *)0));
 newExp->next = (((void *)0));
-switch(exp->expType->kind)
+if(exp->expType->kind == 8 && exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered)
+{
+struct __ecereNameSpace__ecere__com__Class * c = exp->expType->__anon1._class->__anon1.registered;
+
+if(c->type == 2 || c->type == 4 || c->type == 3)
+{
+if(!c->dataType)
+c->dataType = ProcessTypeString(c->dataTypeString, 0);
+kind = c->dataType->kind;
+}
+}
+switch(kind)
 {
 case 7:
 if(exp->destType->classObjectType)
@@ -13010,7 +13031,7 @@ break;
 default:
 exp->type = 11;
 exp->__anon1.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), (((void *)0)));
-if(__ecereProp_Type_Get_isPointerType(exp->expType))
+if((exp->expType->kind == 8 && exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered && exp->expType->__anon1._class->__anon1.registered->type == 1) || __ecereProp_Type_Get_isPointerType(exp->expType))
 exp->__anon1.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), MkExpBrackets(MkListOne(newExp)));
 else
 exp->__anon1.cast.exp = MkExpBrackets(MkListOne(newExp));
@@ -13022,6 +13043,7 @@ else if(exp->expType && exp->expType->passAsTemplate && exp->destType && ((unsig
 {
 struct Expression * newExp = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Expression);
 struct Context * context;
+int kind = exp->expType->kind;
 
 *newExp = *exp;
 if(exp->destType)
@@ -13030,7 +13052,18 @@ if(exp->expType)
 exp->expType->refCount++;
 newExp->prev = (((void *)0));
 newExp->next = (((void *)0));
-switch(exp->expType->kind)
+if(exp->expType->kind == 8 && exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered)
+{
+struct __ecereNameSpace__ecere__com__Class * c = exp->expType->__anon1._class->__anon1.registered;
+
+if(c->type == 2 || c->type == 4 || c->type == 3)
+{
+if(!c->dataType)
+c->dataType = ProcessTypeString(c->dataTypeString, 0);
+kind = c->dataType->kind;
+}
+}
+switch(kind)
 {
 case 7:
 if(exp->destType->classObjectType)
@@ -13064,7 +13097,6 @@ case 8:
 if(exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered && exp->expType->__anon1._class->__anon1.registered->type == 1)
 {
 exp->type = 5;
-if(__ecereProp_Type_Get_isPointerType(exp->expType))
 newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), (((void *)0))), newExp);
 exp->__anon1.list = MkListOne(MkExpOp((((void *)0)), '*', MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp->expType->__anon1._class->string)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), newExp)));
 ProcessExpressionType((*exp->__anon1.list).first);
@@ -13331,10 +13363,11 @@ switch(type->kind)
 case 8:
 {
 struct Symbol * c = type->__anon1._class;
+unsigned int isObjectBaseClass = !c || !c->string || !strcmp(c->string, "class");
 
-if(type->classObjectType == 2)
+if(type->classObjectType == 2 && isObjectBaseClass)
 strcat(string, "typed_object");
-else if(type->classObjectType == 3)
+else if(type->classObjectType == 3 && isObjectBaseClass)
 strcat(string, "any_object");
 else
 {
@@ -14072,12 +14105,32 @@ thisExp->next = (((void *)0));
 __ecereMethod_Expression_Clear(e);
 if((type->kind == 8 && type->__anon1._class && type->__anon1._class->__anon1.registered && (type->__anon1._class->__anon1.registered->type == 1000 || type->__anon1._class->__anon1.registered->type == 2 || type->__anon1._class->__anon1.registered->type == 4 || type->__anon1._class->__anon1.registered->type == 3)) || (type->kind != 13 && type->kind != 22 && type->kind != 12 && type->kind != 8) || (!destType->byReference && byReference && (destType->kind != 13 || type->kind != 13)))
 {
+unsigned int passAsTemplate = thisExp->destType->passAsTemplate;
+struct Type * t;
+
+destType->refCount++;
 e->type = 4;
 e->__anon1.op.op = '*';
 e->__anon1.op.exp1 = (((void *)0));
 e->__anon1.op.exp2 = MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), decl)), thisExp);
+t = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+CopyTypeInto(t, thisExp->destType);
+t->passAsTemplate = 0;
+FreeType(thisExp->destType);
+thisExp->destType = t;
+t = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
+CopyTypeInto(t, destType);
+t->passAsTemplate = passAsTemplate;
+FreeType(destType);
+destType = t;
+destType->refCount = 0;
 e->expType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 CopyTypeInto(e->expType, type);
+if(type->passAsTemplate)
+{
+e->expType->classObjectType = 0;
+e->expType->passAsTemplate = 0;
+}
 e->expType->byReference = 0;
 e->expType->refCount = 1;
 }
@@ -14090,6 +14143,8 @@ e->byReference = 1;
 e->expType = type;
 type->refCount++;
 }
+if(e->destType)
+FreeType(e->destType);
 e->destType = destType;
 destType->refCount++;
 }

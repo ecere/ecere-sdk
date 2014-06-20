@@ -2280,8 +2280,12 @@ static void ProcessExpression(Expression exp)
                                  else if(checkedExp.type == castExp)
                                     checkedExp = checkedExp.cast.exp;
                               }
-                              newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpOp(null, '&', checkedExp));
-                              newExp.byReference = true;
+                              {
+                                 Expression i;
+                                 newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), (i = MkExpOp(null, '&', checkedExp)));
+                                 i.byReference = true;
+                                 newExp.byReference = true;
+                              }
                               if(parentExp.type == callExp)
                               {
                                  exp.call.arguments->Insert(e.prev, newExp);
@@ -3125,7 +3129,7 @@ static void ProcessExpression(Expression exp)
          OldList * specs = MkList();
          char typeString[1024];
          bool castingToDest = false;
-         bool pointerCastExp;
+         bool pointerCastExp = false;
 
          typeString[0] = '\0';
 
@@ -3168,13 +3172,13 @@ static void ProcessExpression(Expression exp)
          {
             Specifier spec = specs ? specs->first : null;
             TemplateParameter tp = (spec && spec.type == templateTypeSpecifier) ? spec.templateParameter : null;
-            pointerCastExp =
-               (spec.type == nameSpecifier && strcmp(spec.name, "uint64")) ||
+            Type type = castingToDest ? exp.destType : exp.expType;
+            bool specsDeclPointer = (spec.type == nameSpecifier && strcmp(spec.name, "uint64")) ||
                (decl && decl.type == pointerDeclarator) ||
                (tp && tp.dataType &&
                   ( (tp.dataType.decl && tp.dataType.decl.type == pointerDeclarator) ||
-                    (tp.dataType.specifiers && ((Specifier)tp.dataType.specifiers->first).type == nameSpecifier && strcmp(((Specifier)tp.dataType.specifiers->first).name, "uint64")) ) )  ||
-               (castingToDest ? exp.destType.isPointerType : exp.expType.isPointerType);
+                    (tp.dataType.specifiers && ((Specifier)tp.dataType.specifiers->first).type == nameSpecifier && strcmp(((Specifier)tp.dataType.specifiers->first).name, "uint64")) ) );
+            pointerCastExp = type ? ((type.kind == templateType && specsDeclPointer) || type.isPointerType) : specsDeclPointer;
          }
 
          if(pointerCastExp)

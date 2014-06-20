@@ -1751,6 +1751,8 @@ struct __ecereNameSpace__ecere__com__Class * c = this->__anon1._class->__anon1.r
 
 if(c->type == 2 || c->type == 3 || c->type == 4 || c->type == 1000)
 return 0;
+else if(c->type == 1 && !this->byReference)
+return 0;
 }
 return 1;
 }

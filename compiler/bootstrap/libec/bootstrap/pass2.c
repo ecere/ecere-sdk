@@ -3164,8 +3164,13 @@ checkedExp = (*checkedExp->__anon1.list).last;
 else if(checkedExp->type == 11)
 checkedExp = checkedExp->__anon1.cast.exp;
 }
-newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpOp((((void *)0)), '&', checkedExp));
+{
+struct Expression * i;
+
+newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), (i = MkExpOp((((void *)0)), '&', checkedExp)));
+i->byReference = 1;
 newExp->byReference = 1;
+}
 if(parentExp->type == 7)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->__anon1.call.arguments), e->prev, newExp);
@@ -3875,7 +3880,7 @@ struct Declarator * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 char typeString[1024];
 unsigned int castingToDest = 0;
-unsigned int pointerCastExp;
+unsigned int pointerCastExp = 0;
 
 typeString[0] = '\0';
 e->needTemplateCast = 2;
@@ -3911,8 +3916,10 @@ exp->type = 5;
 {
 struct Specifier * spec = specs ? (*specs).first : (((void *)0));
 struct TemplateParameter * tp = (spec && spec->type == 8) ? spec->__anon1.templateParameter : (((void *)0));
+struct Type * type = castingToDest ? exp->destType : exp->expType;
+unsigned int specsDeclPointer = (spec->type == 1 && strcmp(spec->__anon1.__anon1.name, "uint64")) || (decl && decl->type == 5) || (tp && tp->__anon1.dataType && ((tp->__anon1.dataType->decl && tp->__anon1.dataType->decl->type == 5) || (tp->__anon1.dataType->specifiers && ((struct Specifier *)(*tp->__anon1.dataType->specifiers).first)->type == 1 && strcmp(((struct Specifier *)(*tp->__anon1.dataType->specifiers).first)->__anon1.__anon1.name, "uint64"))));
 
-pointerCastExp = (spec->type == 1 && strcmp(spec->__anon1.__anon1.name, "uint64")) || (decl && decl->type == 5) || (tp && tp->__anon1.dataType && ((tp->__anon1.dataType->decl && tp->__anon1.dataType->decl->type == 5) || (tp->__anon1.dataType->specifiers && ((struct Specifier *)(*tp->__anon1.dataType->specifiers).first)->type == 1 && strcmp(((struct Specifier *)(*tp->__anon1.dataType->specifiers).first)->__anon1.__anon1.name, "uint64")))) || (castingToDest ? __ecereProp_Type_Get_isPointerType(exp->destType) : __ecereProp_Type_Get_isPointerType(exp->expType));
+pointerCastExp = type ? ((type->kind == 20 && specsDeclPointer) || __ecereProp_Type_Get_isPointerType(type)) : specsDeclPointer;
 }
 if(pointerCastExp)
 {

@@ -3801,7 +3801,18 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 
                // NOTE: To handle bad warnings on int64 vs 32 bit eda::Id incompatibilities
                backupSourceExpType = sourceExp.expType;
-               sourceExp.expType = dest; dest.refCount++;
+               if(dest.passAsTemplate)
+               {
+                  // Don't carry passAsTemplate
+                  sourceExp.expType = { };
+                  CopyTypeInto(sourceExp.expType, dest);
+                  sourceExp.expType.passAsTemplate = false;
+               }
+               else
+               {
+                  sourceExp.expType = dest;
+                  dest.refCount++;
+               }
                //sourceExp.expType = MkClassType(_class.fullName);
                flag = true;
 
@@ -6650,19 +6661,35 @@ static bool CheckExpressionType(Expression exp, Type destType, bool skipUnitBla,
 
 void CheckTemplateTypes(Expression exp)
 {
+   /*
+   bool et = exp.expType ? exp.expType.passAsTemplate : false;
+   bool dt = exp.destType ? exp.destType.passAsTemplate : false;
+   */
    Expression nbExp = GetNonBracketsExp(exp);
    if(exp.destType && exp.destType.passAsTemplate && exp.expType && exp.expType.kind != templateType && !exp.expType.passAsTemplate &&
       (nbExp == exp || nbExp.type != castExp))
    {
       Expression newExp { };
       Context context;
+      TypeKind kind = exp.expType.kind;
       *newExp = *exp;
       if(exp.destType) exp.destType.refCount++;
       if(exp.expType)  exp.expType.refCount++;
       newExp.prev = null;
       newExp.next = null;
 
-      switch(exp.expType.kind)
+      if(exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered)
+      {
+         Class c = exp.expType._class.registered;
+         if(c.type == bitClass || c.type == enumClass || c.type == unitClass)
+         {
+            if(!c.dataType)
+               c.dataType = ProcessTypeString(c.dataTypeString, false);
+            kind = c.dataType.kind;
+         }
+      }
+
+      switch(kind)
       {
          case doubleType:
             if(exp.destType.classObjectType)
@@ -6694,7 +6721,7 @@ void CheckTemplateTypes(Expression exp)
          default:
             exp.type = castExp;
             exp.cast.typeName = MkTypeName(MkListOne(MkSpecifierName("uint64")), null);
-            if(exp.expType.isPointerType)
+            if((exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == structClass) || exp.expType.isPointerType)
                exp.cast.exp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), MkExpBrackets(MkListOne(newExp)));
             else
                exp.cast.exp = MkExpBrackets(MkListOne(newExp));
@@ -6706,13 +6733,25 @@ void CheckTemplateTypes(Expression exp)
    {
       Expression newExp { };
       Context context;
+      TypeKind kind = exp.expType.kind;
       *newExp = *exp;
       if(exp.destType) exp.destType.refCount++;
       if(exp.expType)  exp.expType.refCount++;
       newExp.prev = null;
       newExp.next = null;
 
-      switch(exp.expType.kind)
+      if(exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered)
+      {
+         Class c = exp.expType._class.registered;
+         if(c.type == bitClass || c.type == enumClass || c.type == unitClass)
+         {
+            if(!c.dataType)
+               c.dataType = ProcessTypeString(c.dataTypeString, false);
+            kind = c.dataType.kind;
+         }
+      }
+
+      switch(kind)
       {
          case doubleType:
             if(exp.destType.classObjectType)
@@ -6747,8 +6786,7 @@ void CheckTemplateTypes(Expression exp)
             {
                exp.type = bracketsExp;
 
-               if(exp.expType.isPointerType)
-                  newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), newExp);
+               newExp = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uintptr")), null), newExp);
                exp.list = MkListOne(MkExpOp(null, '*', MkExpCast(MkTypeName(MkListOne(MkSpecifierName(exp.expType._class.string)),
                   MkDeclaratorPointer(MkPointer(null, null), null)), newExp)));
                ProcessExpressionType(exp.list->first);
@@ -7019,11 +7057,12 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
          case classType:
          {
             Symbol c = type._class;
+            bool isObjectBaseClass = !c || !c.string || !strcmp(c.string, "class");
             // TODO: typed_object does not fully qualify the type, as it may have taken up an actual class (Stored in _class) from overriding
             //       look into merging with thisclass ?
-            if(type.classObjectType == typedObject)
+            if(type.classObjectType == typedObject && isObjectBaseClass)
                strcat(string, "typed_object");
-            else if(type.classObjectType == anyObject)
+            else if(type.classObjectType == anyObject && isObjectBaseClass)
                strcat(string, "any_object");
             else
             {
@@ -7773,13 +7812,36 @@ void ApplyAnyObjectLogic(Expression e)
              (type.kind != pointerType && type.kind != intPtrType && type.kind != arrayType && type.kind != classType) ||
              (!destType.byReference && byReference && (destType.kind != pointerType || type.kind != pointerType)))
          {
+            bool passAsTemplate = thisExp.destType.passAsTemplate;
+            Type t;
+
+            destType.refCount++;
+
             e.type = opExp;
             e.op.op = '*';
             e.op.exp1 = null;
             e.op.exp2 = MkExpCast(MkTypeName(specs, MkDeclaratorPointer(MkPointer(null, null), decl)), thisExp);
 
+            t = { };
+            CopyTypeInto(t, thisExp.destType);
+            t.passAsTemplate = false;
+            FreeType(thisExp.destType);
+            thisExp.destType = t;
+
+            t = { };
+            CopyTypeInto(t, destType);
+            t.passAsTemplate = passAsTemplate;
+            FreeType(destType);
+            destType = t;
+            destType.refCount = 0;
+
             e.expType = { };
             CopyTypeInto(e.expType, type);
+            if(type.passAsTemplate)
+            {
+               e.expType.classObjectType = none;
+               e.expType.passAsTemplate = false;
+            }
             e.expType.byReference = false;
             e.expType.refCount = 1;
          }
@@ -7792,6 +7854,10 @@ void ApplyAnyObjectLogic(Expression e)
             e.expType = type;
             type.refCount++;
          }
+
+         if(e.destType)
+            FreeType(e.destType);
+
          e.destType = destType;
          destType.refCount++;
       }

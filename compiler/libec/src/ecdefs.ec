@@ -1360,6 +1360,8 @@ public:
                   Class c = _class.registered;
                   if(c.type == bitClass || c.type == unitClass || c.type == enumClass || c.type == systemClass)
                      return false;
+                  else if(c.type == structClass && !byReference)
+                     return false;
                }
                return true;
             }
