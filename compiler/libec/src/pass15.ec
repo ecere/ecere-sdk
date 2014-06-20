@@ -11243,7 +11243,18 @@ void ProcessExpressionType(Expression exp)
       if(exp.destType.kind == voidType);
       else if(!CheckExpressionType(exp, exp.destType, false, !exp.destType.casted))
       {
-         if(!exp.destType.count || unresolved)
+         // Warn for casting unrelated types to/from struct classes
+         bool invalidCast = false;
+         if(inCompiler && exp.destType.count && exp.expType)
+         {
+            Class c1 = (exp.expType.kind == classType && exp.expType._class) ? exp.expType._class.registered : null;
+            Class c2 = (exp.destType.kind == classType && exp.destType._class) ? exp.destType._class.registered : null;
+            if(c1 && c1.type != structClass) c1 = null;
+            if(c2 && c2.type != structClass) c2 = null;
+            if((c1 && !exp.expType.byReference && !c2 && !exp.destType.isPointerType) || (c2 && !exp.destType.byReference && !c1 && !exp.expType.isPointerType))
+               invalidCast = true;
+         }
+         if(!exp.destType.count || unresolved || invalidCast)
          {
             if(!exp.expType)
             {
@@ -11309,12 +11320,20 @@ void ProcessExpressionType(Expression exp)
                                      !strstr(sourceFile, "src\\grammar.ec") && !strstr(sourceFile, "src/grammar.ec") &&
                                      !strstr(sourceFile, "src\\type.ec") && !strstr(sourceFile, "src/type.ec") &&
                                      !strstr(sourceFile, "src\\expression.ec") && !strstr(sourceFile, "src/expression.ec")))
-                     Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+                  {
+                     if(invalidCast)
+                        Compiler_Error($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+                     else
+                        Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+                  }
 
                   // TO CHECK: FORCING HERE TO HELP DEBUGGER
-                  FreeType(exp.expType);
-                  exp.destType.refCount++;
-                  exp.expType = exp.destType;
+                  if(!inCompiler)
+                  {
+                     FreeType(exp.expType);
+                     exp.destType.refCount++;
+                     exp.expType = exp.destType;
+                  }
                }
             }
          }

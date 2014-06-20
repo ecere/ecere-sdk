@@ -17207,7 +17207,21 @@ if(exp->destType->kind == 0)
 ;
 else if(!CheckExpressionType(exp, exp->destType, 0, !exp->destType->casted))
 {
-if(!exp->destType->count || unresolved)
+unsigned int invalidCast = 0;
+
+if(inCompiler && exp->destType->count && exp->expType)
+{
+struct __ecereNameSpace__ecere__com__Class * c1 = (exp->expType->kind == 8 && exp->expType->__anon1._class) ? exp->expType->__anon1._class->__anon1.registered : (((void *)0));
+struct __ecereNameSpace__ecere__com__Class * c2 = (exp->destType->kind == 8 && exp->destType->__anon1._class) ? exp->destType->__anon1._class->__anon1.registered : (((void *)0));
+
+if(c1 && c1->type != 1)
+c1 = (((void *)0));
+if(c2 && c2->type != 1)
+c2 = (((void *)0));
+if((c1 && !exp->expType->byReference && !c2 && !__ecereProp_Type_Get_isPointerType(exp->destType)) || (c2 && !exp->destType->byReference && !c1 && !__ecereProp_Type_Get_isPointerType(exp->expType)))
+invalidCast = 1;
+}
+if(!exp->destType->count || unresolved || invalidCast)
 {
 if(!exp->expType)
 {
@@ -17275,10 +17289,18 @@ PrintExpression(exp, expString);
 __ecereNameSpace__ecere__sys__ChangeCh(expString, '\n', ' ');
 }
 if(!sourceFile || (!strstr(sourceFile, "src\\lexer.ec") && !strstr(sourceFile, "src/lexer.ec") && !strstr(sourceFile, "src\\grammar.ec") && !strstr(sourceFile, "src/grammar.ec") && !strstr(sourceFile, "src\\type.ec") && !strstr(sourceFile, "src/type.ec") && !strstr(sourceFile, "src\\expression.ec") && !strstr(sourceFile, "src/expression.ec")))
+{
+if(invalidCast)
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatible expression %s (%s); expected %s\n", (((void *)0))), expString, type1, type2);
+else
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatible expression %s (%s); expected %s\n", (((void *)0))), expString, type1, type2);
+}
+if(!inCompiler)
+{
 FreeType(exp->expType);
 exp->destType->refCount++;
 exp->expType = exp->destType;
+}
 }
 }
 }

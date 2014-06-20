@@ -429,7 +429,7 @@ public class TimeStamp32 : uint32
 public:
    const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
-      return ((DateTime)this).OnGetString(tempString, fieldData, needClass);
+      return ((DateTime)(TimeStamp)this).OnGetString(tempString, fieldData, needClass);
    }
 
    // Is this required?
