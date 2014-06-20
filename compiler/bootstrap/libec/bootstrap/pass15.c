@@ -5421,6 +5421,10 @@ char *  name;
 long long data;
 } __attribute__ ((gcc_struct));
 
+extern unsigned int inPreCompiler;
+
+extern unsigned int inDebugger;
+
 extern void FreeExpContents(struct Expression * exp);
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this);
@@ -5473,13 +5477,14 @@ break;
 }
 if(value)
 {
-FreeExpContents(sourceExp);
 FreeType(sourceExp->expType);
 sourceExp->isConstant = 1;
 sourceExp->expType = MkClassType(baseClass->fullName);
+if(inCompiler || inPreCompiler || inDebugger)
 {
 char constant[256];
 
+FreeExpContents(sourceExp);
 sourceExp->type = 2;
 if(!strcmp(baseClass->dataTypeString, "int") || !strcmp(baseClass->dataTypeString, "int64") || !strcmp(baseClass->dataTypeString, "short") || !strcmp(baseClass->dataTypeString, "char"))
 sprintf(constant, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), value->data);
@@ -6011,11 +6016,12 @@ break;
 }
 if(value)
 {
-FreeExpContents(sourceExp);
 FreeType(sourceExp->expType);
 sourceExp->isConstant = 1;
 sourceExp->expType = MkClassType(_class->fullName);
+if(inCompiler || inPreCompiler || inDebugger)
 {
+FreeExpContents(sourceExp);
 sourceExp->type = 2;
 if(_class->dataTypeString && (!strcmp(_class->dataTypeString, "int") || !strcmp(_class->dataTypeString, "int64") || !strcmp(_class->dataTypeString, "short") || !strcmp(_class->dataTypeString, "char")))
 sourceExp->__anon1.__anon1.constant = PrintInt64(value->data);
@@ -13687,16 +13693,19 @@ break;
 }
 if(value)
 {
+exp->isConstant = 1;
+if(inCompiler || inPreCompiler || inDebugger)
+{
 char constant[256];
 
 FreeExpContents(exp);
 exp->type = 2;
-exp->isConstant = 1;
 if(!strcmp(baseClass->dataTypeString, "int") || !strcmp(baseClass->dataTypeString, "int64") || !strcmp(baseClass->dataTypeString, "char") || !strcmp(baseClass->dataTypeString, "short"))
 sprintf(constant, ((__runtimePlatform == 1) ? "%I64d" : "%lld"), value->data);
 else
 sprintf(constant, ((__runtimePlatform == 1) ? "0x%I64X" : "0x%llX"), value->data);
 exp->__anon1.__anon1.constant = __ecereNameSpace__ecere__sys__CopyString(constant);
+}
 exp->expType = MkClassType(baseClass->fullName);
 break;
 }

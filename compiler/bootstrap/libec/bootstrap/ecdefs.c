@@ -1279,6 +1279,13 @@ void SetInCompiler(unsigned int b)
 inCompiler = b;
 }
 
+unsigned int inDebugger = 0;
+
+void SetInDebugger(unsigned int b)
+{
+inDebugger = b;
+}
+
 struct Context * curContext;
 
 struct Context * globalContext;
@@ -2236,6 +2243,7 @@ class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DBIndexItem", 0,
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
 __ecereClass_DBIndexItem = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInCompiler", "void SetInCompiler(bool b)", SetInCompiler, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetInDebugger", "void SetInDebugger(bool b)", SetInDebugger, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetPrivateModule", "void SetPrivateModule(ecere::com::Module module)", SetPrivateModule, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetPrivateModule", "ecere::com::Module GetPrivateModule(void)", GetPrivateModule, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetMainModule", "void SetMainModule(ModuleImport moduleImport)", SetMainModule, module, 1);

@@ -2627,6 +2627,8 @@ class Debugger
                expString[0] = 0;
                PrintExpression(exp, expString);
 
+               SetInDebugger(true);
+
                SetThisClass(null);
                if(codeEditor && activeFrame)
                   DebugFindCtxTree(codeEditor.ast, activeFrame.line, 0);
@@ -3184,6 +3186,8 @@ class Debugger
                      break;
                   }
                }
+
+               SetInDebugger(false);
             }
             else
                snprintf(watchmsg, sizeof(watchmsg), $"Invalid expression: \"%s\"", wh.expression);

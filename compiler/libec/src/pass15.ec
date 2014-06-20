@@ -3609,14 +3609,15 @@ bool MatchWithEnums_NameSpace(NameSpace nameSpace, Expression sourceExp, Type de
                   }
                   if(value)
                   {
-                     FreeExpContents(sourceExp);
                      FreeType(sourceExp.expType);
 
                      sourceExp.isConstant = true;
                      sourceExp.expType = MkClassType(baseClass.fullName);
-                     //if(inCompiler)
+                     if(inCompiler || inPreCompiler || inDebugger)
                      {
                         char constant[256];
+                        FreeExpContents(sourceExp);
+
                         sourceExp.type = constantExp;
                         if(!strcmp(baseClass.dataTypeString, "int") || !strcmp(baseClass.dataTypeString, "int64") || !strcmp(baseClass.dataTypeString, "short") || !strcmp(baseClass.dataTypeString, "char"))
                            sprintf(constant, FORMAT64D, value.data);
@@ -4206,13 +4207,14 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
                      }
                      if(value)
                      {
-                        FreeExpContents(sourceExp);
                         FreeType(sourceExp.expType);
 
                         sourceExp.isConstant = true;
                         sourceExp.expType = MkClassType(_class.fullName);
-                        //if(inCompiler)
+                        if(inCompiler || inPreCompiler || inDebugger)
                         {
+                           FreeExpContents(sourceExp);
+
                            sourceExp.type = constantExp;
                            if(_class.dataTypeString && (!strcmp(_class.dataTypeString, "int") || !strcmp(_class.dataTypeString, "int64") || !strcmp(_class.dataTypeString, "short") || !strcmp(_class.dataTypeString, "char"))) // _class cannot be null here!
                               sourceExp.constant = PrintInt64(value.data);
@@ -5543,6 +5545,36 @@ void ComputeExpression(Expression exp)
 
    switch(exp.type)
    {
+      case identifierExp:
+      {
+         Identifier id = exp.identifier;
+         if(id && exp.isConstant && !inCompiler && !inPreCompiler && !inDebugger)
+         {
+            Class c = (exp.expType && exp.expType.kind == classType && exp.expType._class) ? exp.expType._class.registered : null;
+            if(c && c.type == enumClass)
+            {
+               Class enumClass = eSystem_FindClass(privateModule, "enum");
+               if(enumClass)
+               {
+                  NamedLink64 value;
+                  EnumClassData e = ACCESS_CLASSDATA(c, enumClass);
+                  for(value = e.values.first; value; value = value.next)
+                  {
+                     if(!strcmp(value.name, id.string))
+                        break;
+                  }
+                  if(value)
+                  {
+                     const String dts = c.dataTypeString;
+                     FreeExpContents(exp);
+                     exp.type = constantExp;
+                     exp.constant = (dts && (!strcmp(dts, "int") || !strcmp(dts, "int64") || !strcmp(dts, "short") || !strcmp(dts, "char"))) ? PrintInt64(value.data) : PrintUInt64(value.data);
+                  }
+               }
+            }
+         }
+         break;
+      }
       case instanceExp:
       {
          ComputeInstantiation(exp);
@@ -7293,17 +7325,19 @@ static bool ResolveIdWithClass(Expression exp, Class _class, bool skipIDClassChe
             }
             if(value)
             {
-               char constant[256];
-
-               FreeExpContents(exp);
-
-               exp.type = constantExp;
                exp.isConstant = true;
-               if(!strcmp(baseClass.dataTypeString, "int") || !strcmp(baseClass.dataTypeString, "int64") || !strcmp(baseClass.dataTypeString, "char") || !strcmp(baseClass.dataTypeString, "short"))
-                  sprintf(constant, FORMAT64D, value.data);
-               else
-                  sprintf(constant, FORMAT64HEX, value.data);
-               exp.constant = CopyString(constant);
+               if(inCompiler || inPreCompiler || inDebugger)
+               {
+                  char constant[256];
+                  FreeExpContents(exp);
+
+                  exp.type = constantExp;
+                  if(!strcmp(baseClass.dataTypeString, "int") || !strcmp(baseClass.dataTypeString, "int64") || !strcmp(baseClass.dataTypeString, "char") || !strcmp(baseClass.dataTypeString, "short"))
+                     sprintf(constant, FORMAT64D, value.data);
+                  else
+                     sprintf(constant, FORMAT64HEX, value.data);
+                  exp.constant = CopyString(constant);
+               }
                //for(;_class.base && _class.base.type != systemClass; _class = _class.base);
                exp.expType = MkClassType(baseClass.fullName);
                break;

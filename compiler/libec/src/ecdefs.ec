@@ -183,6 +183,9 @@ class DBIndexItem : struct
 bool inCompiler = false;
 public void SetInCompiler(bool b) { inCompiler = b; }
 
+bool inDebugger = false;
+public void SetInDebugger(bool b) { inDebugger = b; }
+
 Context curContext;
 Context globalContext;
 OldList * excludedSymbols;
