@@ -1546,7 +1546,11 @@ private:
          {
             int nChars;
             bool lineDone = f.GetLinePeek(line + linePos, sizeof(line)-linePos-1, &nChars);
-            if(!lineDone) linePos += nChars;
+            if(!lineDone)
+            {
+               linePos += nChars;
+               Sleep(0.5 / PEEK_RESOLUTION);
+            }
             else
             {
                linePos = 0;
