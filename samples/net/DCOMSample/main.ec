@@ -9,17 +9,18 @@ class Form1 : Window
    caption = $"Server";
    background = formColor;
    borderStyle = sizable;
+   minClientSize = { 340, 200 };
    hasMaximize = true;
    hasMinimize = true;
    hasClose = true;
-   minClientSize = { 340, 200 };
    clientSize = { 640, 460 };
+   tabCycle = true;
 
-   EditBox log { this, anchor = { left = 16, top = 56, right = 26, bottom = 81 }, multiLine = true };
-   EditBox serverAddress { this, size = { 182, 27 }, anchor = { top = 16, right = 98 }, contents = "localhost" };
+   EditBox log { this, anchor = { left = 16, top = 56, right = 18, bottom = 81 }, multiLine = true };
+   EditBox serverAddress { this, size = { 182, 27 }, anchor = { top = 16, right = 82 }, contents = "localhost" };
    Button btnConnect
    {
-      this, caption = $"Connect", anchor = { top = 24, right = 28 };
+      this, caption = $"Connect", anchor = { top = 24, right = 20 }, hotKey = altC;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -49,7 +50,7 @@ class Form1 : Window
    };
    Button btnHost
    {
-      this, text = "Host", position = { 32, 16 };
+      this, caption = $"Host", position = { 32, 16 }, hotKey = altH;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -57,10 +58,10 @@ class Form1 : Window
          return true;
       }
    };
-   EditBox message { this, size = { 510, 43 }, anchor = { left = 16, right = 114, bottom = 17 } };
+   EditBox message { this, size = { 526, 43 }, anchor = { left = 16, right = 98, bottom = 17 } };
    Button btnSend
    {
-      this, caption = $"Send", isDefault = true, size = { 60, 37 }, anchor = { right = 28, bottom = 23 }, disabled = true;
+      this, caption = $"Send", isDefault = true, size = { 60, 37 }, anchor = { right = 20, bottom = 23 }, disabled = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

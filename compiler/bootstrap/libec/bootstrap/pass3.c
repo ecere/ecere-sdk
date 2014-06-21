@@ -1615,6 +1615,8 @@ FreeType(src);
 }
 }
 
+extern void FreeTypeName(struct TypeName * typeName);
+
 extern void FreeExpContents(struct Expression * exp);
 
 extern struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression);
@@ -1725,6 +1727,13 @@ struct Type * type = exp->expType;
 
 if(type && type->kind == 8 && type->__anon1._class->__anon1.registered && type->__anon1._class->__anon1.registered->type == 1 && !exp->needCast)
 {
+if(exp->destType && exp->destType->classObjectType == 2 && exp->destType->byReference)
+{
+FreeTypeName(exp->__anon1.cast.typeName);
+exp->__anon1.cast.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), MkPointer((((void *)0)), (((void *)0)))), (((void *)0))));
+}
+else
+{
 struct Expression * castExp = exp->__anon1.cast.exp;
 struct Expression * prev = exp->prev, * next = exp->next;
 
@@ -1737,6 +1746,7 @@ FreeType(exp->destType);
 exp->prev = prev;
 exp->next = next;
 InstDeclPassExpression(exp);
+}
 }
 else
 {

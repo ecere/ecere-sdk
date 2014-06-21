@@ -609,17 +609,26 @@ static void InstDeclPassExpression(Expression exp)
          // Remove casts to simple structs... (Watch out for pointers later...)
          if(type && type.kind == classType && type._class.registered && type._class.registered.type == structClass && !exp.needCast)
          {
-            Expression castExp = exp.cast.exp;
-            Expression prev = exp.prev, next = exp.next;
-            exp.cast.exp = null;
-            FreeExpContents(exp);
-            FreeType(exp.expType);
-            FreeType(exp.destType);
-            *exp = *castExp;
-            delete castExp;
-            exp.prev = prev;
-            exp.next = next;
-            InstDeclPassExpression(exp);
+            if(exp.destType && exp.destType.classObjectType == typedObject && exp.destType.byReference)
+            {
+               // For Unserialize with a StaticString
+               FreeTypeName(exp.cast.typeName);
+               exp.cast.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, MkPointer(null, null)), null));
+            }
+            else
+            {
+               Expression castExp = exp.cast.exp;
+               Expression prev = exp.prev, next = exp.next;
+               exp.cast.exp = null;
+               FreeExpContents(exp);
+               FreeType(exp.expType);
+               FreeType(exp.destType);
+               *exp = *castExp;
+               delete castExp;
+               exp.prev = prev;
+               exp.next = next;
+               InstDeclPassExpression(exp);
+            }
          }
          else
          {
