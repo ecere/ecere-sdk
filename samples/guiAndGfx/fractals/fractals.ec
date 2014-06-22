@@ -623,7 +623,7 @@ class Fractal : Window
          exportDialog.SetText("Export %s image", text);
          if(exportDialog.Modal())
          {
-            char * ext = exportDialog.types[exportDialog.fileType].typeExtension;
+            const char * ext = exportDialog.types[exportDialog.fileType].typeExtension;
             if(!ext)
             {
                char extension[MAX_EXTENSION];
@@ -631,7 +631,7 @@ class Fractal : Window
                if(!extension[0])
                {
                   ext = "jpg";
-                  ChangeExtension(exportDialog.filePath, ext, exportDialog.filePath);
+                  ChangeExtension(exportDialog.filePath, ext, (char *)exportDialog.filePath);
                }
             }
             image.Save(exportDialog.filePath, ext, (void *) bool::true);
@@ -651,7 +651,7 @@ class Fractal : Window
          exportDialog.SetText("Export %s image", text);
          if(exportDialog.Modal())
          {
-            char * ext = exportDialog.types[exportDialog.fileType].typeExtension;
+            const char * ext = exportDialog.types[exportDialog.fileType].typeExtension;
             Bitmap filtered { };
             if(!ext)
             {
@@ -660,7 +660,7 @@ class Fractal : Window
                if(!extension[0])
                {
                   ext = "jpg";
-                  ChangeExtension(exportDialog.filePath, ext, exportDialog.filePath);
+                  ChangeExtension(exportDialog.filePath, ext, (char *)exportDialog.filePath);
                }
             }
             if(filtered.Allocate(null, image.width/2, image.height/2, 0, pixelFormat888, false))
@@ -1076,7 +1076,7 @@ class FractalsDesigner : Window
          UpdateDisplay();
       }
    };
-   bool LoadFractals(char * fileName)
+   bool LoadFractals(const char * fileName)
    {
       File f = FileOpen(fileName, read);
       if(f)
@@ -1370,7 +1370,7 @@ class FractalsDesigner : Window
 
    saveDialog = mySaveDialog;
 
-   bool OnSaveFile(char * fileName)
+   bool OnSaveFile(const char * fileName)
    {
       File f = FileOpen(fileName, write);
       if(f)

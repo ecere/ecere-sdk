@@ -42,6 +42,7 @@ class eNodepadWindow : Window
                delete(f);
             }
          }
+         return true;
       }
    };
    MenuDivider { fileMenu };
@@ -62,7 +63,7 @@ class eNodepadWindow : Window
    };
    saveDialog = fileSaveDialog;
 
-   bool OnSaveFile(char * fileName)
+   bool OnSaveFile(const char * fileName)
    {
       File f = FileOpen(fileName, write);
       if(f)
@@ -78,7 +79,7 @@ class eNodepadWindow : Window
    {
       this, font = { "Lucida Console", 10 }, anchor = { left = 0.0, top = 0.0, right = 0.0, bottom = 0.0 }, hasHorzScroll = true, hasVertScroll = true, multiLine = true;
 
-      bool OnFileModified(FileChange fileChange, char * param)
+      bool OnFileModified(FileChange fileChange, const char * param)
       {
 
          return true;
@@ -112,7 +113,7 @@ class eNodepadWindow : Window
       return false;
    }
 
-   bool OnFileModified(FileChange fileChange, char * param)
+   bool OnFileModified(FileChange fileChange, const char * param)
    {
 
       return true;

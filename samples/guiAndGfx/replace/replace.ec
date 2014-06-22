@@ -73,8 +73,8 @@ class Replace : Window
       this, noCaret = true, multiLine = true, autoEmpty = true, textHorzScroll = true, hasVertScroll = true, anchor = Anchor { left = 420, top = 30, right = 10, bottom = 10 }
    };
 
-   int ReplaceInDirectory(char * directory, char * findWhat, char * replaceWith,
-                            bool matchCase, bool wholeWord, bool recurse, EditBox edit, EditBox log)
+   int ReplaceInDirectory(const char * directory, const char * findWhat, const char * replaceWith,
+                          bool matchCase, bool wholeWord, bool recurse, EditBox edit, EditBox log)
    {
       FileListing listing { directory, "htm, html, css, ec" };
       int total = 0;

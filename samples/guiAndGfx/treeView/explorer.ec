@@ -12,7 +12,7 @@ class Form1 : Window
 
    ListBox listBox1 { fullRowSelect = false, collapseControl = true, treeBranches = true, rootCollapseButton = true, parent = this, text = "listBox1", size = Size { 306, 432 }, anchor = Anchor { left = 10, top = 10, right = 0.5, bottom = 10 } };
 
-   void ListDirectory(DataRow addTo, char *path)
+   void ListDirectory(DataRow addTo, const char *path)
    {
       static int maxDepth = 0;
       FileListing listing { path };
@@ -29,7 +29,7 @@ class Form1 : Window
 
    bool OnCreate()
    {
-      String rootDir = (GetRuntimePlatform() == win32) ? "c:" : getenv("HOME");
+      const String rootDir = (GetRuntimePlatform() == win32) ? "c:" : getenv("HOME");
       DataRow row = listBox1.AddString(rootDir);
       ListDirectory(row, rootDir);
       return true;

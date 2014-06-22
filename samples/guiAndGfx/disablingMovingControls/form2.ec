@@ -50,9 +50,9 @@ public:
       for (;d--;i++) {
          i->x += i->dx;
          i->y += i->dy;
-         if (i->x<0 && i->dx<0 || (i->x+i->w >= holder.clientSize.w && i->dx>0))
+         if ((i->x<0 && i->dx<0) || (i->x+i->w >= holder.clientSize.w && i->dx>0))
             i->dx = -i->dx;
-         if (i->y<0 && i->dy<0 || (i->y+i->h >= holder.clientSize.h && i->dy>0))
+         if ((i->y<0 && i->dy<0) || (i->y+i->h >= holder.clientSize.h && i->dy>0))
             i->dy = -i->dy;
       }
    }

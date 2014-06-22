@@ -390,7 +390,7 @@ class Form1 : Window
       return true;
    }
 
-   bool OnSaveFile(char * fileName)
+   bool OnSaveFile(const char * fileName)
    {
       File f = FileOpen(fileName, write);
       unsigned short mv = (unsigned short)game.version_code;
@@ -409,7 +409,7 @@ class Form1 : Window
       return true;
    }
 
-   void OnLoadFile(char * fileName) {
+   void OnLoadFile(const char * fileName) {
       File f = FileOpen(fileName, read);
       unsigned short mv;
       char prefix[PREFIX_SIZE];

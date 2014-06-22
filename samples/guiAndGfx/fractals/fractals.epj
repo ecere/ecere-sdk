@@ -13,6 +13,24 @@
       "Console" : false,
       "Compress" : false
    },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      }
+   ],
    "Configurations" : [
       {
          "Name" : "Debug",

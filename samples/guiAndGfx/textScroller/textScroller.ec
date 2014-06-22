@@ -54,7 +54,7 @@ public class TextScroller : Window
       delete contents;
    }
 
-   property String contents
+   property const String contents
    {
       set
       {
@@ -80,8 +80,9 @@ public class TextScroller : Window
          display.FontExtent(fontObject, lines[c], strlen(lines[c]), &w, null);
          if(w > maxW) maxW = w;
       }
-      snapVertScroll = lh; // Snap to line height vertically
-      snapHorzScroll = 1;
+      SetScrollLineStep(1, Max(1, lh));
+      snapVertScroll = true ;//lh; // Snap to line height vertically
+      //snapHorzScroll = 1;
       scrollArea = { maxW, lh * (linesCount-1) };
       return true;
    }
@@ -93,7 +94,6 @@ public class TextScroller : Window
       int ch = clientSize.h;
       for(c = 0; c < linesCount; c++, y += lh)
       {
-         int w;
          if(y > -lh && y < ch)
             surface.WriteText(x, y, lines[c], strlen(lines[c]));
       }

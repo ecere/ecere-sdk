@@ -7,11 +7,11 @@ struct Vector2D {
       x = sx;
       y = sy;
    }
-   void Add(Vector2D a, Vector2D b) {
+   void Add(const Vector2D a, const Vector2D b) {
       x = a.x+b.x;
       y = a.y+b.y;
    }
-   void Sub(Vector2D end, Vector2D start) {
+   void Sub(const Vector2D end, const Vector2D start) {
       x = end.x-start.x;
       y = end.y-start.y;
    }
@@ -28,7 +28,7 @@ struct Vector2D {
 
 struct Coord2D : Vector2D {};
 
-double DotProduct(Vector2D a, Vector2D b) {
+double DotProduct(const Vector2D a, const Vector2D b) {
    return a.x*b.x+a.y*b.y;
 }
 

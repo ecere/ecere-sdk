@@ -21,7 +21,7 @@ struct FLIheader
    uint16 speed           __attribute__((packed));
    uint next              __attribute__((packed));
    uint frit              __attribute__((packed));
-   byte expand[102]       __attribute__((packed));
+   byte expand[102];
 };
 
 struct FLIFrame
@@ -29,7 +29,7 @@ struct FLIFrame
    uint size              __attribute__((packed));
    uint16 magic           __attribute__((packed));
    uint16 chunknum        __attribute__((packed));
-   byte nothing[8]        __attribute__((packed));
+   byte nothing[8];
 };
 
 struct FLIchunk
@@ -69,9 +69,9 @@ class Fli
       {
          byte ch;
 
-         f.Getc(&ch);
+         f.Getc((char *)&ch);
          skip+=ch;
-         f.Getc(&ch);
+         f.Getc((char *)&ch);
          put=ch;
 
          if(!put)
@@ -103,13 +103,13 @@ class Fli
       {
          byte ch;
          offset=skipline*bitmap.width;
-         f.Getc(&ch);
+         f.Getc((char *)&ch);
          num = ch;
          for(; num>0; num--)
          {
-            f.Getc(&ch);
+            f.Getc((char *)&ch);
             offset += ch;
-            f.Getc(&ch);
+            f.Getc((char *)&ch);
             put = ch;
             if(put>0)
             {
@@ -118,7 +118,7 @@ class Fli
             }
             else if(put<0)
             {
-               f.Getc(&value);
+               f.Getc((char *)&value);
                FillBytes(bitmap.picture+offset,value,-put);
                offset-=put;
             }
@@ -148,9 +148,9 @@ class Fli
             offset=y*bitmap.width;
             for(; num>0; num--)
             {
-               f.Getc(&ch);
+               f.Getc((char *)&ch);
                offset += ch;
-               f.Getc(&ch);
+               f.Getc((char *)&ch);
                put = ch;
 
                if(put>0)
@@ -177,19 +177,19 @@ class Fli
    {
       uint offset;
       int y;
-      short num;
+      //short num;
       signed char put;
       byte value;
       for(y=0; y<bitmap.height; y++)
       {
          byte ch;
          int x = 0;
-         f.Getc(&ch);
-         num = ch;
+         f.Getc((char *)&ch);
+         //num = ch;
          /*if(!num)
          {
-            f.Getc(&ch);
-            f.Getc(&ch);
+            f.Getc((char *)&ch);
+            f.Getc((char *)&ch);
             FillBytes(bitmap.picture,ch,bitmap.size);
             return;
          }*/
@@ -197,7 +197,7 @@ class Fli
          // for(; num>0 && x < bitmap.width; num--)
          for(; x < bitmap.width; )
          {
-            f.Getc(&ch);
+            f.Getc((char *)&ch);
             put = ch;
             if(put<0)
             {
@@ -207,7 +207,7 @@ class Fli
             }
             else if(put>0)
             {
-               f.Getc(&value);
+               f.Getc((char *)&value);
                if(offset > bitmap.width * bitmap.height)
                   printf("bug");
                FillBytes(bitmap.picture+offset,value,put);
@@ -234,7 +234,7 @@ class Fli
    property int frame { get { return frame; } set { frame = value; } }
    property bool palUpdate { get { return palUpdate; } set { palUpdate = value; }}
 
-   bool Load(char *fileName)
+   bool Load(const char *fileName)
    {
       bool result = false;
       //f=FileOpen(fileName, read);

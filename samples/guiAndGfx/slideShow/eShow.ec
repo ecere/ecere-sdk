@@ -76,7 +76,7 @@ class SlideShow : Window
          return strcmp(a.name, b.name);
    }
 
-   void AddDirectory(OldList files, char * directory)
+   void AddDirectory(OldList files, const char * directory)
    {
       FileListing listing { directory, "pcx, jpg, bmp, png" };
       OldList list { };
@@ -122,10 +122,10 @@ class SlideShow : Window
    {
       if(bitmap && bitmap.width)
       {
+#ifndef __linux__
          float scale = Min((float)clientSize.w / (float)bitmap.width, (float)clientSize.h / (float)bitmap.height);
          int w = (int)(bitmap.width * scale);
          int h = (int)(bitmap.height * scale);
-#ifndef __linux__
          surface.Filter(bitmap, (clientSize.w - w) / 2,(clientSize.h - h) / 2, 0,0, w, h, bitmap.width, bitmap.height);
 #else
          // Until Filter / Stretch works with X

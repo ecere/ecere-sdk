@@ -1,7 +1,12 @@
+#ifndef __WIN32__
+void XSync();
+void * IS_XGetDisplay();
+#endif
+
 import "ecere"
 
 define NUMFLAKES = 60;
-char * textString = "Let it snow!";
+const char * textString = "Let it snow!";
 define backgroundColor = Color { 10, 0, 60 };
 
 class Snowing : Window
@@ -115,14 +120,14 @@ class Snowing : Window
                   if(GetRandom(0, 4) == 0)
                   {
                      if(GetRandom(0, 1))
-                        (!atLeft && SnowTo(offset, stride-1)) || (!atRight && SnowTo(offset, stride+1));
+                        (void)((!atLeft && SnowTo(offset, stride-1)) || (!atRight && SnowTo(offset, stride+1)));
                      else
-                        (!atRight && SnowTo(offset, stride+1)) || (!atLeft && SnowTo(offset, stride-1));
+                        (void)((!atRight && SnowTo(offset, stride+1)) || (!atLeft && SnowTo(offset, stride-1)));
                   }
                }
                break;
-            case 1: (!atLeft && SnowTo(offset, stride-1)) || (GetRandom(0, 4) == 0 && SnowTo(offset, stride)) || (!atRight && SnowTo(offset, stride+1)); break;
-            case 2: (!atRight && SnowTo(offset, stride+1)) || (GetRandom(0, 4) == 0 && SnowTo(offset, stride)) || (!atLeft && SnowTo(offset, stride-1)); break;
+            case 1: (void)((!atLeft && SnowTo(offset, stride-1)) || (GetRandom(0, 4) == 0 && SnowTo(offset, stride)) || (!atRight && SnowTo(offset, stride+1))); break;
+            case 2: (void)((!atRight && SnowTo(offset, stride+1)) || (GetRandom(0, 4) == 0 && SnowTo(offset, stride)) || (!atLeft && SnowTo(offset, stride-1))); break;
          }
       }
    }

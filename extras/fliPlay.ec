@@ -33,7 +33,7 @@ class FliPlay : Window
       }
    };
 
-   property char * animation
+   property const char * animation
    {
       set
       {

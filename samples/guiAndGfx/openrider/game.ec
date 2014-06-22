@@ -43,18 +43,15 @@ class GameVehicle {
 
    void OnUnserialize(IOChannel channel)
    {
-      if(!this)
+      GameVehicleType vtype;
+      channel.Get(vtype);
+      if(vtype == ball)
       {
-         GameVehicleType vtype;
-         channel.Get(vtype);
-         if(vtype == ball)
-         {
-            GameBall::OnUnserialize(class(GameBall), this, channel);
-            return;
-         }
-         else
-            this = GameVehicle { };
+         GameBall::OnUnserialize(class(GameBall), this, channel);
+         return;
       }
+      else
+         this = GameVehicle { };
 
       if(!type)
          channel.Get(type);
@@ -83,7 +80,8 @@ class GameBall : GameVehicle {
 
    void OnUnserialize(IOChannel channel)
    {
-      this = GameBall { };
+      GameBall gb { };
+      this = gb;
       GameVehicle::OnUnserialize(channel);
       channel.Get(radius);
       channel.Get(elasticity);
@@ -94,7 +92,6 @@ class GameBall : GameVehicle {
    //support backtracing if ball is within box for line
    void Update(Game game) {
       //TODO:  check for collision with other balls
-      uint count;
       double time_left=1.0;
       BallLineReturn soonest = {INF,{0,0}};
       GameLine *soonest_line;

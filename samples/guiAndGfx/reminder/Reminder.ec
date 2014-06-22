@@ -110,7 +110,7 @@ class ReminderApp : GuiApplication
 
 define app = ((ReminderApp)__thisModule);
 
-static void struscpy(char * d, char * s)
+static void struscpy(char * d, const char * s)
 {
    int j, k;
    j = k = 0;

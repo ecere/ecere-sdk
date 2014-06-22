@@ -51,7 +51,7 @@ static ColorKey gradientInactive[] =
 #define GRADIENT_DIRECTION horizontal
 #define TEXT_COLOR         white
 #define TEXT_INACTIVE      darkGray // Color { 212,208,200 }
-
+/*
 static ColorKey gradient[] =
 {
    { ColorAlpha { 255, Color {  10,   36, 106 } }, 0.00f },
@@ -62,8 +62,7 @@ static ColorKey gradientInactive[] =
    { ColorAlpha { 255, Color { 128, 128, 128 } }, 0.00f },
    { ColorAlpha { 255, Color { 192, 192, 192 } }, 1.00f }
 };
-
-
+*/
 
 BitmapResource bmpUpMiddle { ":upMiddle.png", alphaBlend = true };
 BitmapResource bmpUpLeft { ":upLeft.png", alphaBlend = true };
@@ -100,21 +99,21 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnResizing;
 extern int __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnPostCreate;
 private:
 
-static void Dummy()
+static __attribute__((unused)) void Dummy()
 {
-   Window w;
+   Window w = 0;
    w.OnPostCreate();
    w.OnRedraw(null);
    w.OnResizing(null, null);
 }
 
-static void Button::ThumbOnRedraw(Surface surface)
+/*static void Button::ThumbOnRedraw(Surface surface)
 {
-   int offset = (buttonState == down) ? this.offset : 0;
+   //int offset = (buttonState == down) ? this.offset : 0;
    BitmapResource left = bmpThumbUp;
    BitmapResource right = bmpThumbDown;
    BitmapResource middle = bmpThumbVert;
-   int sizeW = size.w;
+   //int sizeW = size.w;
    int x = 1; //-40 * sizeH / 96;
    int y = -6; //-7 * sizeH / 96;
    int w = 14;// * sizeW / 14;
@@ -125,11 +124,9 @@ static void Button::ThumbOnRedraw(Surface surface)
    surface.HTile(middle.bitmap, x, y + sideH, w, middleH);
    surface.Stretch(right.bitmap, x, y + sideH + middleH, 0,0, w, sideH, right.bitmap.width, right.bitmap.height);
 
-   /*
-   surface.Filter(left.bitmap, x, y, 0,0, w, sideH, left.bitmap.width, left.bitmap.height);
-   surface.FilterVTile(middle.bitmap, x, y + sideH, w, middleH);
-   surface.Filter(right.bitmap, x, y + sideH + middleH, 0,0, w, sideH, right.bitmap.width, right.bitmap.height);
-   */
+   //surface.Filter(left.bitmap, x, y, 0,0, w, sideH, left.bitmap.width, left.bitmap.height);
+   //surface.FilterVTile(middle.bitmap, x, y + sideH, w, middleH);
+   //surface.Filter(right.bitmap, x, y + sideH + middleH, 0,0, w, sideH, right.bitmap.width, right.bitmap.height);
 }
 
 static bool Button::ThumbIsInside(int x, int y)
@@ -144,7 +141,7 @@ static void Button::ThumbSetBox(Box box)
    box.right -= 1;
    box.bottom += 6;
 }
-
+*/
 public class MySkin_ScrollBar : ScrollBar
 {
    void OnApplyGraphics()
@@ -197,7 +194,7 @@ public class MySkin_ScrollBar : ScrollBar
       {
 
       }
-      return true;
+      return result;
    }
 
    void OnRedraw(Surface surface)
@@ -318,7 +315,7 @@ public class MySkin_Button : Button
 }
 
 
-char * cursorsBitmaps[] =
+const char * cursorsBitmaps[] =
 {
    "<:ecere>cursors/arrow.png",
    "<:ecere>cursors/iBeam.png",
@@ -343,7 +340,7 @@ static Point cursorsHotSpots[] =
    { 5, 0 }
 };
 
-static char * skinBitmaps[SkinBitmap] =
+static const char * skinBitmaps[SkinBitmap] =
 {
    "<:ecere>elements/areaMinimize.png",
    "<:ecere>elements/areaMaximize.png",
@@ -366,7 +363,7 @@ public class MySkin : Skin
       return FontResource { faceName = "Tahoma", size = 10.0f, bold = true };
    }
 
-   char * ::CursorsBitmaps(uint id, int * hotSpotX, int *hotSpotY, byte ** paletteShades)
+   const char * ::CursorsBitmaps(uint id, int * hotSpotX, int *hotSpotY, byte ** paletteShades)
    {
       *hotSpotX = cursorsHotSpots[id].x;
       *hotSpotY = cursorsHotSpots[id].y;
@@ -517,7 +514,7 @@ public class MySkin_Window : Window
       *ch = Max(*ch, 0);
    }
 
-   void PreShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving)
+   void PreShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving)
    {
       if(((BorderBits)borderStyle).fixed && (state != maximized || !parent.menuBar))
       {
@@ -539,7 +536,7 @@ public class MySkin_Window : Window
       }
    }
 
-   void ShowDecorations(Font captionFont, Surface surface, char * name, bool active, bool moving)
+   void ShowDecorations(Font captionFont, Surface surface, const char * name, bool active, bool moving)
    {
       bool isNormal = (state == normal);
       int top = 0, border = 0, bottom = 0;
