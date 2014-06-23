@@ -1794,7 +1794,7 @@ return string;
 static unsigned int __ecereNameSpace__ecere__com__Integer_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, int * data, const char * string)
 {
 char * end;
-int result = strtol(string, &end, 0);
+int result = (int)strtol(string, &end, 0);
 
 if(end > string)
 {
@@ -1897,7 +1897,7 @@ extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
 static unsigned int __ecereNameSpace__ecere__com__UInteger_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * _class, unsigned int * data, const char * string)
 {
 char * end;
-unsigned int result = strtoul(string, &end, 0);
+unsigned int result = (unsigned int)strtoul(string, &end, 0);
 
 if(end > string)
 {

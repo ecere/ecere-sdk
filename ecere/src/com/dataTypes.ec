@@ -1377,7 +1377,7 @@ static int Integer_OnCompare(Class _class, int * data1, int * data2)
 static bool Integer_OnGetDataFromString(Class _class, int * data, const char * string)
 {
    char * end;
-   int result = strtol(string, &end, 0);
+   int result = (int)strtol(string, &end, 0);
 
    if(end > string)
    {

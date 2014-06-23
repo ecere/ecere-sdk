@@ -277,12 +277,17 @@ public:
       uint count, c;
       Class Dclass = class(D);
       D data;
+      bool clear = true;
 
       channel.Get(count);
       if(Dclass.type == structClass)
-         data = (D)(uintptr)(new byte[Dclass.structSize]);
+      {
+         data = (D)(uintptr)(new0 byte[Dclass.structSize]);
+         clear = false;
+      }
       for(c = 0; c < count; c++)
       {
+         if(clear) data = (D)0;
          ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])
             (Dclass, (Dclass.type == structClass) ? (void *)data : &data, channel);
          container.Add(data);

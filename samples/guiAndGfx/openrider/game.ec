@@ -43,20 +43,23 @@ class GameVehicle {
 
    void OnUnserialize(IOChannel channel)
    {
-      GameVehicleType vtype;
-      channel.Get(vtype);
-      if(vtype == ball)
+      if(!this)
       {
-         GameBall::OnUnserialize(class(GameBall), this, channel);
-         return;
-      }
-      else
-         this = GameVehicle { };
+         GameVehicleType vtype;
+         channel.Get(vtype);
+         if(vtype == ball)
+         {
+            GameBall::OnUnserialize(class(GameBall), this, channel);
+            return;
+         }
+         else
+            this = GameVehicle { };
 
-      if(!type)
-         channel.Get(type);
-      channel.Get(location);
-      channel.Get(velocity);
+         if(!type)
+            channel.Get(type);
+         channel.Get(location);
+         channel.Get(velocity);
+      }
    }
 
    virtual void Update(Game game);
@@ -80,8 +83,7 @@ class GameBall : GameVehicle {
 
    void OnUnserialize(IOChannel channel)
    {
-      GameBall gb { };
-      this = gb;
+      this = GameBall { };
       GameVehicle::OnUnserialize(channel);
       channel.Get(radius);
       channel.Get(elasticity);

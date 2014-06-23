@@ -806,8 +806,8 @@ __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_
 for(c = 0; c < count; c++)
 {
 struct __ecereNameSpace__ecere__com__MapNode * destNode;
-uint64 key;
-uint64 data;
+uint64 key = (uint64)0;
+uint64 data = (uint64)0;
 
 ((void (*)(void *, void *, void *))(void *)Kclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Kclass, ((char *)&key + __ENDIAN_PAD(class->templateArgs[5].__anon1.__anon1.dataTypeClass->typeSize)), channel);
 ((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, ((char *)&data + __ENDIAN_PAD(class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)), channel);

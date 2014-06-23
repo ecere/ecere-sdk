@@ -271,8 +271,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       for(c = 0; c < count; c++)
       {
          MapNode<MT, V> destNode;
-         MT key;
-         D data;
+         MT key = (KT)0;
+         D data = (D)0;
          ((void (*)(void *, void *, void *))(void *)Kclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Kclass, &key, channel);
          ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, &data, channel);
          destNode = (MapNode<MT, V>)container.GetAtPosition(key, true);
