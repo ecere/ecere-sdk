@@ -868,6 +868,8 @@ struct __ecereNameSpace__ecere__com__Class * Eclass = isNormalClass ? ((struct _
 }
 }
 
+extern void *  memset(void *  area, int value, size_t count);
+
 const char *  __ecereProp___ecereNameSpace__ecere__com__Class_Get_char__PTR_(struct __ecereNameSpace__ecere__com__Class * this);
 
 struct __ecereNameSpace__ecere__com__Class * __ecereProp___ecereNameSpace__ecere__com__Class_Set_char__PTR_(const char *  value);
@@ -882,26 +884,25 @@ struct __ecereNameSpace__ecere__com__Instance * container = __ecereNameSpace__ec
 unsigned int count, c;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
 uint64 data;
-unsigned int clear = 1;
+unsigned int isStruct = Dclass->type == 1;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(channel, __ecereClass_uint, (void *)&count);
-if(Dclass->type == 1)
-{
-data = (uint64)(uintptr_t)(__ecereNameSpace__ecere__com__eSystem_New0(sizeof(unsigned char) * (Dclass->structSize)));
-clear = 0;
-}
+if(isStruct)
+data = (uint64)(uintptr_t)(__ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (Dclass->structSize)));
 for(c = 0; c < count; c++)
 {
-if(clear)
+if(isStruct)
+memset((char *)(uintptr_t)data, 0, Dclass->structSize);
+else
 data = (uint64)0;
-((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, (Dclass->type == 1) ? (void *)(uintptr_t)data : ((char *)&data + __ENDIAN_PAD(class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)), channel);
+((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, isStruct ? (void *)(uintptr_t)data : ((char *)&data + __ENDIAN_PAD(class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)), channel);
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(container, data);
 }
-if(Dclass->type == 1)
+if(isStruct)
 (((void (* )(void *  _class, void *  data))class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(class->templateArgs[2].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(data)))), data = 0);
 (*this) = container;
 }
