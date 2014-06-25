@@ -380,26 +380,26 @@ strict_type:
 
 class_function_definition_start:
      guess_declaration_specifiers declarator_function
-      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; }
    | declarator_function
-      { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; }
    ;
 
 constructor_function_definition_start:
    guess_declaration_specifiers '(' ')'
-      { $$ = MkClassFunction(null, null, null, null); $$.isConstructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; FreeList /*FreeSpecifier*/($1, FreeSpecifier); }
+      { $$ = MkClassFunction(null, null, null, null); $$.isConstructor = true; $$.loc = @$; FreeList /*FreeSpecifier*/($1, FreeSpecifier); }
    ;
 
 destructor_function_definition_start:
    '~' guess_declaration_specifiers '(' ')'
-      { $$ = MkClassFunction(null, null, null, null); $$.isDestructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; FreeList /*FreeSpecifier*/($2, FreeSpecifier); }
+      { $$ = MkClassFunction(null, null, null, null); $$.isDestructor = true; $$.loc = @$; FreeList /*FreeSpecifier*/($2, FreeSpecifier); }
    ;
 
 virtual_class_function_definition_start:
      VIRTUAL guess_declaration_specifiers declarator_function
-      { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; }
    | VIRTUAL declarator_function
-      { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; }
       ;
 
 identifier:
@@ -911,19 +911,19 @@ strict_type_specifier:
 
 
 struct_or_union_specifier_compound:
-	  struct_or_union identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $2, $4); if(declMode) DeclClass(globalContext.nextID++, $2.string); }
+	  struct_or_union identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $2, $4); if(declMode) DeclClass(0, $2.string); }
 	| struct_or_union '{' struct_declaration_list '}'              { $$ = MkStructOrUnion($1, null, $3); }
-   | struct_or_union identifier '{' '}'   { $$ = MkStructOrUnion($1, $2, null); if(declMode) DeclClass(globalContext.nextID++, $2.string); }
+   | struct_or_union identifier '{' '}'   { $$ = MkStructOrUnion($1, $2, null); if(declMode) DeclClass(0, $2.string); }
    | struct_or_union '{' '}'              { $$ = MkStructOrUnion($1, null, null); }
 	| struct_or_union base_strict_type '{' struct_declaration_list '}'
-      { $$ = MkStructOrUnion($1, MkIdentifier($2.name), $4); if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
+      { $$ = MkStructOrUnion($1, MkIdentifier($2.name), $4); if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
 
-	| struct_or_union ext_decl identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $3, $5); $$.extDeclStruct = $2; if(declMode) DeclClass(globalContext.nextID++, $3.string); }
+	| struct_or_union ext_decl identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $3, $5); $$.extDeclStruct = $2; if(declMode) DeclClass(0, $3.string); }
 	| struct_or_union ext_decl '{' struct_declaration_list '}'              { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; }
-   | struct_or_union ext_decl identifier '{' '}'   { $$ = MkStructOrUnion($1, $3, null); $$.extDeclStruct = $2; if(declMode) DeclClass(globalContext.nextID++, $3.string); }
+   | struct_or_union ext_decl identifier '{' '}'   { $$ = MkStructOrUnion($1, $3, null); $$.extDeclStruct = $2; if(declMode) DeclClass(0, $3.string); }
    | struct_or_union ext_decl '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; }
 	| struct_or_union ext_decl strict_type '{' struct_declaration_list '}'
-      { $$ = MkStructOrUnion($1, MkIdentifier($3.name), $5); $$.extDeclStruct = $2; if(declMode) DeclClass(globalContext.nextID++, $3.name); FreeSpecifier($3); }
+      { $$ = MkStructOrUnion($1, MkIdentifier($3.name), $5); $$.extDeclStruct = $2; if(declMode) DeclClass(0, $3.name); FreeSpecifier($3); }
 	;
 
 struct_or_union_specifier_nocompound:
@@ -1081,7 +1081,7 @@ struct_declaration:
    | guess_instantiation_named ';'                                   { $$ = MkClassDefDeclaration(MkDeclarationClassInst($1)); $$.loc = @$; $$.decl.loc = @$; }
    | class_function_definition                                       { $$ = MkClassDefFunction($1); $$.loc = @$; }
    | default_property_list ';' { $$ = MkClassDefDefaultProperty($1); if($1->last) ((MemberInit)$1->last).loc.end = @2.start; $$.loc = @$; }
-   | property { $$ = MkClassDefProperty($1); $$.loc = @$; globalContext.nextID++; }
+   | property { $$ = MkClassDefProperty($1); $$.loc = @$; }
    | ';' { $$ = null; }
 	;
 
@@ -1113,10 +1113,10 @@ enum_specifier_nocompound:
 enum_specifier_compound:
 	  ENUM '{' enumerator_list '}'
       { $$ = MkEnum(null, $3); }
-	| ENUM identifier '{' enumerator_list '}'    { $$ = MkEnum($2, $4); if(declMode) DeclClass(globalContext.nextID++, $2.string); }
-   | ENUM identifier '{' enumerator_list ';' struct_declaration_list '}'    { $$ = MkEnum($2, $4); $$.definitions = $6; if(declMode) DeclClass(globalContext.nextID++, $2.string); }
-	| ENUM strict_type '{' enumerator_list ';' struct_declaration_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); $$.definitions = $6; if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
-   | ENUM strict_type '{' enumerator_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
+	| ENUM identifier '{' enumerator_list '}'    { $$ = MkEnum($2, $4); if(declMode) DeclClass(0, $2.string); }
+   | ENUM identifier '{' enumerator_list ';' struct_declaration_list '}'    { $$ = MkEnum($2, $4); $$.definitions = $6; if(declMode) DeclClass(0, $2.string); }
+	| ENUM strict_type '{' enumerator_list ';' struct_declaration_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); $$.definitions = $6; if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
+   | ENUM strict_type '{' enumerator_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
 	;
 
 enumerator_list:
@@ -1582,9 +1582,9 @@ class_function_definition:
 instance_class_function_definition_start:
    // Guess here conflicts with an expression...
      declaration_specifiers declarator_function
-      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; }
     | declaration_specifiers declarator_nofunction
-      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; }
       ;
 
 instance_class_function_definition:

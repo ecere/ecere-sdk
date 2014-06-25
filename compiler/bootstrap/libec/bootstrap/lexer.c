@@ -37,377 +37,6 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
-
-#if /*defined(_W64) || */(defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
-#define _64BIT 1
-#else
-#define _64BIT 0
-#endif
-
-#define arch_PointerSize                  sizeof(void *)
-#define structSize_Instance               (_64BIT ? 24 : 12)
-
-struct __ecereNameSpace__ecere__com__Instance;
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
-
-extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
-
-struct __ecereNameSpace__ecere__sys__BTNode;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BinaryTree;
-
-struct __ecereNameSpace__ecere__sys__BinaryTree
-{
-struct __ecereNameSpace__ecere__sys__BTNode * root;
-int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
-void (*  FreeKey)(void *  key);
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldList;
-
-struct __ecereNameSpace__ecere__sys__OldList
-{
-void *  first;
-void *  last;
-int count;
-unsigned int offset;
-unsigned int circ;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Method;
-
-struct __ecereNameSpace__ecere__com__Method
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__Method * parent;
-struct __ecereNameSpace__ecere__com__Method * left;
-struct __ecereNameSpace__ecere__com__Method * right;
-int depth;
-int (*  function)();
-int vid;
-int type;
-struct __ecereNameSpace__ecere__com__Class * _class;
-void *  symbol;
-const char *  dataTypeString;
-struct Type * dataType;
-int memberAccess;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_CodePosition;
-
-struct CodePosition
-{
-int line;
-int charPos;
-int pos;
-int included;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
-
-struct Location
-{
-struct CodePosition start;
-struct CodePosition end;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
-
-struct Attrib;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
-
-struct ExtDecl;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
-
-struct ClassDefinition;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
-
-struct Context;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
-
-struct Instantiation;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declaration;
-
-struct Declaration;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Statement;
-
-struct Statement;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
-
-struct TypeName;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Initializer;
-
-struct Initializer;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
-
-struct __ecereNameSpace__ecere__com__DataValue
-{
-union
-{
-char c;
-unsigned char uc;
-short s;
-unsigned short us;
-int i;
-unsigned int ui;
-void *  p;
-float f;
-double d;
-long long i64;
-uint64 ui64;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
-
-struct Expression;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
-
-struct TemplateDatatype;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateArgument;
-
-struct TemplateArgument;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateParameter;
-
-struct TemplateParameter;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Specifier;
-
-struct Specifier;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
-
-struct Identifier;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Pointer;
-
-struct Pointer;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declarator;
-
-struct Declarator;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
-
-struct FunctionDefinition;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableDef;
-
-struct DBTableDef;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_External;
-
-struct External;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
-
-struct ModuleImport;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassImport;
-
-struct ClassImport;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
-
-struct Symbol;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
-
-struct Type;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
-
-struct __ecereNameSpace__ecere__com__Class
-{
-struct __ecereNameSpace__ecere__com__Class * prev;
-struct __ecereNameSpace__ecere__com__Class * next;
-const char *  name;
-int offset;
-int structSize;
-void * *  _vTbl;
-int vTblSize;
-unsigned int (*  Constructor)(void * );
-void (*  Destructor)(void * );
-int offsetClass;
-int sizeClass;
-struct __ecereNameSpace__ecere__com__Class * base;
-struct __ecereNameSpace__ecere__sys__BinaryTree methods;
-struct __ecereNameSpace__ecere__sys__BinaryTree members;
-struct __ecereNameSpace__ecere__sys__BinaryTree prop;
-struct __ecereNameSpace__ecere__sys__OldList membersAndProperties;
-struct __ecereNameSpace__ecere__sys__BinaryTree classProperties;
-struct __ecereNameSpace__ecere__sys__OldList derivatives;
-int memberID;
-int startMemberID;
-int type;
-struct __ecereNameSpace__ecere__com__Instance * module;
-struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-const char *  dataTypeString;
-struct Type * dataType;
-int typeSize;
-int defaultAlignment;
-void (*  Initialize)();
-int memberOffset;
-struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-const char *  designerClass;
-unsigned int noExpansion;
-const char *  defaultProperty;
-unsigned int comRedefinition;
-int count;
-int isRemote;
-unsigned int internalDecl;
-void *  data;
-unsigned int computeSize;
-int structAlignment;
-int destructionWatchOffset;
-unsigned int fixed;
-struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
-int inheritanceAccess;
-const char *  fullName;
-void *  symbol;
-struct __ecereNameSpace__ecere__sys__OldList conversions;
-struct __ecereNameSpace__ecere__sys__OldList templateParams;
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
-struct __ecereNameSpace__ecere__com__Class * templateClass;
-struct __ecereNameSpace__ecere__sys__OldList templatized;
-int numParams;
-unsigned int isInstanceClass;
-unsigned int byValueSystemClass;
-} __attribute__ ((gcc_struct));
-
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
-
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
-
-extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
-
-struct __ecereNameSpace__ecere__com__Instance
-{
-void * *  _vTbl;
-struct __ecereNameSpace__ecere__com__Class * _class;
-int _refCount;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
-
-struct __ecereNameSpace__ecere__com__DataMember
-{
-struct __ecereNameSpace__ecere__com__DataMember * prev;
-struct __ecereNameSpace__ecere__com__DataMember * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-int type;
-int offset;
-int memberID;
-struct __ecereNameSpace__ecere__sys__OldList members;
-struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
-int memberOffset;
-int structAlignment;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__SerialBuffer;
-
-struct __ecereNameSpace__ecere__com__SerialBuffer
-{
-unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument
-{
-union
-{
-struct
-{
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct)) __anon1;
-struct __ecereNameSpace__ecere__com__DataValue expression;
-struct
-{
-const char *  memberString;
-union
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct)) __anon2;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
-
 void exit(int status);
 
 void * calloc(size_t nmemb, size_t size);
@@ -488,10 +117,6 @@ int yy_fill_buffer;
 int yy_buffer_status;
 } __attribute__ ((gcc_struct));
 
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_yy_buffer_state;
-
-static YY_BUFFER_STATE yy_current_buffer = 0;
-
 static char yy_hold_char;
 
 static int yy_n_chars;
@@ -508,23 +133,7 @@ static int yy_did_buffer_switch_on_eof;
 
 void yyrestart(FILE * input_file);
 
-void yy_switch_to_buffer(YY_BUFFER_STATE new_buffer);
-
 void yy_load_buffer_state(void);
-
-YY_BUFFER_STATE yy_create_buffer(FILE * file, int size);
-
-void yy_delete_buffer(YY_BUFFER_STATE b);
-
-void yy_init_buffer(YY_BUFFER_STATE b, FILE * file);
-
-void yy_flush_buffer(YY_BUFFER_STATE b);
-
-YY_BUFFER_STATE yy_scan_buffer(char * base, yy_size_t size);
-
-YY_BUFFER_STATE yy_scan_string(const char * yy_str);
-
-YY_BUFFER_STATE yy_scan_bytes(const char * bytes, int len);
 
 static void * yy_flex_alloc(yy_size_t);
 
@@ -594,6 +203,290 @@ enum yytokentype
 IDENTIFIER = 258, CONSTANT = 259, STRING_LITERAL = 260, SIZEOF = 261, PTR_OP = 262, INC_OP = 263, DEC_OP = 264, LEFT_OP = 265, RIGHT_OP = 266, LE_OP = 267, GE_OP = 268, EQ_OP = 269, NE_OP = 270, AND_OP = 271, OR_OP = 272, MUL_ASSIGN = 273, DIV_ASSIGN = 274, MOD_ASSIGN = 275, ADD_ASSIGN = 276, SUB_ASSIGN = 277, LEFT_ASSIGN = 278, RIGHT_ASSIGN = 279, AND_ASSIGN = 280, XOR_ASSIGN = 281, OR_ASSIGN = 282, TYPE_NAME = 283, TYPEDEF = 284, EXTERN = 285, STATIC = 286, AUTO = 287, REGISTER = 288, CHAR = 289, SHORT = 290, INT = 291, UINT = 292, INT64 = 293, LONG = 294, SIGNED = 295, UNSIGNED = 296, FLOAT = 297, DOUBLE = 298, CONST = 299, VOLATILE = 300, VOID = 301, VALIST = 302, STRUCT = 303, UNION = 304, ENUM = 305, ELLIPSIS = 306, CASE = 307, DEFAULT = 308, IF = 309, SWITCH = 310, WHILE = 311, DO = 312, FOR = 313, GOTO = 314, CONTINUE = 315, BREAK = 316, RETURN = 317, IFX = 318, ELSE = 319, CLASS = 320, THISCLASS = 321, CLASS_NAME = 322, PROPERTY = 323, SETPROP = 324, GETPROP = 325, NEWOP = 326, RENEW = 327, DELETE = 328, EXT_DECL = 329, EXT_STORAGE = 330, IMPORT = 331, DEFINE = 332, VIRTUAL = 333, ATTRIB = 334, PUBLIC = 335, PRIVATE = 336, TYPED_OBJECT = 337, ANY_OBJECT = 338, _INCREF = 339, EXTENSION = 340, ASM = 341, TYPEOF = 342, WATCH = 343, STOPWATCHING = 344, FIREWATCHERS = 345, WATCHABLE = 346, CLASS_DESIGNER = 347, CLASS_NO_EXPANSION = 348, CLASS_FIXED = 349, ISPROPSET = 350, CLASS_DEFAULT_PROPERTY = 351, PROPERTY_CATEGORY = 352, CLASS_DATA = 353, CLASS_PROPERTY = 354, SUBCLASS = 355, NAMESPACE = 356, NEW0OP = 357, RENEW0 = 358, VAARG = 359, DBTABLE = 360, DBFIELD = 361, DBINDEX = 362, DATABASE_OPEN = 363, ALIGNOF = 364, ATTRIB_DEP = 365, __ATTRIB = 366, BOOL = 367, _BOOL = 368, _COMPLEX = 369, _IMAGINARY = 370, RESTRICT = 371, THREAD = 372, WIDE_STRING_LITERAL = 373
 };
 
+unsigned int echoOn = 1;
+
+int preprocessor();
+
+int comment();
+
+char sourceFileStack[30][797];
+
+int declModeStack[30];
+
+int include_stack_ptr = 0;
+
+extern int yywrap(void);
+
+static int input(void);
+
+extern int defaultDeclMode;
+
+extern int declMode;
+
+extern int structDeclMode;
+
+extern unsigned int inCompiler;
+
+int yywrap()
+{
+return (1);
+}
+
+extern int yychar;
+
+struct __ecereNameSpace__ecere__sys__BTNode;
+
+struct __ecereNameSpace__ecere__sys__OldList
+{
+void *  first;
+void *  last;
+int count;
+unsigned int offset;
+unsigned int circ;
+} __attribute__ ((gcc_struct));
+
+struct Type;
+
+struct __ecereNameSpace__ecere__com__DataValue
+{
+union
+{
+char c;
+unsigned char uc;
+short s;
+unsigned short us;
+int i;
+unsigned int ui;
+void *  p;
+float f;
+double d;
+long long i64;
+uint64 ui64;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__SerialBuffer
+{
+unsigned char *  _buffer;
+unsigned int count;
+unsigned int _size;
+unsigned int pos;
+} __attribute__ ((gcc_struct));
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
+
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
+struct Identifier;
+
+struct Expression;
+
+struct Specifier;
+
+struct Enumerator;
+
+struct Declarator;
+
+struct Pointer;
+
+struct Initializer;
+
+struct InitDeclarator;
+
+struct TypeName;
+
+struct Declaration;
+
+struct Statement;
+
+struct FunctionDefinition;
+
+struct External;
+
+struct Context;
+
+struct AsmField;
+
+struct Attrib;
+
+struct ExtDecl;
+
+struct Attribute;
+
+struct Instantiation;
+
+struct MembersInit;
+
+struct MemberInit;
+
+struct ClassFunction;
+
+struct ClassDefinition;
+
+struct ClassDef;
+
+struct PropertyDef;
+
+struct Symbol;
+
+struct PropertyWatch;
+
+struct TemplateParameter;
+
+struct TemplateArgument;
+
+struct TemplateDatatype;
+
+struct DBTableEntry;
+
+struct DBIndexItem;
+
+struct DBTableDef;
+
+struct CodePosition
+{
+int line;
+int charPos;
+int pos;
+int included;
+} __attribute__ ((gcc_struct));
+
+extern char *  strcpy(char * , const char * );
+
+extern int check_type(void);
+
+extern int printf(const char * , ...);
+
+extern int yyerror(void);
+
+extern int __ecereNameSpace__ecere__sys__GetValue(char * *  buffer);
+
+extern unsigned int __ecereNameSpace__ecere__sys__GetString(char * *  buffer, char *  string, int max);
+
+extern char *  __ecereNameSpace__ecere__sys__GetExtension(const char *  string, char *  output);
+
+extern int strcmp(const char * , const char * );
+
+extern int GetIncludeFileID(char *  includeFile);
+
+extern char *  __ecereNameSpace__ecere__sys__TrimLSpaces(const char *  string, char *  output);
+
+extern int strncmp(const char * , const char * , size_t n);
+
+extern void *  memmove(void * , const void * , size_t size);
+
+extern size_t strlen(const char * );
+
+extern char *  strncpy(char * , const char * , size_t n);
+
+extern const char *  __ecereNameSpace__ecere__GetTranslatedString(const char * name, const char *  string, const char *  stringAndContext);
+
+extern int FindIncludeFileID(char *  includeFile);
+
+extern void *  memcpy(void * , const void * , size_t size);
+
+struct __ecereNameSpace__ecere__com__GlobalFunction;
+
+static void yy_flex_free(void * ptr)
+{
+free(ptr);
+}
+
+static void * yy_flex_alloc(yy_size_t size)
+{
+return (void *)malloc(size);
+}
+
+static void * yy_flex_realloc(void * ptr, yy_size_t size)
+{
+return (void *)realloc((char *)ptr, size);
+}
+
+static void yy_fatal_error(const char msg[])
+{
+(void)fprintf((bsl_stderr()), "%s\n", msg);
+exit(2);
+}
+
+static YY_BUFFER_STATE yy_current_buffer = 0;
+
+void yy_switch_to_buffer(YY_BUFFER_STATE new_buffer);
+
+YY_BUFFER_STATE yy_create_buffer(FILE * file, int size);
+
+void yy_delete_buffer(YY_BUFFER_STATE b);
+
+void yy_init_buffer(YY_BUFFER_STATE b, FILE * file);
+
+void yy_flush_buffer(YY_BUFFER_STATE b);
+
+YY_BUFFER_STATE yy_scan_buffer(char * base, yy_size_t size);
+
+YY_BUFFER_STATE yy_scan_string(const char * yy_str);
+
+YY_BUFFER_STATE yy_scan_bytes(const char * bytes, int len);
+
+YY_BUFFER_STATE include_stack[30];
+
+static yy_state_type yy_get_previous_state()
+{
+register yy_state_type yy_current_state;
+register char * yy_cp;
+
+yy_current_state = yy_start;
+for(yy_cp = yytext + 0; yy_cp < yy_c_buf_p; ++yy_cp)
+{
+register YY_CHAR yy_c = (*yy_cp ? yy_ec[((unsigned int)(unsigned char)*yy_cp)] : (unsigned char)1);
+
+if(yy_accept[yy_current_state])
+{
+yy_last_accepting_state = yy_current_state;
+yy_last_accepting_cpos = yy_cp;
+}
+while(yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state)
+{
+yy_current_state = (int)yy_def[yy_current_state];
+if(yy_current_state >= 723)
+yy_c = yy_meta[(unsigned int)yy_c];
+}
+yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int)yy_c];
+}
+return yy_current_state;
+}
+
+static yy_state_type yy_try_NUL_trans(yy_state_type yy_current_state)
+{
+register int yy_is_jam;
+register char * yy_cp = yy_c_buf_p;
+register YY_CHAR yy_c = (unsigned char)1;
+
+if(yy_accept[yy_current_state])
+{
+yy_last_accepting_state = yy_current_state;
+yy_last_accepting_cpos = yy_cp;
+}
+while(yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state)
+{
+yy_current_state = (int)yy_def[yy_current_state];
+if(yy_current_state >= 723)
+yy_c = yy_meta[(unsigned int)yy_c];
+}
+yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int)yy_c];
+yy_is_jam = (yy_current_state == 722);
+return yy_is_jam ? 0 : yy_current_state;
+}
+
+void SetEchoOn(unsigned int b)
+{
+echoOn = b;
+}
+
 typedef union YYSTYPE
 {
 int specifierType;
@@ -636,74 +529,260 @@ struct DBIndexItem * dbindexItem;
 struct DBTableDef * dbtableDef;
 } __attribute__ ((gcc_struct)) YYSTYPE;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Enumerator;
-
-struct Enumerator;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_InitDeclarator;
-
-struct InitDeclarator;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_AsmField;
-
-struct AsmField;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attribute;
-
-struct Attribute;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassFunction;
-
-struct ClassFunction;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MembersInit;
-
-struct MembersInit;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_MemberInit;
-
-struct MemberInit;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyDef;
-
-struct PropertyDef;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_PropertyWatch;
-
-struct PropertyWatch;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDef;
-
-struct ClassDef;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableEntry;
-
-struct DBTableEntry;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBIndexItem;
-
-struct DBIndexItem;
-
 extern YYSTYPE yylval;
 
-extern struct Location yylloc;
-
-unsigned int echoOn = 1;
-
-void SetEchoOn(unsigned int b)
+struct Location
 {
-echoOn = b;
+struct CodePosition start;
+struct CodePosition end;
+} __attribute__ ((gcc_struct));
+
+void SetSomeSourceFileStack(const char * fileName, int index)
+{
+strcpy(sourceFileStack[index], fileName);
 }
+
+static int input()
+{
+int c;
+
+*yy_c_buf_p = yy_hold_char;
+if(*yy_c_buf_p == (char)0)
+{
+if(yy_c_buf_p < &(*yy_current_buffer).yy_ch_buf[yy_n_chars])
+*yy_c_buf_p = '\0';
+else
+{
+int offset = yy_c_buf_p - yytext;
+
+++yy_c_buf_p;
+switch(yy_get_next_buffer())
+{
+case 2:
+yyrestart(yyin);
+case 1:
+{
+if(yywrap())
+return (-1);
+if(!yy_did_buffer_switch_on_eof)
+yyrestart(yyin);
+return input();
+}
+case 0:
+yy_c_buf_p = yytext + offset;
+break;
+}
+}
+}
+c = *(unsigned char *)yy_c_buf_p;
+*yy_c_buf_p = '\0';
+yy_hold_char = *++yy_c_buf_p;
+return c;
+}
+
+void yy_switch_to_buffer(YY_BUFFER_STATE new_buffer)
+{
+if(yy_current_buffer == new_buffer)
+return ;
+if(yy_current_buffer)
+{
+*yy_c_buf_p = yy_hold_char;
+(*yy_current_buffer).yy_buf_pos = yy_c_buf_p;
+(*yy_current_buffer).yy_n_chars = yy_n_chars;
+}
+yy_current_buffer = new_buffer;
+yy_load_buffer_state();
+yy_did_buffer_switch_on_eof = 1;
+}
+
+void yy_load_buffer_state(void)
+{
+yy_n_chars = (*yy_current_buffer).yy_n_chars;
+yytext = yy_c_buf_p = (*yy_current_buffer).yy_buf_pos;
+yyin = (*yy_current_buffer).yy_input_file;
+yy_hold_char = *yy_c_buf_p;
+}
+
+void yy_delete_buffer(YY_BUFFER_STATE b)
+{
+if(!b)
+return ;
+if(b == yy_current_buffer)
+yy_current_buffer = (YY_BUFFER_STATE)0;
+if((*b).yy_is_our_buffer)
+yy_flex_free((void *)(*b).yy_ch_buf);
+yy_flex_free((void *)b);
+}
+
+void yy_flush_buffer(YY_BUFFER_STATE b)
+{
+if(!b)
+return ;
+(*b).yy_n_chars = 0;
+(*b).yy_ch_buf[0] = (char)0;
+(*b).yy_ch_buf[1] = (char)0;
+(*b).yy_buf_pos = &(*b).yy_ch_buf[0];
+(*b).yy_at_bol = 1;
+(*b).yy_buffer_status = 0;
+if(b == yy_current_buffer)
+yy_load_buffer_state();
+}
+
+YY_BUFFER_STATE yy_scan_buffer(char * base, yy_size_t size)
+{
+YY_BUFFER_STATE b;
+
+if(size < 2 || base[size - 2] != (char)0 || base[size - 1] != (char)0)
+return 0;
+b = (YY_BUFFER_STATE)yy_flex_alloc(sizeof(struct yy_buffer_state));
+if(!b)
+yy_fatal_error("out of dynamic memory in yy_scan_buffer()");
+(*b).yy_buf_size = size - 2;
+(*b).yy_buf_pos = (*b).yy_ch_buf = base;
+(*b).yy_is_our_buffer = 0;
+(*b).yy_input_file = 0;
+(*b).yy_n_chars = (*b).yy_buf_size;
+(*b).yy_is_interactive = 0;
+(*b).yy_at_bol = 1;
+(*b).yy_fill_buffer = 0;
+(*b).yy_buffer_status = 0;
+yy_switch_to_buffer(b);
+return b;
+}
+
+void yyrestart(FILE * input_file)
+{
+if(!yy_current_buffer)
+yy_current_buffer = yy_create_buffer(yyin, 16384);
+yy_init_buffer(yy_current_buffer, input_file);
+yy_load_buffer_state();
+}
+
+YY_BUFFER_STATE yy_create_buffer(FILE * file, int size)
+{
+YY_BUFFER_STATE b;
+
+b = (YY_BUFFER_STATE)yy_flex_alloc(sizeof(struct yy_buffer_state));
+if(!b)
+yy_fatal_error("out of dynamic memory in yy_create_buffer()");
+(*b).yy_buf_size = size;
+(*b).yy_ch_buf = (char *)yy_flex_alloc((*b).yy_buf_size + 2);
+if(!(*b).yy_ch_buf)
+yy_fatal_error("out of dynamic memory in yy_create_buffer()");
+(*b).yy_is_our_buffer = 1;
+yy_init_buffer(b, file);
+return b;
+}
+
+void yy_init_buffer(YY_BUFFER_STATE b, FILE * file)
+{
+yy_flush_buffer(b);
+(*b).yy_input_file = file;
+(*b).yy_fill_buffer = 1;
+(*b).yy_is_interactive = 0;
+}
+
+YY_BUFFER_STATE yy_scan_bytes(const char * bytes, int len)
+{
+YY_BUFFER_STATE b;
+char * buf;
+yy_size_t n;
+int i;
+
+n = len + 2;
+buf = (char *)yy_flex_alloc(n);
+if(!buf)
+yy_fatal_error("out of dynamic memory in yy_scan_bytes()");
+for(i = 0; i < len; ++i)
+buf[i] = bytes[i];
+buf[len] = buf[len + 1] = (char)0;
+b = yy_scan_buffer(buf, n);
+if(!b)
+yy_fatal_error("bad buffer in yy_scan_bytes()");
+(*b).yy_is_our_buffer = 1;
+return b;
+}
+
+YY_BUFFER_STATE yy_scan_string(const char * yy_str)
+{
+int len;
+
+for(len = 0; yy_str[len]; ++len)
+;
+return yy_scan_bytes(yy_str, len);
+}
+
+extern struct Location yylloc;
 
 extern struct Location type_yylloc;
 
 extern struct Location expression_yylloc;
 
-extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
+struct Location locStack[30];
 
-int preprocessor();
+int comment()
+{
+int c, last = 0;
 
-int comment();
+for(; ; )
+{
+c = input();
+if(c == (-1))
+break;
+if(c == '\n')
+{
+yylloc.end.charPos = 1;
+yylloc.end.pos++;
+yylloc.end.line++;
+}
+else if(c == '\t')
+{
+yylloc.end.charPos++;
+yylloc.end.pos++;
+}
+else
+{
+yylloc.end.charPos++;
+yylloc.end.pos++;
+}
+if(c == '/' && last == '*')
+break;
+last = c;
+}
+yylloc.start = yylloc.end;
+return 0;
+}
+
+int commentCPP()
+{
+int c;
+
+for(; ; )
+{
+c = input();
+if(c == (-1))
+break;
+if(c == '\n')
+{
+yylloc.end.charPos = 1;
+yylloc.end.pos++;
+yylloc.end.line++;
+break;
+}
+else if(c == '\t')
+{
+yylloc.end.charPos++;
+yylloc.end.pos++;
+}
+else
+{
+yylloc.end.charPos++;
+yylloc.end.pos++;
+}
+}
+yylloc.start = yylloc.end;
+return 0;
+}
 
 void TESTTTT()
 {
@@ -715,46 +794,227 @@ expression_yylloc.end.charPos += yyleng;
 expression_yylloc.end.pos += yyleng;
 }
 
-YY_BUFFER_STATE include_stack[30];
+void resetScanner()
+{
+yy_flush_buffer(yy_current_buffer);
+yylloc.start.charPos = yylloc.end.charPos = 1;
+yylloc.start.line = yylloc.end.line = 1;
+yylloc.start.pos = yylloc.end.pos = 0;
+yylloc.start.included = yylloc.end.included = 0;
+expression_yylloc.start.charPos = expression_yylloc.end.charPos = 1;
+expression_yylloc.start.line = expression_yylloc.end.line = 1;
+expression_yylloc.start.pos = expression_yylloc.end.pos = 0;
+expression_yylloc.start.included = expression_yylloc.end.included = 0;
+type_yylloc.start.charPos = type_yylloc.end.charPos = 1;
+type_yylloc.start.line = type_yylloc.end.line = 1;
+type_yylloc.start.pos = type_yylloc.end.pos = 0;
+type_yylloc.start.included = type_yylloc.end.included = 0;
+include_stack_ptr = 0;
+}
+
+void resetScannerPos(struct CodePosition * pos)
+{
+yy_flush_buffer(yy_current_buffer);
+yylloc.start = yylloc.end = *pos;
+type_yylloc.start = type_yylloc.end = *pos;
+expression_yylloc.start = expression_yylloc.end = *pos;
+}
+
+struct __ecereNameSpace__ecere__com__Class;
+
+struct __ecereNameSpace__ecere__com__Instance
+{
+void * *  _vTbl;
+struct __ecereNameSpace__ecere__com__Class * _class;
+int _refCount;
+} __attribute__ ((gcc_struct));
+
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
+
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
+
+extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
 
 struct __ecereNameSpace__ecere__com__Instance * fileStack[30];
 
-char sourceFileStack[30][797];
+extern struct __ecereNameSpace__ecere__com__Instance * OpenIncludeFile(char *  includeFile);
 
-extern char *  strcpy(char * , const char * );
-
-void SetSomeSourceFileStack(const char * fileName, int index)
+struct LexerBackup
 {
-strcpy(sourceFileStack[index], fileName);
-}
-
+struct Location yylloc;
+struct Location type_yylloc;
+struct Location expression_yylloc;
+int declMode;
+int defaultDeclMode;
+struct __ecereNameSpace__ecere__com__Instance * fileInput;
+YY_BUFFER_STATE include_stack[30];
+struct __ecereNameSpace__ecere__com__Instance * fileStack[30];
+char sourceFileStack[30][797];
 struct Location locStack[30];
-
 int declModeStack[30];
-
-int include_stack_ptr = 0;
-
-extern int yywrap(void);
-
-static int input(void);
-
-int commentCPP();
-
-extern int check_type(void);
-
-extern int defaultDeclMode;
-
-extern int declMode;
-
-extern int structDeclMode;
-
-extern unsigned int inCompiler;
-
-extern int printf(const char * , ...);
-
-extern int yyerror(void);
+int include_stack_ptr;
+YY_BUFFER_STATE buffer;
+int yy_n_chars;
+char * yytext;
+char * yy_c_buf_p;
+FILE * yyin;
+char yy_hold_char;
+int yychar;
+int yy_init;
+int yy_start;
+} __attribute__ ((gcc_struct));
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+
+int preprocessor()
+{
+int c, last = 0;
+int count = 0;
+char line[1024];
+
+line[0] = '\0';
+for(; ; )
+{
+c = input();
+if(c == (-1))
+break;
+if(c == '\n')
+{
+yylloc.end.charPos = 1;
+yylloc.end.pos++;
+yylloc.end.line++;
+if(last != '\\')
+{
+char * pointer = line + 1;
+int lineNumber;
+
+line[count] = (char)0;
+lineNumber = __ecereNameSpace__ecere__sys__GetValue(&pointer);
+if(lineNumber)
+{
+char fileName[797];
+int inOut;
+
+fileName[0] = (char)0;
+__ecereNameSpace__ecere__sys__GetString(&pointer, fileName, (797));
+inOut = __ecereNameSpace__ecere__sys__GetValue(&pointer);
+if(inOut == 1)
+{
+char extension[17];
+
+defaultDeclMode = declModeStack[include_stack_ptr] = declMode;
+__ecereNameSpace__ecere__sys__GetExtension(fileName, extension);
+if(!strcmp(extension, "c") || !strcmp(extension, "h"))
+declMode = defaultDeclMode = structDeclMode = 0;
+fileStack[include_stack_ptr] = (((void *)0));
+include_stack_ptr++;
+}
+else if(inOut == 2)
+{
+include_stack_ptr--;
+defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
+}
+yylloc.end.charPos = 1;
+yylloc.end.line = lineNumber;
+if(include_stack_ptr > 0 || (lineNumber && fileName[0]))
+yylloc.end.included = GetIncludeFileID(fileName);
+else
+yylloc.end.included = 0;
+}
+break;
+}
+count = 0;
+}
+else if(c == '\t')
+{
+yylloc.end.charPos++;
+yylloc.end.pos++;
+line[count++] = c;
+}
+else
+{
+yylloc.end.pos++;
+if(c != '\r')
+{
+yylloc.end.charPos++;
+line[count++] = c;
+}
+}
+last = c;
+}
+yylloc.start = yylloc.end;
+line[count] = (char)0;
+__ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
+for(c = 0; line[c] && line[c] != ' '; c++)
+;
+if(!strncmp(line, "include", c))
+{
+char includeFile[797] = "";
+
+memmove(line, line + c, strlen(line + c) + 1);
+__ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
+if(line[0] == '\"')
+{
+for(c = 1; line[c]; c++)
+{
+if(line[c] == '\"')
+{
+strncpy(includeFile, line + 1, c - 1);
+includeFile[c - 1] = '\0';
+break;
+}
+}
+}
+else if(line[0] == '<')
+{
+for(c = 1; line[c]; c++)
+if(line[c] == '>')
+{
+strncpy(includeFile, line + 1, c - 1);
+includeFile[c - 1] = '\0';
+break;
+}
+}
+if(include_stack_ptr >= (30))
+{
+fprintf((bsl_stderr()), "%s", __ecereNameSpace__ecere__GetTranslatedString("ec", "Includes nested too deeply", (((void *)0))));
+exit(1);
+}
+if(inCompiler || !FindIncludeFileID(includeFile))
+{
+struct __ecereNameSpace__ecere__com__Instance * file = OpenIncludeFile(includeFile);
+
+if(file)
+{
+char extension[17];
+
+fileStack[include_stack_ptr] = fileInput;
+locStack[include_stack_ptr] = yylloc;
+defaultDeclMode = declModeStack[include_stack_ptr] = declMode;
+include_stack[include_stack_ptr++] = yy_current_buffer;
+yylloc.start.charPos = yylloc.end.charPos = 1;
+yylloc.start.line = yylloc.end.line = 1;
+yylloc.start.pos = yylloc.end.pos = 0;
+yylloc.start.included = yylloc.end.included = GetIncludeFileID(includeFile);
+__ecereNameSpace__ecere__sys__GetExtension(includeFile, extension);
+if(!strcmp(extension, "c") || !strcmp(extension, "h"))
+declMode = defaultDeclMode = structDeclMode = 0;
+fileInput = file;
+yy_switch_to_buffer(yy_create_buffer(fileInput, 16384));
+yy_start = 1 + 2 * (0);
+}
+}
+}
+return 0;
+}
 
 int yylex(void)
 {
@@ -2006,9 +2266,308 @@ yy_fatal_error("fatal flex scanner internal error--no action found");
 }
 }
 
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
+struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} __attribute__ ((gcc_struct));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+struct __ecereNameSpace__ecere__sys__BinaryTree;
+
+struct __ecereNameSpace__ecere__sys__BinaryTree
+{
+struct __ecereNameSpace__ecere__sys__BTNode * root;
+int count;
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
+void (*  FreeKey)(void *  key);
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Method;
+
+struct __ecereNameSpace__ecere__com__Method
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__Method * parent;
+struct __ecereNameSpace__ecere__com__Method * left;
+struct __ecereNameSpace__ecere__com__Method * right;
+int depth;
+int (*  function)();
+int vid;
+int type;
+struct __ecereNameSpace__ecere__com__Class * _class;
+void *  symbol;
+const char *  dataTypeString;
+struct Type * dataType;
+int memberAccess;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__DataMember;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument
+{
+union
+{
+struct
+{
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+} __attribute__ ((gcc_struct)) __anon1;
+struct __ecereNameSpace__ecere__com__DataValue expression;
+struct
+{
+const char *  memberString;
+union
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__Method * method;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__DataMember
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev;
+struct __ecereNameSpace__ecere__com__DataMember * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+int type;
+int offset;
+int memberID;
+struct __ecereNameSpace__ecere__sys__OldList members;
+struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
+int memberOffset;
+short structAlignment;
+short pointerAlignment;
+} __attribute__ ((gcc_struct));
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
+
+struct __ecereNameSpace__ecere__com__Module;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+
+struct __ecereNameSpace__ecere__com__NameSpace;
+
+struct __ecereNameSpace__ecere__com__NameSpace
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
+struct __ecereNameSpace__ecere__com__NameSpace *  left;
+struct __ecereNameSpace__ecere__com__NameSpace *  right;
+int depth;
+struct __ecereNameSpace__ecere__com__NameSpace *  parent;
+struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
+struct __ecereNameSpace__ecere__sys__BinaryTree classes;
+struct __ecereNameSpace__ecere__sys__BinaryTree defines;
+struct __ecereNameSpace__ecere__sys__BinaryTree functions;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Class
+{
+struct __ecereNameSpace__ecere__com__Class * prev;
+struct __ecereNameSpace__ecere__com__Class * next;
+const char *  name;
+int offset;
+int structSize;
+void * *  _vTbl;
+int vTblSize;
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
+int offsetClass;
+int sizeClass;
+struct __ecereNameSpace__ecere__com__Class * base;
+struct __ecereNameSpace__ecere__sys__BinaryTree methods;
+struct __ecereNameSpace__ecere__sys__BinaryTree members;
+struct __ecereNameSpace__ecere__sys__BinaryTree prop;
+struct __ecereNameSpace__ecere__sys__OldList membersAndProperties;
+struct __ecereNameSpace__ecere__sys__BinaryTree classProperties;
+struct __ecereNameSpace__ecere__sys__OldList derivatives;
+int memberID;
+int startMemberID;
+int type;
+struct __ecereNameSpace__ecere__com__Instance * module;
+struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
+const char *  dataTypeString;
+struct Type * dataType;
+int typeSize;
+int defaultAlignment;
+void (*  Initialize)();
+int memberOffset;
+struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
+const char *  designerClass;
+unsigned int noExpansion;
+const char *  defaultProperty;
+unsigned int comRedefinition;
+int count;
+int isRemote;
+unsigned int internalDecl;
+void *  data;
+unsigned int computeSize;
+short structAlignment;
+short pointerAlignment;
+int destructionWatchOffset;
+unsigned int fixed;
+struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
+int inheritanceAccess;
+const char *  fullName;
+void *  symbol;
+struct __ecereNameSpace__ecere__sys__OldList conversions;
+struct __ecereNameSpace__ecere__sys__OldList templateParams;
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
+struct __ecereNameSpace__ecere__com__Class * templateClass;
+struct __ecereNameSpace__ecere__sys__OldList templatized;
+int numParams;
+unsigned int isInstanceClass;
+unsigned int byValueSystemClass;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Application
+{
+int argc;
+const char * *  argv;
+int exitCode;
+unsigned int isGUIApp;
+struct __ecereNameSpace__ecere__sys__OldList allModules;
+char *  parsedCommand;
+struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_yy_buffer_state;
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_LexerBackup;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+
+struct __ecereNameSpace__ecere__com__Module
+{
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Instance * pushLexer()
+{
+struct __ecereNameSpace__ecere__com__Instance * backup = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_LexerBackup);
+
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yylloc = yylloc;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->type_yylloc = type_yylloc;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->expression_yylloc = expression_yylloc;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileInput = fileInput;
+memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack, include_stack, sizeof (include_stack));
+memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileStack, fileStack, sizeof (fileStack));
+memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->sourceFileStack, sourceFileStack, sizeof (sourceFileStack));
+memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->locStack, locStack, sizeof (locStack));
+memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declModeStack, declModeStack, sizeof (declModeStack));
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack_ptr = include_stack_ptr;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->defaultDeclMode = defaultDeclMode;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declMode = declMode;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->buffer = yy_current_buffer;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_n_chars = yy_n_chars;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yytext = yytext;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_c_buf_p = yy_c_buf_p;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yyin = yyin;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_hold_char = yy_hold_char;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yychar = yychar;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_init = yy_init;
+((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_start = yy_start;
+yy_init = 1;
+yy_current_buffer = 0;
+yylloc.start.charPos = yylloc.end.charPos = 1;
+yylloc.start.line = yylloc.end.line = 1;
+yylloc.start.pos = yylloc.end.pos = 0;
+yylloc.start.included = yylloc.end.included = 0;
+expression_yylloc.start.charPos = expression_yylloc.end.charPos = 1;
+expression_yylloc.start.line = expression_yylloc.end.line = 1;
+expression_yylloc.start.pos = expression_yylloc.end.pos = 0;
+expression_yylloc.start.included = expression_yylloc.end.included = 0;
+type_yylloc.start.charPos = type_yylloc.end.charPos = 1;
+type_yylloc.start.line = type_yylloc.end.line = 1;
+type_yylloc.start.pos = type_yylloc.end.pos = 0;
+type_yylloc.start.included = type_yylloc.end.included = 0;
+include_stack_ptr = 0;
+return backup;
+}
+
+void popLexer(struct __ecereNameSpace__ecere__com__Instance * backup)
+{
+yylloc = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yylloc;
+type_yylloc = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->type_yylloc;
+expression_yylloc = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->expression_yylloc;
+fileInput = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileInput;
+memcpy(include_stack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack, sizeof (include_stack));
+memcpy(fileStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileStack, sizeof (fileStack));
+memcpy(sourceFileStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->sourceFileStack, sizeof (sourceFileStack));
+memcpy(locStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->locStack, sizeof (locStack));
+memcpy(declModeStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declModeStack, sizeof (declModeStack));
+include_stack_ptr = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack_ptr;
+defaultDeclMode = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->defaultDeclMode;
+declMode = structDeclMode = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declMode;
+yy_current_buffer = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->buffer;
+yy_n_chars = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_n_chars;
+yytext = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yytext;
+yy_c_buf_p = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_c_buf_p;
+yyin = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yyin;
+yy_hold_char = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_hold_char;
+yychar = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yychar;
+yy_init = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_init;
+yy_start = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_start;
+(__ecereNameSpace__ecere__com__eInstance_DecRef(backup), backup = 0);
+}
 
 static int yy_get_next_buffer()
 {
@@ -2092,668 +2651,21 @@ yytext = &(*yy_current_buffer).yy_ch_buf[0];
 return ret_val;
 }
 
-static yy_state_type yy_get_previous_state()
+void __ecereUnregisterModule_lexer(struct __ecereNameSpace__ecere__com__Instance * module)
 {
-register yy_state_type yy_current_state;
-register char * yy_cp;
 
-yy_current_state = yy_start;
-for(yy_cp = yytext + 0; yy_cp < yy_c_buf_p; ++yy_cp)
-{
-register YY_CHAR yy_c = (*yy_cp ? yy_ec[((unsigned int)(unsigned char)*yy_cp)] : (unsigned char)1);
-
-if(yy_accept[yy_current_state])
-{
-yy_last_accepting_state = yy_current_state;
-yy_last_accepting_cpos = yy_cp;
 }
-while(yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state)
-{
-yy_current_state = (int)yy_def[yy_current_state];
-if(yy_current_state >= 723)
-yy_c = yy_meta[(unsigned int)yy_c];
-}
-yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int)yy_c];
-}
-return yy_current_state;
-}
-
-static yy_state_type yy_try_NUL_trans(yy_state_type yy_current_state)
-{
-register int yy_is_jam;
-register char * yy_cp = yy_c_buf_p;
-register YY_CHAR yy_c = (unsigned char)1;
-
-if(yy_accept[yy_current_state])
-{
-yy_last_accepting_state = yy_current_state;
-yy_last_accepting_cpos = yy_cp;
-}
-while(yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state)
-{
-yy_current_state = (int)yy_def[yy_current_state];
-if(yy_current_state >= 723)
-yy_c = yy_meta[(unsigned int)yy_c];
-}
-yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int)yy_c];
-yy_is_jam = (yy_current_state == 722);
-return yy_is_jam ? 0 : yy_current_state;
-}
-
-static int input()
-{
-int c;
-
-*yy_c_buf_p = yy_hold_char;
-if(*yy_c_buf_p == (char)0)
-{
-if(yy_c_buf_p < &(*yy_current_buffer).yy_ch_buf[yy_n_chars])
-*yy_c_buf_p = '\0';
-else
-{
-int offset = yy_c_buf_p - yytext;
-
-++yy_c_buf_p;
-switch(yy_get_next_buffer())
-{
-case 2:
-yyrestart(yyin);
-case 1:
-{
-if(yywrap())
-return (-1);
-if(!yy_did_buffer_switch_on_eof)
-yyrestart(yyin);
-return input();
-}
-case 0:
-yy_c_buf_p = yytext + offset;
-break;
-}
-}
-}
-c = *(unsigned char *)yy_c_buf_p;
-*yy_c_buf_p = '\0';
-yy_hold_char = *++yy_c_buf_p;
-return c;
-}
-
-void yyrestart(FILE * input_file)
-{
-if(!yy_current_buffer)
-yy_current_buffer = yy_create_buffer(yyin, 16384);
-yy_init_buffer(yy_current_buffer, input_file);
-yy_load_buffer_state();
-}
-
-void yy_switch_to_buffer(YY_BUFFER_STATE new_buffer)
-{
-if(yy_current_buffer == new_buffer)
-return ;
-if(yy_current_buffer)
-{
-*yy_c_buf_p = yy_hold_char;
-(*yy_current_buffer).yy_buf_pos = yy_c_buf_p;
-(*yy_current_buffer).yy_n_chars = yy_n_chars;
-}
-yy_current_buffer = new_buffer;
-yy_load_buffer_state();
-yy_did_buffer_switch_on_eof = 1;
-}
-
-void yy_load_buffer_state(void)
-{
-yy_n_chars = (*yy_current_buffer).yy_n_chars;
-yytext = yy_c_buf_p = (*yy_current_buffer).yy_buf_pos;
-yyin = (*yy_current_buffer).yy_input_file;
-yy_hold_char = *yy_c_buf_p;
-}
-
-YY_BUFFER_STATE yy_create_buffer(FILE * file, int size)
-{
-YY_BUFFER_STATE b;
-
-b = (YY_BUFFER_STATE)yy_flex_alloc(sizeof(struct yy_buffer_state));
-if(!b)
-yy_fatal_error("out of dynamic memory in yy_create_buffer()");
-(*b).yy_buf_size = size;
-(*b).yy_ch_buf = (char *)yy_flex_alloc((*b).yy_buf_size + 2);
-if(!(*b).yy_ch_buf)
-yy_fatal_error("out of dynamic memory in yy_create_buffer()");
-(*b).yy_is_our_buffer = 1;
-yy_init_buffer(b, file);
-return b;
-}
-
-void yy_delete_buffer(YY_BUFFER_STATE b)
-{
-if(!b)
-return ;
-if(b == yy_current_buffer)
-yy_current_buffer = (YY_BUFFER_STATE)0;
-if((*b).yy_is_our_buffer)
-yy_flex_free((void *)(*b).yy_ch_buf);
-yy_flex_free((void *)b);
-}
-
-void yy_init_buffer(YY_BUFFER_STATE b, FILE * file)
-{
-yy_flush_buffer(b);
-(*b).yy_input_file = file;
-(*b).yy_fill_buffer = 1;
-(*b).yy_is_interactive = 0;
-}
-
-void yy_flush_buffer(YY_BUFFER_STATE b)
-{
-if(!b)
-return ;
-(*b).yy_n_chars = 0;
-(*b).yy_ch_buf[0] = (char)0;
-(*b).yy_ch_buf[1] = (char)0;
-(*b).yy_buf_pos = &(*b).yy_ch_buf[0];
-(*b).yy_at_bol = 1;
-(*b).yy_buffer_status = 0;
-if(b == yy_current_buffer)
-yy_load_buffer_state();
-}
-
-YY_BUFFER_STATE yy_scan_buffer(char * base, yy_size_t size)
-{
-YY_BUFFER_STATE b;
-
-if(size < 2 || base[size - 2] != (char)0 || base[size - 1] != (char)0)
-return 0;
-b = (YY_BUFFER_STATE)yy_flex_alloc(sizeof(struct yy_buffer_state));
-if(!b)
-yy_fatal_error("out of dynamic memory in yy_scan_buffer()");
-(*b).yy_buf_size = size - 2;
-(*b).yy_buf_pos = (*b).yy_ch_buf = base;
-(*b).yy_is_our_buffer = 0;
-(*b).yy_input_file = 0;
-(*b).yy_n_chars = (*b).yy_buf_size;
-(*b).yy_is_interactive = 0;
-(*b).yy_at_bol = 1;
-(*b).yy_fill_buffer = 0;
-(*b).yy_buffer_status = 0;
-yy_switch_to_buffer(b);
-return b;
-}
-
-YY_BUFFER_STATE yy_scan_string(const char * yy_str)
-{
-int len;
-
-for(len = 0; yy_str[len]; ++len)
-;
-return yy_scan_bytes(yy_str, len);
-}
-
-YY_BUFFER_STATE yy_scan_bytes(const char * bytes, int len)
-{
-YY_BUFFER_STATE b;
-char * buf;
-yy_size_t n;
-int i;
-
-n = len + 2;
-buf = (char *)yy_flex_alloc(n);
-if(!buf)
-yy_fatal_error("out of dynamic memory in yy_scan_bytes()");
-for(i = 0; i < len; ++i)
-buf[i] = bytes[i];
-buf[len] = buf[len + 1] = (char)0;
-b = yy_scan_buffer(buf, n);
-if(!b)
-yy_fatal_error("bad buffer in yy_scan_bytes()");
-(*b).yy_is_our_buffer = 1;
-return b;
-}
-
-static void yy_fatal_error(const char msg[])
-{
-(void)fprintf((bsl_stderr()), "%s\n", msg);
-exit(2);
-}
-
-static void * yy_flex_alloc(yy_size_t size)
-{
-return (void *)malloc(size);
-}
-
-static void * yy_flex_realloc(void * ptr, yy_size_t size)
-{
-return (void *)realloc((char *)ptr, size);
-}
-
-static void yy_flex_free(void * ptr)
-{
-free(ptr);
-}
-
-int yywrap()
-{
-return (1);
-}
-
-int comment()
-{
-int c, last = 0;
-
-for(; ; )
-{
-c = input();
-if(c == (-1))
-break;
-if(c == '\n')
-{
-yylloc.end.charPos = 1;
-yylloc.end.pos++;
-yylloc.end.line++;
-}
-else if(c == '\t')
-{
-yylloc.end.charPos++;
-yylloc.end.pos++;
-}
-else
-{
-yylloc.end.charPos++;
-yylloc.end.pos++;
-}
-if(c == '/' && last == '*')
-break;
-last = c;
-}
-yylloc.start = yylloc.end;
-return 0;
-}
-
-int commentCPP()
-{
-int c;
-
-for(; ; )
-{
-c = input();
-if(c == (-1))
-break;
-if(c == '\n')
-{
-yylloc.end.charPos = 1;
-yylloc.end.pos++;
-yylloc.end.line++;
-break;
-}
-else if(c == '\t')
-{
-yylloc.end.charPos++;
-yylloc.end.pos++;
-}
-else
-{
-yylloc.end.charPos++;
-yylloc.end.pos++;
-}
-}
-yylloc.start = yylloc.end;
-return 0;
-}
-
-extern int __ecereNameSpace__ecere__sys__GetValue(char * *  buffer);
-
-extern unsigned int __ecereNameSpace__ecere__sys__GetString(char * *  buffer, char *  string, int max);
-
-extern char *  __ecereNameSpace__ecere__sys__GetExtension(const char *  string, char *  output);
-
-extern int strcmp(const char * , const char * );
-
-extern int GetIncludeFileID(char *  includeFile);
-
-extern char *  __ecereNameSpace__ecere__sys__TrimLSpaces(const char *  string, char *  output);
-
-extern int strncmp(const char * , const char * , size_t n);
-
-extern void *  memmove(void * , const void * , size_t size);
-
-extern size_t strlen(const char * );
-
-extern char *  strncpy(char * , const char * , size_t n);
-
-extern const char *  __ecereNameSpace__ecere__GetTranslatedString(const char * name, const char *  string, const char *  stringAndContext);
-
-extern int FindIncludeFileID(char *  includeFile);
-
-extern struct __ecereNameSpace__ecere__com__Instance * OpenIncludeFile(char *  includeFile);
-
-int preprocessor()
-{
-int c, last = 0;
-int count = 0;
-char line[1024];
-
-line[0] = '\0';
-for(; ; )
-{
-c = input();
-if(c == (-1))
-break;
-if(c == '\n')
-{
-yylloc.end.charPos = 1;
-yylloc.end.pos++;
-yylloc.end.line++;
-if(last != '\\')
-{
-char * pointer = line + 1;
-int lineNumber;
-
-line[count] = (char)0;
-lineNumber = __ecereNameSpace__ecere__sys__GetValue(&pointer);
-if(lineNumber)
-{
-char fileName[797];
-int inOut;
-
-fileName[0] = (char)0;
-__ecereNameSpace__ecere__sys__GetString(&pointer, fileName, (797));
-inOut = __ecereNameSpace__ecere__sys__GetValue(&pointer);
-if(inOut == 1)
-{
-char extension[17];
-
-defaultDeclMode = declModeStack[include_stack_ptr] = declMode;
-__ecereNameSpace__ecere__sys__GetExtension(fileName, extension);
-if(!strcmp(extension, "c") || !strcmp(extension, "h"))
-declMode = defaultDeclMode = structDeclMode = 0;
-fileStack[include_stack_ptr] = (((void *)0));
-include_stack_ptr++;
-}
-else if(inOut == 2)
-{
-include_stack_ptr--;
-defaultDeclMode = declMode = structDeclMode = declModeStack[include_stack_ptr];
-}
-yylloc.end.charPos = 1;
-yylloc.end.line = lineNumber;
-if(include_stack_ptr > 0 || (lineNumber && fileName[0]))
-yylloc.end.included = GetIncludeFileID(fileName);
-else
-yylloc.end.included = 0;
-}
-break;
-}
-count = 0;
-}
-else if(c == '\t')
-{
-yylloc.end.charPos++;
-yylloc.end.pos++;
-line[count++] = c;
-}
-else
-{
-yylloc.end.pos++;
-if(c != '\r')
-{
-yylloc.end.charPos++;
-line[count++] = c;
-}
-}
-last = c;
-}
-yylloc.start = yylloc.end;
-line[count] = (char)0;
-__ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
-for(c = 0; line[c] && line[c] != ' '; c++)
-;
-if(!strncmp(line, "include", c))
-{
-char includeFile[797] = "";
-
-memmove(line, line + c, strlen(line + c) + 1);
-__ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
-if(line[0] == '\"')
-{
-for(c = 1; line[c]; c++)
-{
-if(line[c] == '\"')
-{
-strncpy(includeFile, line + 1, c - 1);
-includeFile[c - 1] = '\0';
-break;
-}
-}
-}
-else if(line[0] == '<')
-{
-for(c = 1; line[c]; c++)
-if(line[c] == '>')
-{
-strncpy(includeFile, line + 1, c - 1);
-includeFile[c - 1] = '\0';
-break;
-}
-}
-if(include_stack_ptr >= (30))
-{
-fprintf((bsl_stderr()), "%s", __ecereNameSpace__ecere__GetTranslatedString("ec", "Includes nested too deeply", (((void *)0))));
-exit(1);
-}
-if(inCompiler || !FindIncludeFileID(includeFile))
-{
-struct __ecereNameSpace__ecere__com__Instance * file = OpenIncludeFile(includeFile);
-
-if(file)
-{
-char extension[17];
-
-fileStack[include_stack_ptr] = fileInput;
-locStack[include_stack_ptr] = yylloc;
-defaultDeclMode = declModeStack[include_stack_ptr] = declMode;
-include_stack[include_stack_ptr++] = yy_current_buffer;
-yylloc.start.charPos = yylloc.end.charPos = 1;
-yylloc.start.line = yylloc.end.line = 1;
-yylloc.start.pos = yylloc.end.pos = 0;
-yylloc.start.included = yylloc.end.included = GetIncludeFileID(includeFile);
-__ecereNameSpace__ecere__sys__GetExtension(includeFile, extension);
-if(!strcmp(extension, "c") || !strcmp(extension, "h"))
-declMode = defaultDeclMode = structDeclMode = 0;
-fileInput = file;
-yy_switch_to_buffer(yy_create_buffer(fileInput, 16384));
-yy_start = 1 + 2 * (0);
-}
-}
-}
-return 0;
-}
-
-void resetScanner()
-{
-yy_flush_buffer(yy_current_buffer);
-yylloc.start.charPos = yylloc.end.charPos = 1;
-yylloc.start.line = yylloc.end.line = 1;
-yylloc.start.pos = yylloc.end.pos = 0;
-yylloc.start.included = yylloc.end.included = 0;
-expression_yylloc.start.charPos = expression_yylloc.end.charPos = 1;
-expression_yylloc.start.line = expression_yylloc.end.line = 1;
-expression_yylloc.start.pos = expression_yylloc.end.pos = 0;
-expression_yylloc.start.included = expression_yylloc.end.included = 0;
-type_yylloc.start.charPos = type_yylloc.end.charPos = 1;
-type_yylloc.start.line = type_yylloc.end.line = 1;
-type_yylloc.start.pos = type_yylloc.end.pos = 0;
-type_yylloc.start.included = type_yylloc.end.included = 0;
-include_stack_ptr = 0;
-}
-
-void resetScannerPos(struct CodePosition * pos)
-{
-yy_flush_buffer(yy_current_buffer);
-yylloc.start = yylloc.end = *pos;
-type_yylloc.start = type_yylloc.end = *pos;
-expression_yylloc.start = expression_yylloc.end = *pos;
-}
-
-struct LexerBackup
-{
-struct Location yylloc;
-struct Location type_yylloc;
-struct Location expression_yylloc;
-int declMode;
-int defaultDeclMode;
-struct __ecereNameSpace__ecere__com__Instance * fileInput;
-YY_BUFFER_STATE include_stack[30];
-struct __ecereNameSpace__ecere__com__Instance * fileStack[30];
-char sourceFileStack[30][797];
-struct Location locStack[30];
-int declModeStack[30];
-int include_stack_ptr;
-YY_BUFFER_STATE buffer;
-int yy_n_chars;
-char * yytext;
-char * yy_c_buf_p;
-FILE * yyin;
-char yy_hold_char;
-int yychar;
-int yy_init;
-int yy_start;
-} __attribute__ ((gcc_struct));
-
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass_LexerBackup;
-
-extern void *  memcpy(void * , const void * , size_t size);
-
-extern int yychar;
-
-extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
-
-struct __ecereNameSpace__ecere__com__Instance * pushLexer()
-{
-struct __ecereNameSpace__ecere__com__Instance * backup = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_LexerBackup);
-
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yylloc = yylloc;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->type_yylloc = type_yylloc;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->expression_yylloc = expression_yylloc;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileInput = fileInput;
-memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack, include_stack, sizeof (include_stack));
-memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileStack, fileStack, sizeof (fileStack));
-memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->sourceFileStack, sourceFileStack, sizeof (sourceFileStack));
-memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->locStack, locStack, sizeof (locStack));
-memcpy(((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declModeStack, declModeStack, sizeof (declModeStack));
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack_ptr = include_stack_ptr;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->defaultDeclMode = defaultDeclMode;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declMode = declMode;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->buffer = yy_current_buffer;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_n_chars = yy_n_chars;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yytext = yytext;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_c_buf_p = yy_c_buf_p;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yyin = yyin;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_hold_char = yy_hold_char;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yychar = yychar;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_init = yy_init;
-((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_start = yy_start;
-yy_init = 1;
-yy_current_buffer = 0;
-yylloc.start.charPos = yylloc.end.charPos = 1;
-yylloc.start.line = yylloc.end.line = 1;
-yylloc.start.pos = yylloc.end.pos = 0;
-yylloc.start.included = yylloc.end.included = 0;
-expression_yylloc.start.charPos = expression_yylloc.end.charPos = 1;
-expression_yylloc.start.line = expression_yylloc.end.line = 1;
-expression_yylloc.start.pos = expression_yylloc.end.pos = 0;
-expression_yylloc.start.included = expression_yylloc.end.included = 0;
-type_yylloc.start.charPos = type_yylloc.end.charPos = 1;
-type_yylloc.start.line = type_yylloc.end.line = 1;
-type_yylloc.start.pos = type_yylloc.end.pos = 0;
-type_yylloc.start.included = type_yylloc.end.included = 0;
-include_stack_ptr = 0;
-return backup;
-}
-
-void popLexer(struct __ecereNameSpace__ecere__com__Instance * backup)
-{
-yylloc = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yylloc;
-type_yylloc = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->type_yylloc;
-expression_yylloc = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->expression_yylloc;
-fileInput = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileInput;
-memcpy(include_stack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack, sizeof (include_stack));
-memcpy(fileStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->fileStack, sizeof (fileStack));
-memcpy(sourceFileStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->sourceFileStack, sizeof (sourceFileStack));
-memcpy(locStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->locStack, sizeof (locStack));
-memcpy(declModeStack, ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declModeStack, sizeof (declModeStack));
-include_stack_ptr = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->include_stack_ptr;
-defaultDeclMode = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->defaultDeclMode;
-declMode = structDeclMode = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->declMode;
-yy_current_buffer = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->buffer;
-yy_n_chars = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_n_chars;
-yytext = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yytext;
-yy_c_buf_p = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_c_buf_p;
-yyin = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yyin;
-yy_hold_char = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_hold_char;
-yychar = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yychar;
-yy_init = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_init;
-yy_start = ((struct LexerBackup *)(((char *)backup + __ecereClass_LexerBackup->offset)))->yy_start;
-(__ecereNameSpace__ecere__com__eInstance_DecRef(backup), backup = 0);
-}
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
-
-struct __ecereNameSpace__ecere__com__NameSpace
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
-struct __ecereNameSpace__ecere__com__NameSpace *  left;
-struct __ecereNameSpace__ecere__com__NameSpace *  right;
-int depth;
-struct __ecereNameSpace__ecere__com__NameSpace *  parent;
-struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
-struct __ecereNameSpace__ecere__sys__BinaryTree classes;
-struct __ecereNameSpace__ecere__sys__BinaryTree defines;
-struct __ecereNameSpace__ecere__sys__BinaryTree functions;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
-
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
-
-struct __ecereNameSpace__ecere__com__GlobalFunction;
-
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 void __ecereRegisterModule_lexer(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(1, "yy_buffer_state", 0, sizeof(struct yy_buffer_state), 0, (void *)0, (void *)0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_yy_buffer_state = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_input_file", "void *", arch_PointerSize, arch_PointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_ch_buf", "char *", arch_PointerSize, arch_PointerSize, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_buf_pos", "char *", arch_PointerSize, arch_PointerSize, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_input_file", "void *", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_ch_buf", "char *", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_buf_pos", "char *", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_buf_size", "uint", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_n_chars", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "yy_is_our_buffer", "int", 4, 4, 1);
@@ -2771,14 +2683,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("preprocessor", "int prep
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("resetScanner", "void resetScanner(void)", resetScanner, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("resetScannerPos", "void resetScannerPos(CodePosition pos)", resetScannerPos, module, 2);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "LexerBackup", 0, sizeof(struct LexerBackup), 0, (void *)0, (void *)0, module, 2, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_LexerBackup = class;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("pushLexer", "LexerBackup pushLexer(void)", pushLexer, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("popLexer", "void popLexer(LexerBackup backup)", popLexer, module, 2);
-}
-
-void __ecereUnregisterModule_lexer(struct __ecereNameSpace__ecere__com__Instance * module)
-{
-
 }
 

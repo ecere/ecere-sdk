@@ -1136,6 +1136,21 @@ void FreeDBTable(DBTableDef table)
 
 void FreeExternal(External external)
 {
+   TopoEdge e;
+   while((e = external.incoming.first))
+   {
+      e.from.outgoing.Remove((IteratorPointer)e);
+      external.incoming.Remove((IteratorPointer)e);
+      delete e;
+   }
+   while((e = external.outgoing.first))
+   {
+      e.to.incoming.Remove((IteratorPointer)e);
+      external.outgoing.Remove((IteratorPointer)e);
+      if(!e.breakable)
+         e.to.nonBreakableIncoming--;
+      delete e;
+   }
    switch(external.type)
    {
       case functionExternal:

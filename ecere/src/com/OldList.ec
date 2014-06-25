@@ -2,6 +2,10 @@ namespace sys;
 
 import "instance"
 
+#ifdef _DEBUG //MEMINFO // _DEBUG
+#define DEBUG_LISTS
+#endif
+
 public class Item : struct
 {
 public:
@@ -52,6 +56,7 @@ public:
 
 public struct OldList
 {
+   class_fixed
 private:
 
    void Merge(OldList list1, OldList list2, int (*compare)(void *, void *, void *), void * data)
@@ -102,7 +107,7 @@ public:
       {
          Item link = (Item) ((byte *)item + offset);
 
-#ifdef MEMINFO // _DEBUG
+#ifdef DEBUG_LISTS
          {
             void * i;
             OldLink l;
@@ -142,7 +147,7 @@ public:
          Item prevLink = (Item) ((byte *)prevItem + offset);
          Item link = (Item) ((byte *)item + offset);
 
-#ifdef MEMINFO // _DEBUG
+#ifdef DEBUG_LISTS
          {
             void * i;
             OldLink l;
@@ -193,7 +198,7 @@ public:
       {
          Item link = (Item) ((byte *)item + offset);
 
-#ifdef MEMINFO // _DEBUG
+#ifdef DEBUG_LISTS
          {
             void * i;
             OldLink l;

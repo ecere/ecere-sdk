@@ -1022,7 +1022,6 @@ public:
    Symbol symbol;
    Location blockStart;
    Location nameLoc;
-   int endid;
    AccessMode declMode;
    bool deleteWatchable;
 };
@@ -1093,6 +1092,14 @@ public:
    void * object;
 };
 
+// An 'edge from' is a 'dependency on'
+class TopoEdge : struct
+{
+   public LinkElement<TopoEdge> in, out;
+   External from, to;
+   bool breakable;
+};
+
 public enum ExternalType { functionExternal, declarationExternal, classExternal, importExternal, nameSpaceExternal, dbtableExternal };
 
 public class External : struct
@@ -1112,6 +1119,109 @@ public:
       DBTableDef table;
    };
    ImportType importType;
+
+   // For the TopoSort
+   External fwdDecl;
+   LinkList<TopoEdge, link = out> outgoing { };
+   LinkList<TopoEdge, link = in> incoming { };
+   int nonBreakableIncoming;
+
+   void CreateUniqueEdge(External from, bool soft)
+   {
+      for(i : from.outgoing; i.to == this)
+      {
+         if(i.breakable && !soft)
+         {
+#ifdef _DEBUG
+            if(from == this)
+               PrintLn("bug: self-dependency");
+#endif
+            i.breakable = false;
+            nonBreakableIncoming++;
+         }
+         return;
+      }
+      CreateEdge(from, soft);
+   }
+
+   void CreateEdge(External from, bool soft)
+   {
+      TopoEdge e { from = from, to = this, breakable = soft };
+
+#ifdef _DEBUG
+      if(from == this && !soft)
+         PrintLn("bug: self-dependency");
+
+      /*for(i : from.outgoing)
+      {
+         if(i.to == this)
+            PrintLn("Warning: adding a duplicate edge");
+      }*/
+#endif
+
+      from.outgoing.Add(e);
+      incoming.Add(e);
+      if(!soft)
+         nonBreakableIncoming++;
+   }
+
+   External ForwardDeclare()
+   {
+      External f = null;
+      Context tmpContext = curContext;
+
+      switch(type)
+      {
+         case declarationExternal:
+         {
+            if(declaration.type == initDeclaration)
+            {
+               OldList * specs = declaration.specifiers;
+               if(specs)
+               {
+                  Specifier s;
+                  for(s = specs->first; s; s = s.next)
+                  {
+                     if(s.type == structSpecifier || s.type == unionSpecifier)
+                        break;
+                  }
+                  if(s)
+                  {
+                     curContext = null;
+                     f = MkExternalDeclaration(MkDeclaration(MkListOne(MkStructOrUnion(s.type, CopyIdentifier(s.id), null)), null));
+                     curContext = tmpContext;
+                  }
+               }
+            }
+            break;
+         }
+         case functionExternal:
+         {
+            curContext = null;
+            f = MkExternalDeclaration(MkDeclaration(CopyList(function.specifiers, CopySpecifier), MkListOne(MkInitDeclarator(CopyDeclarator(function.declarator), null))));
+            curContext = tmpContext;
+            f.symbol = symbol;
+
+            DeclareTypeForwardDeclare(f, symbol.type, false, false);
+            break;
+         }
+      }
+
+      /*
+      for(i : m.protoDepsExternal)
+      {
+         // If the edge is already added, don't bother
+         if(i.incoming.count)
+            CreateEdge(f, i.fwdDecl ? i.fwdDecl : i, i.fwdDecl ? false : true);
+      }
+      */
+
+      fwdDecl = f;
+
+      if(!f)
+         PrintLn("warning: unhandled forward declaration requested");
+      return f;
+   }
 };
 
 public class Context : struct
@@ -1146,7 +1256,7 @@ public:
       Property _property;
       Class registered;
    };
-   int id, idCode;
+   bool notYetDeclared;
    union
    {
       struct
@@ -1317,6 +1427,7 @@ public:
    bool declaredWithStruct:1;
    bool typedByReference:1;      // Originally typed by reference, regardless of class type
    bool casted:1;
+   bool pointerAlignment:1; // true if the alignment is the pointer size
    // bool wasThisClass:1;
    // TODO: Add _Complex & _Imaginary support
    // bool complex:1, imaginary:1;
@@ -1342,6 +1453,44 @@ public:
          Type t = this;
          while((t.kind == pointerType || t.kind == arrayType) && t.type) t = t.type;
          return t.constant;
+      }
+   }
+
+   // Used for generating calls to eClass_AddDataMember (differs slightly from 'isPointerType' below), meant to return true where ComputeTypeSize returns targetBits / 8
+   property bool isPointerTypeSize
+   {
+      get
+      {
+         bool result = false;
+         if(this)
+         {
+            switch(kind)
+            {
+               case classType:
+               {
+                  Class _class = this._class ? this._class.registered : null;
+                  if(!_class || (_class.type != structClass && _class.type != unitClass && _class.type != enumClass && _class.type != bitClass))
+                     result = true;
+                  break;
+               }
+               case pointerType:
+               case subClassType:
+               case thisClassType:
+               case intPtrType:
+               case intSizeType:
+                  result = true;
+                  break;
+               case templateType:
+               {
+                  TemplateParameter param = templateParameter;
+                  Type baseType = ProcessTemplateParameterType(param);
+                  if(baseType)
+                     result = baseType.isPointerTypeSize;
+                  break;
+               }
+            }
+         }
+         return result;
       }
    }
 

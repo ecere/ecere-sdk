@@ -248,7 +248,6 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                prop.symbol = Symbol
                {
                   string = CopyString(propertyDef.symbol.string);
-                  id = propertyDef.symbol.id;
                   type = propertyDef.symbol.type;
                };
 
@@ -469,7 +468,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   method.symbol = Symbol
                   {
                      string = CopyString(func.declarator.symbol.string);
-                     id = func.declarator.symbol.id;
                      type = func.declarator.symbol.type;
                      method = method;
                   };
@@ -484,7 +482,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   method.symbol = Symbol
                   {
                      string = CopyString(func.declarator.symbol.string);
-                     id = func.declarator.symbol.id;
                      type = func.declarator.symbol.type;
                      method = method;
                   };

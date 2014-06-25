@@ -37,263 +37,6 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
-
-#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
-#define _64BIT 1
-#else
-#define _64BIT 0
-#endif
-
-#define arch_PointerSize                  sizeof(void *)
-#define structSize_Instance               (_64BIT ? 24 : 12)
-
-struct __ecereNameSpace__ecere__com__Instance;
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
-
-extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
-
-extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
-
-struct __ecereNameSpace__ecere__sys__BTNode;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BinaryTree;
-
-struct __ecereNameSpace__ecere__sys__BinaryTree
-{
-struct __ecereNameSpace__ecere__sys__BTNode * root;
-int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
-void (*  FreeKey)(void *  key);
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldList;
-
-struct __ecereNameSpace__ecere__sys__OldList
-{
-void *  first;
-void *  last;
-int count;
-unsigned int offset;
-unsigned int circ;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
-
-struct __ecereNameSpace__ecere__com__Class
-{
-struct __ecereNameSpace__ecere__com__Class * prev;
-struct __ecereNameSpace__ecere__com__Class * next;
-const char *  name;
-int offset;
-int structSize;
-void * *  _vTbl;
-int vTblSize;
-unsigned int (*  Constructor)(void * );
-void (*  Destructor)(void * );
-int offsetClass;
-int sizeClass;
-struct __ecereNameSpace__ecere__com__Class * base;
-struct __ecereNameSpace__ecere__sys__BinaryTree methods;
-struct __ecereNameSpace__ecere__sys__BinaryTree members;
-struct __ecereNameSpace__ecere__sys__BinaryTree prop;
-struct __ecereNameSpace__ecere__sys__OldList membersAndProperties;
-struct __ecereNameSpace__ecere__sys__BinaryTree classProperties;
-struct __ecereNameSpace__ecere__sys__OldList derivatives;
-int memberID;
-int startMemberID;
-int type;
-struct __ecereNameSpace__ecere__com__Instance * module;
-struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Instance * dataType;
-int typeSize;
-int defaultAlignment;
-void (*  Initialize)();
-int memberOffset;
-struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
-const char *  designerClass;
-unsigned int noExpansion;
-const char *  defaultProperty;
-unsigned int comRedefinition;
-int count;
-int isRemote;
-unsigned int internalDecl;
-void *  data;
-unsigned int computeSize;
-int structAlignment;
-int destructionWatchOffset;
-unsigned int fixed;
-struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
-int inheritanceAccess;
-const char *  fullName;
-void *  symbol;
-struct __ecereNameSpace__ecere__sys__OldList conversions;
-struct __ecereNameSpace__ecere__sys__OldList templateParams;
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
-struct __ecereNameSpace__ecere__com__Class * templateClass;
-struct __ecereNameSpace__ecere__sys__OldList templatized;
-int numParams;
-unsigned int isInstanceClass;
-unsigned int byValueSystemClass;
-} __attribute__ ((gcc_struct));
-
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
-
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct __ecereNameSpace__ecere__com__Instance * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} __attribute__ ((gcc_struct));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
-
-extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
-
-struct __ecereNameSpace__ecere__com__Instance
-{
-void * *  _vTbl;
-struct __ecereNameSpace__ecere__com__Class * _class;
-int _refCount;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
-
-struct __ecereNameSpace__ecere__com__DataMember
-{
-struct __ecereNameSpace__ecere__com__DataMember * prev;
-struct __ecereNameSpace__ecere__com__DataMember * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct __ecereNameSpace__ecere__com__Instance * dataType;
-int type;
-int offset;
-int memberID;
-struct __ecereNameSpace__ecere__sys__OldList members;
-struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
-int memberOffset;
-int structAlignment;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Method;
-
-struct __ecereNameSpace__ecere__com__Method
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__Method * parent;
-struct __ecereNameSpace__ecere__com__Method * left;
-struct __ecereNameSpace__ecere__com__Method * right;
-int depth;
-int (*  function)();
-int vid;
-int type;
-struct __ecereNameSpace__ecere__com__Class * _class;
-void *  symbol;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Instance * dataType;
-int memberAccess;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__SerialBuffer;
-
-struct __ecereNameSpace__ecere__com__SerialBuffer
-{
-unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
-
-struct __ecereNameSpace__ecere__com__DataValue
-{
-union
-{
-char c;
-unsigned char uc;
-short s;
-unsigned short us;
-int i;
-unsigned int ui;
-void *  p;
-float f;
-double d;
-long long i64;
-uint64 ui64;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument
-{
-union
-{
-struct
-{
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct)) __anon1;
-struct __ecereNameSpace__ecere__com__DataValue expression;
-struct
-{
-const char *  memberString;
-union
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct)) __anon2;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
-
 void exit(int status);
 
 void * calloc(size_t nmemb, size_t size);
@@ -319,9 +62,176 @@ extern int runtimePlatform;
 
 
 
+void __ecereNameSpace__ecere__sys__ChangeCh(char * string, char ch1, char ch2)
+{
+int c;
+
+for(c = 0; string[c]; c++)
+if(string[c] == ch1)
+string[c] = ch2;
+}
+
+void __ecereNameSpace__ecere__sys__RepeatCh(char * string, int count, char ch)
+{
+int c;
+
+for(c = 0; c < count; c++)
+string[c] = ch;
+string[c] = (char)0;
+}
+
+unsigned int __ecereNameSpace__ecere__sys__GetString(char ** buffer, char * string, int max)
+{
+int c;
+char ch;
+unsigned int quoted = 0;
+unsigned int result = 1;
+
+if(!* *buffer)
+{
+string[0] = (char)0;
+return 0;
+}
+for(; ; )
+{
+if(!(ch = *((*buffer)++)))
+result = 0;
+if((ch != '\n') && (ch != '\r') && (ch != ' ') && (ch != ',') && (ch != '\t'))
+break;
+if(!*(*buffer))
+break;
+}
+if(result)
+{
+for(c = 0; c < max - 1; c++)
+{
+if(!quoted && ((ch == '\n') || (ch == '\r') || (ch == ' ') || (ch == ',') || (ch == '\t')))
+{
+result = 1;
+break;
+}
+if(ch == '\"')
+{
+quoted ^= (unsigned int)1;
+c--;
+}
+else
+string[c] = ch;
+if(!(ch = *(*buffer)))
+{
+c++;
+break;
+}
+(*buffer)++;
+}
+string[c] = (char)0;
+}
+return result;
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode;
+
+struct __ecereNameSpace__ecere__sys__OldList
+{
+void *  first;
+void *  last;
+int count;
+unsigned int offset;
+unsigned int circ;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__DataValue
+{
+union
+{
+char c;
+unsigned char uc;
+short s;
+unsigned short us;
+int i;
+unsigned int ui;
+void *  p;
+float f;
+double d;
+long long i64;
+uint64 ui64;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__SerialBuffer
+{
+unsigned char *  _buffer;
+unsigned int count;
+unsigned int _size;
+unsigned int pos;
+} __attribute__ ((gcc_struct));
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
+
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
 extern size_t strlen(const char * );
 
 extern char *  strcpy(char * , const char * );
+
+extern int strcmp(const char * , const char * );
+
+extern void *  memmove(void * , const void * , size_t size);
+
+extern char *  strncpy(char * , const char * , size_t n);
+
+extern char *  strstr(const char * , const char * );
+
+extern void *  memcpy(void * , const void * , size_t size);
+
+extern int toupper(int);
+
+extern char *  strcat(char * , const char * );
+
+extern int sprintf(char * , const char * , ...);
+
+extern int strcasecmp(const char * , const char * );
+
+extern int strncmp(const char * , const char * , size_t n);
+
+extern int strncasecmp(const char * , const char * , size_t n);
+
+extern int tolower(int);
+
+extern int isalnum(int c);
+
+extern char *  strchr(const char * , int);
+
+extern int atoi(const char * );
+
+extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
+
+extern unsigned int isdigit(int);
+
+struct __ecereNameSpace__ecere__com__DefinedExpression;
+
+struct __ecereNameSpace__ecere__com__GlobalFunction;
+
+unsigned int __ecereNameSpace__ecere__sys__StripExtension(char * string)
+{
+int c;
+
+for(c = strlen(string); c >= 0; c--)
+if(string[c] == '.')
+{
+string[c] = '\0';
+return 1;
+}
+else if(string[c] == '\\' || string[c] == '/')
+break;
+return 0;
+}
 
 char * __ecereNameSpace__ecere__sys__GetExtension(const char * string, char * output)
 {
@@ -345,10 +255,6 @@ break;
 }
 return output;
 }
-
-extern int strcmp(const char * , const char * );
-
-extern void *  memmove(void * , const void * , size_t size);
 
 char * __ecereNameSpace__ecere__sys__StripLastDirectory(const char * string, char * output)
 {
@@ -450,7 +356,43 @@ output[len - 1] = '\0';
 return output;
 }
 
-extern char *  strncpy(char * , const char * , size_t n);
+char * __ecereNameSpace__ecere__sys__TrimLSpaces(const char * string, char * output)
+{
+int c;
+
+for(c = 0; string[c] && string[c] == ' '; c++)
+;
+memmove(output, string + c, strlen(string + c) + 1);
+return output;
+}
+
+char * __ecereNameSpace__ecere__sys__TrimRSpaces(const char * string, char * output)
+{
+int c;
+
+for(c = strlen(string) - 1; c >= 0 && string[c] == ' '; c--)
+;
+if(c >= 0)
+{
+memmove(output, string, c + 1);
+output[c + 1] = '\0';
+}
+else
+output[0] = '\0';
+return output;
+}
+
+char * __ecereNameSpace__ecere__sys__StripQuotes(const char * string, char * output)
+{
+int len;
+const char * src = (string[0] == '\"') ? (string + 1) : string;
+
+memmove(output, src, strlen(src) + 1);
+len = strlen(output);
+if(len && output[len - 1] == '\"')
+output[len - 1] = '\0';
+return output;
+}
 
 unsigned int __ecereNameSpace__ecere__sys__SplitArchivePath(const char * fileName, char * archiveName, const char ** archiveFile)
 {
@@ -477,15 +419,361 @@ return 1;
 return 0;
 }
 
-extern char *  strstr(const char * , const char * );
+char * __ecereNameSpace__ecere__sys__CopyString(const char * string)
+{
+if(string)
+{
+int len = strlen(string);
+char * destination = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (len + 1));
 
-extern void *  memcpy(void * , const void * , size_t size);
+if(destination)
+memcpy(destination, string, len + 1);
+return destination;
+}
+else
+return (((void *)0));
+}
 
-extern int toupper(int);
+void __ecereNameSpace__ecere__sys__PrintSize(char * string, unsigned int size, int prec)
+{
+if(size > 1024)
+{
+char format[8];
 
-extern char *  strcat(char * , const char * );
+sprintf(format, "%%.0%df", prec);
+if(size > 1024 * 1024 * 1024)
+{
+sprintf(string, format, (float)size / (float)((float)(float)(1024 * 1024 * 1024)));
+strcat(string, " GB");
+}
+else if(size > 1024 * 1024)
+{
+sprintf(string, format, (float)size / (float)((float)(float)(1024 * 1024)));
+strcat(string, " MB");
+}
+else
+{
+sprintf(string, format, (float)size / (float)1024);
+strcat(string, " KB");
+}
+}
+else
+sprintf(string, "%d B", size);
+}
 
-extern int sprintf(char * , const char * , ...);
+void __ecereNameSpace__ecere__sys__PrintBigSize(char * string, double size, int prec)
+{
+if(size > (double)1024)
+{
+char format[8];
+
+sprintf(format, "%%.0%df", prec);
+if(size > 1024.0 * 1024.0 * 1024.0 * 1024.0)
+{
+sprintf(string, format, size / ((double)(double)(1024 * 1024) * 1024.0 * 1024.0));
+strcat(string, " TB");
+}
+else if(size > 1024.0 * 1024.0 * 1024.0)
+{
+sprintf(string, format, size / (1024.0 * 1024.0 * 1024.0));
+strcat(string, " GB");
+}
+else if(size > 1024.0 * 1024.0)
+{
+sprintf(string, format, size / (1024.0 * 1024.0));
+strcat(string, " MB");
+}
+else
+{
+sprintf(string, format, size / 1024.0);
+strcat(string, " KB");
+}
+}
+else
+sprintf(string, "%.0f B", size);
+}
+
+char * __ecereNameSpace__ecere__sys__SearchString(const char * buffer, int start, const char * subStr, unsigned int matchCase, unsigned int matchWord)
+{
+if(buffer && subStr)
+{
+const char * ptr;
+const char * strBuffer = buffer + start;
+int subLen = strlen(subStr);
+char beforeChar = start ? *(strBuffer - 1) : (char)0;
+int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
+
+for(ptr = strBuffer; *ptr; ptr++)
+{
+if(matchCase ? (*subStr == *ptr) : (tolower(*subStr) == tolower(*ptr)))
+{
+if(matchWord)
+{
+if(!strcompare(ptr, subStr, subLen) && (!((subStr[subLen - 1]) == '_' || isalnum((subStr[subLen - 1]))) || !((ptr[subLen]) == '_' || isalnum((ptr[subLen])))) && (!((subStr[0]) == '_' || isalnum((subStr[0]))) || !((beforeChar) == '_' || isalnum((beforeChar)))))
+return (char *)ptr;
+}
+else
+{
+if(!strcompare(ptr, subStr, subLen))
+return (char *)ptr;
+}
+}
+beforeChar = ptr[0];
+}
+}
+return (((void *)0));
+}
+
+char * __ecereNameSpace__ecere__sys__RSearchString(const char * buffer, const char * subStr, int maxLen, unsigned int matchCase, unsigned int matchWord)
+{
+if(buffer && subStr)
+{
+int subLen = strlen(subStr);
+const char * ptr1 = buffer + maxLen - subLen;
+const char * ptr2 = buffer + maxLen - subLen - 1;
+int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
+
+for(; ptr1 >= buffer; ptr1--, ptr2--)
+{
+if(tolower(*subStr) == tolower(*ptr1))
+{
+if(matchWord)
+{
+if(!strcompare(ptr1, subStr, subLen) && (!((subStr[subLen - 1]) == '_' || isalnum((subStr[subLen - 1]))) || !((ptr1[subLen]) == '_' || isalnum((ptr1[subLen])))) && (!((subStr[0]) == '_' || isalnum((subStr[0]))) || !((*ptr2) == '_' || isalnum((*ptr2)))))
+return (char *)ptr1;
+}
+else
+{
+if(!strcompare(ptr1, subStr, subLen))
+return (char *)ptr1;
+}
+}
+}
+}
+return (((void *)0));
+}
+
+int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char * tokens[], unsigned int esc)
+{
+const char * escChars, * escCharsQuoted;
+int count = 0;
+unsigned int quoted = 0, escaped = 0;
+char * start = (((void *)0)), * output = string;
+char ch;
+
+if(__runtimePlatform == 1)
+{
+escChars = " !\"%&'()+,;=[]^`{}~";
+escCharsQuoted = "\"";
+}
+else
+{
+escChars = " !\"$&'()*:;<=>?[\\`{|";
+escCharsQuoted = "\"()$";
+}
+for(; (ch = *string) && count < maxTokens; string++, output++)
+{
+unsigned int wasEscaped = escaped;
+
+if(output != string)
+*output = ch;
+if(start)
+{
+if(escaped)
+{
+escaped = 0;
+output--;
+*output = ch;
+}
+else if(ch == '\"')
+{
+quoted ^= 1;
+output--;
+}
+else if(ch == ' ' && !quoted)
+{
+tokens[count++] = start;
+*output = '\0';
+start = (((void *)0));
+}
+}
+else if(ch != ' ')
+{
+if(ch == '\"')
+{
+quoted = 1;
+start = output + 1;
+}
+else
+start = output;
+}
+if(!wasEscaped && ch == '\\' && (esc == 1 || (esc == 2 && strchr(quoted ? escCharsQuoted : escChars, *(string + 1)))))
+escaped = 1;
+}
+if(start && count < maxTokens)
+{
+tokens[count++] = start;
+*output = '\0';
+}
+return count;
+}
+
+int __ecereNameSpace__ecere__sys__TokenizeWith(char * string, int maxTokens, char * tokens[], const char * tokenizers, unsigned int escapeBackSlashes)
+{
+int count = 0;
+unsigned int quoted = 0;
+char * start = (((void *)0));
+unsigned int escaped = 0;
+char * output = string;
+unsigned int quotedFromStart = 0;
+
+for(; *string && count < maxTokens; string++, output++)
+{
+if(output != string)
+*output = *string;
+if(start)
+{
+if(escaped)
+{
+escaped = 0;
+output--;
+if(output != string)
+*output = *string;
+}
+else if(escapeBackSlashes && *string == '\\')
+escaped = 1;
+else if(*string == '\"')
+{
+if(quoted)
+{
+if(quotedFromStart)
+*output = '\0';
+quotedFromStart = 0;
+quoted = 0;
+}
+else
+quoted = 1;
+}
+else if(strchr(tokenizers, *string) && !quoted)
+{
+tokens[count++] = start;
+*output = '\0';
+start = (((void *)0));
+}
+}
+else if(!strchr(tokenizers, *string))
+{
+if(*string == '\"')
+{
+quotedFromStart = 1;
+quoted = 1;
+start = output + 1;
+}
+else
+{
+start = output;
+if(*string == '\\' && escapeBackSlashes)
+escaped = 1;
+}
+}
+}
+if(start && count < maxTokens)
+{
+tokens[count++] = start;
+*output = '\0';
+}
+return count;
+}
+
+int __ecereNameSpace__ecere__sys__GetValue(char ** buffer)
+{
+char string[20];
+
+__ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
+return atoi(string);
+}
+
+unsigned int __ecereNameSpace__ecere__sys__GetHexValue(char ** buffer)
+{
+char string[20];
+
+__ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
+return strtoul(string, (((void *)0)), 16);
+}
+
+double __ecereNameSpace__ecere__sys__FloatFromString(const char * string)
+{
+int c, dig;
+float dec = 0, res = 0;
+int neg = 1;
+char ch;
+
+for(c = 0; string[c]; c++)
+{
+ch = string[c];
+if(ch == ' ')
+continue;
+if(ch == '-')
+{
+if(neg == -1)
+break;
+neg = -1;
+}
+else if((ch == '.') && !dec)
+dec = 10;
+else if(isdigit(ch))
+{
+dig = ch - '0';
+if(dec)
+{
+res += (float)dig / dec;
+dec *= 10;
+}
+else
+res = res * (float)10 + (float)dig;
+}
+else
+break;
+}
+return (float)neg * res;
+}
+
+char * __ecereNameSpace__ecere__sys__ChangeExtension(const char * string, const char * ext, char * output)
+{
+if(string != output)
+strcpy(output, string);
+__ecereNameSpace__ecere__sys__StripExtension(output);
+if(ext[0])
+strcat(output, ".");
+strcat(output, ext);
+return output;
+}
+
+unsigned int __ecereNameSpace__ecere__sys__IsPathInsideOf(const char * path, const char * of)
+{
+if(!path[0] || !of[0])
+return 0;
+else
+{
+char ofPart[274], ofRest[797];
+char pathPart[274], pathRest[797];
+
+strcpy(ofRest, of);
+strcpy(pathRest, path);
+for(; ofRest[0] && pathRest[0]; )
+{
+__ecereNameSpace__ecere__sys__SplitDirectory(ofRest, ofPart, ofRest);
+__ecereNameSpace__ecere__sys__SplitDirectory(pathRest, pathPart, pathRest);
+if(((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(pathPart, ofPart))
+return 0;
+}
+if(!ofRest[0] && !pathRest[0])
+return 0;
+else if(!pathRest[0])
+return 0;
+return 1;
+}
+}
 
 char * __ecereNameSpace__ecere__sys__PathCatSlash(char * string, const char * addedPath)
 {
@@ -912,8 +1200,6 @@ strcpy(string, fileName);
 return modified ? string : (((void *)0));
 }
 
-extern int strcasecmp(const char * , const char * );
-
 char * __ecereNameSpace__ecere__sys__MakePathRelative(const char * path, const char * to, char * destination)
 {
 int len;
@@ -955,511 +1241,101 @@ destination[--len] = '\0';
 return destination;
 }
 
-unsigned int __ecereNameSpace__ecere__sys__StripExtension(char * string)
-{
-int c;
+struct __ecereNameSpace__ecere__com__Class;
 
-for(c = strlen(string); c >= 0; c--)
-if(string[c] == '.')
+struct __ecereNameSpace__ecere__com__Instance
 {
-string[c] = '\0';
-return 1;
-}
-else if(string[c] == '\\' || string[c] == '/')
-break;
-return 0;
-}
+void * *  _vTbl;
+struct __ecereNameSpace__ecere__com__Class * _class;
+int _refCount;
+} __attribute__ ((gcc_struct));
 
-char * __ecereNameSpace__ecere__sys__ChangeExtension(const char * string, const char * ext, char * output)
-{
-if(string != output)
-strcpy(output, string);
-__ecereNameSpace__ecere__sys__StripExtension(output);
-if(ext[0])
-strcat(output, ".");
-strcat(output, ext);
-return output;
-}
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-void __ecereNameSpace__ecere__sys__PrintSize(char * string, unsigned int size, int prec)
-{
-if(size > 1024)
-{
-char format[8];
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
-sprintf(format, "%%.0%df", prec);
-if(size > 1024 * 1024 * 1024)
-{
-sprintf(string, format, (float)size / (float)((float)(float)(1024 * 1024 * 1024)));
-strcat(string, " GB");
-}
-else if(size > 1024 * 1024)
-{
-sprintf(string, format, (float)size / (float)((float)(float)(1024 * 1024)));
-strcat(string, " MB");
-}
-else
-{
-sprintf(string, format, (float)size / (float)1024);
-strcat(string, " KB");
-}
-}
-else
-sprintf(string, "%d B", size);
-}
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
-void __ecereNameSpace__ecere__sys__PrintBigSize(char * string, double size, int prec)
-{
-if(size > (double)1024)
-{
-char format[8];
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
-sprintf(format, "%%.0%df", prec);
-if(size > 1024.0 * 1024.0 * 1024.0 * 1024.0)
-{
-sprintf(string, format, size / ((double)(double)(1024 * 1024) * 1024.0 * 1024.0));
-strcat(string, " TB");
-}
-else if(size > 1024.0 * 1024.0 * 1024.0)
-{
-sprintf(string, format, size / (1024.0 * 1024.0 * 1024.0));
-strcat(string, " GB");
-}
-else if(size > 1024.0 * 1024.0)
-{
-sprintf(string, format, size / (1024.0 * 1024.0));
-strcat(string, " MB");
-}
-else
-{
-sprintf(string, format, size / 1024.0);
-strcat(string, " KB");
-}
-}
-else
-sprintf(string, "%.0f B", size);
-}
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-extern int strncmp(const char * , const char * , size_t n);
+struct __ecereNameSpace__ecere__com__Property;
 
-extern int strncasecmp(const char * , const char * , size_t n);
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct __ecereNameSpace__ecere__com__Instance * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} __attribute__ ((gcc_struct));
 
-extern int tolower(int);
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-extern int isalnum(int c);
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
 
-char * __ecereNameSpace__ecere__sys__SearchString(const char * buffer, int start, const char * subStr, unsigned int matchCase, unsigned int matchWord)
-{
-if(buffer && subStr)
-{
-const char * ptr;
-const char * strBuffer = buffer + start;
-int subLen = strlen(subStr);
-char beforeChar = start ? *(strBuffer - 1) : (char)0;
-int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
 
-for(ptr = strBuffer; *ptr; ptr++)
-{
-if(matchCase ? (*subStr == *ptr) : (tolower(*subStr) == tolower(*ptr)))
-{
-if(matchWord)
-{
-if(!strcompare(ptr, subStr, subLen) && (!((subStr[subLen - 1]) == '_' || isalnum((subStr[subLen - 1]))) || !((ptr[subLen]) == '_' || isalnum((ptr[subLen])))) && (!((subStr[0]) == '_' || isalnum((subStr[0]))) || !((beforeChar) == '_' || isalnum((beforeChar)))))
-return (char *)ptr;
-}
-else
-{
-if(!strcompare(ptr, subStr, subLen))
-return (char *)ptr;
-}
-}
-beforeChar = ptr[0];
-}
-}
-return (((void *)0));
-}
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
-char * __ecereNameSpace__ecere__sys__RSearchString(const char * buffer, const char * subStr, int maxLen, unsigned int matchCase, unsigned int matchWord)
-{
-if(buffer && subStr)
-{
-int subLen = strlen(subStr);
-const char * ptr1 = buffer + maxLen - subLen;
-const char * ptr2 = buffer + maxLen - subLen - 1;
-int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
+struct __ecereNameSpace__ecere__sys__BinaryTree;
 
-for(; ptr1 >= buffer; ptr1--, ptr2--)
+struct __ecereNameSpace__ecere__sys__BinaryTree
 {
-if(tolower(*subStr) == tolower(*ptr1))
-{
-if(matchWord)
-{
-if(!strcompare(ptr1, subStr, subLen) && (!((subStr[subLen - 1]) == '_' || isalnum((subStr[subLen - 1]))) || !((ptr1[subLen]) == '_' || isalnum((ptr1[subLen])))) && (!((subStr[0]) == '_' || isalnum((subStr[0]))) || !((*ptr2) == '_' || isalnum((*ptr2)))))
-return (char *)ptr1;
-}
-else
-{
-if(!strcompare(ptr1, subStr, subLen))
-return (char *)ptr1;
-}
-}
-}
-}
-return (((void *)0));
-}
+struct __ecereNameSpace__ecere__sys__BTNode * root;
+int count;
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
+void (*  FreeKey)(void *  key);
+} __attribute__ ((gcc_struct));
 
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping;
+struct __ecereNameSpace__ecere__com__Method;
 
-extern char *  strchr(const char * , int);
+struct __ecereNameSpace__ecere__com__Method
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__Method * parent;
+struct __ecereNameSpace__ecere__com__Method * left;
+struct __ecereNameSpace__ecere__com__Method * right;
+int depth;
+int (*  function)();
+int vid;
+int type;
+struct __ecereNameSpace__ecere__com__Class * _class;
+void *  symbol;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Instance * dataType;
+int memberAccess;
+} __attribute__ ((gcc_struct));
 
-int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char * tokens[], unsigned int esc)
-{
-#ifdef __WIN32__
-const char * escChars = " !\"%&'()+,;=[]^`{}~";
-const char * escCharsQuoted = "\"";
-#else
-const char * escChars = " !\"$&'()*:;<=>?[\\`{|";
-const char * escCharsQuoted = "\"()$";
-#endif
-int count = 0;
-unsigned int quoted = 0, escaped = 0;
-char * start = (((void *)0)), * output = string;
-char ch;
-
-for(; (ch = *string) && count < maxTokens; string++, output++)
-{
-unsigned int wasEscaped = escaped;
-
-if(output != string)
-*output = ch;
-if(start)
-{
-if(escaped)
-{
-escaped = 0;
-output--;
-*output = ch;
-}
-else if(ch == '\"')
-{
-quoted ^= 1;
-output--;
-}
-else if(ch == ' ' && !quoted)
-{
-tokens[count++] = start;
-*output = '\0';
-start = (((void *)0));
-}
-}
-else if(ch != ' ')
-{
-if(ch == '\"')
-{
-quoted = 1;
-start = output + 1;
-}
-else
-start = output;
-}
-if(!wasEscaped && ch == '\\' && (esc == 1 || (esc == 2 && strchr(quoted ? escCharsQuoted : escChars, *(string + 1)))))
-escaped = 1;
-}
-if(start && count < maxTokens)
-{
-tokens[count++] = start;
-*output = '\0';
-}
-return count;
-}
-
-int __ecereNameSpace__ecere__sys__TokenizeWith(char * string, int maxTokens, char * tokens[], const char * tokenizers, unsigned int escapeBackSlashes)
-{
-int count = 0;
-unsigned int quoted = 0;
-char * start = (((void *)0));
-unsigned int escaped = 0;
-char * output = string;
-unsigned int quotedFromStart = 0;
-
-for(; *string && count < maxTokens; string++, output++)
-{
-if(output != string)
-*output = *string;
-if(start)
-{
-if(escaped)
-{
-escaped = 0;
-output--;
-if(output != string)
-*output = *string;
-}
-else if(escapeBackSlashes && *string == '\\')
-escaped = 1;
-else if(*string == '\"')
-{
-if(quoted)
-{
-if(quotedFromStart)
-*output = '\0';
-quotedFromStart = 0;
-quoted = 0;
-}
-else
-quoted = 1;
-}
-else if(strchr(tokenizers, *string) && !quoted)
-{
-tokens[count++] = start;
-*output = '\0';
-start = (((void *)0));
-}
-}
-else if(!strchr(tokenizers, *string))
-{
-if(*string == '\"')
-{
-quotedFromStart = 1;
-quoted = 1;
-start = output + 1;
-}
-else
-{
-start = output;
-if(*string == '\\' && escapeBackSlashes)
-escaped = 1;
-}
-}
-}
-if(start && count < maxTokens)
-{
-tokens[count++] = start;
-*output = '\0';
-}
-return count;
-}
-
-char * __ecereNameSpace__ecere__sys__TrimLSpaces(const char * string, char * output)
-{
-int c;
-
-for(c = 0; string[c] && string[c] == ' '; c++)
-;
-memmove(output, string + c, strlen(string + c) + 1);
-return output;
-}
-
-char * __ecereNameSpace__ecere__sys__TrimRSpaces(const char * string, char * output)
-{
-int c;
-
-for(c = strlen(string) - 1; c >= 0 && string[c] == ' '; c--)
-;
-if(c >= 0)
-{
-memmove(output, string, c + 1);
-output[c + 1] = '\0';
-}
-else
-output[0] = '\0';
-return output;
-}
-
-void __ecereNameSpace__ecere__sys__ChangeCh(char * string, char ch1, char ch2)
-{
-int c;
-
-for(c = 0; string[c]; c++)
-if(string[c] == ch1)
-string[c] = ch2;
-}
-
-void __ecereNameSpace__ecere__sys__RepeatCh(char * string, int count, char ch)
-{
-int c;
-
-for(c = 0; c < count; c++)
-string[c] = ch;
-string[c] = (char)0;
-}
-
-char * __ecereNameSpace__ecere__sys__CopyString(const char * string)
-{
-if(string)
-{
-int len = strlen(string);
-char * destination = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (len + 1));
-
-if(destination)
-memcpy(destination, string, len + 1);
-return destination;
-}
-else
-return (((void *)0));
-}
-
-unsigned int __ecereNameSpace__ecere__sys__GetString(char ** buffer, char * string, int max)
-{
-int c;
-char ch;
-unsigned int quoted = 0;
-unsigned int result = 1;
-
-if(!* *buffer)
-{
-string[0] = (char)0;
-return 0;
-}
-for(; ; )
-{
-if(!(ch = *((*buffer)++)))
-result = 0;
-if((ch != '\n') && (ch != '\r') && (ch != ' ') && (ch != ',') && (ch != '\t'))
-break;
-if(!*(*buffer))
-break;
-}
-if(result)
-{
-for(c = 0; c < max - 1; c++)
-{
-if(!quoted && ((ch == '\n') || (ch == '\r') || (ch == ' ') || (ch == ',') || (ch == '\t')))
-{
-result = 1;
-break;
-}
-if(ch == '\"')
-{
-quoted ^= (unsigned int)1;
-c--;
-}
-else
-string[c] = ch;
-if(!(ch = *(*buffer)))
-{
-c++;
-break;
-}
-(*buffer)++;
-}
-string[c] = (char)0;
-}
-return result;
-}
-
-extern int atoi(const char * );
-
-int __ecereNameSpace__ecere__sys__GetValue(char ** buffer)
-{
-char string[20];
-
-__ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
-return atoi(string);
-}
-
-extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
-
-unsigned int __ecereNameSpace__ecere__sys__GetHexValue(char ** buffer)
-{
-char string[20];
-
-__ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
-return strtoul(string, (((void *)0)), 16);
-}
-
-char * __ecereNameSpace__ecere__sys__StripQuotes(const char * string, char * output)
-{
-int len;
-const char * src = (string[0] == '\"') ? (string + 1) : string;
-
-memmove(output, src, strlen(src) + 1);
-len = strlen(output);
-if(len && output[len - 1] == '\"')
-output[len - 1] = '\0';
-return output;
-}
-
-extern unsigned int isdigit(int);
-
-double __ecereNameSpace__ecere__sys__FloatFromString(const char * string)
-{
-int c, dig;
-float dec = 0, res = 0;
-int neg = 1;
-char ch;
-
-for(c = 0; string[c]; c++)
-{
-ch = string[c];
-if(ch == ' ')
-continue;
-if(ch == '-')
-{
-if(neg == -1)
-break;
-neg = -1;
-}
-else if((ch == '.') && !dec)
-dec = 10;
-else if(isdigit(ch))
-{
-dig = ch - '0';
-if(dec)
-{
-res += (float)dig / dec;
-dec *= 10;
-}
-else
-res = res * (float)10 + (float)dig;
-}
-else
-break;
-}
-return (float)neg * res;
-}
-
-unsigned int __ecereNameSpace__ecere__sys__IsPathInsideOf(const char * path, const char * of)
-{
-if(!path[0] || !of[0])
-return 0;
-else
-{
-char ofPart[274], ofRest[797];
-char pathPart[274], pathRest[797];
-
-strcpy(ofRest, of);
-strcpy(pathRest, path);
-for(; ofRest[0] && pathRest[0]; )
-{
-__ecereNameSpace__ecere__sys__SplitDirectory(ofRest, ofPart, ofRest);
-__ecereNameSpace__ecere__sys__SplitDirectory(pathRest, pathPart, pathRest);
-if(((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(pathPart, ofPart))
-return 0;
-}
-if(!ofRest[0] && !pathRest[0])
-return 0;
-else if(!pathRest[0])
-return 0;
-return 1;
-}
-}
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
-
-struct __ecereNameSpace__ecere__com__DefinedExpression;
+struct __ecereNameSpace__ecere__com__Module;
 
 extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_RegisterDefine(const char *  name, const char *  value, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
-
-struct __ecereNameSpace__ecere__com__GlobalFunction;
 
 extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
+struct __ecereNameSpace__ecere__com__NameSpace;
 
 struct __ecereNameSpace__ecere__com__NameSpace
 {
@@ -1475,7 +1351,16 @@ struct __ecereNameSpace__ecere__sys__BinaryTree defines;
 struct __ecereNameSpace__ecere__sys__BinaryTree functions;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+struct __ecereNameSpace__ecere__com__Application
+{
+int argc;
+const char * *  argv;
+int exitCode;
+unsigned int isGUIApp;
+struct __ecereNameSpace__ecere__sys__OldList allModules;
+char *  parsedCommand;
+struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
+} __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__com__Module
 {
@@ -1495,9 +1380,120 @@ struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+void __ecereUnregisterModule_String(struct __ecereNameSpace__ecere__com__Instance * module)
+{
 
-extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
+}
+
+struct __ecereNameSpace__ecere__com__DataMember;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument
+{
+union
+{
+struct
+{
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+} __attribute__ ((gcc_struct)) __anon1;
+struct __ecereNameSpace__ecere__com__DataValue expression;
+struct
+{
+const char *  memberString;
+union
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__Method * method;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__DataMember
+{
+struct __ecereNameSpace__ecere__com__DataMember * prev;
+struct __ecereNameSpace__ecere__com__DataMember * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct __ecereNameSpace__ecere__com__Instance * dataType;
+int type;
+int offset;
+int memberID;
+struct __ecereNameSpace__ecere__sys__OldList members;
+struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
+int memberOffset;
+short structAlignment;
+short pointerAlignment;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Class
+{
+struct __ecereNameSpace__ecere__com__Class * prev;
+struct __ecereNameSpace__ecere__com__Class * next;
+const char *  name;
+int offset;
+int structSize;
+void * *  _vTbl;
+int vTblSize;
+unsigned int (*  Constructor)(void * );
+void (*  Destructor)(void * );
+int offsetClass;
+int sizeClass;
+struct __ecereNameSpace__ecere__com__Class * base;
+struct __ecereNameSpace__ecere__sys__BinaryTree methods;
+struct __ecereNameSpace__ecere__sys__BinaryTree members;
+struct __ecereNameSpace__ecere__sys__BinaryTree prop;
+struct __ecereNameSpace__ecere__sys__OldList membersAndProperties;
+struct __ecereNameSpace__ecere__sys__BinaryTree classProperties;
+struct __ecereNameSpace__ecere__sys__OldList derivatives;
+int memberID;
+int startMemberID;
+int type;
+struct __ecereNameSpace__ecere__com__Instance * module;
+struct __ecereNameSpace__ecere__com__NameSpace *  nameSpace;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Instance * dataType;
+int typeSize;
+int defaultAlignment;
+void (*  Initialize)();
+int memberOffset;
+struct __ecereNameSpace__ecere__sys__OldList selfWatchers;
+const char *  designerClass;
+unsigned int noExpansion;
+const char *  defaultProperty;
+unsigned int comRedefinition;
+int count;
+int isRemote;
+unsigned int internalDecl;
+void *  data;
+unsigned int computeSize;
+short structAlignment;
+short pointerAlignment;
+int destructionWatchOffset;
+unsigned int fixed;
+struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
+int inheritanceAccess;
+const char *  fullName;
+void *  symbol;
+struct __ecereNameSpace__ecere__sys__OldList conversions;
+struct __ecereNameSpace__ecere__sys__OldList templateParams;
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument *  templateArgs;
+struct __ecereNameSpace__ecere__com__Class * templateClass;
+struct __ecereNameSpace__ecere__sys__OldList templatized;
+int numParams;
+unsigned int isInstanceClass;
+unsigned int byValueSystemClass;
+} __attribute__ ((gcc_struct));
+
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
 void __ecereRegisterModule_String(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -1525,7 +1521,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::PrintBigSize
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::SearchString", "char * ecere::sys::SearchString(const char * buffer, int start, const char * subStr, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__SearchString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RSearchString", "char * ecere::sys::RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord)", __ecereNameSpace__ecere__sys__RSearchString, module, 4);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::sys::BackSlashEscaping", "bool", 0, 0, (void *)0, (void *)0, module, 4, 1);
-if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + structSize_Instance)))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application && class)
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__BackSlashEscaping = class;
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "forArgsPassing", 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Tokenize", "int ecere::sys::Tokenize(char * string, int maxTokens, char * tokens[], ecere::sys::BackSlashEscaping esc)", __ecereNameSpace__ecere__sys__Tokenize, module, 4);
@@ -1541,10 +1537,5 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetHexValue"
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripQuotes", "char * ecere::sys::StripQuotes(const char * string, char * output)", __ecereNameSpace__ecere__sys__StripQuotes, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::FloatFromString", "double ecere::sys::FloatFromString(const char * string)", __ecereNameSpace__ecere__sys__FloatFromString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::IsPathInsideOf", "bool ecere::sys::IsPathInsideOf(const char * path, const char * of)", __ecereNameSpace__ecere__sys__IsPathInsideOf, module, 4);
-}
-
-void __ecereUnregisterModule_String(struct __ecereNameSpace__ecere__com__Instance * module)
-{
-
 }
 

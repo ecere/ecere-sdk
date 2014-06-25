@@ -37,43 +37,44 @@ typedef unsigned __int64 uint64;
 #endif
 #include <stdint.h>
 #include <sys/types.h>
+extern int yychar;
 
-#if /*defined(_W64) || */(defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
-#define _64BIT 1
-#else
-#define _64BIT 0
-#endif
+extern char sourceFileStack[30][797];
 
-#define arch_PointerSize                  sizeof(void *)
-#define structSize_Instance               (_64BIT ? 24 : 12)
+extern int include_stack_ptr;
 
-struct __ecereNameSpace__ecere__com__Instance;
+static int numIncludes;
 
-extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
+static char ** includes;
 
-extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
+unsigned int inIDE = 0;
 
-extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
+unsigned int ecereImported;
 
-extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
+unsigned int inPreCompiler = 0;
 
-extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+unsigned int inSymbolGen = 0;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
+unsigned int inDocumentor = 0;
 
-struct __ecereNameSpace__ecere__sys__BTNode;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BinaryTree;
-
-struct __ecereNameSpace__ecere__sys__BinaryTree
+unsigned int DummyMethod()
 {
-struct __ecereNameSpace__ecere__sys__BTNode * root;
-int count;
-int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
-void (*  FreeKey)(void *  key);
-} __attribute__ ((gcc_struct));
+return 1;
+}
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldList;
+extern const char *  sourceFile;
+
+extern unsigned int skipErrors;
+
+struct __ecereNameSpace__ecere__com__Instance * loadedModules;
+
+extern char *  symbolsDir;
+
+extern unsigned int inCompiler;
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
 
 struct __ecereNameSpace__ecere__sys__OldList
 {
@@ -84,108 +85,7 @@ unsigned int offset;
 unsigned int circ;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Method;
-
-struct __ecereNameSpace__ecere__com__Method
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__Method * parent;
-struct __ecereNameSpace__ecere__com__Method * left;
-struct __ecereNameSpace__ecere__com__Method * right;
-int depth;
-int (*  function)();
-int vid;
-int type;
-struct __ecereNameSpace__ecere__com__Class * _class;
-void *  symbol;
-const char *  dataTypeString;
-struct Type * dataType;
-int memberAccess;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_CodePosition;
-
-struct CodePosition
-{
-int line;
-int charPos;
-int pos;
-int included;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Location;
-
-struct Location
-{
-struct CodePosition start;
-struct CodePosition end;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Attrib;
-
-struct Attrib;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ExtDecl;
-
-struct ExtDecl;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassDefinition;
-
-struct ClassDefinition;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Context;
-
-struct Context;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Instantiation;
-
-struct Instantiation;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declaration;
-
-struct Declaration;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Statement;
-
-struct Statement;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TypeName;
-
-struct TypeName;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Initializer;
-
-struct Initializer;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataValue;
+struct Type;
 
 struct __ecereNameSpace__ecere__com__DataValue
 {
@@ -205,7 +105,246 @@ uint64 ui64;
 } __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Expression;
+struct __ecereNameSpace__ecere__com__SerialBuffer
+{
+unsigned char *  _buffer;
+unsigned int count;
+unsigned int _size;
+unsigned int pos;
+} __attribute__ ((gcc_struct));
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew(void *  memory, unsigned int size);
+
+extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsigned int size);
+
+extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
+
+extern char *  __ecereNameSpace__ecere__sys__TrimLSpaces(const char *  string, char *  output);
+
+extern int strcmp(const char * , const char * );
+
+extern int strtol(const char * , char * * , int base);
+
+extern char *  strcpy(char * , const char * );
+
+extern char *  __ecereNameSpace__ecere__sys__GetLastDirectory(const char *  string, char *  output);
+
+extern int strcasecmp(const char * , const char * );
+
+extern char *  strstr(const char * , const char * );
+
+extern char *  strcat(char * , const char * );
+
+struct External;
+
+struct ModuleImport;
+
+struct ClassImport;
+
+struct CodePosition
+{
+int line;
+int charPos;
+int pos;
+int included;
+} __attribute__ ((gcc_struct));
+
+struct Context;
+
+extern char *  strchr(const char * , int);
+
+extern void *  memcpy(void * , const void * , size_t size);
+
+extern char *  __ecereNameSpace__ecere__sys__TrimRSpaces(const char *  string, char *  output);
+
+extern long long strtoll(const char *  nptr, char * *  endptr, int base);
+
+struct __ecereNameSpace__ecere__com__ClassProperty;
+
+extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
+
+struct yy_buffer_state
+{
+void *  yy_input_file;
+char *  yy_ch_buf;
+char *  yy_buf_pos;
+unsigned int yy_buf_size;
+int yy_n_chars;
+int yy_is_our_buffer;
+int yy_is_interactive;
+int yy_at_bol;
+int yy_fill_buffer;
+int yy_buffer_status;
+} __attribute__ ((gcc_struct));
+
+struct Identifier;
+
+struct Statement;
+
+struct Instantiation;
+
+struct Declarator;
+
+struct TypeName;
+
+struct Specifier;
+
+struct Initializer;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
+
+struct __ecereNameSpace__ecere__com__DefinedExpression;
+
+struct __ecereNameSpace__ecere__com__GlobalFunction;
+
+extern char *  strncpy(char * , const char * , size_t n);
+
+extern char *  __ecereNameSpace__ecere__sys__GetSystemPathBuffer(char *  d, const char *  p);
+
+extern void Compiler_Error(const char *  format, ...);
+
+extern const char *  __ecereNameSpace__ecere__GetTranslatedString(const char * name, const char *  string, const char *  stringAndContext);
+
+extern unsigned int __ecereNameSpace__ecere__sys__StripExtension(char *  string);
+
+extern size_t strlen(const char * );
+
+extern char *  __ecereNameSpace__ecere__sys__GetExtension(const char *  string, char *  output);
+
+extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, const char *  addedPath);
+
+extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(const char *  string, const char *  ext, char *  output);
+
+extern unsigned int __ecereNameSpace__ecere__sys__FileExists(const char *  fileName);
+
+struct __ecereNameSpace__ecere__com__IteratorPointer;
+
+extern int sprintf(char * , const char * , ...);
+
+extern char *  __ecereNameSpace__ecere__sys__StripLastDirectory(const char *  string, char *  output);
+
+extern void Compiler_Warning(const char *  format, ...);
+
+char * GetIncludeFileFromID(int id)
+{
+return includes[id - 1];
+}
+
+void SetInIDE(unsigned int b)
+{
+inIDE = b;
+}
+
+void SetEcereImported(unsigned int b)
+{
+ecereImported = b;
+}
+
+unsigned int GetEcereImported()
+{
+return ecereImported;
+}
+
+void SetInPreCompiler(unsigned int b)
+{
+inPreCompiler = b;
+}
+
+void SetInSymbolGen(unsigned int b)
+{
+inSymbolGen = b;
+}
+
+void SetInDocumentor(unsigned int b)
+{
+inDocumentor = b;
+}
+
+struct __ecereNameSpace__ecere__sys__OldList dataRedefinitions;
+
+struct __ecereNameSpace__ecere__sys__OldList * includeDirs, * sysIncludeDirs;
+
+void SetIncludeDirs(struct __ecereNameSpace__ecere__sys__OldList * list)
+{
+includeDirs = list;
+}
+
+struct __ecereNameSpace__ecere__sys__OldList * precompDefines;
+
+extern struct __ecereNameSpace__ecere__sys__OldList *  defines;
+
+void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
+
+void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereNameSpace__ecere__sys__OldList * this, void (*  freeFn)(void * ));
+
+extern struct Type * ProcessTypeString(const char *  string, unsigned int staticMethod);
+
+extern void FreeType(struct Type * type);
+
+extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
+
+void FreeIncludeFiles()
+{
+int c;
+
+for(c = 0; c < numIncludes; c++)
+(__ecereNameSpace__ecere__com__eSystem_Delete(includes[c]), includes[c] = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(includes), includes = 0);
+numIncludes = 0;
+}
+
+int FindIncludeFileID(char * includeFile)
+{
+int c;
+
+for(c = 0; c < numIncludes; c++)
+if(!((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(includes[c], includeFile))
+return c + 1;
+return 0;
+}
+
+extern struct ModuleImport * mainModule;
+
+struct Location
+{
+struct CodePosition start;
+struct CodePosition end;
+} __attribute__ ((gcc_struct));
+
+void SetSysIncludeDirs(struct __ecereNameSpace__ecere__sys__OldList * list)
+{
+sysIncludeDirs = list;
+}
+
+void SetPrecompDefines(struct __ecereNameSpace__ecere__sys__OldList * list)
+{
+precompDefines = list;
+}
+
+int GetIncludeFileID(char * includeFile)
+{
+int found = FindIncludeFileID(includeFile);
+
+if(found)
+return found;
+includes = __ecereNameSpace__ecere__com__eSystem_Renew(includes, sizeof(char *) * (numIncludes + 1));
+includes[numIncludes++] = __ecereNameSpace__ecere__sys__CopyString(includeFile);
+return numIncludes;
+}
+
+struct __ecereNameSpace__ecere__com__NameSpace;
+
+struct __ecereNameSpace__ecere__com__NameSpace * globalData;
+
+struct Expression;
+
+extern struct Expression * ParseExpressionString(char *  expression);
 
 struct Expression
 {
@@ -324,55 +463,400 @@ unsigned int opDestType;
 unsigned int needTemplateCast;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateDatatype;
+extern void ProcessExpressionType(struct Expression * exp);
 
-struct TemplateDatatype;
+extern void ComputeExpression(struct Expression * exp);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateArgument;
+extern void FreeExpression(struct Expression * exp);
 
-struct TemplateArgument;
+struct __ecereNameSpace__ecere__com__Class;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_TemplateParameter;
+struct __ecereNameSpace__ecere__com__Instance
+{
+void * *  _vTbl;
+struct __ecereNameSpace__ecere__com__Class * _class;
+int _refCount;
+} __attribute__ ((gcc_struct));
 
-struct TemplateParameter;
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Specifier;
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
-struct Specifier;
+extern void __ecereNameSpace__ecere__com__eClass_DestructionWatchable(struct __ecereNameSpace__ecere__com__Class * _class);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
 
-struct Identifier;
+extern long long __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Pointer;
+extern struct __ecereNameSpace__ecere__com__ClassProperty * __ecereNameSpace__ecere__com__eClass_AddClassProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt);
 
-struct Pointer;
+extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Declarator;
+extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
-struct Declarator;
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_FunctionDefinition;
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-struct FunctionDefinition;
+struct __ecereNameSpace__ecere__com__Instance * sourceDirs;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_DBTableDef;
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpenBuffered(const char *  fileName, int mode);
 
-struct DBTableDef;
+struct LexerBackup
+{
+struct Location yylloc;
+struct Location type_yylloc;
+struct Location expression_yylloc;
+int declMode;
+int defaultDeclMode;
+struct __ecereNameSpace__ecere__com__Instance * fileInput;
+struct yy_buffer_state *  include_stack[30];
+struct __ecereNameSpace__ecere__com__Instance * fileStack[30];
+char sourceFileStack[30][797];
+struct Location locStack[30];
+int declModeStack[30];
+int include_stack_ptr;
+struct yy_buffer_state *  buffer;
+int yy_n_chars;
+char *  yytext;
+char *  yy_c_buf_p;
+void *  yyin;
+char yy_hold_char;
+int yychar;
+int yy_init;
+int yy_start;
+} __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_External;
+struct __ecereNameSpace__ecere__com__MapIterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+} __attribute__ ((gcc_struct));
 
-struct External;
+struct __ecereNameSpace__ecere__com__Iterator
+{
+struct __ecereNameSpace__ecere__com__Instance * container;
+struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
+} __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ModuleImport;
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
 
-struct ModuleImport;
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __ecereNameSpace__ecere__com__Instance * this, char *  s, int max);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ClassImport;
+int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
 
-struct ClassImport;
+extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Symbol;
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
+
+void SetSourceDirs(struct __ecereNameSpace__ecere__com__Instance * list)
+{
+sourceDirs = list;
+}
+
+extern struct __ecereNameSpace__ecere__com__Instance * pushLexer(void);
+
+extern void popLexer(struct __ecereNameSpace__ecere__com__Instance * backup);
+
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, const uint64 index, unsigned int create);
+
+uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
+
+void __ecereDestroyModuleInstances_loadSymbols()
+{
+(__ecereNameSpace__ecere__com__eInstance_DecRef(loadedModules), loadedModules = 0);
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode;
+
+struct __ecereNameSpace__ecere__sys__BTNode
+{
+uintptr_t key;
+struct __ecereNameSpace__ecere__sys__BTNode * parent;
+struct __ecereNameSpace__ecere__sys__BTNode * left;
+struct __ecereNameSpace__ecere__sys__BTNode * right;
+int depth;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Property;
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} __attribute__ ((gcc_struct));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
+
+extern void __ecereNameSpace__ecere__com__eProperty_Watchable(struct __ecereNameSpace__ecere__com__Property * _property);
+
+struct __ecereNameSpace__ecere__com__DataMember;
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eMember_AddDataMember(struct __ecereNameSpace__ecere__com__DataMember * member, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
+
+extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eMember_New(int type, int declMode);
+
+extern unsigned int __ecereNameSpace__ecere__com__eMember_AddMember(struct __ecereNameSpace__ecere__com__DataMember * addTo, struct __ecereNameSpace__ecere__com__DataMember * dataMember);
+
+extern unsigned int __ecereNameSpace__ecere__com__eClass_AddMember(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__DataMember * dataMember);
+
+struct Symbol;
+
+extern struct Symbol * DeclClass(int symbolID, const char *  name);
+
+extern struct Symbol * FindClass(const char *  name);
+
+extern void FreeSymbol(struct Symbol * symbol);
+
+struct __ecereNameSpace__ecere__sys__OldLink;
+
+struct __ecereNameSpace__ecere__sys__OldLink
+{
+struct __ecereNameSpace__ecere__sys__OldLink * prev;
+struct __ecereNameSpace__ecere__sys__OldLink * next;
+void *  data;
+} __attribute__ ((gcc_struct));
+
+struct DataRedefinition;
+
+struct DataRedefinition
+{
+struct DataRedefinition * prev;
+struct DataRedefinition * next;
+char name[1024];
+char type1[1024];
+char type2[1024];
+} __attribute__ ((gcc_struct));
+
+void CheckDataRedefinitions()
+{
+struct DataRedefinition * redefinition;
+
+for(redefinition = dataRedefinitions.first; redefinition; redefinition = redefinition->next)
+{
+struct Type * type1 = ProcessTypeString(redefinition->type1, 0);
+struct Type * type2 = ProcessTypeString(redefinition->type2, 0);
+char type1String[1024] = "";
+char type2String[1024] = "";
+
+PrintType(type1, type1String, 0, 1);
+PrintType(type2, type2String, 0, 1);
+if(strcmp(type1String, type2String))
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "Redefinition of %s (defining as %s, already defined as %s)\n", (((void *)0))), redefinition->name, type1String, type2String);
+FreeType(type1);
+FreeType(type2);
+}
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&dataRedefinitions, (((void *)0)));
+}
+
+struct ImportedModule;
+
+struct ImportedModule
+{
+struct ImportedModule * prev;
+struct ImportedModule * next;
+char *  name;
+int type;
+int importType;
+unsigned int globalInstance;
+unsigned int dllOnly;
+int importAccess;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__sys__NamedItem;
+
+struct __ecereNameSpace__ecere__sys__NamedItem
+{
+struct __ecereNameSpace__ecere__sys__NamedItem * prev;
+struct __ecereNameSpace__ecere__sys__NamedItem * next;
+char *  name;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Instance * OpenIncludeFile(char * includeFile)
+{
+struct __ecereNameSpace__ecere__com__Instance * file;
+char location[274];
+
+__ecereNameSpace__ecere__sys__StripLastDirectory(sourceFileStack[(include_stack_ptr >= 0) ? include_stack_ptr : 0], location);
+__ecereNameSpace__ecere__sys__PathCat(location, includeFile);
+file = __ecereNameSpace__ecere__sys__FileOpen(location, 1);
+if(file)
+{
+strcpy(sourceFileStack[include_stack_ptr + 1], location);
+}
+else if(inIDE)
+{
+struct __ecereNameSpace__ecere__sys__NamedItem * includeDir;
+
+if(includeDirs)
+{
+for(includeDir = (*includeDirs).first; includeDir; includeDir = includeDir->next)
+{
+strcpy(location, includeDir->name);
+__ecereNameSpace__ecere__sys__PathCat(location, includeFile);
+file = __ecereNameSpace__ecere__sys__FileOpen(location, 1);
+if(file)
+break;
+}
+}
+if(!file && sysIncludeDirs)
+{
+for(includeDir = (*sysIncludeDirs).first; includeDir; includeDir = includeDir->next)
+{
+strcpy(location, includeDir->name);
+__ecereNameSpace__ecere__sys__PathCat(location, includeFile);
+file = __ecereNameSpace__ecere__sys__FileOpen(location, 1);
+if(file)
+break;
+}
+}
+}
+return file;
+}
+
+struct Operand;
+
+struct OpTable
+{
+unsigned int (*  Add)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Sub)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Mul)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Div)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Mod)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Neg)(struct Expression *, struct Operand *);
+unsigned int (*  Inc)(struct Expression *, struct Operand *);
+unsigned int (*  Dec)(struct Expression *, struct Operand *);
+unsigned int (*  Asign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  AddAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  SubAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  MulAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  DivAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  ModAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  BitAnd)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  BitOr)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  BitXor)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  LShift)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  RShift)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  BitNot)(struct Expression *, struct Operand *);
+unsigned int (*  AndAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  OrAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  XorAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  LShiftAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  RShiftAsign)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Not)(struct Expression *, struct Operand *);
+unsigned int (*  Equ)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Nqu)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  And)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Or)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Grt)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Sma)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  GrtEqu)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  SmaEqu)(struct Expression *, struct Operand *, struct Operand *);
+unsigned int (*  Cond)(struct Expression *, struct Operand *, struct Operand *, struct Operand *);
+} __attribute__ ((gcc_struct));
+
+struct Operand
+{
+int kind;
+struct Type * type;
+unsigned int ptrSize;
+union
+{
+char c;
+unsigned char uc;
+short s;
+unsigned short us;
+int i;
+unsigned int ui;
+float f;
+double d;
+long long i64;
+uint64 ui64;
+} __attribute__ ((gcc_struct)) __anon1;
+struct OpTable ops;
+} __attribute__ ((gcc_struct));
+
+extern struct Operand GetOperand(struct Expression * exp);
+
+struct __ecereNameSpace__ecere__com__Method;
+
+struct __ecereNameSpace__ecere__com__ClassTemplateArgument
+{
+union
+{
+struct
+{
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+} __attribute__ ((gcc_struct)) __anon1;
+struct __ecereNameSpace__ecere__com__DataValue expression;
+struct
+{
+const char *  memberString;
+union
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+struct __ecereNameSpace__ecere__com__Property * prop;
+struct __ecereNameSpace__ecere__com__Method * method;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct)) __anon2;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Method
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__Method * parent;
+struct __ecereNameSpace__ecere__com__Method * left;
+struct __ecereNameSpace__ecere__com__Method * right;
+int depth;
+int (*  function)();
+int vid;
+int type;
+struct __ecereNameSpace__ecere__com__Class * _class;
+void *  symbol;
+const char *  dataTypeString;
+struct Type * dataType;
+int memberAccess;
+} __attribute__ ((gcc_struct));
 
 struct Symbol
 {
@@ -388,8 +872,7 @@ struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 struct __ecereNameSpace__ecere__com__Class * registered;
 } __attribute__ ((gcc_struct)) __anon1;
-int id;
-int idCode;
+unsigned int notYetDeclared;
 union
 {
 struct
@@ -438,11 +921,89 @@ int isIterator;
 struct Expression * propCategory;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Type;
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
-struct Type;
+extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Class;
+extern struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, int type, const void *  info, struct __ecereNameSpace__ecere__com__ClassTemplateArgument * defaultArg);
+
+struct __ecereNameSpace__ecere__com__BitMember;
+
+extern struct __ecereNameSpace__ecere__com__BitMember * __ecereNameSpace__ecere__com__eClass_AddBitMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, int bitSize, int bitPos, int declMode);
+
+struct __ecereNameSpace__ecere__com__BitMember
+{
+struct __ecereNameSpace__ecere__com__BitMember * prev;
+struct __ecereNameSpace__ecere__com__BitMember * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct Type * dataType;
+int type;
+int size;
+int pos;
+uint64 mask;
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__Module;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
+
+extern struct __ecereNameSpace__ecere__com__Instance * privateModule;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
+
+extern struct ModuleImport * FindModule(struct __ecereNameSpace__ecere__com__Instance * moduleToFind);
+
+extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_RegisterDefine(const char *  name, const char *  value, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+
+extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
+
+struct GlobalData
+{
+uintptr_t key;
+struct __ecereNameSpace__ecere__sys__BTNode * parent;
+struct __ecereNameSpace__ecere__sys__BTNode * left;
+struct __ecereNameSpace__ecere__sys__BTNode * right;
+int depth;
+struct __ecereNameSpace__ecere__com__Instance * module;
+char *  dataTypeString;
+struct Type * dataType;
+void *  symbol;
+char *  fullName;
+} __attribute__ ((gcc_struct));
+
+extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char *  name, int importAccess);
+
+extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
+
+struct __ecereNameSpace__ecere__sys__BinaryTree;
+
+struct __ecereNameSpace__ecere__sys__BinaryTree
+{
+struct __ecereNameSpace__ecere__sys__BTNode * root;
+int count;
+int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
+void (*  FreeKey)(void *  key);
+} __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__NameSpace
+{
+const char *  name;
+struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
+struct __ecereNameSpace__ecere__com__NameSpace *  left;
+struct __ecereNameSpace__ecere__com__NameSpace *  right;
+int depth;
+struct __ecereNameSpace__ecere__com__NameSpace *  parent;
+struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
+struct __ecereNameSpace__ecere__sys__BinaryTree classes;
+struct __ecereNameSpace__ecere__sys__BinaryTree defines;
+struct __ecereNameSpace__ecere__sys__BinaryTree functions;
+} __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__com__Class
 {
@@ -485,7 +1046,8 @@ int isRemote;
 unsigned int internalDecl;
 void *  data;
 unsigned int computeSize;
-int structAlignment;
+short structAlignment;
+short pointerAlignment;
 int destructionWatchOffset;
 unsigned int fixed;
 struct __ecereNameSpace__ecere__sys__OldList delayedCPValues;
@@ -501,33 +1063,6 @@ int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
 } __attribute__ ((gcc_struct));
-
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
-
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
-
-extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
-
-struct __ecereNameSpace__ecere__com__Instance
-{
-void * *  _vTbl;
-struct __ecereNameSpace__ecere__com__Class * _class;
-int _refCount;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DataMember;
 
 struct __ecereNameSpace__ecere__com__DataMember
 {
@@ -547,175 +1082,33 @@ int memberID;
 struct __ecereNameSpace__ecere__sys__OldList members;
 struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
 int memberOffset;
-int structAlignment;
+short structAlignment;
+short pointerAlignment;
 } __attribute__ ((gcc_struct));
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__SerialBuffer;
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  key);
 
-struct __ecereNameSpace__ecere__com__SerialBuffer
+int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  a, const char *  b);
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
+
+void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
+
+struct __ecereNameSpace__ecere__com__Application
 {
-unsigned char *  _buffer;
-unsigned int count;
-unsigned int _size;
-unsigned int pos;
+int argc;
+const char * *  argv;
+int exitCode;
+unsigned int isGUIApp;
+struct __ecereNameSpace__ecere__sys__OldList allModules;
+char *  parsedCommand;
+struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
 } __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateArgument;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateArgument
-{
-union
-{
-struct
-{
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct)) __anon1;
-struct __ecereNameSpace__ecere__com__DataValue expression;
-struct
-{
-const char *  memberString;
-union
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-struct __ecereNameSpace__ecere__com__Property * prop;
-struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct)) __anon2;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
-
-extern int yychar;
-
-struct __ecereNameSpace__ecere__com__NameSpace * globalData;
 
 void SetGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace)
 {
 globalData = nameSpace;
 }
-
-struct __ecereNameSpace__ecere__sys__OldList dataRedefinitions;
-
-extern char sourceFileStack[30][797];
-
-extern int include_stack_ptr;
-
-static int numIncludes;
-
-static char ** includes;
-
-unsigned int inIDE = 0;
-
-void SetInIDE(unsigned int b)
-{
-inIDE = b;
-}
-
-struct __ecereNameSpace__ecere__com__Instance * sourceDirs;
-
-void SetSourceDirs(struct __ecereNameSpace__ecere__com__Instance * list)
-{
-sourceDirs = list;
-}
-
-struct __ecereNameSpace__ecere__sys__OldList * includeDirs, * sysIncludeDirs;
-
-void SetIncludeDirs(struct __ecereNameSpace__ecere__sys__OldList * list)
-{
-includeDirs = list;
-}
-
-void SetSysIncludeDirs(struct __ecereNameSpace__ecere__sys__OldList * list)
-{
-sysIncludeDirs = list;
-}
-
-unsigned int ecereImported;
-
-void SetEcereImported(unsigned int b)
-{
-ecereImported = b;
-}
-
-unsigned int GetEcereImported()
-{
-return ecereImported;
-}
-
-unsigned int inPreCompiler = 0;
-
-void SetInPreCompiler(unsigned int b)
-{
-inPreCompiler = b;
-}
-
-unsigned int inSymbolGen = 0;
-
-void SetInSymbolGen(unsigned int b)
-{
-inSymbolGen = b;
-}
-
-unsigned int inDocumentor = 0;
-
-void SetInDocumentor(unsigned int b)
-{
-inDocumentor = b;
-}
-
-struct __ecereNameSpace__ecere__sys__OldList * precompDefines;
-
-void SetPrecompDefines(struct __ecereNameSpace__ecere__sys__OldList * list)
-{
-precompDefines = list;
-}
-
-unsigned int DummyMethod()
-{
-return 1;
-}
-
-extern char *  __ecereNameSpace__ecere__sys__TrimLSpaces(const char *  string, char *  output);
-
-extern int strcmp(const char * , const char * );
-
-extern int strtol(const char * , char * * , int base);
-
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eMember_AddDataMember(struct __ecereNameSpace__ecere__com__DataMember * member, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BitMember;
-
-struct __ecereNameSpace__ecere__com__BitMember
-{
-struct __ecereNameSpace__ecere__com__BitMember * prev;
-struct __ecereNameSpace__ecere__com__BitMember * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct Type * dataType;
-int type;
-int size;
-int pos;
-uint64 mask;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__BitMember * __ecereNameSpace__ecere__com__eClass_AddBitMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, int bitSize, int bitPos, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, unsigned int size, unsigned int alignment, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eMember_New(int type, int declMode);
-
-extern unsigned int __ecereNameSpace__ecere__com__eMember_AddMember(struct __ecereNameSpace__ecere__com__DataMember * addTo, struct __ecereNameSpace__ecere__com__DataMember * dataMember);
-
-extern unsigned int __ecereNameSpace__ecere__com__eClass_AddMember(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__DataMember * dataMember);
-
-extern char *  strcpy(char * , const char * );
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __ecereNameSpace__ecere__com__Instance * this, char *  s, int max);
 
 static void ReadDataMembers(struct __ecereNameSpace__ecere__com__Class * regClass, struct __ecereNameSpace__ecere__com__DataMember * member, struct __ecereNameSpace__ecere__com__Instance * f)
 {
@@ -798,241 +1191,78 @@ memberAccess = 1;
 }
 }
 
-extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpenBuffered(const char *  fileName, int mode);
-
-extern char *  __ecereNameSpace__ecere__sys__GetLastDirectory(const char *  string, char *  output);
-
-extern int strcasecmp(const char * , const char * );
-
-extern struct Symbol * DeclClass(int symbolID, const char *  name);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_FindClass(struct __ecereNameSpace__ecere__com__Instance * module, const char *  name);
-
-extern struct __ecereNameSpace__ecere__com__Instance * privateModule;
-
-extern struct Symbol * FindClass(const char *  name);
-
-extern const char *  sourceFile;
-
-extern char *  strstr(const char * , const char * );
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eSystem_RegisterClass(int type, const char *  name, const char *  baseName, int size, int sizeClass, unsigned int (*  Constructor)(void * ), void (*  Destructor)(void * ), struct __ecereNameSpace__ecere__com__Instance * module, int declMode, int inheritanceAccess);
-
-extern char *  strcat(char * , const char * );
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
-
-struct __ecereNameSpace__ecere__sys__OldLink
-{
-struct __ecereNameSpace__ecere__sys__OldLink * prev;
-struct __ecereNameSpace__ecere__sys__OldLink * next;
-void *  data;
-} __attribute__ ((gcc_struct));
-
-extern void __ecereNameSpace__ecere__com__eClass_DestructionWatchable(struct __ecereNameSpace__ecere__com__Class * _class);
-
-extern struct ModuleImport * FindModule(struct __ecereNameSpace__ecere__com__Instance * moduleToFind);
-
-extern struct ModuleImport * mainModule;
-
-extern char *  strchr(const char * , int);
-
-extern void *  memcpy(void * , const void * , size_t size);
-
-extern char *  __ecereNameSpace__ecere__sys__TrimRSpaces(const char *  string, char *  output);
-
-extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
-
-extern long long strtoll(const char *  nptr, char * *  endptr, int base);
-
-extern long long __ecereNameSpace__ecere__com__eEnum_AddValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string);
-
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
-
-extern void __ecereNameSpace__ecere__com__eProperty_Watchable(struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassProperty;
-
-struct __ecereNameSpace__ecere__com__ClassProperty;
-
-extern struct __ecereNameSpace__ecere__com__ClassProperty * __ecereNameSpace__ecere__com__eClass_AddClassProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt);
-
-extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
-
-extern struct __ecereNameSpace__ecere__com__Instance * pushLexer(void);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_OpTable;
-
-struct OpTable
-{
-unsigned int (*  Add)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Sub)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Mul)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Div)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Mod)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Neg)(struct Expression *, struct Operand *);
-unsigned int (*  Inc)(struct Expression *, struct Operand *);
-unsigned int (*  Dec)(struct Expression *, struct Operand *);
-unsigned int (*  Asign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  AddAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  SubAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  MulAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  DivAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  ModAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  BitAnd)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  BitOr)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  BitXor)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  LShift)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  RShift)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  BitNot)(struct Expression *, struct Operand *);
-unsigned int (*  AndAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  OrAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  XorAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  LShiftAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  RShiftAsign)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Not)(struct Expression *, struct Operand *);
-unsigned int (*  Equ)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Nqu)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  And)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Or)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Grt)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Sma)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  GrtEqu)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  SmaEqu)(struct Expression *, struct Operand *, struct Operand *);
-unsigned int (*  Cond)(struct Expression *, struct Operand *, struct Operand *, struct Operand *);
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Operand;
-
-struct Operand
-{
-int kind;
-struct Type * type;
-unsigned int ptrSize;
-union
-{
-char c;
-unsigned char uc;
-short s;
-unsigned short us;
-int i;
-unsigned int ui;
-float f;
-double d;
-long long i64;
-uint64 ui64;
-} __attribute__ ((gcc_struct)) __anon1;
-struct OpTable ops;
-} __attribute__ ((gcc_struct));
-
-extern unsigned int skipErrors;
-
-extern struct Expression * ParseExpressionString(char *  expression);
-
-extern struct Type * ProcessTypeString(const char *  string, unsigned int staticMethod);
-
-extern void ProcessExpressionType(struct Expression * exp);
-
-extern void ComputeExpression(struct Expression * exp);
-
-extern struct Operand GetOperand(struct Expression * exp);
-
-extern void FreeExpression(struct Expression * exp);
-
-extern void popLexer(struct __ecereNameSpace__ecere__com__Instance * backup);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassTemplateParameter;
-
-struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
-
-extern struct __ecereNameSpace__ecere__com__ClassTemplateParameter * __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, int type, const void *  info, struct __ecereNameSpace__ecere__com__ClassTemplateArgument * defaultArg);
-
-extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DefinedExpression;
-
-struct __ecereNameSpace__ecere__com__DefinedExpression;
-
-extern struct __ecereNameSpace__ecere__com__DefinedExpression * __ecereNameSpace__ecere__com__eSystem_RegisterDefine(const char *  name, const char *  value, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__GlobalFunction;
-
-struct __ecereNameSpace__ecere__com__GlobalFunction;
-
-extern struct __ecereNameSpace__ecere__com__GlobalFunction * __ecereNameSpace__ecere__com__eSystem_RegisterFunction(const char *  name, const char *  type, void *  func, struct __ecereNameSpace__ecere__com__Instance * module, int declMode);
-
-extern char *  strncpy(char * , const char * , size_t n);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__NameSpace;
-
-struct __ecereNameSpace__ecere__com__NameSpace
-{
-const char *  name;
-struct __ecereNameSpace__ecere__com__NameSpace *  btParent;
-struct __ecereNameSpace__ecere__com__NameSpace *  left;
-struct __ecereNameSpace__ecere__com__NameSpace *  right;
-int depth;
-struct __ecereNameSpace__ecere__com__NameSpace *  parent;
-struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
-struct __ecereNameSpace__ecere__sys__BinaryTree classes;
-struct __ecereNameSpace__ecere__sys__BinaryTree defines;
-struct __ecereNameSpace__ecere__sys__BinaryTree functions;
-} __attribute__ ((gcc_struct));
-
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_GlobalData;
-
-struct GlobalData
-{
-uintptr_t key;
-struct __ecereNameSpace__ecere__sys__BTNode * parent;
-struct __ecereNameSpace__ecere__sys__BTNode * left;
-struct __ecereNameSpace__ecere__sys__BTNode * right;
-int depth;
-struct __ecereNameSpace__ecere__com__Instance * module;
-char *  dataTypeString;
-struct Type * dataType;
-void *  symbol;
-char *  fullName;
-} __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_DataRedefinition;
 
-struct DataRedefinition
-{
-struct DataRedefinition * prev;
-struct DataRedefinition * next;
-char name[1024];
-char type1[1024];
-char type2[1024];
-} __attribute__ ((gcc_struct));
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
 
-void ImportModule(const char *  name, int importType, int importAccess, unsigned int loadDllOnly);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
 
-extern char *  __ecereNameSpace__ecere__sys__GetSystemPathBuffer(char *  d, const char *  p);
-
-extern void Compiler_Error(const char *  format, ...);
-
-extern const char *  __ecereNameSpace__ecere__GetTranslatedString(const char * name, const char *  string, const char *  stringAndContext);
-
-extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
-
-int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__File;
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  key);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
-int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  a, const char *  b);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__BTNode;
 
-void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
+struct __ecereNameSpace__ecere__com__Module
+{
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} __attribute__ ((gcc_struct));
 
-extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+void __ecereCreateModuleInstances_loadSymbols()
+{
+loadedModules = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___);
+__ecereNameSpace__ecere__com__eInstance_IncRef(loadedModules);
+}
+
+void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList)
+{
+struct __ecereNameSpace__ecere__com__NameSpace * ns;
+struct GlobalData * data;
+
+for(; (ns = (struct __ecereNameSpace__ecere__com__NameSpace *)globalDataList->nameSpaces.root); )
+{
+FreeGlobalData(ns);
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->nameSpaces, (struct __ecereNameSpace__ecere__sys__BTNode *)ns);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)(*ns).name), (*ns).name = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(ns), ns = 0);
+}
+for(; (data = (struct GlobalData *)globalDataList->functions.root); )
+{
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->functions, (void *)(data));
+if(data->symbol)
+FreeSymbol(data->symbol);
+FreeType(data->dataType);
+(__ecereNameSpace__ecere__com__eSystem_Delete(data->fullName), data->fullName = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(data->dataTypeString), data->dataTypeString = 0);
+((data ? (__ecereClass_GlobalData->Destructor ? __ecereClass_GlobalData->Destructor((void *)data) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)data) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(data)) : 0), data = 0);
+}
+}
+
+void __ecereUnregisterModule_loadSymbols(struct __ecereNameSpace__ecere__com__Instance * module)
+{
+
+}
+
+void ImportModule(const char *  name, int importType, int importAccess, unsigned int loadDllOnly);
 
 unsigned int LoadSymbols(const char * fileName, int importType, unsigned int loadDllOnly)
 {
@@ -1158,8 +1388,7 @@ if(regClass && existingClass)
 {
 existingClass->__anon1.registered = regClass;
 regClass->symbol = existingClass;
-existingClass->id = (((int)0x7fffffff));
-existingClass->idCode = (((int)0x7fffffff));
+existingClass->notYetDeclared = 1;
 existingClass->imported = 1;
 if(regClass->module)
 existingClass->module = FindModule(regClass->module);
@@ -1640,110 +1869,6 @@ Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "Couldn't open
 return globalInstance;
 }
 
-struct __ecereNameSpace__ecere__com__Instance * loadedModules;
-
-extern unsigned int __ecereNameSpace__ecere__sys__StripExtension(char *  string);
-
-extern struct __ecereNameSpace__ecere__sys__OldList *  defines;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_ImportedModule;
-
-struct ImportedModule
-{
-struct ImportedModule * prev;
-struct ImportedModule * next;
-char *  name;
-int type;
-int importType;
-unsigned int globalInstance;
-unsigned int dllOnly;
-int importAccess;
-} __attribute__ ((gcc_struct));
-
-extern size_t strlen(const char * );
-
-extern char *  __ecereNameSpace__ecere__sys__GetExtension(const char *  string, char *  output);
-
-extern char *  symbolsDir;
-
-extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, const char *  addedPath);
-
-extern char *  __ecereNameSpace__ecere__sys__ChangeExtension(const char *  string, const char *  ext, char *  output);
-
-extern unsigned int __ecereNameSpace__ecere__sys__FileExists(const char *  fileName);
-
-extern unsigned int inCompiler;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
-
-struct __ecereNameSpace__ecere__com__IteratorPointer;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__MapIterator;
-
-struct __ecereNameSpace__ecere__com__MapIterator
-{
-struct __ecereNameSpace__ecere__com__Instance * container;
-struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char *  name, int importAccess);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __thisModule;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} __attribute__ ((gcc_struct));
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Iterator;
-
-struct __ecereNameSpace__ecere__com__Iterator
-{
-struct __ecereNameSpace__ecere__com__Instance * container;
-struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
-} __attribute__ ((gcc_struct));
-
-extern int sprintf(char * , const char * , ...);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List_TPL_ecere__com__Module_;
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__OldList_AddName(struct __ecereNameSpace__ecere__sys__OldList * this, void *  item);
-
-struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__MapIterator_Get_map(struct __ecereNameSpace__ecere__com__MapIterator * this);
-
-void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
-
-extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__MapIterator_map;
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct __ecereNameSpace__ecere__com__Iterator * this, const uint64 index, unsigned int create);
-
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__List;
-
-uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
-
-void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value);
-
-extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Iterator_data;
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
-
 void ImportModule(const char * name, int importType, int importAccess, unsigned int loadDllOnly)
 {
 struct ImportedModule * module = (((void *)0));
@@ -1802,7 +1927,7 @@ struct __ecereNameSpace__ecere__com__MapIterator it = (it.container = (void *)0,
 
 if(!__ecereMethod___ecereNameSpace__ecere__com__Iterator_Index((void *)(&it), (uint64)(uintptr_t)(name), 0))
 {
-struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + structSize_Instance)))->application, name, importAccess);
+struct __ecereNameSpace__ecere__com__Instance * firstModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, name, importAccess);
 
 if(firstModule)
 {
@@ -1833,7 +1958,7 @@ if(!skipLoad)
 loadedModule = __ecereNameSpace__ecere__com__eModule_LoadStrict(privateModule, name, importAccess);
 if(loadedModule)
 {
-((struct __ecereNameSpace__ecere__com__Module *)(((char *)loadedModule + structSize_Instance)))->importType = importType;
+((struct __ecereNameSpace__ecere__com__Module *)(((char *)loadedModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->importType = importType;
 module->dllOnly = 0;
 if(list)
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
@@ -1907,154 +2032,6 @@ module->globalInstance = LoadSymbols(symFile, importType, loadDllOnly);
 }
 }
 
-int FindIncludeFileID(char * includeFile)
-{
-int c;
-
-for(c = 0; c < numIncludes; c++)
-if(!((__runtimePlatform == 1) ? (strcasecmp) : strcmp)(includes[c], includeFile))
-return c + 1;
-return 0;
-}
-
-int GetIncludeFileID(char * includeFile)
-{
-int found = FindIncludeFileID(includeFile);
-
-if(found)
-return found;
-includes = __ecereNameSpace__ecere__com__eSystem_Renew(includes, sizeof(char *) * (numIncludes + 1));
-includes[numIncludes++] = __ecereNameSpace__ecere__sys__CopyString(includeFile);
-return numIncludes;
-}
-
-char * GetIncludeFileFromID(int id)
-{
-return includes[id - 1];
-}
-
-extern char *  __ecereNameSpace__ecere__sys__StripLastDirectory(const char *  string, char *  output);
-
-extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__NamedItem;
-
-struct __ecereNameSpace__ecere__sys__NamedItem
-{
-struct __ecereNameSpace__ecere__sys__NamedItem * prev;
-struct __ecereNameSpace__ecere__sys__NamedItem * next;
-char *  name;
-} __attribute__ ((gcc_struct));
-
-struct __ecereNameSpace__ecere__com__Instance * OpenIncludeFile(char * includeFile)
-{
-struct __ecereNameSpace__ecere__com__Instance * file;
-char location[274];
-
-__ecereNameSpace__ecere__sys__StripLastDirectory(sourceFileStack[(include_stack_ptr >= 0) ? include_stack_ptr : 0], location);
-__ecereNameSpace__ecere__sys__PathCat(location, includeFile);
-file = __ecereNameSpace__ecere__sys__FileOpen(location, 1);
-if(file)
-{
-strcpy(sourceFileStack[include_stack_ptr + 1], location);
-}
-else if(inIDE)
-{
-struct __ecereNameSpace__ecere__sys__NamedItem * includeDir;
-
-if(includeDirs)
-{
-for(includeDir = (*includeDirs).first; includeDir; includeDir = includeDir->next)
-{
-strcpy(location, includeDir->name);
-__ecereNameSpace__ecere__sys__PathCat(location, includeFile);
-file = __ecereNameSpace__ecere__sys__FileOpen(location, 1);
-if(file)
-break;
-}
-}
-if(!file && sysIncludeDirs)
-{
-for(includeDir = (*sysIncludeDirs).first; includeDir; includeDir = includeDir->next)
-{
-strcpy(location, includeDir->name);
-__ecereNameSpace__ecere__sys__PathCat(location, includeFile);
-file = __ecereNameSpace__ecere__sys__FileOpen(location, 1);
-if(file)
-break;
-}
-}
-}
-return file;
-}
-
-void FreeIncludeFiles()
-{
-int c;
-
-for(c = 0; c < numIncludes; c++)
-(__ecereNameSpace__ecere__com__eSystem_Delete(includes[c]), includes[c] = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(includes), includes = 0);
-numIncludes = 0;
-}
-
-extern void FreeSymbol(struct Symbol * symbol);
-
-extern void FreeType(struct Type * type);
-
-void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node);
-
-void FreeGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * globalDataList)
-{
-struct __ecereNameSpace__ecere__com__NameSpace * ns;
-struct GlobalData * data;
-
-for(; (ns = (struct __ecereNameSpace__ecere__com__NameSpace *)globalDataList->nameSpaces.root); )
-{
-FreeGlobalData(ns);
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->nameSpaces, (struct __ecereNameSpace__ecere__sys__BTNode *)ns);
-(__ecereNameSpace__ecere__com__eSystem_Delete((void *)(*ns).name), (*ns).name = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(ns), ns = 0);
-}
-for(; (data = (struct GlobalData *)globalDataList->functions.root); )
-{
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(&globalDataList->functions, (void *)(data));
-if(data->symbol)
-FreeSymbol(data->symbol);
-FreeType(data->dataType);
-(__ecereNameSpace__ecere__com__eSystem_Delete(data->fullName), data->fullName = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(data->dataTypeString), data->dataTypeString = 0);
-((data ? (__ecereClass_GlobalData->Destructor ? __ecereClass_GlobalData->Destructor((void *)data) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)data) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(data)) : 0), data = 0);
-}
-}
-
-extern void PrintType(struct Type * type, char *  string, unsigned int printName, unsigned int fullName);
-
-extern void Compiler_Warning(const char *  format, ...);
-
-void __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(struct __ecereNameSpace__ecere__sys__OldList * this, void (*  freeFn)(void * ));
-
-void CheckDataRedefinitions()
-{
-struct DataRedefinition * redefinition;
-
-for(redefinition = dataRedefinitions.first; redefinition; redefinition = redefinition->next)
-{
-struct Type * type1 = ProcessTypeString(redefinition->type1, 0);
-struct Type * type2 = ProcessTypeString(redefinition->type2, 0);
-char type1String[1024] = "";
-char type2String[1024] = "";
-
-PrintType(type1, type1String, 0, 1);
-PrintType(type2, type2String, 0, 1);
-if(strcmp(type1String, type2String))
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "Redefinition of %s (defining as %s, already defined as %s)\n", (((void *)0))), redefinition->name, type1String, type2String);
-FreeType(type1);
-FreeType(type2);
-}
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&dataRedefinitions, (((void *)0)));
-}
-
 void __ecereRegisterModule_loadSymbols(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
@@ -2080,23 +2057,5 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OpenIncludeFile", "ecere
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeIncludeFiles", "void FreeIncludeFiles(void)", FreeIncludeFiles, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("FreeGlobalData", "void FreeGlobalData(ecere::com::NameSpace globalDataList)", FreeGlobalData, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("CheckDataRedefinitions", "void CheckDataRedefinitions(void)", CheckDataRedefinitions, module, 1);
-}
-
-void __ecereUnregisterModule_loadSymbols(struct __ecereNameSpace__ecere__com__Instance * module)
-{
-
-}
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___;
-
-void __ecereCreateModuleInstances_loadSymbols()
-{
-loadedModules = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__com__Map_TPL_String__ecere__com__List_TPL_ecere__com__Module___);
-__ecereNameSpace__ecere__com__eInstance_IncRef(loadedModules);
-}
-
-void __ecereDestroyModuleInstances_loadSymbols()
-{
-(__ecereNameSpace__ecere__com__eInstance_DecRef(loadedModules), loadedModules = 0);
 }
 

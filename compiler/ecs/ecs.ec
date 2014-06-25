@@ -322,7 +322,6 @@ static void WriteMain(const char * fileName)
             Class regClass = eSystem_FindClass(privateModule, _class.name);
 
             FullClassNameCat(className, _class.name, true);
-            //MangleClassName(className);
 
             if(_class.itself)
                f.Printf("Class __ecereClass_%s;\n", className);
@@ -373,8 +372,6 @@ static void WriteMain(const char * fileName)
                   char propName[1024];
                   propName[0] = 0;
                   FullClassNameCat(propName, prop.name, true);
-                  // strcpy(propName, prop.name);
-                  //MangleClassName(propName);
 
                   if((!strcmp(_class.name, "float") || !strcmp(_class.name, "double") || module.name) && module.importType != staticImport)
                   {
@@ -469,11 +466,11 @@ static void WriteMain(const char * fileName)
          f.Puts("   __attribute__((unused)) Class _class;\n");
 
       if(anyMethod)
-         f.Puts("   Method method;\n");
+         f.Puts("   __attribute__((unused)) Method method;\n");
       if(anyProp)
-         f.Puts("   Property _property;\n");
+         f.Puts("   __attribute__((unused)) Property _property;\n");
       if(anyFunction)
-         f.Puts("   GlobalFunction function;\n");
+         f.Puts("   __attribute__((unused)) GlobalFunction function;\n");
 
       f.Puts("\n");
 
@@ -559,7 +556,6 @@ static void WriteMain(const char * fileName)
                   char classID[1024];
                   char className[1024] = "";
                   FullClassNameCat(className, _class.name, true);
-                  //MangleClassName(className);
 
                   if(_class.itself)
                      sprintf(classID, "__ecereClass_%s", className);
@@ -593,8 +589,6 @@ static void WriteMain(const char * fileName)
                      char propName[1024];
                      propName[0] = 0;
                      FullClassNameCat(propName, prop.name, true);
-                     // strcpy(propName, prop.name);
-                     //MangleClassName(propName);
 
                      f.Printf("   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n",
                         className, propName, classID, prop.name);
@@ -853,7 +847,7 @@ static void BindDCOMClient()
          int vid;
          bool doVirtual;
 
-         DeclareClass(FindClass("ecere::net::DCOMClientObject"), "__ecereClass___ecereNameSpace__ecere__net__DCOMClientObject");
+         DeclareClass(null, FindClass("ecere::net::DCOMClientObject"), "__ecereClass___ecereNameSpace__ecere__net__DCOMClientObject");
          f.Printf("class %s : ecere::net::DCOMClientObject\n", _class.fullName);
          f.Printf("{\n");
 
@@ -902,8 +896,7 @@ static void BindDCOMClient()
                            }
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           //MangleClassName(className);
-                           DeclareClass(classSym, className);
+                           DeclareClass(null, classSym, className);
 
                            PrintType(method.dataType.returnType, type, true, true);
 
@@ -921,8 +914,8 @@ static void BindDCOMClient()
                            {
                               // Hardcode 1024 chars max string for now
                               f.Printf("            char %s[1024];\n", param.name);
-                              DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-                              DeclareClass(FindClass("String"), "__ecereClass_String");
+                              DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
+                              DeclareClass(null, FindClass("String"), "__ecereClass_String");
                            }
                            else
                            {
@@ -944,8 +937,7 @@ static void BindDCOMClient()
 
                               strcpy(className, "__ecereClass_");
                               FullClassNameCat(className, classSym.string, true);
-                              //MangleClassName(className);
-                              DeclareClass(classSym, className);
+                              DeclareClass(null, classSym, className);
 
                               PrintType(param, type, true, true);
 
@@ -965,7 +957,7 @@ static void BindDCOMClient()
                            f.Printf("            __ecereBuffer.Unserialize(");
                            if(param.kind == classType && !strcmp(param._class.string, "String"))
                            {
-                              DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                              DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                               f.Printf("(StaticString)");
                            }
                            f.Puts(param.name);
@@ -994,7 +986,7 @@ static void BindDCOMClient()
                            {
                               if(!strcmp(param._class.string, "String"))
                               {
-                                 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                                 DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                                  f.Printf("            __ecereBuffer.Serialize((StaticString)%s);\n", param.name);
                               }
                               else
@@ -1067,7 +1059,7 @@ static void BindDCOMClient()
                   FullClassNameCat(name, method._class.fullName, true);
                   strcat(name, "_");
                   strcat(name, method.name);
-                  DeclareMethod(method, name);
+                  DeclareMethod(null, method, name);
 
                   f.Printf("virtual ");
                }
@@ -1096,8 +1088,7 @@ static void BindDCOMClient()
 
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, classSym.string, true);
-                     //MangleClassName(className);
-                     DeclareClass(classSym, className);
+                     DeclareClass(null, classSym, className);
 
                      PrintType(method.dataType.returnType, type, true, true);
 
@@ -1132,18 +1123,17 @@ static void BindDCOMClient()
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, classSym.string, true);
 
-                     //MangleClassName(className);
-                     DeclareClass(classSym, className);
+                     DeclareClass(null, classSym, className);
 
                      if(param.kind == classType && !strcmp(param._class.string, "String"))
                      {
-                        DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                        DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                         f.Printf("      __ecereBuffer.Serialize((StaticString)%s);\n", param.name);
                      }
                      else
                         f.Printf("      __ecereBuffer.Serialize(%s);\n", param.name);
                   }
-                  DeclareMethod(
+                  DeclareMethod(null,
                      eClass_FindMethod(
                         eSystem_FindClass(privateModule, "ecere::net::DCOMClientObject"), "CallMethod", privateModule),
                      "__ecereMethod___ecereNameSpace__ecere__net__DCOMClientObject_CallMethod");
@@ -1156,7 +1146,7 @@ static void BindDCOMClient()
                      {
                         if(!strcmp(param._class.string, "String"))
                         {
-                           DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                           DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                            f.Printf("         __ecereBuffer.Unserialize((StaticString)%s);\n", param.name);
                         }
                         else
@@ -1167,7 +1157,7 @@ static void BindDCOMClient()
                   {
                      if(method.dataType.returnType.kind == classType && !strcmp(method.dataType.returnType._class.string, "String"))
                      {
-                        DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                        DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                         f.Printf("         __ecereBuffer.Unserialize((StaticString)__ecereResult);\n");
                      }
                      else
@@ -1227,7 +1217,7 @@ static void BindDCOMServer()
       if(!dcomSymbols) dcomSymbols = TempFile { };
       f = dcomSymbols;
 
-      DeclareClass(FindClass("ecere::net::DCOMServerObject"), "__ecereClass___ecereNameSpace__ecere__net__DCOMServerObject");
+      DeclareClass(null, FindClass("ecere::net::DCOMServerObject"), "__ecereClass___ecereNameSpace__ecere__net__DCOMServerObject");
 
       // SERVER BINDINGS
       for(_class = privateModule.classes.first; _class; _class = _class.next)
@@ -1290,8 +1280,7 @@ static void BindDCOMServer()
                         }
                         strcpy(className, "__ecereClass_");
                         FullClassNameCat(className, classSym.string, true);
-                        //MangleClassName(className);
-                        DeclareClass(classSym, className);
+                        DeclareClass(null, classSym, className);
 
                         PrintType(method.dataType.returnType, type, true, true);
 
@@ -1309,8 +1298,8 @@ static void BindDCOMServer()
                         {
                            // Hardcode 1024 chars max string for now
                            f.Printf("            char %s[1024];\n", param.name);
-                           DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
-                           DeclareClass(FindClass("String"), "__ecereClass_String");
+                           DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
+                           DeclareClass(null, FindClass("String"), "__ecereClass_String");
                         }
                         else
                         {
@@ -1332,8 +1321,7 @@ static void BindDCOMServer()
 
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           //MangleClassName(className);
-                           DeclareClass(classSym, className);
+                           DeclareClass(null, classSym, className);
 
                            PrintType(param, type, true, true);
 
@@ -1353,7 +1341,7 @@ static void BindDCOMServer()
                         f.Printf("            __ecereBuffer.Unserialize(");
                         if(param.kind == classType && !strcmp(param._class.string, "String"))
                         {
-                           DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                           DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                            f.Printf("(StaticString)");
                         }
                         f.Puts(param.name);
@@ -1382,7 +1370,7 @@ static void BindDCOMServer()
                         {
                            if(!strcmp(param._class.string, "String"))
                            {
-                              DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                              DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                               f.Printf("            __ecereBuffer.Serialize((StaticString)%s);\n", param.name);
                            }
                            else
@@ -1430,12 +1418,12 @@ static void BindDCOMServer()
                {
                   if(!mutexDeclared)
                   {
-                     DeclareClass(FindClass("ecere::sys::Mutex"), "__ecereClass___ecereNameSpace__ecere__sys__Mutex");
-                     DeclareMethod(
+                     DeclareClass(null, FindClass("ecere::sys::Mutex"), "__ecereClass___ecereNameSpace__ecere__sys__Mutex");
+                     DeclareMethod(null,
                         eClass_FindMethod(
                            eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Wait", privateModule),
                               "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Wait");
-                     DeclareMethod(
+                     DeclareMethod(null,
                         eClass_FindMethod(
                            eSystem_FindClass(privateModule, "ecere::sys::Mutex"), "Release", privateModule),
                               "__ecereMethod___ecereNameSpace__ecere__sys__Mutex_Release");
@@ -1474,8 +1462,7 @@ static void BindDCOMServer()
 
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           //MangleClassName(className);
-                           DeclareClass(classSym, className);
+                           DeclareClass(null, classSym, className);
 
                            PrintType(method.dataType.returnType, type, true, true);
 
@@ -1513,19 +1500,18 @@ static void BindDCOMServer()
                            }
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, classSym.string, true);
-                           //MangleClassName(className);
-                           DeclareClass(classSym, className);
+                           DeclareClass(null, classSym, className);
 
                            if(param.kind == classType && !strcmp(param._class.string, "String"))
                            {
-                              DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                              DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                               f.Printf("      __ecereObject.argsBuffer.Serialize((StaticString)%s);\n", param.name);
                            }
                            else
                               f.Printf("      __ecereObject.argsBuffer.Serialize(%s);\n", param.name);
                         }
 
-                        DeclareMethod(
+                        DeclareMethod(null,
                            eClass_FindMethod(
                               eSystem_FindClass(privateModule, "ecere::net::DCOMServerObject"), "CallVirtualMethod", privateModule),
                            "__ecereMethod___ecereNameSpace__ecere__net__DCOMServerObject_CallVirtualMethod");
@@ -1554,7 +1540,7 @@ static void BindDCOMServer()
                            {
                               if(!strcmp(param._class.string, "String"))
                               {
-                                 DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                                 DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                                  f.Printf("         __ecereObject.returnBuffer.Unserialize((StaticString)%s);\n", param.name);
                               }
                               else
@@ -1565,7 +1551,7 @@ static void BindDCOMServer()
                         {
                            if(method.dataType.returnType.kind == classType && !strcmp(method.dataType.returnType._class.string, "String"))
                            {
-                              DeclareClass(FindClass("StaticString"), "__ecereClass_StaticString");
+                              DeclareClass(null, FindClass("StaticString"), "__ecereClass_StaticString");
                               f.Printf("         __ecereObject.returnBuffer.Unserialize((StaticString)__ecereResult);\n");
                            }
                            else

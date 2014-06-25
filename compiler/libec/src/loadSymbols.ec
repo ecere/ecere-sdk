@@ -268,13 +268,11 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                  regClass.structSize = regClass.offset;    // THIS COULD PROBABLY BENEFIT FROM SOME EXPLANATIONS...
                               }
 
-                              // Added this
                               if(regClass && existingClass)
                               {
                                  existingClass.registered = regClass;
-                                 regClass.symbol = existingClass; // TESTING THIS
-                                 existingClass.id = MAXINT;
-                                 existingClass.idCode = MAXINT;
+                                 regClass.symbol = existingClass;
+                                 existingClass.notYetDeclared = true;
                                  existingClass.imported = true;
                                  if(regClass.module)
                                     existingClass.module = FindModule(regClass.module);

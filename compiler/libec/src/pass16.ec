@@ -7,6 +7,8 @@ extern External curExternal;
 static Statement curCompound;
 static Statement createInstancesBody;
 static Statement destroyInstancesBody;
+static External createInstancesExternal;
+static External destroyInstancesExternal;
 
 static void CreateInstancesBody()
 {
@@ -33,7 +35,7 @@ static void CreateInstancesBody()
       {
          FunctionDefinition function = _MkFunction(specifiers, declarator, null, false);
          ProcessFunctionBody(function, createInstancesBody);
-         ListAdd(ast, MkExternalFunction(function));
+         ListAdd(ast, createInstancesExternal = MkExternalFunction(function));
       }
 
       // Destroy Instances Body
@@ -50,7 +52,7 @@ static void CreateInstancesBody()
       {
          FunctionDefinition function = _MkFunction(specifiers, declarator, null, false);
          ProcessFunctionBody(function, destroyInstancesBody);
-         ListAdd(ast, MkExternalFunction(function));
+         ListAdd(ast, destroyInstancesExternal = MkExternalFunction(function));
       }
    }
 }
@@ -338,7 +340,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                   else
                   {
                      char setName[1024], getName[1024];
-                     DeclareProperty((Property)bitMember, setName, getName);
+                     DeclareProperty(curExternal, (Property)bitMember, setName, getName);
                      if(member.initializer && member.initializer.type == expInitializer)
                      {
                         exp = MkExpCall(MkExpIdentifier(MkIdentifier(setName)),
@@ -407,7 +409,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
             if(prop)
             {
                char setName[1024], getName[1024];
-               DeclareProperty(prop, setName, getName);
+               DeclareProperty(curExternal, prop, setName, getName);
                if(member.initializer && member.initializer.type == expInitializer)
                {
                   exp = MkExpCall(MkExpIdentifier(MkIdentifier(setName)), MkListOne(member.initializer.exp));
@@ -689,7 +691,8 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
    return fullSet || convert;
 }
 
-public void DeclareClass(Symbol classSym, const char * className)
+// We may want to have 2 functions here for dependency on struct or class pointer
+public void DeclareClass(External neededFor, Symbol classSym, const char * className)
 {
    /*if(classSym.registered.templateClass)
    {
@@ -698,21 +701,13 @@ public void DeclareClass(Symbol classSym, const char * className)
       strcpy(className, "__ecereClass_");
       templateSym = FindClass(classSym.registered.templateClass.fullName);
       FullClassNameCat(className, templateSym.string, true);
-      //MangleClassName(className);
 
       DeclareClass(templateSym, className);
    }*/
-   if(classSym && classSym.id == MAXINT)
+   if(classSym && classSym.notYetDeclared)
    {
-      // Add Class declaration as extern
-      Declaration decl;
-      OldList * specifiers, * declarators;
-      Declarator d;
-
       if(!classSym._import)
       {
-         // TESTING: DANGER HERE... CHECK FOR TEMPLATES ONLY? SET classSym.module ELSEWHERE?
-         // if(!classSym.module) return;
          if(!classSym.module) classSym.module = mainModule;
          if(!classSym.module) return;
          classSym._import = ClassImport
@@ -723,55 +718,34 @@ public void DeclareClass(Symbol classSym, const char * className)
          classSym.module.classes.Add(classSym._import);
       }
       classSym._import.itself = true;
-
-      specifiers = MkList();
-      declarators = MkList();
-
-      ListAdd(specifiers, MkSpecifier(EXTERN));
-      ListAdd(specifiers, MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
-
-      d = MkDeclaratorPointer(MkPointer(null, null),
-         MkDeclaratorIdentifier(MkIdentifier(className)));
-
-      ListAdd(declarators, MkInitDeclarator(d, null));
-
-      decl = MkDeclaration(specifiers, declarators);
-
-      if(curExternal)
+      classSym.notYetDeclared = false;
+      if(!classSym.pointerExternal && inCompiler)
       {
-         ast->Insert(curExternal.prev, (classSym.pointerExternal = MkExternalDeclaration(decl)));
-         // classSym.id = curExternal.symbol.id;
+         Declaration decl;
+         OldList * specifiers, * declarators;
+         Declarator d;
 
-         // TESTING THIS:
-         classSym.id = curExternal.symbol ? curExternal.symbol.idCode : 0;
-         // TESTING THIS:
-         classSym.idCode = classSym.id;
+         specifiers = MkList();
+         declarators = MkList();
+
+         ListAdd(specifiers, MkSpecifier(EXTERN));
+         ListAdd(specifiers, MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
+
+         d = MkDeclaratorPointer(MkPointer(null, null),
+            MkDeclaratorIdentifier(MkIdentifier(className)));
+
+         ListAdd(declarators, MkInitDeclarator(d, null));
+
+         decl = MkDeclaration(specifiers, declarators);
+
+         classSym.pointerExternal = MkExternalDeclaration(decl);
+         ast->Add(classSym.pointerExternal);
+
+         DeclareStruct(classSym.pointerExternal, "ecere::com::Class", false, true);
       }
    }
-   else if(classSym && curExternal && curExternal.symbol.idCode < classSym.id)
-   //else if(curExternal.symbol.id <= classSym.id)
-   {
-      // DANGER: (Moved here)
-      if(classSym.structExternal)
-         DeclareStruct(classSym.string, classSym.registered && classSym.registered.type == noHeadClass);
-
-      // Move _class declaration higher...
-      ast->Move(classSym.pointerExternal, curExternal.prev);
-
-      // DANGER:
-      /*
-      if(classSym.structExternal)
-         DeclareStruct(classSym.string, classSym.registered && classSym.registered.type == noHeadClass);
-      */
-
-      // TOFIX: For non simple classes, Class is in pointerExternal and actual struct in structExternal
-      if(classSym.structExternal)
-         ast->Move(classSym.structExternal, classSym.pointerExternal);
-
-      classSym.id = curExternal.symbol.idCode;
-      // TESTING THIS
-      classSym.idCode = classSym.id;
-   }
+   if(inCompiler && classSym && classSym.pointerExternal && neededFor)
+      neededFor.CreateUniqueEdge(classSym.pointerExternal, false);
 }
 
 void ProcessExpressionInstPass(Expression exp)
@@ -1034,8 +1008,11 @@ static void ProcessExpression(Expression exp)
                   (classSym.registered.templateClass ? classSym.registered.templateClass.fixed : classSym.registered.fixed))
                {
                   char size[256];
-                  sprintf(size, "%d", classSym.registered.templateClass ? classSym.registered.templateClass.structSize : classSym.registered.structSize);
-                  newCall = MkExpCall(QMkExpId("ecere::com::eSystem_New0"), MkListOne(MkExpConstant(size)));
+                  Class c = classSym.registered.templateClass ? classSym.registered.templateClass : classSym.registered;
+                  Expression e = MkExpClassSize(MkSpecifierName(c.name));
+                  ProcessExpressionType(e);
+                  sprintf(size, "%d", c.structSize);
+                  newCall = MkExpCall(QMkExpId("ecere::com::eSystem_New0"), MkListOne( e /*MkExpConstant(size)*/));
                   newCall.byReference = true;
                }
                else
@@ -1049,8 +1026,7 @@ static void ProcessExpression(Expression exp)
                   else
                      FullClassNameCat(className, inst._class.name, true);
 
-                  //MangleClassName(className);
-                  DeclareClass(classSym, className);
+                  DeclareClass(curExternal, classSym, className);
                   newCall = MkExpCall(QMkExpId("ecere::com::eInstance_New"), MkListOne(QMkExpId(className)));
                   newCall.usage = exp.usage;
 
@@ -1477,7 +1453,7 @@ static void ProcessExpression(Expression exp)
                else if(member)
                {
                   exp.member.memberType = dataMember;
-                  DeclareStruct(_class.fullName, false);
+                  DeclareStruct(curExternal, _class.fullName, false, true);
                   if(!member.dataType)
                      member.dataType = ProcessTypeString(member.dataTypeString, false);
 
@@ -2270,6 +2246,9 @@ static void ProcessDeclaration(Declaration decl)
                      ListAddFront(destroyInstancesBody.compound.statements, MkExpressionStmt(MkListOne(exp)));
                      ProcessExpressionType(exp);
                   }
+
+                  createInstancesExternal.CreateEdge(curExternal, false);
+                  destroyInstancesExternal.CreateEdge(curExternal, false);
                   break;
                }
                else
@@ -2319,11 +2298,10 @@ static void ProcessDeclaration(Declaration decl)
                {
                   Expression exp;
 
-                  DeclareStruct(inst._class.name, false);
+                  DeclareStruct(curExternal, inst._class.name, false, true);
                   /*{
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, classSym.string, true);
-                     //MangleClassName(className);
                      DeclareClass(classSym, className);
                   }*/
 
@@ -2382,17 +2360,19 @@ static void ProcessDeclaration(Declaration decl)
                   }
                   else
                      FullClassNameCat(className, inst._class.name, true);
-                  //MangleClassName(className);
 
                   if(classSym)
-                     DeclareClass(classSym, className);
+                     DeclareClass(curExternal, classSym, className);
 
                   if(classSym && classSym.registered && classSym.registered.type == noHeadClass &&
                      (classSym.registered.templateClass ? classSym.registered.templateClass.fixed : classSym.registered.fixed))
                   {
                      char size[256];
-                     sprintf(size, "%d", classSym.registered.templateClass ? classSym.registered.templateClass.structSize : classSym.registered.structSize);
-                     newCall = MkExpCall(QMkExpId("ecere::com::eSystem_New0"), MkListOne(MkExpConstant(size)));
+                     Class c = classSym.registered.templateClass ? classSym.registered.templateClass : classSym.registered;
+                     Expression e = MkExpClassSize(MkSpecifierName(c.name));
+                     ProcessExpressionType(e);
+                     sprintf(size, "%d", c.structSize);
+                     newCall = MkExpCall(QMkExpId("ecere::com::eSystem_New0"), MkListOne( e /*MkExpConstant(size)*/));
                   }
                   else
                   {
@@ -2661,7 +2641,85 @@ public void ProcessInstantiations()
       {
          //currentClass = external.function._class;
          if(external.declaration)
+         {
+            bool isInstance = external.declaration.type == instDeclaration;
+            Symbol sym = isInstance ? FindClass(external.declaration.inst._class.name) : null;
             ProcessDeclaration(external.declaration);
+
+            if(isInstance)
+            {
+               // Move edges to the global instances to the create instance body instead
+               TopoEdge e, next;
+               for(e = external.incoming.first; e; e = next)
+               {
+                  External from = e.from;
+
+                  next = e.in.next;
+
+                  if(from.incoming.count)
+                  {
+                     bool reroute = true;
+                     if(sym && sym.registered && sym.registered.type == structClass)
+                        reroute = false;
+                     else if(from.type == declarationExternal && from.declaration && (!from.declaration.declarators || !from.declaration.declarators->count) && from.declaration.specifiers)
+                     {
+                        Specifier spec = null;
+                        for(spec = from.declaration.specifiers->first; spec; spec = spec.next)
+                        {
+                           if(spec.type == structSpecifier || spec.type == unionSpecifier)
+                              break;
+                        }
+                        if(sym.registered && spec && spec.id && spec.id.string)
+                        {
+                           char className[1024];
+                           Class c = sym.registered;
+                           strcpy(className, "__ecereClass_");
+                           if(c.type == noHeadClass && c.templateClass)
+                              FullClassNameCat(className, c.templateClass.name, true);
+                           else
+                              FullClassNameCat(className, c.name, true);
+                           if(!strcmp(c.name, spec.id.string))
+                              reroute = false;
+                        }
+                     }
+                     if(reroute)
+                     {
+                        bool skip = false;
+                        e.to = createInstancesExternal;
+                        external.incoming.Remove((IteratorPointer)e);
+                        for(i : createInstancesExternal.incoming)
+                        {
+                           if(i.from == from)
+                           {
+                              skip = true;
+                              if(i.breakable && !e.breakable)
+                              {
+                                 i.breakable = true;
+                                 createInstancesExternal.nonBreakableIncoming++;
+                              }
+                              break;
+                           }
+                        }
+                        if(skip)
+                        {
+                           external.nonBreakableIncoming--;
+                           e.from.outgoing.Remove((IteratorPointer)e);
+                           delete e;
+                        }
+                        else
+                        {
+                           createInstancesExternal.incoming.Add(e);
+                           if(!e.breakable)
+                           {
+                              external.nonBreakableIncoming--;
+                              createInstancesExternal.nonBreakableIncoming++;
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
       }
       else if(external.type == functionExternal)
       {

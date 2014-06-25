@@ -5,60 +5,6 @@ import "ecdefs"
 
 extern External curExternal;
 
-/*public void MangleClassName(char * className)
-{
-   char output[1024];
-   int c, d = 0;
-   char ch;
-   c = 0;
-   if(!strncmp(className, "const ", 6)) c += 6;
-
-   for(; (ch = className[c]); c++)
-   {
-      if(ch == ' ')
-         output[d++] = '_';
-      else if(ch == '*')
-      {
-         output[d++] = '_';
-         output[d++] = 'P';
-         output[d++] = 'T';
-         output[d++] = 'R';
-         output[d++] = '_';
-      }
-      else if(ch == '<')
-      {
-         if(!strncmp(className + c + 1, "const ", 6)) c += 6;
-         output[d++] = '_';
-         output[d++] = 'T';
-         output[d++] = 'P';
-         output[d++] = 'L';
-         output[d++] = '_';
-      }
-      else if(ch == '=')
-      {
-         output[d++] = '_';
-         output[d++] = 'E';
-         output[d++] = 'Q';
-         output[d++] = 'U';
-         output[d++] = '_';
-      }
-      else if(ch == '>')
-      {
-         output[d++] = '_';
-      }
-      else if(ch == ',')
-      {
-         if(!strncmp(className + c + 1, "const ", 6)) c += 6;
-         output[d++] = '_';
-      }
-      else
-         output[d++] = ch;
-   }
-   output[d] = 0;
-   // ChangeCh(className, ' ', '_');
-   // ChangeCh(className, '*', '_');
-}
-*/
 public void FullClassNameCat(char * output, const char * className, bool includeTemplateParams)
 {
    int c;
@@ -133,12 +79,10 @@ public void FullClassNameCat(char * output, const char * className, bool include
    output[len++] = 0;
 }
 
-static void AddSimpleBaseMembers(OldList list, Class _class, Class topClass)
+static void AddSimpleBaseMembers(External external, OldList list, Class _class, Class topClass)
 {
-   /*if(_class.base && _class.type != CLASS_SYSTEM)
-      AddSimpleBaseMembers(list, _class.base, topClass);*/
    if(_class.type != systemClass)
-      AddMembers(list, _class, false, null, topClass, null);
+      AddMembers(external, list, _class, false, null, topClass, null);
 }
 
 static bool NameSpaceContained(NameSpace * ns, NameSpace * parent)
@@ -593,7 +537,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
    if((classType == structClass || classType == noHeadClass) && inCompiler)
    {
-      AddSimpleBaseMembers(list, regClass.base, regClass);
+      AddSimpleBaseMembers(external, list, regClass.base, regClass);
    }
 
    // First check if there's any declaration or instantiations, we'll need a struct
@@ -754,7 +698,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
    if(inCompiler)
    {
-      external.symbol = null;      // curExternal.symbol = null;
+      external.symbol = null;
 
       if(list->count)
       {
@@ -762,10 +706,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          OldList * specs = MkList(), * declarators = (initDeclarators != null) ? initDeclarators : MkList();
          initDeclarators = null;
 
-         /*
-         structName[0] = 0;
-         FullClassNameCat(structName, symbol.string, false);
-         */
          // TESTING THIS HERE INSTEAD:
          strcpy(structName, symbol.string);
          symbol.structName = CopyString(structName);
@@ -778,7 +718,15 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          }
 
          external.symbol = symbol;
-         // TOFIX : Fix this...
+         if(symbol.structExternal)
+         {
+            for(e : symbol.structExternal.incoming)
+               external.CreateUniqueEdge(e.from, e.breakable);
+            for(e : symbol.structExternal.outgoing)
+               e.to.CreateUniqueEdge(external, e.breakable);
+            ast->Remove(symbol.structExternal);
+            FreeExternal(symbol.structExternal);
+         }
          symbol.structExternal = external;
 
          external.declaration = MkDeclaration(specs, declarators);
@@ -794,7 +742,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          delete list;
       }
 
-      // TODO: Deal with declaration id issues...
       if(classDataList->count)
       {
          // We need a struct
@@ -824,8 +771,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          strcpy(className, "__ecereClass_");
          FullClassNameCat(className, symbol.string, true);
 
-         //MangleClassName(className);
-
          symbol.className = CopyString(className);
 
          if(!strstr(sourceFile, ".main.ec"))
@@ -834,8 +779,10 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
          ListAdd(declarators, MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null),
             MkDeclaratorIdentifier(MkIdentifier(className))), null));
 
-         symbol.methodExternal = MkExternalDeclaration(MkDeclaration(specs, declarators));
-         defs.Insert(after, symbol.methodExternal);
+         symbol.pointerExternal = MkExternalDeclaration(MkDeclaration(specs, declarators));
+         DeclareStruct(symbol.pointerExternal, "ecere::com::Class", false, true);
+
+         defs.Insert(after, symbol.pointerExternal);
          after = symbol.methodExternal;
       }
 
@@ -918,20 +865,11 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
          decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(destructorName)), null);
 
-         // Destructor will have same Symbol ID as class
-         decl.symbol = Symbol
-         {
-            id = symbol.id;
-            idCode = symbol.idCode;
-            //id = symbol.endid;
-         };
+         decl.symbol = Symbol { };
          excludedSymbols->Add(decl.symbol);
 
          function = MkClassFunction(specs, null, decl, null);
          ProcessClassFunctionBody(function, body);
-         function.id = symbol.id;
-         function.idCode = symbol.idCode;
-         //function.id = symbol.endid;
          function.dontMangle = true;
          definitions.Insert(null, MkClassDefFunction(function));
       }
@@ -1091,20 +1029,11 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 
          decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(constructorName)), null);
 
-         // Constructor will have same Symbol ID as class
          decl.symbol = Symbol { };
          excludedSymbols->Add(decl.symbol);
 
-         //*decl.symbol = *symbol;
-         decl.symbol.id = symbol.id;
-         decl.symbol.idCode = symbol.idCode;
-         //decl.symbol.id = symbol.endid;
-
          function = MkClassFunction(specs, null, decl, null);
          ProcessClassFunctionBody(function, body);
-         function.id = symbol.id;
-         function.idCode = symbol.idCode;
-         //function.id = symbol.endid;
          function.dontMangle = true;
          if(definitions != null)
             definitions.Insert(null, MkClassDefFunction(function));
@@ -1148,7 +1077,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_Get_");
                      // strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1197,7 +1125,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_Set_");
                      //strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1217,9 +1144,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         if(!spec)
                            specs->Insert(null, MkSpecifier(CONST));
                      }
-
-                     // Take it out here...
-                     //propertyDef.specifiers = null;
 
                      decl = MkDeclaratorFunction(
                         MkDeclaratorIdentifier(MkIdentifier(name)), params);
@@ -1243,16 +1167,9 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      ProcessClassFunctionBody(func, propertyDef.setStmt);
                      func.dontMangle = true;
                      func.declarator.symbol = propertyDef.symbol;
-                     //func.declarator.propSymbol = propertyDef.symbol;
                      propertyDef.symbol.externalSet = (External)func;
                      if(!propertyDef.conversion && regClass.type == normalClass)
                         func.propSet = propertyDef.symbol;
-
-                     /*
-
-                     func.declarator.symbol = Symbol { id = propertyDef.symbol.id + 1 };
-                     //func.declarator.symbol.methodExternal = (External)func;
-                     */
 
                      newDef = MkClassDefFunction(func);
                      definitions.Insert(after, newDef);
@@ -1272,7 +1189,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_IsSet_");
                      //strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1319,7 +1235,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(name, "_");
                      //strcat(name, propertyDef.id.string);
                      FullClassNameCat(name, propertyDef.id.string, true);
-                     //MangleClassName(name);
 
                      {
                         OldList * list = MkList();
@@ -1330,7 +1245,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                         strcat(name, "_");
                         //strcat(name, propertyDef.id.string);
                         FullClassNameCat(name, propertyDef.id.string, true);
-                        //MangleClassName(name);
 
                         ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(name)), null));
                         decl = MkDeclaration(specifiers, list);
@@ -1379,7 +1293,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      FullClassNameCat(name, symbol.string, false);
                      strcat(name, "_Get_");
                      strcat(name, propertyDef.id.string);
-                     //MangleClassName(name);
 
                      params = MkList();
 
@@ -1459,7 +1372,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      FullClassNameCat(name, symbol.string, false);
                      strcat(name, "_Set_");
                      strcat(name, propertyDef.id.string);
-                     //MangleClassName(name);
 
                      params = MkList();
                      /*
@@ -1609,7 +1521,7 @@ public void PreProcessClassDefinitions()
          else if(external.type == declarationExternal)
          {
             Declaration declaration = external.declaration;
-            if(declaration.type == initDeclaration)
+            if(declaration && declaration.type == initDeclaration)
             {
                if(declaration.specifiers)
                {
@@ -1640,7 +1552,7 @@ public void PreProcessClassDefinitions()
                   }
                }
             }
-            else if(inCompiler && declaration.type == defineDeclaration)
+            else if(declaration && inCompiler && declaration.type == defineDeclaration)
             {
                yylloc = declaration.loc;
                if(declaration.declMode == publicAccess)

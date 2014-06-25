@@ -537,40 +537,40 @@ strict_type:
 
 class_function_definition_start:
    guess_declaration_specifiers declarator_function_type_ok
-      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; }
    | declarator_function
-      { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; }
    ;
 
 constructor_function_definition_start:
    guess_declaration_specifiers '(' ')'
-      { $$ = MkClassFunction($1, null, null, null); $$.isConstructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, null, null); $$.isConstructor = true; $$.loc = @$; }
    ;
 
 destructor_function_definition_start:
    '~' guess_declaration_specifiers '(' ')'
-      { $$ = MkClassFunction($2, null, null, null); $$.isDestructor = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($2, null, null, null); $$.isDestructor = true; $$.loc = @$; }
    ;
 
 virtual_class_function_definition_start:
      VIRTUAL guess_declaration_specifiers declarator_function_type_ok
-      { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; }
    | VIRTUAL declarator_function
-      { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; }
       ;
 
 class_function_definition_start_error:
      guess_declaration_specifiers declarator_function_error_type_ok
-      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; }
    | declarator_function_error
-      { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction(null, null, $1, null); $$.loc = @$; }
    ;
 
 virtual_class_function_definition_start_error:
      VIRTUAL guess_declaration_specifiers declarator_function_error_type_ok
-      { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($2, null, $3, null); $$.isVirtual = true; $$.loc = @$; }
    | VIRTUAL declarator_function_error
-      { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction(null, null, $2, null); $$.isVirtual = true; $$.loc = @$; }
       ;
 
 class_function_definition:
@@ -618,14 +618,14 @@ class_function_definition_error:
 // In Instances, return type is required to distinguish from calling the function
 instance_class_function_definition_start:
    declaration_specifiers declarator_function_type_ok
-      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; }
    |  declaration_specifiers declarator_nofunction_type_ok
-      { $$ = MkClassFunction($1, null, MkDeclaratorFunction($2, null), null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, MkDeclaratorFunction($2, null), null); $$.loc = @$; }
       ;
 
 instance_class_function_definition_start_error:
    declaration_specifiers declarator_function_error_type_ok
-      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; $$.id = ++globalContext.nextID; }
+      { $$ = MkClassFunction($1, null, $2, null); $$.loc = @$; }
       ;
 
 instance_class_function_definition:
@@ -1155,10 +1155,10 @@ struct_declaration:
      struct_declaration_error ';' { $$ = $1; $$.loc.end = @2.end; }
    | default_property_list ';'     { $$ = MkClassDefDefaultProperty($1); if($1->last) ((MemberInit)$1->last).loc.end = @2.start; $$.loc = @$; }
    | class_function_definition                                       { $$ = MkClassDefFunction($1); $$.loc = @$; $$.memberAccess = memberAccessStack[defaultMemberAccess]; }
-   | property                       { $$ = MkClassDefProperty($1); $$.loc = @$; globalContext.nextID++; $$.memberAccess = memberAccessStack[defaultMemberAccess]; }
+   | property                       { $$ = MkClassDefProperty($1); $$.loc = @$; $$.memberAccess = memberAccessStack[defaultMemberAccess]; }
    | member_access class_function_definition                                       { $$ = MkClassDefFunction($2); $$.loc = @$; $$.memberAccess = $1; }
-   | member_access property                       { $$ = MkClassDefProperty($2); $$.loc = @$; globalContext.nextID++; $$.memberAccess = $1; }
-   | class_property                 { $$ = MkClassDefClassProperty($1); $$.loc = @$; globalContext.nextID++; }
+   | member_access property                       { $$ = MkClassDefProperty($2); $$.loc = @$; $$.memberAccess = $1; }
+   | class_property                 { $$ = MkClassDefClassProperty($1); $$.loc = @$; }
    | WATCHABLE { $$ = null; deleteWatchable = true; }
    | CLASS_NO_EXPANSION             { $$ = MkClassDefNoExpansion(); }
    | CLASS_FIXED                    { $$ = MkClassDefFixed(); }
@@ -1181,7 +1181,7 @@ struct_declaration_error:
    | member_access instantiation_unnamed                                       { $$ = MkClassDefDeclaration(MkDeclarationClassInst($2)); $$.loc = @$; $$.decl.loc = @$; $$.memberAccess = $1; }
    | member_access guess_instantiation_named                                   { $$ = MkClassDefDeclaration(MkDeclarationClassInst($2)); $$.loc = @$; $$.decl.loc = @$; $$.memberAccess = $1; }
    | CLASS_DATA guess_declaration_specifiers struct_declarator_list { $$ = MkClassDefClassData(MkStructDeclaration($2, $3, null)); $$.decl.loc = @$; $$.loc = @$; }
-   | self_watch_definition      { $$ = MkClassDefPropertyWatch($1); $$.loc = @$; globalContext.nextID++; }
+   | self_watch_definition      { $$ = MkClassDefPropertyWatch($1); $$.loc = @$; }
    | CLASS_DESIGNER identifier { $$ = MkClassDefDesigner($2.string); FreeIdentifier($2); }
    | CLASS_DESIGNER strict_type { $$ = MkClassDefDesigner($2.name); FreeSpecifier($2); }
    | CLASS_DEFAULT_PROPERTY identifier { $$ = MkClassDefDesignerDefaultProperty($2); }
@@ -1338,30 +1338,30 @@ class_entry:
    };
 
 class_decl:
-     class_entry identifier { (void)$1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+     class_entry identifier { (void)$1; $$ = DeclClassAddNameSpace(0, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type
    {
-      (void)$1; $$ = DeclClass(globalContext.nextID++, $2.name);
+      (void)$1; $$ = DeclClass(0, $2.name);
       $$.nameLoc = @2;
       FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier { (void)$2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type { (void)$2; $$ = DeclClass(globalContext.nextID++, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier { (void)$2; $$ = DeclClassAddNameSpace(0, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type { (void)$2; $$ = DeclClass(0, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
 
-   | class_entry identifier '<' template_parameters_list '>' { (void)$1; $$ = DeclClassAddNameSpace(globalContext.nextID++, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | class_entry identifier '<' template_parameters_list '>' { (void)$1; $$ = DeclClassAddNameSpace(0, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type '<' template_parameters_list '>'
    {
-      (void)$1; $$ = DeclClass(globalContext.nextID++, $2.name);
+      (void)$1; $$ = DeclClass(0, $2.name);
       $$.templateParams = $4;
       $$.nameLoc = @2;
       FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier '<' template_parameters_list '>' { (void)$2; $$ = DeclClassAddNameSpace(globalContext.nextID++, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type '<' template_parameters_list '>' { (void)$2; $$ = DeclClass(globalContext.nextID++, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier '<' template_parameters_list '>' { (void)$2; $$ = DeclClassAddNameSpace(0, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type '<' template_parameters_list '>' { (void)$2; $$ = DeclClass(0, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
    ;
 
 class:
@@ -1374,20 +1374,20 @@ class:
    // Added this for unit classes...
 	| class_head ';'
       {
-         $$ = $1; $$.definitions = MkList(); $$.blockStart = @2;  $$.loc = @$; $$.endid = globalContext.nextID++;
+         $$ = $1; $$.definitions = MkList(); $$.blockStart = @2;  $$.loc = @$;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 
 	| class_decl '{' '}'
       {
-         $$ = MkClass($1, null, MkList()); $$.blockStart = @2;  $$.loc = @$; $$.endid = globalContext.nextID++;
+         $$ = MkClass($1, null, MkList()); $$.blockStart = @2;  $$.loc = @$;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_head '{' '}'
       {
-         $$ = $1; $$.definitions = MkList(); $$.blockStart = @2;  $$.loc = @$; $$.endid = globalContext.nextID++;
+         $$ = $1; $$.definitions = MkList(); $$.blockStart = @2;  $$.loc = @$;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
@@ -1416,37 +1416,37 @@ class_head:
 class_error:
 	 class_decl '{' struct_declaration_list_error
       {
-         $$ = MkClass($1, null, $3); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2; $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
+         $$ = MkClass($1, null, $3); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2; $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_head '{' struct_declaration_list_error
       {
-         $$ = $1; $$.definitions = $3; $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
+         $$ = $1; $$.definitions = $3; $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_decl '{' struct_declaration_list
       {
-         $$ = MkClass($1, null, $3); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2; $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
+         $$ = MkClass($1, null, $3); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2; $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_head '{' struct_declaration_list
       {
-         $$ = $1; $$.definitions = $3; $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
+         $$ = $1; $$.definitions = $3; $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_decl '{' error
       {
-         $$ = MkClass($1, null, MkList()); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
+         $$ = MkClass($1, null, MkList()); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_head '{' error
       {
-         $$ = $1; $$.definitions = MkList(); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++; $$.endid = globalContext.nextID++;
+         $$ = $1; $$.definitions = MkList(); $$.deleteWatchable = deleteWatchable; deleteWatchable = false; $$.blockStart = @2;  $$.loc = @$; $$.loc.end.charPos++; $$.loc.end.pos++;
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
@@ -2207,8 +2207,8 @@ enum_specifier_compound_error:
 	;
 
 enum_decl:
-     enum_specifier identifier  { $$ = $2; if(declMode) DeclClassAddNameSpace(globalContext.nextID++, $2.string); }
-   | enum_specifier strict_type { $$ = MkIdentifier($2.name); if(declMode) DeclClass(globalContext.nextID++, $2.name); FreeSpecifier($2); }
+     enum_specifier identifier  { $$ = $2; if(declMode) DeclClassAddNameSpace(0, $2.string); }
+   | enum_specifier strict_type { $$ = MkIdentifier($2.name); if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
    ;
 
 enum_class:
@@ -2415,12 +2415,12 @@ struct_decl:
         $$ = $1;
         if(declMode)
         {
-           ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext.nextID++, $1.id.string);
+           ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)(0, $1.id.string);
         }
      }
    | struct_entry '<' template_parameters_list '>'
    {
-      Symbol symbol = ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)(globalContext.nextID++, $1.id.string);
+      Symbol symbol = ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)(0, $1.id.string);
       $$ = $1;
       symbol.templateParams = $3;
    }
@@ -3770,8 +3770,8 @@ thefile:
    ;
 
 dbtable_definition:
-     DBTABLE string_literal identifier   '{' dbfield_definition_list '}' { Symbol symbol = DeclClassAddNameSpace(globalContext.nextID++, $3.string); FreeIdentifier($3); $$ = MkDBTableDef($2, symbol, $5); }
-   | DBTABLE string_literal strict_type  '{' dbfield_definition_list '}' { Symbol symbol = DeclClass(globalContext.nextID++, $3.name); FreeSpecifier($3); $$ = MkDBTableDef($2, symbol, $5); }
+     DBTABLE string_literal identifier   '{' dbfield_definition_list '}' { Symbol symbol = DeclClassAddNameSpace(0, $3.string); FreeIdentifier($3); $$ = MkDBTableDef($2, symbol, $5); }
+   | DBTABLE string_literal strict_type  '{' dbfield_definition_list '}' { Symbol symbol = DeclClass(0, $3.name); FreeSpecifier($3); $$ = MkDBTableDef($2, symbol, $5); }
    | DBTABLE string_literal '{' dbfield_definition_list '}' { $$ = MkDBTableDef($2, null, $4); }
    ;
 

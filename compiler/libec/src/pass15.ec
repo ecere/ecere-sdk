@@ -1,9 +1,5 @@
 import "ecdefs"
 
-#define uint _uint
-#include <stdlib.h>  // For strtoll
-#undef uint
-
 // UNTIL IMPLEMENTED IN GRAMMAR
 #define ACCESS_CLASSDATA(_class, baseClass) \
    (_class ? ((void *)(((char *)_class.data) + baseClass.offsetClass)) : null)
@@ -735,8 +731,8 @@ public int ComputeTypeSize(Type type)
          case charType: type.alignment = size = sizeof(char); break;
          case intType: type.alignment = size = sizeof(int); break;
          case int64Type: type.alignment = size = sizeof(int64); break;
-         case intPtrType: type.alignment = size = targetBits / 8; break;
-         case intSizeType: type.alignment = size = targetBits / 8; break;
+         case intPtrType: type.alignment = size = targetBits / 8; type.pointerAlignment = true; break;
+         case intSizeType: type.alignment = size = targetBits / 8; type.pointerAlignment = true; break;
          case longType: type.alignment = size = sizeof(long); break;
          case shortType: type.alignment = size = sizeof(short); break;
          case floatType: type.alignment = size = sizeof(float); break;
@@ -750,6 +746,7 @@ public int ComputeTypeSize(Type type)
                // Ensure all members are properly registered
                ComputeClassMembers(_class, false);
                type.alignment = _class.structAlignment;
+               type.pointerAlignment = (bool)_class.pointerAlignment;
                size = _class.structSize;
                if(type.alignment && size % type.alignment)
                   size += type.alignment - (size % type.alignment);
@@ -764,10 +761,13 @@ public int ComputeTypeSize(Type type)
                size = type.alignment = ComputeTypeSize(_class.dataType);
             }
             else
+            {
                size = type.alignment = targetBits / 8; // sizeof(Instance *);
+               type.pointerAlignment = true;
+            }
             break;
          }
-         case pointerType: case subClassType: size = type.alignment = targetBits / 8; /*sizeof(void *); */break;
+         case pointerType: case subClassType: size = type.alignment = targetBits / 8; /*sizeof(void *); */ type.pointerAlignment = true; break;
          case arrayType:
             if(type.arraySizeExp)
             {
@@ -813,7 +813,10 @@ public int ComputeTypeSize(Type type)
 
             size = ComputeTypeSize(type.type) * type.arraySize;
             if(type.type)
+            {
                type.alignment = type.type.alignment;
+               type.pointerAlignment = type.type.pointerAlignment;
+            }
 
             break;
          case structType:
@@ -839,6 +842,11 @@ public int ComputeTypeSize(Type type)
                      member.offset += member.alignment - (size % member.alignment);
                   size = member.offset;
 
+                  if(member.pointerAlignment && type.size <= 4)
+                     type.pointerAlignment = true;
+                  else if(!member.pointerAlignment && member.alignment >= 8)
+                     type.pointerAlignment = false;
+
                   type.alignment = Max(type.alignment, member.alignment);
                   size += addSize;
                }
@@ -856,6 +864,7 @@ public int ComputeTypeSize(Type type)
                {
                   ComputeTypeSize(symbol.type);
                   size = symbol.type.size;
+                  type.alignment = symbol.type.alignment;
                }
             }
             else
@@ -870,7 +879,13 @@ public int ComputeTypeSize(Type type)
                      member.offset += member.alignment - (size % member.alignment);
                   size = member.offset;
 
+                  if(member.pointerAlignment && type.size <= 4)
+                     type.pointerAlignment = true;
+                  else if(!member.pointerAlignment && member.alignment >= 8)
+                     type.pointerAlignment = false;
+
                   type.alignment = Max(type.alignment, member.alignment);
+
                   size = Max(size, addSize);
                }
                if(type.alignment && size % type.alignment)
@@ -886,6 +901,7 @@ public int ComputeTypeSize(Type type)
             {
                size = ComputeTypeSize(baseType);
                type.alignment = baseType.alignment;
+               type.pointerAlignment = baseType.pointerAlignment;
             }
             else
                type.alignment = size = sizeof(uint64);
@@ -899,6 +915,7 @@ public int ComputeTypeSize(Type type)
          case thisClassType:
          {
             type.alignment = size = targetBits / 8; //sizeof(void *);
+            type.pointerAlignment = true;
             break;
          }
       }
@@ -909,7 +926,7 @@ public int ComputeTypeSize(Type type)
 }
 
 
-/*static */int AddMembers(OldList * declarations, Class _class, bool isMember, uint * retSize, Class topClass, bool *addedPadding)
+/*static */int AddMembers(External neededBy, OldList * declarations, Class _class, bool isMember, uint * retSize, Class topClass, bool *addedPadding)
 {
    // This function is in need of a major review when implementing private members etc.
    DataMember topMember = isMember ? (DataMember) _class : null;
@@ -930,7 +947,7 @@ public int ComputeTypeSize(Type type)
       {
          // DANGER: Testing this noHeadClass here...
          if(_class.type == structClass || _class.type == noHeadClass)
-            /*totalSize = */AddMembers(declarations, _class.base, false, &totalSize, topClass, null);
+            /*totalSize = */AddMembers(neededBy, declarations, _class.base, false, &totalSize, topClass, null);
          else
          {
             uint baseSize = _class.base.templateClass ? _class.base.templateClass.structSize : _class.base.structSize;
@@ -967,7 +984,7 @@ public int ComputeTypeSize(Type type)
 
                   {
                      Type type = ProcessType(specs, decl);
-                     DeclareType(member.dataType, false, false);
+                     DeclareType(neededBy, member.dataType, true, false);
                      FreeType(type);
                   }
                   /*
@@ -997,7 +1014,7 @@ public int ComputeTypeSize(Type type)
                sprintf(id, "__anon%d", anonID++);
 
                size = 0;
-               AddMembers(list, (Class)member, true, &size, topClass, null);
+               AddMembers(neededBy, list, (Class)member, true, &size, topClass, null);
                ListAdd(specs,
                   MkStructOrUnion((member.type == unionMember)?unionSpecifier:structSpecifier, null, list));
                ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(specs, MkListOne(MkDeclaratorIdentifier(MkIdentifier(id))),null)));
@@ -1042,14 +1059,14 @@ public int ComputeTypeSize(Type type)
    return topMember ? topMember.memberID : _class.memberID;
 }
 
-static int DeclareMembers(Class _class, bool isMember)
+static int DeclareMembers(External neededBy, Class _class, bool isMember)
 {
    DataMember topMember = isMember ? (DataMember) _class : null;
    DataMember member;
    Context context = isMember ? null : SetupTemplatesContext(_class);
 
    if(!isMember && (_class.type == structClass || _class.type == noHeadClass) && _class.base.type != systemClass)
-      DeclareMembers(_class.base, false);
+      DeclareMembers(neededBy, _class.base, false);
 
    for(member = isMember ? topMember.members.first : _class.membersAndProperties.first; member; member = member.next)
    {
@@ -1059,21 +1076,16 @@ static int DeclareMembers(Class _class, bool isMember)
          {
             case normalMember:
             {
-               /*
-               if(member.dataType && member.dataType.kind == classType && member.dataType._class &&
-                  member.dataType._class.registered && member.dataType._class.registered.type == structClass)
-                  DeclareStruct(member.dataType._class.string, false);
-                  */
                if(!member.dataType && member.dataTypeString)
                   member.dataType = ProcessTypeString(member.dataTypeString, false);
                if(member.dataType)
-                  DeclareType(member.dataType, false, false);
+                  DeclareType(neededBy, member.dataType, true, false);
                break;
             }
             case unionMember:
             case structMember:
             {
-               DeclareMembers((Class)member, true);
+               DeclareMembers(neededBy, (Class)member, true);
                break;
             }
          }
@@ -1133,35 +1145,48 @@ static void IdentifyAnonStructs(OldList/*<ClassDef>*/ *  definitions)
    }
 }
 
-void DeclareStruct(const char * name, bool skipNoHead)
+External DeclareStruct(External neededBy, const char * name, bool skipNoHead, bool needDereference)
+{
+   return _DeclareStruct(neededBy, name, skipNoHead, needDereference, false);
+}
+
+External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, bool needDereference, bool fwdDecl)
 {
    External external = null;
    Symbol classSym = FindClass(name);
+   OldList * curDeclarations = null;
+   Specifier curSpec = null;
 
-   if(!inCompiler || !classSym) return;
+   if(!inCompiler || !classSym) return null;
 
    // We don't need any declaration for bit classes...
    if(classSym.registered &&
       (classSym.registered.type == bitClass || classSym.registered.type == unitClass || classSym.registered.type == enumClass))
-      return;
+      return null;
 
-   /*if(classSym.registered.templateClass)
-      return DeclareStruct(classSym.registered.templateClass.fullName, skipNoHead);
-   */
+   if(!classSym.registered || (classSym.registered.type == normalClass && classSym.registered.structSize && classSym.registered.base && classSym.registered.base.base))
+      _DeclareStruct(neededBy, "ecere::com::Instance", false, true, fwdDecl);
 
-   if(classSym.registered && classSym.imported && !classSym.declaredStructSym)
+   external = classSym.structExternal;
+
+   if(external && external.declaration)
    {
-      // Add typedef struct
-      Declaration decl;
+      Specifier spec;
+      for(spec = external.declaration.specifiers ? external.declaration.specifiers->first : null; spec; spec = spec.next)
+         if(spec.type == structSpecifier || spec.type == unionSpecifier)
+         {
+            curSpec = spec;
+            curDeclarations = spec.definitions;
+            break;
+         }
+   }
+
+   if(classSym.registered && !classSym.declaring && classSym.imported && (!classSym.declaredStructSym || (classSym.registered.type == noHeadClass && !skipNoHead && external && !curDeclarations)))
+   {
       OldList * specifiers, * declarators;
       OldList * declarations = null;
       char structName[1024];
-      Specifier spec = null;
-      external = (classSym.registered && classSym.registered.type == structClass) ?
-         classSym.pointerExternal : classSym.structExternal;
-
-      // TEMPORARY HACK: Pass 3 will move up struct declarations without moving members
-      // Moved this one up because DeclareClass done later will need it
+      bool addedPadding = false;
 
       classSym.declaring++;
 
@@ -1169,482 +1194,412 @@ void DeclareStruct(const char * name, bool skipNoHead)
       {
          if(classSym.registered.templateClass)
          {
-            DeclareStruct(classSym.registered.templateClass.fullName, skipNoHead);
+            external = _DeclareStruct(neededBy, classSym.registered.templateClass.fullName, skipNoHead, needDereference, fwdDecl);
             classSym.declaring--;
          }
-         return;
+         return external;
       }
-
-      //if(!skipNoHead)
-         DeclareMembers(classSym.registered, false);
 
       structName[0] = 0;
       FullClassNameCat(structName, name, false);
 
-      if(external && external.declaration && external.declaration.specifiers)
+      classSym.declaredStructSym = true;
+      if(!external || (classSym.registered.type == noHeadClass && !skipNoHead && !curDeclarations))
       {
-         for(spec = external.declaration.specifiers->first; spec; spec = spec.next)
+         bool add = false;
+         if(!external)
          {
-            if(spec.type == structSpecifier || spec.type == unionSpecifier)
-               break;
+            external = MkExternalDeclaration(null);
+            classSym.structExternal = external;
+            external.symbol = classSym;
+
+            add = true;
          }
-      }
 
-      /*if(!external)
-         external = MkExternalDeclaration(null);*/
+         if(!skipNoHead)
+         {
+            declarations = MkList();
+            AddMembers(external, declarations, classSym.registered, false, null, classSym.registered, &addedPadding);
+         }
 
-      if(!skipNoHead && (!spec || !spec.definitions))
-      {
-         bool addedPadding = false;
-         classSym.declaredStructSym = true;
-
-         declarations = MkList();
-
-         AddMembers(declarations, classSym.registered, false, null, classSym.registered, &addedPadding);
-
-         //ListAdd(specifiers, MkSpecifier(TYPEDEF));
-         //ListAdd(specifiers, MkStructOrUnion(structSpecifier, null, declarations));
-
-         if(!declarations->count || (declarations->count == 1 && addedPadding))
+         if(declarations && (!declarations->count || (declarations->count == 1 && addedPadding)))
          {
             FreeList(declarations, FreeClassDef);
             declarations = null;
          }
-      }
-      if(skipNoHead || declarations)
-      {
-         if(spec)
+
+         if(classSym.registered.type != noHeadClass && !declarations)
          {
-            if(declarations)
-               spec.definitions = declarations;
-
-            if(curExternal && curExternal.symbol && curExternal.symbol.idCode < classSym.id)
-            {
-               // TODO: Fix this
-               //ast->Move(classSym.structExternal ? classSym.structExternal : classSym.pointerExternal, curExternal.prev);
-
-               // DANGER
-               if(classSym.structExternal)
-                  ast->Move(classSym.structExternal, curExternal.prev);
-               ast->Move(classSym.pointerExternal, curExternal.prev);
-
-               classSym.id = curExternal.symbol.idCode;
-               classSym.idCode = curExternal.symbol.idCode;
-               // external = classSym.pointerExternal;
-               //external = classSym.structExternal ? classSym.structExternal : classSym.pointerExternal;
-            }
+            FreeExternal(external);
+            external = null;
+            classSym.structExternal = null;
          }
          else
          {
-            if(!external)
-               external = MkExternalDeclaration(null);
-
-            specifiers = MkList();
-            declarators = MkList();
-            ListAdd(specifiers, MkStructOrUnion(structSpecifier, MkIdentifier(structName), declarations));
-
-            /*
-            d = MkDeclaratorIdentifier(MkIdentifier(structName));
-            ListAdd(declarators, MkInitDeclarator(d, null));
-            */
-            external.declaration = decl = MkDeclaration(specifiers, declarators);
-            if(decl.symbol && !decl.symbol.pointerExternal)
-               decl.symbol.pointerExternal = external;
-
-            // For simple classes, keep the declaration as the external to move around
-            if(classSym.registered && classSym.registered.type == structClass)
-            {
-               char className[1024];
-               strcpy(className, "__ecereClass_");
-               FullClassNameCat(className, classSym.string, true);
-               //MangleClassName(className);
-
-               // Testing This
-               DeclareClass(classSym, className);
-
-               external.symbol = classSym;
-               classSym.pointerExternal = external;
-               classSym.id = (curExternal && curExternal.symbol) ? curExternal.symbol.idCode : 0;
-               classSym.idCode = (curExternal && curExternal.symbol) ? curExternal.symbol.idCode : 0;
-            }
+            if(curSpec)
+               curSpec.definitions = declarations;
             else
             {
                char className[1024];
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, classSym.string, true);
-               //MangleClassName(className);
 
-               // TOFIX: TESTING THIS...
-               classSym.structExternal = external;
-               DeclareClass(classSym, className);
-               external.symbol = classSym;
+               specifiers = MkList();
+               declarators = MkList();
+               ListAdd(specifiers, MkStructOrUnion(structSpecifier, MkIdentifier(structName), declarations));
+               external.declaration = MkDeclaration(specifiers, declarators);
             }
-
-            //if(curExternal)
-               ast->Insert(curExternal ? curExternal.prev : null, external);
+            if(add)
+               ast->Add(external);
          }
       }
-
       classSym.declaring--;
    }
-   else
+   else if(!classSym.declaredStructSym && classSym.structExternal)
    {
-      if(classSym.structExternal && classSym.structExternal.declaration && classSym.structExternal.declaration.specifiers)
+      classSym.declaredStructSym = true;
+
+      if(classSym.registered)
+         DeclareMembers(classSym.structExternal, classSym.registered, false);
+
+      if(classSym.structExternal.declaration && classSym.structExternal.declaration.specifiers)
       {
          Specifier spec;
          for(spec = classSym.structExternal.declaration.specifiers->first; spec; spec = spec.next)
          {
-            IdentifyAnonStructs(spec.definitions);
+            if(spec.definitions)
+               IdentifyAnonStructs(spec.definitions);
          }
-      }
-
-      if(curExternal && curExternal.symbol && curExternal.symbol.idCode < classSym.id)
-      {
-         // TEMPORARY HACK: Pass 3 will move up struct declarations without moving members
-         // Moved this one up because DeclareClass done later will need it
-
-         // TESTING THIS:
-         classSym.declaring++;
-
-         //if(!skipNoHead)
-         {
-            if(classSym.registered)
-               DeclareMembers(classSym.registered, false);
-         }
-
-         if(classSym.registered && (classSym.registered.type == structClass || classSym.registered.type == noHeadClass))
-         {
-            // TODO: Fix this
-            //ast->Move(classSym.structExternal ? classSym.structExternal : classSym.pointerExternal, curExternal.prev);
-
-            // DANGER
-            if(classSym.structExternal)
-               ast->Move(classSym.structExternal, curExternal.prev);
-            ast->Move(classSym.pointerExternal, curExternal.prev);
-
-            classSym.id = curExternal.symbol.idCode;
-            classSym.idCode = curExternal.symbol.idCode;
-            // external = classSym.pointerExternal;
-            // external = classSym.structExternal ? classSym.structExternal : classSym.pointerExternal;
-         }
-
-         classSym.declaring--;
       }
    }
-   //return external;
+   if(inCompiler && neededBy && (external || !classSym.imported))
+   {
+      if(!external)
+      {
+         classSym.structExternal = external = MkExternalDeclaration(null);
+         external.symbol = classSym;
+         ast->Add(external);
+      }
+      if(fwdDecl)
+      {
+         External e = external.fwdDecl ? external.fwdDecl : external;
+         if(e.incoming.count)
+            neededBy.CreateUniqueEdge(e, !needDereference && !external.fwdDecl);
+      }
+      else
+         neededBy.CreateUniqueEdge(external, !needDereference);
+   }
+   return external;
 }
 
-void DeclareProperty(Property prop, char * setName, char * getName)
+void DeclareProperty(External neededBy, Property prop, char * setName, char * getName)
 {
    Symbol symbol = prop.symbol;
+   bool imported = false;
+   bool dllImport = false;
+   External structExternal = null;
+   External instExternal = null;
 
    strcpy(setName, "__ecereProp_");
    FullClassNameCat(setName, prop._class.fullName, false);
    strcat(setName, "_Set_");
-   // strcat(setName, prop.name);
    FullClassNameCat(setName, prop.name, true);
-   //MangleClassName(setName);
 
    strcpy(getName, "__ecereProp_");
    FullClassNameCat(getName, prop._class.fullName, false);
    strcat(getName, "_Get_");
    FullClassNameCat(getName, prop.name, true);
-   // strcat(getName, prop.name);
 
-   // To support "char *" property
-   //MangleClassName(getName);
-
-   if(prop._class.type == structClass)
-      DeclareStruct(prop._class.fullName, false);
-
-   if(!symbol || curExternal.symbol.idCode < symbol.id)
+   if(!symbol || symbol._import)
    {
-      bool imported = false;
-      bool dllImport = false;
-
-      if(!symbol || symbol._import)
+      if(!symbol)
       {
-         if(!symbol)
+         Symbol classSym;
+
+         if(!prop._class.symbol)
+            prop._class.symbol = FindClass(prop._class.fullName);
+         classSym = prop._class.symbol;
+         if(classSym && !classSym._import)
          {
-            Symbol classSym;
-            if(!prop._class.symbol)
-               prop._class.symbol = FindClass(prop._class.fullName);
-            classSym = prop._class.symbol;
-            if(classSym && !classSym._import)
-            {
-               ModuleImport module;
+            ModuleImport module;
 
-               if(prop._class.module)
-                  module = FindModule(prop._class.module);
-               else
-                  module = mainModule;
+            if(prop._class.module)
+               module = FindModule(prop._class.module);
+            else
+               module = mainModule;
 
-               classSym._import = ClassImport
-               {
-                  name = CopyString(prop._class.fullName);
-                  isRemote = prop._class.isRemote;
-               };
-               module.classes.Add(classSym._import);
-            }
-            symbol = prop.symbol = Symbol { };
-            symbol._import = (ClassImport)PropertyImport
+            classSym._import = ClassImport
             {
-               name = CopyString(prop.name);
-               isVirtual = false; //prop.isVirtual;
-               hasSet = prop.Set ? true : false;
-               hasGet = prop.Get ? true : false;
+               name = CopyString(prop._class.fullName);
+               isRemote = prop._class.isRemote;
             };
-            if(classSym)
-               classSym._import.properties.Add(symbol._import);
+            module.classes.Add(classSym._import);
          }
-         imported = true;
-         // Ugly work around for isNan properties declared within float/double classes which are initialized with ecereCOM
-         if((prop._class.module != privateModule || !strcmp(prop._class.name, "float") || !strcmp(prop._class.name, "double")) &&
-            prop._class.module.importType != staticImport)
-            dllImport = true;
+         symbol = prop.symbol = Symbol { };
+         symbol._import = (ClassImport)PropertyImport
+         {
+            name = CopyString(prop.name);
+            isVirtual = false; //prop.isVirtual;
+            hasSet = prop.Set ? true : false;
+            hasGet = prop.Get ? true : false;
+         };
+         if(classSym)
+            classSym._import.properties.Add(symbol._import);
       }
+      imported = true;
+      // Ugly work around for isNan properties declared within float/double classes which are initialized with ecereCOM
+      if((prop._class.module != privateModule || !strcmp(prop._class.name, "float") || !strcmp(prop._class.name, "double")) &&
+         prop._class.module.importType != staticImport)
+         dllImport = true;
+   }
 
-      if(!symbol.type)
+   if(!symbol.type)
+   {
+      Context context = SetupTemplatesContext(prop._class);
+      symbol.type = ProcessTypeString(prop.dataTypeString, false);
+      FinishTemplatesContext(context);
+   }
+
+   if((prop.Get && !symbol.externalGet) || (prop.Set && !symbol.externalSet))
+   {
+      if(prop._class.type == normalClass && prop._class.structSize)
+         instExternal = DeclareStruct(null, "ecere::com::Instance", false, true);
+      structExternal = DeclareStruct(null, prop._class.fullName, prop._class.type != structClass /*true*/, false);
+   }
+
+   // Get
+   if(prop.Get && !symbol.externalGet)
+   {
+      Declaration decl;
+      OldList * specifiers, * declarators;
+      Declarator d;
+      OldList * params;
+      Specifier spec = null;
+      External external;
+      Declarator typeDecl;
+      bool simple = false;
+      bool needReference;
+
+      specifiers = MkList();
+      declarators = MkList();
+      params = MkList();
+
+      ListAdd(params, MkTypeName(MkListOne(MkSpecifierName(prop._class.fullName)),
+         MkDeclaratorIdentifier(MkIdentifier("this"))));
+
+      d = MkDeclaratorIdentifier(MkIdentifier(getName));
+      //if(imported)
+      if(dllImport)
+         d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), d));
+
       {
          Context context = SetupTemplatesContext(prop._class);
-         symbol.type = ProcessTypeString(prop.dataTypeString, false);
+         typeDecl = SpecDeclFromString(prop.dataTypeString, specifiers, null);
          FinishTemplatesContext(context);
       }
 
-      // Get
-      if(prop.Get)
+      // Make sure the simple _class's type is declared
+      needReference = !typeDecl || typeDecl.type == identifierDeclarator;
+      for(spec = specifiers->first; spec; spec = spec.next)
       {
-         if(!symbol.externalGet || symbol.externalGet.type == functionExternal)
+         if(spec.type == nameSpecifier)
          {
-            Declaration decl;
-            OldList * specifiers, * declarators;
-            Declarator d;
-            OldList * params;
-            Specifier spec;
-            External external;
-            Declarator typeDecl;
-            bool simple = false;
-
-            specifiers = MkList();
-            declarators = MkList();
-            params = MkList();
-
-            ListAdd(params, MkTypeName(MkListOne(MkSpecifierName /*MkClassName*/(prop._class.fullName)),
-               MkDeclaratorIdentifier(MkIdentifier("this"))));
-
-            d = MkDeclaratorIdentifier(MkIdentifier(getName));
-            //if(imported)
-            if(dllImport)
-               d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), d));
-
+            Symbol classSym = spec.symbol;
+            if(needReference)
             {
-               Context context = SetupTemplatesContext(prop._class);
-               typeDecl = SpecDeclFromString(prop.dataTypeString, specifiers, null);
-               FinishTemplatesContext(context);
+               symbol._class = classSym.registered;
+               if(classSym.registered && classSym.registered.type == structClass)
+                  simple = true;
             }
-
-            // Make sure the simple _class's type is declared
-            for(spec = specifiers->first; spec; spec = spec.next)
-            {
-               if(spec.type == nameSpecifier /*SpecifierClass*/)
-               {
-                  if((!typeDecl || typeDecl.type == identifierDeclarator))
-                  {
-                     Symbol classSym = spec.symbol; // FindClass(spec.name);
-                     symbol._class = classSym.registered;
-                     if(classSym.registered && classSym.registered.type == structClass)
-                     {
-                        DeclareStruct(spec.name, false);
-                        simple = true;
-                     }
-                  }
-               }
-            }
-
-            if(!simple)
-               d = PlugDeclarator(typeDecl, d);
-            else
-            {
-               ListAdd(params, MkTypeName(specifiers,
-                  PlugDeclarator(typeDecl, MkDeclaratorIdentifier(MkIdentifier("value")))));
-               specifiers = MkList();
-            }
-
-            d = MkDeclaratorFunction(d, params);
-
-            //if(imported)
-            if(dllImport)
-               specifiers->Insert(null, MkSpecifier(EXTERN));
-            else if(prop._class.symbol && ((Symbol)prop._class.symbol).isStatic)
-               specifiers->Insert(null, MkSpecifier(STATIC));
-            if(simple)
-               ListAdd(specifiers, MkSpecifier(VOID));
-
-            ListAdd(declarators, MkInitDeclarator(d, null));
-
-            decl = MkDeclaration(specifiers, declarators);
-
-            external = MkExternalDeclaration(decl);
-            ast->Insert(curExternal.prev, external);
-            external.symbol = symbol;
-            symbol.externalGet = external;
-
-            ReplaceThisClassSpecifiers(specifiers, prop._class);
-
-            if(typeDecl)
-               FreeDeclarator(typeDecl);
-         }
-         else
-         {
-            // Move declaration higher...
-            ast->Move(symbol.externalGet, curExternal.prev);
+            break;
          }
       }
 
-      // Set
-      if(prop.Set)
-      {
-         if(!symbol.externalSet || symbol.externalSet.type == functionExternal)
-         {
-            Declaration decl;
-            OldList * specifiers, * declarators;
-            Declarator d;
-            OldList * params;
-            Specifier spec;
-            External external;
-            Declarator typeDecl;
-
-            declarators = MkList();
-            params = MkList();
-
-            // TESTING COMMENTING THIS FIRST LINE OUT, what was the problem? Trying to add noHeadClass here ...
-            if(!prop.conversion || prop._class.type == structClass)
-            {
-               ListAdd(params, MkTypeName(MkListOne(MkSpecifierName/*MkClassName*/(prop._class.fullName)),
-                  MkDeclaratorIdentifier(MkIdentifier("this"))));
-            }
-
-            specifiers = MkList();
-
-            {
-               Context context = SetupTemplatesContext(prop._class);
-               typeDecl = d = SpecDeclFromString(prop.dataTypeString, specifiers,
-                  MkDeclaratorIdentifier(MkIdentifier("value")));
-               FinishTemplatesContext(context);
-            }
-            if(!strcmp(prop._class.base.fullName, "eda::Row") || !strcmp(prop._class.base.fullName, "eda::Id"))
-               specifiers->Insert(null, MkSpecifier(CONST));
-
-            ListAdd(params, MkTypeName(specifiers, d));
-
-            d = MkDeclaratorIdentifier(MkIdentifier(setName));
-            //if(imported)
-            if(dllImport)
-               d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), d));
-            d = MkDeclaratorFunction(d, params);
-
-            // Make sure the simple _class's type is declared
-            for(spec = specifiers->first; spec; spec = spec.next)
-            {
-               if(spec.type == nameSpecifier /*SpecifierClass*/)
-               {
-                  if((!typeDecl || typeDecl.type == identifierDeclarator))
-                  {
-                     Symbol classSym = spec.symbol; // FindClass(spec.name);
-                     symbol._class = classSym.registered;
-                     if(classSym.registered && classSym.registered.type == structClass)
-                        DeclareStruct(spec.name, false);
-                  }
-               }
-            }
-
-            ListAdd(declarators, MkInitDeclarator(d, null));
-
-            specifiers = MkList();
-            //if(imported)
-            if(dllImport)
-               specifiers->Insert(null, MkSpecifier(EXTERN));
-            else if(prop._class.symbol && ((Symbol)prop._class.symbol).isStatic)
-               specifiers->Insert(null, MkSpecifier(STATIC));
-
-            // TESTING COMMENTING THIS FIRST LINE OUT, what was the problem? Trying to add noHeadClass here ...
-            if(!prop.conversion || prop._class.type == structClass)
-               ListAdd(specifiers, MkSpecifier(VOID));
-            else
-               ListAdd(specifiers, MkSpecifierName/*MkClassName*/(prop._class.fullName));
-
-            decl = MkDeclaration(specifiers, declarators);
-
-            external = MkExternalDeclaration(decl);
-            ast->Insert(curExternal.prev, external);
-            external.symbol = symbol;
-            symbol.externalSet = external;
-
-            ReplaceThisClassSpecifiers(specifiers, prop._class);
-         }
-         else
-         {
-            // Move declaration higher...
-            ast->Move(symbol.externalSet, curExternal.prev);
-         }
-      }
-
-      // Property (for Watchers)
-      if(!symbol.externalPtr)
-      {
-         Declaration decl;
-         External external;
-         OldList * specifiers = MkList();
-         char propName[1024];
-
-         if(imported)
-            specifiers->Insert(null, MkSpecifier(EXTERN));
-         else
-         {
-            specifiers->Insert(null, MkSpecifier(STATIC));
-            specifiers->Add(MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(CopyString("unused"), null))))));
-         }
-
-         ListAdd(specifiers, MkSpecifierName("Property"));
-
-         strcpy(propName, "__ecereProp_");
-         FullClassNameCat(propName, prop._class.fullName, false);
-         strcat(propName, "_");
-         FullClassNameCat(propName, prop.name, true);
-         // strcat(propName, prop.name);
-         //MangleClassName(propName);
-
-         {
-            OldList * list = MkList();
-            ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), null));
-
-            if(!imported)
-            {
-               strcpy(propName, "__ecerePropM_");
-               FullClassNameCat(propName, prop._class.fullName, false);
-               strcat(propName, "_");
-               // strcat(propName, prop.name);
-               FullClassNameCat(propName, prop.name, true);
-
-               //MangleClassName(propName);
-
-               ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), null));
-            }
-            decl = MkDeclaration(specifiers, list);
-         }
-
-         external = MkExternalDeclaration(decl);
-         ast->Insert(curExternal.prev, external);
-         external.symbol = symbol;
-         symbol.externalPtr = external;
-      }
+      if(!simple)
+         d = PlugDeclarator(typeDecl, d);
       else
       {
-         // Move declaration higher...
-         ast->Move(symbol.externalPtr, curExternal.prev);
+         ListAdd(params, MkTypeName(specifiers,
+            PlugDeclarator(typeDecl, MkDeclaratorIdentifier(MkIdentifier("value")))));
+         specifiers = MkList();
       }
 
-      symbol.id = curExternal.symbol.idCode;
+      d = MkDeclaratorFunction(d, params);
+
+      //if(imported)
+      if(dllImport)
+         specifiers->Insert(null, MkSpecifier(EXTERN));
+      else if(prop._class.symbol && ((Symbol)prop._class.symbol).isStatic)
+         specifiers->Insert(null, MkSpecifier(STATIC));
+      if(simple)
+         ListAdd(specifiers, MkSpecifier(VOID));
+
+      ListAdd(declarators, MkInitDeclarator(d, null));
+
+      decl = MkDeclaration(specifiers, declarators);
+
+      external = MkExternalDeclaration(decl);
+
+      if(structExternal)
+         external.CreateEdge(structExternal, false);
+      if(instExternal)
+         external.CreateEdge(instExternal, false);
+
+      if(spec)
+         DeclareStruct(external, spec.name, false, needReference);
+
+      ast->Add(external);
+      external.symbol = symbol;
+      symbol.externalGet = external;
+
+      ReplaceThisClassSpecifiers(specifiers, prop._class);
+
+      if(typeDecl)
+         FreeDeclarator(typeDecl);
+   }
+
+   // Set
+   if(prop.Set && !symbol.externalSet)
+   {
+      Declaration decl;
+      OldList * specifiers, * declarators;
+      Declarator d;
+      OldList * params;
+      Specifier spec = null;
+      External external;
+      Declarator typeDecl;
+      bool needReference;
+
+      declarators = MkList();
+      params = MkList();
+
+      if(!prop.conversion || prop._class.type == structClass)
+      {
+         ListAdd(params, MkTypeName(MkListOne(MkSpecifierName(prop._class.fullName)),
+            MkDeclaratorIdentifier(MkIdentifier("this"))));
+      }
+
+      specifiers = MkList();
+
+      {
+         Context context = SetupTemplatesContext(prop._class);
+         typeDecl = d = SpecDeclFromString(prop.dataTypeString, specifiers,
+            MkDeclaratorIdentifier(MkIdentifier("value")));
+         FinishTemplatesContext(context);
+      }
+      if(!strcmp(prop._class.base.fullName, "eda::Row") || !strcmp(prop._class.base.fullName, "eda::Id"))
+         specifiers->Insert(null, MkSpecifier(CONST));
+
+      ListAdd(params, MkTypeName(specifiers, d));
+
+      d = MkDeclaratorIdentifier(MkIdentifier(setName));
+      if(dllImport)
+         d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), d));
+      d = MkDeclaratorFunction(d, params);
+
+      // Make sure the simple _class's type is declared
+      needReference = !typeDecl || typeDecl.type == identifierDeclarator;
+      for(spec = specifiers->first; spec; spec = spec.next)
+      {
+         if(spec.type == nameSpecifier)
+         {
+            Symbol classSym = spec.symbol;
+            if(needReference)
+               symbol._class = classSym.registered;
+            break;
+         }
+      }
+
+      ListAdd(declarators, MkInitDeclarator(d, null));
+
+      specifiers = MkList();
+      if(dllImport)
+         specifiers->Insert(null, MkSpecifier(EXTERN));
+      else if(prop._class.symbol && ((Symbol)prop._class.symbol).isStatic)
+         specifiers->Insert(null, MkSpecifier(STATIC));
+
+      if(!prop.conversion || prop._class.type == structClass)
+         ListAdd(specifiers, MkSpecifier(VOID));
+      else
+         ListAdd(specifiers, MkSpecifierName(prop._class.fullName));
+
+      decl = MkDeclaration(specifiers, declarators);
+
+      external = MkExternalDeclaration(decl);
+
+      if(structExternal)
+         external.CreateEdge(structExternal, false);
+      if(instExternal)
+         external.CreateEdge(instExternal, false);
+
+      if(spec)
+         DeclareStruct(external, spec.name, false, needReference);
+
+      ast->Add(external);
+      external.symbol = symbol;
+      symbol.externalSet = external;
+
+      ReplaceThisClassSpecifiers(specifiers, prop._class);
+   }
+
+   // Property (for Watchers)
+   if(!symbol.externalPtr)
+   {
+      Declaration decl;
+      External external;
+      OldList * specifiers = MkList();
+      char propName[1024];
+
+      if(imported)
+         specifiers->Insert(null, MkSpecifier(EXTERN));
+      else
+      {
+         specifiers->Insert(null, MkSpecifier(STATIC));
+         specifiers->Add(MkSpecifierExtended(MkExtDeclAttrib(MkAttrib(ATTRIB, MkListOne(MkAttribute(CopyString("unused"), null))))));
+      }
+
+      ListAdd(specifiers, MkSpecifierName("Property"));
+
+      strcpy(propName, "__ecereProp_");
+      FullClassNameCat(propName, prop._class.fullName, false);
+      strcat(propName, "_");
+      FullClassNameCat(propName, prop.name, true);
+
+      {
+         OldList * list = MkList();
+         ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), null));
+
+         if(!imported)
+         {
+            strcpy(propName, "__ecerePropM_");
+            FullClassNameCat(propName, prop._class.fullName, false);
+            strcat(propName, "_");
+            FullClassNameCat(propName, prop.name, true);
+
+            ListAdd(list, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(propName)), null));
+         }
+         decl = MkDeclaration(specifiers, list);
+      }
+
+      external = MkExternalDeclaration(decl);
+      ast->Insert(curExternal.prev, external);
+      external.symbol = symbol;
+      symbol.externalPtr = external;
+   }
+
+   if(inCompiler && neededBy)
+   {
+      // Could improve this to create edge on only what is needed...
+      if(symbol.externalPtr)
+         neededBy.CreateUniqueEdge(symbol.externalPtr, false);
+
+      if(symbol.externalGet)
+         neededBy.CreateUniqueEdge(symbol.externalGet, symbol.externalGet.type == functionExternal);
+
+      if(symbol.externalSet)
+         neededBy.CreateUniqueEdge(symbol.externalSet, symbol.externalSet.type == functionExternal);
+
+      // IsSet ?
    }
 }
 
@@ -2071,17 +2026,14 @@ void ProcessInstantiationType(Instantiation inst)
    if(inst._class)
    {
       MembersInit members;
-      Symbol classSym; // = inst._class.symbol; // FindClass(inst._class.name);
+      Symbol classSym;
       Class _class;
 
-      /*if(!inst._class.symbol)
-         inst._class.symbol = FindClass(inst._class.name);*/
       classSym = inst._class.symbol;
       _class = classSym ? classSym.registered : null;
 
-      // DANGER: Patch for mutex not declaring its struct when not needed
       if(!_class || _class.type != noHeadClass)
-         DeclareStruct(inst._class.name, false); //_class && _class.type == noHeadClass);
+         DeclareStruct(curExternal, inst._class.name, false, true);
 
       afterExternal = afterExternal ? afterExternal : curExternal;
 
@@ -2115,7 +2067,6 @@ void ProcessInstantiationType(Instantiation inst)
                   if(inCompiler)
                   {
                      char number[16];
-                     //members.function.dontMangle = true;
                      strcpy(name, "__ecereInstMeth_");
                      FullClassNameCat(name, _class ? _class.fullName : "_UNKNOWNCLASS", false);
                      strcat(name, "_");
@@ -2153,8 +2104,7 @@ void ProcessInstantiationType(Instantiation inst)
                               symbol.type.thisClass = _class.symbol;
                            }
                         }
-                        // TESTING THIS HERE:
-                        DeclareType(symbol.type, true, true);
+                        DeclareType(curExternal, symbol.type, true, true);
 
                      }
                      else if(classSym)
@@ -2164,7 +2114,6 @@ void ProcessInstantiationType(Instantiation inst)
                      }
                   }
 
-                  //declarator.symbol.id = declarator.symbol.idCode = curExternal.symbol.idCode;
                   createdExternal = ProcessClassFunction(classSym ? classSym.registered : null, members.function, ast, afterExternal, true);
 
                   if(nameID)
@@ -2173,87 +2122,11 @@ void ProcessInstantiationType(Instantiation inst)
                      nameID._class = null;
                   }
 
+                  curExternal = createdExternal;
                   if(inCompiler)
                   {
-                     //Type type = declarator.symbol.type;
-                     External oldExternal = curExternal;
-
-                     // *** Commented this out... Any negative impact? Yes: makes double prototypes declarations... Why was it commented out?
-                     // *** It was commented out for problems such as
-                     /*
-                           class VirtualDesktop : Window
-                           {
-                              clientSize = Size { };
-                              Timer timer
-                              {
-                                 bool DelayExpired()
-                                 {
-                                    clientSize.w;
-                                    return true;
-                                 }
-                              };
-                           }
-                     */
-                     // Commented Out: Good for bet.ec in Poker (Otherwise: obj\bet.c:187: error: `currentBet' undeclared (first use in this function))
-
-                     declarator.symbol.id = declarator.symbol.idCode = curExternal.symbol.idCode;
-
-                     /*
-                     if(strcmp(declarator.symbol.string, name))
-                     {
-                        printf("TOCHECK: Look out for this\n");
-                        delete declarator.symbol.string;
-                        declarator.symbol.string = CopyString(name);
-                     }
-
-                     if(!declarator.symbol.parent && globalContext.symbols.root != (BTNode)declarator.symbol)
-                     {
-                        printf("TOCHECK: Will this ever be in a list? Yes.\n");
-                        excludedSymbols->Remove(declarator.symbol);
-                        globalContext.symbols.Add((BTNode)declarator.symbol);
-                        if(strstr(declarator.symbol.string), "::")
-                           globalContext.hasNameSpace = true;
-
-                     }
-                     */
-
-                     //curExternal = curExternal.prev;
-                     //afterExternal = afterExternal->next;
-
-                     //ProcessFunction(afterExternal->function);
-
-                     //curExternal = afterExternal;
-                     {
-                        External externalDecl;
-                        externalDecl = MkExternalDeclaration(null);
-                        ast->Insert(oldExternal.prev, externalDecl);
-
-                        // Which function does this process?
-                        if(createdExternal.function)
-                        {
-                           ProcessFunction(createdExternal.function);
-
-                           //curExternal = oldExternal;
-
-                           {
-                              //Declaration decl = MkDeclaration(members.function.specifiers, MkListOne(MkInitDeclarator(CopyDeclarator(declarator), null)));
-
-                              Declaration decl = MkDeclaration(CopyList(createdExternal.function.specifiers, CopySpecifier),
-                                 MkListOne(MkInitDeclarator(CopyDeclarator(declarator), null)));
-
-                              //externalDecl = MkExternalDeclaration(decl);
-
-                              //***** ast->Insert(external.prev, externalDecl);
-                              //ast->Insert(curExternal.prev, externalDecl);
-                              externalDecl.declaration = decl;
-                              if(decl.symbol && !decl.symbol.pointerExternal)
-                                 decl.symbol.pointerExternal = externalDecl;
-
-                              // Trying this out...
-                              declarator.symbol.pointerExternal = externalDecl;
-                           }
-                        }
-                     }
+                     if(createdExternal.function)
+                        ProcessFunction(createdExternal.function);
                   }
                   else if(declarator)
                   {
@@ -2298,36 +2171,42 @@ void ProcessInstantiationType(Instantiation inst)
    }
 }
 
-static void DeclareType(Type type, bool declarePointers, bool declareParams)
+void DeclareType(External neededFor, Type type, bool needDereference, bool forFunctionDef)
 {
-   // OPTIMIZATIONS: TESTING THIS...
+   _DeclareType(neededFor, type, needDereference, forFunctionDef, false);
+}
+
+void DeclareTypeForwardDeclare(External neededFor, Type type, bool needDereference, bool forFunctionDef)
+{
+   _DeclareType(neededFor, type, needDereference, forFunctionDef, true);
+}
+
+static void _DeclareType(External neededFor, Type type, bool needDereference, bool forFunctionDef, bool fwdDecl)
+{
    if(inCompiler)
    {
       if(type.kind == functionType)
       {
          Type param;
-         if(declareParams)
-         {
-            for(param = type.params.first; param; param = param.next)
-               DeclareType(param, declarePointers, true);
-         }
-         DeclareType(type.returnType, declarePointers, true);
+         for(param = type.params.first; param; param = param.next)
+            _DeclareType(neededFor, param, forFunctionDef, false, fwdDecl);
+         _DeclareType(neededFor, type.returnType, forFunctionDef, false, fwdDecl);
       }
-      else if(type.kind == pointerType && declarePointers)
-         DeclareType(type.type, declarePointers, false);
+      else if(type.kind == pointerType)
+         _DeclareType(neededFor, type.type, false, false, fwdDecl);
       else if(type.kind == classType)
       {
-         if(type._class.registered && (type._class.registered.type == structClass || type._class.registered.type == noHeadClass) && !type._class.declaring)
-            DeclareStruct(type._class.registered.fullName, type._class.registered.type == noHeadClass);
+         Class c = type._class.registered;
+         _DeclareStruct(neededFor, c ? c.fullName : "ecere::com::Instance", c ? c.type == noHeadClass : false, needDereference && c && c.type == structClass, fwdDecl);
       }
       else if(type.kind == structType || type.kind == unionType)
       {
          Type member;
          for(member = type.members.first; member; member = member.next)
-            DeclareType(member, false, false);
+            _DeclareType(neededFor, member, needDereference, forFunctionDef, fwdDecl);
       }
       else if(type.kind == arrayType)
-         DeclareType(type.arrayType, declarePointers, false);
+         _DeclareType(neededFor, type.arrayType, true, false, fwdDecl);
    }
 }
 
@@ -2505,18 +2384,17 @@ public void ProcessPropertyType(Property prop)
    }
 }
 
-public void DeclareMethod(Method method, const char * name)
+public void DeclareMethod(External neededFor, Method method, const char * name)
 {
    Symbol symbol = method.symbol;
-   if(!symbol || (!symbol.pointerExternal && method.type == virtualMethod) || symbol.id > (curExternal ? curExternal.symbol.idCode : -1))
+   if(!symbol || (!symbol.pointerExternal && (!symbol.methodCodeExternal || method.type == virtualMethod)))
    {
-      //bool imported = false;
       bool dllImport = false;
 
       if(!method.dataType)
          method.dataType = ProcessTypeString(method.dataTypeString, false);
 
-      if(!symbol || symbol._import || method.type == virtualMethod)
+      //if(!symbol || symbol._import || method.type == virtualMethod)
       {
          if(!symbol || method.type == virtualMethod)
          {
@@ -2554,45 +2432,18 @@ public void DeclareMethod(Method method, const char * name)
             }
             if(!symbol)
             {
-               // Set the symbol type
-               /*
-               if(!type.thisClass)
-               {
-                  type.thisClass = method._class.symbol; // FindClass(method._class.fullName);
-               }
-               else if(type.thisClass == (void *)-1)
-               {
-                  type.thisClass = null;
-               }
-               */
-               // symbol.type = ProcessTypeString(method.dataTypeString, false);
                symbol.type = method.dataType;
                if(symbol.type) symbol.type.refCount++;
             }
-            /*
-            if(!method.thisClass || strcmp(method.thisClass, "void"))
-               symbol.type.params.Insert(null,
-                  MkClassType(method.thisClass ? method.thisClass : method._class.fullName));
-            */
          }
          if(!method.dataType.dllExport)
          {
-            //imported = true;
             if((method._class.module != privateModule || !strcmp(method._class.name, "float") || !strcmp(method._class.name, "double")) && method._class.module.importType != staticImport)
                dllImport = true;
          }
       }
 
-      /* MOVING THIS UP
-      if(!method.dataType)
-         method.dataType = ((Symbol)method.symbol).type;
-         //ProcessMethodType(method);
-      */
-
-      if(method.type != virtualMethod && method.dataType)
-         DeclareType(method.dataType, true, true);
-
-      if(!symbol.pointerExternal || symbol.pointerExternal.type == functionExternal)
+      if(inCompiler)
       {
          // We need a declaration here :)
          Declaration decl;
@@ -2604,7 +2455,6 @@ public void DeclareMethod(Method method, const char * name)
          specifiers = MkList();
          declarators = MkList();
 
-         //if(imported)
          if(dllImport)
             ListAdd(specifiers, MkSpecifier(EXTERN));
          else if(method._class.symbol && ((Symbol)method._class.symbol).isStatic)
@@ -2618,7 +2468,6 @@ public void DeclareMethod(Method method, const char * name)
          else
          {
             d = MkDeclaratorIdentifier(MkIdentifier(name));
-            //if(imported)
             if(dllImport)
                d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), d));
             {
@@ -2649,7 +2498,7 @@ public void DeclareMethod(Method method, const char * name)
                {
                   Class _class = method.dataType.thisClass ? method.dataType.thisClass.registered : method._class;
                   TypeName thisParam = MkTypeName(MkListOne(
-                     MkSpecifierName/*MkClassName*/(method.dataType.thisClass ? method.dataType.thisClass.string : method._class.fullName)),
+                     MkSpecifierName(method.dataType.thisClass ? method.dataType.thisClass.string : method._class.fullName)),
                      (_class && _class.type == systemClass) ? MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("this"))) : MkDeclaratorIdentifier(MkIdentifier("this")));
                   TypeName firstParam = ((TypeName)funcDecl.function.parameters->first);
                   Specifier firstSpec = firstParam.qualifiers ? firstParam.qualifiers->first : null;
@@ -2666,17 +2515,8 @@ public void DeclareMethod(Method method, const char * name)
                   funcDecl.function.parameters->Insert(null, thisParam);
                }
             }
-            // Make sure we don't have empty parameter declarations for static methods...
-            /*
-            else if(!funcDecl.function.parameters)
-            {
-               funcDecl.function.parameters = MkList();
-               funcDecl.function.parameters->Insert(null,
-                  MkTypeName(MkListOne(MkSpecifier(VOID)),null));
-            }*/
          }
-         // TESTING THIS:
-         ProcessDeclarator(d);
+         ProcessDeclarator(d, true);
 
          ListAdd(declarators, MkInitDeclarator(d, null));
 
@@ -2684,35 +2524,19 @@ public void DeclareMethod(Method method, const char * name)
 
          ReplaceThisClassSpecifiers(specifiers, method._class);
 
-         // Keep a different symbol for the function definition than the declaration...
-         if(symbol.pointerExternal)
-         {
-            Symbol functionSymbol { };
-
-            // Copy symbol
-            {
-               *functionSymbol = *symbol;
-               functionSymbol.string = CopyString(symbol.string);
-               if(functionSymbol.type)
-                  functionSymbol.type.refCount++;
-            }
-
-            excludedSymbols->Add(functionSymbol);
-            symbol.pointerExternal.symbol = functionSymbol;
-         }
          external = MkExternalDeclaration(decl);
-         if(curExternal)
-            ast->Insert(curExternal ? curExternal.prev : null, external);
          external.symbol = symbol;
          symbol.pointerExternal = external;
+         ast->Add(external);
+         DeclareStruct(external, method._class.fullName, true, true);
+         if(method.dataType)
+            DeclareType(external, method.dataType, true, true);
       }
-      else if(ast)
-      {
-         // Move declaration higher...
-         ast->Move(symbol.pointerExternal, curExternal.prev);
-      }
-
-      symbol.id = curExternal ? curExternal.symbol.idCode : MAXINT;
+   }
+   if(inCompiler && neededFor)
+   {
+      External external = symbol.pointerExternal ? symbol.pointerExternal : symbol.methodCodeExternal;
+      neededFor.CreateUniqueEdge(external, external.type == functionExternal);
    }
 }
 
@@ -2823,10 +2647,11 @@ void ReplaceThisClassSpecifiers(OldList specs, Class _class)
 }
 
 // Returns imported or not
-bool DeclareFunction(GlobalFunction function, char * name)
+bool DeclareFunction(External neededFor, GlobalFunction function, char * name)
 {
    Symbol symbol = function.symbol;
-   if(curExternal && (!symbol || symbol.id > curExternal.symbol.idCode))
+   // TOCHECK: Might get rid of the pointerExternal check in favor of marking the edge as breakable
+   if(!symbol || !symbol.pointerExternal)
    {
       bool imported = false;
       bool dllImport = false;
@@ -2866,11 +2691,10 @@ bool DeclareFunction(GlobalFunction function, char * name)
             dllImport = true;
       }
 
-      DeclareType(function.dataType, true, true);
-
       if(inCompiler)
       {
-         if(!symbol.pointerExternal || symbol.pointerExternal.type == functionExternal)
+         // TOCHECK: What's with the functionExternal check here? Is it Edge breaking / forward declaration?
+         //if(!symbol.pointerExternal || symbol.pointerExternal.type == functionExternal)
          {
             // We need a declaration here :)
             Declaration decl;
@@ -2882,15 +2706,9 @@ bool DeclareFunction(GlobalFunction function, char * name)
             specifiers = MkList();
             declarators = MkList();
 
-            //if(imported)
-               ListAdd(specifiers, MkSpecifier(EXTERN));
-            /*
-            else
-               ListAdd(specifiers, MkSpecifier(STATIC));
-            */
+            ListAdd(specifiers, MkSpecifier(EXTERN));
 
             d = MkDeclaratorIdentifier(MkIdentifier(imported ? name : function.name));
-            //if(imported)
             if(dllImport)
                d = MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), d));
 
@@ -2928,7 +2746,8 @@ bool DeclareFunction(GlobalFunction function, char * name)
             }
 
             // Keep a different symbol for the function definition than the declaration...
-            if(symbol.pointerExternal)
+            /* Note: This should be handled by the edge breaking...
+            if(symbol.pointerExternal && symbol.pointerExternal.type == functionExternal)
             {
                Symbol functionSymbol { };
                // Copy symbol
@@ -2943,29 +2762,26 @@ bool DeclareFunction(GlobalFunction function, char * name)
 
                symbol.pointerExternal.symbol = functionSymbol;
             }
+            */
             external = MkExternalDeclaration(decl);
-            if(curExternal)
-               ast->Insert(curExternal.prev, external);
+            ast->Add(external);
             external.symbol = symbol;
             symbol.pointerExternal = external;
-         }
-         else
-         {
-            // Move declaration higher...
-            ast->Move(symbol.pointerExternal, curExternal.prev);
-         }
 
-         if(curExternal)
-            symbol.id = curExternal.symbol.idCode;
+            DeclareType(external, function.dataType, true, true);
+         }
       }
    }
+   if(inCompiler && neededFor && symbol && symbol.pointerExternal)
+      neededFor.CreateUniqueEdge(symbol.pointerExternal, symbol.pointerExternal.type == functionExternal);
    return (symbol && symbol._import && function.module != privateModule && function.module.importType != staticImport) ? true : false;
 }
 
-void DeclareGlobalData(GlobalData data)
+void DeclareGlobalData(External neededFor, GlobalData data)
 {
    Symbol symbol = data.symbol;
-   if(curExternal && (!symbol || symbol.id > curExternal.symbol.idCode))
+   // TOCHECK: Might get rid of the pointerExternal check in favor of marking the edge as breakable
+   if(!symbol || !symbol.pointerExternal)
    {
       if(inCompiler)
       {
@@ -2974,43 +2790,36 @@ void DeclareGlobalData(GlobalData data)
       }
       if(!data.dataType)
          data.dataType = ProcessTypeString(data.dataTypeString, false);
-      DeclareType(data.dataType, true, true);
+
       if(inCompiler)
       {
-         if(!symbol.pointerExternal)
-         {
-            // We need a declaration here :)
-            Declaration decl;
-            OldList * specifiers, * declarators;
-            Declarator d;
-            External external;
+         // We need a declaration here :)
+         Declaration decl;
+         OldList * specifiers, * declarators;
+         Declarator d;
+         External external;
 
-            specifiers = MkList();
-            declarators = MkList();
+         specifiers = MkList();
+         declarators = MkList();
 
-            ListAdd(specifiers, MkSpecifier(EXTERN));
-            d = MkDeclaratorIdentifier(MkIdentifier(data.fullName));
-            d = SpecDeclFromString(data.dataTypeString, specifiers, d);
+         ListAdd(specifiers, MkSpecifier(EXTERN));
+         d = MkDeclaratorIdentifier(MkIdentifier(data.fullName));
+         d = SpecDeclFromString(data.dataTypeString, specifiers, d);
 
-            ListAdd(declarators, MkInitDeclarator(d, null));
+         ListAdd(declarators, MkInitDeclarator(d, null));
 
-            decl = MkDeclaration(specifiers, declarators);
-            external = MkExternalDeclaration(decl);
-            if(curExternal)
-               ast->Insert(curExternal.prev, external);
-            external.symbol = symbol;
-            symbol.pointerExternal = external;
-         }
-         else
-         {
-            // Move declaration higher...
-            ast->Move(symbol.pointerExternal, curExternal.prev);
-         }
-
+         decl = MkDeclaration(specifiers, declarators);
+         external = MkExternalDeclaration(decl);
          if(curExternal)
-            symbol.id = curExternal.symbol.idCode;
+            ast->Insert(curExternal.prev, external);
+         external.symbol = symbol;
+         symbol.pointerExternal = external;
+
+         DeclareType(external, data.dataType, true, true);
       }
    }
+   if(inCompiler && neededFor && symbol && symbol.pointerExternal)
+      neededFor.CreateUniqueEdge(symbol.pointerExternal, false);
 }
 
 class Conversion : struct
@@ -4825,7 +4634,7 @@ static void PopulateInstanceProcessMember(Instantiation inst, OldList * memberLi
                {
                   FreeExpContents(exp);
                   // TODO: This should probably use proper type
-                  exp.constant = PrintInt64((int64)*(intptr*)ptr);
+                  exp.constant = PrintInt64((int64)*(intsize*)ptr);
                   exp.type = constantExp;
                   break;
                }
@@ -6289,9 +6098,8 @@ void ComputeExpression(Expression exp)
                char className[1024];
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, classSym.string, true);
-               //MangleClassName(className);
 
-               DeclareClass(classSym, className);
+               DeclareClass(curExternal, classSym, className);
 
                FreeExpContents(exp);
                exp.type = pointerExp;
@@ -6944,6 +6752,7 @@ static void ProcessDeclaration(Declaration decl);
    // Optimize this later? Do this before/less?
    Context ctx;
    Symbol symbol = null;
+
    // First, check if the identifier is declared inside the function
    //for(ctx = curContext; ctx /*!= topContext.parent */&& !symbol; ctx = ctx.parent)
 
@@ -6969,34 +6778,8 @@ static void ProcessDeclaration(Declaration decl);
 
       if(symbol || ctx == endContext) break;
    }
-   if(inCompiler && curExternal && symbol && ctx == globalContext && curExternal.symbol && symbol.id > curExternal.symbol.idCode && symbol.pointerExternal)
-   {
-      if(symbol.pointerExternal.type == functionExternal)
-      {
-         FunctionDefinition function = symbol.pointerExternal.function;
-
-         // Modified this recently...
-         Context tmpContext = curContext;
-         curContext = null;
-         symbol.pointerExternal = MkExternalDeclaration(MkDeclaration(CopyList(function.specifiers, CopySpecifier), MkListOne(MkInitDeclarator(CopyDeclarator(function.declarator), null))));
-         curContext = tmpContext;
-
-         symbol.pointerExternal.symbol = symbol;
-
-         // TESTING THIS:
-         DeclareType(symbol.type, true, true);
-
-         ast->Insert(curExternal.prev, symbol.pointerExternal);
-
-         symbol.id = curExternal.symbol.idCode;
-
-      }
-      else if(symbol.pointerExternal.type == declarationExternal && curExternal.symbol.idCode < symbol.pointerExternal.symbol.id) // Added id comparison because Global Function prototypes were broken
-      {
-         ast->Move(symbol.pointerExternal, curExternal.prev);
-         symbol.id = curExternal.symbol.idCode;
-      }
-   }
+   if(inCompiler && symbol && ctx == globalContext && symbol.pointerExternal && curExternal && symbol.pointerExternal != curExternal)
+      curExternal.CreateUniqueEdge(symbol.pointerExternal, symbol.pointerExternal.type == functionExternal);
 #ifdef _DEBUG
    //findSymbolTotalTime += GetTime() - startTime;
 #endif
@@ -7589,7 +7372,7 @@ void ApplyAnyObjectLogic(Expression e)
                   {
                      char size[100];
                      ComputeTypeSize(e.expType);
-                     sprintf(size, "%d", e.expType.size);
+                     sprintf(size, "%d", e.expType.size);   // Potential 32/64 Bootstrap issue
                      newExp = MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)),
                         MkDeclaratorPointer(MkPointer(null, null), null)), newExp), '+',
                            MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne(MkExpConstant(size))))));
@@ -8169,7 +7952,7 @@ void ProcessExpressionType(Expression exp)
                      data = FindGlobalData(id.string);
                   if(data)
                   {
-                     DeclareGlobalData(data);
+                     DeclareGlobalData(curExternal, data);
                      exp.expType = data.dataType;
                      if(data.dataType) data.dataType.refCount++;
 
@@ -8203,7 +7986,7 @@ void ProcessExpressionType(Expression exp)
                         if(function.module.importType != staticImport && (!function.dataType || !function.dataType.dllExport))
                            strcpy(name, "__ecereFunction_");
                         FullClassNameCat(name, id.string, false); // Why is this using FullClassNameCat ?
-                        if(DeclareFunction(function, name))
+                        if(DeclareFunction(curExternal, function, name))
                         {
                            delete id.string;
                            id.string = CopyString(name);
@@ -8390,7 +8173,7 @@ void ProcessExpressionType(Expression exp)
             kind = pointerType;
             type = ProcessType(exp._new.typeName.qualifiers, exp._new.typeName.declarator);
          };
-         DeclareType(exp.expType.type, false, false);
+         DeclareType(curExternal, exp.expType.type, true, false);
          break;
       case renewExp:
       case renew0Exp:
@@ -8402,7 +8185,7 @@ void ProcessExpressionType(Expression exp)
             kind = pointerType;
             type = ProcessType(exp._renew.typeName.qualifiers, exp._renew.typeName.declarator);
          };
-         DeclareType(exp.expType.type, false, false);
+         DeclareType(curExternal, exp.expType.type, true, false);
          break;
       case opExp:
       {
@@ -9338,7 +9121,7 @@ void ProcessExpressionType(Expression exp)
 
          if(exp.op.op == SIZEOF && exp.op.exp2.expType)
          {
-            DeclareType(exp.op.exp2.expType, false, false);
+            DeclareType(curExternal, exp.op.exp2.expType, true, false);
          }
 
          if(exp.op.op == DELETE && exp.op.exp2 && exp.op.exp2.expType && exp.op.exp2.expType.specConst)
@@ -9458,7 +9241,7 @@ void ProcessExpressionType(Expression exp)
          if(!exp.expType)
             exp.expType = Dereference(exp.index.exp.expType);
          if(exp.expType)
-            DeclareType(exp.expType, false, false);
+            DeclareType(curExternal, exp.expType, true, false);
          break;
       }
       case callExp:
@@ -9676,7 +9459,7 @@ void ProcessExpressionType(Expression exp)
                      {
                         Class backupThisClass = thisClass;
                         thisClass = exp.call.exp.expType.usedClass;
-                        ProcessDeclarator(decl);
+                        ProcessDeclarator(decl, true);
                         thisClass = backupThisClass;
                      }
 
@@ -10419,7 +10202,10 @@ void ProcessExpressionType(Expression exp)
                   }
 
                   exp.member.memberType = dataMember;
-                  DeclareStruct(_class.fullName, false);
+                  DeclareStruct(curExternal, _class.fullName, false, true);
+                  if(member._class != _class)
+                     DeclareStruct(curExternal, member._class.fullName, false, true);
+
                   if(!member.dataType)
                   {
                      Context context = SetupTemplatesContext(_class);
@@ -10828,19 +10614,54 @@ void ProcessExpressionType(Expression exp)
          Symbol classSym = exp._class.symbol; // FindClass(exp._class.name);
          if(classSym && classSym.registered)
          {
-            if(classSym.registered.type == noHeadClass)
+            if(classSym.registered.type == noHeadClass || (classSym.registered.fixed && classSym.registered.structSize))
             {
                char name[1024];
+               Class b = classSym.registered;
                name[0] = '\0';
-               DeclareStruct(classSym.string, false);
+               DeclareStruct(curExternal, classSym.string, false, true);
                FreeSpecifier(exp._class);
-               exp.type = typeSizeExp;
                FullClassNameCat(name, classSym.string, false);
-               exp.typeName = MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(name), null)), null);
+
+               if(b.offset == 0)
+               {
+                  exp.type = typeSizeExp;
+                  exp.typeName = MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(name), null)), null);
+               }
+               else
+               {
+                  Expression e;
+                  exp.type = opExp;
+                  if(b.structSize == b.offset)
+                     exp.op.exp1 = MkExpConstant("0");
+                  else
+                     exp.op.exp1 = MkExpTypeSize(MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(name), null)), null));
+                  exp.op.op = '+';
+                  e = exp;
+                  while(b.offset != 0)
+                  {
+                     Symbol sym;
+                     Expression typeSize;
+
+                     b = b.base;
+                     sym = FindClass(b.fullName);
+
+                     name[0] = '\0';
+                     DeclareStruct(curExternal, sym.string, false, true);
+                     FullClassNameCat(name, sym.string, false);
+
+                     if(b.structSize == b.offset)
+                        typeSize = MkExpConstant("0");
+                     else
+                        typeSize = MkExpTypeSize(MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(name), null)), null));
+                     e.op.exp2 = b.offset ? MkExpOp(typeSize, '+', null) : typeSize;
+                     e = e.op.exp2;
+                  }
+               }
             }
             else
             {
-               if(classSym.registered.fixed)
+               if(classSym.registered.fixed && !classSym.registered.structSize)
                {
                   FreeSpecifier(exp._class);
                   exp.constant = PrintUInt(classSym.registered.templateClass ? classSym.registered.templateClass.structSize : classSym.registered.structSize);
@@ -10851,9 +10672,8 @@ void ProcessExpressionType(Expression exp)
                   char className[1024];
                   strcpy(className, "__ecereClass_");
                   FullClassNameCat(className, classSym.string, true);
-                  //MangleClassName(className);
 
-                  DeclareClass(classSym, className);
+                  DeclareClass(curExternal, classSym, className);
 
                   FreeExpContents(exp);
                   exp.type = pointerExp;
@@ -10882,7 +10702,7 @@ void ProcessExpressionType(Expression exp)
          };
          exp.isConstant = true;
 
-         DeclareType(type, false, false);
+         DeclareType(curExternal, type, true, false);
          FreeType(type);
          break;
       }
@@ -11169,7 +10989,7 @@ void ProcessExpressionType(Expression exp)
                delete exp.list;
             }
 
-            DeclareStruct("ecere::com::BuiltInContainer", false);
+            DeclareStruct(curExternal, "ecere::com::BuiltInContainer", false, true);
 
             ListAdd(structInitializers, /*MkIdentifier("_vTbl")*/    MkInitializerAssignment(MkExpMember(MkExpClass(MkListOne(MkSpecifierName("BuiltInContainer")), null), MkIdentifier("_vTbl"))));
                ProcessExpressionType(((Initializer)structInitializers->last).exp);
@@ -11579,9 +11399,12 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct)
       {
          Symbol symbol = FindType(curContext, spec.name);
          if(symbol)
-            DeclareType(symbol.type, true, true);
-         else if((symbol = spec.symbol /*FindClass(spec.name)*/) && symbol.registered && symbol.registered.type == structClass && declareStruct)
-            DeclareStruct(spec.name, false);
+            DeclareType(curExternal, symbol.type, true, true);
+         else if(spec.symbol /*&& declareStruct*/)
+         {
+            Class c = spec.symbol.registered;
+            DeclareStruct(curExternal, spec.name, c && c.type == noHeadClass, declareStruct && c && c.type == structClass);
+         }
          break;
       }
       case enumSpecifier:
@@ -11624,7 +11447,7 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct)
       {
          Symbol classSym = FindClass(spec.name);
          if(classSym && classSym.registered && classSym.registered.type == structClass)
-            DeclareStruct(spec.name, false);
+            DeclareStruct(spec.name, false, true);
          break;
       }
       */
@@ -11632,7 +11455,7 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct)
 }
 
 
-static void ProcessDeclarator(Declarator decl)
+static void ProcessDeclarator(Declarator decl, bool isFunction)
 {
    switch(decl.type)
    {
@@ -11652,22 +11475,32 @@ static void ProcessDeclarator(Declarator decl)
       case pointerDeclarator:
       case extendedDeclarator:
       case extendedDeclaratorEnd:
-         if(decl.declarator)
-            ProcessDeclarator(decl.declarator);
+      {
+         Identifier id = null;
+         Specifier classSpec = null;
          if(decl.type == functionDeclarator)
          {
-            Identifier id = GetDeclId(decl);
+            id = GetDeclId(decl);
             if(id && id._class)
+            {
+               classSpec = id._class;
+               id._class = null;
+            }
+         }
+         if(decl.declarator)
+            ProcessDeclarator(decl.declarator, isFunction);
+         if(decl.type == functionDeclarator)
+         {
+            if(classSpec)
             {
                TypeName param
                {
-                  qualifiers = MkListOne(id._class);
+                  qualifiers = MkListOne(classSpec);
                   declarator = null;
                };
                if(!decl.function.parameters)
                   decl.function.parameters = MkList();
                decl.function.parameters->Insert(null, param);
-               id._class = null;
             }
             if(decl.function.parameters)
             {
@@ -11675,57 +11508,73 @@ static void ProcessDeclarator(Declarator decl)
 
                for(param = decl.function.parameters->first; param; param = param.next)
                {
-                  if(param.qualifiers && param.qualifiers->first)
+                  if(param.qualifiers)
                   {
-                     Specifier spec = param.qualifiers->first;
-                     if(spec && spec.specifier == TYPED_OBJECT)
+                     Specifier spec;
+                     for(spec = param.qualifiers->first; spec; spec = spec.next)
                      {
-                        Declarator d = param.declarator;
-                        TypeName newParam
+                        if(spec.type == baseSpecifier)
                         {
-                           qualifiers = MkListOne(MkSpecifier(VOID));
-                           declarator = MkDeclaratorPointer(MkPointer(null,null), d);
-                        };
-                        if(d.type != pointerDeclarator)
-                           newParam.qualifiers->Insert(null, MkSpecifier(CONST));
+                           if(spec.specifier == TYPED_OBJECT)
+                           {
+                              Declarator d = param.declarator;
+                              TypeName newParam
+                              {
+                                 qualifiers = MkListOne(MkSpecifier(VOID));
+                                 declarator = MkDeclaratorPointer(MkPointer(null,null), d);
+                              };
+                              if(d.type != pointerDeclarator)
+                                 newParam.qualifiers->Insert(null, MkSpecifier(CONST));
 
-                        FreeList(param.qualifiers, FreeSpecifier);
+                              FreeList(param.qualifiers, FreeSpecifier);
 
-                        param.qualifiers = MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
-                        param.declarator = MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("class")));
+                              param.qualifiers = MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
+                              param.declarator = MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("class")));
 
-                        decl.function.parameters->Insert(param, newParam);
-                        param = newParam;
-                     }
-                     else if(spec && spec.specifier == ANY_OBJECT)
-                     {
-                        Declarator d = param.declarator;
+                              DeclareStruct(curExternal, "ecere::com::Class", false, true);
 
-                        FreeList(param.qualifiers, FreeSpecifier);
+                              decl.function.parameters->Insert(param, newParam);
+                              param = newParam;
+                              break;
+                           }
+                           else if(spec.specifier == ANY_OBJECT)
+                           {
+                              Declarator d = param.declarator;
 
-                        param.qualifiers = MkListOne(MkSpecifier(VOID));
-                        if(d.type != pointerDeclarator)
-                           param.qualifiers->Insert(null, MkSpecifier(CONST));
-                        param.declarator = MkDeclaratorPointer(MkPointer(null,null), d);
-                     }
-                     else if(spec.specifier == THISCLASS)
-                     {
-                        if(thisClass)
+                              FreeList(param.qualifiers, FreeSpecifier);
+
+                              param.qualifiers = MkListOne(MkSpecifier(VOID));
+                              if(d.type != pointerDeclarator)
+                                 param.qualifiers->Insert(null, MkSpecifier(CONST));
+                              param.declarator = MkDeclaratorPointer(MkPointer(null,null), d);
+                              break;
+                           }
+                           else if(spec.specifier == THISCLASS)
+                           {
+                              if(thisClass)
+                              {
+                                 spec.type = nameSpecifier;
+                                 spec.name = ReplaceThisClass(thisClass);
+                                 spec.symbol = FindClass(spec.name);
+                                 ProcessSpecifier(spec, false);
+                              }
+                              break;
+                           }
+                        }
+                        else if(spec.type == nameSpecifier)
                         {
-                           spec.type = nameSpecifier;
-                           spec.name = ReplaceThisClass(thisClass);
-                           spec.symbol = FindClass(spec.name);
-                           ProcessSpecifier(spec, false);
+                           ProcessSpecifier(spec, isFunction);
                         }
                      }
                   }
 
                   if(param.declarator)
-                     ProcessDeclarator(param.declarator);
+                     ProcessDeclarator(param.declarator, false);
                }
             }
          }
          break;
+      }
    }
 }
 
@@ -11749,7 +11598,7 @@ static void ProcessDeclaration(Declaration decl)
             for(d = decl.declarators->first; d; d = d.next)
             {
                Type type, subType;
-               ProcessDeclarator(d.declarator);
+               ProcessDeclarator(d.declarator, false);
 
                type = ProcessType(decl.specifiers, d.declarator);
 
@@ -11827,7 +11676,7 @@ static void ProcessDeclaration(Declaration decl)
             {
                Type type = ProcessType(decl.specifiers, d.declarator);
                Type subType;
-               ProcessDeclarator(d);
+               ProcessDeclarator(d, false);
                for(subType = type; subType;)
                {
                   if(subType.kind == classType)
@@ -11863,22 +11712,18 @@ static void CreateFireWatcher(Property prop, Expression object, Statement stmt)
    char getName[1024], setName[1024];
    OldList * args;
 
-   DeclareProperty(prop, setName, getName);
+   DeclareProperty(curExternal, prop, setName, getName);
 
    // eInstance_FireWatchers(object, prop);
    strcpy(propName, "__ecereProp_");
    FullClassNameCat(propName, prop._class.fullName, false);
    strcat(propName, "_");
-   // strcat(propName, prop.name);
    FullClassNameCat(propName, prop.name, true);
-   //MangleClassName(propName);
 
    strcpy(propNameM, "__ecerePropM_");
    FullClassNameCat(propNameM, prop._class.fullName, false);
    strcat(propNameM, "_");
-   // strcat(propNameM, prop.name);
    FullClassNameCat(propNameM, prop.name, true);
-   //MangleClassName(propNameM);
 
    if(prop.isWatchable)
    {
@@ -11891,8 +11736,9 @@ static void CreateFireWatcher(Property prop, Expression object, Statement stmt)
       ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
       ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
       ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireWatchers")), args));
-   }
 
+      DeclareFunctionUtil(curExternal, "eInstance_FireWatchers");
+   }
 
    {
       args = MkList();
@@ -11904,6 +11750,8 @@ static void CreateFireWatcher(Property prop, Expression object, Statement stmt)
       ListAdd(args, object ? CopyExpression(object) : MkExpIdentifier(MkIdentifier("this")));
       ListAdd(args, MkExpIdentifier(MkIdentifier(propNameM)));
       ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_FireSelfWatchers")), args));
+
+      DeclareFunctionUtil(curExternal, "eInstance_FireSelfWatchers");
    }
 
    if(curFunction.propSet && !strcmp(curFunction.propSet.string, prop.name) &&
@@ -12582,8 +12430,6 @@ static void ProcessStatement(Statement stmt)
                stmt.type = expressionStmt;
                stmt.expressions = MkList();
 
-               curExternal = external.prev;
-
                for(propWatch = watches->first; propWatch; propWatch = propWatch.next)
                {
                   ClassFunction func;
@@ -12591,10 +12437,6 @@ static void ProcessStatement(Statement stmt)
                   Class watcherClass = watcher ?
                      ((watcher.expType && watcher.expType.kind == classType && watcher.expType._class) ? watcher.expType._class.registered : null) : thisClass;
                   External createdExternal;
-
-                  // Create a declaration above
-                  External externalDecl = MkExternalDeclaration(null);
-                  ast->Insert(curExternal.prev, externalDecl);
 
                   sprintf(watcherName,"__ecerePropertyWatcher_%d", propWatcherID++);
                   if(propWatch.deleteWatch)
@@ -12618,25 +12460,10 @@ static void ProcessStatement(Statement stmt)
                      ProcessClassFunctionBody(func, propWatch.compound);
                      propWatch.compound = null;
 
-                     //afterExternal = afterExternal ? afterExternal : curExternal;
-
-                     //createdExternal = ProcessClassFunction(watcherClass, func, ast, curExternal.prev);
                      createdExternal = ProcessClassFunction(watcherClass, func, ast, curExternal, true);
-                     // TESTING THIS...
-                     createdExternal.symbol.idCode = external.symbol.idCode;
 
                      curExternal = createdExternal;
                      ProcessFunction(createdExternal.function);
-
-
-                     // Create a declaration above
-                     {
-                        Declaration decl = MkDeclaration(CopyList(createdExternal.function.specifiers, CopySpecifier),
-                           MkListOne(MkInitDeclarator(CopyDeclarator(createdExternal.function.declarator), null)));
-                        externalDecl.declaration = decl;
-                        if(decl.symbol && !decl.symbol.pointerExternal)
-                           decl.symbol.pointerExternal = externalDecl;
-                     }
 
                      if(propWatch.deleteWatch)
                      {
@@ -12660,13 +12487,12 @@ static void ProcessStatement(Statement stmt)
                               char getName[1024], setName[1024];
                               OldList * args = MkList();
 
-                              DeclareProperty(prop, setName, getName);
+                              DeclareProperty(createdExternal, prop, setName, getName);
 
                               // eInstance_Watch(stmt.watch.object, prop, stmt.watch.watcher, callback);
                               strcpy(propName, "__ecereProp_");
                               FullClassNameCat(propName, prop._class.fullName, false);
                               strcat(propName, "_");
-                              // strcat(propName, prop.name);
                               FullClassNameCat(propName, prop.name, true);
 
                               ListAdd(args, CopyExpression(object));
@@ -12675,6 +12501,8 @@ static void ProcessStatement(Statement stmt)
                               ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)), MkExpIdentifier(MkIdentifier(watcherName))));
 
                               ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_Watch")), args));
+
+                              external.CreateUniqueEdge(createdExternal, true);
                            }
                            else
                               Compiler_Error($"Property %s not found in class %s\n", propID.string, _class.fullName);
@@ -12695,7 +12523,7 @@ static void ProcessStatement(Statement stmt)
                FreeList(watches, FreePropertyWatch);
             }
             else
-               Compiler_Error($"No observer specified and not inside a _class\n");
+               Compiler_Error($"No observer specified and not inside a class\n");
          }
          else
          {
@@ -12822,15 +12650,13 @@ static void ProcessStatement(Statement stmt)
                            char getName[1024], setName[1024];
                            OldList * args = MkList();
 
-                           DeclareProperty(prop, setName, getName);
+                           DeclareProperty(curExternal, prop, setName, getName);
 
                            // eInstance_StopWatching(object, prop, watcher);
                            strcpy(propName, "__ecereProp_");
                            FullClassNameCat(propName, prop._class.fullName, false);
                            strcat(propName, "_");
-                           // strcat(propName, prop.name);
                            FullClassNameCat(propName, prop.name, true);
-                           //MangleClassName(propName);
 
                            ListAdd(args, CopyExpression(object));
                            ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
@@ -12918,14 +12744,10 @@ static void ProcessFunction(FunctionDefinition function)
          strcpy(className, "__ecereClass_");
          FullClassNameCat(className, _class.fullName, true);
 
-         //MangleClassName(className);
-
          structName[0] = 0;
          FullClassNameCat(structName, _class.fullName, false);
 
          // [class] this
-
-
          funcDecl = GetFuncDecl(function.declarator);
          if(funcDecl)
          {
@@ -12939,10 +12761,6 @@ static void ProcessFunction(FunctionDefinition function)
                }
             }
 
-            // DANGER: Watch for this... Check if it's a Conversion?
-            // if((_class.type != bitClass && _class.type != unitClass && _class.type != enumClass) || function != (FunctionDefinition)symbol.externalSet)
-
-            // WAS TRYING THIS FOR CONVERSION PROPERTIES ON NOHEAD CLASSES: if((_class.type == structClass) || function != (FunctionDefinition)symbol.externalSet)
             if(!function.propertyNoThis)
             {
                TypeName thisParam = null;
@@ -12968,6 +12786,7 @@ static void ProcessFunction(FunctionDefinition function)
                      declarator = MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("class")));
                      qualifiers = MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null));
                   };
+                  DeclareStruct(curExternal, "ecere::com::Class", false, true);
                   funcDecl.function.parameters->Insert(null, thisParam);
                }
             }
@@ -12991,7 +12810,6 @@ static void ProcessFunction(FunctionDefinition function)
 
                if(type.classObjectType != classPointer)
                {
-                  // DANGER: Watch for this... Check if it's a Conversion?
                   if((_class.type != bitClass && _class.type != unitClass && _class.type != enumClass) || function != (FunctionDefinition)symbol.externalSet)
                   {
                      TypeName thisParam = QMkClass(_class.fullName, MkDeclaratorIdentifier(MkIdentifier("this")));
@@ -13013,7 +12831,7 @@ static void ProcessFunction(FunctionDefinition function)
             thisSymbol = Symbol
             {
                string = CopyString("this");
-               type = classSym ? MkClassType(classSym.string) : null; //_class.fullName);
+               type = classSym ? MkClassType(classSym.string) : null;
             };
             function.body.compound.context.symbols.Add((BTNode)thisSymbol);
 
@@ -13022,17 +12840,12 @@ static void ProcessFunction(FunctionDefinition function)
                thisSymbol.type.classObjectType = ClassObjectType::typedObject;
                thisSymbol.type.byReference = type.byReference;
                thisSymbol.type.typedByReference = type.byReference;
-               /*
-               thisSymbol = Symbol { string = CopyString("class") };
-               function.body.compound.context.symbols.Add(thisSymbol);
-               */
             }
          }
       }
 
       // Pointer to class data
-
-      if(inCompiler && _class && (_class.type == normalClass /*|| _class.type == noHeadClass*/) && type.classObjectType != classPointer)
+      if(inCompiler && _class && _class.type == normalClass && type.classObjectType != classPointer)
       {
          DataMember member = null;
          {
@@ -13063,10 +12876,8 @@ static void ProcessFunction(FunctionDefinition function)
                char className[1024];
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, classSym.string, true);
-               //MangleClassName(className);
 
-               // Testing This
-               DeclareClass(classSym, className);
+               DeclareClass(curExternal, classSym, className);
             }
 
             // ((byte *) this)
@@ -13074,9 +12885,19 @@ static void ProcessFunction(FunctionDefinition function)
 
             if(_class.fixed)
             {
-               char string[256];
-               sprintf(string, "%d", _class.offset);
-               exp = QBrackets(MkExpOp(bytePtr, '+', MkExpConstant(string)));
+               Expression e;
+               if(_class.offset && _class.offset == _class.base.structSize)
+               {
+                  e = MkExpClassSize(MkSpecifierName(_class.base.fullName));
+                  ProcessExpressionType(e);
+               }
+               else
+               {
+                  char string[256];
+                  sprintf(string, "%d", _class.offset);  // Need Bootstrap Fix
+                  e = MkExpConstant(string);
+               }
+               exp = QBrackets(MkExpOp(bytePtr, '+', e));
             }
             else
             {
@@ -13182,7 +13003,7 @@ static void ProcessFunction(FunctionDefinition function)
 
    if(function.declarator)
    {
-      ProcessDeclarator(function.declarator);
+      ProcessDeclarator(function.declarator, true);
    }
 
    topContext = oldTopContext;
@@ -13252,11 +13073,6 @@ static void ProcessClass(OldList definitions, Symbol symbol)
          PropertyDef prop = def.propertyDef;
 
          // Add this to the context
-         /*
-         Symbol thisSymbol = Symbol { string = CopyString("this"), type = MkClassType(regClass.fullName) };
-         globalContext.symbols.Add(thisSymbol);
-         */
-
          thisClass = regClass;
          if(prop.setStmt)
          {
@@ -13305,11 +13121,6 @@ static void ProcessClass(OldList definitions, Symbol symbol)
          }
 
          thisClass = null;
-
-         /*
-         globalContext.symbols.Remove(thisSymbol);
-         FreeSymbol(thisSymbol);
-         */
       }
       else if(def.type == propertyWatchClassDef && def.propertyWatch)
       {
@@ -13334,7 +13145,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
    }
 }
 
-void DeclareFunctionUtil(const String s)
+void DeclareFunctionUtil(External neededBy, const String s)
 {
    GlobalFunction function = eSystem_FindFunction(privateModule, s);
    if(function)
@@ -13344,103 +13155,65 @@ void DeclareFunctionUtil(const String s)
       if(function.module.importType != staticImport && (!function.dataType || !function.dataType.dllExport))
          strcpy(name, "__ecereFunction_");
       FullClassNameCat(name, s, false); // Why is this using FullClassNameCat ?
-      DeclareFunction(function, name);
+      DeclareFunction(neededBy, function, name);
    }
+   else if(neededBy)
+      FindSymbol(s, globalContext, globalContext, false, false);
 }
 
 void ComputeDataTypes()
 {
    External external;
-   External temp { };
-   External after = null;
 
    currentClass = null;
 
    containerClass = eSystem_FindClass(GetPrivateModule(), "Container");
 
-   for(external = ast->first; external; external = external.next)
-   {
-      if(external.type == declarationExternal)
-      {
-         Declaration decl = external.declaration;
-         if(decl)
-         {
-            OldList * decls = decl.declarators;
-            if(decls)
-            {
-               InitDeclarator initDecl = decls->first;
-               if(initDecl)
-               {
-                  Declarator declarator = initDecl.declarator;
-                  if(declarator && declarator.type == identifierDeclarator)
-                  {
-                     Identifier id = declarator.identifier;
-                     if(id && id.string)
-                     {
-                        if(!strcmp(id.string, "uintptr_t") || !strcmp(id.string, "intptr_t") || !strcmp(id.string, "size_t") || !strcmp(id.string, "ssize_t"))
-                        {
-                           external.symbol.id = -1001, external.symbol.idCode = -1001;
-                           after = external;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-       }
-   }
+   DeclareStruct(null, "ecere::com::Class", false, true);
+   DeclareStruct(null, "ecere::com::Instance", false, true);
+   DeclareStruct(null, "ecere::com::Property", false, true);
+   DeclareStruct(null, "ecere::com::DataMember", false, true);
+   DeclareStruct(null, "ecere::com::Method", false, true);
+   DeclareStruct(null, "ecere::com::SerialBuffer", false, true);
+   DeclareStruct(null, "ecere::com::ClassTemplateArgument", false, true);
 
-   {
-      // Workaround until we have proper toposort for declarations reordering
-      External e = MkExternalDeclaration(MkDeclaration(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Instance"), null)), null));
-      ast->Insert(after, e);
-      after = e;
-   }
-
-   temp.symbol = Symbol { id = -1000, idCode = -1000 };
-   ast->Insert(after, temp);
-   curExternal = temp;
-
-   DeclareFunctionUtil("eSystem_New");
-   DeclareFunctionUtil("eSystem_New0");
-   DeclareFunctionUtil("eSystem_Renew");
-   DeclareFunctionUtil("eSystem_Renew0");
-   DeclareFunctionUtil("eSystem_Delete");
-   DeclareFunctionUtil("eClass_GetProperty");
-   DeclareFunctionUtil("eClass_SetProperty");
-   DeclareFunctionUtil("eInstance_FireSelfWatchers");
-   DeclareFunctionUtil("eInstance_SetMethod");
-   DeclareFunctionUtil("eInstance_IncRef");
-   DeclareFunctionUtil("eInstance_StopWatching");
-   DeclareFunctionUtil("eInstance_Watch");
-   DeclareFunctionUtil("eInstance_FireWatchers");
-   if(memoryGuard)
-   {
-      DeclareFunctionUtil("MemoryGuard_PushLoc");
-      DeclareFunctionUtil("MemoryGuard_PopLoc");
-   }
-
-   DeclareStruct("ecere::com::Class", false);
-   DeclareStruct("ecere::com::Instance", false);
-   DeclareStruct("ecere::com::Property", false);
-   DeclareStruct("ecere::com::DataMember", false);
-   DeclareStruct("ecere::com::Method", false);
-   DeclareStruct("ecere::com::SerialBuffer", false);
-   DeclareStruct("ecere::com::ClassTemplateArgument", false);
-
-   ast->Remove(temp);
+   DeclareFunctionUtil(null, "eSystem_New");
+   DeclareFunctionUtil(null, "eSystem_New0");
+   DeclareFunctionUtil(null, "eSystem_Renew");
+   DeclareFunctionUtil(null, "eSystem_Renew0");
+   DeclareFunctionUtil(null, "eSystem_Delete");
+   DeclareFunctionUtil(null, "eClass_GetProperty");
+   DeclareFunctionUtil(null, "eClass_SetProperty");
+   DeclareFunctionUtil(null, "eInstance_FireSelfWatchers");
+   DeclareFunctionUtil(null, "eInstance_SetMethod");
+   DeclareFunctionUtil(null, "eInstance_IncRef");
+   DeclareFunctionUtil(null, "eInstance_StopWatching");
+   DeclareFunctionUtil(null, "eInstance_Watch");
+   DeclareFunctionUtil(null, "eInstance_FireWatchers");
 
    for(external = ast->first; external; external = external.next)
    {
       afterExternal = curExternal = external;
       if(external.type == functionExternal)
       {
+         if(memoryGuard)
+         {
+            DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
+            DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
+         }
+
          currentClass = external.function._class;
          ProcessFunction(external.function);
       }
       // There shouldn't be any _class member access here anyways...
       else if(external.type == declarationExternal)
       {
+         if(memoryGuard && external.declaration && external.declaration.type == instDeclaration)
+         {
+            DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
+            DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
+         }
+
          currentClass = null;
          if(external.declaration)
             ProcessDeclaration(external.declaration);
@@ -13449,6 +13222,11 @@ void ComputeDataTypes()
       {
          ClassDefinition _class = external._class;
          currentClass = external.symbol.registered;
+         if(memoryGuard)
+         {
+            DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
+            DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
+         }
          if(_class.definitions)
          {
             ProcessClass(_class.definitions, _class.symbol);
@@ -13468,7 +13246,4 @@ void ComputeDataTypes()
    currentClass = null;
    thisNameSpace = null;
    curExternal = null;
-
-   delete temp.symbol;
-   delete temp;
 }

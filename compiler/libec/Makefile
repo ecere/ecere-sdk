@@ -1,4 +1,4 @@
-.PHONY: all objdir cleantarget clean realclean distclean fixprecompile silentfixprecompile
+.PHONY: all objdir cleantarget clean realclean distclean
 
 # CORE VARIABLES
 
@@ -35,13 +35,6 @@ USE_BOOTSTRAP := defined
 
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
-
-# PRECOMPILED FILES SUPPORT
-
-PRE = precompiled/
-PRECOMPILED_LIST = expression.c grammar.c grammar.bowl type.c
-PRECOMPILED_SOURCES = $(addprefix $(PRE),$(PRECOMPILED_LIST))
-PRECOMPILED_OBJECTS = $(addprefix $(OBJ),$(PRECOMPILED_LIST))
 
 # POST-INCLUDES VARIABLES
 
@@ -146,8 +139,7 @@ $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 
 $(SYMBOLS): | objdir
 $(OBJECTS): | objdir
-# PRECOMPILED: added PRECOMPILED_OBJECTS prerequisite
-$(TARGET): $(SOURCES) $(PRECOMPILED_OBJECTS) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
+$(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 ifndef STATIC_LIBRARY_TARGET
 	$(CC) $(OFLAGS) $(OBJECTS) $(LIBS) -o $(TARGET) $(SONAME) $(INSTALLNAME)
 ifndef NOSTRIP
@@ -166,35 +158,6 @@ ifdef WINDOWS_TARGET
 ifndef CROSS_TARGET
 	$(call cpq,$(TARGET),../../compiler/bootstrap/obj/bin.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/)
 endif
-endif
-
-# PRECOMPILED FILES SUPPORT
-
-fixprecompile:
-	@$(call echo,Stamping precompiled files...)
-	$(call touch,$(PRECOMPILED_SOURCES))
-
-silentfixprecompile:
-	$(call touch,$(PRECOMPILED_SOURCES))
-
-ifdef PRECOMPILE_RULES
-
-precompile: $(if $(wildcard $(PRE)expression.c),$(OBJ)expression.c,)
-$(OBJ)expression.c: $(PRE)expression.c | objdir
-	$(if $(wildcard $(PRE)expression.c),$(call cpq,$(PRE)expression.c,$@),)
-
-precompile: $(if $(wildcard $(PRE)grammar.c),$(OBJ)grammar.c,)
-$(OBJ)grammar.c: $(PRE)grammar.c | objdir
-	$(call cpq,$(PRE)grammar.c,$@)
-
-precompile: $(if $(wildcard $(PRE)grammar.bowl),$(OBJ)grammar.bowl,)
-$(OBJ)grammar.bowl: $(PRE)grammar.bowl | objdir
-	$(call cpq,$(PRE)grammar.bowl,$@)
-
-precompile: $(if $(wildcard $(PRE)type.c),$(OBJ)type.c,)
-$(OBJ)type.c: $(PRE)type.c | objdir
-	$(call cpq,$(PRE)type.c,$@)
-
 endif
 
 # SYMBOL RULES
@@ -270,10 +233,8 @@ $(OBJ)dbpass.c: src/dbpass.ec $(OBJ)dbpass.sym | $(SYMBOLS)
 $(OBJ)ecdefs.c: src/ecdefs.ec $(OBJ)ecdefs.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/ecdefs.ec -o $(OBJ)ecdefs.c -symbols $(OBJ)
 
-ifndef PRECOMPILE_RULES
 $(OBJ)expression.c: src/expression.ec $(if $(wildcard $(PRE)expression.c),,$(OBJ)expression.sym) | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/expression.ec -o $(OBJ)expression.c -symbols $(OBJ)
-endif
 
 $(OBJ)firstPass.c: src/firstPass.ec $(OBJ)firstPass.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/firstPass.ec -o $(OBJ)firstPass.c -symbols $(OBJ)
@@ -281,10 +242,8 @@ $(OBJ)firstPass.c: src/firstPass.ec $(OBJ)firstPass.sym | $(SYMBOLS)
 $(OBJ)freeAst.c: src/freeAst.ec $(OBJ)freeAst.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/freeAst.ec -o $(OBJ)freeAst.c -symbols $(OBJ)
 
-ifndef PRECOMPILE_RULES
 $(OBJ)grammar.c: src/grammar.ec $(if $(wildcard $(PRE)grammar.c),,$(OBJ)grammar.sym) | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/grammar.ec -o $(OBJ)grammar.c -symbols $(OBJ)
-endif
 
 $(OBJ)lexer.c: src/lexer.ec $(OBJ)lexer.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/lexer.ec -o $(OBJ)lexer.c -symbols $(OBJ)
@@ -316,10 +275,8 @@ $(OBJ)pass3.c: src/pass3.ec $(OBJ)pass3.sym | $(SYMBOLS)
 $(OBJ)shortcuts.c: src/shortcuts.ec $(OBJ)shortcuts.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/shortcuts.ec -o $(OBJ)shortcuts.c -symbols $(OBJ)
 
-ifndef PRECOMPILE_RULES
 $(OBJ)type.c: src/type.ec $(if $(wildcard $(PRE)type.c),,$(OBJ)type.sym) | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/type.ec -o $(OBJ)type.c -symbols $(OBJ)
-endif
 
 # OBJECT RULES
 
@@ -335,7 +292,6 @@ $(OBJ)dbpass.o: $(OBJ)dbpass.c
 $(OBJ)ecdefs.o: $(OBJ)ecdefs.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)ecdefs.c -o $(OBJ)ecdefs.o
 
-# PRECOMPILED: added optional PRECOMPILED_OBJECTS order only prerequisite
 $(OBJ)expression.o: $(OBJ)expression.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)expression.c -o $(OBJ)expression.o
 
@@ -345,7 +301,6 @@ $(OBJ)firstPass.o: $(OBJ)firstPass.c
 $(OBJ)freeAst.o: $(OBJ)freeAst.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)freeAst.c -o $(OBJ)freeAst.o
 
-# PRECOMPILED: added optional PRECOMPILED_OBJECTS order only prerequisite
 $(OBJ)grammar.o: $(OBJ)grammar.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)grammar.c -o $(OBJ)grammar.o
 
@@ -379,7 +334,6 @@ $(OBJ)pass3.o: $(OBJ)pass3.c
 $(OBJ)shortcuts.o: $(OBJ)shortcuts.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)shortcuts.c -o $(OBJ)shortcuts.o
 
-# PRECOMPILED: added optional PRECOMPILED_OBJECTS order only prerequisite
 $(OBJ)type.o: $(OBJ)type.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)type.c -o $(OBJ)type.o
 

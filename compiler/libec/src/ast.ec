@@ -769,7 +769,6 @@ Declaration MkDeclarationInst(Instantiation inst)
       string = (inst.exp.type == identifierExp) ? CopyString(inst.exp.identifier.string) : null;
       type = MkClassTypeSymbol(inst._class.symbol);
    };
-   symbol.idCode = symbol.id = curContext.nextID++;
    if(strstr(symbol.string, "::"))
       curContext.hasNameSpace = true;
    if(!(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.Add((BTNode)symbol))
@@ -846,7 +845,6 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                         string = CopyString(GetDeclId(d.declarator).string);
                         type = ProcessType(specifiers, d.declarator);
                      };
-                     type.id = type.idCode = curContext.nextID++;
 
                      if(!(curContext.templateTypesOnly ? curContext.parent : curContext).types.Add((BTNode)type))
                         excludedSymbols->Add(type);
@@ -874,7 +872,6 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                      if(s)
                      {
                         Symbol type { string = CopyString(s), type = ProcessType(specifiers, null) };
-                        type.id = type.idCode = curContext.nextID++;
                         decl.symbol = type;
                         decl.declarators = initDeclarators = MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier(s)), null));
                         specifiers.Remove(spec);
@@ -1000,7 +997,6 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                         symbol.type.freeExp = true;
                      }
                   }
-                  symbol.id = symbol.idCode = curContext.nextID++;
                }
                decl.symbol = d.declarator.symbol = symbol;
             }
@@ -1010,7 +1006,6 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
    else
    {
       decl.symbol = Symbol { };
-      decl.symbol.id = decl.symbol.idCode = curContext.nextID++;
       excludedSymbols->Add(decl.symbol);
    }
    return decl;
@@ -1196,8 +1191,6 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
                   if(!context.symbols.Add((BTNode)symbol))
                      excludedSymbols->Add(symbol);
 
-                  // TODO: Fix this, the parameters' IDs should really be smaller...
-                  symbol.id = context.nextID++;
                   param.declarator.symbol = symbol;
                }
             }
@@ -1235,7 +1228,6 @@ void ProcessFunctionBody(FunctionDefinition func, Statement body)
          id.string = CopyString(name);
       }
       symbol = Symbol { string = CopyString(id.string), type = ProcessType(func.specifiers, declarator) };
-      symbol.idCode = symbol.id = globalContext.nextID++;
       if(strstr(symbol.string, "::"))
          globalContext.hasNameSpace = true;
       if(!globalContext.symbols.Add((BTNode)symbol))
@@ -1433,6 +1425,7 @@ void SetClassTemplateArgs(Specifier spec, OldList templateArgs)
          {
             // If class was only decl'ed, invoke DeclClass on this templated class as well
             symbol = _DeclClass(MAXINT, templateString);
+            symbol.notYetDeclared = true;
          }
          // Add a reference to all templated class to the basic class
          if(spec.symbol)
@@ -1550,8 +1543,6 @@ void ProcessClassFunctionBody(ClassFunction func, Statement body)
                      isParam = true;
                   };
 
-                  // TODO: Fix this, the parameters' IDs should really be smaller...
-                  symbol.idCode = symbol.id = context.nextID++;
                   if(!context.symbols.Add((BTNode)symbol))
                      excludedSymbols->Add(symbol);
 
@@ -1595,7 +1586,6 @@ void ProcessClassFunctionBody(ClassFunction func, Statement body)
             symbolSpecs->Add(CopySpecifier(spec));
       }
       symbol.type = ProcessType(symbolSpecs, decl);
-      symbol.idCode = symbol.id = globalContext.nextID++;
       decl.symbol = symbol;
 
       excludedSymbols->Add(symbol);
@@ -1799,7 +1789,7 @@ Symbol _DeclClass(int symbolID, const char * name)
       symbol = Symbol
       {
          string = CopyString(name);
-         idCode = symbolID, id = symbolID;
+         // notYetDeclared = true;
       };
       if(!globalContext.classes.Add((BTNode)symbol))
          excludedSymbols->Add(symbol);
@@ -1819,8 +1809,6 @@ Symbol _DeclClass(int symbolID, const char * name)
             symbol.shortName = CopyString(name + start);
       }
    }
-   if(symbolID)
-      symbol.idCode = symbol.id = symbolID;
    return symbol;
 }
 
@@ -1905,7 +1893,7 @@ ClassDefinition MkClass(Symbol symbol, OldList baseSpecs, OldList definitions)
       delete symbol.ctx;
    }
    symbol.ctx = curContext;
-   classDef = { symbol = symbol, _class = MkSpecifierName /*MkClassName*/(symbol.string), baseSpecs = baseSpecs, definitions = definitions, nameLoc = symbol.nameLoc };
+   classDef = { symbol = symbol, _class = MkSpecifierName(symbol.string), baseSpecs = baseSpecs, definitions = definitions, nameLoc = symbol.nameLoc };
    curContext.classDef = classDef;
    return classDef;
 }
@@ -1946,10 +1934,7 @@ PropertyDef MkProperty(OldList specs, Declarator decl, Identifier id, Statement 
       string = CopyString(id.string);
       type = type;
    };
-   symbol.idCode = symbol.id = globalContext.nextID++;
    excludedSymbols->Add(symbol);
-   globalContext.nextID++;
-   globalContext.nextID++;
    prop.symbol = symbol;
    return prop;
 }
@@ -2215,8 +2200,7 @@ public Symbol FindClass(const char * name)
             {
                string = CopyString(name);
                registered = _class;
-               id = MAXINT;
-               idCode = MAXINT;
+               notYetDeclared = true;
                imported = true;
             };
             _class.symbol = cl;
@@ -2925,8 +2909,7 @@ Expression GetTemplateArgExpByName(const char * paramName, Class curClass, Templ
          sprintf(idString, "%d", id);
          strcpy(className, "__ecereClass_");
          FullClassNameCat(className, _class.fullName, true);
-         //MangleClassName(className);
-         DeclareClass(FindClass(_class.fullName), className);
+         DeclareClass(curExternal, FindClass(_class.fullName), className);
 
          argExp = MkExpIndex((/*pointer ? MkExpPointer : */MkExpMember)
                (MkExpMember(MkExpIdentifier(MkIdentifier("this")), MkIdentifier("_class")) /*MkExpIdentifier(MkIdentifier(className))*/,

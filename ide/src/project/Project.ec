@@ -1777,7 +1777,7 @@ private:
                            else
                            {
                               // Silence warnings for compiled eC
-                              char * objDir = strstr(moduleName, objDirExp.dir);
+                              //char * objDir = strstr(moduleName, objDirExp.dir);
 
                               if(linking)
                               {
@@ -1799,13 +1799,14 @@ private:
                                  colon = pointer;
                                  numErrors++;
                               }
-                              else if(compilingEC == 1 || (objDir && objDir == moduleName))
+                              else //if(compilingEC == 1 || (objDir && objDir == moduleName))
                               {
                                  bool skip = false;
 
                                  // Filter out these warnings caused by eC generated C code:
 
                                  // Declaration ordering bugs -- Awaiting topo sort implementation
+                                 /*
                                       if(strstr(line, "declared inside parameter list")) skip = true;
                                  else if(strstr(line, "its scope is only this definition")) skip = true;
                                  else if(strstr(line, "from incompatible pointer type")) skip = true;
@@ -1835,14 +1836,14 @@ private:
                                  else if(strstr(line, "In function '") || strstr(line, "In function ‘") ) skip = true;
                                  else if(strstr(line, "At top level")) skip = true;
                                  else if(strstr(line, "(near initialization for '") || strstr(line, "(near initialization for ‘")) skip = true;
-
+                                 */
                                  if(skip) continue;
                                  numWarnings++;
                               }
-                              else if(strstr(line, "warning:"))
+                              /*else if(strstr(line, "warning:"))
                               {
                                  numWarnings++;
-                              }
+                              }*/
                            }
                            if(message)
                               ide.outputView.buildBox.Logf("   %s%s\n", message, colon);

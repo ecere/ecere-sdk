@@ -840,19 +840,24 @@ public char * RSearchString(const char * buffer, const char * subStr, int maxLen
 public enum BackSlashEscaping : bool { forArgsPassing = 2 };
 public int Tokenize(char * string, int maxTokens, char* tokens[], BackSlashEscaping esc)
 {
-#ifdef __WIN32__
-//define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
-   const char * escChars = " !\"%&'()+,;=[]^`{}~"; // windowsFileNameCharsNeedEscaping;
-   const char * escCharsQuoted = "\"";
-#else
-//define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
-   const char * escChars = " !\"$&'()*:;<=>?[\\`{|"; // linuxFileNameCharsNeedEscaping;
-   const char * escCharsQuoted = "\"()$";
-#endif
+   const char * escChars, * escCharsQuoted;
    int count = 0;
    bool quoted = false, escaped = false;
    char * start = null, * output = string;
    char ch;
+   if(__runtimePlatform == win32)
+   {
+//define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
+      escChars = " !\"%&'()+,;=[]^`{}~"; // windowsFileNameCharsNeedEscaping;
+      escCharsQuoted = "\"";
+   }
+   else
+   {
+//define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
+      escChars = " !\"$&'()*:;<=>?[\\`{|"; // linuxFileNameCharsNeedEscaping;
+      escCharsQuoted = "\"()$";
+   }
+
    for(; (ch = *string) && count<maxTokens; string++, output++)
    {
       bool wasEscaped = escaped;

@@ -245,7 +245,7 @@ static void ProcessExpression(Expression exp)
                strcat(name, "_");
                strcat(name, method.name);
 
-               DeclareMethod(method, name);
+               DeclareMethod(curExternal, method, name);
 
                // Cast function to its type
                decl = SpecDeclFromString(method.dataTypeString, specs, MkDeclaratorBrackets(MkDeclaratorPointer(MkPointer(null, null), null)));
@@ -275,11 +275,10 @@ static void ProcessExpression(Expression exp)
                   // Need the class itself here...
                   strcpy(className, "__ecereClass_");
                   FullClassNameCat(className, _class.fullName, true);
-                  //MangleClassName(className);
 
                   if(!_class.symbol)
                      _class.symbol = FindClass(_class.fullName);
-                  DeclareClass(_class.symbol, className);
+                  DeclareClass(curExternal, _class.symbol, className);
 
                   if(exp.identifier)
                      FreeIdentifier(exp.identifier);
@@ -302,7 +301,7 @@ static void ProcessExpression(Expression exp)
 
                exp.identifier._class = null;
                exp.identifier.string = CopyString(name);
-               DeclareMethod(method, name);
+               DeclareMethod(curExternal, method, name);
             }
          }
          /*
@@ -329,10 +328,10 @@ static void ProcessExpression(Expression exp)
 
          switch(exp.type)
          {
-            case newExp:   exp.call.exp = QMkExpId("ecere::com::eSystem_New"); break;
-            case new0Exp:  exp.call.exp = QMkExpId("ecere::com::eSystem_New0"); break;
-            case renewExp: exp.call.exp = QMkExpId("ecere::com::eSystem_Renew"); break;
-            case renew0Exp:exp.call.exp = QMkExpId("ecere::com::eSystem_Renew0"); break;
+            case newExp:   exp.call.exp = QMkExpId("ecere::com::eSystem_New"); DeclareFunctionUtil(curExternal, "eSystem_New"); break;
+            case new0Exp:  exp.call.exp = QMkExpId("ecere::com::eSystem_New0"); DeclareFunctionUtil(curExternal, "eSystem_New0"); break;
+            case renewExp: exp.call.exp = QMkExpId("ecere::com::eSystem_Renew"); DeclareFunctionUtil(curExternal, "eSystem_Renew"); break;
+            case renew0Exp:exp.call.exp = QMkExpId("ecere::com::eSystem_Renew0"); DeclareFunctionUtil(curExternal, "eSystem_Renew0"); break;
          }
          exp.call.arguments = args;
          exp.type = callExp;
@@ -476,7 +475,7 @@ static void ProcessExpression(Expression exp)
                            }
                            if(lastProperty && lastProperty.Get && lastProperty.Set)
                            {
-                              DeclareProperty(lastProperty, setName, getName);
+                              DeclareProperty(curExternal, lastProperty, setName, getName);
                               // propertyClass = convertTo ? _class : ((Symbol)lastProperty.symbol)._class;
                               propertyClass = convertTo ? _class :
                                  ((((Symbol)lastProperty.symbol).type &&
@@ -811,7 +810,7 @@ static void ProcessExpression(Expression exp)
                               if(value)
                                  value.usage.usageArg = true;
 
-                              DeclareProperty(prop, setName, getName);
+                              DeclareProperty(curExternal, prop, setName, getName);
 
                               if(memberExp.member.exp)
                                  ProcessExpression(memberExp.member.exp);
@@ -1036,7 +1035,6 @@ static void ProcessExpression(Expression exp)
 
                strcpy(className, "__ecereClass_");
                FullClassNameCat(className, exp.expType._class.string, true);
-               //MangleClassName(className);
 
                DeclareClass(exp.expType._class, className);
 
@@ -1063,11 +1061,10 @@ static void ProcessExpression(Expression exp)
                   if(_class.templateClass) _class = _class.templateClass;
                   strcpy(className, "__ecereClass_");
                   FullClassNameCat(className, _class.fullName, false /*true*/);
-                  //MangleClassName(className);
 
                   if(!_class.symbol)
                      _class.symbol = FindClass(_class.fullName);
-                  DeclareClass(_class.symbol, className);
+                  DeclareClass(curExternal, _class.symbol, className);
 
                   // Call the non virtual destructor
                   ListAdd(list,
@@ -1090,6 +1087,7 @@ static void ProcessExpression(Expression exp)
                   );
                }
                ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
+               DeclareFunctionUtil(curExternal, "eSystem_Delete");
                o = CopyExpression(object);
                ProcessExpressionType(o);
                o.usage.usageGet = true;
@@ -1124,7 +1122,7 @@ static void ProcessExpression(Expression exp)
                   ProcessExpressionType(classExp);
                   ProcessExpression(classExp);
                   args->Insert(null, CopyExpression(classExp));
-                  DeclareMethod(eClass_FindMethod(eSystem_FindClass(privateModule, "class"), "OnFree", privateModule), "__ecereVMethodID_class_OnFree");
+                  DeclareMethod(curExternal, eClass_FindMethod(eSystem_FindClass(privateModule, "class"), "OnFree", privateModule), "__ecereVMethodID_class_OnFree");
                   ListAdd(exp.list, MkExpCall(
                      MkExpBrackets(MkListOne(MkExpCast(typeName,
                         MkExpIndex(MkExpPointer(classExp, MkIdentifier("_vTbl")),
@@ -1133,7 +1131,10 @@ static void ProcessExpression(Expression exp)
                }
             }
             else
+            {
                ListAdd(exp.list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
+               DeclareFunctionUtil(curExternal, "eSystem_Delete");
+            }
 
             //ProcessExpression(object);
 
@@ -1175,6 +1176,7 @@ static void ProcessExpression(Expression exp)
                      derefExp.index.exp = null;
                      FreeExpression(derefExp);
 
+                     // BOOSTRAP FIX
                      derefExp = MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), indexExp), '+',
                         MkExpBrackets(MkListOne(MkExpOp(MkExpBrackets(indexExpIndex), '*', MkExpBrackets(MkListOne(CopyExpression(sizeExp)))))));
                   }
@@ -1211,7 +1213,7 @@ static void ProcessExpression(Expression exp)
                      ProcessExpressionType(args->last);
                      ProcessExpression(args->last);
 
-                     DeclareFunctionUtil("memcpy");
+                     DeclareFunctionUtil(curExternal, "memcpy");
 
                      exp.list = MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("memcpy")), args));
                      exp.type = bracketsExp;
@@ -1652,7 +1654,7 @@ static void ProcessExpression(Expression exp)
                strcat(name, "_");
                strcat(name, method.name);
 
-               DeclareMethod(method, name);
+               DeclareMethod(curExternal, method, name);
 
                back = curContext;
                // THIS SpecDeclFromString HERE SHOULD WORK WITH THE METHOD TEMPLATE PARAMETERS...
@@ -1693,7 +1695,10 @@ static void ProcessExpression(Expression exp)
                      funcDecl.function.parameters->Insert(null, param);
                      // Testing this for any_object::
                      if(!method.dataType.extraParam)
+                     {
                         funcDecl.function.parameters->Insert(null, MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null)), MkDeclaratorPointer(MkPointer(null,null), null)));
+                        DeclareStruct(curExternal, "ecere::com::Class", false, true);
+                     }
                   }
                   else
                   {
@@ -1773,12 +1778,11 @@ static void ProcessExpression(Expression exp)
                      // Need the class itself here...
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, cl.fullName, true);
-                     //MangleClassName(className);
 
                      if(!cl.symbol)
                         cl.symbol = FindClass(cl.fullName);
 
-                     DeclareClass(cl.symbol, className);
+                     DeclareClass(curExternal, cl.symbol, className);
                   }
 
                   if(type && type.kind == subClassType && !_class && !exp.call.exp.expType.methodClass && memberExp)
@@ -1835,7 +1839,7 @@ static void ProcessExpression(Expression exp)
                if(!memberExp)
                   FreeExpression(exp.call.exp);
                exp.call.exp = MkExpIdentifier(MkIdentifier(name));
-               DeclareMethod(method, name);
+               DeclareMethod(curExternal, method, name);
                if(memberExp && memberExp.expType && method.dataType)
                {
                   exp.call.exp.expType = method.dataType;
@@ -1998,11 +2002,10 @@ static void ProcessExpression(Expression exp)
                            // Need the class itself here...
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, cl.fullName, true);
-                           //MangleClassName(className);
 
                            if(!cl.symbol)
                               cl.symbol = FindClass(cl.fullName);
-                           DeclareClass(cl.symbol, className);
+                           DeclareClass(curExternal, cl.symbol, className);
                         }
 
                         if(className[0])
@@ -2154,7 +2157,7 @@ static void ProcessExpression(Expression exp)
                               {
                                  char size[100];
                                  ComputeTypeSize(e.expType);
-                                 sprintf(size, "%d", e.expType.size);
+                                 sprintf(size, "%d", e.expType.size);   // BOOTSTRAP FIX
                                  newExp = MkExpBrackets(MkListOne(MkExpOp(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)),
                                     MkDeclaratorPointer(MkPointer(null, null), null)), newExp), '+',
                                        MkExpCall(MkExpIdentifier(MkIdentifier("__ENDIAN_PAD")), MkListOne(MkExpConstant(size))))));
@@ -2325,12 +2328,11 @@ static void ProcessExpression(Expression exp)
                         {
                            strcpy(className, "__ecereClass_");
                            FullClassNameCat(className, _class.fullName, true);
-                           //MangleClassName(className);
 
                            if(!_class.symbol)
                               _class.symbol = FindClass(_class.fullName);
 
-                           DeclareClass(_class.symbol, className);
+                           DeclareClass(curExternal, _class.symbol, className);
                         }
 
                         if(_class.type == normalClass && destType.byReference == false && strcmp(_class.dataTypeString, "char *"))
@@ -2509,11 +2511,10 @@ static void ProcessExpression(Expression exp)
                      ProcessExpression(exp.member.exp);
                      // TEST: exp.tempCount = exp.member.exp.tempCount;
 
-                     DeclareProperty(prop, setName, getName);
+                     DeclareProperty(curExternal, prop, setName, getName);
                      //propertyClass = convertTo ? _class : ((Symbol)prop.symbol)._class;
                      propertyClass = convertTo ? _class :
                         ((((Symbol)prop.symbol).type && ((Symbol)prop.symbol).type.kind == classType) ? ((Symbol)prop.symbol).type._class.registered : ((Symbol)prop.symbol)._class);
-
 
                      if(propertyClass && propertyClass.type == bitClass)
                      {
@@ -2578,6 +2579,7 @@ static void ProcessExpression(Expression exp)
 
                         className[0] = 0;
                         FullClassNameCat(className, propertyClass.fullName, false); //true);
+                        DeclareStruct(curExternal, propertyClass.fullName, false, true);
 
                         //ListAdd(specs, MkSpecifierName(className));
                         ListAdd(specs, MkStructOrUnion(structSpecifier, MkIdentifier(className), null));
@@ -2717,11 +2719,10 @@ static void ProcessExpression(Expression exp)
                         // Need the class itself here...
                         strcpy(className, "__ecereClass_");
                         FullClassNameCat(className, _class.fullName, true);
-                        //MangleClassName(className);
 
                         if(!_class.symbol)
                            _class.symbol = FindClass(_class.fullName);
-                        DeclareClass(_class.symbol, className);
+                        DeclareClass(curExternal, _class.symbol, className);
 
                         FreeExpression(exp.member.exp);
                         exp.index.exp = MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"));
@@ -2737,7 +2738,7 @@ static void ProcessExpression(Expression exp)
                            exp.index.exp = MkExpPointer(exp.member.exp, MkIdentifier("_vTbl"));
                      }
                      exp.index.index = MkListOne(QMkExpId(name));
-                     DeclareMethod(method, name);
+                     DeclareMethod(curExternal, method, name);
                   }
                   else
                   {
@@ -2748,7 +2749,7 @@ static void ProcessExpression(Expression exp)
                      strcat(name, "_");
                      strcat(name, method.name);
                      exp.identifier = MkIdentifier(name);
-                     DeclareMethod(method, name);
+                     DeclareMethod(curExternal, method, name);
                   }
                }
             }
@@ -2799,7 +2800,7 @@ static void ProcessExpression(Expression exp)
                // TEST: exp.tempCount = exp.member.exp.tempCount;
 
                if(type.kind == classType && type._class && type._class.registered)
-                  DeclareStruct(type._class.registered.fullName, false);
+                  DeclareStruct(curExternal, type._class.registered.fullName, false, true);
 
                // TESTING THIS NOHEAD STUFF...
                if(_class.type == noHeadClass)
@@ -2859,15 +2860,14 @@ static void ProcessExpression(Expression exp)
                      char className[1024];
                      strcpy(className, "__ecereClass_");
                      FullClassNameCat(className, member._class.fullName, true);
-                     //MangleClassName(className);
 
                      // classExp = QMkExpId(className);
 
                      if(!member._class.symbol)
                         member._class.symbol = FindClass(member._class.fullName);
 
-                     DeclareClass(member._class.symbol, className);
-                     DeclareStruct(member._class.fullName, false);
+                     DeclareClass(curExternal, member._class.symbol, className);
+                     DeclareStruct(curExternal, member._class.fullName, false, true);
 
                      structName[0] = 0;
                      FullClassNameCat(structName, member._class.fullName, false);
@@ -2902,11 +2902,24 @@ static void ProcessExpression(Expression exp)
                                  MkInitializerAssignment(MkExpCast(MkTypeName(MkListOne(MkSpecifier(CHAR)), MkDeclaratorPointer(MkPointer(null, null), null)), QBrackets(exp.member.exp))))))), null);
                         if(member._class.fixed)
                         {
-                           if(member._class.templateClass ? member._class.templateClass.offset : member._class.offset)
+                           Class c = member._class.templateClass ? member._class.templateClass : member._class;
+                           if(c.offset)
                            {
-                              char string[256];
-                              sprintf(string, "%d", member._class.templateClass ? member._class.templateClass.offset : member._class.offset);
-                              e = QBrackets(MkExpOp(QMkExpId(ecereTemp), '+', MkExpConstant(string)));
+                              Expression se;
+
+                              if(c.offset == c.base.structSize)
+                              {
+                                 se = MkExpClassSize(MkSpecifierName(c.base.fullName));
+                                 ProcessExpressionType(se);
+                                 se.isConstant = false;
+                              }
+                              else
+                              {
+                                 char string[256];
+                                 sprintf(string, "%d", c.offset);
+                                 se = MkExpConstant(string);
+                              }
+                              e = QBrackets(MkExpOp(QMkExpId(ecereTemp), '+', se));
                            }
                            else
                               e = QMkExpId(ecereTemp);
@@ -2940,11 +2953,25 @@ static void ProcessExpression(Expression exp)
                         // if(class.fixed)
                         if(member._class.fixed)
                         {
-                           if(member._class.templateClass ? member._class.templateClass.offset : member._class.offset)
+                           Class c = member._class.templateClass ? member._class.templateClass : member._class;
+                           if(c.offset)
                            {
-                              char string[256];
-                              sprintf(string, "%d", member._class.templateClass ? member._class.templateClass.offset : member._class.offset);
-                              e = QBrackets(QBrackets(MkExpOp(bytePtr, '+', MkExpConstant(string))));
+                              Expression se;
+
+                              if(c.offset == c.base.structSize)
+                              {
+                                 se = MkExpClassSize(MkSpecifierName(c.base.fullName));
+                                 ProcessExpressionType(se);
+                                 se.isConstant = false;
+                              }
+                              else
+                              {
+                                 char string[256];
+                                 sprintf(string, "%d", c.offset);
+                                 se = MkExpConstant(string);
+                              }
+
+                              e = QBrackets(QBrackets(MkExpOp(bytePtr, '+', se)));
                            }
                            else
                               e = bytePtr;
@@ -3087,8 +3114,8 @@ static void ProcessExpression(Expression exp)
 
             strcpy(className, "__ecereClass_");
             FullClassNameCat(className, string, true);      // TODO: Verify this
-            //MangleClassName(className);
-            DeclareClass(classSym, className);
+
+            DeclareClass(curExternal, classSym, className);
             delete string;
 
             FreeList(exp._classExp.specifiers, FreeSpecifier);

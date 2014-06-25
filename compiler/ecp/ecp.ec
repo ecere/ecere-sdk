@@ -366,7 +366,6 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                   prop.symbol = Symbol
                   {
                      string = CopyString(propertyDef.symbol.string);
-                     id = propertyDef.symbol.id;
                      type = propertyDef.symbol.type;
                   };
                   if(propertyDef.symbol.type)
@@ -618,7 +617,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   method.symbol = Symbol
                   {
                      string = CopyString(func.declarator.symbol.string);
-                     id = func.declarator.symbol.id;
                      type = func.declarator.symbol.type;
                   };
                   if(func.declarator.symbol.type)
@@ -1279,7 +1277,8 @@ static void OutputSymbols(const char * fileName)
                   for(value = e.values.first; value; value = value.next)
                   {
                      f.Printf("         %s = ", value.name);
-                     if(!strcmp(_class.dataTypeString, "uint64") && *(uint64 *)&value.data > MAXINT64)
+                     // We can have a null _class.dataTypeString here if the enum uses a base defined in another module yet to be precompiled
+                     if(_class.dataTypeString && !strcmp(_class.dataTypeString, "uint64") && *(uint64 *)&value.data > MAXINT64)
                         f.Printf(FORMAT64HEX, *(uint64 *)&value.data);
                      else
                         f.Printf(FORMAT64D, value.data);

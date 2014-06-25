@@ -19,7 +19,7 @@ public void SetBuildingEcereCom(bool b) { buildingECERECOM = b; } public bool Ge
 bool buildingECERECOMModule = false;
 public void SetBuildingEcereComModule(bool b) { buildingECERECOMModule = b; } public bool GetBuildingEcereComModule() { return buildingECERECOMModule; }
 
-// This will also be called by the instance processer to make the instance methods... (pass 1.5)
+// This will also be called by the instance processor to make the instance methods... (pass 1.5)
 External ProcessClassFunction(Class owningClass, ClassFunction func, OldList defs, External after, bool makeStatic)
 {
    Type type = null;
@@ -30,8 +30,6 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
    {
       FunctionDefinition function = null;
       Symbol propSymbol;
-      int symid = func.declarator.symbol.id;
-      int symidCode = func.declarator.symbol.idCode;
 
       if(inCompiler)
       {
@@ -39,7 +37,14 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
             func.specifiers = MkList();
          // Add static to the specifiers
          if(makeStatic)
-            func.specifiers->Insert(null, MkSpecifier(STATIC));
+         {
+            Specifier s;
+            for(s = func.specifiers->first; s; s = s.next)
+               if(s.type == baseSpecifier && s.specifier == STATIC)
+                  break;
+            if(!s)
+               func.specifiers->Insert(null, MkSpecifier(STATIC));
+         }
       }
 
       propSymbol = func.declarator.symbol;
@@ -49,15 +54,9 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
       if(propSymbol.externalGet == (External)func)
          func.declarator.symbol = null;
       else if(propSymbol.externalSet == (External)func)
-      {
          func.declarator.symbol = null;
-         symid++;
-      }
       else if(propSymbol.externalIsSet == (External)func)
-      {
          func.declarator.symbol = null;
-         symid += 2; // TOFIX: What should we do with this? Where are 2 IDs allocated for properties? In MkProperty...
-      }
 
       //if(inCompiler)
       {
@@ -68,14 +67,19 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
          ProcessFunctionBody(function, func.body);
          external = MkExternalFunction(function);
 
+         if(owningClass)
+         {
+            char className[1024];
+            strcpy(className, "__ecereClass_");
+            FullClassNameCat(className, owningClass.fullName, true);
+            DeclareClass(external, owningClass.symbol, className);
+         }
+
          external.symbol = func.declarator.symbol;
          external.function._class = func._class;
       }
 
       symbol = func.declarator.symbol;
-      //symbol.id = func.id; //symid;
-      symbol.id = symid;
-      symbol.idCode = symidCode;
 
       if(!func.dontMangle)
       {
@@ -83,10 +87,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
          Method method = func.declarator.symbol.method;
          func.declarator.symbol.methodExternal = external;
 
-         // DANGER: Added this one...
-
          if(method && method.symbol)
-            //((Symbol)method.symbol).methodExternal = external;
             ((Symbol)method.symbol).methodCodeExternal = external;
 
          if(method && method.type == virtualMethod)
@@ -271,11 +272,6 @@ void CreateRegisterModuleBody()
       registerModuleBody = MkCompoundStmt(MkList(), MkList());
       registerModuleBody.compound.context = Context { parent = globalContext };
 
-      #if 0
-      ListAdd(registerModuleBody.compound.declarations,
-         MkDeclaration(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier("__ecereNameSpace__ecere__com__Class"), null) /*MkSpecifierName("ecere::com::Class")*/ /*MkStructOrUnion(SpecifierStruct, MkIdentifier("Class"), null)*/),
-                       MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("class"))), null))));
-      #endif
       ListAdd(registerModuleBody.compound.declarations,
          MkDeclaration((specifiers = MkListOne(MkSpecifierName("ecere::com::Class"))),
                        MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("class")), null))));
@@ -285,12 +281,10 @@ void CreateRegisterModuleBody()
       specifiers = MkList();
       ListAdd(specifiers, MkSpecifier(VOID));
 
-      moduleParam = MkTypeName(MkListOne(/*MkSpecifier(VOID)*/MkSpecifierName("Module")),
-         //MkDeclaratorPointer(MkPointer(null, null),
+      moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")),
          MkDeclaratorIdentifier(MkIdentifier("module")));
 
       GetLastDirectory(outputFile, moduleName);
-      //strcpy(moduleName, argv[2]);
       StripExtension(moduleName);
       FixModuleName(moduleName);
       sprintf(registerName, "__ecereRegisterModule_%s", moduleName);
@@ -304,6 +298,8 @@ void CreateRegisterModuleBody()
          function.declMode = defaultAccess;
          if(!ast) ast = MkList();
          ListAdd(ast, (registerModuleExternal = MkExternalFunction(function)));
+         DeclareStruct(registerModuleExternal, "ecere::com::Instance", false, true);
+         DeclareStruct(registerModuleExternal, "ecere::com::Module", false, true);
       }
    }
 
@@ -321,14 +317,12 @@ void CreateRegisterModuleBody()
       specifiers = MkList();
       ListAdd(specifiers, MkSpecifier(VOID));
 
-      moduleParam = MkTypeName(MkListOne(/*MkSpecifier(VOID)*/ MkSpecifierName("Module")),
-         //MkDeclaratorPointer(MkPointer(null, null),
+      moduleParam = MkTypeName(MkListOne(MkSpecifierName("Module")),
          MkDeclaratorIdentifier(MkIdentifier("module")));
 
       GetLastDirectory(outputFile, moduleName);
       StripExtension(moduleName);
       FixModuleName(moduleName);
-      //strcpy(moduleName, argv[2]);
       sprintf(registerName, "__ecereUnregisterModule_%s", moduleName);
 
       declarator = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(registerName)),
@@ -340,6 +334,8 @@ void CreateRegisterModuleBody()
          function.declMode = defaultAccess;
          if(!ast) ast = MkList();
          ListAdd(ast, (unregisterModuleExternal = MkExternalFunction(function)));
+         DeclareStruct(unregisterModuleExternal, "ecere::com::Instance", false, true);
+         DeclareStruct(unregisterModuleExternal, "ecere::com::Module", false, true);
       }
    }
 }
@@ -384,7 +380,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             strcat(name, "_Set_");
             // strcat(name, prop.name);
             FullClassNameCat(name, prop.name, true);
-            //MangleClassName(name);
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }
          else
@@ -397,7 +392,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             strcat(name, "_Get_");
             // strcat(name, prop.name);
             FullClassNameCat(name, prop.name, true);
-            //MangleClassName(name);
 
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }
@@ -425,8 +419,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
          strcat(name, "_");
          FullClassNameCat(name, prop.name, true);
          // strcat(name, prop.name);
-         //MangleClassName(name);
-
          stmt = MkExpressionStmt(MkListOne(
             MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=',
             MkExpCall(MkExpIdentifier(MkIdentifier("eClass_AddProperty")), args))));
@@ -464,8 +456,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                FullClassNameCat(name, regClass.fullName, false);
                strcat(name, "_Set_");
                FullClassNameCat(name, prop.name, true);
-               // strcat(name, prop.name);
-               //MangleClassName(name);
                ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
             }
             else
@@ -477,8 +467,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                FullClassNameCat(name, regClass.fullName, false);
                strcat(name, "_Get_");
                FullClassNameCat(name, prop.name, true);
-               // strcat(name, prop.name);
-               //MangleClassName(name);
                ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
             }
             else
@@ -503,15 +491,11 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             FullClassNameCat(name, regClass.fullName, false);
             strcat(name, "_");
             FullClassNameCat(name, prop.name, true);
-            // strcat(name, prop.name);
-            //MangleClassName(name);
 
             strcpy(nameM, "__ecerePropM_");
             FullClassNameCat(nameM, regClass.fullName, false);
             strcat(nameM, "_");
             FullClassNameCat(nameM, prop.name, true);
-            // strcat(nameM, prop.name);
-            //MangleClassName(nameM);
 
             if(prop.dataTypeString)
             {
@@ -532,9 +516,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                FullClassNameCat(name, regClass.fullName, true);
                strcat(name, "_IsSet_");
                FullClassNameCat(name, prop.name, false);
-               // strcat(name, prop.name);
-               //MangleClassName(name);
-
                stmt = MkExpressionStmt(MkListOne(
                   MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=',
                   MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null)), MkExpIdentifier(MkIdentifier(name))))));
@@ -690,17 +671,40 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                delete string;
             }
             // int size
-            {
-               char string[256];
-               sprintf(string, "%d", member.dataType.size);
-               ListAdd(args, (exp = MkExpConstant(string)));
-            }
-
             // int alignment
             {
-               char string[256];
-               sprintf(string, "%d", member.dataType.alignment);
-               ListAdd(args, (exp = MkExpConstant(string)));
+               if(member.dataType.isPointerTypeSize)
+               {
+                  ListAdd(args, (exp = MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)))));
+                  ListAdd(args, (exp = MkExpConstant("0xF000F000") /*MkExpTypeSize(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null), null)))*/));
+               }
+               else
+               {
+                  char string[256];
+                  if(member.dataType.kind == classType && member.dataType._class && member.dataType._class.registered && member.dataType._class.registered.offset == 0 &&
+                     (member.dataType._class.registered.type == structClass || member.dataType._class.registered.type == noHeadClass || member.dataType._class.registered.type == normalClass))
+                  {
+                     string[0] = '\0';
+                     DeclareStruct(registerModuleExternal, member.dataType._class.string, false, true);
+                     FullClassNameCat(string, member.dataType._class.string, false);
+                     exp = MkExpTypeSize(MkTypeName(MkListOne(MkStructOrUnion(structSpecifier, MkIdentifier(string), null)), null));
+                  }
+                  else
+                  {
+                     sprintf(string, "%d", member.dataType.size);
+                     exp = MkExpConstant(string);
+                  }
+                  ListAdd(args, exp);
+
+                  if(member.dataType.pointerAlignment)
+                     exp = MkExpConstant("0xF000F000");
+                  else
+                  {
+                     sprintf(string, "%d", member.dataType.alignment);
+                     exp = MkExpConstant(string);
+                  }
+                  ListAdd(args, exp);
+               }
             }
 
             // Declaration Mode
@@ -808,15 +812,11 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             FullClassNameCat(name, regClass.fullName, true);
             strcat(name, "_");
             FullClassNameCat(name, prop.name, false);
-            // strcat(name, prop.name);
-            //MangleClassName(name);
 
             strcpy(nameM, "__ecerePropM_");
             FullClassNameCat(nameM, regClass.fullName, true);
             strcat(nameM, "_");
             FullClassNameCat(nameM, prop.name, false);
-            // strcat(nameM, prop.name);
-            //MangleClassName(nameM);
 
             args = MkListOne(MkExpCondition(MkExpIdentifier(MkIdentifier(nameM)), MkListOne(MkExpIdentifier(MkIdentifier(nameM))), MkExpIdentifier(MkIdentifier(name))));
             stmt = MkExpressionStmt(MkListOne(
@@ -852,7 +852,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             FullClassNameCat(name, regClass.fullName, true);
             strcat(name, "_Set_");
             strcat(name, classProperty.name);
-            //MangleClassName(name);
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }
          else
@@ -864,7 +863,6 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
             FullClassNameCat(name, regClass.fullName, true);
             strcat(name, "_Get_");
             strcat(name, classProperty.name);
-            //MangleClassName(name);
 
             ListAdd(args, MkExpIdentifier(MkIdentifier(name)));
          }
@@ -1007,6 +1005,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   Identifier propID;
                   Statement stmt = MkExpressionStmt(MkList());
                   Declarator decl;
+                  OldList * specs;
 
                   sprintf(watcherName,"__ecerePropertySelfWatcher_%d", propWatcherID++);
                   for(propID = propWatch.properties->first; propID; propID = propID.next)
@@ -1015,46 +1014,18 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      strcat(watcherName, propID.string);
                   }
 
-                  // TESTING THIS STUFF... BEWARE OF SYMBOL ID ISSUES
                   decl = MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)), MkListOne(MkTypeName(MkListOne(MkSpecifier(VOID)), null)));
-                  func = MkClassFunction(MkListOne(MkSpecifier(VOID)), null, decl, null);
+                  specs = MkList();
+                  ListAdd(specs, MkSpecifier(STATIC));
+                  ListAdd(specs, MkSpecifier(VOID));
+
+                  func = MkClassFunction(specs, null, decl, null);
                   ProcessClassFunctionBody(func, propWatch.compound);
 
-                  // TESTING WITH SAME SYMBOL ID AS CLASS
-                  decl.symbol = Symbol
-                  {
-                     id = symbol.id;
-                     idCode = symbol.idCode;
-                  };
+                  decl.symbol = Symbol { };
                   excludedSymbols->Add(decl.symbol);
 
-                  func.id = symbol.id;
-                  func.idCode = symbol.idCode;
                   func.dontMangle = true;
-
-                  // Create a declaration above for constructor to see
-                  {
-                     External externalDecl = MkExternalDeclaration(null);
-                     Declaration decl;
-                     OldList * specifiers = MkList();
-                     ListAdd(specifiers, MkSpecifier(STATIC));
-                     ListAdd(specifiers, MkSpecifier(VOID));
-
-                     ast->Insert(curExternal.prev, externalDecl);
-
-                     decl = MkDeclaration(specifiers,
-                        MkListOne(MkInitDeclarator(MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)),
-                           MkListOne(MkTypeName(MkListOne(MkSpecifierName(regClass.fullName)), null))), null)));
-                     externalDecl.declaration = decl;
-                     if(decl.symbol && !decl.symbol.methodExternal)
-                     {
-                        decl.symbol.methodExternal = externalDecl;
-
-                        // PATCHED THIS, 2 SYMBOLS WERE THERE.. THIS ONE HAD AN ID TOO BIG
-                        decl.symbol.id = symbol.id;
-                        decl.symbol.idCode = symbol.idCode;
-                     }
-                  }
 
                   propWatch.compound = null;
                   definitions.Insert(null, MkClassDefFunction(func));
@@ -1097,8 +1068,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       }
 
       // Make the RegisterClass section
-
-      if(inCompiler && symbol.id != MAXINT && regClass)
+      if(inCompiler && !symbol.notYetDeclared && regClass)
       {
          Statement stmt;
          OldList * args = MkList();
@@ -1337,6 +1307,11 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   OldList * args = MkList();
                   Identifier id = external.function ? GetDeclId(external.function.declarator) : null;
 
+                  {
+                     External e = method.methodExternal ? method.methodExternal : method.methodCodeExternal;
+                     registerModuleExternal.CreateUniqueEdge(e, e.type == functionExternal);
+                  }
+
                   // Class class
                   ListAdd(args, MkExpIdentifier(MkIdentifier("class")));
                   // char * name
@@ -1376,7 +1351,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      char name[1024];
                      Expression exp;
 
-                     //External external = method->symbol ? ((Symbol)method.symbol).methodExternal : null;
                      External external = method.symbol ? ((Symbol)method.symbol).methodCodeExternal : null;
                      OldList * args = MkList();
                      Identifier id = (external && external.function) ? GetDeclId(external.function.declarator) : null;
@@ -1438,7 +1412,10 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                      stmt = MkExpressionStmt(MkListOne(/*
                         MkExpOp(MkExpIdentifier(MkIdentifier(name)), '=', */exp/*)*/));
 
-                     DeclareMethod(method, name);
+                     if(external)
+                        registerModuleExternal.CreateUniqueEdge(external, external.type == functionExternal);
+
+                     DeclareMethod(curExternal, method, name);
 
                      ListAdd(registerModuleBody.compound.statements, stmt);
                   }
@@ -1453,7 +1430,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
             if(method.type == virtualMethod && method._class == regClass);
             else if(method.memberAccess == publicAccess || !method.dataTypeString)
             {
-               //External external = method.symbol ? ((Symbol )method.symbol).methodExternal : null;
                External external = method.symbol ? ((Symbol )method.symbol).methodCodeExternal : null;
                OldList * args = MkList();
                Identifier id = (external && external.function) ? GetDeclId(external.function.declarator) : null;
@@ -1502,6 +1478,9 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                stmt = MkExpressionStmt(MkListOne(
                   MkExpCall(MkExpIdentifier(MkIdentifier("eClass_AddMethod")), args)));
                ListAdd(registerModuleBody.compound.statements, stmt);
+
+               if(external)
+                  registerModuleExternal.CreateUniqueEdge(external, external.type == functionExternal);
             }
          }
 
@@ -1688,7 +1667,6 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                   /*
                   char className[1024];
                   sprintf(className, "__ecereClass_%s", def.designer);
-                  MangleClassName(className);
 
                   DeclareClass(FindClass(def.designer), className);
                   */
@@ -1872,7 +1850,7 @@ public void ProcessClassDefinitions()
                   external.symbol.type.staticMethod = true;
             }
 
-            if(external.symbol && declaration.type == initDeclaration)
+            if(external.symbol && declaration && declaration.type == initDeclaration)
             {
                if(declaration.specifiers)
                {
@@ -1909,7 +1887,7 @@ public void ProcessClassDefinitions()
                   }
                }
             }
-            else if(declaration.type == defineDeclaration)
+            else if(declaration && declaration.type == defineDeclaration)
             {
                if(inCompiler && declaration.declMode != staticAccess)
                {

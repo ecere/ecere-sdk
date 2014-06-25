@@ -1557,6 +1557,29 @@ public void OutputTree(OldList ast, File f)
    }
 }
 
+public void OutputExternal(External external, File f)
+{
+   switch(external.type)
+   {
+      case functionExternal:
+         OutputFunction(external.function, f);
+         f.Puts("\n");
+         outputLine ++;
+         break;
+      case declarationExternal:
+         if(external.declaration)
+            OutputDeclaration(external.declaration, f);
+         f.Puts("\n");
+         outputLine ++;
+         break;
+      case classExternal:
+         OutputClass(external._class, f);
+         f.Puts("\n");
+         outputLine ++;
+         break;
+   }
+}
+
 public char * StringFromSpecDecl(OldList specs, Declarator decl)
 {
    char * string;

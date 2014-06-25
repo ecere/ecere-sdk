@@ -299,7 +299,7 @@ public:
    bool internalDecl;
    void * data;
    bool computeSize;
-   int structAlignment;
+   short structAlignment; short pointerAlignment;
    int destructionWatchOffset;
    bool fixed;
    OldList delayedCPValues;
@@ -532,7 +532,7 @@ public:
    OldList members;
    BinaryTree membersAlpha;
    int memberOffset;
-   int structAlignment;
+   short structAlignment; short pointerAlignment;
 };
 
 public class BitMember : struct
@@ -1978,6 +1978,8 @@ static void FixDerivativesBase(Class base, Class mod)
 
       if(type == normalClass || type == noHeadClass)
          _class.offset = (base && (base.templateClass ? base.templateClass.structSize : base.structSize) && base.type != systemClass) ? (base.templateClass ? base.templateClass.structSize : base.structSize) : ((type == noHeadClass) ? 0 : sizeof(class Instance));
+      else
+         _class.offset = 0; // Force set to 0
 
       if(type == structClass)
       {
@@ -2636,6 +2638,8 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
          _class.memberID = _class.startMemberID = (base && (type == normalClass || type == noHeadClass || type == structClass)) ? base.memberID : 0;
          if(type == normalClass || type == noHeadClass)
             _class.offset = (base && base.structSize && base.type != systemClass) ? base.structSize : ((type == noHeadClass) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(class Instance)));
+         else
+            _class.offset = 0;   // Force set to 0 for redefinitions
 
          // For cross-bitness-compiling
          if(crossBits)
@@ -2664,6 +2668,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
                {
                   size = 3*(force32Bits ? 4 : 8);
                   _class.structAlignment = force32Bits ? 4 : 8;   // FileListing is problematic because it is a struct with private data that the user allocates
+                  _class.pointerAlignment = 1;
                }
                // These we want to recompute inside the IDE to help the debugger
                else if(!strcmp(name, "ecere::com::Class"))           size = 0; // 616
@@ -5079,7 +5084,7 @@ public dllexport void eClass_Resize(Class _class, int newSize)
    for(deriv = _class.derivatives.first; deriv; deriv = deriv.next)
       FixOffsets(deriv.data);
 }
-
+                                                                                                                        // F000F000 will mean a pointer size alignment
 public dllexport DataMember eClass_AddDataMember(Class _class, const char * name, const char * type, unsigned int size, unsigned int alignment, AccessMode declMode)
 {
    if(_class && name)
@@ -5090,6 +5095,15 @@ public dllexport DataMember eClass_AddDataMember(Class _class, const char * name
 
          if(alignment)
          {
+            bool pointerAlignment = alignment == 0xF000F000;
+
+            if(pointerAlignment) alignment = sizeof(void *);
+
+            if(pointerAlignment && _class.structAlignment <= 4)
+               _class.pointerAlignment = 1;
+            else if(!pointerAlignment && alignment >= 8)
+               _class.pointerAlignment = 0;
+
             _class.structAlignment = Max(_class.structAlignment, alignment);
 
             if(_class.memberOffset % alignment)
@@ -5115,7 +5129,7 @@ public dllexport DataMember eClass_AddDataMember(Class _class, const char * name
    }
    return null;
 }
-
+                                                                                                                              // F000F000 will mean a pointer size alignment
 public dllexport DataMember eMember_AddDataMember(DataMember member, const char * name, const char * type, unsigned int size, unsigned int alignment, AccessMode declMode)
 {
    if(name && !member.membersAlpha.FindString(name))
@@ -5124,6 +5138,14 @@ public dllexport DataMember eMember_AddDataMember(DataMember member, const char 
 
       if(alignment)
       {
+         bool pointerAlignment = alignment == 0xF000F000;
+         if(pointerAlignment) alignment = sizeof(void *);
+
+         if(pointerAlignment && member.structAlignment <= 4)
+            member.pointerAlignment = 1;
+         else if(!pointerAlignment && alignment >= 8)
+            member.pointerAlignment = 0;
+
          member.structAlignment = Max(member.structAlignment, alignment);
 
          if(member.memberOffset % alignment)
@@ -5188,13 +5210,17 @@ public dllexport bool eMember_AddMember(DataMember addTo, DataMember dataMember)
    else
       addTo.memberID += dataMember.memberID;
 
+   if(dataMember.pointerAlignment && dataMember.structAlignment <= 4)
+      addTo.pointerAlignment = 1;
+   else if(!dataMember.pointerAlignment && dataMember.structAlignment >= 8)
+      addTo.pointerAlignment = 0;
+
    addTo.structAlignment = Max(addTo.structAlignment, dataMember.structAlignment);
+
    dataMember.offset = (addTo.type == unionMember) ? 0 : addTo.memberOffset;
 
    if(dataMember.structAlignment)
    {
-      addTo.structAlignment = Max(addTo.structAlignment, dataMember.structAlignment);
-
       if(addTo.memberOffset % dataMember.structAlignment)
          addTo.memberOffset += dataMember.structAlignment - (addTo.memberOffset % dataMember.structAlignment);
    }
@@ -5228,6 +5254,11 @@ public dllexport bool eClass_AddMember(Class _class, DataMember dataMember)
    //dataMember.id = _class.memberID++;
    dataMember.id = _class.memberID;
 
+   if(dataMember.pointerAlignment && dataMember.structAlignment <= 4)
+      _class.pointerAlignment = 1;
+   else if(!dataMember.pointerAlignment && dataMember.structAlignment >= 8)
+      _class.pointerAlignment = 0;
+
    _class.structAlignment = Max(_class.structAlignment, dataMember.structAlignment);
    if(dataMember.type == unionMember)
       _class.memberID += 1;
@@ -5236,8 +5267,6 @@ public dllexport bool eClass_AddMember(Class _class, DataMember dataMember)
 
    if(dataMember.structAlignment)
    {
-      _class.structAlignment = Max(_class.structAlignment, dataMember.structAlignment);
-
       if(_class.memberOffset % dataMember.structAlignment)
          _class.memberOffset += dataMember.structAlignment - (_class.memberOffset % dataMember.structAlignment);
    }
