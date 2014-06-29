@@ -927,6 +927,8 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
          int c;
          bool isFirst = true;
          Class mapKeyClass = null, mapDataClass = null;
+         Class baseClass;
+         List<Class> bases { };
 
          if(objectType.templateClass && eClass_IsDerived(objectType.templateClass, class(MapNode)))
          {
@@ -937,143 +939,155 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
          f.Puts("{\n");
          indent++;
 
-         for(prop = objectType.membersAndProperties.first; prop; prop = prop.next)
+         for(baseClass = objectType; baseClass; baseClass = baseClass.base)
          {
-            if(prop.memberAccess != publicAccess || (prop.isProperty && (!prop.Set || !prop.Get))) continue;
-            if(prop.isProperty)
-            {
-               if(!prop.conversion && (!prop.IsSet || prop.IsSet(object)))
-               {
-                  DataValue value { };
-                  Class type;
+            if(baseClass.isInstanceClass || !baseClass.base)
+               break;
+            bases.Insert(null, baseClass);
+         }
 
-                  if(mapKeyClass && !strcmp(prop.name, "key"))
-                     type = mapKeyClass;
-                  else if(mapDataClass && !strcmp(prop.name, "value"))
-                     type = mapDataClass;
-                  else
-                     type = eSystem_FindClass(__thisModule, prop.dataTypeString);
-                  if(!type)
-                     type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
-                  if(!type)
-                     PrintLn("warning: Unresolved data type ", (String)prop.dataTypeString);
-                  else
+         for(baseClass : bases)
+         {
+            for(prop = baseClass.membersAndProperties.first; prop; prop = prop.next)
+            {
+               if(prop.memberAccess != publicAccess || (prop.isProperty && (!prop.Set || !prop.Get))) continue;
+               if(prop.isProperty)
+               {
+                  if(!prop.conversion && (!prop.IsSet || prop.IsSet(object)))
                   {
-                     // TOFIX: How to swiftly handle classes with base data type?
-                     if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                     DataValue value { };
+                     Class type;
+
+                     if(mapKeyClass && !strcmp(prop.name, "key"))
+                        type = mapKeyClass;
+                     else if(mapDataClass && !strcmp(prop.name, "value"))
+                        type = mapDataClass;
+                     else
+                        type = eSystem_FindClass(__thisModule, prop.dataTypeString);
+                     if(!type)
+                        type = eSystem_FindClass(__thisModule.application, prop.dataTypeString);
+                     if(!type)
+                        PrintLn("warning: Unresolved data type ", (String)prop.dataTypeString);
+                     else
                      {
-                        value.d = ((double (*)(void *))(void *)prop.Get)(object);
+                        // TOFIX: How to swiftly handle classes with base data type?
+                        if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                        {
+                           value.d = ((double (*)(void *))(void *)prop.Get)(object);
+                        }
+                        else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
+                        {
+                           value.f = ((float (*)(void *))(void *)prop.Get)(object);
+                        }
+                        else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
+                           !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
+                        {
+                           value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
+                        }
+                        else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
+                           !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
+                        {
+                           value.i = ((int (*)(void *))(void *)prop.Get)(object);
+                        }
+                        else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
+                           !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
+                           !strcmp(type.dataTypeString, "int16"))
+                        {
+                           value.s = ((short (*)(void *))(void *)prop.Get)(object);
+                        }
+                        else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
+                           !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
+                        {
+                           value.c = ((char (*)(void *))(void *)prop.Get)(object);
+                        }
+                        else
+                        {
+                           value.p = ((void *(*)(void *))(void *)prop.Get)(object);
+                        }
+
+                        if(!isFirst) f.Puts(",\n");
+                        for(c = 0; c<indent; c++) f.Puts("   ");
+
+                        f.Puts("\"");
+                        f.Putc((char)toupper(prop.name[0]));
+                        f.Puts(prop.name+1);
+                        f.Puts("\" : ");
+                        WriteValue(f, type, value, indent);
+                        isFirst = false;
+                     }
+                  }
+               }
+               else
+               {
+                  DataMember member = (DataMember)prop;
+                  DataValue value { };
+                  Class type = eSystem_FindClass(__thisModule, member.dataTypeString);
+                  if(!type)
+                     type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
+
+                  if(type)
+                  {
+                     if(type.type == normalClass || type.type == noHeadClass || type.type == structClass || !strcmp(type.name, "String"))
+                     {
+                        if(type.type == structClass)
+                           value.p = (void *)((byte *)object + member._class.offset + member.offset);
+                        else
+                           value.p = *(void **)((byte *)object + member._class.offset + member.offset);
+                        if(!value.p)
+                           continue;
+                     }
+                     else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
+                     {
+                        value.d = *(double *)((byte *)object + member._class.offset + member.offset);
                      }
                      else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
                      {
-                        value.f = ((float (*)(void *))(void *)prop.Get)(object);
+                        value.f = *(float *)((byte *)object + member._class.offset + member.offset);
                      }
                      else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                         !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                      {
-                        value.ui64 = ((uint64 (*)(void *))(void *)prop.Get)(object);
+                        value.ui64 = *(uint64 *)((byte *)object + member._class.offset + member.offset);
                      }
                      else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                         !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                      {
-                        value.i = ((int (*)(void *))(void *)prop.Get)(object);
+                        value.i = *(int *)((byte *)object + member._class.offset + member.offset);
+                        if(!strcmp(type.name, "bool") || type.type == enumClass)
+                           if(!value.i)
+                              continue;
                      }
                      else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
                         !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                         !strcmp(type.dataTypeString, "int16"))
                      {
-                        value.s = ((short (*)(void *))(void *)prop.Get)(object);
+                        value.s = *(short *)((byte *)object + member._class.offset + member.offset);
                      }
                      else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                         !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                      {
-                        value.c = ((char (*)(void *))(void *)prop.Get)(object);
+                        value.c = *(char *)((byte *)object + member._class.offset + member.offset);
                      }
                      else
                      {
-                        value.p = ((void *(*)(void *))(void *)prop.Get)(object);
+                        value.i = *(int *)((byte *)object + member._class.offset + member.offset);
                      }
 
                      if(!isFirst) f.Puts(",\n");
                      for(c = 0; c<indent; c++) f.Puts("   ");
 
                      f.Puts("\"");
-                     f.Putc((char)toupper(prop.name[0]));
-                     f.Puts(prop.name+1);
+                     f.Putc((char)toupper(member.name[0]));
+                     f.Puts(member.name+1);
                      f.Puts("\" : ");
                      WriteValue(f, type, value, indent);
                      isFirst = false;
                   }
                }
             }
-            else
-            {
-               DataMember member = (DataMember)prop;
-               DataValue value { };
-               Class type = eSystem_FindClass(__thisModule, member.dataTypeString);
-               if(!type)
-                  type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
-
-               if(type)
-               {
-                  if(type.type == normalClass || type.type == noHeadClass || type.type == structClass || !strcmp(type.name, "String"))
-                  {
-                     if(type.type == structClass)
-                        value.p = (void *)((byte *)object + member._class.offset + member.offset);
-                     else
-                        value.p = *(void **)((byte *)object + member._class.offset + member.offset);
-                     if(!value.p)
-                        continue;
-                  }
-                  else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
-                  {
-                     value.d = *(double *)((byte *)object + member._class.offset + member.offset);
-                  }
-                  else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
-                  {
-                     value.f = *(float *)((byte *)object + member._class.offset + member.offset);
-                  }
-                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
-                     !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
-                  {
-                     value.ui64 = *(uint64 *)((byte *)object + member._class.offset + member.offset);
-                  }
-                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
-                     !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
-                  {
-                     value.i = *(int *)((byte *)object + member._class.offset + member.offset);
-                     if(!strcmp(type.name, "bool") || type.type == enumClass)
-                        if(!value.i)
-                           continue;
-                  }
-                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
-                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
-                     !strcmp(type.dataTypeString, "int16"))
-                  {
-                     value.s = *(short *)((byte *)object + member._class.offset + member.offset);
-                  }
-                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
-                     !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
-                  {
-                     value.c = *(char *)((byte *)object + member._class.offset + member.offset);
-                  }
-                  else
-                  {
-                     value.i = *(int *)((byte *)object + member._class.offset + member.offset);
-                  }
-
-                  if(!isFirst) f.Puts(",\n");
-                  for(c = 0; c<indent; c++) f.Puts("   ");
-
-                  f.Puts("\"");
-                  f.Putc((char)toupper(member.name[0]));
-                  f.Puts(member.name+1);
-                  f.Puts("\" : ");
-                  WriteValue(f, type, value, indent);
-                  isFirst = false;
-               }
-            }
          }
+
+         delete bases;
 
          indent--;
          f.Puts("\n");
