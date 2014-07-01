@@ -19,11 +19,11 @@ static Console console
    // height = 480;
    referenceHeight = 480;
 
-   bool ProcessCommand(char * command)
+   bool ProcessCommand(const char * command)
    {
       bool result = false;
       char *tokens[10];
-      int count = Tokenize(command, 10, tokens, false);
+      int count = Tokenize((char *)command, 10, tokens, false);
 
 
       // ==== OFFLINE ====
@@ -124,11 +124,11 @@ static const char * const_NickName = "[User1491]";
 
 class IRCSocket : Socket
 {
-   uint OnReceive(byte * recvBuffer, uint recvCount)
+   uint OnReceive(const byte * recvBuffer, uint recvCount)
    {
       int count;
-      byte buffer[513];
-      byte *tokens[10];
+      char buffer[513];
+      char *tokens[10];
 
       count = Min(recvCount, 512);
       memcpy(buffer, recvBuffer, count);
@@ -172,10 +172,10 @@ class IRCSocket : Socket
 
 class IdentSocket : Socket
 {
-   uint OnReceive(byte * recvBuffer, uint recvCount)
+   uint OnReceive(const byte * recvBuffer, uint recvCount)
    {
       int count;
-      byte buffer[1024];
+      char buffer[1024];
       count = Min(recvCount, 1023);
       memcpy(buffer, recvBuffer, count);
       if(count > 1)

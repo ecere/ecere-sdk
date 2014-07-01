@@ -88,7 +88,6 @@ class MainWindow : Window
    void OnRedraw(Surface surface)
    {
       Bitmap board = boardBmp.bitmap;
-      Bitmap remove = removeBmp.bitmap;
       Bitmap wStone = stoneBmps[Stone::white].bitmap;
 
       int x, y;
@@ -102,7 +101,6 @@ class MainWindow : Window
       for(c = black; c <= white; c++)
       {
          Bitmap stone = stoneBmps[c].bitmap;
-         int bx = (clientSize.w - board.width * scale)/2;
          int drawerX = (c == black) ? blackDrawer : whiteDrawer;
          int r;
 

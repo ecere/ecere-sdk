@@ -30,11 +30,11 @@ class eModelApp : GuiApplication
          if(argc > 1)
          {
             selected = true;
-            strcpy(fileDialog.filePath, argv[1]);
+            fileDialog.filePath = argv[1];
          }
          else
          {
-            strcpy(fileDialog.filePath, "models/cow/cow.3DS");
+            fileDialog.filePath = "models/cow/cow.3DS";
             //selected = true;
          }
          while(selected || fileDialog.Modal() == ok)
@@ -103,7 +103,7 @@ class ModelViewer : Window
    FillModeValue fillMode;
    SkyBox sky { size = { 10000, 10000, 10000 }, folder = ":skycube", extension = "jpg" };
 
-   char * modelFile;
+   const char * modelFile;
 
    ModelViewer()
    {

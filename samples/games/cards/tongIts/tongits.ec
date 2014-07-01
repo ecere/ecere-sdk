@@ -1,6 +1,6 @@
 import "ecere"
 
-static String cardsNames[] =
+static const String cardsNames[] =
 {
    ":ac.png", ":ad.png", ":ah.png", ":as.png",    ":2c.png", ":2d.png", ":2h.png", ":2s.png",    ":3c.png", ":3d.png", ":3h.png", ":3s.png",
    ":4c.png", ":4d.png", ":4h.png", ":4s.png",    ":5c.png", ":5d.png", ":5h.png", ":5s.png",    ":6c.png", ":6d.png", ":6h.png", ":6s.png",
@@ -338,15 +338,13 @@ class TongIts : Window
 
    bool ChowClicked(Button button, int x, int y, Modifiers mods)
    {
-      int i, j, suit, number;
+      int i, j;
       int tempCtr = 0;
       int tempHouse[13];
       for(i=0;i<13;i++)
       {
          tempHouse[i]=0;
       }
-      suit = KIND(discard[discardCounter-1]);
-      number = NUMBER(discard[discardCounter-1]);
       tempHouse[tempCtr++] = discard[discardCounter-1];
       for(i=0;i<player[currentPlayer].numCards;i++)
       {
@@ -402,7 +400,7 @@ class TongIts : Window
             }
          }
          player[currentPlayer].numCards = j;
-         discard[discardCounter--];
+         discardCounter--;
          drawButton[currentPlayer].disabled = true;
          chowButton[currentPlayer].disabled = true;
          callButton[currentPlayer].disabled = true;

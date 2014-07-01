@@ -228,11 +228,12 @@ class MedTesting : Window
          FormConcentrations formConcentrations = row.formConcentrations;
 
          // if(commercialNames.OnCompare(*(void **)boxCommercialNames.data))
-         if(class(StringList)._vTbl[__ecereVMethodID_class_OnCompare](class(StringList), commercialNames, *(void **)boxCommercialNames.data))
+
+         if(((int (*)(Class, StringList, StringList))class(StringList)._vTbl[__ecereVMethodID_class_OnCompare])(class(StringList), commercialNames, *(void **)boxCommercialNames.data))
             boxCommercialNames.foreground = red;
 
          // if(genericName.OnCompare(*(void **)boxGenericName.data))
-         if(class(String)._vTbl[__ecereVMethodID_class_OnCompare](class(String), genericName, *(void **)boxGenericName.data))
+         if(((int (*)(Class, const String, const String))class(String)._vTbl[__ecereVMethodID_class_OnCompare])(class(String), genericName, *(void **)boxGenericName.data))
             boxGenericName.foreground = red;
 
          if(drugClass.OnCompare(boxClass.data))

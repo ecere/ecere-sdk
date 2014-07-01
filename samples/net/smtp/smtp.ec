@@ -1,6 +1,7 @@
 import "ecere"
 
 define app = ((MyApp)__thisModule);
+ConsoleFile con { };
 
 class SMTPSocket : Socket
 {
@@ -9,10 +10,7 @@ class SMTPSocket : Socket
    {
       int c;
       for(c = 0; c<count; c++)
-      {
-         //putch(buffer[c]);
-         putc(buffer[c]);
-      }
+         con.Putc(buffer[c]);
       replied = true;
       return count;
    }
@@ -31,7 +29,7 @@ class SMTPSocket : Socket
    }
 };
 
-void Send(char * host, char * to, char * from, File file)
+void Send(const char * host, const char * to, const char * from, File file)
 {
    SMTPSocket socket { };
    incref socket;
@@ -74,6 +72,6 @@ class MyApp : GuiApplication
       if(f)
          Send("mail.mailserver.com", "destaddress@destdomain.com", "srcaddress@srcdomain.com", f);
       delete f;
-      getch();
+      system("pause");
    }
 }

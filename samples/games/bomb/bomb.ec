@@ -223,7 +223,7 @@ class Bomb : Window
 
             for(y=0; y<DIMY; y++)
                for(x=0; x<DIMX; x++)
-                  surface.Blit(gfx[board[y][x]],
+                  surface.Blit(gfx[(int)board[y][x]],
                      offX + x*mapSize.w, offY + y*mapSize.h, 0,0,
                      mapSize.w,mapSize.h);
             surface.Blit(gfx[PLAYER],
@@ -263,7 +263,7 @@ class Bomb : Window
          if(key == enter)
          {
             int l;
-            char * pwd = passEdit.contents;
+            const char * pwd = passEdit.contents;
             for(l=1; l<=NUMLEVELS; l++)
                if(!strcmpi(pwd,passwords[l]))
                {

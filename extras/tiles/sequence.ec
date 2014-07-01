@@ -61,7 +61,7 @@ Sequence * SequenceInit(uint16 numEvents)
    return result;
 }
 
-bool SequenceLoadTable(Sequence **sequences, int count, char *fileName)
+bool SequenceLoadTable(Sequence **sequences, int count, const char * fileName)
 {
    bool result = false;
    File f = FileOpen(fileName, read);

@@ -43,7 +43,7 @@ class SampleSocket : Socket
       form.UpdateButtonStates();
    }
 
-   unsigned int OnReceive(unsigned char * buffer, unsigned int count)
+   unsigned int OnReceive(const unsigned char * buffer, unsigned int count)
    {
       // We only process the data if we've received enough bytes to make up the message
       // This first if just checks if we have reveived enough bytes for the header
@@ -101,7 +101,7 @@ class SocketSample : Window
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          // We build up a SamplePacket here with our message from the sentString EditBox
-         String string = sentString.contents;
+         const String string = sentString.contents;
          int len = strlen(string);
          int size = sizeof(SamplePacket) + len;
          SamplePacket * packet = (SamplePacket *)new byte[size];

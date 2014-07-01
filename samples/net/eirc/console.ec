@@ -26,7 +26,7 @@ class Console : Window
    {
       this, textHorzScroll = true; size.h = editHeight, anchor = { left = 0, right = 0, bottom = 0 };
    };
-   virtual bool ProcessCommand(char * command);
+   virtual bool ProcessCommand(const char * command);
 
    Bitmap bitmap;
    OldList commands;
@@ -68,7 +68,7 @@ class Console : Window
          /* CONSOLE MOVEMENT */
          if(shown && moving)
          {
-            int movement = (int)(diffTime * (movement * speed));
+            int movement = (int)(diffTime * (this.movement * speed));
 
             if(movement)
             {
@@ -182,7 +182,7 @@ class Console : Window
          case enter:
          {
             Item string;
-            char * lineBuffer;
+            const char * lineBuffer;
             char * buffer;
 
             // Process Command in command edit box here
@@ -220,7 +220,7 @@ class Console : Window
 
    bool OnKeyHit(Key key, unichar ch)
    {
-      char * lineBuffer = commandBox.line.text;
+      const char * lineBuffer = commandBox.line.text;
       char * buffer;
 
       switch((SmartKey)key)
@@ -250,7 +250,7 @@ class Console : Window
                   doneLooping = false;
                   command = command.prev;
                   commandBox.Clear();
-                  commandBox.PutS(((byte *) command) + sizeof(class Item));
+                  commandBox.PutS(((const char *) command) + sizeof(class Item));
                }
             }
             return false;
@@ -273,7 +273,7 @@ class Console : Window
                   doneLooping = false;
                   command = command.next;
                   commandBox.Clear();
-                  commandBox.PutS(((byte *) command) + sizeof(class Item));
+                  commandBox.PutS(((const char *) command) + sizeof(class Item));
                }
             }
             return false;
@@ -298,7 +298,7 @@ class Console : Window
       }
    }
 
-   void Log(char * format, ...)
+   void Log(const char * format, ...)
    {
       if(this)
       {

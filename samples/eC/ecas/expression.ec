@@ -446,12 +446,9 @@ public:
    }
 
    //Note that FromString likes to toy with the string, but anything done to the string will be undone.
-   bool FromString(char *str, CASDictionary dictionary) {
+   bool FromString(const char *str, CASDictionary dictionary) {
       ExpressionFromString(this, str, dictionary);
       return Sanitize(this, dictionary);
-   }
-   char *ToString(void) {
-
    }
    const char *OpString(void) {
       if (type==prefix && prefix.op<PrefixOperator::enumSize)
@@ -560,7 +557,6 @@ public:
       Expression op {type=binary};
       Expression w;
       ExpressionClass pc;
-      int order;
       if (s[1]==0) { //single-character operator
          switch (*s) {
             case '+':
@@ -733,9 +729,10 @@ private:
    }
 };
 
-void ExpressionFromString(Expression expr, char *str, CASDictionary dictionary) {
+void ExpressionFromString(Expression expr, const char *str, CASDictionary dictionary) {
    ExpressionTree tree {dictionary};
-   char *s, *p, *e; //token start and end
+   const char * s; //token start and end
+   char *p, *e;
    CASCharFlag flag;
    CASCharFlags cf = cascharflags;
    char borrow;
@@ -743,7 +740,7 @@ void ExpressionFromString(Expression expr, char *str, CASDictionary dictionary) 
    expr.Free();
 
    s = str;
-   e = s;
+   e = (char *)s;
    while (*s) {
       for (;;) //for loop is used so multiple character types that merge into one token can be implemented in the future
       { //grab the next token
@@ -752,7 +749,7 @@ void ExpressionFromString(Expression expr, char *str, CASDictionary dictionary) 
          flag = (CASCharFlag)f;
          break;
       }
-      p = s;
+      p = (char *)s;
       switch (flag) {
          case letter: {
             uint f;
@@ -765,7 +762,6 @@ void ExpressionFromString(Expression expr, char *str, CASDictionary dictionary) 
             if (f != (uint)-1)
                tree.PushFunction((CASFunction)f);
             else do {
-               unsigned char c;
                uint con = (uint)-1;
                UTF8GetChar(p, &charlen);
                p += charlen;

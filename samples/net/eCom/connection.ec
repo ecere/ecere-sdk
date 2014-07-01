@@ -93,7 +93,7 @@ class Connection : Window
       this, text = "Send", size = Size { 80, 20 }, anchor = Anchor { right = 10, top = 40 }, hotKey = altS, disabled = true;
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         char * fileName = sendFile.line.text;
+         const char * fileName = sendFile.line.text;
 
          fileSend = FileOpen(fileName, read);
          if(fileSend)
@@ -203,7 +203,7 @@ class Connection : Window
             for(line = message.firstLine; line; line = line.next)
             {
                eComPacket * packet;
-               char * string = line.text;
+               const char * string = line.text;
                int size = strlen(string);
 
                packet = (eComPacket *)new byte[sizeof(eComPacket) + size];
@@ -255,7 +255,7 @@ class Connection : Window
    char recvFileName[MAX_FILENAME];
 
    char * displayedName;
-   char * localName;
+   const char * localName;
 
    void SendBlock(uint blockSize)
    {
@@ -277,7 +277,7 @@ class Connection : Window
       }
    }
 
-   void SendName(char * name)
+   void SendName(const char * name)
    {
       eComPacket * namePacket = (eComPacket *)new byte[sizeof(eComPacket) + strlen(name)];
       localName = name;
@@ -325,7 +325,7 @@ class ConnectionSocket : Socket
    Connection connection;
    MainPanel mainPanel;
 
-   uint OnReceive(byte * buffer, uint count)
+   uint OnReceive(const byte * buffer, uint count)
    {
       if(count >= sizeof(eComPacket))
       {

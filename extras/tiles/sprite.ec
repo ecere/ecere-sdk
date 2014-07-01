@@ -36,7 +36,7 @@ class Sprite
       }
    }
 
-   bool Load(char *bmpname, char *sizefile, bool trans, bool usePaletteShades, ColorAlpha * palette, DisplaySystem displaySystem)
+   bool Load(const char *bmpname, const char *sizefile, bool trans, bool usePaletteShades, ColorAlpha * palette, DisplaySystem displaySystem)
    {
       bool result = false;
       File f = FileOpen(sizefile, read);
@@ -45,7 +45,7 @@ class Sprite
          Bitmap bmpFrames {};
          if(bmpFrames.Load(bmpname, null, null))
          {
-            f.Getc(&numFrames);
+            f.Getc((char *)&numFrames);
             f.Read(&maxWidth,  sizeof(uint16),1);
             f.Read(&maxHeight, sizeof(uint16),1);
             frames = new0 SpriteFrame[numFrames];
@@ -57,10 +57,10 @@ class Sprite
                for(c=0; c<numFrames; c++)
                {
                   byte width,height;
-                  f.Getc(&width);
-                  f.Getc(&height);
-                  f.Getc(&frames[c].xDis);
-                  f.Getc(&frames[c].yDis);
+                  f.Getc((char *)&width);
+                  f.Getc((char *)&height);
+                  f.Getc((char *)&frames[c].xDis);
+                  f.Getc((char *)&frames[c].yDis);
 
                   frames[c].bitmap = Bitmap {};
                   if(frames[c].bitmap.Allocate(null, width,height,0,bmpFrames.pixelFormat, false))

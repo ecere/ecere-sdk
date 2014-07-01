@@ -46,7 +46,7 @@ static Example examples[] =
    { POOR, true, false, 1, HIDE   }
 };
 
-char * behaviors[4] = { "Run", "Hide", "Wander", "Attack" };
+const char * behaviors[4] = { "Run", "Hide", "Wander", "Attack" };
 
 #define NUM_EXAMPLES (sizeof(examples) / sizeof(Example))
 
@@ -98,11 +98,11 @@ class NeuralApp : Application
          for(h = 0; h<NUM_HIDDEN; h++)
          {
             Neuron * hidden = &hiddenNeurons[h];
-            Synapse * synapse = &input->axons._[h];
+            Synapse * synapse = &input->axons[h];
 
             if(!hidden->dendrons.size)
                hidden->dendrons.size = NUM_INPUT;
-            hidden->dendrons._[i] = synapse;
+            hidden->dendrons[i].ptr = synapse;
 
             synapse->dendron = input;
             synapse->axon = hidden;
@@ -119,11 +119,11 @@ class NeuralApp : Application
          for(o = 0; o<NUM_OUTPUT; o++)
          {
             Neuron * output = &outputNeurons[o];
-            Synapse * synapse = &hidden->axons._[o];
+            Synapse * synapse = &hidden->axons[o];
 
             if(!output->dendrons.size)
                output->dendrons.size = NUM_HIDDEN;
-            output->dendrons._[h] = synapse;
+            output->dendrons[h].ptr = synapse;
 
             synapse->dendron = hidden;
             synapse->axon = output;

@@ -199,7 +199,7 @@ static bool AloneInKind(Player player, Card whichCard)
 
 enum TrumpFlag { AnyCard, NoTrump, PutTrump, Alone, DontNudify };
 
-static int Discard(Player player, char * numbers, TrumpFlag trumpFlag)
+static int Discard(Player player, const char * numbers, TrumpFlag trumpFlag)
 {
    RuffGame * game = player.game;
    Round * round = &game->rounds[game->round];

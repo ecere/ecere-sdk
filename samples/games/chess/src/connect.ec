@@ -3,11 +3,11 @@ import "chess.ec"
 class ConnectDialog : Window
 {
    minClientSize = Size { 300, 100 };
-   tabCycle = true, background = activeBorder, hasClose = true, text = "Connect to server";
+   tabCycle = true, background = activeBorder, hasClose = true, caption = "Connect to server";
 
    Button ok
    {
-      parent = this, bevel = true, isDefault = true, text = "OK",
+      parent = this, bevel = true, isDefault = true, caption = "OK",
       size = Size { w = 80 }, anchor = Anchor { horz = -48, bottom = 10 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -20,7 +20,7 @@ class ConnectDialog : Window
 
    Button cancel
    {
-      parent = this, bevel = true, text = "Cancel", size = Size { w = 80 }, hotKey = escape;
+      parent = this, bevel = true, caption = "Cancel", size = Size { w = 80 }, hotKey = escape;
       anchor = Anchor { horz = 48, bottom = 10 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -32,7 +32,7 @@ class ConnectDialog : Window
 
    EditBox address
    {
-      parent = this, textHorzScroll = true,  size = Size { w = 200 }, anchor = Anchor { top = 10 },
+      parent = this, textHorzScroll = true, size = Size { w = 200 }, anchor = Anchor { top = 10 },
       line.text = "localhost"
    };
 }

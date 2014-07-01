@@ -16,7 +16,7 @@ struct Card // class Card : uint16
    Kind kind;
 } Card;
 
-static String cardsNames[] =
+static const String cardsNames[] =
 {
    ":ac.png", ":ad.png", ":ah.png", ":as.png",    ":2c.png", ":2d.png", ":2h.png", ":2s.png",    ":3c.png", ":3d.png", ":3h.png", ":3s.png",
    ":4c.png", ":4d.png", ":4h.png", ":4s.png",    ":5c.png", ":5d.png", ":5h.png", ":5s.png",    ":6c.png", ":6d.png", ":6h.png", ":6s.png",
@@ -276,7 +276,7 @@ void Player_Ack4Cards(Player player, PlayerPosition winner, int scores0, int sco
    }
 }
 
-void Player_SetName(Player player, char * name)
+void Player_SetName(Player player, const char * name)
 {
    Ruff ruff = player.ruff;
    if(player.socket)
@@ -293,7 +293,7 @@ void Player_SetName(Player player, char * name)
 }
 
 // SERVER TO CLIENT : Informations
-void Player_InformPlayerInfo(Player player, PlayerPosition who, char *name)
+void Player_InformPlayerInfo(Player player, PlayerPosition who, const char *name)
 {
    Ruff ruff = player.ruff;
    RuffGame * game = &ruff.game;

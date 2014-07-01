@@ -21,7 +21,7 @@ Light light
 
 class Hello3D : Window
 {
-   text = "Hello, 3D";
+   caption = "Hello, 3D";
    background = black;
    borderStyle = sizable;
    hasMaximize = true;

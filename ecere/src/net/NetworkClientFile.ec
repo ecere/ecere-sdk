@@ -406,7 +406,7 @@ public class FileServerConnection : Socket
 {
    processAlone = true;
 public:
-   NetworkClientFile Open(char * fileName, FileOpenMode mode)
+   NetworkClientFile Open(const char * fileName, FileOpenMode mode)
    {
       NetworkClientFile f { };
       Request request;
@@ -480,7 +480,7 @@ private:
    }
 
    // Packet Sending Functions
-   void SendOpenPacket(char * fileName)
+   void SendOpenPacket(const char * fileName)
    {
       int len = strlen(fileName);
       OpenPacket packet = (OpenPacket) new0 byte[sizeof(class OpenPacket) + len];

@@ -1553,7 +1553,7 @@ class HTMLView : Window
       html.block.ClearEntries();
    }
 
-   property char * location
+   property const char * location
    {
       set
       {

@@ -6,7 +6,7 @@ import "ecere"
 
 /*
 static ColorKey defaultKeys[] =
-{ 
+{
    { navy, 0.0f },
    { green, 0.1f },
    { yellow, 0.2f },
@@ -22,7 +22,7 @@ static ColorKey defaultKeys[] =
 */
 /*
 static ColorKey defaultKeys[] =
-{ 
+{
    { navy, 0.0f },
    { Color { 146, 237, 237 }, 0.2f },
    { white, 0.3f },
@@ -87,7 +87,7 @@ class KeyHandle : Window
       startX = x;
 
       Capture();
-      
+
       return true;
    }
 
@@ -127,7 +127,7 @@ class KeyHandle : Window
             if(key->percent < 0) key->percent = 0;
             else if(key->percent > 1) key->percent = 1;
          }
-         
+
          designer.Update(null);
          designer.NotifyUpdate(designer.master);
       }
@@ -177,7 +177,7 @@ class KeyHandle : Window
          *key = designer.gradient.keys._[designer.gradient.keys.size-1];
          designer.gradient.keys.size--;
          qsort(designer.gradient.keys._, designer.gradient.keys.size, sizeof(ColorKey), CompareKeys);
-         Destroy(0);                  
+         Destroy(0);
 
          designer.Update(null);
          designer.NotifyUpdate(designer.master);
@@ -240,7 +240,7 @@ class GradientDesigner : Window
    void OnRedraw(Surface surface)
    {
       int c;
-      
+
       for(c = 0; c < gradient.keys.size; c++)
       {
          ColorKey * key = gradient.keys._ + c;
@@ -256,7 +256,7 @@ class GradientDesigner : Window
    ScrollBar smoothness
    {
       this, borderStyle = deep, clientSize = { 124, 18 }, position = { 16, 240 }, range = 100;
-      text = "Smoothness"; 
+      text = "Smoothness";
 
       void NotifyScrolling(ScrollBar scrollBar, ScrollBarAction action, int position, Key key)
       {
@@ -305,7 +305,7 @@ class GradientDesigner : Window
             ColorKey * key;
             int c;
             KeyHandle handle;
-            
+
             gradient.keys.size++;
             key = gradient.keys._ + gradient.keys.size - 1;
             x -= preview.position.x;
@@ -315,7 +315,7 @@ class GradientDesigner : Window
 
             handle = KeyHandle { this, percent = key->percent, position = { key->percent * preview.size.w + preview.position.x - handleWidth/2, preview.position.y - 30 }, background = key->color };
             handle.Create();
-            
+
             qsort(gradient.keys._, gradient.keys.size, sizeof(ColorKey), CompareKeys);
 
             for(c = 0; c < gradient.keys.size; c++)

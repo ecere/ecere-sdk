@@ -108,6 +108,7 @@ Direction MapDirection(int xd, int yd)
       return West;
    else if((xd<0)&&(yd<0))
       return NorthWest;
+   return North;
 }
 
 static void MapForward(Direction direction, Point result, uint16 distance)

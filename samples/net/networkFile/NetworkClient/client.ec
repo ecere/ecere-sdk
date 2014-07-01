@@ -13,7 +13,7 @@ class ClientApp : GuiApplication
          if(f)
          {
             int newsize;
-            uint * indexfs = null;
+            byte * indexfs = null;
             int c;
 
             f.Seek(0, end);

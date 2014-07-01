@@ -1,7 +1,7 @@
 import "EcereAudio"
 
 static uint16 periods[] = { 1712, 1616, 1524, 1440, 1356, 1280, 1208, 1140, 1076, 1016, 960, 907};
-static String notes[12] = { "C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-"};
+static const String notes[12] = { "C-", "C#", "D-", "D#", "E-", "F-", "F#", "G-", "G#", "A-", "A#", "B-"};
 
 struct S3MHeader
 {
@@ -79,7 +79,7 @@ class S3M
    Array<Pattern> patterns { };
    Voice voices[32];
 
-   bool Load(char *fileName)
+   bool Load(const char *fileName)
    {
       int i,p,c;
       byte what, row, channel;
@@ -245,7 +245,7 @@ class S3M
                SND_SetVolume(volume, channel);
             SND_Play(ins.sound, channel);
             */
-            int c2spd = ins.header.c2spd;
+            //int c2spd = ins.header.c2spd;
             //double freq = pow(Do_, note) * pow(2, octave-4) / (c2spd/8363.0);
             double freq = 14317456.0 / note_st3period / 22150/2;
             //double freq = 500.0/note_st3period;
@@ -290,7 +290,7 @@ class S3M
    bool Play(Mixer mixer)
    {
       bool result = false;
-      int initSpeed = header.initSpeed;
+      // int initSpeed = header.initSpeed;
       Time time = /*pattern == 10*/ 1? speed/(1.1*45.5) : 0;
       Time current = GetTime();
 

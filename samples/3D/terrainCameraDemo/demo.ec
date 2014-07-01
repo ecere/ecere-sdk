@@ -131,7 +131,7 @@ static bool LoadTerrain(Terrain terrain, const char * fileName, Angle lat)
 
       // OutputTexture("res/texture.png");
 
-      if(terrain.Create(heightMap, 16, 1025, 2, resLon, RESOLUTION_LAT, 512,512))
+      if(terrain.Create(heightMap, 16, 1025, 2, resLon, (float)RESOLUTION_LAT, 512,512))
          result = true;
       delete f;
    }

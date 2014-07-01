@@ -2,7 +2,7 @@ import "EcereAudio"
 
 class Form1 : Window
 {
-   text = "Form1";
+   caption = "Form1";
    background = activeBorder;
    borderStyle = sizable;
    hasMaximize = true;
@@ -15,7 +15,7 @@ class Form1 : Window
 
    Button button1
    {
-      this, text = "Play", position = { 200, 168 };
+      this, caption = "Play", position = { 200, 168 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {

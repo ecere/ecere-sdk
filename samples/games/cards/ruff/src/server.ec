@@ -341,7 +341,7 @@ void Server_PlayCard(RuffGame game, Player player, int card)
       Player_RequestCard(player);
 }
 
-void Server_SetName(RuffGame game, Player player, char * name)
+void Server_SetName(RuffGame game, Player player, const char * name)
 {
    int c;
    strcpy(player.name, name);

@@ -26,7 +26,7 @@ class TXApp : GuiApplication
       if(socket.Connect("localhost", samplePort))
       {
          // We build up a SamplePacket here with our message
-         String string = "Hello !";
+         const String string = "Hello !";
          int len = strlen(string);
          int size = sizeof(SamplePacket) + len;
          SamplePacket * packet = (SamplePacket *)new byte[size];

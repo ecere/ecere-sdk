@@ -22,7 +22,7 @@ class SampleService : Service
 
 class SampleSocket : Socket
 {
-   unsigned int OnReceive(unsigned char * buffer, unsigned int count)
+   unsigned int OnReceive(const unsigned char * buffer, unsigned int count)
    {
       // We only process the data if we've received enough bytes to make up the message
       // This first if just checks if we have reveived enough bytes for the header
@@ -34,8 +34,8 @@ class SampleSocket : Socket
          if(count >= size)
          {
             // We've received a complete message, so we change the contents of the recvString EditBox
-            log.PutS(packet->string);
-            log.PutS("\n");
+            logBox.PutS(packet->string);
+            logBox.PutS("\n");
             // and we return the size of the message we've processed.
             // If more data is already buffered, this method will be called again right away.
             return size;
@@ -50,7 +50,7 @@ class SampleSocket : Socket
 // The service
 SampleService service { port = samplePort };
 
-EditBox log
+EditBox logBox
 {
    caption = "RX Sample";
    hasClose = true;

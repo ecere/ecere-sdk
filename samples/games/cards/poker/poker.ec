@@ -11,7 +11,7 @@ import "player.ec"
 import "widow.ec"
 import "bet.ec"
 
-static String cardsNames[] =
+static const String cardsNames[] =
 {
    ":ac.png", ":ad.png", ":ah.png", ":as.png",    ":2c.png", ":2d.png", ":2h.png", ":2s.png",    ":3c.png", ":3d.png", ":3h.png", ":3s.png",
    ":4c.png", ":4d.png", ":4h.png", ":4s.png",    ":5c.png", ":5d.png", ":5h.png", ":5s.png",    ":6c.png", ":6d.png", ":6h.png", ":6s.png",

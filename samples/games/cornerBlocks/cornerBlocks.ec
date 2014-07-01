@@ -517,7 +517,8 @@ class CornerBlocks : Window
                                        bool result;
                                        gotMove = false;
                                        result = server.PlayPiece(p, direction, flip, x, y);
-                                       validMove = true;
+                                       if(result)
+                                          validMove = true;
                                     }
                                  }
                               }
@@ -676,7 +677,6 @@ class CornerBlocks : Window
          {
             if(gameStarted && colorPlayed == gameState.colorTurn)
             {
-               Piece * piece = &pieces[selectedPiece];
                if(gameState.ValidMove(gameState.colorTurn, selectedPiece, direction, flip, boardPos.x, boardPos.y))
                   server.PlayPiece(selectedPiece, direction, flip, boardPos.x, boardPos.y);
             }
@@ -734,7 +734,6 @@ class CornerBlocks : Window
       {
          Piece * piece = &pieces[selectedPiece];
          int mx = drag.x - offset.x, my = drag.y - offset.y;
-         int rx, ry;
          int x = squareDragged.x, y = squareDragged.y;
          int w,h;
          bool isDown = key == wheelDown || key == right || key == down;
@@ -1057,7 +1056,7 @@ class CornerBlocks : Window
       log.inactive = bool::true;
       visible = false;
 
-      bool ProcessCommand(char * command)
+      bool ProcessCommand(const char * command)
       {
          cornerBlocks.server.SendMessage(command);
          return false;
@@ -1096,7 +1095,7 @@ class CornerBlocksScores : Window
    void OnRedraw(Surface surface)
    {
       PlayerColor p;
-      char * s;
+      const char * s;
       int len;
       char temp[256];
       int grandTotals[4];
@@ -1209,7 +1208,7 @@ class CornerBlocksScores : Window
          {
             for(c = 0; c < numTies; c++)
             {
-               strcat(string, cornerBlocks.playerNames[c]);
+               strcat(string, cornerBlocks.playerNames[ties[c]]);
                if(c < numTies-2)
                   strcat(string, ", ");
                else if(c < numTies-1)
@@ -1397,7 +1396,6 @@ class CommunicationPanel : Window
 
                void GameStarted(GameInfo gameInfo)
                {
-                  int x,y;
                   int c, np = 0;
 
                   cornerBlocks.gameState.numPlayers = gameInfo.numPlayers;
@@ -1430,8 +1428,6 @@ class CommunicationPanel : Window
 
                void GameEnded()
                {
-                  int c;
-
                   panel.ListPlayers();
                   cornerBlocks.gameStarted = false;
                   cornerBlocks.btnPass.visible = false;
@@ -1505,15 +1501,15 @@ class CommunicationPanel : Window
                   }
                }
 
-               void NotifyMessage(String name, String msg)
+               void NotifyMessage(const String name, const String msg)
                {
                   EditBox log = cornerBlocks.chat.log;
-                  char * format = (log.numLines > 1 || log.line.count) ?
+                  const char * format = (log.numLines > 1 || log.line.count) ?
                      "\n%s: %s" : "%s: %s";
                   int len = strlen(msg);
                   // Avoid buffer overflow...
                   if(len >= MAX_F_STRING-100)
-                     msg[MAX_F_STRING-100] = 0;
+                     ((char *)msg)[MAX_F_STRING-100] = 0;
                   cornerBlocks.chat.Log(format, name, msg);
                }
             };

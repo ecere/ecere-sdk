@@ -1,6 +1,6 @@
 import "ecere"
 
-static char * indexNames[] =
+static const char * indexNames[] =
 {
    "index.html",
    "index.htm",
@@ -14,7 +14,7 @@ static char * indexNames[] =
 
 #define NUM_INDEX    (sizeof(indexNames) / sizeof(char *))
 
-static void WriteFileName(File f, char * fileName)
+static void WriteFileName(File f, const char * fileName)
 {
    byte ch;
    int c;
@@ -59,7 +59,7 @@ static void CreateDirectoryListing(File f, char * directory)
    f.Puts("\r\n</BODY></HTML>\r\n");
 }
 
-static char * GetString(char * string, char * what, int count)
+static const char * GetString(const char * string, const char * what, int count)
 {
    int c;
    bool result = true;
@@ -88,9 +88,9 @@ class HTTPClient : Socket
       }
       if(c<count)
       {
-         char * string = (char *)buffer;
+         const char * string = (const char *)buffer;
 
-         if((string = GetString((char *)buffer, "GET ", count)))
+         if((string = GetString(string, "GET ", count)))
          {
             char reply[1024];
             char path[MAX_LOCATION];

@@ -15,22 +15,10 @@ enum NeuronState
    TAUGHT
 };
 
-static struct SynapsePtr
+struct SynapsePtr
 {
-   Synapse * a;
+   Synapse * ptr; // TOFIX: Support pointers in generic types
 };
-
-class ArraySynapse : OldArray
-{
-   type = class(Synapse);
-   Synapse * _;
-};
-
-class ArraySynapsePtr : OldArray
-{
-   type = class(SynapsePtr);
-   Synapse ** _;
-}
 
 static double Sigmoid(double x)
 {
@@ -50,16 +38,16 @@ double GetRandDouble(double lo, double hi)
 struct Neuron
 {
    double bias;
-   ArraySynapse axons;
-   ArraySynapsePtr dendrons;
+   Array<Synapse> axons;
+   Array<SynapsePtr> dendrons;
    double activation;
    double error;
    NeuronState state;
 
    void Init()
    {
-      axons = ArraySynapse { };
-      dendrons = ArraySynapsePtr { };
+      axons = { };
+      dendrons = { };
    }
 
    void Unactivate()
@@ -67,7 +55,7 @@ struct Neuron
       int c;
       for(c = 0; c<dendrons.size; c++)
       {
-         Synapse * synapse = dendrons._[c];
+         Synapse * synapse = dendrons[c].ptr;
          if(synapse->dendron->state != CLEARED)
             synapse->dendron->Unactivate();
       }
@@ -82,7 +70,7 @@ struct Neuron
          activation = bias;
          for(c = 0; c<dendrons.size; c++)
          {
-            Synapse * synapse = dendrons._[c];
+            Synapse * synapse = dendrons[c].ptr;
             if(synapse->dendron->state != ACTIVATED)
                synapse->dendron->Activate();
             activation += synapse->dendron->activation * synapse->weight;
@@ -100,7 +88,7 @@ struct Neuron
          error = 0;
          for(c = 0; c<axons.size; c++)
          {
-            Synapse * synapse = &axons._[c];
+            Synapse * synapse = &axons[c];
             if(synapse->axon->state != PROPAGATED)
                synapse->axon->BackPropagate();
             error += synapse->axon->error * synapse->weight;
@@ -117,7 +105,7 @@ struct Neuron
       {
          for(c = 0; c<dendrons.size; c++)
          {
-            Synapse * synapse = dendrons._[c];
+            Synapse * synapse = dendrons[c].ptr;
             if(state != TAUGHT)
                synapse->dendron->Teach(learnRate);
             synapse->weight += learnRate * error * synapse->dendron->activation;

@@ -33,9 +33,9 @@ TrackXMLParser parser { };
 
 class TrackingSocket : Socket
 {
-   unsigned int OnReceive(unsigned char * buffer, unsigned int count)
+   unsigned int OnReceive(const byte * buffer, unsigned int count)
    {
-      parser.Parse(buffer, count);
+      parser.Parse((char *)buffer, count);
 
       // Update Things Here
       return count;
@@ -46,7 +46,7 @@ class TrackXMLParser : XMLParser
 {
    Track object;
 
-   void ProcessKeyword(char * keyWord)
+   void ProcessKeyword(const char * keyWord)
    {
       if(!strcmpi(keyWord, "object"))
       {
@@ -106,7 +106,7 @@ class MyParser : XMLParser
 {
    MyTag tag;
 
-   void ProcessCharacterData(char * data)
+   void ProcessCharacterData(const char * data)
    {
       switch(tag)
       {
@@ -116,7 +116,7 @@ class MyParser : XMLParser
       }
    }
 
-   void ProcessKeyword(char * keyWord)
+   void ProcessKeyword(const char * keyWord)
    {
       NamedLink64 nl;
       EnumClassData tagData = class(MyTag).data;

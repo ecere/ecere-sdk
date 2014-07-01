@@ -200,8 +200,6 @@ class RenderThread : Thread
 
       for(y = start; y <= end && !view3D.abort; y++)
       {
-         Box box { 0, y, bitmap.width, y };
-
          for(x = 0; x < bitmap.width && !view3D.abort; x++)
          {
             Vector3D v, end;
@@ -489,7 +487,6 @@ class RTCube : RTObject
          {
             int c;
             bool visible = true;
-            int sign = 0;
             planes[plane].IntersectLine(ray, intersect);
             for(c = 0; c < 6; c++)
             {
@@ -622,7 +619,6 @@ class RTMandelbulb : RTCube
 
    void Compute()
    {
-      Quaternion q;
       bulb.size = size;
       bulb.power = power;
       RTCube::Compute();
@@ -633,8 +629,10 @@ class RTMandelbulb : RTCube
       double t = 0;
       int refine = 0;
       double refineDT = dt;
+      double refineDT10 = refineDT * 10;
       double stopT = MAXDOUBLE;
       bool firstPointInside = false;
+      Vector3D halfSize = { size.x / 2, size.y / 2, size.z / 2 };
       if(backwards && bulb.IsPointInside(l.p0, iters))
       {
          firstPointInside = true;
@@ -649,11 +647,11 @@ class RTMandelbulb : RTCube
             l.p0.y - l.delta.y * t,
             l.p0.z - l.delta.z * t
          };
-         if(p.x + refineDT*10 < -size.x / 2 || p.x - refineDT*10 > size.x / 2 ||
-            p.y + refineDT*10 < -size.y / 2 || p.y - refineDT*10 > size.y / 2 ||
-            p.z + refineDT*10 < -size.z / 2 || p.z - refineDT*10 > size.z / 2)
+         if(p.x + refineDT10 < -halfSize.x || p.x - refineDT10 > halfSize.x ||
+            p.y + refineDT10 < -halfSize.y || p.y - refineDT10 > halfSize.y ||
+            p.z + refineDT10 < -halfSize.z || p.z - refineDT10 > halfSize.z)
          {
-            Print("");
+            // Print("");
             break;
          }
 
@@ -663,6 +661,7 @@ class RTMandelbulb : RTCube
             stopT = t;
             t -= refineDT;
             refineDT /= 2;
+            refineDT10 = refineDT * 10;
          }
          if(t > stopT)
          {
@@ -786,25 +785,25 @@ class RTMandelbulb : RTCube
                      double d2 = (found[1] && found[2]) ? (distances[1] * distances[2]) : MAXDOUBLE;
                      double d3 = (found[2] && found[3]) ? (distances[2] * distances[3]) : MAXDOUBLE;
                      double d4 = (found[3] && found[0]) ? (distances[3] * distances[0]) : MAXDOUBLE;
-                     if(d1 < minDistance || d1 < d2 && d1 < d3 && d1 < d4)
+                     if(d1 < minDistance || (d1 < d2 && d1 < d3 && d1 < d4))
                      {
                         normalPlane.FromPoints(points[1], p, points[0]);
                         normal.Add(normal, normalPlane.normal);
                         count++;
                      }
-                     if(d2 < minDistance || d2 < d1 && d2 < d3 && d2 < d4)
+                     if(d2 < minDistance || (d2 < d1 && d2 < d3 && d2 < d4))
                      {
                         normalPlane.FromPoints(points[2], p, points[1]);
                         normal.Add(normal, normalPlane.normal);
                         count++;
                      }
-                     if(d1 < minDistance || d3 < d1 && d3 < d2 && d3 < d4)
+                     if(d1 < minDistance || (d3 < d1 && d3 < d2 && d3 < d4))
                      {
                         normalPlane.FromPoints(points[3], p, points[2]);
                         normal.Add(normal, normalPlane.normal);
                         count++;
                      }
-                     if(d4 < minDistance || d4 < d1 && d4 < d2 && d4 < d2)
+                     if(d4 < minDistance || (d4 < d1 && d4 < d2 && d4 < d2))
                      {
                         normalPlane.FromPoints(points[0], p, points[3]);
                         normal.Add(normal, normalPlane.normal);

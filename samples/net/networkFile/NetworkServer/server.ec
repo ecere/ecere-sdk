@@ -86,7 +86,7 @@ enum PacketType { open, close, read, size };
 
 class NetworkServer : Service
 {
-   OldList clients { offset = (uint)&((ClientConnection)0).prev };
+   OldList clients { offset = (uint)(uintptr)&((ClientConnection)0).prev };
    void OnAccept()
    {
       ClientConnection socket { this };

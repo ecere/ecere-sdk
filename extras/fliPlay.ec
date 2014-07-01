@@ -39,7 +39,12 @@ class FliPlay : Window
       {
          timer.Stop();
          if(!(animation.Load(value)))
-            Logf("Couldn't load animation %s.\n", value);
+         {
+            String s = PrintString("Couldn't load animation ", value, ".");
+            MessageBox { caption = "Ecere FLC Player", contents = s }.Modal();
+            Destroy(0);
+            delete s;
+         }
          else
          {
             image.Allocate(null, animation.width, animation.height, 0, pixelFormat8, true);
@@ -49,7 +54,6 @@ class FliPlay : Window
                animation.PlayFrame(image);
                timer.delay = animation.speed;
                timer.Start();
-
             }
          }
 

@@ -1,5 +1,5 @@
 /********************************************************
-   This sample demonstrates takes a screenshot of the
+   This sample takes a screenshot of the
    desktop and saves it to a bitmap file.
 ********************************************************/
 import "ecere"

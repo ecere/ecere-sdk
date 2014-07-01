@@ -34,7 +34,6 @@ static HMIXEROBJ hmx;
 
 public void OpenMixer()
 {
-   HMIXER        mixerHandle;
    WAVEFORMATEX  waveFormat = { 0 };
    waveFormat.nSamplesPerSec = 44100; //(cur_stream && cur_stream->audio_st && cur_stream->audio_st->codec) ? cur_stream->audio_st->codec->sample_rate : 44100;
    waveFormat.wBitsPerSample = 16;
@@ -45,7 +44,7 @@ public void OpenMixer()
    waveFormat.nAvgBytesPerSec = waveFormat.nBlockAlign * waveFormat.nSamplesPerSec;
 
    waveOutOpen(&hWaveOut, WAVE_MAPPER, &waveFormat, 0, 0, CALLBACK_NULL);
-   mixerOpen((HMIXER *)&hmx, (uint)hWaveOut, 0, 0, MIXER_OBJECTF_HWAVEOUT);
+   mixerOpen((HMIXER *)&hmx, (uint)(uintptr)hWaveOut, 0, 0, MIXER_OBJECTF_HWAVEOUT);
 }
 
 public void CloseMixer()
@@ -173,7 +172,7 @@ public int OpenAudio(AudioSpec wanted, AudioSpec result)
    result.size = dwNotifySize * NUM_PLAY_NOTIFICATIONS;
 
    g_pSoundManager.InitStreaming(&streamingSound, NUM_PLAY_NOTIFICATIONS, dwNotifySize, dSoundThread.g_hNotificationEvent,
-      wanted.callback, wanted.userdata, wanted.channels, wanted.freq, wanted.bits);
+      (void *)wanted.callback, wanted.userdata, wanted.channels, wanted.freq, wanted.bits);
    if(streamingSound)
    {
       streamingSound.volume = wanted.volume;
@@ -207,14 +206,14 @@ public void CloseAudio()
 
 static bool PlayBuffer( bool bLooped )
 {
-   void * pDSB;
+   //void * pDSB;
    if(!streamingSound)
       return false;
 
    if(streamingSound.Reset())
       return false;
 
-   pDSB = streamingSound.GetBuffer( 0 );
+   //pDSB = streamingSound.GetBuffer( 0 );
 
    SetEvent(dSoundThread.g_hNotificationEvent);
    return true;
@@ -301,7 +300,7 @@ static class StreamingSound
    int RestoreBuffer( IDirectSoundBuffer * pDSB, bool* pbWasRestored )
    {
       int hr;
-      uint dwStatus;
+      DWORD dwStatus;
 
       if( pDSB == null )
          return CO_E_NOTINITIALIZED;
@@ -346,7 +345,7 @@ static class StreamingSound
       {
          if( apDSBuffer[i] )
          {
-            uint dwStatus = 0;
+            DWORD dwStatus = 0;
             IDirectSoundBuffer_GetStatus(apDSBuffer[i], &dwStatus );
             if ( ( dwStatus & DSBSTATUS_PLAYING ) == 0 )
                break;
@@ -417,6 +416,7 @@ static class StreamingSound
       return result;
    }
 
+   /*
    int Stop()
    {
       int hr = 0;
@@ -429,23 +429,20 @@ static class StreamingSound
 
       return hr;
    }
+   */
 
    bool HandleWaveStreamNotification(  )
    {
-      uint dwCurrentPlayPos;
-      uint dwPlayDelta;
-      uint dwBytesWrittenToBuffer;
+      DWORD dwCurrentPlayPos;
       void * pDSLockedBuffer = null;
       void * pDSLockedBuffer2 = null;
-      uint dwDSLockedBufferSize;
-      uint dwDSLockedBufferSize2;
+      DWORD dwDSLockedBufferSize;
+      DWORD dwDSLockedBufferSize2;
       uint playCursor, writeCursor;
-      bool bRestored;
       uint start, size;
-
-      static uint cursor;
       bool written = true;
       int c;
+
       while(written)
       {
          written = false;
@@ -521,7 +518,6 @@ static class StreamingSound
 
    int Reset()
    {
-      int hr;
       bool bRestored;
       int result;
 
@@ -550,10 +546,8 @@ static class StreamingSound
 
    int FillBufferWithSound( IDirectSoundBuffer * pDSB, bool bRepeatWavIfBufferLarger )
    {
-      int hr;
-      void*   pDSLockedBuffer      = null; // Pointer to locked buffer memory
-      uint   dwDSLockedBufferSize = 0;    // Size of the locked DirectSound buffer
-      uint   dwWavDataRead        = 0;    // Amount of data read from the wav file
+      void * pDSLockedBuffer = null; // Pointer to locked buffer memory
+      DWORD dwDSLockedBufferSize = 0;    // Size of the locked DirectSound buffer
 
       if( pDSB == null )
          return CO_E_NOTINITIALIZED;
@@ -569,9 +563,7 @@ static class StreamingSound
 
       callback(data, pDSLockedBuffer, dwDSLockedBufferSize);
 
-      dwWavDataRead = dwDSLockedBufferSize;
-
-      printf("Filling 16 spots\n");
+      // printf("Filling 16 spots\n");
       IDirectSoundBuffer_Unlock(pDSB, pDSLockedBuffer, dwDSLockedBufferSize, null, 0 );
 
       //dwNextWriteOffset = dwNotifySize*2;
@@ -654,7 +646,6 @@ static class CSoundManager
    bool InitStreaming(StreamingSound * ppStreamingSound, uint dwNotifyCount, uint dwNotifySize, void * hNotifyEvent,
                       void (*callback)(void * data, void * buffer, int len), void * data, int nChannels, int freq,int bits)
    {
-      int hr;
       IDirectSoundBuffer * pDSBuffer = null;
       uint dwDSBufferSize = 0;
       DSBPOSITIONNOTIFY * aPosNotify = null;

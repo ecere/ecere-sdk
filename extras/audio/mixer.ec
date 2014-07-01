@@ -8,9 +8,9 @@ public define AUDIO_BUFFER_SIZE = 48000;
 
 struct WAVEHDR
 {
-   byte   format[4]           __attribute__((packed));
+   byte   format[4];
    uint32 f_len               __attribute__((packed));
-   byte   wave_fmt[8]         __attribute__((packed));
+   byte   wave_fmt[8];
    uint32 fmt_len             __attribute__((packed));
    uint16 fmt_tag             __attribute__((packed));
    uint16 channel             __attribute__((packed));
@@ -18,21 +18,21 @@ struct WAVEHDR
    uint32 avg_bytes_per_sec   __attribute__((packed));
    uint16 blk_align           __attribute__((packed));
    uint16 bits_per_sample     __attribute__((packed));
-   byte   data[4]             __attribute__((packed));
+   byte   data[4];
    uint32 data_len            __attribute__((packed));
 };
 
 public class Sound
 {
 public:
-   property String fileName { set { Load(value); } }
+   property const String fileName { set { Load(value); } }
 
    int frequency, bits, channels, length;
    byte * data;
 
    ~Sound() { delete data; }
 
-   bool Load(char * fileName)
+   bool Load(const char * fileName)
    {
       bool result = false;
       WAVEHDR header;
@@ -105,7 +105,7 @@ public class Mixer
          int chn = sound.channels;
          if(sound.bits == 16)
          {
-            short * sBuffer = sound.data;
+            short * sBuffer = (short *)sound.data;
             int se = 0;
             int s = v.pos;
             short sampleL = sBuffer[s];

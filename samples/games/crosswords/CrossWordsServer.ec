@@ -96,7 +96,7 @@ class Player
    }
 };
 
-static char * dicos[Languages] = { ":englishWords.txt", ":frenchWords.txt" };
+static const char * dicos[Languages] = { ":englishWords.txt", ":frenchWords.txt" };
 
 class CrossWordsGame
 {
@@ -137,7 +137,6 @@ class CrossWordsGame
    void GetTiles(int tilesPlayer, PlayedMove move)
    {
       Player player = players[tilesPlayer];
-      int c;
       move.numTiles = 0;
 
       while(player.numLetters < 7 && numLettersAvailable)
@@ -220,7 +219,7 @@ class CrossWordsGame
       }
    }
 
-   void LoadWords(char * fileName)
+   void LoadWords(const char * fileName)
    {
       File f = FileOpen(fileName, read);
       if(f)
@@ -296,8 +295,8 @@ class CrossWordsGame
       int numLetters = 0;
       Direction direction = horizontal;
 
-      int wordX;
-      int wordY;
+      //int wordX;
+      //int wordY;
       int firstX = MAXINT, lastX = MININT;
       int firstY = MAXINT, lastY = MININT;
       int first, last, where;
@@ -312,8 +311,8 @@ class CrossWordsGame
          {
             if(board[y][x] == empty && newBoard[y][x] != empty)
             {
-               wordX = x;
-               wordY = y;
+               //wordX = x;
+               //wordY = y;
                if(x < firstX) firstX = x;
                if(y < firstY) firstY = y;
                if(x > lastX) lastX = x;

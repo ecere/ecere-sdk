@@ -49,7 +49,7 @@ public:
       }
       else
       {
-         class(double)._vTbl[__ecereVMethodID_class_OnGetString](class(double), &amount, amountString, null, null);
+         ((const char * (*)(Class, double *, char *, void *, bool *)) class(double)._vTbl[__ecereVMethodID_class_OnGetString])(class(double), &amount, amountString, null, null);
          if(form)
          {
             String formName = form.name;

@@ -54,35 +54,35 @@ class CharFlags {
    }
 };
 
-char *findfirst(const char *haystack, uint haystacklen, CharFlags cf) {
+const char *findfirst(const char *haystack, uint haystacklen, CharFlags cf) {
    const byte *h = (const byte*)haystack;
    while (haystacklen--) {
       if (cf.flags[(uint)*h++])
-         return h-1;
+         return (const char *)h-1;
    }
    return null;
 }
-char *findfirstnon(const char *haystack, uint haystacklen, CharFlags cf) {
+const char *findfirstnon(const char *haystack, uint haystacklen, CharFlags cf) {
    const byte *h = (const byte*)haystack;
    while (haystacklen--) {
       if (!cf.flags[(uint)*h++])
-         return h-1;
+         return (const char *)h-1;
    }
    return null;
 }
-char *findlast(const char *haystack, uint haystacklen, CharFlags cf) {
+const char *findlast(const char *haystack, uint haystacklen, CharFlags cf) {
    const byte *h = (const byte*)haystack + haystacklen;
    while (haystacklen--) {
       if (cf.flags[(uint)*--h])
-         return h;
+         return (const char *)h;
    }
    return null;
 }
-char *findlastnon(const char *haystack, uint haystacklen, CharFlags cf) {
+const char *findlastnon(const char *haystack, uint haystacklen, CharFlags cf) {
    const byte *h = (const byte*)haystack + haystacklen;
    while (haystacklen--) {
       if (!cf.flags[(uint)*--h])
-         return h;
+         return (const char *)h;
    }
    return null;
 }

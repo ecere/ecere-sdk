@@ -77,6 +77,7 @@ class Form1 : Window
       inputString.Deselect();
       inputString.AddS(button.text);
       inputString.Update(null);
+      return true;
    }
    Label statusLabel { this, size = { 274, 21 }, position = { 250, 45 } };
    Button ebutton { this, text = constant_string[e], NotifyClicked = TypeButton, size = { 20, 20 }, position = { 170, 45 } };

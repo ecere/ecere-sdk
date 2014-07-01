@@ -97,7 +97,7 @@ class Test3D : Window
    }
    bool OnLoadGraphics()
    {
-      char * hiragana[6] = { "あ", "い", "う", "え", "お", "ん" };
+      const char * hiragana[6] = { "あ", "い", "う", "え", "お", "ん" };
       int c;
 
       PrimitiveGroup group;

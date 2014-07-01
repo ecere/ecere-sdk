@@ -135,7 +135,7 @@ class WalkAroundForm : Window
       int i;
       for(i = 0; i < map.count; i++)
       {
-         int num = map[i] = GetRandom(0, 7);
+         map[i] = GetRandom(0, 7);
          elv[i] = GetRandom(1, 100);
       }
    }
@@ -144,7 +144,6 @@ class WalkAroundForm : Window
    {
       Bitmap textureFile { };
       int i, x, y;
-      PrimitiveGroup group;
 
       cowModel.Load(":cow.3DS", null, displaySystem);
       cowModel.Merge(displaySystem);
@@ -203,8 +202,6 @@ class WalkAroundForm : Window
          {
             int ix = y * width + x;
             int num = map[ix];
-            int xs = -((tileSize+gap) * width) / 2;
-            int ys = -((tileSize+gap) * height) / 2;
             float h = elv[ix];
             Cube cube { };
 

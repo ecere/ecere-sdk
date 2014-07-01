@@ -52,7 +52,7 @@ class Player : Window
 
       for(c=0; c<numDown; c++)
       {
-         poker.DrawCard(surface, c*GAP, 0, (human || gameOver && !folded) ? POKER_Card(down[c]) : -1);
+         poker.DrawCard(surface, c*GAP, 0, (human || (gameOver && !folded)) ? POKER_Card(down[c]) : -1);
       }
       POKER_HandType(bestHand);
       for(c=0; c<numUp; c++)

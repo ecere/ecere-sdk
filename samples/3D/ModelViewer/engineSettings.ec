@@ -13,7 +13,7 @@ class EngineSettings : Window
    Resolution resolution;
    PixelFormat colorDepth;
    int refreshRate;
-   char * driver;
+   const char * driver;
    driver = "OpenGL";
 
    Picture ecereLogo { this, image = BitmapResource { ":ecere.png", alphaBlend = true }, anchor = { left = 30, top = 10 } };

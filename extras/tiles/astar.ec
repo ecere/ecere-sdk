@@ -46,7 +46,6 @@ void AStarTerminate(AStar * aStar)
 
 AStar * AStarInitialize(int width, int height, int stackSize)
 {
-   AStar * result = null;
    AStar * aStar = new0 AStar[1];
    if(aStar)
    {

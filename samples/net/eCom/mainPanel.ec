@@ -89,7 +89,7 @@ class MainPanel : Window
 
       void NotifyUpdate(EditBox editBox)
       {
-         char * string = nameBox.contents;
+         const char * string = nameBox.contents;
          OldLink link;
          for(link = connections.first; link; link = link.next)
             ((Connection)link.data).SendName(string);
@@ -142,7 +142,7 @@ class MainPanel : Window
       connections.Delete(connections.FindLink(connection));
    }
 
-   void OnConnect(Connection connection, char * inetAddress, char * address)
+   void OnConnect(Connection connection, const char * inetAddress, const char * address)
    {
       log.End();
       log.Printf("\nConnected to %s (%s)", inetAddress, address);

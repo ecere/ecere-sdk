@@ -20,7 +20,7 @@ class Window3D : struct
    Euler offset;
 };
 
-static char * iconFiles[] =
+static const char * iconFiles[] =
 {
    ":icon1.png",
    ":icon2.png",
@@ -992,7 +992,7 @@ class Desktop3D : Window
    bool OnKeyHit(Key key, unichar character)
    {
       static int id = 0;
-      static char * shotFileNames[] =
+      static const char * shotFileNames[] =
       {
          ":img1.jpg", ":img2.jpg", ":img3.jpg", ":img4.jpg", ":img5.jpg"
       };
@@ -1082,17 +1082,14 @@ class Desktop3D : Window
             if(poppingWindow) break;
             if(sliding == 1.0 && !dockHidden)
             {
-               Quaternion fa, ta;
-               Vector3D fp, tp;
-
                Window window = virtualDesktop.activeChild;
                if(window)
                {
                   Window3D window3D = Desktop3DGetWindowHandle(window);
 
                   camera.Update();
-                  fa = fromAngle = camera.cOrientation;
-                  fp = fromPosition = camera.cPosition;
+                  fromAngle = camera.cOrientation;
+                  fromPosition = camera.cPosition;
 
                   camera.type = lookAt;
                   camera.position = { 0,0,0 };
@@ -1105,8 +1102,8 @@ class Desktop3D : Window
                   dockHidden = true;
 
                   camera.Update();
-                  tp = toPosition = camera.cPosition;
-                  ta = toAngle = camera.cOrientation;
+                  toPosition = camera.cPosition;
+                  toAngle = camera.cOrientation;
 
                   camera.AdjustAngle(fromAngle);
                   camera.AdjustPosition(fromPosition);
@@ -1299,7 +1296,7 @@ static void Update3DWindow(Window window, Box box)
    int w = box.right - box.left + 1;
    int h = box.bottom - box.top + 1;
 
-   glBindTexture(GL_TEXTURE_2D, (int)window3D.bitmap.driverData);
+   glBindTexture(GL_TEXTURE_2D, (int)(intptr)window3D.bitmap.driverData);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

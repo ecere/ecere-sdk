@@ -15,7 +15,7 @@ class AddThread : Thread
       return 0;
    }
 
-   void AddItem(char * string, Seconds delay)
+   void AddItem(const char * string, Seconds delay)
    {
       this.delay = delay;
       strcpy(this.string,string);
@@ -38,7 +38,7 @@ class MySocket : Socket
       AddThread{}.AddItem(addPacket.string, addPacket.delay);
    }
 
-   void AddItem(char * string, Seconds delay)
+   void AddItem(const char * string, Seconds delay)
    {
       int len = strlen(string);
       uint size = sizeof(class AddPacket) + len;
@@ -63,7 +63,7 @@ class MyServer : Service
 
 class Form1 : Window
 {
-   text = "Form1";
+   caption = "Form1";
    background = activeBorder;
    borderStyle = sizable;
    hasMaximize = true;
@@ -74,7 +74,7 @@ class Form1 : Window
 
    Button deleteBtn
    {
-      this, text = "Delete", hotKey = del, size = Size { 51, 21 }, position = Point { 424, 152 }, disabled = true;
+      this, caption = "Delete", hotKey = del, size = Size { 51, 21 }, position = Point { 424, 152 }, disabled = true;
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -85,7 +85,7 @@ class Form1 : Window
    };
    Button addBtn
    {
-      parent = this, text = "Add", isDefault = true, size = Size { 31, 21 }, position = Point { 432, 120 };
+      parent = this, caption = "Add", isDefault = true, size = Size { 31, 21 }, position = Point { 432, 120 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -96,7 +96,7 @@ class Form1 : Window
    };
    Button addBtn2
    {
-      this, text = "Add2", position = Point { 496, 120 };
+      this, caption = "Add2", position = Point { 496, 120 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -107,7 +107,7 @@ class Form1 : Window
    };
    ListBox listBox1
    {
-      this, alwaysHighLight = true, text = "listBox1", hasVertScroll = true, size = Size { 172, 268 }, position = Point { 56, 72 };
+      this, alwaysHighLight = true, caption = "listBox1", hasVertScroll = true, size = Size { 172, 268 }, position = Point { 56, 72 };
 
       bool NotifySelect(ListBox listBox, DataRow row, Modifiers mods)
       {
@@ -115,7 +115,7 @@ class Form1 : Window
          return true;
       }
    };
-   EditBox editBox1 { parent = this, text = "What to add", contents = "Value", hotKey = w, size = Size { 84, 19 }, position = Point { 304, 120 } };
+   EditBox editBox1 { parent = this, caption = "What to add", contents = "Value", hotKey = w, size = Size { 84, 19 }, position = Point { 304, 120 } };
    Label label1 { labeledWindow = editBox1, parent = this, size = Size { 68, 13 }, position = Point { 304, 96 } };
    MySocket socket {};
    MySocket socket2 {};
@@ -135,7 +135,7 @@ class Form1 : Window
       {
          char temp[256];
          sprintf(temp, "Error: The value \"%s\" is already in the list!", string);
-         MessageBox { text = "Test App", contents = temp }.Create();
+         MessageBox { caption = "Test App", contents = temp }.Create();
       }
    }
 

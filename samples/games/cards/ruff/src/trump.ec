@@ -2,7 +2,7 @@ import "ruff.ec"
 
 class Trump : Kind
 {
-   char * OnGetString(char * string, void * fieldData, bool * needClass)
+   const char * OnGetString(char * string, void * fieldData, bool * needClass)
    {
       switch(this)
       {
