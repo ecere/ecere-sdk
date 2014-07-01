@@ -59,6 +59,9 @@ public:
    #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
       SOCKET s;
 
+      if(this.s != -1)
+         return false; // Already started
+
    #ifdef DEBUG_SOCKETS
       Log("[P] [NStartService]\n");
    #endif
