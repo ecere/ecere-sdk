@@ -15831,7 +15831,7 @@ exp->__anon1.op.exp1->expType->refCount++;
 else
 {
 exp->__anon1.op.exp2->destType = exp->destType;
-if(!exp->__anon1.op.exp1 || exp->__anon1.op.op != '&')
+if(!exp->__anon1.op.exp1 || (exp->__anon1.op.op != '&' && exp->__anon1.op.op != '^'))
 exp->__anon1.op.exp2->opDestType = 1;
 if(exp->destType)
 exp->destType->refCount++;
@@ -15879,7 +15879,7 @@ else if(destClass && ((destClass->type == 3 && useDestType && useSideUnit) || (d
 if(exp->__anon1.op.exp2->destType)
 FreeType(exp->__anon1.op.exp2->destType);
 exp->__anon1.op.exp2->destType = exp->destType;
-if(exp->__anon1.op.op != '&')
+if(exp->__anon1.op.op != '&' && exp->__anon1.op.op != '^')
 exp->__anon1.op.exp2->opDestType = 1;
 if(exp->destType)
 exp->destType->refCount++;

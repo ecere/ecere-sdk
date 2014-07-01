@@ -8371,7 +8371,7 @@ void ProcessExpressionType(Expression exp)
                else
                {
                   exp.op.exp2.destType = exp.destType;
-                  if(!exp.op.exp1 || exp.op.op != '&')
+                  if(!exp.op.exp1 || (exp.op.op != '&' && exp.op.op != '^'))
                      exp.op.exp2.opDestType = true;
                   if(exp.destType)
                      exp.destType.refCount++;
@@ -8420,7 +8420,7 @@ void ProcessExpressionType(Expression exp)
             {
                if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
                exp.op.exp2.destType = exp.destType;
-               if(exp.op.op != '&')
+               if(exp.op.op != '&' && exp.op.op != '^')
                   exp.op.exp2.opDestType = true;
                if(exp.destType)
                   exp.destType.refCount++;
