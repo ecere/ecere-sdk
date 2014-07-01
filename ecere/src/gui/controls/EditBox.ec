@@ -708,7 +708,9 @@ static const char * keyWords1[] =
 
 static const char * keyWords2[] =
 {
-   "defined", "warning", null
+   "defined", "warning",
+   "include", "pragma", "elif", "ifdef", "ifndef", "endif", "undef", "line",
+   null
 };
 
 static const char ** keyWords[] = { keyWords1, keyWords2 };
@@ -1787,7 +1789,7 @@ private:
                         }
                         else if(x < box.right && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment && (isdigit(word[0]) || (word[0] == '.' && isdigit(word[1]))))
                         {
-                           char * dot = word[wordLen] == '.' ? word + wordLen : null;
+                           char * dot = word[wordLen] == '.' ? word + wordLen : (word[0] == '.' && (word == line.buffer || word[-1] == '-' || isspace(word[-1])) ? word : null);
                            bool isReal = dot != null;
                            char * s = null;
                            if(dot)
@@ -1869,7 +1871,7 @@ private:
                               if(firstWord)
                               {
                                  inPrep = true;
-                                 newTextColor = colorScheme.preprocessorColor;
+                                 newTextColor = wordLen == 1 ? colorScheme.keywordColors[1] : colorScheme.preprocessorColor;
                               }
                            }
                            if(x < box.right && !inQuotes && !inString && !inMultiLineComment && !inSingleLineComment)
