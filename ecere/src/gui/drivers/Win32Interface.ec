@@ -113,7 +113,9 @@ static const uint16 className[] = L"Ecere Application";
 static HINSTANCE hInstance;
 
 static DEVMODE devMode;
+#ifndef ECERE_NODINPUT
 static HWND acquiredWindow = null;
+#endif
 static HCURSOR systemCursors[SystemCursor];
 static bool fullScreenMode;
 static int desktopX = 0, desktopY = 0, desktopW = 0, desktopH = 0;
@@ -1494,7 +1496,6 @@ class Win32Interface : Interface
 
    void SetRootWindowColor(Window window)
    {
-      DWORD style = GetWindowLong(window.windowHandle, GWL_EXSTYLE);
       if(window.alphaBlend && window.display.pixelFormat == pixelFormat888)
       {
          /*if(A(window.background) == 255)
@@ -1505,6 +1506,7 @@ class Win32Interface : Interface
          else*/
          {
 #ifndef ECERE_NOBLENDING
+            DWORD style = GetWindowLong(window.windowHandle, GWL_EXSTYLE);
             if((style & WS_EX_LAYERED) != WS_EX_LAYERED)
                SetWindowLong(window.windowHandle, GWL_EXSTYLE, style | WS_EX_LAYERED);
 #endif

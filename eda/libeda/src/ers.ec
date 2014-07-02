@@ -649,6 +649,7 @@ public class CSVReport : ReportDestination
    {
       char filePath[MAX_LOCATION];
       strcpy(filePath, report.title);
+      ChangeChars(filePath, "/\\:*?\"|<>", '_');
       strcat(filePath, ".csv");
       saveTo.master = master;
       saveTo.filePath = filePath;

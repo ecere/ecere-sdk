@@ -873,8 +873,10 @@ static int CALLBACK MyFontProc(ENUMLOGFONTEX * font, NEWTEXTMETRICEX *lpntme, in
 }
 #endif
 
+#if !defined(ECERE_NOTRUETYPE)
 static int utf16BufferSize = 0;
 static uint16 * utf16 = null;
+#endif
 
 public class LFBDisplayDriver : DisplayDriver
 {

@@ -20,7 +20,7 @@ public enum JSONResult { syntaxError, success, typeMismatch, noItem };
 
 public enum SetBool : uint
 {
-   unset, false, true /*; // Syntax error! */
+   unset, false, true;
 
    /*public property bool     // NOT WORKING!
    {

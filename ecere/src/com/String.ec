@@ -1003,6 +1003,13 @@ public void ChangeCh(char * string, char ch1, char ch2)
       if(string[c] == ch1) string[c] = ch2;
 }
 
+public void ChangeChars(char * string, const char * chars, char alt)
+{
+   int c;
+   for(c=0; string[c]; c++)
+      if(strchr(chars, string[c])) string[c] = alt;
+}
+
 public void RepeatCh(char * string, int count, char ch)
 {
    int c;
