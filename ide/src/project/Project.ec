@@ -4029,12 +4029,11 @@ void ProjectConfig::LegacyProjectConfigLoad(File f)
 Project LegacyAsciiLoadProject(File f, const char * filePath)
 {
    Project project = null;
-   //ProjectNode node = null;
    int pos;
    char parentPath[MAX_LOCATION];
    char section[128] = "";
    char subSection[128] = "";
-   ProjectNode parent = project.topNode;
+   ProjectNode parent = null;
    bool configurationsPresent = false;
 
    f.Seek(0, start);
