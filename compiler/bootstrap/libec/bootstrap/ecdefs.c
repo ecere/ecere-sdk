@@ -1049,6 +1049,7 @@ int kind;
 unsigned int size;
 char * name;
 char * typeName;
+struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
@@ -3430,6 +3431,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "kind", "TypeKind", 4,
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "size", "uint", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "name", "char *", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "typeName", "char *", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "thisClassFrom", "ecere::com::Class", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classObjectType", "ClassObjectType", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "alignment", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "offset", "uint", 4, 4, 1);

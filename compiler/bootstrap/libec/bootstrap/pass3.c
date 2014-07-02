@@ -680,6 +680,7 @@ int kind;
 unsigned int size;
 char *  name;
 char *  typeName;
+struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
@@ -1639,6 +1640,8 @@ if(src && src->kind == 8 && src->__anon1._class)
 {
 struct __ecereNameSpace__ecere__com__Class * sc = src->__anon1._class->__anon1.registered;
 
+if(src->thisClassFrom)
+sc = src->thisClassFrom;
 if(sc && (sc->type == 1 || sc->type == 5))
 {
 struct Type * dest = e->destType;
@@ -1665,6 +1668,8 @@ if(!dest->passAsTemplate && dest->kind == 8 && dest->__anon1._class && dest->__a
 {
 struct __ecereNameSpace__ecere__com__Class * dc = dest->__anon1._class->__anon1.registered;
 
+if(dest->thisClassFrom)
+dc = dest->thisClassFrom;
 if(sc->templateClass)
 sc = sc->templateClass;
 if(dc->templateClass)

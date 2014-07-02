@@ -998,6 +998,7 @@ int kind;
 unsigned int size;
 char *  name;
 char *  typeName;
+struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;

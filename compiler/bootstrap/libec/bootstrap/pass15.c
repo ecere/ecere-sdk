@@ -1813,6 +1813,7 @@ int kind;
 unsigned int size;
 char *  name;
 char *  typeName;
+struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
@@ -16801,6 +16802,19 @@ thisClassParams = 1;
 functionType = ProcessType(specs, decl);
 functionType->refCount = 0;
 FinishTemplatesContext(context);
+{
+struct Type * p, * op;
+
+for(p = functionType->__anon1.__anon2.params.first, op = methodType->__anon1.__anon3.method->dataType->__anon1.__anon2.params.first; p && op; p = p->next, op = op->next)
+{
+if(op->kind == 21)
+p->thisClassFrom = methodType->__anon1.__anon3.method->_class;
+}
+}
+if(methodType->__anon1.__anon3.method->dataType->__anon1.__anon2.returnType->kind == 21)
+{
+functionType->__anon1.__anon2.returnType->thisClassFrom = methodType->__anon1.__anon3.method->_class;
+}
 }
 FreeList(specs, (void *)(FreeSpecifier));
 FreeDeclarator(decl);
@@ -17417,7 +17431,7 @@ prop->_class->symbol = FindClass(prop->_class->fullName);
 exp->__anon1.member.exp->destType = __extension__ ({
 struct Type * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type);
 
-__ecereInstance1->refCount = 1, __ecereInstance1->kind = 8, __ecereInstance1->__anon1._class = prop ? prop->_class->symbol : method ? method->_class->symbol : _class->symbol, __ecereInstance1;
+__ecereInstance1->refCount = 1, __ecereInstance1->kind = 8, __ecereInstance1->__anon1._class = prop ? prop->_class->symbol : method ? method->_class->symbol : _class->symbol, __ecereInstance1->thisClassFrom = type ? type->thisClassFrom : (((void *)0)), __ecereInstance1;
 });
 }
 if(prop)

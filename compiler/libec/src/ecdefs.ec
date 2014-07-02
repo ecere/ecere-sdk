@@ -1406,6 +1406,7 @@ public:
    uint size;
    char * name;
    char * typeName;
+   Class thisClassFrom;
 
    ClassObjectType classObjectType;
    int alignment;

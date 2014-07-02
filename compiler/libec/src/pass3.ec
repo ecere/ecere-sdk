@@ -473,9 +473,13 @@ static void AddPointerCast(Expression e)
          if(src && src.kind == classType && src._class)
          {
             Class sc = src._class.registered;
+            if(src.thisClassFrom)
+               sc = src.thisClassFrom;
+
             if(sc && (sc.type == structClass || sc.type == noHeadClass))
             {
                Type dest = e.destType;
+
                if(dest && (dest.kind == templateType || dest.kind == classType))
                {
                   if(dest) dest.refCount++;
@@ -496,6 +500,9 @@ static void AddPointerCast(Expression e)
                   if(!dest.passAsTemplate && dest.kind == classType && dest._class && dest._class.registered)
                   {
                      Class dc = dest._class.registered;
+                     if(dest.thisClassFrom)
+                        dc = dest.thisClassFrom;
+
                      if(sc.templateClass) sc = sc.templateClass;
                      if(dc.templateClass) dc = dc.templateClass;
                      if(dc.base && sc != dc)

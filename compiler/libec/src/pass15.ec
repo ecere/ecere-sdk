@@ -9470,11 +9470,20 @@ void ProcessExpressionType(Expression exp)
                      FinishTemplatesContext(context);
 
                      // Mark parameters that were 'thisclass'
-                     /*{
+                     {
                         Type p, op;
                         for(p = functionType.params.first, op = methodType.method.dataType.params.first; p && op; p = p.next, op = op.next)
-                           p.wasThisClass = op.kind == thisClassType;
-                     }*/
+                        {
+                           //p.wasThisClass = op.kind == thisClassType;
+                           if(op.kind == thisClassType)
+                              p.thisClassFrom = methodType.method._class;
+                        }
+                     }
+                     if(methodType.method.dataType.returnType.kind == thisClassType)
+                     {
+                        // functionType.returnType.wasThisClass = true;
+                        functionType.returnType.thisClassFrom = methodType.method._class;
+                     }
                   }
 
                   FreeList(specs, FreeSpecifier);
@@ -10170,6 +10179,7 @@ void ProcessExpressionType(Expression exp)
                      kind = classType;
                      _class = prop ? prop._class.symbol : method ? method._class.symbol : _class.symbol;
                      // wasThisClass = type ? type.wasThisClass : false;
+                     thisClassFrom = type ? type.thisClassFrom : null;
                   };
                }
 
