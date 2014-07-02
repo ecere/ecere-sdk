@@ -575,12 +575,19 @@ static void InstDeclPassExpression(Expression exp)
          {
             for(e = exp.call.arguments->first; e; e = e.next)
             {
+               bool addCast = false;
                InstDeclPassExpression(e);
                AddPointerCast(e);
 
                if(e.expType && e.expType.kind == pointerType && e.expType.type && (e.expType.type.kind == classType || (e.expType.type.kind == pointerType && e.expType.type.type && e.expType.type.type.kind != voidType)) &&
-                  e.destType && e.destType.kind == pointerType && e.destType.type && e.destType.type.kind == pointerType && e.destType.type.type && e.destType.type.type.kind == voidType &&
-                  (e.type != castExp || !IsVoidPtrCast(e.cast.typeName)))
+                  e.destType && e.destType.kind == pointerType && e.destType.type && e.destType.type.kind == pointerType && e.destType.type.type && e.destType.type.type.kind == voidType)
+                  addCast = true;
+               // Fix for adding a cast to Unserialize with a struct passed as a parameter:
+               else if(e.expType && e.expType.kind == classType && e.expType._class && e.expType._class.registered && e.expType._class.registered.type == structClass && e.byReference &&
+                  e.destType && e.destType.kind == classType && e.destType.classObjectType && e.destType.byReference)
+                  addCast = true;
+
+               if(addCast && (e.type != castExp || !IsVoidPtrCast(e.cast.typeName)))
                {
                   e.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
                   e.type = castExp;

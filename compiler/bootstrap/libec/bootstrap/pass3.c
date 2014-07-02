@@ -2205,9 +2205,15 @@ if(exp->__anon1.call.arguments)
 {
 for(e = (*exp->__anon1.call.arguments).first; e; e = e->next)
 {
+unsigned int addCast = 0;
+
 InstDeclPassExpression(e);
 AddPointerCast(e);
-if(e->expType && e->expType->kind == 13 && e->expType->__anon1.type && (e->expType->__anon1.type->kind == 8 || (e->expType->__anon1.type->kind == 13 && e->expType->__anon1.type->__anon1.type && e->expType->__anon1.type->__anon1.type->kind != 0)) && e->destType && e->destType->kind == 13 && e->destType->__anon1.type && e->destType->__anon1.type->kind == 13 && e->destType->__anon1.type->__anon1.type && e->destType->__anon1.type->__anon1.type->kind == 0 && (e->type != 11 || !IsVoidPtrCast(e->__anon1.cast.typeName)))
+if(e->expType && e->expType->kind == 13 && e->expType->__anon1.type && (e->expType->__anon1.type->kind == 8 || (e->expType->__anon1.type->kind == 13 && e->expType->__anon1.type->__anon1.type && e->expType->__anon1.type->__anon1.type->kind != 0)) && e->destType && e->destType->kind == 13 && e->destType->__anon1.type && e->destType->__anon1.type->kind == 13 && e->destType->__anon1.type->__anon1.type && e->destType->__anon1.type->__anon1.type->kind == 0)
+addCast = 1;
+else if(e->expType && e->expType->kind == 8 && e->expType->__anon1._class && e->expType->__anon1._class->__anon1.registered && e->expType->__anon1._class->__anon1.registered->type == 1 && e->byReference && e->destType && e->destType->kind == 8 && e->destType->classObjectType && e->destType->byReference)
+addCast = 1;
+if(addCast && (e->type != 11 || !IsVoidPtrCast(e->__anon1.cast.typeName)))
 {
 e->__anon1.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
 e->type = 11;
