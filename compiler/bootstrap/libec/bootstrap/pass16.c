@@ -2766,7 +2766,30 @@ FreeInstance(inst);
 ListAdd(list, MkInitializerList(subList));
 }
 else if(dataMember->dataType->kind == 12)
-ListAdd(list, MkInitializerList(MkListOne(MkInitializerAssignment(MkExpConstant("0")))));
+{
+struct Type * t = dataMember->dataType->__anon1.type;
+struct Initializer * inner = MkInitializerAssignment((((void *)0))), * i = inner;
+
+while(t && t->kind == 12)
+{
+i = MkInitializerList(MkListOne(i));
+t = t->__anon1.type;
+}
+if(t && t->kind == 8 && t->__anon1._class && t->__anon1._class->__anon1.registered && t->__anon1._class->__anon1.registered->type == 1)
+{
+struct __ecereNameSpace__ecere__sys__OldList * subList = MkList();
+struct Specifier * spec = _MkSpecifierName(t->__anon1._class->__anon1.registered->name, classSym, (((void *)0)));
+struct Instantiation * inst = MkInstantiation(spec, (((void *)0)), (((void *)0)));
+
+ProcessBracketInst(inst, subList);
+FreeInstance(inst);
+inner->type = 1;
+inner->__anon1.list = subList;
+}
+else
+inner->__anon1.exp = MkExpConstant("0");
+ListAdd(list, MkInitializerList(MkListOne(i)));
+}
 else
 ListAdd(list, MkInitializerAssignment(MkExpConstant("0")));
 }
@@ -3667,15 +3690,18 @@ FreeInstance(inst);
 init->type = 1;
 init->__anon1.list = subList;
 }
-else if(dataMember->dataType && dataMember->dataType->kind == 12)
+else if(dataMember->dataType && (dataMember->dataType->kind == 12 || dataMember->dataType->kind == 9))
 {
-struct Type * t = dataMember->dataType->__anon1.type;
+struct Type * t = dataMember->dataType->kind == 12 ? dataMember->dataType->__anon1.type : dataMember->dataType->__anon1.__anon1.members.first;
 struct Initializer * i = MkInitializerAssignment(MkExpConstant("0"));
 
-while(t && t->kind == 12)
+while(t && (t->kind == 12 || t->kind == 9))
 {
 i = MkInitializerList(MkListOne(i));
+if(t->kind == 12)
 t = t->__anon1.type;
+else if(t->kind == 9)
+t = t->__anon1.__anon1.members.first;
 }
 init->type = 1;
 init->__anon1.list = MkListOne(i);

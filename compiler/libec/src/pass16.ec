@@ -1891,14 +1891,17 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
          init.type = listInitializer;
          init.list = subList;
       }
-      else if(dataMember.dataType && dataMember.dataType.kind == arrayType)
+      else if(dataMember.dataType && (dataMember.dataType.kind == arrayType || dataMember.dataType.kind == structType))
       {
-         Type t = dataMember.dataType.type;
+         Type t = dataMember.dataType.kind == arrayType ? dataMember.dataType.type : dataMember.dataType.members.first;
          Initializer i = MkInitializerAssignment(MkExpConstant("0"));
-         while(t && t.kind == arrayType)
+         while(t && (t.kind == arrayType || t.kind == structType))
          {
             i = MkInitializerList(MkListOne(i));
-            t = t.type;
+            if(t.kind == arrayType)
+               t = t.type;
+            else if(t.kind == structType)
+               t = t.members.first;
          }
          init.type = listInitializer;
          init.list = MkListOne(i);
@@ -2123,14 +2126,35 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                if(classSym && classSym.registered && classSym.registered.type == structClass)
                {
                   OldList * subList = MkList();
-                  Specifier spec = _MkSpecifierName/*MkClassName*/(dataMember.dataTypeString, classSym, null);
+                  Specifier spec = _MkSpecifierName(dataMember.dataTypeString, classSym, null);
                   Instantiation inst = MkInstantiation(spec, null, null);
                   ProcessBracketInst(inst, subList);
                   FreeInstance(inst);
                   ListAdd(list, MkInitializerList(subList));
                }
                else if(dataMember.dataType.kind == arrayType)
-                  ListAdd(list, MkInitializerList(MkListOne(MkInitializerAssignment(MkExpConstant("0")))));
+               {
+                  Type t = dataMember.dataType.type;
+                  Initializer inner = MkInitializerAssignment(null), i = inner;
+                  while(t && t.kind == arrayType)
+                  {
+                     i = MkInitializerList(MkListOne(i));
+                     t = t.type;
+                  }
+                  if(t && t.kind == classType && t._class && t._class.registered && t._class.registered.type == structClass)
+                  {
+                     OldList * subList = MkList();
+                     Specifier spec = _MkSpecifierName(t._class.registered.name, classSym, null);
+                     Instantiation inst = MkInstantiation(spec, null, null);
+                     ProcessBracketInst(inst, subList);
+                     FreeInstance(inst);
+                     inner.type = listInitializer;
+                     inner.list = subList;
+                  }
+                  else
+                     inner.exp = MkExpConstant("0");
+                  ListAdd(list,  MkInitializerList(MkListOne(i)));
+               }
                else
                   ListAdd(list, MkInitializerAssignment(MkExpConstant("0")));
             }
