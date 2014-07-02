@@ -1424,7 +1424,7 @@ void SetClassTemplateArgs(Specifier spec, OldList templateArgs)
          if(!symbol && spec.symbol)
          {
             // If class was only decl'ed, invoke DeclClass on this templated class as well
-            symbol = _DeclClass(MAXINT, templateString);
+            symbol = _DeclClass(templateString);
             symbol.notYetDeclared = true;
          }
          // Add a reference to all templated class to the basic class
@@ -1734,7 +1734,7 @@ ClassDef MkClassDefFunction(ClassFunction function)
    return def;
 }
 
-Symbol DeclClassAddNameSpace(int symbolID, const char * className)
+Symbol DeclClassAddNameSpace(const char * className)
 {
    char name[1024];
    int len = 0, stringLen;
@@ -1760,18 +1760,18 @@ Symbol DeclClassAddNameSpace(int symbolID, const char * className)
    memcpy(name + len, className, stringLen);
    len += stringLen;
    name[len] = 0;
-   return _DeclClass(symbolID, name);
+   return _DeclClass(name);
 }
 
-Symbol DeclClass(int symbolID, const char * name)
+Symbol DeclClass(const char * name)
 {
    if(strchr(name, ':'))
-      return _DeclClass(symbolID, name);
+      return _DeclClass(name);
    else
-      return DeclClassAddNameSpace(symbolID, name);
+      return DeclClassAddNameSpace(name);
 }
 
-Symbol _DeclClass(int symbolID, const char * name)
+Symbol _DeclClass(const char * name)
 {
    Symbol symbol = FindClass(name);
    if(!symbol)

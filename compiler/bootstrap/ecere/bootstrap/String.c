@@ -685,6 +685,15 @@ tokens[count++] = start;
 return count;
 }
 
+void __ecereNameSpace__ecere__sys__ChangeChars(char * string, const char * chars, char alt)
+{
+int c;
+
+for(c = 0; string[c]; c++)
+if(strchr(chars, string[c]))
+string[c] = alt;
+}
+
 int __ecereNameSpace__ecere__sys__GetValue(char ** buffer)
 {
 char string[20];
@@ -1529,6 +1538,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::TokenizeWith
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::TrimLSpaces", "char * ecere::sys::TrimLSpaces(const char * string, char * output)", __ecereNameSpace__ecere__sys__TrimLSpaces, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::TrimRSpaces", "char * ecere::sys::TrimRSpaces(const char * string, char * output)", __ecereNameSpace__ecere__sys__TrimRSpaces, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeCh", "void ecere::sys::ChangeCh(char * string, char ch1, char ch2)", __ecereNameSpace__ecere__sys__ChangeCh, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeChars", "void ecere::sys::ChangeChars(char * string, const char * chars, char alt)", __ecereNameSpace__ecere__sys__ChangeChars, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RepeatCh", "void ecere::sys::RepeatCh(char * string, int count, char ch)", __ecereNameSpace__ecere__sys__RepeatCh, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::CopyString", "char * ecere::sys::CopyString(const char * string)", __ecereNameSpace__ecere__sys__CopyString, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetString", "bool ecere::sys::GetString(char * * buffer, char * string, int max)", __ecereNameSpace__ecere__sys__GetString, module, 4);

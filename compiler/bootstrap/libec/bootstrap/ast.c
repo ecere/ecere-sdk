@@ -588,9 +588,9 @@ return CheckType(yytext);
 
 struct DBTableEntry;
 
-struct Symbol *  _DeclClass(int symbolID, const char *  name);
+struct Symbol *  _DeclClass(const char *  name);
 
-struct Symbol * DeclClassAddNameSpace(int symbolID, const char * className)
+struct Symbol * DeclClassAddNameSpace(const char * className)
 {
 char name[1024];
 int len = 0, stringLen;
@@ -617,15 +617,15 @@ stringLen = strlen(className);
 memcpy(name + len, className, stringLen);
 len += stringLen;
 name[len] = (char)0;
-return _DeclClass(symbolID, name);
+return _DeclClass(name);
 }
 
-struct Symbol * DeclClass(int symbolID, const char * name)
+struct Symbol * DeclClass(const char * name)
 {
 if(strchr(name, ':'))
-return _DeclClass(symbolID, name);
+return _DeclClass(name);
 else
-return DeclClassAddNameSpace(symbolID, name);
+return DeclClassAddNameSpace(name);
 }
 
 struct MemberInit;
@@ -3051,7 +3051,7 @@ templateString[len++] = '\0';
 symbol = FindClass(templateString);
 if(!symbol && spec->__anon1.__anon1.symbol)
 {
-symbol = _DeclClass((((int)0x7fffffff)), templateString);
+symbol = _DeclClass(templateString);
 symbol->notYetDeclared = 1;
 }
 if(spec->__anon1.__anon1.symbol)
@@ -3069,7 +3069,7 @@ else
 FreeList(templateArgs, (void *)(FreeTemplateArgument));
 }
 
-struct Symbol * _DeclClass(int symbolID, const char * name)
+struct Symbol * _DeclClass(const char * name)
 {
 struct Symbol * symbol = FindClass(name);
 
@@ -5207,9 +5207,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefFixed", "Class
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDesignerDefaultProperty", "ClassDef MkClassDefDesignerDefaultProperty(Identifier id)", MkClassDefDesignerDefaultProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDefaultProperty", "ClassDef MkClassDefDefaultProperty(ecere::sys::OldList defProperties)", MkClassDefDefaultProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefFunction", "ClassDef MkClassDefFunction(ClassFunction function)", MkClassDefFunction, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClassAddNameSpace", "Symbol DeclClassAddNameSpace(int symbolID, const char * className)", DeclClassAddNameSpace, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClass", "Symbol DeclClass(int symbolID, const char * name)", DeclClass, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_DeclClass", "Symbol _DeclClass(int symbolID, const char * name)", _DeclClass, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClassAddNameSpace", "Symbol DeclClassAddNameSpace(const char * className)", DeclClassAddNameSpace, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClass", "Symbol DeclClass(const char * name)", DeclClass, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_DeclClass", "Symbol _DeclClass(const char * name)", _DeclClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetupBaseSpecs", "void SetupBaseSpecs(Symbol symbol, ecere::sys::OldList baseSpecs)", SetupBaseSpecs, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClass", "ClassDefinition MkClass(Symbol symbol, ecere::sys::OldList baseSpecs, ecere::sys::OldList definitions)", MkClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpInstance", "Expression MkExpInstance(Instantiation inst)", MkExpInstance, module, 2);

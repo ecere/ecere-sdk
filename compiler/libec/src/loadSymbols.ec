@@ -207,7 +207,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                         TrimLSpaces(line, line);
 
                         if(importType == preDeclImport)
-                           DeclClass(0, name);
+                           DeclClass(name);
                         if(isStatic || loadDllOnly || importType == preDeclImport || importType == comCheckImport)
                           regClass = null;
                         else if(regClass = eSystem_FindClass(privateModule, name), !regClass || regClass.internalDecl || regClass.isRemote)
@@ -219,7 +219,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                            /*if(classType != unitClass && classType != bitClass && classType != enumClass && baseName && !eSystem_FindClass(privateModule, baseName))
                            {
                               Compiler_Error($"Base class %s undefined\n", baseName);
-                              DeclClass(0, name);
+                              DeclClass(name);
                               regClass = null;
                               continue;
                            }
@@ -239,7 +239,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                     char className[1024] = "DCOMClient_";
                                     strcat(className, name);
                                     if(!existingClass)
-                                       existingClass = DeclClass(0, name);
+                                       existingClass = DeclClass(name);
                                     regClass = eSystem_RegisterClass(classType, className, baseName, 0, 0, null, null, privateModule, ecereCOMModule ? baseSystemAccess : publicAccess, inheritanceAccess);
                                  }
                                  if(regClass)

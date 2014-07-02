@@ -760,7 +760,7 @@ static void ProcessDBTable(DBTableDef table)
       inheritanceSpecs->Add(MkSpecifier(PRIVATE));
       inheritanceSpecs->Add(MkSpecifierName("Row"));
       PushContext();
-      _class = MkClass(DeclClass(0, rowClassName), inheritanceSpecs, rowClassDefs);
+      _class = MkClass(DeclClass(rowClassName), inheritanceSpecs, rowClassDefs);
       PopContext(curContext);
 
       def = MkClassDefDefaultProperty(MkListOne(MkMemberInitExp(MkExpIdentifier(MkIdentifier("tbl")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier(tableID))))));
@@ -1137,10 +1137,10 @@ public void ProcessDBTableDefinitions()
    if(inCompiler)
       PrePreProcessClassDefinitions();
 
-   DeclClass(0, "Field");
-   DeclClass(0, "Table");
-   DeclClass(0, "Row");
-   DeclClass(0, "Id");
+   DeclClass("Field");
+   DeclClass("Table");
+   DeclClass("Row");
+   DeclClass("Id");
    numIndexes = 0;
    if(ast != null)
    {

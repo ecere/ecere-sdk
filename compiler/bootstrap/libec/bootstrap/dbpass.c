@@ -324,7 +324,7 @@ struct __ecereNameSpace__ecere__sys__OldList *  definitions;
 int declMode;
 } __attribute__ ((gcc_struct));
 
-extern struct Symbol * DeclClass(int symbolID, const char *  name);
+extern struct Symbol * DeclClass(const char *  name);
 
 struct PropertyDef;
 
@@ -1626,7 +1626,7 @@ struct __ecereNameSpace__ecere__sys__OldList * inheritanceSpecs = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*inheritanceSpecs), MkSpecifier(PRIVATE));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*inheritanceSpecs), MkSpecifierName("Row"));
 PushContext();
-_class = MkClass(DeclClass(0, rowClassName), inheritanceSpecs, rowClassDefs);
+_class = MkClass(DeclClass(rowClassName), inheritanceSpecs, rowClassDefs);
 PopContext(curContext);
 def = MkClassDefDefaultProperty(MkListOne(MkMemberInitExp(MkExpIdentifier(MkIdentifier("tbl")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier(tableID))))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowClassDefs), def);
@@ -2288,10 +2288,10 @@ addAfter = (((void *)0));
 curContext = globalContext;
 if(inCompiler)
 PrePreProcessClassDefinitions();
-DeclClass(0, "Field");
-DeclClass(0, "Table");
-DeclClass(0, "Row");
-DeclClass(0, "Id");
+DeclClass("Field");
+DeclClass("Table");
+DeclClass("Row");
+DeclClass("Id");
 numIndexes = 0;
 if(ast != (((void *)0)))
 {

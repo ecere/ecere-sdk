@@ -5076,7 +5076,7 @@ yyreduce:
 #line 230 "type.y"
     {
       (yyval.specifier) = null;
-      DeclClass(0, (yyvsp[(1) - (2)].id).string);
+      DeclClass((yyvsp[(1) - (2)].id).string);
       fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
@@ -5107,10 +5107,10 @@ yyreduce:
          strcpy(name,  (yyvsp[(1) - (2)].id)._class.name ? (yyvsp[(1) - (2)].id)._class.name : "");
          strcat(name, "::");
          strcat(name, (yyvsp[(1) - (2)].id).string);
-         _DeclClass(0, name);
+         _DeclClass(name);
       }
       else
-         _DeclClass(0, (yyvsp[(1) - (2)].id).string);
+         _DeclClass((yyvsp[(1) - (2)].id).string);
 
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
@@ -5134,7 +5134,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 282 "type.y"
     {
-      DeclClass(0, (yyvsp[(1) - (2)].id).string);
+      DeclClass((yyvsp[(1) - (2)].id).string);
       fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       parseTypeError = 0;
       resetScannerPos(&(yylsp[(1) - (2)]).start);
@@ -5164,7 +5164,7 @@ yyreduce:
 #line 333 "type.y"
     {
    #ifdef PRECOMPILER
-      DeclClass(0, (yyvsp[(1) - (2)].id).string);
+      DeclClass((yyvsp[(1) - (2)].id).string);
       fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
@@ -6237,10 +6237,10 @@ yyreduce:
             strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
             strcat(name, "::");
             strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (4)].id).string);
+            _DeclClass((yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -6258,10 +6258,10 @@ yyreduce:
             char name[1024];
             strcpy(name, "::");
             strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(2) - (5)].id).string);
+            _DeclClass((yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -6363,10 +6363,10 @@ yyreduce:
             strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
             strcat(name, "::");
             strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (4)].id).string);
+            _DeclClass((yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -6384,10 +6384,10 @@ yyreduce:
             char name[1024];
             strcpy(name, "::");
             strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(2) - (5)].id).string);
+            _DeclClass((yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -6740,7 +6740,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 881 "type.y"
-    { _DeclClass(0, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
+    { _DeclClass((yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 240:
@@ -6887,7 +6887,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 908 "type.y"
-    { _DeclClass(0, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
+    { _DeclClass((yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 264:
@@ -6901,7 +6901,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 914 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass(0, (yyvsp[(2) - (5)].id).string); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].id).string); ;}
     break;
 
   case 266:
@@ -6915,7 +6915,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 916 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), (yyvsp[(2) - (4)].id), null); if(declMode) DeclClass(0, (yyvsp[(2) - (4)].id).string); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), (yyvsp[(2) - (4)].id), null); if(declMode) DeclClass((yyvsp[(2) - (4)].id).string); ;}
     break;
 
   case 268:
@@ -6929,14 +6929,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 919 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass(0, (yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
     break;
 
   case 270:
 
 /* Line 1464 of yacc.c  */
 #line 921 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), (yyvsp[(3) - (6)].id), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass(0, (yyvsp[(3) - (6)].id).string); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), (yyvsp[(3) - (6)].id), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (6)].id).string); ;}
     break;
 
   case 271:
@@ -6950,7 +6950,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 923 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(3) - (5)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (5)].extDecl); if(declMode) DeclClass(0, (yyvsp[(3) - (5)].id).string); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(3) - (5)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (5)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (5)].id).string); ;}
     break;
 
   case 273:
@@ -6964,35 +6964,35 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 926 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), MkIdentifier((yyvsp[(3) - (6)].specifier).name), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass(0, (yyvsp[(3) - (6)].specifier).name); FreeSpecifier((yyvsp[(3) - (6)].specifier)); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), MkIdentifier((yyvsp[(3) - (6)].specifier).name), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (6)].specifier).name); FreeSpecifier((yyvsp[(3) - (6)].specifier)); ;}
     break;
 
   case 275:
 
 /* Line 1464 of yacc.c  */
 #line 930 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), (yyvsp[(2) - (2)].id), null); if(declMode) DeclClass(0, (yyvsp[(2) - (2)].id).string); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), (yyvsp[(2) - (2)].id), null); if(declMode) DeclClass((yyvsp[(2) - (2)].id).string); ;}
     break;
 
   case 276:
 
 /* Line 1464 of yacc.c  */
 #line 932 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass(0, (yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass((yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 277:
 
 /* Line 1464 of yacc.c  */
 #line 935 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), (yyvsp[(3) - (3)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl);if(declMode) DeclClass(0, (yyvsp[(3) - (3)].id).string); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), (yyvsp[(3) - (3)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl);if(declMode) DeclClass((yyvsp[(3) - (3)].id).string); ;}
     break;
 
   case 278:
 
 /* Line 1464 of yacc.c  */
 #line 937 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), MkIdentifier((yyvsp[(3) - (3)].specifier).name), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl); if(declMode) DeclClass(0, (yyvsp[(3) - (3)].specifier).name); FreeSpecifier((yyvsp[(3) - (3)].specifier)); ;}
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), MkIdentifier((yyvsp[(3) - (3)].specifier).name), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (3)].specifier).name); FreeSpecifier((yyvsp[(3) - (3)].specifier)); ;}
     break;
 
   case 279:
@@ -7390,14 +7390,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1109 "type.y"
-    { (yyval.specifier) = MkEnum((yyvsp[(2) - (2)].id), null); if(declMode) DeclClass(0, (yyvsp[(2) - (2)].id).string); ;}
+    { (yyval.specifier) = MkEnum((yyvsp[(2) - (2)].id), null); if(declMode) DeclClass((yyvsp[(2) - (2)].id).string); ;}
     break;
 
   case 335:
 
 /* Line 1464 of yacc.c  */
 #line 1110 "type.y"
-    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass(0, (yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
+    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass((yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 336:
@@ -7411,28 +7411,28 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1116 "type.y"
-    { (yyval.specifier) = MkEnum((yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass(0, (yyvsp[(2) - (5)].id).string); ;}
+    { (yyval.specifier) = MkEnum((yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].id).string); ;}
     break;
 
   case 338:
 
 /* Line 1464 of yacc.c  */
 #line 1117 "type.y"
-    { (yyval.specifier) = MkEnum((yyvsp[(2) - (7)].id), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass(0, (yyvsp[(2) - (7)].id).string); ;}
+    { (yyval.specifier) = MkEnum((yyvsp[(2) - (7)].id), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass((yyvsp[(2) - (7)].id).string); ;}
     break;
 
   case 339:
 
 /* Line 1464 of yacc.c  */
 #line 1118 "type.y"
-    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (7)].specifier).name), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass(0, (yyvsp[(2) - (7)].specifier).name); FreeSpecifier((yyvsp[(2) - (7)].specifier)); ;}
+    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (7)].specifier).name), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass((yyvsp[(2) - (7)].specifier).name); FreeSpecifier((yyvsp[(2) - (7)].specifier)); ;}
     break;
 
   case 340:
 
 /* Line 1464 of yacc.c  */
 #line 1119 "type.y"
-    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass(0, (yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
+    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
     break;
 
   case 341:

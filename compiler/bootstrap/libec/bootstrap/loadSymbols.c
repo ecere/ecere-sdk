@@ -640,7 +640,7 @@ extern unsigned int __ecereNameSpace__ecere__com__eClass_AddMember(struct __ecer
 
 struct Symbol;
 
-extern struct Symbol * DeclClass(int symbolID, const char *  name);
+extern struct Symbol * DeclClass(const char *  name);
 
 extern struct Symbol * FindClass(const char *  name);
 
@@ -1336,7 +1336,7 @@ inheritanceAccess = 2;
 __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(importType == 3)
-DeclClass(0, name);
+DeclClass(name);
 if(isStatic || loadDllOnly || importType == 3 || importType == 4)
 regClass = (((void *)0));
 else if(regClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, name), !regClass || regClass->internalDecl || regClass->isRemote)
@@ -1358,7 +1358,7 @@ char className[1024] = "DCOMClient_";
 
 strcat(className, name);
 if(!existingClass)
-existingClass = DeclClass(0, name);
+existingClass = DeclClass(name);
 regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, className, baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : 1, inheritanceAccess);
 }
 if(regClass)

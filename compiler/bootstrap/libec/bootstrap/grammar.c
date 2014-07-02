@@ -1120,7 +1120,7 @@ struct TemplateParameter * templateParameter;
 } __attribute__ ((gcc_struct)) __anon1;
 } __attribute__ ((gcc_struct));
 
-extern struct Symbol * _DeclClass(int symbolID, const char *  name);
+extern struct Symbol * _DeclClass(const char *  name);
 
 struct ClassFunction
 {
@@ -1244,9 +1244,9 @@ struct Symbol * symbol;
 int declMode;
 } __attribute__ ((gcc_struct));
 
-extern struct Symbol * DeclClassAddNameSpace(int symbolID, const char *  className);
+extern struct Symbol * DeclClassAddNameSpace(const char *  className);
 
-extern struct Symbol * DeclClass(int symbolID, const char *  name);
+extern struct Symbol * DeclClass(const char *  name);
 
 struct ClassDefinition
 {
@@ -3136,10 +3136,10 @@ char name[1024];
 strcpy(name, yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (2)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (2)].id->string);
+_DeclClass(yyvsp[(1) - (2)].id->string);
 FreeIdentifier(yyvsp[(1) - (2)].id);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
@@ -3176,10 +3176,10 @@ char name[1024];
 strcpy(name, yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (2)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (2)].id->string);
+_DeclClass(yyvsp[(1) - (2)].id->string);
 FreeIdentifier(yyvsp[(1) - (2)].id);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
@@ -3229,10 +3229,10 @@ char name[1024];
 strcpy(name, yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (2)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (2)].id->string);
+_DeclClass(yyvsp[(1) - (2)].id->string);
 FreeIdentifier(yyvsp[(1) - (2)].id);
 FreeIdentifier(yyvsp[(2) - (2)].id);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
@@ -5072,7 +5072,7 @@ break;
 case 236:
 {
 (void)yyvsp[(1) - (2)].context;
-yyval.symbol = DeclClassAddNameSpace(0, yyvsp[(2) - (2)].id->string);
+yyval.symbol = DeclClassAddNameSpace(yyvsp[(2) - (2)].id->string);
 FreeIdentifier(yyvsp[(2) - (2)].id);
 yyval.symbol->nameLoc = (yylsp[(2) - (2)]);
 memberAccessStack[++defaultMemberAccess] = 2;
@@ -5082,7 +5082,7 @@ break;
 case 237:
 {
 (void)yyvsp[(1) - (2)].context;
-yyval.symbol = DeclClass(0, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
+yyval.symbol = DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 yyval.symbol->nameLoc = (yylsp[(2) - (2)]);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ++defaultMemberAccess;
@@ -5093,7 +5093,7 @@ break;
 case 238:
 {
 (void)yyvsp[(2) - (3)].context;
-yyval.symbol = DeclClassAddNameSpace(0, yyvsp[(3) - (3)].id->string);
+yyval.symbol = DeclClassAddNameSpace(yyvsp[(3) - (3)].id->string);
 FreeIdentifier(yyvsp[(1) - (3)].id);
 FreeIdentifier(yyvsp[(3) - (3)].id);
 yyval.symbol->nameLoc = (yylsp[(3) - (3)]);
@@ -5105,7 +5105,7 @@ break;
 case 239:
 {
 (void)yyvsp[(2) - (3)].context;
-yyval.symbol = DeclClass(0, yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
+yyval.symbol = DeclClass(yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
 FreeIdentifier(yyvsp[(1) - (3)].id);
 yyval.symbol->nameLoc = (yylsp[(3) - (3)]);
 yyval.symbol->isRemote = 1;
@@ -5117,7 +5117,7 @@ break;
 case 240:
 {
 (void)yyvsp[(1) - (5)].context;
-yyval.symbol = DeclClassAddNameSpace(0, yyvsp[(2) - (5)].id->string);
+yyval.symbol = DeclClassAddNameSpace(yyvsp[(2) - (5)].id->string);
 yyval.symbol->templateParams = yyvsp[(4) - (5)].list;
 FreeIdentifier(yyvsp[(2) - (5)].id);
 yyval.symbol->nameLoc = (yylsp[(2) - (5)]);
@@ -5128,7 +5128,7 @@ break;
 case 241:
 {
 (void)yyvsp[(1) - (5)].context;
-yyval.symbol = DeclClass(0, yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
+yyval.symbol = DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
 yyval.symbol->templateParams = yyvsp[(4) - (5)].list;
 yyval.symbol->nameLoc = (yylsp[(2) - (5)]);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
@@ -5140,7 +5140,7 @@ break;
 case 242:
 {
 (void)yyvsp[(2) - (6)].context;
-yyval.symbol = DeclClassAddNameSpace(0, yyvsp[(3) - (6)].id->string);
+yyval.symbol = DeclClassAddNameSpace(yyvsp[(3) - (6)].id->string);
 yyval.symbol->templateParams = yyvsp[(5) - (6)].list;
 FreeIdentifier(yyvsp[(1) - (6)].id);
 FreeIdentifier(yyvsp[(3) - (6)].id);
@@ -5153,7 +5153,7 @@ break;
 case 243:
 {
 (void)yyvsp[(2) - (6)].context;
-yyval.symbol = DeclClass(0, yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
+yyval.symbol = DeclClass(yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
 yyval.symbol->templateParams = yyvsp[(5) - (6)].list;
 FreeIdentifier(yyvsp[(1) - (6)].id);
 yyval.symbol->nameLoc = (yylsp[(3) - (6)]);
@@ -5208,7 +5208,7 @@ break;
 case 248:
 {
 (void)yyvsp[(1) - (3)].context;
-yyval._class = MkClass(DeclClassAddNameSpace(0, yyvsp[(2) - (3)].id->string), (((void *)0)), (((void *)0)));
+yyval._class = MkClass(DeclClassAddNameSpace(yyvsp[(2) - (3)].id->string), (((void *)0)), (((void *)0)));
 FreeIdentifier(yyvsp[(2) - (3)].id);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -5219,7 +5219,7 @@ break;
 case 249:
 {
 (void)yyvsp[(1) - (3)].context;
-yyval._class = MkClass(DeclClass(0, yyvsp[(2) - (3)].specifier->__anon1.__anon1.name), (((void *)0)), (((void *)0)));
+yyval._class = MkClass(DeclClass(yyvsp[(2) - (3)].specifier->__anon1.__anon1.name), (((void *)0)), (((void *)0)));
 FreeSpecifier(yyvsp[(2) - (3)].specifier);
 if(defaultMemberAccess > -1)
 defaultMemberAccess--;
@@ -6836,10 +6836,10 @@ char name[1024];
 
 strcpy(name, "::");
 strcat(name, yyvsp[(1) - (2)].exp->__anon1.__anon1.identifier->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (2)].exp->__anon1.__anon1.identifier->string);
+_DeclClass(yyvsp[(1) - (2)].exp->__anon1.__anon1.identifier->string);
 skipErrors = 0;
 FreeExpression(yyvsp[(1) - (2)].exp);
 FreeExpression(yyvsp[(2) - (2)].exp);
@@ -7721,7 +7721,7 @@ case 624:
 {
 yyval.id = yyvsp[(2) - (2)].id;
 if(declMode)
-DeclClassAddNameSpace(0, yyvsp[(2) - (2)].id->string);
+DeclClassAddNameSpace(yyvsp[(2) - (2)].id->string);
 ;
 }
 break;
@@ -7729,7 +7729,7 @@ case 625:
 {
 yyval.id = MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 if(declMode)
-DeclClass(0, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -8089,7 +8089,7 @@ yyval.specifier = MkSpecifierSubClass(yyvsp[(3) - (4)].specifier);
 break;
 case 677:
 {
-_DeclClass(0, yyvsp[(3) - (4)].id->string);
+_DeclClass(yyvsp[(3) - (4)].id->string);
 yyval.specifier = MkSpecifierSubClass(MkSpecifierName(yyvsp[(3) - (4)].id->string));
 FreeIdentifier(yyvsp[(3) - (4)].id);
 ;
@@ -8253,7 +8253,7 @@ yyval.specifier = MkSpecifierSubClass(yyvsp[(3) - (4)].specifier);
 break;
 case 707:
 {
-_DeclClass(0, yyvsp[(3) - (4)].id->string);
+_DeclClass(yyvsp[(3) - (4)].id->string);
 yyval.specifier = MkSpecifierSubClass(MkSpecifierName(yyvsp[(3) - (4)].id->string));
 FreeIdentifier(yyvsp[(3) - (4)].id);
 ;
@@ -8518,14 +8518,14 @@ case 739:
 yyval.specifier = yyvsp[(1) - (1)].specifier;
 if(declMode)
 {
-(yyvsp[(1) - (1)].specifier->__anon1.__anon2.addNameSpace ? DeclClassAddNameSpace : DeclClass)(0, yyvsp[(1) - (1)].specifier->__anon1.__anon2.id->string);
+(yyvsp[(1) - (1)].specifier->__anon1.__anon2.addNameSpace ? DeclClassAddNameSpace : DeclClass)(yyvsp[(1) - (1)].specifier->__anon1.__anon2.id->string);
 }
 ;
 }
 break;
 case 740:
 {
-struct Symbol * symbol = (yyvsp[(1) - (4)].specifier->__anon1.__anon2.addNameSpace ? DeclClassAddNameSpace : DeclClass)(0, yyvsp[(1) - (4)].specifier->__anon1.__anon2.id->string);
+struct Symbol * symbol = (yyvsp[(1) - (4)].specifier->__anon1.__anon2.addNameSpace ? DeclClassAddNameSpace : DeclClass)(yyvsp[(1) - (4)].specifier->__anon1.__anon2.id->string);
 
 yyval.specifier = yyvsp[(1) - (4)].specifier;
 symbol->templateParams = yyvsp[(3) - (4)].list;
@@ -9103,7 +9103,7 @@ ListAdd(yyvsp[(1) - (2)].list, yyvsp[(2) - (2)].specifier);
 break;
 case 817:
 {
-_DeclClass(0, yyvsp[(1) - (1)].id->string);
+_DeclClass(yyvsp[(1) - (1)].id->string);
 yyval.list = MkListOne(MkSpecifierName(yyvsp[(1) - (1)].id->string));
 FreeIdentifier(yyvsp[(1) - (1)].id);
 ;
@@ -9112,7 +9112,7 @@ break;
 case 818:
 {
 yyval.list = yyvsp[(1) - (2)].list;
-_DeclClass(0, yyvsp[(2) - (2)].id->string);
+_DeclClass(yyvsp[(2) - (2)].id->string);
 ListAdd(yyvsp[(1) - (2)].list, MkSpecifierName(yyvsp[(2) - (2)].id->string));
 FreeIdentifier(yyvsp[(2) - (2)].id);
 ;
@@ -9127,10 +9127,10 @@ char name[1024];
 strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (4)].id->string);
+_DeclClass(yyvsp[(1) - (4)].id->string);
 yyval.list = MkList();
 ListAdd(yyval.list, MkSpecifierNameArgs(yyvsp[(1) - (4)].id->string, yyvsp[(3) - (4)].list));
 FreeIdentifier(yyvsp[(1) - (4)].id);
@@ -9146,10 +9146,10 @@ char name[1024];
 
 strcpy(name, "::");
 strcat(name, yyvsp[(2) - (5)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(2) - (5)].id->string);
+_DeclClass(yyvsp[(2) - (5)].id->string);
 ListAdd(yyvsp[(1) - (5)].list, MkSpecifierNameArgs(yyvsp[(2) - (5)].id->string, yyvsp[(4) - (5)].list));
 FreeIdentifier(yyvsp[(2) - (5)].id);
 ;
@@ -9228,10 +9228,10 @@ char name[1024];
 strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (4)].id->string);
+_DeclClass(yyvsp[(1) - (4)].id->string);
 yyval.list = MkList();
 ListAdd(yyval.list, MkSpecifierNameArgs(yyvsp[(1) - (4)].id->string, yyvsp[(3) - (4)].list));
 FreeIdentifier(yyvsp[(1) - (4)].id);
@@ -9246,10 +9246,10 @@ char name[1024];
 
 strcpy(name, "::");
 strcat(name, yyvsp[(2) - (5)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(2) - (5)].id->string);
+_DeclClass(yyvsp[(2) - (5)].id->string);
 ListAdd(yyvsp[(1) - (5)].list, MkSpecifierNameArgs(yyvsp[(2) - (5)].id->string, yyvsp[(4) - (5)].list));
 FreeIdentifier(yyvsp[(2) - (5)].id);
 ;
@@ -9348,10 +9348,10 @@ char name[1024];
 strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (4)].id->string);
+_DeclClass(yyvsp[(1) - (4)].id->string);
 yyval.list = MkList();
 ListAdd(yyval.list, MkSpecifierNameArgs(yyvsp[(1) - (4)].id->string, yyvsp[(3) - (4)].list));
 FreeIdentifier(yyvsp[(1) - (4)].id);
@@ -9366,10 +9366,10 @@ char name[1024];
 
 strcpy(name, "::");
 strcat(name, yyvsp[(2) - (5)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(2) - (5)].id->string);
+_DeclClass(yyvsp[(2) - (5)].id->string);
 ListAdd(yyvsp[(1) - (5)].list, MkSpecifierNameArgs(yyvsp[(2) - (5)].id->string, yyvsp[(4) - (5)].list));
 FreeIdentifier(yyvsp[(2) - (5)].id);
 ;
@@ -9468,10 +9468,10 @@ char name[1024];
 strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
 strcat(name, "::");
 strcat(name, yyvsp[(1) - (4)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(1) - (4)].id->string);
+_DeclClass(yyvsp[(1) - (4)].id->string);
 yyval.list = MkList();
 ListAdd(yyval.list, MkSpecifierNameArgs(yyvsp[(1) - (4)].id->string, yyvsp[(3) - (4)].list));
 FreeIdentifier(yyvsp[(1) - (4)].id);
@@ -9486,10 +9486,10 @@ char name[1024];
 
 strcpy(name, "::");
 strcat(name, yyvsp[(2) - (5)].id->string);
-_DeclClass(0, name);
+_DeclClass(name);
 }
 else
-_DeclClass(0, yyvsp[(2) - (5)].id->string);
+_DeclClass(yyvsp[(2) - (5)].id->string);
 ListAdd(yyvsp[(1) - (5)].list, MkSpecifierNameArgs(yyvsp[(2) - (5)].id->string, yyvsp[(4) - (5)].list));
 FreeIdentifier(yyvsp[(2) - (5)].id);
 ;
@@ -12476,7 +12476,7 @@ ast = MkList();
 break;
 case 1290:
 {
-struct Symbol * symbol = DeclClassAddNameSpace(0, yyvsp[(3) - (6)].id->string);
+struct Symbol * symbol = DeclClassAddNameSpace(yyvsp[(3) - (6)].id->string);
 
 FreeIdentifier(yyvsp[(3) - (6)].id);
 yyval.dbtableDef = MkDBTableDef(yyvsp[(2) - (6)].string, symbol, yyvsp[(5) - (6)].list);
@@ -12485,7 +12485,7 @@ yyval.dbtableDef = MkDBTableDef(yyvsp[(2) - (6)].string, symbol, yyvsp[(5) - (6)
 break;
 case 1291:
 {
-struct Symbol * symbol = DeclClass(0, yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
+struct Symbol * symbol = DeclClass(yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
 
 FreeSpecifier(yyvsp[(3) - (6)].specifier);
 yyval.dbtableDef = MkDBTableDef(yyvsp[(2) - (6)].string, symbol, yyvsp[(5) - (6)].list);

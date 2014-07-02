@@ -13491,10 +13491,10 @@ yyreduce:
          strcpy(name,  (yyvsp[(1) - (2)].id)._class.name ? (yyvsp[(1) - (2)].id)._class.name : "");
          strcat(name, "::");
          strcat(name, (yyvsp[(1) - (2)].id).string);
-         _DeclClass(0, name);
+         _DeclClass(name);
       }
       else
-         _DeclClass(0, (yyvsp[(1) - (2)].id).string);
+         _DeclClass((yyvsp[(1) - (2)].id).string);
 
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
@@ -13526,10 +13526,10 @@ yyreduce:
          strcpy(name,  (yyvsp[(1) - (2)].id)._class.name ? (yyvsp[(1) - (2)].id)._class.name : "");
          strcat(name, "::");
          strcat(name, (yyvsp[(1) - (2)].id).string);
-         _DeclClass(0, name);
+         _DeclClass(name);
       }
       else
-         _DeclClass(0, (yyvsp[(1) - (2)].id).string);
+         _DeclClass((yyvsp[(1) - (2)].id).string);
 
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
@@ -13576,10 +13576,10 @@ yyreduce:
             strcpy(name,  (yyvsp[(1) - (2)].id)._class.name ? (yyvsp[(1) - (2)].id)._class.name : "");
             strcat(name, "::");
             strcat(name, (yyvsp[(1) - (2)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (2)].id).string);
+            _DeclClass((yyvsp[(1) - (2)].id).string);
 
          FreeIdentifier((yyvsp[(1) - (2)].id));
          FreeIdentifier((yyvsp[(2) - (2)].id));
@@ -15198,7 +15198,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1341 "grammar.y"
-    { (void)(yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClassAddNameSpace(0, (yyvsp[(2) - (2)].id).string); FreeIdentifier((yyvsp[(2) - (2)].id)); (yyval.symbol).nameLoc = (yylsp[(2) - (2)]); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
+    { (void)(yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClassAddNameSpace((yyvsp[(2) - (2)].id).string); FreeIdentifier((yyvsp[(2) - (2)].id)); (yyval.symbol).nameLoc = (yylsp[(2) - (2)]); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 237:
@@ -15206,7 +15206,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 1343 "grammar.y"
     {
-      (void)(yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClass(0, (yyvsp[(2) - (2)].specifier).name);
+      (void)(yyvsp[(1) - (2)].context); (yyval.symbol) = DeclClass((yyvsp[(2) - (2)].specifier).name);
       (yyval.symbol).nameLoc = (yylsp[(2) - (2)]);
       FreeSpecifier((yyvsp[(2) - (2)].specifier));
       ++defaultMemberAccess;
@@ -15218,21 +15218,21 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1350 "grammar.y"
-    { (void)(yyvsp[(2) - (3)].context); (yyval.symbol) = DeclClassAddNameSpace(0, (yyvsp[(3) - (3)].id).string); FreeIdentifier((yyvsp[(1) - (3)].id)); FreeIdentifier((yyvsp[(3) - (3)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (3)]); (yyval.symbol).isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
+    { (void)(yyvsp[(2) - (3)].context); (yyval.symbol) = DeclClassAddNameSpace((yyvsp[(3) - (3)].id).string); FreeIdentifier((yyvsp[(1) - (3)].id)); FreeIdentifier((yyvsp[(3) - (3)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (3)]); (yyval.symbol).isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 239:
 
 /* Line 1464 of yacc.c  */
 #line 1351 "grammar.y"
-    { (void)(yyvsp[(2) - (3)].context); (yyval.symbol) = DeclClass(0, (yyvsp[(3) - (3)].specifier).name); FreeIdentifier((yyvsp[(1) - (3)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (3)]); (yyval.symbol).isRemote = true; FreeSpecifier((yyvsp[(3) - (3)].specifier)); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
+    { (void)(yyvsp[(2) - (3)].context); (yyval.symbol) = DeclClass((yyvsp[(3) - (3)].specifier).name); FreeIdentifier((yyvsp[(1) - (3)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (3)]); (yyval.symbol).isRemote = true; FreeSpecifier((yyvsp[(3) - (3)].specifier)); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 240:
 
 /* Line 1464 of yacc.c  */
 #line 1353 "grammar.y"
-    { (void)(yyvsp[(1) - (5)].context); (yyval.symbol) = DeclClassAddNameSpace(0, (yyvsp[(2) - (5)].id).string); (yyval.symbol).templateParams = (yyvsp[(4) - (5)].list); FreeIdentifier((yyvsp[(2) - (5)].id)); (yyval.symbol).nameLoc = (yylsp[(2) - (5)]); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
+    { (void)(yyvsp[(1) - (5)].context); (yyval.symbol) = DeclClassAddNameSpace((yyvsp[(2) - (5)].id).string); (yyval.symbol).templateParams = (yyvsp[(4) - (5)].list); FreeIdentifier((yyvsp[(2) - (5)].id)); (yyval.symbol).nameLoc = (yylsp[(2) - (5)]); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 241:
@@ -15240,7 +15240,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 1355 "grammar.y"
     {
-      (void)(yyvsp[(1) - (5)].context); (yyval.symbol) = DeclClass(0, (yyvsp[(2) - (5)].specifier).name);
+      (void)(yyvsp[(1) - (5)].context); (yyval.symbol) = DeclClass((yyvsp[(2) - (5)].specifier).name);
       (yyval.symbol).templateParams = (yyvsp[(4) - (5)].list);
       (yyval.symbol).nameLoc = (yylsp[(2) - (5)]);
       FreeSpecifier((yyvsp[(2) - (5)].specifier));
@@ -15253,14 +15253,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 1363 "grammar.y"
-    { (void)(yyvsp[(2) - (6)].context); (yyval.symbol) = DeclClassAddNameSpace(0, (yyvsp[(3) - (6)].id).string); (yyval.symbol).templateParams = (yyvsp[(5) - (6)].list); FreeIdentifier((yyvsp[(1) - (6)].id)); FreeIdentifier((yyvsp[(3) - (6)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (6)]); (yyval.symbol).isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
+    { (void)(yyvsp[(2) - (6)].context); (yyval.symbol) = DeclClassAddNameSpace((yyvsp[(3) - (6)].id).string); (yyval.symbol).templateParams = (yyvsp[(5) - (6)].list); FreeIdentifier((yyvsp[(1) - (6)].id)); FreeIdentifier((yyvsp[(3) - (6)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (6)]); (yyval.symbol).isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 243:
 
 /* Line 1464 of yacc.c  */
 #line 1364 "grammar.y"
-    { (void)(yyvsp[(2) - (6)].context); (yyval.symbol) = DeclClass(0, (yyvsp[(3) - (6)].specifier).name); (yyval.symbol).templateParams = (yyvsp[(5) - (6)].list); FreeIdentifier((yyvsp[(1) - (6)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (6)]); (yyval.symbol).isRemote = true; FreeSpecifier((yyvsp[(3) - (6)].specifier)); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
+    { (void)(yyvsp[(2) - (6)].context); (yyval.symbol) = DeclClass((yyvsp[(3) - (6)].specifier).name); (yyval.symbol).templateParams = (yyvsp[(5) - (6)].list); FreeIdentifier((yyvsp[(1) - (6)].id)); (yyval.symbol).nameLoc = (yylsp[(3) - (6)]); (yyval.symbol).isRemote = true; FreeSpecifier((yyvsp[(3) - (6)].specifier)); memberAccessStack[++defaultMemberAccess] = privateAccess; ;}
     break;
 
   case 244:
@@ -15311,7 +15311,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 1396 "grammar.y"
     {
-         (void)(yyvsp[(1) - (3)].context); (yyval._class) = MkClass(DeclClassAddNameSpace(0, (yyvsp[(2) - (3)].id).string), null, null); FreeIdentifier((yyvsp[(2) - (3)].id));
+         (void)(yyvsp[(1) - (3)].context); (yyval._class) = MkClass(DeclClassAddNameSpace((yyvsp[(2) - (3)].id).string), null, null); FreeIdentifier((yyvsp[(2) - (3)].id));
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       ;}
@@ -15322,7 +15322,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 1402 "grammar.y"
     {
-         (void)(yyvsp[(1) - (3)].context); (yyval._class) = MkClass(DeclClass(0, (yyvsp[(2) - (3)].specifier).name), null, null); FreeSpecifier((yyvsp[(2) - (3)].specifier));
+         (void)(yyvsp[(1) - (3)].context); (yyval._class) = MkClass(DeclClass((yyvsp[(2) - (3)].specifier).name), null, null); FreeSpecifier((yyvsp[(2) - (3)].specifier));
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       ;}
@@ -16899,10 +16899,10 @@ yyreduce:
             char name[1024];
             strcpy(name, "::");
             strcat(name, (yyvsp[(1) - (2)].exp).identifier.string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (2)].exp).identifier.string);
+            _DeclClass((yyvsp[(1) - (2)].exp).identifier.string);
 
          // printf("Declaring Class %s\n", $1.identifier.string);
          skipErrors = false;
@@ -17751,14 +17751,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2210 "grammar.y"
-    { (yyval.id) = (yyvsp[(2) - (2)].id); if(declMode) DeclClassAddNameSpace(0, (yyvsp[(2) - (2)].id).string); ;}
+    { (yyval.id) = (yyvsp[(2) - (2)].id); if(declMode) DeclClassAddNameSpace((yyvsp[(2) - (2)].id).string); ;}
     break;
 
   case 625:
 
 /* Line 1464 of yacc.c  */
 #line 2211 "grammar.y"
-    { (yyval.id) = MkIdentifier((yyvsp[(2) - (2)].specifier).name); if(declMode) DeclClass(0, (yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
+    { (yyval.id) = MkIdentifier((yyvsp[(2) - (2)].specifier).name); if(declMode) DeclClass((yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 626:
@@ -18073,7 +18073,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2291 "grammar.y"
-    { _DeclClass(0, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
+    { _DeclClass((yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 678:
@@ -18262,7 +18262,7 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2324 "grammar.y"
-    { _DeclClass(0, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
+    { _DeclClass((yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 708:
@@ -18508,7 +18508,7 @@ yyreduce:
         (yyval.specifier) = (yyvsp[(1) - (1)].specifier);
         if(declMode)
         {
-           ((yyvsp[(1) - (1)].specifier).addNameSpace ? DeclClassAddNameSpace : DeclClass)(0, (yyvsp[(1) - (1)].specifier).id.string);
+           ((yyvsp[(1) - (1)].specifier).addNameSpace ? DeclClassAddNameSpace : DeclClass)((yyvsp[(1) - (1)].specifier).id.string);
         }
      ;}
     break;
@@ -18518,7 +18518,7 @@ yyreduce:
 /* Line 1464 of yacc.c  */
 #line 2422 "grammar.y"
     {
-      Symbol symbol = ((yyvsp[(1) - (4)].specifier).addNameSpace ? DeclClassAddNameSpace : DeclClass)(0, (yyvsp[(1) - (4)].specifier).id.string);
+      Symbol symbol = ((yyvsp[(1) - (4)].specifier).addNameSpace ? DeclClassAddNameSpace : DeclClass)((yyvsp[(1) - (4)].specifier).id.string);
       (yyval.specifier) = (yyvsp[(1) - (4)].specifier);
       symbol.templateParams = (yyvsp[(3) - (4)].list);
    ;}
@@ -19097,14 +19097,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 2587 "grammar.y"
-    { _DeclClass(0, (yyvsp[(1) - (1)].id).string); (yyval.list) = MkListOne(MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id)); ;}
+    { _DeclClass((yyvsp[(1) - (1)].id).string); (yyval.list) = MkListOne(MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 818:
 
 /* Line 1464 of yacc.c  */
 #line 2588 "grammar.y"
-    { (yyval.list) = (yyvsp[(1) - (2)].list); _DeclClass(0, (yyvsp[(2) - (2)].id).string); ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id)); ;}
+    { (yyval.list) = (yyvsp[(1) - (2)].list); _DeclClass((yyvsp[(2) - (2)].id).string); ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id)); ;}
     break;
 
   case 819:
@@ -19119,10 +19119,10 @@ yyreduce:
             strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
             strcat(name, "::");
             strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (4)].id).string);
+            _DeclClass((yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -19141,10 +19141,10 @@ yyreduce:
             char name[1024];
             strcpy(name, "::");
             strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(2) - (5)].id).string);
+            _DeclClass((yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -19225,10 +19225,10 @@ yyreduce:
             strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
             strcat(name, "::");
             strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (4)].id).string);
+            _DeclClass((yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -19246,10 +19246,10 @@ yyreduce:
             char name[1024];
             strcpy(name, "::");
             strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(2) - (5)].id).string);
+            _DeclClass((yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -19351,10 +19351,10 @@ yyreduce:
             strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
             strcat(name, "::");
             strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (4)].id).string);
+            _DeclClass((yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -19372,10 +19372,10 @@ yyreduce:
             char name[1024];
             strcpy(name, "::");
             strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(2) - (5)].id).string);
+            _DeclClass((yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -19477,10 +19477,10 @@ yyreduce:
             strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
             strcat(name, "::");
             strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(1) - (4)].id).string);
+            _DeclClass((yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -19498,10 +19498,10 @@ yyreduce:
             char name[1024];
             strcpy(name, "::");
             strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, (yyvsp[(2) - (5)].id).string);
+            _DeclClass((yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -22454,14 +22454,14 @@ yyreduce:
 
 /* Line 1464 of yacc.c  */
 #line 3773 "grammar.y"
-    { Symbol symbol = DeclClassAddNameSpace(0, (yyvsp[(3) - (6)].id).string); FreeIdentifier((yyvsp[(3) - (6)].id)); (yyval.dbtableDef) = MkDBTableDef((yyvsp[(2) - (6)].string), symbol, (yyvsp[(5) - (6)].list)); ;}
+    { Symbol symbol = DeclClassAddNameSpace((yyvsp[(3) - (6)].id).string); FreeIdentifier((yyvsp[(3) - (6)].id)); (yyval.dbtableDef) = MkDBTableDef((yyvsp[(2) - (6)].string), symbol, (yyvsp[(5) - (6)].list)); ;}
     break;
 
   case 1291:
 
 /* Line 1464 of yacc.c  */
 #line 3774 "grammar.y"
-    { Symbol symbol = DeclClass(0, (yyvsp[(3) - (6)].specifier).name); FreeSpecifier((yyvsp[(3) - (6)].specifier)); (yyval.dbtableDef) = MkDBTableDef((yyvsp[(2) - (6)].string), symbol, (yyvsp[(5) - (6)].list)); ;}
+    { Symbol symbol = DeclClass((yyvsp[(3) - (6)].specifier).name); FreeSpecifier((yyvsp[(3) - (6)].specifier)); (yyval.dbtableDef) = MkDBTableDef((yyvsp[(2) - (6)].string), symbol, (yyvsp[(5) - (6)].list)); ;}
     break;
 
   case 1292:

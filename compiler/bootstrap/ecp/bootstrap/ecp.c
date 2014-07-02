@@ -3006,10 +3006,10 @@ struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassDefine", "Definition", sizeof(struct ClassDefine), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_ClassDefine = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "base", "char *", sizeof(void *), 0, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propertiesAndMembers", "ecere::sys::OldList", 32, 8, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classProperties", "ecere::sys::OldList", 32, 8, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "methods", "ecere::sys::OldList", 32, 8, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "base", "char *", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propertiesAndMembers", "ecere::sys::OldList", sizeof(struct __ecereNameSpace__ecere__sys__OldList), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "classProperties", "ecere::sys::OldList", sizeof(struct __ecereNameSpace__ecere__sys__OldList), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "methods", "ecere::sys::OldList", sizeof(struct __ecereNameSpace__ecere__sys__OldList), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isRemote", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isWatchable", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fixed", "bool", 4, 4, 1);
@@ -3018,15 +3018,15 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "noExpansion", "bool",
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Define", "Definition", sizeof(struct Define), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_Define = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", sizeof(void *), 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "exp", "Expression", sizeof(void *), 0xF000F000, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "FunctionDefine", "Definition", sizeof(struct FunctionDefine), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_FunctionDefine = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", sizeof(void *), 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", sizeof(void *), 0xF000F000, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "DataDefine", "Definition", sizeof(struct DataDefine), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_DataDefine = class;
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", sizeof(void *), 0, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "dataType", "char *", sizeof(void *), 0xF000F000, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "MethodDefine", 0, sizeof(struct MethodDefine), 0, (void *)0, (void *)0, module, 2, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_MethodDefine = class;

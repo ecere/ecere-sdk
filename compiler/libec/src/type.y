@@ -229,7 +229,7 @@ guess_type:
    identifier '*'
    {
       $$ = null;
-      DeclClass(0, $1.string);
+      DeclClass($1.string);
       fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
@@ -255,10 +255,10 @@ guess_type:
          strcpy(name,  $1._class.name ? $1._class.name : "");
          strcat(name, "::");
          strcat(name, $1.string);
-         _DeclClass(0, name);
+         _DeclClass(name);
       }
       else
-         _DeclClass(0, $1.string);
+         _DeclClass($1.string);
 
       FreeIdentifier($1);
 
@@ -280,7 +280,7 @@ guess_type:
 real_guess_type:
    identifier error
    {
-      DeclClass(0, $1.string);
+      DeclClass($1.string);
       fileInput.Seek(@1.start.pos, start);
       parseTypeError = 0;
       resetScannerPos(&@1.start);
@@ -305,10 +305,10 @@ real_guess_type:
          strcpy(name,  $1._class.name ? $1._class.name : "");
          strcat(name, "::");
          strcat(name, $1.string);
-         _DeclClass(0, name);
+         _DeclClass(name);
       }
       else
-         _DeclClass(0, $1.string);
+         _DeclClass($1.string);
 
       FreeIdentifier($1);
 
@@ -332,7 +332,7 @@ type:
    | identifier identifier
    {
    #ifdef PRECOMPILER
-      DeclClass(0, $1.string);
+      DeclClass($1.string);
       fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
@@ -718,10 +718,10 @@ property_specifiers:
             strcpy(name,  $1._class.name ? $1._class.name : "");
             strcat(name, "::");
             strcat(name, $1.string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, $1.string);
+            _DeclClass($1.string);
 
          $$ = MkList();
          ListAdd($$, MkSpecifierNameArgs($1.string, $3));
@@ -734,10 +734,10 @@ property_specifiers:
             char name[1024];
             strcpy(name, "::");
             strcat(name, $2.string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, $2.string);
+            _DeclClass($2.string);
          ListAdd($1, MkSpecifierNameArgs($2.string, $4));
          FreeIdentifier($2);
       }
@@ -765,10 +765,10 @@ renew_specifiers:
             strcpy(name,  $1._class.name ? $1._class.name : "");
             strcat(name, "::");
             strcat(name, $1.string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, $1.string);
+            _DeclClass($1.string);
 
          $$ = MkList();
          ListAdd($$, MkSpecifierNameArgs($1.string, $3));
@@ -781,10 +781,10 @@ renew_specifiers:
             char name[1024];
             strcpy(name, "::");
             strcat(name, $2.string);
-            _DeclClass(0, name);
+            _DeclClass(name);
          }
          else
-            _DeclClass(0, $2.string);
+            _DeclClass($2.string);
          ListAdd($1, MkSpecifierNameArgs($2.string, $4));
          FreeIdentifier($2);
       }
@@ -878,7 +878,7 @@ type_specifier:
 	| type
    | TYPEOF '(' assignment_expression ')' { $$ = MkSpecifierTypeOf($3); }
    | SUBCLASS '(' type ')'                { $$ = MkSpecifierSubClass($3); }
-   | SUBCLASS '(' identifier ')'          { _DeclClass(0, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
+   | SUBCLASS '(' identifier ')'          { _DeclClass($3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
    | THISCLASS       { $$ = MkSpecifier(THISCLASS); }
    | TYPED_OBJECT    { $$ = MkSpecifier(TYPED_OBJECT); }
    | ANY_OBJECT      { $$ = MkSpecifier(ANY_OBJECT); }
@@ -905,36 +905,36 @@ strict_type_specifier:
 	| strict_type
    | TYPEOF '(' assignment_expression ')' { $$ = MkSpecifierTypeOf($3); }
    | SUBCLASS '(' type ')'                { $$ = MkSpecifierSubClass($3); }
-   | SUBCLASS '(' identifier ')'          { _DeclClass(0, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
+   | SUBCLASS '(' identifier ')'          { _DeclClass($3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
    | THISCLASS       { $$ = MkSpecifier(THISCLASS); }
 	;
 
 
 struct_or_union_specifier_compound:
-	  struct_or_union identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $2, $4); if(declMode) DeclClass(0, $2.string); }
+	  struct_or_union identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $2, $4); if(declMode) DeclClass($2.string); }
 	| struct_or_union '{' struct_declaration_list '}'              { $$ = MkStructOrUnion($1, null, $3); }
-   | struct_or_union identifier '{' '}'   { $$ = MkStructOrUnion($1, $2, null); if(declMode) DeclClass(0, $2.string); }
+   | struct_or_union identifier '{' '}'   { $$ = MkStructOrUnion($1, $2, null); if(declMode) DeclClass($2.string); }
    | struct_or_union '{' '}'              { $$ = MkStructOrUnion($1, null, null); }
 	| struct_or_union base_strict_type '{' struct_declaration_list '}'
-      { $$ = MkStructOrUnion($1, MkIdentifier($2.name), $4); if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
+      { $$ = MkStructOrUnion($1, MkIdentifier($2.name), $4); if(declMode) DeclClass($2.name); FreeSpecifier($2); }
 
-	| struct_or_union ext_decl identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $3, $5); $$.extDeclStruct = $2; if(declMode) DeclClass(0, $3.string); }
+	| struct_or_union ext_decl identifier '{' struct_declaration_list '}'   { $$ = MkStructOrUnion($1, $3, $5); $$.extDeclStruct = $2; if(declMode) DeclClass($3.string); }
 	| struct_or_union ext_decl '{' struct_declaration_list '}'              { $$ = MkStructOrUnion($1, null, $4); $$.extDeclStruct = $2; }
-   | struct_or_union ext_decl identifier '{' '}'   { $$ = MkStructOrUnion($1, $3, null); $$.extDeclStruct = $2; if(declMode) DeclClass(0, $3.string); }
+   | struct_or_union ext_decl identifier '{' '}'   { $$ = MkStructOrUnion($1, $3, null); $$.extDeclStruct = $2; if(declMode) DeclClass($3.string); }
    | struct_or_union ext_decl '{' '}'              { $$ = MkStructOrUnion($1, null, null); $$.extDeclStruct = $2; }
 	| struct_or_union ext_decl strict_type '{' struct_declaration_list '}'
-      { $$ = MkStructOrUnion($1, MkIdentifier($3.name), $5); $$.extDeclStruct = $2; if(declMode) DeclClass(0, $3.name); FreeSpecifier($3); }
+      { $$ = MkStructOrUnion($1, MkIdentifier($3.name), $5); $$.extDeclStruct = $2; if(declMode) DeclClass($3.name); FreeSpecifier($3); }
 	;
 
 struct_or_union_specifier_nocompound:
-	  struct_or_union identifier                                   { $$ = MkStructOrUnion($1, $2, null); if(declMode) DeclClass(0, $2.string); }
+	  struct_or_union identifier                                   { $$ = MkStructOrUnion($1, $2, null); if(declMode) DeclClass($2.string); }
 	| struct_or_union strict_type
-      { $$ = MkStructOrUnion($1, MkIdentifier($2.name), null); if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
+      { $$ = MkStructOrUnion($1, MkIdentifier($2.name), null); if(declMode) DeclClass($2.name); FreeSpecifier($2); }
 
 	| struct_or_union ext_decl identifier
-      { $$ = MkStructOrUnion($1, $3, null); $$.extDeclStruct = $2;if(declMode) DeclClass(0, $3.string); }
+      { $$ = MkStructOrUnion($1, $3, null); $$.extDeclStruct = $2;if(declMode) DeclClass($3.string); }
 	| struct_or_union ext_decl strict_type
-      { $$ = MkStructOrUnion($1, MkIdentifier($3.name), null); $$.extDeclStruct = $2; if(declMode) DeclClass(0, $3.name); FreeSpecifier($3); }
+      { $$ = MkStructOrUnion($1, MkIdentifier($3.name), null); $$.extDeclStruct = $2; if(declMode) DeclClass($3.name); FreeSpecifier($3); }
 	;
 
 template_datatype:
@@ -1106,17 +1106,17 @@ struct_declarator:
 	;
 
 enum_specifier_nocompound:
-     ENUM identifier                            { $$ = MkEnum($2, null); if(declMode) DeclClass(0, $2.string); }
-   | ENUM strict_type                           { $$ = MkEnum(MkIdentifier($2.name), null); if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
+     ENUM identifier                            { $$ = MkEnum($2, null); if(declMode) DeclClass($2.string); }
+   | ENUM strict_type                           { $$ = MkEnum(MkIdentifier($2.name), null); if(declMode) DeclClass($2.name); FreeSpecifier($2); }
    ;
 
 enum_specifier_compound:
 	  ENUM '{' enumerator_list '}'
       { $$ = MkEnum(null, $3); }
-	| ENUM identifier '{' enumerator_list '}'    { $$ = MkEnum($2, $4); if(declMode) DeclClass(0, $2.string); }
-   | ENUM identifier '{' enumerator_list ';' struct_declaration_list '}'    { $$ = MkEnum($2, $4); $$.definitions = $6; if(declMode) DeclClass(0, $2.string); }
-	| ENUM strict_type '{' enumerator_list ';' struct_declaration_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); $$.definitions = $6; if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
-   | ENUM strict_type '{' enumerator_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); if(declMode) DeclClass(0, $2.name); FreeSpecifier($2); }
+	| ENUM identifier '{' enumerator_list '}'    { $$ = MkEnum($2, $4); if(declMode) DeclClass($2.string); }
+   | ENUM identifier '{' enumerator_list ';' struct_declaration_list '}'    { $$ = MkEnum($2, $4); $$.definitions = $6; if(declMode) DeclClass($2.string); }
+	| ENUM strict_type '{' enumerator_list ';' struct_declaration_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); $$.definitions = $6; if(declMode) DeclClass($2.name); FreeSpecifier($2); }
+   | ENUM strict_type '{' enumerator_list '}'          { $$ = MkEnum(MkIdentifier($2.name), $4); if(declMode) DeclClass($2.name); FreeSpecifier($2); }
 	;
 
 enumerator_list:
