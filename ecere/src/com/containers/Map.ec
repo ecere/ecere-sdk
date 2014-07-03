@@ -183,7 +183,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             uint size = sizeof(class MapNode<MT, V>);
 
             if(class(MT).type == structClass) size += class(MT).typeSize - sizeof(node.AVLNode::key);
-            if(class(V).type == structClass) size += class(V).typeSize - sizeof(*&node.value);
+            if(class(V).type == structClass)
+               size += class(V).typeSize - sizeof(uint64); //sizeof(*&node.value);  // TODO: Simplify code generation for this sizeof
             node = (MapNode<MT, V>)new0 byte[size];
          }
          else

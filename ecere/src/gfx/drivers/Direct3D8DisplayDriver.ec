@@ -523,7 +523,7 @@ class Direct3D8DisplayDriver : DisplayDriver
             IDirect3DDevice8_SetRenderState(d3dDevice, D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
             IDirect3DDevice8_SetRenderState(d3dDevice, D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
             IDirect3DDevice8_SetRenderState(d3dDevice, D3DRS_FOGTABLEMODE, D3DFOG_EXP);
-            IDirect3DDevice8_SetRenderState(d3dDevice, D3DRS_FOGDENSITY, *(uint *)(void *)&fogDensity);
+            IDirect3DDevice8_SetRenderState(d3dDevice, D3DRS_FOGDENSITY, RenderStateFloat { fogDensity }.ui);
             display.ambient = Color { 50,50,50 };
             IDirect3DDevice8_SetRenderState(d3dDevice, D3DRS_NORMALIZENORMALS, TRUE);
             IDirect3DDevice8_SetRenderState(d3dSystem.d3dDevice, D3DRS_MULTISAMPLEANTIALIAS, FALSE);
@@ -1086,8 +1086,8 @@ class Direct3D8DisplayDriver : DisplayDriver
             break;
          case fogDensity:
          {
-            float fogDensity = *(float *)(void *)&value;
-            IDirect3DDevice8_SetRenderState(d3dSystem.d3dDevice, D3DRS_FOGDENSITY, *(uint *)(void *)&fogDensity);
+            float fogDensity = RenderStateFloat { ui = value }.f;
+            IDirect3DDevice8_SetRenderState(d3dSystem.d3dDevice, D3DRS_FOGDENSITY, RenderStateFloat { fogDensity }.ui);
             break;
          }
          case blend:
@@ -1114,10 +1114,12 @@ class Direct3D8DisplayDriver : DisplayDriver
             { light.specular.r, light.specular.g, light.specular.b, 1.0f },
             { light.ambient.r, light.ambient.g, light.ambient.b,    1.0f }
          };
+         Vector3Df * lightDirection;
          Vector3Df vector {0,0,1};
          Vector3Df vectorPI {0,0,-1};
          Vector3Df direction;
          Matrix mat;
+         lightDirection = (Vector3Df *)&d3dLight.Direction;
 
          mat.RotationQuaternion(light.orientation);
 
@@ -1129,9 +1131,7 @@ class Direct3D8DisplayDriver : DisplayDriver
             d3dLight.Direction.z =-direction.z;
          }
          else
-         {
-            ((Vector3Df *)&d3dLight.Direction)->MultMatrix(direction, d3dDisplay.worldMatrix);
-         }
+            lightDirection->MultMatrix(direction, d3dDisplay.worldMatrix);
 
          d3dDisplay.lights[id] = d3dLight;
 
@@ -1139,7 +1139,7 @@ class Direct3D8DisplayDriver : DisplayDriver
          IDirect3DDevice8_SetLight(d3dSystem.d3dDevice, id, &d3dDisplay.lights[id]);
 
          direction.MultMatrix(vectorPI, mat);
-         ((Vector3Df *)&d3dLight.Direction)->MultMatrix(direction, d3dDisplay.worldMatrix);
+         lightDirection->MultMatrix(direction, d3dDisplay.worldMatrix);
 
          d3dDisplay.lightsPI[id] = d3dLight;
       }

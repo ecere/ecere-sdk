@@ -687,7 +687,7 @@ unsigned int size = sizeof(struct __ecereNameSpace__ecere__com__MapNode);
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1)
 size += ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->typeSize - sizeof node->key;
 if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->type == 1)
-size += ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->typeSize - sizeof (((((((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->type == 1) ? ((uint64)(uintptr_t)&node->value) : ((((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->typeSize == 1) ? *((unsigned char *)&node->value) : ((((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->typeSize == 2) ? *((unsigned short *)&node->value) : ((((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->typeSize == 4) ? *((unsigned int *)&node->value) : *(&node->value))))))));
+size += ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->typeSize - sizeof(uint64);
 node = (struct __ecereNameSpace__ecere__com__MapNode *)__ecereNameSpace__ecere__com__eSystem_New0(sizeof(unsigned char) * (size));
 }
 else

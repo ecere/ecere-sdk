@@ -210,11 +210,11 @@ public:
                }
                else if(arrayType == class(double) || !strcmp(arrayType.dataTypeString, "double"))
                {
-                  t = *(uint64 *)&value.d;
+                  t = value.ui64; //*(uint64 *)&value.d;
                }
                else if(arrayType == class(float) || !strcmp(arrayType.dataTypeString, "float"))
                {
-                  t = *(uint *)&value.f;
+                  t = value.ui; //f*(uint *)&value.f;
                }
                else if(arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64") ||
                   !strcmp(arrayType.dataTypeString, "unsigned int64") || !strcmp(arrayType.dataTypeString, "uint64"))
@@ -720,11 +720,13 @@ bool WriteArray(File f, Class type, Container array, int indent)
          }
          else if(arrayType == class(double) || !strcmp(arrayType.dataTypeString, "double"))
          {
-            value.d = *(double *)&t;
+            value.ui64 = t;
+            //value.d = *(double *)&t;
          }
          else if(arrayType == class(float) || !strcmp(arrayType.dataTypeString, "float"))
          {
-            value.f = *(float *)&t;
+            value.ui = (uint)t;
+            //value.f = *(float *)&t;
          }
          else if(arrayType.typeSize == sizeof(int64) || !strcmp(arrayType.dataTypeString, "int64") ||
             !strcmp(arrayType.dataTypeString, "unsigned int64") || !strcmp(arrayType.dataTypeString, "uint64"))

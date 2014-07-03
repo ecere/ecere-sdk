@@ -33,6 +33,8 @@ import "Vector3D"
 
 public enum RenderState { fillMode = 1, depthTest, depthWrite, fogDensity, fogColor, blend, ambient, alphaWrite, antiAlias, vSync };
 
+public union RenderStateFloat { float f; uint ui; };
+
 public enum FillModeValue { solid, wireframe };
 
 public class DisplayFlags
@@ -1101,7 +1103,7 @@ public:
    property FillModeValue fillMode { set { displaySystem.driver.SetRenderState(this, fillMode, value); } };
    property bool depthTest    { set { displaySystem.driver.SetRenderState(this, depthTest, value); } };
    property bool depthWrite   { set { displaySystem.driver.SetRenderState(this, depthWrite, value); } };
-   property float fogDensity  { set { displaySystem.driver.SetRenderState(this, fogDensity, *(uint *)(void *)&value); } };
+   property float fogDensity  { set { displaySystem.driver.SetRenderState(this, fogDensity, RenderStateFloat { value }.ui); } };
    property Color fogColor    { set { displaySystem.driver.SetRenderState(this, fogColor, value); } };
    property bool blend        { set { displaySystem.driver.SetRenderState(this, blend, value); } };
    property Color ambient     { set { displaySystem.driver.SetRenderState(this, ambient, value); } };
