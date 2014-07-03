@@ -738,7 +738,7 @@ void (* onCopy)(void *, void *, void *) = Tclass->_vTbl[__ecereVMethodID_class_O
 if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
 onCopy(Tclass, (unsigned char *)&newNode->key + __ENDIAN_PAD(Tclass->typeSize), (unsigned char *)&newNode->key + __ENDIAN_PAD(Tclass->typeSize));
 else
-onCopy(Tclass, (unsigned char *)&newNode->key + __ENDIAN_PAD(sizeof(void *)), (void *)(uintptr_t)*(uint64 *)(&newNode->key));
+onCopy(Tclass, (unsigned char *)&newNode->key + __ENDIAN_PAD(sizeof(void *)), (void *)(uintptr_t)(uint64)(newNode->key));
 ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(this, (uint64)(uintptr_t)newNode);
 return newNode;
 }

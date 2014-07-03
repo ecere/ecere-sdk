@@ -479,7 +479,7 @@ b = (unsigned char *)&this->key;
 b += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
 }
 else
-b = (unsigned char *)(uintptr_t)*(uint64 *)(&this->key);
+b = (unsigned char *)(uintptr_t)(uint64)(this->key);
 result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 if(result < 0)
 this = this->left;
@@ -693,8 +693,8 @@ b += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
 }
 else
 {
-a = (unsigned char *)(uintptr_t)*(uint64 *)(&node->key);
-b = (unsigned char *)(uintptr_t)*(uint64 *)(&this->key);
+a = (unsigned char *)(uintptr_t)(uint64)(node->key);
+b = (unsigned char *)(uintptr_t)(uint64)(this->key);
 }
 result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 if(!result)

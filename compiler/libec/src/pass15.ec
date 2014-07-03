@@ -6632,15 +6632,16 @@ void CheckTemplateTypes(Expression exp)
                   break;
                }
             }
-            if(newExp.type == memberExp && newExp.member.memberType == dataMember)
+            /*if(newExp.type == memberExp && newExp.member.memberType == dataMember)
             {
+               // When was this required?    Removed to address using templated values to pass to printf()
                exp.type = opExp;
                exp.op.op = '*';
                exp.op.exp1 = null;
                exp.op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer(null, null), null)),
                   MkExpBrackets(MkListOne(MkExpOp(null, '&', newExp))));
             }
-            else
+            else*/
             {
                char typeString[1024];
                Declarator decl;
@@ -6654,6 +6655,8 @@ void CheckTemplateTypes(Expression exp)
                exp.cast.typeName = MkTypeName(specs, decl);
                exp.cast.exp = MkExpBrackets(MkListOne(newExp));
                exp.cast.exp.needCast = true;
+               exp.needTemplateCast = 2;
+               newExp.needTemplateCast = 2;
             }
             break;
          }

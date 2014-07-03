@@ -10190,14 +10190,6 @@ FreeType(exp->expType);
 break;
 }
 }
-if(newExp->type == 8 && newExp->__anon1.member.memberType == 3)
-{
-exp->type = 4;
-exp->__anon1.op.op = '*';
-exp->__anon1.op.exp1 = (((void *)0));
-exp->__anon1.op.exp2 = MkExpCast(MkTypeName(MkListOne(MkSpecifierName("uint64")), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpBrackets(MkListOne(MkExpOp((((void *)0)), '&', newExp))));
-}
-else
 {
 char typeString[1024];
 struct Declarator * decl;
@@ -10210,6 +10202,8 @@ exp->type = 11;
 exp->__anon1.cast.typeName = MkTypeName(specs, decl);
 exp->__anon1.cast.exp = MkExpBrackets(MkListOne(newExp));
 exp->__anon1.cast.exp->needCast = 1;
+exp->needTemplateCast = 2;
+newExp->needTemplateCast = 2;
 }
 break;
 }
