@@ -517,6 +517,16 @@ static void AddPointerCast(Expression e)
          FreeType(src);
       }
    }
+   else if(src && src.kind == intPtrType && e.destType && e.destType.classObjectType)
+   {
+      Expression nbExp = GetNonBracketsExp(e);
+      if(nbExp.type != castExp || !IsVoidPtrCast(nbExp.cast.typeName))
+      {
+         e.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+         e.type = castExp;
+         e.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null));
+      }
+   }
 }
 
 static void InstDeclPassExpression(Expression exp)

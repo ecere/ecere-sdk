@@ -365,6 +365,8 @@ extern struct Expression * MkExpBrackets(struct __ecereNameSpace__ecere__sys__Ol
 
 extern struct Expression * MoveExpContents(struct Expression * exp);
 
+extern struct Expression * GetNonBracketsExp(struct Expression * exp);
+
 extern void FreeExpContents(struct Expression * exp);
 
 struct TypeName;
@@ -1684,6 +1686,17 @@ FreeType(dest);
 }
 }
 FreeType(src);
+}
+}
+else if(src && src->kind == 22 && e->destType && e->destType->classObjectType)
+{
+struct Expression * nbExp = GetNonBracketsExp(e);
+
+if(nbExp->type != 11 || !IsVoidPtrCast(nbExp->__anon1.cast.typeName))
+{
+e->__anon1.cast.exp = MkExpBrackets(MkListOne(MoveExpContents(e)));
+e->type = 11;
+e->__anon1.typeName = MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0))));
 }
 }
 }
