@@ -15615,7 +15615,8 @@ unsigned int isSigned = constant[0] == '-';
 char * endP = (((void *)0));
 long long i64 = strtoll(constant, &endP, 0);
 uint64 ui64 = strtoull(constant, &endP, 0);
-unsigned int is64Bit = endP && (!strcmp(endP, "LL") || !strcmp(endP, "ll"));
+unsigned int is64Bit = endP && (!strcmp(endP, "LL") || !strcmp(endP, "ll") || !strcmp(endP, "LLU") || !strcmp(endP, "llu") || !strcmp(endP, "ull") || !strcmp(endP, "ULL"));
+unsigned int forceUnsigned = endP && (!strcmp(endP, "U") || !strcmp(endP, "u") || !strcmp(endP, "LLU") || !strcmp(endP, "llu") || !strcmp(endP, "ull") || !strcmp(endP, "ULL"));
 
 if(isSigned)
 {
@@ -15636,6 +15637,8 @@ isSigned = 1;
 else if(constant[0] != '0' || !constant[1])
 isSigned = 1;
 }
+if(forceUnsigned)
+isSigned = 0;
 type->kind = is64Bit ? 4 : 3;
 type->isSigned = isSigned;
 }

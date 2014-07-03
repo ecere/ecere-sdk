@@ -8113,7 +8113,8 @@ void ProcessExpressionType(Expression exp)
                   char * endP = null;
                   int64 i64 = strtoll(constant, &endP, 0);
                   uint64 ui64 = strtoull(constant, &endP, 0);
-                  bool is64Bit = endP && (!strcmp(endP, "LL") || !strcmp(endP, "ll"));
+                  bool is64Bit = endP && (!strcmp(endP, "LL") || !strcmp(endP, "ll") || !strcmp(endP, "LLU") || !strcmp(endP, "llu") || !strcmp(endP, "ull") || !strcmp(endP, "ULL"));
+                  bool forceUnsigned = endP && (!strcmp(endP, "U") || !strcmp(endP, "u") || !strcmp(endP, "LLU") || !strcmp(endP, "llu") || !strcmp(endP, "ull") || !strcmp(endP, "ULL"));
                   if(isSigned)
                   {
                      if(i64 < MININT)
@@ -8133,6 +8134,8 @@ void ProcessExpressionType(Expression exp)
                      else if(constant[0] != '0' || !constant[1])
                         isSigned = true;
                   }
+                  if(forceUnsigned)
+                     isSigned = false;
                   type.kind = is64Bit ? int64Type : intType;
                   type.isSigned = isSigned;
                }
