@@ -10314,11 +10314,22 @@ void ProcessExpressionType(Expression exp)
                         ClassTemplateArgument arg = tClass.templateArgs[id];
                         Context context = SetupTemplatesContext(tClass);
                         bool constant = exp.expType.constant;
+                        bool passAsTemplate = false;
+                        Class thisClassFrom = null;
+                        Type t = ProcessTypeString(exp.expType.templateParameter.dataTypeString, false);
+                        if(t && t.kind == classType && t._class)
+                           thisClassFrom = t._class.registered;
+                        FreeType(t);
+
+                        passAsTemplate = tClass.templateClass && (exp.expType.kind != templateType ||
+                           (!exp.expType.templateParameter || (!exp.expType.templateParameter.dataTypeString && !exp.expType.templateParameter.dataType)));
+
                         /*if(!arg.dataType)
                            arg.dataType = ProcessTypeString(arg.dataTypeString, false);*/
                         FreeType(exp.expType);
 
                         exp.expType = ProcessTypeString(arg.dataTypeString, false);
+                        exp.expType.thisClassFrom = thisClassFrom;
                         if(exp.expType.kind == classType && constant) exp.expType.constant = true;
                         else if(exp.expType.kind == pointerType)
                         {
@@ -10334,7 +10345,7 @@ void ProcessExpressionType(Expression exp)
                               exp.expType = ReplaceThisClassType(_class);
                            }
 
-                           if(tClass.templateClass && (exp.expType.kind != templateType || (!exp.expType.templateParameter || (!exp.expType.templateParameter.dataTypeString && !exp.expType.templateParameter.dataType))))
+                           if(passAsTemplate)
                               exp.expType.passAsTemplate = true;
                            //exp.expType.refCount++;
                            if(!exp.destType)

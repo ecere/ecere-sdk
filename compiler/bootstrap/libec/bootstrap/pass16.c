@@ -2376,11 +2376,11 @@ if(isInstance)
 {
 struct TopoEdge * e, * next;
 
-for(e = ((struct TopoEdge *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first); e; e = next)
+for(e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e; e = next)
 {
 struct External * from = e->from;
 
-next = ((struct TopoEdge *)(uintptr_t)e->in.next);
+next = e->in.next;
 if(((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)from->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->count)
 {
 unsigned int reroute = 1;
@@ -2424,7 +2424,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 struct TopoEdge * i;
 struct __ecereNameSpace__ecere__com__Instance * __internalLinkList = createInstancesExternal->incoming;
 
-for(i = ((struct TopoEdge *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first); i; i = (struct TopoEdge *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+for(i = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; i; i = (struct TopoEdge *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __internalLinkList;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;

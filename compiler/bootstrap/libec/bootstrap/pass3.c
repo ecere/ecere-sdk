@@ -1205,7 +1205,7 @@ if((n = S.first))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&S, (struct __ecereNameSpace__ecere__com__IteratorPointer *)n);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&L, n);
-for(e = ((struct TopoEdge *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)n->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first); e; e = ne)
+for(e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)n->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e; e = ne)
 {
 struct External * m = e->to;
 struct __ecereNameSpace__ecere__sys__OldList * list;
@@ -1220,7 +1220,7 @@ list = &B;
 }
 if(!(*list).count)
 __ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "!!! Something's wrong !!!", (void *)0);
-ne = ((struct TopoEdge *)(uintptr_t)e->out.next);
+ne = e->out.next;
 if(!e->breakable)
 {
 m->nonBreakableIncoming--;
@@ -1251,14 +1251,14 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&B, m);
 else if((n = B.first))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&B, (struct __ecereNameSpace__ecere__com__IteratorPointer *)n);
-for(e = ((struct TopoEdge *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)n->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first); e; e = ne)
+for(e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)n->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e; e = ne)
 {
 struct TopoEdge * e2, * n2;
 struct External * m = e->from;
 struct External * f;
 
 f = __ecereMethod_External_ForwardDeclare(m);
-ne = ((struct TopoEdge *)(uintptr_t)e->in.next);
+ne = e->in.next;
 {
 struct External * c, * next;
 
@@ -1277,9 +1277,9 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&B, c);
 }
 }
 }
-for(e2 = ((struct TopoEdge *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)m->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first); e2; e2 = n2)
+for(e2 = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)m->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; e2; e2 = n2)
 {
-n2 = ((struct TopoEdge *)(uintptr_t)e2->out.next);
+n2 = e2->out.next;
 if(e2->breakable)
 {
 struct External * to = e2->to;
@@ -1668,8 +1668,6 @@ if(!dest->passAsTemplate && dest->kind == 8 && dest->__anon1._class && dest->__a
 {
 struct __ecereNameSpace__ecere__com__Class * dc = dest->__anon1._class->__anon1.registered;
 
-if(dest->thisClassFrom)
-dc = dest->thisClassFrom;
 if(sc->templateClass)
 sc = sc->templateClass;
 if(dc->templateClass)

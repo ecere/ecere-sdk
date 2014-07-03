@@ -500,8 +500,6 @@ static void AddPointerCast(Expression e)
                   if(!dest.passAsTemplate && dest.kind == classType && dest._class && dest._class.registered)
                   {
                      Class dc = dest._class.registered;
-                     if(dest.thisClassFrom)
-                        dc = dest.thisClassFrom;
 
                      if(sc.templateClass) sc = sc.templateClass;
                      if(dc.templateClass) dc = dc.templateClass;

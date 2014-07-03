@@ -17549,9 +17549,17 @@ if(curParam && tClass->templateArgs[id].__anon1.__anon1.dataTypeString)
 struct __ecereNameSpace__ecere__com__ClassTemplateArgument arg = tClass->templateArgs[id];
 struct Context * context = SetupTemplatesContext(tClass);
 unsigned int constant = exp->expType->constant;
+unsigned int passAsTemplate = 0;
+struct __ecereNameSpace__ecere__com__Class * thisClassFrom = (((void *)0));
+struct Type * t = ProcessTypeString(exp->expType->__anon1.templateParameter->dataTypeString, 0);
 
+if(t && t->kind == 8 && t->__anon1._class)
+thisClassFrom = t->__anon1._class->__anon1.registered;
+FreeType(t);
+passAsTemplate = tClass->templateClass && (exp->expType->kind != 20 || (!exp->expType->__anon1.templateParameter || (!exp->expType->__anon1.templateParameter->dataTypeString && !exp->expType->__anon1.templateParameter->__anon1.dataType)));
 FreeType(exp->expType);
 exp->expType = ProcessTypeString(arg.__anon1.__anon1.dataTypeString, 0);
+exp->expType->thisClassFrom = thisClassFrom;
 if(exp->expType->kind == 8 && constant)
 exp->expType->constant = 1;
 else if(exp->expType->kind == 13)
@@ -17570,7 +17578,7 @@ if(exp->expType->kind == 21)
 FreeType(exp->expType);
 exp->expType = ReplaceThisClassType(_class);
 }
-if(tClass->templateClass && (exp->expType->kind != 20 || (!exp->expType->__anon1.templateParameter || (!exp->expType->__anon1.templateParameter->dataTypeString && !exp->expType->__anon1.templateParameter->__anon1.dataType))))
+if(passAsTemplate)
 exp->expType->passAsTemplate = 1;
 if(!exp->destType)
 {

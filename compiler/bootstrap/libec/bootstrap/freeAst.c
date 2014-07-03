@@ -2777,7 +2777,7 @@ void FreeExternal(struct External * external)
 {
 struct TopoEdge * e;
 
-while((e = ((struct TopoEdge *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first)))
+while((e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first))
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = e->from->outgoing;
@@ -2791,7 +2791,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(external->incoming, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e);
 ((e ? (__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
 }
-while((e = ((struct TopoEdge *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first)))
+while((e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first))
 {
 ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = e->to->incoming;

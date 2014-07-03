@@ -462,14 +462,14 @@ return (struct __ecereNameSpace__ecere__com__Link *)((struct __ecereNameSpace__e
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, (void *)(((struct __ecereNameSpace__ecere__com__Link *)(uintptr_t)((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->last)), value);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Insert])(this, (void *)(((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->last), value);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__List_Free(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 void * item;
 
-while((item = ((struct __ecereNameSpace__ecere__com__Link *)((uintptr_t)(((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first)))))
+while((item = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first))
 {
 uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
