@@ -19,11 +19,9 @@ import "createLink"
 import "licensing"
 import "CheckListBox"
 
-static LanguageOption dummy; // TOFIX
-
 static bool IsAdministrator()
 {
-   bool b;
+   BOOL b;
    SID_IDENTIFIER_AUTHORITY NtAuthority = { SECURITY_NT_AUTHORITY };
    PSID AdministratorsGroup;
    b = AllocateAndInitializeSid(&NtAuthority, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &AdministratorsGroup);
@@ -33,15 +31,15 @@ static bool IsAdministrator()
          b = FALSE;
        FreeSid(AdministratorsGroup);
    }
-   return b;
+   return b == TRUE;
 }
 
 struct CheckItem
 {
-   char * name;
+   const char * name;
    void * data;
    bool add32Bit;
-   char * OnGetString(char * tempString, void * fieldData, bool * needClass)
+   const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
    {
       if(add32Bit)
       {
@@ -63,7 +61,7 @@ struct CheckItem
 #define BUFFERSIZE 0x1000
 bool abortInstall = false;
 
-void ExtractFileFromArchive(ProgressBar progressBar, char * path, char * outputFile)
+void ExtractFileFromArchive(ProgressBar progressBar, const char * path, const char * outputFile)
 {
    char fileName[MAX_LOCATION];
    FileAttribs exists = FileExists(path);
@@ -171,9 +169,9 @@ public enum BitArch { none, bits32, bits64 };
 
 struct Component
 {
-   char * name;
-   char * dataPath;
-   char * defInstallPath;
+   const char * name;
+   const char * dataPath;
+   const char * defInstallPath;
    Component * subComponents;
    bool mandatory;
    bool selected;
@@ -233,10 +231,7 @@ struct Component
                PathCat(path, name);
             }
             if(requiredSize)
-            {
-               uint p = installProgress.progressBar.progress;
                ExtractFileFromArchive(installProgress.progressBar, source, path);
-            }
          }
          if(subComponents)
          {
@@ -362,7 +357,7 @@ FileSize totalInstalled;
 
 struct InstallOption
 {
-   char * name;
+   const char * name;
    InstallOption * subOptions;
    bool selected;
    bool available;
@@ -455,8 +450,11 @@ class Installer : Window
       {
          DataRow row = componentsBox.currentRow;
          Component * component = ((CheckItem *)row.GetData(componentField))->data;
-         component->GetFullPath(fileDialog.filePath, false);
-         StripLastDirectory(fileDialog.filePath, fileDialog.currentDirectory);
+         char filePath[MAX_LOCATION];
+         component->GetFullPath(filePath, false);
+         fileDialog.filePath = filePath;
+         StripLastDirectory(filePath, filePath);
+         fileDialog.currentDirectory = filePath;
 
          if(fileDialog.Modal() == ok)
          {
@@ -624,11 +622,10 @@ class Installer : Window
                ((CheckItem *)pathOptions[PathOptions::AddMinGWPaths].row.GetData(optionField))->name = pathOptions[PathOptions::AddMinGWPaths].name;
 
             GetEnvironment(options[0].selected ? "ALLUSERSPROFILE" : "APPDATA", appData, sizeof(appData));
-            if(appData && appData[0])
+            if(appData[0])
             {
                char defPath[MAX_LOCATION];
 
-               char * s = components[ComponentID::samples].installPath;
                strcpy(defPath, installDir);
                PathCat(defPath, components[ComponentID::samples].defInstallPath);
                ChangeCh(defPath, '/', DIR_SEP);
@@ -809,7 +806,7 @@ class Installer : Window
 
    DataField languageField { class(LanguageOption) };
 
-   void SetAvailableSpace(Component component, char * parentPath)
+   void SetAvailableSpace(Component component, const char * parentPath)
    {
       char path[MAX_LOCATION];
       int c;
@@ -831,7 +828,7 @@ class Installer : Window
       if(!size) install.disabled = true;
    }
 
-   FileSize ComputeSize(char * path)
+   FileSize ComputeSize(const char * path)
    {
       FileSize size = 0;
       FileAttribs attribs = FileExists(path);
@@ -851,7 +848,7 @@ class Installer : Window
       return size;
    }
 
-   void AddComponent(Component component, Component parent, char * parentPath)
+   void AddComponent(Component component, Component parent, const char * parentPath)
    {
       DataRow row = (parent != null) ? parent.row.AddRow() : componentsBox.AddRow();
       FileSize size = 0;
@@ -971,7 +968,7 @@ class Installer : Window
 
          if(settings.language)
          {
-            String language = GetLanguageString();
+            const String language = GetLanguageString();
             if(settings.language.OnCompare(language))
             {
                // Relaunch the installer with previously selected language
@@ -1022,14 +1019,14 @@ class Installer : Window
             strcpy(installDir32, installDir);
          }
       }
-      else if(homeDrive && homeDrive[0])
+      else if(homeDrive[0])
       {
          strcpy(installDir, homeDrive);
          PathCat(installDir, "Ecere SDK");
          strcpy(installDir32, installDir);
          strcat(installDir32, " (32)");
       }
-      else if(winDir && winDir[0])
+      else if(winDir[0])
       {
          strcpy(installDir, winDir);
          PathCat(installDir, "..\\Ecere SDK");
@@ -1043,7 +1040,7 @@ class Installer : Window
          strcat(installDir32, " (32)");
       }
 
-      if(appData && appData[0])
+      if(appData[0])
       {
          static char defSamplesPath[MAX_LOCATION];
          static char defExtrasPath[MAX_LOCATION];
@@ -1106,7 +1103,7 @@ class Installer : Window
 
       if(!loaded)
       {
-         String language = GetLanguageString();
+         const String language = GetLanguageString();
          bool found = false;
          DataRow row;
 
@@ -1308,7 +1305,6 @@ void ModifyPath(char * systemPath, char * userPath)
       CoreSDKID c;
       for(c = 0; coreSDK[c].name; c++)
       {
-         bool found = false;
          char path[MAX_LOCATION];
          if(!coreSDK[c].selected) continue;
          coreSDK[c].GetFullPath(path, false);
@@ -1329,7 +1325,6 @@ void ModifyPath(char * systemPath, char * userPath)
       // Up to C++
       for(c = 0; c <= cpp; c++)
       {
-         bool found = false;
          char path[MAX_LOCATION];
          if(!additional[c].selected || c == vanilla || c == vanilla32 || c == extras) continue;
          if((c != eda && c != eda32 && c != upx) && (!pathOptions[PathOptions::AddMinGWPaths].available || !pathOptions[PathOptions::AddMinGWPaths].selected))
@@ -1342,31 +1337,31 @@ void ModifyPath(char * systemPath, char * userPath)
    }
 }
 
-void AssociateExtension(char * extension, char * description, char *name, char * action, char * path)
+void AssociateExtension(const char * extension, const char * description, const char *name, const char * action, const char * path)
 {
    HKEY key;
-   uint status, size;
+   DWORD status;
    char keyName[1024];
 
-   RegCreateKeyEx(HKEY_CLASSES_ROOT, extension, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-   RegSetValueEx(key, null, 0, REG_SZ, name, (uint)strlen(name)+1);
+   RegCreateKeyEx(HKEY_CLASSES_ROOT, extension, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+   RegSetValueEx(key, null, 0, REG_SZ, (byte *)name, (uint)strlen(name)+1);
    RegCloseKey(key);
 
-   RegCreateKeyEx(HKEY_CLASSES_ROOT, name, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-   RegSetValueEx(key, null, 0, REG_SZ, description, (uint)strlen(description)+1);
+   RegCreateKeyEx(HKEY_CLASSES_ROOT, name, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+   RegSetValueEx(key, null, 0, REG_SZ, (byte *)description, (uint)strlen(description)+1);
    RegCloseKey(key);
 
    sprintf(keyName, "%s\\shell", extension);
-   RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
-   RegSetValueEx(key, null, 0, REG_SZ, action, (uint)strlen(action)+1);
+   RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+   RegSetValueEx(key, null, 0, REG_SZ, (byte *)action, (uint)strlen(action)+1);
    RegCloseKey(key);
 
    sprintf(keyName, "%s\\shell\\%s", name, action);
-   RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+   RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
    RegCloseKey(key);
 
    sprintf(keyName, "%s\\shell\\%s\\command", name, action);
-   RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+   RegCreateKeyEx(HKEY_CLASSES_ROOT, keyName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
 
    sprintf(keyName, path);
    strcat(keyName, " \"%L\"");
@@ -1503,13 +1498,13 @@ class InstallThread : Thread
          {
             HKEY key = null;
             uint16 wLanguage[256];
-            HRESULT status;
+            DWORD status;
             wLanguage[0] = 0;
 
             if(options[0].selected)
                RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_ALL_ACCESS, &key);
             else
-               RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+               RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
             if(key)
             {
                UTF8toUTF16Buffer(settings.language, wLanguage, sizeof(wLanguage) / sizeof(uint16));
@@ -1530,19 +1525,19 @@ class InstallThread : Thread
 
          {
             HKEY key;
-            uint status, size;
-            char * displayName = "Ecere SDK 0.44";
+            DWORD status;
+            const char * displayName = "Ecere SDK 0.44";
             char uninstaller[MAX_LOCATION];
-            bool nomodify = true;
+            //bool nomodify = true;
 
             strcpy(uninstaller, installDir);
             PathCat(uninstaller, "uninstall_ecere.exe");
 
-            RegCreateKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Ecere SDK", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
+            RegCreateKeyEx(HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Ecere SDK", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &key, &status);
 
-            RegSetValueEx(key, "DisplayName", 0, REG_SZ, displayName, (uint)strlen(displayName)+1);
-            RegSetValueEx(key, "UninstallString", 0, REG_SZ, uninstaller, (uint)strlen(uninstaller)+1);
-            RegSetValueEx(key, "DisplayIcon", 0, REG_SZ, idePath, (uint)strlen(idePath)+1);
+            RegSetValueEx(key, "DisplayName", 0, REG_SZ, (byte *)displayName, (uint)strlen(displayName)+1);
+            RegSetValueEx(key, "UninstallString", 0, REG_SZ, (byte *)uninstaller, (uint)strlen(uninstaller)+1);
+            RegSetValueEx(key, "DisplayIcon", 0, REG_SZ, (byte *)idePath, (uint)strlen(idePath)+1);
             //RegSetValueEx(key, "NoModify", 0, REG_DWORD, (byte *)&nomodify, sizeof(nomodify));
             //RegSetValueEx(key, "NoRepair", 0, REG_DWORD, (byte *)&nomodify, sizeof(nomodify));
             RegCloseKey(key);
@@ -1556,7 +1551,7 @@ class InstallThread : Thread
             )
          {
             HKEY userKey = null, systemKey = null;
-            uint status, size;
+            DWORD status, size;
             char userPath[8192] = "";
             char systemPath[8192] = "";
             uint16 wUserPath[8192];
@@ -1594,7 +1589,7 @@ class InstallThread : Thread
                   RegCloseKey(systemKey);
                }
 
-               RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, "", REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &userKey, &status);
+               RegCreateKeyEx(HKEY_CURRENT_USER, "Environment", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, null, &userKey, &status);
                if(status == REG_OPENED_EXISTING_KEY)
                {
                   size = sizeof(wUserPath);
@@ -1629,7 +1624,7 @@ class InstallThread : Thread
                "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS)
             {
                uint16 wStartMenuPath[2048];
-               uint size = sizeof(wStartMenuPath);
+               DWORD size = sizeof(wStartMenuPath);
                // RegQueryValueEx(key, "Start Menu", null, null, startMenuPath, &size);
                RegQueryValueExW(key, options[0].selected ? L"Common Programs" : L"Programs", null, null, (byte *)wStartMenuPath, &size);
                UTF16toUTF8Buffer(wStartMenuPath, startMenuPath, sizeof(startMenuPath));
@@ -1689,7 +1684,7 @@ class InstallThread : Thread
                "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS)
             {
                uint16 wDesktopPath[MAX_LOCATION];
-               uint size = sizeof(wDesktopPath);
+               DWORD size = sizeof(wDesktopPath);
                RegQueryValueExW(key, options[0].selected ? L"Common Desktop" : L"Desktop", null, null, (byte *)wDesktopPath, &size);
                UTF16toUTF8Buffer(wDesktopPath, desktopPath, sizeof(desktopPath));
                RegCloseKey(key);
