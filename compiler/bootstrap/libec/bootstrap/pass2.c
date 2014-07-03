@@ -3974,7 +3974,12 @@ nbExp->needTemplateCast = 2;
 if(((unsigned int)((exp->usage & 0x80) >> 7)))
 strcpy(typeString, "void *");
 else
+{
+if(exp->expType->kind == 20 && exp->expType->__anon1.templateParameter && exp->expType->__anon1.templateParameter->dataTypeString)
+strcpy(typeString, exp->expType->__anon1.templateParameter->dataTypeString);
+else
 PrintType(exp->expType, typeString, 0, 0);
+}
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 if(specs && (*specs).first && ((struct Specifier *)(*specs).first)->type == 8 && exp->destType && !exp->destType->passAsTemplate && exp->destType->kind == 20 && exp->destType->__anon1.templateParameter && (exp->destType->__anon1.templateParameter->dataTypeString || exp->destType->__anon1.templateParameter->__anon1.dataType) && !((unsigned int)((exp->usage & 0x4) >> 2)))
 {

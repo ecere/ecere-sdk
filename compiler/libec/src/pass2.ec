@@ -3166,7 +3166,12 @@ static void ProcessExpression(Expression exp)
          if(exp.usage.usageDelete)
             strcpy(typeString, "void *");
          else
-            PrintType(exp.expType, typeString, false, false);
+         {
+            if(exp.expType.kind == templateType && exp.expType.templateParameter && exp.expType.templateParameter.dataTypeString)
+               strcpy(typeString, exp.expType.templateParameter.dataTypeString);
+            else
+               PrintType(exp.expType, typeString, false, false);
+         }
 
          decl = SpecDeclFromString(typeString, specs, null);
 
