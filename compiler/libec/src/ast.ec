@@ -2249,6 +2249,7 @@ public Symbol FindClass(const char * name)
 void CopyTypeInto(Type type, Type src)
 {
    type = *src;
+
    type.name = CopyString(src.name);
    type.typeName = CopyString(src.typeName);
    type.refCount = 1;
@@ -2414,7 +2415,6 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
 
                   CopyTypeInto(specType, symbol.type);
                   specType.constant = isConstant;
-                  specType.typeName = CopyString(symbol.type.name);
                }
                else if(!isTypedef) // !specType.kind)    // TESTING THIS FOR enum / typedef problem
                {

@@ -1260,7 +1260,6 @@ case 15:
 {
 struct __ecereNameSpace__ecere__sys__NamedLink64 * member, * next;
 
-if(type->__anon1.__anon1.enumName)
 (__ecereNameSpace__ecere__com__eSystem_Delete(type->__anon1.__anon1.enumName), type->__anon1.__anon1.enumName = 0);
 for(member = type->__anon1.__anon1.members.first; member; member = next)
 {
