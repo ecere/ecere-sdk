@@ -706,19 +706,23 @@ public void DeclareClass(External neededFor, Symbol classSym, const char * class
    }*/
    if(classSym && classSym.notYetDeclared)
    {
-      if(!classSym._import)
+      if(!classSym.mustRegister)
       {
-         if(!classSym.module) classSym.module = mainModule;
-         if(!classSym.module) return;
-         classSym._import = ClassImport
+         if(!classSym._import)
          {
-            isRemote = classSym.registered ? classSym.registered.isRemote : 0;
-            name = CopyString(classSym.string);
-         };
-         classSym.module.classes.Add(classSym._import);
+            if(!classSym.module) classSym.module = mainModule;
+            if(!classSym.module) return;
+            classSym._import = ClassImport
+            {
+               isRemote = classSym.registered ? classSym.registered.isRemote : 0;
+               name = CopyString(classSym.string);
+            };
+            classSym.module.classes.Add(classSym._import);
+         }
+         classSym._import.itself = true;
       }
-      classSym._import.itself = true;
       classSym.notYetDeclared = false;
+
       if(!classSym.pointerExternal && inCompiler)
       {
          Declaration decl;

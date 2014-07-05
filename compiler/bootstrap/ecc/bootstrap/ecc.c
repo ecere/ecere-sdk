@@ -845,6 +845,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__sys__OldList _excludedSymbols =

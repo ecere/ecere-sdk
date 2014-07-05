@@ -34,6 +34,12 @@ default:
 #undef uint
 #undef set
 
+import "Array"
+import "i18n"
+import "File"
+import "TempFile"
+import "memory"
+
 default:
 FILE *eC_stdout(void);
 FILE *eC_stderr(void);
@@ -54,12 +60,6 @@ bool System_ShellOpen(const char * fileName, va_list args);
 void System_GetFreeSpace(const char * path, FileSize64 * size);
 
 private:
-
-import "Array"
-import "i18n"
-import "File"
-import "TempFile"
-import "memory"
 
 #if !defined(ECERE_BOOTSTRAP)
 import "units"
@@ -487,6 +487,7 @@ private struct System
    ErrorCode lastErrorCode;
    ErrorLevel errorLevel;
 
+#ifndef ECERE_BOOTSTRAP
    Semaphore eventSemaphore;
 
    //FileSystem fileSystems;
@@ -496,6 +497,7 @@ private struct System
    Mutex fileMonitorMutex;
    Thread fileMonitorThread;
    bool systemTerminate;
+#endif
 };
 
 System globalSystem;

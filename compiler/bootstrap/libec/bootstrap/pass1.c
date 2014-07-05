@@ -151,10 +151,6 @@ struct ModuleImport;
 
 struct ClassImport;
 
-extern char *  strcpy(char * , const char * );
-
-extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
-
 struct __ecereNameSpace__ecere__com__LinkList
 {
 void * first;
@@ -177,6 +173,10 @@ extern void FixModuleName(char *  moduleName);
 extern int sprintf(char * , const char * , ...);
 
 extern char *  QMkString(const char *  source);
+
+extern char *  strcpy(char * , const char * );
+
+extern void FullClassNameCat(char *  output, const char *  className, unsigned int includeTemplateParams);
 
 extern char *  strcat(char * , const char * );
 
@@ -525,9 +525,8 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
-
-extern void DeclareClass(struct External * neededFor, struct Symbol * classSym, const char *  className);
 
 extern struct Symbol * FindClass(const char *  name);
 
@@ -1075,6 +1074,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -1576,14 +1576,6 @@ if(func->type)
 func->type->refCount++;
 ProcessFunctionBody(function, func->body);
 external = MkExternalFunction(function);
-if(owningClass)
-{
-char className[1024];
-
-strcpy(className, "__ecereClass_");
-FullClassNameCat(className, owningClass->fullName, 1);
-DeclareClass(external, owningClass->symbol, className);
-}
 external->symbol = func->declarator->symbol;
 external->__anon1.function->_class = func->_class;
 }
@@ -2450,7 +2442,7 @@ ProcessClassFunction(regClass, def->__anon1.function, defs, external->prev, decl
 }
 }
 }
-if(inCompiler && !symbol->notYetDeclared && regClass)
+if(inCompiler && symbol->mustRegister && regClass)
 {
 struct Statement * stmt;
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();

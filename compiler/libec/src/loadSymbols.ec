@@ -207,7 +207,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                         TrimLSpaces(line, line);
 
                         if(importType == preDeclImport)
-                           DeclClass(name);
+                           DeclClass(null, name);
                         if(isStatic || loadDllOnly || importType == preDeclImport || importType == comCheckImport)
                           regClass = null;
                         else if(regClass = eSystem_FindClass(privateModule, name), !regClass || regClass.internalDecl || regClass.isRemote)
@@ -239,7 +239,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
                                     char className[1024] = "DCOMClient_";
                                     strcat(className, name);
                                     if(!existingClass)
-                                       existingClass = DeclClass(name);
+                                       existingClass = DeclClass(null, name);
                                     regClass = eSystem_RegisterClass(classType, className, baseName, 0, 0, null, null, privateModule, ecereCOMModule ? baseSystemAccess : publicAccess, inheritanceAccess);
                                  }
                                  if(regClass)

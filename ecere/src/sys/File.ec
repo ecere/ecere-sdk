@@ -859,6 +859,10 @@ public:
    // property bool { };
 };
 
+#ifdef ECERE_BOOTSTRAP
+public class SecSince1970 : int64;
+#endif
+
 public struct FileStats
 {
    FileAttribs attribs;

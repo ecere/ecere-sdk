@@ -1159,6 +1159,26 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__StaticString;
 
+void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data)
+{
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize])(class, data, this);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * * data)
+{
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize])(class, data, this);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data)
+{
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize])(class, data, this);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * * data)
+{
+((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize])(class, data, this);
+}
+
 const char * __ecereNameSpace__ecere__com__Enum_OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * needClass)
 {
 struct __ecereNameSpace__ecere__sys__NamedLink64 * item = (((void *)0));
@@ -1403,6 +1423,28 @@ __ecereNameSpace__ecere__com__DataMember_OnUnserialize(member, (unsigned char *)
 return 0;
 }
 
+int __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnCompare(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__StaticString * string2)
+{
+int result = 0;
+
+if(this && string2)
+result = (strcasecmp)(this->string, string2->string);
+else if(!this && string2)
+result = -1;
+else if(this && !string2)
+result = 1;
+return result;
+}
+
+const char * __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, char * tempString, void * fieldData, unsigned int * needClass)
+{
+return this ? this->string : (((void *)0));
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this)
+{
+}
+
 int __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(char * buffer, int maxLen, struct __ecereNameSpace__ecere__com__Class * class, const void * object, va_list args)
 {
 int len = 0;
@@ -1473,26 +1515,6 @@ int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
-
-void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data)
-{
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize])(class, data, this);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * * data)
-{
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize])(class, data, this);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * data)
-{
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnSerialize])(class, data, this);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Get(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, void * * data)
-{
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))class->_vTbl[__ecereVMethodID_class_OnUnserialize])(class, data, this);
-}
 
 void __ecereNameSpace__ecere__com__Byte_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, unsigned char * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
@@ -1705,6 +1727,33 @@ else
 *data = 0;
 }
 
+void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__Instance * channel)
+{
+unsigned int len = this ? strlen(this->string) : 0;
+
+((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, this ? this->string : "", len + 1);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__Instance * channel)
+{
+if(this)
+{
+int c;
+
+for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*this).string[c], 1) && (*this).string[c]; c++)
+;
+(*this).string[c++] = '\0';
+}
+}
+
 static void __ecereNameSpace__ecere__com__String_OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, char * string, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 int len = string ? strlen(string) : 0;
@@ -1826,55 +1875,6 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__com__SerialBuffer * __ec
 
 __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->count = value;
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__Instance * channel)
-{
-unsigned int len = this ? strlen(this->string) : 0;
-
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  data, unsigned int numBytes))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_WriteData])(channel, this ? this->string : "", len + 1);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnUnserialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__Instance * channel)
-{
-if(this)
-{
-int c;
-
-for(c = 0; ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  data, unsigned int numBytes))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = channel;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__IOChannel->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__IOChannel_ReadData])(channel, &(*this).string[c], 1) && (*this).string[c]; c++)
-;
-(*this).string[c++] = '\0';
-}
-}
-
-int __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnCompare(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, struct __ecereNameSpace__ecere__com__StaticString * string2)
-{
-int result = 0;
-
-if(this && string2)
-result = (strcasecmp)(this->string, string2->string);
-else if(!this && string2)
-result = -1;
-else if(this && !string2)
-result = 1;
-return result;
-}
-
-const char * __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this, char * tempString, void * fieldData, unsigned int * needClass)
-{
-return this ? this->string : (((void *)0));
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__StaticString_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__StaticString * this)
-{
 }
 
 static int __ecereNameSpace__ecere__com__OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, void * data1, void * data2)

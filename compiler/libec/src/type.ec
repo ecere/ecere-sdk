@@ -835,57 +835,57 @@ static const yytype_int16 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   229,   229,   247,   281,   331,   332,   359,   363,   364,
-     365,   382,   384,   389,   394,   399,   401,   406,   411,   412,
-     417,   419,   421,   423,   424,   426,   427,   428,   431,   432,
-     433,   434,   435,   436,   437,   438,   439,   443,   444,   445,
-     446,   447,   448,   461,   462,   463,   467,   496,   497,   498,
-     499,   503,   504,   505,   507,   508,   510,   511,   515,   516,
-     525,   526,   527,   528,   529,   530,   531,   535,   536,   540,
-     541,   542,   543,   547,   548,   549,   553,   554,   555,   559,
-     567,   568,   569,   570,   571,   575,   576,   577,   581,   582,
-     586,   587,   591,   592,   596,   597,   601,   602,   606,   607,
-     611,   612,   613,   617,   618,   619,   620,   621,   622,   623,
-     624,   625,   626,   627,   631,   632,   636,   640,   641,   642,
-     643,   647,   648,   649,   650,   651,   652,   653,   654,   658,
-     659,   660,   661,   662,   663,   664,   665,   666,   667,   671,
-     672,   673,   674,   675,   676,   677,   678,   679,   680,   684,
-     685,   686,   687,   688,   689,   690,   691,   692,   693,   694,
-     695,   699,   700,   704,   705,   706,   707,   708,   709,   710,
-     711,   712,   730,   747,   748,   749,   750,   751,   752,   753,
-     754,   755,   756,   757,   758,   759,   777,   794,   795,   799,
-     800,   804,   805,   806,   807,   808,   809,   813,   814,   815,
-     819,   820,   821,   826,   827,   828,   829,   830,   834,   835,
-     839,   840,   841,   845,   846,   850,   854,   855,   856,   861,
-     862,   863,   864,   865,   866,   867,   868,   869,   870,   871,
-     872,   873,   874,   875,   876,   877,   878,   879,   880,   881,
-     882,   883,   884,   888,   889,   890,   891,   892,   893,   894,
-     895,   896,   897,   898,   899,   900,   901,   902,   903,   904,
-     905,   906,   907,   908,   909,   914,   915,   916,   917,   918,
-     921,   922,   923,   924,   925,   930,   931,   934,   936,   941,
-     942,   947,   948,   959,   963,   965,   966,   968,   969,   993,
-    1008,  1009,  1013,  1014,  1018,  1019,  1023,  1027,  1028,  1032,
-    1034,  1036,  1038,  1040,  1043,  1045,  1047,  1049,  1051,  1054,
-    1056,  1058,  1060,  1062,  1065,  1067,  1069,  1071,  1073,  1078,
-    1079,  1080,  1081,  1082,  1083,  1084,  1085,  1089,  1091,  1096,
-    1098,  1100,  1102,  1104,  1109,  1110,  1114,  1116,  1117,  1118,
-    1119,  1123,  1125,  1130,  1132,  1138,  1140,  1142,  1144,  1146,
-    1148,  1150,  1152,  1154,  1156,  1158,  1163,  1165,  1167,  1169,
-    1171,  1176,  1177,  1178,  1179,  1180,  1181,  1185,  1186,  1187,
-    1188,  1189,  1190,  1236,  1237,  1239,  1241,  1246,  1248,  1250,
-    1252,  1254,  1259,  1260,  1263,  1265,  1267,  1273,  1277,  1279,
-    1281,  1286,  1287,  1288,  1290,  1295,  1296,  1297,  1298,  1299,
-    1303,  1304,  1308,  1309,  1310,  1311,  1315,  1316,  1320,  1321,
-    1325,  1326,  1327,  1328,  1329,  1340,  1365,  1366,  1370,  1371,
-    1375,  1376,  1380,  1382,  1384,  1400,  1402,  1424,  1426,  1431,
-    1432,  1433,  1434,  1435,  1436,  1440,  1442,  1444,  1449,  1450,
-    1454,  1455,  1458,  1462,  1463,  1464,  1468,  1472,  1480,  1485,
-    1486,  1490,  1491,  1492,  1496,  1497,  1498,  1499,  1501,  1502,
-    1503,  1507,  1508,  1509,  1510,  1511,  1515,  1519,  1521,  1526,
-    1528,  1553,  1555,  1557,  1559,  1564,  1566,  1570,  1572,  1574,
-    1576,  1578,  1584,  1586,  1591,  1596,  1597,  1601,  1603,  1608,
-    1613,  1614,  1615,  1616,  1617,  1618,  1622,  1623,  1624,  1628,
-    1629
+       0,   229,   229,   247,   271,   311,   312,   339,   343,   344,
+     345,   362,   364,   369,   374,   379,   381,   386,   391,   392,
+     397,   399,   401,   403,   404,   406,   407,   408,   411,   412,
+     413,   414,   415,   416,   417,   418,   419,   423,   424,   425,
+     426,   427,   428,   441,   442,   443,   447,   476,   477,   478,
+     479,   483,   484,   485,   487,   488,   490,   491,   495,   496,
+     505,   506,   507,   508,   509,   510,   511,   515,   516,   520,
+     521,   522,   523,   527,   528,   529,   533,   534,   535,   539,
+     547,   548,   549,   550,   551,   555,   556,   557,   561,   562,
+     566,   567,   571,   572,   576,   577,   581,   582,   586,   587,
+     591,   592,   593,   597,   598,   599,   600,   601,   602,   603,
+     604,   605,   606,   607,   611,   612,   616,   620,   621,   622,
+     623,   627,   628,   629,   630,   631,   632,   633,   634,   638,
+     639,   640,   641,   642,   643,   644,   645,   646,   647,   651,
+     652,   653,   654,   655,   656,   657,   658,   659,   660,   664,
+     665,   666,   667,   668,   669,   670,   671,   672,   673,   674,
+     675,   679,   680,   684,   685,   686,   687,   688,   689,   690,
+     691,   692,   700,   709,   710,   711,   712,   713,   714,   715,
+     716,   717,   718,   719,   720,   721,   729,   738,   739,   743,
+     744,   748,   749,   750,   751,   752,   753,   757,   758,   759,
+     763,   764,   765,   770,   771,   772,   773,   774,   778,   779,
+     783,   784,   785,   789,   790,   794,   798,   799,   800,   805,
+     806,   807,   808,   809,   810,   811,   812,   813,   814,   815,
+     816,   817,   818,   819,   820,   821,   822,   823,   824,   825,
+     826,   827,   828,   832,   833,   834,   835,   836,   837,   838,
+     839,   840,   841,   842,   843,   844,   845,   846,   847,   848,
+     849,   850,   851,   852,   853,   858,   859,   860,   861,   862,
+     865,   866,   867,   868,   869,   874,   875,   878,   880,   885,
+     886,   891,   892,   903,   907,   909,   910,   912,   913,   937,
+     952,   953,   957,   958,   962,   963,   967,   971,   972,   976,
+     978,   980,   982,   984,   987,   989,   991,   993,   995,   998,
+    1000,  1002,  1004,  1006,  1009,  1011,  1013,  1015,  1017,  1022,
+    1023,  1024,  1025,  1026,  1027,  1028,  1029,  1033,  1035,  1040,
+    1042,  1044,  1046,  1048,  1053,  1054,  1058,  1060,  1061,  1062,
+    1063,  1067,  1069,  1074,  1076,  1082,  1084,  1086,  1088,  1090,
+    1092,  1094,  1096,  1098,  1100,  1102,  1107,  1109,  1111,  1113,
+    1115,  1120,  1121,  1122,  1123,  1124,  1125,  1129,  1130,  1131,
+    1132,  1133,  1134,  1180,  1181,  1183,  1185,  1190,  1192,  1194,
+    1196,  1198,  1203,  1204,  1207,  1209,  1211,  1217,  1221,  1223,
+    1225,  1230,  1231,  1232,  1234,  1239,  1240,  1241,  1242,  1243,
+    1247,  1248,  1252,  1253,  1254,  1255,  1259,  1260,  1264,  1265,
+    1269,  1270,  1271,  1272,  1273,  1284,  1309,  1310,  1314,  1315,
+    1319,  1320,  1324,  1326,  1328,  1344,  1346,  1368,  1370,  1375,
+    1376,  1377,  1378,  1379,  1380,  1384,  1386,  1388,  1393,  1394,
+    1398,  1399,  1402,  1406,  1407,  1408,  1412,  1416,  1424,  1429,
+    1430,  1434,  1435,  1436,  1440,  1441,  1442,  1443,  1445,  1446,
+    1447,  1451,  1452,  1453,  1454,  1455,  1459,  1463,  1465,  1470,
+    1472,  1497,  1499,  1501,  1503,  1508,  1510,  1514,  1516,  1518,
+    1520,  1522,  1528,  1530,  1535,  1540,  1541,  1545,  1547,  1552,
+    1557,  1558,  1559,  1560,  1561,  1562,  1566,  1567,  1568,  1572,
+    1573
 };
 #endif
 
@@ -5076,7 +5076,7 @@ yyreduce:
 #line 230 "type.y"
     {
       (yyval.specifier) = null;
-      DeclClass((yyvsp[(1) - (2)].id).string);
+      DeclClass((yyvsp[(1) - (2)].id)._class, (yyvsp[(1) - (2)].id).string);
       fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
@@ -5100,17 +5100,7 @@ yyreduce:
     {
       (yyval.specifier) = null;
    #ifdef PRECOMPILER
-      // if($1._class && !$1._class.name)
-      if((yyvsp[(1) - (2)].id)._class)
-      {
-         char name[1024];
-         strcpy(name,  (yyvsp[(1) - (2)].id)._class.name ? (yyvsp[(1) - (2)].id)._class.name : "");
-         strcat(name, "::");
-         strcat(name, (yyvsp[(1) - (2)].id).string);
-         _DeclClass(name);
-      }
-      else
-         _DeclClass((yyvsp[(1) - (2)].id).string);
+      _DeclClass((yyvsp[(1) - (2)].id)._class, (yyvsp[(1) - (2)].id).string);
 
       FreeIdentifier((yyvsp[(1) - (2)].id));
 
@@ -5132,9 +5122,9 @@ yyreduce:
   case 4:
 
 /* Line 1464 of yacc.c  */
-#line 282 "type.y"
+#line 272 "type.y"
     {
-      DeclClass((yyvsp[(1) - (2)].id).string);
+      DeclClass((yyvsp[(1) - (2)].id)._class, (yyvsp[(1) - (2)].id).string);
       fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       parseTypeError = 0;
       resetScannerPos(&(yylsp[(1) - (2)]).start);
@@ -5154,17 +5144,17 @@ yyreduce:
   case 5:
 
 /* Line 1464 of yacc.c  */
-#line 331 "type.y"
+#line 311 "type.y"
     { (yyval.specifier) = (yyvsp[(1) - (1)].specifier); ;}
     break;
 
   case 6:
 
 /* Line 1464 of yacc.c  */
-#line 333 "type.y"
+#line 313 "type.y"
     {
    #ifdef PRECOMPILER
-      DeclClass((yyvsp[(1) - (2)].id).string);
+      DeclClass((yyvsp[(1) - (2)].id)._class, (yyvsp[(1) - (2)].id).string);
       fileInput.Seek((yylsp[(1) - (2)]).start.pos, start);
       resetScannerPos(&(yylsp[(1) - (2)]).start);
       yyclearin;
@@ -5190,21 +5180,21 @@ yyreduce:
   case 7:
 
 /* Line 1464 of yacc.c  */
-#line 359 "type.y"
+#line 339 "type.y"
     { (yyval.specifier) = MkSpecifierName(yytext); ;}
     break;
 
   case 9:
 
 /* Line 1464 of yacc.c  */
-#line 364 "type.y"
+#line 344 "type.y"
     { (yyval.specifier) = (yyvsp[(1) - (4)].specifier); SetClassTemplateArgs((yyval.specifier), (yyvsp[(3) - (4)].list)); (yyval.specifier).loc = (yyloc); ;}
     break;
 
   case 10:
 
 /* Line 1464 of yacc.c  */
-#line 366 "type.y"
+#line 346 "type.y"
     {
       (yyval.specifier) = (yyvsp[(1) - (4)].specifier);
       SetClassTemplateArgs((yyval.specifier), (yyvsp[(3) - (4)].list));
@@ -5220,210 +5210,210 @@ yyreduce:
   case 11:
 
 /* Line 1464 of yacc.c  */
-#line 383 "type.y"
+#line 363 "type.y"
     { (yyval.classFunction) = MkClassFunction((yyvsp[(1) - (2)].list), null, (yyvsp[(2) - (2)].declarator), null); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 12:
 
 /* Line 1464 of yacc.c  */
-#line 385 "type.y"
+#line 365 "type.y"
     { (yyval.classFunction) = MkClassFunction(null, null, (yyvsp[(1) - (1)].declarator), null); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 13:
 
 /* Line 1464 of yacc.c  */
-#line 390 "type.y"
+#line 370 "type.y"
     { (yyval.classFunction) = MkClassFunction(null, null, null, null); (yyval.classFunction).isConstructor = true; (yyval.classFunction).loc = (yyloc); FreeList /*FreeSpecifier*/((yyvsp[(1) - (3)].list), FreeSpecifier); ;}
     break;
 
   case 14:
 
 /* Line 1464 of yacc.c  */
-#line 395 "type.y"
+#line 375 "type.y"
     { (yyval.classFunction) = MkClassFunction(null, null, null, null); (yyval.classFunction).isDestructor = true; (yyval.classFunction).loc = (yyloc); FreeList /*FreeSpecifier*/((yyvsp[(2) - (4)].list), FreeSpecifier); ;}
     break;
 
   case 15:
 
 /* Line 1464 of yacc.c  */
-#line 400 "type.y"
+#line 380 "type.y"
     { (yyval.classFunction) = MkClassFunction((yyvsp[(2) - (3)].list), null, (yyvsp[(3) - (3)].declarator), null); (yyval.classFunction).isVirtual = true; (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 16:
 
 /* Line 1464 of yacc.c  */
-#line 402 "type.y"
+#line 382 "type.y"
     { (yyval.classFunction) = MkClassFunction(null, null, (yyvsp[(2) - (2)].declarator), null); (yyval.classFunction).isVirtual = true; (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 17:
 
 /* Line 1464 of yacc.c  */
-#line 407 "type.y"
+#line 387 "type.y"
     { (yyval.id) = MkIdentifier(yytext); (yyval.id).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 19:
 
 /* Line 1464 of yacc.c  */
-#line 413 "type.y"
+#line 393 "type.y"
     { (yyval.exp) = MkExpBrackets((yyvsp[(2) - (3)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 20:
 
 /* Line 1464 of yacc.c  */
-#line 418 "type.y"
+#line 398 "type.y"
     { (yyval.exp) = MkExpIdentifier((yyvsp[(1) - (1)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 21:
 
 /* Line 1464 of yacc.c  */
-#line 420 "type.y"
+#line 400 "type.y"
     { (yyval.exp) = MkExpInstance((yyvsp[(1) - (1)].instance)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 22:
 
 /* Line 1464 of yacc.c  */
-#line 422 "type.y"
+#line 402 "type.y"
     { (yyval.exp) = MkExpConstant(yytext); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 23:
 
 /* Line 1464 of yacc.c  */
-#line 423 "type.y"
+#line 403 "type.y"
     { (yyval.exp) = MkExpWideString(yytext); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 24:
 
 /* Line 1464 of yacc.c  */
-#line 425 "type.y"
+#line 405 "type.y"
     { (yyval.exp) = MkExpString((yyvsp[(1) - (1)].string)); delete (yyvsp[(1) - (1)].string); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 25:
 
 /* Line 1464 of yacc.c  */
-#line 426 "type.y"
+#line 406 "type.y"
     { (yyval.exp) = MkExpIntlString((yyvsp[(2) - (2)].string), null); delete (yyvsp[(2) - (2)].string); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 26:
 
 /* Line 1464 of yacc.c  */
-#line 427 "type.y"
+#line 407 "type.y"
     { (yyval.exp) = MkExpIntlString((yyvsp[(4) - (4)].string), (yyvsp[(2) - (4)].string)); delete (yyvsp[(2) - (4)].string); delete (yyvsp[(4) - (4)].string); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 27:
 
 /* Line 1464 of yacc.c  */
-#line 429 "type.y"
+#line 409 "type.y"
     { Expression exp = MkExpDummy(); exp.loc.start = (yylsp[(1) - (2)]).end; exp.loc.end = (yylsp[(2) - (2)]).start; (yyval.exp) = MkExpBrackets(MkListOne(exp)); (yyval.exp).loc = (yyloc); yyerror(); ;}
     break;
 
   case 28:
 
 /* Line 1464 of yacc.c  */
-#line 431 "type.y"
+#line 411 "type.y"
     { (yyval.exp) = MkExpNew(MkTypeName((yyvsp[(2) - (6)].list),(yyvsp[(3) - (6)].declarator)), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 29:
 
 /* Line 1464 of yacc.c  */
-#line 432 "type.y"
+#line 412 "type.y"
     { (yyval.exp) = MkExpNew(MkTypeName((yyvsp[(2) - (5)].list),null), (yyvsp[(4) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 30:
 
 /* Line 1464 of yacc.c  */
-#line 433 "type.y"
+#line 413 "type.y"
     { (yyval.exp) = MkExpNew0(MkTypeName((yyvsp[(2) - (6)].list),(yyvsp[(3) - (6)].declarator)), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 31:
 
 /* Line 1464 of yacc.c  */
-#line 434 "type.y"
+#line 414 "type.y"
     { (yyval.exp) = MkExpNew0(MkTypeName((yyvsp[(2) - (5)].list),null), (yyvsp[(4) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 32:
 
 /* Line 1464 of yacc.c  */
-#line 435 "type.y"
+#line 415 "type.y"
     { (yyval.exp) = MkExpRenew((yyvsp[(2) - (7)].exp), MkTypeName((yyvsp[(3) - (7)].list),(yyvsp[(4) - (7)].declarator)), (yyvsp[(6) - (7)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 33:
 
 /* Line 1464 of yacc.c  */
-#line 436 "type.y"
+#line 416 "type.y"
     { (yyval.exp) = MkExpRenew((yyvsp[(2) - (6)].exp), MkTypeName((yyvsp[(3) - (6)].list),null), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 34:
 
 /* Line 1464 of yacc.c  */
-#line 437 "type.y"
+#line 417 "type.y"
     { (yyval.exp) = MkExpRenew0((yyvsp[(2) - (7)].exp), MkTypeName((yyvsp[(3) - (7)].list),(yyvsp[(4) - (7)].declarator)), (yyvsp[(6) - (7)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 35:
 
 /* Line 1464 of yacc.c  */
-#line 438 "type.y"
+#line 418 "type.y"
     { (yyval.exp) = MkExpRenew0((yyvsp[(2) - (6)].exp), MkTypeName((yyvsp[(3) - (6)].list),null), (yyvsp[(5) - (6)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 36:
 
 /* Line 1464 of yacc.c  */
-#line 439 "type.y"
+#line 419 "type.y"
     { (yyval.exp) = MkExpDummy(); ;}
     break;
 
   case 38:
 
 /* Line 1464 of yacc.c  */
-#line 444 "type.y"
+#line 424 "type.y"
     { (yyval.exp) = MkExpIndex((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 39:
 
 /* Line 1464 of yacc.c  */
-#line 445 "type.y"
+#line 425 "type.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (3)].exp), MkList()); (yyval.exp).call.argLoc.start = (yylsp[(2) - (3)]).start; (yyval.exp).call.argLoc.end = (yylsp[(3) - (3)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 40:
 
 /* Line 1464 of yacc.c  */
-#line 446 "type.y"
+#line 426 "type.y"
     { (yyval.exp) = MkExpCall((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].list)); (yyval.exp).call.argLoc.start = (yylsp[(2) - (4)]).start; (yyval.exp).call.argLoc.end = (yylsp[(4) - (4)]).end; (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 41:
 
 /* Line 1464 of yacc.c  */
-#line 447 "type.y"
+#line 427 "type.y"
     { (yyval.exp) = MkExpMember((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 42:
 
 /* Line 1464 of yacc.c  */
-#line 449 "type.y"
+#line 429 "type.y"
     {
       char * constant = (yyvsp[(1) - (2)].exp).type == constantExp ? (yyvsp[(1) - (2)].exp).constant : null;
       int len = constant ? strlen(constant) : 0;
@@ -5441,217 +5431,217 @@ yyreduce:
   case 43:
 
 /* Line 1464 of yacc.c  */
-#line 461 "type.y"
+#line 441 "type.y"
     { (yyval.exp) = MkExpPointer((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].id)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 44:
 
 /* Line 1464 of yacc.c  */
-#line 462 "type.y"
+#line 442 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), INC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 45:
 
 /* Line 1464 of yacc.c  */
-#line 463 "type.y"
+#line 443 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), DEC_OP, null); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 46:
 
 /* Line 1464 of yacc.c  */
-#line 467 "type.y"
+#line 447 "type.y"
     { (yyval.exp) = MkExpInstance((yyvsp[(1) - (1)].instance)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 47:
 
 /* Line 1464 of yacc.c  */
-#line 496 "type.y"
+#line 476 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 48:
 
 /* Line 1464 of yacc.c  */
-#line 497 "type.y"
+#line 477 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 49:
 
 /* Line 1464 of yacc.c  */
-#line 498 "type.y"
+#line 478 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp));  ;}
     break;
 
   case 50:
 
 /* Line 1464 of yacc.c  */
-#line 499 "type.y"
+#line 479 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp));  ;}
     break;
 
   case 51:
 
 /* Line 1464 of yacc.c  */
-#line 503 "type.y"
+#line 483 "type.y"
     { (yyval.exp) = MkExpOp(null, INC_OP, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 52:
 
 /* Line 1464 of yacc.c  */
-#line 504 "type.y"
+#line 484 "type.y"
     { (yyval.exp) = MkExpOp(null, DEC_OP, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 53:
 
 /* Line 1464 of yacc.c  */
-#line 505 "type.y"
+#line 485 "type.y"
     { (yyval.exp) = MkExpOp(null, (yyvsp[(1) - (2)].i), (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 54:
 
 /* Line 1464 of yacc.c  */
-#line 507 "type.y"
+#line 487 "type.y"
     { (yyval.exp) = MkExpOp(null, SIZEOF, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 55:
 
 /* Line 1464 of yacc.c  */
-#line 508 "type.y"
+#line 488 "type.y"
     { (yyval.exp) = MkExpTypeSize((yyvsp[(3) - (4)].typeName)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 56:
 
 /* Line 1464 of yacc.c  */
-#line 510 "type.y"
+#line 490 "type.y"
     { (yyval.exp) = MkExpOp(null, ALIGNOF, (yyvsp[(2) - (2)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 57:
 
 /* Line 1464 of yacc.c  */
-#line 511 "type.y"
+#line 491 "type.y"
     { (yyval.exp) = MkExpTypeAlign((yyvsp[(3) - (4)].typeName)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 60:
 
 /* Line 1464 of yacc.c  */
-#line 525 "type.y"
+#line 505 "type.y"
     { (yyval.i) = '&'; ;}
     break;
 
   case 61:
 
 /* Line 1464 of yacc.c  */
-#line 526 "type.y"
+#line 506 "type.y"
     { (yyval.i) = '*'; ;}
     break;
 
   case 62:
 
 /* Line 1464 of yacc.c  */
-#line 527 "type.y"
+#line 507 "type.y"
     { (yyval.i) = '+'; ;}
     break;
 
   case 63:
 
 /* Line 1464 of yacc.c  */
-#line 528 "type.y"
+#line 508 "type.y"
     { (yyval.i) = '-'; ;}
     break;
 
   case 64:
 
 /* Line 1464 of yacc.c  */
-#line 529 "type.y"
+#line 509 "type.y"
     { (yyval.i) = '~'; ;}
     break;
 
   case 65:
 
 /* Line 1464 of yacc.c  */
-#line 530 "type.y"
+#line 510 "type.y"
     { (yyval.i) = '!'; ;}
     break;
 
   case 66:
 
 /* Line 1464 of yacc.c  */
-#line 531 "type.y"
+#line 511 "type.y"
     { (yyval.i) = DELETE; ;}
     break;
 
   case 68:
 
 /* Line 1464 of yacc.c  */
-#line 536 "type.y"
+#line 516 "type.y"
     { (yyval.exp) = MkExpCast((yyvsp[(2) - (4)].typeName), (yyvsp[(4) - (4)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 70:
 
 /* Line 1464 of yacc.c  */
-#line 541 "type.y"
+#line 521 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 71:
 
 /* Line 1464 of yacc.c  */
-#line 542 "type.y"
+#line 522 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 72:
 
 /* Line 1464 of yacc.c  */
-#line 543 "type.y"
+#line 523 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '%', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 74:
 
 /* Line 1464 of yacc.c  */
-#line 548 "type.y"
+#line 528 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 75:
 
 /* Line 1464 of yacc.c  */
-#line 549 "type.y"
+#line 529 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 77:
 
 /* Line 1464 of yacc.c  */
-#line 554 "type.y"
+#line 534 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LEFT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 78:
 
 /* Line 1464 of yacc.c  */
-#line 555 "type.y"
+#line 535 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), RIGHT_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 79:
 
 /* Line 1464 of yacc.c  */
-#line 560 "type.y"
+#line 540 "type.y"
     {
       (yyval.exp) = (yyvsp[(1) - (2)].exp);
       skipErrors = true;
@@ -5661,586 +5651,576 @@ yyreduce:
   case 81:
 
 /* Line 1464 of yacc.c  */
-#line 568 "type.y"
+#line 548 "type.y"
     { skipErrors = false; (yyval.exp) = MkExpOp((yyvsp[(1) - (2)].exp), '<', (yyvsp[(2) - (2)].exp)/*$3*/); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 82:
 
 /* Line 1464 of yacc.c  */
-#line 569 "type.y"
+#line 549 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '>', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 83:
 
 /* Line 1464 of yacc.c  */
-#line 570 "type.y"
+#line 550 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), LE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 84:
 
 /* Line 1464 of yacc.c  */
-#line 571 "type.y"
+#line 551 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), GE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 86:
 
 /* Line 1464 of yacc.c  */
-#line 576 "type.y"
+#line 556 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), EQ_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 87:
 
 /* Line 1464 of yacc.c  */
-#line 577 "type.y"
+#line 557 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), NE_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 89:
 
 /* Line 1464 of yacc.c  */
-#line 582 "type.y"
+#line 562 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 91:
 
 /* Line 1464 of yacc.c  */
-#line 587 "type.y"
+#line 567 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '^', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 93:
 
 /* Line 1464 of yacc.c  */
-#line 592 "type.y"
+#line 572 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), '|', (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 95:
 
 /* Line 1464 of yacc.c  */
-#line 597 "type.y"
+#line 577 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), AND_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 97:
 
 /* Line 1464 of yacc.c  */
-#line 602 "type.y"
+#line 582 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), OR_OP, (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 99:
 
 /* Line 1464 of yacc.c  */
-#line 607 "type.y"
+#line 587 "type.y"
     { (yyval.exp) = MkExpCondition((yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 101:
 
 /* Line 1464 of yacc.c  */
-#line 612 "type.y"
+#line 592 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 102:
 
 /* Line 1464 of yacc.c  */
-#line 613 "type.y"
+#line 593 "type.y"
     { (yyval.exp) = MkExpOp((yyvsp[(1) - (3)].exp), (yyvsp[(2) - (3)].i), (yyvsp[(3) - (3)].exp)); (yyval.exp).loc = (yyloc); ;}
     break;
 
   case 103:
 
 /* Line 1464 of yacc.c  */
-#line 617 "type.y"
+#line 597 "type.y"
     { (yyval.i) = '='; ;}
     break;
 
   case 104:
 
 /* Line 1464 of yacc.c  */
-#line 618 "type.y"
+#line 598 "type.y"
     { (yyval.i) = MUL_ASSIGN; ;}
     break;
 
   case 105:
 
 /* Line 1464 of yacc.c  */
-#line 619 "type.y"
+#line 599 "type.y"
     { (yyval.i) = DIV_ASSIGN; ;}
     break;
 
   case 106:
 
 /* Line 1464 of yacc.c  */
-#line 620 "type.y"
+#line 600 "type.y"
     { (yyval.i) = MOD_ASSIGN; ;}
     break;
 
   case 107:
 
 /* Line 1464 of yacc.c  */
-#line 621 "type.y"
+#line 601 "type.y"
     { (yyval.i) = ADD_ASSIGN; ;}
     break;
 
   case 108:
 
 /* Line 1464 of yacc.c  */
-#line 622 "type.y"
+#line 602 "type.y"
     { (yyval.i) = SUB_ASSIGN; ;}
     break;
 
   case 109:
 
 /* Line 1464 of yacc.c  */
-#line 623 "type.y"
+#line 603 "type.y"
     { (yyval.i) = LEFT_ASSIGN; ;}
     break;
 
   case 110:
 
 /* Line 1464 of yacc.c  */
-#line 624 "type.y"
+#line 604 "type.y"
     { (yyval.i) = RIGHT_ASSIGN; ;}
     break;
 
   case 111:
 
 /* Line 1464 of yacc.c  */
-#line 625 "type.y"
+#line 605 "type.y"
     { (yyval.i) = AND_ASSIGN; ;}
     break;
 
   case 112:
 
 /* Line 1464 of yacc.c  */
-#line 626 "type.y"
+#line 606 "type.y"
     { (yyval.i) = XOR_ASSIGN; ;}
     break;
 
   case 113:
 
 /* Line 1464 of yacc.c  */
-#line 627 "type.y"
+#line 607 "type.y"
     { (yyval.i) = OR_ASSIGN; ;}
     break;
 
   case 114:
 
 /* Line 1464 of yacc.c  */
-#line 631 "type.y"
+#line 611 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 115:
 
 /* Line 1464 of yacc.c  */
-#line 632 "type.y"
+#line 612 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 117:
 
 /* Line 1464 of yacc.c  */
-#line 640 "type.y"
+#line 620 "type.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (2)].list), null); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 118:
 
 /* Line 1464 of yacc.c  */
-#line 641 "type.y"
+#line 621 "type.y"
     { (yyval.declaration) = MkDeclaration((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].list)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 119:
 
 /* Line 1464 of yacc.c  */
-#line 642 "type.y"
+#line 622 "type.y"
     { (yyval.declaration) = MkDeclarationInst((yyvsp[(1) - (2)].instance)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 120:
 
 /* Line 1464 of yacc.c  */
-#line 643 "type.y"
+#line 623 "type.y"
     { (yyval.declaration) = MkDeclarationDefine((yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].exp)); (yyval.declaration).loc = (yyloc); ;}
     break;
 
   case 121:
 
 /* Line 1464 of yacc.c  */
-#line 647 "type.y"
+#line 627 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 122:
 
 /* Line 1464 of yacc.c  */
-#line 648 "type.y"
+#line 628 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 123:
 
 /* Line 1464 of yacc.c  */
-#line 649 "type.y"
+#line 629 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 124:
 
 /* Line 1464 of yacc.c  */
-#line 650 "type.y"
+#line 630 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 125:
 
 /* Line 1464 of yacc.c  */
-#line 651 "type.y"
+#line 631 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 126:
 
 /* Line 1464 of yacc.c  */
-#line 652 "type.y"
+#line 632 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 127:
 
 /* Line 1464 of yacc.c  */
-#line 653 "type.y"
+#line 633 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 128:
 
 /* Line 1464 of yacc.c  */
-#line 654 "type.y"
+#line 634 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 129:
 
 /* Line 1464 of yacc.c  */
-#line 658 "type.y"
+#line 638 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 130:
 
 /* Line 1464 of yacc.c  */
-#line 659 "type.y"
+#line 639 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 131:
 
 /* Line 1464 of yacc.c  */
-#line 660 "type.y"
+#line 640 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 132:
 
 /* Line 1464 of yacc.c  */
-#line 661 "type.y"
+#line 641 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 133:
 
 /* Line 1464 of yacc.c  */
-#line 662 "type.y"
+#line 642 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 134:
 
 /* Line 1464 of yacc.c  */
-#line 663 "type.y"
+#line 643 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 135:
 
 /* Line 1464 of yacc.c  */
-#line 664 "type.y"
+#line 644 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 136:
 
 /* Line 1464 of yacc.c  */
-#line 665 "type.y"
+#line 645 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 137:
 
 /* Line 1464 of yacc.c  */
-#line 666 "type.y"
+#line 646 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 138:
 
 /* Line 1464 of yacc.c  */
-#line 667 "type.y"
+#line 647 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 139:
 
 /* Line 1464 of yacc.c  */
-#line 671 "type.y"
+#line 651 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 140:
 
 /* Line 1464 of yacc.c  */
-#line 672 "type.y"
+#line 652 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 141:
 
 /* Line 1464 of yacc.c  */
-#line 673 "type.y"
+#line 653 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 142:
 
 /* Line 1464 of yacc.c  */
-#line 674 "type.y"
+#line 654 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 143:
 
 /* Line 1464 of yacc.c  */
-#line 675 "type.y"
+#line 655 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 144:
 
 /* Line 1464 of yacc.c  */
-#line 676 "type.y"
+#line 656 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 145:
 
 /* Line 1464 of yacc.c  */
-#line 677 "type.y"
+#line 657 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 146:
 
 /* Line 1464 of yacc.c  */
-#line 678 "type.y"
+#line 658 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 147:
 
 /* Line 1464 of yacc.c  */
-#line 679 "type.y"
+#line 659 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 148:
 
 /* Line 1464 of yacc.c  */
-#line 680 "type.y"
+#line 660 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 149:
 
 /* Line 1464 of yacc.c  */
-#line 684 "type.y"
+#line 664 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 150:
 
 /* Line 1464 of yacc.c  */
-#line 685 "type.y"
+#line 665 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 151:
 
 /* Line 1464 of yacc.c  */
-#line 686 "type.y"
+#line 666 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 152:
 
 /* Line 1464 of yacc.c  */
-#line 687 "type.y"
+#line 667 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 153:
 
 /* Line 1464 of yacc.c  */
-#line 688 "type.y"
+#line 668 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 154:
 
 /* Line 1464 of yacc.c  */
-#line 689 "type.y"
+#line 669 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 155:
 
 /* Line 1464 of yacc.c  */
-#line 690 "type.y"
+#line 670 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 156:
 
 /* Line 1464 of yacc.c  */
-#line 691 "type.y"
+#line 671 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 157:
 
 /* Line 1464 of yacc.c  */
-#line 692 "type.y"
+#line 672 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 158:
 
 /* Line 1464 of yacc.c  */
-#line 693 "type.y"
+#line 673 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 159:
 
 /* Line 1464 of yacc.c  */
-#line 694 "type.y"
+#line 674 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 160:
 
 /* Line 1464 of yacc.c  */
-#line 695 "type.y"
+#line 675 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 161:
 
 /* Line 1464 of yacc.c  */
-#line 699 "type.y"
+#line 679 "type.y"
     { (yyval.list) = (yyvsp[(1) - (1)].list); ;}
     break;
 
   case 162:
 
 /* Line 1464 of yacc.c  */
-#line 700 "type.y"
+#line 680 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 163:
 
 /* Line 1464 of yacc.c  */
-#line 704 "type.y"
+#line 684 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 164:
 
 /* Line 1464 of yacc.c  */
-#line 705 "type.y"
+#line 685 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 165:
 
 /* Line 1464 of yacc.c  */
-#line 706 "type.y"
+#line 686 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 166:
 
 /* Line 1464 of yacc.c  */
-#line 707 "type.y"
+#line 687 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 167:
 
 /* Line 1464 of yacc.c  */
-#line 708 "type.y"
+#line 688 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 168:
 
 /* Line 1464 of yacc.c  */
-#line 709 "type.y"
+#line 689 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 169:
 
 /* Line 1464 of yacc.c  */
-#line 710 "type.y"
+#line 690 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 170:
 
 /* Line 1464 of yacc.c  */
-#line 711 "type.y"
+#line 691 "type.y"
     { ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id)); ;}
     break;
 
   case 171:
 
 /* Line 1464 of yacc.c  */
-#line 713 "type.y"
+#line 693 "type.y"
     {
-         // if($1._class && !$1._class.name)
-         if((yyvsp[(1) - (4)].id)._class)
-         {
-            char name[1024];
-            strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
-            strcat(name, "::");
-            strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass((yyvsp[(1) - (4)].id).string);
+         _DeclClass((yyvsp[(1) - (4)].id)._class, (yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -6251,17 +6231,9 @@ yyreduce:
   case 172:
 
 /* Line 1464 of yacc.c  */
-#line 731 "type.y"
+#line 701 "type.y"
     {
-         if((yyvsp[(2) - (5)].id)._class && !(yyvsp[(2) - (5)].id)._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass((yyvsp[(2) - (5)].id).string);
+         _DeclClass((yyvsp[(2) - (5)].id)._class, (yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -6270,103 +6242,93 @@ yyreduce:
   case 173:
 
 /* Line 1464 of yacc.c  */
-#line 747 "type.y"
+#line 709 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 174:
 
 /* Line 1464 of yacc.c  */
-#line 748 "type.y"
+#line 710 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 175:
 
 /* Line 1464 of yacc.c  */
-#line 749 "type.y"
+#line 711 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 176:
 
 /* Line 1464 of yacc.c  */
-#line 750 "type.y"
+#line 712 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 177:
 
 /* Line 1464 of yacc.c  */
-#line 751 "type.y"
+#line 713 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 178:
 
 /* Line 1464 of yacc.c  */
-#line 752 "type.y"
+#line 714 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 179:
 
 /* Line 1464 of yacc.c  */
-#line 753 "type.y"
+#line 715 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 180:
 
 /* Line 1464 of yacc.c  */
-#line 754 "type.y"
+#line 716 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 181:
 
 /* Line 1464 of yacc.c  */
-#line 755 "type.y"
+#line 717 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 182:
 
 /* Line 1464 of yacc.c  */
-#line 756 "type.y"
+#line 718 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 183:
 
 /* Line 1464 of yacc.c  */
-#line 757 "type.y"
+#line 719 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkSpecifierName((yyvsp[(1) - (1)].id).string)); FreeIdentifier((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 184:
 
 /* Line 1464 of yacc.c  */
-#line 758 "type.y"
+#line 720 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), MkSpecifierName((yyvsp[(2) - (2)].id).string)); FreeIdentifier((yyvsp[(2) - (2)].id));}
     break;
 
   case 185:
 
 /* Line 1464 of yacc.c  */
-#line 760 "type.y"
+#line 722 "type.y"
     {
-         // if($1._class && !$1._class.name)
-         if((yyvsp[(1) - (4)].id)._class)
-         {
-            char name[1024];
-            strcpy(name,  (yyvsp[(1) - (4)].id)._class.name ? (yyvsp[(1) - (4)].id)._class.name : "");
-            strcat(name, "::");
-            strcat(name, (yyvsp[(1) - (4)].id).string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass((yyvsp[(1) - (4)].id).string);
+         _DeclClass((yyvsp[(1) - (4)].id)._class, (yyvsp[(1) - (4)].id).string);
 
          (yyval.list) = MkList();
          ListAdd((yyval.list), MkSpecifierNameArgs((yyvsp[(1) - (4)].id).string, (yyvsp[(3) - (4)].list)));
@@ -6377,17 +6339,9 @@ yyreduce:
   case 186:
 
 /* Line 1464 of yacc.c  */
-#line 778 "type.y"
+#line 730 "type.y"
     {
-         if((yyvsp[(2) - (5)].id)._class && !(yyvsp[(2) - (5)].id)._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, (yyvsp[(2) - (5)].id).string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass((yyvsp[(2) - (5)].id).string);
+         _DeclClass((yyvsp[(2) - (5)].id)._class, (yyvsp[(2) - (5)].id).string);
          ListAdd((yyvsp[(1) - (5)].list), MkSpecifierNameArgs((yyvsp[(2) - (5)].id).string, (yyvsp[(4) - (5)].list)));
          FreeIdentifier((yyvsp[(2) - (5)].id));
       ;}
@@ -6396,658 +6350,658 @@ yyreduce:
   case 187:
 
 /* Line 1464 of yacc.c  */
-#line 794 "type.y"
+#line 738 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].initDeclarator)); ;}
     break;
 
   case 188:
 
 /* Line 1464 of yacc.c  */
-#line 795 "type.y"
+#line 739 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initDeclarator)); ;}
     break;
 
   case 189:
 
 /* Line 1464 of yacc.c  */
-#line 799 "type.y"
+#line 743 "type.y"
     { (yyval.initDeclarator) = MkInitDeclarator((yyvsp[(1) - (1)].declarator), null); (yyval.initDeclarator).loc = (yyloc); ;}
     break;
 
   case 190:
 
 /* Line 1464 of yacc.c  */
-#line 800 "type.y"
+#line 744 "type.y"
     { (yyval.initDeclarator) = MkInitDeclarator((yyvsp[(1) - (3)].declarator), (yyvsp[(3) - (3)].initializer)); (yyval.initDeclarator).loc = (yyloc); (yyval.initDeclarator).initializer.loc.start = (yylsp[(2) - (3)]).end; ;}
     break;
 
   case 191:
 
 /* Line 1464 of yacc.c  */
-#line 804 "type.y"
+#line 748 "type.y"
     { (yyval.specifier) = MkSpecifier(TYPEDEF); ;}
     break;
 
   case 192:
 
 /* Line 1464 of yacc.c  */
-#line 805 "type.y"
+#line 749 "type.y"
     { (yyval.specifier) = MkSpecifier(EXTERN); ;}
     break;
 
   case 193:
 
 /* Line 1464 of yacc.c  */
-#line 806 "type.y"
+#line 750 "type.y"
     { (yyval.specifier) = MkSpecifier(STATIC); ;}
     break;
 
   case 194:
 
 /* Line 1464 of yacc.c  */
-#line 807 "type.y"
+#line 751 "type.y"
     { (yyval.specifier) = MkSpecifier(AUTO); ;}
     break;
 
   case 195:
 
 /* Line 1464 of yacc.c  */
-#line 808 "type.y"
+#line 752 "type.y"
     { (yyval.specifier) = MkSpecifier(REGISTER); ;}
     break;
 
   case 196:
 
 /* Line 1464 of yacc.c  */
-#line 809 "type.y"
+#line 753 "type.y"
     { (yyval.specifier) = MkSpecifier(THREAD); ;}
     break;
 
   case 197:
 
 /* Line 1464 of yacc.c  */
-#line 813 "type.y"
+#line 757 "type.y"
     { (yyval.extDecl) = MkExtDeclString(CopyString(yytext)); ;}
     break;
 
   case 198:
 
 /* Line 1464 of yacc.c  */
-#line 814 "type.y"
+#line 758 "type.y"
     { (yyval.extDecl) = MkExtDeclString(CopyString(yytext)); ;}
     break;
 
   case 199:
 
 /* Line 1464 of yacc.c  */
-#line 815 "type.y"
+#line 759 "type.y"
     { (yyval.extDecl) = MkExtDeclAttrib((yyvsp[(1) - (1)].attrib)); ;}
     break;
 
   case 200:
 
 /* Line 1464 of yacc.c  */
-#line 819 "type.y"
+#line 763 "type.y"
     { (yyval.i) = ATTRIB; ;}
     break;
 
   case 201:
 
 /* Line 1464 of yacc.c  */
-#line 820 "type.y"
+#line 764 "type.y"
     { (yyval.i) = ATTRIB_DEP; ;}
     break;
 
   case 202:
 
 /* Line 1464 of yacc.c  */
-#line 821 "type.y"
+#line 765 "type.y"
     { (yyval.i) = __ATTRIB; ;}
     break;
 
   case 203:
 
 /* Line 1464 of yacc.c  */
-#line 826 "type.y"
+#line 770 "type.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 204:
 
 /* Line 1464 of yacc.c  */
-#line 827 "type.y"
+#line 771 "type.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 205:
 
 /* Line 1464 of yacc.c  */
-#line 828 "type.y"
+#line 772 "type.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 206:
 
 /* Line 1464 of yacc.c  */
-#line 829 "type.y"
+#line 773 "type.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 207:
 
 /* Line 1464 of yacc.c  */
-#line 830 "type.y"
+#line 774 "type.y"
     { (yyval.string)  = CopyString(yytext); ;}
     break;
 
   case 208:
 
 /* Line 1464 of yacc.c  */
-#line 834 "type.y"
+#line 778 "type.y"
     { (yyval.attribute) = MkAttribute((yyvsp[(1) - (1)].string), null); (yyval.attribute).loc = (yyloc); ;}
     break;
 
   case 209:
 
 /* Line 1464 of yacc.c  */
-#line 835 "type.y"
+#line 779 "type.y"
     { (yyval.attribute) = MkAttribute((yyvsp[(1) - (4)].string), MkExpBrackets((yyvsp[(3) - (4)].list))); (yyval.attribute).loc = (yyloc); ;}
     break;
 
   case 210:
 
 /* Line 1464 of yacc.c  */
-#line 839 "type.y"
+#line 783 "type.y"
     { (yyval.list) = MkListOne((yyvsp[(1) - (1)].attribute)); ;}
     break;
 
   case 211:
 
 /* Line 1464 of yacc.c  */
-#line 840 "type.y"
+#line 784 "type.y"
     { ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].attribute)); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 212:
 
 /* Line 1464 of yacc.c  */
-#line 841 "type.y"
+#line 785 "type.y"
     { ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].attribute)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 213:
 
 /* Line 1464 of yacc.c  */
-#line 845 "type.y"
+#line 789 "type.y"
     { (yyval.attrib) = MkAttrib((yyvsp[(1) - (6)].i), (yyvsp[(4) - (6)].list)); (yyval.attrib).loc = (yyloc); ;}
     break;
 
   case 214:
 
 /* Line 1464 of yacc.c  */
-#line 846 "type.y"
+#line 790 "type.y"
     { (yyval.attrib) = MkAttrib((yyvsp[(1) - (5)].i), null); (yyval.attrib).loc = (yyloc); ;}
     break;
 
   case 215:
 
 /* Line 1464 of yacc.c  */
-#line 850 "type.y"
+#line 794 "type.y"
     { (yyval.specifier) = MkSpecifierExtended((yyvsp[(1) - (1)].extDecl)); ;}
     break;
 
   case 216:
 
 /* Line 1464 of yacc.c  */
-#line 854 "type.y"
+#line 798 "type.y"
     { (yyval.specifier) = MkSpecifier(CONST); ;}
     break;
 
   case 217:
 
 /* Line 1464 of yacc.c  */
-#line 855 "type.y"
+#line 799 "type.y"
     { (yyval.specifier) = MkSpecifier(VOLATILE); ;}
     break;
 
   case 218:
 
 /* Line 1464 of yacc.c  */
-#line 856 "type.y"
+#line 800 "type.y"
     { (yyval.specifier) = (yyvsp[(1) - (1)].specifier); ;}
     break;
 
   case 219:
 
 /* Line 1464 of yacc.c  */
-#line 861 "type.y"
+#line 805 "type.y"
     { (yyval.specifier) = MkSpecifier(VOID); ;}
     break;
 
   case 220:
 
 /* Line 1464 of yacc.c  */
-#line 862 "type.y"
+#line 806 "type.y"
     { (yyval.specifier) = MkSpecifier(CHAR); ;}
     break;
 
   case 221:
 
 /* Line 1464 of yacc.c  */
-#line 863 "type.y"
+#line 807 "type.y"
     { (yyval.specifier) = MkSpecifier(SHORT); ;}
     break;
 
   case 222:
 
 /* Line 1464 of yacc.c  */
-#line 864 "type.y"
+#line 808 "type.y"
     { (yyval.specifier) = MkSpecifier(INT); ;}
     break;
 
   case 223:
 
 /* Line 1464 of yacc.c  */
-#line 865 "type.y"
+#line 809 "type.y"
     { (yyval.specifier) = MkSpecifier(UINT); ;}
     break;
 
   case 224:
 
 /* Line 1464 of yacc.c  */
-#line 866 "type.y"
+#line 810 "type.y"
     { (yyval.specifier) = MkSpecifier(INT64); ;}
     break;
 
   case 225:
 
 /* Line 1464 of yacc.c  */
-#line 867 "type.y"
+#line 811 "type.y"
     { (yyval.specifier) = MkSpecifier(VALIST); ;}
     break;
 
   case 226:
 
 /* Line 1464 of yacc.c  */
-#line 868 "type.y"
+#line 812 "type.y"
     { (yyval.specifier) = MkSpecifier(LONG); ;}
     break;
 
   case 227:
 
 /* Line 1464 of yacc.c  */
-#line 869 "type.y"
+#line 813 "type.y"
     { (yyval.specifier) = MkSpecifier(FLOAT); ;}
     break;
 
   case 228:
 
 /* Line 1464 of yacc.c  */
-#line 870 "type.y"
+#line 814 "type.y"
     { (yyval.specifier) = MkSpecifier(DOUBLE); ;}
     break;
 
   case 229:
 
 /* Line 1464 of yacc.c  */
-#line 871 "type.y"
+#line 815 "type.y"
     { (yyval.specifier) = MkSpecifier(SIGNED); ;}
     break;
 
   case 230:
 
 /* Line 1464 of yacc.c  */
-#line 872 "type.y"
+#line 816 "type.y"
     { (yyval.specifier) = MkSpecifier(UNSIGNED); ;}
     break;
 
   case 231:
 
 /* Line 1464 of yacc.c  */
-#line 873 "type.y"
+#line 817 "type.y"
     { (yyval.specifier) = MkSpecifier(EXTENSION); ;}
     break;
 
   case 232:
 
 /* Line 1464 of yacc.c  */
-#line 874 "type.y"
+#line 818 "type.y"
     { (yyval.specifier) = MkSpecifier(_BOOL); ;}
     break;
 
   case 233:
 
 /* Line 1464 of yacc.c  */
-#line 875 "type.y"
+#line 819 "type.y"
     { (yyval.specifier) = MkSpecifier(BOOL); ;}
     break;
 
   case 237:
 
 /* Line 1464 of yacc.c  */
-#line 879 "type.y"
+#line 823 "type.y"
     { (yyval.specifier) = MkSpecifierTypeOf((yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 238:
 
 /* Line 1464 of yacc.c  */
-#line 880 "type.y"
+#line 824 "type.y"
     { (yyval.specifier) = MkSpecifierSubClass((yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 239:
 
 /* Line 1464 of yacc.c  */
-#line 881 "type.y"
-    { _DeclClass((yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
+#line 825 "type.y"
+    { _DeclClass((yyvsp[(3) - (4)].id)._class, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 240:
 
 /* Line 1464 of yacc.c  */
-#line 882 "type.y"
+#line 826 "type.y"
     { (yyval.specifier) = MkSpecifier(THISCLASS); ;}
     break;
 
   case 241:
 
 /* Line 1464 of yacc.c  */
-#line 883 "type.y"
+#line 827 "type.y"
     { (yyval.specifier) = MkSpecifier(TYPED_OBJECT); ;}
     break;
 
   case 242:
 
 /* Line 1464 of yacc.c  */
-#line 884 "type.y"
+#line 828 "type.y"
     { (yyval.specifier) = MkSpecifier(ANY_OBJECT); ;}
     break;
 
   case 243:
 
 /* Line 1464 of yacc.c  */
-#line 888 "type.y"
+#line 832 "type.y"
     { (yyval.specifier) = MkSpecifier(VOID); ;}
     break;
 
   case 244:
 
 /* Line 1464 of yacc.c  */
-#line 889 "type.y"
+#line 833 "type.y"
     { (yyval.specifier) = MkSpecifier(CHAR); ;}
     break;
 
   case 245:
 
 /* Line 1464 of yacc.c  */
-#line 890 "type.y"
+#line 834 "type.y"
     { (yyval.specifier) = MkSpecifier(SHORT); ;}
     break;
 
   case 246:
 
 /* Line 1464 of yacc.c  */
-#line 891 "type.y"
+#line 835 "type.y"
     { (yyval.specifier) = MkSpecifier(INT); ;}
     break;
 
   case 247:
 
 /* Line 1464 of yacc.c  */
-#line 892 "type.y"
+#line 836 "type.y"
     { (yyval.specifier) = MkSpecifier(UINT); ;}
     break;
 
   case 248:
 
 /* Line 1464 of yacc.c  */
-#line 893 "type.y"
+#line 837 "type.y"
     { (yyval.specifier) = MkSpecifier(INT64); ;}
     break;
 
   case 249:
 
 /* Line 1464 of yacc.c  */
-#line 894 "type.y"
+#line 838 "type.y"
     { (yyval.specifier) = MkSpecifier(VALIST); ;}
     break;
 
   case 250:
 
 /* Line 1464 of yacc.c  */
-#line 895 "type.y"
+#line 839 "type.y"
     { (yyval.specifier) = MkSpecifier(LONG); ;}
     break;
 
   case 251:
 
 /* Line 1464 of yacc.c  */
-#line 896 "type.y"
+#line 840 "type.y"
     { (yyval.specifier) = MkSpecifier(FLOAT); ;}
     break;
 
   case 252:
 
 /* Line 1464 of yacc.c  */
-#line 897 "type.y"
+#line 841 "type.y"
     { (yyval.specifier) = MkSpecifier(DOUBLE); ;}
     break;
 
   case 253:
 
 /* Line 1464 of yacc.c  */
-#line 898 "type.y"
+#line 842 "type.y"
     { (yyval.specifier) = MkSpecifier(SIGNED); ;}
     break;
 
   case 254:
 
 /* Line 1464 of yacc.c  */
-#line 899 "type.y"
+#line 843 "type.y"
     { (yyval.specifier) = MkSpecifier(UNSIGNED); ;}
     break;
 
   case 255:
 
 /* Line 1464 of yacc.c  */
-#line 900 "type.y"
+#line 844 "type.y"
     { (yyval.specifier) = MkSpecifier(EXTENSION); ;}
     break;
 
   case 256:
 
 /* Line 1464 of yacc.c  */
-#line 901 "type.y"
+#line 845 "type.y"
     { (yyval.specifier) = MkSpecifier(_BOOL); ;}
     break;
 
   case 257:
 
 /* Line 1464 of yacc.c  */
-#line 902 "type.y"
+#line 846 "type.y"
     { (yyval.specifier) = MkSpecifier(BOOL); ;}
     break;
 
   case 261:
 
 /* Line 1464 of yacc.c  */
-#line 906 "type.y"
+#line 850 "type.y"
     { (yyval.specifier) = MkSpecifierTypeOf((yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 262:
 
 /* Line 1464 of yacc.c  */
-#line 907 "type.y"
+#line 851 "type.y"
     { (yyval.specifier) = MkSpecifierSubClass((yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 263:
 
 /* Line 1464 of yacc.c  */
-#line 908 "type.y"
-    { _DeclClass((yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
+#line 852 "type.y"
+    { _DeclClass((yyvsp[(3) - (4)].id)._class, (yyvsp[(3) - (4)].id).string); (yyval.specifier) = MkSpecifierSubClass(MkSpecifierName((yyvsp[(3) - (4)].id).string)); FreeIdentifier((yyvsp[(3) - (4)].id)); ;}
     break;
 
   case 264:
 
 /* Line 1464 of yacc.c  */
-#line 909 "type.y"
+#line 853 "type.y"
     { (yyval.specifier) = MkSpecifier(THISCLASS); ;}
     break;
 
   case 265:
 
 /* Line 1464 of yacc.c  */
-#line 914 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].id).string); ;}
+#line 858 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].id)._class, (yyvsp[(2) - (5)].id).string); ;}
     break;
 
   case 266:
 
 /* Line 1464 of yacc.c  */
-#line 915 "type.y"
+#line 859 "type.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), null, (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 267:
 
 /* Line 1464 of yacc.c  */
-#line 916 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), (yyvsp[(2) - (4)].id), null); if(declMode) DeclClass((yyvsp[(2) - (4)].id).string); ;}
+#line 860 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), (yyvsp[(2) - (4)].id), null); if(declMode) DeclClass((yyvsp[(2) - (4)].id)._class, (yyvsp[(2) - (4)].id).string); ;}
     break;
 
   case 268:
 
 /* Line 1464 of yacc.c  */
-#line 917 "type.y"
+#line 861 "type.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), null, null); ;}
     break;
 
   case 269:
 
 /* Line 1464 of yacc.c  */
-#line 919 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
+#line 863 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].specifier).nsSpec, (yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
     break;
 
   case 270:
 
 /* Line 1464 of yacc.c  */
-#line 921 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), (yyvsp[(3) - (6)].id), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (6)].id).string); ;}
+#line 865 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), (yyvsp[(3) - (6)].id), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (6)].id)._class, (yyvsp[(3) - (6)].id).string); ;}
     break;
 
   case 271:
 
 /* Line 1464 of yacc.c  */
-#line 922 "type.y"
+#line 866 "type.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), null, (yyvsp[(4) - (5)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (5)].extDecl); ;}
     break;
 
   case 272:
 
 /* Line 1464 of yacc.c  */
-#line 923 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(3) - (5)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (5)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (5)].id).string); ;}
+#line 867 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (5)].specifierType), (yyvsp[(3) - (5)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (5)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (5)].id)._class, (yyvsp[(3) - (5)].id).string); ;}
     break;
 
   case 273:
 
 /* Line 1464 of yacc.c  */
-#line 924 "type.y"
+#line 868 "type.y"
     { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (4)].specifierType), null, null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (4)].extDecl); ;}
     break;
 
   case 274:
 
 /* Line 1464 of yacc.c  */
-#line 926 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), MkIdentifier((yyvsp[(3) - (6)].specifier).name), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (6)].specifier).name); FreeSpecifier((yyvsp[(3) - (6)].specifier)); ;}
+#line 870 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (6)].specifierType), MkIdentifier((yyvsp[(3) - (6)].specifier).name), (yyvsp[(5) - (6)].list)); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (6)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (6)].specifier).nsSpec, (yyvsp[(3) - (6)].specifier).name); FreeSpecifier((yyvsp[(3) - (6)].specifier)); ;}
     break;
 
   case 275:
 
 /* Line 1464 of yacc.c  */
-#line 930 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), (yyvsp[(2) - (2)].id), null); if(declMode) DeclClass((yyvsp[(2) - (2)].id).string); ;}
+#line 874 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), (yyvsp[(2) - (2)].id), null); if(declMode) DeclClass((yyvsp[(2) - (2)].id)._class, (yyvsp[(2) - (2)].id).string); ;}
     break;
 
   case 276:
 
 /* Line 1464 of yacc.c  */
-#line 932 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass((yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
+#line 876 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (2)].specifierType), MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass((yyvsp[(2) - (2)].specifier).nsSpec, (yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 277:
 
 /* Line 1464 of yacc.c  */
-#line 935 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), (yyvsp[(3) - (3)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl);if(declMode) DeclClass((yyvsp[(3) - (3)].id).string); ;}
+#line 879 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), (yyvsp[(3) - (3)].id), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl);if(declMode) DeclClass((yyvsp[(3) - (3)].id)._class, (yyvsp[(3) - (3)].id).string); ;}
     break;
 
   case 278:
 
 /* Line 1464 of yacc.c  */
-#line 937 "type.y"
-    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), MkIdentifier((yyvsp[(3) - (3)].specifier).name), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (3)].specifier).name); FreeSpecifier((yyvsp[(3) - (3)].specifier)); ;}
+#line 881 "type.y"
+    { (yyval.specifier) = MkStructOrUnion((yyvsp[(1) - (3)].specifierType), MkIdentifier((yyvsp[(3) - (3)].specifier).name), null); (yyval.specifier).extDeclStruct = (yyvsp[(2) - (3)].extDecl); if(declMode) DeclClass((yyvsp[(3) - (3)].specifier).nsSpec, (yyvsp[(3) - (3)].specifier).name); FreeSpecifier((yyvsp[(3) - (3)].specifier)); ;}
     break;
 
   case 279:
 
 /* Line 1464 of yacc.c  */
-#line 941 "type.y"
+#line 885 "type.y"
     { (yyval.templateDatatype) = MkTemplateDatatype((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 280:
 
 /* Line 1464 of yacc.c  */
-#line 942 "type.y"
+#line 886 "type.y"
     { (yyval.templateDatatype) = MkTemplateDatatype((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 281:
 
 /* Line 1464 of yacc.c  */
-#line 947 "type.y"
+#line 891 "type.y"
     { (yyval.templateArgument) = MkTemplateTypeArgument(MkTemplateDatatype((yyvsp[(1) - (1)].list), null)); ;}
     break;
 
   case 282:
 
 /* Line 1464 of yacc.c  */
-#line 948 "type.y"
+#line 892 "type.y"
     { (yyval.templateArgument) = MkTemplateTypeArgument(MkTemplateDatatype((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator))); ;}
     break;
 
   case 283:
 
 /* Line 1464 of yacc.c  */
-#line 959 "type.y"
+#line 903 "type.y"
     { (yyval.templateArgument) = MkTemplateExpressionArgument((yyvsp[(1) - (1)].exp)); ;}
     break;
 
   case 286:
 
 /* Line 1464 of yacc.c  */
-#line 966 "type.y"
+#line 910 "type.y"
     { (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument); (yyval.templateArgument).name = (yyvsp[(1) - (3)].id); (yyval.templateArgument).loc = (yyloc); ;}
     break;
 
   case 287:
 
 /* Line 1464 of yacc.c  */
-#line 968 "type.y"
+#line 912 "type.y"
     { (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument); (yyval.templateArgument).name = (yyvsp[(1) - (3)].id); (yyval.templateArgument).loc = (yyloc); ;}
     break;
 
   case 288:
 
 /* Line 1464 of yacc.c  */
-#line 970 "type.y"
+#line 914 "type.y"
     {
       (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument);
       if((yyvsp[(1) - (3)].templateDatatype).specifiers && (yyvsp[(1) - (3)].templateDatatype).specifiers->first)
@@ -7064,7 +7018,7 @@ yyreduce:
   case 289:
 
 /* Line 1464 of yacc.c  */
-#line 994 "type.y"
+#line 938 "type.y"
     {
       (yyval.templateArgument) = (yyvsp[(3) - (3)].templateArgument);
       if((yyvsp[(1) - (3)].templateDatatype).specifiers && (yyvsp[(1) - (3)].templateDatatype).specifiers->first)
@@ -7081,882 +7035,882 @@ yyreduce:
   case 290:
 
 /* Line 1464 of yacc.c  */
-#line 1008 "type.y"
+#line 952 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].templateArgument)); ;}
     break;
 
   case 291:
 
 /* Line 1464 of yacc.c  */
-#line 1009 "type.y"
+#line 953 "type.y"
     { ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].templateArgument)); ;}
     break;
 
   case 292:
 
 /* Line 1464 of yacc.c  */
-#line 1013 "type.y"
+#line 957 "type.y"
     { (yyval.specifierType) = structSpecifier; ;}
     break;
 
   case 293:
 
 /* Line 1464 of yacc.c  */
-#line 1014 "type.y"
+#line 958 "type.y"
     { (yyval.specifierType) = unionSpecifier; ;}
     break;
 
   case 294:
 
 /* Line 1464 of yacc.c  */
-#line 1018 "type.y"
+#line 962 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].classDef)); ;}
     break;
 
   case 295:
 
 /* Line 1464 of yacc.c  */
-#line 1019 "type.y"
+#line 963 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].classDef)); ;}
     break;
 
   case 296:
 
 /* Line 1464 of yacc.c  */
-#line 1023 "type.y"
+#line 967 "type.y"
     { (yyval.memberInit) = MkMemberInitExp((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].initializer)); (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); ;}
     break;
 
   case 297:
 
 /* Line 1464 of yacc.c  */
-#line 1027 "type.y"
+#line 971 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].memberInit)); ((MemberInit)(yyval.list)->last).loc = (yyloc); ;}
     break;
 
   case 298:
 
 /* Line 1464 of yacc.c  */
-#line 1028 "type.y"
+#line 972 "type.y"
     { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(3) - (3)]).start; ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].memberInit)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 299:
 
 /* Line 1464 of yacc.c  */
-#line 1033 "type.y"
+#line 977 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (9)].list), null, (yyvsp[(3) - (9)].id), (yyvsp[(6) - (9)].stmt), (yyvsp[(8) - (9)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 300:
 
 /* Line 1464 of yacc.c  */
-#line 1035 "type.y"
+#line 979 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (9)].list), null, (yyvsp[(3) - (9)].id), (yyvsp[(8) - (9)].stmt), (yyvsp[(6) - (9)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 301:
 
 /* Line 1464 of yacc.c  */
-#line 1037 "type.y"
+#line 981 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (7)].list), null, (yyvsp[(3) - (7)].id), (yyvsp[(6) - (7)].stmt), null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 302:
 
 /* Line 1464 of yacc.c  */
-#line 1039 "type.y"
+#line 983 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (7)].list), null, (yyvsp[(3) - (7)].id), null, (yyvsp[(6) - (7)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 303:
 
 /* Line 1464 of yacc.c  */
-#line 1041 "type.y"
+#line 985 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (5)].list), null, (yyvsp[(3) - (5)].id), null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 304:
 
 /* Line 1464 of yacc.c  */
-#line 1044 "type.y"
+#line 988 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (10)].list), (yyvsp[(3) - (10)].declarator), (yyvsp[(4) - (10)].id), (yyvsp[(7) - (10)].stmt), (yyvsp[(9) - (10)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 305:
 
 /* Line 1464 of yacc.c  */
-#line 1046 "type.y"
+#line 990 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (10)].list), (yyvsp[(3) - (10)].declarator), (yyvsp[(4) - (10)].id), (yyvsp[(9) - (10)].stmt), (yyvsp[(7) - (10)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 306:
 
 /* Line 1464 of yacc.c  */
-#line 1048 "type.y"
+#line 992 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (8)].list), (yyvsp[(3) - (8)].declarator), (yyvsp[(4) - (8)].id), (yyvsp[(7) - (8)].stmt), null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 307:
 
 /* Line 1464 of yacc.c  */
-#line 1050 "type.y"
+#line 994 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (8)].list), (yyvsp[(3) - (8)].declarator), (yyvsp[(4) - (8)].id), null, (yyvsp[(7) - (8)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 308:
 
 /* Line 1464 of yacc.c  */
-#line 1052 "type.y"
+#line 996 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (6)].list), (yyvsp[(3) - (6)].declarator), (yyvsp[(4) - (6)].id), null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 309:
 
 /* Line 1464 of yacc.c  */
-#line 1055 "type.y"
+#line 999 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (8)].list), null, null, (yyvsp[(5) - (8)].stmt), (yyvsp[(7) - (8)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 310:
 
 /* Line 1464 of yacc.c  */
-#line 1057 "type.y"
+#line 1001 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (8)].list), null, null, (yyvsp[(7) - (8)].stmt), (yyvsp[(5) - (8)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 311:
 
 /* Line 1464 of yacc.c  */
-#line 1059 "type.y"
+#line 1003 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (6)].list), null, null, (yyvsp[(5) - (6)].stmt), null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 312:
 
 /* Line 1464 of yacc.c  */
-#line 1061 "type.y"
+#line 1005 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (6)].list), null, null, null, (yyvsp[(5) - (6)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 313:
 
 /* Line 1464 of yacc.c  */
-#line 1063 "type.y"
+#line 1007 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (4)].list), null, null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 314:
 
 /* Line 1464 of yacc.c  */
-#line 1066 "type.y"
+#line 1010 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (9)].list), (yyvsp[(3) - (9)].declarator), null, (yyvsp[(6) - (9)].stmt), (yyvsp[(8) - (9)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 315:
 
 /* Line 1464 of yacc.c  */
-#line 1068 "type.y"
+#line 1012 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (9)].list), (yyvsp[(3) - (9)].declarator), null, (yyvsp[(8) - (9)].stmt), (yyvsp[(6) - (9)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 316:
 
 /* Line 1464 of yacc.c  */
-#line 1070 "type.y"
+#line 1014 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (7)].list), (yyvsp[(3) - (7)].declarator), null, (yyvsp[(6) - (7)].stmt), null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 317:
 
 /* Line 1464 of yacc.c  */
-#line 1072 "type.y"
+#line 1016 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (7)].list), (yyvsp[(3) - (7)].declarator), null, null, (yyvsp[(6) - (7)].stmt)); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 318:
 
 /* Line 1464 of yacc.c  */
-#line 1074 "type.y"
+#line 1018 "type.y"
     { (yyval.prop) = MkProperty((yyvsp[(2) - (5)].list), (yyvsp[(3) - (5)].declarator), null, null, null); (yyval.prop).loc = (yyloc); ;}
     break;
 
   case 319:
 
 /* Line 1464 of yacc.c  */
-#line 1078 "type.y"
+#line 1022 "type.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkStructDeclaration((yyvsp[(1) - (3)].list), (yyvsp[(2) - (3)].list), null)); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 320:
 
 /* Line 1464 of yacc.c  */
-#line 1079 "type.y"
+#line 1023 "type.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkStructDeclaration((yyvsp[(1) - (2)].list), null, null)); (yyval.classDef).decl.loc = (yyloc); (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 321:
 
 /* Line 1464 of yacc.c  */
-#line 1080 "type.y"
+#line 1024 "type.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(1) - (2)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyloc); ;}
     break;
 
   case 322:
 
 /* Line 1464 of yacc.c  */
-#line 1081 "type.y"
+#line 1025 "type.y"
     { (yyval.classDef) = MkClassDefDeclaration(MkDeclarationClassInst((yyvsp[(1) - (2)].instance))); (yyval.classDef).loc = (yyloc); (yyval.classDef).decl.loc = (yyloc); ;}
     break;
 
   case 323:
 
 /* Line 1464 of yacc.c  */
-#line 1082 "type.y"
+#line 1026 "type.y"
     { (yyval.classDef) = MkClassDefFunction((yyvsp[(1) - (1)].classFunction)); (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 324:
 
 /* Line 1464 of yacc.c  */
-#line 1083 "type.y"
+#line 1027 "type.y"
     { (yyval.classDef) = MkClassDefDefaultProperty((yyvsp[(1) - (2)].list)); if((yyvsp[(1) - (2)].list)->last) ((MemberInit)(yyvsp[(1) - (2)].list)->last).loc.end = (yylsp[(2) - (2)]).start; (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 325:
 
 /* Line 1464 of yacc.c  */
-#line 1084 "type.y"
+#line 1028 "type.y"
     { (yyval.classDef) = MkClassDefProperty((yyvsp[(1) - (1)].prop)); (yyval.classDef).loc = (yyloc); ;}
     break;
 
   case 326:
 
 /* Line 1464 of yacc.c  */
-#line 1085 "type.y"
+#line 1029 "type.y"
     { (yyval.classDef) = null; ;}
     break;
 
   case 327:
 
 /* Line 1464 of yacc.c  */
-#line 1090 "type.y"
+#line 1034 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].declarator)); ;}
     break;
 
   case 328:
 
 /* Line 1464 of yacc.c  */
-#line 1092 "type.y"
+#line 1036 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].declarator)); ;}
     break;
 
   case 329:
 
 /* Line 1464 of yacc.c  */
-#line 1097 "type.y"
+#line 1041 "type.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (1)].declarator), null); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 330:
 
 /* Line 1464 of yacc.c  */
-#line 1099 "type.y"
+#line 1043 "type.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (2)].declarator), null); (yyval.declarator).structDecl.attrib = (yyvsp[(2) - (2)].attrib); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 331:
 
 /* Line 1464 of yacc.c  */
-#line 1101 "type.y"
+#line 1045 "type.y"
     { (yyval.declarator) = MkStructDeclarator(null, (yyvsp[(2) - (2)].exp));  (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 332:
 
 /* Line 1464 of yacc.c  */
-#line 1103 "type.y"
+#line 1047 "type.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (3)].declarator), (yyvsp[(3) - (3)].exp));  (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 333:
 
 /* Line 1464 of yacc.c  */
-#line 1105 "type.y"
+#line 1049 "type.y"
     { (yyval.declarator) = MkStructDeclarator((yyvsp[(1) - (5)].declarator), (yyvsp[(3) - (5)].exp)); (yyval.declarator).structDecl.posExp = (yyvsp[(5) - (5)].exp); (yyval.declarator).loc = (yyloc); ;}
     break;
 
   case 334:
 
 /* Line 1464 of yacc.c  */
-#line 1109 "type.y"
-    { (yyval.specifier) = MkEnum((yyvsp[(2) - (2)].id), null); if(declMode) DeclClass((yyvsp[(2) - (2)].id).string); ;}
+#line 1053 "type.y"
+    { (yyval.specifier) = MkEnum((yyvsp[(2) - (2)].id), null); if(declMode) DeclClass((yyvsp[(2) - (2)].id)._class, (yyvsp[(2) - (2)].id).string); ;}
     break;
 
   case 335:
 
 /* Line 1464 of yacc.c  */
-#line 1110 "type.y"
-    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass((yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
+#line 1054 "type.y"
+    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (2)].specifier).name), null); if(declMode) DeclClass((yyvsp[(2) - (2)].specifier).nsSpec, (yyvsp[(2) - (2)].specifier).name); FreeSpecifier((yyvsp[(2) - (2)].specifier)); ;}
     break;
 
   case 336:
 
 /* Line 1464 of yacc.c  */
-#line 1115 "type.y"
+#line 1059 "type.y"
     { (yyval.specifier) = MkEnum(null, (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 337:
 
 /* Line 1464 of yacc.c  */
-#line 1116 "type.y"
-    { (yyval.specifier) = MkEnum((yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].id).string); ;}
+#line 1060 "type.y"
+    { (yyval.specifier) = MkEnum((yyvsp[(2) - (5)].id), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].id)._class, (yyvsp[(2) - (5)].id).string); ;}
     break;
 
   case 338:
 
 /* Line 1464 of yacc.c  */
-#line 1117 "type.y"
-    { (yyval.specifier) = MkEnum((yyvsp[(2) - (7)].id), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass((yyvsp[(2) - (7)].id).string); ;}
+#line 1061 "type.y"
+    { (yyval.specifier) = MkEnum((yyvsp[(2) - (7)].id), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass((yyvsp[(2) - (7)].id)._class, (yyvsp[(2) - (7)].id).string); ;}
     break;
 
   case 339:
 
 /* Line 1464 of yacc.c  */
-#line 1118 "type.y"
-    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (7)].specifier).name), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass((yyvsp[(2) - (7)].specifier).name); FreeSpecifier((yyvsp[(2) - (7)].specifier)); ;}
+#line 1062 "type.y"
+    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (7)].specifier).name), (yyvsp[(4) - (7)].list)); (yyval.specifier).definitions = (yyvsp[(6) - (7)].list); if(declMode) DeclClass((yyvsp[(2) - (7)].specifier).nsSpec, (yyvsp[(2) - (7)].specifier).name); FreeSpecifier((yyvsp[(2) - (7)].specifier)); ;}
     break;
 
   case 340:
 
 /* Line 1464 of yacc.c  */
-#line 1119 "type.y"
-    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
+#line 1063 "type.y"
+    { (yyval.specifier) = MkEnum(MkIdentifier((yyvsp[(2) - (5)].specifier).name), (yyvsp[(4) - (5)].list)); if(declMode) DeclClass((yyvsp[(2) - (5)].specifier).nsSpec, (yyvsp[(2) - (5)].specifier).name); FreeSpecifier((yyvsp[(2) - (5)].specifier)); ;}
     break;
 
   case 341:
 
 /* Line 1464 of yacc.c  */
-#line 1124 "type.y"
+#line 1068 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].enumerator)); ;}
     break;
 
   case 342:
 
 /* Line 1464 of yacc.c  */
-#line 1126 "type.y"
+#line 1070 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].enumerator)); ;}
     break;
 
   case 343:
 
 /* Line 1464 of yacc.c  */
-#line 1131 "type.y"
+#line 1075 "type.y"
     { (yyval.enumerator) = MkEnumerator((yyvsp[(1) - (1)].id), null); ;}
     break;
 
   case 344:
 
 /* Line 1464 of yacc.c  */
-#line 1133 "type.y"
+#line 1077 "type.y"
     { (yyval.enumerator) = MkEnumerator((yyvsp[(1) - (3)].id), (yyvsp[(3) - (3)].exp)); ;}
     break;
 
   case 345:
 
 /* Line 1464 of yacc.c  */
-#line 1139 "type.y"
+#line 1083 "type.y"
     { (yyval.declarator) = MkDeclaratorBrackets((yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 346:
 
 /* Line 1464 of yacc.c  */
-#line 1141 "type.y"
+#line 1085 "type.y"
     { (yyval.declarator) = MkDeclaratorArray(null, null); ;}
     break;
 
   case 347:
 
 /* Line 1464 of yacc.c  */
-#line 1143 "type.y"
+#line 1087 "type.y"
     { (yyval.declarator) = MkDeclaratorArray(null, (yyvsp[(2) - (3)].exp)); ;}
     break;
 
   case 348:
 
 /* Line 1464 of yacc.c  */
-#line 1145 "type.y"
+#line 1089 "type.y"
     { (yyval.declarator) = MkDeclaratorEnumArray(null, (yyvsp[(2) - (3)].specifier)); ;}
     break;
 
   case 349:
 
 /* Line 1464 of yacc.c  */
-#line 1147 "type.y"
+#line 1091 "type.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 350:
 
 /* Line 1464 of yacc.c  */
-#line 1149 "type.y"
+#line 1093 "type.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 351:
 
 /* Line 1464 of yacc.c  */
-#line 1151 "type.y"
+#line 1095 "type.y"
     { (yyval.declarator) = MkDeclaratorEnumArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 352:
 
 /* Line 1464 of yacc.c  */
-#line 1153 "type.y"
+#line 1097 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, null); ;}
     break;
 
   case 353:
 
 /* Line 1464 of yacc.c  */
-#line 1155 "type.y"
+#line 1099 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 354:
 
 /* Line 1464 of yacc.c  */
-#line 1157 "type.y"
+#line 1101 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 355:
 
 /* Line 1464 of yacc.c  */
-#line 1159 "type.y"
+#line 1103 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 356:
 
 /* Line 1464 of yacc.c  */
-#line 1164 "type.y"
+#line 1108 "type.y"
     { (yyval.declarator) = MkDeclaratorBrackets((yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 357:
 
 /* Line 1464 of yacc.c  */
-#line 1166 "type.y"
+#line 1110 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, null); ;}
     break;
 
   case 358:
 
 /* Line 1464 of yacc.c  */
-#line 1168 "type.y"
+#line 1112 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction(null, (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 359:
 
 /* Line 1464 of yacc.c  */
-#line 1170 "type.y"
+#line 1114 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 360:
 
 /* Line 1464 of yacc.c  */
-#line 1172 "type.y"
+#line 1116 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].list)); ;}
     break;
 
   case 361:
 
 /* Line 1464 of yacc.c  */
-#line 1176 "type.y"
+#line 1120 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (1)].pointer), null); ;}
     break;
 
   case 363:
 
 /* Line 1464 of yacc.c  */
-#line 1178 "type.y"
+#line 1122 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 364:
 
 /* Line 1464 of yacc.c  */
-#line 1179 "type.y"
+#line 1123 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (2)].pointer), null)); ;}
     break;
 
   case 365:
 
 /* Line 1464 of yacc.c  */
-#line 1180 "type.y"
+#line 1124 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 366:
 
 /* Line 1464 of yacc.c  */
-#line 1181 "type.y"
+#line 1125 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 367:
 
 /* Line 1464 of yacc.c  */
-#line 1185 "type.y"
+#line 1129 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (1)].pointer), null); ;}
     break;
 
   case 369:
 
 /* Line 1464 of yacc.c  */
-#line 1187 "type.y"
+#line 1131 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 370:
 
 /* Line 1464 of yacc.c  */
-#line 1188 "type.y"
+#line 1132 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (2)].pointer), null)); ;}
     break;
 
   case 371:
 
 /* Line 1464 of yacc.c  */
-#line 1189 "type.y"
+#line 1133 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 372:
 
 /* Line 1464 of yacc.c  */
-#line 1190 "type.y"
+#line 1134 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 374:
 
 /* Line 1464 of yacc.c  */
-#line 1238 "type.y"
+#line 1182 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 375:
 
 /* Line 1464 of yacc.c  */
-#line 1240 "type.y"
+#line 1184 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 376:
 
 /* Line 1464 of yacc.c  */
-#line 1242 "type.y"
+#line 1186 "type.y"
     { (yyval.declarator) = MkDeclaratorExtendedEnd((yyvsp[(2) - (2)].extDecl), (yyvsp[(1) - (2)].declarator)); ;}
     break;
 
   case 377:
 
 /* Line 1464 of yacc.c  */
-#line 1247 "type.y"
+#line 1191 "type.y"
     { (yyval.declarator) = MkDeclaratorIdentifier((yyvsp[(1) - (1)].id)); ;}
     break;
 
   case 378:
 
 /* Line 1464 of yacc.c  */
-#line 1249 "type.y"
+#line 1193 "type.y"
     { (yyval.declarator) = MkDeclaratorBrackets((yyvsp[(2) - (3)].declarator)); ;}
     break;
 
   case 379:
 
 /* Line 1464 of yacc.c  */
-#line 1251 "type.y"
+#line 1195 "type.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].exp)); ;}
     break;
 
   case 380:
 
 /* Line 1464 of yacc.c  */
-#line 1253 "type.y"
+#line 1197 "type.y"
     { (yyval.declarator) = MkDeclaratorArray((yyvsp[(1) - (3)].declarator), null); ;}
     break;
 
   case 381:
 
 /* Line 1464 of yacc.c  */
-#line 1255 "type.y"
+#line 1199 "type.y"
     { (yyval.declarator) = MkDeclaratorEnumArray((yyvsp[(1) - (4)].declarator), (yyvsp[(3) - (4)].specifier)); ;}
     break;
 
   case 383:
 
 /* Line 1464 of yacc.c  */
-#line 1261 "type.y"
+#line 1205 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 384:
 
 /* Line 1464 of yacc.c  */
-#line 1264 "type.y"
+#line 1208 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 385:
 
 /* Line 1464 of yacc.c  */
-#line 1266 "type.y"
+#line 1210 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 386:
 
 /* Line 1464 of yacc.c  */
-#line 1268 "type.y"
+#line 1212 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (3)].pointer), MkDeclaratorExtended((yyvsp[(2) - (3)].extDecl), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 388:
 
 /* Line 1464 of yacc.c  */
-#line 1278 "type.y"
+#line 1222 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 389:
 
 /* Line 1464 of yacc.c  */
-#line 1280 "type.y"
+#line 1224 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (3)].declarator), (yyvsp[(2) - (3)].list)); ;}
     break;
 
   case 390:
 
 /* Line 1464 of yacc.c  */
-#line 1282 "type.y"
+#line 1226 "type.y"
     { (yyval.declarator) = MkDeclaratorFunction((yyvsp[(1) - (2)].declarator), null); ;}
     break;
 
   case 393:
 
 /* Line 1464 of yacc.c  */
-#line 1289 "type.y"
+#line 1233 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 394:
 
 /* Line 1464 of yacc.c  */
-#line 1291 "type.y"
+#line 1235 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 396:
 
 /* Line 1464 of yacc.c  */
-#line 1296 "type.y"
+#line 1240 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (2)].pointer), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 397:
 
 /* Line 1464 of yacc.c  */
-#line 1297 "type.y"
+#line 1241 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (2)].extDecl), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 398:
 
 /* Line 1464 of yacc.c  */
-#line 1298 "type.y"
+#line 1242 "type.y"
     { (yyval.declarator) = MkDeclaratorExtended((yyvsp[(1) - (3)].extDecl), MkDeclaratorPointer((yyvsp[(2) - (3)].pointer), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 399:
 
 /* Line 1464 of yacc.c  */
-#line 1299 "type.y"
+#line 1243 "type.y"
     { (yyval.declarator) = MkDeclaratorPointer((yyvsp[(1) - (3)].pointer), MkDeclaratorExtended((yyvsp[(2) - (3)].extDecl), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 400:
 
 /* Line 1464 of yacc.c  */
-#line 1303 "type.y"
+#line 1247 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].specifier)); ;}
     break;
 
   case 401:
 
 /* Line 1464 of yacc.c  */
-#line 1304 "type.y"
+#line 1248 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].specifier));  ;}
     break;
 
   case 402:
 
 /* Line 1464 of yacc.c  */
-#line 1308 "type.y"
+#line 1252 "type.y"
     { (yyval.pointer) = MkPointer(null, null); ;}
     break;
 
   case 403:
 
 /* Line 1464 of yacc.c  */
-#line 1309 "type.y"
+#line 1253 "type.y"
     { (yyval.pointer) = MkPointer((yyvsp[(2) - (2)].list), null); ;}
     break;
 
   case 404:
 
 /* Line 1464 of yacc.c  */
-#line 1310 "type.y"
+#line 1254 "type.y"
     { (yyval.pointer) = MkPointer(null, (yyvsp[(2) - (2)].pointer)); ;}
     break;
 
   case 405:
 
 /* Line 1464 of yacc.c  */
-#line 1311 "type.y"
+#line 1255 "type.y"
     { (yyval.pointer) = MkPointer((yyvsp[(2) - (3)].list), (yyvsp[(3) - (3)].pointer)); ;}
     break;
 
   case 407:
 
 /* Line 1464 of yacc.c  */
-#line 1316 "type.y"
+#line 1260 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, null)); ;}
     break;
 
   case 408:
 
 /* Line 1464 of yacc.c  */
-#line 1320 "type.y"
+#line 1264 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].typeName)); ;}
     break;
 
   case 409:
 
 /* Line 1464 of yacc.c  */
-#line 1321 "type.y"
+#line 1265 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].typeName)); ;}
     break;
 
   case 410:
 
 /* Line 1464 of yacc.c  */
-#line 1325 "type.y"
+#line 1269 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 411:
 
 /* Line 1464 of yacc.c  */
-#line 1326 "type.y"
+#line 1270 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 412:
 
 /* Line 1464 of yacc.c  */
-#line 1327 "type.y"
+#line 1271 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), MkDeclaratorPointer(MkPointer(null,null), null)); ;}
     break;
 
   case 413:
 
 /* Line 1464 of yacc.c  */
-#line 1328 "type.y"
+#line 1272 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (3)].list), MkDeclaratorPointer(MkPointer(null,null), (yyvsp[(3) - (3)].declarator))); ;}
     break;
 
   case 414:
 
 /* Line 1464 of yacc.c  */
-#line 1329 "type.y"
+#line 1273 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 415:
 
 /* Line 1464 of yacc.c  */
-#line 1341 "type.y"
+#line 1285 "type.y"
     { (yyval.typeName) = MkTypeName(MkListOne(MkSpecifier(CLASS)), null); ;}
     break;
 
   case 416:
 
 /* Line 1464 of yacc.c  */
-#line 1365 "type.y"
+#line 1309 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkTypeName(null, MkDeclaratorIdentifier((yyvsp[(1) - (1)].id)))); ;}
     break;
 
   case 417:
 
 /* Line 1464 of yacc.c  */
-#line 1366 "type.y"
+#line 1310 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), MkTypeName(null, MkDeclaratorIdentifier((yyvsp[(3) - (3)].id)))); ;}
     break;
 
   case 418:
 
 /* Line 1464 of yacc.c  */
-#line 1370 "type.y"
+#line 1314 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 419:
 
 /* Line 1464 of yacc.c  */
-#line 1371 "type.y"
+#line 1315 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 420:
 
 /* Line 1464 of yacc.c  */
-#line 1375 "type.y"
+#line 1319 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 421:
 
 /* Line 1464 of yacc.c  */
-#line 1376 "type.y"
+#line 1320 "type.y"
     { (yyval.typeName) = MkTypeName((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declarator)); ;}
     break;
 
   case 422:
 
 /* Line 1464 of yacc.c  */
-#line 1381 "type.y"
+#line 1325 "type.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 423:
 
 /* Line 1464 of yacc.c  */
-#line 1383 "type.y"
+#line 1327 "type.y"
     { (yyval.initializer) = MkInitializerList((yyvsp[(2) - (3)].list)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 424:
 
 /* Line 1464 of yacc.c  */
-#line 1385 "type.y"
+#line 1329 "type.y"
     {
          (yyval.initializer) = MkInitializerList((yyvsp[(2) - (4)].list));
          (yyval.initializer).loc = (yyloc);
@@ -7974,119 +7928,119 @@ yyreduce:
   case 425:
 
 /* Line 1464 of yacc.c  */
-#line 1401 "type.y"
+#line 1345 "type.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 426:
 
 /* Line 1464 of yacc.c  */
-#line 1403 "type.y"
+#line 1347 "type.y"
     { (yyval.initializer) = MkInitializerAssignment((yyvsp[(1) - (1)].exp)); (yyval.initializer).loc = (yyloc); ;}
     break;
 
   case 427:
 
 /* Line 1464 of yacc.c  */
-#line 1425 "type.y"
+#line 1369 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].initializer)); ;}
     break;
 
   case 428:
 
 /* Line 1464 of yacc.c  */
-#line 1427 "type.y"
+#line 1371 "type.y"
     { (yyval.list) = (yyvsp[(1) - (3)].list); ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].initializer)); ;}
     break;
 
   case 435:
 
 /* Line 1464 of yacc.c  */
-#line 1441 "type.y"
+#line 1385 "type.y"
     { (yyval.stmt) = MkLabeledStmt((yyvsp[(1) - (3)].id), (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 436:
 
 /* Line 1464 of yacc.c  */
-#line 1443 "type.y"
+#line 1387 "type.y"
     { (yyval.stmt) = MkCaseStmt((yyvsp[(2) - (4)].exp), (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); (yyvsp[(2) - (4)].exp).loc.start = (yylsp[(1) - (4)]).end; ;}
     break;
 
   case 437:
 
 /* Line 1464 of yacc.c  */
-#line 1445 "type.y"
+#line 1389 "type.y"
     { (yyval.stmt) = MkCaseStmt(null, (yyvsp[(3) - (3)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 438:
 
 /* Line 1464 of yacc.c  */
-#line 1449 "type.y"
+#line 1393 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].declaration)); ;}
     break;
 
   case 439:
 
 /* Line 1464 of yacc.c  */
-#line 1450 "type.y"
+#line 1394 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].declaration)); ;}
     break;
 
   case 440:
 
 /* Line 1464 of yacc.c  */
-#line 1454 "type.y"
+#line 1398 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].stmt)); ;}
     break;
 
   case 441:
 
 /* Line 1464 of yacc.c  */
-#line 1455 "type.y"
+#line 1399 "type.y"
     { (yyval.list) = (yyvsp[(1) - (2)].list); ListAdd((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 442:
 
 /* Line 1464 of yacc.c  */
-#line 1458 "type.y"
+#line 1402 "type.y"
     { Statement stmt = MkBadDeclStmt((yyvsp[(2) - (2)].declaration)); stmt.loc = (yylsp[(2) - (2)]); /*yyerror(); */ ListAdd((yyvsp[(1) - (2)].list), stmt); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 443:
 
 /* Line 1464 of yacc.c  */
-#line 1462 "type.y"
+#line 1406 "type.y"
     { (yyval.stmt) = MkCompoundStmt(null, (yyvsp[(1) - (1)].list)); ;}
     break;
 
   case 444:
 
 /* Line 1464 of yacc.c  */
-#line 1463 "type.y"
+#line 1407 "type.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (1)].list), null); ;}
     break;
 
   case 445:
 
 /* Line 1464 of yacc.c  */
-#line 1464 "type.y"
+#line 1408 "type.y"
     { (yyval.stmt) = MkCompoundStmt((yyvsp[(1) - (2)].list), (yyvsp[(2) - (2)].list)); ;}
     break;
 
   case 446:
 
 /* Line 1464 of yacc.c  */
-#line 1468 "type.y"
+#line 1412 "type.y"
     { (yyval.context) = PushContext(); ;}
     break;
 
   case 447:
 
 /* Line 1464 of yacc.c  */
-#line 1473 "type.y"
+#line 1417 "type.y"
     {
       (yyval.stmt) = MkCompoundStmt(null, null);
       (yyval.stmt).compound.context = PushContext();
@@ -8098,371 +8052,371 @@ yyreduce:
   case 448:
 
 /* Line 1464 of yacc.c  */
-#line 1481 "type.y"
+#line 1425 "type.y"
     { (yyval.stmt) = (yyvsp[(2) - (3)].stmt); (yyval.stmt).compound.context = (yyvsp[(1) - (3)].context); PopContext((yyvsp[(1) - (3)].context)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 449:
 
 /* Line 1464 of yacc.c  */
-#line 1485 "type.y"
+#line 1429 "type.y"
     { (yyval.stmt) = MkExpressionStmt(null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 450:
 
 /* Line 1464 of yacc.c  */
-#line 1486 "type.y"
+#line 1430 "type.y"
     { (yyval.stmt) = MkExpressionStmt((yyvsp[(1) - (2)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 451:
 
 /* Line 1464 of yacc.c  */
-#line 1490 "type.y"
+#line 1434 "type.y"
     { (yyval.stmt) = MkIfStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt), null); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 452:
 
 /* Line 1464 of yacc.c  */
-#line 1491 "type.y"
+#line 1435 "type.y"
     { (yyval.stmt) = MkIfStmt((yyvsp[(3) - (7)].list), (yyvsp[(5) - (7)].stmt), (yyvsp[(7) - (7)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 453:
 
 /* Line 1464 of yacc.c  */
-#line 1492 "type.y"
+#line 1436 "type.y"
     { (yyval.stmt) = MkSwitchStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 454:
 
 /* Line 1464 of yacc.c  */
-#line 1496 "type.y"
+#line 1440 "type.y"
     { (yyval.stmt) = MkWhileStmt((yyvsp[(3) - (5)].list), (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 455:
 
 /* Line 1464 of yacc.c  */
-#line 1497 "type.y"
+#line 1441 "type.y"
     { (yyval.stmt) = MkDoWhileStmt((yyvsp[(2) - (7)].stmt), (yyvsp[(5) - (7)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 456:
 
 /* Line 1464 of yacc.c  */
-#line 1498 "type.y"
+#line 1442 "type.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (6)].stmt), (yyvsp[(4) - (6)].stmt), null, (yyvsp[(6) - (6)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 457:
 
 /* Line 1464 of yacc.c  */
-#line 1499 "type.y"
+#line 1443 "type.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (7)].stmt), (yyvsp[(4) - (7)].stmt), (yyvsp[(5) - (7)].list), (yyvsp[(7) - (7)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 458:
 
 /* Line 1464 of yacc.c  */
-#line 1501 "type.y"
+#line 1445 "type.y"
     { (yyval.stmt) = MkWhileStmt(null, (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 459:
 
 /* Line 1464 of yacc.c  */
-#line 1502 "type.y"
+#line 1446 "type.y"
     { (yyval.stmt) = MkForStmt((yyvsp[(3) - (5)].stmt), null, null, (yyvsp[(5) - (5)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 460:
 
 /* Line 1464 of yacc.c  */
-#line 1503 "type.y"
+#line 1447 "type.y"
     { (yyval.stmt) = MkForStmt(null, null, null, (yyvsp[(4) - (4)].stmt)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 461:
 
 /* Line 1464 of yacc.c  */
-#line 1507 "type.y"
+#line 1451 "type.y"
     { (yyval.stmt) = MkGotoStmt((yyvsp[(2) - (3)].id)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 462:
 
 /* Line 1464 of yacc.c  */
-#line 1508 "type.y"
+#line 1452 "type.y"
     { (yyval.stmt) = MkContinueStmt(); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 463:
 
 /* Line 1464 of yacc.c  */
-#line 1509 "type.y"
+#line 1453 "type.y"
     { (yyval.stmt) = MkBreakStmt(); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 464:
 
 /* Line 1464 of yacc.c  */
-#line 1510 "type.y"
+#line 1454 "type.y"
     { Expression exp = MkExpDummy(); (yyval.stmt) = MkReturnStmt(MkListOne(exp)); (yyval.stmt).loc = (yyloc); exp.loc = (yylsp[(2) - (2)]); ;}
     break;
 
   case 465:
 
 /* Line 1464 of yacc.c  */
-#line 1511 "type.y"
+#line 1455 "type.y"
     { (yyval.stmt) = MkReturnStmt((yyvsp[(2) - (3)].list)); (yyval.stmt).loc = (yyloc); ;}
     break;
 
   case 466:
 
 /* Line 1464 of yacc.c  */
-#line 1515 "type.y"
+#line 1459 "type.y"
     { (yyval.string) = CopyString(yytext); ;}
     break;
 
   case 467:
 
 /* Line 1464 of yacc.c  */
-#line 1520 "type.y"
+#line 1464 "type.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (5)].list), MkExpIdentifier((yyvsp[(2) - (5)].id)), (yyvsp[(4) - (5)].list)); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (5)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (5)]).end; (yyval.instance).insideLoc.end = (yylsp[(5) - (5)]).start;;}
     break;
 
   case 468:
 
 /* Line 1464 of yacc.c  */
-#line 1522 "type.y"
+#line 1466 "type.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), MkList());  (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).start;;}
     break;
 
   case 469:
 
 /* Line 1464 of yacc.c  */
-#line 1527 "type.y"
+#line 1471 "type.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (5)].list), MkExpIdentifier((yyvsp[(2) - (5)].id)), (yyvsp[(4) - (5)].list)); (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (5)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (5)]).end; (yyval.instance).insideLoc.end = (yylsp[(5) - (5)]).start;;}
     break;
 
   case 470:
 
 /* Line 1464 of yacc.c  */
-#line 1529 "type.y"
+#line 1473 "type.y"
     { (yyval.instance) = MkInstantiationNamed((yyvsp[(1) - (4)].list), MkExpIdentifier((yyvsp[(2) - (4)].id)), MkList());  (yyval.instance).loc = (yyloc); (yyval.instance).nameLoc = (yylsp[(2) - (4)]); (yyval.instance).insideLoc.start = (yylsp[(3) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).start;;}
     break;
 
   case 471:
 
 /* Line 1464 of yacc.c  */
-#line 1554 "type.y"
+#line 1498 "type.y"
     { (yyval.instance) = MkInstantiation((yyvsp[(1) - (4)].specifier), null, (yyvsp[(3) - (4)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).start; ;}
     break;
 
   case 472:
 
 /* Line 1464 of yacc.c  */
-#line 1556 "type.y"
+#line 1500 "type.y"
     { (yyval.instance) = MkInstantiation((yyvsp[(1) - (3)].specifier), null, MkList());  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).start;;}
     break;
 
   case 473:
 
 /* Line 1464 of yacc.c  */
-#line 1558 "type.y"
+#line 1502 "type.y"
     { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (4)]); yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (4)].id).string), null, (yyvsp[(3) - (4)].list));(yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (4)]).end; (yyval.instance).insideLoc.end = (yylsp[(4) - (4)]).start; FreeIdentifier((yyvsp[(1) - (4)].id)); ;}
     break;
 
   case 474:
 
 /* Line 1464 of yacc.c  */
-#line 1560 "type.y"
+#line 1504 "type.y"
     { Location tmpLoc = yylloc; yylloc = (yylsp[(1) - (3)]); yylloc = tmpLoc;  (yyval.instance) = MkInstantiation(MkSpecifierName((yyvsp[(1) - (3)].id).string), null, MkList());  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(2) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).start; FreeIdentifier((yyvsp[(1) - (3)].id)); ;}
     break;
 
   case 475:
 
 /* Line 1464 of yacc.c  */
-#line 1565 "type.y"
+#line 1509 "type.y"
     { (yyval.instance) = MkInstantiation(null, null, (yyvsp[(2) - (3)].list));  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(1) - (3)]).end; (yyval.instance).insideLoc.end = (yylsp[(3) - (3)]).start; ;}
     break;
 
   case 476:
 
 /* Line 1464 of yacc.c  */
-#line 1567 "type.y"
+#line 1511 "type.y"
     { (yyval.instance) = MkInstantiation(null, null, MkList());  (yyval.instance).loc = (yyloc); (yyval.instance).insideLoc.start = (yylsp[(1) - (2)]).end; (yyval.instance).insideLoc.end = (yylsp[(2) - (2)]).start;;}
     break;
 
   case 477:
 
 /* Line 1464 of yacc.c  */
-#line 1571 "type.y"
+#line 1515 "type.y"
     { ProcessClassFunctionBody((yyvsp[(1) - (2)].classFunction), (yyvsp[(2) - (2)].stmt)); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 478:
 
 /* Line 1464 of yacc.c  */
-#line 1573 "type.y"
+#line 1517 "type.y"
     { ProcessClassFunctionBody((yyvsp[(1) - (2)].classFunction), (yyvsp[(2) - (2)].stmt)); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 479:
 
 /* Line 1464 of yacc.c  */
-#line 1575 "type.y"
+#line 1519 "type.y"
     { ProcessClassFunctionBody((yyvsp[(1) - (2)].classFunction), null); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 480:
 
 /* Line 1464 of yacc.c  */
-#line 1577 "type.y"
+#line 1521 "type.y"
     { ProcessClassFunctionBody((yyvsp[(1) - (2)].classFunction), (yyvsp[(2) - (2)].stmt)); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 481:
 
 /* Line 1464 of yacc.c  */
-#line 1579 "type.y"
+#line 1523 "type.y"
     { ProcessClassFunctionBody((yyvsp[(1) - (2)].classFunction), (yyvsp[(2) - (2)].stmt)); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 482:
 
 /* Line 1464 of yacc.c  */
-#line 1585 "type.y"
+#line 1529 "type.y"
     { (yyval.classFunction) = MkClassFunction((yyvsp[(1) - (2)].list), null, (yyvsp[(2) - (2)].declarator), null); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 483:
 
 /* Line 1464 of yacc.c  */
-#line 1587 "type.y"
+#line 1531 "type.y"
     { (yyval.classFunction) = MkClassFunction((yyvsp[(1) - (2)].list), null, (yyvsp[(2) - (2)].declarator), null); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 484:
 
 /* Line 1464 of yacc.c  */
-#line 1592 "type.y"
+#line 1536 "type.y"
     { ProcessClassFunctionBody((yyvsp[(1) - (2)].classFunction), (yyvsp[(2) - (2)].stmt)); (yyval.classFunction).loc = (yyloc); ;}
     break;
 
   case 485:
 
 /* Line 1464 of yacc.c  */
-#line 1596 "type.y"
+#line 1540 "type.y"
     { (yyval.memberInit) = MkMemberInitExp((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].initializer)); (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc); (yyval.memberInit).initializer.loc.start = (yylsp[(2) - (3)]).end;;}
     break;
 
   case 486:
 
 /* Line 1464 of yacc.c  */
-#line 1597 "type.y"
+#line 1541 "type.y"
     { (yyval.memberInit) = MkMemberInit(null, (yyvsp[(1) - (1)].initializer)); (yyval.memberInit).loc = (yyloc); (yyval.memberInit).realLoc = (yyloc);;}
     break;
 
   case 487:
 
 /* Line 1464 of yacc.c  */
-#line 1602 "type.y"
+#line 1546 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), (yyvsp[(1) - (1)].memberInit)); ;}
     break;
 
   case 488:
 
 /* Line 1464 of yacc.c  */
-#line 1604 "type.y"
+#line 1548 "type.y"
     { ((MemberInit)(yyvsp[(1) - (3)].list)->last).loc.end = (yylsp[(3) - (3)]).start; ListAdd((yyvsp[(1) - (3)].list), (yyvsp[(3) - (3)].memberInit)); (yyval.list) = (yyvsp[(1) - (3)].list); ;}
     break;
 
   case 489:
 
 /* Line 1464 of yacc.c  */
-#line 1609 "type.y"
+#line 1553 "type.y"
     { if((yyvsp[(1) - (2)].list)->last) ((MemberInit)(yyvsp[(1) - (2)].list)->last).loc.end = (yylsp[(2) - (2)]).end; (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 490:
 
 /* Line 1464 of yacc.c  */
-#line 1613 "type.y"
+#line 1557 "type.y"
     { MembersInit members = MkMembersInitList((yyvsp[(1) - (1)].list)); (yyval.list) = MkList(); ListAdd((yyval.list), members); members.loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 491:
 
 /* Line 1464 of yacc.c  */
-#line 1614 "type.y"
+#line 1558 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkMembersInitMethod((yyvsp[(1) - (1)].classFunction))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 492:
 
 /* Line 1464 of yacc.c  */
-#line 1615 "type.y"
+#line 1559 "type.y"
     { MembersInit members = MkMembersInitList((yyvsp[(2) - (2)].list)); ListAdd((yyval.list), members); members.loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list);  ;}
     break;
 
   case 493:
 
 /* Line 1464 of yacc.c  */
-#line 1616 "type.y"
+#line 1560 "type.y"
     { ListAdd((yyval.list), MkMembersInitMethod((yyvsp[(2) - (2)].classFunction))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]);(yyval.list) = (yyvsp[(1) - (2)].list);  ;}
     break;
 
   case 494:
 
 /* Line 1464 of yacc.c  */
-#line 1617 "type.y"
+#line 1561 "type.y"
     { MembersInit members = MkMembersInitList(MkList()); (yyval.list) = MkList(); ListAdd((yyval.list), members); members.loc = (yylsp[(1) - (1)]);  ;}
     break;
 
   case 495:
 
 /* Line 1464 of yacc.c  */
-#line 1618 "type.y"
+#line 1562 "type.y"
     { MembersInit members = MkMembersInitList(MkList()); ListAdd((yyval.list), members); members.loc = (yylsp[(2) - (2)]); (yyval.list) = (yyvsp[(1) - (2)].list); ;}
     break;
 
   case 497:
 
 /* Line 1464 of yacc.c  */
-#line 1623 "type.y"
+#line 1567 "type.y"
     { (yyval.list) = MkList(); ListAdd((yyval.list), MkMembersInitList((yyvsp[(1) - (1)].list))); ((MembersInit)(yyval.list)->last).loc = (yylsp[(1) - (1)]); ;}
     break;
 
   case 498:
 
 /* Line 1464 of yacc.c  */
-#line 1624 "type.y"
+#line 1568 "type.y"
     { ListAdd((yyvsp[(1) - (2)].list), MkMembersInitList((yyvsp[(2) - (2)].list)));   ((MembersInit)(yyval.list)->last).loc = (yylsp[(2) - (2)]); ;}
     break;
 
   case 499:
 
 /* Line 1464 of yacc.c  */
-#line 1628 "type.y"
+#line 1572 "type.y"
     { parsedType = (yyvsp[(1) - (1)].typeName); ;}
     break;
 
   case 500:
 
 /* Line 1464 of yacc.c  */
-#line 1629 "type.y"
+#line 1573 "type.y"
     { parsedType = (yyvsp[(1) - (3)].typeName); parsedType.bitCount = (yyvsp[(3) - (3)].exp); ;}
     break;
 
 
 
 /* Line 1464 of yacc.c  */
-#line 8466 "type.ec"
+#line 8420 "type.ec"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -8681,6 +8635,6 @@ yyreturn:
 
 
 /* Line 1684 of yacc.c  */
-#line 1632 "type.y"
+#line 1576 "type.y"
 
 

@@ -761,14 +761,6 @@ int importType;
 int importAccess;
 } __attribute__ ((gcc_struct));
 
-struct Declaration;
-
-extern struct External * MkExternalDeclaration(struct Declaration * declaration);
-
-extern struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators);
-
-static void ProcessDeclaration(struct Declaration * decl);
-
 struct __ecereNameSpace__ecere__com__NameSpace;
 
 extern struct __ecereNameSpace__ecere__com__NameSpace *  globalData;
@@ -848,6 +840,12 @@ struct __ecereNameSpace__ecere__sys__OldLink * prev;
 struct __ecereNameSpace__ecere__sys__OldLink * next;
 void *  data;
 } __attribute__ ((gcc_struct));
+
+struct Declaration;
+
+extern struct External * MkExternalDeclaration(struct Declaration * declaration);
+
+extern struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators);
 
 struct Specifier;
 
@@ -1683,6 +1681,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__com__ClassProperty;
@@ -1851,6 +1850,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -13846,7 +13846,7 @@ if(computedExp != sourceExp)
 FreeExpression(computedExp);
 computedExp = sourceExp;
 }
-if(dest->kind != 8 && source->kind == 8 && source->__anon1._class && source->__anon1._class->__anon1.registered && !strcmp(source->__anon1._class->__anon1.registered->fullName, "ecere::com::unichar"))
+if(dest->kind != 8 && source->kind == 8 && source->__anon1._class && source->__anon1._class->__anon1.registered && !strcmp(source->__anon1._class->__anon1.registered->fullName, "unichar"))
 {
 FreeType(source);
 source = __extension__ ({
@@ -14495,6 +14495,299 @@ break;
 }
 }
 
+static void ProcessClass(struct __ecereNameSpace__ecere__sys__OldList *  definitions, struct Symbol *  symbol);
+
+static void ProcessSpecifier(struct Specifier * spec, unsigned int declareStruct, unsigned int warnClasses)
+{
+switch(spec->type)
+{
+case 0:
+{
+if(spec->__anon1.specifier == THISCLASS)
+{
+if(thisClass)
+{
+spec->type = 1;
+spec->__anon1.__anon1.name = ReplaceThisClass(thisClass);
+spec->__anon1.__anon1.symbol = FindClass(spec->__anon1.__anon1.name);
+ProcessSpecifier(spec, declareStruct, 0);
+}
+}
+break;
+}
+case 1:
+{
+struct Symbol * symbol = FindType(curContext, spec->__anon1.__anon1.name);
+
+if(symbol)
+DeclareType(curExternal, symbol->type, 1, 1);
+else if(spec->__anon1.__anon1.symbol)
+{
+struct __ecereNameSpace__ecere__com__Class * c = spec->__anon1.__anon1.symbol->__anon1.registered;
+
+if(warnClasses && !c)
+Compiler_Warning("Undeclared class %s\n", spec->__anon1.__anon1.name);
+DeclareStruct(curExternal, spec->__anon1.__anon1.name, c && c->type == 5, declareStruct && c && c->type == 1);
+}
+break;
+}
+case 2:
+{
+struct Enumerator * e;
+
+if(spec->__anon1.__anon2.list)
+{
+for(e = (*spec->__anon1.__anon2.list).first; e; e = e->next)
+{
+if(e->exp)
+ProcessExpressionType(e->exp);
+}
+}
+if(inCompiler)
+break;
+}
+case 3:
+case 4:
+{
+if(spec->__anon1.__anon2.definitions)
+{
+struct Symbol * symbol = spec->__anon1.__anon2.id ? FindClass(spec->__anon1.__anon2.id->string) : (((void *)0));
+
+ProcessClass(spec->__anon1.__anon2.definitions, symbol);
+}
+break;
+}
+}
+}
+
+static void ProcessDeclarator(struct Declarator * decl, unsigned int isFunction)
+{
+switch(decl->type)
+{
+case 1:
+if(decl->__anon1.identifier->classSym)
+{
+FreeSpecifier(decl->__anon1.identifier->_class);
+decl->__anon1.identifier->_class = (((void *)0));
+}
+break;
+case 3:
+if(decl->__anon1.array.exp)
+ProcessExpressionType(decl->__anon1.array.exp);
+case 0:
+case 2:
+case 4:
+case 5:
+case 6:
+case 7:
+{
+struct Identifier * id = (((void *)0));
+struct Specifier * classSpec = (((void *)0));
+
+if(decl->type == 4)
+{
+id = GetDeclId(decl);
+if(id && id->_class)
+{
+classSpec = id->_class;
+id->_class = (((void *)0));
+}
+}
+if(decl->declarator)
+ProcessDeclarator(decl->declarator, isFunction);
+if(decl->type == 4)
+{
+if(classSpec)
+{
+struct TypeName * param = (param = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), param->qualifiers = MkListOne(classSpec), param->declarator = (((void *)0)), param);
+
+if(!decl->__anon1.function.parameters)
+decl->__anon1.function.parameters = MkList();
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->__anon1.function.parameters), (((void *)0)), param);
+}
+if(decl->__anon1.function.parameters)
+{
+struct TypeName * param;
+
+for(param = (*decl->__anon1.function.parameters).first; param; param = param->next)
+{
+if(param->qualifiers)
+{
+struct Specifier * spec;
+
+for(spec = (*param->qualifiers).first; spec; spec = spec->next)
+{
+if(spec->type == 0)
+{
+if(spec->__anon1.specifier == TYPED_OBJECT)
+{
+struct Declarator * d = param->declarator;
+struct TypeName * newParam = (newParam = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), newParam->qualifiers = MkListOne(MkSpecifier(VOID)), newParam->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d), newParam);
+
+if(d->type != 5)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*newParam->qualifiers), (((void *)0)), MkSpecifier(CONST));
+FreeList(param->qualifiers, (void *)(FreeSpecifier));
+param->qualifiers = MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
+param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier("class")));
+DeclareStruct(curExternal, "ecere::com::Class", 0, 1);
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->__anon1.function.parameters), param, newParam);
+param = newParam;
+break;
+}
+else if(spec->__anon1.specifier == ANY_OBJECT)
+{
+struct Declarator * d = param->declarator;
+
+FreeList(param->qualifiers, (void *)(FreeSpecifier));
+param->qualifiers = MkListOne(MkSpecifier(VOID));
+if(d->type != 5)
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*param->qualifiers), (((void *)0)), MkSpecifier(CONST));
+param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d);
+break;
+}
+else if(spec->__anon1.specifier == THISCLASS)
+{
+if(thisClass)
+{
+spec->type = 1;
+spec->__anon1.__anon1.name = ReplaceThisClass(thisClass);
+spec->__anon1.__anon1.symbol = FindClass(spec->__anon1.__anon1.name);
+ProcessSpecifier(spec, 0, 0);
+}
+break;
+}
+}
+else if(spec->type == 1)
+{
+ProcessSpecifier(spec, isFunction, 1);
+}
+}
+}
+if(param->declarator)
+ProcessDeclarator(param->declarator, 0);
+}
+}
+}
+break;
+}
+}
+}
+
+static void ProcessDeclaration(struct Declaration * decl, unsigned int warnClasses)
+{
+yylloc = decl->loc;
+switch(decl->type)
+{
+case 1:
+{
+unsigned int declareStruct = 0;
+
+if(decl->__anon1.__anon1.declarators)
+{
+struct InitDeclarator * d;
+
+for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
+{
+struct Type * type, * subType;
+
+ProcessDeclarator(d->declarator, 0);
+type = ProcessType(decl->__anon1.__anon1.specifiers, d->declarator);
+if(d->initializer)
+{
+ProcessInitializer(d->initializer, type);
+if((*decl->__anon1.__anon1.declarators).count == 1 && d->initializer->type == 0 && d->initializer->__anon1.exp->type == 1)
+{
+if(type->kind == 8 && type->__anon1._class == d->initializer->__anon1.exp->expType->__anon1._class)
+{
+struct Instantiation * inst = d->initializer->__anon1.exp->__anon1.instance;
+
+inst->exp = MkExpIdentifier(CopyIdentifier(GetDeclId(d->declarator)));
+d->initializer->__anon1.exp->__anon1.instance = (((void *)0));
+if(decl->__anon1.__anon1.specifiers)
+FreeList(decl->__anon1.__anon1.specifiers, (void *)(FreeSpecifier));
+FreeList(decl->__anon1.__anon1.declarators, (void *)(FreeInitDeclarator));
+d = (((void *)0));
+decl->type = 2;
+decl->__anon1.inst = inst;
+}
+}
+}
+for(subType = type; subType; )
+{
+if(subType->kind == 8)
+{
+declareStruct = 1;
+break;
+}
+else if(subType->kind == 13)
+break;
+else if(subType->kind == 12)
+subType = subType->__anon1.__anon4.arrayType;
+else
+break;
+}
+FreeType(type);
+if(!d)
+break;
+}
+}
+if(decl->__anon1.__anon1.specifiers)
+{
+struct Specifier * s;
+
+for(s = (*decl->__anon1.__anon1.specifiers).first; s; s = s->next)
+{
+ProcessSpecifier(s, declareStruct, 1);
+}
+}
+break;
+}
+case 2:
+{
+ProcessInstantiationType(decl->__anon1.inst);
+break;
+}
+case 0:
+{
+struct Specifier * spec;
+struct Declarator * d;
+unsigned int declareStruct = 0;
+
+if(decl->__anon1.__anon1.declarators)
+{
+for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
+{
+struct Type * type = ProcessType(decl->__anon1.__anon1.specifiers, d->declarator);
+struct Type * subType;
+
+ProcessDeclarator(d, 0);
+for(subType = type; subType; )
+{
+if(subType->kind == 8)
+{
+declareStruct = 1;
+break;
+}
+else if(subType->kind == 13)
+break;
+else if(subType->kind == 12)
+subType = subType->__anon1.__anon4.arrayType;
+else
+break;
+}
+FreeType(type);
+}
+}
+if(decl->__anon1.__anon1.specifiers)
+{
+for(spec = (*decl->__anon1.__anon1.specifiers).first; spec; spec = spec->next)
+ProcessSpecifier(spec, declareStruct, warnClasses);
+}
+break;
+}
+}
+}
+
 static void ProcessStatement(struct Statement * stmt)
 {
 yylloc = stmt->loc;
@@ -14531,7 +14824,7 @@ curContext = stmt->__anon1.compound.context;
 if(stmt->__anon1.compound.declarations)
 {
 for(decl = (*stmt->__anon1.compound.declarations).first; decl; decl = decl->next)
-ProcessDeclaration(decl);
+ProcessDeclaration(decl, 1);
 }
 if(stmt->__anon1.compound.statements)
 {
@@ -14947,7 +15240,7 @@ stmt->__anon1.compound.statements = MkListOne(MkWhileStmt(MkListOne(MkExpCall(Mk
 }
 ProcessExpressionType(expIt);
 if((*stmt->__anon1.compound.declarations).first)
-ProcessDeclaration((*stmt->__anon1.compound.declarations).first);
+ProcessDeclaration((*stmt->__anon1.compound.declarations).first, 1);
 if(symbol)
 symbol->isIterator = isMap ? 2 : ((isArray || isBuiltin) ? 3 : (isLinkList ? (isList ? 5 : 4) : (isCustomAVLTree ? 6 : 1)));
 ProcessStatement(stmt);
@@ -14994,7 +15287,7 @@ break;
 }
 case 14:
 {
-ProcessDeclaration(stmt->__anon1.decl);
+ProcessDeclaration(stmt->__anon1.decl, 1);
 break;
 }
 case 13:
@@ -15271,6 +15564,86 @@ Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "No observer s
 break;
 }
 }
+}
+
+void ComputeDataTypes()
+{
+struct External * external;
+
+currentClass = (((void *)0));
+containerClass = __ecereNameSpace__ecere__com__eSystem_FindClass(GetPrivateModule(), "Container");
+DeclareStruct((((void *)0)), "ecere::com::Class", 0, 1);
+DeclareStruct((((void *)0)), "ecere::com::Instance", 0, 1);
+DeclareStruct((((void *)0)), "ecere::com::Property", 0, 1);
+DeclareStruct((((void *)0)), "ecere::com::DataMember", 0, 1);
+DeclareStruct((((void *)0)), "ecere::com::Method", 0, 1);
+DeclareStruct((((void *)0)), "ecere::com::SerialBuffer", 0, 1);
+DeclareStruct((((void *)0)), "ecere::com::ClassTemplateArgument", 0, 1);
+DeclareFunctionUtil((((void *)0)), "eSystem_New");
+DeclareFunctionUtil((((void *)0)), "eSystem_New0");
+DeclareFunctionUtil((((void *)0)), "eSystem_Renew");
+DeclareFunctionUtil((((void *)0)), "eSystem_Renew0");
+DeclareFunctionUtil((((void *)0)), "eSystem_Delete");
+DeclareFunctionUtil((((void *)0)), "eClass_GetProperty");
+DeclareFunctionUtil((((void *)0)), "eClass_SetProperty");
+DeclareFunctionUtil((((void *)0)), "eInstance_FireSelfWatchers");
+DeclareFunctionUtil((((void *)0)), "eInstance_SetMethod");
+DeclareFunctionUtil((((void *)0)), "eInstance_IncRef");
+DeclareFunctionUtil((((void *)0)), "eInstance_StopWatching");
+DeclareFunctionUtil((((void *)0)), "eInstance_Watch");
+DeclareFunctionUtil((((void *)0)), "eInstance_FireWatchers");
+for(external = (*ast).first; external; external = external->next)
+{
+afterExternal = curExternal = external;
+if(external->type == 0)
+{
+if(memoryGuard)
+{
+DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
+DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
+}
+currentClass = external->__anon1.function->_class;
+ProcessFunction(external->__anon1.function);
+}
+else if(external->type == 1)
+{
+if(memoryGuard && external->__anon1.declaration && external->__anon1.declaration->type == 2)
+{
+DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
+DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
+}
+currentClass = (((void *)0));
+if(external->__anon1.declaration)
+ProcessDeclaration(external->__anon1.declaration, 1);
+}
+else if(external->type == 2)
+{
+struct ClassDefinition * _class = external->__anon1._class;
+
+currentClass = external->symbol->__anon1.registered;
+if(memoryGuard)
+{
+DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
+DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
+}
+if(_class->definitions)
+{
+ProcessClass(_class->definitions, _class->symbol);
+}
+if(inCompiler)
+{
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*ast), external);
+((external ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)external) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(external)) : 0), external = 0);
+}
+}
+else if(external->type == 4)
+{
+thisNameSpace = external->__anon1.id->string;
+}
+}
+currentClass = (((void *)0));
+thisNameSpace = (((void *)0));
+curExternal = (((void *)0));
 }
 
 void ProcessExpressionType(struct Expression * exp)
@@ -18725,7 +19098,7 @@ struct __ecereNameSpace__ecere__com__Class * backThisClass = thisClass;
 
 if(regClass)
 thisClass = regClass;
-ProcessDeclaration(def->__anon1.decl);
+ProcessDeclaration(def->__anon1.decl, symbol ? 1 : 0);
 thisClass = backThisClass;
 }
 }
@@ -18798,375 +19171,6 @@ curExternal = (((void *)0));
 ProcessStatement(propertyWatch->compound);
 }
 thisClass = (((void *)0));
-}
-}
-}
-
-static void ProcessSpecifier(struct Specifier * spec, unsigned int declareStruct)
-{
-switch(spec->type)
-{
-case 0:
-{
-if(spec->__anon1.specifier == THISCLASS)
-{
-if(thisClass)
-{
-spec->type = 1;
-spec->__anon1.__anon1.name = ReplaceThisClass(thisClass);
-spec->__anon1.__anon1.symbol = FindClass(spec->__anon1.__anon1.name);
-ProcessSpecifier(spec, declareStruct);
-}
-}
-break;
-}
-case 1:
-{
-struct Symbol * symbol = FindType(curContext, spec->__anon1.__anon1.name);
-
-if(symbol)
-DeclareType(curExternal, symbol->type, 1, 1);
-else if(spec->__anon1.__anon1.symbol)
-{
-struct __ecereNameSpace__ecere__com__Class * c = spec->__anon1.__anon1.symbol->__anon1.registered;
-
-DeclareStruct(curExternal, spec->__anon1.__anon1.name, c && c->type == 5, declareStruct && c && c->type == 1);
-}
-break;
-}
-case 2:
-{
-struct Enumerator * e;
-
-if(spec->__anon1.__anon2.list)
-{
-for(e = (*spec->__anon1.__anon2.list).first; e; e = e->next)
-{
-if(e->exp)
-ProcessExpressionType(e->exp);
-}
-}
-if(inCompiler)
-break;
-}
-case 3:
-case 4:
-{
-if(spec->__anon1.__anon2.definitions)
-{
-struct Symbol * symbol = spec->__anon1.__anon2.id ? FindClass(spec->__anon1.__anon2.id->string) : (((void *)0));
-
-ProcessClass(spec->__anon1.__anon2.definitions, symbol);
-}
-break;
-}
-}
-}
-
-void ComputeDataTypes()
-{
-struct External * external;
-
-currentClass = (((void *)0));
-containerClass = __ecereNameSpace__ecere__com__eSystem_FindClass(GetPrivateModule(), "Container");
-DeclareStruct((((void *)0)), "ecere::com::Class", 0, 1);
-DeclareStruct((((void *)0)), "ecere::com::Instance", 0, 1);
-DeclareStruct((((void *)0)), "ecere::com::Property", 0, 1);
-DeclareStruct((((void *)0)), "ecere::com::DataMember", 0, 1);
-DeclareStruct((((void *)0)), "ecere::com::Method", 0, 1);
-DeclareStruct((((void *)0)), "ecere::com::SerialBuffer", 0, 1);
-DeclareStruct((((void *)0)), "ecere::com::ClassTemplateArgument", 0, 1);
-DeclareFunctionUtil((((void *)0)), "eSystem_New");
-DeclareFunctionUtil((((void *)0)), "eSystem_New0");
-DeclareFunctionUtil((((void *)0)), "eSystem_Renew");
-DeclareFunctionUtil((((void *)0)), "eSystem_Renew0");
-DeclareFunctionUtil((((void *)0)), "eSystem_Delete");
-DeclareFunctionUtil((((void *)0)), "eClass_GetProperty");
-DeclareFunctionUtil((((void *)0)), "eClass_SetProperty");
-DeclareFunctionUtil((((void *)0)), "eInstance_FireSelfWatchers");
-DeclareFunctionUtil((((void *)0)), "eInstance_SetMethod");
-DeclareFunctionUtil((((void *)0)), "eInstance_IncRef");
-DeclareFunctionUtil((((void *)0)), "eInstance_StopWatching");
-DeclareFunctionUtil((((void *)0)), "eInstance_Watch");
-DeclareFunctionUtil((((void *)0)), "eInstance_FireWatchers");
-for(external = (*ast).first; external; external = external->next)
-{
-afterExternal = curExternal = external;
-if(external->type == 0)
-{
-if(memoryGuard)
-{
-DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
-DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
-}
-currentClass = external->__anon1.function->_class;
-ProcessFunction(external->__anon1.function);
-}
-else if(external->type == 1)
-{
-if(memoryGuard && external->__anon1.declaration && external->__anon1.declaration->type == 2)
-{
-DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
-DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
-}
-currentClass = (((void *)0));
-if(external->__anon1.declaration)
-ProcessDeclaration(external->__anon1.declaration);
-}
-else if(external->type == 2)
-{
-struct ClassDefinition * _class = external->__anon1._class;
-
-currentClass = external->symbol->__anon1.registered;
-if(memoryGuard)
-{
-DeclareFunctionUtil(external, "MemoryGuard_PushLoc");
-DeclareFunctionUtil(external, "MemoryGuard_PopLoc");
-}
-if(_class->definitions)
-{
-ProcessClass(_class->definitions, _class->symbol);
-}
-if(inCompiler)
-{
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*ast), external);
-((external ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)external) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(external)) : 0), external = 0);
-}
-}
-else if(external->type == 4)
-{
-thisNameSpace = external->__anon1.id->string;
-}
-}
-currentClass = (((void *)0));
-thisNameSpace = (((void *)0));
-curExternal = (((void *)0));
-}
-
-static void ProcessDeclarator(struct Declarator * decl, unsigned int isFunction)
-{
-switch(decl->type)
-{
-case 1:
-if(decl->__anon1.identifier->classSym)
-{
-FreeSpecifier(decl->__anon1.identifier->_class);
-decl->__anon1.identifier->_class = (((void *)0));
-}
-break;
-case 3:
-if(decl->__anon1.array.exp)
-ProcessExpressionType(decl->__anon1.array.exp);
-case 0:
-case 2:
-case 4:
-case 5:
-case 6:
-case 7:
-{
-struct Identifier * id = (((void *)0));
-struct Specifier * classSpec = (((void *)0));
-
-if(decl->type == 4)
-{
-id = GetDeclId(decl);
-if(id && id->_class)
-{
-classSpec = id->_class;
-id->_class = (((void *)0));
-}
-}
-if(decl->declarator)
-ProcessDeclarator(decl->declarator, isFunction);
-if(decl->type == 4)
-{
-if(classSpec)
-{
-struct TypeName * param = (param = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), param->qualifiers = MkListOne(classSpec), param->declarator = (((void *)0)), param);
-
-if(!decl->__anon1.function.parameters)
-decl->__anon1.function.parameters = MkList();
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->__anon1.function.parameters), (((void *)0)), param);
-}
-if(decl->__anon1.function.parameters)
-{
-struct TypeName * param;
-
-for(param = (*decl->__anon1.function.parameters).first; param; param = param->next)
-{
-if(param->qualifiers)
-{
-struct Specifier * spec;
-
-for(spec = (*param->qualifiers).first; spec; spec = spec->next)
-{
-if(spec->type == 0)
-{
-if(spec->__anon1.specifier == TYPED_OBJECT)
-{
-struct Declarator * d = param->declarator;
-struct TypeName * newParam = (newParam = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), newParam->qualifiers = MkListOne(MkSpecifier(VOID)), newParam->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d), newParam);
-
-if(d->type != 5)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*newParam->qualifiers), (((void *)0)), MkSpecifier(CONST));
-FreeList(param->qualifiers, (void *)(FreeSpecifier));
-param->qualifiers = MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
-param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier("class")));
-DeclareStruct(curExternal, "ecere::com::Class", 0, 1);
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*decl->__anon1.function.parameters), param, newParam);
-param = newParam;
-break;
-}
-else if(spec->__anon1.specifier == ANY_OBJECT)
-{
-struct Declarator * d = param->declarator;
-
-FreeList(param->qualifiers, (void *)(FreeSpecifier));
-param->qualifiers = MkListOne(MkSpecifier(VOID));
-if(d->type != 5)
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*param->qualifiers), (((void *)0)), MkSpecifier(CONST));
-param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d);
-break;
-}
-else if(spec->__anon1.specifier == THISCLASS)
-{
-if(thisClass)
-{
-spec->type = 1;
-spec->__anon1.__anon1.name = ReplaceThisClass(thisClass);
-spec->__anon1.__anon1.symbol = FindClass(spec->__anon1.__anon1.name);
-ProcessSpecifier(spec, 0);
-}
-break;
-}
-}
-else if(spec->type == 1)
-{
-ProcessSpecifier(spec, isFunction);
-}
-}
-}
-if(param->declarator)
-ProcessDeclarator(param->declarator, 0);
-}
-}
-}
-break;
-}
-}
-}
-
-static void ProcessDeclaration(struct Declaration * decl)
-{
-yylloc = decl->loc;
-switch(decl->type)
-{
-case 1:
-{
-unsigned int declareStruct = 0;
-
-if(decl->__anon1.__anon1.declarators)
-{
-struct InitDeclarator * d;
-
-for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
-{
-struct Type * type, * subType;
-
-ProcessDeclarator(d->declarator, 0);
-type = ProcessType(decl->__anon1.__anon1.specifiers, d->declarator);
-if(d->initializer)
-{
-ProcessInitializer(d->initializer, type);
-if((*decl->__anon1.__anon1.declarators).count == 1 && d->initializer->type == 0 && d->initializer->__anon1.exp->type == 1)
-{
-if(type->kind == 8 && type->__anon1._class == d->initializer->__anon1.exp->expType->__anon1._class)
-{
-struct Instantiation * inst = d->initializer->__anon1.exp->__anon1.instance;
-
-inst->exp = MkExpIdentifier(CopyIdentifier(GetDeclId(d->declarator)));
-d->initializer->__anon1.exp->__anon1.instance = (((void *)0));
-if(decl->__anon1.__anon1.specifiers)
-FreeList(decl->__anon1.__anon1.specifiers, (void *)(FreeSpecifier));
-FreeList(decl->__anon1.__anon1.declarators, (void *)(FreeInitDeclarator));
-d = (((void *)0));
-decl->type = 2;
-decl->__anon1.inst = inst;
-}
-}
-}
-for(subType = type; subType; )
-{
-if(subType->kind == 8)
-{
-declareStruct = 1;
-break;
-}
-else if(subType->kind == 13)
-break;
-else if(subType->kind == 12)
-subType = subType->__anon1.__anon4.arrayType;
-else
-break;
-}
-FreeType(type);
-if(!d)
-break;
-}
-}
-if(decl->__anon1.__anon1.specifiers)
-{
-struct Specifier * s;
-
-for(s = (*decl->__anon1.__anon1.specifiers).first; s; s = s->next)
-{
-ProcessSpecifier(s, declareStruct);
-}
-}
-break;
-}
-case 2:
-{
-ProcessInstantiationType(decl->__anon1.inst);
-break;
-}
-case 0:
-{
-struct Specifier * spec;
-struct Declarator * d;
-unsigned int declareStruct = 0;
-
-if(decl->__anon1.__anon1.declarators)
-{
-for(d = (*decl->__anon1.__anon1.declarators).first; d; d = d->next)
-{
-struct Type * type = ProcessType(decl->__anon1.__anon1.specifiers, d->declarator);
-struct Type * subType;
-
-ProcessDeclarator(d, 0);
-for(subType = type; subType; )
-{
-if(subType->kind == 8)
-{
-declareStruct = 1;
-break;
-}
-else if(subType->kind == 13)
-break;
-else if(subType->kind == 12)
-subType = subType->__anon1.__anon4.arrayType;
-else
-break;
-}
-FreeType(type);
-}
-}
-if(decl->__anon1.__anon1.specifiers)
-{
-for(spec = (*decl->__anon1.__anon1.specifiers).first; spec; spec = spec->next)
-ProcessSpecifier(spec, declareStruct);
-}
-break;
 }
 }
 }

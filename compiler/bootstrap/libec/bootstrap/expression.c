@@ -329,8 +329,6 @@ extern void FreeExtDecl(struct ExtDecl * extDecl);
 
 extern struct ExtDecl * MkExtDeclString(char * s);
 
-extern struct Symbol * DeclClass(const char *  name);
-
 struct Location
 {
 struct CodePosition start;
@@ -496,6 +494,8 @@ extern struct Specifier * MkSpecifierSubClass(struct Specifier * _class);
 
 extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, struct __ecereNameSpace__ecere__sys__OldList * definitions);
 
+extern struct Symbol * DeclClass(struct Specifier * _class, const char *  name);
+
 struct Specifier
 {
 struct Specifier * prev;
@@ -511,6 +511,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -2642,7 +2643,7 @@ case 214:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (5)].specifierType, yyvsp[(2) - (5)].id, yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].id->string);
+DeclClass(yyvsp[(2) - (5)].id->_class, yyvsp[(2) - (5)].id->string);
 ;
 }
 break;
@@ -2656,7 +2657,7 @@ case 216:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (4)].specifierType, yyvsp[(2) - (4)].id, (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (4)].id->string);
+DeclClass(yyvsp[(2) - (4)].id->_class, yyvsp[(2) - (4)].id->string);
 ;
 }
 break;
@@ -2670,7 +2671,7 @@ case 218:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (5)].specifierType, MkIdentifier(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name), yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
 ;
 }
@@ -2680,7 +2681,7 @@ case 219:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (6)].specifierType, yyvsp[(3) - (6)].id, yyvsp[(5) - (6)].list);
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (6)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (6)].id->string);
+DeclClass(yyvsp[(3) - (6)].id->_class, yyvsp[(3) - (6)].id->string);
 ;
 }
 break;
@@ -2696,7 +2697,7 @@ case 221:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (5)].specifierType, yyvsp[(3) - (5)].id, (((void *)0)));
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (5)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (5)].id->string);
+DeclClass(yyvsp[(3) - (5)].id->_class, yyvsp[(3) - (5)].id->string);
 ;
 }
 break;
@@ -2712,7 +2713,7 @@ case 223:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (6)].specifierType, MkIdentifier(yyvsp[(3) - (6)].specifier->__anon1.__anon1.name), yyvsp[(5) - (6)].list);
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (6)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(3) - (6)].specifier->__anon1.__anon1.nsSpec, yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(3) - (6)].specifier);
 ;
 }
@@ -2721,7 +2722,7 @@ case 224:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (2)].specifierType, yyvsp[(2) - (2)].id, (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].id->string);
+DeclClass(yyvsp[(2) - (2)].id->_class, yyvsp[(2) - (2)].id->string);
 ;
 }
 break;
@@ -2729,7 +2730,7 @@ case 225:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (2)].specifierType, MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name), (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -2739,7 +2740,7 @@ case 226:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifierType, yyvsp[(3) - (3)].id, (((void *)0)));
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (3)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (3)].id->string);
+DeclClass(yyvsp[(3) - (3)].id->_class, yyvsp[(3) - (3)].id->string);
 ;
 }
 break;
@@ -2748,7 +2749,7 @@ case 227:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifierType, MkIdentifier(yyvsp[(3) - (3)].specifier->__anon1.__anon1.name), (((void *)0)));
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (3)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(3) - (3)].specifier->__anon1.__anon1.nsSpec, yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(3) - (3)].specifier);
 ;
 }
@@ -3060,7 +3061,7 @@ case 270:
 {
 yyval.specifier = MkEnum(yyvsp[(2) - (2)].id, (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].id->string);
+DeclClass(yyvsp[(2) - (2)].id->_class, yyvsp[(2) - (2)].id->string);
 ;
 }
 break;
@@ -3068,7 +3069,7 @@ case 271:
 {
 yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name), (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -3083,7 +3084,7 @@ case 273:
 {
 yyval.specifier = MkEnum(yyvsp[(2) - (5)].id, yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].id->string);
+DeclClass(yyvsp[(2) - (5)].id->_class, yyvsp[(2) - (5)].id->string);
 ;
 }
 break;
@@ -3092,7 +3093,7 @@ case 274:
 yyval.specifier = MkEnum(yyvsp[(2) - (7)].id, yyvsp[(4) - (7)].list);
 yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (7)].list;
 if(declMode)
-DeclClass(yyvsp[(2) - (7)].id->string);
+DeclClass(yyvsp[(2) - (7)].id->_class, yyvsp[(2) - (7)].id->string);
 ;
 }
 break;
@@ -3101,7 +3102,7 @@ case 275:
 yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (7)].specifier->__anon1.__anon1.name), yyvsp[(4) - (7)].list);
 yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (7)].list;
 if(declMode)
-DeclClass(yyvsp[(2) - (7)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (7)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (7)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (7)].specifier);
 ;
 }
@@ -3110,7 +3111,7 @@ case 276:
 {
 yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name), yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
 ;
 }

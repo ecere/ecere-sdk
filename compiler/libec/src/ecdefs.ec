@@ -493,6 +493,7 @@ public:
          char * name;
          Symbol symbol;
          OldList/*<TemplateArgument>*/ * templateArgs;
+         Specifier nsSpec;
       };
       struct
       {
@@ -1301,6 +1302,7 @@ public:
    Context ctx;
    int isIterator;
    Expression propCategory;
+   bool mustRegister;   // Must register the class within the RegisterClass (also used to check whether this class is declared in this module)
 };
 
 // For the .imp file:

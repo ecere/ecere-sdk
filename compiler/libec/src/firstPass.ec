@@ -583,8 +583,10 @@ public void PrePreProcessClassDefinitions()
          if(external.type == classExternal)
          {
             ClassDefinition _class = external._class;
-            if(_class.definitions && (!_class.symbol.registered || !inCompiler))
+            if(/*_class.definitions &&*/ (!_class.symbol.registered || !inCompiler))
             {
+               if(_class.definitions)
+                  _class.symbol.mustRegister = true;
                ProcessClass(normalClass, _class.definitions, _class.symbol, _class.baseSpecs, null, _class.loc, ast, external.prev, null, _class.declMode);
                _class.symbol.isStatic = _class.declMode == staticAccess;
             }
@@ -623,6 +625,10 @@ public void PrePreProcessClassDefinitions()
                               classType = unionClass;
                            else
                               classType = structClass;
+
+                           if(specifier.definitions || specifier.type == enumSpecifier || specifier.baseSpecs)
+                              symbol.mustRegister = true;
+
                            ProcessClass(classType, specifier.definitions, symbol, specifier.baseSpecs, specifier.list, specifier.loc, ast, external.prev, declaration.declarators, declaration.declMode);
                            symbol.isStatic = declaration.declMode == staticAccess;
                         }

@@ -378,6 +378,11 @@ int type;
 struct __ecereNameSpace__ecere__sys__OldList * attribs;
 } __attribute__ ((gcc_struct));
 
+unsigned int __ecereMethod_Location_Inside(struct Location * this, int line, int charPos)
+{
+return (this->start.line < line || (this->start.line == line && this->start.charPos <= charPos)) && (this->end.line > line || (this->end.line == line && this->end.charPos >= charPos));
+}
+
 extern struct Location yylloc;
 
 void SetExcludedSymbols(struct __ecereNameSpace__ecere__sys__OldList * list)
@@ -393,6 +398,52 @@ imports = list;
 void SetDefines(struct __ecereNameSpace__ecere__sys__OldList * list)
 {
 defines = list;
+}
+
+void __ecereMethod_CodePosition_AdjustDelete(struct CodePosition * this, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * start, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * end)
+{
+if(this->line - 1 < start->y || (this->line - 1 == start->y && this->charPos - 1 < start->x))
+return ;
+if((this->line - 1 >= start->y && (this->line - 1 > start->y || this->charPos - 1 >= start->x)) && (this->line - 1 >= end->y && (this->line - 1 > end->y || this->charPos - 1 >= end->x)))
+{
+if(this->line - 1 >= end->y)
+{
+if(this->line - 1 > end->y)
+this->line -= end->y - start->y;
+else
+{
+if(this->charPos - 1 >= end->x)
+{
+this->line = start->y + 1;
+this->charPos -= end->x - start->x;
+}
+}
+}
+}
+else
+{
+this->line = start->y + 1;
+this->charPos = start->x + 1;
+}
+}
+
+void __ecereMethod_CodePosition_AdjustAdd(struct CodePosition * this, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * start, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * end)
+{
+int numLines = end->y - start->y;
+
+if(this->line - 1 >= start->y)
+{
+if(this->line - 1 > start->y)
+this->line += numLines;
+else
+{
+if(this->charPos - 1 > start->x || (this->charPos - 1 == start->x))
+{
+this->line += numLines;
+this->charPos += end->x - start->x;
+}
+}
+}
 }
 
 struct ExtDecl
@@ -800,6 +851,7 @@ struct ExtDecl * extDecl;
 char * name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList * templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -1126,6 +1178,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__com__Method
@@ -1146,6 +1199,15 @@ int memberAccess;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
+
+unsigned int __ecereProp_Type_Get_specConst(struct Type * this)
+{
+struct Type * t = this;
+
+while((t->kind == 13 || t->kind == 12) && t->__anon1.type)
+t = t->__anon1.type;
+return t->constant;
+}
 
 unsigned int __ecereProp_Type_Get_isPointerTypeSize(struct Type * this);
 
@@ -1608,89 +1670,6 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass_Operand;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_OpTable;
 
-extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} __attribute__ ((gcc_struct));
-
-void __ecereMethod_CodePosition_AdjustDelete(struct CodePosition * this, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * start, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * end)
-{
-if(this->line - 1 < start->y || (this->line - 1 == start->y && this->charPos - 1 < start->x))
-return ;
-if((this->line - 1 >= start->y && (this->line - 1 > start->y || this->charPos - 1 >= start->x)) && (this->line - 1 >= end->y && (this->line - 1 > end->y || this->charPos - 1 >= end->x)))
-{
-if(this->line - 1 >= end->y)
-{
-if(this->line - 1 > end->y)
-this->line -= end->y - start->y;
-else
-{
-if(this->charPos - 1 >= end->x)
-{
-this->line = start->y + 1;
-this->charPos -= end->x - start->x;
-}
-}
-}
-}
-else
-{
-this->line = start->y + 1;
-this->charPos = start->x + 1;
-}
-}
-
-void __ecereMethod_CodePosition_AdjustAdd(struct CodePosition * this, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * start, struct __ecereNameSpace__ecere__gui__controls__BufferLocation * end)
-{
-int numLines = end->y - start->y;
-
-if(this->line - 1 >= start->y)
-{
-if(this->line - 1 > start->y)
-this->line += numLines;
-else
-{
-if(this->charPos - 1 > start->x || (this->charPos - 1 == start->x))
-{
-this->line += numLines;
-this->charPos += end->x - start->x;
-}
-}
-}
-}
-
-unsigned int __ecereMethod_Location_Inside(struct Location * this, int line, int charPos)
-{
-return (this->start.line < line || (this->start.line == line && this->start.charPos <= charPos)) && (this->end.line > line || (this->end.line == line && this->end.charPos >= charPos));
-}
-
 const char * __ecereMethod_Type_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct Type * this, char * tempString, void * fieldData, unsigned int * needClass)
 {
 struct Type * type = (struct Type *)this;
@@ -1703,15 +1682,6 @@ return tempString;
 
 void __ecereMethod_Type_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct Type * this)
 {
-}
-
-unsigned int __ecereProp_Type_Get_specConst(struct Type * this)
-{
-struct Type * t = this;
-
-while((t->kind == 13 || t->kind == 12) && t->__anon1.type)
-t = t->__anon1.type;
-return t->constant;
 }
 
 unsigned int __ecereProp_Type_Get_isPointerTypeSize(struct Type * this)
@@ -1794,6 +1764,38 @@ return 0;
 }
 return 0;
 }
+
+extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__out_;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList_TPL_TopoEdge__link__EQU__in_;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__LinkList;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_char__PTR_;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
+
+struct __ecereNameSpace__ecere__com__Module
+{
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} __attribute__ ((gcc_struct));
 
 void __ecereUnregisterModule_ecdefs(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -2716,6 +2718,7 @@ __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "extDecl", "Ext
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "name", "char *", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "symbol", "Symbol", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "templateArgs", "ecere::sys::OldList *", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eMember_AddDataMember(dataMember1, "nsSpec", "Specifier", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eMember_AddMember(dataMember0, dataMember1);
 }
 {
@@ -3306,6 +3309,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "templatedClasses", "e
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "ctx", "Context", sizeof(void *), 0xF000F000, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isIterator", "int", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "propCategory", "Expression", sizeof(void *), 0xF000F000, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "mustRegister", "bool", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ClassImport", 0, sizeof(struct ClassImport), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass_ClassImport = class;

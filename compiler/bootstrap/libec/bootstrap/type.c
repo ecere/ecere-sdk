@@ -79,7 +79,7 @@ static const yytype_int16 yyrhs[] =
 
 static const yytype_uint16 yyrline[] =
 {
-(unsigned short)0, (unsigned short)229, (unsigned short)229, (unsigned short)247, (unsigned short)281, (unsigned short)331, (unsigned short)332, (unsigned short)359, (unsigned short)363, (unsigned short)364, (unsigned short)365, (unsigned short)382, (unsigned short)384, (unsigned short)389, (unsigned short)394, (unsigned short)399, (unsigned short)401, (unsigned short)406, (unsigned short)411, (unsigned short)412, (unsigned short)417, (unsigned short)419, (unsigned short)421, (unsigned short)423, (unsigned short)424, (unsigned short)426, (unsigned short)427, (unsigned short)428, (unsigned short)431, (unsigned short)432, (unsigned short)433, (unsigned short)434, (unsigned short)435, (unsigned short)436, (unsigned short)437, (unsigned short)438, (unsigned short)439, (unsigned short)443, (unsigned short)444, (unsigned short)445, (unsigned short)446, (unsigned short)447, (unsigned short)448, (unsigned short)461, (unsigned short)462, (unsigned short)463, (unsigned short)467, (unsigned short)496, (unsigned short)497, (unsigned short)498, (unsigned short)499, (unsigned short)503, (unsigned short)504, (unsigned short)505, (unsigned short)507, (unsigned short)508, (unsigned short)510, (unsigned short)511, (unsigned short)515, (unsigned short)516, (unsigned short)525, (unsigned short)526, (unsigned short)527, (unsigned short)528, (unsigned short)529, (unsigned short)530, (unsigned short)531, (unsigned short)535, (unsigned short)536, (unsigned short)540, (unsigned short)541, (unsigned short)542, (unsigned short)543, (unsigned short)547, (unsigned short)548, (unsigned short)549, (unsigned short)553, (unsigned short)554, (unsigned short)555, (unsigned short)559, (unsigned short)567, (unsigned short)568, (unsigned short)569, (unsigned short)570, (unsigned short)571, (unsigned short)575, (unsigned short)576, (unsigned short)577, (unsigned short)581, (unsigned short)582, (unsigned short)586, (unsigned short)587, (unsigned short)591, (unsigned short)592, (unsigned short)596, (unsigned short)597, (unsigned short)601, (unsigned short)602, (unsigned short)606, (unsigned short)607, (unsigned short)611, (unsigned short)612, (unsigned short)613, (unsigned short)617, (unsigned short)618, (unsigned short)619, (unsigned short)620, (unsigned short)621, (unsigned short)622, (unsigned short)623, (unsigned short)624, (unsigned short)625, (unsigned short)626, (unsigned short)627, (unsigned short)631, (unsigned short)632, (unsigned short)636, (unsigned short)640, (unsigned short)641, (unsigned short)642, (unsigned short)643, (unsigned short)647, (unsigned short)648, (unsigned short)649, (unsigned short)650, (unsigned short)651, (unsigned short)652, (unsigned short)653, (unsigned short)654, (unsigned short)658, (unsigned short)659, (unsigned short)660, (unsigned short)661, (unsigned short)662, (unsigned short)663, (unsigned short)664, (unsigned short)665, (unsigned short)666, (unsigned short)667, (unsigned short)671, (unsigned short)672, (unsigned short)673, (unsigned short)674, (unsigned short)675, (unsigned short)676, (unsigned short)677, (unsigned short)678, (unsigned short)679, (unsigned short)680, (unsigned short)684, (unsigned short)685, (unsigned short)686, (unsigned short)687, (unsigned short)688, (unsigned short)689, (unsigned short)690, (unsigned short)691, (unsigned short)692, (unsigned short)693, (unsigned short)694, (unsigned short)695, (unsigned short)699, (unsigned short)700, (unsigned short)704, (unsigned short)705, (unsigned short)706, (unsigned short)707, (unsigned short)708, (unsigned short)709, (unsigned short)710, (unsigned short)711, (unsigned short)712, (unsigned short)730, (unsigned short)747, (unsigned short)748, (unsigned short)749, (unsigned short)750, (unsigned short)751, (unsigned short)752, (unsigned short)753, (unsigned short)754, (unsigned short)755, (unsigned short)756, (unsigned short)757, (unsigned short)758, (unsigned short)759, (unsigned short)777, (unsigned short)794, (unsigned short)795, (unsigned short)799, (unsigned short)800, (unsigned short)804, (unsigned short)805, (unsigned short)806, (unsigned short)807, (unsigned short)808, (unsigned short)809, (unsigned short)813, (unsigned short)814, (unsigned short)815, (unsigned short)819, (unsigned short)820, (unsigned short)821, (unsigned short)826, (unsigned short)827, (unsigned short)828, (unsigned short)829, (unsigned short)830, (unsigned short)834, (unsigned short)835, (unsigned short)839, (unsigned short)840, (unsigned short)841, (unsigned short)845, (unsigned short)846, (unsigned short)850, (unsigned short)854, (unsigned short)855, (unsigned short)856, (unsigned short)861, (unsigned short)862, (unsigned short)863, (unsigned short)864, (unsigned short)865, (unsigned short)866, (unsigned short)867, (unsigned short)868, (unsigned short)869, (unsigned short)870, (unsigned short)871, (unsigned short)872, (unsigned short)873, (unsigned short)874, (unsigned short)875, (unsigned short)876, (unsigned short)877, (unsigned short)878, (unsigned short)879, (unsigned short)880, (unsigned short)881, (unsigned short)882, (unsigned short)883, (unsigned short)884, (unsigned short)888, (unsigned short)889, (unsigned short)890, (unsigned short)891, (unsigned short)892, (unsigned short)893, (unsigned short)894, (unsigned short)895, (unsigned short)896, (unsigned short)897, (unsigned short)898, (unsigned short)899, (unsigned short)900, (unsigned short)901, (unsigned short)902, (unsigned short)903, (unsigned short)904, (unsigned short)905, (unsigned short)906, (unsigned short)907, (unsigned short)908, (unsigned short)909, (unsigned short)914, (unsigned short)915, (unsigned short)916, (unsigned short)917, (unsigned short)918, (unsigned short)921, (unsigned short)922, (unsigned short)923, (unsigned short)924, (unsigned short)925, (unsigned short)930, (unsigned short)931, (unsigned short)934, (unsigned short)936, (unsigned short)941, (unsigned short)942, (unsigned short)947, (unsigned short)948, (unsigned short)959, (unsigned short)963, (unsigned short)965, (unsigned short)966, (unsigned short)968, (unsigned short)969, (unsigned short)993, (unsigned short)1008, (unsigned short)1009, (unsigned short)1013, (unsigned short)1014, (unsigned short)1018, (unsigned short)1019, (unsigned short)1023, (unsigned short)1027, (unsigned short)1028, (unsigned short)1032, (unsigned short)1034, (unsigned short)1036, (unsigned short)1038, (unsigned short)1040, (unsigned short)1043, (unsigned short)1045, (unsigned short)1047, (unsigned short)1049, (unsigned short)1051, (unsigned short)1054, (unsigned short)1056, (unsigned short)1058, (unsigned short)1060, (unsigned short)1062, (unsigned short)1065, (unsigned short)1067, (unsigned short)1069, (unsigned short)1071, (unsigned short)1073, (unsigned short)1078, (unsigned short)1079, (unsigned short)1080, (unsigned short)1081, (unsigned short)1082, (unsigned short)1083, (unsigned short)1084, (unsigned short)1085, (unsigned short)1089, (unsigned short)1091, (unsigned short)1096, (unsigned short)1098, (unsigned short)1100, (unsigned short)1102, (unsigned short)1104, (unsigned short)1109, (unsigned short)1110, (unsigned short)1114, (unsigned short)1116, (unsigned short)1117, (unsigned short)1118, (unsigned short)1119, (unsigned short)1123, (unsigned short)1125, (unsigned short)1130, (unsigned short)1132, (unsigned short)1138, (unsigned short)1140, (unsigned short)1142, (unsigned short)1144, (unsigned short)1146, (unsigned short)1148, (unsigned short)1150, (unsigned short)1152, (unsigned short)1154, (unsigned short)1156, (unsigned short)1158, (unsigned short)1163, (unsigned short)1165, (unsigned short)1167, (unsigned short)1169, (unsigned short)1171, (unsigned short)1176, (unsigned short)1177, (unsigned short)1178, (unsigned short)1179, (unsigned short)1180, (unsigned short)1181, (unsigned short)1185, (unsigned short)1186, (unsigned short)1187, (unsigned short)1188, (unsigned short)1189, (unsigned short)1190, (unsigned short)1236, (unsigned short)1237, (unsigned short)1239, (unsigned short)1241, (unsigned short)1246, (unsigned short)1248, (unsigned short)1250, (unsigned short)1252, (unsigned short)1254, (unsigned short)1259, (unsigned short)1260, (unsigned short)1263, (unsigned short)1265, (unsigned short)1267, (unsigned short)1273, (unsigned short)1277, (unsigned short)1279, (unsigned short)1281, (unsigned short)1286, (unsigned short)1287, (unsigned short)1288, (unsigned short)1290, (unsigned short)1295, (unsigned short)1296, (unsigned short)1297, (unsigned short)1298, (unsigned short)1299, (unsigned short)1303, (unsigned short)1304, (unsigned short)1308, (unsigned short)1309, (unsigned short)1310, (unsigned short)1311, (unsigned short)1315, (unsigned short)1316, (unsigned short)1320, (unsigned short)1321, (unsigned short)1325, (unsigned short)1326, (unsigned short)1327, (unsigned short)1328, (unsigned short)1329, (unsigned short)1340, (unsigned short)1365, (unsigned short)1366, (unsigned short)1370, (unsigned short)1371, (unsigned short)1375, (unsigned short)1376, (unsigned short)1380, (unsigned short)1382, (unsigned short)1384, (unsigned short)1400, (unsigned short)1402, (unsigned short)1424, (unsigned short)1426, (unsigned short)1431, (unsigned short)1432, (unsigned short)1433, (unsigned short)1434, (unsigned short)1435, (unsigned short)1436, (unsigned short)1440, (unsigned short)1442, (unsigned short)1444, (unsigned short)1449, (unsigned short)1450, (unsigned short)1454, (unsigned short)1455, (unsigned short)1458, (unsigned short)1462, (unsigned short)1463, (unsigned short)1464, (unsigned short)1468, (unsigned short)1472, (unsigned short)1480, (unsigned short)1485, (unsigned short)1486, (unsigned short)1490, (unsigned short)1491, (unsigned short)1492, (unsigned short)1496, (unsigned short)1497, (unsigned short)1498, (unsigned short)1499, (unsigned short)1501, (unsigned short)1502, (unsigned short)1503, (unsigned short)1507, (unsigned short)1508, (unsigned short)1509, (unsigned short)1510, (unsigned short)1511, (unsigned short)1515, (unsigned short)1519, (unsigned short)1521, (unsigned short)1526, (unsigned short)1528, (unsigned short)1553, (unsigned short)1555, (unsigned short)1557, (unsigned short)1559, (unsigned short)1564, (unsigned short)1566, (unsigned short)1570, (unsigned short)1572, (unsigned short)1574, (unsigned short)1576, (unsigned short)1578, (unsigned short)1584, (unsigned short)1586, (unsigned short)1591, (unsigned short)1596, (unsigned short)1597, (unsigned short)1601, (unsigned short)1603, (unsigned short)1608, (unsigned short)1613, (unsigned short)1614, (unsigned short)1615, (unsigned short)1616, (unsigned short)1617, (unsigned short)1618, (unsigned short)1622, (unsigned short)1623, (unsigned short)1624, (unsigned short)1628, (unsigned short)1629
+(unsigned short)0, (unsigned short)229, (unsigned short)229, (unsigned short)247, (unsigned short)271, (unsigned short)311, (unsigned short)312, (unsigned short)339, (unsigned short)343, (unsigned short)344, (unsigned short)345, (unsigned short)362, (unsigned short)364, (unsigned short)369, (unsigned short)374, (unsigned short)379, (unsigned short)381, (unsigned short)386, (unsigned short)391, (unsigned short)392, (unsigned short)397, (unsigned short)399, (unsigned short)401, (unsigned short)403, (unsigned short)404, (unsigned short)406, (unsigned short)407, (unsigned short)408, (unsigned short)411, (unsigned short)412, (unsigned short)413, (unsigned short)414, (unsigned short)415, (unsigned short)416, (unsigned short)417, (unsigned short)418, (unsigned short)419, (unsigned short)423, (unsigned short)424, (unsigned short)425, (unsigned short)426, (unsigned short)427, (unsigned short)428, (unsigned short)441, (unsigned short)442, (unsigned short)443, (unsigned short)447, (unsigned short)476, (unsigned short)477, (unsigned short)478, (unsigned short)479, (unsigned short)483, (unsigned short)484, (unsigned short)485, (unsigned short)487, (unsigned short)488, (unsigned short)490, (unsigned short)491, (unsigned short)495, (unsigned short)496, (unsigned short)505, (unsigned short)506, (unsigned short)507, (unsigned short)508, (unsigned short)509, (unsigned short)510, (unsigned short)511, (unsigned short)515, (unsigned short)516, (unsigned short)520, (unsigned short)521, (unsigned short)522, (unsigned short)523, (unsigned short)527, (unsigned short)528, (unsigned short)529, (unsigned short)533, (unsigned short)534, (unsigned short)535, (unsigned short)539, (unsigned short)547, (unsigned short)548, (unsigned short)549, (unsigned short)550, (unsigned short)551, (unsigned short)555, (unsigned short)556, (unsigned short)557, (unsigned short)561, (unsigned short)562, (unsigned short)566, (unsigned short)567, (unsigned short)571, (unsigned short)572, (unsigned short)576, (unsigned short)577, (unsigned short)581, (unsigned short)582, (unsigned short)586, (unsigned short)587, (unsigned short)591, (unsigned short)592, (unsigned short)593, (unsigned short)597, (unsigned short)598, (unsigned short)599, (unsigned short)600, (unsigned short)601, (unsigned short)602, (unsigned short)603, (unsigned short)604, (unsigned short)605, (unsigned short)606, (unsigned short)607, (unsigned short)611, (unsigned short)612, (unsigned short)616, (unsigned short)620, (unsigned short)621, (unsigned short)622, (unsigned short)623, (unsigned short)627, (unsigned short)628, (unsigned short)629, (unsigned short)630, (unsigned short)631, (unsigned short)632, (unsigned short)633, (unsigned short)634, (unsigned short)638, (unsigned short)639, (unsigned short)640, (unsigned short)641, (unsigned short)642, (unsigned short)643, (unsigned short)644, (unsigned short)645, (unsigned short)646, (unsigned short)647, (unsigned short)651, (unsigned short)652, (unsigned short)653, (unsigned short)654, (unsigned short)655, (unsigned short)656, (unsigned short)657, (unsigned short)658, (unsigned short)659, (unsigned short)660, (unsigned short)664, (unsigned short)665, (unsigned short)666, (unsigned short)667, (unsigned short)668, (unsigned short)669, (unsigned short)670, (unsigned short)671, (unsigned short)672, (unsigned short)673, (unsigned short)674, (unsigned short)675, (unsigned short)679, (unsigned short)680, (unsigned short)684, (unsigned short)685, (unsigned short)686, (unsigned short)687, (unsigned short)688, (unsigned short)689, (unsigned short)690, (unsigned short)691, (unsigned short)692, (unsigned short)700, (unsigned short)709, (unsigned short)710, (unsigned short)711, (unsigned short)712, (unsigned short)713, (unsigned short)714, (unsigned short)715, (unsigned short)716, (unsigned short)717, (unsigned short)718, (unsigned short)719, (unsigned short)720, (unsigned short)721, (unsigned short)729, (unsigned short)738, (unsigned short)739, (unsigned short)743, (unsigned short)744, (unsigned short)748, (unsigned short)749, (unsigned short)750, (unsigned short)751, (unsigned short)752, (unsigned short)753, (unsigned short)757, (unsigned short)758, (unsigned short)759, (unsigned short)763, (unsigned short)764, (unsigned short)765, (unsigned short)770, (unsigned short)771, (unsigned short)772, (unsigned short)773, (unsigned short)774, (unsigned short)778, (unsigned short)779, (unsigned short)783, (unsigned short)784, (unsigned short)785, (unsigned short)789, (unsigned short)790, (unsigned short)794, (unsigned short)798, (unsigned short)799, (unsigned short)800, (unsigned short)805, (unsigned short)806, (unsigned short)807, (unsigned short)808, (unsigned short)809, (unsigned short)810, (unsigned short)811, (unsigned short)812, (unsigned short)813, (unsigned short)814, (unsigned short)815, (unsigned short)816, (unsigned short)817, (unsigned short)818, (unsigned short)819, (unsigned short)820, (unsigned short)821, (unsigned short)822, (unsigned short)823, (unsigned short)824, (unsigned short)825, (unsigned short)826, (unsigned short)827, (unsigned short)828, (unsigned short)832, (unsigned short)833, (unsigned short)834, (unsigned short)835, (unsigned short)836, (unsigned short)837, (unsigned short)838, (unsigned short)839, (unsigned short)840, (unsigned short)841, (unsigned short)842, (unsigned short)843, (unsigned short)844, (unsigned short)845, (unsigned short)846, (unsigned short)847, (unsigned short)848, (unsigned short)849, (unsigned short)850, (unsigned short)851, (unsigned short)852, (unsigned short)853, (unsigned short)858, (unsigned short)859, (unsigned short)860, (unsigned short)861, (unsigned short)862, (unsigned short)865, (unsigned short)866, (unsigned short)867, (unsigned short)868, (unsigned short)869, (unsigned short)874, (unsigned short)875, (unsigned short)878, (unsigned short)880, (unsigned short)885, (unsigned short)886, (unsigned short)891, (unsigned short)892, (unsigned short)903, (unsigned short)907, (unsigned short)909, (unsigned short)910, (unsigned short)912, (unsigned short)913, (unsigned short)937, (unsigned short)952, (unsigned short)953, (unsigned short)957, (unsigned short)958, (unsigned short)962, (unsigned short)963, (unsigned short)967, (unsigned short)971, (unsigned short)972, (unsigned short)976, (unsigned short)978, (unsigned short)980, (unsigned short)982, (unsigned short)984, (unsigned short)987, (unsigned short)989, (unsigned short)991, (unsigned short)993, (unsigned short)995, (unsigned short)998, (unsigned short)1000, (unsigned short)1002, (unsigned short)1004, (unsigned short)1006, (unsigned short)1009, (unsigned short)1011, (unsigned short)1013, (unsigned short)1015, (unsigned short)1017, (unsigned short)1022, (unsigned short)1023, (unsigned short)1024, (unsigned short)1025, (unsigned short)1026, (unsigned short)1027, (unsigned short)1028, (unsigned short)1029, (unsigned short)1033, (unsigned short)1035, (unsigned short)1040, (unsigned short)1042, (unsigned short)1044, (unsigned short)1046, (unsigned short)1048, (unsigned short)1053, (unsigned short)1054, (unsigned short)1058, (unsigned short)1060, (unsigned short)1061, (unsigned short)1062, (unsigned short)1063, (unsigned short)1067, (unsigned short)1069, (unsigned short)1074, (unsigned short)1076, (unsigned short)1082, (unsigned short)1084, (unsigned short)1086, (unsigned short)1088, (unsigned short)1090, (unsigned short)1092, (unsigned short)1094, (unsigned short)1096, (unsigned short)1098, (unsigned short)1100, (unsigned short)1102, (unsigned short)1107, (unsigned short)1109, (unsigned short)1111, (unsigned short)1113, (unsigned short)1115, (unsigned short)1120, (unsigned short)1121, (unsigned short)1122, (unsigned short)1123, (unsigned short)1124, (unsigned short)1125, (unsigned short)1129, (unsigned short)1130, (unsigned short)1131, (unsigned short)1132, (unsigned short)1133, (unsigned short)1134, (unsigned short)1180, (unsigned short)1181, (unsigned short)1183, (unsigned short)1185, (unsigned short)1190, (unsigned short)1192, (unsigned short)1194, (unsigned short)1196, (unsigned short)1198, (unsigned short)1203, (unsigned short)1204, (unsigned short)1207, (unsigned short)1209, (unsigned short)1211, (unsigned short)1217, (unsigned short)1221, (unsigned short)1223, (unsigned short)1225, (unsigned short)1230, (unsigned short)1231, (unsigned short)1232, (unsigned short)1234, (unsigned short)1239, (unsigned short)1240, (unsigned short)1241, (unsigned short)1242, (unsigned short)1243, (unsigned short)1247, (unsigned short)1248, (unsigned short)1252, (unsigned short)1253, (unsigned short)1254, (unsigned short)1255, (unsigned short)1259, (unsigned short)1260, (unsigned short)1264, (unsigned short)1265, (unsigned short)1269, (unsigned short)1270, (unsigned short)1271, (unsigned short)1272, (unsigned short)1273, (unsigned short)1284, (unsigned short)1309, (unsigned short)1310, (unsigned short)1314, (unsigned short)1315, (unsigned short)1319, (unsigned short)1320, (unsigned short)1324, (unsigned short)1326, (unsigned short)1328, (unsigned short)1344, (unsigned short)1346, (unsigned short)1368, (unsigned short)1370, (unsigned short)1375, (unsigned short)1376, (unsigned short)1377, (unsigned short)1378, (unsigned short)1379, (unsigned short)1380, (unsigned short)1384, (unsigned short)1386, (unsigned short)1388, (unsigned short)1393, (unsigned short)1394, (unsigned short)1398, (unsigned short)1399, (unsigned short)1402, (unsigned short)1406, (unsigned short)1407, (unsigned short)1408, (unsigned short)1412, (unsigned short)1416, (unsigned short)1424, (unsigned short)1429, (unsigned short)1430, (unsigned short)1434, (unsigned short)1435, (unsigned short)1436, (unsigned short)1440, (unsigned short)1441, (unsigned short)1442, (unsigned short)1443, (unsigned short)1445, (unsigned short)1446, (unsigned short)1447, (unsigned short)1451, (unsigned short)1452, (unsigned short)1453, (unsigned short)1454, (unsigned short)1455, (unsigned short)1459, (unsigned short)1463, (unsigned short)1465, (unsigned short)1470, (unsigned short)1472, (unsigned short)1497, (unsigned short)1499, (unsigned short)1501, (unsigned short)1503, (unsigned short)1508, (unsigned short)1510, (unsigned short)1514, (unsigned short)1516, (unsigned short)1518, (unsigned short)1520, (unsigned short)1522, (unsigned short)1528, (unsigned short)1530, (unsigned short)1535, (unsigned short)1540, (unsigned short)1541, (unsigned short)1545, (unsigned short)1547, (unsigned short)1552, (unsigned short)1557, (unsigned short)1558, (unsigned short)1559, (unsigned short)1560, (unsigned short)1561, (unsigned short)1562, (unsigned short)1566, (unsigned short)1567, (unsigned short)1568, (unsigned short)1572, (unsigned short)1573
 };
 
 static const char * const yytname[] =
@@ -285,10 +285,6 @@ int pos;
 int included;
 } __attribute__ ((gcc_struct));
 
-extern char *  strcpy(char * , const char * );
-
-extern char *  strcat(char * , const char * );
-
 extern size_t strlen(const char * );
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
@@ -328,10 +324,6 @@ extern struct Context * PushContext(void);
 extern void FreeExtDecl(struct ExtDecl * extDecl);
 
 extern struct ExtDecl * MkExtDeclString(char * s);
-
-extern struct Symbol * DeclClass(const char *  name);
-
-extern struct Symbol * _DeclClass(const char *  name);
 
 struct Location
 {
@@ -425,6 +417,10 @@ struct Specifier;
 
 extern void FreeSpecifier(struct Specifier * spec);
 
+extern struct Symbol * DeclClass(struct Specifier * _class, const char *  name);
+
+extern struct Symbol * _DeclClass(struct Specifier * _class, const char *  name);
+
 extern struct Specifier * MkSpecifierName(const char *  name);
 
 extern void SetClassTemplateArgs(struct Specifier * spec, struct __ecereNameSpace__ecere__sys__OldList * templateArgs);
@@ -481,6 +477,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -2273,7 +2270,7 @@ switch(yyn)
 case 2:
 {
 yyval.specifier = (((void *)0));
-DeclClass(yyvsp[(1) - (2)].id->string);
+DeclClass(yyvsp[(1) - (2)].id->_class, yyvsp[(1) - (2)].id->string);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
@@ -2303,17 +2300,7 @@ break;
 case 3:
 {
 yyval.specifier = (((void *)0));
-if(yyvsp[(1) - (2)].id->_class)
-{
-char name[1024];
-
-strcpy(name, yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (2)].id->_class->__anon1.__anon1.name : "");
-strcat(name, "::");
-strcat(name, yyvsp[(1) - (2)].id->string);
-_DeclClass(name);
-}
-else
-_DeclClass(yyvsp[(1) - (2)].id->string);
+_DeclClass(yyvsp[(1) - (2)].id->_class, yyvsp[(1) - (2)].id->string);
 FreeIdentifier(yyvsp[(1) - (2)].id);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
@@ -2342,7 +2329,7 @@ goto yysetstate;
 break;
 case 4:
 {
-DeclClass(yyvsp[(1) - (2)].id->string);
+DeclClass(yyvsp[(1) - (2)].id->_class, yyvsp[(1) - (2)].id->string);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
@@ -2378,7 +2365,7 @@ yyval.specifier = yyvsp[(1) - (1)].specifier;
 break;
 case 6:
 {
-DeclClass(yyvsp[(1) - (2)].id->string);
+DeclClass(yyvsp[(1) - (2)].id->_class, yyvsp[(1) - (2)].id->string);
 ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
@@ -3442,17 +3429,7 @@ FreeIdentifier(yyvsp[(2) - (2)].id);
 break;
 case 171:
 {
-if(yyvsp[(1) - (4)].id->_class)
-{
-char name[1024];
-
-strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
-strcat(name, "::");
-strcat(name, yyvsp[(1) - (4)].id->string);
-_DeclClass(name);
-}
-else
-_DeclClass(yyvsp[(1) - (4)].id->string);
+_DeclClass(yyvsp[(1) - (4)].id->_class, yyvsp[(1) - (4)].id->string);
 yyval.list = MkList();
 ListAdd(yyval.list, MkSpecifierNameArgs(yyvsp[(1) - (4)].id->string, yyvsp[(3) - (4)].list));
 FreeIdentifier(yyvsp[(1) - (4)].id);
@@ -3461,16 +3438,7 @@ FreeIdentifier(yyvsp[(1) - (4)].id);
 break;
 case 172:
 {
-if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->__anon1.__anon1.name)
-{
-char name[1024];
-
-strcpy(name, "::");
-strcat(name, yyvsp[(2) - (5)].id->string);
-_DeclClass(name);
-}
-else
-_DeclClass(yyvsp[(2) - (5)].id->string);
+_DeclClass(yyvsp[(2) - (5)].id->_class, yyvsp[(2) - (5)].id->string);
 ListAdd(yyvsp[(1) - (5)].list, MkSpecifierNameArgs(yyvsp[(2) - (5)].id->string, yyvsp[(4) - (5)].list));
 FreeIdentifier(yyvsp[(2) - (5)].id);
 ;
@@ -3563,17 +3531,7 @@ FreeIdentifier(yyvsp[(2) - (2)].id);
 break;
 case 185:
 {
-if(yyvsp[(1) - (4)].id->_class)
-{
-char name[1024];
-
-strcpy(name, yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name ? yyvsp[(1) - (4)].id->_class->__anon1.__anon1.name : "");
-strcat(name, "::");
-strcat(name, yyvsp[(1) - (4)].id->string);
-_DeclClass(name);
-}
-else
-_DeclClass(yyvsp[(1) - (4)].id->string);
+_DeclClass(yyvsp[(1) - (4)].id->_class, yyvsp[(1) - (4)].id->string);
 yyval.list = MkList();
 ListAdd(yyval.list, MkSpecifierNameArgs(yyvsp[(1) - (4)].id->string, yyvsp[(3) - (4)].list));
 FreeIdentifier(yyvsp[(1) - (4)].id);
@@ -3582,16 +3540,7 @@ FreeIdentifier(yyvsp[(1) - (4)].id);
 break;
 case 186:
 {
-if(yyvsp[(2) - (5)].id->_class && !yyvsp[(2) - (5)].id->_class->__anon1.__anon1.name)
-{
-char name[1024];
-
-strcpy(name, "::");
-strcat(name, yyvsp[(2) - (5)].id->string);
-_DeclClass(name);
-}
-else
-_DeclClass(yyvsp[(2) - (5)].id->string);
+_DeclClass(yyvsp[(2) - (5)].id->_class, yyvsp[(2) - (5)].id->string);
 ListAdd(yyvsp[(1) - (5)].list, MkSpecifierNameArgs(yyvsp[(2) - (5)].id->string, yyvsp[(4) - (5)].list));
 FreeIdentifier(yyvsp[(2) - (5)].id);
 ;
@@ -3904,7 +3853,7 @@ yyval.specifier = MkSpecifierSubClass(yyvsp[(3) - (4)].specifier);
 break;
 case 239:
 {
-_DeclClass(yyvsp[(3) - (4)].id->string);
+_DeclClass(yyvsp[(3) - (4)].id->_class, yyvsp[(3) - (4)].id->string);
 yyval.specifier = MkSpecifierSubClass(MkSpecifierName(yyvsp[(3) - (4)].id->string));
 FreeIdentifier(yyvsp[(3) - (4)].id);
 ;
@@ -4032,7 +3981,7 @@ yyval.specifier = MkSpecifierSubClass(yyvsp[(3) - (4)].specifier);
 break;
 case 263:
 {
-_DeclClass(yyvsp[(3) - (4)].id->string);
+_DeclClass(yyvsp[(3) - (4)].id->_class, yyvsp[(3) - (4)].id->string);
 yyval.specifier = MkSpecifierSubClass(MkSpecifierName(yyvsp[(3) - (4)].id->string));
 FreeIdentifier(yyvsp[(3) - (4)].id);
 ;
@@ -4048,7 +3997,7 @@ case 265:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (5)].specifierType, yyvsp[(2) - (5)].id, yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].id->string);
+DeclClass(yyvsp[(2) - (5)].id->_class, yyvsp[(2) - (5)].id->string);
 ;
 }
 break;
@@ -4062,7 +4011,7 @@ case 267:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (4)].specifierType, yyvsp[(2) - (4)].id, (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (4)].id->string);
+DeclClass(yyvsp[(2) - (4)].id->_class, yyvsp[(2) - (4)].id->string);
 ;
 }
 break;
@@ -4076,7 +4025,7 @@ case 269:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (5)].specifierType, MkIdentifier(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name), yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
 ;
 }
@@ -4086,7 +4035,7 @@ case 270:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (6)].specifierType, yyvsp[(3) - (6)].id, yyvsp[(5) - (6)].list);
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (6)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (6)].id->string);
+DeclClass(yyvsp[(3) - (6)].id->_class, yyvsp[(3) - (6)].id->string);
 ;
 }
 break;
@@ -4102,7 +4051,7 @@ case 272:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (5)].specifierType, yyvsp[(3) - (5)].id, (((void *)0)));
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (5)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (5)].id->string);
+DeclClass(yyvsp[(3) - (5)].id->_class, yyvsp[(3) - (5)].id->string);
 ;
 }
 break;
@@ -4118,7 +4067,7 @@ case 274:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (6)].specifierType, MkIdentifier(yyvsp[(3) - (6)].specifier->__anon1.__anon1.name), yyvsp[(5) - (6)].list);
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (6)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(3) - (6)].specifier->__anon1.__anon1.nsSpec, yyvsp[(3) - (6)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(3) - (6)].specifier);
 ;
 }
@@ -4127,7 +4076,7 @@ case 275:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (2)].specifierType, yyvsp[(2) - (2)].id, (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].id->string);
+DeclClass(yyvsp[(2) - (2)].id->_class, yyvsp[(2) - (2)].id->string);
 ;
 }
 break;
@@ -4135,7 +4084,7 @@ case 276:
 {
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (2)].specifierType, MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name), (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -4145,7 +4094,7 @@ case 277:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifierType, yyvsp[(3) - (3)].id, (((void *)0)));
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (3)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (3)].id->string);
+DeclClass(yyvsp[(3) - (3)].id->_class, yyvsp[(3) - (3)].id->string);
 ;
 }
 break;
@@ -4154,7 +4103,7 @@ case 278:
 yyval.specifier = MkStructOrUnion(yyvsp[(1) - (3)].specifierType, MkIdentifier(yyvsp[(3) - (3)].specifier->__anon1.__anon1.name), (((void *)0)));
 yyval.specifier->__anon1.__anon2.extDeclStruct = yyvsp[(2) - (3)].extDecl;
 if(declMode)
-DeclClass(yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(3) - (3)].specifier->__anon1.__anon1.nsSpec, yyvsp[(3) - (3)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(3) - (3)].specifier);
 ;
 }
@@ -4554,7 +4503,7 @@ case 334:
 {
 yyval.specifier = MkEnum(yyvsp[(2) - (2)].id, (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].id->string);
+DeclClass(yyvsp[(2) - (2)].id->_class, yyvsp[(2) - (2)].id->string);
 ;
 }
 break;
@@ -4562,7 +4511,7 @@ case 335:
 {
 yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name), (((void *)0)));
 if(declMode)
-DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (2)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (2)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (2)].specifier);
 ;
 }
@@ -4577,7 +4526,7 @@ case 337:
 {
 yyval.specifier = MkEnum(yyvsp[(2) - (5)].id, yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].id->string);
+DeclClass(yyvsp[(2) - (5)].id->_class, yyvsp[(2) - (5)].id->string);
 ;
 }
 break;
@@ -4586,7 +4535,7 @@ case 338:
 yyval.specifier = MkEnum(yyvsp[(2) - (7)].id, yyvsp[(4) - (7)].list);
 yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (7)].list;
 if(declMode)
-DeclClass(yyvsp[(2) - (7)].id->string);
+DeclClass(yyvsp[(2) - (7)].id->_class, yyvsp[(2) - (7)].id->string);
 ;
 }
 break;
@@ -4595,7 +4544,7 @@ case 339:
 yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (7)].specifier->__anon1.__anon1.name), yyvsp[(4) - (7)].list);
 yyval.specifier->__anon1.__anon2.definitions = yyvsp[(6) - (7)].list;
 if(declMode)
-DeclClass(yyvsp[(2) - (7)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (7)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (7)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (7)].specifier);
 ;
 }
@@ -4604,7 +4553,7 @@ case 340:
 {
 yyval.specifier = MkEnum(MkIdentifier(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name), yyvsp[(4) - (5)].list);
 if(declMode)
-DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
+DeclClass(yyvsp[(2) - (5)].specifier->__anon1.__anon1.nsSpec, yyvsp[(2) - (5)].specifier->__anon1.__anon1.name);
 FreeSpecifier(yyvsp[(2) - (5)].specifier);
 ;
 }

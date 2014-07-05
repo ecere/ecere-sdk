@@ -541,6 +541,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
@@ -935,6 +936,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -1701,8 +1703,10 @@ if(external->type == 2)
 {
 struct ClassDefinition * _class = external->__anon1._class;
 
-if(_class->definitions && (!_class->symbol->__anon1.registered || !inCompiler))
+if((!_class->symbol->__anon1.registered || !inCompiler))
 {
+if(_class->definitions)
+_class->symbol->mustRegister = 1;
 ProcessClass(0, _class->definitions, _class->symbol, _class->baseSpecs, (((void *)0)), &_class->loc, ast, external->prev, (((void *)0)), _class->declMode);
 _class->symbol->isStatic = _class->declMode == 3;
 }
@@ -1743,6 +1747,8 @@ else if(specifier->type == 4)
 classType = 6;
 else
 classType = 1;
+if(specifier->__anon1.__anon2.definitions || specifier->type == 2 || specifier->__anon1.__anon2.baseSpecs)
+symbol->mustRegister = 1;
 ProcessClass(classType, specifier->__anon1.__anon2.definitions, symbol, specifier->__anon1.__anon2.baseSpecs, specifier->__anon1.__anon2.list, &specifier->loc, ast, external->prev, declaration->__anon1.__anon1.declarators, declaration->declMode);
 symbol->isStatic = declaration->declMode == 3;
 }

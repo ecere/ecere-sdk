@@ -195,7 +195,53 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Free;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Delete;
 
+struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
+{
+return this->data;
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_SetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data)
+{
+return 0;
+}
+
+struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Insert(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value)
+{
+return (((void *)0));
+}
+
+struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Add(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, uint64 value)
+{
+return (((void *)0));
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Remove(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it)
+{
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Move(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it, struct __ecereNameSpace__ecere__com__IteratorPointer * after)
+{
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Copy(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__Instance * source)
+{
+}
+
+int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetCount(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
+{
+return this->count;
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it)
+{
+}
+
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__BuiltInContainer * this);
+
+struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
+{
+return __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(this);
+}
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 
@@ -375,36 +421,6 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} __attribute__ ((gcc_struct));
-
-struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
-{
-return __ecereProp___ecereNameSpace__ecere__com__BuiltInContainer_Get___ecereNameSpace__ecere__com__Container(this);
-}
-
-struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
-{
-return this->data;
-}
-
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetLast(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
 {
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)(this->data ? ((unsigned char *)this->data + (this->count * this->type->typeSize) - 1) : (((void *)0)));
@@ -427,77 +443,9 @@ uint64 * item = (uint64 *)pointer;
 return ((((this->type->type == 1) ? ((uint64)(uintptr_t)item) : ((this->type->typeSize == 1) ? *((unsigned char *)item) : ((this->type->typeSize == 2) ? *((unsigned short *)item) : ((this->type->typeSize == 4) ? *((unsigned int *)item) : *(item)))))));
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_SetData(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data)
-{
-return 0;
-}
-
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetAtPosition(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, const uint64 pos, unsigned int create)
 {
 return this->data ? (struct __ecereNameSpace__ecere__com__IteratorPointer *)((unsigned char *)this->data + this->type->typeSize) : (((void *)0));
-}
-
-struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Insert(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * after, uint64 value)
-{
-return (((void *)0));
-}
-
-struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Add(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, uint64 value)
-{
-return (((void *)0));
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Remove(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it)
-{
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Move(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it, struct __ecereNameSpace__ecere__com__IteratorPointer * after)
-{
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
-{
-struct __ecereNameSpace__ecere__com__IteratorPointer * i;
-
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext])(this, i))
-((void (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Remove])(this, i);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Copy(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__Instance * source)
-{
-}
-
-struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Find(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, uint64 value)
-{
-struct __ecereNameSpace__ecere__com__IteratorPointer * i;
-
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext])(this, i))
-{
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData])(this, i);
-struct __ecereNameSpace__ecere__com__Class * Dclass = this->type;
-int result = ((int (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare])(Dclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &value : (void *)(uintptr_t)value, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &data : (void *)(uintptr_t)data);
-
-if(!result)
-return i;
-}
-return (((void *)0));
-}
-
-int __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_GetCount(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
-{
-return this->count;
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Free(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
-{
-struct __ecereNameSpace__ecere__com__IteratorPointer * i;
-
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext])(this, i))
-((void (*)(void *, void *))(void *)this->type->_vTbl[__ecereVMethodID_class_OnFree])(this->type, (void *)(uintptr_t)((uint64 (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData])(this, i));
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Delete(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, struct __ecereNameSpace__ecere__com__IteratorPointer * it)
-{
 }
 
 const char * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__BuiltInContainer * this, char * tempString, void * fieldData, unsigned int * needClass)
@@ -527,6 +475,58 @@ data += Dclass->typeSize;
 else
 tempString[0] = (char)0;
 return tempString;
+}
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
+
+struct __ecereNameSpace__ecere__com__Module
+{
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} __attribute__ ((gcc_struct));
+
+void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_RemoveAll(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
+{
+struct __ecereNameSpace__ecere__com__IteratorPointer * i;
+
+for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext])(this, i))
+((void (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_Remove])(this, i);
+}
+
+struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Find(struct __ecereNameSpace__ecere__com__BuiltInContainer * this, uint64 value)
+{
+struct __ecereNameSpace__ecere__com__IteratorPointer * i;
+
+for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext])(this, i))
+{
+uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData])(this, i);
+struct __ecereNameSpace__ecere__com__Class * Dclass = this->type;
+int result = ((int (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare])(Dclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &value : (void *)(uintptr_t)value, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? &data : (void *)(uintptr_t)data);
+
+if(!result)
+return i;
+}
+return (((void *)0));
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__BuiltInContainer_Free(struct __ecereNameSpace__ecere__com__BuiltInContainer * this)
+{
+struct __ecereNameSpace__ecere__com__IteratorPointer * i;
+
+for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetNext])(this, i))
+((void (*)(void *, void *))(void *)this->type->_vTbl[__ecereVMethodID_class_OnFree])(this->type, (void *)(uintptr_t)((uint64 (*)(struct __ecereNameSpace__ecere__com__BuiltInContainer *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__ecereClass___ecereNameSpace__ecere__com__BuiltInContainer->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__BuiltInContainer_GetData])(this, i));
 }
 
 void __ecereUnregisterModule_BuiltInContainer(struct __ecereNameSpace__ecere__com__Instance * module)

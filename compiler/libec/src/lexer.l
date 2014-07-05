@@ -212,7 +212,7 @@ default:
 "dbindex"                  { return(DBINDEX); }
 "database_open"            { return(DATABASE_OPEN); }
 
-("::"|(({IDENT}"&"?"::")*)){IDENT}?    { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }  // ("::"|(({IDENT}"::")*)){IDENT}  { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }
+("::"?(({IDENT}"&"?"::")*)){IDENT}?    { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }  // ("::"|(({IDENT}"::")*)){IDENT}  { return(check_type()); }     // {L}({L}|{D})*      { return(check_type()); }
 
 0[xX]{H}+{IS}?          { return(CONSTANT); }
 

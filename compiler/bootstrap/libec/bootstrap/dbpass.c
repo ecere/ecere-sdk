@@ -271,81 +271,9 @@ extern struct Specifier * MkSpecifier(int specifier);
 
 extern struct Specifier * CopySpecifier(struct Specifier * spec);
 
-struct Symbol;
-
-struct Specifier
-{
-struct Specifier * prev;
-struct Specifier * next;
-struct Location loc;
-int type;
-union
-{
-int specifier;
-struct
-{
-struct ExtDecl * extDecl;
-char *  name;
-struct Symbol * symbol;
-struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
-} __attribute__ ((gcc_struct)) __anon1;
-struct
-{
-struct Identifier * id;
-struct __ecereNameSpace__ecere__sys__OldList *  list;
-struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
-struct __ecereNameSpace__ecere__sys__OldList *  definitions;
-unsigned int addNameSpace;
-struct Context * ctx;
-struct ExtDecl * extDeclStruct;
-} __attribute__ ((gcc_struct)) __anon2;
-struct Expression * expression;
-struct Specifier * _class;
-struct TemplateParameter * templateParameter;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
-
-struct Identifier
-{
-struct Identifier * prev;
-struct Identifier * next;
-struct Location loc;
-struct Symbol * classSym;
-struct Specifier * _class;
-char *  string;
-struct Identifier * badID;
-} __attribute__ ((gcc_struct));
-
-struct DBTableDef
-{
-char *  name;
-struct Symbol * symbol;
-struct __ecereNameSpace__ecere__sys__OldList *  definitions;
-int declMode;
-} __attribute__ ((gcc_struct));
-
-extern struct Symbol * DeclClass(const char *  name);
-
 struct PropertyDef;
 
 struct Instantiation;
-
-struct Instantiation
-{
-struct Instantiation * prev;
-struct Instantiation * next;
-struct Location loc;
-struct Specifier * _class;
-struct Expression * exp;
-struct __ecereNameSpace__ecere__sys__OldList *  members;
-struct Symbol * symbol;
-unsigned int fullSet;
-unsigned int isConstant;
-unsigned char *  data;
-struct Location nameLoc;
-struct Location insideLoc;
-unsigned int built;
-} __attribute__ ((gcc_struct));
 
 extern struct Expression * MkExpInstance(struct Instantiation * inst);
 
@@ -360,27 +288,6 @@ extern struct Statement * MkIfStmt(struct __ecereNameSpace__ecere__sys__OldList 
 extern struct Statement * MkReturnStmt(struct __ecereNameSpace__ecere__sys__OldList * exp);
 
 extern struct Statement * MkExpressionStmt(struct __ecereNameSpace__ecere__sys__OldList * expressions);
-
-struct PropertyDef
-{
-struct PropertyDef * prev;
-struct PropertyDef * next;
-struct Location loc;
-struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
-struct Declarator * declarator;
-struct Identifier * id;
-struct Statement * getStmt;
-struct Statement * setStmt;
-struct Statement * issetStmt;
-struct Symbol * symbol;
-struct Expression * category;
-struct
-{
-unsigned int conversion : 1;
-unsigned int isWatchable : 1;
-unsigned int isDBProp : 1;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
 
 extern struct PropertyDef * MkProperty(struct __ecereNameSpace__ecere__sys__OldList * specs, struct Declarator * decl, struct Identifier * id, struct Statement * setStmt, struct Statement * getStmt);
 
@@ -471,6 +378,77 @@ struct Declaration * decl;
 
 extern struct Declaration * MkDeclaration(struct __ecereNameSpace__ecere__sys__OldList * specifiers, struct __ecereNameSpace__ecere__sys__OldList * initDeclarators);
 
+extern struct External * MkExternalDeclaration(struct Declaration * declaration);
+
+extern struct Declaration * MkDeclarationInst(struct Instantiation * inst);
+
+struct Initializer;
+
+extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
+
+extern struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sys__OldList * list);
+
+struct Initializer
+{
+struct Initializer * prev;
+struct Initializer * next;
+struct Location loc;
+int type;
+union
+{
+struct Expression * exp;
+struct __ecereNameSpace__ecere__sys__OldList *  list;
+} __attribute__ ((gcc_struct)) __anon1;
+unsigned int isConstant;
+struct Identifier * id;
+} __attribute__ ((gcc_struct));
+
+struct Symbol;
+
+struct Specifier
+{
+struct Specifier * prev;
+struct Specifier * next;
+struct Location loc;
+int type;
+union
+{
+int specifier;
+struct
+{
+struct ExtDecl * extDecl;
+char *  name;
+struct Symbol * symbol;
+struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
+} __attribute__ ((gcc_struct)) __anon1;
+struct
+{
+struct Identifier * id;
+struct __ecereNameSpace__ecere__sys__OldList *  list;
+struct __ecereNameSpace__ecere__sys__OldList *  baseSpecs;
+struct __ecereNameSpace__ecere__sys__OldList *  definitions;
+unsigned int addNameSpace;
+struct Context * ctx;
+struct ExtDecl * extDeclStruct;
+} __attribute__ ((gcc_struct)) __anon2;
+struct Expression * expression;
+struct Specifier * _class;
+struct TemplateParameter * templateParameter;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct));
+
+struct Identifier
+{
+struct Identifier * prev;
+struct Identifier * next;
+struct Location loc;
+struct Symbol * classSym;
+struct Specifier * _class;
+char *  string;
+struct Identifier * badID;
+} __attribute__ ((gcc_struct));
+
 struct Declaration
 {
 struct Declaration * prev;
@@ -496,30 +474,53 @@ struct Symbol * symbol;
 int declMode;
 } __attribute__ ((gcc_struct));
 
-extern struct External * MkExternalDeclaration(struct Declaration * declaration);
-
-extern struct Declaration * MkDeclarationInst(struct Instantiation * inst);
-
-struct Initializer;
-
-extern struct Initializer * MkInitializerAssignment(struct Expression * exp);
-
-extern struct Initializer * MkInitializerList(struct __ecereNameSpace__ecere__sys__OldList * list);
-
-struct Initializer
+struct Instantiation
 {
-struct Initializer * prev;
-struct Initializer * next;
+struct Instantiation * prev;
+struct Instantiation * next;
 struct Location loc;
-int type;
-union
-{
+struct Specifier * _class;
 struct Expression * exp;
-struct __ecereNameSpace__ecere__sys__OldList *  list;
-} __attribute__ ((gcc_struct)) __anon1;
+struct __ecereNameSpace__ecere__sys__OldList *  members;
+struct Symbol * symbol;
+unsigned int fullSet;
 unsigned int isConstant;
-struct Identifier * id;
+unsigned char *  data;
+struct Location nameLoc;
+struct Location insideLoc;
+unsigned int built;
 } __attribute__ ((gcc_struct));
+
+struct PropertyDef
+{
+struct PropertyDef * prev;
+struct PropertyDef * next;
+struct Location loc;
+struct __ecereNameSpace__ecere__sys__OldList *  specifiers;
+struct Declarator * declarator;
+struct Identifier * id;
+struct Statement * getStmt;
+struct Statement * setStmt;
+struct Statement * issetStmt;
+struct Symbol * symbol;
+struct Expression * category;
+struct
+{
+unsigned int conversion : 1;
+unsigned int isWatchable : 1;
+unsigned int isDBProp : 1;
+} __attribute__ ((gcc_struct)) __anon1;
+} __attribute__ ((gcc_struct));
+
+struct DBTableDef
+{
+char *  name;
+struct Symbol * symbol;
+struct __ecereNameSpace__ecere__sys__OldList *  definitions;
+int declMode;
+} __attribute__ ((gcc_struct));
+
+extern struct Symbol * DeclClass(struct Specifier * _class, const char *  name);
 
 struct MembersInit;
 
@@ -703,6 +704,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 struct Type
@@ -929,20 +931,6 @@ struct __ecereNameSpace__ecere__sys__OldList *  properties;
 unsigned int deleteWatch;
 } __attribute__ ((gcc_struct));
 
-static void ProcessStatement(struct Statement *  stmt);
-
-static void ProcessProperty(struct PropertyDef * def)
-{
-if(def->getStmt)
-{
-ProcessStatement(def->getStmt);
-}
-if(def->setStmt)
-{
-ProcessStatement(def->setStmt);
-}
-}
-
 struct MemberInit;
 
 struct MemberInit
@@ -1008,6 +996,20 @@ static void ProcessMemberInit(struct MemberInit * init)
 if(init->initializer)
 {
 ProcessInitializer(init->initializer);
+}
+}
+
+static void ProcessStatement(struct Statement *  stmt);
+
+static void ProcessProperty(struct PropertyDef * def)
+{
+if(def->getStmt)
+{
+ProcessStatement(def->getStmt);
+}
+if(def->setStmt)
+{
+ProcessStatement(def->setStmt);
 }
 }
 
@@ -1627,7 +1629,7 @@ struct __ecereNameSpace__ecere__sys__OldList * inheritanceSpecs = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*inheritanceSpecs), MkSpecifier(PRIVATE));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*inheritanceSpecs), MkSpecifierName("Row"));
 PushContext();
-_class = MkClass(DeclClass(rowClassName), inheritanceSpecs, rowClassDefs);
+_class = MkClass(DeclClass((((void *)0)), rowClassName), inheritanceSpecs, rowClassDefs);
 PopContext(curContext);
 def = MkClassDefDefaultProperty(MkListOne(MkMemberInitExp(MkExpIdentifier(MkIdentifier("tbl")), MkInitializerAssignment(MkExpIdentifier(MkIdentifier(tableID))))));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*rowClassDefs), def);
@@ -2289,10 +2291,10 @@ addAfter = (((void *)0));
 curContext = globalContext;
 if(inCompiler)
 PrePreProcessClassDefinitions();
-DeclClass("Field");
-DeclClass("Table");
-DeclClass("Row");
-DeclClass("Id");
+DeclClass((((void *)0)), "Field");
+DeclClass((((void *)0)), "Table");
+DeclClass((((void *)0)), "Row");
+DeclClass((((void *)0)), "Id");
 numIndexes = 0;
 if(ast != (((void *)0)))
 {

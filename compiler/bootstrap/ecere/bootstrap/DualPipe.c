@@ -39,6 +39,44 @@ typedef unsigned __int64 uint64;
 #include <sys/types.h>
 typedef __builtin_va_list va_list;
 
+typedef struct _DualPipe _DualPipe;
+
+void DualPipe_Destructor(_DualPipe * dp);
+
+void DualPipe_CloseInput(_DualPipe * dp);
+
+void DualPipe_CloseOutput(_DualPipe * dp);
+
+int DualPipe_Read(_DualPipe * dp, unsigned char * buffer, unsigned int size, unsigned int count);
+
+int DualPipe_Write(_DualPipe * dp, const unsigned char * buffer, unsigned int size, unsigned int count);
+
+unsigned int DualPipe_Getc(_DualPipe * dp, char * ch);
+
+unsigned int DualPipe_Putc(_DualPipe * dp, char ch);
+
+unsigned int DualPipe_Puts(_DualPipe * dp, const char * string);
+
+unsigned int DualPipe_Seek(_DualPipe * dp, int pos, int mode);
+
+unsigned int DualPipe_Tell(_DualPipe * dp);
+
+unsigned int DualPipe_Eof(_DualPipe * dp);
+
+unsigned int DualPipe_GetSize(_DualPipe * dp);
+
+unsigned int DualPipe_Peek(_DualPipe * dp);
+
+void DualPipe_Terminate(_DualPipe * dp);
+
+int DualPipe_GetExitCode(_DualPipe * dp);
+
+int DualPipe_GetProcessID(_DualPipe * dp);
+
+void DualPipe_Wait(_DualPipe * dp);
+
+_DualPipe * _DualPipeOpen(unsigned int mode, const char * commandLine, const char * env, void ** inputPtr, void ** outputPtr);
+
 struct __ecereNameSpace__ecere__sys__DualPipe
 {
 void * dp;
@@ -121,42 +159,6 @@ extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpa
 extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
-
-void DualPipe_Destructor(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-void DualPipe_CloseInput(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-void DualPipe_CloseOutput(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-int DualPipe_Read(struct __ecereNameSpace__ecere__com__Instance ** dp, unsigned char * buffer, unsigned int size, unsigned int count);
-
-int DualPipe_Write(struct __ecereNameSpace__ecere__com__Instance ** dp, const unsigned char * buffer, unsigned int size, unsigned int count);
-
-unsigned int DualPipe_Getc(struct __ecereNameSpace__ecere__com__Instance ** dp, char * ch);
-
-unsigned int DualPipe_Putc(struct __ecereNameSpace__ecere__com__Instance ** dp, char ch);
-
-unsigned int DualPipe_Puts(struct __ecereNameSpace__ecere__com__Instance ** dp, const char * string);
-
-unsigned int DualPipe_Seek(struct __ecereNameSpace__ecere__com__Instance ** dp, int pos, int mode);
-
-unsigned int DualPipe_Tell(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-unsigned int DualPipe_Eof(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-unsigned int DualPipe_GetSize(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-unsigned int DualPipe_Peek(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-void DualPipe_Terminate(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-int DualPipe_GetExitCode(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-int DualPipe_GetProcessID(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-void DualPipe_Wait(struct __ecereNameSpace__ecere__com__Instance ** dp);
-
-struct __ecereNameSpace__ecere__com__Instance ** _DualPipeOpen(unsigned int mode, const char * commandLine, const char * env, void ** inputPtr, void ** outputPtr);
 
 void *  __ecereProp___ecereNameSpace__ecere__sys__File_Get_input(struct __ecereNameSpace__ecere__com__Instance * this);
 

@@ -67,6 +67,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
          ProcessFunctionBody(function, func.body);
          external = MkExternalFunction(function);
 
+         /*
          if(owningClass)
          {
             char className[1024];
@@ -74,6 +75,7 @@ External ProcessClassFunction(Class owningClass, ClassFunction func, OldList def
             FullClassNameCat(className, owningClass.fullName, true);
             DeclareClass(external, owningClass.symbol, className);
          }
+         */
 
          external.symbol = func.declarator.symbol;
          external.function._class = func._class;
@@ -1068,7 +1070,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
       }
 
       // Make the RegisterClass section
-      if(inCompiler && !symbol.notYetDeclared && regClass)
+      if(inCompiler && symbol.mustRegister && regClass)
       {
          Statement stmt;
          OldList * args = MkList();

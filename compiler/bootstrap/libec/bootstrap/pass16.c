@@ -507,6 +507,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -931,6 +932,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 struct ClassImport
@@ -1974,6 +1976,8 @@ void DeclareClass(struct External * neededFor, struct Symbol * classSym, const c
 {
 if(classSym && classSym->notYetDeclared)
 {
+if(!classSym->mustRegister)
+{
 if(!classSym->_import)
 {
 if(!classSym->module)
@@ -1988,6 +1992,7 @@ __ecereInstance1->isRemote = classSym->__anon1.registered ? classSym->__anon1.re
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&classSym->module->classes, classSym->_import);
 }
 classSym->_import->itself = 1;
+}
 classSym->notYetDeclared = 0;
 if(!classSym->__anon2.__anon1.pointerExternal && inCompiler)
 {

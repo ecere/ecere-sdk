@@ -94,7 +94,7 @@ private:
 
 public class Angle : double;
 
-public class unichar : uint32
+public class ::unichar : uint32
 {
 
    const char * OnGetString(char * tempString, void * fieldData, bool * needClass)
@@ -111,6 +111,11 @@ public class unichar : uint32
    }
 
 };
+
+// Forward declarations to hook on to libec:
+class ::Type;
+class ::Instantiation;
+class ::ClassDefinition;
 
 public class Property : struct
 {

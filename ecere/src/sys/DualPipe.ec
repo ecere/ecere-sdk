@@ -5,6 +5,9 @@ namespace sys;
 import "System"
 
 default:
+
+typedef struct _DualPipe _DualPipe;
+
 // IMPLEMENTATION OF THESE IS IN _DualPipe.c
 void DualPipe_Destructor(_DualPipe * dp);
 void DualPipe_CloseInput(_DualPipe * dp);

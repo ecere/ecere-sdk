@@ -92,6 +92,11 @@ extern int strcmp(const char * , const char * );
 
 struct __ecereNameSpace__ecere__sys__StringBTNode;
 
+void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FreeString(char * string)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
+}
+
 struct __ecereNameSpace__ecere__com__Property;
 
 extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
@@ -206,11 +211,108 @@ void (*  FreeKey)(void *  key);
 
 __attribute__((unused)) static struct __ecereNameSpace__ecere__sys__BinaryTree __ecereNameSpace__ecere__sys__dummy;
 
+int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t a, uintptr_t b)
+{
+return (a > b) ? 1 : ((a < b) ? -1 : 0);
+}
+
+int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * a, const char * b)
+{
+return (a && b) ? strcmp(a, b) : -1;
+}
+
+void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Free(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
+{
+if(this->root)
+__ecereMethod___ecereNameSpace__ecere__sys__BTNode_Free(this->root, this->FreeKey);
+this->root = (((void *)0));
+this->count = 0;
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * key)
+{
+return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString(this->root, key) : (((void *)0));
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * key)
+{
+return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(this->root, key) : (((void *)0));
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindAll(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t key)
+{
+return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindAll(this->root, key) : (((void *)0));
+}
+
+void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node)
+{
+struct __ecereNameSpace__ecere__sys__BTNode * parent = node->parent;
+
+if(parent || this->root == node)
+{
+this->root = __ecereMethod___ecereNameSpace__ecere__sys__BTNode_RemoveSwapRight(node);
+this->count--;
+node->parent = (((void *)0));
+}
+}
+
+char * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Print(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char * output, int tps)
+{
+output[0] = (char)0;
+if(this->root)
+__ecereMethod___ecereNameSpace__ecere__sys__BTNode_Print(this->root, output, tps);
+return output;
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
+{
+return this->root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_minimum(this->root) : (((void *)0));
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_last(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
+{
+return this->root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_maximum(this->root) : (((void *)0));
+}
+
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Add(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, struct __ecereNameSpace__ecere__sys__BTNode * node);
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t key);
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(struct __ecereNameSpace__ecere__sys__BTNode * this, struct __ecereNameSpace__ecere__sys__BinaryTree * tree);
+
+void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node)
+{
+void * voidNode = node;
+
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(this, node);
+(__ecereNameSpace__ecere__com__eSystem_Delete(voidNode), voidNode = 0);
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node)
+{
+if(!this->CompareKey)
+this->CompareKey = (void *)(__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt);
+if(!this->root)
+this->root = node;
+else if(__ecereMethod___ecereNameSpace__ecere__sys__BTNode_Add(this->root, this, node))
+this->root = __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Rebalance(node);
+else
+return 0;
+this->count++;
+return 1;
+}
+
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t key)
+{
+if(!this->CompareKey)
+this->CompareKey = (void *)(__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt);
+return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(this->root, this, key) : (((void *)0));
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Check(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
+{
+return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->root, this) : 1;
+}
 
 struct __ecereNameSpace__ecere__com__DataMember;
 
@@ -402,79 +504,6 @@ struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
 
-int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t a, uintptr_t b)
-{
-return (a > b) ? 1 : ((a < b) ? -1 : 0);
-}
-
-int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * a, const char * b)
-{
-return (a && b) ? strcmp(a, b) : -1;
-}
-
-void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FreeString(char * string)
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Free(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
-{
-if(this->root)
-__ecereMethod___ecereNameSpace__ecere__sys__BTNode_Free(this->root, this->FreeKey);
-this->root = (((void *)0));
-this->count = 0;
-}
-
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * key)
-{
-return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString(this->root, key) : (((void *)0));
-}
-
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindPrefix(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char * key)
-{
-return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindPrefix(this->root, key) : (((void *)0));
-}
-
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindAll(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t key)
-{
-return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindAll(this->root, key) : (((void *)0));
-}
-
-void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node)
-{
-struct __ecereNameSpace__ecere__sys__BTNode * parent = node->parent;
-
-if(parent || this->root == node)
-{
-this->root = __ecereMethod___ecereNameSpace__ecere__sys__BTNode_RemoveSwapRight(node);
-this->count--;
-node->parent = (((void *)0));
-}
-}
-
-char * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Print(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char * output, int tps)
-{
-output[0] = (char)0;
-if(this->root)
-__ecereMethod___ecereNameSpace__ecere__sys__BTNode_Print(this->root, output, tps);
-return output;
-}
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Check(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
-{
-return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Check(this->root, this) : 1;
-}
-
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
-{
-return this->root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_minimum(this->root) : (((void *)0));
-}
-
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_last(struct __ecereNameSpace__ecere__sys__BinaryTree * this)
-{
-return this->root ? __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_maximum(this->root) : (((void *)0));
-}
-
 void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Serialize(channel, __ecereClass___ecereNameSpace__ecere__sys__BTNode, this->root);
@@ -505,35 +534,6 @@ void __ecereUnregisterModule_BinaryTree(struct __ecereNameSpace__ecere__com__Ins
 
 __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_first = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__sys__BinaryTree_last = (void *)0;
-}
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node)
-{
-if(!this->CompareKey)
-this->CompareKey = (void *)(__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt);
-if(!this->root)
-this->root = node;
-else if(__ecereMethod___ecereNameSpace__ecere__sys__BTNode_Add(this->root, this, node))
-this->root = __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Rebalance(node);
-else
-return 0;
-this->count++;
-return 1;
-}
-
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Find(struct __ecereNameSpace__ecere__sys__BinaryTree * this, uintptr_t key)
-{
-if(!this->CompareKey)
-this->CompareKey = (void *)(__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareInt);
-return this->root ? __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Find(this->root, this, key) : (((void *)0));
-}
-
-void __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(struct __ecereNameSpace__ecere__sys__BinaryTree * this, struct __ecereNameSpace__ecere__sys__BTNode * node)
-{
-void * voidNode = node;
-
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Remove(this, node);
-(__ecereNameSpace__ecere__com__eSystem_Delete(voidNode), voidNode = 0);
 }
 
 void __ecereRegisterModule_BinaryTree(struct __ecereNameSpace__ecere__com__Instance * module)

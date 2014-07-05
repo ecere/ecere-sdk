@@ -588,46 +588,6 @@ return CheckType(yytext);
 
 struct DBTableEntry;
 
-struct Symbol *  _DeclClass(const char *  name);
-
-struct Symbol * DeclClassAddNameSpace(const char * className)
-{
-char name[1024];
-int len = 0, stringLen;
-
-name[0] = '\0';
-if((currentNameSpace || defaultNameSpace) && declMode != 0 && defaultDeclMode != 0)
-{
-if(defaultNameSpace)
-{
-memcpy(name, defaultNameSpace, defaultNameSpaceLen);
-len += defaultNameSpaceLen;
-name[len++] = ':';
-name[len++] = ':';
-}
-if(currentNameSpace)
-{
-memcpy(name + len, currentNameSpace, currentNameSpaceLen);
-len += currentNameSpaceLen;
-name[len++] = ':';
-name[len++] = ':';
-}
-}
-stringLen = strlen(className);
-memcpy(name + len, className, stringLen);
-len += stringLen;
-name[len] = (char)0;
-return _DeclClass(name);
-}
-
-struct Symbol * DeclClass(const char * name)
-{
-if(strchr(name, ':'))
-return _DeclClass(name);
-else
-return DeclClassAddNameSpace(name);
-}
-
 struct MemberInit;
 
 struct Pointer;
@@ -725,6 +685,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
@@ -1004,6 +965,7 @@ struct ExtDecl * extDecl;
 char *  name;
 struct Symbol * symbol;
 struct __ecereNameSpace__ecere__sys__OldList *  templateArgs;
+struct Specifier * nsSpec;
 } __attribute__ ((gcc_struct)) __anon1;
 struct
 {
@@ -1208,6 +1170,46 @@ struct Location nameLoc;
 struct Location insideLoc;
 unsigned int built;
 } __attribute__ ((gcc_struct));
+
+struct Symbol *  _DeclClass(struct Specifier *  _class, const char *  name);
+
+struct Symbol * DeclClassAddNameSpace(struct Specifier * _class, const char * className)
+{
+char name[1024];
+int len = 0, stringLen;
+
+name[0] = '\0';
+if(className[0] != ':' && (currentNameSpace || defaultNameSpace) && declMode != 0 && defaultDeclMode != 0 && (!_class || _class->__anon1.__anon1.name))
+{
+if(defaultNameSpace)
+{
+memcpy(name, defaultNameSpace, defaultNameSpaceLen);
+len += defaultNameSpaceLen;
+name[len++] = ':';
+name[len++] = ':';
+}
+if(currentNameSpace)
+{
+memcpy(name + len, currentNameSpace, currentNameSpaceLen);
+len += currentNameSpaceLen;
+name[len++] = ':';
+name[len++] = ':';
+}
+}
+stringLen = strlen(className);
+memcpy(name + len, className, stringLen);
+len += stringLen;
+name[len] = (char)0;
+return _DeclClass(_class, name);
+}
+
+struct Symbol * DeclClass(struct Specifier * _class, const char * name)
+{
+if(_class || strchr(name, ':'))
+return _DeclClass(_class, name);
+else
+return DeclClassAddNameSpace(_class, name);
+}
 
 struct ClassDefinition;
 
@@ -1595,6 +1597,23 @@ struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass_ContextStringPair;
 
+void __ecereMethod_ContextStringPair_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct ContextStringPair * this)
+{
+(__ecereNameSpace__ecere__com__eSystem_Delete(this->string), this->string = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete(this->context), this->context = 0);
+}
+
+int __ecereMethod_ContextStringPair_OnCompare(struct __ecereNameSpace__ecere__com__Class * class, struct ContextStringPair * this, struct ContextStringPair * b)
+{
+int result;
+
+result = (this->string && b->string) ? strcmp(this->string, b->string) : (!this->string && b->string) ? 1 : (this->string && !b->string) ? -1 : 0;
+if(result)
+return result;
+result = (this->context && b->context) ? strcmp(this->context, b->context) : (!this->context && b->context) ? 1 : (this->context && !b->context) ? -1 : 0;
+return result;
+}
+
 extern void __ecereNameSpace__ecere__com__PrintLn(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_Identifier;
@@ -1706,23 +1725,6 @@ int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 } __attribute__ ((gcc_struct));
-
-void __ecereMethod_ContextStringPair_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct ContextStringPair * this)
-{
-(__ecereNameSpace__ecere__com__eSystem_Delete(this->string), this->string = 0);
-(__ecereNameSpace__ecere__com__eSystem_Delete(this->context), this->context = 0);
-}
-
-int __ecereMethod_ContextStringPair_OnCompare(struct __ecereNameSpace__ecere__com__Class * class, struct ContextStringPair * this, struct ContextStringPair * b)
-{
-int result;
-
-result = (this->string && b->string) ? strcmp(this->string, b->string) : (!this->string && b->string) ? 1 : (this->string && !b->string) ? -1 : 0;
-if(result)
-return result;
-result = (this->context && b->context) ? strcmp(this->context, b->context) : (!this->context && b->context) ? 1 : (this->context && !b->context) ? -1 : 0;
-return result;
-}
 
 struct Specifier * MkSpecifier(int specifier)
 {
@@ -3052,7 +3054,7 @@ templateString[len++] = '\0';
 symbol = FindClass(templateString);
 if(!symbol && spec->__anon1.__anon1.symbol)
 {
-symbol = _DeclClass(templateString);
+symbol = _DeclClass((((void *)0)), templateString);
 symbol->notYetDeclared = 1;
 }
 if(spec->__anon1.__anon1.symbol)
@@ -3070,10 +3072,19 @@ else
 FreeList(templateArgs, (void *)(FreeTemplateArgument));
 }
 
-struct Symbol * _DeclClass(const char * name)
+struct Symbol * _DeclClass(struct Specifier * _class, const char * name)
 {
-struct Symbol * symbol = FindClass(name);
+struct Symbol * symbol;
+char nameBuffer[1024];
 
+if(_class)
+{
+strcpy(nameBuffer, _class->__anon1.__anon1.name ? _class->__anon1.__anon1.name : "");
+strcat(nameBuffer, "::");
+strcat(nameBuffer, name);
+name = nameBuffer;
+}
+symbol = FindClass(name);
 if(!symbol)
 {
 if(name[0] == ':' && name[1] == ':')
@@ -3081,7 +3092,7 @@ name += 2;
 symbol = __extension__ ({
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
 
-__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1;
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->notYetDeclared = 1, __ecereInstance1;
 });
 if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->classes, (struct __ecereNameSpace__ecere__sys__BTNode *)symbol))
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*excludedSymbols), symbol);
@@ -3292,7 +3303,23 @@ spec->__anon1.__anon1.name = __ecereNameSpace__ecere__sys__CopyString(className)
 }
 }
 else if(symbol)
+{
+char nameSpace[1024];
+char * c = strstr(name, symbol->string);
+
 spec->__anon1.__anon1.name = __ecereNameSpace__ecere__sys__CopyString(symbol->string);
+if(c && c >= name + 2 && c[-1] == ':' && c[-2] == ':')
+{
+if(c > name + 2)
+{
+memcpy(nameSpace, name, c - name - 2);
+nameSpace[c - name] = (char)0;
+spec->__anon1.__anon1.nsSpec = _MkSpecifierName(nameSpace, (((void *)0)), (((void *)0)));
+}
+else
+spec->__anon1.__anon1.nsSpec = _MkSpecifierName((((void *)0)), (((void *)0)), (((void *)0)));
+}
+}
 else
 spec->__anon1.__anon1.name = __ecereNameSpace__ecere__sys__CopyString(name);
 spec->__anon1.__anon1.symbol = symbol;
@@ -5208,9 +5235,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefFixed", "Class
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDesignerDefaultProperty", "ClassDef MkClassDefDesignerDefaultProperty(Identifier id)", MkClassDefDesignerDefaultProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefDefaultProperty", "ClassDef MkClassDefDefaultProperty(ecere::sys::OldList defProperties)", MkClassDefDefaultProperty, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClassDefFunction", "ClassDef MkClassDefFunction(ClassFunction function)", MkClassDefFunction, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClassAddNameSpace", "Symbol DeclClassAddNameSpace(const char * className)", DeclClassAddNameSpace, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClass", "Symbol DeclClass(const char * name)", DeclClass, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_DeclClass", "Symbol _DeclClass(const char * name)", _DeclClass, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClassAddNameSpace", "Symbol DeclClassAddNameSpace(Specifier _class, const char * className)", DeclClassAddNameSpace, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclClass", "Symbol DeclClass(Specifier _class, const char * name)", DeclClass, module, 2);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("_DeclClass", "Symbol _DeclClass(Specifier _class, const char * name)", _DeclClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetupBaseSpecs", "void SetupBaseSpecs(Symbol symbol, ecere::sys::OldList baseSpecs)", SetupBaseSpecs, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkClass", "ClassDefinition MkClass(Symbol symbol, ecere::sys::OldList baseSpecs, ecere::sys::OldList definitions)", MkClass, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MkExpInstance", "Expression MkExpInstance(Instantiation inst)", MkExpInstance, module, 2);

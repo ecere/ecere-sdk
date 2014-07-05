@@ -127,6 +127,155 @@ uint64 key;
 
 struct __ecereNameSpace__ecere__com__Class;
 
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+while(this->left)
+this = this->left;
+return this;
+}
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+while(this->right)
+this = this->right;
+return this;
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwap(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__AVLNode * swap)
+{
+if(swap->left)
+{
+swap->left->parent = swap->parent;
+if(swap == swap->parent->left)
+swap->parent->left = swap->left;
+else if(swap == swap->parent->right)
+swap->parent->right = swap->left;
+swap->left = (((void *)0));
+}
+if(swap->right)
+{
+swap->right->parent = swap->parent;
+if(swap == swap->parent->left)
+swap->parent->left = swap->right;
+else if(swap == swap->parent->right)
+swap->parent->right = swap->right;
+swap->right = (((void *)0));
+}
+if(swap == swap->parent->left)
+swap->parent->left = (((void *)0));
+else if(swap == swap->parent->right)
+swap->parent->right = (((void *)0));
+{
+struct __ecereNameSpace__ecere__com__AVLNode * n;
+
+for(n = swap->parent; n; n = n->parent)
+{
+int __simpleStruct0, __simpleStruct1;
+int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+
+if(newDepth == n->depth)
+break;
+n->depth = newDepth;
+if(n == this)
+break;
+}
+}
+swap->left = this->left;
+if(this->left)
+this->left->parent = swap;
+swap->right = this->right;
+if(this->right)
+this->right->parent = swap;
+swap->parent = this->parent;
+this->left = (((void *)0));
+this->right = (((void *)0));
+if(this->parent)
+{
+if(this == this->parent->left)
+this->parent->left = swap;
+else if(this == this->parent->right)
+this->parent->right = swap;
+}
+}
+
+int __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+int leftDepth = this->left ? (this->left->depth + 1) : 0;
+int rightDepth = this->right ? (this->right->depth + 1) : 0;
+
+return rightDepth - leftDepth;
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+int __simpleStruct2, __simpleStruct3;
+int __simpleStruct0, __simpleStruct1;
+
+if(this->parent)
+{
+if(this == this->parent->left)
+this->parent->left = this->left;
+else if(this == this->parent->right)
+this->parent->right = this->left;
+}
+this->left->parent = this->parent;
+this->parent = this->left;
+this->left = this->parent->right;
+if(this->left)
+this->left->parent = this;
+this->parent->right = this;
+this->depth = (__simpleStruct0 = this->left ? (this->left->depth + 1) : 0, __simpleStruct1 = this->right ? (this->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+this->parent->depth = (__simpleStruct2 = this->parent->left ? (this->parent->left->depth + 1) : 0, __simpleStruct3 = this->parent->right ? (this->parent->right->depth + 1) : 0, (__simpleStruct2 > __simpleStruct3) ? __simpleStruct2 : __simpleStruct3);
+{
+struct __ecereNameSpace__ecere__com__AVLNode * n;
+
+for(n = this->parent->parent; n; n = n->parent)
+{
+int __simpleStruct0, __simpleStruct1;
+int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+
+if(newDepth == n->depth)
+break;
+n->depth = newDepth;
+}
+}
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+int __simpleStruct2, __simpleStruct3;
+int __simpleStruct0, __simpleStruct1;
+
+if(this->parent)
+{
+if(this == this->parent->right)
+this->parent->right = this->right;
+else if(this == this->parent->left)
+this->parent->left = this->right;
+}
+this->right->parent = this->parent;
+this->parent = this->right;
+this->right = this->parent->left;
+if(this->right)
+this->right->parent = this;
+this->parent->left = this;
+this->depth = (__simpleStruct0 = this->left ? (this->left->depth + 1) : 0, __simpleStruct1 = this->right ? (this->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+this->parent->depth = (__simpleStruct2 = this->parent->left ? (this->parent->left->depth + 1) : 0, __simpleStruct3 = this->parent->right ? (this->parent->right->depth + 1) : 0, (__simpleStruct2 > __simpleStruct3) ? __simpleStruct2 : __simpleStruct3);
+{
+struct __ecereNameSpace__ecere__com__AVLNode * n;
+
+for(n = this->parent->parent; n; n = n->parent)
+{
+int __simpleStruct0, __simpleStruct1;
+int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+
+if(newDepth == n->depth)
+break;
+n->depth = newDepth;
+}
+}
+}
+
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(struct __ecereNameSpace__ecere__com__AVLNode * this);
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(struct __ecereNameSpace__ecere__com__AVLNode * this);
@@ -155,6 +304,63 @@ extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameS
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
 
 extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base);
+
+void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateRight(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this->left);
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(this);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateLeft(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(this->right);
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this);
+}
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+if(this->left)
+return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(this->left);
+while(this)
+{
+if(this->parent && this == this->parent->right)
+return this->parent;
+else
+this = this->parent;
+}
+return this;
+}
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * right = this->right;
+
+if(right)
+return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(right);
+while(this)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * parent = this->parent;
+
+if(parent && this == parent->left)
+return parent;
+else
+this = parent;
+}
+return (((void *)0));
+}
+
+int __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+return 1 + (this->left ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(this->left) : 0) + (this->right ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(this->right) : 0);
+}
+
+int __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+int leftDepth = this->left ? (__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this->left) + 1) : 0;
+int rightDepth = this->right ? (__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this->right) + 1) : 0;
+
+return ((leftDepth > rightDepth) ? leftDepth : rightDepth);
+}
 
 struct __ecereNameSpace__ecere__com__Property
 {
@@ -194,6 +400,115 @@ extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereN
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+while(1)
+{
+int factor = __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this);
+
+if(factor < -1)
+{
+if(__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this->left) == 1)
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateRight(this);
+else
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(this);
+}
+else if(factor > 1)
+{
+if(__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this->right) == -1)
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateLeft(this);
+else
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this);
+}
+if(this->parent)
+this = this->parent;
+else
+return this;
+}
+}
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwapLeft(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * swap = this->left ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(this->left) : this->right;
+struct __ecereNameSpace__ecere__com__AVLNode * swapParent = (((void *)0));
+
+if(swap)
+{
+swapParent = swap->parent;
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwap(this, swap);
+}
+if(this->parent)
+{
+if(this == this->parent->left)
+this->parent->left = (((void *)0));
+else if(this == this->parent->right)
+this->parent->right = (((void *)0));
+}
+{
+struct __ecereNameSpace__ecere__com__AVLNode * n;
+
+for(n = swap ? swap : this->parent; n; n = n->parent)
+{
+int __simpleStruct0, __simpleStruct1;
+int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+
+if(newDepth == n->depth && n != swap)
+break;
+n->depth = newDepth;
+}
+}
+if(swapParent && swapParent != this)
+return __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swapParent);
+else if(swap)
+return __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swap);
+else if(this->parent)
+return __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(this->parent);
+else
+return (((void *)0));
+}
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwapRight(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * result;
+struct __ecereNameSpace__ecere__com__AVLNode * swap = this->right ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(this->right) : this->left;
+struct __ecereNameSpace__ecere__com__AVLNode * swapParent = (((void *)0));
+
+if(swap)
+{
+swapParent = swap->parent;
+__ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwap(this, swap);
+}
+if(this->parent)
+{
+if(this == this->parent->left)
+this->parent->left = (((void *)0));
+else if(this == this->parent->right)
+this->parent->right = (((void *)0));
+}
+{
+struct __ecereNameSpace__ecere__com__AVLNode * n;
+
+for(n = swap ? swap : this->parent; n; n = n->parent)
+{
+int __simpleStruct0, __simpleStruct1;
+int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+
+if(newDepth == n->depth && n != swap)
+break;
+n->depth = newDepth;
+}
+}
+if(swapParent && swapParent != this)
+result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swapParent);
+else if(swap)
+result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swap);
+else if(this->parent)
+result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(this->parent);
+else
+result = (((void *)0));
+return result;
+}
+
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree
@@ -203,6 +518,21 @@ int count;
 int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
 } __attribute__ ((gcc_struct));
+
+struct __ecereNameSpace__ecere__com__AVLNode *  __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(struct __ecereNameSpace__ecere__com__AVLNode *  this, const uint64 key);
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(struct __ecereNameSpace__ecere__com__AVLNode * this, const uint64 key)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * result = (((void *)0));
+
+if(this->key == key)
+result = this;
+if(!result && this->left)
+result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(this->left, key);
+if(!result && this->right)
+result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(this->right, key);
+return result;
+}
 
 struct __ecereNameSpace__ecere__com__DataMember;
 
@@ -374,91 +704,6 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint64;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
-
-struct __ecereNameSpace__ecere__com__Module
-{
-struct __ecereNameSpace__ecere__com__Instance * application;
-struct __ecereNameSpace__ecere__sys__OldList classes;
-struct __ecereNameSpace__ecere__sys__OldList defines;
-struct __ecereNameSpace__ecere__sys__OldList functions;
-struct __ecereNameSpace__ecere__sys__OldList modules;
-struct __ecereNameSpace__ecere__com__Instance * prev;
-struct __ecereNameSpace__ecere__com__Instance * next;
-const char *  name;
-void *  library;
-void *  Unload;
-int importType;
-int origImportType;
-struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
-struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} __attribute__ ((gcc_struct));
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-if(this->left)
-return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(this->left);
-while(this)
-{
-if(this->parent && this == this->parent->right)
-return this->parent;
-else
-this = this->parent;
-}
-return this;
-}
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-struct __ecereNameSpace__ecere__com__AVLNode * right = this->right;
-
-if(right)
-return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(right);
-while(this)
-{
-struct __ecereNameSpace__ecere__com__AVLNode * parent = this->parent;
-
-if(parent && this == parent->left)
-return parent;
-else
-this = parent;
-}
-return (((void *)0));
-}
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-while(this->left)
-this = this->left;
-return this;
-}
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-while(this->right)
-this = this->right;
-return this;
-}
-
-int __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-return 1 + (this->left ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(this->left) : 0) + (this->right ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(this->right) : 0);
-}
-
-int __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-int leftDepth = this->left ? (__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this->left) + 1) : 0;
-int rightDepth = this->right ? (__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_depthProp(this->right) + 1) : 0;
-
-return ((leftDepth > rightDepth) ? leftDepth : rightDepth);
-}
-
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, const uint64 key)
 {
 while(this)
@@ -491,140 +736,31 @@ break;
 return this;
 }
 
-void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwap(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__AVLNode * swap)
-{
-if(swap->left)
-{
-swap->left->parent = swap->parent;
-if(swap == swap->parent->left)
-swap->parent->left = swap->left;
-else if(swap == swap->parent->right)
-swap->parent->right = swap->left;
-swap->left = (((void *)0));
-}
-if(swap->right)
-{
-swap->right->parent = swap->parent;
-if(swap == swap->parent->left)
-swap->parent->left = swap->right;
-else if(swap == swap->parent->right)
-swap->parent->right = swap->right;
-swap->right = (((void *)0));
-}
-if(swap == swap->parent->left)
-swap->parent->left = (((void *)0));
-else if(swap == swap->parent->right)
-swap->parent->right = (((void *)0));
-{
-struct __ecereNameSpace__ecere__com__AVLNode * n;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
-for(n = swap->parent; n; n = n->parent)
-{
-int __simpleStruct0, __simpleStruct1;
-int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint64;
 
-if(newDepth == n->depth)
-break;
-n->depth = newDepth;
-if(n == this)
-break;
-}
-}
-swap->left = this->left;
-if(this->left)
-this->left->parent = swap;
-swap->right = this->right;
-if(this->right)
-this->right->parent = swap;
-swap->parent = this->parent;
-this->left = (((void *)0));
-this->right = (((void *)0));
-if(this->parent)
-{
-if(this == this->parent->left)
-this->parent->left = swap;
-else if(this == this->parent->right)
-this->parent->right = swap;
-}
-}
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
-int __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-int leftDepth = this->left ? (this->left->depth + 1) : 0;
-int rightDepth = this->right ? (this->right->depth + 1) : 0;
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
 
-return rightDepth - leftDepth;
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(struct __ecereNameSpace__ecere__com__AVLNode * this)
+struct __ecereNameSpace__ecere__com__Module
 {
-int __simpleStruct2, __simpleStruct3;
-int __simpleStruct0, __simpleStruct1;
-
-if(this->parent)
-{
-if(this == this->parent->left)
-this->parent->left = this->left;
-else if(this == this->parent->right)
-this->parent->right = this->left;
-}
-this->left->parent = this->parent;
-this->parent = this->left;
-this->left = this->parent->right;
-if(this->left)
-this->left->parent = this;
-this->parent->right = this;
-this->depth = (__simpleStruct0 = this->left ? (this->left->depth + 1) : 0, __simpleStruct1 = this->right ? (this->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
-this->parent->depth = (__simpleStruct2 = this->parent->left ? (this->parent->left->depth + 1) : 0, __simpleStruct3 = this->parent->right ? (this->parent->right->depth + 1) : 0, (__simpleStruct2 > __simpleStruct3) ? __simpleStruct2 : __simpleStruct3);
-{
-struct __ecereNameSpace__ecere__com__AVLNode * n;
-
-for(n = this->parent->parent; n; n = n->parent)
-{
-int __simpleStruct0, __simpleStruct1;
-int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
-
-if(newDepth == n->depth)
-break;
-n->depth = newDepth;
-}
-}
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-int __simpleStruct2, __simpleStruct3;
-int __simpleStruct0, __simpleStruct1;
-
-if(this->parent)
-{
-if(this == this->parent->right)
-this->parent->right = this->right;
-else if(this == this->parent->left)
-this->parent->left = this->right;
-}
-this->right->parent = this->parent;
-this->parent = this->right;
-this->right = this->parent->left;
-if(this->right)
-this->right->parent = this;
-this->parent->left = this;
-this->depth = (__simpleStruct0 = this->left ? (this->left->depth + 1) : 0, __simpleStruct1 = this->right ? (this->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
-this->parent->depth = (__simpleStruct2 = this->parent->left ? (this->parent->left->depth + 1) : 0, __simpleStruct3 = this->parent->right ? (this->parent->right->depth + 1) : 0, (__simpleStruct2 > __simpleStruct3) ? __simpleStruct2 : __simpleStruct3);
-{
-struct __ecereNameSpace__ecere__com__AVLNode * n;
-
-for(n = this->parent->parent; n; n = n->parent)
-{
-int __simpleStruct0, __simpleStruct1;
-int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
-
-if(newDepth == n->depth)
-break;
-n->depth = newDepth;
-}
-}
-}
+struct __ecereNameSpace__ecere__com__Instance * application;
+struct __ecereNameSpace__ecere__sys__OldList classes;
+struct __ecereNameSpace__ecere__sys__OldList defines;
+struct __ecereNameSpace__ecere__sys__OldList functions;
+struct __ecereNameSpace__ecere__sys__OldList modules;
+struct __ecereNameSpace__ecere__com__Instance * prev;
+struct __ecereNameSpace__ecere__com__Instance * next;
+const char *  name;
+void *  library;
+void *  Unload;
+int importType;
+int origImportType;
+struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
+struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
+} __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetFirst(struct __ecereNameSpace__ecere__com__Instance * this)
 {
@@ -666,6 +802,19 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_SetData(s
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
 
 return 0;
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Remove(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
+struct __ecereNameSpace__ecere__com__AVLNode * parent = ((struct __ecereNameSpace__ecere__com__AVLNode *)node)->parent;
+
+if(parent || ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))) == (struct __ecereNameSpace__ecere__com__AVLNode *)node)
+{
+__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwapRight(((struct __ecereNameSpace__ecere__com__AVLNode *)node));
+__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->count--;
+((struct __ecereNameSpace__ecere__com__AVLNode *)node)->parent = (((void *)0));
+}
 }
 
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Find(struct __ecereNameSpace__ecere__com__Instance * this, uint64 value)
@@ -787,127 +936,6 @@ __ecerePropM___ecereNameSpace__ecere__com__AVLNode_depthProp = (void *)0;
 __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor = (void *)0;
 }
 
-void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateRight(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this->left);
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(this);
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateLeft(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(this->right);
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this);
-}
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-while(1)
-{
-int factor = __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this);
-
-if(factor < -1)
-{
-if(__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this->left) == 1)
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateRight(this);
-else
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(this);
-}
-else if(factor > 1)
-{
-if(__ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_balanceFactor(this->right) == -1)
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateLeft(this);
-else
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this);
-}
-if(this->parent)
-this = this->parent;
-else
-return this;
-}
-}
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwapLeft(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-struct __ecereNameSpace__ecere__com__AVLNode * swap = this->left ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(this->left) : this->right;
-struct __ecereNameSpace__ecere__com__AVLNode * swapParent = (((void *)0));
-
-if(swap)
-{
-swapParent = swap->parent;
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwap(this, swap);
-}
-if(this->parent)
-{
-if(this == this->parent->left)
-this->parent->left = (((void *)0));
-else if(this == this->parent->right)
-this->parent->right = (((void *)0));
-}
-{
-struct __ecereNameSpace__ecere__com__AVLNode * n;
-
-for(n = swap ? swap : this->parent; n; n = n->parent)
-{
-int __simpleStruct0, __simpleStruct1;
-int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
-
-if(newDepth == n->depth && n != swap)
-break;
-n->depth = newDepth;
-}
-}
-if(swapParent && swapParent != this)
-return __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swapParent);
-else if(swap)
-return __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swap);
-else if(this->parent)
-return __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(this->parent);
-else
-return (((void *)0));
-}
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwapRight(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-struct __ecereNameSpace__ecere__com__AVLNode * result;
-struct __ecereNameSpace__ecere__com__AVLNode * swap = this->right ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(this->right) : this->left;
-struct __ecereNameSpace__ecere__com__AVLNode * swapParent = (((void *)0));
-
-if(swap)
-{
-swapParent = swap->parent;
-__ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwap(this, swap);
-}
-if(this->parent)
-{
-if(this == this->parent->left)
-this->parent->left = (((void *)0));
-else if(this == this->parent->right)
-this->parent->right = (((void *)0));
-}
-{
-struct __ecereNameSpace__ecere__com__AVLNode * n;
-
-for(n = swap ? swap : this->parent; n; n = n->parent)
-{
-int __simpleStruct0, __simpleStruct1;
-int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
-
-if(newDepth == n->depth && n != swap)
-break;
-n->depth = newDepth;
-}
-}
-if(swapParent && swapParent != this)
-result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swapParent);
-else if(swap)
-result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(swap);
-else if(this->parent)
-result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(this->parent);
-else
-result = (((void *)0));
-return result;
-}
-
 struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Add(struct __ecereNameSpace__ecere__com__Instance * this, uint64 node)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
@@ -929,19 +957,6 @@ return (((void *)0));
 }
 __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->count++;
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node)));
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Remove(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * node)
-{
-__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
-struct __ecereNameSpace__ecere__com__AVLNode * parent = ((struct __ecereNameSpace__ecere__com__AVLNode *)node)->parent;
-
-if(parent || ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))) == (struct __ecereNameSpace__ecere__com__AVLNode *)node)
-{
-__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_RemoveSwapRight(((struct __ecereNameSpace__ecere__com__AVLNode *)node));
-__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->count--;
-((struct __ecereNameSpace__ecere__com__AVLNode *)node)->parent = (((void *)0));
-}
 }
 
 void __ecereRegisterModule_CustomAVLTree(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -1010,21 +1025,6 @@ __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "KT", 0, 0, &__
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
 if(class)
 class->fixed = (unsigned int)1;
-}
-
-struct __ecereNameSpace__ecere__com__AVLNode *  __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(struct __ecereNameSpace__ecere__com__AVLNode *  this, const uint64 key);
-
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(struct __ecereNameSpace__ecere__com__AVLNode * this, const uint64 key)
-{
-struct __ecereNameSpace__ecere__com__AVLNode * result = (((void *)0));
-
-if(this->key == key)
-result = this;
-if(!result && this->left)
-result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(this->left, key);
-if(!result && this->right)
-result = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindAll(this->right, key);
-return result;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(struct __ecereNameSpace__ecere__com__AVLNode *  this);

@@ -1049,6 +1049,19 @@ break;
 return sign * value;
 }
 
+int __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(const char *  value)
+{
+if(value)
+{
+int c;
+
+for(c = __ecereNameSpace__ecere__com__firstPlatform; c <= __ecereNameSpace__ecere__com__lastPlatform; c++)
+if(!strcasecmp(value, __ecereNameSpace__ecere__com__platformNames[c]))
+return c;
+}
+return 0;
+}
+
 struct __ecereNameSpace__ecere__com__Class;
 
 struct __ecereNameSpace__ecere__com__Instance
@@ -1209,7 +1222,190 @@ struct __ecereNameSpace__ecere__com__MemPart * part;
 unsigned int size;
 } __attribute__ ((gcc_struct));
 
-static void *  __ecereNameSpace__ecere__com___mymalloc(unsigned int size);
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(struct __ecereNameSpace__ecere__com__BlockPool * this, unsigned int numBlocks)
+{
+unsigned char * memory = malloc(numBlocks * this->blockSpace);
+
+__ecereNameSpace__ecere__com__TOTAL_MEM += numBlocks * this->blockSpace;
+if(memory)
+{
+int c;
+struct __ecereNameSpace__ecere__com__MemBlock * block = (struct __ecereNameSpace__ecere__com__MemBlock *)memory;
+struct __ecereNameSpace__ecere__com__MemPart * part = calloc(1, sizeof(struct __ecereNameSpace__ecere__com__MemPart));
+
+__ecereNameSpace__ecere__com__TOTAL_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemPart);
+this->free = block;
+for(c = 0; c < numBlocks - 1; c++)
+{
+block->part = part;
+block->prev = (((void *)0));
+block->next = (struct __ecereNameSpace__ecere__com__MemBlock *)((unsigned char *)block + this->blockSpace);
+block = block->next;
+}
+part->blocksUsed = 0;
+part->pool = this;
+part->memory = memory;
+part->size = numBlocks;
+block->part = part;
+block->prev = (((void *)0));
+block->next = (((void *)0));
+this->totalSize += numBlocks;
+this->numParts++;
+return 1;
+}
+return 0;
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Remove(struct __ecereNameSpace__ecere__com__BlockPool * this, struct __ecereNameSpace__ecere__com__MemBlock * block)
+{
+if(block->prev)
+block->prev->next = block->next;
+if(block->next)
+block->next->prev = block->prev;
+if(this->first == block)
+this->first = block->next;
+if(this->last == block)
+this->last = block->prev;
+block->next = this->free;
+this->free = block;
+block->part->blocksUsed--;
+this->numBlocks--;
+(*block->part->pool).usedSpace -= block->size;
+if(!block->part->blocksUsed && this->numBlocks && this->totalSize > this->numBlocks + this->numBlocks / 2)
+{
+struct __ecereNameSpace__ecere__com__MemBlock * next = this->free, * prev = (((void *)0));
+struct __ecereNameSpace__ecere__com__MemPart * part = block->part;
+
+this->free = (((void *)0));
+this->totalSize -= part->size;
+while(next)
+{
+if(next->part != part)
+{
+if(prev)
+prev->next = next;
+else
+this->free = next;
+prev = next;
+}
+next = next->next;
+}
+;
+if(prev)
+prev->next = (((void *)0));
+__ecereNameSpace__ecere__com__TOTAL_MEM -= part->size * this->blockSpace;
+__ecereNameSpace__ecere__com__TOTAL_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemPart);
+this->numParts--;
+free(part->memory);
+free(part);
+}
+}
+
+struct __ecereNameSpace__ecere__com__MemBlock * __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Add(struct __ecereNameSpace__ecere__com__BlockPool * this)
+{
+int __simpleStruct0;
+struct __ecereNameSpace__ecere__com__MemBlock * block = (((void *)0));
+
+if(!this->free)
+__ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(this, (__simpleStruct0 = this->numBlocks / 2, (1 > __simpleStruct0) ? 1 : __simpleStruct0));
+if(this->free)
+{
+block = this->free;
+block->prev = this->last;
+if(block->prev)
+block->prev->next = block;
+if(!this->first)
+this->first = block;
+this->last = block;
+this->free = block->next;
+block->next = (((void *)0));
+block->part->blocksUsed++;
+this->numBlocks++;
+}
+return block;
+}
+
+static void __ecereNameSpace__ecere__com__InitMemory()
+{
+int c;
+
+__ecereNameSpace__ecere__com__memoryInitialized = 1;
+__ecereNameSpace__ecere__com__pools = calloc(1, sizeof(struct __ecereNameSpace__ecere__com__BlockPool) * 31);
+for(c = 0; c < 31; c++)
+{
+int expansion;
+
+__ecereNameSpace__ecere__com__pools[c].blockSize = __ecereNameSpace__ecere__com__pow1_5(c);
+if(__ecereNameSpace__ecere__com__pools[c].blockSize % sizeof(void *))
+__ecereNameSpace__ecere__com__pools[c].blockSize += sizeof(void *) - (__ecereNameSpace__ecere__com__pools[c].blockSize % sizeof(void *));
+__ecereNameSpace__ecere__com__pools[c].blockSpace = __ecereNameSpace__ecere__com__pools[c].blockSize;
+__ecereNameSpace__ecere__com__pools[c].blockSpace += sizeof(struct __ecereNameSpace__ecere__com__MemBlock);
+expansion = (__ecereNameSpace__ecere__com__pools[c].blockSize < 128) ? 1024 : (131072 / __ecereNameSpace__ecere__com__pools[c].blockSize);
+if(c < 12)
+__ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(&__ecereNameSpace__ecere__com__pools[c], ((1 > expansion) ? 1 : expansion));
+}
+}
+
+static void __ecereNameSpace__ecere__com___myfree(void * pointer)
+{
+if(pointer)
+{
+struct __ecereNameSpace__ecere__com__MemBlock * block = (struct __ecereNameSpace__ecere__com__MemBlock *)((unsigned char *)pointer - sizeof(struct __ecereNameSpace__ecere__com__MemBlock));
+struct __ecereNameSpace__ecere__com__MemPart * part = block->part;
+struct __ecereNameSpace__ecere__com__BlockPool * pool = part ? part->pool : (((void *)0));
+
+if(pool)
+__ecereMethod___ecereNameSpace__ecere__com__BlockPool_Remove((&*pool), block);
+else
+{
+__ecereNameSpace__ecere__com__TOTAL_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + block->size;
+__ecereNameSpace__ecere__com__OUTSIDE_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + block->size;
+free(block);
+}
+}
+}
+
+static void * __ecereNameSpace__ecere__com___mymalloc(unsigned int size)
+{
+struct __ecereNameSpace__ecere__com__MemBlock * block = (((void *)0));
+
+if(size)
+{
+unsigned int p = __ecereNameSpace__ecere__com__log1_5i(size);
+
+if(!__ecereNameSpace__ecere__com__memoryInitialized)
+__ecereNameSpace__ecere__com__InitMemory();
+if(!__ecereNameSpace__ecere__com__poolingDisabled && p < 31)
+{
+block = __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Add(&__ecereNameSpace__ecere__com__pools[p]);
+if(block)
+{
+block->size = size;
+__ecereNameSpace__ecere__com__pools[p].usedSpace += size;
+}
+}
+else
+{
+block = malloc(sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size);
+if(block)
+{
+__ecereNameSpace__ecere__com__TOTAL_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size;
+__ecereNameSpace__ecere__com__OUTSIDE_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size;
+block->part = (((void *)0));
+block->size = size;
+}
+}
+}
+return block ? ((struct __ecereNameSpace__ecere__com__MemBlock *)block + 1) : (((void *)0));
+}
+
+static void __ecereNameSpace__ecere__com___free(void * pointer)
+{
+if(pointer)
+{
+__ecereNameSpace__ecere__com___myfree(pointer);
+}
+}
 
 static void * __ecereNameSpace__ecere__com___mycalloc(int n, unsigned int size)
 {
@@ -1219,57 +1415,6 @@ if(pointer)
 memset(pointer, 0, n * size);
 return pointer;
 }
-
-static void * __ecereNameSpace__ecere__com___malloc(unsigned int size)
-{
-void * pointer;
-
-pointer = size ? __ecereNameSpace__ecere__com___mymalloc(size + 2 * 0) : (((void *)0));
-return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
-}
-
-static void * __ecereNameSpace__ecere__com___calloc(int n, unsigned int size)
-{
-void * pointer;
-
-pointer = (n * size) ? __ecereNameSpace__ecere__com___mycalloc(1, n * size + 2 * 0) : (((void *)0));
-return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
-}
-
-void * __ecereNameSpace__ecere__com__eSystem_New(unsigned int size)
-{
-return __ecereNameSpace__ecere__com___malloc(size);
-}
-
-void * __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size)
-{
-return __ecereNameSpace__ecere__com___calloc(1, size);
-}
-
-static void __ecereNameSpace__ecere__com___free(void *  pointer);
-
-void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory)
-{
-if(memory)
-__ecereNameSpace__ecere__com___free(memory);
-}
-
-static void *  __ecereNameSpace__ecere__com___mycrealloc(void *  pointer, unsigned int size);
-
-static void * __ecereNameSpace__ecere__com___crealloc(void * pointer, unsigned int size)
-{
-if(!size)
-return (((void *)0));
-pointer = __ecereNameSpace__ecere__com___mycrealloc(pointer, size);
-return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
-}
-
-void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, unsigned int size)
-{
-return __ecereNameSpace__ecere__com___crealloc(memory, size);
-}
-
-static void __ecereNameSpace__ecere__com___myfree(void *  pointer);
 
 static void * __ecereNameSpace__ecere__com___myrealloc(void * pointer, unsigned int size)
 {
@@ -1385,12 +1530,26 @@ memset((unsigned char *)newPointer, 0, size);
 return newPointer;
 }
 
-static void __ecereNameSpace__ecere__com___free(void * pointer)
+static void * __ecereNameSpace__ecere__com___malloc(unsigned int size)
 {
-if(pointer)
-{
-__ecereNameSpace__ecere__com___myfree(pointer);
+void * pointer;
+
+pointer = size ? __ecereNameSpace__ecere__com___mymalloc(size + 2 * 0) : (((void *)0));
+return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
+
+void __ecereNameSpace__ecere__com__eSystem_Delete(void * memory)
+{
+if(memory)
+__ecereNameSpace__ecere__com___free(memory);
+}
+
+static void * __ecereNameSpace__ecere__com___calloc(int n, unsigned int size)
+{
+void * pointer;
+
+pointer = (n * size) ? __ecereNameSpace__ecere__com___mycalloc(1, n * size + 2 * 0) : (((void *)0));
+return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
 
 static void * __ecereNameSpace__ecere__com___realloc(void * pointer, unsigned int size)
@@ -1404,9 +1563,32 @@ pointer = __ecereNameSpace__ecere__com___myrealloc(pointer, size);
 return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
 
+static void * __ecereNameSpace__ecere__com___crealloc(void * pointer, unsigned int size)
+{
+if(!size)
+return (((void *)0));
+pointer = __ecereNameSpace__ecere__com___mycrealloc(pointer, size);
+return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
+}
+
+void * __ecereNameSpace__ecere__com__eSystem_New(unsigned int size)
+{
+return __ecereNameSpace__ecere__com___malloc(size);
+}
+
+void * __ecereNameSpace__ecere__com__eSystem_New0(unsigned int size)
+{
+return __ecereNameSpace__ecere__com___calloc(1, size);
+}
+
 void * __ecereNameSpace__ecere__com__eSystem_Renew(void * memory, unsigned int size)
 {
 return __ecereNameSpace__ecere__com___realloc(memory, size);
+}
+
+void * __ecereNameSpace__ecere__com__eSystem_Renew0(void * memory, unsigned int size)
+{
+return __ecereNameSpace__ecere__com___crealloc(memory, size);
 }
 
 struct __ecereNameSpace__ecere__sys__BTNode;
@@ -1515,6 +1697,13 @@ extern void __ecereNameSpace__ecere__com__InitializeDataTypes1(struct __ecereNam
 
 extern void __ecereNameSpace__ecere__com__InitializeDataTypes(struct __ecereNameSpace__ecere__com__Instance * module);
 
+struct __ecereNameSpace__ecere__com__Class * __ecereProp___ecereNameSpace__ecere__com__Class_Set_char__PTR_(const char *  value)
+{
+struct __ecereNameSpace__ecere__com__Class * theClass = __ecereNameSpace__ecere__com__eSystem_FindClass(__thisModule, value);
+
+return theClass;
+}
+
 struct __ecereNameSpace__ecere__com__BitMember;
 
 struct __ecereNameSpace__ecere__com__BitMember
@@ -1580,50 +1769,6 @@ const char * name;
 const char * value;
 struct __ecereNameSpace__ecere__com__NameSpace * nameSpace;
 } __attribute__ ((gcc_struct));
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(struct __ecereNameSpace__ecere__com__BlockPool *  this, unsigned int numBlocks);
-
-static void __ecereNameSpace__ecere__com__InitMemory()
-{
-int c;
-
-__ecereNameSpace__ecere__com__memoryInitialized = 1;
-__ecereNameSpace__ecere__com__pools = calloc(1, sizeof(struct __ecereNameSpace__ecere__com__BlockPool) * 31);
-for(c = 0; c < 31; c++)
-{
-int expansion;
-
-__ecereNameSpace__ecere__com__pools[c].blockSize = __ecereNameSpace__ecere__com__pow1_5(c);
-if(__ecereNameSpace__ecere__com__pools[c].blockSize % sizeof(void *))
-__ecereNameSpace__ecere__com__pools[c].blockSize += sizeof(void *) - (__ecereNameSpace__ecere__com__pools[c].blockSize % sizeof(void *));
-__ecereNameSpace__ecere__com__pools[c].blockSpace = __ecereNameSpace__ecere__com__pools[c].blockSize;
-__ecereNameSpace__ecere__com__pools[c].blockSpace += sizeof(struct __ecereNameSpace__ecere__com__MemBlock);
-expansion = (__ecereNameSpace__ecere__com__pools[c].blockSize < 128) ? 1024 : (131072 / __ecereNameSpace__ecere__com__pools[c].blockSize);
-if(c < 12)
-__ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(&__ecereNameSpace__ecere__com__pools[c], ((1 > expansion) ? 1 : expansion));
-}
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Remove(struct __ecereNameSpace__ecere__com__BlockPool *  this, struct __ecereNameSpace__ecere__com__MemBlock *  block);
-
-static void __ecereNameSpace__ecere__com___myfree(void * pointer)
-{
-if(pointer)
-{
-struct __ecereNameSpace__ecere__com__MemBlock * block = (struct __ecereNameSpace__ecere__com__MemBlock *)((unsigned char *)pointer - sizeof(struct __ecereNameSpace__ecere__com__MemBlock));
-struct __ecereNameSpace__ecere__com__MemPart * part = block->part;
-struct __ecereNameSpace__ecere__com__BlockPool * pool = part ? part->pool : (((void *)0));
-
-if(pool)
-__ecereMethod___ecereNameSpace__ecere__com__BlockPool_Remove((&*pool), block);
-else
-{
-__ecereNameSpace__ecere__com__TOTAL_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + block->size;
-__ecereNameSpace__ecere__com__OUTSIDE_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + block->size;
-free(block);
-}
-}
-}
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 
@@ -1988,7 +2133,7 @@ unsigned int byValueSystemClass;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Angle;
 
-static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__unichar;
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass_unichar;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Property;
 
@@ -2051,6 +2196,34 @@ static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpac
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__DesignerBase;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__ClassDesignerBase;
+
+const char * __ecereMethod_unichar_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, unsigned int * this, char * tempString, void * fieldData, unsigned int * needClass)
+{
+__ecereNameSpace__ecere__sys__UTF32toUTF8Len(&(*this), 1, tempString, 5);
+return tempString;
+}
+
+unsigned int __ecereMethod_unichar_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * class, unsigned int * this, const char * string)
+{
+int nb;
+
+(*this) = __ecereNameSpace__ecere__sys__UTF8GetChar(string, &nb);
+return 1;
+}
+
+const char *  __ecereProp___ecereNameSpace__ecere__com__Class_Get_char__PTR_(struct __ecereNameSpace__ecere__com__Class * this)
+{
+return this->name;
+}
+
+const char * __ecereMethod___ecereNameSpace__ecere__com__Class_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Class * this, char * tempString, void * fieldData, unsigned int * needClass)
+{
+return this->name;
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__Class_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Class * this)
+{
+}
 
 static void __ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(struct __ecereNameSpace__ecere__com__Class * base, const char * name, int vid, void * origFunction, const char * type)
 {
@@ -2555,6 +2728,25 @@ return (struct __ecereNameSpace__ecere__com__Class *)__ecereNameSpace__ecere__co
 return (((void *)0));
 }
 
+const char * __ecereMethod___ecereNameSpace__ecere__com__Platform_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, int * this, char * tempString, void * fieldData, unsigned int * needClass)
+{
+if((*this) >= __ecereNameSpace__ecere__com__firstPlatform && (*this) <= __ecereNameSpace__ecere__com__lastPlatform)
+{
+if(tempString)
+strcpy(tempString, __ecereNameSpace__ecere__com__platformNames[*(int *)this]);
+return __ecereNameSpace__ecere__com__platformNames[*(int *)this];
+}
+if(tempString && tempString[0])
+tempString[0] = '\0';
+return (((void *)0));
+}
+
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Platform_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * class, int * this, const char * string)
+{
+(*this) = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(string);
+return (*this) != 0;
+}
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__OldLink;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Module;
@@ -2566,41 +2758,6 @@ extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_String;
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Application;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
-
-const char * __ecereMethod___ecereNameSpace__ecere__com__unichar_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, unsigned int * this, char * tempString, void * fieldData, unsigned int * needClass)
-{
-__ecereNameSpace__ecere__sys__UTF32toUTF8Len(&(*this), 1, tempString, 5);
-return tempString;
-}
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__unichar_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * class, unsigned int * this, const char * string)
-{
-int nb;
-
-(*this) = __ecereNameSpace__ecere__sys__UTF8GetChar(string, &nb);
-return 1;
-}
-
-const char *  __ecereProp___ecereNameSpace__ecere__com__Class_Get_char__PTR_(struct __ecereNameSpace__ecere__com__Class * this)
-{
-return this->name;
-}
-
-struct __ecereNameSpace__ecere__com__Class * __ecereProp___ecereNameSpace__ecere__com__Class_Set_char__PTR_(const char *  value)
-{
-struct __ecereNameSpace__ecere__com__Class * theClass = __ecereNameSpace__ecere__com__eSystem_FindClass(__thisModule, value);
-
-return theClass;
-}
-
-const char * __ecereMethod___ecereNameSpace__ecere__com__Class_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Class * this, char * tempString, void * fieldData, unsigned int * needClass)
-{
-return this->name;
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__Class_OnFree(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Class * this)
-{
-}
 
 struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, const char * type, void * function, int declMode)
 {
@@ -2787,144 +2944,9 @@ return bitMember;
 return (((void *)0));
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(struct __ecereNameSpace__ecere__com__BlockPool * this, unsigned int numBlocks)
-{
-unsigned char * memory = malloc(numBlocks * this->blockSpace);
-
-__ecereNameSpace__ecere__com__TOTAL_MEM += numBlocks * this->blockSpace;
-if(memory)
-{
-int c;
-struct __ecereNameSpace__ecere__com__MemBlock * block = (struct __ecereNameSpace__ecere__com__MemBlock *)memory;
-struct __ecereNameSpace__ecere__com__MemPart * part = calloc(1, sizeof(struct __ecereNameSpace__ecere__com__MemPart));
-
-__ecereNameSpace__ecere__com__TOTAL_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemPart);
-this->free = block;
-for(c = 0; c < numBlocks - 1; c++)
-{
-block->part = part;
-block->prev = (((void *)0));
-block->next = (struct __ecereNameSpace__ecere__com__MemBlock *)((unsigned char *)block + this->blockSpace);
-block = block->next;
-}
-part->blocksUsed = 0;
-part->pool = this;
-part->memory = memory;
-part->size = numBlocks;
-block->part = part;
-block->prev = (((void *)0));
-block->next = (((void *)0));
-this->totalSize += numBlocks;
-this->numParts++;
-return 1;
-}
-return 0;
-}
-
-struct __ecereNameSpace__ecere__com__MemBlock * __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Add(struct __ecereNameSpace__ecere__com__BlockPool * this)
-{
-int __simpleStruct0;
-struct __ecereNameSpace__ecere__com__MemBlock * block = (((void *)0));
-
-if(!this->free)
-__ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(this, (__simpleStruct0 = this->numBlocks / 2, (1 > __simpleStruct0) ? 1 : __simpleStruct0));
-if(this->free)
-{
-block = this->free;
-block->prev = this->last;
-if(block->prev)
-block->prev->next = block;
-if(!this->first)
-this->first = block;
-this->last = block;
-this->free = block->next;
-block->next = (((void *)0));
-block->part->blocksUsed++;
-this->numBlocks++;
-}
-return block;
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Remove(struct __ecereNameSpace__ecere__com__BlockPool * this, struct __ecereNameSpace__ecere__com__MemBlock * block)
-{
-if(block->prev)
-block->prev->next = block->next;
-if(block->next)
-block->next->prev = block->prev;
-if(this->first == block)
-this->first = block->next;
-if(this->last == block)
-this->last = block->prev;
-block->next = this->free;
-this->free = block;
-block->part->blocksUsed--;
-this->numBlocks--;
-(*block->part->pool).usedSpace -= block->size;
-if(!block->part->blocksUsed && this->numBlocks && this->totalSize > this->numBlocks + this->numBlocks / 2)
-{
-struct __ecereNameSpace__ecere__com__MemBlock * next = this->free, * prev = (((void *)0));
-struct __ecereNameSpace__ecere__com__MemPart * part = block->part;
-
-this->free = (((void *)0));
-this->totalSize -= part->size;
-while(next)
-{
-if(next->part != part)
-{
-if(prev)
-prev->next = next;
-else
-this->free = next;
-prev = next;
-}
-next = next->next;
-}
-;
-if(prev)
-prev->next = (((void *)0));
-__ecereNameSpace__ecere__com__TOTAL_MEM -= part->size * this->blockSpace;
-__ecereNameSpace__ecere__com__TOTAL_MEM -= sizeof(struct __ecereNameSpace__ecere__com__MemPart);
-this->numParts--;
-free(part->memory);
-free(part);
-}
-}
-
 const char *  __ecereProp___ecereNameSpace__ecere__com__Platform_Get_char__PTR_(int this)
 {
 return ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__Platform->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass___ecereNameSpace__ecere__com__Platform, (void *)&this, (((void *)0)), (((void *)0)), (((void *)0)));
-}
-
-int __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(const char *  value)
-{
-if(value)
-{
-int c;
-
-for(c = __ecereNameSpace__ecere__com__firstPlatform; c <= __ecereNameSpace__ecere__com__lastPlatform; c++)
-if(!strcasecmp(value, __ecereNameSpace__ecere__com__platformNames[c]))
-return c;
-}
-return 0;
-}
-
-const char * __ecereMethod___ecereNameSpace__ecere__com__Platform_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, int * this, char * tempString, void * fieldData, unsigned int * needClass)
-{
-if((*this) >= __ecereNameSpace__ecere__com__firstPlatform && (*this) <= __ecereNameSpace__ecere__com__lastPlatform)
-{
-if(tempString)
-strcpy(tempString, __ecereNameSpace__ecere__com__platformNames[*(int *)this]);
-return __ecereNameSpace__ecere__com__platformNames[*(int *)this];
-}
-if(tempString && tempString[0])
-tempString[0] = '\0';
-return (((void *)0));
-}
-
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Platform_OnGetDataFromString(struct __ecereNameSpace__ecere__com__Class * class, int * this, const char * string)
-{
-(*this) = __ecereProp___ecereNameSpace__ecere__com__Platform_Set_char__PTR_(string);
-return (*this) != 0;
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__com__DesignerBase_Get_classDesigner(struct __ecereNameSpace__ecere__com__Instance * this)
@@ -3485,40 +3507,6 @@ struct __ecereNameSpace__ecere__com__Class * __ecereNameSpace__ecere__com__eInst
 if(instance)
 return __ecereNameSpace__ecere__com__eClass_GetDesigner(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class);
 return (((void *)0));
-}
-
-static void * __ecereNameSpace__ecere__com___mymalloc(unsigned int size)
-{
-struct __ecereNameSpace__ecere__com__MemBlock * block = (((void *)0));
-
-if(size)
-{
-unsigned int p = __ecereNameSpace__ecere__com__log1_5i(size);
-
-if(!__ecereNameSpace__ecere__com__memoryInitialized)
-__ecereNameSpace__ecere__com__InitMemory();
-if(!__ecereNameSpace__ecere__com__poolingDisabled && p < 31)
-{
-block = __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Add(&__ecereNameSpace__ecere__com__pools[p]);
-if(block)
-{
-block->size = size;
-__ecereNameSpace__ecere__com__pools[p].usedSpace += size;
-}
-}
-else
-{
-block = malloc(sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size);
-if(block)
-{
-__ecereNameSpace__ecere__com__TOTAL_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size;
-__ecereNameSpace__ecere__com__OUTSIDE_MEM += sizeof(struct __ecereNameSpace__ecere__com__MemBlock) + size;
-block->part = (((void *)0));
-block->size = size;
-}
-}
-}
-return block ? ((struct __ecereNameSpace__ecere__com__MemBlock *)block + 1) : (((void *)0));
 }
 
 void __ecereNameSpace__ecere__com__eProperty_SelfWatch(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, void (* callback)(void *))
@@ -6278,11 +6266,11 @@ __ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::com::null", "((void
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::com::Angle", "double", 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Angle = class;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "ecere::com::unichar", "uint", 0, 0, (void *)0, (void *)0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(3, "unichar", "uint", 0, 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
-__ecereClass___ecereNameSpace__ecere__com__unichar = class;
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod___ecereNameSpace__ecere__com__unichar_OnGetString, 1);
-__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod___ecereNameSpace__ecere__com__unichar_OnGetDataFromString, 1);
+__ecereClass_unichar = class;
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetString", 0, __ecereMethod_unichar_OnGetString, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "OnGetDataFromString", 0, __ecereMethod_unichar_OnGetDataFromString, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::Property", 0, sizeof(struct __ecereNameSpace__ecere__com__Property), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__Property = class;
@@ -6808,9 +6796,9 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8Validate
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ISO8859_1toUTF8", "int ecere::sys::ISO8859_1toUTF8(const char * source, char * dest, int max)", __ecereNameSpace__ecere__sys__ISO8859_1toUTF8, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF16toUTF8", "char * ecere::sys::UTF16toUTF8(const uint16 * source)", __ecereNameSpace__ecere__sys__UTF16toUTF8, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF16toUTF8Buffer", "int ecere::sys::UTF16toUTF8Buffer(const uint16 * source, char * dest, int max)", __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8GetChar", "ecere::com::unichar ecere::sys::UTF8GetChar(const char * string, int * numBytes)", __ecereNameSpace__ecere__sys__UTF8GetChar, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8GetChar", "unichar ecere::sys::UTF8GetChar(const char * string, int * numBytes)", __ecereNameSpace__ecere__sys__UTF8GetChar, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8toUTF16Buffer", "int ecere::sys::UTF8toUTF16Buffer(const char * source, uint16 * dest, int max)", __ecereNameSpace__ecere__sys__UTF8toUTF16Buffer, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF32toUTF8Len", "int ecere::sys::UTF32toUTF8Len(const ecere::com::unichar * source, int count, char * dest, int max)", __ecereNameSpace__ecere__sys__UTF32toUTF8Len, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF32toUTF8Len", "int ecere::sys::UTF32toUTF8Len(const unichar * source, int count, char * dest, int max)", __ecereNameSpace__ecere__sys__UTF32toUTF8Len, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::UTF8toUTF16", "uint16 * ecere::sys::UTF8toUTF16(const char * source, int * wordCount)", __ecereNameSpace__ecere__sys__UTF8toUTF16, module, 4);
 }
 

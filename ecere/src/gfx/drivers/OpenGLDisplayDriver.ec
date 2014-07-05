@@ -324,6 +324,9 @@ typedef HDC (APIENTRY * PFNWGLGETPBUFFERDCARBPROC) (void * hPbuffer);
 typedef int (APIENTRY * PFNWGLRELEASEPBUFFERDCARBPROC) (void * hPbuffer, HDC hDC);
 typedef BOOL (APIENTRY * PFNWGLDESTROYPBUFFERARBPROC) (void * hPbuffer);
 typedef BOOL (APIENTRY * PFNWGLQUERYPBUFFERARBPROC) (void * hPbuffer, int iAttribute, int *piValue);
+typedef const char * (APIENTRY * PFNWGLGETEXTENSIONSSTRINGARBPROC) (HDC hdc);
+typedef BOOL (APIENTRY * PFNWGLBINDTEXIMAGEARBPROC) (void * hPbuffer, int iBuffer);
+typedef BOOL (APIENTRY * PFNWGLRELEASETEXIMAGEARBPROC) (void * hPbuffer, int iBuffer);
 
 static PFNGLMAPBUFFERARBPROC glMapBufferARB = null;
 static PFNGLUNMAPBUFFERARBPROC glUnmapBufferARB = null;

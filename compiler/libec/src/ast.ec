@@ -1424,7 +1424,7 @@ void SetClassTemplateArgs(Specifier spec, OldList templateArgs)
          if(!symbol && spec.symbol)
          {
             // If class was only decl'ed, invoke DeclClass on this templated class as well
-            symbol = _DeclClass(templateString);
+            symbol = _DeclClass(null, templateString);
             symbol.notYetDeclared = true;
          }
          // Add a reference to all templated class to the basic class
@@ -1470,7 +1470,22 @@ Specifier _MkSpecifierName(const char * name, Symbol symbol, OldList templateArg
          }
       }
       else if(symbol)
+      {
+         char nameSpace[1024];
+         char * c = strstr(name, symbol.string);
          spec.name = CopyString(symbol.string);
+         if(c && c >= name + 2 && c[-1] == ':' && c[-2] == ':')
+         {
+            if(c > name + 2)
+            {
+               memcpy(nameSpace, name, c - name - 2);
+               nameSpace[c-name] = 0;
+               spec.nsSpec = _MkSpecifierName(nameSpace, null, null);
+            }
+            else
+               spec.nsSpec = _MkSpecifierName(null, null, null);
+         }
+      }
       else
          spec.name = CopyString(name);
       spec.symbol = symbol;
@@ -1734,12 +1749,12 @@ ClassDef MkClassDefFunction(ClassFunction function)
    return def;
 }
 
-Symbol DeclClassAddNameSpace(const char * className)
+Symbol DeclClassAddNameSpace(Specifier _class, const char * className)
 {
    char name[1024];
    int len = 0, stringLen;
    name[0] = '\0';
-   if((currentNameSpace || defaultNameSpace) && declMode != defaultAccess && defaultDeclMode != defaultAccess)
+   if(className[0] != ':' && (currentNameSpace || defaultNameSpace) && declMode != defaultAccess && defaultDeclMode != defaultAccess && (!_class || _class.name))
    {
       if(defaultNameSpace)
       {
@@ -1760,20 +1775,30 @@ Symbol DeclClassAddNameSpace(const char * className)
    memcpy(name + len, className, stringLen);
    len += stringLen;
    name[len] = 0;
-   return _DeclClass(name);
+   return _DeclClass(_class, name);
 }
 
-Symbol DeclClass(const char * name)
+Symbol DeclClass(Specifier _class, const char * name)
 {
-   if(strchr(name, ':'))
-      return _DeclClass(name);
+   if(_class || strchr(name, ':'))
+      return _DeclClass(_class, name);
    else
-      return DeclClassAddNameSpace(name);
+      return DeclClassAddNameSpace(_class, name);
 }
 
-Symbol _DeclClass(const char * name)
+Symbol _DeclClass(Specifier _class, const char * name)
 {
-   Symbol symbol = FindClass(name);
+   Symbol symbol;
+   char nameBuffer[1024];
+   if(_class)
+   {
+      strcpy(nameBuffer,  _class.name ? _class.name : "");
+      strcat(nameBuffer, "::");
+      strcat(nameBuffer, name);
+      name = nameBuffer;
+   }
+
+   symbol = FindClass(name);
    if(!symbol)
    {
       /*
@@ -1789,7 +1814,7 @@ Symbol _DeclClass(const char * name)
       symbol = Symbol
       {
          string = CopyString(name);
-         // notYetDeclared = true;
+         notYetDeclared = true;
       };
       if(!globalContext.classes.Add((BTNode)symbol))
          excludedSymbols->Add(symbol);

@@ -3578,7 +3578,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       }
 
       if(dest.kind != classType && source.kind == classType && source._class && source._class.registered &&
-         !strcmp(source._class.registered.fullName, "ecere::com::unichar"))
+         !strcmp(source._class.registered.fullName, "unichar" /*"ecere::com::unichar"*/))
       {
          FreeType(source);
          source = Type { kind = intType, isSigned = false, refCount = 1 };
@@ -6744,8 +6744,6 @@ static Symbol FindWithNameSpace(BinaryTree tree, const char * name)
    }
    return null;
 }
-
-static void ProcessDeclaration(Declaration decl);
 
 /*static */Symbol FindSymbol(const char * name, Context startContext, Context endContext, bool isStruct, bool globalNameSpace)
 {
@@ -11404,7 +11402,7 @@ static void ProcessInitializer(Initializer init, Type type)
    }
 }
 
-static void ProcessSpecifier(Specifier spec, bool declareStruct)
+static void ProcessSpecifier(Specifier spec, bool declareStruct, bool warnClasses)
 {
    switch(spec.type)
    {
@@ -11417,7 +11415,7 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct)
                spec.type = nameSpecifier;
                spec.name = ReplaceThisClass(thisClass);
                spec.symbol = FindClass(spec.name);
-               ProcessSpecifier(spec, declareStruct);
+               ProcessSpecifier(spec, declareStruct, false);
             }
          }
          break;
@@ -11430,6 +11428,8 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct)
          else if(spec.symbol /*&& declareStruct*/)
          {
             Class c = spec.symbol.registered;
+            if(warnClasses && !c)
+               Compiler_Warning("Undeclared class %s\n", spec.name);
             DeclareStruct(curExternal, spec.name, c && c.type == noHeadClass, declareStruct && c && c.type == structClass);
          }
          break;
@@ -11583,14 +11583,14 @@ static void ProcessDeclarator(Declarator decl, bool isFunction)
                                  spec.type = nameSpecifier;
                                  spec.name = ReplaceThisClass(thisClass);
                                  spec.symbol = FindClass(spec.name);
-                                 ProcessSpecifier(spec, false);
+                                 ProcessSpecifier(spec, false, false);
                               }
                               break;
                            }
                         }
                         else if(spec.type == nameSpecifier)
                         {
-                           ProcessSpecifier(spec, isFunction);
+                           ProcessSpecifier(spec, isFunction, true);
                         }
                      }
                   }
@@ -11605,7 +11605,7 @@ static void ProcessDeclarator(Declarator decl, bool isFunction)
    }
 }
 
-static void ProcessDeclaration(Declaration decl)
+static void ProcessDeclaration(Declaration decl, bool warnClasses)
 {
    yylloc = decl.loc;
    switch(decl.type)
@@ -11681,7 +11681,7 @@ static void ProcessDeclaration(Declaration decl)
             Specifier s;
             for(s = decl.specifiers->first; s; s = s.next)
             {
-               ProcessSpecifier(s, declareStruct);
+               ProcessSpecifier(s, declareStruct, true);
             }
          }
          break;
@@ -11724,7 +11724,7 @@ static void ProcessDeclaration(Declaration decl)
          if(decl.specifiers)
          {
             for(spec = decl.specifiers->first; spec; spec = spec.next)
-               ProcessSpecifier(spec, declareStruct);
+               ProcessSpecifier(spec, declareStruct, warnClasses);
          }
          break;
       }
@@ -11828,7 +11828,7 @@ static void ProcessStatement(Statement stmt)
             if(stmt.compound.declarations)
             {
                for(decl = stmt.compound.declarations->first; decl; decl = decl.next)
-                  ProcessDeclaration(decl);
+                  ProcessDeclaration(decl, true);
             }
             if(stmt.compound.statements)
             {
@@ -12359,7 +12359,7 @@ static void ProcessStatement(Statement stmt)
                }
                ProcessExpressionType(expIt);
                if(stmt.compound.declarations->first)
-                  ProcessDeclaration(stmt.compound.declarations->first);
+                  ProcessDeclaration(stmt.compound.declarations->first, true);
 
                if(symbol)
                   symbol.isIterator = isMap ? 2 : ((isArray || isBuiltin) ? 3 : (isLinkList ? (isList ? 5 : 4) : (isCustomAVLTree ? 6 : 1)));
@@ -12408,7 +12408,7 @@ static void ProcessStatement(Statement stmt)
       }
       case badDeclarationStmt:
       {
-         ProcessDeclaration(stmt.decl);
+         ProcessDeclaration(stmt.decl, true);
          break;
       }
       case asmStmt:
@@ -13069,7 +13069,7 @@ static void ProcessClass(OldList definitions, Symbol symbol)
          {
             Class backThisClass = thisClass;
             if(regClass) thisClass = regClass;
-            ProcessDeclaration(def.decl);
+            ProcessDeclaration(def.decl, symbol ? true : false);
             thisClass = backThisClass;
          }
       }
@@ -13243,7 +13243,7 @@ void ComputeDataTypes()
 
          currentClass = null;
          if(external.declaration)
-            ProcessDeclaration(external.declaration);
+            ProcessDeclaration(external.declaration, true);
       }
       else if(external.type == classExternal)
       {

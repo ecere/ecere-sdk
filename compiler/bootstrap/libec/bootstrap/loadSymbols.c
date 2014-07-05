@@ -135,6 +135,8 @@ extern char *  __ecereNameSpace__ecere__sys__GetLastDirectory(const char *  stri
 
 extern int strcasecmp(const char * , const char * );
 
+struct Specifier;
+
 extern char *  strstr(const char * , const char * );
 
 extern char *  strcat(char * , const char * );
@@ -190,8 +192,6 @@ struct Instantiation;
 struct Declarator;
 
 struct TypeName;
-
-struct Specifier;
 
 struct Initializer;
 
@@ -640,7 +640,7 @@ extern unsigned int __ecereNameSpace__ecere__com__eClass_AddMember(struct __ecer
 
 struct Symbol;
 
-extern struct Symbol * DeclClass(const char *  name);
+extern struct Symbol * DeclClass(struct Specifier * _class, const char *  name);
 
 extern struct Symbol * FindClass(const char *  name);
 
@@ -919,6 +919,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatedClasses;
 struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
+unsigned int mustRegister;
 } __attribute__ ((gcc_struct));
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
@@ -1336,7 +1337,7 @@ inheritanceAccess = 2;
 __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line));
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 if(importType == 3)
-DeclClass(name);
+DeclClass((((void *)0)), name);
 if(isStatic || loadDllOnly || importType == 3 || importType == 4)
 regClass = (((void *)0));
 else if(regClass = __ecereNameSpace__ecere__com__eSystem_FindClass(privateModule, name), !regClass || regClass->internalDecl || regClass->isRemote)
@@ -1358,7 +1359,7 @@ char className[1024] = "DCOMClient_";
 
 strcat(className, name);
 if(!existingClass)
-existingClass = DeclClass(name);
+existingClass = DeclClass((((void *)0)), name);
 regClass = __ecereNameSpace__ecere__com__eSystem_RegisterClass(classType, className, baseName, 0, 0, (((void *)0)), (((void *)0)), privateModule, ecereCOMModule ? 4 : 1, inheritanceAccess);
 }
 if(regClass)

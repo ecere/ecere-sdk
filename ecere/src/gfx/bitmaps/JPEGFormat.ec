@@ -3,6 +3,7 @@ namespace gfx::bitmaps;
 import "Display"
 
 #include <setjmp.h>
+#include <stdio.h>
 
 #include "jpeglib.h"
 #include "jerror.h"

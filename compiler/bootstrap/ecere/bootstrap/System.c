@@ -123,8 +123,20 @@ unsigned int System_Execute(const char * env, const char * command, va_list args
 
 unsigned int System_ShellOpen(const char * fileName, va_list args);
 
+void System_GetFreeSpace(const char * path, uint64 * size);
 
 
+
+
+struct __ecereNameSpace__ecere__sys__System
+{
+int errorLoggingMode;
+char * errorBuffer;
+int errorBufferSize;
+char logFile[797];
+unsigned int lastErrorCode;
+int errorLevel;
+} __attribute__ ((gcc_struct));
 
 struct __ecereNameSpace__ecere__sys__BTNode;
 
@@ -298,11 +310,45 @@ __builtin_va_end(args);
 return result;
 }
 
+void __ecereNameSpace__ecere__sys__GetFreeSpace(const char * path, uint64 * size)
+{
+System_GetFreeSpace(path, size);
+}
+
+struct __ecereNameSpace__ecere__sys__System __ecereNameSpace__ecere__sys__globalSystem;
+
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__errorMessages;
 
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__sysErrorMessages;
 
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__guiErrorMessages;
+
+void __ecereNameSpace__ecere__sys__DumpErrors(unsigned int display)
+{
+if(__ecereNameSpace__ecere__sys__globalSystem.errorBuffer && __ecereNameSpace__ecere__sys__globalSystem.errorBuffer[0])
+{
+if(display)
+{
+printf("%s", __ecereNameSpace__ecere__sys__globalSystem.errorBuffer);
+}
+__ecereNameSpace__ecere__sys__globalSystem.errorBuffer[0] = '\0';
+}
+}
+
+unsigned int __ecereNameSpace__ecere__sys__GetLastErrorCode()
+{
+return (unsigned int)__ecereNameSpace__ecere__sys__globalSystem.lastErrorCode;
+}
+
+void __ecereNameSpace__ecere__sys__ResetError()
+{
+__ecereNameSpace__ecere__sys__globalSystem.lastErrorCode = 0;
+}
+
+void __ecereNameSpace__ecere__sys__SetErrorLevel(int level)
+{
+__ecereNameSpace__ecere__sys__globalSystem.errorLevel = level;
+}
 
 struct __ecereNameSpace__ecere__com__Class;
 
@@ -337,23 +383,6 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-void System_GetFreeSpace(const char * path, struct __ecereNameSpace__ecere__com__Instance ** size);
-
-struct __ecereNameSpace__ecere__sys__System
-{
-int errorLoggingMode;
-char * errorBuffer;
-int errorBufferSize;
-char logFile[797];
-unsigned int lastErrorCode;
-int errorLevel;
-struct __ecereNameSpace__ecere__com__Instance * eventSemaphore;
-struct __ecereNameSpace__ecere__sys__OldList fileMonitors;
-struct __ecereNameSpace__ecere__com__Instance * fileMonitorMutex;
-struct __ecereNameSpace__ecere__com__Instance * fileMonitorThread;
-unsigned int systemTerminate;
-} __attribute__ ((gcc_struct));
-
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
@@ -361,47 +390,6 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
 void __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * value);
-
-void __ecereNameSpace__ecere__sys__GetFreeSpace(const char * path, struct __ecereNameSpace__ecere__com__Instance ** size)
-{
-System_GetFreeSpace(path, size);
-}
-
-struct __ecereNameSpace__ecere__sys__System __ecereNameSpace__ecere__sys__globalSystem;
-
-void __ecereDestroyModuleInstances_System()
-{
-(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__errorMessages), __ecereNameSpace__ecere__sys__errorMessages = 0);
-(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__guiErrorMessages), __ecereNameSpace__ecere__sys__guiErrorMessages = 0);
-(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__sysErrorMessages), __ecereNameSpace__ecere__sys__sysErrorMessages = 0);
-}
-
-void __ecereNameSpace__ecere__sys__DumpErrors(unsigned int display)
-{
-if(__ecereNameSpace__ecere__sys__globalSystem.errorBuffer && __ecereNameSpace__ecere__sys__globalSystem.errorBuffer[0])
-{
-if(display)
-{
-printf("%s", __ecereNameSpace__ecere__sys__globalSystem.errorBuffer);
-}
-__ecereNameSpace__ecere__sys__globalSystem.errorBuffer[0] = '\0';
-}
-}
-
-unsigned int __ecereNameSpace__ecere__sys__GetLastErrorCode()
-{
-return (unsigned int)__ecereNameSpace__ecere__sys__globalSystem.lastErrorCode;
-}
-
-void __ecereNameSpace__ecere__sys__ResetError()
-{
-__ecereNameSpace__ecere__sys__globalSystem.lastErrorCode = 0;
-}
-
-void __ecereNameSpace__ecere__sys__SetErrorLevel(int level)
-{
-__ecereNameSpace__ecere__sys__globalSystem.errorLevel = level;
-}
 
 void __ecereNameSpace__ecere__sys__SetLoggingMode(int mode, void * where)
 {
@@ -435,6 +423,13 @@ if(__ecereNameSpace__ecere__sys__globalSystem.errorBuffer)
 __ecereNameSpace__ecere__sys__globalSystem.errorBufferSize = 0;
 }
 }
+}
+
+void __ecereDestroyModuleInstances_System()
+{
+(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__errorMessages), __ecereNameSpace__ecere__sys__errorMessages = 0);
+(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__guiErrorMessages), __ecereNameSpace__ecere__sys__guiErrorMessages = 0);
+(__ecereNameSpace__ecere__com__eInstance_DecRef(__ecereNameSpace__ecere__sys__sysErrorMessages), __ecereNameSpace__ecere__sys__sysErrorMessages = 0);
 }
 
 struct __ecereNameSpace__ecere__com__Property;
@@ -853,7 +848,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Execute", "b
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ExecuteWait", "bool ecere::sys::ExecuteWait(const char * command, ...)", __ecereNameSpace__ecere__sys__ExecuteWait, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ExecuteEnv", "bool ecere::sys::ExecuteEnv(const char * env, const char * command, ...)", __ecereNameSpace__ecere__sys__ExecuteEnv, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ShellOpen", "bool ecere::sys::ShellOpen(const char * fileName, ...)", __ecereNameSpace__ecere__sys__ShellOpen, module, 1);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetFreeSpace", "void ecere::sys::GetFreeSpace(const char * path, FileSize64 * size)", __ecereNameSpace__ecere__sys__GetFreeSpace, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::GetFreeSpace", "void ecere::sys::GetFreeSpace(const char * path, ecere::sys::FileSize64 * size)", __ecereNameSpace__ecere__sys__GetFreeSpace, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Logf", "void ecere::sys::Logf(const char * format, ...)", __ecereNameSpace__ecere__sys__Logf, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Log", "void ecere::sys::Log(const char * text)", __ecereNameSpace__ecere__sys__Log, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::DumpErrors", "void ecere::sys::DumpErrors(bool display)", __ecereNameSpace__ecere__sys__DumpErrors, module, 1);
@@ -871,10 +866,5 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorBufferSize", "in
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "logFile", "char[MAX_LOCATION]", 797, 1, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "lastErrorCode", "ecere::sys::ErrorCode", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "errorLevel", "ecere::sys::ErrorLevel", 4, 4, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "eventSemaphore", "Semaphore", sizeof(void *), 0xF000F000, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitors", "ecere::sys::OldList", sizeof(struct __ecereNameSpace__ecere__sys__OldList), 8, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitorMutex", "Mutex", sizeof(void *), 0xF000F000, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "fileMonitorThread", "Thread", sizeof(void *), 0xF000F000, 1);
-__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "systemTerminate", "bool", 4, 4, 1);
 }
 

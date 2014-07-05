@@ -282,17 +282,7 @@ guess_type:
    identifier '*'
    {
       $$ = null;
-      // if($1._class && !$1._class.name)
-      if($1._class)
-      {
-         char name[1024];
-         strcpy(name,  $1._class.name ? $1._class.name : "");
-         strcat(name, "::");
-         strcat(name, $1.string);
-         _DeclClass(name);
-      }
-      else
-         _DeclClass($1.string);
+      _DeclClass($1._class, $1.string);
 
       FreeIdentifier($1);
 
@@ -312,17 +302,7 @@ guess_type:
    {
       $$ = null;
    #ifdef PRECOMPILER
-      // if($1._class && !$1._class.name)
-      if($1._class)
-      {
-         char name[1024];
-         strcpy(name,  $1._class.name ? $1._class.name : "");
-         strcat(name, "::");
-         strcat(name, $1.string);
-         _DeclClass(name);
-      }
-      else
-         _DeclClass($1.string);
+      _DeclClass($1._class, $1.string);
 
       FreeIdentifier($1);
 
@@ -341,17 +321,7 @@ guess_type:
    }
 /*   | identifier '*' '<' template_arguments_list '>'
    {
-      //if($1._class && !$1._class.name)
-      if($1._class)
-      {
-         char name[1024];
-         strcpy(name,  $1._class.name ? $1._class.name : "");
-         strcat(name, "::");
-         strcat(name, $1.string);
-         _DeclClass(name);
-      }
-      else
-         _DeclClass($1.string);
+      _DeclClass($1._class, $1.string);
       fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
@@ -379,17 +349,7 @@ type:
       }
       else
       {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($1.string);
+         _DeclClass($1._class, $1.string);
 
          FreeIdentifier($1);
          FreeIdentifier($2);
@@ -416,17 +376,7 @@ type:
    | identifier '<'
    {
    #ifdef PRECOMPILER
-      //if($1._class && !$1._class.name)
-      if($1._class)
-      {
-         char name[1024];
-         strcpy(name,  $1._class.name ? $1._class.name : "");
-         strcat(name, "::");
-         strcat(name, $1.string);
-         _DeclClass(name);
-      }
-      else
-         _DeclClass($1.string);
+      _DeclClass($1._class, $1.string);
       fileInput.Seek(@1.start.pos, start);
       resetScannerPos(&@1.start);
       yyclearin;
@@ -444,17 +394,7 @@ type:
    | identifier identifier '<' template_arguments_list '>'
    {
    #ifdef PRECOMPILER
-      // if($1._class && !$1._class.name)
-      if($1._class)
-      {
-         char name[1024];
-         strcpy(name,  $1._class.name ? $1._class.name : "");
-         strcat(name, "::");
-         strcat(name, $1.string);
-         _DeclClass(name);
-      }
-      else
-         _DeclClass($1.string);
+      _DeclClass($1._class, $1.string);
       FreeIdentifier($1);
       FreeIdentifier($2);
 
@@ -502,17 +442,7 @@ strict_type:
 /*    | identifier '<' template_arguments_list '>' */
       /*| identifier '<' error
       {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($1.string);
+         _DeclClass($1._class, $1.string);
 
          yyerrok;
 
@@ -1338,30 +1268,30 @@ class_entry:
    };
 
 class_decl:
-     class_entry identifier { (void)$1; $$ = DeclClassAddNameSpace($2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+     class_entry identifier { (void)$1; $$ = DeclClassAddNameSpace($2._class, $2.string); FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type
    {
-      (void)$1; $$ = DeclClass($2.name);
+      (void)$1; $$ = DeclClass($2.nsSpec, $2.name);
       $$.nameLoc = @2;
       FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier { (void)$2; $$ = DeclClassAddNameSpace($3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type { (void)$2; $$ = DeclClass($3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier { (void)$2; $$ = DeclClassAddNameSpace($3._class, $3.string); FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type { (void)$2; $$ = DeclClass($3.nsSpec, $3.name); FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
 
-   | class_entry identifier '<' template_parameters_list '>' { (void)$1; $$ = DeclClassAddNameSpace($2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | class_entry identifier '<' template_parameters_list '>' { (void)$1; $$ = DeclClassAddNameSpace($2._class, $2.string); $$.templateParams = $4; FreeIdentifier($2); $$.nameLoc = @2; memberAccessStack[++defaultMemberAccess] = privateAccess; }
    | class_entry base_strict_type '<' template_parameters_list '>'
    {
-      (void)$1; $$ = DeclClass($2.name);
+      (void)$1; $$ = DeclClass($2.nsSpec, $2.name);
       $$.templateParams = $4;
       $$.nameLoc = @2;
       FreeSpecifier($2);
       ++defaultMemberAccess;
       memberAccessStack[defaultMemberAccess] = privateAccess;
    }
-   | identifier class_entry identifier '<' template_parameters_list '>' { (void)$2; $$ = DeclClassAddNameSpace($3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
-   | identifier class_entry base_strict_type '<' template_parameters_list '>' { (void)$2; $$ = DeclClass($3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry identifier '<' template_parameters_list '>' { (void)$2; $$ = DeclClassAddNameSpace($3._class, $3.string); $$.templateParams = $5; FreeIdentifier($1); FreeIdentifier($3); $$.nameLoc = @3; $$.isRemote = true; memberAccessStack[++defaultMemberAccess] = privateAccess; }
+   | identifier class_entry base_strict_type '<' template_parameters_list '>' { (void)$2; $$ = DeclClass($3.nsSpec, $3.name); $$.templateParams = $5; FreeIdentifier($1); $$.nameLoc = @3; $$.isRemote = true; FreeSpecifier($3); memberAccessStack[++defaultMemberAccess] = privateAccess; }
    ;
 
 class:
@@ -1394,13 +1324,13 @@ class:
 
 	| class_entry identifier ';'
       {
-         (void)$1; $$ = MkClass(DeclClassAddNameSpace($2.string), null, null); FreeIdentifier($2);
+         (void)$1; $$ = MkClass(DeclClassAddNameSpace($2._class, $2.string), null, null); FreeIdentifier($2);
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
 	| class_entry type ';'
       {
-         (void)$1; $$ = MkClass(DeclClass($2.name), null, null); FreeSpecifier($2);
+         (void)$1; $$ = MkClass(DeclClass($2.nsSpec, $2.name), null, null); FreeSpecifier($2);
          POP_DEFAULT_ACCESS
          PopContext(curContext);
       }
@@ -1930,15 +1860,7 @@ relational_expression_error:
    {
       if($1.type == identifierExp)
       {
-         if($1.identifier._class && !$1.identifier._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, $1.identifier.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($1.identifier.string);
+         _DeclClass($1.identifier._class, $1.identifier.string);
 
          // printf("Declaring Class %s\n", $1.identifier.string);
          skipErrors = false;
@@ -2207,8 +2129,8 @@ enum_specifier_compound_error:
 	;
 
 enum_decl:
-     enum_specifier identifier  { $$ = $2; if(declMode) DeclClassAddNameSpace($2.string); }
-   | enum_specifier strict_type { $$ = MkIdentifier($2.name); if(declMode) DeclClass($2.name); FreeSpecifier($2); }
+     enum_specifier identifier  { $$ = $2; if(declMode) DeclClassAddNameSpace($2._class, $2.string); }
+   | enum_specifier strict_type { $$ = MkIdentifier($2.name); if(declMode) DeclClass($2.nsSpec, $2.name); FreeSpecifier($2); }
    ;
 
 enum_class:
@@ -2288,7 +2210,7 @@ type_specifier:
 	| type
    | TYPEOF '(' assignment_expression ')' { $$ = MkSpecifierTypeOf($3); }
    | SUBCLASS '(' type ')'                { $$ = MkSpecifierSubClass($3); }
-   | SUBCLASS '(' identifier ')'          { _DeclClass($3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
+   | SUBCLASS '(' identifier ')'          { _DeclClass($3._class, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
    | THISCLASS       { $$ = MkSpecifier(THISCLASS); }
    | TYPED_OBJECT    { $$ = MkSpecifier(TYPED_OBJECT); }
    | ANY_OBJECT      { $$ = MkSpecifier(ANY_OBJECT); }
@@ -2321,7 +2243,7 @@ strict_type_specifier:
    | _IMAGINARY      { $$ = MkSpecifier(_IMAGINARY); }
    | TYPEOF '(' assignment_expression ')' { $$ = MkSpecifierTypeOf($3); }
    | SUBCLASS '(' type ')'                { $$ = MkSpecifierSubClass($3); }
-   | SUBCLASS '(' identifier ')'          { _DeclClass($3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
+   | SUBCLASS '(' identifier ')'          { _DeclClass($3._class, $3.string); $$ = MkSpecifierSubClass(MkSpecifierName($3.string)); FreeIdentifier($3); }
    | THISCLASS       { $$ = MkSpecifier(THISCLASS); }
 	;
 
@@ -2415,12 +2337,12 @@ struct_decl:
         $$ = $1;
         if(declMode)
         {
-           ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)($1.id.string);
+           ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)($1.id._class, $1.id.string);
         }
      }
    | struct_entry '<' template_parameters_list '>'
    {
-      Symbol symbol = ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)($1.id.string);
+      Symbol symbol = ($1.addNameSpace ? DeclClassAddNameSpace : DeclClass)($1.id._class, $1.id.string);
       $$ = $1;
       symbol.templateParams = $3;
    }
@@ -2584,22 +2506,12 @@ _inheritance_specifiers:
    | strict_type_specifier                                   { $$ = MkList(); ListAdd($$, $1); }
    | _inheritance_specifiers strict_type_specifier            { $$ = $1; ListAdd($1, $2); }
    | identifier
-      { _DeclClass($1.string); $$ = MkListOne(MkSpecifierName($1.string)); FreeIdentifier($1); }
-	| _inheritance_specifiers identifier                { $$ = $1; _DeclClass($2.string); ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
+      { _DeclClass($1._class, $1.string); $$ = MkListOne(MkSpecifierName($1.string)); FreeIdentifier($1); }
+	| _inheritance_specifiers identifier                { $$ = $1; _DeclClass($2._class, $2.string); ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2); }
 
    | identifier '<' template_arguments_list '>'
       {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($1.string);
+         _DeclClass($1._class, $1.string);
 
          $$ = MkList();
          ListAdd($$, MkSpecifierNameArgs($1.string, $3));
@@ -2608,15 +2520,7 @@ _inheritance_specifiers:
    | _inheritance_specifiers identifier '<' template_arguments_list '>'
       {
          $$ = $1;
-         if($2._class && !$2._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, $2.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($2.string);
+         _DeclClass($2._class, $2.string);
          ListAdd($1, MkSpecifierNameArgs($2.string, $4));
          FreeIdentifier($2);
       }
@@ -2638,17 +2542,7 @@ property_specifiers:
    | property_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
    | identifier '<' template_arguments_list '>'
       {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($1.string);
+         _DeclClass($1._class, $1.string);
 
          $$ = MkList();
          ListAdd($$, MkSpecifierNameArgs($1.string, $3));
@@ -2656,15 +2550,7 @@ property_specifiers:
       }
    | property_specifiers identifier '<' template_arguments_list '>'
       {
-         if($2._class && !$2._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, $2.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($2.string);
+         _DeclClass($2._class, $2.string);
          ListAdd($1, MkSpecifierNameArgs($2.string, $4));
          FreeIdentifier($2);
       }
@@ -2685,17 +2571,7 @@ renew_specifiers:
    | renew_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
    | identifier '<' template_arguments_list '>'
       {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($1.string);
+         _DeclClass($1._class, $1.string);
 
          $$ = MkList();
          ListAdd($$, MkSpecifierNameArgs($1.string, $3));
@@ -2703,15 +2579,7 @@ renew_specifiers:
       }
    | renew_specifiers identifier '<' template_arguments_list '>'
       {
-         if($2._class && !$2._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, $2.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($2.string);
+         _DeclClass($2._class, $2.string);
          ListAdd($1, MkSpecifierNameArgs($2.string, $4));
          FreeIdentifier($2);
       }
@@ -2732,17 +2600,7 @@ new_specifiers:
    | new_specifiers identifier          { $$ = $1; ListAdd($1, MkSpecifierName($2.string)); FreeIdentifier($2)}
    | identifier '<' template_arguments_list '>'
       {
-         // if($1._class && !$1._class.name)
-         if($1._class)
-         {
-            char name[1024];
-            strcpy(name,  $1._class.name ? $1._class.name : "");
-            strcat(name, "::");
-            strcat(name, $1.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($1.string);
+         _DeclClass($1._class, $1.string);
 
          $$ = MkList();
          ListAdd($$, MkSpecifierNameArgs($1.string, $3));
@@ -2750,15 +2608,7 @@ new_specifiers:
       }
    | new_specifiers identifier '<' template_arguments_list '>'
       {
-         if($2._class && !$2._class.name)
-         {
-            char name[1024];
-            strcpy(name, "::");
-            strcat(name, $2.string);
-            _DeclClass(name);
-         }
-         else
-            _DeclClass($2.string);
+         _DeclClass($2._class, $2.string);
          ListAdd($1, MkSpecifierNameArgs($2.string, $4));
          FreeIdentifier($2);
       }
@@ -3770,8 +3620,8 @@ thefile:
    ;
 
 dbtable_definition:
-     DBTABLE string_literal identifier   '{' dbfield_definition_list '}' { Symbol symbol = DeclClassAddNameSpace($3.string); FreeIdentifier($3); $$ = MkDBTableDef($2, symbol, $5); }
-   | DBTABLE string_literal strict_type  '{' dbfield_definition_list '}' { Symbol symbol = DeclClass($3.name); FreeSpecifier($3); $$ = MkDBTableDef($2, symbol, $5); }
+     DBTABLE string_literal identifier   '{' dbfield_definition_list '}' { Symbol symbol = DeclClassAddNameSpace($3._class, $3.string); FreeIdentifier($3); $$ = MkDBTableDef($2, symbol, $5); }
+   | DBTABLE string_literal strict_type  '{' dbfield_definition_list '}' { Symbol symbol = DeclClass($3.nsSpec, $3.name); FreeSpecifier($3); $$ = MkDBTableDef($2, symbol, $5); }
    | DBTABLE string_literal '{' dbfield_definition_list '}' { $$ = MkDBTableDef($2, null, $4); }
    ;
 
