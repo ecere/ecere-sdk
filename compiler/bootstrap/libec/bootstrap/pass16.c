@@ -302,6 +302,8 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
+extern unsigned int __ecereNameSpace__ecere__com__eClass_IsDerived(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from);
+
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
@@ -3308,6 +3310,8 @@ break;
 case 8:
 {
 exp->__anon1.member.exp->usage = (exp->__anon1.member.exp->usage & ~0x1) | (((unsigned int)(1)) << 0);
+if(exp->__anon1.member.memberType == 3 && exp->__anon1.member.exp->expType && exp->__anon1.member.exp->expType->thisClassFrom && exp->__anon1.member.exp->expType->kind == 8 && exp->__anon1.member.exp->expType->__anon1._class && exp->__anon1.member.exp->expType->__anon1._class->__anon1.registered && !__ecereNameSpace__ecere__com__eClass_IsDerived(exp->__anon1.member.exp->expType->thisClassFrom, exp->__anon1.member.exp->expType->__anon1._class->__anon1.registered))
+exp->__anon1.member.exp->expType->passAsTemplate = 1;
 ProcessExpression(exp->__anon1.member.exp);
 if(!exp->__anon1.member.memberType)
 {

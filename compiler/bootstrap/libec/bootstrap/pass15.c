@@ -17925,6 +17925,8 @@ struct Type * t = ProcessTypeString(exp->expType->__anon1.templateParameter->dat
 
 if(t && t->kind == 8 && t->__anon1._class)
 thisClassFrom = t->__anon1._class->__anon1.registered;
+else
+thisClassFrom = __ecereNameSpace__ecere__com__eSystem_FindClass(GetPrivateModule(), "class");
 FreeType(t);
 passAsTemplate = tClass->templateClass && (exp->expType->kind != 20 || (!exp->expType->__anon1.templateParameter || (!exp->expType->__anon1.templateParameter->dataTypeString && !exp->expType->__anon1.templateParameter->__anon1.dataType)));
 FreeType(exp->expType);

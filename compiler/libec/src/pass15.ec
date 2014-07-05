@@ -10323,6 +10323,10 @@ void ProcessExpressionType(Expression exp)
                         Type t = ProcessTypeString(exp.expType.templateParameter.dataTypeString, false);
                         if(t && t.kind == classType && t._class)
                            thisClassFrom = t._class.registered;
+                        else
+                           // Mark that 'thisClassFrom' was set to something
+                           thisClassFrom = eSystem_FindClass(GetPrivateModule(), "class");
+
                         FreeType(t);
 
                         passAsTemplate = tClass.templateClass && (exp.expType.kind != templateType ||

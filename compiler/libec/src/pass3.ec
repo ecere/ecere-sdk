@@ -473,7 +473,7 @@ static void AddPointerCast(Expression e)
          if(src && src.kind == classType && src._class)
          {
             Class sc = src._class.registered;
-            if(src.thisClassFrom)
+            if(src.thisClassFrom && src.thisClassFrom.base)
                sc = src.thisClassFrom;
 
             if(sc && (sc.type == structClass || sc.type == noHeadClass))

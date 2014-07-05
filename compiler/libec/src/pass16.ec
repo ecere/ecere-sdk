@@ -1380,6 +1380,12 @@ static void ProcessExpression(Expression exp)
       case memberExp:
       {
          exp.member.exp.usage.usageGet = true;
+         // Tweak for LinkList::first to be casted to proper type (e.g. Link) when accessing members
+         if(exp.member.memberType == dataMember &&
+            exp.member.exp.expType && exp.member.exp.expType.thisClassFrom && exp.member.exp.expType.kind == classType &&
+            exp.member.exp.expType._class && exp.member.exp.expType._class.registered &&
+            !eClass_IsDerived(exp.member.exp.expType.thisClassFrom, exp.member.exp.expType._class.registered))
+            exp.member.exp.expType.passAsTemplate = true;
          ProcessExpression(exp.member.exp);
 
          // Must do this here so we can set the MemberType of deep properties inside instantiations

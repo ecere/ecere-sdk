@@ -1644,7 +1644,7 @@ if(src && src->kind == 8 && src->__anon1._class)
 {
 struct __ecereNameSpace__ecere__com__Class * sc = src->__anon1._class->__anon1.registered;
 
-if(src->thisClassFrom)
+if(src->thisClassFrom && src->thisClassFrom->base)
 sc = src->thisClassFrom;
 if(sc && (sc->type == 1 || sc->type == 5))
 {
