@@ -1234,7 +1234,7 @@ public class LFBDisplayDriver : DisplayDriver
       LFBDisplay lfbDisplay = display ? display.driverData : null;
       LFBSurface lfbSurface = surface.driverData;
       uint index;
-      if(display) color = color /*& 0xFFFFFF*/;
+      //if(display) color = color & 0xFFFFFF;
       lfbSurface.foregroundRgb = color;
 
       if(lfbSurface.font && lfbDisplay)
@@ -1269,7 +1269,7 @@ public class LFBDisplayDriver : DisplayDriver
    {
       LFBDisplay lfbDisplay = display ? display.driverData : null;
       LFBSurface lfbSurface = surface.driverData;
-      color = color /*& 0xFFFFFF*/;
+      //color = color & 0xFFFFFF;
       switch(lfbSurface.bitmap.pixelFormat)
       {
          case pixelFormat8:
@@ -2461,7 +2461,7 @@ public class LFBDisplayDriver : DisplayDriver
             ColorAlpha * backsrc;
             ColorAlpha * source = ((ColorAlpha *) src.picture) + sy * addsource + sx;
             ColorAlpha * dest = ((ColorAlpha *) lfbSurface.bitmap.picture) + dy * adddest   + dx;
-            if(flip < 0) source += sw-1;
+            if(flip) source += sw-1;
             adddest -= w;
             yerr = 0;
             for(y=0; y<sh; y++)

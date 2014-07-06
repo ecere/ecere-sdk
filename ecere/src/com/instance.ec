@@ -4083,7 +4083,7 @@ public dllexport Method eClass_AddMethod(Class _class, const char * name, const 
                if(method.vid >= _class.vTblSize)
                   printf("error: virtual methods overriding failure\n");
                else
-                  _class._vTbl[method.vid] = function ? function : DefaultFunction;
+                  _class._vTbl[method.vid] = function ? function : (void *)DefaultFunction;
                for(deriv = _class.derivatives.first; deriv; deriv = deriv.next)
                {
                   Class derivClass = deriv.data;
@@ -4152,7 +4152,7 @@ public dllexport Method eClass_AddVirtualMethod(Class _class, const char * name,
                if(method.vid >= _class.vTblSize)
                   printf("error: virtual methods overriding failure\n");
                else
-                  _class._vTbl[method.vid] = function ? function : DefaultFunction;
+                  _class._vTbl[method.vid] = function ? function : (void *)DefaultFunction;
             }
             else
                base = null;
@@ -4174,7 +4174,7 @@ public dllexport Method eClass_AddVirtualMethod(Class _class, const char * name,
          };
          _class.methods.Add((BTNode)method);
          _class._vTbl = renew _class._vTbl void *[_class.vTblSize];
-         _class._vTbl[method.vid] = function ? function : DefaultFunction;
+         _class._vTbl[method.vid] = function ? function : (void *)DefaultFunction;
 
          // TODO: Fix derived classes
          if(_class.derivatives.first || _class.templatized.first)
@@ -5032,7 +5032,7 @@ public dllexport void eInstance_SetMethod(Instance instance, const char * name, 
                memcpy(instance._vTbl, instance._class._vTbl,
                   sizeof(int(*)()) * instance._class.vTblSize);
             }
-            instance._vTbl[method.vid] = function ? function : DefaultFunction;
+            instance._vTbl[method.vid] = function ? function : (void *)DefaultFunction;
          }
       }
    }

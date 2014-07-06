@@ -943,11 +943,11 @@ class StringsArrayOptionBox : MultiStringOptionBox
 {
    editor = StringsBox
    {
-      bool OnCreate()
+      /*bool OnCreate()
       {
          project = ::project;
          return true;
-      }
+      }*/
 
       bool NotifyModified(StringsBox stringsBox)
       {

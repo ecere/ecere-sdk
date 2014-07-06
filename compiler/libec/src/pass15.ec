@@ -3695,7 +3695,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       {
          Class _class = source._class ? source._class.registered : null;
 
-         if(_class && (_class.type == unitClass || /*!strcmp(_class.fullName, "bool") || /*_class.type == enumClass || */_class.type == bitClass ))  // TOCHECK: enumClass, bitClass is new here...
+         if(_class && (_class.type == unitClass || /*!strcmp(_class.fullName, "bool") || _class.type == enumClass || */_class.type == bitClass ))  // TOCHECK: enumClass, bitClass is new here...
          {
             /*
             if(dest.kind != classType)

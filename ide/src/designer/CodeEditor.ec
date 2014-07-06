@@ -912,11 +912,11 @@ class CodeEditor : Window
          int oldLine = lastLine;
          display.FontExtent(font.font, " ", 1, null, &spaceH);
          {
-            Box box { 0, (Min(oldLine,oldLine)-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, (Max(oldLine, oldLine))*spaceH-1 - editBox.scroll.y };
+            Box box { 0, (oldLine-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, oldLine*spaceH-1 - editBox.scroll.y };
             Update(box);
          }
          {
-            Box box { 0, (Min(line,line)-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, (Max(line, line))*spaceH-1 - editBox.scroll.y };
+            Box box { 0, (line-1) * spaceH - editBox.scroll.y, editBox.anchor.left.distance, line*spaceH-1 - editBox.scroll.y };
             Update(box);
          }
          lastLine = line;

@@ -118,7 +118,7 @@ public class TempFile : File
                   result = false;
                }
             }
-            else if(position + pos < 0)
+            else if((int)position + pos < 0)
             {
                position = 0;
                result = false;

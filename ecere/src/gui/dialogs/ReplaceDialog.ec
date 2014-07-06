@@ -27,7 +27,7 @@ public:
             value.GetSelPos(null, &y1, &x1, null, &y2, &x2, true);
          if(!editBox || (x1 == x2 && y1 == y2))
             selection.disabled = true;
-         if(y1 == y2 || !editBox)
+         if(!editBox || y1 == y2)
             wholeFile.checked = true;
          else
             selection.checked = true;

@@ -737,9 +737,9 @@ public:
 
    dllexport bool CallMethod(unsigned int methodID)
    {
+      bool result = false;
       if(this && connected)
       {
-         bool result;
          CallAck ack = null;
          int callID = nextCallID++;
          unsigned int size = (uint)(uintptr)&((CallMethodPacket)0).args + __ecereBuffer.size; // sizeof(class CallMethodPacket) + __ecereBuffer.size - 1;
@@ -779,9 +779,8 @@ public:
             delete ack;
             result = true;
          }
-         return result;
       }
-      return false;
+      return result;
    }
 
    ~DCOMClientObject()

@@ -2284,7 +2284,7 @@ class ProjectView : Window
       for(c = 1; c < 100; c++)
       {
          char string[16];
-         sprintf(string, c ? "%s%d.ec" : "%s.ec", lower, c);
+         sprintf(string, "%s%d.ec", lower, c);
          if((projectNode = parentNode.Add(project, string, after, file, genFile, true)))
             break;
       }

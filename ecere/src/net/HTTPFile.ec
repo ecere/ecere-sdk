@@ -797,12 +797,12 @@ private:
          bufferPos = pos;
          return true;
       }
-      else if(mode == current && bufferPos == 0 && (position + pos) <= bufferCount && (position + pos) >= 0)
+      else if(mode == current && bufferPos == 0 && ((int)position + pos) <= bufferCount && ((int)position + pos) >= 0)
       {
          bufferPos = position + pos;
          return true;
       }
-      else if(mode == end && totalSizeSet && bufferPos == 0 && bufferCount == totalSize && (totalSize - pos) <= bufferCount && (totalSize - pos) >= 0)
+      else if(mode == end && totalSizeSet && bufferPos == 0 && bufferCount == totalSize && ((int)totalSize - pos) <= bufferCount && ((int)totalSize - pos) >= 0)
       {
          bufferPos = totalSize - pos;
          return true;
