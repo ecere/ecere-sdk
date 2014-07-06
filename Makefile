@@ -832,3 +832,4 @@ troubleshoot:
 	@$(call echo,GIT_REPOSITORY=$(GIT_REPOSITORY))
 	@$(call echo,DIR_VER=$(DIR_VER))
 	@$(call echo,REPOSITORY_VER=$(REPOSITORY_VER))
+	@$(call echo,CPPFLAGS=$(CPPFLAGS))

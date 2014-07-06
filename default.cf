@@ -40,6 +40,12 @@ TARGET_ARCH :=$(shell $(CC) -dumpmachine)
   else
      TARGET_ARCH := i386
   endif
+ else
+  ifdef LINUX_TARGET
+   ifneq ($(filter x86_64-pc-linux-gnu,$(TARGET_ARCH)),)    # Fix for PREFIXLIBDIR / DEB_HOST_MULTIARCH with Clang on Debian
+      TARGET_ARCH := x86_64-linux-gnu
+   endif
+  endif
  endif
 endif
 

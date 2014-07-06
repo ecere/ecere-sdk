@@ -122,7 +122,7 @@ public:
    bool Allocate(MeshFeatures what, int nVertices, DisplaySystem displaySystem)
    {
       bool result = false;
-      if((!nVertices || this.nVertices == nVertices) && (!this.displaySystem || this.displaySystem == displaySystem))
+      if((!this.nVertices || this.nVertices == nVertices) && (!this.displaySystem || this.displaySystem == displaySystem))
       {
          flags |= what;
          this.nVertices = nVertices;
