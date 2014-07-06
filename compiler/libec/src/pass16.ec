@@ -1746,6 +1746,7 @@ static bool ProcessBracketInst_DataMember(DataMember parentMember, Instantiation
                                           nextMembers.dataMembers->Remove(nextMember);
                                           nextMember.identifiers->Remove(nextID);
                                           ListAdd(partList, nextMember);
+                                          FreeIdentifier(nextID);
                                        }
                                     }
                                  }
@@ -2057,6 +2058,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                                              nextMembers.dataMembers->Remove(nextMember);
                                              nextMember.identifiers->Remove(nextID);
                                              ListAdd(partList, nextMember);
+                                             FreeIdentifier(nextID);
                                           }
                                        }
                                     }
@@ -2065,6 +2067,7 @@ static bool ProcessBracketInst(Instantiation inst, OldList list)
                                  member.initializer.exp = MkExpInstance(MkInstantiation(spec, null,
                                     MkListOne(MkMembersInitList(partList))));
 
+                                 FreeIdentifier(firstID);
                                  // TESTING THIS
                                  member.identifiers = null;
                               }

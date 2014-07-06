@@ -15362,6 +15362,7 @@ func = MkClassFunction(MkListOne(MkSpecifier(VOID)), (((void *)0)), MkDeclarator
 ProcessClassFunctionBody(func, propWatch->compound);
 propWatch->compound = (((void *)0));
 createdExternal = ProcessClassFunction(watcherClass, func, ast, curExternal, 1);
+FreeClassFunction(func);
 curExternal = createdExternal;
 ProcessFunction(createdExternal->__anon1.function);
 if(propWatch->deleteWatch)

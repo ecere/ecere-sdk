@@ -433,6 +433,8 @@ extern struct Specifier * MkStructOrUnion(int type, struct Identifier * id, stru
 
 extern struct Identifier * CopyIdentifier(struct Identifier * id);
 
+extern void FreeIdentifier(struct Identifier * id);
+
 struct Type;
 
 struct __ecereNameSpace__ecere__com__Property
@@ -2694,11 +2696,13 @@ if(nextMember->identifiers && (*nextMember->identifiers).count > 1 && !strcmp(fi
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*nextMembers->__anon1.dataMembers), nextMember);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*nextMember->identifiers), nextID);
 ListAdd(partList, nextMember);
+FreeIdentifier(nextID);
 }
 }
 }
 }
 member->initializer->__anon1.exp = MkExpInstance(MkInstantiation(spec, (((void *)0)), MkListOne(MkMembersInitList(partList))));
+FreeIdentifier(firstID);
 member->identifiers = (((void *)0));
 }
 found = 1;
@@ -3568,6 +3572,7 @@ if(nextMember->identifiers && (*nextMember->identifiers).count > 1 && !strcmp(fi
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*nextMembers->__anon1.dataMembers), nextMember);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*nextMember->identifiers), nextID);
 ListAdd(partList, nextMember);
+FreeIdentifier(nextID);
 }
 }
 }

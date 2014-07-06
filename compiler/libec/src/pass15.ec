@@ -12484,14 +12484,14 @@ static void ProcessStatement(Statement stmt)
 
                   if(object && object.expType && object.expType.kind == classType && object.expType._class && object.expType._class.registered)
                   {
-                     // TESTING THIS STUFF... BEWARE OF SYMBOL ID ISSUES
                      func = MkClassFunction(MkListOne(MkSpecifier(VOID)), null, MkDeclaratorFunction(MkDeclaratorIdentifier(MkIdentifier(watcherName)),
-                        //MkListOne(MkTypeName(MkListOne(MkSpecifier(VOID)), null))), null);
                         MkListOne(MkTypeName(MkListOne(MkSpecifierName(object.expType._class.string)), MkDeclaratorIdentifier(MkIdentifier("value"))))), null);
                      ProcessClassFunctionBody(func, propWatch.compound);
                      propWatch.compound = null;
 
                      createdExternal = ProcessClassFunction(watcherClass, func, ast, curExternal, true);
+
+                     FreeClassFunction(func);
 
                      curExternal = createdExternal;
                      ProcessFunction(createdExternal.function);
