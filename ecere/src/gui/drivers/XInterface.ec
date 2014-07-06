@@ -857,7 +857,8 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
    {
       int numBytes;
 
-      if(code < KeyCode::enumSize) keyStates[code] = false;
+      if(key < KeyCode::enumSize)
+         keyStates[key] = false;
       if(windowData && windowData.ic) ch = buflength ? UTF8GetChar(buf, &numBytes) : 0;
       if(ch == 127) ch = 0;
       // printf("Release! %d %d %d\n", keysym, code, ch);
@@ -868,7 +869,8 @@ static bool ProcessKeyMessage(Window window, uint keyCode, int release, XKeyEven
       int c;
       if(release == 0)
       {
-         if(code < KeyCode::enumSize) keyStates[code] = true;
+         if(key < KeyCode::enumSize)
+            keyStates[key] = true;
 
          if(windowData.ic && buflength)
          {
@@ -3479,7 +3481,16 @@ class XInterface : Interface
          return (bool)state;
       }
       else
-         return keyStates[key.code];
+      {
+         if(key == alt)
+            return keyStates[leftAlt] || keyStates[rightAlt];
+         else if(key == shift)
+            return keyStates[leftShift] || keyStates[rightShift];
+         else if(key == control)
+            return keyStates[leftControl] || keyStates[rightControl];
+         else
+            return keyStates[key.code];
+      }
    }
 
    void SetTimerResolution(uint hertz)
