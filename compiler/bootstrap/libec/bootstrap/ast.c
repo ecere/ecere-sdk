@@ -4601,6 +4601,8 @@ struct Type * dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_T
 FreeType(dummy);
 CopyTypeInto(specType, symbol->type);
 specType->constant = isConstant;
+(__ecereNameSpace__ecere__com__eSystem_Delete(specType->typeName), specType->typeName = 0);
+specType->typeName = __ecereNameSpace__ecere__sys__CopyString(symbol->type->name);
 }
 else if(!isTypedef)
 {

@@ -2415,6 +2415,8 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
 
                   CopyTypeInto(specType, symbol.type);
                   specType.constant = isConstant;
+                  delete specType.typeName;
+                  specType.typeName = CopyString(symbol.type.name);
                }
                else if(!isTypedef) // !specType.kind)    // TESTING THIS FOR enum / typedef problem
                {
