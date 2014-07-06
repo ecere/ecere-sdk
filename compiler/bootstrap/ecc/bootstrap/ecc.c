@@ -37,12 +37,12 @@ typedef unsigned __int64 uint64;
 #endif
 #if defined(_WIN32)
 #   if defined(__GNUC__) || defined(__TINYC__)
-#      define stdcall __attribute__((__stdcall__))
+#      define ecere_stdcall __attribute__((__stdcall__))
 #   else
-#      define stdcall __stdcall
+#      define ecere_stdcall __stdcall
 #   endif
 #else
-#   define stdcall
+#   define ecere_stdcall
 #endif
 #include <stdint.h>
 #include <sys/types.h>
@@ -1259,12 +1259,12 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIA
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(_WIN32)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   if defined(__GNUC__) || defined(__TINYC__)\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define stdcall __attribute__((__stdcall__))\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define ecere_stdcall __attribute__((__stdcall__))\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   else\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define stdcall __stdcall\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define ecere_stdcall __stdcall\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
-__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   define stdcall\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   define ecere_stdcall\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 if(buildingBootStrap)
 {

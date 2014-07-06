@@ -37,12 +37,12 @@ typedef unsigned __int64 uint64;
 #endif
 #if defined(_WIN32)
 #   if defined(__GNUC__) || defined(__TINYC__)
-#      define stdcall __attribute__((__stdcall__))
+#      define ecere_stdcall __attribute__((__stdcall__))
 #   else
-#      define stdcall __stdcall
+#      define ecere_stdcall __stdcall
 #   endif
 #else
-#   define stdcall
+#   define ecere_stdcall
 #endif
 #include <stdint.h>
 #include <sys/types.h>
@@ -5748,8 +5748,8 @@ __ecereNameSpace__ecere__com__eInstance_Delete(instance);
 
 static struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__Module_Load(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char * name, int importAccess, unsigned int ensureCOM)
 {
-unsigned int (stdcall * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
-unsigned int (stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
+unsigned int (ecere_stdcall * Load)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
+unsigned int (ecere_stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (((void *)0));
 struct __ecereNameSpace__ecere__com__Instance * module;
 
 for(module = ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)fromModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->allModules.first; module; module = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->next)
@@ -5954,7 +5954,7 @@ Unload(module);
 }
 else
 {
-unsigned int (stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (void *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->Unload;
+unsigned int (ecere_stdcall * Unload)(struct __ecereNameSpace__ecere__com__Instance * module) = (void *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->Unload;
 
 Unload(module);
 }

@@ -37,12 +37,12 @@ typedef unsigned __int64 uint64;
 #endif
 #if defined(_WIN32)
 #   if defined(__GNUC__) || defined(__TINYC__)
-#      define stdcall __attribute__((__stdcall__))
+#      define ecere_stdcall __attribute__((__stdcall__))
 #   else
-#      define stdcall __stdcall
+#      define ecere_stdcall __stdcall
 #   endif
 #else
-#   define stdcall
+#   define ecere_stdcall
 #endif
 #include <stdint.h>
 #include <sys/types.h>

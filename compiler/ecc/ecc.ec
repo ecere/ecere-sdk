@@ -691,12 +691,12 @@ class CompilerApp : Application
 
                      output.Printf("#if defined(_WIN32)\n");
                      output.Printf("#   if defined(__GNUC__) || defined(__TINYC__)\n");
-                     output.Printf("#      define stdcall __attribute__((__stdcall__))\n");
+                     output.Printf("#      define ecere_stdcall __attribute__((__stdcall__))\n");
                      output.Printf("#   else\n");
-                     output.Printf("#      define stdcall __stdcall\n");
+                     output.Printf("#      define ecere_stdcall __stdcall\n");
                      output.Printf("#   endif\n");
                      output.Printf("#else\n");
-                     output.Printf("#   define stdcall\n");
+                     output.Printf("#   define ecere_stdcall\n");
                      output.Printf("#endif\n");
 
                      if(buildingBootStrap)

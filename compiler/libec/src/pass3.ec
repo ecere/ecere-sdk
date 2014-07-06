@@ -285,7 +285,7 @@ static void InstDeclPassSpecifier(Specifier spec, bool byRefTypedObject)
                !strcmp(spec.extDecl.s, "__stdcall") || !strcmp(spec.extDecl.s, "__stdcall__"))
             {
                delete spec.extDecl.s;
-               spec.extDecl.s = CopyString("stdcall");
+               spec.extDecl.s = CopyString("ecere_stdcall");
             }
          }
          break;
@@ -367,7 +367,7 @@ static void InstDeclPassDeclarator(Declarator decl)
                !strcmp(decl.extended.extended.s, "__stdcall") || !strcmp(decl.extended.extended.s, "__stdcall__")))
             {
                delete decl.extended.extended.s;
-               decl.extended.extended.s = CopyString("stdcall");
+               decl.extended.extended.s = CopyString("ecere_stdcall");
             }
          }
          if(decl.declarator)
