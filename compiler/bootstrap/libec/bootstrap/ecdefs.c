@@ -1122,6 +1122,7 @@ unsigned int declaredWithStruct : 1;
 unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
+unsigned int isLong : 1;
 } __attribute__ ((gcc_struct));
 
 struct Symbol
@@ -3456,6 +3457,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "declaredWithStruct", 
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "typedByReference", "bool:1", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "casted", "bool:1", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "pointerAlignment", "bool:1", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "isLong", "bool:1", 4, 4, 1);
 __ecerePropM_Type_specConst = __ecereNameSpace__ecere__com__eClass_AddProperty(class, "specConst", "bool", 0, __ecereProp_Type_Get_specConst, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp_Type_specConst = __ecerePropM_Type_specConst, __ecerePropM_Type_specConst = (void *)0;

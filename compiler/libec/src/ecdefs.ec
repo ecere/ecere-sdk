@@ -1431,6 +1431,7 @@ public:
    bool typedByReference:1;      // Originally typed by reference, regardless of class type
    bool casted:1;
    bool pointerAlignment:1; // true if the alignment is the pointer size
+   bool isLong:1;    // true if this is truly a long set as a int/int64 (need to improve long support)
    // bool wasThisClass:1;
    // TODO: Add _Complex & _Imaginary support
    // bool complex:1, imaginary:1;

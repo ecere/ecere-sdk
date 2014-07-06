@@ -4245,7 +4245,7 @@ argument.__anon1.expression.__anon1.ui = ch;
 }
 else if(!strcmp(curParam->__anon1.dataTypeString, "uint"))
 {
-argument.__anon1.expression.__anon1.ui = strtoul(value, (((void *)0)), 0);
+argument.__anon1.expression.__anon1.ui = (unsigned int)strtoul(value, (((void *)0)), 0);
 }
 else if(!strcmp(curParam->__anon1.dataTypeString, "char"))
 {
@@ -4281,7 +4281,7 @@ argument.__anon1.expression.__anon1.d = strtod(value, (((void *)0)));
 }
 else
 {
-argument.__anon1.expression.__anon1.i = strtol(value, (((void *)0)), 0);
+argument.__anon1.expression.__anon1.i = (int)strtol(value, (((void *)0)), 0);
 }
 break;
 }

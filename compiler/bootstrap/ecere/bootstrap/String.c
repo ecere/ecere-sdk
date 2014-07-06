@@ -707,7 +707,7 @@ unsigned int __ecereNameSpace__ecere__sys__GetHexValue(char ** buffer)
 char string[20];
 
 __ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
-return strtoul(string, (((void *)0)), 16);
+return (unsigned int)strtoul(string, (((void *)0)), 16);
 }
 
 double __ecereNameSpace__ecere__sys__FloatFromString(const char * string)

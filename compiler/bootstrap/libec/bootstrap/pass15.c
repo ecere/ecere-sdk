@@ -1833,6 +1833,7 @@ unsigned int declaredWithStruct : 1;
 unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
+unsigned int isLong : 1;
 } __attribute__ ((gcc_struct));
 
 struct Specifier
@@ -1904,7 +1905,7 @@ if(type1->kind == 20 && type2->kind == 4 && type2->passAsTemplate == 0)
 {
 return 0;
 }
-if(type1->kind == type2->kind)
+if(type1->kind == type2->kind && type1->isLong == type2->isLong)
 {
 switch(type1->kind)
 {
@@ -7615,7 +7616,7 @@ op.ops = intOps;
 }
 else
 {
-op.__anon1.ui = strtoul(exp->__anon1.__anon1.constant, (((void *)0)), 0);
+op.__anon1.ui = (unsigned int)strtoul(exp->__anon1.__anon1.constant, (((void *)0)), 0);
 op.ops = uintOps;
 }
 op.kind = 3;

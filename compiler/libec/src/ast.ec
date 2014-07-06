@@ -2365,6 +2365,7 @@ static Type ProcessTypeSpecs(OldList specs, bool assumeEllipsis, bool keepTypeNa
                   specType.kind = int64Type;
                else
                   specType.kind = intType;
+               specType.isLong = true;
                isLong = true;
             }
             else if(spec.specifier == FLOAT) specType.kind = floatType;

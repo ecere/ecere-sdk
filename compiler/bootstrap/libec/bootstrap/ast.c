@@ -876,6 +876,7 @@ unsigned int declaredWithStruct : 1;
 unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
+unsigned int isLong : 1;
 } __attribute__ ((gcc_struct));
 
 struct TemplatedType *  FindTemplateTypeParameter(struct Context *  ctx, const char *  name);
@@ -4542,6 +4543,7 @@ if(isLong || (targetBits == 64 && targetPlatform != 1))
 specType->kind = 4;
 else
 specType->kind = 3;
+specType->isLong = 1;
 isLong = 1;
 }
 else if(spec->__anon1.specifier == FLOAT)
@@ -4969,7 +4971,7 @@ if(exp)
 ProcessExpressionType(exp);
 ComputeExpression(exp);
 if(exp->type == 2)
-type->bitFieldCount = strtoul(exp->__anon1.__anon1.constant, (((void *)0)), 0);
+type->bitFieldCount = (unsigned int)strtoul(exp->__anon1.__anon1.constant, (((void *)0)), 0);
 }
 break;
 }

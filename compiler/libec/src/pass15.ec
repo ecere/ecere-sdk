@@ -84,7 +84,7 @@ bool NeedCast(Type type1, Type type2)
       return false;
    }
 
-   if(type1.kind == type2.kind)
+   if(type1.kind == type2.kind && type1.isLong == type2.isLong)
    {
       switch(type1.kind)
       {

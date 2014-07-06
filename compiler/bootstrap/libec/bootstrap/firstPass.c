@@ -1017,6 +1017,7 @@ unsigned int declaredWithStruct : 1;
 unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
+unsigned int isLong : 1;
 } __attribute__ ((gcc_struct));
 
 struct PropertyDef;

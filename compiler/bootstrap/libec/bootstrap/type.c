@@ -2174,7 +2174,7 @@ yylsp = yyls + yysize - 1;
 do
 {
 if(type_yydebug)
-fprintf((bsl_stderr()), "Stack size increased to %lu\n", yystacksize);
+fprintf((bsl_stderr()), "Stack size increased to %lu\n", (unsigned long int)yystacksize);
 }while((0));
 if(yyss + yystacksize - 1 <= yyssp)
 goto yyabortlab;

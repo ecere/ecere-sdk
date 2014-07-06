@@ -1294,7 +1294,7 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePoint
 char string[32];
 
 __ecereMethod___ecereNameSpace__ecere__sys__File_GetString(this, string, sizeof (string));
-return strtoul(string, (((void *)0)), 16);
+return (unsigned int)strtoul(string, (((void *)0)), 16);
 }
 
 float __ecereMethod___ecereNameSpace__ecere__sys__File_GetFloat(struct __ecereNameSpace__ecere__com__Instance * this)
