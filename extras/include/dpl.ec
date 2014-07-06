@@ -59,7 +59,7 @@ void __dpl(const char * file, int line, int indent, typed_object object, ...)
       printf(" ");
    va_start(args, object);
    PrintStdArgsToBuffer(string, sizeof(string), object, args);
-   printf(string);
+   printf("%s", string);
    va_end(args);
    printf("\n");
    delete time;
@@ -98,7 +98,7 @@ void __dpcl(const char * file, int line, const char ** channels, int channel, in
          printf(" ");
       va_start(args, object);
       PrintStdArgsToBuffer(string, sizeof(string), object, args);
-      printf(string);
+      printf("%s", string);
       va_end(args);
       printf("\n");
       delete time;
