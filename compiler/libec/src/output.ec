@@ -1,5 +1,7 @@
 import "ecdefs"
 
+#define NUM_ECC_ADDED_LINES   47
+
 #define YYLTYPE Location
 
 #include "grammar.h"
@@ -1531,7 +1533,7 @@ public void OutputTree(OldList ast, File f)
 {
    External external;
 
-   outputLine = 38;
+   outputLine = NUM_ECC_ADDED_LINES;
 
    for(external = ast.first; external; external = external.next)
    {

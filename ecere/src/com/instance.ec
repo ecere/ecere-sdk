@@ -6103,6 +6103,36 @@ public bool LocateModule(const char * name, const char * fileName)
    return Instance_LocateModule(name, fileName);
 }
 
+/*
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
+#define _64BIT 1
+#else
+#define _64BIT 0
+#endif
+
+#define arch_PointerSize                  sizeof(void *)
+#define structSize_Instance               (_64BIT ? 24 : 12)
+#define structSize_Module                 (_64BIT ? 560 : 300)
+#define structSize_BinaryTree             (_64BIT ? 32 : 16)
+#define structSize_OldList                (_64BIT ? 32 : 20)
+#define structSize_NamedLink64            (_64BIT ? 32 : 24)
+#define structSize_ClassTemplateArgument  (_64BIT ? 16 : 8)
+#define structSize_ClassTemplateParameter (_64BIT ? 64 : 40)
+#define structSize_OldLink                (_64BIT ? 24 : 12)
+#define structSize_BTNamedLink            (_64BIT ? 48 : 24)
+#define structSize_Application            (_64BIT ? 800 : 428)
+#define structSize_Watcher                (_64BIT ? 32 : 16)
+#define structSize_SelfWatcher            (_64BIT ? 32 : 16)
+#define structSize_GlobalFunction         (_64BIT ? 72 : 36)
+#define structSize_DefinedExpression      (_64BIT ? 40 : 20)
+#define structSize_BitMember              (_64BIT ? 96 : 64)
+#define structSize_DataMember             (_64BIT ? 160 : 96)
+#define structSize_ClassProperty          (_64BIT ? 80 : 40)
+#define structSize_Method                 (_64BIT ? 96 : 52)
+#define structSize_Property               (_64BIT ? 152 : 88)
+#define structSize_Class                  (_64BIT ? 624 : 376)
+*/
+
 static void LoadCOM(Module module)
 {
    bool force64Bits = (module.application.isGUIApp & 2) ? true : false;

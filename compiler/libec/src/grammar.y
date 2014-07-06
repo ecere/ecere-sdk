@@ -1,6 +1,7 @@
 %{
 import "ecdefs"
 
+#define YYSIZE_T size_t
 #define YYLTYPE Location
 #include "grammar.h"
 

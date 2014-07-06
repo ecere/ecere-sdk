@@ -9,10 +9,7 @@
 #if defined(__GNUC__)
 typedef long long int64;
 typedef unsigned long long uint64;
-#ifdef _WIN32
-#define stdcall __attribute__((__stdcall__))
-#else
-#define stdcall
+#ifndef _WIN32
 #define __declspec(x)
 #endif
 #elif defined(__TINYC__)
@@ -24,10 +21,8 @@ typedef unsigned long long uint64;
 #define strcasecmp stricmp
 #define strncasecmp strnicmp
 #define __declspec(x) __attribute__((x))
-#define stdcall __attribute__((__stdcall__))
 #else
 #define __declspec(x)
-#define stdcall
 #endif
 typedef long long int64;
 typedef unsigned long long uint64;
@@ -40,37 +35,17 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#if defined(_WIN32)
+#   if defined(__GNUC__) || defined(__TINYC__)
+#      define stdcall __attribute__((__stdcall__))
+#   else
+#      define stdcall __stdcall
+#   endif
+#else
+#   define stdcall
+#endif
 #include <stdint.h>
 #include <sys/types.h>
-
-#if /*defined(_W64) || */(defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__)
-#define _64BIT 1
-#else
-#define _64BIT 0
-#endif
-
-#define arch_PointerSize                  sizeof(void *)
-#define structSize_Instance               (_64BIT ? 24 : 12)
-#define structSize_Module                 (_64BIT ? 560 : 300)
-#define structSize_BinaryTree             (_64BIT ? 32 : 16)
-#define structSize_OldList                (_64BIT ? 32 : 20)
-#define structSize_NamedLink64            (_64BIT ? 32 : 24)
-#define structSize_ClassTemplateArgument  (_64BIT ? 16 : 8)
-#define structSize_ClassTemplateParameter (_64BIT ? 64 : 40)
-#define structSize_OldLink                (_64BIT ? 24 : 12)
-#define structSize_BTNamedLink            (_64BIT ? 48 : 24)
-#define structSize_Application            (_64BIT ? 800 : 428)
-#define structSize_Watcher                (_64BIT ? 32 : 16)
-#define structSize_SelfWatcher            (_64BIT ? 32 : 16)
-#define structSize_GlobalFunction         (_64BIT ? 72 : 36)
-#define structSize_DefinedExpression      (_64BIT ? 40 : 20)
-#define structSize_BitMember              (_64BIT ? 96 : 64)
-#define structSize_DataMember             (_64BIT ? 160 : 96)
-#define structSize_ClassProperty          (_64BIT ? 80 : 40)
-#define structSize_Method                 (_64BIT ? 96 : 52)
-#define structSize_Property               (_64BIT ? 152 : 88)
-#define structSize_Class                  (_64BIT ? 624 : 376)
-
 void exit(int status);
 
 void * calloc(size_t nmemb, size_t size);

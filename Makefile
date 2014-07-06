@@ -1,4 +1,4 @@
-.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer
+.PHONY: all clean realclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs
 ifneq "$V" "1"
 .SILENT:
 endif
@@ -757,6 +757,43 @@ ifdef WINDOWS_TARGET
 	$(call rmdirq,"$(DESTDIR)/")
 endif
 	@$(call echo,The Ecere SDK has been uninstalled.)
+
+regenbootstrap: update_ecere update_libec update_ecp update_ecc update_ecs
+	@echo Bootstrap regenerated.
+
+updatebootstrap: regenbootstrap
+	@echo Copying files...
+	$(call cpq,ecere/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/*.c,compiler/bootstrap/ecere/bootstrap)
+	$(call cpq,compiler/libec/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/*.c,compiler/bootstrap/libec/bootstrap)
+	$(call cpq,compiler/ecp/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/*.c,compiler/bootstrap/ecp/bootstrap)
+	$(call cpq,compiler/ecc/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/*.c,compiler/bootstrap/ecc/bootstrap)
+	$(call cpq,compiler/ecs/obj/bootstrap.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/*.c,compiler/bootstrap/ecs/bootstrap)
+	@echo Bootstrap updated.
+
+update_ecere:
+	@echo Regenerating ecere bootstrapper...
+	cd ecere && $(MAKE) -f Makefile.bootstrap clean
+	cd ecere && $(MAKE) -f Makefile.bootstrap
+
+update_libec:
+	@echo Regenerating ec bootstrapper...
+	cd compiler/libec && $(MAKE) -f Makefile.bootstrap clean
+	cd compiler/libec && $(MAKE) -f Makefile.bootstrap
+
+update_ecp:
+	@echo Regenerating ecp bootstrapper...
+	cd compiler/ecp && $(MAKE) -f Makefile.bootstrap clean
+	cd compiler/ecp && $(MAKE) -f Makefile.bootstrap
+
+update_ecc:
+	@echo Regenerating ecc bootstrapper...
+	cd compiler/ecc && $(MAKE) -f Makefile.bootstrap clean
+	cd compiler/ecc && $(MAKE) -f Makefile.bootstrap
+
+update_ecs:
+	@echo Regenerating ecs bootstrapper...
+	cd compiler/ecs && $(MAKE) -f Makefile.bootstrap clean
+	cd compiler/ecs && $(MAKE) -f Makefile.bootstrap
 
 troubleshoot:
 	@$(call echo,Printing values of some variables.)

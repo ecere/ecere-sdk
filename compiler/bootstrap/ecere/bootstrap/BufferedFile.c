@@ -35,6 +35,15 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#if defined(_WIN32)
+#   if defined(__GNUC__) || defined(__TINYC__)
+#      define stdcall __attribute__((__stdcall__))
+#   else
+#      define stdcall __stdcall
+#   endif
+#else
+#   define stdcall
+#endif
 #include <stdint.h>
 #include <sys/types.h>
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__File_buffered;

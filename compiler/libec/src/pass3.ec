@@ -285,10 +285,7 @@ static void InstDeclPassSpecifier(Specifier spec, bool byRefTypedObject)
                !strcmp(spec.extDecl.s, "__stdcall") || !strcmp(spec.extDecl.s, "__stdcall__"))
             {
                delete spec.extDecl.s;
-               if(targetPlatform == win32)
-                  spec.extDecl.s = CopyString("__attribute__((__stdcall__))");
-               else
-                  spec.extDecl.s = CopyString("");
+               spec.extDecl.s = CopyString("stdcall");
             }
          }
          break;
@@ -370,10 +367,7 @@ static void InstDeclPassDeclarator(Declarator decl)
                !strcmp(decl.extended.extended.s, "__stdcall") || !strcmp(decl.extended.extended.s, "__stdcall__")))
             {
                delete decl.extended.extended.s;
-               if(targetPlatform == win32)
-                  decl.extended.extended.s = CopyString("__attribute__((__stdcall__))");
-               else
-                  decl.extended.extended.s = CopyString("");
+               decl.extended.extended.s = CopyString("stdcall");
             }
          }
          if(decl.declarator)

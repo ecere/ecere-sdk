@@ -35,6 +35,15 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#if defined(_WIN32)
+#   if defined(__GNUC__) || defined(__TINYC__)
+#      define stdcall __attribute__((__stdcall__))
+#   else
+#      define stdcall __stdcall
+#   endif
+#else
+#   define stdcall
+#endif
 #include <stdint.h>
 #include <sys/types.h>
 static struct Context * globalContext;
@@ -1247,6 +1256,15 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#ifdef __BIG_EN
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIAN_PAD(x) (8 - (x))\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __ENDIAN_PAD(x) 0\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(_WIN32)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   if defined(__GNUC__) || defined(__TINYC__)\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define stdcall __attribute__((__stdcall__))\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   else\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#      define stdcall __stdcall\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   endif\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#   define stdcall\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 if(buildingBootStrap)
 {

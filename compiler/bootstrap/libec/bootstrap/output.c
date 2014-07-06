@@ -35,6 +35,15 @@ typedef unsigned __int64 uint64;
 #else
 #define __ENDIAN_PAD(x) 0
 #endif
+#if defined(_WIN32)
+#   if defined(__GNUC__) || defined(__TINYC__)
+#      define stdcall __attribute__((__stdcall__))
+#   else
+#      define stdcall __stdcall
+#   endif
+#else
+#   define stdcall
+#endif
 #include <stdint.h>
 #include <sys/types.h>
 enum yytokentype
@@ -3226,7 +3235,7 @@ void OutputTree(struct __ecereNameSpace__ecere__sys__OldList * ast, struct __ece
 {
 struct External * external;
 
-outputLine = 38;
+outputLine = 47;
 for(external = ast->first; external; external = external->next)
 {
 switch(external->type)

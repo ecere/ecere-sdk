@@ -1485,6 +1485,12 @@ from wherever you obtained them.
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
+                                    },
+                                    {
+                                       "Name" : "apple",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
                                     }
                                  ]
                               },
