@@ -262,6 +262,7 @@ unsigned int FILE_FileGetStats(const char * fileName, struct __ecereNameSpace__e
 void __ecereNameSpace__ecere__sys__MakeSlashPath(char * p)
 {
 __ecereNameSpace__ecere__sys__FileFixCase(p);
+if(__runtimePlatform == 1)
 __ecereNameSpace__ecere__sys__ChangeCh(p, '\\', '/');
 }
 

@@ -232,30 +232,31 @@ public void FixModuleName(char *moduleName)
 // todo support %var% variables for windows and $var for linux?
 public char * PassArg(char * output, const char * input)
 {
-#ifdef __WIN32__
-//define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
-   const char * escChars = " !\"%&'()+,;=[]^`{}~"; // windowsFileNameCharsNeedEscaping;
-   const char * escCharsQuoted = "\"";
-#else
-//define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
-   const char * escChars = " !\"$&'()*:;<=>?[\\`{|"; // linuxFileNameCharsNeedEscaping;
-   const char * escCharsQuoted = "\"()$";
-#endif
+   const char * escChars, * escCharsQuoted;
    bool quoting = false;
    char *o = output;
    const char *i = input, *l = input;
-#ifdef __WIN32__
-   while(*l && !strchr(escChars, *l)) l++;
-   if(*l) quoting = true;
-#else
-   if(*i == '-')
+   if(__runtimePlatform == win32)
    {
-      l++;
+//define windowsFileNameCharsNeedEscaping = " !%&'()+,;=[]^`{}~"; // "#$-.@_" are ok
+      escChars = " !\"%&'()+,;=[]^`{}~"; // windowsFileNameCharsNeedEscaping;
+      escCharsQuoted = "\"";
       while(*l && !strchr(escChars, *l)) l++;
       if(*l) quoting = true;
-      *o++ = *i++;
    }
-#endif
+//define linuxFileNameCharsNeedEscaping = " !\"$&'()*:;<=>?[\\`{|"; // "#%+,-.@]^_}~" are ok
+   else
+   {
+      escChars = " !\"$&'()*:;<=>?[\\`{|"; // linuxFileNameCharsNeedEscaping;
+      escCharsQuoted = "\"()$";
+      if(*i == '-')
+      {
+         l++;
+         while(*l && !strchr(escChars, *l)) l++;
+         if(*l) quoting = true;
+         *o++ = *i++;
+      }
+   }
    if(quoting)
       *o++ = '\"';
    while(*i)

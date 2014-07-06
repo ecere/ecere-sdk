@@ -1830,9 +1830,8 @@ public void CreateTemporaryDir(char * tempFileName, const char * template)
 public void MakeSlashPath(char * p)
 {
    FileFixCase(p);
-#ifdef WIN32
-   ChangeCh(p, '\\', '/');
-#endif
+   if(__runtimePlatform == win32)
+      ChangeCh(p, '\\', '/');
 }
 
 public void MakeSystemPath(char * p)

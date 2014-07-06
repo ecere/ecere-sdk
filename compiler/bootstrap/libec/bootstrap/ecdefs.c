@@ -349,16 +349,34 @@ __ecereNameSpace__ecere__sys__ChangeCh(moduleName, '&', '_');
 
 char * PassArg(char * output, const char * input)
 {
-const char * escChars = " !\"%&'()+,;=[]^`{}~";
-const char * escCharsQuoted = "\"";
+const char * escChars, * escCharsQuoted;
 unsigned int quoting = 0;
 char * o = output;
 const char * i = input, * l = input;
 
+if(__runtimePlatform == 1)
+{
+escChars = " !\"%&'()+,;=[]^`{}~";
+escCharsQuoted = "\"";
 while(*l && !strchr(escChars, *l))
 l++;
 if(*l)
 quoting = 1;
+}
+else
+{
+escChars = " !\"$&'()*:;<=>?[\\`{|";
+escCharsQuoted = "\"()$";
+if(*i == '-')
+{
+l++;
+while(*l && !strchr(escChars, *l))
+l++;
+if(*l)
+quoting = 1;
+*o++ = *i++;
+}
+}
 if(quoting)
 *o++ = '\"';
 while(*i)
