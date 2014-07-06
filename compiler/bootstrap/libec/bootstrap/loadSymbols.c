@@ -38,11 +38,14 @@ typedef unsigned __int64 uint64;
 #if defined(_WIN32)
 #   if defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
+#      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
 #      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
 #   endif
 #else
 #   define ecere_stdcall
+#   define ecere_gcc_struct
 #endif
 #include <stdint.h>
 #include <sys/types.h>
@@ -92,7 +95,7 @@ void *  last;
 int count;
 unsigned int offset;
 unsigned int circ;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct Type;
 
@@ -111,8 +114,8 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
@@ -120,7 +123,7 @@ unsigned char *  _buffer;
 unsigned int count;
 unsigned int _size;
 unsigned int pos;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
@@ -162,7 +165,7 @@ int line;
 int charPos;
 int pos;
 int included;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct Context;
 
@@ -190,7 +193,7 @@ int yy_is_interactive;
 int yy_at_bol;
 int yy_fill_buffer;
 int yy_buffer_status;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct Identifier;
 
@@ -324,7 +327,7 @@ struct Location
 {
 struct CodePosition start;
 struct CodePosition end;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 void SetSysIncludeDirs(struct __ecereNameSpace__ecere__sys__OldList * list)
 {
@@ -367,7 +370,7 @@ struct
 {
 char *  constant;
 struct Identifier * identifier;
-} __attribute__ ((gcc_struct)) __anon1;
+} ecere_gcc_struct __anon1;
 struct Statement * compound;
 struct Instantiation * instance;
 struct
@@ -375,86 +378,86 @@ struct
 char *  string;
 unsigned int intlString;
 unsigned int wideString;
-} __attribute__ ((gcc_struct)) __anon2;
+} ecere_gcc_struct __anon2;
 struct __ecereNameSpace__ecere__sys__OldList *  list;
 struct
 {
 struct __ecereNameSpace__ecere__sys__OldList * specifiers;
 struct Declarator * decl;
-} __attribute__ ((gcc_struct)) _classExp;
+} ecere_gcc_struct _classExp;
 struct
 {
 struct Identifier * id;
-} __attribute__ ((gcc_struct)) classData;
+} ecere_gcc_struct classData;
 struct
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList * arguments;
 struct Location argLoc;
-} __attribute__ ((gcc_struct)) call;
+} ecere_gcc_struct call;
 struct
 {
 struct Expression * exp;
 struct __ecereNameSpace__ecere__sys__OldList * index;
-} __attribute__ ((gcc_struct)) index;
+} ecere_gcc_struct index;
 struct
 {
 struct Expression * exp;
 struct Identifier * member;
 int memberType;
 unsigned int thisPtr;
-} __attribute__ ((gcc_struct)) member;
+} ecere_gcc_struct member;
 struct
 {
 int op;
 struct Expression * exp1;
 struct Expression * exp2;
-} __attribute__ ((gcc_struct)) op;
+} ecere_gcc_struct op;
 struct TypeName * typeName;
 struct Specifier * _class;
 struct
 {
 struct TypeName * typeName;
 struct Expression * exp;
-} __attribute__ ((gcc_struct)) cast;
+} ecere_gcc_struct cast;
 struct
 {
 struct Expression * cond;
 struct __ecereNameSpace__ecere__sys__OldList * exp;
 struct Expression * elseExp;
-} __attribute__ ((gcc_struct)) cond;
+} ecere_gcc_struct cond;
 struct
 {
 struct TypeName * typeName;
 struct Expression * size;
-} __attribute__ ((gcc_struct)) _new;
+} ecere_gcc_struct _new;
 struct
 {
 struct TypeName * typeName;
 struct Expression * size;
 struct Expression * exp;
-} __attribute__ ((gcc_struct)) _renew;
+} ecere_gcc_struct _renew;
 struct
 {
 char * table;
 struct Identifier * id;
-} __attribute__ ((gcc_struct)) db;
+} ecere_gcc_struct db;
 struct
 {
 struct Expression * ds;
 struct Expression * name;
-} __attribute__ ((gcc_struct)) dbopen;
+} ecere_gcc_struct dbopen;
 struct
 {
 struct TypeName * typeName;
 struct Initializer * initializer;
-} __attribute__ ((gcc_struct)) initializer;
+} ecere_gcc_struct initializer;
 struct
 {
 struct Expression * exp;
 struct TypeName * typeName;
-} __attribute__ ((gcc_struct)) vaArg;
-} __attribute__ ((gcc_struct)) __anon1;
+} ecere_gcc_struct vaArg;
+} ecere_gcc_struct __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
 uint64 address;
@@ -470,7 +473,7 @@ unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
 unsigned int needTemplateCast;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern void ProcessExpressionType(struct Expression * exp);
 
@@ -485,7 +488,7 @@ struct __ecereNameSpace__ecere__com__Instance
 void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
@@ -534,19 +537,19 @@ char yy_hold_char;
 int yychar;
 int yy_init;
 int yy_start;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__MapIterator
 {
 struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Iterator
 {
 struct __ecereNameSpace__ecere__com__Instance * container;
 struct __ecereNameSpace__ecere__com__IteratorPointer * pointer;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__FileOpen(const char *  fileName, int mode);
 
@@ -593,7 +596,7 @@ struct __ecereNameSpace__ecere__sys__BTNode * parent;
 struct __ecereNameSpace__ecere__sys__BTNode * left;
 struct __ecereNameSpace__ecere__sys__BTNode * right;
 int depth;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Property;
 
@@ -621,7 +624,7 @@ const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -662,7 +665,7 @@ struct __ecereNameSpace__ecere__sys__OldLink
 struct __ecereNameSpace__ecere__sys__OldLink * prev;
 struct __ecereNameSpace__ecere__sys__OldLink * next;
 void *  data;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct DataRedefinition;
 
@@ -673,7 +676,7 @@ struct DataRedefinition * next;
 char name[1024];
 char type1[1024];
 char type2[1024];
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 void CheckDataRedefinitions()
 {
@@ -708,7 +711,7 @@ int importType;
 unsigned int globalInstance;
 unsigned int dllOnly;
 int importAccess;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__sys__NamedItem;
 
@@ -717,7 +720,7 @@ struct __ecereNameSpace__ecere__sys__NamedItem
 struct __ecereNameSpace__ecere__sys__NamedItem * prev;
 struct __ecereNameSpace__ecere__sys__NamedItem * next;
 char *  name;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Instance * OpenIncludeFile(char * includeFile)
 {
@@ -800,7 +803,7 @@ unsigned int (*  Sma)(struct Expression *, struct Operand *, struct Operand *);
 unsigned int (*  GrtEqu)(struct Expression *, struct Operand *, struct Operand *);
 unsigned int (*  SmaEqu)(struct Expression *, struct Operand *, struct Operand *);
 unsigned int (*  Cond)(struct Expression *, struct Operand *, struct Operand *, struct Operand *);
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct Operand
 {
@@ -819,9 +822,9 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct)) __anon1;
+} ecere_gcc_struct __anon1;
 struct OpTable ops;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern struct Operand GetOperand(struct Expression * exp);
 
@@ -835,7 +838,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct)) __anon1;
+} ecere_gcc_struct __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -845,10 +848,10 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct)) __anon2;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct __anon2;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Method
 {
@@ -865,7 +868,7 @@ void *  symbol;
 const char *  dataTypeString;
 struct Type * dataType;
 int memberAccess;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct Symbol
 {
@@ -880,7 +883,7 @@ union
 struct __ecereNameSpace__ecere__com__Method * method;
 struct __ecereNameSpace__ecere__com__Property * _property;
 struct __ecereNameSpace__ecere__com__Class * registered;
-} __attribute__ ((gcc_struct)) __anon1;
+} ecere_gcc_struct __anon1;
 unsigned int notYetDeclared;
 union
 {
@@ -888,20 +891,20 @@ struct
 {
 struct External * pointerExternal;
 struct External * structExternal;
-} __attribute__ ((gcc_struct)) __anon1;
+} ecere_gcc_struct __anon1;
 struct
 {
 struct External * externalGet;
 struct External * externalSet;
 struct External * externalPtr;
 struct External * externalIsSet;
-} __attribute__ ((gcc_struct)) __anon2;
+} ecere_gcc_struct __anon2;
 struct
 {
 struct External * methodExternal;
 struct External * methodCodeExternal;
-} __attribute__ ((gcc_struct)) __anon3;
-} __attribute__ ((gcc_struct)) __anon2;
+} ecere_gcc_struct __anon3;
+} ecere_gcc_struct __anon2;
 unsigned int imported;
 unsigned int declaredStructSym;
 struct __ecereNameSpace__ecere__com__Class * _class;
@@ -929,7 +932,7 @@ struct Context * ctx;
 int isIterator;
 struct Expression * propCategory;
 unsigned int mustRegister;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);
 
@@ -957,7 +960,7 @@ int type;
 int size;
 int pos;
 uint64 mask;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Module;
 
@@ -985,7 +988,7 @@ char *  dataTypeString;
 struct Type * dataType;
 void *  symbol;
 char *  fullName;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char *  name, int importAccess);
 
@@ -999,7 +1002,7 @@ struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
 int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__NameSpace
 {
@@ -1013,7 +1016,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
 struct __ecereNameSpace__ecere__sys__BinaryTree classes;
 struct __ecereNameSpace__ecere__sys__BinaryTree defines;
 struct __ecereNameSpace__ecere__sys__BinaryTree functions;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Class
 {
@@ -1072,7 +1075,7 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__DataMember
 {
@@ -1094,7 +1097,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
 int memberOffset;
 short structAlignment;
 short pointerAlignment;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(struct __ecereNameSpace__ecere__sys__BinaryTree * this, const char *  key);
 
@@ -1113,7 +1116,7 @@ unsigned int isGUIApp;
 struct __ecereNameSpace__ecere__sys__OldList allModules;
 char *  parsedCommand;
 struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 void SetGlobalData(struct __ecereNameSpace__ecere__com__NameSpace * nameSpace)
 {
@@ -1235,7 +1238,7 @@ int importType;
 int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 void __ecereCreateModuleInstances_loadSymbols()
 {

@@ -38,11 +38,14 @@ typedef unsigned __int64 uint64;
 #if defined(_WIN32)
 #   if defined(__GNUC__) || defined(__TINYC__)
 #      define ecere_stdcall __attribute__((__stdcall__))
+#      define ecere_gcc_struct __attribute__((gcc_struct))
 #   else
 #      define ecere_stdcall __stdcall
+#      define ecere_gcc_struct
 #   endif
 #else
 #   define ecere_stdcall
+#   define ecere_gcc_struct
 #endif
 #include <stdint.h>
 #include <sys/types.h>
@@ -71,7 +74,7 @@ void *  last;
 int count;
 unsigned int offset;
 unsigned int circ;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__sys__BTNode;
 
@@ -90,8 +93,8 @@ float f;
 double d;
 long long i64;
 uint64 ui64;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
@@ -99,7 +102,7 @@ unsigned char *  _buffer;
 unsigned int count;
 unsigned int _size;
 unsigned int pos;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern void *  __ecereNameSpace__ecere__com__eSystem_New(unsigned int size);
 
@@ -151,7 +154,7 @@ struct __ecereNameSpace__ecere__com__Instance
 void * *  _vTbl;
 struct __ecereNameSpace__ecere__com__Class * _class;
 int _refCount;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
 
@@ -187,7 +190,7 @@ const char *  category;
 unsigned int compiled;
 unsigned int selfWatchable;
 unsigned int isWatchable;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
 
@@ -205,7 +208,7 @@ struct __ecereNameSpace__ecere__sys__BTNode * root;
 int count;
 int (*  CompareKey)(struct __ecereNameSpace__ecere__sys__BinaryTree * tree, uintptr_t a, uintptr_t b);
 void (*  FreeKey)(void *  key);
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Method;
 
@@ -224,7 +227,7 @@ void *  symbol;
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Instance * dataType;
 int memberAccess;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Module;
 
@@ -244,7 +247,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree nameSpaces;
 struct __ecereNameSpace__ecere__sys__BinaryTree classes;
 struct __ecereNameSpace__ecere__sys__BinaryTree defines;
 struct __ecereNameSpace__ecere__sys__BinaryTree functions;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Application
 {
@@ -255,7 +258,7 @@ unsigned int isGUIApp;
 struct __ecereNameSpace__ecere__sys__OldList allModules;
 char *  parsedCommand;
 struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Module
 {
@@ -273,7 +276,7 @@ int importType;
 int origImportType;
 struct __ecereNameSpace__ecere__com__NameSpace privateNameSpace;
 struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 void __ecereRegisterModule_memory(struct __ecereNameSpace__ecere__com__Instance * module)
 {
@@ -303,7 +306,7 @@ struct
 {
 const char *  dataTypeString;
 struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-} __attribute__ ((gcc_struct)) __anon1;
+} ecere_gcc_struct __anon1;
 struct __ecereNameSpace__ecere__com__DataValue expression;
 struct
 {
@@ -313,10 +316,10 @@ union
 struct __ecereNameSpace__ecere__com__DataMember * member;
 struct __ecereNameSpace__ecere__com__Property * prop;
 struct __ecereNameSpace__ecere__com__Method * method;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct)) __anon2;
-} __attribute__ ((gcc_struct)) __anon1;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct __anon2;
+} ecere_gcc_struct __anon1;
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__DataMember
 {
@@ -338,7 +341,7 @@ struct __ecereNameSpace__ecere__sys__BinaryTree membersAlpha;
 int memberOffset;
 short structAlignment;
 short pointerAlignment;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__Class
 {
@@ -397,5 +400,5 @@ struct __ecereNameSpace__ecere__sys__OldList templatized;
 int numParams;
 unsigned int isInstanceClass;
 unsigned int byValueSystemClass;
-} __attribute__ ((gcc_struct));
+} ecere_gcc_struct;
 

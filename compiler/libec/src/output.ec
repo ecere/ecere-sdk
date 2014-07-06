@@ -1,6 +1,6 @@
 import "ecdefs"
 
-#define NUM_ECC_ADDED_LINES   47
+#define NUM_ECC_ADDED_LINES   50
 
 #define YYLTYPE Location
 
@@ -1068,7 +1068,7 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
                //OutputDeclaration(decl, f);
                OutputClassDef(def, f);
             }
-            f.Puts("} __attribute__ ((gcc_struct))");
+            f.Puts("} ecere_gcc_struct");
          }
          break;
       }
