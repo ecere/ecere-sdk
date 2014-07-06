@@ -17,7 +17,7 @@ static define app = ((GuiApplication)__thisModule);
 static void OutputLog(const char * string)
 {
 #ifdef MAKEFILE_GENERATOR
-   printf(string);
+   printf("%s", string);
 #else
    ide.outputView.buildBox.Log(string);
 #endif

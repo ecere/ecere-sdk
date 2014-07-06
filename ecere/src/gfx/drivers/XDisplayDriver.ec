@@ -517,6 +517,8 @@ class XDisplayDriver : DisplayDriver
                xDisplay.image = XShmCreateImage(xGlobalDisplay, xSystemVisual /*DefaultVisual(xGlobalDisplay, DefaultScreen(xGlobalDisplay))*/,
                   format->depth, ZPixmap, null, &xDisplay.shminfo, width, height);
             }
+            else if(display.useSharedMemory && !xSharedMemory)
+               printf("%s", $"Error: Requested shared memory but shared memory pixmaps are not supported by X server.\n");
 #endif
             if(xDisplay.image)
             {

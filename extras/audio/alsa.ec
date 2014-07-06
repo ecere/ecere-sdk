@@ -12,7 +12,7 @@ static AudioSpec audioSpec { };
 static bool paused;
 static Semaphore pauseSemaphore { };
 
-static char *device = "default";
+static const char *device = "default";
 
 static snd_mixer_t *mixer_handle;
 
@@ -35,8 +35,8 @@ public bool AudioSetVolume(VolumeControl type, double percent)
    {
       snd_mixer_elem_t *elem;
       snd_mixer_selem_id_t *sid;
-      int pmin, pmax;
-      int get_vol, set_vol;
+      long pmin, pmax;
+      int set_vol;
       float f_multi;
 
      	snd_mixer_load(mixer_handle);
@@ -75,7 +75,7 @@ public bool AudioGetVolume(VolumeControl type, double * percent)
       snd_mixer_elem_t *elem;
       snd_mixer_selem_id_t *sid;
       long pmin, pmax;
-      long get_vol, set_vol;
+      long set_vol;
       float f_multi;
 
     	snd_mixer_load(mixer_handle);
@@ -116,7 +116,6 @@ public void CloseMixer()
 public int OpenAudio(AudioSpec wanted, AudioSpec result)
 {
    int err;
-   unsigned int i;
 
    buffer = new byte[wanted.samples * wanted.channels * wanted.bits / 8];
    memset(buffer, 0, wanted.samples * wanted.channels * wanted.bits / 8);
@@ -204,14 +203,14 @@ static class SoundThread : Thread
 
             frames = snd_pcm_writei(handle, buffer, numSamples);
             if(frames < 0)
-               frames = snd_pcm_recover(handle, frames, 0);
+               frames = snd_pcm_recover(handle, (int)frames, 0);
             if (frames < 0)
             {
-               printf("snd_pcm_writei failed: %s\n", snd_strerror(frames));
+               printf("snd_pcm_writei failed: %s\n", snd_strerror((int)frames));
                break;
             }
             if (frames > 0 && frames < numSamples)
-               printf("Short write (expected %li, wrote %li)\n", numSamples, frames);
+               printf("Short write (expected %ui, wrote %li)\n", numSamples, frames);
          }
       }
       return 0;

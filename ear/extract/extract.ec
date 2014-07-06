@@ -213,7 +213,8 @@ class SelfExtract : Window
    void ViewArchive(const char * path)
    {
       FileListing listing { path };
-      char string[MAX_LOCATION], * directory;
+      char string[MAX_LOCATION];
+      const char * directory;
       DataRow row;
 
       SplitArchivePath(path, string, &directory);

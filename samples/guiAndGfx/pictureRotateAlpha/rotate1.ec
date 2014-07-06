@@ -78,7 +78,7 @@ public class PictureRotate : Window
    Camera camera
    {
       type = fixed;
-      position = { 0, -1000, 0 };
+      position = { 0, -275, 0 };
       zMin = 0.1f,
       orientation = Euler { 0, 90, 0 };
    };
@@ -89,8 +89,7 @@ public class PictureRotate : Window
       Mesh mesh;
       material.baseMap = image.bitmap;
       plane.Create(displaySystem);
-      //plane.transform.scaling = { 20 / 2 / 0.707, 20 /2 / 0.707f, 20 /2/ 0.707f };
-      plane.transform.scaling = { 1.0f, 1.5f, 1.0f };
+      plane.transform.scaling = { 1, 1, 1 };
 
       // plane.transform.scaling = { image.bitmap.width, 1.5f, image.bitmap.height };
       //plane.transform.scaling = { Max(image.bitmap.width, image.bitmap.height), 1.5f, Max(image.bitmap.width, image.bitmap.height) };
@@ -98,7 +97,7 @@ public class PictureRotate : Window
       if(!image.bitmap) return false;
       w = image.bitmap.width;
       h = image.bitmap.height;
-      camera.position.y = -Max(image.bitmap.height, image.bitmap.height);
+      camera.position.y = -Max(image.bitmap.height, image.bitmap.height) / sqrt(2);
 
       plane.UpdateTransform();
 
@@ -120,21 +119,20 @@ public class PictureRotate : Window
    {
       Size size = initSize;
       Anchor anchor = this.anchor;
-      Bitmap bitmap = image ? image.bitmap : null;
-
-      if(!size.w && (!anchor.left.type || !anchor.right.type))
+      if(image && image.bitmap)
       {
-         if(bitmap)
-            *w = (int)(bitmap.width * zoom / 0.707);
-         else
-            *w = 80;
+         Bitmap bitmap = image.bitmap;
+         double m = Max(bitmap.width, bitmap.height) * zoom * sqrt(2);
+         if(!size.w && (!anchor.left.type || !anchor.right.type))
+            *w = (int)m;
+         if(!size.h && (!anchor.top.type || !anchor.bottom.type))
+            *h = (int)m;
       }
-
-      if(!size.h && (!anchor.top.type || !anchor.bottom.type))
+      else
       {
-         if(bitmap)
-            *h = (int)(bitmap.height * zoom / 0.707);
-         else
+         if(!size.w && (!anchor.left.type || !anchor.right.type))
+            *w = 80;
+         if(!size.h && (!anchor.top.type || !anchor.bottom.type))
             *h = 80;
       }
       return true;
@@ -167,7 +165,7 @@ static Degrees startAngle;
 static int startY, startX;
 static bool rotating;
 
-PictureRotate megan
+PictureRotate pic
 {
    displayDriver = "OpenGL",
    background = 0,

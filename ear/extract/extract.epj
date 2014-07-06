@@ -54,7 +54,8 @@
                      "m",
                      "dl",
                      "pthread",
-                     "X11"
+                     "X11",
+                     "freetype"
                   ]
                }
             },

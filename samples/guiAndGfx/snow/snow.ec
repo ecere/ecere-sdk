@@ -11,7 +11,7 @@ define backgroundColor = Color { 10, 0, 60 };
 
 class Snowing : Window
 {
-   text = "Snowing";
+   caption = "Snowing";
    background = backgroundColor;
    opacity = 0;
    drawBehind = false;
