@@ -507,7 +507,7 @@ __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = __ecerePointer
 result = 0;
 }
 }
-else if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->position + pos < 0)
+else if((int)__ecerePointer___ecereNameSpace__ecere__sys__TempFile->position + pos < 0)
 {
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = 0;
 result = 0;

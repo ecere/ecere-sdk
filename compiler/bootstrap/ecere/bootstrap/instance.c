@@ -2760,7 +2760,7 @@ void * oldFunction = _class->_vTbl[method->vid];
 if(method->vid >= _class->vTblSize)
 printf("error: virtual methods overriding failure\n");
 else
-_class->_vTbl[method->vid] = function ? function : __ecereNameSpace__ecere__com__DefaultFunction;
+_class->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
 for(deriv = _class->derivatives.first; deriv; deriv = deriv->next)
 {
 struct __ecereNameSpace__ecere__com__Class * derivClass = deriv->data;
@@ -2965,7 +2965,7 @@ if(method->type == 1)
 if(method->vid >= _class->vTblSize)
 printf("error: virtual methods overriding failure\n");
 else
-_class->_vTbl[method->vid] = function ? function : __ecereNameSpace__ecere__com__DefaultFunction;
+_class->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
 }
 else
 base = (((void *)0));
@@ -2978,7 +2978,7 @@ struct __ecereNameSpace__ecere__com__Method * method = (method = __ecereNameSpac
 
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->methods, (struct __ecereNameSpace__ecere__sys__BTNode *)method);
 _class->_vTbl = __ecereNameSpace__ecere__com__eSystem_Renew(_class->_vTbl, sizeof(void *) * (_class->vTblSize));
-_class->_vTbl[method->vid] = function ? function : __ecereNameSpace__ecere__com__DefaultFunction;
+_class->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
 if(_class->derivatives.first || _class->templatized.first)
 __ecereNameSpace__ecere__com__FixDerivativeVirtualMethod(_class, name, method->vid, function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction, type);
 return method;
@@ -3342,7 +3342,7 @@ if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl ==
 ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl = __ecereNameSpace__ecere__com___malloc(sizeof(void *) * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->vTblSize);
 memcpy(((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->_vTbl, sizeof(int (*)()) * ((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_class->vTblSize);
 }
-((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl[method->vid] = function ? function : __ecereNameSpace__ecere__com__DefaultFunction;
+((struct __ecereNameSpace__ecere__com__Instance *)(char *)instance)->_vTbl[method->vid] = function ? function : (void *)__ecereNameSpace__ecere__com__DefaultFunction;
 }
 }
 }
