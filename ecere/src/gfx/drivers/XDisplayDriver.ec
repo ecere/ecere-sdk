@@ -937,7 +937,7 @@ class XDisplayDriver : DisplayDriver
    {
       XSurface xSurface = surface.driverData;
       XDisplay xDisplay = display ? display.driverData : null;
-      XRenderColor renderColor = { color.color.r * color.a, color.color.g * color.a, color.color.b * color.a, color.a * 255};
+      XRenderColor renderColor = { (uint16)(color.color.r * color.a), (uint16)(color.color.g * color.a), (uint16)(color.color.b * color.a), (uint16)(color.a * 255) };
 
       if(xSurface.colorPicture)
          XRenderFreePicture(xGlobalDisplay, xSurface.colorPicture);
@@ -1189,7 +1189,7 @@ class XDisplayDriver : DisplayDriver
             (uint16)(xSurface.background.color.r * xSurface.background.a),
             (uint16)(xSurface.background.color.g * xSurface.background.a),
             (uint16)(xSurface.background.color.b * xSurface.background.a),
-            (uint16)xSurface.background.a * 255
+            (uint16)(xSurface.background.a * 255)
          };
          x1 += surface.offset.x;
          y1 += surface.offset.y;
@@ -1227,7 +1227,7 @@ class XDisplayDriver : DisplayDriver
                (uint16)(xSurface.background.color.r * xSurface.background.a),
                (uint16)(xSurface.background.color.g * xSurface.background.a),
                (uint16)(xSurface.background.color.b * xSurface.background.a),
-               (uint16)xSurface.background.a * 255
+               (uint16)(xSurface.background.a * 255)
             };
             x1 += surface.offset.x;
             y1 += surface.offset.y;
