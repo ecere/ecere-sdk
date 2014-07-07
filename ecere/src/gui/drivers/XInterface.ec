@@ -2926,7 +2926,7 @@ class XInterface : Interface
          x += desktopX;
          y += desktopY;
 
-         if(!fullScreenMode && (!atomsSupported[_net_wm_state] || window.state != maximized))
+         if(!fullScreenMode && (!atomsSupported[_net_wm_state] || (window.state != maximized || !window.visible)))
          {
             if(move && resize)
                XMoveResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, x, y, w, h);
@@ -2936,7 +2936,7 @@ class XInterface : Interface
                XResizeWindow(xGlobalDisplay, (X11Window)window.windowHandle, w, h);
 
             // Reset min/max for fixed size windows on WMs not looking at MWM_FUNC_RESIZE (e.g. Cinnamon)
-            if(window.style.fixed && !window.style.sizable)
+            if(window.style.fixed && !window.style.sizable && window.state != maximized)
             {
                XSizeHints hints = { 0 };
                long supplied;
