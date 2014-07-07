@@ -78,43 +78,43 @@ msgstr "(earu)   w  Specify an output directory after <files>\n"
 msgid "(xearu)  q  Quiet mode\n"
 msgstr "(xearu)  q  Quiet mode\n"
 
-#: ./ear.ec:342
+#: ./ear.ec:345
 msgid "A file with the same name already exists (%s).\n"
 msgstr "A file with the same name already exists (%s).\n"
 
-#: ./ear.ec:352
+#: ./ear.ec:355
 msgid "A folder with the same name already exists (%s).\n"
 msgstr "A folder with the same name already exists (%s).\n"
 
-#: ./ear.ec:216
+#: ./ear.ec:217
 msgid "Adding %s..."
 msgstr "Adding %s..."
 
-#: ./ear.ec:711
+#: ./ear.ec:715
 msgid "Archive cleared: %s.\n"
 msgstr "Archive cleared: %s.\n"
 
-#: ./ear.ec:534
+#: ./ear.ec:537
 msgid "Archive file is empty: %s\n"
 msgstr "Archive file is empty: %s\n"
 
-#: ./ear.ec:529
+#: ./ear.ec:532
 msgid "Archive file not found: %s\n"
 msgstr "Archive file not found: %s\n"
 
-#: ./ear.ec:348
+#: ./ear.ec:351
 msgid "Can't move directory %s inside itself.\n"
 msgstr "Can't move directory %s inside itself.\n"
 
-#: ./ear.ec:738
+#: ./ear.ec:742
 msgid "Deleting file %s in directory %s.\n"
 msgstr "Deleting file %s in directory %s.\n"
 
-#: ./ear.ec:827
+#: ./ear.ec:831
 msgid "Drive letters and %s only valid at root.\n"
 msgstr "Drive letters and %s only valid at root.\n"
 
-#: ./ear.ec:160
+#: ./ear.ec:161
 msgid "Extracting %s...\n"
 msgstr "Extracting %s...\n"
 
@@ -122,27 +122,27 @@ msgstr "Extracting %s...\n"
 msgid "Extraction Commands:\n"
 msgstr "Extraction Commands:\n"
 
-#: ./ear.ec:680
+#: ./ear.ec:684
 msgid "Failed to add %s to archive!\n"
 msgstr "Failed to add %s to archive!\n"
 
-#: ./ear.ec:698
+#: ./ear.ec:702
 msgid "Failed to open archive %s for writing!\n"
 msgstr "Failed to open archive %s for writing!\n"
 
-#: ./ear.ec:689
+#: ./ear.ec:693
 msgid "Failed to open the internal directory of archive %s!\n"
 msgstr "Failed to open the internal directory of archive %s!\n"
 
-#: ./ear.ec:585
+#: ./ear.ec:589
 msgid "File Not Found: %s\n"
 msgstr "File Not Found: %s\n"
 
-#: ./ear.ec:384
+#: ./ear.ec:387
 msgid "File is already in directory \"%s\".\n"
 msgstr "File is already in directory \"%s\".\n"
 
-#: ./ear.ec:544
+#: ./ear.ec:547
 msgid "File is not a valid ECERE archive: %s\n"
 msgstr "File is not a valid ECERE archive: %s\n"
 
@@ -150,7 +150,7 @@ msgstr "File is not a valid ECERE archive: %s\n"
 msgid "General Syntax:\n"
 msgstr "General Syntax:\n"
 
-#: ./ear.ec:319
+#: ./ear.ec:322
 msgid "Merging directory %s in %s with %s in %s.\n"
 msgstr "Merging directory %s in %s with %s in %s.\n"
 
@@ -158,15 +158,15 @@ msgstr "Merging directory %s in %s with %s in %s.\n"
 msgid "Modification Commands:\n"
 msgstr "Modification Commands:\n"
 
-#: ./ear.ec:370
+#: ./ear.ec:373
 msgid "Moving file %s in directory %s to %s.\n"
 msgstr "Moving file %s in directory %s to %s.\n"
 
-#: ./ear.ec:307
+#: ./ear.ec:309
 msgid "Moving files in root to %s.\n"
 msgstr "Moving files in root to %s.\n"
 
-#: ./ear.ec:830
+#: ./ear.ec:834
 msgid "New name contains directory structure.\n"
 msgstr "New name contains directory structure.\n"
 
@@ -174,19 +174,19 @@ msgstr "New name contains directory structure.\n"
 msgid "Options:\n"
 msgstr "Options:\n"
 
-#: ./ear.ec:231
+#: ./ear.ec:232
 msgid "Out of disk space.\nError: Ran out of disk space while archiving%s%s.\n"
 msgstr "Out of disk space.\nError: Ran out of disk space while archiving%s%s.\n"
 
-#: ./ear.ec:794
+#: ./ear.ec:798
 msgid "Renaming %s in directory %s to %s.\n"
 msgstr "Renaming %s in directory %s to %s.\n"
 
-#: ./ear.ec:227
+#: ./ear.ec:228
 msgid "Skipped%s%s.\n"
 msgstr "Skipped%s%s.\n"
 
-#: ./ear.ec:83
+#: ./ear.ec:84
 msgid "\n   Modified: "
 msgstr "\n   Modified: "
 

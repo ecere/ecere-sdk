@@ -22,11 +22,11 @@ msgstr "Created"
 msgid "Done."
 msgstr "Done."
 
-#: ./extract.ec:297
+#: ./extract.ec:298
 msgid "ECERE Archive - %s"
 msgstr "ECERE Archive - %s"
 
-#: ./extract.ec:303
+#: ./extract.ec:304
 msgid "ECERE Self-Extractable Archive"
 msgstr "ECERE Self-Extractable Archive"
 
