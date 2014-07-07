@@ -81,7 +81,7 @@ class PCXFormat : BitmapFormat
                   b = buf[bptr++];
                   if(b > 192)
                   {
-                     count = b - 192;
+                     count = (byte)(b - 192);
                      if(bptr >= BUFLEN)
                      {
                         if(!f.Read(buf, 1, BUFLEN)) break;

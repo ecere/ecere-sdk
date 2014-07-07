@@ -83,7 +83,7 @@ static int TIME_DayLightCompareDate(const SYSTEMTIME *date, const SYSTEMTIME *co
    {
       WORD First;
       int weekofmonth = compareDate->wDay;
-      First = ( 6 + compareDate->wDayOfWeek - date->wDayOfWeek + date->wDay ) % 7 + 1;
+      First = (WORD)(( 6 + compareDate->wDayOfWeek - date->wDayOfWeek + date->wDay ) % 7 + 1);
       limit_day = First + 7 * (weekofmonth - 1);
       if(limit_day > monthLengths[date->wMonth==2 && ISLEAP(date->wYear)][date->wMonth - 1])
          limit_day -= 7;
@@ -333,7 +333,7 @@ public:
          input = this;
 
          localTime.wYear = (short)input.year;
-         localTime.wMonth = (short)input.month + 1;
+         localTime.wMonth = (short)(input.month + 1);
          localTime.wDay = (short)input.day;
          localTime.wHour = (short)input.hour;
          localTime.wMinute = (short)input.minute;
@@ -385,7 +385,7 @@ public:
          utc = this;
 
          systemTime.wYear = (short)utc.year;
-         systemTime.wMonth = (short)utc.month + 1;
+         systemTime.wMonth = (short)(utc.month + 1);
          systemTime.wDay = (short)utc.day;
          systemTime.wHour = (short)utc.hour;
          systemTime.wMinute = (short)utc.minute;
@@ -512,7 +512,7 @@ public struct DateTime
          FILETIME fileTime, localFileTime;
 
          localTime.wYear = (short)year;
-         localTime.wMonth = (short)month + 1;
+         localTime.wMonth = (short)(month + 1);
          localTime.wDay = (short)day;
          localTime.wHour = (short)hour;
          localTime.wMinute = (short)minute;
@@ -554,7 +554,7 @@ public struct DateTime
          SYSTEMTIME systemTime, localTime;
 
          systemTime.wYear = (short)year;
-         systemTime.wMonth = (short)month + 1;
+         systemTime.wMonth = (short)(month + 1);
          systemTime.wDay = (short)day;
          systemTime.wHour = (short)hour;
          systemTime.wMinute = (short)minute;

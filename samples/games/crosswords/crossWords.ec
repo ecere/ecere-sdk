@@ -209,7 +209,7 @@ class CrossWords : Window
       }
       if(a != Letters::blank)
       {
-         char ch = (char)a + 'A';
+         char ch = (char)(a + 'A');
          surface.SetForeground(blank ? gray : black);
          surface.TextFont(letterFont.font);
          surface.WriteText(x + 5, y, &ch, 1);

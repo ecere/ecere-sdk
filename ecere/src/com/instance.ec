@@ -6747,6 +6747,7 @@ public int ISO8859_1toUTF8(const char * source, char * dest, int max)
 {
    int c;
    int d = 0;
+   byte * byteDest = (byte *)dest;
    for(c = 0; source[c]; c++)
    {
       unichar ch = ((byte *)source)[c];
@@ -6757,28 +6758,28 @@ public int ISO8859_1toUTF8(const char * source, char * dest, int max)
       if(ch < 0x80)
       {
          if(d + 1 >= max) break;
-         dest[d++] = (char)ch;
+         byteDest[d++] = (char)ch;
       }
       else if(ch < 0x800)
       {
          if(d + 2 >= max) break;
-         dest[d++] = 0xC0 | (byte)((ch & 0x7C0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xC0 | (byte)((ch & 0x7C0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
       else if(ch < 0x10000)
       {
          if(d + 3 >= max) break;
-         dest[d++] = 0xE0 | (byte)((ch & 0xF000) >> 12);
-         dest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xE0 | (byte)((ch & 0xF000) >> 12);
+         byteDest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
       else
       {
          if(d + 4 >= max) break;
-         dest[d++] = 0xF0 | (byte)((ch & 0x1C0000) >> 18);
-         dest[d++] = 0x80 | (byte)((ch & 0x3F000) >> 12);
-         dest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xF0 | (byte)((ch & 0x1C0000) >> 18);
+         byteDest[d++] = 0x80 | (byte)((ch & 0x3F000) >> 12);
+         byteDest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
    }
    dest[d] = 0;
@@ -6790,12 +6791,12 @@ public char * UTF16toUTF8(const uint16 * source)
    int c;
    int d = 0;
    int len;
-   char * dest;
+   byte * dest;
    uint16 u16;
    bool invert = false;
 
    for(len = 0; source[len]; len++);
-   dest = new char[len * 3 + 1];
+   dest = new byte[len * 3 + 1];
    for(c = 0; (u16 = source[c]); c++)
    {
       unichar ch;
@@ -6835,8 +6836,8 @@ public char * UTF16toUTF8(const uint16 * source)
       }
    }
    dest[d] = 0;
-   dest = renew dest char[d+1];
-   return dest;
+   dest = renew dest byte[d+1];
+   return (char *)dest;
 }
 
 public int UTF16toUTF8Buffer(const uint16 * source, char * dest, int max)
@@ -6844,6 +6845,7 @@ public int UTF16toUTF8Buffer(const uint16 * source, char * dest, int max)
    int c;
    int d = 0;
    uint16 u16;
+   byte * byteDest = (byte *)dest;
    for(c = 0; (u16 = source[c]); c++)
    {
       unichar ch;
@@ -6855,31 +6857,31 @@ public int UTF16toUTF8Buffer(const uint16 * source, char * dest, int max)
       if(ch < 0x80)
       {
          if(d + 1 >= max) break;
-         dest[d++] = (char)ch;
+         byteDest[d++] = (char)ch;
       }
       else if(ch < 0x800)
       {
          if(d + 2 >= max) break;
-         dest[d++] = 0xC0 | (byte)((ch & 0x7C0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xC0 | (byte)((ch & 0x7C0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
       else if(ch < 0x10000)
       {
          if(d + 3 >= max) break;
-         dest[d++] = 0xE0 | (byte)((ch & 0xF000) >> 12);
-         dest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xE0 | (byte)((ch & 0xF000) >> 12);
+         byteDest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
       else
       {
          if(d + 4 >= max) break;
-         dest[d++] = 0xF0 | (byte)((ch & 0x1C0000) >> 18);
-         dest[d++] = 0x80 | (byte)((ch & 0x3F000) >> 12);
-         dest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xF0 | (byte)((ch & 0x1C0000) >> 18);
+         byteDest[d++] = 0x80 | (byte)((ch & 0x3F000) >> 12);
+         byteDest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
    }
-   dest[d] = 0;
+   byteDest[d] = 0;
    return d;
 }
 
@@ -6998,36 +7000,37 @@ public int UTF32toUTF8Len(const unichar * source, int count, char * dest, int ma
    int c;
    int d = 0;
    uint32 ch;
+   byte * byteDest = (byte *)dest;
    for(c = 0; c<count && (ch = source[c]); c++)
    {
       if(ch < 0x80)
       {
          if(d + 1 >= max) break;
-         dest[d++] = (char)ch;
+         byteDest[d++] = (char)ch;
       }
       else if(ch < 0x800)
       {
          if(d + 2 >= max) break;
-         dest[d++] = 0xC0 | (byte)((ch & 0x7C0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xC0 | (byte)((ch & 0x7C0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
       else if(ch < 0x10000)
       {
          if(d + 3 >= max) break;
-         dest[d++] = 0xE0 | (byte)((ch & 0xF000) >> 12);
-         dest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xE0 | (byte)((ch & 0xF000) >> 12);
+         byteDest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
       else
       {
          if(d + 4 >= max) break;
-         dest[d++] = 0xF0 | (byte)((ch & 0x1C0000) >> 18);
-         dest[d++] = 0x80 | (byte)((ch & 0x3F000) >> 12);
-         dest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
-         dest[d++] = 0x80 | (byte)(ch & 0x03F);
+         byteDest[d++] = 0xF0 | (byte)((ch & 0x1C0000) >> 18);
+         byteDest[d++] = 0x80 | (byte)((ch & 0x3F000) >> 12);
+         byteDest[d++] = 0x80 | (byte)((ch & 0xFC0) >> 6);
+         byteDest[d++] = 0x80 | (byte)(ch & 0x03F);
       }
    }
-   dest[d] = 0;
+   byteDest[d] = 0;
    return d;
 }
 

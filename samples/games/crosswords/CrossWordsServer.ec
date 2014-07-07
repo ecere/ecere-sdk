@@ -278,7 +278,7 @@ class CrossWordsGame
 
          if(letter == blank)
             letter = blankValues[y][x];
-         word[len++] = (char)letter + 'a';
+         word[len++] = (char)(letter + 'a');
       }
       word[len] = 0;
       found = dictionary.Find(word) != null;

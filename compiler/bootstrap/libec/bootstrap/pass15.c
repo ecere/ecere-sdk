@@ -643,11 +643,11 @@ extern void FreeExpression(struct Expression * exp);
 
 extern void FreeExpContents(struct Expression * exp);
 
+extern struct Expression * GetNonBracketsExp(struct Expression * exp);
+
 extern struct Expression * CopyExpression(struct Expression * exp);
 
 extern struct Expression * MkExpBrackets(struct __ecereNameSpace__ecere__sys__OldList * expressions);
-
-extern struct Expression * GetNonBracketsExp(struct Expression * exp);
 
 extern struct Expression * MkExpCall(struct Expression * expression, struct __ecereNameSpace__ecere__sys__OldList * arguments);
 
@@ -2978,7 +2978,7 @@ static unsigned int ShortDiv(struct Expression * exp, struct Operand * op1, stru
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort(value2 ? ((short)(op1->__anon1.s / value2)) : (short)0);
+exp->__anon1.__anon2.string = PrintShort(value2 ? ((short)(op1->__anon1.s / value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -2993,7 +2993,7 @@ static unsigned int UShortDiv(struct Expression * exp, struct Operand * op1, str
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort(value2 ? ((unsigned short)(op1->__anon1.us / value2)) : (unsigned short)0);
+exp->__anon1.__anon2.string = PrintUShort(value2 ? ((unsigned short)(op1->__anon1.us / value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3008,7 +3008,7 @@ static unsigned int CharDiv(struct Expression * exp, struct Operand * op1, struc
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar(value2 ? ((char)(op1->__anon1.c / value2)) : (char)0);
+exp->__anon1.__anon2.string = PrintChar(value2 ? ((char)(op1->__anon1.c / value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3023,7 +3023,7 @@ static unsigned int UCharDiv(struct Expression * exp, struct Operand * op1, stru
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar(value2 ? ((unsigned char)(op1->__anon1.uc / value2)) : (unsigned char)0);
+exp->__anon1.__anon2.string = PrintUChar(value2 ? ((unsigned char)(op1->__anon1.uc / value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3128,7 +3128,7 @@ static unsigned int ShortMod(struct Expression * exp, struct Operand * op1, stru
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort(value2 ? ((short)(op1->__anon1.s % value2)) : (short)0);
+exp->__anon1.__anon2.string = PrintShort(value2 ? ((short)(op1->__anon1.s % value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3143,7 +3143,7 @@ static unsigned int UShortMod(struct Expression * exp, struct Operand * op1, str
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort(value2 ? ((unsigned short)(op1->__anon1.us % value2)) : (unsigned short)0);
+exp->__anon1.__anon2.string = PrintUShort(value2 ? ((unsigned short)(op1->__anon1.us % value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3158,7 +3158,7 @@ static unsigned int CharMod(struct Expression * exp, struct Operand * op1, struc
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar(value2 ? ((char)(op1->__anon1.c % value2)) : (char)0);
+exp->__anon1.__anon2.string = PrintChar(value2 ? ((char)(op1->__anon1.c % value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3173,7 +3173,7 @@ static unsigned int UCharMod(struct Expression * exp, struct Operand * op1, stru
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar(value2 ? ((unsigned char)(op1->__anon1.uc % value2)) : (unsigned char)0);
+exp->__anon1.__anon2.string = PrintUChar(value2 ? ((unsigned char)(op1->__anon1.uc % value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3638,7 +3638,7 @@ static unsigned int ShortAsign(struct Expression * exp, struct Operand * op1, st
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s = value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s = value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3653,7 +3653,7 @@ static unsigned int UShortAsign(struct Expression * exp, struct Operand * op1, s
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us = value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us = value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3668,7 +3668,7 @@ static unsigned int CharAsign(struct Expression * exp, struct Operand * op1, str
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c = value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c = value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3683,7 +3683,7 @@ static unsigned int UCharAsign(struct Expression * exp, struct Operand * op1, st
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc = value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc = value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3788,7 +3788,7 @@ static unsigned int ShortAddAsign(struct Expression * exp, struct Operand * op1,
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s += value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s += value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3803,7 +3803,7 @@ static unsigned int UShortAddAsign(struct Expression * exp, struct Operand * op1
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us += value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us += value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3818,7 +3818,7 @@ static unsigned int CharAddAsign(struct Expression * exp, struct Operand * op1, 
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c += value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c += value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3833,7 +3833,7 @@ static unsigned int UCharAddAsign(struct Expression * exp, struct Operand * op1,
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc += value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc += value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3938,7 +3938,7 @@ static unsigned int ShortSubAsign(struct Expression * exp, struct Operand * op1,
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s -= value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s -= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3953,7 +3953,7 @@ static unsigned int UShortSubAsign(struct Expression * exp, struct Operand * op1
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us -= value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us -= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3968,7 +3968,7 @@ static unsigned int CharSubAsign(struct Expression * exp, struct Operand * op1, 
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c -= value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c -= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -3983,7 +3983,7 @@ static unsigned int UCharSubAsign(struct Expression * exp, struct Operand * op1,
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc -= value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc -= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4088,7 +4088,7 @@ static unsigned int ShortMulAsign(struct Expression * exp, struct Operand * op1,
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s *= value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s *= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4103,7 +4103,7 @@ static unsigned int UShortMulAsign(struct Expression * exp, struct Operand * op1
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us *= value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us *= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4118,7 +4118,7 @@ static unsigned int CharMulAsign(struct Expression * exp, struct Operand * op1, 
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c *= value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c *= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4133,7 +4133,7 @@ static unsigned int UCharMulAsign(struct Expression * exp, struct Operand * op1,
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc *= value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc *= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4238,7 +4238,7 @@ static unsigned int ShortDivAsign(struct Expression * exp, struct Operand * op1,
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort(value2 ? ((short)(op1->__anon1.s /= value2)) : (short)0);
+exp->__anon1.__anon2.string = PrintShort(value2 ? ((op1->__anon1.s /= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4253,7 +4253,7 @@ static unsigned int UShortDivAsign(struct Expression * exp, struct Operand * op1
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort(value2 ? ((unsigned short)(op1->__anon1.us /= value2)) : (unsigned short)0);
+exp->__anon1.__anon2.string = PrintUShort(value2 ? ((op1->__anon1.us /= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4268,7 +4268,7 @@ static unsigned int CharDivAsign(struct Expression * exp, struct Operand * op1, 
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar(value2 ? ((char)(op1->__anon1.c /= value2)) : (char)0);
+exp->__anon1.__anon2.string = PrintChar(value2 ? ((op1->__anon1.c /= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4283,7 +4283,7 @@ static unsigned int UCharDivAsign(struct Expression * exp, struct Operand * op1,
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar(value2 ? ((unsigned char)(op1->__anon1.uc /= value2)) : (unsigned char)0);
+exp->__anon1.__anon2.string = PrintUChar(value2 ? ((op1->__anon1.uc /= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4388,7 +4388,7 @@ static unsigned int ShortModAsign(struct Expression * exp, struct Operand * op1,
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort(value2 ? ((short)(op1->__anon1.s %= value2)) : (short)0);
+exp->__anon1.__anon2.string = PrintShort(value2 ? ((op1->__anon1.s %= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4403,7 +4403,7 @@ static unsigned int UShortModAsign(struct Expression * exp, struct Operand * op1
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort(value2 ? ((unsigned short)(op1->__anon1.us %= value2)) : (unsigned short)0);
+exp->__anon1.__anon2.string = PrintUShort(value2 ? ((op1->__anon1.us %= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4418,7 +4418,7 @@ static unsigned int CharModAsign(struct Expression * exp, struct Operand * op1, 
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar(value2 ? ((char)(op1->__anon1.c %= value2)) : (char)0);
+exp->__anon1.__anon2.string = PrintChar(value2 ? ((op1->__anon1.c %= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -4433,7 +4433,7 @@ static unsigned int UCharModAsign(struct Expression * exp, struct Operand * op1,
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar(value2 ? ((unsigned char)(op1->__anon1.uc %= value2)) : (unsigned char)0);
+exp->__anon1.__anon2.string = PrintUChar(value2 ? ((op1->__anon1.uc %= value2)) : 0);
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5212,7 +5212,7 @@ static unsigned int ShortAndAsign(struct Expression * exp, struct Operand * op1,
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s &= value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s &= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5227,7 +5227,7 @@ static unsigned int UShortAndAsign(struct Expression * exp, struct Operand * op1
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us &= value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us &= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5242,7 +5242,7 @@ static unsigned int CharAndAsign(struct Expression * exp, struct Operand * op1, 
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c &= value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c &= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5257,7 +5257,7 @@ static unsigned int UCharAndAsign(struct Expression * exp, struct Operand * op1,
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc &= value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc &= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5332,7 +5332,7 @@ static unsigned int ShortOrAsign(struct Expression * exp, struct Operand * op1, 
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s |= value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s |= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5347,7 +5347,7 @@ static unsigned int UShortOrAsign(struct Expression * exp, struct Operand * op1,
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us |= value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us |= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5362,7 +5362,7 @@ static unsigned int CharOrAsign(struct Expression * exp, struct Operand * op1, s
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c |= value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c |= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5377,7 +5377,7 @@ static unsigned int UCharOrAsign(struct Expression * exp, struct Operand * op1, 
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc |= value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc |= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5452,7 +5452,7 @@ static unsigned int ShortXorAsign(struct Expression * exp, struct Operand * op1,
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s ^= value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s ^= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5467,7 +5467,7 @@ static unsigned int UShortXorAsign(struct Expression * exp, struct Operand * op1
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us ^= value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us ^= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5482,7 +5482,7 @@ static unsigned int CharXorAsign(struct Expression * exp, struct Operand * op1, 
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c ^= value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c ^= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5497,7 +5497,7 @@ static unsigned int UCharXorAsign(struct Expression * exp, struct Operand * op1,
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc ^= value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc ^= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5572,7 +5572,7 @@ static unsigned int ShortLShiftAsign(struct Expression * exp, struct Operand * o
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s <<= value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s <<= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5587,7 +5587,7 @@ static unsigned int UShortLShiftAsign(struct Expression * exp, struct Operand * 
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us <<= value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us <<= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5602,7 +5602,7 @@ static unsigned int CharLShiftAsign(struct Expression * exp, struct Operand * op
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c <<= value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c <<= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5617,7 +5617,7 @@ static unsigned int UCharLShiftAsign(struct Expression * exp, struct Operand * o
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc <<= value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc <<= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5692,7 +5692,7 @@ static unsigned int ShortRShiftAsign(struct Expression * exp, struct Operand * o
 short value2 = op2->__anon1.s;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintShort((short)(op1->__anon1.s >>= value2));
+exp->__anon1.__anon2.string = PrintShort((op1->__anon1.s >>= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5707,7 +5707,7 @@ static unsigned int UShortRShiftAsign(struct Expression * exp, struct Operand * 
 unsigned short value2 = op2->__anon1.us;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUShort((unsigned short)(op1->__anon1.us >>= value2));
+exp->__anon1.__anon2.string = PrintUShort((op1->__anon1.us >>= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5722,7 +5722,7 @@ static unsigned int CharRShiftAsign(struct Expression * exp, struct Operand * op
 char value2 = op2->__anon1.c;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintChar((char)(op1->__anon1.c >>= value2));
+exp->__anon1.__anon2.string = PrintChar((op1->__anon1.c >>= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -5737,7 +5737,7 @@ static unsigned int UCharRShiftAsign(struct Expression * exp, struct Operand * o
 unsigned char value2 = op2->__anon1.uc;
 
 exp->type = 2;
-exp->__anon1.__anon2.string = PrintUChar((unsigned char)(op1->__anon1.uc >>= value2));
+exp->__anon1.__anon2.string = PrintUChar((op1->__anon1.uc >>= value2));
 if(!exp->expType)
 {
 exp->expType = op1->type;
@@ -13549,7 +13549,7 @@ case 24:
 case 1:
 if(type->isSigned)
 {
-char value = (char)0;
+char value = 0;
 
 if(GetChar(e, &value))
 {
@@ -13560,7 +13560,7 @@ exp->type = 2;
 }
 else
 {
-unsigned char value = (unsigned char)0;
+unsigned char value = 0;
 
 if(GetUChar(e, &value))
 {
@@ -13573,7 +13573,7 @@ break;
 case 2:
 if(type->isSigned)
 {
-short value = (short)0;
+short value = 0;
 
 if(GetShort(e, &value))
 {
@@ -13584,7 +13584,7 @@ exp->type = 2;
 }
 else
 {
-unsigned short value = (unsigned short)0;
+unsigned short value = 0;
 
 if(GetUShort(e, &value))
 {
@@ -13805,21 +13805,22 @@ unsigned int MatchTypeExpression(struct Expression * sourceExp, struct Type * de
 struct Type * source;
 struct Type * realDest = dest;
 struct Type * backupSourceExpType = (((void *)0));
-struct Expression * computedExp = sourceExp;
+struct Expression * nbExp = GetNonBracketsExp(sourceExp);
+struct Expression * computedExp = nbExp;
 
 dest->refCount++;
 if(sourceExp->isConstant && sourceExp->type != 2 && sourceExp->type != 0 && sourceExp->type != 11 && dest->kind == 8 && dest->__anon1._class && dest->__anon1._class->__anon1.registered && dest->__anon1._class->__anon1.registered->type == 4)
 {
-computedExp = CopyExpression(sourceExp);
+computedExp = CopyExpression(nbExp);
 ComputeExpression(computedExp);
 }
 source = sourceExp->expType;
 if(dest->kind == 13 && sourceExp->type == 2 && !strtoul(sourceExp->__anon1.__anon1.constant, (((void *)0)), 0))
 {
-if(computedExp != sourceExp)
+if(computedExp != nbExp)
 {
 FreeExpression(computedExp);
-computedExp = sourceExp;
+computedExp = nbExp;
 }
 FreeType(dest);
 return 1;
@@ -13836,10 +13837,10 @@ for(destBase = dest->__anon1._class->__anon1.registered; destBase && destBase->b
 ;
 if(sourceBase == destBase)
 {
-if(computedExp != sourceExp)
+if(computedExp != nbExp)
 {
 FreeExpression(computedExp);
-computedExp = sourceExp;
+computedExp = nbExp;
 }
 FreeType(dest);
 return 1;
@@ -13867,10 +13868,10 @@ value = -strtoll(computedExp->__anon1.op.exp2->__anon1.__anon1.constant, (((void
 else
 value = -strtoull(computedExp->__anon1.op.exp2->__anon1.__anon1.constant, (((void *)0)), 0);
 }
-if(computedExp != sourceExp)
+if(computedExp != nbExp)
 {
 FreeExpression(computedExp);
-computedExp = sourceExp;
+computedExp = nbExp;
 }
 if(dest->kind != 8 && source->kind == 8 && source->__anon1._class && source->__anon1._class->__anon1.registered && !strcmp(source->__anon1._class->__anon1.registered->fullName, "unichar"))
 {
@@ -14126,17 +14127,27 @@ ListAdd(specs, MkSpecifier(BOOL));
 }
 else if(dest->kind == 1 && (source->kind == 24 || source->kind == 1 || source->kind == 15 || source->kind == 2 || source->kind == 3) && (dest->isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
 {
+if(source->kind == 3)
+return 1;
+else
+{
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(CHAR));
 }
+}
 else if(dest->kind == 2 && (source->kind == 15 || source->kind == 24 || source->kind == 1 || source->kind == 2 || (source->kind == 3 && (dest->isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
+{
+if(source->kind == 3)
+return 1;
+else
 {
 specs = MkList();
 if(!dest->isSigned)
 ListAdd(specs, MkSpecifier(UNSIGNED));
 ListAdd(specs, MkSpecifier(SHORT));
+}
 }
 else if(dest->kind == 3 && (source->kind == 15 || source->kind == 2 || source->kind == 24 || source->kind == 1 || source->kind == 3))
 {
@@ -14207,10 +14218,10 @@ return 1;
 }
 else
 {
-if(computedExp != sourceExp)
+if(computedExp != nbExp)
 {
 FreeExpression(computedExp);
-computedExp = sourceExp;
+computedExp = nbExp;
 }
 while((sourceExp->type == 5 || sourceExp->type == 32) && sourceExp->__anon1.list)
 sourceExp = (*sourceExp->__anon1.list).last;
@@ -16211,7 +16222,7 @@ exp->__anon1.op.exp1->destType = (((void *)0));
 }
 if(exp->__anon1.op.exp2)
 {
-if(exp->__anon1.op.exp1->expType && (exp->__anon1.op.exp1->expType->kind == 1 || exp->__anon1.op.exp1->expType->kind == 2))
+if(!assign && exp->__anon1.op.exp1->expType && (exp->__anon1.op.exp1->expType->kind == 1 || exp->__anon1.op.exp1->expType->kind == 2))
 {
 struct Type * type = (type = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), type->kind = 3, type->isSigned = 1, type->refCount = 1, type->signedBeforePromotion = exp->__anon1.op.exp1->expType->isSigned, type->bitMemberSize = exp->__anon1.op.exp1->expType->bitMemberSize, type->promotedFrom = exp->__anon1.op.exp1->expType->kind, type);
 
@@ -16326,7 +16337,7 @@ ProcessExpressionType(exp->__anon1.op.exp2);
 exp->__anon1.op.exp2->opDestType = 0;
 if(exp->__anon1.op.exp2->destType && exp->__anon1.op.op != '=')
 exp->__anon1.op.exp2->destType->count--;
-if(exp->__anon1.op.exp1 || exp->__anon1.op.op == '~')
+if(!assign && (exp->__anon1.op.exp1 || exp->__anon1.op.op == '~'))
 {
 if(exp->__anon1.op.exp2->expType && (exp->__anon1.op.exp2->expType->kind == 1 || exp->__anon1.op.exp2->expType->kind == 2))
 {
@@ -18781,6 +18792,8 @@ struct Expression * nbExp = GetNonBracketsExp(exp);
 unsigned int skipWarning = 0;
 int kind = exp->destType->kind;
 
+if(nbExp->type == 12 && !nbExp->destType->casted && nbExp->destType->kind == exp->destType->kind)
+skipWarning = 1;
 if((kind == 1 || kind == 2) && exp->destType->isSigned == exp->expType->signedBeforePromotion && nbExp->type == 4 && nbExp->__anon1.op.exp1 && nbExp->__anon1.op.exp2)
 {
 int op = nbExp->__anon1.op.op;
@@ -18821,10 +18834,9 @@ break;
 case '-':
 if(!exp->destType->isSigned)
 {
-struct Expression * nbExp1 = GetNonBracketsExp(nbExp->__anon1.op.exp1);
-struct Expression * nbExp2 = GetNonBracketsExp(nbExp->__anon1.op.exp2);
-int from = nbExp2->expType->promotedFrom;
-
+nbExp1 = GetNonBracketsExp(nbExp->__anon1.op.exp1);
+nbExp2 = GetNonBracketsExp(nbExp->__anon1.op.exp2);
+from = nbExp2->expType->promotedFrom;
 if((from == 1 || from == 2) && nbExp1->isConstant && nbExp1->type == 2)
 {
 int n = strtol(nbExp1->__anon1.__anon1.constant, (((void *)0)), 0);
@@ -18834,6 +18846,30 @@ skipWarning = 1;
 }
 }
 break;
+case '|':
+{
+int kind1, kind2;
+
+nbExp1 = GetNonBracketsExp(nbExp->__anon1.op.exp1);
+nbExp2 = GetNonBracketsExp(nbExp->__anon1.op.exp2);
+kind1 = nbExp1->expType->promotedFrom ? nbExp1->expType->promotedFrom : nbExp1->expType->kind;
+kind2 = nbExp2->expType->promotedFrom ? nbExp2->expType->promotedFrom : nbExp2->expType->kind;
+if(((kind1 == 1 || (kind1 == 2 && kind == 2)) || MatchTypeExpression(nbExp1, exp->destType, (((void *)0)), 0, 0)) && ((kind2 == 1 || (kind2 == 2 && kind == 2)) || MatchTypeExpression(nbExp2, exp->destType, (((void *)0)), 0, 0)))
+skipWarning = 1;
+break;
+}
+case '&':
+{
+int kind1, kind2;
+
+nbExp1 = GetNonBracketsExp(nbExp->__anon1.op.exp1);
+nbExp2 = GetNonBracketsExp(nbExp->__anon1.op.exp2);
+kind1 = nbExp1->expType->promotedFrom ? nbExp1->expType->promotedFrom : nbExp1->expType->kind;
+kind2 = nbExp2->expType->promotedFrom ? nbExp2->expType->promotedFrom : nbExp2->expType->kind;
+if(((kind1 == 1 || (kind1 == 2 && kind == 2)) || MatchTypeExpression(nbExp1, exp->destType, (((void *)0)), 0, 0)) || ((kind2 == 1 || (kind2 == 2 && kind == 2)) || MatchTypeExpression(nbExp2, exp->destType, (((void *)0)), 0, 0)))
+skipWarning = 1;
+break;
+}
 }
 }
 if(!skipWarning)

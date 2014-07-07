@@ -923,7 +923,7 @@ public:
                                     newGroup.indices32[nIndices++] = group.indices32[c] + vertexOffset;
                               else
                                  for(c = 0; c<group.nIndices; c++)
-                                    newGroup.indices[nIndices++] = group.indices[c] + (uint16)vertexOffset;
+                                    newGroup.indices[nIndices++] = (uint16)(group.indices[c] + vertexOffset);
                            }
                         }
                         vertexOffset += objectMesh.nVertices;
@@ -944,7 +944,7 @@ public:
                                        newGroup.indices32[nIndices++] = group.indices32[c] + vertexOffset;
                                  else
                                     for(c = 0; c<group.nIndices; c++)
-                                       newGroup.indices[nIndices++] = group.indices[c] + (uint16)vertexOffset;
+                                       newGroup.indices[nIndices++] = (uint16)(group.indices[c] + vertexOffset);
                               }
                            }
                            vertexOffset += child.mesh.nVertices;

@@ -307,8 +307,8 @@ class Win32ConsoleInterface : Interface
          if(GetConsoleScreenBufferInfo(hStdout, &info))
          {
             COORD coord;
-            coord.X = info.srWindow.Right+1;
-            coord.Y = info.srWindow.Bottom+1;
+            coord.X = (short)(info.srWindow.Right+1);
+            coord.Y = (short)(info.srWindow.Bottom+1);
             SetConsoleScreenBufferSize(hStdout,coord);
             guiApp.SetDesktopPosition(0,0, coord.X * textCellW, coord.Y * textCellH, false);
             *textMode = true;

@@ -1773,13 +1773,13 @@ private:
          {
             int b;
             char word[3];
-            word[0] = 'a' + (char)a;
+            word[0] = (char)('a' + a);
             word[1] = 0;
             word[2] = 0;
             letters[a] = (WordEntry)wordTree.FindString(word);
             for(b = 0; b<26; b++)
             {
-               word[1] = 'a' + (char)b;
+               word[1] = (char)('a' + b);
                doubleLetters[a][b] = (WordEntry)wordTree.FindString(word);
             }
          }
@@ -1793,13 +1793,13 @@ private:
             {
                int b;
                char word[3];
-               word[0] = 'a' + (char)a;
+               word[0] = (char)('a' + a);
                word[1] = 0;
                word[2] = 0;
                wordTree.Add((BTNode)(letters[a] = WordEntry { string = CopyString(word) }));
                for(b = 0; b<26; b++)
                {
-                  word[1] = 'a' + (char)b;
+                  word[1] = (char)('a' + b);
                   wordTree.Add((BTNode)(doubleLetters[a][b] = WordEntry { string = CopyString(word) }));
                }
             }

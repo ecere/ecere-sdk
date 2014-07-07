@@ -25,9 +25,9 @@ static void WriteFileName(File f, const char * fileName)
          byte nibble;
          f.Putc('%');
          nibble = (ch & 0xF0) >> 4;
-         f.Putc((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0'));
+         f.Putc((char)((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0')));
          nibble = ch & 0x0F;
-         f.Putc((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0'));
+         f.Putc((char)((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0')));
       }
       else
          f.Putc(ch);

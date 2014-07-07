@@ -2078,7 +2078,7 @@ struct __ecereNameSpace__ecere__com__DataValue __simpleStruct0 =
 {
 
 .__anon1 = {
-.c = (char)0
+.c = 0
 }
 };
 

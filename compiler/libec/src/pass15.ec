@@ -3501,13 +3501,14 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    Type source;
    Type realDest = dest;
    Type backupSourceExpType = null;
-   Expression computedExp = sourceExp;
+   Expression nbExp = GetNonBracketsExp(sourceExp);
+   Expression computedExp = nbExp;
    dest.refCount++;
 
    if(sourceExp.isConstant && sourceExp.type != constantExp && sourceExp.type != identifierExp && sourceExp.type != castExp &&
       dest.kind == classType && dest._class && dest._class.registered && dest._class.registered.type == enumClass)
    {
-      computedExp = CopyExpression(sourceExp);        // Keep the original expression, but compute for checking enum ranges
+      computedExp = CopyExpression(nbExp);        // Keep the original expression, but compute for checking enum ranges
       ComputeExpression(computedExp /*sourceExp*/);
    }
 
@@ -3515,10 +3516,10 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
 
    if(dest.kind == pointerType && sourceExp.type == constantExp && !strtoul(sourceExp.constant, null, 0))
    {
-      if(computedExp != sourceExp)
+      if(computedExp != nbExp)
       {
          FreeExpression(computedExp);
-         computedExp = sourceExp;
+         computedExp = nbExp;
       }
       FreeType(dest);
       return true;
@@ -3538,10 +3539,10 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
           //if(source._class.registered == dest._class.registered)
           if(sourceBase == destBase)
           {
-            if(computedExp != sourceExp)
+            if(computedExp != nbExp)
             {
                FreeExpression(computedExp);
-               computedExp = sourceExp;
+               computedExp = nbExp;
             }
             FreeType(dest);
             return true;
@@ -3571,10 +3572,10 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          else
             value = -strtoull(computedExp.op.exp2.constant, null, 0);
       }
-      if(computedExp != sourceExp)
+      if(computedExp != nbExp)
       {
          FreeExpression(computedExp);
-         computedExp = sourceExp;
+         computedExp = nbExp;
       }
 
       if(dest.kind != classType && source.kind == classType && source._class && source._class.registered &&
@@ -3918,16 +3919,26 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
       else if(dest.kind == charType && (source.kind == _BoolType || source.kind == charType || source.kind == enumType || source.kind == shortType || source.kind == intType) &&
          (dest.isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
       {
-         specs = MkList();
-         if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
-         ListAdd(specs, MkSpecifier(CHAR));
+         if(source.kind == intType)
+            return true;
+         else
+         {
+            specs = MkList();
+            if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
+            ListAdd(specs, MkSpecifier(CHAR));
+         }
       }
       else if(dest.kind == shortType && (source.kind == enumType || source.kind == _BoolType || source.kind == charType || source.kind == shortType ||
          (source.kind == intType && (dest.isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
       {
-         specs = MkList();
-         if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
-         ListAdd(specs, MkSpecifier(SHORT));
+         if(source.kind == intType)
+            return true;
+         else
+         {
+            specs = MkList();
+            if(!dest.isSigned) ListAdd(specs, MkSpecifier(UNSIGNED));
+            ListAdd(specs, MkSpecifier(SHORT));
+         }
       }
       else if(dest.kind == intType && (source.kind == enumType || source.kind == shortType || source.kind == _BoolType || source.kind == charType || source.kind == intType))
       {
@@ -3998,10 +4009,10 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    }
    else
    {
-      if(computedExp != sourceExp)
+      if(computedExp != nbExp)
       {
          FreeExpression(computedExp);
-         computedExp = sourceExp;
+         computedExp = nbExp;
       }
 
       while((sourceExp.type == bracketsExp || sourceExp.type == extensionExpressionExp) && sourceExp.list) sourceExp = sourceExp.list->last;
@@ -8370,7 +8381,7 @@ void ProcessExpressionType(Expression exp)
 
             if(exp.op.exp2)
             {
-               if(exp.op.exp1.expType && (exp.op.exp1.expType.kind == charType || exp.op.exp1.expType.kind == shortType))
+               if(!assign && exp.op.exp1.expType && (exp.op.exp1.expType.kind == charType || exp.op.exp1.expType.kind == shortType))
                {
                   Type type { kind = intType, isSigned = true, refCount = 1, signedBeforePromotion = exp.op.exp1.expType.isSigned, bitMemberSize = exp.op.exp1.expType.bitMemberSize, promotedFrom = exp.op.exp1.expType.kind };
                   FreeType(exp.op.exp1.expType);
@@ -8487,7 +8498,7 @@ void ProcessExpressionType(Expression exp)
             exp.op.exp2.opDestType = false;
             if(exp.op.exp2.destType && exp.op.op != '=') exp.op.exp2.destType.count--;
 
-            if(exp.op.exp1 || exp.op.op == '~')
+            if(!assign && (exp.op.exp1 || exp.op.op == '~'))
             {
                if(exp.op.exp2.expType && (exp.op.exp2.expType.kind == charType || exp.op.exp2.expType.kind == shortType))
                {
@@ -11213,6 +11224,9 @@ void ProcessExpressionType(Expression exp)
                   Expression nbExp = GetNonBracketsExp(exp);
                   bool skipWarning = false;
                   TypeKind kind = exp.destType.kind;
+                  if(nbExp.type == conditionExp && !nbExp.destType.casted && nbExp.destType.kind == exp.destType.kind)
+                     // The if/else operands have already been checked / warned about
+                     skipWarning = true;
                   if((kind == charType || kind == shortType) && exp.destType.isSigned == exp.expType.signedBeforePromotion && nbExp.type == opExp && nbExp.op.exp1 && nbExp.op.exp2)
                   {
                      int op = nbExp.op.op;
@@ -11256,9 +11270,9 @@ void ProcessExpressionType(Expression exp)
                         case '-':
                            if(!exp.destType.isSigned)
                            {
-                              Expression nbExp1 = GetNonBracketsExp(nbExp.op.exp1);
-                              Expression nbExp2 = GetNonBracketsExp(nbExp.op.exp2);
-                              TypeKind from = nbExp2.expType.promotedFrom;
+                              nbExp1 = GetNonBracketsExp(nbExp.op.exp1);
+                              nbExp2 = GetNonBracketsExp(nbExp.op.exp2);
+                              from = nbExp2.expType.promotedFrom;
                               // Max value of unsigned type before promotion minus the same will always fit
                               if((from == charType || from == shortType) && nbExp1.isConstant && nbExp1.type == constantExp)
                               {
@@ -11268,6 +11282,30 @@ void ProcessExpressionType(Expression exp)
                               }
                            }
                            break;
+                        case '|':
+                        {
+                           TypeKind kind1, kind2;
+                           nbExp1 = GetNonBracketsExp(nbExp.op.exp1);
+                           nbExp2 = GetNonBracketsExp(nbExp.op.exp2);
+                           kind1 = nbExp1.expType.promotedFrom ? nbExp1.expType.promotedFrom : nbExp1.expType.kind;
+                           kind2 = nbExp2.expType.promotedFrom ? nbExp2.expType.promotedFrom : nbExp2.expType.kind;
+                           if(((kind1 == charType || (kind1 == shortType && kind == shortType)) || MatchTypeExpression(nbExp1, exp.destType, null, false, false)) &&
+                              ((kind2 == charType || (kind2 == shortType && kind == shortType)) || MatchTypeExpression(nbExp2, exp.destType, null, false, false)))
+                              skipWarning = true;
+                           break;
+                        }
+                        case '&':
+                        {
+                           TypeKind kind1, kind2;
+                           nbExp1 = GetNonBracketsExp(nbExp.op.exp1);
+                           nbExp2 = GetNonBracketsExp(nbExp.op.exp2);
+                           kind1 = nbExp1.expType.promotedFrom ? nbExp1.expType.promotedFrom : nbExp1.expType.kind;
+                           kind2 = nbExp2.expType.promotedFrom ? nbExp2.expType.promotedFrom : nbExp2.expType.kind;
+                           if(((kind1 == charType || (kind1 == shortType && kind == shortType)) || MatchTypeExpression(nbExp1, exp.destType, null, false, false)) ||
+                              ((kind2 == charType || (kind2 == shortType && kind == shortType)) || MatchTypeExpression(nbExp2, exp.destType, null, false, false)))
+                              skipWarning = true;
+                           break;
+                        }
                      }
                   }
 

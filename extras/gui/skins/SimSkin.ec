@@ -38,7 +38,7 @@ define skinTextForeground = black;
 define evenRowBackground = red; //Color { 80, 70, 60 };
 
 define skinTextColor = skinMainColor;
-define skinInactiveTextColor = Color { skinMainColor.r - 20, skinMainColor.g - 20, skinMainColor.b - 20 };
+define skinInactiveTextColor = Color { 0, 51, 108 };
 
 ColorKey skinGradient[3] =
 {

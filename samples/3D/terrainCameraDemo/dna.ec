@@ -228,49 +228,49 @@ public:
             //Define Polygons
             for(p=0; p<num; p++)
             {
-               group.indices[index++] = p*2+1;
-               group.indices[index++] = p*2+3;
-               group.indices[index++] = p*2+2;
-               group.indices[index++] = p*2+2;
-               group.indices[index++] = p*2;
-               group.indices[index++] = p*2+1;
+               group.indices[index++] = (uint16)(p*2+1);
+               group.indices[index++] = (uint16)(p*2+3);
+               group.indices[index++] = (uint16)(p*2+2);
+               group.indices[index++] = (uint16)(p*2+2);
+               group.indices[index++] = (uint16)(p*2);
+               group.indices[index++] = (uint16)(p*2+1);
 
-               group.indices[index++] = p*2+startv;
-               group.indices[index++] = p*2+2+startv;
-               group.indices[index++] = p*2+3+startv;
-               group.indices[index++] = p*2+3+startv;
-               group.indices[index++] = p*2+1+startv;
-               group.indices[index++] = p*2+startv;
+               group.indices[index++] = (uint16)(p*2+startv);
+               group.indices[index++] = (uint16)(p*2+2+startv);
+               group.indices[index++] = (uint16)(p*2+3+startv);
+               group.indices[index++] = (uint16)(p*2+3+startv);
+               group.indices[index++] = (uint16)(p*2+1+startv);
+               group.indices[index++] = (uint16)(p*2+startv);
 
-               group.indices[index++] = p*2+startv+1;
-               group.indices[index++] = p*2+startv+3;
-               group.indices[index++] = p*2+3;
-               group.indices[index++] = p*2+3;
-               group.indices[index++] = p*2+1;
-               group.indices[index++] = p*2+startv+1;
+               group.indices[index++] = (uint16)(p*2+startv+1);
+               group.indices[index++] = (uint16)(p*2+startv+3);
+               group.indices[index++] = (uint16)(p*2+3);
+               group.indices[index++] = (uint16)(p*2+3);
+               group.indices[index++] = (uint16)(p*2+1);
+               group.indices[index++] = (uint16)(p*2+startv+1);
 
-               group.indices[index++] = p*2;
-               group.indices[index++] = p*2+2;
-               group.indices[index++] = p*2+startv+2;
-               group.indices[index++] = p*2+startv+2;
-               group.indices[index++] = p*2+startv;
-               group.indices[index++] = p*2;
+               group.indices[index++] = (uint16)(p*2);
+               group.indices[index++] = (uint16)(p*2+2);
+               group.indices[index++] = (uint16)(p*2+startv+2);
+               group.indices[index++] = (uint16)(p*2+startv+2);
+               group.indices[index++] = (uint16)(p*2+startv);
+               group.indices[index++] = (uint16)(p*2);
             }
 
             // Ends
             group.indices[index++] = startv;
-            group.indices[index++] = startv+1;
+            group.indices[index++] = (uint16)(startv+1);
             group.indices[index++] = 1;
             group.indices[index++] = 1;
             group.indices[index++] = 0;
             group.indices[index++] = startv;
 
-            group.indices[index++] = 2*num;
-            group.indices[index++] = 2*num+1;
-            group.indices[index++] = 2*num+startv+1;
-            group.indices[index++] = 2*num+startv+1;
-            group.indices[index++] = 2*num+startv;
-            group.indices[index++] = 2*num;
+            group.indices[index++] = (uint16)(2*num);
+            group.indices[index++] = (uint16)(2*num+1);
+            group.indices[index++] = (uint16)(2*num+startv+1);
+            group.indices[index++] = (uint16)(2*num+startv+1);
+            group.indices[index++] = (uint16)(2*num+startv);
+            group.indices[index++] = (uint16)(2*num);
 
             ComputeNormals();
             result = true;

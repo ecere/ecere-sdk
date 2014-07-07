@@ -621,7 +621,7 @@ return (__ecereProp___ecereNameSpace__ecere__sys__File_Get_input(this) || __ecer
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetLinePeek(struct __ecereNameSpace__ecere__com__Instance * this, char * s, int max, int * charsRead)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__DualPipe * __ecerePointer___ecereNameSpace__ecere__sys__DualPipe = (struct __ecereNameSpace__ecere__sys__DualPipe *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__DualPipe->offset) : 0);
-char ch = (char)0;
+char ch = 0;
 int c = 0;
 
 while(c < max - 1 && __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Peek(this) && ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({

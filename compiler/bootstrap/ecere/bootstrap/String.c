@@ -512,7 +512,7 @@ if(buffer && subStr)
 const char * ptr;
 const char * strBuffer = buffer + start;
 int subLen = strlen(subStr);
-char beforeChar = start ? *(strBuffer - 1) : (char)0;
+char beforeChar = start ? *(strBuffer - 1) : 0;
 int (* strcompare)(const char *, const char *, size_t) = (void *)(matchCase ? (void *)(strncmp) : ((void *)(strncasecmp)));
 
 for(ptr = strBuffer; *ptr; ptr++)

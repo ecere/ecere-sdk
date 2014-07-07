@@ -99,7 +99,7 @@ public:
                strcat(accelString, "0");
             else if(value.code >= k1 && value.code <= k9)
             {
-               accelString[strlen(accelString)] = '1' + (char)(value.code - k1);
+               accelString[strlen(accelString)] = (char)('1' + value.code - k1);
                accelString[strlen(accelString)+1] = 0;
             }
             else

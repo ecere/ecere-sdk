@@ -909,7 +909,7 @@ default void TimeStampToWin32FileTime(TimeStamp t, FILETIME * fileTime)
    tm = t;
 
    st.wYear = (short)tm.year;
-   st.wMonth = (short)tm.month + 1;
+   st.wMonth = (short)(tm.month + 1);
    st.wDay = (short)tm.day;
    st.wHour = (short)tm.hour;
    st.wMinute = (short)tm.minute;

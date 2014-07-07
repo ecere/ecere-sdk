@@ -276,7 +276,7 @@ unsigned char ch = source[c];
 unsigned int codePoint = 0;
 int numBytes = 1;
 int i;
-unsigned char mask = (unsigned char)0x7F;
+unsigned char mask = 0x7F;
 
 if(ch & 0x80)
 {
@@ -324,6 +324,7 @@ int __ecereNameSpace__ecere__sys__ISO8859_1toUTF8(const char * source, char * de
 {
 int c;
 int d = 0;
+unsigned char * byteDest = (unsigned char *)dest;
 
 for(c = 0; source[c]; c++)
 {
@@ -339,31 +340,31 @@ if(ch < 0x80)
 {
 if(d + 1 >= max)
 break;
-dest[d++] = (char)ch;
+byteDest[d++] = (char)ch;
 }
 else if(ch < 0x800)
 {
 if(d + 2 >= max)
 break;
-dest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else if(ch < 0x10000)
 {
 if(d + 3 >= max)
 break;
-dest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
-dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else
 {
 if(d + 4 >= max)
 break;
-dest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
-dest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
-dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
 dest[d] = 0;
@@ -375,6 +376,7 @@ int __ecereNameSpace__ecere__sys__UTF16toUTF8Buffer(const unsigned short * sourc
 int c;
 int d = 0;
 unsigned short u16;
+unsigned char * byteDest = (unsigned char *)dest;
 
 for(c = 0; (u16 = source[c]); c++)
 {
@@ -388,34 +390,34 @@ if(ch < 0x80)
 {
 if(d + 1 >= max)
 break;
-dest[d++] = (char)ch;
+byteDest[d++] = (char)ch;
 }
 else if(ch < 0x800)
 {
 if(d + 2 >= max)
 break;
-dest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else if(ch < 0x10000)
 {
 if(d + 3 >= max)
 break;
-dest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
-dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else
 {
 if(d + 4 >= max)
 break;
-dest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
-dest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
-dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
-dest[d] = 0;
+byteDest[d] = 0;
 return d;
 }
 
@@ -424,7 +426,7 @@ unsigned int __ecereNameSpace__ecere__sys__UTF8GetChar(const char * string, int 
 unsigned int ch;
 unsigned char b = ((unsigned char *)string)[0];
 int i;
-unsigned char mask = (unsigned char)0x7F;
+unsigned char mask = 0x7F;
 int nb = b ? 1 : 0;
 
 ch = 0;
@@ -486,7 +488,7 @@ unsigned char ch = source[c];
 unsigned int codePoint = 0;
 int numBytes = 1;
 int i;
-unsigned char mask = (unsigned char)0x7F;
+unsigned char mask = 0x7F;
 
 if(ch & 0x80 && ch & 0x40)
 {
@@ -537,6 +539,7 @@ int __ecereNameSpace__ecere__sys__UTF32toUTF8Len(const unsigned int * source, in
 int c;
 int d = 0;
 unsigned int ch;
+unsigned char * byteDest = (unsigned char *)dest;
 
 for(c = 0; c < count && (ch = source[c]); c++)
 {
@@ -544,34 +547,34 @@ if(ch < 0x80)
 {
 if(d + 1 >= max)
 break;
-dest[d++] = (char)ch;
+byteDest[d++] = (char)ch;
 }
 else if(ch < 0x800)
 {
 if(d + 2 >= max)
 break;
-dest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else if(ch < 0x10000)
 {
 if(d + 3 >= max)
 break;
-dest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
-dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else
 {
 if(d + 4 >= max)
 break;
-dest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
-dest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
-dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
+byteDest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
+byteDest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+byteDest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
-dest[d] = 0;
+byteDest[d] = 0;
 return d;
 }
 
@@ -739,13 +742,13 @@ char * __ecereNameSpace__ecere__sys__UTF16toUTF8(const unsigned short * source)
 int c;
 int d = 0;
 int len;
-char * dest;
+unsigned char * dest;
 unsigned short u16;
 unsigned int invert = 0;
 
 for(len = 0; source[len]; len++)
 ;
-dest = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (len * 3 + 1));
+dest = __ecereNameSpace__ecere__com__eSystem_New(sizeof(unsigned char) * (len * 3 + 1));
 for(c = 0; (u16 = source[c]); c++)
 {
 unsigned int ch;
@@ -788,8 +791,8 @@ dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
 dest[d] = 0;
-dest = __ecereNameSpace__ecere__com__eSystem_Renew(dest, sizeof(char) * (d + 1));
-return dest;
+dest = __ecereNameSpace__ecere__com__eSystem_Renew(dest, sizeof(unsigned char) * (d + 1));
+return (char *)dest;
 }
 
 unsigned int __ecereNameSpace__ecere__com__LocateModule(const char * name, const char * fileName)
@@ -861,7 +864,7 @@ unsigned char ch = source[c];
 unsigned int codePoint = 0;
 int numBytes = 1;
 int i;
-unsigned char mask = (unsigned char)0x7F;
+unsigned char mask = 0x7F;
 
 if(ch & 0x80 && ch & 0x40)
 {

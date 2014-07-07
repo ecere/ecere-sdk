@@ -1018,7 +1018,7 @@ else
 {
 while(c < max - 1)
 {
-char ch = (char)0;
+char ch = 0;
 
 if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;

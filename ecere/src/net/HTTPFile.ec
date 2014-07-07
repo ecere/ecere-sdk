@@ -527,9 +527,9 @@ private:
                      byte nibble;
                      msg[len++] = '%';
                      nibble = (ch & 0xF0) >> 4;
-                     msg[len++] = (nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0');
+                     msg[len++] = (byte)((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0'));
                      nibble = ch & 0x0F;
-                     msg[len++] = (nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0');
+                     msg[len++] = (byte)((nibble > 9) ? (nibble - 10 + 'a') : (nibble + '0'));
                   }
                   else
                      msg[len++] = ch;

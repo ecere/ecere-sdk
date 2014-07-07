@@ -40,7 +40,7 @@ public void OpenMixer()
    waveFormat.nChannels = 2;
    waveFormat.cbSize = 0;
    waveFormat.wFormatTag = WAVE_FORMAT_PCM;
-   waveFormat.nBlockAlign = (waveFormat.wBitsPerSample >> 3) * waveFormat.nChannels;
+   waveFormat.nBlockAlign = (uint16)((waveFormat.wBitsPerSample >> 3) * waveFormat.nChannels);
    waveFormat.nAvgBytesPerSec = waveFormat.nBlockAlign * waveFormat.nSamplesPerSec;
 
    waveOutOpen(&hWaveOut, WAVE_MAPPER, &waveFormat, 0, 0, CALLBACK_NULL);
