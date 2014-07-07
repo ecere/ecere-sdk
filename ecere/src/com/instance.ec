@@ -5640,17 +5640,26 @@ static void Module_Destructor(Module module)
       if(_class.nameSpace)
       {
          BTNamedLink classLink = (BTNamedLink)_class.nameSpace->classes.FindString(_class.name);
-         OldLink t;
-         for(t = _class.templatized.first; t; t = t.next)
+         if(classLink)
          {
-            Class template = t.data;
-            BTNamedLink link;
-            link = (BTNamedLink)template.nameSpace->classes.FindString(template.name);
+            OldLink t;
+            for(t = _class.templatized.first; t; t = t.next)
+            {
+               Class template = t.data;
+               BTNamedLink link;
+               link = (BTNamedLink)template.nameSpace->classes.FindString(template.name);
 
-            template.nameSpace->classes.Delete((BTNode)link);
-            template.nameSpace = null;
+               template.nameSpace->classes.Delete((BTNode)link);
+               template.nameSpace = null;
+            }
+            _class.nameSpace->classes.Delete((BTNode)classLink);
          }
-         _class.nameSpace->classes.Delete((BTNode)classLink);
+#ifdef _DEBUG
+         else
+         {
+            printf("Warning: Could not find %s in namespace classes while destructing module %s\n", _class.name, module.name);
+         }
+#endif
          _class.nameSpace = null;
       }
       _class.module = null;
@@ -6967,7 +6976,7 @@ public int UTF8toUTF16Buffer(const char * source, uint16 * dest, int max)
          if(codePoint > 0xFFFF)
          {
             uint16 lead = (uint16)(LEAD_OFFSET + (codePoint >> 10));
-            uint16 trail = 0xDC00 + (uint16)(codePoint & 0x3FF);
+            uint16 trail = (uint16)(0xDC00 | (codePoint & 0x3FF));
             if(d >= max - 1) break;
             dest[d++] = lead;
             dest[d++] = trail;
@@ -7062,7 +7071,7 @@ public uint16 * UTF8toUTF16(const char * source, int * wordCount)
          if(codePoint > 0xFFFF)
          {
             uint16 lead = (uint16)(LEAD_OFFSET + (codePoint >> 10));
-            uint16 trail = 0xDC00 + (uint16)(codePoint & 0x3FF);
+            uint16 trail = (uint16)(0xDC00 | (codePoint & 0x3FF));
             dest[d++] = lead;
             dest[d++] = trail;
          }

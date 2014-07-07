@@ -31,7 +31,7 @@ class RGBFormat : BitmapFormat
             {
                int c;
                for(c = 0; c<256; c++)
-                  result[c] = ColorAlpha { 255, { palette[c*3]<<2, palette[c*3+1]<<2, palette[c*3+2]<<2 } };
+                  result[c] = ColorAlpha { 255, { (byte)(palette[c*3]<<2), (byte)(palette[c*3+1]<<2), (byte)(palette[c*3+2]<<2) } };
             }
          }
          delete f;

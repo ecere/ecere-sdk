@@ -278,19 +278,19 @@ int numBytes = 1;
 int i;
 unsigned char mask = (unsigned char)0x7F;
 
-if(ch & (unsigned char)0x80)
+if(ch & 0x80)
 {
-if(ch & (unsigned char)0x40)
+if(ch & 0x40)
 {
 mask >>= 2;
 numBytes++;
-if(ch & (unsigned char)0x20)
+if(ch & 0x20)
 {
 numBytes++;
 mask >>= 1;
-if(ch & (unsigned char)0x10)
+if(ch & 0x10)
 {
-if(ch & (unsigned char)0x08)
+if(ch & 0x08)
 return 0;
 numBytes++;
 mask >>= 1;
@@ -304,10 +304,10 @@ for(i = 0; i < numBytes && (ch = source[c]); i++, c++)
 {
 codePoint <<= 6;
 codePoint |= ch & mask;
-mask = (unsigned char)0x3F;
+mask = 0x3F;
 if(i > 1)
 {
-if(!(ch & (unsigned char)0x80) || (ch & (unsigned char)0x40))
+if(!(ch & 0x80) || (ch & 0x40))
 return 0;
 }
 }
@@ -345,28 +345,28 @@ else if(ch < 0x800)
 {
 if(d + 2 >= max)
 break;
-dest[d++] = (unsigned char)0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else if(ch < 0x10000)
 {
 if(d + 3 >= max)
 break;
-dest[d++] = (unsigned char)0xE0 | (unsigned char)((ch & 0xF000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else
 {
 if(d + 4 >= max)
 break;
-dest[d++] = (unsigned char)0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0x3F000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
+dest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
-dest[d] = (char)0;
+dest[d] = 0;
 return d;
 }
 
@@ -380,7 +380,7 @@ for(c = 0; (u16 = source[c]); c++)
 {
 unsigned int ch;
 
-if(u16 < (unsigned short)0xD800 || u16 > (unsigned short)0xDBFF)
+if(u16 < 0xD800 || u16 > 0xDBFF)
 ch = u16;
 else
 ch = (u16 << 10) + source[c++] + (0x10000 - (0xD800 << 10) - 0xDC00);
@@ -394,28 +394,28 @@ else if(ch < 0x800)
 {
 if(d + 2 >= max)
 break;
-dest[d++] = (unsigned char)0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else if(ch < 0x10000)
 {
 if(d + 3 >= max)
 break;
-dest[d++] = (unsigned char)0xE0 | (unsigned char)((ch & 0xF000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else
 {
 if(d + 4 >= max)
 break;
-dest[d++] = (unsigned char)0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0x3F000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
+dest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
-dest[d] = (char)0;
+dest[d] = 0;
 return d;
 }
 
@@ -428,19 +428,19 @@ unsigned char mask = (unsigned char)0x7F;
 int nb = b ? 1 : 0;
 
 ch = 0;
-if(b & (unsigned char)0x80)
+if(b & 0x80)
 {
-if(b & (unsigned char)0x40)
+if(b & 0x40)
 {
 mask >>= 2;
 nb++;
-if(b & (unsigned char)0x20)
+if(b & 0x20)
 {
 nb++;
 mask >>= 1;
-if(b & (unsigned char)0x10)
+if(b & 0x10)
 {
-if(b & (unsigned char)0x08)
+if(b & 0x08)
 {
 nb = 0;
 }
@@ -456,8 +456,8 @@ for(i = 0; i < nb; i++)
 {
 ch <<= 6;
 ch |= (b = ((unsigned char *)string)[i]) & mask;
-mask = (unsigned char)0x3F;
-if(i > 1 && (!(b & (unsigned char)0x80) || (b & (unsigned char)0x40)))
+mask = 0x3F;
+if(i > 1 && (!(b & 0x80) || (b & 0x40)))
 {
 nb = 0;
 ch = 0;
@@ -488,15 +488,15 @@ int numBytes = 1;
 int i;
 unsigned char mask = (unsigned char)0x7F;
 
-if(ch & (unsigned char)0x80 && ch & (unsigned char)0x40)
+if(ch & 0x80 && ch & 0x40)
 {
 mask >>= 2;
 numBytes++;
-if(ch & (unsigned char)0x20)
+if(ch & 0x20)
 {
 numBytes++;
 mask >>= 1;
-if(ch & (unsigned char)0x10)
+if(ch & 0x10)
 {
 numBytes++;
 mask >>= 1;
@@ -507,12 +507,12 @@ for(i = 0; i < numBytes; i++)
 {
 codePoint <<= 6;
 codePoint |= source[c++] & mask;
-mask = (unsigned char)0x3F;
+mask = 0x3F;
 }
 if(codePoint > 0xFFFF)
 {
 unsigned short lead = (unsigned short)((0xD800 - (0x10000 >> 10)) + (codePoint >> 10));
-unsigned short trail = (unsigned short)0xDC00 + (unsigned short)(codePoint & 0x3FF);
+unsigned short trail = (unsigned short)(0xDC00 | (codePoint & 0x3FF));
 
 if(d >= max - 1)
 break;
@@ -526,7 +526,7 @@ break;
 dest[d++] = (unsigned short)codePoint;
 }
 }
-dest[d] = (unsigned short)0;
+dest[d] = 0;
 return d;
 }
 return 0;
@@ -550,28 +550,28 @@ else if(ch < 0x800)
 {
 if(d + 2 >= max)
 break;
-dest[d++] = (unsigned char)0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else if(ch < 0x10000)
 {
 if(d + 3 >= max)
 break;
-dest[d++] = (unsigned char)0xE0 | (unsigned char)((ch & 0xF000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else
 {
 if(d + 4 >= max)
 break;
-dest[d++] = (unsigned char)0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0x3F000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
+dest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
-dest[d] = (char)0;
+dest[d] = 0;
 return d;
 }
 
@@ -750,17 +750,17 @@ for(c = 0; (u16 = source[c]); c++)
 {
 unsigned int ch;
 
-if(!c && (u16 == (unsigned short)0xFFFE || u16 == (unsigned short)0xFEFF))
+if(!c && (u16 == 0xFFFE || u16 == 0xFEFF))
 {
-if(u16 == (unsigned short)0xFFFE)
+if(u16 == 0xFFFE)
 invert = 1;
 continue;
 }
 if(invert)
 {
-u16 = ((u16 & (unsigned short)0xFF00) >> (unsigned short)8) | ((u16 & (unsigned short)0x00FF) << (unsigned short)8);
+u16 = ((u16 & 0xFF00) >> 8) | ((u16 & 0x00FF) << 8);
 }
-if(u16 < (unsigned short)0xD800 || u16 > (unsigned short)0xDBFF)
+if(u16 < 0xD800 || u16 > 0xDBFF)
 ch = u16;
 else
 ch = (u16 << 10) + source[c++] + (0x10000 - (0xD800 << 10) - 0xDC00);
@@ -770,24 +770,24 @@ dest[d++] = (char)ch;
 }
 else if(ch < 0x800)
 {
-dest[d++] = (unsigned char)0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xC0 | (unsigned char)((ch & 0x7C0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else if(ch < 0x10000)
 {
-dest[d++] = (unsigned char)0xE0 | (unsigned char)((ch & 0xF000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xE0 | (unsigned char)((ch & 0xF000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 else
 {
-dest[d++] = (unsigned char)0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0x3F000) >> 12);
-dest[d++] = (unsigned char)0x80 | (unsigned char)((ch & 0xFC0) >> 6);
-dest[d++] = (unsigned char)0x80 | (unsigned char)(ch & 0x03F);
+dest[d++] = 0xF0 | (unsigned char)((ch & 0x1C0000) >> 18);
+dest[d++] = 0x80 | (unsigned char)((ch & 0x3F000) >> 12);
+dest[d++] = 0x80 | (unsigned char)((ch & 0xFC0) >> 6);
+dest[d++] = 0x80 | (unsigned char)(ch & 0x03F);
 }
 }
-dest[d] = (char)0;
+dest[d] = 0;
 dest = __ecereNameSpace__ecere__com__eSystem_Renew(dest, sizeof(char) * (d + 1));
 return dest;
 }
@@ -863,15 +863,15 @@ int numBytes = 1;
 int i;
 unsigned char mask = (unsigned char)0x7F;
 
-if(ch & (unsigned char)0x80 && ch & (unsigned char)0x40)
+if(ch & 0x80 && ch & 0x40)
 {
 mask >>= 2;
 numBytes++;
-if(ch & (unsigned char)0x20)
+if(ch & 0x20)
 {
 numBytes++;
 mask >>= 1;
-if(ch & (unsigned char)0x10)
+if(ch & 0x10)
 {
 numBytes++;
 mask >>= 1;
@@ -882,12 +882,12 @@ for(i = 0; i < numBytes; i++)
 {
 codePoint <<= 6;
 codePoint |= source[c++] & mask;
-mask = (unsigned char)0x3F;
+mask = 0x3F;
 }
 if(codePoint > 0xFFFF)
 {
 unsigned short lead = (unsigned short)((0xD800 - (0x10000 >> 10)) + (codePoint >> 10));
-unsigned short trail = (unsigned short)0xDC00 + (unsigned short)(codePoint & 0x3FF);
+unsigned short trail = (unsigned short)(0xDC00 | (codePoint & 0x3FF));
 
 dest[d++] = lead;
 dest[d++] = trail;
@@ -897,7 +897,7 @@ else
 dest[d++] = (unsigned short)codePoint;
 }
 }
-dest[d] = (unsigned short)0;
+dest[d] = 0;
 if(wordCount)
 *wordCount = d;
 return dest;
@@ -2005,10 +2005,10 @@ unsigned int pointerAlignment = alignment == 0xF000F000;
 
 if(pointerAlignment)
 alignment = sizeof(void *);
-if(pointerAlignment && member->structAlignment <= (short)4)
-member->pointerAlignment = (short)1;
+if(pointerAlignment && member->structAlignment <= 4)
+member->pointerAlignment = 1;
 else if(!pointerAlignment && alignment >= 8)
-member->pointerAlignment = (short)0;
+member->pointerAlignment = 0;
 member->structAlignment = (__simpleStruct0 = member->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
 if(member->memberOffset % alignment)
 member->memberOffset += alignment - (member->memberOffset % alignment);
@@ -2614,10 +2614,10 @@ unsigned int pointerAlignment = alignment == 0xF000F000;
 
 if(pointerAlignment)
 alignment = sizeof(void *);
-if(pointerAlignment && _class->structAlignment <= (short)4)
-_class->pointerAlignment = (short)1;
+if(pointerAlignment && _class->structAlignment <= 4)
+_class->pointerAlignment = 1;
 else if(!pointerAlignment && alignment >= 8)
-_class->pointerAlignment = (short)0;
+_class->pointerAlignment = 0;
 _class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
 if(_class->memberOffset % alignment)
 _class->memberOffset += alignment - (_class->memberOffset % alignment);
@@ -2831,10 +2831,10 @@ if(dataMember->type == 1)
 addTo->memberID += 1;
 else
 addTo->memberID += dataMember->memberID;
-if(dataMember->pointerAlignment && dataMember->structAlignment <= (short)4)
-addTo->pointerAlignment = (short)1;
-else if(!dataMember->pointerAlignment && dataMember->structAlignment >= (short)8)
-addTo->pointerAlignment = (short)0;
+if(dataMember->pointerAlignment && dataMember->structAlignment <= 4)
+addTo->pointerAlignment = 1;
+else if(!dataMember->pointerAlignment && dataMember->structAlignment >= 8)
+addTo->pointerAlignment = 0;
 addTo->structAlignment = (__simpleStruct0 = addTo->structAlignment, __simpleStruct1 = dataMember->structAlignment, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
 dataMember->offset = (addTo->type == 1) ? 0 : addTo->memberOffset;
 if(dataMember->structAlignment)
@@ -2871,10 +2871,10 @@ __ecereInstance1->name = dataMember->name, __ecereInstance1->data = dataMember, 
 }));
 __ecereNameSpace__ecere__com__SetMemberClass(dataMember, _class);
 dataMember->id = _class->memberID;
-if(dataMember->pointerAlignment && dataMember->structAlignment <= (short)4)
-_class->pointerAlignment = (short)1;
-else if(!dataMember->pointerAlignment && dataMember->structAlignment >= (short)8)
-_class->pointerAlignment = (short)0;
+if(dataMember->pointerAlignment && dataMember->structAlignment <= 4)
+_class->pointerAlignment = 1;
+else if(!dataMember->pointerAlignment && dataMember->structAlignment >= 8)
+_class->pointerAlignment = 0;
 _class->structAlignment = (__simpleStruct0 = _class->structAlignment, __simpleStruct1 = dataMember->structAlignment, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
 if(dataMember->type == 1)
 _class->memberID += 1;
@@ -4091,7 +4091,7 @@ char ident[1024];
 while(*end == ' ')
 end--;
 strncpy(ident, paramStart, end + 1 - paramStart);
-ident[end + 1 - paramStart] = (char)0;
+ident[end + 1 - paramStart] = 0;
 for(sClass = _class; sClass; sClass = sClass->base)
 {
 if(sClass->templateClass)
@@ -4177,12 +4177,12 @@ equal++;
 while(*equal == ' ')
 equal++;
 memcpy(value, equal, paramEnd - equal);
-value[paramEnd - equal] = (char)0;
+value[paramEnd - equal] = 0;
 }
 else
 {
 memcpy(value, paramStart, paramEnd - paramStart);
-value[paramEnd - paramStart] = (char)0;
+value[paramEnd - paramStart] = 0;
 }
 __ecereNameSpace__ecere__sys__TrimRSpaces(value, value);
 switch(curParam->type)
@@ -5466,8 +5466,8 @@ else
 if(!strcmp(name, "ecere::sys::FileListing"))
 {
 size = 3 * (force32Bits ? 4 : 8);
-_class->structAlignment = force32Bits ? (short)4 : (short)8;
-_class->pointerAlignment = (short)1;
+_class->structAlignment = force32Bits ? 4 : 8;
+_class->pointerAlignment = 1;
 }
 else if(!strcmp(name, "ecere::com::Class"))
 size = 0;
@@ -5800,7 +5800,7 @@ if((!(strcasecmp)(ext, "dylib") || !(strcasecmp)(ext, "so")) && strstr(moduleNam
 int len = (int)strlen(moduleName) - 3;
 
 memmove(moduleName, moduleName + 3, len);
-moduleName[len] = (char)0;
+moduleName[len] = 0;
 }
 ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name = __ecereNameSpace__ecere__sys__CopyString(moduleName);
 }
@@ -5992,6 +5992,9 @@ for(; (_class = ((struct __ecereNameSpace__ecere__com__Module *)(((char *)module
 if(_class->nameSpace)
 {
 struct __ecereNameSpace__ecere__com__BTNamedLink * classLink = (struct __ecereNameSpace__ecere__com__BTNamedLink *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(*_class->nameSpace).classes, _class->name);
+
+if(classLink)
+{
 struct __ecereNameSpace__ecere__sys__OldLink * t;
 
 for(t = _class->templatized.first; t; t = t->next)
@@ -6004,6 +6007,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*template->nameS
 template->nameSpace = (((void *)0));
 }
 __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Delete(&(*_class->nameSpace).classes, (struct __ecereNameSpace__ecere__sys__BTNode *)classLink);
+}
 _class->nameSpace = (((void *)0));
 }
 _class->module = (((void *)0));

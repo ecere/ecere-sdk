@@ -979,7 +979,7 @@ va_list args;
 
 __builtin_va_start(args, format);
 vsnprintf(text, sizeof (text), format, args);
-text[sizeof (text) - 1] = (char)0;
+text[sizeof (text) - 1] = 0;
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -1005,7 +1005,7 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePoint
 int c = 0;
 unsigned int result = 1;
 
-s[c] = (char)0;
+s[c] = 0;
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
@@ -1035,7 +1035,7 @@ if(ch != '\r')
 s[c++] = ch;
 }
 }
-s[c] = (char)0;
+s[c] = 0;
 return result || c > 1;
 }
 
@@ -1047,7 +1047,7 @@ char ch;
 unsigned int quoted = 0;
 unsigned int result = 1;
 
-*string = (char)0;
+*string = 0;
 while(1)
 {
 if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
@@ -1092,7 +1092,7 @@ result = 0;
 break;
 }
 }
-string[c] = (char)0;
+string[c] = 0;
 }
 return result;
 }

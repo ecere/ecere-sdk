@@ -1888,7 +1888,7 @@ struct ImportedModule * module = (((void *)0));
 char moduleName[797];
 
 strncpy(moduleName, name, (797) - 1);
-moduleName[(797) - 1] = (char)0;
+moduleName[(797) - 1] = 0;
 __ecereNameSpace__ecere__sys__StripExtension(moduleName);
 for(module = (*defines).first; module; module = module->next)
 {

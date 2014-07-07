@@ -458,7 +458,7 @@ char lcMessages[256];
 char * locale = (((void *)0));
 char genericLocale[256];
 
-genericLocale[0] = (char)0;
+genericLocale[0] = 0;
 if(__ecereNameSpace__ecere__sys__GetEnvironment("ECERE_LANGUAGE", language, sizeof (language)))
 locale = language;
 else if(__ecereNameSpace__ecere__sys__GetEnvironment("LANGUAGE", language, sizeof (language)))
@@ -478,10 +478,10 @@ if(language != locale)
 strcpy(language, locale);
 dot = strstr(language, ".");
 if(dot)
-*dot = (char)0;
+*dot = 0;
 colon = strstr(language, ":");
 if(colon)
-*colon = (char)0;
+*colon = 0;
 locale = language;
 if(!(strcasecmp)(locale, "zh"))
 strcpy(locale, "zh_CN");
@@ -493,7 +493,7 @@ char * under;
 strcpy(genericLocale, locale);
 under = strchr(genericLocale, '_');
 if(under)
-*under = (char)0;
+*under = 0;
 if(!(strcasecmp)(genericLocale, "zh"))
 strcpy(genericLocale, "zh_CN");
 }

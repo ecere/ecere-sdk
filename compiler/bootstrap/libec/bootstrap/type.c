@@ -2665,7 +2665,7 @@ int len = constant ? strlen(constant) : 0;
 
 if(constant && constant[len - 1] == '.')
 {
-constant[len - 1] = (char)0;
+constant[len - 1] = 0;
 yyval.exp = MkExpMember(yyvsp[(1) - (2)].exp, yyvsp[(2) - (2)].id);
 yyval.exp->loc = (yyloc);
 }
@@ -5654,7 +5654,7 @@ yyn = yypact[yystate];
 if(yyn != -760)
 {
 yyn += 1;
-if(0 <= yyn && yyn <= 9157 && yycheck[yyn] == (short)1)
+if(0 <= yyn && yyn <= 9157 && yycheck[yyn] == 1)
 {
 yyn = yytable[yyn];
 if(0 < yyn)

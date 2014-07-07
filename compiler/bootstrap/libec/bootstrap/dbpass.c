@@ -762,11 +762,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -783,6 +785,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 struct TypeName;
@@ -1473,7 +1476,7 @@ char name[1024];
 int len = strlen(exp->__anon1.db.table);
 
 memcpy(tableName, exp->__anon1.db.table + 1, len - 2);
-tableName[len - 2] = (char)0;
+tableName[len - 2] = 0;
 __ecereNameSpace__ecere__sys__ChangeCh(tableName, ' ', '_');
 sprintf(name, "__ecereDBField_%s_%s", tableName, exp->__anon1.db.id->string);
 FreeExpContents(exp);
@@ -1488,7 +1491,7 @@ char name[1024];
 int len = strlen(exp->__anon1.db.table);
 
 memcpy(tableName, exp->__anon1.db.table + 1, len - 2);
-tableName[len - 2] = (char)0;
+tableName[len - 2] = 0;
 __ecereNameSpace__ecere__sys__ChangeCh(tableName, ' ', '_');
 sprintf(name, "__ecereDBTable_%s", tableName);
 FreeExpContents(exp);
@@ -1503,7 +1506,7 @@ char name[1024];
 int len = strlen(exp->__anon1.db.table);
 
 memcpy(tableName, exp->__anon1.db.table + 1, len - 2);
-tableName[len - 2] = (char)0;
+tableName[len - 2] = 0;
 __ecereNameSpace__ecere__sys__ChangeCh(tableName, ' ', '_');
 sprintf(name, "__ecereDBIndex_%s_%s", tableName, exp->__anon1.db.id->string);
 FreeExpContents(exp);
@@ -1606,9 +1609,9 @@ struct __ecereNameSpace__ecere__sys__OldList * members;
 
 if(table->symbol)
 idClassDefs = MkList();
-nameField[0] = (char)0;
+nameField[0] = 0;
 memcpy(tableName, table->name + 1, len - 2);
-tableName[len - 2] = (char)0;
+tableName[len - 2] = 0;
 __ecereNameSpace__ecere__sys__ChangeCh(tableName, ' ', '_');
 sprintf(tableID, "__ecereDBTable_%s", tableName);
 sprintf(rowClassName, "Row%s", tableName);

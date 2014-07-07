@@ -257,7 +257,7 @@ va_list args;
 
 __builtin_va_start(args, command);
 vsnprintf(commandLine, sizeof (commandLine), command, args);
-commandLine[sizeof (commandLine) - 1] = (char)0;
+commandLine[sizeof (commandLine) - 1] = 0;
 __builtin_va_end(args);
 return __ecereNameSpace__ecere__sys__DualPipeOpen(mode, commandLine);
 }
@@ -271,7 +271,7 @@ va_list args;
 
 __builtin_va_start(args, command);
 vsnprintf(commandLine, sizeof (commandLine), command, args);
-commandLine[sizeof (commandLine) - 1] = (char)0;
+commandLine[sizeof (commandLine) - 1] = 0;
 __builtin_va_end(args);
 return __ecereNameSpace__ecere__sys__DualPipeOpenEnv(mode, env, commandLine);
 }

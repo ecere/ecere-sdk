@@ -289,7 +289,7 @@ output[len++] = '_';
 else
 output[len++] = ch;
 }
-output[len++] = (char)0;
+output[len++] = 0;
 }
 
 extern struct Location yylloc;
@@ -698,11 +698,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -719,6 +721,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Method * __ecereNameSpace__ecere__com__eClass_AddMethod(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  type, void *  function, int declMode);

@@ -1009,11 +1009,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -1030,6 +1032,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 struct PropertyDef;
@@ -1241,7 +1244,7 @@ struct Expression * posExp = (d->type == 0) ? d->__anon1.structDecl.posExp : (((
 int bitSize = 0, bitPos = -1;
 char dataTypeString[8192];
 
-dataTypeString[0] = (char)0;
+dataTypeString[0] = 0;
 if(sizeExp)
 {
 ProcessExpressionType(sizeExp);
@@ -1288,7 +1291,7 @@ else
 {
 char typeString[8192];
 
-typeString[0] = (char)0;
+typeString[0] = 0;
 dataType = ProcessType(decl->__anon1.__anon1.specifiers, d);
 PrintType(dataType, typeString, 0, 1);
 if(member)
@@ -1340,7 +1343,7 @@ else if(spec->__anon1.__anon2.definitions && spec->__anon1.__anon2.id)
 struct Identifier * id = spec->__anon1.__anon2.id;
 char typeString[8192];
 
-typeString[0] = (char)0;
+typeString[0] = 0;
 spec->__anon1.__anon2.id = (((void *)0));
 decl->__anon1.__anon1.declarators = MkListOne(MkDeclaratorIdentifier(id));
 dataType = ProcessType(decl->__anon1.__anon1.specifiers, (((void *)0)));

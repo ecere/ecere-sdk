@@ -1410,12 +1410,14 @@ public:
    char * name;
    char * typeName;
    Class thisClassFrom;
+   TypeKind promotedFrom;
 
    ClassObjectType classObjectType;
    int alignment;
    uint offset;
    int bitFieldCount;
    int count;  // This is used to avoid outputting warnings when non-zero
+   int bitMemberSize;
 
    bool isSigned:1;
    bool constant:1;
@@ -1433,6 +1435,7 @@ public:
    bool casted:1;
    bool pointerAlignment:1; // true if the alignment is the pointer size
    bool isLong:1;    // true if this is truly a long set as a int/int64 (need to improve long support)
+   bool signedBeforePromotion:1;
    // bool wasThisClass:1;
    // TODO: Add _Complex & _Imaginary support
    // bool complex:1, imaginary:1;

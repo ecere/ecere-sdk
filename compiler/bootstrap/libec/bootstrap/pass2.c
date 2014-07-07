@@ -1012,11 +1012,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -1033,6 +1035,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 struct Specifier
@@ -3009,7 +3012,7 @@ struct Type * type = memberExp->__anon1.member.exp ? memberExp->__anon1.member.e
 struct __ecereNameSpace__ecere__com__Class * regClass = (type && type->kind == 8 && type->__anon1._class) ? type->__anon1._class->__anon1.registered : (((void *)0));
 struct __ecereNameSpace__ecere__com__Class * cl = argClass ? argClass : regClass;
 
-className[0] = (char)0;
+className[0] = 0;
 if(memberExp->__anon1.member.exp && memberExp->__anon1.member.exp->expType && memberExp->__anon1.member.exp->expType->classObjectType == 2)
 strcpy(className, "class");
 else if(cl)
@@ -3478,7 +3481,7 @@ struct Declaration * decl;
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList(), * decls = MkList();
 struct Expression * tempExp;
 
-className[0] = (char)0;
+className[0] = 0;
 FullClassNameCat(className, propertyClass->fullName, 0);
 DeclareStruct(curExternal, propertyClass->fullName, 0, 1);
 ListAdd(specs, MkStructOrUnion(3, MkIdentifier(className), (((void *)0))));
@@ -3559,7 +3562,7 @@ char typeString[2048];
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Declarator * decl;
 
-typeString[0] = (char)0;
+typeString[0] = 0;
 PrintType(exp->expType, typeString, 0, 0);
 decl = SpecDeclFromString(typeString, specs, (((void *)0)));
 exp->__anon1.cast.typeName = MkTypeName(specs, decl);
@@ -3736,7 +3739,7 @@ if(!member->_class->symbol)
 member->_class->symbol = FindClass(member->_class->fullName);
 DeclareClass(curExternal, member->_class->symbol, className);
 DeclareStruct(curExternal, member->_class->fullName, 0, 1);
-structName[0] = (char)0;
+structName[0] = 0;
 FullClassNameCat(structName, member->_class->fullName, 0);
 checkedExp = exp->__anon1.member.exp;
 while(((checkedExp->type == 5 || checkedExp->type == 32) && checkedExp->__anon1.list && (*checkedExp->__anon1.list).count == 1) || checkedExp->type == 11)

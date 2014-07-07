@@ -421,7 +421,7 @@ if(!__ecereNameSpace__ecere__sys__globalSystem.errorBuffer)
 __ecereNameSpace__ecere__sys__globalSystem.errorBufferSize = (100 * (1025));
 __ecereNameSpace__ecere__sys__globalSystem.errorBuffer = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * ((100 * (1025))));
 }
-__ecereNameSpace__ecere__sys__globalSystem.errorBuffer[0] = (char)0;
+__ecereNameSpace__ecere__sys__globalSystem.errorBuffer[0] = 0;
 }
 else if(mode == 3)
 {
@@ -489,7 +489,7 @@ char string[1025];
 
 __builtin_va_start(args, format);
 vsnprintf(string, sizeof (string), format, args);
-string[sizeof (string) - 1] = (char)0;
+string[sizeof (string) - 1] = 0;
 __ecereNameSpace__ecere__sys__Log(string);
 __builtin_va_end(args);
 }

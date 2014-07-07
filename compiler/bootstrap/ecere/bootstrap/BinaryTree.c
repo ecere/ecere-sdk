@@ -270,7 +270,7 @@ node->parent = (((void *)0));
 
 char * __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Print(struct __ecereNameSpace__ecere__sys__BinaryTree * this, char * output, int tps)
 {
-output[0] = (char)0;
+output[0] = 0;
 if(this->root)
 __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Print(this->root, output, tps);
 return output;

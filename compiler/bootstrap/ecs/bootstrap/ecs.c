@@ -662,11 +662,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -683,6 +685,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 extern void DeclareMethod(struct External * neededFor, struct __ecereNameSpace__ecere__com__Method * method, const char *  name);
@@ -1243,7 +1246,7 @@ else
 {
 PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1278,7 +1281,7 @@ else
 {
 PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1413,7 +1416,7 @@ else
 {
 PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1444,7 +1447,7 @@ else
 {
 PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1577,7 +1580,7 @@ else
 {
 PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1612,7 +1615,7 @@ else
 {
 PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1730,7 +1733,7 @@ else
 {
 PrintTypeNoConst(method->dataType->__anon1.__anon2.returnType, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1762,7 +1765,7 @@ else
 {
 PrintTypeNoConst(param, type, 0, 1);
 classSym = FindClass(type);
-type[0] = (char)0;
+type[0] = 0;
 }
 strcpy(className, "__ecereClass_");
 FullClassNameCat(className, classSym->string, 1);
@@ -1971,7 +1974,7 @@ for(prop = _class->properties.first; prop; prop = prop->next)
 {
 char propName[1024];
 
-propName[0] = (char)0;
+propName[0] = 0;
 FullClassNameCat(propName, prop->name, 1);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
 {
@@ -1995,7 +1998,7 @@ if(module->name && module->importType != 1 && (!func || !func->dataType || !func
 {
 char functionName[1024];
 
-functionName[0] = (char)0;
+functionName[0] = 0;
 FullClassNameCat(functionName, function->name, 0);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "void * __ecereFunction_%s;\n", functionName);
 anyFunction = 1;
@@ -2267,7 +2270,7 @@ for(prop = _class->properties.first; prop; prop = prop->next)
 {
 char propName[1024];
 
-propName[0] = (char)0;
+propName[0] = 0;
 FullClassNameCat(propName, prop->name, 1);
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   __ecereProp_%s_%s = _property = eClass_FindProperty(%s, \"%s\", module);\n", className, propName, classID, prop->name);
 if((!strcmp(_class->name, "float") || !strcmp(_class->name, "double") || module->name) && module->importType != 1)
@@ -2292,7 +2295,7 @@ if(module->name && module->importType != 1 && (!func || !func->dataType || !func
 {
 char functionName[1024];
 
-functionName[0] = (char)0;
+functionName[0] = 0;
 FullClassNameCat(functionName, function->name, 0);
 if(isDynamicLibrary && !isStaticLibrary)
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "   function = eSystem_FindFunction(__currentModule, \"%s\");\n", function->name);
@@ -2809,7 +2812,7 @@ else if(strstr(line, "msgid \"") == line)
 msgid = __ecereNameSpace__ecere__sys__CopyString(line + 7);
 len = strlen(msgid);
 if(len)
-msgid[len - 1] = (unsigned char)0;
+msgid[len - 1] = 0;
 }
 else if(strstr(line, "msgctxt \"") == line)
 {
@@ -2817,7 +2820,7 @@ else if(strstr(line, "msgctxt \"") == line)
 msgctxt = __ecereNameSpace__ecere__sys__CopyString(line + 9);
 len = strlen(msgctxt);
 if(len)
-msgctxt[len - 1] = (unsigned char)0;
+msgctxt[len - 1] = 0;
 }
 else if(strstr(line, "msgstr \"") == line)
 {
@@ -2825,7 +2828,7 @@ else if(strstr(line, "msgstr \"") == line)
 msgstr = __ecereNameSpace__ecere__sys__CopyString(line + 8);
 len = strlen(msgstr);
 if(len)
-msgstr[len - 1] = (unsigned char)0;
+msgstr[len - 1] = 0;
 }
 if(msgid && msgstr)
 {

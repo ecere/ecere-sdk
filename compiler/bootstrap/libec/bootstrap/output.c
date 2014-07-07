@@ -188,7 +188,7 @@ struct CodePosition end;
 
 static void GetSourceName(char * name, const char * src)
 {
-name[0] = (char)0;
+name[0] = 0;
 if(src)
 {
 if(!strchr(src, '/') && !strchr(src, '\\'))
@@ -676,11 +676,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -697,6 +699,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 struct Declaration;

@@ -868,11 +868,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -889,6 +891,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 struct TemplatedType *  FindTemplateTypeParameter(struct Context *  ctx, const char *  name);
@@ -1212,7 +1215,7 @@ name[len++] = ':';
 stringLen = strlen(className);
 memcpy(name + len, className, stringLen);
 len += stringLen;
-name[len] = (char)0;
+name[len] = 0;
 return _DeclClass(_class, name);
 }
 
@@ -2792,7 +2795,7 @@ char * msgid = __ecereNameSpace__ecere__com__eSystem_New(sizeof(char) * (lenStri
 
 msgid[0] = '\"';
 memcpy(msgid + 1, context + 1, lenContext - 2);
-msgid[1 + lenContext - 2] = (char)4;
+msgid[1 + lenContext - 2] = 4;
 memcpy(msgid + 1 + lenContext - 2 + 1, string + 1, lenString - 2);
 memcpy(msgid + 1 + lenContext - 2 + 1 + lenString - 2, "\"", 2);
 ListAdd(list, MkExpString(msgid));
@@ -2865,7 +2868,7 @@ fullName[len++] = ':';
 stringLen = strlen(name);
 memcpy(fullName + len, name, stringLen);
 len += stringLen;
-fullName[len] = (char)0;
+fullName[len] = 0;
 cl = globalContext ? (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&globalContext->classes, fullName) : (((void *)0));
 }
 if(!cl)
@@ -3232,7 +3235,7 @@ char * tpl;
 strcpy(name, ((struct Specifier *)baseSpecs->first)->__anon1.__anon1.name);
 tpl = strchr(name, '<');
 if(tpl)
-*tpl = (char)0;
+*tpl = 0;
 baseClass = FindClass(name);
 if(baseClass && baseClass->ctx)
 {
@@ -3326,7 +3329,7 @@ if(c && c >= name + 2 && c[-1] == ':' && c[-2] == ':')
 if(c > name + 2)
 {
 memcpy(nameSpace, name, c - name - 2);
-nameSpace[c - name] = (char)0;
+nameSpace[c - name] = 0;
 spec->__anon1.__anon1.nsSpec = _MkSpecifierName(nameSpace, (((void *)0)), (((void *)0)));
 }
 else
@@ -3511,7 +3514,7 @@ name[len++] = ':';
 stringLen = strlen(inst->exp->__anon1.__anon1.identifier->string);
 memcpy(name + len, inst->exp->__anon1.__anon1.identifier->string, stringLen);
 len += stringLen;
-name[len] = (char)0;
+name[len] = 0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(inst->exp->__anon1.__anon1.identifier->string), inst->exp->__anon1.__anon1.identifier->string = 0);
 inst->exp->__anon1.__anon1.identifier->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
@@ -3663,7 +3666,7 @@ name[len++] = ':';
 stringLen = strlen(id->string);
 memcpy(name + len, id->string, stringLen);
 len += stringLen;
-name[len] = (char)0;
+name[len] = 0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
@@ -3806,7 +3809,7 @@ name[len++] = ':';
 stringLen = strlen(id->string);
 memcpy(name + len, id->string, stringLen);
 len += stringLen;
-name[len] = (char)0;
+name[len] = 0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
@@ -3957,7 +3960,7 @@ name[len++] = ':';
 stringLen = strlen(id->string);
 memcpy(name + len, id->string, stringLen);
 len += stringLen;
-name[len] = (char)0;
+name[len] = 0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
@@ -4055,7 +4058,7 @@ if(id->string[c] == ':')
 {
 char * string = __ecereNameSpace__ecere__sys__CopyString(id->string + c + 1);
 
-id->string[c - 1] = (char)0;
+id->string[c - 1] = 0;
 id->_class = MkSpecifierName(id->string);
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = string;

@@ -559,7 +559,7 @@ static int input()
 int c;
 
 *yy_c_buf_p = yy_hold_char;
-if(*yy_c_buf_p == (char)0)
+if(*yy_c_buf_p == 0)
 {
 if(yy_c_buf_p < &(*yy_current_buffer).yy_ch_buf[yy_n_chars])
 *yy_c_buf_p = '\0';
@@ -631,8 +631,8 @@ void yy_flush_buffer(YY_BUFFER_STATE b)
 if(!b)
 return ;
 (*b).yy_n_chars = 0;
-(*b).yy_ch_buf[0] = (char)0;
-(*b).yy_ch_buf[1] = (char)0;
+(*b).yy_ch_buf[0] = 0;
+(*b).yy_ch_buf[1] = 0;
 (*b).yy_buf_pos = &(*b).yy_ch_buf[0];
 (*b).yy_at_bol = 1;
 (*b).yy_buffer_status = 0;
@@ -644,7 +644,7 @@ YY_BUFFER_STATE yy_scan_buffer(char * base, yy_size_t size)
 {
 YY_BUFFER_STATE b;
 
-if(size < 2 || base[size - 2] != (char)0 || base[size - 1] != (char)0)
+if(size < 2 || base[size - 2] != 0 || base[size - 1] != 0)
 return 0;
 b = (YY_BUFFER_STATE)yy_flex_alloc(sizeof(struct yy_buffer_state));
 if(!b)
@@ -707,7 +707,7 @@ if(!buf)
 yy_fatal_error("out of dynamic memory in yy_scan_bytes()");
 for(i = 0; i < len; ++i)
 buf[i] = bytes[i];
-buf[len] = buf[len + 1] = (char)0;
+buf[len] = buf[len + 1] = 0;
 b = yy_scan_buffer(buf, n);
 if(!b)
 yy_fatal_error("bad buffer in yy_scan_bytes()");
@@ -908,14 +908,14 @@ if(last != '\\')
 char * pointer = line + 1;
 int lineNumber;
 
-line[count] = (char)0;
+line[count] = 0;
 lineNumber = __ecereNameSpace__ecere__sys__GetValue(&pointer);
 if(lineNumber)
 {
 char fileName[797];
 int inOut;
 
-fileName[0] = (char)0;
+fileName[0] = 0;
 __ecereNameSpace__ecere__sys__GetString(&pointer, fileName, (797));
 inOut = __ecereNameSpace__ecere__sys__GetValue(&pointer);
 if(inOut == 1)
@@ -963,7 +963,7 @@ line[count++] = c;
 last = c;
 }
 yylloc.start = yylloc.end;
-line[count] = (char)0;
+line[count] = 0;
 __ecereNameSpace__ecere__sys__TrimLSpaces(line, line);
 for(c = 0; line[c] && line[c] != ' '; c++)
 ;
@@ -1074,7 +1074,7 @@ yy_c = yy_meta[(unsigned int)yy_c];
 }
 yy_current_state = yy_nxt[yy_base[yy_current_state] + (unsigned int)yy_c];
 ++yy_cp;
-}while(yy_base[yy_current_state] != (short)2575);
+}while(yy_base[yy_current_state] != 2575);
 yy_find_action:
 yy_act = yy_accept[yy_current_state];
 if(yy_act == 0)
@@ -2657,8 +2657,8 @@ ret_val = 2;
 else
 ret_val = 0;
 yy_n_chars += number_to_move;
-(*yy_current_buffer).yy_ch_buf[yy_n_chars] = (char)0;
-(*yy_current_buffer).yy_ch_buf[yy_n_chars + 1] = (char)0;
+(*yy_current_buffer).yy_ch_buf[yy_n_chars] = 0;
+(*yy_current_buffer).yy_ch_buf[yy_n_chars + 1] = 0;
 yytext = &(*yy_current_buffer).yy_ch_buf[0];
 return ret_val;
 }

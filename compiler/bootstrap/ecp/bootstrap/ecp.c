@@ -1245,11 +1245,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -1266,6 +1268,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
@@ -1676,7 +1679,7 @@ if(tp->defaultArgument && tp->defaultArgument->__anon1.expression)
 {
 char temp[8192];
 
-temp[0] = (char)0;
+temp[0] = 0;
 PrintExpression(tp->defaultArgument->__anon1.expression, temp);
 __ecereNameSpace__ecere__sys__ChangeCh(temp, '\n', ' ');
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(f, "               ");
@@ -1880,7 +1883,7 @@ else
 {
 char expString[8192];
 
-expString[0] = (char)0;
+expString[0] = 0;
 PrintExpression(e->exp, expString);
 printf(__ecereNameSpace__ecere__GetTranslatedString("ecp", "error: could not resolve value %s for enum %s in precompiler\n", (((void *)0))), expString, regClass->name);
 ((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Instance *)__thisModule) + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->exitCode = 1;
@@ -2939,7 +2942,7 @@ if(__ecereNameSpace__ecere__sys__FileExists(outputFilePath))
 __ecereNameSpace__ecere__sys__DeleteFile(outputFilePath);
 }
 snprintf(command, sizeof (command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
-command[sizeof (command) - 1] = (char)0;
+command[sizeof (command) - 1] = 0;
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(1))), command)))
 {
 int exitCode;

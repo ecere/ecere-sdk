@@ -231,7 +231,7 @@ static void PlaceButton(TabButton button, TabsPlacement placement, bool selected
 static define skinMainColor = Color { 0, 71, 128 };
 static define skinBackground = Color { 255, 255, 255 };
 static define skinTextColor = skinMainColor;
-static define skinInactiveTextColor = Color { skinMainColor.r - 20, skinMainColor.g - 20, skinMainColor.b - 20 };
+static define skinInactiveTextColor = Color { 0, 51, 108 };
 
 #define CAPTION      14
 #define NAME_OFFSET   2

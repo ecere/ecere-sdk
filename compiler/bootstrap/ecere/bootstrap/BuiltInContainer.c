@@ -485,7 +485,7 @@ data += Dclass->typeSize;
 }
 }
 else
-tempString[0] = (char)0;
+tempString[0] = 0;
 return tempString;
 }
 

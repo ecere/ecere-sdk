@@ -1147,11 +1147,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -1168,6 +1170,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 unsigned int __ecereProp_Type_Get_isPointerTypeSize(struct Type * this);
@@ -2555,7 +2558,7 @@ if(regClass->type == 1 && symbol->declaredStruct && member)
 {
 char baseStructName[1024];
 
-baseStructName[0] = (char)0;
+baseStructName[0] = 0;
 strcpy(baseStructName, (regClass->base->templateClass ? regClass->base->templateClass : regClass->base)->fullName);
 ListAdd(args, MkExpOp(MkExpTypeSize(MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier(symbol->structName), (((void *)0)))), (((void *)0)))), '-', MkExpTypeSize(MkTypeName(MkListOne(MkStructOrUnion(3, MkIdentifier(baseStructName), (((void *)0)))), (((void *)0))))));
 }

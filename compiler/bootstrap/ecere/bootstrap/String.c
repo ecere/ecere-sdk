@@ -89,7 +89,7 @@ int c;
 
 for(c = 0; c < count; c++)
 string[c] = ch;
-string[c] = (char)0;
+string[c] = 0;
 }
 
 unsigned int __ecereNameSpace__ecere__sys__GetString(char ** buffer, char * string, int max)
@@ -101,7 +101,7 @@ unsigned int result = 1;
 
 if(!* *buffer)
 {
-string[0] = (char)0;
+string[0] = 0;
 return 0;
 }
 for(; ; )
@@ -136,7 +136,7 @@ break;
 }
 (*buffer)++;
 }
-string[c] = (char)0;
+string[c] = 0;
 }
 return result;
 }
@@ -831,7 +831,7 @@ if(protocolSymbol)
 int len = protocolSymbol - addedPath + 3;
 
 memcpy(fileName, addedPath, len);
-fileName[len] = (char)0;
+fileName[len] = 0;
 isURL = 1;
 c = len;
 }
@@ -1039,7 +1039,7 @@ if(protocolSymbol)
 int len = protocolSymbol - addedPath + 3;
 
 memcpy(fileName, addedPath, len);
-fileName[len] = (char)0;
+fileName[len] = 0;
 isURL = 1;
 c = len;
 }

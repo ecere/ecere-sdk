@@ -757,7 +757,7 @@ first = 0;
 }
 }
 else
-tempString[0] = (char)0;
+tempString[0] = 0;
 return tempString;
 }
 

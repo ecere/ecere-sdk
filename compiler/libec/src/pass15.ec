@@ -4088,7 +4088,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    {                                                              \
       t value2 = op2.m;                                           \
       exp.type = constantExp;                                    \
-      exp.string = p(value2 ? (op1.m o value2) : 0);             \
+      exp.string = p(value2 ? ((t)(op1.m o value2)) : 0);             \
       if(!exp.expType) \
          { exp.expType = op1.type; if(op1.type) op1.type.refCount++; } \
       return true;                                                \
@@ -4099,7 +4099,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
    {                                                              \
       t value2 = op2.m;                                           \
       exp.type = constantExp;                                    \
-      exp.string = p(op1.m o value2);             \
+      exp.string = p((t)(op1.m o value2));             \
       if(!exp.expType) \
          { exp.expType = op1.type; if(op1.type) op1.type.refCount++; } \
       return true;                                                \
@@ -4391,7 +4391,12 @@ public Operand GetOperand(Expression exp)
                break;
             }
             case shortType:
-               if(type.isSigned)
+               if(exp.constant[0] == '\'')
+               {
+                  op.s = exp.constant[1];
+                  op.ops = shortOps;
+               }
+               else if(type.isSigned)
                {
                   op.s = (short)strtol(exp.constant, null, 0);
                   op.ops = shortOps;
@@ -4404,7 +4409,12 @@ public Operand GetOperand(Expression exp)
                break;
             case intType:
             case longType:
-               if(type.isSigned)
+               if(exp.constant[0] == '\'')
+               {
+                  op.i = exp.constant[1];
+                  op.ops = intOps;
+               }
+               else if(type.isSigned)
                {
                   op.i = (int)strtol(exp.constant, null, 0);
                   op.ops = intOps;
@@ -8255,8 +8265,8 @@ void ProcessExpressionType(Expression exp)
 
             case LEFT_OP:
             case RIGHT_OP:
-               useSideType = true;
-               useDestType = true;
+               // useSideType = true;
+               // useDestType = true;
                break;
 
             case '|':
@@ -8357,6 +8367,17 @@ void ProcessExpressionType(Expression exp)
                FreeType(dummy);
                exp.op.exp1.destType = null;
             }
+
+            if(exp.op.exp2)
+            {
+               if(exp.op.exp1.expType && (exp.op.exp1.expType.kind == charType || exp.op.exp1.expType.kind == shortType))
+               {
+                  Type type { kind = intType, isSigned = true, refCount = 1, signedBeforePromotion = exp.op.exp1.expType.isSigned, bitMemberSize = exp.op.exp1.expType.bitMemberSize, promotedFrom = exp.op.exp1.expType.kind };
+                  FreeType(exp.op.exp1.expType);
+                  exp.op.exp1.expType = type;
+               }
+            }
+
             type1 = exp.op.exp1.expType;
          }
 
@@ -8466,6 +8487,16 @@ void ProcessExpressionType(Expression exp)
             exp.op.exp2.opDestType = false;
             if(exp.op.exp2.destType && exp.op.op != '=') exp.op.exp2.destType.count--;
 
+            if(exp.op.exp1 || exp.op.op == '~')
+            {
+               if(exp.op.exp2.expType && (exp.op.exp2.expType.kind == charType || exp.op.exp2.expType.kind == shortType))
+               {
+                  Type type { kind = intType, isSigned = true, refCount = 1, signedBeforePromotion = exp.op.exp2.expType.isSigned, bitMemberSize = exp.op.exp2.expType.bitMemberSize, promotedFrom = exp.op.exp2.expType.kind };
+                  FreeType(exp.op.exp2.expType);
+                  exp.op.exp2.expType = type;
+               }
+            }
+
             if(assign && type1 && type1.kind == pointerType && exp.op.exp2.expType)
             {
                if(exp.op.exp2.expType.kind == intSizeType || exp.op.exp2.expType.kind == intPtrType || exp.op.exp2.expType.kind == int64Type || exp.op.exp2.expType.kind == intType || exp.op.exp2.expType.kind == shortType || exp.op.exp2.expType.kind == charType)
@@ -8548,6 +8579,14 @@ void ProcessExpressionType(Expression exp)
          }
          else if(exp.op.op == '&' && !exp.op.exp1)
             exp.expType = Reference(type2);
+         else if(exp.op.op == LEFT_OP || exp.op.op == RIGHT_OP)
+         {
+            if(exp.op.exp1.expType)
+            {
+               exp.expType = exp.op.exp1.expType;
+               exp.expType.refCount++;
+            }
+         }
          else if(!assign)
          {
             if(boolOps)
@@ -10226,6 +10265,8 @@ void ProcessExpressionType(Expression exp)
                      member.dataType = ProcessTypeString(member.dataTypeString, false);
                      FinishTemplatesContext(context);
                   }
+                  if(exp.member.exp.expType.kind == classType && exp.member.exp.expType._class && exp.member.exp.expType._class.registered && exp.member.exp.expType._class.registered.type == bitClass)
+                     member.dataType.bitMemberSize = ((BitMember)member).size;
                   exp.expType = member.dataType;
                   if(member.dataType) member.dataType.refCount++;
                }
@@ -11169,23 +11210,88 @@ void ProcessExpressionType(Expression exp)
                   (exp.expType.kind != classType || exp.expType.classObjectType || (exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type != structClass)));
                else
                {
-                  char expString[10240];
-                  expString[0] = '\0';
-                  if(inCompiler) { PrintExpression(exp, expString); ChangeCh(expString, '\n', ' '); }
+                  Expression nbExp = GetNonBracketsExp(exp);
+                  bool skipWarning = false;
+                  TypeKind kind = exp.destType.kind;
+                  if((kind == charType || kind == shortType) && exp.destType.isSigned == exp.expType.signedBeforePromotion && nbExp.type == opExp && nbExp.op.exp1 && nbExp.op.exp2)
+                  {
+                     int op = nbExp.op.op;
+                     Expression nbExp1, nbExp2;
+                     TypeKind from;
+
+                     switch(op)
+                     {
+                        case '%': case '/':
+                           nbExp1 = GetNonBracketsExp(nbExp.op.exp1);
+                           from = nbExp1.expType.promotedFrom;
+                           // Division and Modulo will not take more room than type before promotion
+                           if(from == charType || (kind == shortType && from == shortType))
+                              skipWarning = true;
+                           break;
+                        // Left shift
+                        case LEFT_OP: case RIGHT_OP:
+                           nbExp1 = GetNonBracketsExp(nbExp.op.exp1);
+                           nbExp2 = GetNonBracketsExp(nbExp.op.exp2);
+                           from = nbExp1.expType.promotedFrom;
+                           // Right shift will not take more room than type before promotion
+                           if(op == RIGHT_OP && (from == charType || (kind == shortType && from == shortType)))
+                              skipWarning = true;
+                           else if(nbExp2.isConstant && nbExp2.type == constantExp && (nbExp.op.op == RIGHT_OP || nbExp1.expType.bitMemberSize))
+                           {
+                              int n = (int)strtol(nbExp2.constant, null, 0);
+                              int s = from == charType ? 8 : 16;
+                              // Left shifting a bit member constrained in size may still fit in type before promotion
+                              if(nbExp1.expType.bitMemberSize && nbExp1.expType.bitMemberSize < s)
+                                 s = nbExp1.expType.bitMemberSize;
+
+                              // If right shifted enough things will fit in smaller type
+                              if(nbExp.op.op == RIGHT_OP)
+                                 s -= n;
+                              else
+                                 s += n;
+                              if(s <= (kind == charType ? 8 : 16))
+                                 skipWarning = true;
+                           }
+                           break;
+                        case '-':
+                           if(!exp.destType.isSigned)
+                           {
+                              Expression nbExp1 = GetNonBracketsExp(nbExp.op.exp1);
+                              Expression nbExp2 = GetNonBracketsExp(nbExp.op.exp2);
+                              TypeKind from = nbExp2.expType.promotedFrom;
+                              // Max value of unsigned type before promotion minus the same will always fit
+                              if((from == charType || from == shortType) && nbExp1.isConstant && nbExp1.type == constantExp)
+                              {
+                                 int n = (int)strtol(nbExp1.constant, null, 0);
+                                 if(n == (from == charType ? 255 : 65535))
+                                    skipWarning = true;
+                              }
+                           }
+                           break;
+                     }
+                  }
+
+                  if(!skipWarning)
+                  {
+                     char expString[10240];
+                     expString[0] = '\0';
+                     if(inCompiler) { PrintExpression(exp, expString); ChangeCh(expString, '\n', ' '); }
 
 #ifdef _DEBUG
-                  CheckExpressionType(exp, exp.destType, false, true);
+                     CheckExpressionType(exp, exp.destType, false, true);
 #endif
-                  // Flex & Bison generate code that triggers this, so we ignore it for a quiet sdk build:
-                  if(!sourceFile || (!strstr(sourceFile, "src\\lexer.ec") && !strstr(sourceFile, "src/lexer.ec") &&
-                                     !strstr(sourceFile, "src\\grammar.ec") && !strstr(sourceFile, "src/grammar.ec") &&
-                                     !strstr(sourceFile, "src\\type.ec") && !strstr(sourceFile, "src/type.ec") &&
-                                     !strstr(sourceFile, "src\\expression.ec") && !strstr(sourceFile, "src/expression.ec")))
-                  {
-                     if(invalidCast)
-                        Compiler_Error($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
-                     else
-                        Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+
+                     // Flex & Bison generate code that triggers this, so we ignore it for a quiet sdk build:
+                     if(!sourceFile || (!strstr(sourceFile, "src\\lexer.ec") && !strstr(sourceFile, "src/lexer.ec") &&
+                                        !strstr(sourceFile, "src\\grammar.ec") && !strstr(sourceFile, "src/grammar.ec") &&
+                                        !strstr(sourceFile, "src\\type.ec") && !strstr(sourceFile, "src/type.ec") &&
+                                        !strstr(sourceFile, "src\\expression.ec") && !strstr(sourceFile, "src/expression.ec")))
+                     {
+                        if(invalidCast)
+                           Compiler_Error($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+                        else
+                           Compiler_Warning($"incompatible expression %s (%s); expected %s\n", expString, type1, type2);
+                     }
                   }
 
                   // TO CHECK: FORCING HERE TO HELP DEBUGGER

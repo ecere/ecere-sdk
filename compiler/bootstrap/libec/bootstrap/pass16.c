@@ -674,11 +674,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -695,6 +697,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 extern void ProcessMethodType(struct __ecereNameSpace__ecere__com__Method * method);
@@ -3841,7 +3844,7 @@ CreateInstancesBody();
 {
 char className[1024];
 
-className[0] = (char)0;
+className[0] = 0;
 decl->type = 1;
 decl->__anon1.__anon1.specifiers = MkList();
 decl->__anon1.__anon1.declarators = MkList();

@@ -92,7 +92,7 @@ public uint16 * UTF8toUTF16Len(const char * source, int byteCount, int * wordCou
          if(codePoint > 0xFFFF)
          {
             uint16 lead = (uint16)(LEAD_OFFSET + (codePoint >> 10));
-            uint16 trail = 0xDC00 + (uint16)(codePoint & 0x3FF);
+            uint16 trail = (uint16)(0xDC00 | (codePoint & 0x3FF));
 
             dest[d++] = lead;
             dest[d++] = trail;
@@ -148,7 +148,7 @@ public int UTF8toUTF16BufferLen(const char * source, uint16 * dest, int max, int
          if(codePoint > 0xFFFF)
          {
             uint16 lead = (uint16)(LEAD_OFFSET + (codePoint >> 10));
-            uint16 trail = 0xDC00 + (uint16)(codePoint & 0x3FF);
+            uint16 trail = (uint16)(0xDC00 | (codePoint & 0x3FF));
             if(d >= max - 1) break;
             dest[d++] = lead;
             dest[d++] = trail;

@@ -331,7 +331,7 @@ if(ch == ':')
 ch = '_';
 newID[len++] = ch;
 }
-newID[len] = (char)0;
+newID[len] = 0;
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 id->string = __ecereNameSpace__ecere__sys__CopyString(newID);
 }
@@ -697,11 +697,13 @@ unsigned int size;
 char *  name;
 char *  typeName;
 struct __ecereNameSpace__ecere__com__Class * thisClassFrom;
+int promotedFrom;
 int classObjectType;
 int alignment;
 unsigned int offset;
 int bitFieldCount;
 int count;
+int bitMemberSize;
 unsigned int isSigned : 1;
 unsigned int constant : 1;
 unsigned int truth : 1;
@@ -718,6 +720,7 @@ unsigned int typedByReference : 1;
 unsigned int casted : 1;
 unsigned int pointerAlignment : 1;
 unsigned int isLong : 1;
+unsigned int signedBeforePromotion : 1;
 } ecere_gcc_struct;
 
 unsigned int IsVoidPtrCast(struct TypeName * typeName)
@@ -1091,7 +1094,7 @@ if(_class && _class->type == 1)
 {
 char name[1024];
 
-name[0] = (char)0;
+name[0] = 0;
 FullClassNameCat(name, _class->fullName, 0);
 FreeSpecifierContents(spec);
 spec->type = 3;
