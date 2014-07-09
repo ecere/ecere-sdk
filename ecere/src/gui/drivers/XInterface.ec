@@ -2005,7 +2005,7 @@ class XInterface : Interface
 
                      if(window.parent && window == window.parent.activeChild) break;
                      incref window;
-                     //if(window.creationActivation == activate)
+                     //if(window.creationActivation == activate && guiApp.desktop.active)
                      {
                         if(modalRoot)
                            modalRoot.ExternalActivate(true, true, window, null); // lastActive);
@@ -2897,7 +2897,12 @@ class XInterface : Interface
       if(window.windowHandle && (!window.parent || !window.parent.display))
       {
          if(window.visible && window.created)
+         {
+            long t = (window.creationActivation == activate && guiApp.desktop.active) ? (int)timeStamp : 0;
+            XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[_net_wm_user_time],
+              XA_CARDINAL,32,PropModeReplace, (byte *)&t, 1);
             XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+         }
          if(window.state == minimized && atomsSupported[_net_wm_state]) return;
 
          if(window.nativeDecorations)
@@ -3012,10 +3017,13 @@ class XInterface : Interface
          {
             if(!windowData.currentlyVisible)
             {
+               long t = (window.creationActivation == activate && guiApp.desktop.active) ? timeStamp : 0;
+               XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[_net_wm_user_time],
+                 XA_CARDINAL,32,PropModeReplace, (byte *)&t, 1);
                XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
                windowData.currentlyVisible = true;
                WaitForViewableWindow(window);
-               if(window.creationActivation == activate && state != minimized)
+               if(window.creationActivation == activate && guiApp.desktop.active && state != minimized)
                   ActivateRootWindow(window);
             }
 
@@ -3135,6 +3143,9 @@ class XInterface : Interface
             //printf("Activate root window %s\n", window._class.name);
             if(!windowData.currentlyVisible)
             {
+               long t = (window.creationActivation == activate && guiApp.desktop.active) ? timeStamp : 0;
+               XChangeProperty(xGlobalDisplay, (X11Window)window.windowHandle, atoms[_net_wm_user_time],
+                 XA_CARDINAL,32,PropModeReplace, (byte *)&t, 1);
                XMapWindow(xGlobalDisplay, (X11Window)window.windowHandle);
                WaitForViewableWindow(window);
                windowData.currentlyVisible = true;
