@@ -195,6 +195,8 @@ private:
    ~FindInFilesDialog()
    {
       SearchStop();
+      delete lastSelectionProject;
+      delete lastSelectionProjectNode;
    }
 
    LayoutPage layout
