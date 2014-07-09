@@ -112,6 +112,9 @@ static byte key2VK[256] =
 static const uint16 className[] = L"Ecere Application";
 static HINSTANCE hInstance;
 
+static WPARAM lastBits;
+static LPARAM lastRes;
+
 static DEVMODE devMode;
 #ifndef ECERE_NODINPUT
 static HWND acquiredWindow = null;
@@ -175,6 +178,18 @@ static WINDOWPLACEMENT taskBarPlacement;
 static bool activateApp;
 
 static SystemCursor lastCursor = (SystemCursor)-1;
+
+static void SmartShowWindow(HWND windowHandle, WindowState state, bool doActivate)
+{
+   int showCmd;
+   if(state == maximized)
+      showCmd = doActivate ? SW_SHOWMAXIMIZED : SW_MAXIMIZE;
+   else if(state == minimized)
+      showCmd = SW_MINIMIZE;
+   else
+      showCmd = doActivate ? SW_SHOWNORMAL : SW_SHOWNOACTIVATE;
+   ShowWindow(windowHandle, showCmd);
+}
 
 void AeroSnapPosition(Window window, int x, int y, int w, int h)
 {
@@ -611,19 +626,26 @@ class Win32Interface : Interface
             }
             case WM_DISPLAYCHANGE:
             {
-               static int lastBits = 0;
-               static int lastRes = 0;
-               if(lastBits != wParam || lastRes != lParam)
+               if(!guiApp.fullScreenMode && (lastBits != wParam || lastRes != lParam))
                {
-                  lastBits = (int)wParam;
-                  lastRes = (int)lParam;
+                  RECT rect;
+                  HWND foregroundWindow = GetForegroundWindow();
+                  int w = LOWORD(lParam);
+                  int h = HIWORD(lParam);
+
+                  GetWindowRect(foregroundWindow, &rect);
+                  if(rect.right == w && rect.bottom == h)
+                     break;
+
+                  lastBits = wParam;
+                  lastRes = lParam;
 
                   externalDisplayChange = true;
                   if(guiApp.desktop.DisplayModeChanged())
                   {
                      char caption[2048];
                      if(!window.style.hidden)
-                        ShowWindow(windowHandle, SW_SHOWNOACTIVATE /*SW_SHOWNORMAL*/);
+                        SmartShowWindow(window.windowHandle, (window.nativeDecorations && window.state == maximized) ? maximized : normal, false);
                      window.FigureCaption(caption);
                      SetRootWindowCaption(window, caption);
                   }
@@ -1173,6 +1195,11 @@ class Win32Interface : Interface
          null,
          className
       };
+      HDC hdc = GetDC(0);
+      lastRes = MAKELPARAM(GetSystemMetrics(SM_CYSCREEN), GetSystemMetrics(SM_CXSCREEN));
+      lastBits = (WPARAM)GetDeviceCaps(hdc, BITSPIXEL);
+      ReleaseDC(0, hdc);
+
       AttachConsole(-1);
       wcl.hInstance = hInstance = GetModuleHandle(null);
       RegisterClass(&wcl);
@@ -1535,27 +1562,19 @@ class Win32Interface : Interface
    {
       if(visible)
       {
+         WindowState curState = window.state;
+         *&window.state = state;
          switch(state)
          {
             case maximized:
             case normal:
-            {
-               if((window.active || window.creationActivation == activate) && !externalDisplayChange)
-                  ShowWindow(window.windowHandle, (window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL);
-               else
-               {
-                  WINDOWPLACEMENT plc = { 0 };
-                  GetWindowPlacement(window.windowHandle, &plc);
-                  plc.showCmd = (window.nativeDecorations && state == maximized) ? SW_MAXIMIZE : SW_SHOWNORMAL;
-                  ShowWindow(window.windowHandle, SW_SHOWNOACTIVATE);
-                  SetWindowPlacement(window.windowHandle, &plc);
-               }
+               SmartShowWindow(window.windowHandle, window.nativeDecorations ? state : normal, (window.active || window.creationActivation == activate) && !externalDisplayChange);
                break;
-            }
             case minimized:
                ShowWindow(window.windowHandle, SW_MINIMIZE);
                break;
          }
+         *&window.state = curState;
       }
       else
       {
