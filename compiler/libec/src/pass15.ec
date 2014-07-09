@@ -11154,6 +11154,16 @@ void ProcessExpressionType(Expression exp)
       }
    }
 
+   // Trying to do this here before conversion properties kick in and this becomes a new expression... (Fixing Class c; const char * a = c;)
+   // Mark nohead classes as by reference, unless we're casting them to an integral type
+   if(!notByReference && exp.expType && exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered &&
+      exp.expType._class.registered.type == noHeadClass && (!exp.destType ||
+         (exp.destType.kind != intType && exp.destType.kind != int64Type && exp.destType.kind != intPtrType && exp.destType.kind != intSizeType &&
+          exp.destType.kind != longType && exp.destType.kind != shortType && exp.destType.kind != charType && exp.destType.kind != _BoolType)))
+   {
+      exp.byReference = true;
+   }
+
    yylloc = exp.loc;
    if(exp.destType && (/*exp.destType.kind == voidType || */exp.destType.kind == dummyType) );
    else if(exp.destType && !exp.destType.keepCast)

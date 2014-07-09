@@ -18715,6 +18715,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&exp->expType->__anon1._
 }
 }
 }
+if(!notByReference && exp->expType && exp->expType->kind == 8 && exp->expType->__anon1._class && exp->expType->__anon1._class->__anon1.registered && exp->expType->__anon1._class->__anon1.registered->type == 5 && (!exp->destType || (exp->destType->kind != 3 && exp->destType->kind != 4 && exp->destType->kind != 22 && exp->destType->kind != 23 && exp->destType->kind != 5 && exp->destType->kind != 2 && exp->destType->kind != 1 && exp->destType->kind != 24)))
+{
+exp->byReference = 1;
+}
 yylloc = exp->loc;
 if(exp->destType && (exp->destType->kind == 18))
 ;
