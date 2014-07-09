@@ -286,6 +286,11 @@ void FreeSpecifierContents(Specifier spec)
             FreeList(spec.templateArgs, FreeTemplateArgument);
             spec.templateArgs = null;
          }
+         if(spec.nsSpec)
+         {
+            FreeSpecifier(spec.nsSpec);
+            spec.nsSpec = null;
+         }
          break;
       case extendedSpecifier:
          if(spec.extDecl)

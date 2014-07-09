@@ -2711,6 +2711,11 @@ if(spec->__anon1.__anon1.templateArgs)
 FreeList(spec->__anon1.__anon1.templateArgs, (void *)(FreeTemplateArgument));
 spec->__anon1.__anon1.templateArgs = (((void *)0));
 }
+if(spec->__anon1.__anon1.nsSpec)
+{
+FreeSpecifier(spec->__anon1.__anon1.nsSpec);
+spec->__anon1.__anon1.nsSpec = (((void *)0));
+}
 break;
 case 5:
 if(spec->__anon1.__anon1.extDecl)

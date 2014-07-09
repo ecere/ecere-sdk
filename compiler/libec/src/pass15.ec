@@ -1155,7 +1155,6 @@ External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, b
    External external = null;
    Symbol classSym = FindClass(name);
    OldList * curDeclarations = null;
-   Specifier curSpec = null;
 
    if(!inCompiler || !classSym) return null;
 
@@ -1175,7 +1174,6 @@ External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, b
       for(spec = external.declaration.specifiers ? external.declaration.specifiers->first : null; spec; spec = spec.next)
          if(spec.type == structSpecifier || spec.type == unionSpecifier)
          {
-            curSpec = spec;
             curDeclarations = spec.definitions;
             break;
          }
@@ -1187,16 +1185,15 @@ External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, b
       OldList * declarations = null;
       char structName[1024];
       bool addedPadding = false;
+      Specifier curSpec = null;
 
       classSym.declaring++;
 
       if(strchr(classSym.string, '<'))
       {
          if(classSym.registered.templateClass)
-         {
             external = _DeclareStruct(neededBy, classSym.registered.templateClass.fullName, skipNoHead, needDereference, fwdDecl);
-            classSym.declaring--;
-         }
+         classSym.declaring--;
          return external;
       }
 
@@ -1220,6 +1217,18 @@ External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, b
          {
             declarations = MkList();
             AddMembers(external, declarations, classSym.registered, false, null, classSym.registered, &addedPadding);
+         }
+
+         if(external.declaration)
+         {
+            Specifier spec;
+            for(spec = external.declaration.specifiers ? external.declaration.specifiers->first : null; spec; spec = spec.next)
+               if(spec.type == structSpecifier || spec.type == unionSpecifier)
+               {
+                  curSpec = spec;
+                  curDeclarations = spec.definitions;
+                  break;
+               }
          }
 
          if(declarations && (!declarations->count || (declarations->count == 1 && addedPadding)))
@@ -3928,7 +3937,12 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          (dest.isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
       {
          if(source.kind == intType)
+         {
+            FreeType(dest);
+            FreeType(source);
+            if(backupSourceExpType) FreeType(backupSourceExpType);
             return true;
+         }
          else
          {
             specs = MkList();
@@ -3940,7 +3954,12 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          (source.kind == intType && (dest.isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
       {
          if(source.kind == intType)
+         {
+            FreeType(dest);
+            FreeType(source);
+            if(backupSourceExpType) FreeType(backupSourceExpType);
             return true;
+         }
          else
          {
             specs = MkList();

@@ -12428,7 +12428,6 @@ struct External * _DeclareStruct(struct External * neededBy, const char * name, 
 struct External * external = (((void *)0));
 struct Symbol * classSym = FindClass(name);
 struct __ecereNameSpace__ecere__sys__OldList * curDeclarations = (((void *)0));
-struct Specifier * curSpec = (((void *)0));
 
 if(!inCompiler || !classSym)
 return (((void *)0));
@@ -12444,7 +12443,6 @@ struct Specifier * spec;
 for(spec = external->__anon1.declaration->__anon1.__anon1.specifiers ? (*external->__anon1.declaration->__anon1.__anon1.specifiers).first : (((void *)0)); spec; spec = spec->next)
 if(spec->type == 3 || spec->type == 4)
 {
-curSpec = spec;
 curDeclarations = spec->__anon1.__anon2.definitions;
 break;
 }
@@ -12455,15 +12453,14 @@ struct __ecereNameSpace__ecere__sys__OldList * specifiers, * declarators;
 struct __ecereNameSpace__ecere__sys__OldList * declarations = (((void *)0));
 char structName[1024];
 unsigned int addedPadding = 0;
+struct Specifier * curSpec = (((void *)0));
 
 classSym->declaring++;
 if(strchr(classSym->string, '<'))
 {
 if(classSym->__anon1.registered->templateClass)
-{
 external = _DeclareStruct(neededBy, classSym->__anon1.registered->templateClass->fullName, skipNoHead, needDereference, fwdDecl);
 classSym->declaring--;
-}
 return external;
 }
 structName[0] = 0;
@@ -12484,6 +12481,18 @@ if(!skipNoHead)
 {
 declarations = MkList();
 AddMembers(external, declarations, classSym->__anon1.registered, 0, (((void *)0)), classSym->__anon1.registered, &addedPadding);
+}
+if(external->__anon1.declaration)
+{
+struct Specifier * spec;
+
+for(spec = external->__anon1.declaration->__anon1.__anon1.specifiers ? (*external->__anon1.declaration->__anon1.__anon1.specifiers).first : (((void *)0)); spec; spec = spec->next)
+if(spec->type == 3 || spec->type == 4)
+{
+curSpec = spec;
+curDeclarations = spec->__anon1.__anon2.definitions;
+break;
+}
 }
 if(declarations && (!(*declarations).count || ((*declarations).count == 1 && addedPadding)))
 {
@@ -14138,7 +14147,13 @@ ListAdd(specs, MkSpecifier(BOOL));
 else if(dest->kind == 1 && (source->kind == 24 || source->kind == 1 || source->kind == 15 || source->kind == 2 || source->kind == 3) && (dest->isSigned ? (value >= -128 && value <= 127) : (value >= 0 && value <= 255)))
 {
 if(source->kind == 3)
+{
+FreeType(dest);
+FreeType(source);
+if(backupSourceExpType)
+FreeType(backupSourceExpType);
 return 1;
+}
 else
 {
 specs = MkList();
@@ -14150,7 +14165,13 @@ ListAdd(specs, MkSpecifier(CHAR));
 else if(dest->kind == 2 && (source->kind == 15 || source->kind == 24 || source->kind == 1 || source->kind == 2 || (source->kind == 3 && (dest->isSigned ? (value >= -32768 && value <= 32767) : (value >= 0 && value <= 65535)))))
 {
 if(source->kind == 3)
+{
+FreeType(dest);
+FreeType(source);
+if(backupSourceExpType)
+FreeType(backupSourceExpType);
 return 1;
+}
 else
 {
 specs = MkList();
