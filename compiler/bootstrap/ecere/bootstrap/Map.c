@@ -116,6 +116,10 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsi
 
 extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
 
+struct __ecereNameSpace__ecere__com__MapNode;
+
+struct __ecereNameSpace__ecere__com__MapNode;
+
 extern void *  memcpy(void * , const void * , size_t size);
 
 struct __ecereNameSpace__ecere__com__CustomAVLTree
@@ -127,6 +131,34 @@ int count;
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
 int __ecereVMethodID_class_OnFree;
+
+struct __ecereNameSpace__ecere__com__MapNode
+{
+struct __ecereNameSpace__ecere__com__MapNode * parent;
+struct __ecereNameSpace__ecere__com__MapNode * left;
+struct __ecereNameSpace__ecere__com__MapNode * right;
+int depth;
+uint64 key;
+uint64 value;
+} ecere_gcc_struct;
+
+uint64 __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(struct __ecereNameSpace__ecere__com__MapNode * this)
+{
+return this ? this->value : (uint64)0;
+}
+
+void __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(struct __ecereNameSpace__ecere__com__MapNode * this, uint64 value)
+{
+this->value = value;
+}
+
+const uint64 __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(struct __ecereNameSpace__ecere__com__MapNode * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(struct __ecereNameSpace__ecere__com__MapNode * this, const uint64 value);
+
+uint64 __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(struct __ecereNameSpace__ecere__com__MapNode * this);
+
+void __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(struct __ecereNameSpace__ecere__com__MapNode * this, uint64 value);
 
 struct __ecereNameSpace__ecere__com__Property;
 
@@ -152,35 +184,7 @@ static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * _
 
 static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__Map_mapSrc, * __ecerePropM___ecereNameSpace__ecere__com__Map_mapSrc;
 
-struct __ecereNameSpace__ecere__com__MapNode
-{
-struct __ecereNameSpace__ecere__com__MapNode * parent;
-struct __ecereNameSpace__ecere__com__MapNode * left;
-struct __ecereNameSpace__ecere__com__MapNode * right;
-int depth;
-uint64 key;
-uint64 value;
-} ecere_gcc_struct;
-
 struct __ecereNameSpace__ecere__com__Class;
-
-uint64 __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(struct __ecereNameSpace__ecere__com__MapNode * this)
-{
-return this ? this->value : (uint64)0;
-}
-
-void __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(struct __ecereNameSpace__ecere__com__MapNode * this, uint64 value)
-{
-this->value = value;
-}
-
-const uint64 __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(struct __ecereNameSpace__ecere__com__MapNode * this);
-
-void __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_key(struct __ecereNameSpace__ecere__com__MapNode * this, const uint64 value);
-
-uint64 __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(struct __ecereNameSpace__ecere__com__MapNode * this);
-
-void __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(struct __ecereNameSpace__ecere__com__MapNode * this, uint64 value);
 
 struct __ecereNameSpace__ecere__com__Instance
 {

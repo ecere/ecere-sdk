@@ -182,6 +182,8 @@ extern const char *  sourceFile;
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_Type_specConst;
 
+unsigned int reachedPass15;
+
 extern unsigned int memoryGuard;
 
 struct __ecereNameSpace__ecere__sys__OldList
@@ -12500,10 +12502,6 @@ if(curSpec)
 curSpec->__anon1.__anon2.definitions = declarations;
 else
 {
-char className[1024];
-
-strcpy(className, "__ecereClass_");
-FullClassNameCat(className, classSym->string, 1);
 specifiers = MkList();
 declarators = MkList();
 ListAdd(specifiers, MkStructOrUnion(3, MkIdentifier(structName), declarations));
@@ -12538,6 +12536,18 @@ if(!external)
 classSym->__anon2.__anon1.structExternal = external = MkExternalDeclaration((((void *)0)));
 external->symbol = classSym;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*ast), external);
+}
+if(reachedPass15 && !external->__anon1.declaration && classSym->__anon1.registered && classSym->__anon1.registered->type == 5)
+{
+char structName[1024];
+struct __ecereNameSpace__ecere__sys__OldList * specifiers, * declarators;
+
+structName[0] = 0;
+FullClassNameCat(structName, name, 0);
+specifiers = MkList();
+declarators = MkList();
+ListAdd(specifiers, MkStructOrUnion(3, MkIdentifier(structName), (((void *)0))));
+external->__anon1.declaration = MkDeclaration(specifiers, declarators);
 }
 if(fwdDecl)
 {
@@ -15630,6 +15640,7 @@ DeclareFunctionUtil((((void *)0)), "eInstance_IncRef");
 DeclareFunctionUtil((((void *)0)), "eInstance_StopWatching");
 DeclareFunctionUtil((((void *)0)), "eInstance_Watch");
 DeclareFunctionUtil((((void *)0)), "eInstance_FireWatchers");
+reachedPass15 = 1;
 for(external = (*ast).first; external; external = external->next)
 {
 afterExternal = curExternal = external;

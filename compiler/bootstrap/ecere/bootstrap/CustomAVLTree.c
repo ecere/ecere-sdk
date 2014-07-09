@@ -106,29 +106,13 @@ extern void *  __ecereNameSpace__ecere__com__eSystem_Renew0(void *  memory, unsi
 
 extern void __ecereNameSpace__ecere__com__eSystem_Delete(void *  memory);
 
+struct __ecereNameSpace__ecere__com__AVLNode;
+
 struct __ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__ClassTemplateParameter;
 
 int __ecereVMethodID_class_OnFree;
-
-struct __ecereNameSpace__ecere__com__Property;
-
-extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
-
-static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_prev;
-
-static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_next, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_next;
-
-static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_minimum;
-
-static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_maximum;
-
-static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_count, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_count;
-
-static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_depthProp, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_depthProp;
-
-static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_balanceFactor, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor;
 
 struct __ecereNameSpace__ecere__com__AVLNode
 {
@@ -136,8 +120,6 @@ struct __ecereNameSpace__ecere__com__AVLNode * parent, * left, * right;
 int depth;
 uint64 key;
 } ecere_gcc_struct;
-
-struct __ecereNameSpace__ecere__com__Class;
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_minimum(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
@@ -302,21 +284,6 @@ struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ece
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(struct __ecereNameSpace__ecere__com__AVLNode * this);
 
-struct __ecereNameSpace__ecere__com__Instance
-{
-void * *  _vTbl;
-struct __ecereNameSpace__ecere__com__Class * _class;
-int _refCount;
-} ecere_gcc_struct;
-
-extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
-
-extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
-
-extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
-
-extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base);
-
 void __ecereMethod___ecereNameSpace__ecere__com__AVLNode_DoubleRotateRight(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
 __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this->left);
@@ -329,19 +296,23 @@ __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateRight(this->righ
 __ecereMethod___ecereNameSpace__ecere__com__AVLNode_SingleRotateLeft(this);
 }
 
-struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(struct __ecereNameSpace__ecere__com__AVLNode * this)
-{
-if(this->left)
-return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(this->left);
-while(this)
-{
-if(this->parent && this == this->parent->right)
-return this->parent;
-else
-this = this->parent;
-}
-return this;
-}
+struct __ecereNameSpace__ecere__com__Property;
+
+extern void __ecereNameSpace__ecere__com__eInstance_Watch(void *  instance, struct __ecereNameSpace__ecere__com__Property * _property, void *  object, void (*  callback)(void * , void * ));
+
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_prev, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_prev;
+
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_next, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_next;
+
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_minimum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_minimum;
+
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_maximum, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_maximum;
+
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_count, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_count;
+
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_depthProp, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_depthProp;
+
+static __attribute__((unused)) struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__com__AVLNode_balanceFactor, * __ecerePropM___ecereNameSpace__ecere__com__AVLNode_balanceFactor;
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_next(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
@@ -361,6 +332,20 @@ this = parent;
 return (((void *)0));
 }
 
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_prev(struct __ecereNameSpace__ecere__com__AVLNode * this)
+{
+if(this->left)
+return __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(this->left);
+while(this)
+{
+if(this->parent && this == this->parent->right)
+return this->parent;
+else
+this = this->parent;
+}
+return this;
+}
+
 int __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
 return 1 + (this->left ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(this->left) : 0) + (this->right ? __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_count(this->right) : 0);
@@ -373,44 +358,6 @@ int rightDepth = this->right ? (__ecereProp___ecereNameSpace__ecere__com__AVLNod
 
 return ((leftDepth > rightDepth) ? leftDepth : rightDepth);
 }
-
-struct __ecereNameSpace__ecere__com__Property
-{
-struct __ecereNameSpace__ecere__com__Property * prev;
-struct __ecereNameSpace__ecere__com__Property * next;
-const char *  name;
-unsigned int isProperty;
-int memberAccess;
-int id;
-struct __ecereNameSpace__ecere__com__Class * _class;
-const char *  dataTypeString;
-struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
-struct __ecereNameSpace__ecere__com__Instance * dataType;
-void (*  Set)(void * , int);
-int (*  Get)(void * );
-unsigned int (*  IsSet)(void * );
-void *  data;
-void *  symbol;
-int vid;
-unsigned int conversion;
-unsigned int watcherOffset;
-const char *  category;
-unsigned int compiled;
-unsigned int selfWatchable;
-unsigned int isWatchable;
-} ecere_gcc_struct;
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
-
-extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
-
-extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
-
-extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
-
-int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(struct __ecereNameSpace__ecere__com__AVLNode * this)
 {
@@ -520,6 +467,61 @@ else
 result = (((void *)0));
 return result;
 }
+
+struct __ecereNameSpace__ecere__com__Class;
+
+struct __ecereNameSpace__ecere__com__Instance
+{
+void * *  _vTbl;
+struct __ecereNameSpace__ecere__com__Class * _class;
+int _refCount;
+} ecere_gcc_struct;
+
+extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name);
+
+extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
+
+extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
+
+extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base);
+
+struct __ecereNameSpace__ecere__com__Property
+{
+struct __ecereNameSpace__ecere__com__Property * prev;
+struct __ecereNameSpace__ecere__com__Property * next;
+const char *  name;
+unsigned int isProperty;
+int memberAccess;
+int id;
+struct __ecereNameSpace__ecere__com__Class * _class;
+const char *  dataTypeString;
+struct __ecereNameSpace__ecere__com__Class * dataTypeClass;
+struct __ecereNameSpace__ecere__com__Instance * dataType;
+void (*  Set)(void * , int);
+int (*  Get)(void * );
+unsigned int (*  IsSet)(void * );
+void *  data;
+void *  symbol;
+int vid;
+unsigned int conversion;
+unsigned int watcherOffset;
+const char *  category;
+unsigned int compiled;
+unsigned int selfWatchable;
+unsigned int isWatchable;
+} ecere_gcc_struct;
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereNameSpace__ecere__com__Instance * instance, const char *  name, void *  function);
+
+extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern void __ecereNameSpace__ecere__com__eInstance_StopWatching(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property, struct __ecereNameSpace__ecere__com__Instance * object);
+
+extern void __ecereNameSpace__ecere__com__eInstance_FireWatchers(struct __ecereNameSpace__ecere__com__Instance * instance, struct __ecereNameSpace__ecere__com__Property * _property);
+
+int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
 struct __ecereNameSpace__ecere__sys__BinaryTree;
 

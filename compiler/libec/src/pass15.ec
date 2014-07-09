@@ -1240,10 +1240,6 @@ External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, b
                curSpec.definitions = declarations;
             else
             {
-               char className[1024];
-               strcpy(className, "__ecereClass_");
-               FullClassNameCat(className, classSym.string, true);
-
                specifiers = MkList();
                declarators = MkList();
                ListAdd(specifiers, MkStructOrUnion(structSpecifier, MkIdentifier(structName), declarations));
@@ -1279,6 +1275,18 @@ External _DeclareStruct(External neededBy, const char * name, bool skipNoHead, b
          classSym.structExternal = external = MkExternalDeclaration(null);
          external.symbol = classSym;
          ast->Add(external);
+      }
+      if(reachedPass15 && !external.declaration && classSym.registered && classSym.registered.type == noHeadClass)
+      {
+         // Declare nohead classes without definitions here (e.g. IteratorPointer)
+         char structName[1024];
+         OldList * specifiers, * declarators;
+         structName[0] = 0;
+         FullClassNameCat(structName, name, false);
+         specifiers = MkList();
+         declarators = MkList();
+         ListAdd(specifiers, MkStructOrUnion(structSpecifier, MkIdentifier(structName), null));
+         external.declaration = MkDeclaration(specifiers, declarators);
       }
       if(fwdDecl)
       {
@@ -13336,6 +13344,8 @@ void DeclareFunctionUtil(External neededBy, const String s)
       FindSymbol(s, globalContext, globalContext, false, false);
 }
 
+bool reachedPass15;
+
 void ComputeDataTypes()
 {
    External external;
@@ -13365,6 +13375,7 @@ void ComputeDataTypes()
    DeclareFunctionUtil(null, "eInstance_StopWatching");
    DeclareFunctionUtil(null, "eInstance_Watch");
    DeclareFunctionUtil(null, "eInstance_FireWatchers");
+   reachedPass15 = true;
 
    for(external = ast->first; external; external = external.next)
    {

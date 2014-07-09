@@ -84,6 +84,8 @@ uint64 ui64;
 } ecere_gcc_struct __anon1;
 } ecere_gcc_struct;
 
+struct __ecereNameSpace__ecere__com__IteratorPointer;
+
 struct __ecereNameSpace__ecere__com__SerialBuffer
 {
 unsigned char *  _buffer;
