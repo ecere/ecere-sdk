@@ -2921,6 +2921,7 @@ class CodeEditor : Window
          int bitDepth = ide.workspace.bitDepth;
          DirExpression objDir = project.GetObjDir(compiler, config, bitDepth);
          SetSymbolsDir(objDir.dir);
+         SetDefaultNameSpace(project.GetDefaultNameSpace(config));
          ide.SetPath(true, compiler, config, bitDepth);
 
          delete objDir;
@@ -2938,6 +2939,7 @@ class CodeEditor : Window
          }
          SetIncludeDirs(null);
          SetSysIncludeDirs(null);
+         SetDefaultNameSpace(null);
       }
 
       {

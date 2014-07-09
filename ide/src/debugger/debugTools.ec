@@ -154,11 +154,27 @@ void DebugComputeExpression(Expression exp)
          Expression expNew;
          TypeKind kind = dummyType;
          Type dataType = exp.expType;
-
-         char temp[1024];
          uint64 address = 0;
          bool hasAddress;
          bool isPointer = false;
+         bool evaluate = false;
+         bool evaluateAddress = false;
+         String idString = null;
+         if(exp.identifier.string)
+         {
+            const String start = (exp.identifier.string[0] == ':' && exp.identifier.string[1] == ':') ? exp.identifier.string + 2 : exp.identifier.string;
+            if(strstr(start, "::"))
+            {
+               char prefix[] = "__ecereNameSpace__";
+               int len = strlen(start);
+               idString = new char[len + sizeof(prefix)];
+               memcpy(idString, prefix, sizeof(prefix) - 1);
+               memcpy(idString + sizeof(prefix) - 1, start, len + 1);
+               ChangeCh(idString + sizeof(prefix) - 1, ':', '_');
+            }
+            else
+               idString = CopyString(exp.identifier.string);
+         }
 
          if(dataType && dataType.kind == classType && dataType._class.registered)
          {
@@ -180,7 +196,6 @@ void DebugComputeExpression(Expression exp)
             kind = dataType.kind;
          else
             exp.type = symbolErrorExp;
-         temp[0] = '\0';
          switch(kind)
          {
             case intPtrType: case intSizeType: case _BoolType:
@@ -190,14 +205,16 @@ void DebugComputeExpression(Expression exp)
             case structType:
             case pointerType:
             case unionType:
-               sprintf(temp, "&%s", exp.identifier.string);
+               evaluate = true;
+               evaluateAddress = true;
                break;
             case classType:
                if(exp.byReference && dataType._class && dataType._class.registered && dataType._class.registered.type == structClass)
                // if(!dataType._class || !dataType._class.registered || dataType._class.registered.type != structClass || exp.byReference)
-                  strcpy(temp, exp.identifier.string);
+                  evaluateAddress = false;
                else
-                  sprintf(temp, "&%s", exp.identifier.string);
+                  evaluateAddress = true;
+               evaluate = true;
                break;
             case functionType:
             case ellipsisType:
@@ -207,8 +224,17 @@ void DebugComputeExpression(Expression exp)
             case dummyType:
                break;
          }
-         if(temp[0])
+         if(evaluate)
          {
+            char temp[1024];
+            if(evaluateAddress)
+            {
+               temp[0] = '&';
+               strcpy(temp + 1, idString);
+            }
+            else
+               strcpy(temp, idString);
+
             evaluation = Debugger::EvaluateExpression(temp, &evalError);
             if(evaluation)
             {
@@ -229,7 +255,7 @@ void DebugComputeExpression(Expression exp)
             {
                case charType:
                   delete evaluation;
-                  evaluation = Debugger::EvaluateExpression(exp.identifier.string, &evalError);
+                  evaluation = Debugger::EvaluateExpression(idString, &evalError);
                   if(evaluation)
                   {
                      //int c, len;
@@ -257,7 +283,7 @@ void DebugComputeExpression(Expression exp)
                case enumType:
                case pointerType:
                   delete evaluation;
-                  evaluation = Debugger::EvaluateExpression(exp.identifier.string, &evalError);
+                  evaluation = Debugger::EvaluateExpression(idString, &evalError);
                   if(evaluation)
                   {
                      if(kind == pointerType)
@@ -275,7 +301,7 @@ void DebugComputeExpression(Expression exp)
                      int size;
                      char format;
                      delete evaluation;
-                     //evaluation = Debugger::EvaluateExpression(exp.identifier.string, &evalError);
+                     //evaluation = Debugger::EvaluateExpression(idString, &evalError);
                      size = ComputeTypeSize(exp.expType); //exp.expType.arrayType.size;
                      format = GetGdbFormatChar(exp.expType);
                      evaluation = Debugger::ReadMemory(address, size, format, &evalError);
@@ -286,14 +312,14 @@ void DebugComputeExpression(Expression exp)
                case structType:
                case unionType:
                case functionType:
-                  //evaluation = Debugger::EvaluateExpression(exp.identifier.string, &evalError);
+                  //evaluation = Debugger::EvaluateExpression(idString, &evalError);
                   delete evaluation;
                   break;
                case arrayType:
                {
                   // for classType  --> if(_class.type == structClass) ?
                   //char temp[1024];
-                  //sprintf(temp, "&%s", exp.identifier.string);
+                  //sprintf(temp, "&%s", idString);
                   //evaluation = Debugger::EvaluateExpression(temp, &evalError);
                   break;
                }
@@ -303,15 +329,18 @@ void DebugComputeExpression(Expression exp)
                // case TypeTypedObject, TypeAnyObject, TypeClassPointer:
                case dummyType:
                   delete evaluation;
-                  evaluation = Debugger::EvaluateExpression(exp.identifier.string, &evalError);
+                  evaluation = Debugger::EvaluateExpression(idString, &evalError);
                   break;
             }
          }
          switch(evalError)
          {
             case dummyExp:
-               if(evaluation && !strchr(evaluation, '<') && (exp.type != symbolErrorExp || !exp.identifier || !exp.identifier.string || strcmp(evaluation, exp.identifier.string)))
+               if(evaluation && (exp.type != symbolErrorExp || !exp.identifier || !idString || strcmp(evaluation, idString)))
                {
+                  char * lt = strchr(evaluation, '<');
+                  if(lt) *lt = 0;
+
                   // Going back to parsing the expression string so as to catch inf/-inf/nan/-nan etc.
                   expNew = ParseExpressionString(evaluation);
                   //expNew = MkExpConstant(evaluation);
