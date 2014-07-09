@@ -1495,18 +1495,24 @@ class ProjectView : Window
    void SelectNextProject(bool backwards)
    {
       DataRow row = fileList.currentRow;
-      DataRow currentRow = row;
-      ProjectNode node = (ProjectNode)(intptr)row.tag;
-      if(node.type != project)
-         row = node.project.topNode.row;
-      else if(backwards)
-         row = row.previous ? row.previous : fileList.lastRow;
-      if(!backwards)
-         row = row.next ? row.next : fileList.firstRow;
-      if(row && row != currentRow)
+      if(!row)
+         row = backwards ? fileList.lastRow : fileList.firstRow;
+
+      if(row)
       {
-         fileList.SelectRow(row);
-         fileList.currentRow = row;
+         DataRow currentRow = row;
+         ProjectNode node = (ProjectNode)(intptr)row.tag;
+         if(node.type != project)
+            row = node.project.topNode.row;
+         else if(backwards)
+            row = row.previous ? row.previous : fileList.lastRow;
+         if(!backwards)
+            row = row.next ? row.next : fileList.firstRow;
+         if(row && row != currentRow)
+         {
+            fileList.SelectRow(row);
+            fileList.currentRow = row;
+         }
       }
    }
 
