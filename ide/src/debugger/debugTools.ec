@@ -1419,6 +1419,7 @@ void DebugComputeExpression(Expression exp)
             Expression prev = exp.prev, next = exp.next;
             char * evaluation = null;
             ExpressionType evalError = dummyExp;
+            Type dataType = exp.index.exp.expType ? exp.index.exp.expType.type : null;
 
             if(!exp.index.exp.isConstant)
                exp.isConstant = false;
@@ -1429,12 +1430,12 @@ void DebugComputeExpression(Expression exp)
             // 4 == size = ComputeTypeSize(exp.index.exp.expType);
             // 0 == size = ComputeTypeSize(exp.index.exp.expType.arrayType);
 
-            size = ComputeTypeSize(exp.expType);
-            if(exp.expType && exp.expType.type && exp.expType.kind == arrayType)
+            size = ComputeTypeSize(dataType);
+            if(dataType && dataType.type && dataType.kind == arrayType)
                // For multilevels arrays
                format = 'x';
             else
-               format = GetGdbFormatChar(exp.expType);
+               format = GetGdbFormatChar(dataType);
 
             for(e = exp.index.index->first; e; e = e.next)
             {
