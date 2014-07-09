@@ -2114,7 +2114,7 @@ private:
 
             for(node : onlyNodes)
             {
-               if(node.GetIsExcluded(config))
+               if(node.GetIsExcludedForCompiler(config, compiler))
                   ide.outputView.buildBox.Logf($"File %s is excluded from current build configuration.\n", node.name);
                else
                {

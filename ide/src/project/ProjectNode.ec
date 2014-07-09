@@ -974,6 +974,19 @@ private:
       return result;
    }
 
+   bool GetIsExcludedForCompiler(ProjectConfig prjConfig, CompilerConfig compiler)
+   {
+      bool result;
+      Map<Platform, SetBool> exclusionInfo { };
+      SetBool common, platform;
+      CollectExclusionInfo(exclusionInfo, prjConfig);
+      common = exclusionInfo[unknown];
+      platform = exclusionInfo[compiler.targetPlatform];
+      result = platform == true || (common == true && platform == unset);
+      delete exclusionInfo;
+      return result;
+   }
+
    void CollectExclusionInfo(Map<Platform, SetBool> output, ProjectConfig prjConfig)
    {
       // note: unknown platform is for common
