@@ -22,6 +22,16 @@ default:
 #include <unistd.h>
 #include <sys/select.h>
 
+#if defined(__APPLE__)
+#define set _set
+#include <mach/mach.h>
+#include <mach/task.h>
+#include <mach/semaphore.h>
+#undef set
+#else
+#include <semaphore.h>
+#endif
+
 //#include <stdio.h>
 //#include <stdlib.h>
 //#include <string.h>
