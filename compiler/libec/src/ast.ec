@@ -1985,6 +1985,16 @@ int CheckType(const char * text)
 #ifdef _TIMINGS
    Time startTime = GetTime();
 #endif
+
+   if(inIDE)
+   {
+      // Help out the Debugger with Windows files until we improve the parser
+      if(!strcmp(text, "WINAPI"))
+         return EXT_DECL;
+      else if(!strcmp(text, "BOOL") || !strcmp(text, "WINUSERAPI"))
+         return TYPE_NAME;
+   }
+
    if(FindTemplateTypeParameter(curContext, text))
    {
 #ifdef _TIMINGS

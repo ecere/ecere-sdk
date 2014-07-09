@@ -91,6 +91,8 @@ extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSp
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BTNode_next;
 
+extern unsigned int inIDE;
+
 extern int targetBits;
 
 extern int targetPlatform;
@@ -3134,6 +3136,13 @@ return symbol;
 
 int CheckType(const char * text)
 {
+if(inIDE)
+{
+if(!strcmp(text, "WINAPI"))
+return EXT_DECL;
+else if(!strcmp(text, "BOOL") || !strcmp(text, "WINUSERAPI"))
+return TYPE_NAME;
+}
 if(FindTemplateTypeParameter(curContext, text))
 {
 return TYPE_NAME;
