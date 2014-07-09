@@ -979,6 +979,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
                         char ch;
                         bool escaped = false;
                         char * s = d.initializer.exp.string;
+                        if(s[0] == 'L') s++;
 
                         // MAKE MORE ACCURATE
                         for(c = 1; (ch = s[c]); c++)

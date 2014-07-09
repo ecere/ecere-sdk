@@ -3070,7 +3070,7 @@ class Debugger
                         result = true;
                      }
                      else if(wh.type && (wh.type.kind == charType || (wh.type.kind == classType && wh.type._class &&
-                              wh.type._class.registered && !strcmp(wh.type._class.registered.fullName, "ecere::com::unichar"))) )
+                              wh.type._class.registered && !strcmp(wh.type._class.registered.fullName, "unichar"))) )
                      {
                         unichar value;
                         int signedValue;
@@ -3128,7 +3128,7 @@ class Debugger
                         else if(value > 256 || wh.type.kind != charType)
                         {
                            if(value > 0x10FFFF || !GetCharCategory(value))
-                              snprintf(string, sizeof(string), $"Invalid Unicode Keypoint (0x%08X)", value);
+                              snprintf(string, sizeof(string), $"Invalid Unicode Codepoint (0x%08X)", value);
                            else
                               snprintf(string, sizeof(string), "\'%s\' (U+%04X)", charString, value);
                         }

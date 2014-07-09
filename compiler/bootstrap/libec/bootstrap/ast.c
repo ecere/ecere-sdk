@@ -3700,6 +3700,8 @@ char ch;
 unsigned int escaped = 0;
 char * s = d->initializer->__anon1.exp->__anon1.__anon2.string;
 
+if(s[0] == 'L')
+s++;
 for(c = 1; (ch = s[c]); c++)
 {
 if(ch == '\\' && !escaped)
