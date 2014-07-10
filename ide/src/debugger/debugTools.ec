@@ -195,7 +195,10 @@ void DebugComputeExpression(Expression exp)
          if(dataType)
             kind = dataType.kind;
          else
+         {
             exp.type = symbolErrorExp;
+            evalError = symbolErrorExp;
+         }
          switch(kind)
          {
             case intPtrType: case intSizeType: case _BoolType:

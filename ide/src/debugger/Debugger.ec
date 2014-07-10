@@ -2630,6 +2630,7 @@ class Debugger
                SetInDebugger(true);
 
                SetThisClass(null);
+               // NOTE: DebugFindCtxTree() should be called only once for evaluating all watches in the watch window
                if(codeEditor && activeFrame)
                   DebugFindCtxTree(codeEditor.ast, activeFrame.line, 0);
                ProcessExpressionType(exp);
