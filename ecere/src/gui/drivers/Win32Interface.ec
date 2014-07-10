@@ -1590,9 +1590,14 @@ class Win32Interface : Interface
 
    void FlashRootWindow(Window window)
    {
+      HWND hwnd = window.windowHandle;
       FLASHWINFO flashInfo = { 0 };
+      Window master = window.master, rootWindow = (master && master != guiApp.desktop) ? master.rootWindow : null;
+      if(!window.style.showInTaskBar && rootWindow && (window._isModal || window.style.interim))
+         hwnd = rootWindow.windowHandle;
+
       flashInfo.cbSize = sizeof(FLASHWINFO);
-      flashInfo.hwnd = window.windowHandle;
+      flashInfo.hwnd = hwnd;
       flashInfo.uCount = 1;
       flashInfo.dwFlags = FLASHW_TRAY; // FLASHW_ALL;
       guiApp.Unlock();

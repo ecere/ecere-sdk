@@ -3116,8 +3116,13 @@ class XInterface : Interface
 
    void FlashRootWindow(Window window)
    {
+      void * hwnd = window.windowHandle;
+      Window master = window.master, rootWindow = (master && master != guiApp.desktop) ? master.rootWindow : null;
+      if(!window.style.showInTaskBar && rootWindow && (window._isModal || window.style.interim))
+         hwnd = rootWindow.windowHandle;
+
       // printf("Attempting to flash root window\n");
-      SetNETWMState((X11Window)window.windowHandle, true, add, atoms[_net_wm_state_demands_attention], 0);
+      SetNETWMState((X11Window)hwnd, true, add, atoms[_net_wm_state_demands_attention], 0);
    }
 
    void ActivateRootWindow(Window window)
