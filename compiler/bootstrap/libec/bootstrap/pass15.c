@@ -14692,7 +14692,7 @@ if(spec->__anon1.specifier == TYPED_OBJECT)
 struct Declarator * d = param->declarator;
 struct TypeName * newParam = (newParam = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TypeName), newParam->qualifiers = MkListOne(MkSpecifier(VOID)), newParam->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d), newParam);
 
-if(d->type != 5)
+if(!d || d->type != 5)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*newParam->qualifiers), (((void *)0)), MkSpecifier(CONST));
 FreeList(param->qualifiers, (void *)(FreeSpecifier));
 param->qualifiers = MkListOne(MkStructOrUnion(3, MkIdentifier("__ecereNameSpace__ecere__com__Class"), (((void *)0))));
@@ -14708,7 +14708,7 @@ struct Declarator * d = param->declarator;
 
 FreeList(param->qualifiers, (void *)(FreeSpecifier));
 param->qualifiers = MkListOne(MkSpecifier(VOID));
-if(d->type != 5)
+if(!d || d->type != 5)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*param->qualifiers), (((void *)0)), MkSpecifier(CONST));
 param->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), d);
 break;
@@ -14728,6 +14728,13 @@ break;
 else if(spec->type == 1)
 {
 ProcessSpecifier(spec, isFunction, 1);
+}
+else if((spec->type == 3 || spec->type == 4) && !spec->__anon1.__anon2.definitions && spec->__anon1.__anon2.id && spec->__anon1.__anon2.id->string)
+{
+struct Declarator * d = param->declarator;
+
+if(!d || d->type != 5)
+DeclareStruct(curExternal, spec->__anon1.__anon2.id->string, 0, 1);
 }
 }
 }

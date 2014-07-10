@@ -11735,7 +11735,7 @@ static void ProcessDeclarator(Declarator decl, bool isFunction)
                                  qualifiers = MkListOne(MkSpecifier(VOID));
                                  declarator = MkDeclaratorPointer(MkPointer(null,null), d);
                               };
-                              if(d.type != pointerDeclarator)
+                              if(!d || d.type != pointerDeclarator)
                                  newParam.qualifiers->Insert(null, MkSpecifier(CONST));
 
                               FreeList(param.qualifiers, FreeSpecifier);
@@ -11756,7 +11756,7 @@ static void ProcessDeclarator(Declarator decl, bool isFunction)
                               FreeList(param.qualifiers, FreeSpecifier);
 
                               param.qualifiers = MkListOne(MkSpecifier(VOID));
-                              if(d.type != pointerDeclarator)
+                              if(!d || d.type != pointerDeclarator)
                                  param.qualifiers->Insert(null, MkSpecifier(CONST));
                               param.declarator = MkDeclaratorPointer(MkPointer(null,null), d);
                               break;
@@ -11776,6 +11776,12 @@ static void ProcessDeclarator(Declarator decl, bool isFunction)
                         else if(spec.type == nameSpecifier)
                         {
                            ProcessSpecifier(spec, isFunction, true);
+                        }
+                        else if((spec.type == structSpecifier || spec.type == unionSpecifier) && !spec.definitions && spec.id && spec.id.string)
+                        {
+                           Declarator d = param.declarator;
+                           if(!d || d.type != pointerDeclarator)
+                              DeclareStruct(curExternal, spec.id.string, false, true);
                         }
                      }
                   }
