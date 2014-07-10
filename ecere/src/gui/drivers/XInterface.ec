@@ -2999,6 +2999,8 @@ class XInterface : Interface
 
    void SetRootWindowState(Window window, WindowState state, bool visible)
    {
+      WindowState curState = window.state;
+      *&window.state = state;
       // Old WM (e.g. TWM), use built-in decorations
       if(!atomsSupported[_net_wm_state])
          window.nativeDecorations = false;
@@ -3088,8 +3090,10 @@ class XInterface : Interface
                if(atomsSupported[_net_wm_state])
                {
                   // Maximize / Restore the window
-                  SetNETWMState((X11Window)window.windowHandle, true, state == maximized ? add : remove,
-                     atoms[_net_wm_state_maximized_vert], atoms[_net_wm_state_maximized_horz]);
+                  if(curState != state)
+                     SetNETWMState((X11Window)window.windowHandle, true, state == maximized ? add : remove,
+                        atoms[_net_wm_state_maximized_vert], atoms[_net_wm_state_maximized_horz]);
+
                   if(state == maximized)
                   {
                      // Prevent the code in ConfigureNotify to think the window has been unmaximized
@@ -3107,6 +3111,7 @@ class XInterface : Interface
          }
          //XFlush(xGlobalDisplay);
       }
+      *&window.state = curState;
    }
 
    void FlashRootWindow(Window window)
