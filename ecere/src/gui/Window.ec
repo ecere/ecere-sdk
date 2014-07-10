@@ -6363,7 +6363,8 @@ public:
                         else if(creationActivation == activate || creationActivation == flash)
                         {
                            MakeActive();
-                           Flash();
+                           if(this == rootWindow)
+                              Flash();
                         }
                      }
 
@@ -6866,7 +6867,8 @@ public:
       else if(!active)
       {
          MakeActive();
-         Flash();
+         if(this == rootWindow)
+            Flash();
       }
    }
 
@@ -9136,7 +9138,8 @@ public:
                else if((creationActivation == activate || creationActivation == flash) && !object)
                {
                   MakeActive();
-                  Flash();
+                  if(this == rootWindow)
+                     Flash();
                }
 
                //SetVisibility(!parent.style.hidden && (style.hidden ? false : true));
