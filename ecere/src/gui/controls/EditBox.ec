@@ -5428,7 +5428,7 @@ public:
    {
       bool result;
 
-      if((ch >= 32 /*&& ch <=126*/) || ch == '\n')
+      if((ch >= 32 /*&& ch <=126*/) || ch == '\n' || ch == '\t')
       //if((ch >= 32) || ch == '\n')
       {
          int addedSpaces = 0, addedTabs = 0, xAdjustment = 0;
