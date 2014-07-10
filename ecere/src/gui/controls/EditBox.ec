@@ -304,15 +304,18 @@ static class AddCharAction : UndoAction
 {
    int y, x;
    unichar ch;
-   int addedSpaces, addedTabs;
+   int addedSpaces, addedTabs, xAdjustment;
    type = class(AddCharAction);
 
    void Undo(EditBox editBox)
    {
-      editBox.GoToPosition(null, (ch == '\n') ? (y + 1) : y, (ch == '\n') ? 0 : (x + 1));
+      editBox.GoToPosition(null, (ch == '\n') ? (y + 1) : y, (ch == '\n') ? 0 : (x + 1) - xAdjustment);
       editBox.BackSpace();
       if(addedTabs || addedSpaces)
-         editBox.DelCh(editBox.line, y, x - (addedSpaces + addedTabs), editBox.line, y, x, false);
+      {
+         editBox.DelCh(editBox.line, y, x - xAdjustment - (addedSpaces + addedTabs), editBox.line, y, x - xAdjustment, false);
+         editBox.GoToPosition(editBox.line, y, x);
+      }
       editBox.UpdateDirty();
    }
 
@@ -334,7 +337,7 @@ static class AddTextAction : UndoAction
 {
    int y1, x1, y2, x2;
    char * string;
-   int addedSpaces, addedTabs;
+   int addedSpaces, addedTabs, xAdjustment;
    type = class(AddTextAction);
 
 #ifdef _DEBUG
@@ -449,7 +452,7 @@ static class ReplaceTextAction : UndoAction
    char * oldString;
    char * newString;
    bool placeAfter;
-   int addedSpaces, addedTabs;
+   int addedSpaces, addedTabs, xAdjustment;
 
    type = class(ReplaceTextAction);
 
@@ -2481,7 +2484,7 @@ private:
       return false;
    }
 
-   bool AddToLine(const char * stringLine, int count, bool LFComing, int * addedSpacesPtr, int * addedTabsPtr)
+   bool AddToLine(const char * stringLine, int count, bool LFComing, int * addedSpacesPtr, int * addedTabsPtr, int * xAdjustmentPtr)
    {
       bool hadComment = false;
       // Add the line here
@@ -2541,6 +2544,7 @@ private:
       {
          int addedSpaces = 0;
          int addedTabs = 0;
+         int xAdjustment = 0;
 
          // Add blank spaces if EES_FREECARET
          if(this.x > line.count)
@@ -2567,6 +2571,8 @@ private:
                      addedSpaces = wantedPosition - position;
                   else
                   {
+                     xAdjustment = wantedPosition - position;
+
                      // Put a first tab
                      addedTabs = 1;
                      position += this.tabSize - (position % this.tabSize);
@@ -2575,6 +2581,8 @@ private:
                      position += (addedTabs-1) * this.tabSize;
                      // Finish off with spaces
                      addedSpaces = wantedPosition - position;
+
+                     xAdjustment -= addedSpaces + addedTabs;
                   }
                }
                else
@@ -2603,7 +2611,6 @@ private:
             CopyBytes(line.buffer + this.x + addedTabs + addedSpaces, stringLine, count);
             if(addedTabs)
             {
-               *addedTabsPtr = addedTabs;
                FillBytes(line.buffer+line.count,'\t',addedTabs);
 #ifdef _DEBUG
       if(addedTabs > 4000 || addedTabs < 0)
@@ -2611,8 +2618,7 @@ private:
 #endif
                line.count += addedTabs;
             }
-            else if(addedTabs)
-               *addedTabsPtr = 0;
+
             if(addedSpaces)
             {
                FillBytes(line.buffer+line.count,' ',addedSpaces);
@@ -2621,10 +2627,11 @@ private:
          printf("Warning");
 #endif
                line.count += addedSpaces;
-               if(addedSpacesPtr) *addedSpacesPtr = addedSpaces;
             }
-            else if(addedSpacesPtr)
-               *addedSpacesPtr = 0;
+
+            if(addedTabsPtr) *addedTabsPtr = addedTabs;
+            if(addedSpacesPtr) *addedSpacesPtr = addedSpaces;
+            if(xAdjustmentPtr) *xAdjustmentPtr = xAdjustment;
 #ifdef _DEBUG
       if(count > 4000 || count < 0)
          printf("Warning");
@@ -4981,14 +4988,14 @@ private:
       UpdateDirty();
    }
 
-   bool _AddCh(unichar ch, int * addedSpacesPtr, int * addedTabsPtr)
+   bool _AddCh(unichar ch, int * addedSpacesPtr, int * addedTabsPtr, int * xAdjustmentPtr)
    {
       EditLine line;
       int length, endX = 0;
       bool result;
       ReplaceTextAction replaceAction = null;
       AddCharAction addCharAction = null;
-      int addedSpaces = 0, addedTabs = 0;
+      int addedSpaces = 0, addedTabs = 0, xAdjustment = 0;
 
       if(ch == '\r') return true;
       if(style.stuckCaret /*|EES_READONLY)*/ )
@@ -5122,9 +5129,10 @@ private:
          char string[5];
          int count = UTF32toUTF8Len(&ch, 1, string, 5);
          DelSel(&addedSpaces);
-         result = AddToLine(string, count, false, addedSpaces ? null : &addedSpaces, &addedTabs);
+         result = AddToLine(string, count, false, addedSpaces ? null : &addedSpaces, &addedTabs, &xAdjustment);
          if(addedSpacesPtr) *addedSpacesPtr = addedSpaces;
          if(addedTabsPtr) *addedTabsPtr = addedTabs;
+         if(xAdjustmentPtr) *xAdjustmentPtr = xAdjustment;
       }
       this.selX = this.x;
       this.selY = this.y;
@@ -5156,7 +5164,7 @@ public:
 
    bool AddCh(unichar ch)
    {
-      return _AddCh(ch, null, null);
+      return _AddCh(ch, null, null, null);
    }
 
    void Modified()
@@ -5262,7 +5270,7 @@ public:
          bool ret = true;
          const char * line;
          int c, count;
-         int addedSpaces = 0, addedTabs = 0;
+         int addedSpaces = 0, addedTabs = 0, xAdjustment = 0;
          AddTextAction action = null;
          ReplaceTextAction replaceAction = null;
 
@@ -5335,7 +5343,7 @@ public:
          {
             if(string[c] == '\n' || string[c] == '\r')
             {
-               if(!AddToLine(line, count, true, addedSpaces ? null : &addedSpaces, addedTabs ? null : &addedTabs))
+               if(!AddToLine(line, count, true, addedSpaces ? null : &addedSpaces, addedTabs ? null : &addedTabs, xAdjustment ? null : &xAdjustment))
                {
                   ret = false;
                   break;
@@ -5370,7 +5378,7 @@ public:
 
          // Add the line here
          if(ret && count)
-            if(!AddToLine(line,count,false, addedSpaces ? null : &addedSpaces, addedTabs ? null : &addedTabs))
+            if(!AddToLine(line,count,false, addedSpaces ? null : &addedSpaces, addedTabs ? null : &addedTabs, xAdjustment ? null : &xAdjustment))
             {
                ret = false;
             }
@@ -5383,6 +5391,7 @@ public:
             action.x2 = x;
             action.addedSpaces = addedSpaces;
             action.addedTabs = addedTabs;
+            action.xAdjustment = xAdjustment;
          }
          else if(replaceAction)
          {
@@ -5390,6 +5399,7 @@ public:
             replaceAction.x3 = x;
             replaceAction.addedSpaces = addedSpaces;
             replaceAction.addedTabs = addedTabs;
+            replaceAction.xAdjustment = xAdjustment;
          }
 
          UpdateCaretPosition(true);
@@ -5421,7 +5431,7 @@ public:
       if((ch >= 32 /*&& ch <=126*/) || ch == '\n')
       //if((ch >= 32) || ch == '\n')
       {
-         int addedSpaces = 0, addedTabs = 0;
+         int addedSpaces = 0, addedTabs = 0, xAdjustment = 0;
          ReplaceTextAction replaceAction = null;
          AddCharAction addCharAction = null;
 
@@ -5485,19 +5495,20 @@ public:
             }
          }
          undoBuffer.dontRecord++;
-         result = _AddCh(ch, &addedSpaces, &addedTabs);
+         result = _AddCh(ch, &addedSpaces, &addedTabs, &xAdjustment);
          if(replaceAction)
          {
             replaceAction.x3 = x;
             replaceAction.y3 = y;
             replaceAction.addedSpaces = addedSpaces;
             replaceAction.addedTabs = addedTabs;
+            replaceAction.addedTabs = xAdjustment;
          }
          if(addCharAction)
          {
-            addCharAction.x -= addedTabs * (tabSize-1);
             addCharAction.addedSpaces = addedSpaces;
             addCharAction.addedTabs = addedTabs;
+            addCharAction.xAdjustment = xAdjustment;
          }
          undoBuffer.dontRecord--;
          if(ch == '\n')
