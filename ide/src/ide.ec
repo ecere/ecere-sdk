@@ -1779,7 +1779,8 @@ class IDEWorkSpace : Window
                   anchor.left = (sheet.visible || (projectView && projectView.visible)) ? 300 : 0;
                   anchor.right = toolBoxVisible ? 150 : 0;
                }
-               child.anchor = anchor;
+               if(ide.projectView)
+                  child.anchor = anchor;
             }
             else if(expand)
             {
