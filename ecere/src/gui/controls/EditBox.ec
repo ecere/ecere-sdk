@@ -5180,6 +5180,11 @@ public:
       undoBuffer.Undo();
       itemEditUndo.disabled = undoBuffer.curAction == 0;
       itemEditRedo.disabled = undoBuffer.curAction == undoBuffer.count;
+
+      UpdateDirty();
+      SetSelectCursor();
+      SelectionEnables();
+
       if(savedAction == undoBuffer.curAction)
       {
          modifiedDocument = false;
@@ -5193,6 +5198,11 @@ public:
       undoBuffer.Redo();
       itemEditUndo.disabled = undoBuffer.curAction == 0;
       itemEditRedo.disabled = undoBuffer.curAction == undoBuffer.count;
+
+      UpdateDirty();
+      SetSelectCursor();
+      SelectionEnables();
+
       if(savedAction == undoBuffer.curAction)
       {
          modifiedDocument = false;
