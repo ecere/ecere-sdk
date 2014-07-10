@@ -5212,7 +5212,7 @@ private:
          LogErrorCode(graphicsLoadingFailed, _class.name);
 
       // Do this here to avoid problems on Windows
-      if(stateBackup == maximized)
+      if(rootWindow == this && parent && stateBackup == maximized)
          property::state = maximized;
       return result;
    }
