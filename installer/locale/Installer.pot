@@ -178,10 +178,6 @@ msgstr "Ecere Coursework"
 msgid "Ecere Extras"
 msgstr "Ecere Extras"
 
-#: ./src/installer.ec:1
-msgid "Ecere SDK v0.44.10"
-msgstr "Ecere SDK v0.44.10"
-
 #: ./src/installer.ec:447
 #: ./src/installer.ec:1195
 msgid "Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition"
