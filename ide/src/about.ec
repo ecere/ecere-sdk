@@ -51,7 +51,7 @@ class AboutIDE : Window
    Label { this, text = $"With contributions from...", font = { $"Tahoma", 8.25f, bold = true }, position = { 16, 234 } };
    Button licensingBtn
    {
-      this, anchor = { left = 40, bottom = 10 }; hotKey = altL; text = "Software Licenses";
+      this, anchor = { left = 40, bottom = 10 }; hotKey = altL; text = $"Software Licenses";
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          LicensesForm { master = this }.Modal();
