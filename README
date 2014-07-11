@@ -1,11 +1,11 @@
-The Ecere SDK v0.44.09 - http://ecere.com
+The Ecere SDK v0.44.10 - http://ecere.org
 
 Free Open Source Software released under the New BSD license.
 
 The Ecere SDK is a Software Development Kit including:
 
    * A set of compiling tools for the eC programming language
-                               ( http://www.ecere.com/technologies.html#eC )
+                               ( http://ec-lang.org )
 
    * An Integrated Development Environment, with the usual features such as:
       - A source code editor with auto-completion, syntax highlighting
@@ -41,7 +41,7 @@ The Ecere SDK is a Software Development Kit including:
 
  * INSTALLATION *
 
-Please refer to the latest instructions at http://ecere.com/wiki/
+Please refer to the latest instructions at http://ecere.org/install
 Windows binaries are available from that page.
 
 Daily-built Ubuntu Debian packages are available from our Ubuntu PPA:
@@ -55,7 +55,7 @@ on Mac OS X with Xcode command line tools installed or on FreeBSD (with gmake).
 
 Executables can also be deployed to the Android platform using the Android NDK.
 
-   Please refer to http://ecere.com/wiki/index.php?title=Android
+   Please refer to http://ecere.org/android
 
 To install, type make install (mingw32-make install on Windows).
 
@@ -66,7 +66,7 @@ To install, type make install (mingw32-make install on Windows).
 The Ecere Tao of Programming is a Programmer's Guide (still work in progress)
 that will teach you the foundations of eC and Ecere. You will find it under:
 
-Online: http://ecere.com/tao.pdf
+Online: http://ecere.org/tao.pdf
 On Windows:
       %PROGRAMFILES%\Ecere SDK\doc\Ecere Tao of Programming [work in progress].pdf
 On Linux/Unix: /usr/share/doc/tao.pdf
@@ -78,8 +78,6 @@ On Linux/Unix they get installed in /usr/share/ecere/samples/
 You can also find the latest versions on GitHub:
 
    http://github.com/ecere/ecere-sdk/tree/master/samples
-   http://github.com/ecere/fractals
-   http://github.com/ecere/chess
 
 The Documentor is a tool under development to browse and document the APIs of
 eC modules. You can use it to browse all available classes, methods and properties
@@ -91,7 +89,7 @@ descriptive info has been added yet.
 
 Git Repository @ http://github.com/ecere/ecere-sdk/
                 ( git://github.com/ecere/ecere-sdk.git )
-Support forums @ http://ecere.com/forums
-Bug tracker    @ http://ecere.com/mantis
+Support forums @ http://ecere.org/forums
+Bug tracker    @ http://ecere.org/mantis
 IRC            @ #ecere on irc.freenode.net
                 ( http://webchat.freenode.net/?channels=ecere )
