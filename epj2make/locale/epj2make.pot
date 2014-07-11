@@ -78,15 +78,15 @@ msgstr "      toolchain:\n"
 msgid "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 msgstr "   epj2make [-t <target platform>] [-c <configuration>] [toolchain] [directories] [options] [-o <output>] <input>\n"
 
-#: ./../ide/src/project/ProjectNode.ec:2427
+#: ./../ide/src/project/ProjectNode.ec:2440
 msgid " instead\n"
 msgstr " instead\n"
 
-#: ./../ide/src/project/ProjectNode.ec:2433
+#: ./../ide/src/project/ProjectNode.ec:2446
 msgid " to compile instead of "
 msgstr " to compile instead of "
 
-#: ./../ide/src/project/ProjectNode.ec:2427
+#: ./../ide/src/project/ProjectNode.ec:2440
 msgid "Compiling source file "
 msgstr "Compiling source file "
 
@@ -118,7 +118,7 @@ msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
 
-#: ./../ide/src/project/ProjectNode.ec:2420
+#: ./../ide/src/project/ProjectNode.ec:2433
 msgid "No compilation required for header file "
 msgstr "No compilation required for header file "
 
@@ -138,11 +138,11 @@ msgstr "Syntax:\n"
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: ./../ide/src/project/ProjectNode.ec:2433
+#: ./../ide/src/project/ProjectNode.ec:2446
 msgid "Unable to locate source file "
 msgstr "Unable to locate source file "
 
-#: ./../ide/src/project/ProjectNode.ec:2433
+#: ./../ide/src/project/ProjectNode.ec:2446
 msgid "\n"
 msgstr "\n"
 
