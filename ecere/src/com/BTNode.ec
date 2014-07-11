@@ -656,8 +656,6 @@ private:
    }
 };
 
-// TODO: WHY CAN'T WE HAVE THIS ABOVE?
-
 public class StringBTNode : struct // BTNode
 {
    class_fixed
@@ -689,8 +687,7 @@ public:
       channel.Unserialize(truth);
       if(truth)
       {
-         // TODO: Fix typed_object issues
-         this = eInstance_New(class(StringBTNode));
+         this = { };
          channel.Unserialize(key);
          channel.Unserialize(left);
          if(left) { left.parent = this; }

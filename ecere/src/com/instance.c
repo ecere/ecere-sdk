@@ -50,6 +50,10 @@ typedef unsigned long long uint64;
 #define MAX_FILENAME 274
 #define MAX_EXTENSION 17
 
+#if defined(__MINGW32__) && !defined(_W64) && __GNUC__ < 4
+__declspec(dllexport) int isblank(int c) { return c == '\t' || c == ' '; }
+#endif
+
 #if defined(__WIN32__)
 intptr_t stdinHandle, stdoutHandle;
 int osfStdin, osfStdout;

@@ -4,8 +4,6 @@ public import static "ecere"
 
 #include <stdarg.h>
 
-extern int isblank(int c);
-
 public class DynamicString : Array<char>
 {
    minAllocSize = 1024;

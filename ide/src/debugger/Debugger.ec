@@ -23,7 +23,6 @@ extern char * strrchr(const char * s, int c);
 #define strlen _strlen
 #include <stdarg.h>
 #include <unistd.h>
-#include <ctype.h>
 #include <string.h> // For memchr
 
 #ifdef __APPLE__

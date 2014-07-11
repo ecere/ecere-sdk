@@ -693,12 +693,6 @@ extern int atoi(const char * );
 
 extern double atof(const char * );
 
-extern int tolower(int);
-
-extern int toupper(int);
-
-extern unsigned int isdigit(int);
-
 extern char *  getenv(const char *  name);
 
 extern int rename(const char *  oldpath, const char *  newpath);
@@ -721,6 +715,14 @@ extern int puts(const char * );
 
 extern int fputs(const char * , void *  stream);
 
+extern int tolower(int);
+
+extern int toupper(int);
+
+extern unsigned int isdigit(int);
+
+extern unsigned int isxdigit(int);
+
 extern int isalnum(int c);
 
 extern int isalpha(int c);
@@ -730,6 +732,8 @@ extern int islower(int c);
 extern int isupper(int c);
 
 extern int isprint(int c);
+
+extern int isblank(int c);
 
 int __ecereVMethodID_class_OnGetString;
 
@@ -6181,9 +6185,6 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("strtoull", "uint64 strto
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("system", "int system(const char*)", system, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("atoi", "int atoi(const char*)", atoi, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("atof", "double atof(const char*)", atof, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("tolower", "int tolower(int)", tolower, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("toupper", "int toupper(int)", toupper, module, 4);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("isdigit", "bool isdigit(int)", isdigit, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("memset", "void * memset(void * area, int value, uintsize count)", memset, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("getenv", "char * getenv(const char * name)", getenv, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("rename", "int rename(const char *oldpath, const char *newpath)", rename, module, 4);
@@ -6216,12 +6217,17 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsprintf", "int vsprintf
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("vsnprintf", "int vsnprintf(char*, uintsize, const char*, __builtin_va_list)", vsnprintf, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("puts", "int puts(const char *)", puts, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("fputs", "int fputs(const char *, void * stream)", fputs, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("tolower", "int tolower(int)", tolower, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("toupper", "int toupper(int)", toupper, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("isdigit", "bool isdigit(int)", isdigit, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("isxdigit", "bool isxdigit(int)", isxdigit, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isalnum", "int isalnum(int c)", isalnum, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isspace", "int isspace(int c)", isspace, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isalpha", "int isalpha(int c)", isalpha, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("islower", "int islower(int c)", islower, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isupper", "int isupper(int c)", isupper, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("isblank", "int isblank(int c)", isblank, module, 4);
 }
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com____ecere_COM_Initialize(unsigned int guiApp, int argc, char * argv[])

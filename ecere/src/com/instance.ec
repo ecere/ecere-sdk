@@ -82,6 +82,9 @@ default:
 extern int __ecereVMethodID_class_OnGetDataFromString;
 
 // IMPLEMENTATION FOR THESE IN _instance.c:
+#if defined(__MINGW32__) && !defined(_W64) && __GNUC__ < 4
+dllexport int isblank(int c);
+#endif
 bool Instance_LocateModule(const char * name, const char * fileName);
 void Instance_COM_Initialize(int argc, char ** argv, char ** parsedCommand, int * argcPtr, const char *** argvPtr);
 void * Instance_Module_Load(const char * libLocation, const char * name, void ** Load, void ** Unload);
@@ -6289,9 +6292,6 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("system", "int system(const char*)", system, module, baseSystemAccess);
    eSystem_RegisterFunction("atoi", "int atoi(const char*)", atoi, module, baseSystemAccess);
    eSystem_RegisterFunction("atof", "double atof(const char*)", atof, module, baseSystemAccess);
-   eSystem_RegisterFunction("tolower", "int tolower(int)", tolower, module, baseSystemAccess);
-   eSystem_RegisterFunction("toupper", "int toupper(int)", toupper, module, baseSystemAccess);
-   eSystem_RegisterFunction("isdigit", "bool isdigit(int)", isdigit, module, baseSystemAccess);
    eSystem_RegisterFunction("memset", "void * memset(void * area, int value, uintsize count)", memset, module, baseSystemAccess);
    eSystem_RegisterFunction("getenv", "char * getenv(const char * name)", getenv, module, baseSystemAccess);
    eSystem_RegisterFunction("rename", "int rename(const char *oldpath, const char *newpath)", rename, module, baseSystemAccess);
@@ -6342,12 +6342,17 @@ static void LoadCOM(Module module)
    eSystem_RegisterFunction("fputs", "int fputs(const char *, void * stream)", fputs, module, baseSystemAccess);
 
    // --- Ctype ---
+   eSystem_RegisterFunction("tolower", "int tolower(int)", tolower, module, baseSystemAccess);
+   eSystem_RegisterFunction("toupper", "int toupper(int)", toupper, module, baseSystemAccess);
+   eSystem_RegisterFunction("isdigit", "bool isdigit(int)", isdigit, module, baseSystemAccess);
+   eSystem_RegisterFunction("isxdigit","bool isxdigit(int)", isxdigit, module, baseSystemAccess);
    eSystem_RegisterFunction("isalnum", "int isalnum(int c)", isalnum, module, baseSystemAccess);
    eSystem_RegisterFunction("isspace", "int isspace(int c)", isspace, module, baseSystemAccess);
    eSystem_RegisterFunction("isalpha", "int isalpha(int c)", isalpha, module, baseSystemAccess);
    eSystem_RegisterFunction("islower", "int islower(int c)", islower, module, baseSystemAccess);
    eSystem_RegisterFunction("isupper", "int isupper(int c)", isupper, module, baseSystemAccess);
    eSystem_RegisterFunction("isprint", "int isprint(int c)", isprint, module, baseSystemAccess);
+   eSystem_RegisterFunction("isblank", "int isblank(int c)", isblank, module, baseSystemAccess);
 
 }
 

@@ -1072,7 +1072,7 @@ unsigned int truth;
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_bool, (void *)&truth);
 if(truth)
 {
-(*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__StringBTNode);
+(*this) = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__sys__StringBTNode));
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass_String, (void *)&(*this)->key);
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Unserialize(channel, __ecereClass___ecereNameSpace__ecere__sys__StringBTNode, (void *)&(*this)->left);
 if((*this)->left)
