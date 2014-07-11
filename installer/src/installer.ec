@@ -656,6 +656,7 @@ class Installer : Window
                   additional[AdditionalID::extras].row.SetData(locationField, additional[AdditionalID::extras].installPath);
                }
             }
+            listBox.Update(null);
          }
       }
    };
