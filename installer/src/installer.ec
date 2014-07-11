@@ -1,8 +1,7 @@
-#ifdef NOMINGW
-static define buildString = $"Ecere SDK v0.44.10 (Without MinGW) -- built on March 9th, 2014 ";
-#else
-static define buildString = $"Ecere SDK v0.44.10 -- built on March 9th, 2014 ";
-#endif
+static define versionString = $"Ecere SDK v0.44.10";
+static define dateString = $"July 12th, 2014";
+static define builtOnString = $"built on ";
+static define withoutMinGW = $" (Without MinGW)";
 
 #define WIN32_LEAN_AND_MEAN
 #define GetFreeSpace _GetFreeSpace
@@ -18,6 +17,20 @@ import "IDESettings"
 import "createLink"
 import "licensing"
 import "CheckListBox"
+
+static void SetBuildString(Label label)
+{
+   static const String addMinGW = "";
+   String s;
+
+#ifdef NOMINGW
+   addMinGW = withoutMinGW;
+#endif
+
+   s = PrintString(versionString, addMinGW, " -- ", builtOnString, dateString);
+   label.caption = s;
+   delete s;
+}
 
 static bool IsAdministrator()
 {
@@ -431,7 +444,7 @@ class Installer : Window
    tabCycle = true;
    clientSize = { 636, 476 };
    icon = { ":icon.png" };
-   text = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
+   caption = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
 
    // clientSize = { 796, 576 };
    bool loaded;
@@ -440,11 +453,11 @@ class Installer : Window
    FileDialog fileDialog
    {
       master = this, type = selectDir,
-      text = $"Select a new location"
+      caption = $"Select a new location"
    };
    Button browse
    {
-      master = this, autoCreate = false, inactive = true, text = "...";
+      master = this, autoCreate = false, inactive = true, caption = "...";
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -570,17 +583,17 @@ class Installer : Window
             {
                char sizeString[100];
                PrintSize(sizeString, totalSize, 2);
-               totalSpaceValue.text = sizeString;
+               totalSpaceValue.caption = sizeString;
             }
          }
       }
    };
-   Label agreementLbl { parent = this, text = $"By installing the Ecere SDK, you agree to the", font = { "Tahoma", 8.25f }, anchor = Anchor { right = 399, top = 448 } };
+   Label agreementLbl { parent = this, caption = $"By installing the Ecere SDK, you agree to the", font = { "Tahoma", 8.25f }, anchor = Anchor { right = 399, top = 448 } };
    Button licenseButton
    {
       this, inactive = true, offset = false, bevel = false, foreground = blue, font = { "Tahoma", 8.25f, underline = true, bold = true },
-      // text = $"terms and conditions", anchor = Anchor { left = 241, top = 421 };
-      text = $"terms and conditions", anchor = Anchor { left = 235, top = 445 };
+      // caption = $"terms and conditions", anchor = Anchor { left = 241, top = 421 };
+      caption = $"terms and conditions", anchor = Anchor { left = 235, top = 445 };
       cursor = ((GuiApplication)__thisModule).GetCursor(hand);
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
@@ -590,7 +603,7 @@ class Installer : Window
          return true;
       }
    };
-   Label dotLbl { parent = this, text = ".", font = { "Tahoma", 8.25f }, anchor = Anchor { left = 372, top = 448 } };
+   Label dotLbl { parent = this, caption = ".", font = { "Tahoma", 8.25f }, anchor = Anchor { left = 372, top = 448 } };
    CheckListBox optionsBox
    {
       this, size = { 460, 114 }, position = { 160, 284 };
@@ -662,7 +675,7 @@ class Installer : Window
    };
    Button install
    {
-      parent = this, text = $"Install", isDefault = true, size = { 75, 23 }, position = { 432, 440 };
+      parent = this, caption = $"Install", isDefault = true, size = { 75, 23 }, position = { 432, 440 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -673,7 +686,7 @@ class Installer : Window
          return true;
       }
    };
-   Button button3 { parent = this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 440 }, NotifyClicked = ButtonCloseDialog };
+   Button button3 { parent = this, caption = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 440 }, NotifyClicked = ButtonCloseDialog };
    DropBox languageBox
    {
       this, position = { 14, 374 }, size = { 142, 0 }, caption = "Language:";
@@ -709,7 +722,7 @@ class Installer : Window
    Label label1 { labeledWindow = destBox, tabCycle = true, isGroupBox = true, parent = this, inactive = false, size = Size { 458, 50 }, anchor = Anchor { left = 160, top = 96 } };
    PathBox destBox
    {
-      parent = label1, master = this, text = $" Destination Folder", size = Size { 336, 22 }, anchor = Anchor { left = 12, top = 20, right = 12 };
+      parent = label1, master = this, caption = $" Destination Folder", size = Size { 336, 22 }, anchor = Anchor { left = 12, top = 20, right = 12 };
       typeExpected = directory;
       browseDialog = fileDialog;
       opacity = 0;
@@ -775,21 +788,21 @@ class Installer : Window
    };
    Label totalSpaceLabel
    {
-      this, anchor = { right = 72, top = 404 }, text = $"Space Required: "
+      this, anchor = { right = 72, top = 404 }, caption = $"Space Required: "
    };
    Label totalSpaceValue
    {
-      this, anchor = { right = 14, top = 404 }, text = "0 mb"
+      this, anchor = { right = 14, top = 404 }, caption = "0 mb"
    };
    EditBox editBox1
    {
       label3, caption = "editBox1", opacity = 0, borderStyle = none, inactive = true, size = { 350, 35 }, position = { 256, 40 }, multiLine = true, noSelect = true, contents = $"Choose in which folder to install the Ecere SDK, which features\n"
          "of the SDK to install, as well as where to install program icons."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 422 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Label label2 { parent = this, position = { 16, 422 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
    Picture picture1
    {
-      image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, text = "picture1", anchor = Anchor { left = 16, top = 4 };
+      image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, caption = "picture1", anchor = Anchor { left = 16, top = 4 };
       cursor = ((GuiApplication)__thisModule).GetCursor(hand);
 
       bool OnLeftButtonDown(int x, int y, Modifiers mods)
@@ -798,7 +811,7 @@ class Installer : Window
          return true;
       }
    };
-   Label label4 { label3, font = { "Tahoma", 8.25f, bold = true }, /*size = { 326, 16 }, */position = { 248, 24 }, text = $"Choose Components, Locations and Install Options" };
+   Label label4 { label3, font = { "Tahoma", 8.25f, bold = true }, /*size = { 326, 16 }, */position = { 248, 24 }, caption = $"Choose Components, Locations and Install Options" };
    DataField componentField { "CheckItem", width = 160, header = $"Component" };
    DataField locationField { "char *", width = 108, header = $"Destination Folder", editable = true };
    DataField reqField { "FileSize", width = 70, header = $"Req. Space", alignment = right };
@@ -948,6 +961,8 @@ class Installer : Window
 
       bool isAdministrator = IsAdministrator();
 
+      SetBuildString(label2);
+
       if(!isAdministrator)
       {
          options[0].available = false;
@@ -1072,7 +1087,7 @@ class Installer : Window
       {
          char sizeString[100];
          PrintSize(sizeString, totalSize, 2);
-         totalSpaceValue.text = sizeString;
+         totalSpaceValue.caption = sizeString;
       }
       for(c = 0; options[c].name; c++)
       {
@@ -1177,7 +1192,7 @@ class Installer : Window
 
 class InstallProgress : Window
 {
-   text = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
+   caption = $"Ecere Software Development Kit Setup - v0.44.10 \"Ryōan-ji\" 64 Bit Edition";
    background = activeBorder;
    borderStyle = fixed;
    hasMinimize = true;
@@ -1188,18 +1203,23 @@ class InstallProgress : Window
    //clientSize = { 796, 576 };
    icon = { ":icon.png" };
 
+   InstallProgress()
+   {
+      SetBuildString(label2);
+   }
+
    Picture back { image = BitmapResource { ":ryoanji-progress.png" }, parent = this, position = { 0, 0 } };
    Label installing { this, position = { 32, 160 } };
    ProgressBar progressBar { parent = this, size = Size { 588, 24 }, anchor = Anchor { left = 24, top = 184 } };
    Button finish
    {
-      parent = this, text = $"Install", disabled = true, isDefault = true, size = Size { 75, 23 }, anchor = Anchor { left = 432, top = 440 };
+      parent = this, caption = $"Install", disabled = true, isDefault = true, size = Size { 75, 23 }, anchor = Anchor { left = 432, top = 440 };
 
       NotifyClicked = ButtonCloseDialog
    };
    Button cancel
    {
-      this, text = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 440 };
+      this, caption = $"Cancel", hotKey = altX, size = Size { 75, 23 }, anchor = Anchor { left = 544, top = 440 };
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
@@ -1213,7 +1233,7 @@ class InstallProgress : Window
       multiLine = true, parent = label3, opacity = 0, borderStyle = none, size = Size { 350, 35 }, anchor = Anchor { horz = 111, vert = 13 },
       contents = $"Please wait while the Ecere Software Development Kit is being installed."
    };
-   Label label2 { parent = this, text = buildString, position = { 16, 422 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
+   Label label2 { parent = this, position = { 16, 422 }, font = { "Tahoma", 10, true }, disabled = true, opacity = 0, background = activeBorder };
    Picture picture1
    {
       image = BitmapResource { ":ecere.png", alphaBlend = true }, filter = true, parent = label3, anchor = Anchor { left = 16, top = 4 };
@@ -1225,7 +1245,7 @@ class InstallProgress : Window
          return true;
       }
    };
-   Label title { parent = label3, text = $"Installing the Ecere SDK", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
+   Label title { parent = label3, caption = $"Installing the Ecere SDK", font = FontResource { "Tahoma", 8.25f, bold = true }, size = Size { 326, 16 }, anchor = Anchor { horz = 91, vert = -12 } };
 
    void OnDrawOverChildren(Surface surface)
    {
@@ -1391,12 +1411,12 @@ class InstallThread : Thread
       {
          installProgress.progressBar.range = 0;
          installProgress.finish.Destroy(0);
-         installProgress.cancel.text = $"Close";
+         installProgress.cancel.caption = $"Close";
          installProgress.cancel.isDefault = true;
          installProgress.cancel.disabled = false;
          installProgress.cancel.NotifyClicked = Window::ButtonCloseDialog;
-         installProgress.installing.text = $"Installation Cancelled.";
-         installProgress.title.text = $"Installation Cancelled";
+         installProgress.installing.caption = $"Installation Cancelled.";
+         installProgress.title.caption = $"Installation Cancelled";
          installProgress.titleInfo.contents = $"The installation was not completed.";
       }
       else
@@ -1415,7 +1435,7 @@ class InstallThread : Thread
             allUsers = options[0].selected;
          };
          CompilerConfig compiler;
-         installProgress.installing.text = $"Configuring Ecere IDE...";
+         installProgress.installing.caption = $"Configuring Ecere IDE...";
          ((GuiApplication)__thisModule).Unlock();
          ((GuiApplication)__thisModule).SignalEvent();
 
@@ -1520,7 +1540,7 @@ class InstallThread : Thread
 
          // Set up Uninstaller
          ((GuiApplication)__thisModule).Lock();
-         installProgress.installing.text = $"Registering uninstaller...";
+         installProgress.installing.caption = $"Registering uninstaller...";
          ((GuiApplication)__thisModule).Unlock();
          ((GuiApplication)__thisModule).SignalEvent();
 
@@ -1562,7 +1582,7 @@ class InstallThread : Thread
             wSystemPath[0] = 0;
 
             ((GuiApplication)__thisModule).Lock();
-            installProgress.installing.text = "Registering paths...";
+            installProgress.installing.caption = "Registering paths...";
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
 
@@ -1615,7 +1635,7 @@ class InstallThread : Thread
             HKEY key;
 
             ((GuiApplication)__thisModule).Lock();
-            installProgress.installing.text = $"Installing Start Menu Icons...";
+            installProgress.installing.caption = $"Installing Start Menu Icons...";
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
 
@@ -1701,7 +1721,7 @@ class InstallThread : Thread
                PathCat(desktopPath, "Ecere IDE.lnk");
 
                ((GuiApplication)__thisModule).Lock();
-               installProgress.installing.text = $"Installing Desktop Icon...";
+               installProgress.installing.caption = $"Installing Desktop Icon...";
                ((GuiApplication)__thisModule).Unlock();
                ((GuiApplication)__thisModule).SignalEvent();
 
@@ -1731,7 +1751,7 @@ class InstallThread : Thread
                }
 
                ((GuiApplication)__thisModule).Lock();
-               installProgress.installing.text = $"Installing Quicklaunch Icon...";
+               installProgress.installing.caption = $"Installing Quicklaunch Icon...";
                ((GuiApplication)__thisModule).Unlock();
                ((GuiApplication)__thisModule).SignalEvent();
 
@@ -1760,7 +1780,7 @@ class InstallThread : Thread
             associateOptions[AssociateOptions::AssociateIMG].selected)
          {
             ((GuiApplication)__thisModule).Lock();
-            installProgress.installing.text = $"Resgistering File Types...";
+            installProgress.installing.caption = $"Resgistering File Types...";
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
 
@@ -1808,11 +1828,11 @@ class InstallThread : Thread
          ((GuiApplication)__thisModule).Lock();
 
          installProgress.cancel.Destroy(0);
-         installProgress.finish.text = $"Finish";
+         installProgress.finish.caption = $"Finish";
          installProgress.finish.disabled = false;
          installProgress.finish.Activate();
-         installProgress.installing.text = $"Installation Complete.";
-         installProgress.title.text = $"Installation Complete";
+         installProgress.installing.caption = $"Installation Complete.";
+         installProgress.title.caption = $"Installation Complete";
          installProgress.titleInfo.contents = $"Thank you for using the Ecere SDK.";
       }
       ((GuiApplication)__thisModule).Unlock();
