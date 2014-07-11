@@ -339,7 +339,7 @@ class SQLiteDatabase : Database
                      Class type = null;
                      int sqliteType = SQLITE_BLOB;
 
-                     ((Class)(&type)).OnGetDataFromString(typeName);    // TODO: THIS REQUIRES A FIX SOMEWHERE ELSE
+                     type.OnGetDataFromString(typeName);
 
                      if(type)
                      {

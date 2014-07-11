@@ -666,7 +666,9 @@ void ComputeClassMembers(Class _class, bool isMember)
                if(_class.memberOffset % _class.structAlignment)
                   extra += _class.structAlignment - (_class.memberOffset % _class.structAlignment);
             }
-            _class.structSize = (_class.base ? (_class.base.templateClass ? _class.base.templateClass.structSize : _class.base.structSize) : 0) + _class.memberOffset + extra;
+            _class.structSize = (_class.base ? (_class.base.templateClass ?
+               (_class.base.type == noHeadClass ? _class.base.templateClass.memberOffset : _class.base.templateClass.structSize) :
+                  (_class.base.type == noHeadClass ? _class.base.memberOffset : _class.base.structSize) ) : 0) + _class.memberOffset + extra;
             if(!member)
             {
                Property prop;
@@ -690,7 +692,7 @@ void ComputeClassMembers(Class _class, bool isMember)
                   if(deriv.computeSize)
                   {
                      // TESTING THIS NEW CODE HERE... TRYING TO FIX ScrollBar MEMBERS DEBUGGING
-                     deriv.offset = /*_class.offset + */_class.structSize;
+                     deriv.offset = /*_class.offset + */(_class.type == noHeadClass ? _class.memberOffset : _class.structSize);
                      deriv.memberOffset = 0;
                      // ----------------------
 
@@ -13104,7 +13106,7 @@ static void ProcessFunction(FunctionDefinition function)
             if(_class.fixed)
             {
                Expression e;
-               if(_class.offset && _class.offset == _class.base.structSize)
+               if(_class.offset && _class.offset == (_class.base.type == noHeadClass ? _class.base.memberOffset : _class.base.structSize))
                {
                   e = MkExpClassSize(MkSpecifierName(_class.base.fullName));
                   ProcessExpressionType(e);

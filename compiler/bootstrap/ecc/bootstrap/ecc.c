@@ -639,7 +639,7 @@ char *  dataTypeString;
 struct Type * dataType;
 void *  symbol;
 char *  fullName;
-char __ecere_padding[40];
+char __ecere_padding[36];
 } ecere_gcc_struct;
 
 extern struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__com__eModule_LoadStrict(struct __ecereNameSpace__ecere__com__Instance * fromModule, const char *  name, int importAccess);

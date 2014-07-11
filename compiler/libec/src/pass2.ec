@@ -1889,20 +1889,22 @@ static void ProcessExpression(Expression exp)
                   if(typedObject && memberExp.member.exp && memberExp.member.exp.expType)
                   {
                      bool changeReference = false;
+                     bool stillAddReferenceOp = false;
                      Expression memberExpMemberExp = CopyExpression(memberExp.member.exp);
+                     Type expType = memberExp.member.exp.expType;
+                     Class c = expType.kind == classType && expType._class ? expType._class.registered : null;
 
                      // Patched so that class isn't considered SYSTEM...
                      if(argClass && (argClass.type == enumClass || argClass.type == unitClass || argClass.type == bitClass || argClass.type == systemClass) && strcmp(argClass.fullName, "class") &&
                         strcmp(argClass.fullName, "uintptr") && strcmp(argClass.fullName, "intptr"))
                         changeReference = true;
-                     if(!memberExp.member.exp.expType.classObjectType &&
-                        (((
-                           (memberExp.member.exp.expType.kind != pointerType &&
-                              (memberExp.member.exp.expType.kind != classType || !memberExp.member.exp.expType._class ||
-                               !memberExp.member.exp.expType._class.registered || memberExp.member.exp.expType._class.registered.type == structClass)))) ||
-                           method.dataType.byReference)) // ADDED THIS FOR OnGetDataFromString
+                     if(!expType.classObjectType && ( ( (expType.kind != pointerType && (!c || c.type == structClass) ) ) || method.dataType.byReference) ) // ADDED THIS FOR OnGetDataFromString
+                     {
+                        if(c && (c.type == normalClass || c.type == noHeadClass))
+                           stillAddReferenceOp = true;
                         changeReference = true;
-                     if(typedObject && memberExp.member.exp.expType.classObjectType && memberExp.member.exp.expType.byReference != method.dataType.byReference)
+                     }
+                     if(typedObject && expType.classObjectType && expType.byReference != method.dataType.byReference)
                         changeReference = true;
                      if(changeReference)
                      {
@@ -1917,7 +1919,7 @@ static void ProcessExpression(Expression exp)
                            exp.call.arguments->Insert(null, memberExp.member.exp.op.exp2);
                            memberExp.member.exp.op.exp2 = null;
                         }
-                        else if(!memberExp.member.exp.byReference)
+                        else if(!memberExp.member.exp.byReference || stillAddReferenceOp)
                         {
                            // TESTING THIS... REUSE THIS CODE?
                            Expression checkedExp = memberExp.member.exp;
@@ -1952,7 +1954,13 @@ static void ProcessExpression(Expression exp)
                            if(!parentExp)
                               nullMemberExp = true;
 
-                           newExp = (typedObject && !memberExp.member.exp.expType.classObjectType) ? checkedExp : MkExpOp(null, '&', checkedExp);
+                           if(typedObject && !expType.classObjectType && !stillAddReferenceOp)
+                              newExp = checkedExp;
+                           else
+                           {
+                              newExp = MkExpOp(null, '&', checkedExp);
+                              newExp.byReference = true;
+                           }
                            if(parentExp && (parentExp.type == bracketsExp || parentExp.type == extensionExpressionExp))
                            {
                               parentExp.list->Remove(checkedExp);
@@ -1965,7 +1973,7 @@ static void ProcessExpression(Expression exp)
                               if(newExp.expType && newExp.expType.classObjectType)
                                  parentExp.cast.typeName.declarator = MkDeclaratorPointer(MkPointer(null, null), parentExp.cast.typeName.declarator);
                            }
-                           if(typedObject && !memberExp.member.exp.expType.classObjectType)
+                           if(typedObject && !expType.classObjectType)
                            {
                               Type destType { refCount = 1, kind = classType, classObjectType = ClassObjectType::anyObject };
                               FreeType((parentExp ? parentExp : newExp).expType);

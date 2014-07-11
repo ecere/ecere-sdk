@@ -2919,13 +2919,20 @@ exp->__anon1.call.arguments = MkList();
 if(typedObject && memberExp->__anon1.member.exp && memberExp->__anon1.member.exp->expType)
 {
 unsigned int changeReference = 0;
+unsigned int stillAddReferenceOp = 0;
 struct Expression * memberExpMemberExp = CopyExpression(memberExp->__anon1.member.exp);
+struct Type * expType = memberExp->__anon1.member.exp->expType;
+struct __ecereNameSpace__ecere__com__Class * c = expType->kind == 8 && expType->__anon1._class ? expType->__anon1._class->__anon1.registered : (((void *)0));
 
 if(argClass && (argClass->type == 4 || argClass->type == 3 || argClass->type == 2 || argClass->type == 1000) && strcmp(argClass->fullName, "class") && strcmp(argClass->fullName, "uintptr") && strcmp(argClass->fullName, "intptr"))
 changeReference = 1;
-if(!memberExp->__anon1.member.exp->expType->classObjectType && ((((memberExp->__anon1.member.exp->expType->kind != 13 && (memberExp->__anon1.member.exp->expType->kind != 8 || !memberExp->__anon1.member.exp->expType->__anon1._class || !memberExp->__anon1.member.exp->expType->__anon1._class->__anon1.registered || memberExp->__anon1.member.exp->expType->__anon1._class->__anon1.registered->type == 1)))) || method->dataType->byReference))
+if(!expType->classObjectType && (((expType->kind != 13 && (!c || c->type == 1))) || method->dataType->byReference))
+{
+if(c && (c->type == 0 || c->type == 5))
+stillAddReferenceOp = 1;
 changeReference = 1;
-if(typedObject && memberExp->__anon1.member.exp->expType->classObjectType && memberExp->__anon1.member.exp->expType->byReference != method->dataType->byReference)
+}
+if(typedObject && expType->classObjectType && expType->byReference != method->dataType->byReference)
 changeReference = 1;
 if(changeReference)
 {
@@ -2939,7 +2946,7 @@ else if(memberExp->__anon1.member.exp->type == 4 && memberExp->__anon1.member.ex
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*exp->__anon1.call.arguments), (((void *)0)), memberExp->__anon1.member.exp->__anon1.op.exp2);
 memberExp->__anon1.member.exp->__anon1.op.exp2 = (((void *)0));
 }
-else if(!memberExp->__anon1.member.exp->byReference)
+else if(!memberExp->__anon1.member.exp->byReference || stillAddReferenceOp)
 {
 struct Expression * checkedExp = memberExp->__anon1.member.exp;
 struct Expression * parentExp = (((void *)0));
@@ -2970,7 +2977,13 @@ disconnected = 1;
 }
 if(!parentExp)
 nullMemberExp = 1;
-newExp = (typedObject && !memberExp->__anon1.member.exp->expType->classObjectType) ? checkedExp : MkExpOp((((void *)0)), '&', checkedExp);
+if(typedObject && !expType->classObjectType && !stillAddReferenceOp)
+newExp = checkedExp;
+else
+{
+newExp = MkExpOp((((void *)0)), '&', checkedExp);
+newExp->byReference = 1;
+}
 if(parentExp && (parentExp->type == 5 || parentExp->type == 32))
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*parentExp->__anon1.list), checkedExp);
@@ -2982,7 +2995,7 @@ parentExp->__anon1.cast.exp = newExp;
 if(newExp->expType && newExp->expType->classObjectType)
 parentExp->__anon1.cast.typeName->declarator = MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), parentExp->__anon1.cast.typeName->declarator);
 }
-if(typedObject && !memberExp->__anon1.member.exp->expType->classObjectType)
+if(typedObject && !expType->classObjectType)
 {
 struct Type * destType = (destType = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), destType->refCount = 1, destType->kind = 8, destType->classObjectType = 3, destType);
 

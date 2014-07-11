@@ -428,6 +428,7 @@ public:
                Property prop = null;
                Class type = null;
                bool isKey = false;
+               uint offset = 0;
 
                if(objectType)
                {
@@ -451,6 +452,8 @@ public:
                         type = eSystem_FindClass(__thisModule, member.dataTypeString);
                         if(!type)
                            type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
+
+                        offset = member._class.offset + member.offset;
                      }
                      else if(!member)
                      {
@@ -472,7 +475,7 @@ public:
 
                   if(type && type.type == structClass)
                   {
-                     value.p = (byte *)*object + member._class.offset + member.offset;
+                     value.p = (byte *)*object + offset;
                   }
                   ch = 0;
                   SkipEmpty();
@@ -497,7 +500,7 @@ public:
                                     ;
                                  else if(type.type == normalClass || type.type == noHeadClass)
                                  {
-                                    void ** ptr = (void**)((byte *)*object + member._class.offset + member.offset);
+                                    void ** ptr = (void**)((byte *)*object + offset);
                                     if(eClass_IsDerived(type, class(Container)) && *ptr)
                                     {
                                        Container container = (Container)*ptr;
@@ -508,36 +511,36 @@ public:
                                  }
                                  else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
                                  {
-                                    *(double *)((byte *)*object + member._class.offset + member.offset) = value.d;
+                                    *(double *)((byte *)*object + offset) = value.d;
                                  }
                                  else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
                                  {
-                                    *(float *)((byte *)*object + member._class.offset + member.offset) = value.f;
+                                    *(float *)((byte *)*object + offset) = value.f;
                                  }
                                  else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                                     !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                                  {
-                                    *(uint64 *)((byte *)*object + member._class.offset + member.offset) = value.ui64;
+                                    *(uint64 *)((byte *)*object + offset) = value.ui64;
                                  }
                                  else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                                     !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                                  {
-                                    *(int *)((byte *)*object + member._class.offset + member.offset) = value.i;
+                                    *(int *)((byte *)*object + offset) = value.i;
                                  }
                                  else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
                                     !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                                     !strcmp(type.dataTypeString, "int16"))
                                  {
-                                    *(short *)((byte *)*object + member._class.offset + member.offset) = value.s;
+                                    *(short *)((byte *)*object + offset) = value.s;
                                  }
                                  else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                                     !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                                  {
-                                    *(char *)((byte *)*object + member._class.offset + member.offset) = value.c;
+                                    *(char *)((byte *)*object + offset) = value.c;
                                  }
                                  else
                                  {
-                                    *(void **)((byte *)*object + member._class.offset + member.offset) = value.p;
+                                    *(void **)((byte *)*object + offset) = value.p;
                                  }
                               }
                               else if(prop && prop.Set)
@@ -1021,38 +1024,41 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                {
                   DataMember member = (DataMember)prop;
                   DataValue value { };
+                  uint offset;
                   Class type = eSystem_FindClass(__thisModule, member.dataTypeString);
                   if(!type)
                      type = eSystem_FindClass(__thisModule.application, member.dataTypeString);
+
+                  offset = member._class.offset + member.offset;
 
                   if(type)
                   {
                      if(type.type == normalClass || type.type == noHeadClass || type.type == structClass || !strcmp(type.name, "String"))
                      {
                         if(type.type == structClass)
-                           value.p = (void *)((byte *)object + member._class.offset + member.offset);
+                           value.p = (void *)((byte *)object + offset);
                         else
-                           value.p = *(void **)((byte *)object + member._class.offset + member.offset);
+                           value.p = *(void **)((byte *)object + offset);
                         if(!value.p)
                            continue;
                      }
                      else if(type == class(double) || !strcmp(type.dataTypeString, "double"))
                      {
-                        value.d = *(double *)((byte *)object + member._class.offset + member.offset);
+                        value.d = *(double *)((byte *)object + offset);
                      }
                      else if(type == class(float) || !strcmp(type.dataTypeString, "float"))
                      {
-                        value.f = *(float *)((byte *)object + member._class.offset + member.offset);
+                        value.f = *(float *)((byte *)object + offset);
                      }
                      else if(type.typeSize == sizeof(int64) || !strcmp(type.dataTypeString, "int64") ||
                         !strcmp(type.dataTypeString, "unsigned int64") || !strcmp(type.dataTypeString, "uint64"))
                      {
-                        value.ui64 = *(uint64 *)((byte *)object + member._class.offset + member.offset);
+                        value.ui64 = *(uint64 *)((byte *)object + offset);
                      }
                      else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                         !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                      {
-                        value.i = *(int *)((byte *)object + member._class.offset + member.offset);
+                        value.i = *(int *)((byte *)object + offset);
                         if(!strcmp(type.name, "bool") || type.type == enumClass)
                            if(!value.i)
                               continue;
@@ -1061,16 +1067,16 @@ static bool _WriteJSONObject(File f, Class objectType, void * object, int indent
                         !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
                         !strcmp(type.dataTypeString, "int16"))
                      {
-                        value.s = *(short *)((byte *)object + member._class.offset + member.offset);
+                        value.s = *(short *)((byte *)object + offset);
                      }
                      else if(type.typeSize == sizeof(byte) || !strcmp(type.dataTypeString, "char") ||
                         !strcmp(type.dataTypeString, "unsigned char") || !strcmp(type.dataTypeString, "byte"))
                      {
-                        value.c = *(char *)((byte *)object + member._class.offset + member.offset);
+                        value.c = *(char *)((byte *)object + offset);
                      }
                      else
                      {
-                        value.i = *(int *)((byte *)object + member._class.offset + member.offset);
+                        value.i = *(int *)((byte *)object + offset);
                      }
 
                      if(!isFirst) f.Puts(",\n");

@@ -1982,7 +1982,8 @@ static void FixDerivativesBase(Class base, Class mod)
       // _class.memberID = _class.startMemberID = (base && (type == normalClass || type == noHeadClass || type == structClass)) ? base.memberID : 0;
 
       if(type == normalClass || type == noHeadClass)
-         _class.offset = (base && (base.templateClass ? base.templateClass.structSize : base.structSize) && base.type != systemClass) ? (base.templateClass ? base.templateClass.structSize : base.structSize) : ((type == noHeadClass) ? 0 : sizeof(class Instance));
+         // Use 'memberOffset' for nohead class as the members get added without padding
+         _class.offset = (base && (base.templateClass ? (type == normalClass ? base.templateClass.structSize : base.templateClass.memberOffset) : (type == normalClass ? base.structSize : base.memberOffset)) && base.type != systemClass) ? (base.templateClass ? base.templateClass.structSize : base.structSize) : ((type == noHeadClass) ? 0 : sizeof(class Instance));
       else
          _class.offset = 0; // Force set to 0
 
@@ -2642,7 +2643,9 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
          }
          _class.memberID = _class.startMemberID = (base && (type == normalClass || type == noHeadClass || type == structClass)) ? base.memberID : 0;
          if(type == normalClass || type == noHeadClass)
-            _class.offset = (base && base.structSize && base.type != systemClass) ? base.structSize : ((type == noHeadClass) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(class Instance)));
+            _class.offset = (base && base.structSize && base.type != systemClass) ?
+               // Use 'memberOffset' for nohead class as the members get added without padding
+               (base.type == normalClass ? base.structSize : base.memberOffset) : ((type == noHeadClass) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(class Instance)));
          else
             _class.offset = 0;   // Force set to 0 for redefinitions
 

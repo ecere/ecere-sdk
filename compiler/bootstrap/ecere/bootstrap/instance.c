@@ -4693,7 +4693,7 @@ dataTypeString = enumBase ? enumBase->dataTypeString : base->dataTypeString;
 offsetClass = base ? (base->templateClass ? base->templateClass->sizeClass : base->sizeClass) : (type == 5 ? 0 : 0);
 totalSizeClass = offsetClass + sizeClass;
 if(type == 0 || type == 5)
-_class->offset = (base && (base->templateClass ? base->templateClass->structSize : base->structSize) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : ((type == 5) ? 0 : sizeof(struct __ecereNameSpace__ecere__com__Instance));
+_class->offset = (base && (base->templateClass ? (type == 0 ? base->templateClass->structSize : base->templateClass->memberOffset) : (type == 0 ? base->structSize : base->memberOffset)) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : ((type == 5) ? 0 : sizeof(struct __ecereNameSpace__ecere__com__Instance));
 else
 _class->offset = 0;
 if(type == 1)
@@ -5453,7 +5453,7 @@ id++;
 }
 _class->memberID = _class->startMemberID = (base && (type == 0 || type == 5 || type == 1)) ? base->memberID : 0;
 if(type == 0 || type == 5)
-_class->offset = (base && base->structSize && base->type != 1000) ? base->structSize : ((type == 5) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(struct __ecereNameSpace__ecere__com__Instance)));
+_class->offset = (base && base->structSize && base->type != 1000) ? (base->type == 0 ? base->structSize : base->memberOffset) : ((type == 5) ? 0 : ((force64Bits && inCompiler && fixed) ? 24 : (force32Bits && inCompiler && fixed) ? 12 : sizeof(struct __ecereNameSpace__ecere__com__Instance)));
 else
 _class->offset = 0;
 if(crossBits)

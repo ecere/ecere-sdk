@@ -596,6 +596,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
             char memberString[1024];
             Class memberType = member.dataTypeClass;
             const char * name = member.name;
+            const char *(* onGetString)(void *, void *, char *, void *, bool *);
             if(member.id < 0) continue;
 
             memberString[0] = 0;
@@ -604,6 +605,8 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                memberType = member.dataTypeClass = eSystem_FindClass(module, member.dataTypeString);
             if(!memberType)
                memberType = member.dataTypeClass = eSystem_FindClass(module, "int");
+
+            onGetString = memberType._vTbl[__ecereVMethodID_class_OnGetString];
 
             if(member.isProperty)
             {
@@ -620,7 +623,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         if(value.f)
                         {
                            bool needClass = true;
-                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
+                           const char * result = onGetString(memberType, &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                            // TESTING THIS HERE
@@ -634,7 +637,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         if(value.p || prop.IsSet)
                         {
                            bool needClass = true;
-                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType,
+                           const char * result = onGetString(memberType,
                               (memberType.type == normalClass) ? value.p : &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
@@ -646,7 +649,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         if(value.i || prop.IsSet)
                         {
                            bool needClass = true;
-                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
+                           const char * result = onGetString(memberType, &value, memberString, null, &needClass);
                            if(result && result != memberString)
                               strcpy(memberString, result);
                         }
@@ -656,12 +659,13 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
             }
             else
             {
+               uint offset = member.offset + member._class.offset;
+               byte * memberData = (byte *)data + offset;
                if(member.type == normalMember)
                {
                   if(memberType.type == structClass || memberType.type == normalClass)
                   {
                      char internalMemberString[1024];
-                     byte * memberData = ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                      int c;
                      uint typeSize = (memberType.type == normalClass) ? memberType.typeSize : memberType.structSize;
                      for(c = 0; c < typeSize; c++)
@@ -672,9 +676,9 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         bool needClass = true;
                         const char * result;
                         if(memberType.type == normalClass)
-                           result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
+                           result = onGetString(memberType, *(Instance *)memberData, internalMemberString, null, &needClass);
                         else
-                           result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
+                           result = onGetString(memberType, memberData, internalMemberString, null, &needClass);
                         if(needClass && strcmp(memberType.dataTypeString, "char *"))
                         {
                            //strcpy(memberString, memberType.name);
@@ -701,7 +705,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                         {
                            bool needClass = true;
                            char internalMemberString[1024];
-                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, internalMemberString, null, &needClass);
+                           const char * result = onGetString(memberType, &value, internalMemberString, null, &needClass);
 
                            if(needClass && memberType.type != systemClass && memberType.type != enumClass && memberType.type != unitClass)
                            {
@@ -720,22 +724,11 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                      }
                      else if(!memberType.noExpansion)
                      {
-                        // TOCHECK: Is this still right??
-                        if(memberType.typeSize <= 4)
-                        {
-                           value.i = *(int *)((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
-                           if(value.i)
-                           {
-                              bool needClass = true;
-                              const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, &value, memberString, null, &needClass);
-                              if(result && memberString != result)
-                                 strcpy(memberString, result);
-                           }
-                        }
-                        else
+                        // TOCHECK: Is this null check still right??
+                        if(memberType.typeSize > 4 || *(int *)memberData)
                         {
                            bool needClass = true;
-                           const char * result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset)), memberString, null, &needClass);
+                           const char * result = onGetString(memberType, memberData, memberString, null, &needClass);
                            if(result && memberString != result)
                               strcpy(memberString, result);
                         }
@@ -747,7 +740,7 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                      byte * memberData = ((byte *)data + (((member._class.type == normalClass) ? member._class.offset : 0) + member.offset));
                      bool needClass = true;
                      const char * result;
-                     result = ((const char *(*)(void *, void *, char *, void *, bool *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetString])(memberType, memberData, internalMemberString, null, &needClass);
+                     result = onGetString(memberType, memberData, internalMemberString, null, &needClass);
                      if(needClass)
                      {
                         //strcpy(memberString, memberType.name);
@@ -1051,17 +1044,20 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
          if(found)
          {
             Class memberType = thisMember.dataTypeClass;
+            uint offset;
+            byte * memberData;
 
             if(!memberType)
                memberType = thisMember.dataTypeClass = eSystem_FindClass(module, thisMember.dataTypeString);
             if(!memberType)
                memberType = thisMember.dataTypeClass = eSystem_FindClass(module, "int");
+            offset = thisMember._class.offset + memberOffset;
+            memberData = (byte *)data + offset;
             if(memberType.type == structClass)
             {
                if(thisMember)
                {
-                  if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType,
-                     (byte *)data + (((thisMember._class.type == normalClass) ? thisMember._class.offset : 0) + memberOffset), memberString))
+                  if(!((bool (*)(void *, void *, const char *))(void *)memberType._vTbl[__ecereVMethodID_class_OnGetDataFromString])(memberType, memberData, memberString))
                      result = false;
                }
             }
@@ -1087,7 +1083,7 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
                      *(uint *)data = (uint32)(((*(uint *)data & ~bitMember.mask)) | ((value.ui64<<bitMember.pos)&bitMember.mask));
                   }
                   else
-                     *(int *)((byte *)data + (((thisMember._class.type == normalClass) ? thisMember._class.offset : 0) + thisMember.offset)) = value.i;
+                     *(int *)memberData = value.i;
                }
                else if(thisMember.isProperty && ((Property)thisMember).Set)
                {
