@@ -1997,8 +1997,8 @@
                   {
                      "Folder" : "bin",
                      "Files" : [
-                        "tdm/gdb64/gdb.exe",
-                        "tdm/gdb32/i686-w64-mingw32-gdb.exe"
+                        "tdm/gdb/gdb.exe",
+                        "tdm/gdb/i686-w64-mingw32-gdb.exe"
                      ]
                   }
                ]

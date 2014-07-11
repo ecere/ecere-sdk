@@ -1051,8 +1051,8 @@ RESOURCES27 = \
 	../obj/win32.x32/bin/EDASQLite.dll \
 	../obj/win32.x32/bin/ecere.dll \
 	../obj/win32.x32/lib/libecereVanilla.a \
-	tdm/gdb64/gdb.exe \
-	tdm/gdb32/i686-w64-mingw32-gdb.exe \
+	tdm/gdb/gdb.exe \
+	tdm/gdb/i686-w64-mingw32-gdb.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/addr2line.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/ar.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/as.exe \
@@ -5656,7 +5656,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/documentor.exe ../obj/win32.x32/bin/ide.exe "ecere-sdk32/ide"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/ear.exe ../obj/win32.x32/bin/ec.dll ../obj/win32.x32/bin/ecc.exe ../obj/win32.x32/bin/ecereCOM.dll ../obj/win32.x32/bin/ecp.exe ../obj/win32.x32/bin/ecs.exe ../obj/win32.x32/bin/epj2make.exe "ecere-sdk32/compiler"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/EDA.dll ../obj/win32.x32/bin/EDASQLite.dll "ecere-sdk32/eda"
-	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/gdb64/gdb.exe tdm/gdb32/i686-w64-mingw32-gdb.exe "tdm/gdb/bin"
+	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/gdb/gdb.exe tdm/gdb/i686-w64-mingw32-gdb.exe "tdm/gdb/bin"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/binutils-2.23.2-tdm64-1/bin/addr2line.exe tdm/binutils-2.23.2-tdm64-1/bin/ar.exe tdm/binutils-2.23.2-tdm64-1/bin/as.exe tdm/binutils-2.23.2-tdm64-1/bin/c++filt.exe tdm/binutils-2.23.2-tdm64-1/bin/dlltool.exe tdm/binutils-2.23.2-tdm64-1/bin/dllwrap.exe tdm/binutils-2.23.2-tdm64-1/bin/elfedit.exe tdm/binutils-2.23.2-tdm64-1/bin/gprof.exe tdm/binutils-2.23.2-tdm64-1/bin/ld.bfd.exe tdm/binutils-2.23.2-tdm64-1/bin/ld.exe "tdm/binutils/bin"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/binutils-2.23.2-tdm64-1/bin/nm.exe tdm/binutils-2.23.2-tdm64-1/bin/objcopy.exe tdm/binutils-2.23.2-tdm64-1/bin/objdump.exe tdm/binutils-2.23.2-tdm64-1/bin/ranlib.exe tdm/binutils-2.23.2-tdm64-1/bin/readelf.exe tdm/binutils-2.23.2-tdm64-1/bin/size.exe tdm/binutils-2.23.2-tdm64-1/bin/strings.exe tdm/binutils-2.23.2-tdm64-1/bin/strip.exe tdm/binutils-2.23.2-tdm64-1/bin/windmc.exe tdm/binutils-2.23.2-tdm64-1/bin/windres.exe "tdm/binutils/bin"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/binutils-2.23.2-tdm64-1/include/ansidecl.h tdm/binutils-2.23.2-tdm64-1/include/bfd.h tdm/binutils-2.23.2-tdm64-1/include/bfdlink.h tdm/binutils-2.23.2-tdm64-1/include/dis-asm.h tdm/binutils-2.23.2-tdm64-1/include/symcat.h "tdm/binutils/include"
