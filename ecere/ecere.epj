@@ -119,7 +119,7 @@ from wherever you obtained them.
          "Options" : {
             "IncludeDirs" : [
                "../deps/DirectX-9.0/include",
-               "../deps/jpeg-6b",
+               "../deps/jpeg-9a",
                "../deps/libpng-1.4.0",
                "../deps/libungif-4.1.1/lib",
                "../deps/zlib",
@@ -148,7 +148,7 @@ from wherever you obtained them.
             ],
             "LibraryDirs" : [
                "../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
-               "../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
@@ -166,7 +166,7 @@ from wherever you obtained them.
                "$(SYSROOT)/usr/X11/include",
                "/usr/X11R6/include/freetype2",
                "/usr/X11R6/include",
-               "../deps/jpeg-6b",
+               "../deps/jpeg-9a",
                "../deps/libpng-1.4.0",
                "../deps/libungif-4.1.1/lib"
             ],
@@ -187,7 +187,7 @@ from wherever you obtained them.
             "LibraryDirs" : [
                "$(SYSROOT)/usr/X11/lib",
                "/usr/X11R6/lib",
-               "../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libpng-1.6.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ]
@@ -401,7 +401,7 @@ from wherever you obtained them.
                "ECERE_NOSSL"
             ],
             "IncludeDirs" : [
-               "../deps/jpeg-6b",
+               "../deps/jpeg-9a",
                "../deps/libpng-1.4.0",
                "../deps/libungif-4.1.1/lib",
                "../deps/zlib",
@@ -426,7 +426,7 @@ from wherever you obtained them.
                   "LibraryDirs" : [
                      "../deps/libungif-4.1.1/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/libpng-1.4.0/obj/release.$(PLATFORM).$(COMPILER)",
-                     "../deps/jpeg-6b/obj/release.$(PLATFORM).$(COMPILER)",
+                     "../deps/jpeg-9a/obj/release.$(PLATFORM).$(COMPILER)",
                      "../deps/freetype-2.3.12/obj/release.$(PLATFORM).$(COMPILER)"
                   ]
                }

@@ -20,7 +20,7 @@ cleantarget:
 	cd freetype-2.3.12 && $(MAKE) cleantarget
 	cd libpng-1.6.12 && $(MAKE) cleantarget
 	cd zlib-1.2.8 && $(MAKE) cleantarget
-	cd jpeg-6b && $(MAKE) cleantarget
+	cd jpeg-9a && $(MAKE) cleantarget
 	cd libungif-4.1.1 && $(MAKE) cleantarget
 	cd libffi-3.0.11 && $(MAKE) cleantarget
 
@@ -28,7 +28,7 @@ clean:
 	cd freetype-2.3.12 && $(MAKE) clean
 	cd libpng-1.6.12 && $(MAKE) clean
 	cd zlib-1.2.8 && $(MAKE) clean
-	cd jpeg-6b && $(MAKE) clean
+	cd jpeg-9a && $(MAKE) clean
 	cd libungif-4.1.1 && $(MAKE) clean
 	cd libffi-3.0.11 && $(MAKE) clean
 
@@ -36,7 +36,7 @@ realclean:
 	cd freetype-2.3.12 && $(MAKE) realclean
 	cd libpng-1.6.12 && $(MAKE) realclean
 	cd zlib-1.2.8 && $(MAKE) realclean
-	cd jpeg-6b && $(MAKE) realclean
+	cd jpeg-9a && $(MAKE) realclean
 	cd libungif-4.1.1 && $(MAKE) realclean
 	cd libffi-3.0.11 && $(MAKE) realclean
 
@@ -44,7 +44,7 @@ distclean:
 	cd freetype-2.3.12 && $(MAKE) distclean
 	cd libpng-1.6.12 && $(MAKE) distclean
 	cd zlib-1.2.8 && $(MAKE) distclean
-	cd jpeg-6b && $(MAKE) distclean
+	cd jpeg-9a && $(MAKE) distclean
 	cd libungif-4.1.1 && $(MAKE) distclean
 	cd libffi-3.0.11 && $(MAKE) distclean
 
@@ -54,7 +54,7 @@ freetype:
 	
 jpeg:
 	@$(call echo,Building libjpeg...)
-	cd jpeg-6b && $(MAKE)
+	cd jpeg-9a && $(MAKE)
 
 png:
 	@$(call echo,Building libpng...)

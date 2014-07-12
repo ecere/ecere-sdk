@@ -400,7 +400,7 @@ PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -isystem ../deps/glext \
 			 -I../deps/DirectX-9.0/include \
-			 -I../deps/jpeg-6b \
+			 -I../deps/jpeg-9a \
 			 -I../deps/libpng-1.6.12 \
 			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib-1.2.8 \
@@ -414,7 +414,7 @@ PRJ_CFLAGS += \
 			 -I$(SYSROOT)/usr/X11/include \
 			 -I/usr/X11R6/include/freetype2 \
 			 -I/usr/X11R6/include \
-			 -I../deps/jpeg-6b \
+			 -I../deps/jpeg-9a \
 			 -I../deps/libpng-1.4.0 \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
@@ -438,7 +438,7 @@ ifdef WINDOWS_TARGET
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
-	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
@@ -491,7 +491,7 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(SYSROOT)/usr/X11/lib \
 	 -L/usr/X11R6/lib \
-	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \

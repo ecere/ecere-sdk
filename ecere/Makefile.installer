@@ -366,7 +366,7 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../deps/DirectX-9.0/include \
-			 -I../deps/jpeg-6b \
+			 -I../deps/jpeg-9a \
 			 -I../deps/libpng-1.6.12 \
 			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib-1.2.8 \
@@ -380,7 +380,7 @@ PRJ_CFLAGS += \
 			 -I$(SYSROOT)/usr/X11/include \
 			 -I/usr/X11R6/include/freetype2 \
 			 -I/usr/X11R6/include \
-			 -I../deps/jpeg-6b \
+			 -I../deps/jpeg-9a \
 			 -I../deps/libpng-1.4.0 \
 			 -I../deps/libungif-4.1.1/lib,) \
 	 $(if $(DEBUG), -g, -Os) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
@@ -409,7 +409,7 @@ ifdef WINDOWS_TARGET
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(call quote_path,../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
@@ -461,7 +461,7 @@ ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(call quote_path,$(SYSROOT)/usr/X11/lib) \
 	 -L$(call quote_path,/usr/X11R6/lib) \
-	 -L$(call quote_path,../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
 LIBS += \

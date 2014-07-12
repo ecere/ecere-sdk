@@ -92,7 +92,7 @@
                ]
             },
             {
-               "Folder" : "jpeg-6b",
+               "Folder" : "jpeg-9a",
                "Files" : [
                   "Makefile"
                ]
@@ -104,7 +104,7 @@
                ]
             },
             {
-               "Folder" : "libpng-1.4.0",
+               "Folder" : "libpng-1.6.12",
                "Files" : [
                   "Makefile"
                ]
@@ -116,7 +116,7 @@
                ]
             },
             {
-               "Folder" : "zlib",
+               "Folder" : "zlib-1.2.8",
                "Files" : [
                   "Makefile"
                ]
