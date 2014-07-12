@@ -538,6 +538,10 @@ endif
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO).0
 endif
+ifdef ECERE_AUDIO
+	ln -sf $(LP)EcereAudio$(SOV) $(OBJLIBDIR)$(LP)EcereAudio$(SO).0
+endif
+
 	ln -sf $(LP)ecere$(SOV) $(OBJLIBDIR)$(LP)ecere$(SO)
 	ln -sf $(LP)ecereCOM$(SOV) $(OBJLIBDIR)$(LP)ecereCOM$(SO)
 	ln -sf $(LP)ec$(SOV) $(OBJLIBDIR)$(LP)ec$(SO)
@@ -546,6 +550,7 @@ endif
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO)
 endif
+	ln -sf $(LP)EcereAudio$(SOV) $(OBJLIBDIR)$(LP)EcereAudio$(SO)
 endif
 
 ifndef WINDOWS_TARGET
@@ -626,7 +631,7 @@ ifdef EDASQLiteCipher
 	install $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/
 endif
 ifdef ECERE_AUDIO
-	install $(OBJBINDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/
+	install $(OBJLIBDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/
 endif
 	install $(OBJBINDIR)ide$(E) $(BINDIR)/
 	install $(OBJBINDIR)ear$(E) $(BINDIR)/
@@ -667,7 +672,7 @@ ifdef EDASQLiteCipher
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SOV)
 endif
 ifdef ECERE_AUDIO
-	install $(INSTALL_FLAGS) $(OBJBINDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/ec/$(LP)EcereAudio$(SOV)
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/ec/$(LP)EcereAudio$(SOV)
 endif
 	ln -sf $(LP)ecere$(SOV) $(DESTLIBDIR)/$(LP)ecere$(SO).0
 	ln -sf $(LP)ecereCOM$(SOV) $(DESTLIBDIR)/$(LP)ecereCOM$(SO).0
@@ -689,6 +694,9 @@ endif
 	ln -sf ../$(LP)ecereCOM$(SOV) $(DESTLIBDIR)/ec/$(LP)ecereCOM$(SO)
 ifdef EDASQLiteCipher
 	ln -sf $(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SO)
+endif
+ifdef ECERE_AUDIO
+	ln -sf $(LP)EcereAudio$(SOV) $(DESTLIBDIR)/ec/$(LP)EcereAudio$(SO)
 endif
 ifndef BSD_HOST
 	install $(INSTALL_FLAGS) -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
