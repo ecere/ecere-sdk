@@ -7,27 +7,27 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-19 03:21+0000\n"
-"PO-Revision-Date: 2014-03-19 00:04-0500\n"
+"POT-Creation-Date: 2014-07-11 10:00+0000\n"
+"PO-Revision-Date: 2014-07-11 23:12-0500\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-03-19 03:56+0000\n"
+"X-Launchpad-Export-Date: 2014-07-12 01:56+0000\n"
 "X-Generator: Poedit 1.6.4\n"
 "Language: zh_CN\n"
 "X-Poedit-Basepath: ..\\..\\..\n"
 
-#: src/project/Project.ec:1557
+#: src/project/Project.ec:1576
 msgid "   %s: No such file or directory\n"
 msgstr "   %s: 无此文件或目录\n"
 
-#: src/dialogs/GlobalSettingsDialog.ec:454
+#: src/dialogs/GlobalSettingsDialog.ec:450
 msgid " Compiler Configuration"
 msgstr " 的编译器配置"
 
-#: src/ProjectSettings.ec:1419
+#: src/ProjectSettings.ec:1417
 msgid " Configuration"
 msgstr " 配置"
 
@@ -35,79 +35,79 @@ msgstr " 配置"
 msgid " Properties"
 msgstr " 属性"
 
-#: src/dialogs/FindInFilesDialog.ec:690
+#: src/dialogs/FindInFilesDialog.ec:689
 msgid " and its sub directories"
 msgstr " 及其子目录"
 
-#: src/project/Project.ec:2240 src/project/Project.ec:2247
+#: src/project/Project.ec:2297 src/project/Project.ec:2304
 msgid " and object files"
 msgstr " 和目标文件"
 
-#: src/dialogs/FindInFilesDialog.ec:1057 src/dialogs/FindInFilesDialog.ec:1143
+#: src/dialogs/FindInFilesDialog.ec:1054 src/dialogs/FindInFilesDialog.ec:1138
 msgid " before search was aborted"
 msgstr " 查找中止前"
 
-#: src/dialogs/GlobalSettingsDialog.ec:455
+#: src/dialogs/GlobalSettingsDialog.ec:451
 msgid " compiler configuration?"
 msgstr " 的编译器配置吗?"
 
-#: src/ProjectSettings.ec:1420
+#: src/ProjectSettings.ec:1418
 msgid " configuration?"
 msgstr " 配置吗?"
 
-#: src/dialogs/FindInFilesDialog.ec:678
+#: src/dialogs/FindInFilesDialog.ec:677
 msgid " containing \"%s\""
 msgstr " 包含\"%s\""
 
-#: src/designer/CodeEditor.ec:1415
+#: src/designer/CodeEditor.ec:1490
 msgid " file is not part of any project.\n"
 msgstr " 文件不属于任何项目\n"
 
-#: src/project/ProjectNode.ec:2436
+#: src/project/ProjectNode.ec:2440
 msgid " instead\n"
 msgstr " 改为\n"
 
-#: src/project/ProjectNode.ec:2442
+#: src/project/ProjectNode.ec:2446
 msgid " to compile instead of "
 msgstr " 改为编译 "
 
-#: src/project/ProjectView.ec:2210
+#: src/project/ProjectView.ec:2215
 msgid " was "
 msgstr " 是 "
 
-#: src/debugger/Debugger.ec:1026
+#: src/debugger/Debugger.ec:911
 msgid " with exit code %s"
 msgstr " 退出代码%s"
 
-#: src/dialogs/FindInFilesDialog.ec:674
+#: src/dialogs/FindInFilesDialog.ec:673
 msgid " with file name matching \"%s\""
 msgstr " 文件名匹配“%s”"
 
-#: src/ide.ec:2986
+#: src/ide.ec:3046
 msgid "%s %s is excluded from current build configuration.\n"
 msgstr "%s %s从当前生成配置中移除.\n"
 
-#: src/project/ProjectView.ec:743
+#: src/project/ProjectView.ec:738
 msgid "%s - %s%smakefile for %s config...\n"
 msgstr "%s - %s%s根据配置 %s 生成文件...\n"
 
-#: src/project/ProjectView.ec:661
+#: src/project/ProjectView.ec:660
 msgid "%s Compiler\n"
 msgstr "%s编译器\n"
 
-#: src/debugger/Debugger.ec:3474
+#: src/debugger/Debugger.ec:3577
 msgid "%s Constructor, %s:%d\n"
 msgstr "%s 构造, %s:%d\n"
 
-#: src/debugger/Debugger.ec:3476
+#: src/debugger/Debugger.ec:3579
 msgid "%s Destructor, %s:%d\n"
 msgstr "%s 析构, %s:%d\n"
 
-#: src/debugger/Debugger.ec:3478
+#: src/debugger/Debugger.ec:3581
 msgid "%s Function, %s:%d\n"
 msgstr "%s 函数, %s:%d\n"
 
-#: src/debugger/Debugger.ec:3470
+#: src/debugger/Debugger.ec:3573
 msgid "%s Method, %s:%d\n"
 msgstr "%s 方法, %s:%d\n"
 
@@ -115,44 +115,44 @@ msgstr "%s 方法, %s:%d\n"
 msgid "%s Project"
 msgstr "%s项目"
 
-#: src/debugger/Debugger.ec:3472
+#: src/debugger/Debugger.ec:3575
 msgid "%s Property, %s:%d\n"
 msgstr "%s 属性, %s:%d\n"
 
-#: src/dialogs/FindInFilesDialog.ec:981
+#: src/dialogs/FindInFilesDialog.ec:978
 msgid ""
 "%s search %s a total of %d match%s in %d out of the %d file%s searched\n"
 msgstr "%s查找%s 一共%d个匹配处%s, %d个文件匹配,共查找 %d 个文件%s\n"
 
-#: src/dialogs/FindInFilesDialog.ec:996
+#: src/dialogs/FindInFilesDialog.ec:993
 msgid "%s search did not find any file\n"
 msgstr "%s查找没有发现任何文件\n"
 
-#: src/dialogs/FindInFilesDialog.ec:991
+#: src/dialogs/FindInFilesDialog.ec:988
 msgid "%s search did not find any match in the %d files searched\n"
 msgstr "%s查找没有找到任何匹配处共查找%d个文件\n"
 
-#: src/dialogs/FindInFilesDialog.ec:986
+#: src/dialogs/FindInFilesDialog.ec:983
 msgid "%s search found a total of %d match%s in the %d file%s searched\n"
 msgstr "%s查找找到一共%d个匹配处%s共查找%d个文件%s\n"
 
-#: src/project/ProjectView.ec:1154
+#: src/project/ProjectView.ec:1148
 msgid "%s specific file(s) in project %s using the %s configuration...\n"
 msgstr "%s在项目 %s中的指定文件，使用配置%s...\n"
 
-#: src/project/ProjectView.ec:1157
+#: src/project/ProjectView.ec:1151
 msgid "%s specific file(s) in project %s...\n"
 msgstr "%s项目%s中的指定文件...\n"
 
-#: src/project/Project.ec:2245
+#: src/project/Project.ec:2302
 msgid "%s%s deleted\n"
 msgstr "%s%s被删除\n"
 
-#: src/ide.ec:1838
+#: src/ide.ec:1902
 msgid "(Mixed)"
 msgstr "(混合模式)"
 
-#: src/ProjectSettings.ec:1493
+#: src/ProjectSettings.ec:1491
 msgid "(Right click or press Ctrl-Del to revert an option to inherited value)"
 msgstr "(右击或按下Ctrl-Del恢复原来选项)"
 
@@ -160,24 +160,24 @@ msgstr "(右击或按下Ctrl-Del恢复原来选项)"
 msgid "(unnamed)"
 msgstr "(未命名)"
 
-#: src/debugger/Debugger.ec:4168
+#: src/debugger/Debugger.ec:4296
 msgid "...breaked on Valgrind error (F5 to resume)\n"
 msgstr "...Valgrind错误致中断(按F5恢复)\n"
 
-#: src/ide.ec:106
+#: src/ide.ec:115
 msgid "3D Studio Model"
 msgstr "3D Studio模型文件"
 
-#: src/project/ProjectView.ec:53 src/ide.ec:97
+#: src/project/ProjectView.ec:53 src/ide.ec:106
 msgid "3D Studio Model Files (*.3ds)"
 msgstr "3D Studio模型文件(*.3ds)"
 
-#: src/ide.ec:1462
+#: src/ide.ec:1524
 msgid "API Reference"
 msgstr "API参考手册(R)"
 
-#: src/dialogs/FindInFilesDialog.ec:982 src/dialogs/FindInFilesDialog.ec:987
-#: src/dialogs/FindInFilesDialog.ec:992 src/dialogs/FindInFilesDialog.ec:996
+#: src/dialogs/FindInFilesDialog.ec:979 src/dialogs/FindInFilesDialog.ec:984
+#: src/dialogs/FindInFilesDialog.ec:989 src/dialogs/FindInFilesDialog.ec:993
 msgid "Aborted"
 msgstr "已中止"
 
@@ -185,7 +185,7 @@ msgstr "已中止"
 msgid "About the Ecere SDK"
 msgstr "关于Ecere SDK简体中文版"
 
-#: src/ide.ec:1539
+#: src/ide.ec:1601
 msgid "About..."
 msgstr "关于(A)..."
 
@@ -193,15 +193,19 @@ msgstr "关于(A)..."
 msgid "Absolute Path"
 msgstr "绝对路径"
 
-#: src/ide.ec:316
+#: src/debugger/Debugger.ec:2904
+msgid "Accessing member \"%s\" from unresolved expression"
+msgstr "从未解析的表达式访问成员\"%s\""
+
+#: src/ide.ec:325
 msgid "Active Bit Length"
 msgstr "当前位长"
 
-#: src/ide.ec:294
+#: src/ide.ec:303
 msgid "Active Compiler"
 msgstr "活动编译器"
 
-#: src/ide.ec:281
+#: src/ide.ec:290
 msgid "Active Configuration(s)"
 msgstr "当前配置"
 
@@ -209,7 +213,7 @@ msgstr "当前配置"
 msgid "Add Files to Folder..."
 msgstr "添加文件至文件夹(F)..."
 
-#: src/project/ProjectView.ec:2155
+#: src/project/ProjectView.ec:2160
 msgid "Add Files to Project"
 msgstr "添加文件至项目"
 
@@ -225,7 +229,7 @@ msgstr "添加新窗体(O)..."
 msgid "Add Resources to Folder..."
 msgstr "添加资源至文件夹(F)..."
 
-#: src/project/ProjectView.ec:2155
+#: src/project/ProjectView.ec:2160
 msgid "Add Resources to Project"
 msgstr "添加资源至项目"
 
@@ -233,57 +237,57 @@ msgstr "添加资源至项目"
 msgid "Add Resources to Project..."
 msgstr "添加资源至项目(F)..."
 
-#: src/ide.ec:867
+#: src/ide.ec:875
 msgid "Add a different project?"
 msgstr "增加另一个项目吗?"
 
-#: src/ide.ec:227
+#: src/ide.ec:236
 msgid "Add project to workspace"
 msgstr "添加项目到工作空间"
 
-#: src/ide.ec:851
+#: src/ide.ec:859
 msgid "Add project to workspace..."
 msgstr "添加项目至解决方案(A)..."
 
-#: src/ProjectSettings.ec:2077
+#: src/ProjectSettings.ec:2073
 msgid "Additional Include Directories"
 msgstr "附加的包含目录(I)"
 
-#: src/ProjectSettings.ec:2168
+#: src/ProjectSettings.ec:2164
 msgid "Additional Libraries"
 msgstr "附加库(L)"
 
-#: src/ProjectSettings.ec:2196
+#: src/ProjectSettings.ec:2192
 msgid "Additional Library Directories"
 msgstr "附加库目录(Y)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1026
+#: src/dialogs/GlobalSettingsDialog.ec:1033
 msgid "Additional compiler flags"
 msgstr "附加编译标志"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1007
+#: src/dialogs/GlobalSettingsDialog.ec:1014
 msgid "Additional eC compiler flags"
 msgstr "附加eC编译器标志"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1045
+#: src/dialogs/GlobalSettingsDialog.ec:1052
 msgid "Additional linker flags"
 msgstr "附加链接标志"
 
-#: src/ProjectSettings.ec:1243
+#: src/ProjectSettings.ec:1241
 msgid "All"
 msgstr "全部"
 
-#: src/ide.ec:1391
+#: src/ide.ec:1453
 msgid "All Debug Views"
 msgstr "所有调试视图(A)"
 
 #: src/dialogs/FindInFilesDialog.ec:59 src/project/ProjectView.ec:47
 #: src/project/ProjectView.ec:55 src/designer/CodeEditor.ec:85
-#: src/documents/PictureEdit.ec:22 src/ide.ec:98 src/ide.ec:126
+#: src/documents/PictureEdit.ec:22 src/ide.ec:107 src/ide.ec:135
 msgid "All files"
 msgstr "所有文件(*.*)"
 
-#: src/project/ProjectView.ec:2447
+#: src/project/ProjectView.ec:2452
 msgid ""
 "Are you sure you want to remove the \"%s\" project\n"
 "from this workspace?"
@@ -291,7 +295,7 @@ msgstr ""
 "你确认要删除\"%s\"项目吗?\n"
 "从工作空间?"
 
-#: src/project/ProjectView.ec:2424
+#: src/project/ProjectView.ec:2429
 msgid ""
 "Are you sure you want to remove the folder \"%s\"\n"
 "and all of its contents from the project?"
@@ -299,7 +303,7 @@ msgstr ""
 "你确认想从项目中删除这个文件夹 \"%s\"\n"
 "以及它里面包含的所有内容吗?"
 
-#: src/dialogs/GlobalSettingsDialog.ec:455 src/ProjectSettings.ec:1420
+#: src/dialogs/GlobalSettingsDialog.ec:451 src/ProjectSettings.ec:1418
 msgid "Are you sure you wish to delete the "
 msgstr "你确定要删除 "
 
@@ -311,19 +315,19 @@ msgstr "你确定要放弃对生成选项的修改吗?"
 msgid "Are you sure you wish to discard changes?"
 msgstr "你确定要放弃对生成选项的修改吗?"
 
-#: src/ide.ec:1456
+#: src/ide.ec:1518
 msgid "Arrange Icons"
 msgstr "排列图标(A)"
 
-#: src/designer/Sheet.ec:516
+#: src/designer/Sheet.ec:517
 msgid "Attach"
 msgstr "附加(A)"
 
-#: src/designer/CodeEditor.ec:5242 src/designer/CodeEditor.ec:5283
+#: src/designer/CodeEditor.ec:5407 src/designer/CodeEditor.ec:5448
 msgid "Attach %s"
 msgstr "附加%s"
 
-#: src/project/ProjectView.ec:1583
+#: src/project/ProjectView.ec:1581
 msgid ""
 "Attempting to debug non-debug configuration\n"
 "Proceed anyways?"
@@ -335,15 +339,15 @@ msgstr ""
 msgid "BMP Image"
 msgstr "BMP图片"
 
-#: src/documents/PictureEdit.ec:27 src/ide.ec:103
+#: src/documents/PictureEdit.ec:27 src/ide.ec:112
 msgid "Based on extension"
 msgstr "基于扩展名"
 
-#: src/ide.ec:261 src/ide.ec:1065
+#: src/ide.ec:270 src/ide.ec:1073
 msgid "Break"
 msgstr "中断(B)"
 
-#: src/panels/BreakpointsView.ec:9 src/ide.ec:1373
+#: src/panels/BreakpointsView.ec:9 src/ide.ec:1435
 msgid "Breakpoints"
 msgstr "断点(B)"
 
@@ -356,28 +360,28 @@ msgstr "分隔"
 msgid "Browse Folder"
 msgstr "浏览文件夹(W)"
 
-#: src/ide.ec:904
+#: src/ide.ec:912
 msgid "Browse Project Folder"
 msgstr "浏览项目目录(P)"
 
-#: src/project/ProjectView.ec:232 src/ide.ec:926 src/ide.ec:1993
-#: src/ide.ec:2027 src/ProjectSettings.ec:1269
+#: src/project/ProjectView.ec:232 src/ide.ec:934 src/ide.ec:2057
+#: src/ide.ec:2091 src/ProjectSettings.ec:1267
 msgid "Build"
 msgstr "生成(B)"
 
-#: src/ide.ec:235
+#: src/ide.ec:244
 msgid "Build project"
 msgstr "编译项目"
 
-#: src/ProjectSettings.ec:2225
+#: src/ProjectSettings.ec:2221
 msgid "Builder"
 msgstr "生成器"
 
-#: src/project/Project.ec:1662
+#: src/project/Project.ec:1681
 msgid "Building library...\n"
 msgstr "正在生成类库...\n"
 
-#: src/project/ProjectView.ec:760
+#: src/project/ProjectView.ec:755
 msgid "Building project %s using the %s configuration...\n"
 msgstr "正在生成项目%s(引用配置 %s)...\n"
 
@@ -387,65 +391,65 @@ msgid ""
 "licenses."
 msgstr "使用它即表示同意每个licenses的条款和条件."
 
-#: src/dialogs/GlobalSettingsDialog.ec:723
+#: src/dialogs/GlobalSettingsDialog.ec:730
 msgid "C Compiler"
 msgstr "C编译器"
 
-#: src/dialogs/GlobalSettingsDialog.ec:717
+#: src/dialogs/GlobalSettingsDialog.ec:724
 msgid "C Preprocessor"
 msgstr "C预编译器"
 
-#: src/dialogs/GlobalSettingsDialog.ec:729
+#: src/dialogs/GlobalSettingsDialog.ec:736
 msgid "C++ Compiler"
 msgstr "C++ 编译器"
 
-#: src/designer/CodeEditor.ec:81 src/ide.ec:91 src/ide.ec:122
+#: src/designer/CodeEditor.ec:81 src/ide.ec:100 src/ide.ec:131
 msgid ""
 "C/C++/eC Files (*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
 msgstr ""
 "C/C++/eC文件(*.ec, *.eh, *.c, *.cpp, *.cc, *.cxx, *.h, *.hpp, *.hh, *.hxx)"
 
-#: src/designer/CodeEditor.ec:83 src/ide.ec:93 src/ide.ec:124
+#: src/designer/CodeEditor.ec:83 src/ide.ec:102 src/ide.ec:133
 msgid "C/C++/eC Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 msgstr "C/C++/eC源文件(*.ec, *.c, *.cpp, *.cc, *.cxx)"
 
-#: src/ide.ec:2945
+#: src/ide.ec:3005
 msgid "CAPS"
 msgstr "CAPS"
 
-#: src/panels/CallStackView.ec:13 src/ide.ec:1382
+#: src/panels/CallStackView.ec:13 src/ide.ec:1444
 msgid "Call Stack"
 msgstr "调用堆栈(S)"
 
 #: src/dialogs/CompilersDetectionDialog.ec:142
-#: src/dialogs/FindInFilesDialog.ec:427 src/dialogs/GlobalSettingsDialog.ec:55
-#: src/dialogs/NewProjectDialog.ec:227 src/dialogs/NewProjectDialog.ec:581
-#: src/designer/CodeEditor.ec:5314 src/ProjectSettings.ec:185
+#: src/dialogs/FindInFilesDialog.ec:429 src/dialogs/GlobalSettingsDialog.ec:55
+#: src/dialogs/NewProjectDialog.ec:227 src/dialogs/NewProjectDialog.ec:580
+#: src/designer/CodeEditor.ec:5479 src/ProjectSettings.ec:185
 msgid "Cancel"
 msgstr "取消"
 
-#: src/ide.ec:1453
+#: src/ide.ec:1515
 msgid "Cascade"
 msgstr "层叠(C)"
 
 #: src/project/ProjectView.ec:236 src/project/ProjectView.ec:288
-#: src/project/ProjectView.ec:331 src/ide.ec:978
+#: src/project/ProjectView.ec:331 src/ide.ec:986
 msgid "Clean"
 msgstr "清理(E)"
 
-#: src/project/ProjectView.ec:235 src/ide.ec:964
+#: src/project/ProjectView.ec:235 src/ide.ec:972
 msgid "Clean Target"
 msgstr "清空目标文件"
 
-#: src/ide.ec:241
+#: src/ide.ec:250
 msgid "Clean project"
 msgstr "清理项目"
 
-#: src/project/ProjectView.ec:1015
+#: src/project/ProjectView.ec:1012
 msgid "Cleaning project %s target using the %s configuration...\n"
 msgstr "清空项目%s目标文件(用配置%s)...\n"
 
-#: src/project/ProjectView.ec:1021
+#: src/project/ProjectView.ec:1018
 msgid "Cleaning project %s using the %s configuration...\n"
 msgstr "正在清理项目 %s (引用配置 %s)...\n"
 
@@ -453,23 +457,27 @@ msgstr "正在清理项目 %s (引用配置 %s)...\n"
 msgid "Clear"
 msgstr "清除"
 
-#: src/documents/PictureEdit.ec:288 src/ide.ec:669 src/ide.ec:880
+#: src/designer/CodeEditor.ec:2012
+msgid "Clear trailing spaces"
+msgstr "清除尾部空白"
+
+#: src/documents/PictureEdit.ec:308 src/ide.ec:677 src/ide.ec:888
 msgid "Close"
 msgstr "关闭(C)"
 
-#: src/ide.ec:1448
+#: src/ide.ec:1510
 msgid "Close All"
 msgstr "关闭所有(L)"
 
-#: src/ide.ec:3015
+#: src/ide.ec:3075
 msgid "Close IDE"
 msgstr "关闭IDE"
 
-#: src/ide.ec:1417
+#: src/ide.ec:1479
 msgid "Color Picker..."
 msgstr "颜色拾取(C)..."
 
-#: src/documents/PictureEdit.ec:94 src/documents/PictureEdit.ec:282
+#: src/documents/PictureEdit.ec:100 src/documents/PictureEdit.ec:302
 msgid "Color Table"
 msgstr "颜色表(R)"
 
@@ -477,7 +485,7 @@ msgstr "颜色表(R)"
 msgid "Command History"
 msgstr "命令历史"
 
-#: src/dialogs/WorkspaceSettings.ec:22
+#: src/dialogs/WorkspaceSettings.ec:38
 msgid "Command Line Arguments"
 msgstr "命令行参数(A)"
 
@@ -485,11 +493,11 @@ msgstr "命令行参数(A)"
 msgid "Command:"
 msgstr "命令:"
 
-#: src/ProjectSettings.ec:1727 src/ProjectSettings.ec:1760
+#: src/ProjectSettings.ec:1723 src/ProjectSettings.ec:1756
 msgid "Common"
 msgstr "公共"
 
-#: src/ide.ec:1529
+#: src/ide.ec:1591
 msgid "Community Forums"
 msgstr "社区论坛"
 
@@ -497,29 +505,29 @@ msgstr "社区论坛"
 msgid "Compile"
 msgstr "编译(C)"
 
-#: src/ide.ec:2971
+#: src/ide.ec:3031
 msgid "Compile %s"
 msgstr "编译%s"
 
-#: src/ProjectSettings.ec:1907
+#: src/ProjectSettings.ec:1903
 msgid "Compiler"
 msgstr "编译器"
 
-#: src/dialogs/GlobalSettingsDialog.ec:278
+#: src/dialogs/GlobalSettingsDialog.ec:274
 #: src/dialogs/ProjectTabSettings.ec:30
 msgid "Compiler Configurations Directory"
 msgstr "编译器配置目录"
 
-#: src/dialogs/GlobalSettingsDialog.ec:283
+#: src/dialogs/GlobalSettingsDialog.ec:279
 msgid "Compiler Configurations:"
 msgstr "编译器配置:"
 
-#: src/ProjectSettings.ec:2069
+#: src/ProjectSettings.ec:2065
 msgid "Compiler Options"
 msgstr "编译器选项"
 
 #: src/dialogs/CompilersDetectionDialog.ec:115
-#: src/dialogs/GlobalSettingsDialog.ec:272
+#: src/dialogs/GlobalSettingsDialog.ec:268
 msgid "Compilers"
 msgstr "编译器"
 
@@ -527,24 +535,24 @@ msgstr "编译器"
 msgid "Compilers Detection"
 msgstr "编译器探测"
 
-#: src/project/ProjectView.ec:1155 src/project/ProjectView.ec:1158
+#: src/project/ProjectView.ec:1149 src/project/ProjectView.ec:1152
 msgid "Compiling"
 msgstr "编译"
 
-#: src/project/ProjectNode.ec:2436
+#: src/project/ProjectNode.ec:2440
 msgid "Compiling source file "
 msgstr "编译源文件 "
 
-#: src/project/Project.ec:1610
+#: src/project/Project.ec:1629
 msgid "Compiling...\n"
 msgstr "正在编译...\n"
 
-#: src/dialogs/FindInFilesDialog.ec:982 src/dialogs/FindInFilesDialog.ec:987
-#: src/dialogs/FindInFilesDialog.ec:992 src/dialogs/FindInFilesDialog.ec:996
+#: src/dialogs/FindInFilesDialog.ec:979 src/dialogs/FindInFilesDialog.ec:984
+#: src/dialogs/FindInFilesDialog.ec:989 src/dialogs/FindInFilesDialog.ec:993
 msgid "Completed"
 msgstr "完成了"
 
-#: src/ProjectSettings.ec:2189
+#: src/ProjectSettings.ec:2185
 msgid "Compress"
 msgstr "压缩(W)"
 
@@ -552,11 +560,11 @@ msgstr "压缩(W)"
 msgid "Condition"
 msgstr "条件"
 
-#: src/ProjectSettings.ec:1325
+#: src/ProjectSettings.ec:1323
 msgid "Configurations: "
 msgstr "配置: "
 
-#: src/ProjectSettings.ec:2183
+#: src/ProjectSettings.ec:2179
 msgid "Console Application"
 msgstr "控制台应用程序(C)"
 
@@ -565,11 +573,11 @@ msgstr "控制台应用程序(C)"
 msgid "Copy"
 msgstr "复制(C)"
 
-#: src/project/ProjectView.ec:2191
+#: src/project/ProjectView.ec:2196
 msgid "Couldn't create file."
 msgstr "无法创建文件."
 
-#: src/debugger/Debugger.ec:2970
+#: src/debugger/Debugger.ec:3041
 msgid "Couldn't read memory"
 msgstr "不能读内存"
 
@@ -585,7 +593,7 @@ msgstr "创建窗体(F)"
 msgid "Create directory?"
 msgstr "创建目录吗?"
 
-#: src/designer/CodeEditor.ec:1933 src/ide.ec:1029
+#: src/designer/CodeEditor.ec:2033 src/ide.ec:1037
 msgid "Debug"
 msgstr "调试(D)"
 
@@ -601,111 +609,111 @@ msgstr "调试生成符号"
 msgid "Debug Precompile"
 msgstr "调试预编译"
 
-#: src/dialogs/WorkspaceSettings.ec:12
+#: src/dialogs/WorkspaceSettings.ec:15
 msgid "Debug Working Directory"
 msgstr "调试工作目录(U)"
 
-#: src/project/ProjectView.ec:1155 src/project/ProjectView.ec:1158
+#: src/project/ProjectView.ec:1149 src/project/ProjectView.ec:1152
 msgid "Debug compiling"
 msgstr "调试编译"
 
-#: src/ProjectSettings.ec:2050
+#: src/ProjectSettings.ec:2046
 msgid "Debuggable"
 msgstr "可调试(G)"
 
-#: src/debugger/Debugger.ec:3874
+#: src/debugger/Debugger.ec:3979
 msgid "Debugger Error: No target process ID\n"
 msgstr "编译器错误: 没有目标进程ID\n"
 
-#: src/debugger/Debugger.ec:2433
+#: src/debugger/Debugger.ec:2368
 msgid "Debugger Fatal Error: Command %s for GDB is not available.\n"
 msgstr "调试器致命错: 在GDB中命令%s不可用.\n"
 
-#: src/debugger/Debugger.ec:2380
+#: src/debugger/Debugger.ec:2316
 msgid "Debugger Fatal Error: Command %s for Valgrind is not available.\n"
 msgstr "调试器致命错: 命令%s在Valgrind中不存在.\n"
 
-#: src/debugger/Debugger.ec:2456
+#: src/debugger/Debugger.ec:2391
 msgid "Debugger Fatal Error: Couldn't get GDB process ID\n"
 msgstr "调试发生致命错误:无法获得GDB进程ID\n"
 
-#: src/debugger/Debugger.ec:2406
+#: src/debugger/Debugger.ec:2341
 msgid "Debugger Fatal Error: Couldn't get Valgrind process ID\n"
 msgstr "调试器致命错: 没能获得Valgrind进程ID\n"
 
-#: src/debugger/Debugger.ec:2375
+#: src/debugger/Debugger.ec:2311
 msgid ""
 "Debugger Fatal Error: Couldn't open temporary log file for Valgrind output\n"
 msgstr "调试器致命错: 没能为Valgrind输出打开临时日志文件\n"
 
-#: src/debugger/Debugger.ec:2443
+#: src/debugger/Debugger.ec:2378
 msgid "Debugger Fatal Error: Couldn't start GDB\n"
 msgstr "调试发生致命错误:无法启动GDB\n"
 
-#: src/debugger/Debugger.ec:2393
+#: src/debugger/Debugger.ec:2328
 msgid "Debugger Fatal Error: Couldn't start Valgrind\n"
 msgstr "调试器致命错: 没能启动Valgrind\n"
 
-#: src/debugger/Debugger.ec:3287
+#: src/debugger/Debugger.ec:3390
 msgid "Debugger Fatal Error: GDB lost\n"
 msgstr "调试发生致命错误:GDB丢失\n"
 
-#: src/debugger/Debugger.ec:2886
+#: src/debugger/Debugger.ec:2936
 msgid "Debugger required for symbol evaluation in \"%s\""
 msgstr "调试器需要使用“%s”来计算符号"
 
-#: src/project/ProjectView.ec:1581
+#: src/project/ProjectView.ec:1579
 msgid "Debugging compressed applications is not supported\n"
 msgstr "不支持调试压缩应用程序\n"
 
-#: src/debugger/Debugger.ec:2592 src/debugger/Debugger.ec:3288
-#: src/debugger/Debugger.ec:3891
+#: src/debugger/Debugger.ec:2526 src/debugger/Debugger.ec:3391
+#: src/debugger/Debugger.ec:3996
 msgid "Debugging stopped\n"
 msgstr "调试结束\n"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1201
+#: src/dialogs/GlobalSettingsDialog.ec:1208
 msgid "Default Compiler"
 msgstr "默认编译器"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1165
+#: src/dialogs/GlobalSettingsDialog.ec:1172
 msgid "Default Intermediate Objects Directory"
 msgstr "默认中间结果目录(I)"
 
-#: src/ProjectSettings.ec:2013
+#: src/ProjectSettings.ec:2009
 msgid "Default Name Space"
 msgstr "默认命名空间"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1151
+#: src/dialogs/GlobalSettingsDialog.ec:1158
 msgid "Default Target Directory"
 msgstr "默认目标目录(T)"
 
-#: src/designer/Sheet.ec:529
+#: src/designer/Sheet.ec:530
 msgid "Delete"
 msgstr "删除"
 
-#: src/dialogs/GlobalSettingsDialog.ec:454 src/ProjectSettings.ec:1419
+#: src/dialogs/GlobalSettingsDialog.ec:450 src/ProjectSettings.ec:1417
 msgid "Delete "
 msgstr "删除 "
 
-#: src/designer/Sheet.ec:1276 src/designer/Sheet.ec:1288
+#: src/designer/Sheet.ec:1269 src/designer/Sheet.ec:1281
 msgid "Delete %s"
 msgstr "删除%s"
 
-#: src/project/ProjectView.ec:2425
+#: src/project/ProjectView.ec:2430
 msgid "Delete Folder"
 msgstr "删除文件夹"
 
-#: src/project/Project.ec:2238
+#: src/project/Project.ec:2295
 msgid "Deleting %s%s..."
 msgstr "删除%s%s..."
 
-#: src/project/ProjectView.ec:1213
+#: src/project/ProjectView.ec:1206
 msgid ""
 "Deleting intermediate objects for %s %s in project %s using the %s "
 "configuration...\n"
 msgstr "删除中间目标文件%s %s在项目 %s中(使用配置%s)...\n"
 
-#: src/project/ProjectView.ec:1216
+#: src/project/ProjectView.ec:1209
 msgid "Deleting intermediate objects for %s %s in project %s...\n"
 msgstr "删除中间目标文件%s %s在项目%s中...\n"
 
@@ -713,31 +721,31 @@ msgstr "删除中间目标文件%s %s在项目%s中...\n"
 msgid "Deprecated"
 msgstr "已过时的"
 
-#: src/debugger/Debugger.ec:2880
-msgid "Dereference failure for \"%s\""
-msgstr "撤销失败“%s”"
+#: src/debugger/Debugger.ec:2930
+msgid "Dereferencing error evaluating \"%s\""
+msgstr "计算\"%s\"时解析引用出错"
 
 #: src/dialogs/ProjectTabSettings.ec:40
 msgid "Description"
 msgstr "描述(A)"
 
-#: src/designer/Designer.ec:143
+#: src/designer/Designer.ec:142
 msgid "Designer"
 msgstr "设计器"
 
-#: src/designer/Sheet.ec:528 src/designer/Sheet.ec:534
+#: src/designer/Sheet.ec:529 src/designer/Sheet.ec:535
 msgid "Detach"
 msgstr "分离(D)"
 
-#: src/about.ec:48
+#: src/about.ec:49
 msgid "Developer (IDE, build system, EDA)"
 msgstr "开发者(IDE, 编译系统, EDA)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:569
+#: src/dialogs/GlobalSettingsDialog.ec:565
 msgid "Directories"
 msgstr "%s目录"
 
-#: src/dialogs/FindInFilesDialog.ec:453
+#: src/dialogs/FindInFilesDialog.ec:454
 msgid "Directory"
 msgstr "目录"
 
@@ -749,23 +757,23 @@ msgstr "目录不存在"
 msgid "Do you want to quickly create a temporary project?"
 msgstr "你想快速创建一个临时项目吗?"
 
-#: src/ide.ec:2159
+#: src/ide.ec:2222
 msgid "Do you want to terminate the debugging session in progress?"
 msgstr "你想结束正在调试的进程吗?"
 
-#: src/designer/CodeEditor.ec:2227 src/ide.ec:1764
+#: src/designer/CodeEditor.ec:2338 src/ide.ec:1828
 msgid "Document has been modified"
 msgstr "文档已经被修改"
 
-#: src/ide.ec:1501
+#: src/ide.ec:1563
 msgid "Documentation Folder"
 msgstr "文档目录"
 
-#: src/dialogs/GlobalSettingsDialog.ec:711
+#: src/dialogs/GlobalSettingsDialog.ec:718
 msgid "Ecere Archiver"
 msgstr "Ecere存档"
 
-#: src/ide.ec:3866
+#: src/ide.ec:3968
 msgid "Ecere IDE"
 msgstr "Ecere IDE 集成开发环境"
 
@@ -777,28 +785,29 @@ msgstr "Ecere项目"
 msgid "Ecere IDE Workspace"
 msgstr "Ecere解决方案"
 
-#: src/ide.ec:1491
+#: src/ide.ec:1553
 msgid "Ecere Tao of Programming [work in progress]"
 msgstr "Ecere编程之道[正在编写中]"
 
-#: src/designer/Sheet.ec:449 src/panels/CallStackView.ec:71
-#: src/panels/OutputView.ec:213 src/panels/ThreadsView.ec:95 src/ide.ec:788
+#: src/designer/CodeEditor.ec:2008 src/designer/Sheet.ec:451
+#: src/panels/CallStackView.ec:71 src/panels/OutputView.ec:213
+#: src/panels/ThreadsView.ec:95 src/ide.ec:796
 msgid "Edit"
 msgstr "编辑(E)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:228
+#: src/dialogs/GlobalSettingsDialog.ec:224
 msgid "Editor"
 msgstr "编辑器"
 
-#: src/debugger/Debugger.ec:2966
+#: src/debugger/Debugger.ec:3038
 msgid "Empty string"
 msgstr "空字符串"
 
-#: src/dialogs/GlobalSettingsDialog.ec:828
+#: src/dialogs/GlobalSettingsDialog.ec:835
 msgid "Environment"
 msgstr "环境"
 
-#: src/dialogs/GlobalSettingsDialog.ec:834 src/dialogs/WorkspaceSettings.ec:29
+#: src/dialogs/GlobalSettingsDialog.ec:841 src/dialogs/WorkspaceSettings.ec:45
 msgid "Environment Variables"
 msgstr "环境变量"
 
@@ -806,29 +815,33 @@ msgstr "环境变量"
 msgid "Error creating directory"
 msgstr "创建目录错误"
 
-#: src/project/Project.ec:2173
+#: src/debugger/Debugger.ec:2940 src/debugger/Debugger.ec:3185
+msgid "Error evaluating \"%s\""
+msgstr "计算“%s”时出错"
+
+#: src/project/Project.ec:2230
 msgid "Error executing make (%s) command\n"
 msgstr "执行make (%s) 命令错误\n"
 
-#: src/project/ProjectView.ec:686
+#: src/project/ProjectView.ec:681
 msgid ""
 "Error generating compiler configuration (Is the project/config directory "
 "writable?)\n"
 msgstr "错误生成编译器配置(是否项目/配置目录可写?)\n"
 
-#: src/project/ProjectView.ec:746
+#: src/project/ProjectView.ec:741
 msgid "Error generating makefile (Is the project directory writable?)\n"
 msgstr "生成makefile时出错(是否项目目录可写?)\n"
 
-#: src/ide.ec:654
+#: src/ide.ec:662
 msgid "Error opening file"
 msgstr "打开文件错误"
 
-#: src/ide.ec:2337
+#: src/ide.ec:2397
 msgid "Error opening project"
 msgstr "项目打开错误"
 
-#: src/ide.ec:866
+#: src/ide.ec:874
 msgid "Error opening project file"
 msgstr "打开项目文件错误"
 
@@ -836,36 +849,28 @@ msgstr "打开项目文件错误"
 msgid "Error writing project file"
 msgstr "写入项目文件错误"
 
-#: src/debugger/Debugger.ec:2847
-msgid "Error: Struct member not found for \"%s\""
-msgstr "错误:%s的结构成员未找到"
-
-#: src/dialogs/FindInFilesDialog.ec:813
+#: src/dialogs/FindInFilesDialog.ec:812
 msgid "Error: aborting search!\n"
 msgstr "错误: 终止搜索!\n"
 
-#: src/debugger/Debugger.ec:3079
-msgid "Evaluation failed for \"%s\" of type \"%s\""
-msgstr "计算失败表达式“%s”类型为“%s”"
-
-#: src/ProjectSettings.ec:1999
+#: src/ProjectSettings.ec:1995
 msgid "Exclude from Build"
 msgstr "编译时不包括"
 
-#: src/dialogs/NewProjectDialog.ec:332 src/dialogs/NewProjectDialog.ec:591
-#: src/ProjectSettings.ec:1185
+#: src/dialogs/NewProjectDialog.ec:332 src/dialogs/NewProjectDialog.ec:590
+#: src/ProjectSettings.ec:1183
 msgid "Executable"
 msgstr "可执行"
 
-#: src/dialogs/GlobalSettingsDialog.ec:564
+#: src/dialogs/GlobalSettingsDialog.ec:560
 msgid "Executable Files"
 msgstr "可执行文件"
 
-#: src/dialogs/GlobalSettingsDialog.ec:753
+#: src/dialogs/GlobalSettingsDialog.ec:760
 msgid "Executable Launcher"
 msgstr "可执行启动器"
 
-#: src/ide.ec:728
+#: src/ide.ec:736
 msgid "Exit"
 msgstr "退出(X)"
 
@@ -873,41 +878,41 @@ msgstr "退出(X)"
 msgid "Expression"
 msgstr "表达式"
 
-#: src/ide.ec:1519
+#: src/ide.ec:1581
 msgid "Extras Folder"
 msgstr "附加目录"
 
-#: src/ProjectSettings.ec:2024
+#: src/ProjectSettings.ec:2020
 msgid "Fast Math"
 msgstr "快速匹配"
 
-#: src/project/Project.ec:1909
+#: src/project/Project.ec:1967
 msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "常规错误: 子进程异常终止\n"
 
-#: src/project/ProjectView.ec:497 src/designer/CodeEditor.ec:1929
-#: src/designer/Designer.ec:150 src/documents/PictureEdit.ec:53 src/ide.ec:616
-#: src/ide.ec:3406
+#: src/project/ProjectView.ec:497 src/designer/CodeEditor.ec:2004
+#: src/designer/Designer.ec:149 src/documents/PictureEdit.ec:54 src/ide.ec:624
+#: src/ide.ec:3465
 msgid "File"
 msgstr "文件(F)"
 
-#: src/project/Project.ec:2061 src/project/ProjectView.ec:1209
+#: src/project/Project.ec:2118 src/project/ProjectView.ec:1202
 msgid "File %s is excluded from current build configuration.\n"
 msgstr "文件%s包含当前生成配置.\n"
 
-#: src/ide.ec:2432 src/ide.ec:2444
+#: src/ide.ec:2492 src/ide.ec:2504
 msgid "File doesn't exist."
 msgstr "文件不存在."
 
-#: src/project/ProjectView.ec:2180 src/ide.ec:2492
+#: src/project/ProjectView.ec:2185 src/ide.ec:2552
 msgid "File doesn't exist. Create?"
 msgstr "文件不存在. 要创建吗?"
 
-#: src/dialogs/FindInFilesDialog.ec:350
+#: src/dialogs/FindInFilesDialog.ec:352
 msgid "File name:"
 msgstr "文件名(N):"
 
-#: src/designer/CodeEditor.ec:1417
+#: src/designer/CodeEditor.ec:1492
 msgid "File not in project error"
 msgstr "文件不在项目中"
 
@@ -915,19 +920,19 @@ msgstr "文件不在项目中"
 msgid "File with same name already in project."
 msgstr "相同文件名已经存在."
 
-#: src/project/Workspace.ec:1265
+#: src/project/Workspace.ec:1261
 msgid "File%s not found"
 msgstr "文件%s没找到"
 
-#: src/ProjectSettings.ec:1921
+#: src/ProjectSettings.ec:1917
 msgid "Files"
 msgstr "Files"
 
-#: src/dialogs/FindInFilesDialog.ec:337
+#: src/dialogs/FindInFilesDialog.ec:339
 msgid "Filter:"
 msgstr "过滤(L):"
 
-#: src/dialogs/FindInFilesDialog.ec:125 src/dialogs/FindInFilesDialog.ec:392
+#: src/dialogs/FindInFilesDialog.ec:125 src/dialogs/FindInFilesDialog.ec:394
 #: src/panels/CallStackView.ec:22 src/panels/CallStackView.ec:86
 #: src/panels/OutputView.ec:228 src/panels/ThreadsView.ec:110
 msgid "Find"
@@ -937,7 +942,7 @@ msgstr "查找(F)"
 msgid "Find In Files"
 msgstr "文件中查找"
 
-#: src/ide.ec:689
+#: src/ide.ec:697
 msgid "Find In Files..."
 msgstr "在文件中查找(F)..."
 
@@ -951,34 +956,34 @@ msgstr "查找下一个(N)"
 msgid "Find Previous"
 msgstr "查找上一个(E)"
 
-#: src/dialogs/FindInFilesDialog.ec:231
+#: src/dialogs/FindInFilesDialog.ec:233
 msgid "Find in:"
 msgstr "查找从(I):"
 
-#: src/dialogs/FindInFilesDialog.ec:361
+#: src/dialogs/FindInFilesDialog.ec:363
 msgid "Find what:"
 msgstr "查找(T):"
 
-#: src/dialogs/FindInFilesDialog.ec:301 src/dialogs/FindInFilesDialog.ec:306
+#: src/dialogs/FindInFilesDialog.ec:303 src/dialogs/FindInFilesDialog.ec:308
 msgid "Find where:"
 msgstr "查找路径(H)："
 
-#: src/ProjectSettings.ec:1218
+#: src/ProjectSettings.ec:1216
 msgid "For Size (-Os)"
 msgstr "体积优先(-Os)"
 
-#: src/ProjectSettings.ec:1214
+#: src/ProjectSettings.ec:1212
 msgid "For Speed (-O2)"
 msgstr "速度优先(-O2)"
 
-#: src/ide.ec:2647
+#: src/ide.ec:2707
 msgctxt ""
 "Found %d match%s in \"%s\"%s\n"
 "\n"
 msgid "Found"
 msgstr "找到"
 
-#: src/dialogs/FindInFilesDialog.ec:1056
+#: src/dialogs/FindInFilesDialog.ec:1053
 msgid ""
 "Found %d match%s in \"%s\"%s\n"
 "\n"
@@ -994,35 +999,35 @@ msgstr "GDB命令"
 msgid "GIF Image"
 msgstr "GIF图片"
 
-#: src/IDESettings.ec:736
+#: src/IDESettings.ec:739
 msgid "GNU Compiler Collection (GCC) / GNU Make"
 msgstr "GNU Compiler Collection (GCC) / GNU Make"
 
-#: src/dialogs/GlobalSettingsDialog.ec:735
+#: src/dialogs/GlobalSettingsDialog.ec:742
 msgid "GNU Make"
 msgstr "GNU Make"
 
-#: src/dialogs/GlobalSettingsDialog.ec:741
+#: src/dialogs/GlobalSettingsDialog.ec:748
 msgid "GNU Toolchain Prefix"
 msgstr "GNU工具链前缀"
 
-#: src/project/ProjectView.ec:728
+#: src/project/ProjectView.ec:723
 msgid "Generating "
 msgstr "正在生成 "
 
-#: src/project/ProjectView.ec:148 src/project/ProjectView.ec:724
+#: src/project/ProjectView.ec:148 src/project/ProjectView.ec:719
 msgid "Generating Makefile & Dependencies..."
 msgstr "正在生成Makefile和依赖项..."
 
-#: src/project/ProjectView.ec:699
+#: src/project/ProjectView.ec:694
 msgid "Generating Visual Studio Project..."
 msgstr "生成Visual Studio项目..."
 
-#: src/project/ProjectView.ec:696
+#: src/project/ProjectView.ec:691
 msgid "Generating Visual Studio Solution..."
 msgstr "生成Visual Studio解决方案..."
 
-#: src/project/Project.ec:1615
+#: src/project/Project.ec:1634
 msgid "Generating symbols...\n"
 msgstr "正在生成符号...\n"
 
@@ -1030,15 +1035,15 @@ msgstr "正在生成符号...\n"
 msgid "Global Settings"
 msgstr "全局配置"
 
-#: src/ide.ec:710
+#: src/ide.ec:718
 msgid "Global Settings..."
 msgstr "全局配置(G)..."
 
-#: src/designer/Sheet.ec:527 src/designer/Sheet.ec:533
+#: src/designer/Sheet.ec:528 src/designer/Sheet.ec:534
 msgid "Go to"
 msgstr "跳至(G)"
 
-#: src/ide.ec:1440
+#: src/ide.ec:1502
 msgid "Graphics Driver"
 msgstr "图形驱动(V)"
 
@@ -1046,17 +1051,13 @@ msgstr "图形驱动(V)"
 msgid "Header Files for C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
 msgstr "C/C++头文件(*.eh, *.h, *.hpp, *.hh, *.hxx)"
 
-#: src/project/ProjectView.ec:46 src/ide.ec:92 src/ide.ec:123
+#: src/project/ProjectView.ec:46 src/ide.ec:101 src/ide.ec:132
 msgid "Header Files for eC/C/C++ (*.eh, *.h, *.hpp, *.hh, *.hxx)"
 msgstr "eC/C/C++头文件(*.eh, *.h, *.hpp, *.hh, *.hxx)"
 
-#: src/ide.ec:1459
+#: src/ide.ec:1521
 msgid "Help"
 msgstr "帮助(H)"
-
-#: src/ide.ec:3794
-msgid "Help Translate"
-msgstr ""
 
 #: src/panels/BreakpointsView.ec:120
 msgid "Hits"
@@ -1074,17 +1075,14 @@ msgstr "我不同意"
 msgid "Ignore Count"
 msgstr "忽略计数"
 
-#: src/documents/PictureEdit.ec:56 src/ide.ec:105 src/ide.ec:1260
+#: src/documents/PictureEdit.ec:57 src/ide.ec:114 src/ide.ec:1322
 msgid "Image"
 msgstr "图片文件"
 
-#: src/documents/PictureEdit.ec:21 src/ide.ec:96
+#: src/project/ProjectView.ec:52 src/documents/PictureEdit.ec:21
+#: src/ide.ec:105
 msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
 msgstr "图片文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png, *.gif)"
-
-#: src/project/ProjectView.ec:52
-msgid "Image Files (*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
-msgstr "图像文件(*.jpg, *.jpeg, *.bmp, *.pcx, *.png,*.gif)"
 
 #: src/project/ProjectView.ec:482
 msgid "Import Folder"
@@ -1095,19 +1093,15 @@ msgstr "导入目录(I)..."
 msgid "Import Folder..."
 msgstr "导入目录(I)..."
 
-#: src/dialogs/GlobalSettingsDialog.ec:561
+#: src/dialogs/GlobalSettingsDialog.ec:557
 msgid "Include Files"
 msgstr "包含文件"
 
-#: src/dialogs/FindInFilesDialog.ec:331
+#: src/dialogs/FindInFilesDialog.ec:333
 msgid "Include Subdirectories"
 msgstr "包含子目录(U)"
 
-#: src/debugger/Debugger.ec:2889
-msgid "Incorrect debugger state for symbol evaluation in \"%s\""
-msgstr "用于计算的“%s”调试器状态不正确"
-
-#: src/documents/PictureEdit.ec:60
+#: src/documents/PictureEdit.ec:61
 msgid "Indexed Color..."
 msgstr "索引颜色(I)..."
 
@@ -1119,36 +1113,40 @@ msgstr "初始化调试器"
 msgid "Install"
 msgstr "安装"
 
-#: src/ProjectSettings.ec:2245
+#: src/ProjectSettings.ec:2241
 msgid "Install Commands"
 msgstr "安装指令"
 
-#: src/ProjectSettings.ec:1993
+#: src/debugger/Debugger.ec:2933
+msgid "Integer division by 0"
+msgstr "0作为除数"
+
+#: src/ProjectSettings.ec:1989
 msgid "Intermediate Objects Directory"
 msgstr "中间对象目录(J)"
 
-#: src/project/Project.ec:2246
+#: src/project/Project.ec:2303
 msgid "Intermediate objects directory"
 msgstr "中间对象目录"
 
-#: src/debugger/Debugger.ec:2988
-msgid "Invalid Enum Value"
-msgstr "无效枚举值"
+#: src/debugger/Debugger.ec:3069
+msgid "Invalid Enum Value ("
+msgstr "无效枚举值("
 
-#: src/debugger/Debugger.ec:1364 src/debugger/Debugger.ec:1380
-#: src/debugger/Debugger.ec:1393 src/debugger/Debugger.ec:1494
+#: src/debugger/Debugger.ec:1248 src/debugger/Debugger.ec:1264
+#: src/debugger/Debugger.ec:1277 src/debugger/Debugger.ec:1378
 msgid "Invalid Source Directory"
 msgstr "无效源码目录"
 
-#: src/debugger/Debugger.ec:3050
-msgid "Invalid Unicode Keypoint (0x%08X)"
-msgstr "无效Unicode Keypoint (0x%08X)"
+#: src/debugger/Debugger.ec:3131
+msgid "Invalid Unicode Codepoint (0x%08X)"
+msgstr "无效Unicode码字(0x%08X)"
 
-#: src/debugger/Debugger.ec:3086
+#: src/debugger/Debugger.ec:3193
 msgid "Invalid expression: \"%s\""
 msgstr "无效表达式:“%s”"
 
-#: src/designer/CodeEditor.ec:1416
+#: src/designer/CodeEditor.ec:1491
 msgid "It can't be compiled."
 msgstr "无法完成编译"
 
@@ -1156,23 +1154,19 @@ msgstr "无法完成编译"
 msgid "JPG Image"
 msgstr "JPG图片"
 
-#: src/dialogs/GlobalSettingsDialog.ec:238
+#: src/dialogs/GlobalSettingsDialog.ec:234
 msgid "Keep caret visible (move along) when scrolling"
 msgstr "使用滚轴时光标可见"
 
-#: src/ide.ec:1444
-msgid "Language"
-msgstr ""
-
-#: src/about.ec:46
+#: src/about.ec:47
 msgid "Lead Architect and Developer"
 msgstr "首席架构师及开发者"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1064
+#: src/dialogs/GlobalSettingsDialog.ec:1071
 msgid "Libraries to exclude"
 msgstr "需要排除的库文件"
 
-#: src/dialogs/GlobalSettingsDialog.ec:562
+#: src/dialogs/GlobalSettingsDialog.ec:558
 msgid "Library Files"
 msgstr "库文件"
 
@@ -1184,35 +1178,35 @@ msgstr "许可(A)"
 msgid "License Agreements"
 msgstr "许可协议"
 
-#: src/ProjectSettings.ec:2141
+#: src/ProjectSettings.ec:2137
 msgid "Linker"
 msgstr "连接器"
 
-#: src/project/Project.ec:1740
+#: src/project/Project.ec:1759
 msgid "Linker "
 msgstr "链接器 "
 
-#: src/project/Project.ec:1731 src/project/Project.ec:1745
+#: src/project/Project.ec:1750 src/project/Project.ec:1764
 msgid "Linker Error: "
 msgstr "链接器错误: "
 
-#: src/project/Project.ec:1725
+#: src/project/Project.ec:1744
 msgid "Linker Message: "
 msgstr "链接器消息: "
 
-#: src/ProjectSettings.ec:2176
+#: src/ProjectSettings.ec:2172
 msgid "Linker Options"
 msgstr "连接器选项(O)"
 
-#: src/project/Project.ec:1627
+#: src/project/Project.ec:1646
 msgid "Linking...\n"
 msgstr "正在链接...\n"
 
-#: src/designer/CodeEditor.ec:707 src/designer/CodeEditor.ec:744
+#: src/designer/CodeEditor.ec:781 src/designer/CodeEditor.ec:818
 msgid "Ln %d, Col %d"
 msgstr "Ln %d, Col %d"
 
-#: src/debugger/Debugger.ec:4034
+#: src/debugger/Debugger.ec:4162
 msgid ""
 "Loaded library %s doesn't match the %s target of the %s added project.\n"
 msgstr "已调入的库%s 与 %s的目标文件不匹配(来自已添加的%s项目).\n"
@@ -1225,60 +1219,80 @@ msgstr "位置"
 msgid "Lose Changes?"
 msgstr "放弃修改吗?"
 
-#: src/project/ProjectView.ec:736
+#: src/project/ProjectView.ec:731
 msgid "Makefile doesn't exist. "
 msgstr "Makefile不存在. "
 
-#: src/dialogs/FindInFilesDialog.ec:375
+#: src/dialogs/FindInFilesDialog.ec:377
 msgid "Match case"
 msgstr "区分大小写(C)"
 
-#: src/debugger/Debugger.ec:2867
+#: src/debugger/Debugger.ec:2881
+msgid "Member \"%s\" not found in %s \"%s\""
+msgstr "在%s \"%s\"中没有发现成员\"％"
+
+#: src/debugger/Debugger.ec:2896
 msgid "Member \"%s\" not found in class \"%s\""
 msgstr "成员“%s”在类“%s”中未找到"
 
-#: src/debugger/Debugger.ec:2877
+#: src/debugger/Debugger.ec:2899
+msgid "Member \"%s\" not found in type \"%s\""
+msgstr "在类型\"%s\"中没有发现成员\"%s\""
+
+#: src/debugger/Debugger.ec:2927
 msgid "Memory can't be read at %s"
 msgstr "无法读取内存%s"
 
-#: src/ProjectSettings.ec:2030
+#: src/ProjectSettings.ec:2026
 msgid "MemoryGuard"
 msgstr "内存保护(M)"
 
-#: src/designer/CodeEditor.ec:5243 src/designer/CodeEditor.ec:5285
+#: src/designer/CodeEditor.ec:5408 src/designer/CodeEditor.ec:5450
 msgid "Method is unused. Move method inside instance?"
 msgstr "方法未使用. 是否移除方法?"
 
-#: src/designer/Sheet.ec:1281
+#: src/designer/Sheet.ec:1274
 msgid "Method still contains code. Are you sure you want to delete it?"
 msgstr "方法中包含代码，你确定要删除它吗?"
 
-#: src/designer/Sheet.ec:421 src/designer/Sheet.ec:429
+#: src/designer/Sheet.ec:423 src/designer/Sheet.ec:431
 msgid "Methods"
 msgstr "方法"
 
-#: src/IDESettings.ec:739
+#: src/IDESettings.ec:742
 msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
 msgstr "Microsoft Visual Studio 2005 (8.0)编译器"
 
-#: src/IDESettings.ec:740
+#: src/IDESettings.ec:743
 msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
 msgstr "Microsoft Visual Studio 2008 (9.0)编译器"
 
-#: src/IDESettings.ec:742
+#: src/IDESettings.ec:745
 msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
 msgstr "Microsoft Visual Studio 2010 (10.0)编译器"
 
 #: src/designer/Sheet.ec:800 src/designer/Sheet.ec:931
-#: src/designer/Sheet.ec:1654 src/designer/Sheet.ec:1655
+#: src/designer/Sheet.ec:1663 src/designer/Sheet.ec:1664
 msgid "Misc"
 msgstr "杂项"
 
-#: src/debugger/Debugger.ec:3077
-msgid "Missing property evaluation support for \"%s\""
-msgstr "%s 参数丢失"
+#: src/debugger/Debugger.ec:2923
+msgid "Missing function evaluation for \"%s\""
+msgstr "\"%s\"函数未计算"
 
-#: src/documents/PictureEdit.ec:57
+#: src/debugger/Debugger.ec:2921
+msgid "Missing function evaluation for call to \"%s\""
+msgstr "调用“%s\"时函数未计算"
+
+#: src/debugger/Debugger.ec:2916
+msgid "Missing property evaluation for \"%s\""
+msgstr "”%s\"属性未计算"
+
+#: src/debugger/Debugger.ec:2914
+msgid "Missing property evaluation for \"%s\" in class \"%s\""
+msgstr "\"%s\"的属性未计算（在类\"%s\"中）"
+
+#: src/documents/PictureEdit.ec:58
 msgid "Mode"
 msgstr "Mode"
 
@@ -1290,11 +1304,11 @@ msgstr "模块名称(U)"
 msgid "Module Version"
 msgstr "模块版本"
 
-#: src/dialogs/GlobalSettingsDialog.ec:232
+#: src/dialogs/GlobalSettingsDialog.ec:228
 msgid "Move code editor caret freely past end of line"
 msgstr "编辑器自动在行尾补全"
 
-#: src/ide.ec:2953
+#: src/ide.ec:3013
 msgid "NUM"
 msgstr "NUM"
 
@@ -1302,15 +1316,15 @@ msgstr "NUM"
 msgid "Name"
 msgstr "名称"
 
-#: src/project/ProjectView.ec:2228
+#: src/project/ProjectView.ec:2233
 msgid "Name Conflict"
 msgstr "名称冲突"
 
-#: src/designer/CodeEditor.ec:5310
+#: src/designer/CodeEditor.ec:5475
 msgid "Name detached method"
 msgstr "命名分离方法"
 
-#: src/ide.ec:619
+#: src/ide.ec:627
 msgid "New"
 msgstr "新建(N)"
 
@@ -1324,121 +1338,121 @@ msgstr "新建文件(L)..."
 msgid "New Folder..."
 msgstr "新建目录(N)..."
 
-#: src/dialogs/NewProjectDialog.ec:13 src/ide.ec:797
+#: src/dialogs/NewProjectDialog.ec:13 src/ide.ec:805
 msgid "New Project"
 msgstr "新建项目"
 
-#: src/ide.ec:200
+#: src/ide.ec:209
 msgid "New file"
 msgstr "新建文件"
 
-#: src/ide.ec:223
+#: src/ide.ec:232
 msgid "New project"
 msgstr "新建项目"
 
-#: src/ide.ec:793
+#: src/ide.ec:801
 msgid "New..."
 msgstr "新建(N)..."
 
-#: src/ide.ec:1450
+#: src/ide.ec:1512
 msgid "Next"
 msgstr "下一个(N)"
 
-#: src/ProjectSettings.ec:2062
+#: src/ProjectSettings.ec:2058
 msgid "No Line Numbers"
 msgstr "没有行号(N)"
 
-#: src/project/ProjectNode.ec:2429
+#: src/project/ProjectNode.ec:2433
 msgid "No compilation required for header file "
 msgstr "头文件无需编译 "
 
-#: src/debugger/Debugger.ec:2664
+#: src/debugger/Debugger.ec:2600
 msgid "No source file found for selected frame"
 msgstr "选择的框架中未找到源文件"
 
-#: src/ProjectSettings.ec:1210 src/ProjectSettings.ec:1239
+#: src/ProjectSettings.ec:1208 src/ProjectSettings.ec:1237
 msgid "None"
 msgstr "无"
 
-#: src/ProjectSettings.ec:1235
+#: src/ProjectSettings.ec:1233
 msgid "Normal"
 msgstr "一般"
 
-#: src/dialogs/FindInFilesDialog.ec:413
+#: src/dialogs/FindInFilesDialog.ec:415
 msgid "Nothing to be found. Please specify at least one criteria."
 msgstr "没找到. 请提供至少一个关键词."
 
-#: src/debugger/Debugger.ec:2931
+#: src/debugger/Debugger.ec:2983
 msgid "Null string"
 msgstr "无效字符串"
 
-#: src/debugger/Debugger.ec:2892
+#: src/debugger/Debugger.ec:2944
 msgid "Null type for \"%s\""
 msgstr "类型“%s”为空"
 
-#: src/dialogs/GlobalSettingsDialog.ec:892
+#: src/dialogs/GlobalSettingsDialog.ec:899
 msgid "Number of parallel build jobs"
 msgstr "并行生成数量(J)"
 
 #: src/dialogs/CompilersDetectionDialog.ec:130
 #: src/dialogs/GlobalSettingsDialog.ec:63 src/dialogs/NewProjectDialog.ec:40
-#: src/dialogs/NewProjectDialog.ec:367 src/designer/CodeEditor.ec:5319
-#: src/about.ec:62 src/ProjectSettings.ec:224
+#: src/dialogs/NewProjectDialog.ec:367 src/designer/CodeEditor.ec:5484
+#: src/about.ec:63 src/ProjectSettings.ec:224
 msgid "OK"
 msgstr "确定(O)"
 
-#: src/ide.ec:2949
+#: src/ide.ec:3009
 msgid "OVR"
 msgstr "OVR"
 
 #: src/dialogs/GlobalSettingsDialog.ec:9 src/project/ProjectView.ec:286
-#: src/designer/CodeEditor.ec:140 src/ide.ec:131
+#: src/designer/CodeEditor.ec:140 src/ide.ec:140
 msgid "Open"
 msgstr "打开"
 
-#: src/ide.ec:136
+#: src/ide.ec:145
 msgid "Open Additional Project"
 msgstr "打开项目"
 
-#: src/designer/CodeEditor.ec:147 src/ide.ec:135 src/ide.ec:2218
+#: src/designer/CodeEditor.ec:147 src/ide.ec:144 src/ide.ec:2281
 msgid "Open Project"
 msgstr "打开项目"
 
-#: src/ide.ec:655
+#: src/ide.ec:663
 msgid "Open a different file?"
 msgstr "打开另一个文件吗?"
 
-#: src/ide.ec:2337
+#: src/ide.ec:2397
 msgid "Open a different project?"
 msgstr "要打开不同的项目吗?"
 
-#: src/ide.ec:202
+#: src/ide.ec:211
 msgid "Open file"
 msgstr "打开文件"
 
-#: src/ide.ec:225
+#: src/ide.ec:234
 msgid "Open project"
 msgstr "打开项目"
 
-#: src/ide.ec:633 src/ide.ec:823
+#: src/ide.ec:641 src/ide.ec:831
 msgid "Open..."
 msgstr "打开(O)..."
 
-#: src/ProjectSettings.ec:2044
+#: src/ProjectSettings.ec:2040
 msgid "Optimization"
 msgstr "优化(O)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:868
+#: src/dialogs/GlobalSettingsDialog.ec:875
 msgid "Options"
 msgstr "选项"
 
-#: src/designer/Sheet.ec:1294
+#: src/designer/Sheet.ec:1287
 msgid ""
 "Other methods are still attached to this method. Are you sure you want to "
 "delete it?"
 msgstr "其他方法附加在此方法中. 你确定要删除它吗?"
 
-#: src/ide.ec:1346
+#: src/ide.ec:1408
 msgid "Output"
 msgstr "输出(O)"
 
@@ -1446,7 +1460,7 @@ msgstr "输出(O)"
 msgid "Output:"
 msgstr "输出:"
 
-#: src/designer/Sheet.ec:513
+#: src/designer/Sheet.ec:514
 msgid "Override"
 msgstr "优先(O)"
 
@@ -1462,11 +1476,11 @@ msgstr "PNG图片"
 msgid "Path"
 msgstr "Path"
 
-#: src/ProjectSettings.ec:1471
+#: src/ProjectSettings.ec:1469
 msgid "Platforms: "
 msgstr "平台: "
 
-#: src/project/ProjectView.ec:1399 src/project/ProjectView.ec:1429
+#: src/project/ProjectView.ec:1392 src/project/ProjectView.ec:1421
 msgid "Please select files from a single project.\n"
 msgstr "请从单一的项目中选择多个文件.\n"
 
@@ -1474,40 +1488,40 @@ msgstr "请从单一的项目中选择多个文件.\n"
 msgid "Pointer"
 msgstr "指针"
 
-#: src/IDESettings.ec:738
+#: src/IDESettings.ec:741
 msgid "Portable C Compiler / GNU Make"
 msgstr "Portable C Compiler / GNU Make"
 
-#: src/ProjectSettings.ec:2238
+#: src/ProjectSettings.ec:2234
 msgid "Post-build Commands"
 msgstr "生成后命令(T)"
 
-#: src/ProjectSettings.ec:2231
+#: src/ProjectSettings.ec:2227
 msgid "Pre-build Commands"
 msgstr "预生成命令(E)"
 
-#: src/ProjectSettings.ec:2006
+#: src/ProjectSettings.ec:2002
 msgid "Preprocessor Definitions"
 msgstr "预处理器定义(D)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:988
+#: src/dialogs/GlobalSettingsDialog.ec:995
 msgid "Preprocessor directives"
 msgstr "预处理指令"
 
-#: src/ide.ec:1451
+#: src/ide.ec:1513
 msgid "Previous"
 msgstr "上一个(P)"
 
-#: src/ProjectSettings.ec:2056
+#: src/ProjectSettings.ec:2052
 msgid "Profiling Data"
 msgstr "资料区(P)"
 
-#: src/ide.ec:790
+#: src/ide.ec:798
 msgctxt "Menu"
 msgid "Project"
 msgstr "项目(P)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:1145
+#: src/dialogs/GlobalSettingsDialog.ec:1152
 #: src/dialogs/ProjectTabSettings.ec:8
 msgid "Project"
 msgstr "项目"
@@ -1516,35 +1530,35 @@ msgstr "项目"
 msgid "Project Already Exists"
 msgstr "项目已经存在"
 
-#: src/project/ProjectView.ec:898
+#: src/project/ProjectView.ec:895
 msgid "Project Build"
 msgstr "Project Build"
 
-#: src/project/ProjectView.ec:1021
+#: src/project/ProjectView.ec:1018
 msgid "Project Clean"
 msgstr "项目清理"
 
-#: src/project/ProjectView.ec:1015
+#: src/project/ProjectView.ec:1012
 msgid "Project Clean Target"
 msgstr "项目清空目标"
 
-#: src/ide.ec:885
+#: src/ide.ec:893
 msgid "Project Close"
 msgstr "关闭项目"
 
-#: src/ide.ec:116
+#: src/ide.ec:125
 msgid "Project File"
 msgstr "项目文件"
 
-#: src/project/ProjectView.ec:60 src/ide.ec:111
+#: src/project/ProjectView.ec:60 src/ide.ec:120
 msgid "Project Files (*.epj)"
 msgstr "项目文件(*.epj)"
 
-#: src/project/ProjectView.ec:929
+#: src/project/ProjectView.ec:926
 msgid "Project Install"
 msgstr "项目安装"
 
-#: src/project/ProjectView.ec:962
+#: src/project/ProjectView.ec:959
 msgid "Project Link"
 msgstr "项目链接"
 
@@ -1552,11 +1566,11 @@ msgstr "项目链接"
 msgid "Project Name"
 msgstr "项目名称"
 
-#: src/project/ProjectView.ec:1027
+#: src/project/ProjectView.ec:1024
 msgid "Project Real Clean"
 msgstr "项目实际清理"
 
-#: src/project/ProjectView.ec:996
+#: src/project/ProjectView.ec:993
 msgid "Project Rebuild"
 msgstr "项目重新生成"
 
@@ -1564,20 +1578,20 @@ msgstr "项目重新生成"
 msgid "Project Settings"
 msgstr "项目设置"
 
-#: src/ide.ec:1264
+#: src/ide.ec:1326
 msgid "Project View"
 msgstr "项目文件"
 
-#: src/project/Project.ec:903
+#: src/project/Project.ec:907
 msgid "Project has been modified"
 msgstr "项目已被修改"
 
-#: src/project/ProjectView.ec:738
+#: src/project/ProjectView.ec:733
 msgid "Project has been modified. "
 msgstr "工程已被修改. "
 
-#: src/dialogs/NodeProperties.ec:12 src/designer/Sheet.ec:393
-#: src/designer/Sheet.ec:400 src/designer/Sheet.ec:605
+#: src/dialogs/NodeProperties.ec:12 src/designer/Sheet.ec:395
+#: src/designer/Sheet.ec:402 src/designer/Sheet.ec:606
 msgid "Properties"
 msgstr "属性"
 
@@ -1590,11 +1604,11 @@ msgstr "属性(P)..."
 msgid "Properties..."
 msgstr "属性(P)..."
 
-#: src/debugger/Debugger.ec:943
+#: src/debugger/Debugger.ec:829
 msgid "Provide source file location for %s"
 msgstr "为源码%s 指定位置"
 
-#: src/debugger/Debugger.ec:1467
+#: src/debugger/Debugger.ec:1351
 msgid "Provide source files location directory for %s"
 msgstr "为源码%s 指定位置"
 
@@ -1602,59 +1616,59 @@ msgstr "为源码%s 指定位置"
 msgid "Quick Project"
 msgstr "快速工程"
 
-#: src/ide.ec:841
+#: src/ide.ec:849
 msgid "Quick..."
 msgstr "快速项目(Q)..."
 
-#: src/documents/PictureEdit.ec:80
+#: src/documents/PictureEdit.ec:85
 msgid "RGB Color"
 msgstr "RGB颜色(R)"
 
-#: src/project/ProjectView.ec:237 src/ide.ec:992
+#: src/project/ProjectView.ec:237 src/ide.ec:1000
 msgid "Real Clean"
 msgstr "实际清理"
 
-#: src/designer/Sheet.ec:537
+#: src/designer/Sheet.ec:538
 msgid "Reattach"
 msgstr "重新分离(R)"
 
-#: src/project/ProjectView.ec:234 src/ide.ec:953
+#: src/project/ProjectView.ec:234 src/ide.ec:961
 msgid "Rebuild"
 msgstr "重新生成(R)"
 
-#: src/ide.ec:239
+#: src/ide.ec:248
 msgid "Rebuild project"
 msgstr "重新生成项目"
 
-#: src/project/ProjectView.ec:1000
+#: src/project/ProjectView.ec:997
 msgid "Rebuilding project %s using the %s configuration...\n"
 msgstr "正在重新生成项目%s(引用配置%s)...\n"
 
-#: src/ide.ec:723 src/ide.ec:3407
+#: src/ide.ec:731 src/ide.ec:3466
 msgid "Recent Files"
 msgstr "最近的文件"
 
-#: src/ide.ec:724 src/ide.ec:3408
+#: src/ide.ec:732 src/ide.ec:3467
 msgid "Recent Projects"
 msgstr "最近的项目"
 
-#: src/project/ProjectView.ec:238 src/ide.ec:245 src/ide.ec:1006
+#: src/project/ProjectView.ec:238 src/ide.ec:254 src/ide.ec:1014
 msgid "Regenerate Makefile"
 msgstr "重新生成Makefile"
 
-#: src/project/ProjectView.ec:730
+#: src/project/ProjectView.ec:725
 msgid "Regenerating "
 msgstr "正在重新生成 "
 
-#: src/project/ProjectView.ec:233 src/ide.ec:942
+#: src/project/ProjectView.ec:233 src/ide.ec:950
 msgid "Relink"
 msgstr "重新链接(L)"
 
-#: src/ide.ec:237
+#: src/ide.ec:246
 msgid "Relink project"
 msgstr "重新链接项目"
 
-#: src/project/ProjectView.ec:966
+#: src/project/ProjectView.ec:963
 msgid "Relinking project %s using the %s configuration...\n"
 msgstr "正在重新连接项目%s(引用配置%s)...\n"
 
@@ -1662,7 +1676,7 @@ msgstr "正在重新连接项目%s(引用配置%s)...\n"
 msgid "Remove"
 msgstr "移除(R)"
 
-#: src/project/ProjectView.ec:2448
+#: src/project/ProjectView.ec:2453
 msgid "Remove Project"
 msgstr "删除项目"
 
@@ -1670,7 +1684,7 @@ msgstr "删除项目"
 msgid "Remove project from workspace"
 msgstr "移除项目从解决方案中(R)"
 
-#: src/project/ProjectView.ec:1027
+#: src/project/ProjectView.ec:1024
 msgid ""
 "Removing intermediate objects directory for project %s using the %s "
 "configuration...\n"
@@ -1684,7 +1698,7 @@ msgstr "替换(R)"
 msgid "Replace In Files"
 msgstr "文件中替换"
 
-#: src/ide.ec:699
+#: src/ide.ec:707
 msgid "Replace In Files..."
 msgstr "在文件中替换(R)..."
 
@@ -1692,11 +1706,11 @@ msgstr "在文件中替换(R)..."
 msgid "Replace existing project?"
 msgstr "替换存在的项目吗?"
 
-#: src/dialogs/FindInFilesDialog.ec:367
+#: src/dialogs/FindInFilesDialog.ec:369
 msgid "Replace with:"
 msgstr "替换为(E):"
 
-#: src/dialogs/FindInFilesDialog.ec:1142
+#: src/dialogs/FindInFilesDialog.ec:1137
 msgid ""
 "Replaced %d match%s in \"%s\"%s\n"
 "\n"
@@ -1704,66 +1718,70 @@ msgstr ""
 "替换了%d个匹配处%s从“%s”%s\n"
 "\n"
 
-#: src/dialogs/FindInFilesDialog.ec:710
+#: src/dialogs/FindInFilesDialog.ec:709
 msgid "Replacing Editbox"
 msgstr "替换编辑框"
 
-#: src/ide.ec:259 src/ide.ec:1054
+#: src/ide.ec:268 src/ide.ec:1062
 msgid "Restart"
 msgstr "重新启动(R)"
 
-#: src/ide.ec:2072 src/ide.ec:2077
+#: src/ide.ec:2135 src/ide.ec:2140
 msgid "Resume"
 msgstr "继续调试"
 
-#: src/project/ProjectView.ec:1579 src/ide.ec:248 src/ide.ec:915
+#: src/ide.ec:1139
+msgid "Rubber Duck"
+msgstr "橡皮鸭"
+
+#: src/project/ProjectView.ec:1577 src/ide.ec:257 src/ide.ec:923
 msgid "Run"
 msgstr "运行(R)"
 
-#: src/designer/CodeEditor.ec:1934 src/ide.ec:1248
+#: src/designer/CodeEditor.ec:2034 src/ide.ec:1310
 msgid "Run To Cursor"
 msgstr "运行到光标处(C)"
 
-#: src/designer/CodeEditor.ec:1936 src/ide.ec:1250
+#: src/designer/CodeEditor.ec:2036 src/ide.ec:1312
 msgid "Run To Cursor At Same Level"
 msgstr "运行至光标所在位置"
 
-#: src/designer/CodeEditor.ec:1937 src/ide.ec:1251
+#: src/designer/CodeEditor.ec:2037 src/ide.ec:1313
 msgid "Run To Cursor At Same Level Skipping Breakpoints"
 msgstr "运行至光标所在位置(跳过断点)"
 
-#: src/designer/CodeEditor.ec:1935 src/ide.ec:1249
+#: src/designer/CodeEditor.ec:2035 src/ide.ec:1311
 msgid "Run To Cursor Skipping Breakpoints"
 msgstr "运行到光标处跳过断点(U)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:747
+#: src/dialogs/GlobalSettingsDialog.ec:754
 msgid "SYSROOT"
 msgstr "SYSROOT"
 
-#: src/ide.ec:2371
+#: src/ide.ec:2431
 msgid "Same Project"
 msgstr "相同项目"
 
-#: src/ide.ec:1510
+#: src/ide.ec:1572
 msgid "Samples Folder"
 msgstr "样例文件"
 
 #: src/project/ProjectView.ec:269 src/project/ProjectView.ec:498
-#: src/designer/CodeEditor.ec:1930 src/designer/Designer.ec:153
-#: src/documents/PictureEdit.ec:54 src/ide.ec:673
+#: src/designer/CodeEditor.ec:2005 src/designer/Designer.ec:152
+#: src/documents/PictureEdit.ec:55 src/ide.ec:681
 msgid "Save"
 msgstr "保存(S)"
 
-#: src/ide.ec:685
+#: src/ide.ec:693
 msgid "Save All"
 msgstr "全部保存(L)"
 
-#: src/designer/CodeEditor.ec:1931 src/designer/Designer.ec:161
-#: src/documents/PictureEdit.ec:55 src/ide.ec:684
+#: src/designer/CodeEditor.ec:2006 src/designer/Designer.ec:160
+#: src/documents/PictureEdit.ec:56 src/ide.ec:692
 msgid "Save As..."
 msgstr "另存为(A)..."
 
-#: src/ide.ec:208
+#: src/ide.ec:217
 msgid "Save all"
 msgstr "全部保存"
 
@@ -1771,35 +1789,35 @@ msgstr "全部保存"
 msgid "Save changes to project options?"
 msgstr "保存改动选项吗?"
 
-#: src/ProjectSettings.ec:1883
+#: src/ProjectSettings.ec:1879
 msgid "Save changes to project settings?"
 msgstr "保存项目配置吗?"
 
-#: src/dialogs/WorkspaceSettings.ec:95
+#: src/dialogs/WorkspaceSettings.ec:125
 msgid "Save changes to workspace options?"
 msgstr "保存解决方案改动吗?"
 
-#: src/ide.ec:206
+#: src/ide.ec:215
 msgid "Save file"
 msgstr "保存文件"
 
-#: src/dialogs/FindInFilesDialog.ec:407
+#: src/dialogs/FindInFilesDialog.ec:409
 msgid "Search location does not exist. Please provide a valid location."
 msgstr "搜索位置不存在. 请提供一个合法位置."
 
-#: src/dialogs/FindInFilesDialog.ec:786
+#: src/dialogs/FindInFilesDialog.ec:785
 msgid "Searching %s"
 msgstr "搜索%s"
 
-#: src/dialogs/FindInFilesDialog.ec:747
+#: src/dialogs/FindInFilesDialog.ec:746
 msgid "Searching %s for %s"
 msgstr "搜索%s从%s"
 
-#: src/dialogs/FindInFilesDialog.ec:887
+#: src/dialogs/FindInFilesDialog.ec:884
 msgid "Searching %s for \"%s\""
 msgstr "搜索%s从“%s”"
 
-#: src/dialogs/FindInFilesDialog.ec:689
+#: src/dialogs/FindInFilesDialog.ec:688
 msgid ""
 "Searching \"%s\"%s for %s%s%s%s\n"
 "\n"
@@ -1807,7 +1825,7 @@ msgstr ""
 "在\"%s\"%s中搜索%s%s%s%s\n"
 "\n"
 
-#: src/dialogs/FindInFilesDialog.ec:700
+#: src/dialogs/FindInFilesDialog.ec:699
 msgid ""
 "Searching project %s files for %s%s%s%s\n"
 "\n"
@@ -1815,7 +1833,7 @@ msgstr ""
 "在项目%s 文件中搜索%s%s%s%s\n"
 "\n"
 
-#: src/dialogs/FindInFilesDialog.ec:696
+#: src/dialogs/FindInFilesDialog.ec:695
 msgid ""
 "Searching workspace files for %s%s%s%s\n"
 "\n"
@@ -1823,7 +1841,7 @@ msgstr ""
 "在工作空间中搜索%s%s%s%s\n"
 "\n"
 
-#: src/dialogs/FindInFilesDialog.ec:438
+#: src/dialogs/FindInFilesDialog.ec:440
 msgid "Select Search Location..."
 msgstr "选择..."
 
@@ -1837,32 +1855,36 @@ msgstr "选择项目目录"
 
 #: src/project/ProjectView.ec:265 src/project/ProjectView.ec:281
 #: src/project/ProjectView.ec:306 src/project/ProjectView.ec:338
-#: src/ide.ec:894
+#: src/ide.ec:902
 msgid "Settings..."
 msgstr "配置(S)..."
 
-#: src/dialogs/NewProjectDialog.ec:336 src/dialogs/NewProjectDialog.ec:595
-#: src/ProjectSettings.ec:1189
+#: src/dialogs/NewProjectDialog.ec:336 src/dialogs/NewProjectDialog.ec:594
+#: src/ProjectSettings.ec:1187
 msgid "Shared Library"
 msgstr "共享动态库"
 
-#: src/project/ProjectView.ec:1579
+#: src/project/ProjectView.ec:1577
 msgid "Shared and static libraries cannot be run like executables."
 msgstr "共享和静态类库无法作为可执行文件运行."
 
-#: src/designer/Sheet.ec:276
+#: src/designer/Sheet.ec:279
 msgid "Sheet"
 msgstr "表格"
 
-#: src/dialogs/GlobalSettingsDialog.ec:244
+#: src/dialogs/GlobalSettingsDialog.ec:240
 msgid "Show line numbers in code editor"
 msgstr "显示行号"
 
-#: src/debugger/Debugger.ec:668
+#: src/debugger/Debugger.ec:553
 msgid "Signal received: %s - %s\n"
 msgstr "已接收信号:%s - %s\n"
 
-#: src/dialogs/WorkspaceSettings.ec:37
+#: src/about.ec:54
+msgid "Software Licenses"
+msgstr "软件许可证"
+
+#: src/dialogs/WorkspaceSettings.ec:53
 msgid "Source Files Directories"
 msgstr "源文件目录(I)"
 
@@ -1870,89 +1892,89 @@ msgstr "源文件目录(I)"
 msgid "Stack Depth"
 msgstr "栈深度"
 
-#: src/ide.ec:257 src/ide.ec:1032 src/ide.ec:2072 src/ide.ec:2077
+#: src/ide.ec:266 src/ide.ec:1040 src/ide.ec:2135 src/ide.ec:2140
 msgid "Start"
 msgstr "启动(S)"
 
-#: src/project/ProjectView.ec:1581 src/project/ProjectView.ec:1583
+#: src/project/ProjectView.ec:1579 src/project/ProjectView.ec:1581
 msgid "Starting Debug"
 msgstr "正在启动调试"
 
-#: src/debugger/Debugger.ec:1098 src/debugger/Debugger.ec:2322
+#: src/debugger/Debugger.ec:983 src/debugger/Debugger.ec:2258
 msgid "Starting debug mode\n"
 msgstr "启动调试模式\n"
 
-#: src/dialogs/NewProjectDialog.ec:340 src/dialogs/NewProjectDialog.ec:599
-#: src/ProjectSettings.ec:1193
+#: src/dialogs/NewProjectDialog.ec:340 src/dialogs/NewProjectDialog.ec:598
+#: src/ProjectSettings.ec:1191
 msgid "Static Library"
 msgstr "静态库"
 
-#: src/ide.ec:267 src/ide.ec:1180
+#: src/ide.ec:276 src/ide.ec:1242
 msgid "Step Into"
 msgstr "逐语句(I)"
 
-#: src/ide.ec:271 src/ide.ec:1210
+#: src/ide.ec:280 src/ide.ec:1272
 msgid "Step Out"
 msgstr "跳出(O)"
 
-#: src/ide.ec:1220
+#: src/ide.ec:1282
 msgid "Step Out Skipping Breakpoints"
 msgstr "跳过断点(T)"
 
-#: src/ide.ec:269 src/ide.ec:1190
+#: src/ide.ec:278 src/ide.ec:1252
 msgid "Step Over"
 msgstr "逐过程(V)"
 
-#: src/ide.ec:273 src/ide.ec:1200
+#: src/ide.ec:282 src/ide.ec:1262
 msgid "Step Over Skipping Breakpoints"
 msgstr "逐断点(E)"
 
-#: src/ide.ec:263 src/ide.ec:1078
+#: src/ide.ec:272 src/ide.ec:1086
 msgid "Stop"
 msgstr "停止(P)"
 
-#: src/ide.ec:1993 src/ide.ec:2027
+#: src/ide.ec:2057 src/ide.ec:2091
 msgid "Stop Build"
 msgstr "停止生成"
 
-#: src/ProjectSettings.ec:2018
+#: src/ProjectSettings.ec:2014
 msgid "Strict Name Spaces"
 msgstr "严格命名空间校验"
 
-#: src/debugger/Debugger.ec:2843
+#: src/debugger/Debugger.ec:2867
 msgid "Symbol \"%s\" not found"
 msgstr "符号\"%s\"未找到"
 
-#: src/designer/CodeEditor.ec:680 src/designer/CodeEditor.ec:681
-#: src/designer/Sheet.ec:401 src/designer/Sheet.ec:430
-#: src/designer/Sheet.ec:602 src/panels/OutputView.ec:34
-#: src/panels/OutputView.ec:100 src/about.ec:25 src/about.ec:46
-#: src/about.ec:48 src/about.ec:50
+#: src/designer/CodeEditor.ec:754 src/designer/CodeEditor.ec:755
+#: src/designer/Sheet.ec:403 src/designer/Sheet.ec:432
+#: src/designer/Sheet.ec:603 src/panels/OutputView.ec:34
+#: src/panels/OutputView.ec:100 src/about.ec:25 src/about.ec:47
+#: src/about.ec:49 src/about.ec:51
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: src/project/Project.ec:2246
+#: src/project/Project.ec:2303
 msgid "Target"
 msgstr "目标"
 
-#: src/ProjectSettings.ec:2161
+#: src/ProjectSettings.ec:2157
 msgid "Target Directory"
 msgstr "目标目录(R)"
 
-#: src/ProjectSettings.ec:2147
+#: src/ProjectSettings.ec:2143
 msgid "Target Name"
 msgstr "目标名称(N)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:874
+#: src/dialogs/GlobalSettingsDialog.ec:881
 msgid "Target Platform"
 msgstr "目标平台(T)"
 
 #: src/dialogs/NewProjectDialog.ec:34 src/dialogs/NewProjectDialog.ec:362
-#: src/ProjectSettings.ec:2154
+#: src/ProjectSettings.ec:2150
 msgid "Target Type"
 msgstr "目标类型(T)"
 
-#: src/debugger/Debugger.ec:3349
+#: src/debugger/Debugger.ec:3452
 msgid "Target doesn't contain debug information!\n"
 msgstr "目标不能包含编译信息!\n"
 
@@ -1960,7 +1982,7 @@ msgstr "目标不能包含编译信息!\n"
 msgid "Temporary directory does not exist."
 msgstr "临时目录不存在."
 
-#: src/ide.ec:104
+#: src/ide.ec:113
 msgid "Text"
 msgstr "文本文件"
 
@@ -1968,19 +1990,19 @@ msgstr "文本文件"
 msgid "Text Files"
 msgstr "文本文件"
 
-#: src/designer/CodeEditor.ec:84 src/ide.ec:125
+#: src/designer/CodeEditor.ec:84 src/ide.ec:134
 msgid "Text files (*.txt)"
 msgstr "文本文件(*.txt)"
 
-#: src/ide.ec:94
+#: src/ide.ec:103
 msgid "Text files (*.txt, *.text, *.nfo, *.info)"
 msgstr "文本文件(*.txt, *.text, *.nfo, *.info)"
 
-#: src/designer/CodeEditor.ec:1415
+#: src/designer/CodeEditor.ec:1490
 msgid "The "
 msgstr "The "
 
-#: src/designer/CodeEditor.ec:2226 src/ide.ec:1762
+#: src/designer/CodeEditor.ec:2337 src/ide.ec:1826
 msgid ""
 "The document %s was modified by another application.\n"
 "Would you like to reload it and lose your changes?"
@@ -1988,31 +2010,31 @@ msgstr ""
 "该文档 %s 被其他程序修改.\n"
 "你想重新加载并放弃你使用当前程序做的修改吗?"
 
-#: src/project/ProjectView.ec:2209
+#: src/project/ProjectView.ec:2214
 msgid "The following file"
 msgstr "文件"
 
-#: src/project/Workspace.ec:1266
+#: src/project/Workspace.ec:1262
 msgid "The following file%s could not be re-opened.%s"
 msgstr "文件%s不能重复打开%s"
 
-#: src/debugger/Debugger.ec:1074
+#: src/debugger/Debugger.ec:959
 msgid "The program %s has exited (gdb provided an unknown reason)%s.\n"
 msgstr "程序%s已退出(gdb 提供了一个未知的原因)%s.\n"
 
-#: src/debugger/Debugger.ec:1068
+#: src/debugger/Debugger.ec:953
 msgid "The program %s has exited normally%s.\n"
 msgstr "程序%s已正常退出%s.\n"
 
-#: src/debugger/Debugger.ec:1072
+#: src/debugger/Debugger.ec:957
 msgid "The program %s has exited with a signal%s.\n"
 msgstr "程序%s由于信号%s退出.\n"
 
-#: src/debugger/Debugger.ec:1066 src/debugger/Debugger.ec:1070
+#: src/debugger/Debugger.ec:951 src/debugger/Debugger.ec:955
 msgid "The program %s has exited%s.\n"
 msgstr "程序%s已退出%s.\n"
 
-#: src/project/Project.ec:901
+#: src/project/Project.ec:905
 msgid ""
 "The project %s was modified by another application.\n"
 "Would you like to reload it and lose your changes?"
@@ -2028,7 +2050,7 @@ msgstr ""
 "因有冲突,不能导入文件\n"
 "\n"
 
-#: src/debugger/Debugger.ec:1363
+#: src/debugger/Debugger.ec:1247
 msgid ""
 "This is the project directory.\n"
 "Would you like to try again?"
@@ -2040,11 +2062,11 @@ msgstr ""
 msgid "This program is based on these free open source software components."
 msgstr "本程序基于这些自由开源软件部件."
 
-#: src/ide.ec:2372
+#: src/ide.ec:2432
 msgid "This project is already present in workspace."
 msgstr "这个项目已经在解决方案中存在."
 
-#: src/debugger/Debugger.ec:1379
+#: src/debugger/Debugger.ec:1263
 msgid ""
 "This source directory is already specified.\n"
 "Would you like to try again?"
@@ -2052,23 +2074,23 @@ msgstr ""
 "源码目录已指定.\n"
 "你要重试吗"
 
-#: src/ide.ec:1364
+#: src/ide.ec:1426
 msgid "Threads"
 msgstr "线程(T)"
 
-#: src/ide.ec:1454
+#: src/ide.ec:1516
 msgid "Tile Horizontally"
 msgstr "水平平铺(H)"
 
-#: src/ide.ec:1455
+#: src/ide.ec:1517
 msgid "Tile Vertically"
 msgstr "垂直平铺(V)"
 
-#: src/IDESettings.ec:737
+#: src/IDESettings.ec:740
 msgid "Tiny C Compiler / GNU Make"
 msgstr "Tiny C Compiler / GNU Make"
 
-#: src/designer/CodeEditor.ec:1966
+#: src/designer/CodeEditor.ec:2066
 msgid "Toggle Breakpoint"
 msgstr "切换断点"
 
@@ -2076,7 +2098,7 @@ msgstr "切换断点"
 msgid "Toolbox"
 msgstr "工具箱"
 
-#: src/dialogs/GlobalSettingsDialog.ec:684
+#: src/dialogs/GlobalSettingsDialog.ec:691
 msgid "Toolchain"
 msgstr "工具链"
 
@@ -2092,11 +2114,11 @@ msgstr "树:"
 msgid "Type"
 msgstr "类型"
 
-#: src/project/ProjectNode.ec:2442
+#: src/project/ProjectNode.ec:2446
 msgid "Unable to locate source file "
 msgstr "无法定位源文件 "
 
-#: src/debugger/Debugger.ec:1392
+#: src/debugger/Debugger.ec:1276
 msgid ""
 "Unable to locate source file.\n"
 "Would you like to try again?"
@@ -2104,7 +2126,7 @@ msgstr ""
 "无法定位源码文件.\n"
 "你想重试吗?"
 
-#: src/dialogs/FindInFilesDialog.ec:1064 src/dialogs/FindInFilesDialog.ec:1150
+#: src/dialogs/FindInFilesDialog.ec:1061 src/dialogs/FindInFilesDialog.ec:1145
 msgid ""
 "Unable to open file %s\n"
 "\n"
@@ -2112,27 +2134,23 @@ msgstr ""
 "无法打开文件 %s\n"
 "\n"
 
-#: src/project/ProjectView.ec:1138 src/project/ProjectView.ec:1189
+#: src/project/ProjectView.ec:1132 src/project/ProjectView.ec:1182
 msgid "Unable to save %s file.\n"
 msgstr "不能保存文件%s.\n"
 
-#: src/debugger/Debugger.ec:2883
-msgid "Unknown error for \"%s\""
-msgstr "未知错误“%s”"
-
-#: src/project/ProjectView.ec:1243 src/designer/CodeEditor.ec:2481
+#: src/project/ProjectView.ec:1236 src/designer/CodeEditor.ec:2594
 msgid "Untitled %d"
 msgstr "Untitled %d"
 
-#: src/project/ProjectView.ec:732
+#: src/project/ProjectView.ec:727
 msgid "Updating "
 msgstr "正在更新 "
 
-#: src/dialogs/GlobalSettingsDialog.ec:931
+#: src/dialogs/GlobalSettingsDialog.ec:938
 msgid "Use ccache"
 msgstr "使用缓存"
 
-#: src/dialogs/GlobalSettingsDialog.ec:949
+#: src/dialogs/GlobalSettingsDialog.ec:956
 msgid "Use distcc"
 msgstr "使用distcc"
 
@@ -2140,62 +2158,62 @@ msgstr "使用distcc"
 msgid "Value"
 msgstr "值"
 
-#: src/designer/Sheet.ec:450 src/designer/ToolBox.ec:36 src/ide.ec:1261
+#: src/designer/Sheet.ec:452 src/designer/ToolBox.ec:36 src/ide.ec:1323
 msgid "View"
 msgstr "视图(V)"
 
-#: src/ide.ec:1276 src/ide.ec:1298
+#: src/ide.ec:1338 src/ide.ec:1360
 msgid "View Code"
 msgstr "查看代码(C)"
 
-#: src/ide.ec:1275 src/ide.ec:1281
+#: src/ide.ec:1337 src/ide.ec:1343
 msgid "View Designer"
 msgstr "查看设计器(D)"
 
-#: src/ide.ec:1278 src/ide.ec:1325
+#: src/ide.ec:1340 src/ide.ec:1387
 msgid "View Methods"
 msgstr "查看方法(M)"
 
-#: src/ide.ec:1277 src/ide.ec:1314
+#: src/ide.ec:1339 src/ide.ec:1376
 msgid "View Properties"
 msgstr "查看属性(P)"
 
-#: src/designer/ToolBox.ec:37 src/ide.ec:1336
+#: src/designer/ToolBox.ec:37 src/ide.ec:1398
 msgid "View Toolbox"
 msgstr "查看工具箱(X)"
 
-#: src/ProjectSettings.ec:2037
+#: src/ProjectSettings.ec:2033
 msgid "Warnings"
 msgstr "警告(W)"
 
-#: src/panels/WatchesView.ec:6 src/ide.ec:1355
+#: src/panels/WatchesView.ec:6 src/ide.ec:1417
 msgid "Watches"
 msgstr "监视(W)"
 
-#: src/ide.ec:95
+#: src/ide.ec:104
 msgid ""
 "Web files (*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
 msgstr ""
 "Web 文件(*.html, *.htm, *.xhtml, *.css, *.php, *.js, *.jsi, *.rb, *.xml)"
 
-#: src/dialogs/FindInFilesDialog.ec:372
+#: src/dialogs/FindInFilesDialog.ec:374
 msgid "Whole word only"
 msgstr "整词匹配(W)"
 
-#: src/ide.ec:1447
+#: src/ide.ec:1509
 msgid "Window"
 msgstr "窗口(W)"
 
-#: src/ide.ec:1458
+#: src/ide.ec:1520
 msgid "Windows..."
 msgstr "窗口(W)..."
 
-#: src/about.ec:50
+#: src/about.ec:51
 msgid "With contributions from..."
 msgstr "贡献来自..."
 
-#: src/dialogs/FindInFilesDialog.ec:457
-#: src/dialogs/GlobalSettingsDialog.ec:1195 src/dialogs/WorkspaceSettings.ec:6
+#: src/dialogs/FindInFilesDialog.ec:458
+#: src/dialogs/GlobalSettingsDialog.ec:1202 src/dialogs/WorkspaceSettings.ec:9
 msgid "Workspace"
 msgstr "工作空间"
 
@@ -2203,15 +2221,15 @@ msgstr "工作空间"
 msgid "Workspace Files (*.ews)"
 msgstr "解决方案文件(*.ews)"
 
-#: src/project/Workspace.ec:1233
+#: src/project/Workspace.ec:1229
 msgid "Workspace Load File Error"
 msgstr "工程空间加载文件错误"
 
-#: src/project/Workspace.ec:1233
+#: src/project/Workspace.ec:1229
 msgid "Workspace load file failed"
 msgstr "工程空间加载文件失败"
 
-#: src/ProjectSettings.ec:1885
+#: src/ProjectSettings.ec:1881
 msgid "Would you like to save changes made to the build options?"
 msgstr "你要保存修改的选项吗?"
 
@@ -2219,11 +2237,11 @@ msgstr "你要保存修改的选项吗?"
 msgid "Would you like to save changes made to the project options?"
 msgstr "你要保存改动的工程选项吗?"
 
-#: src/dialogs/WorkspaceSettings.ec:97
+#: src/dialogs/WorkspaceSettings.ec:127
 msgid "Would you like to save changes made to the workspace options?"
 msgstr "你要保存改动的解决方案选项吗?"
 
-#: src/project/Project.ec:1664
+#: src/project/Project.ec:1683
 msgid "Writing symbol loader...\n"
 msgstr "正在写入符号加载器...\n"
 
@@ -2235,7 +2253,7 @@ msgstr ""
 "你已经修改了项目.\n"
 "保存改动至 "
 
-#: src/debugger/Debugger.ec:1493
+#: src/debugger/Debugger.ec:1377
 msgid ""
 "You must provide a valid source directory in order to place a breakpoint in "
 "this file.\n"
@@ -2244,15 +2262,15 @@ msgstr ""
 "你必须提供一个有效的源目录才能在此文件中设置一个断点。\n"
 "你重试吗?"
 
-#: src/dialogs/FindInFilesDialog.ec:401
+#: src/dialogs/FindInFilesDialog.ec:403
 msgid "You must specify a search location."
 msgstr "你必须设置具体位置."
 
-#: src/project/ProjectNode.ec:2442
+#: src/project/ProjectNode.ec:2446
 msgid "\n"
 msgstr "\n"
 
-#: src/project/Project.ec:1460 src/project/Project.ec:1901
+#: src/project/Project.ec:1470 src/project/Project.ec:1959
 msgid ""
 "\n"
 "Build cancelled by user.\n"
@@ -2260,7 +2278,7 @@ msgstr ""
 "\n"
 "生成被取消.\n"
 
-#: src/project/ProjectView.ec:934
+#: src/project/ProjectView.ec:931
 msgid ""
 "\n"
 "Installing project %s using the %s configuration...\n"
@@ -2268,7 +2286,7 @@ msgstr ""
 "\n"
 "安装项目%s (使用配置%s)...\n"
 
-#: src/project/Project.ec:2134
+#: src/project/Project.ec:2191
 msgid ""
 "\n"
 "Make outputs the following list of commands to choose from:\n"
@@ -2276,7 +2294,7 @@ msgstr ""
 "\n"
 "从命令列表中选择命令生成输出:\n"
 
-#: src/project/Project.ec:2168
+#: src/project/Project.ec:2225
 msgid ""
 "\n"
 "The following command was chosen to be executed:\n"
@@ -2286,19 +2304,19 @@ msgstr ""
 "下面的命令被执行:\n"
 "%s\n"
 
-#: src/dialogs/GlobalSettingsDialog.ec:969
+#: src/dialogs/GlobalSettingsDialog.ec:976
 msgid "distcc hosts"
 msgstr "distcc hosts"
 
-#: src/dialogs/GlobalSettingsDialog.ec:699
+#: src/dialogs/GlobalSettingsDialog.ec:706
 msgid "eC Compiler"
 msgstr "eC编译器"
 
-#: src/ide.ec:121
+#: src/ide.ec:130
 msgid "eC Files (*.ec, *.eh)"
 msgstr "eC文件(*.ec, *.eh)"
 
-#: src/dialogs/GlobalSettingsDialog.ec:693
+#: src/dialogs/GlobalSettingsDialog.ec:700
 msgid "eC Precompiler"
 msgstr "eC预编译器"
 
@@ -2306,7 +2324,7 @@ msgstr "eC预编译器"
 msgid "eC Source Code"
 msgstr "eC源代码"
 
-#: src/dialogs/GlobalSettingsDialog.ec:705
+#: src/dialogs/GlobalSettingsDialog.ec:712
 msgid "eC Symbol Loader"
 msgstr "eC符号加载器"
 
@@ -2320,60 +2338,64 @@ msgstr ""
 msgid "eC/C/C++ Source Files (*.ec, *.c, *.cpp, *.cc, *.cxx)"
 msgstr "eC/C/C++源文件(*.ec, *.c, *.cpp, *.cc, *.cxx)"
 
-#: src/debugger/Debugger.ec:4385
+#: src/debugger/Debugger.ec:4513
 msgid "err: Unable to create FIFO %s\n"
 msgstr "错误: 不能创建FIFO %s\n"
 
-#: src/debugger/Debugger.ec:4386
+#: src/debugger/Debugger.ec:4514
 msgid "err: Unable to open FIFO %s for read\n"
 msgstr "错误: 不能打开FIFO %s读\n"
 
-#: src/project/Project.ec:1921
+#: src/project/Project.ec:1979
 msgid "error"
 msgstr "个错误"
 
-#: src/project/Project.ec:1921
+#: src/ide.ec:3803
+msgid "error: unable to load :crossplatform.mk file inside ide binary."
+msgstr "错误：不能调入:crossplatform.mk文件到IDE中"
+
+#: src/project/Project.ec:1979
 msgid "errors"
 msgstr "个错误"
 
-#: src/dialogs/FindInFilesDialog.ec:982 src/dialogs/FindInFilesDialog.ec:987
-#: src/dialogs/FindInFilesDialog.ec:1142
+#: src/dialogs/FindInFilesDialog.ec:979 src/dialogs/FindInFilesDialog.ec:984
+#: src/dialogs/FindInFilesDialog.ec:1137
 msgid "es"
 msgstr "es"
 
-#: src/project/ProjectView.ec:1214 src/project/ProjectView.ec:1217
+#: src/project/ProjectView.ec:1207 src/project/ProjectView.ec:1210
 msgid "folder"
 msgstr "文件夹"
 
-#: src/dialogs/FindInFilesDialog.ec:982
+#: src/dialogs/FindInFilesDialog.ec:979
 msgid "found"
 msgstr "找到"
 
-#: src/ide.ec:2647
+#: src/ide.ec:2707
 msgid "in"
 msgstr "在"
 
-#: src/debugger/Debugger.ec:3488
+#: src/debugger/Debugger.ec:3591
 msgid "inside %s, %s\n"
 msgstr "在%s里, %s\n"
 
-#: src/project/Project.ec:2239
+#: src/project/Project.ec:2296
 msgid "intermediate objects directory"
 msgstr "中间目标文件目录"
 
-#: src/ide.ec:2647
+#: src/ide.ec:2707
 msgid "match"
 msgstr "匹配"
 
-#: src/project/Project.ec:1923
+#: src/project/Project.ec:1981
 msgid "no error, "
 msgstr "没有错误, "
 
-#: src/project/Project.ec:1928
+#: src/project/Project.ec:1986
 msgid "no warning\n"
 msgstr "没有警告\n"
 
-#: src/project/ProjectView.ec:2212
+#: src/project/ProjectView.ec:2217
 msgid ""
 "not added because of identical file name conflict within the project.\n"
 "\n"
@@ -2381,53 +2403,38 @@ msgstr ""
 "不能添加,由于项目中同名文件已经存在.\n"
 "\n"
 
-#: src/dialogs/FindInFilesDialog.ec:982
+#: src/dialogs/FindInFilesDialog.ec:979
 msgid "replaced"
 msgstr "替换"
 
-#: src/dialogs/FindInFilesDialog.ec:983 src/dialogs/FindInFilesDialog.ec:988
+#: src/dialogs/FindInFilesDialog.ec:980 src/dialogs/FindInFilesDialog.ec:985
 msgid "s"
 msgstr "s"
 
-#: src/project/ProjectView.ec:2211
+#: src/project/ProjectView.ec:2216
 msgid "s were "
 msgstr "s是 "
 
-#: src/project/ProjectView.ec:1214 src/project/ProjectView.ec:1217
+#: src/project/ProjectView.ec:1207 src/project/ProjectView.ec:1210
 msgid "single file"
 msgstr "单个文件"
 
-#: src/project/Project.ec:2239
+#: src/project/Project.ec:2296
 msgid "target"
 msgstr "目标"
 
-#: src/debugger/Debugger.ec:3494
+#: src/debugger/Debugger.ec:3597
 msgid "unknown source\n"
 msgstr "未知源码\n"
 
-#: src/project/Project.ec:1926
+#: src/project/Project.ec:1984
 msgid "warning"
 msgstr "个警告"
 
-#: src/project/Project.ec:1926
+#: src/project/Project.ec:1984
 msgid "warnings"
 msgstr "个警告"
 
-#: src/project/ProjectView.ec:661
+#: src/project/ProjectView.ec:660
 msgid "{problem with compiler selection}"
 msgstr "{编译选中部分时出错}"
-
-#~ msgid "ECERE IDE"
-#~ msgstr "ECERE IDE简体中文版"
-
-#~ msgid "Error: abborting search!\n"
-#~ msgstr "错误：终止搜索!\n"
-
-#~ msgid "ValgrindLogThreadExit\n"
-#~ msgstr "Valgrind日志线程退出\n"
-
-#~ msgid "ValgrindTargetThreadExit\n"
-#~ msgstr "Valgrind目标线程退出\n"
-
-#~ msgid "Consolas"
-#~ msgstr "Consolas"

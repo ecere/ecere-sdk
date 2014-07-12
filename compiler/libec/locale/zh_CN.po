@@ -7,324 +7,365 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-18 21:23+0000\n"
-"PO-Revision-Date: 2014-03-19 00:02-0500\n"
+"POT-Creation-Date: 2014-07-11 09:06+0000\n"
+"PO-Revision-Date: 2014-07-11 23:06-0500\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: ec <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2014-03-19 03:16+0000\n"
+"X-Launchpad-Export-Date: 2014-07-12 01:56+0000\n"
 "X-Generator: Poedit 1.6.4\n"
 "Language: zh_CN\n"
 "X-Poedit-Basepath: ..\\..\\..\\\n"
 
-#: src/pass15.ec:3207 src/pass15.ec:3233
+#: src/pass15.ec:3256 src/pass15.ec:3282
 msgid "%s expected to be derived from method class\n"
 msgstr "%s 被期望由方法类导出\n"
 
-#: src/pass15.ec:9077
+#: src/pass15.ec:9796
 msgid "%s undefined; assuming extern returning int\n"
 msgstr "%s不确定，假设外部返回整数\n"
 
-#: src/ecdefs.ec:1314
+#: src/ecdefs.ec:1671
 msgid ":%d:%d: error: "
 msgstr ":%d:%d: 错误: "
 
-#: src/ecdefs.ec:1361
+#: src/ecdefs.ec:1719
 msgid ":%d:%d: warning: "
 msgstr ":%d:%d: 警告: "
 
-#: src/pass15.ec:741
+#: src/pass15.ec:796
 msgid "Array size not constant int (%s)\n"
 msgstr "数组大小不是常整型(%s)\n"
 
-#: src/pass15.ec:10624
+#: src/pass15.ec:11585
 msgid "Assigning list initializer to non list\n"
 msgstr "列表分配给非列表\n"
 
-#: src/pass15.ec:10289 src/pass15.ec:11334
+#: src/pass15.ec:11129 src/pass15.ec:12358
 msgid "Couldn't determine type of array elements\n"
 msgstr "无法确定数组元素的类型\n"
 
-#: src/pass0.ec:570
+#: src/pass0.ec:524
 msgid "Couldn't find member %s to override\n"
 msgstr "不能找到成员%s去继承\n"
 
-#: src/loadSymbols.ec:708
+#: src/loadSymbols.ec:712
 msgid "Couldn't open %s\n"
 msgstr "无法打开 %s\n"
 
-#: src/ast.ec:1655
+#: src/ast.ec:1678
 msgid "Expecting class specifier\n"
 msgstr "需要类限定符\n"
 
-#: src/pass15.ec:11539
+#: src/pass15.ec:12570
 msgid "Expression is not a container\n"
 msgstr "表达式不是一个容器\n"
 
-#: src/lexer.ec:521
+#: src/lexer.ec:535
 msgid "Includes nested too deeply"
 msgstr "包括的嵌套太深"
 
-#: src/pass1.ec:143
+#: src/pass1.ec:145
 msgid "Incompatible virtual function %s\n"
 msgstr "不兼容虚函数%s\n"
 
-#: src/pass15.ec:11813 src/pass15.ec:11888
+#: src/pass15.ec:12825 src/pass15.ec:12898
 msgid "Invalid object specified and not inside a class\n"
 msgstr "无效的类说明%s关于对象类%s\n"
 
-#: src/pass15.ec:11721
+#: src/pass15.ec:12733
 msgid "Invalid watched object\n"
 msgstr "无效的被监控对象\n"
 
-#: src/firstPass.ec:83 src/firstPass.ec:108 src/firstPass.ec:169
-#: src/firstPass.ec:211
+#: src/firstPass.ec:85 src/firstPass.ec:112 src/firstPass.ec:175
+#: src/firstPass.ec:217
 msgid "Member with same name already exists %s in class %s\n"
 msgstr "相同名字的成员已存在 %s 在类 %s 中\n"
 
-#: src/firstPass.ec:101 src/firstPass.ec:162 src/firstPass.ec:204
+#: src/firstPass.ec:105 src/firstPass.ec:168 src/firstPass.ec:210
 msgid "Member with same name already exists %s in member %s\n"
 msgstr "相同名字的成员已存在 %s 在成员 %s 中\n"
 
-#: src/dbpass.ec:1082
+#: src/dbpass.ec:1085
 msgid "Multiple field index requires a name\n"
 msgstr "多域索引需要一个名字\n"
 
-#: src/dbpass.ec:306
+#: src/dbpass.ec:310
 msgid ""
 "No database table defined in this module or database_open already used.\n"
 msgstr "在已打开的模块中没有数据库表被定义，或者已经使用了database_open\n"
 
-#: src/pass15.ec:11734
-msgid "No observer specified and not inside a _class\n"
-msgstr "没有确定观察者并且不在一个类中\n"
-
-#: src/pass15.ec:11891
+#: src/pass15.ec:12746 src/pass15.ec:12901
 msgid "No observer specified and not inside a class\n"
 msgstr "没有确定观察者并且不在一个类中\n"
 
-#: src/pass16.ec:1899 src/pass16.ec:1970
+#: src/pass16.ec:2014 src/pass16.ec:2087
 msgid "No set defined for property %s\n"
 msgstr "没有为property定义set %s\n"
 
-#: src/pass0.ec:153
+#: src/pass0.ec:108
 msgid "Non-static %s making use of a static class\n"
 msgstr "非静态%s 使用静态类\n"
 
-#: src/pass1.ec:1049 src/pass15.ec:11716 src/pass15.ec:11788
-#: src/pass15.ec:11877
+#: src/pass1.ec:1053 src/pass15.ec:12728 src/pass15.ec:12800
+#: src/pass15.ec:12887
 msgid "Property %s not found in class %s\n"
 msgstr "属性%s在类%s中未能找到\n"
 
-#: src/pass0.ec:160
+#: src/pass0.ec:115
 msgid "Public %s making use of a private class\n"
 msgstr "公共的%s使用私有类\n"
 
-#: src/pass15.ec:7445
+#: src/pass15.ec:7987
 msgid "Recursion in defined expression %s\n"
 msgstr "被定义表达式中存在递归 %s\n"
 
-#: src/loadSymbols.ec:993
+#: src/loadSymbols.ec:1002
 msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
 msgstr "重复定义%s (定义%s, 已经存在定义%s)\n"
 
-#: src/ast.ec:800
+#: src/ast.ec:817
 msgid "Redefinition of %s ignored\n"
 msgstr "%s的重定义被忽略\n"
 
-#: src/firstPass.ec:446
+#: src/firstPass.ec:460
 msgid "Redefinition of method %s in class %s\n"
 msgstr "方法%s在类%s中重定义\n"
 
-#: src/pass15.ec:4421 src/pass15.ec:4532
+#: src/pass15.ec:4692 src/pass15.ec:4803
 msgid "Unhandled type populating instance\n"
 msgstr "未处理的类型产生实例\n"
 
-#: src/pass15.ec:7172
+#: src/pass15.ec:7607
 msgid "Unspecified type\n"
 msgstr "未确定类型\n"
 
-#: src/pass15.ec:9092
+#: src/pass15.ec:9811
 msgid "callable object undefined; extern assuming returning int\n"
 msgstr "可调用对象未定义，外部假设返回整数\n"
 
-#: src/pass15.ec:8881
+#: src/pass15.ec:9590
 msgid "called object %s is not a function\n"
 msgstr "调用对象%s不是一个函数\n"
 
-#: src/pass15.ec:7941 src/pass15.ec:7947 src/pass15.ec:8125
+#: src/pass15.ec:8554 src/pass15.ec:8560 src/pass15.ec:8768
 msgid "cannot add two pointers\n"
 msgstr "不能添加两个指针\n"
 
-#: src/pass15.ec:1519
+#: src/pass15.ec:1651
 msgid "cannot dereference type\n"
 msgstr "不能取消引用类型\n"
 
-#: src/pass2.ec:2364
+#: src/pass2.ec:2477
 msgid "cannot obtain address of property\n"
 msgstr "不能获取属性地址\n"
 
-#: src/pass0.ec:485 src/pass0.ec:491
+#: src/pass0.ec:439 src/pass0.ec:445
 msgid "class"
 msgstr "类"
 
-#: src/pass0.ec:397 src/pass0.ec:423
+#: src/pass0.ec:351 src/pass0.ec:377
 msgid "class data member"
 msgstr "类数据成员"
 
-#: src/pass0.ec:431
+#: src/pass0.ec:385
 msgid "class member instance"
 msgstr "类成员实例"
 
-#: src/pass15.ec:10364
+#: src/firstPass.ec:431
+msgid "constructor"
+msgstr "构造函数"
+
+#: src/pass15.ec:11229
 msgid "couldn't determine type of %s; expected %s\n"
 msgstr "无法确定%s的类型; 期望%s\n"
 
-#: src/pass15.ec:8502 src/pass15.ec:8514 src/pass15.ec:10376
-#: src/pass15.ec:10452
+#: src/pass15.ec:9179 src/pass15.ec:9191 src/pass15.ec:11241
+#: src/pass15.ec:11413
 msgid "couldn't determine type of %s\n"
 msgstr "无法确定%s的类型\n"
 
-#: src/pass15.ec:1891 src/pass15.ec:9601
+#: src/pass15.ec:2031 src/pass15.ec:10362
 msgid "couldn't find member %s in class %s\n"
 msgstr "不能找到成员%s在类%s中\n"
 
-#: src/pass15.ec:1887 src/pass15.ec:1996
+#: src/pass15.ec:2027 src/pass15.ec:2131
 msgid "couldn't find virtual method %s in class %s\n"
 msgstr "不能找到虚方法%s在类%s中\n"
 
-#: src/pass15.ec:8117
+#: src/pass15.ec:9211
+msgid "deleting const qualified object\n"
+msgstr "删除常量限定对象\n"
+
+#: src/firstPass.ec:431
+msgid "destructor"
+msgstr "析构函数"
+
+#: src/pass15.ec:8760
 msgid "different levels of indirection\n"
 msgstr "不同级别的间接\n"
 
-#: src/pass15.ec:7959 src/pass15.ec:10407
+#: src/pass15.ec:2870
+msgid "discarding const qualifier\n"
+msgstr "丢弃常量限定符\n"
+
+#: src/grammar.ec:3280 src/grammar.ec:3281 src/grammar.ec:3282
+#: src/grammar.ec:3283 src/grammar.ec:3284 src/grammar.ec:3296
+#: src/grammar.ec:3297 src/grammar.ec:3298 src/grammar.ec:3299
+#: src/grammar.ec:3300 src/grammar.ec:3366 src/grammar.ec:3367
+#: src/grammar.ec:3368 src/grammar.ec:3369
+msgid ""
+"eC expects all declarations to precede statements in the block (C89 style)\n"
+msgstr "eC期望所有声明语句放在语句块的前端(C89风格)\n"
+
+#: src/grammar.ec:3021
+msgid "extra comma\n"
+msgstr "多余的逗号\n"
+
+#: src/pass15.ec:8572 src/pass15.ec:11368 src/pass15.ec:11370
 msgid "incompatible expression %s (%s); expected %s\n"
 msgstr "不兼容表达式%s (%s); 期望 %s\n"
 
-#: src/pass15.ec:8234 src/pass15.ec:8394
+#: src/pass15.ec:8862 src/pass15.ec:9070
 msgid "incompatible expressions %s (%s) and %s (%s)\n"
 msgstr "不兼容的表达示%s (%s) 和%s (%s)\n"
 
-#: src/pass15.ec:1843
+#: src/pass15.ec:1983
 msgid "incompatible instance method %s\n"
 msgstr "不兼容的实例方法%s\n"
 
-#: src/pass15.ec:3306
+#: src/pass15.ec:3358
 msgid "incompatible parameter %s (expected %s)\n"
 msgstr "不兼容参数%s (期望%s)\n"
 
-#: src/pass15.ec:3246
+#: src/pass15.ec:3295
 msgid "incompatible return type for function\n"
 msgstr "函数返回类型不兼容\n"
 
-#: src/pass15.ec:9415
+#: src/pass15.ec:10131
 msgid "invalid class specifier %s for object of class %s\n"
 msgstr "无效的类说明%s关于对象类%s\n"
 
-#: src/pass15.ec:9885
+#: src/grammar.ec:1705 src/grammar.ec:1706
+msgid "l-value expected\n"
+msgstr "期望左值\n"
+
+#: src/pass15.ec:10677
 msgid "member operator on non-structure type expression %s\n"
 msgstr "成员操作符对非结构类型表达式%s\n"
 
-#: src/pass15.ec:3181 src/pass15.ec:3196 src/pass15.ec:3222
+#: src/pass15.ec:3230 src/pass15.ec:3245 src/pass15.ec:3271
 msgid "method class must be derived from %s\n"
 msgstr "方法类必须由%s导出\n"
 
-#: src/pass15.ec:3183
+#: src/pass15.ec:3232
 msgid "method class should not take an object\n"
 msgstr "方法类不能有一个对象\n"
 
-#: src/pass2.ec:2366 src/pass2.ec:2368
+#: src/pass2.ec:2479 src/pass2.ec:2481
 msgid "no get defined for property %s of class %s\n"
 msgstr "未获得定义，属性%s, 类%s\n"
 
-#: src/pass2.ec:879
+#: src/pass2.ec:921
 msgid "no set defined for property %s of class %s\n"
 msgstr "无效的类说明%s关于对象类%s\n"
 
-#: src/pass15.ec:9044
+#: src/pass15.ec:9763
 msgid "not enough arguments for function %s (%d given, expected %d)\n"
 msgstr "参数不够，函数%s (规定%d个, 期望%d个)\n"
 
-#: src/pass15.ec:9040
+#: src/pass15.ec:9759
 msgid "not enough arguments for method %s::%s (%d given, expected %d)\n"
 msgstr "参数不够，方法%s::%s(规定%d个, 期望%d个)\n"
 
-#: src/pass15.ec:3257
+#: src/pass15.ec:3309
 msgid "not enough parameters\n"
 msgstr "没有足够参数\n"
 
-#: src/pass15.ec:8060
+#: src/pass15.ec:8708
 msgid "operating on %s and %s with an untyped result, assuming %s\n"
 msgstr "正在使用无类型的结果操作%s和%s,假设%s\n"
 
-#: src/pass15.ec:7871
+#: src/pass15.ec:8457
 msgid "operator %s illegal on pointer\n"
 msgstr "在指针上的操作符%s非法\n"
 
-#: src/pass15.ec:3209
+#: src/pass15.ec:3258
 msgid "overriding class expected to be derived from method class\n"
 msgstr "期望重载类由方法类导出\n"
+
+#: src/ast.ec:1154
+msgid "parameter name omitted\n"
+msgstr "参数名被省略\n"
 
 #: src/shortcuts.ec:223 src/shortcuts.ec:229
 msgid "parsing type %s\n"
 msgstr "正在解析类型%s\n"
 
-#: src/firstPass.ec:310
+#: src/firstPass.ec:312
 msgid "redefinition of class %s\n"
 msgstr "类%s重定义\n"
 
-#: src/pass0.ec:720
+#: src/pass0.ec:676
 msgid "redefinition of constructor for class %s\n"
 msgstr "重复定义构造类%s\n"
 
-#: src/pass0.ec:697
+#: src/pass0.ec:653
 msgid "redefinition of destructor for class %s\n"
 msgstr "重复定义析构类%s\n"
 
-#: src/ecdefs.ec:1381 src/grammar.ec:3128 src/grammar.ec:3129
-#: src/grammar.ec:3130 src/grammar.ec:3131 src/grammar.ec:3132
-#: src/grammar.ec:3133 src/grammar.ec:3134
+#: src/pass0.ec:1161
+msgid "set defined on type without storage for non-conversion property\n"
+msgstr "set已定义为无需存储的非转化属性\n"
+
+#: src/ecdefs.ec:1740 src/grammar.ec:3232 src/grammar.ec:3233
+#: src/grammar.ec:3234 src/grammar.ec:3235 src/grammar.ec:3236
+#: src/grammar.ec:3237 src/grammar.ec:3238
 msgid "syntax error\n"
 msgstr "语法错误\n"
 
-#: src/pass15.ec:8955
+#: src/pass15.ec:9664
 msgid "too many arguments for function %s (%d given, expected %d)\n"
 msgstr "参数太多，函数%s (规定%d个, 期望%d个)\n"
 
-#: src/pass15.ec:8951
+#: src/pass15.ec:9660
 msgid "too many arguments for method %s::%s (%d given, expected %d)\n"
 msgstr "参数太多，方法%s::%s(规定%d个, 期望%d个)\n"
 
-#: src/pass15.ec:1897
+#: src/pass15.ec:2037
 msgid "too many initializers for instantiation of class %s\n"
 msgstr "类%s的实例初始设置太多\n"
 
-#: src/pass15.ec:3320
+#: src/pass15.ec:3372
 msgid "too many parameters\n"
 msgstr "太多参数\n"
 
-#: src/pass15.ec:9868
+#: src/pass15.ec:10660
 msgid "undefined class %s\n"
 msgstr "未定义类%s\n"
 
-#: src/pass15.ec:10443
+#: src/pass15.ec:11404
 msgid "unresolved identifier %s::%s\n"
 msgstr "不确定的标识符%s::%s\n"
 
-#: src/pass15.ec:10362
+#: src/pass15.ec:11227
 msgid "unresolved identifier %s; expected %s\n"
 msgstr "不确定的标识符%s; 期望%s\n"
 
-#: src/pass15.ec:10374 src/pass15.ec:10445
+#: src/pass15.ec:11239 src/pass15.ec:11406
 msgid "unresolved identifier %s\n"
 msgstr "不确定的标识符%s\n"
 
-#: src/pass15.ec:1837
+#: src/pass15.ec:1977
 msgid "unresolved symbol used as an instance method %s\n"
 msgstr "使用未解析的符号作为实例方法%s\n"
 
-#: src/pass15.ec:7932 src/pass15.ec:8103 src/pass15.ec:8110
+#: src/pass15.ec:8545 src/pass15.ec:8746 src/pass15.ec:8753
 msgid "void *: unknown size\n"
 msgstr "void *: 未知大小\n"
+
+#: src/firstPass.ec:431
+msgid "wrong class name specified for %s\n"
+msgstr "%s被指定错误的类名\n"
