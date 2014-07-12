@@ -26,6 +26,7 @@ ifeq ($(DEB_HOST_ARCH),amd64)
 	cp debian/libedasqlite0.install.in64 debian/libedasqlite0.install
 	cp debian/libecc0.install.in64 debian/libecc0.install
 	cp debian/ecere-dev.install.in64 debian/ecere-dev.install
+	cp debian/libecereaudio0.install.in64 debian/libecereaudio0.install
 endif
 
 ifeq ($(DEB_HOST_ARCH),i386)
@@ -35,6 +36,7 @@ ifeq ($(DEB_HOST_ARCH),i386)
 	cp debian/libedasqlite0.install.in32 debian/libedasqlite0.install
 	cp debian/libecc0.install.in32 debian/libecc0.install
 	cp debian/ecere-dev.install.in32 debian/ecere-dev.install
+	cp debian/libecereaudio0.install.in32 debian/libecereaudio0.install
 endif
 	dh_install
 
