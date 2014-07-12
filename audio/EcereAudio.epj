@@ -15,7 +15,7 @@
          "Name" : "Win32",
          "Options" : {
             "IncludeDirs" : [
-               "../../deps/DirectX-9.0/include"
+               "../deps/DirectX-9.0/include"
             ],
             "Libraries" : [
                "winmm",
@@ -55,7 +55,7 @@
             "Debug" : false,
             "Optimization" : "Speed",
             "IncludeDirs" : [
-               "../../deps/DirectX-9.0/include"
+               "../deps/DirectX-9.0/include"
             ],
             "FastMath" : true
          }

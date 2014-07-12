@@ -302,7 +302,7 @@ epj2make: prepbinaries
 ecereaudio: prepbinaries
 ifdef ECERE_AUDIO
 	@$(call echo,Building EcereAudio...)
-	cd extras/audio && $(MAKE)
+	cd audio && $(MAKE)
 endif
 
 ide: prepbinaries
@@ -404,7 +404,7 @@ cleantarget:
 	cd ide && $(MAKE) cleantarget
 	cd installer && $(MAKE) cleantarget
 ifdef ECERE_AUDIO
-	cd extras/EcereAudio && $(MAKE) cleantarget
+	cd audio && $(MAKE) cleantarget
 endif
 
 pots: cleantarget
@@ -433,7 +433,7 @@ endif
 	cd ide && $(MAKE) clean
 	cd documentor && $(MAKE) clean
 ifdef ECERE_AUDIO
-	cd extras/EcereAudio && $(MAKE) clean
+	cd audio && $(MAKE) clean
 endif
 ifdef CodeGuard
 	cd codeGuard && $(MAKE) clean
@@ -452,7 +452,7 @@ endif
 	cd ide && $(MAKE) realclean
 	cd documentor && $(MAKE) realclean
 ifdef ECERE_AUDIO
-	cd extras/EcereAudio && $(MAKE) realclan
+	cd audio && $(MAKE) realclan
 endif
 ifdef CodeGuard
 	cd codeGuard && $(MAKE) realclean
@@ -472,7 +472,7 @@ endif
 	cd ide && $(MAKE) distclean
 	cd documentor && $(MAKE) distclean
 ifdef ECERE_AUDIO
-	cd extras/EcereAudio && $(MAKE) distclean
+	cd audio && $(MAKE) distclean
 endif
 ifdef CodeGuard
 	cd codeGuard && $(MAKE) distclean
@@ -499,7 +499,7 @@ BINARIES = \
 	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
 
 ifdef ECERE_AUDIO
-BINARIES += extras/audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SOV)
+BINARIES += audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SOV)
 endif
 
 ifdef CodeGuard
@@ -523,7 +523,7 @@ ifdef WINDOWS_TARGET
 	$(call cpq,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJBINDIR))
 	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJBINDIR))
 ifdef ECERE_AUDIO
-	$(call cpq,extras/audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO),$(OBJBINDIR))
+	$(call cpq,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO),$(OBJBINDIR))
 endif
 ifdef EDASQLiteCipher
 	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLiteCipher$(SO),$(OBJBINDIR))
@@ -537,7 +537,7 @@ ifdef LINUX_TARGET
 	$(call cpq,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV),$(OBJLIBDIR))
 	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV),$(OBJLIBDIR))
 ifdef ECERE_AUDIO
-	$(call cpq,extras/audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SOV),$(OBJLIBDIR))
+	$(call cpq,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SOV),$(OBJLIBDIR))
 endif
 ifdef EDASQLiteCipher
 	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLiteCipher$(SOV),$(OBJLIBDIR))
@@ -573,7 +573,7 @@ ifndef LINUX_TARGET
 	$(call cpq,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJLIBDIR))
 	$(call cpq,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJLIBDIR))
 ifdef ECERE_AUDIO
-	$(call cpq,extras/audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO),$(OBJLIBDIR))
+	$(call cpq,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO),$(OBJLIBDIR))
 endif
 ifdef EDASQLiteCipher
 	$(call cpq,eda/drivers/sqliteCipher/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLiteCipher$(SO),$(OBJLIBDIR))
@@ -668,7 +668,6 @@ endif
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
 	mkdir -p $(EXTRASDIR)
 	cp -pRf extras/* $(EXTRASDIR)
-	chmod 777 $(EXTRASDIR)/audio
 endif
 
 ifndef OSX_TARGET
@@ -717,15 +716,6 @@ endif
 else
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecere$(SO) $(DESTLIBDIR)/$(LP)ecere$(SO)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ecereCOM$(SO) $(DESTLIBDIR)/$(LP)ecereCOM$(SO)
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/$(LP)ec$(SO)
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/$(LP)EDA$(SO)
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/$(LP)EDASQLite$(SO)
-ifdef EDASQLiteCipher
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)
-endif
-endif
-ifdef ECERE_AUDIO
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EcereAudio$(SO) $(DESTLIBDIR)/$(LP)EcereAudio$(SO)
 endif
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ide$(E) $(BINDIR)/ide$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ear$(E) $(BINDIR)/ear$(E)
@@ -753,7 +743,6 @@ endif
 	find $(SAMPLESDIR) -type d -exec chmod 777 {} \;
 	mkdir -p $(EXTRASDIR)
 	cp $(CPFLAGS) extras/* $(EXTRASDIR)
-	chmod 777 $(EXTRASDIR)/audio
 ifdef DEBIAN_PACKAGE
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecere0
 	install $(INSTALL_FLAG) -m644 NEWS $(DESTDIR)$(prefix)/share/doc/libecere0/changelog
@@ -785,12 +774,22 @@ uninstall:
 	$(call rmq,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO)")
 	$(call rmq,"$(DESTLIBDIR)/$(LP)ec$(SO)")
 	$(call rmq,"$(DESTLIBDIR)/$(LP)EDA$(SO)")
+ifdef LINUX_TARGET
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO)")
+ifdef EDASQLiteCipher
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SO)")
+endif
+ifdef ECERE_AUDIO
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EcereAudio$(SO)")
+endif
+else
 	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLite$(SO)")
 ifdef EDASQLiteCipher
 	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)")
 endif
 ifdef ECERE_AUDIO
 	$(call rmq,"$(DESTLIBDIR)/$(LP)EcereAudio$(SO)")
+endif
 endif
 	$(call rmq,"$(BINDIR)/ide$(E)")
 	$(call rmq,"$(BINDIR)/ear$(E)")
@@ -810,23 +809,23 @@ endif
 ifdef LINUX_TARGET
 	$(call rmq,"$(DESTLIBDIR)/$(LP)ecere$(SO).0")
 	$(call rmq,"$(DESTLIBDIR)/$(LP)ecereCOM$(SO).0")
-	$(call rmq,"$(DESTLIBDIR)/$(LP)ec$(SO).0")
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EDA$(SO).0")
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLite$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)ec$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDA$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SO).0")
 ifdef EDASQLiteCipher
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SO).0")
 endif
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EcereaAudio$(SO).0")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EcereaAudio$(SO).0")
 	$(call rmq,"$(DESTLIBDIR)/$(LP)ecere$(SOV)")
 	$(call rmq,"$(DESTLIBDIR)/$(LP)ecereCOM$(SOV)")
-	$(call rmq,"$(DESTLIBDIR)/$(LP)ec$(SOV)")
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EDA$(SOV)")
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLite$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)ec$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDA$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)")
 ifdef EDASQLiteCipher
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SOV)")
 endif
 ifdef ECERE_AUDIO
-	$(call rmq,"$(DESTLIBDIR)/$(LP)EcereAudio$(SOV)")
+	$(call rmq,"$(DESTLIBDIR)/ec/$(LP)EcereAudio$(SOV)")
 endif
 	$(call rmq,"$(DESTDIR)$(prefix)/share/pixmaps/ecere.png")
 	$(call rmq,"$(DESTDIR)$(prefix)/share/applications/ecere.desktop")

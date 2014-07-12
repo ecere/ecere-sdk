@@ -31,7 +31,7 @@ CONSOLE = -mwindows
 
 # INCLUDES
 
-_CF_DIR = ../../
+_CF_DIR = ../
 
 include $(_CF_DIR)crossplatform.mk
 include $(_CF_DIR)default.cf
@@ -43,6 +43,10 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 RES = 
 
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO)$(VER)
+
+ifdef LINUX_TARGET
+SONAME = -Wl,-soname,$(LP)EcereAudio$(SO).0
+endif
 
 _ECSOURCES = \
 	alsa.ec \
@@ -87,9 +91,9 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
-			 -I../../deps/DirectX-9.0/include,) \
+			 -I../deps/DirectX-9.0/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -I../../deps/DirectX-9.0/include
+			 -I../deps/DirectX-9.0/include
 
 ECFLAGS += -module $(MODULE)
 # PLATFORM-SPECIFIC OPTIONS
@@ -119,8 +123,8 @@ CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
-	 -L../../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bin \
+	 -L../obj/$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/lib
 endif
 
 # TARGETS
@@ -151,7 +155,7 @@ $(TARGET): $(SOURCES) $(RESOURCES) $(SYMBOLS) $(OBJECTS) | objdir
 	@$(call echo,$(OBJ)$(MODULE).main$(O)) >> $(OBJ)objects.lst
 	@$(call echo,$(ECOBJECTS)) >> $(OBJ)objects.lst
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
