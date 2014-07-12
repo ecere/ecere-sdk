@@ -403,6 +403,9 @@ cleantarget:
 	cd epj2make && $(MAKE) cleantarget
 	cd ide && $(MAKE) cleantarget
 	cd installer && $(MAKE) cleantarget
+ifdef ECERE_AUDIO
+	cd extras/EcereAudio && $(MAKE) cleantarget
+endif
 
 pots: cleantarget
 	$(MAKE) OUTPUT_POT=1
@@ -429,6 +432,9 @@ endif
 	cd epj2make && $(MAKE) clean
 	cd ide && $(MAKE) clean
 	cd documentor && $(MAKE) clean
+ifdef ECERE_AUDIO
+	cd extras/EcereAudio && $(MAKE) clean
+endif
 ifdef CodeGuard
 	cd codeGuard && $(MAKE) clean
 endif
@@ -445,6 +451,9 @@ endif
 	cd epj2make && $(MAKE) realclean
 	cd ide && $(MAKE) realclean
 	cd documentor && $(MAKE) realclean
+ifdef ECERE_AUDIO
+	cd extras/EcereAudio && $(MAKE) realclan
+endif
 ifdef CodeGuard
 	cd codeGuard && $(MAKE) realclean
 endif
@@ -462,6 +471,9 @@ endif
 	cd epj2make && $(MAKE) distclean
 	cd ide && $(MAKE) distclean
 	cd documentor && $(MAKE) distclean
+ifdef ECERE_AUDIO
+	cd extras/EcereAudio && $(MAKE) distclean
+endif
 ifdef CodeGuard
 	cd codeGuard && $(MAKE) distclean
 endif
