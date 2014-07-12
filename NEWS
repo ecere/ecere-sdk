@@ -2,12 +2,15 @@ Ecere SDK 0.44.10 (July 12, 2014)
 
    * Compiler fixes and optimizations
    * Better C99 compatibility (stdbool, complex numbers)
+   * Fixed C integer promotion issues
    * Fixed and improved all samples (resources included)
    * Improved 3DS model support
    * EditBox and syntax highlighting fixes
    * Internationalization improvements
    * Clang and OS X Mavericks Support
    * More reliable IDE debugger watches
+   * X11 full screen support
+   * X11 acquired input support
    * X11 fixes (including improved fix for Unity)
    * Various bug fixes
    * Memory leaks fixes
