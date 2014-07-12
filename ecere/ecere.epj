@@ -147,9 +147,9 @@ from wherever you obtained them.
                "ssleay32"
             ],
             "LibraryDirs" : [
-               "../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
-               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "$(OPENSSL_BIN_DIR)",
@@ -188,7 +188,7 @@ from wherever you obtained them.
                "$(SYSROOT)/usr/X11/lib",
                "/usr/X11R6/lib",
                "../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
-               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/libpng-1.6.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ]
          }

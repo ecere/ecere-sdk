@@ -401,9 +401,9 @@ PRJ_CFLAGS += \
 			 -isystem ../deps/glext \
 			 -I../deps/DirectX-9.0/include \
 			 -I../deps/jpeg-6b \
-			 -I../deps/libpng-1.4.0 \
+			 -I../deps/libpng-1.6.12 \
 			 -I../deps/libungif-4.1.1/lib \
-			 -I../deps/zlib \
+			 -I../deps/zlib-1.2.8 \
 			 -I../deps/freetype-2.3.12/include \
 			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
@@ -437,9 +437,9 @@ ifdef WINDOWS_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/jpeg-6b/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
-	 -L../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 $(if $(ENABLE_SSL),-L$(OPENSSL_LIB_DIR) -L$(OPENSSL_BIN_DIR))

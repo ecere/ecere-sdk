@@ -177,7 +177,7 @@ CECFLAGS += -cpp $(_CPP)
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L../../ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) \
-	 -L../../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
+	 -L../../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 endif
 
 # TARGETS
