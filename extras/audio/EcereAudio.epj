@@ -1,6 +1,7 @@
 {
    "Version" : 0.2,
    "ModuleName" : "EcereAudio",
+   "ModuleVersion" : "0.44",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "SharedLibrary",
