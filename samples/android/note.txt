@@ -1,4 +1,4 @@
-See http://ecere.com/wiki/index.php?title=Android
+See http://ecere.org/android
 
 - You need to configure an Android compiler and select it as the active compiler
    You can simply use the default toolchain values, with a GCC prefix:
