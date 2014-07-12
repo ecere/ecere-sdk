@@ -317,7 +317,8 @@
                ]
             },
             "../obj/win32/bin/ecere.dll",
-            "../obj/win32/lib/libecereVanilla.a"
+            "../obj/win32/lib/libecereVanilla.a",
+            "../obj/win32/bin/EcereAudio.dll"
          ]
       },
       {
@@ -1561,16 +1562,6 @@
          "Folder" : "extras",
          "Files" : [
             {
-               "Folder" : "audio",
-               "Files" : [
-                  "../extras/audio/alsa.ec",
-                  "../extras/audio/audio.ec",
-                  "../extras/audio/dsound.ec",
-                  "../extras/audio/EcereAudio.epj",
-                  "../extras/audio/mixer.ec"
-               ]
-            },
-            {
                "Folder" : "gui",
                "Files" : [
                   {
@@ -1985,7 +1976,8 @@
                ]
             },
             "../obj/win32.x32/bin/ecere.dll",
-            "../obj/win32.x32/lib/libecereVanilla.a"
+            "../obj/win32.x32/lib/libecereVanilla.a",
+            "../obj/win32.x32/bin/EcereAudio.dll"
          ]
       },
       {

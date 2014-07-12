@@ -302,13 +302,15 @@ Array<Component> coreSDK
 
 public enum AdditionalID
 {
-   eda, eda32, vanilla, vanilla32, extras, upx, gnurx, gnurx32, /*pthreads, */cpp, /*w32api, gcci18n, gdbi18n, makei18n, binutilsi18n, */none
+   eda, eda32, audio, audio32, vanilla, vanilla32, extras, upx, gnurx, gnurx32, /*pthreads, */cpp, /*w32api, gcci18n, gdbi18n, makei18n, binutilsi18n, */none
 };
 
 Array<Component> additional
 { [
    { $"Data Access",     "ecere-sdk/eda",                 "bin",      null, false, true, true, bits64 },
    { $"Data Access",     "ecere-sdk32/eda",               "bin",      null, false, true, true, bits32 },
+   { $"Ecere Audio",     "ecere-sdk/EcereAudio.dll",      "bin",      null, false, true, true, bits64 },
+   { $"Ecere Audio",     "ecere-sdk32/EcereAudio.dll",    "bin",      null, false, true, true, bits32 },
    { $"Ecere Vanilla",   "ecere-sdk/libecereVanilla.a",   "lib",      null, false, true, true, bits64 },
    { $"Ecere Vanilla",   "ecere-sdk32/libecereVanilla.a", "lib",      null, false, true, true, bits32 },
    { $"Ecere Extras",    "extras",                        "extras",   null, false, true, true, none },
