@@ -763,7 +763,7 @@ ifdef DEBIAN_PACKAGE
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libedasqlite0
 	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libedasqlite0/
 	mkdir -p $(DESTDIR)$(prefix)/share/doc/libecereaudio0
-	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecereaudio/
+	ln -sf ../libecere0/changelog.gz $(DESTDIR)$(prefix)/share/doc/libecereaudio0/
 endif
 endif
 endif
