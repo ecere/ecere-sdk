@@ -1,0 +1,4 @@
+# We use {LIBDIR} in the install files, to ensure consistency with the upstream Makefiles which accepts LIBDIR
+# It is derived from DEB_HOST_MULTIARCH in our rules files if available, otherwise guessed from DEB_HOST_ARCH
+# in an attempt to be compatible with pre-multiarch Debians.
+ecere-sdk source: dh-exec-subst-unknown-variable

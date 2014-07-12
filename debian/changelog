@@ -1,3 +1,45 @@
+ecere-sdk (0.44.10-0ubuntu1) utopic; urgency=low
+
+   * Closes: #749822 #750066 #750068
+   * Compiler fixes and optimizations
+   * Better C99 compatibility (stdbool, complex numbers)
+   * Fixed C integer promotion issues
+   * Fixed and improved all samples (resources included)
+   * Improved 3DS model support
+   * EditBox and syntax highlighting fixes
+   * Internationalization improvements
+   * Clang and OS X Mavericks Support
+   * More reliable IDE debugger watches
+   * X11 full screen support
+   * X11 acquired input support
+   * X11 fixes (including improved fix for Unity)
+   * Various bug fixes
+   * Memory leaks fixes
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Sat, 12 Jul 2014 19:00:00 -0500
+
+ecere-sdk (0.44.09.9-0ubuntu1) trusty; urgency=low
+
+   * 64 bit fixes
+   * IDE fixes
+   * X11 GUI driver fixes
+   * eC Compiler fixes
+   * HTTP fixes
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Thu, 20 Feb 2014 17:37:00 -0500
+
+ecere-sdk (0.44.09-0ubuntu1) saucy; urgency=low
+
+   * Debugger fixes
+   * Documentor fixes
+   * Valgrind integration
+   * Improved usability with Unity
+   * 64 bit fixes
+   * Compiler Fixes, Improved C headers compatibility
+   * Tons of other bug fixes
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Fri, 30 Aug 2013 07:04:00 -0400
+
 ecere-sdk (0.44.06-0ubuntu1) raring; urgency=low
 
   * Fixed bugs causing build to fail on PowerPC
@@ -54,7 +96,7 @@ ecere-sdk (0.44.02-0ubuntu1) raring; urgency=low
 
  -- Jerome St-Louis <jerstlouis@gmail.com>  Tue, 6 Nov 2012 23:59:00 -0500
 
-ecere-sdk (0.44.01-0ubuntu1) natty; urgency=low
+ecere-sdk (0.44.01-0ubuntu1) quantal; urgency=low
 
   * Initial packaging of Ecere SDK for Debian. (Closes: #665332, LP: #394998)
 
