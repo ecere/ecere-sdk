@@ -2826,8 +2826,8 @@ class IDEWorkSpace : Window
          }
          else
          {
-            CodeEditor codeEditor = (CodeEditor)OpenFile(path, false, true, ext, no, normal, false);
-            if(codeEditor && line)
+            CodeEditor codeEditor = (CodeEditor)OpenFile(path, false, true, !strcmpi(ext, "epj") ? "txt" : ext, no, normal, false);
+            if(codeEditor && codeEditor._class == class(CodeEditor) && line)
             {
                EditBox editBox = codeEditor.editBox;
                editBox.GoToLineNum(line - 1);
