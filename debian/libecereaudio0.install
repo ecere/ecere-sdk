@@ -1,0 +1,5 @@
+#!/usr/bin/dh-exec
+${LIBDIR}/ec/libEcereAudio.so.0.44
+${LIBDIR}/ec/libEcereAudio.so.0
+${LIBDIR}/ec/libEcereAudio.so
+usr/share/doc/libecereaudio0/changelog.gz

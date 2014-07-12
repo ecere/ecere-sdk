@@ -5,15 +5,16 @@ Maintainer: Jerome St-Louis <jerstlouis@gmail.com>
 Build-Depends: debhelper (>= 9~),
                dh-exec (>= 0.3~),
                dpkg-dev (>= 1.16.1~),
+               libasound2-dev,
                libffi-dev,
                libfontconfig1-dev,
                libfreetype6-dev,
                libgif-dev,
                libgl1-mesa-dev,
                libgl1-mesa-glx,
-               libjpeg62-dev,
+               libjpeg-dev,
                libncurses5-dev,
-               libpng12-dev,
+               libpng-dev,
                libsqlite3-dev,
                libx11-dev,
                libxext-dev,
@@ -22,12 +23,12 @@ Build-Depends: debhelper (>= 9~),
                upx-ucl,
                zlib1g-dev
 Standards-Version: 3.9.5
-Homepage: http://www.ecere.com/
+Homepage: http://ecere.org/
 
 Package: ecere-sdk
 Architecture: any
 Depends: ecere-dev, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
-Recommends: ecere-extras, ecere-samples, libeda0, libedasqlite0
+Recommends: ecere-extras, ecere-samples, libeda0, libedasqlite0, libecereaudio0
 Description: Ecere cross-platform SDK
  This package is a metapackage providing
  the entire Ecere cross-platform SDK
@@ -115,6 +116,17 @@ Description: EDA SQLite Driver
  for building database applications
  with the Ecere Database Access layer.
 
+Package: libecereaudio0
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: multiarch-support
+Depends: libecere0, ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
+Description: Ecere Audio
+ This package provides an audio playback and mixer API
+ as well as support for basic .wav sound files.
+ It makes use of ALSA.
+
 Package: ecere-samples
 Architecture: all
 Multi-Arch: foreign
@@ -131,6 +143,6 @@ Architecture: all
 Multi-Arch: foreign
 Depends: ${devel:Depends}, ${misc:Depends}, ${shlibs:Depends}
 Description: Extras for the Ecere SDK
- This package provides additional Ecere
- functionality, such as SSL Sockets,
- Audio, in the form of source code.
+ This package provides miscellaneous utilities
+ not yet part of any library in the form of
+ source code.

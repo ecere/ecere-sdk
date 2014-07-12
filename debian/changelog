@@ -1,3 +1,23 @@
+ecere-sdk (0.44.10-1) unstable; urgency=low
+
+   * Closes: #749822 #750066 #750068
+   * Compiler fixes and optimizations
+   * Better C99 compatibility (stdbool, complex numbers)
+   * Fixed C integer promotion issues
+   * Fixed and improved all samples (resources included)
+   * Improved 3DS model support
+   * EditBox and syntax highlighting fixes
+   * Internationalization improvements
+   * Clang and OS X Mavericks Support
+   * More reliable IDE debugger watches
+   * X11 full screen support
+   * X11 acquired input support
+   * X11 fixes (including improved fix for Unity)
+   * Various bug fixes
+   * Memory leaks fixes
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Sat, 12 Jul 2014 19:00:00 -0500
+
 ecere-sdk (0.44.09.9-1) unstable; urgency=low
 
    * 64 bit fixes
