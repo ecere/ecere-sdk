@@ -11263,7 +11263,7 @@ void ProcessExpressionType(Expression exp)
                   Expression nbExp = GetNonBracketsExp(exp);
                   bool skipWarning = false;
                   TypeKind kind = exp.destType.kind;
-                  if(nbExp.type == conditionExp && !nbExp.destType.casted && nbExp.destType.kind == exp.destType.kind)
+                  if(nbExp.type == conditionExp && nbExp.destType && !nbExp.destType.casted && nbExp.destType.kind == exp.destType.kind)
                      // The if/else operands have already been checked / warned about
                      skipWarning = true;
                   if((kind == charType || kind == shortType) && exp.destType.isSigned == exp.expType.signedBeforePromotion && nbExp.type == opExp && nbExp.op.exp1 && nbExp.op.exp2)

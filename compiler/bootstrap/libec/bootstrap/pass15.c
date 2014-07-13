@@ -18835,7 +18835,7 @@ struct Expression * nbExp = GetNonBracketsExp(exp);
 unsigned int skipWarning = 0;
 int kind = exp->destType->kind;
 
-if(nbExp->type == 12 && !nbExp->destType->casted && nbExp->destType->kind == exp->destType->kind)
+if(nbExp->type == 12 && nbExp->destType && !nbExp->destType->casted && nbExp->destType->kind == exp->destType->kind)
 skipWarning = 1;
 if((kind == 1 || kind == 2) && exp->destType->isSigned == exp->expType->signedBeforePromotion && nbExp->type == 4 && nbExp->__anon1.op.exp1 && nbExp->__anon1.op.exp2)
 {
