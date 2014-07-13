@@ -86,7 +86,7 @@ public enum ErrorLevel
    minor = 3
 };
 
-public define AllErrors = ErrorLevel::Minor;
+public define AllErrors = ErrorLevel::minor;
 
 public class ErrorCode
 {

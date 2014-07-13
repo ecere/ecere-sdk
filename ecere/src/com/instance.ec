@@ -5352,7 +5352,7 @@ static Module Module_Load(Module fromModule, const char * name, AccessMode impor
       }
       else
       {
-         char * libLocation = null;
+         const char * libLocation = null;
 #if defined(__ANDROID__)
          libLocation = AndroidInterface_GetLibLocation();
 #endif

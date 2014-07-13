@@ -128,11 +128,11 @@ private:
          AInputEvent* event = null;
          if(AInputQueue_getEvent(inputQueue, &event) >= 0)
          {
-            int handled = 0;
+            //int handled = 0;
             LOGV("New input event: type=%d\n", AInputEvent_getType(event));
             if(AInputQueue_preDispatchEvent(inputQueue, event))
                return;
-            handled = onInputEvent(event);
+            /*handled = */onInputEvent(event);
             //AInputQueue_finishEvent(inputQueue, event, handled);
          }
          else
@@ -199,7 +199,7 @@ private:
 
    void pre_exec_cmd(AppCommand cmd)
    {
-      PrintLn("pre_exec_cmd: ", (int)cmd);
+      PrintLn("pre_exec_cmd: ", cmd);
       switch(cmd)
       {
          case inputChanged:
@@ -242,7 +242,7 @@ private:
 
    void post_exec_cmd(AppCommand cmd)
    {
-      PrintLn("post_exec_cmd: ", (int)cmd);
+      PrintLn("post_exec_cmd: ", cmd);
       switch(cmd)
       {
          case termWindow:
@@ -755,10 +755,6 @@ class AndroidInterface : Interface
 
    void GetMousePosition(int *x, int *y)
    {
-      int rootWindow, childWindow;
-      int mx, my;
-      unsigned int state;
-
       *x = mouseX;
       *y = mouseY;
    }
@@ -875,7 +871,7 @@ class AndroidInterface : Interface
 
    bool GetKeyState(Key key)
    {
-      int keyState = 0;
+      bool keyState = false;
       return keyState;
    }
 
@@ -1041,8 +1037,8 @@ static Key keyCodeTable[] =
     0, //AKEYCODE_BUTTON_START    = 108,
     0, //AKEYCODE_BUTTON_SELECT   = 109,
     0, //AKEYCODE_BUTTON_MODE     = 110,
-    escape, //AKEYCODE_BUTTON_ESCAPE     = 111,
-    del //AKEYCODE_BUTTON_ESCAPE     = 112,
+    escape, //AKEYCODE_BUTTON_ESCAPE = 111,
+    del, //AKEYCODE_BUTTON_ESCAPE    = 112,
     leftControl, // = 113
     rightControl, // = 114
     capsLock, // = 115
@@ -1079,21 +1075,21 @@ class AndroidActivity : AndroidAppGlue
       if(type == AINPUT_EVENT_TYPE_MOTION)
       {
          uint actionAndIndex = AMotionEvent_getAction(event);
-         uint source = AInputEvent_getSource(event);
+         //uint source = AInputEvent_getSource(event);
          uint action = actionAndIndex & AMOTION_EVENT_ACTION_MASK;
-         uint index  = (actionAndIndex & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
-         uint flags = AMotionEvent_getFlags(event);
+         //uint index  = (actionAndIndex & AMOTION_EVENT_ACTION_POINTER_INDEX_MASK) >> AMOTION_EVENT_ACTION_POINTER_INDEX_SHIFT;
+         //uint flags = AMotionEvent_getFlags(event);
          uint meta = AMotionEvent_getMetaState(event);
-         uint edge = AMotionEvent_getEdgeFlags(event);
-         int64 downTime = AMotionEvent_getDownTime(event);     // nanotime
-         int64 eventTime = AMotionEvent_getDownTime(event);
+         //uint edge = AMotionEvent_getEdgeFlags(event);
+         //int64 downTime = AMotionEvent_getDownTime(event);     // nanotime
+         //int64 eventTime = AMotionEvent_getDownTime(event);
          //float axis;
          Modifiers keyFlags = 0;
          int x = (int)AMotionEvent_getX(event, 0);
          int y = (int)AMotionEvent_getY(event, 0);
          bool shift = (meta & AMETA_SHIFT_ON) ? true : false;
          bool alt = (meta & AMETA_ALT_ON) ? true : false;
-         bool sym = (meta & AMETA_SYM_ON) ? true : false;
+         //bool sym = (meta & AMETA_SYM_ON) ? true : false;
 
          keyFlags.shift = shift;
          keyFlags.alt = alt;
@@ -1134,14 +1130,14 @@ class AndroidActivity : AndroidAppGlue
       else if(type == AINPUT_EVENT_TYPE_KEY)
       {
          uint action = AKeyEvent_getAction(event);
-         uint flags = AKeyEvent_getFlags(event);
+         //uint flags = AKeyEvent_getFlags(event);
          uint keyCode = AKeyEvent_getKeyCode(event);
          uint meta = AKeyEvent_getMetaState(event);
          Key key = keyCodeTable[keyCode];
          bool shift = (meta & AMETA_SHIFT_ON) ? true : false;
          bool alt = (meta & AMETA_ALT_ON || meta & AMETA_ALT_LEFT_ON || meta & AMETA_ALT_RIGHT_ON) ? true : false;
-         bool metaMeta = (meta & AMETA_META_ON || meta & AMETA_META_LEFT_ON || meta & AMETA_META_RIGHT_ON) ? true : false;
-         bool sym = (meta & AMETA_SYM_ON) ? true : false;
+         //bool metaMeta = (meta & AMETA_META_ON || meta & AMETA_META_LEFT_ON || meta & AMETA_META_RIGHT_ON) ? true : false;
+         //bool sym = (meta & AMETA_SYM_ON) ? true : false;
          //unichar ch = AKeyEvent_getUnichar(event);
          unichar ch = 0;
 
@@ -1274,7 +1270,7 @@ class AndroidActivity : AndroidAppGlue
             guiApp = (GuiApplication)__androidCurrentModule;
 
             {
-               String skin = guiApp.skin;
+               const String skin = guiApp.skin;
                *&guiApp.currentSkin = null;
                guiApp.SelectSkin(skin);
             }

@@ -465,7 +465,7 @@ static bool egl_init_display(ANativeWindow* window)
       EGL_SAMPLES, 0, //2,*/
       EGL_NONE
    };
-   EGLint w, h, dummy, format;
+   EGLint w, h, format;
    EGLint numConfigs;
    EGLConfig config;
    EGLSurface surface;
@@ -811,13 +811,14 @@ void glesLoadMatrixd(double * i)
 
 void glesOrtho( double l, double r, double b, double t, double n, double f )
 {
-   Matrix m =
+   Matrix m
    { {
       (2 / (r - l)), 0, 0, 0,
       0, (2 / (t - b)), 0, 0,
       0, 0, (-2 / (f - n)), 0,
       (-(r + l) / (r - l)), (-(t + b) / (t - b)), (-(f + n) / (f - n)), 1
-   } }, res;
+   } };
+   Matrix res;
    res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
    matrixStack[curStack][matrixIndex[curStack]] = res;
    LoadCurMatrix();
@@ -837,13 +838,14 @@ void glesFrustum( double l, double r, double b, double t, double n, double f )
       double B = ((t + b) / (t - b));
       double C = (-(f + n) / (f - n));
       double D = (-2*f*n/(f-n));
-      Matrix m =
+      Matrix m
       { {
          (2.0*n / (r - l)), 0, 0, 0,
          0, (2.0*n / (t - b)), 0, 0,
          A, B,             C,-1,
          0, 0,             D, 0
-      } }, res;
+      } };
+      Matrix res;
       res.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
       matrixStack[curStack][matrixIndex[curStack]] = res;
       LoadCurMatrix();
@@ -1045,7 +1047,6 @@ static bool stippleEnabled;
 void glesLineStipple( int i, unsigned short j )
 {
    uint texture[1*16];
-   int c;
    int x;
    for(x = 0; x < 16; x++)
    {
@@ -1177,9 +1178,9 @@ void GLBufferData(int type, GLenum target, int size, const GLvoid *data, GLenum 
 {
 #ifdef __ANDROID__
    if(type == GL_DOUBLE)
-      glesBufferDatad(target, size, data, usage);
+      glesBufferDatad(target, size, (void *)data, usage);
    else if(type == GL_UNSIGNED_INT)
-      glesBufferDatai(target, size, data, usage);
+      glesBufferDatai(target, size, (void *)data, usage);
    else
       glBufferData(target, size, data, usage);
 #else
@@ -1214,7 +1215,7 @@ class OGLDisplay : struct
    int imageBuffers[2];
    byte * pboMemory1, * pboMemory2;
    */
-#else
+#elif !defined(__ANDROID__)
    GLXContext glContext;
 
    Pixmap pixmap;
@@ -1248,7 +1249,7 @@ class OGLSystem : struct
    HDC hdc;
    HGLRC glrc;
    HWND hwnd;
-#else
+#elif !defined(__ANDROID__)
    XVisualInfo * visualInfo;
    GLXContext glContext;
    GLXDrawable glxDrawable;
@@ -1297,6 +1298,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    bool LockSystem(DisplaySystem displaySystem)
    {
+#if !defined(__ANDROID__)
       OGLSystem oglSystem = displaySystem.driverData;
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
@@ -1304,11 +1306,10 @@ class OpenGLDisplayDriver : DisplayDriver
    #elif defined(__unix__) || defined(__APPLE__)
       //if(previous) return true;
       // printf("Making SYSTEM current\n");
-#if !defined(__ANDROID__)
       glXMakeCurrent(xGlobalDisplay, (GLXDrawable)oglSystem.glxDrawable, oglSystem.glContext);
-#endif
       //previous = oglSystem.glContext;
    #endif
+#endif
       return true;
    }
 
@@ -1329,19 +1330,17 @@ class OpenGLDisplayDriver : DisplayDriver
 
    bool Lock(Display display)
    {
+#if !defined(__ANDROID__)
       OGLDisplay oglDisplay = display.driverData;
-
       if(useSingleGLContext) return true;
    #if defined(__WIN32__)
       wglMakeCurrent(oglDisplay.hdc, oglDisplay.glrc);
    #elif defined(__unix__) || defined(__APPLE__)
       // if(previous) glXMakeCurrent(xGlobalDisplay, None, null);
       // printf("   Making DISPLAY current\n");
-      #if defined(__ANDROID__)
-      #else
       glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
-      #endif
    #endif
+#endif
       return true;
    }
 
@@ -1649,7 +1648,9 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLDisplay oglDisplay = display.driverData;
+#if !defined(__ANDROID__)
       OGLSystem oglSystem = display.displaySystem.driverData;
+#endif
       if(!oglDisplay)
          oglDisplay = display.driverData = OGLDisplay { };
       //printf("Inside CreateDisplay\n");
@@ -3926,11 +3927,14 @@ IS_GLGetContext(DisplaySystem displaySystem)
 {
    if(displaySystem)
    {
-      OGLSystem system = displaySystem.driverData;
 #if defined(__WIN32__)
+      OGLSystem system = displaySystem.driverData;
       return system.glrc;
-#else
+#elif !defined(__ANDROID__)
+      OGLSystem system = displaySystem.driverData;
       return system.glContext;
+#else
+      return eglContext;
 #endif
    }
    return null;

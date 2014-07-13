@@ -824,7 +824,7 @@ __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "veryFatal", 0);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "fatal", 1);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "major", 2);
 __ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "minor", 3);
-__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::AllErrors", "ecere::sys::ErrorLevel::Minor", module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterDefine("ecere::sys::AllErrors", "ecere::sys::ErrorLevel::minor", module, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(2, "ecere::sys::ErrorCode", 0, 0, 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__sys__ErrorCode = class;

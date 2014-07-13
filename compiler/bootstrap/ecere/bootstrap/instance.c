@@ -5786,7 +5786,7 @@ Unload = (void *)(__ecereDll_Unload_ecere);
 }
 else
 {
-char * libLocation = (((void *)0));
+const char * libLocation = (((void *)0));
 
 library = Instance_Module_Load(libLocation, name, (void *)(&Load), (void *)(&Unload));
 }
