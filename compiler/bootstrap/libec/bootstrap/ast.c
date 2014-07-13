@@ -3680,7 +3680,7 @@ name[len] = 0;
 id->string = __ecereNameSpace__ecere__sys__CopyString(name);
 }
 symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&(curContext->templateTypesOnly ? curContext->parent : curContext)->symbols, id->string);
-if(!symbol)
+if(!symbol && strcmp(id->string, "strlen"))
 {
 symbol = __extension__ ({
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);

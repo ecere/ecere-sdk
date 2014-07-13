@@ -955,7 +955,7 @@ Declaration MkDeclaration(OldList specifiers, OldList initDeclarators)
 
                // Avoid memory leaks on duplicated symbols (BinaryTree::Add Would Fail)
                symbol = (Symbol)(curContext.templateTypesOnly ? curContext.parent : curContext).symbols.FindString(id.string);
-               if(!symbol)
+               if(!symbol && strcmp(id.string, "strlen")) // Avoid overriding our definition of strlen or our 'uintsize' warning override won't take effect
                {
                   symbol = Symbol { string = CopyString(id.string), type = ProcessType(specifiers, d.declarator) };
                   if(strstr(symbol.string, "::"))
