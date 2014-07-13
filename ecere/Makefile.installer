@@ -543,7 +543,11 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/hu.mo locale/mr.mo locale/nl.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
 else
+ifdef WINDOWS_HOST
 	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
+else
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
+endif
 endif
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET

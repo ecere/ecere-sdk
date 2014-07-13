@@ -3347,7 +3347,11 @@ private:
          if(resNode.files && resNode.files.count && !noResources)
             resNode.GenMakefileAddResources(f, resNode.path, config);
          f.Puts("else\n");
+         f.Puts("ifdef WINDOWS_HOST\n");
          f.Puts("\t$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)\n");
+         f.Puts("else\n");
+         f.Puts("\t$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)\n");
+         f.Puts("endif\n");
          f.Puts("endif\n");
          f.Puts("ifdef SHARED_LIBRARY_TARGET\n");
          f.Puts("ifdef LINUX_TARGET\n");
