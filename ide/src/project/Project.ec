@@ -1744,6 +1744,11 @@ private:
                                  message = $"Linker Message: ";
                                  colon = line;
                               }
+                              else if(SearchString(colon, 0, "warning:", false, false))
+                              {
+                                 message = $"Linker Warning: ";
+                                 colon = line;
+                              }
                               else
                               {
                                  numErrors++;
