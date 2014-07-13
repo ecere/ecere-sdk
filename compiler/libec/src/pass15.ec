@@ -7830,7 +7830,13 @@ void ProcessExpressionType(Expression exp)
          }
          else
          {
-            Symbol symbol = FindSymbol(id.string, curContext, topContext /*exp.destType ? topContext : globalContext*/, false, id._class && id._class.name == null);
+            Symbol symbol = null;
+            bool findInGlobal = false;
+            if(!topContext.parent && exp.destType && exp.destType.kind == classType && exp.destType._class && exp.destType._class.registered && exp.destType._class.registered.type == enumClass)
+               findInGlobal = true;  // In global context, look at enum values first
+            else
+               symbol = FindSymbol(id.string, curContext, topContext /*exp.destType ? topContext : globalContext*/, false, id._class && id._class.name == null);
+
             // Enums should be resolved here (Special pass in opExp to fix identifiers not seen as enum on the first pass)
             if(!symbol/* && exp.destType*/)
             {
@@ -7856,6 +7862,8 @@ void ProcessExpressionType(Expression exp)
                   symbol = FindSymbol(id.string, topContext.parent, globalContext, false, id._class && id._class.name == null);
                }
             }
+            if(findInGlobal)
+               symbol = FindSymbol(id.string, curContext, topContext, false, id._class && id._class.name == null);
 
             // If we manage to resolve this symbol
             if(symbol)

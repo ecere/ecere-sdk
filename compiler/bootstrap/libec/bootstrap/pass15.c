@@ -15767,8 +15767,13 @@ break;
 }
 else
 {
-struct Symbol * symbol = FindSymbol(id->string, curContext, topContext, 0, id->_class && id->_class->__anon1.__anon1.name == (((void *)0)));
+struct Symbol * symbol = (((void *)0));
+unsigned int findInGlobal = 0;
 
+if(!topContext->parent && exp->destType && exp->destType->kind == 8 && exp->destType->__anon1._class && exp->destType->__anon1._class->__anon1.registered && exp->destType->__anon1._class->__anon1.registered->type == 4)
+findInGlobal = 1;
+else
+symbol = FindSymbol(id->string, curContext, topContext, 0, id->_class && id->_class->__anon1.__anon1.name == (((void *)0)));
 if(!symbol)
 {
 if(exp->destType && CheckExpressionType(exp, exp->destType, 0, 0))
@@ -15792,6 +15797,8 @@ break;
 symbol = FindSymbol(id->string, topContext->parent, globalContext, 0, id->_class && id->_class->__anon1.__anon1.name == (((void *)0)));
 }
 }
+if(findInGlobal)
+symbol = FindSymbol(id->string, curContext, topContext, 0, id->_class && id->_class->__anon1.__anon1.name == (((void *)0)));
 if(symbol)
 {
 struct Type * type = symbol->type;
