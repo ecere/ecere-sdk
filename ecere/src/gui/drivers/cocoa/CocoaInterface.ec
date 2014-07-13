@@ -62,7 +62,7 @@ class CocoaInterface : Interface
     const char **GraphicsDrivers(int *numDrivers)
     {
         static const char *graphicsDrivers[] = { "CocoaOpenGL" };
-        *numDrivers = (const char *)sizeof(graphicsDrivers) / sizeof(char *);
+        *numDrivers = sizeof(graphicsDrivers) / sizeof(char *);
 
         return (char **)graphicsDrivers;
     }

@@ -93,7 +93,7 @@ void CocoaDestroyRootWindow(WindowHandle handle)
     [view release];
 }
 
-void CocoaSetRootWindowCaption(WindowHandle handle, char *name)
+void CocoaSetRootWindowCaption(WindowHandle handle, const char *name)
 {
     EcereView *view = (EcereView*)handle;
 

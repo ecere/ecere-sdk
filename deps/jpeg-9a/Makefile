@@ -176,7 +176,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 else
-	$(AR) rcs $(TARGET) @$(OBJ)objects.lst $(LIBS)
+	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif
 ifdef SHARED_LIBRARY_TARGET
 ifdef LINUX_TARGET
