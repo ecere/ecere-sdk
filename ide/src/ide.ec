@@ -2668,6 +2668,65 @@ class IDEWorkSpace : Window
          projectView.GoToError(line, noParsing);
    }
 
+   FileAttribs GoToCodeSelectFile(const char * filePath, const char * dir, Project prj, ProjectNode * node, char * selectedPath)
+   {
+      FileAttribs result { };
+      FileAttribs fileAttribs;
+      if(filePath[0])
+      {
+         if(prj)
+            strcpy(selectedPath, prj.topNode.path);
+         else if(dir && dir[0])
+            strcpy(selectedPath, dir);
+         else
+            selectedPath[0] = '\0';
+         PathCat(selectedPath, filePath);
+
+         if((fileAttribs = FileExists(selectedPath)).isFile)
+            result = fileAttribs;
+         else if(workspace)
+         {
+            bool done = false;
+            for(p : workspace.projects)
+            {
+               strcpy(selectedPath, p.topNode.path);
+               PathCat(selectedPath, filePath);
+               if((fileAttribs = FileExists(selectedPath)).isFile)
+               {
+                  done = true;
+                  result = fileAttribs;
+                  break;
+               }
+            }
+            if(!done)
+            {
+               Project project;
+               ProjectNode n = null;
+               for(p : workspace.projects)
+               {
+                  if((n = p.topNode.Find(filePath, false)))
+                  {
+                     n.GetFullFilePath(selectedPath);
+                     if((fileAttribs = FileExists(selectedPath)).isFile)
+                     {
+                        if(node) *node = n;
+                        result = fileAttribs;
+                        break;
+                     }
+                  }
+               }
+               if(!n && (n = workspace.GetObjectFileNode(filePath, &project, selectedPath)) && project &&
+                     (fileAttribs = FileExists(selectedPath)).isFile)
+               {
+                  if(node) *node = n;
+                  result = fileAttribs;
+               }
+            }
+         }
+      }
+      return result;
+   }
+
    void CodeLocationParseAndGoTo(const char * text, Project project, const char * dir)
    {
       char *s = null;
@@ -2763,54 +2822,8 @@ class IDEWorkSpace : Window
          strcpy(filePath, path);
       }
 
-      if(filePath[0])
-      {
-         if(prj)
-            strcpy(completePath, prj.topNode.path);
-         else if(dir && dir[0])
-            strcpy(completePath, dir);
-         else
-            completePath[0] = '\0';
-         PathCat(completePath, filePath);
-
-         if((fileAttribs = FileExists(completePath)))
-            CodeLocationGoTo(completePath, fileAttribs, line, col);
-         else if(ide.workspace)
-         {
-            bool done = false;
-            for(p : ide.workspace.projects)
-            {
-               strcpy(completePath, p.topNode.path);
-               PathCat(completePath, filePath);
-               if((fileAttribs = FileExists(completePath)).isFile)
-               {
-                  CodeLocationGoTo(completePath, fileAttribs, line, col);
-                  done = true;
-                  break;
-               }
-            }
-            if(!done)
-            {
-               Project project;
-               ProjectNode node;
-               for(p : ide.workspace.projects)
-               {
-                  if((node = p.topNode.Find(filePath, false)))
-                  {
-                     node.GetFullFilePath(completePath);
-                     if((fileAttribs = FileExists(completePath)).isFile)
-                     {
-                        CodeLocationGoTo(completePath, fileAttribs, line, col);
-                        break;
-                     }
-                  }
-               }
-               if(!node && (node = workspace.GetObjectFileNode(filePath, &project, completePath)) && project &&
-                     (fileAttribs = FileExists(completePath)).isFile)
-                  CodeLocationGoTo(completePath, fileAttribs, line, col);
-            }
-         }
-      }
+      if((fileAttribs = GoToCodeSelectFile(filePath, dir, prj, null, completePath)))
+         CodeLocationGoTo(completePath, fileAttribs, line, col);
    }
 
    void CodeLocationGoTo(const char * path, const FileAttribs fileAttribs, int line, int col)

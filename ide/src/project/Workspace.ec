@@ -358,7 +358,7 @@ public:
       }
    }
 
-   char * GetAbsolutePathFromRelative(const char * relative)
+   char * CopyAbsolutePathFromRelative(const char * relative)
    {
       char name[MAX_LOCATION];
       char absolute[MAX_LOCATION];
@@ -412,7 +412,7 @@ public:
       return null;
    }
 
-   char * GetPathWorkspaceRelativeOrAbsolute(const char * path)
+   char * CopyUnixPathWorkspaceRelativeOrAbsolute(const char * path)
    {
       if(IsPathInsideOf(path, workspaceDir))
       {
@@ -422,6 +422,31 @@ public:
       }
       else
          return CopyUnixPath(path);
+   }
+
+   char * MakeRelativePath(char * buffer, const char * path)
+   {
+      char * result = null;
+      if(buffer && path)
+      {
+         MakePathRelative(path, workspaceDir, buffer);
+         MakeSlashPath(buffer);
+         result = buffer;
+      }
+      return result;
+   }
+
+   char * GetRelativePathForProject(char * buffer, Project project)
+   {
+      char * result = null;
+      if(buffer && project && project.topNode.path)
+      {
+         MakePathRelative(project.topNode.path, workspaceDir, buffer);
+         MakeSlashPath(buffer);
+         PathCatSlash(buffer, project.topNode.name);
+         result = buffer;
+      }
+      return result;
    }
 
    Array<ProjectNode> GetAllProjectNodes(const char *fullPath, bool skipExcluded)

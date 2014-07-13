@@ -821,7 +821,7 @@ class Debugger
             if(frame.absoluteFile)
                editor = (CodeEditor)ide.OpenFile(frame.absoluteFile, false, true, null, no, normal, false);
             if(!editor && frame.file)
-               frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
+               frame.absoluteFile = ide.workspace.CopyAbsolutePathFromRelative(frame.file);
             if(!frame.absoluteFile && askForLocation && frame.file)
             {
                char * s = null;
@@ -832,7 +832,7 @@ class Debugger
                if(SourceDirDialog(title, ide.workspace.projectDir, frame.file, sourceDir))
                {
                   AddSourceDir(sourceDir);
-                  frame.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(frame.file);
+                  frame.absoluteFile = ide.workspace.CopyAbsolutePathFromRelative(frame.file);
                }
             }
             if(!editor && frame.absoluteFile)
@@ -1508,7 +1508,7 @@ class Debugger
                Workspace ws = ide.workspace;
                if(ws)
                {
-                  String path = ide.workspace.GetPathWorkspaceRelativeOrAbsolute(item.value);
+                  String path = ide.workspace.CopyUnixPathWorkspaceRelativeOrAbsolute(item.value);
                   if(strcmp(frame.file, path))
                      frame.file = path;
                   delete path;
@@ -5014,7 +5014,7 @@ class CodeLocation : struct
                {
                   CodeLocation codloc { line = line };
                   codloc.file = CopyString(loc);
-                  codloc.absoluteFile = ide.workspace.GetAbsolutePathFromRelative(loc);
+                  codloc.absoluteFile = ide.workspace.CopyAbsolutePathFromRelative(loc);
                   return codloc;
                }
             }

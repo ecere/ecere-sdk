@@ -1796,47 +1796,40 @@ class ProjectView : Window
                moduleName[0] = 0;    // Avoid opening binary files
             if(moduleName[0])
             {
-               CodeEditor codeEditor;
-               if(!filePath[0])
+               CodeEditor codeEditor = null;
+
+               if(ide.GoToCodeSelectFile(moduleName, null, project, null, filePath))
                {
-                  strcpy(filePath, project.topNode.path);
-                  PathCatSlash(filePath, moduleName);
+                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
                }
 
-               codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
-               if(!codeEditor && !strcmp(ext, "c"))
-               {
-                  char ecName[MAX_LOCATION];
-                  ChangeExtension(filePath, "ec", ecName);
-                  codeEditor = (CodeEditor)ide.OpenFile(ecName, false, true, null, no, normal, noParsing);
-               }
                if(!codeEditor)
                {
-                  char path[MAX_LOCATION];
-                  // TOFIX: Improve on this, don't use only filename, make a function
-                  if(ide && ide.workspace)
+                  if(!filePath[0])
                   {
-                     for(prj : ide.workspace.projects)
-                     {
-                        ProjectNode node;
-                        MakePathRelative(filePath, prj.topNode.path, path);
+                     strcpy(filePath, project.topNode.path);
+                     PathCatSlash(filePath, moduleName);
+                  }
 
-                        if((node = prj.topNode.FindWithPath(path, false)))
-                        {
-                           strcpy(filePath, prj.topNode.path);
-                           PathCatSlash(filePath, node.path);
-                           PathCatSlash(filePath, node.name);
-                           codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
-                           if(codeEditor)
-                              break;
-                        }
-                     }
-                     if(!codeEditor && (strchr(moduleName, '/') || strchr(moduleName, '\\')))
+                  codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
+                  if(!codeEditor && !strcmp(ext, "c"))
+                  {
+                     char ecName[MAX_LOCATION];
+                     ChangeExtension(filePath, "ec", ecName);
+                     codeEditor = (CodeEditor)ide.OpenFile(ecName, false, true, null, no, normal, noParsing);
+                  }
+                  if(!codeEditor)
+                  {
+                     char path[MAX_LOCATION];
+                     // TOFIX: Improve on this, don't use only filename, make a function
+                     if(ide && ide.workspace)
                      {
                         for(prj : ide.workspace.projects)
                         {
                            ProjectNode node;
-                           if((node = prj.topNode.FindWithPath(moduleName, false)))
+                           MakePathRelative(filePath, prj.topNode.path, path);
+
+                           if((node = prj.topNode.FindWithPath(path, false)))
                            {
                               strcpy(filePath, prj.topNode.path);
                               PathCatSlash(filePath, node.path);
@@ -1846,21 +1839,37 @@ class ProjectView : Window
                                  break;
                            }
                         }
-                     }
-                     if(!codeEditor)
-                     {
-                        GetLastDirectory(moduleName, moduleName);
-                        for(prj : ide.workspace.projects)
+                        if(!codeEditor && (strchr(moduleName, '/') || strchr(moduleName, '\\')))
                         {
-                           ProjectNode node;
-                           if((node = prj.topNode.Find(moduleName, false)))
+                           for(prj : ide.workspace.projects)
                            {
-                              strcpy(filePath, prj.topNode.path);
-                              PathCatSlash(filePath, node.path);
-                              PathCatSlash(filePath, node.name);
-                              codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
-                              if(codeEditor)
-                                 break;
+                              ProjectNode node;
+                              if((node = prj.topNode.FindWithPath(moduleName, false)))
+                              {
+                                 strcpy(filePath, prj.topNode.path);
+                                 PathCatSlash(filePath, node.path);
+                                 PathCatSlash(filePath, node.name);
+                                 codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
+                                 if(codeEditor)
+                                    break;
+                              }
+                           }
+                        }
+                        if(!codeEditor)
+                        {
+                           GetLastDirectory(moduleName, moduleName);
+                           for(prj : ide.workspace.projects)
+                           {
+                              ProjectNode node;
+                              if((node = prj.topNode.Find(moduleName, false)))
+                              {
+                                 strcpy(filePath, prj.topNode.path);
+                                 PathCatSlash(filePath, node.path);
+                                 PathCatSlash(filePath, node.name);
+                                 codeEditor = (CodeEditor)ide.OpenFile(filePath, false, true, null, no, normal, noParsing);
+                                 if(codeEditor)
+                                    break;
+                              }
                            }
                         }
                      }
