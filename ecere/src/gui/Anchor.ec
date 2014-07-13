@@ -182,6 +182,7 @@ public struct Anchor
       const char * anchorValue;
       bool subNeedClass;
 
+      stringOutput[0] = 0;
       tempString[0] = '\0';
       anchorValue = left.OnGetString(tempString, null, &subNeedClass);
       if(anchorValue[0]) { if(stringOutput[0]) strcat(stringOutput, ", "); strcat(stringOutput, "left = "); strcat(stringOutput, anchorValue); }
