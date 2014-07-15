@@ -2,6 +2,16 @@ namespace gfx3D::models;
 
 import "Object"
 
+#if !defined(__ANDROID__)
+#define USE_32_BIT_INDICES true
+#define indicesMember indices32
+#define uintindex uint32
+#else
+#define USE_32_BIT_INDICES false
+#define indicesMember indices
+#define uintindex uint16
+#endif
+
 #define MAXNAMELEN   64
 
 // RGB Chunks
@@ -774,17 +784,17 @@ static bool ReadTriMesh(FileInfo * info, Object object)
                   PrimitiveSingle * triangle;
 
                   triangle = &mesh.primitives[mesh.nPrimitives++];
-                  if(mesh.AllocatePrimitive(triangle, { triangles, indices32bit = true }, 3))
+                  if(mesh.AllocatePrimitive(triangle, { triangles, indices32bit = USE_32_BIT_INDICES }, 3))
                   {
-                     triangle->indices32[0] = face->indices[0];
-                     triangle->indices32[1] = face->indices[1];
-                     triangle->indices32[2] = face->indices[2];
-                     triangle->middle.Add(mesh.vertices[triangle->indices32[0]], mesh.vertices[triangle->indices32[1]]);
-                     triangle->middle.Add(triangle->middle, mesh.vertices[triangle->indices32[2]]);
+                     triangle->indicesMember[0] = (uintindex)face->indices[0];
+                     triangle->indicesMember[1] = (uintindex)face->indices[1];
+                     triangle->indicesMember[2] = (uintindex)face->indices[2];
+                     triangle->middle.Add(mesh.vertices[triangle->indicesMember[0]], mesh.vertices[triangle->indicesMember[1]]);
+                     triangle->middle.Add(triangle->middle, mesh.vertices[triangle->indicesMember[2]]);
                      triangle->plane.FromPointsf(
-                        mesh.vertices[triangle->indices32[2]],
-                        mesh.vertices[triangle->indices32[1]],
-                        mesh.vertices[triangle->indices32[0]]);
+                        mesh.vertices[triangle->indicesMember[2]],
+                        mesh.vertices[triangle->indicesMember[1]],
+                        mesh.vertices[triangle->indicesMember[0]]);
 
                      mesh.UnlockPrimitive(triangle);
                   }
@@ -800,7 +810,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
             }
             else
             {
-               PrimitiveGroup group = mesh.AddPrimitiveGroup({ triangles, indices32bit = true }, faces.count * 3);
+               PrimitiveGroup group = mesh.AddPrimitiveGroup({ triangles, indices32bit = USE_32_BIT_INDICES }, faces.count * 3);
                if(group)
                {
                   c = 0;
@@ -811,15 +821,15 @@ static bool ReadTriMesh(FileInfo * info, Object object)
 
                      if(object.flags.flipWindings)
                      {
-                        group.indices32[c*3]   = face->indices[2];
-                        group.indices32[c*3+1] = face->indices[1];
-                        group.indices32[c*3+2] = face->indices[0];
+                        group.indicesMember[c*3]   = (uintindex)face->indices[2];
+                        group.indicesMember[c*3+1] = (uintindex)face->indices[1];
+                        group.indicesMember[c*3+2] = (uintindex)face->indices[0];
                      }
                      else
                      {
-                        group.indices32[c*3]   = face->indices[0];
-                        group.indices32[c*3+1] = face->indices[1];
-                        group.indices32[c*3+2] = face->indices[2];
+                        group.indicesMember[c*3]   = (uintindex)face->indices[0];
+                        group.indicesMember[c*3+1] = (uintindex)face->indices[1];
+                        group.indicesMember[c*3+2] = (uintindex)face->indices[2];
                      }
                      face->done = true;
                      c++;
@@ -836,7 +846,7 @@ static bool ReadTriMesh(FileInfo * info, Object object)
                count++;
          if(count)
          {
-            PrimitiveGroup group = mesh.AddPrimitiveGroup({ triangles, indices32bit = true }, count * 3);
+            PrimitiveGroup group = mesh.AddPrimitiveGroup({ triangles, indices32bit = USE_32_BIT_INDICES }, count * 3);
             if(group)
             {
                for(c = 0; c<nFaces; c++)
@@ -844,9 +854,9 @@ static bool ReadTriMesh(FileInfo * info, Object object)
                   Face * face = &info->faces[c];
                   if(!face->done)
                   {
-                     group.indices32[c*3]   = face->indices[0];
-                     group.indices32[c*3+1] = face->indices[1];
-                     group.indices32[c*3+2] = face->indices[2];
+                     group.indicesMember[c*3]   = (uintindex)face->indices[0];
+                     group.indicesMember[c*3+1] = (uintindex)face->indices[1];
+                     group.indicesMember[c*3+2] = (uintindex)face->indices[2];
                   }
                }
                mesh.UnlockPrimitiveGroup(group);

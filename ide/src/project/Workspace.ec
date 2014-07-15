@@ -527,6 +527,7 @@ public:
          ide.projectView.Update(null);
          Save();
       }
+      ide.AdjustDebugMenus();
    }
 
    bool FindPath(ProjectNode node, const char * path)
