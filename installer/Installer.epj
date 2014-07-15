@@ -37,8 +37,8 @@
             ],
             "LibraryDirs" : [
                "../ecere/obj/installer.$(PLATFORM)$(ARCH_SUFFIX)",
-               "../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
-               "../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
+               "../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ],
             "FastMath" : true
          }

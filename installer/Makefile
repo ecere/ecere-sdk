@@ -5394,8 +5394,8 @@ CECFLAGS += -cpp $(_CPP)
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
 	 -L$(call quote_path,../ecere/obj/installer.$(PLATFORM)$(ARCH_SUFFIX)) \
-	 -L$(call quote_path,../deps/libpng-1.4.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/zlib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
+	 -L$(call quote_path,../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
 endif
 
 # TARGETS
