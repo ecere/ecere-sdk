@@ -953,7 +953,7 @@ msgstr "File not in project error"
 msgid "File with same name already in project."
 msgstr "File with same name already in project."
 
-#: ./src/project/Workspace.ec:1261
+#: ./src/project/Workspace.ec:1262
 msgid "File%s not found"
 msgstr "File%s not found"
 
@@ -2103,7 +2103,7 @@ msgstr "The document %s was modified by another application.\nWould you like to 
 msgid "The following file"
 msgstr "The following file"
 
-#: ./src/project/Workspace.ec:1262
+#: ./src/project/Workspace.ec:1263
 msgid "The following file%s could not be re-opened.%s"
 msgstr "The following file%s could not be re-opened.%s"
 
@@ -2297,11 +2297,11 @@ msgstr "Workspace"
 msgid "Workspace Files (*.ews)"
 msgstr "Workspace Files (*.ews)"
 
-#: ./src/project/Workspace.ec:1229
+#: ./src/project/Workspace.ec:1230
 msgid "Workspace Load File Error"
 msgstr "Workspace Load File Error"
 
-#: ./src/project/Workspace.ec:1229
+#: ./src/project/Workspace.ec:1230
 msgid "Workspace load file failed"
 msgstr "Workspace load file failed"
 
