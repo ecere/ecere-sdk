@@ -2152,11 +2152,11 @@ class XInterface : Interface
                {
                   XConfigureEvent * event = (XConfigureEvent *) thisEvent;
                   bool unmaximized = false;
+                  bool um = false;
                   if(!window.visible || fullScreenMode) break;
                   while(XCheckIfEvent(xGlobalDisplay, (XEvent *)thisEvent, (void *)ConfigureNotifyChecker, (void *)window.windowHandle));
                   //if(event->x - desktopX != window.position.x || event->y - desktopY != window.position.y || event->width != window.size.w || event->height != window.size.h)
-
-                  X11UpdateState(window, &unmaximized);
+                  X11UpdateState(window, &um);
                   unmaximized = false;
                   {
                      bool offset = false;
@@ -2206,7 +2206,7 @@ class XInterface : Interface
                         }
                      }
 
-                     window.Position(x, y, w, h, false /*true*/, true, true, true, false, unmaximized);
+                     window.Position(x, y, w, h, um /*false /*true*/, true, true, true, false, unmaximized);
 
                      // Break the anchors for moveable/resizable windows
                      // Avoid doing this if the translation wasn't in sync as it will cause the window to move around
