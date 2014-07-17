@@ -8109,15 +8109,14 @@ public:
                firewatchers font;
 
 
-               if(value.rootWindow && value.rootWindow.display && rootWindow)
+               if(value.rootWindow && value.rootWindow.display && rootWindow && created)
                {
                   bool reloadGraphics = (oldParent.rootWindow == oldParent && value.rootWindow) || (!value.rootWindow && rootWindow == this) ||
                         (value.rootWindow.display && value.rootWindow.display.displaySystem != rootWindow.display.displaySystem);
 
                   if(reloadGraphics)
                      UnloadGraphics(false);
-                  if(created)
-                     SetupDisplay();
+                  SetupDisplay();
                   if(reloadGraphics)
                      LoadGraphics(false, false);
 
