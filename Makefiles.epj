@@ -14,6 +14,12 @@
    ],
    "Files" : [
       {
+         "Folder" : "audio",
+         "Files" : [
+            "Makefile"
+         ]
+      },
+      {
          "Folder" : "compiler",
          "Files" : [
             {
@@ -55,25 +61,29 @@
             {
                "Folder" : "ecc",
                "Files" : [
-                  "Makefile"
+                  "Makefile",
+                  "Makefile.bootstrap"
                ]
             },
             {
                "Folder" : "ecp",
                "Files" : [
-                  "Makefile"
+                  "Makefile",
+                  "Makefile.bootstrap"
                ]
             },
             {
                "Folder" : "ecs",
                "Files" : [
-                  "Makefile"
+                  "Makefile",
+                  "Makefile.bootstrap"
                ]
             },
             {
                "Folder" : "libec",
                "Files" : [
-                  "Makefile"
+                  "Makefile",
+                  "Makefile.bootstrap"
                ]
             },
             "Makefile"
@@ -161,6 +171,7 @@
          "Folder" : "ecere",
          "Files" : [
             "Makefile",
+            "Makefile.bootstrap",
             "Makefile.ecereCOM",
             "Makefile.vanilla"
          ],
