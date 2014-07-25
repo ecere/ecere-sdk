@@ -1,4 +1,4 @@
-ifneq "$V" "1"
+ifneq "$(V)" "1"
 .SILENT:
 endif
 .PHONY: all cmd cleantarget clean realclean distclean

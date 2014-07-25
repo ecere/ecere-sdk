@@ -1,5 +1,5 @@
 .PHONY: bindir ecere libec ecp ecc ecs cleantarget clean realclean distclean
-ifneq "$V" "1"
+ifneq "$(V)" "1"
 .SILENT:
 endif
 

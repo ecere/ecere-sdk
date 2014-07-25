@@ -1,5 +1,5 @@
 .PHONY: all bootstrap cleantarget clean realclean distclean libec ecp ecc ecs
-ifneq "$V" "1"
+ifneq "$(V)" "1"
 .SILENT:
 endif
 
