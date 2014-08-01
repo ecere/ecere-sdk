@@ -4,6 +4,10 @@ import "instance"
 
 #if defined(__WIN32__)
 
+#ifndef D3DPRESENT_DONOTWAIT
+#define D3DPRESENT_DONOTWAIT 0x00000001L
+#endif
+
 #define D3D_DEBUG_INFO  1
 
 #define Method _Method

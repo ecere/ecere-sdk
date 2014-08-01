@@ -90,10 +90,7 @@ LIBS += \
 endif
 
 PRJ_CFLAGS += \
-	 $(if $(WINDOWS_TARGET), \
-			 -I../deps/DirectX-9.0/include,) \
-	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
-			 -I../deps/DirectX-9.0/include
+	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\""
 
 ECFLAGS += -module $(MODULE)
 # PLATFORM-SPECIFIC OPTIONS

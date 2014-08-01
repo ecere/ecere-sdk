@@ -118,7 +118,6 @@ from wherever you obtained them.
          "Name" : "Win32",
          "Options" : {
             "IncludeDirs" : [
-               "../deps/DirectX-9.0/include",
                "../deps/jpeg-9a",
                "../deps/libpng-1.4.0",
                "../deps/libungif-4.1.1/lib",

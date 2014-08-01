@@ -399,7 +399,6 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -isystem ../deps/glext \
-			 -I../deps/DirectX-9.0/include \
 			 -I../deps/jpeg-9a \
 			 -I../deps/libpng-1.6.12 \
 			 -I../deps/libungif-4.1.1/lib \
