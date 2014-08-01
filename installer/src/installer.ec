@@ -1353,7 +1353,7 @@ void ModifyPath(char * systemPath, char * userPath)
          if((c != eda && c != eda32 && c != upx) && (!pathOptions[PathOptions::AddMinGWPaths].available || !pathOptions[PathOptions::AddMinGWPaths].selected))
             continue;
          additional[c].GetFullPath(path, false);
-         if(c != eda && c != eda32 && c != upx)
+         if(c != eda && c != eda32 && c != upx && c != audio && c != audio32)
             PathCat(path, "bin");
          AddPath(sysPaths, sysCount, paths, &count, oldPath, userPath ? userPath : systemPath, path);
       }
