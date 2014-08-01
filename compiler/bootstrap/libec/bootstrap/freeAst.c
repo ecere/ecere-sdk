@@ -1479,6 +1479,11 @@ struct
 struct Expression * exp;
 struct TypeName * typeName;
 } ecere_gcc_struct vaArg;
+struct
+{
+struct TypeName * typeName;
+struct Identifier * id;
+} ecere_gcc_struct offset;
 } ecere_gcc_struct __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
@@ -2311,10 +2316,16 @@ if(exp->__anon1.member.member)
 FreeIdentifier(exp->__anon1.member.member);
 break;
 case 10:
-FreeTypeName(exp->__anon1._new.typeName);
+FreeTypeName(exp->__anon1.typeName);
 break;
 case 36:
-FreeTypeName(exp->__anon1._new.typeName);
+FreeTypeName(exp->__anon1.typeName);
+break;
+case 40:
+if(exp->__anon1.offset.typeName)
+FreeTypeName(exp->__anon1.offset.typeName);
+if(exp->__anon1.offset.id)
+FreeIdentifier(exp->__anon1.offset.id);
 break;
 case 11:
 if(exp->__anon1.cast.exp)

@@ -197,6 +197,7 @@ default:
 %token ALIGNOF ATTRIB_DEP __ATTRIB
 %token BOOL _BOOL _COMPLEX _IMAGINARY RESTRICT THREAD
 %token WIDE_STRING_LITERAL
+%token BUILTIN_OFFSETOF
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -1549,6 +1550,8 @@ common_unary_expression:
 	//| ALIGNOF '(' unary_expression ')'         { $$ = MkExpOp(null, ALIGNOF, $3); $$.loc = @$; }
    | ALIGNOF unary_expression           { $$ = MkExpOp(null, ALIGNOF, $2); $$.loc = @$; }
    | ALIGNOF '(' guess_type_name ')'          { $$ = MkExpTypeAlign($3); $$.loc = @$; }
+
+   | BUILTIN_OFFSETOF '(' guess_type_name ',' identifier ')'      { $$ = MkExpOffsetOf($3, $5); $$.loc = @$; }
 	;
 
 unary_expression:

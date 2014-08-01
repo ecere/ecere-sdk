@@ -187,6 +187,9 @@ Expression MoveExpContents(Expression exp)
          case typeAlignExp:
             result = MkExpTypeAlign(CopyTypeName(exp.typeName));
             break;
+         case offsetOfExp:
+            result = MkExpOffsetOf(CopyTypeName(exp.typeName), CopyIdentifier(exp.identifier));
+            break;
          case castExp:
             result = MkExpCast(CopyTypeName(exp.cast.typeName), CopyExpression(exp.cast.exp));
             break;

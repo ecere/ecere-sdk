@@ -457,6 +457,11 @@ struct
 struct Expression * exp;
 struct TypeName * typeName;
 } ecere_gcc_struct vaArg;
+struct
+{
+struct TypeName * typeName;
+struct Identifier * id;
+} ecere_gcc_struct offset;
 } ecere_gcc_struct __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;

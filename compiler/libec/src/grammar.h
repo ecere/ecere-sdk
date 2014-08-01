@@ -153,7 +153,8 @@
      _IMAGINARY = 370,
      RESTRICT = 371,
      THREAD = 372,
-     WIDE_STRING_LITERAL = 373
+     WIDE_STRING_LITERAL = 373,
+     BUILTIN_OFFSETOF = 374
    };
 #endif
 
@@ -210,7 +211,7 @@ typedef union YYSTYPE
 
 
 /* Line 1685 of yacc.c  */
-#line 214 "grammar.h"
+#line 215 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

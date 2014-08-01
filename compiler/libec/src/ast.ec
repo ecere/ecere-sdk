@@ -399,6 +399,11 @@ Expression MkExpTypeAlign(TypeName typeName)
    return { type = typeAlignExp, typeName = typeName, loc = yylloc };
 }
 
+Expression MkExpOffsetOf(TypeName typeName, Identifier id)
+{
+   return { type = offsetOfExp, offset.typeName = typeName, offset.id = id, loc = yylloc };
+}
+
 Expression MkExpClassSize(Specifier _class)
 {
    return { type = classSizeExp, _class = _class, loc = yylloc };

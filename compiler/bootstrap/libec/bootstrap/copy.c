@@ -862,6 +862,11 @@ struct
 struct Expression * exp;
 struct TypeName * typeName;
 } ecere_gcc_struct vaArg;
+struct
+{
+struct TypeName * typeName;
+struct Identifier * id;
+} ecere_gcc_struct offset;
 } ecere_gcc_struct __anon1;
 unsigned int debugValue;
 struct __ecereNameSpace__ecere__com__DataValue val;
@@ -883,6 +888,8 @@ unsigned int needTemplateCast;
 extern struct Expression * MkExpTypeSize(struct TypeName * typeName);
 
 extern struct Expression * MkExpTypeAlign(struct TypeName * typeName);
+
+extern struct Expression * MkExpOffsetOf(struct TypeName * typeName, struct Identifier * id);
 
 extern struct Expression * MkExpCast(struct TypeName * typeName, struct Expression * expression);
 
@@ -1496,6 +1503,9 @@ result = MkExpTypeSize(CopyTypeName(exp->__anon1.typeName));
 break;
 case 36:
 result = MkExpTypeAlign(CopyTypeName(exp->__anon1.typeName));
+break;
+case 40:
+result = MkExpOffsetOf(CopyTypeName(exp->__anon1.typeName), CopyIdentifier(exp->__anon1.__anon1.identifier));
 break;
 case 11:
 result = MkExpCast(CopyTypeName(exp->__anon1.cast.typeName), CopyExpression(exp->__anon1.cast.exp));

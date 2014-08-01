@@ -416,7 +416,8 @@ public enum ExpressionType
    extensionCompoundExp, classExp, classDataExp, new0Exp, renew0Exp,
    dbopenExp, dbfieldExp, dbtableExp, dbindexExp, extensionExpressionExp, extensionInitializerExp,
    vaArgExp, arrayExp, typeAlignExp,
-   memberPropertyErrorExp, functionCallErrorExp, divideBy0ErrorExp
+   memberPropertyErrorExp, functionCallErrorExp, divideBy0ErrorExp,
+   offsetOfExp
 };
 
 public enum MemberType
@@ -645,6 +646,11 @@ public:
          Expression exp;
          TypeName typeName;
       } vaArg;
+      struct
+      {
+         TypeName typeName;
+         Identifier id;
+      } offset;
    };
 
    bool debugValue;

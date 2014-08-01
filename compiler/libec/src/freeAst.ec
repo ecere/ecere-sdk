@@ -463,10 +463,16 @@ static void _FreeExpression(Expression exp, bool freePointer)
             FreeIdentifier(exp.member.member);
          break;
       case typeSizeExp:
-         FreeTypeName(exp._new.typeName);
+         FreeTypeName(exp.typeName);
          break;
       case typeAlignExp:
-         FreeTypeName(exp._new.typeName);
+         FreeTypeName(exp.typeName);
+         break;
+      case offsetOfExp:
+         if(exp.offset.typeName)
+            FreeTypeName(exp.offset.typeName);
+         if(exp.offset.id)
+            FreeIdentifier(exp.offset.id);
          break;
       case castExp:
          if(exp.cast.exp)

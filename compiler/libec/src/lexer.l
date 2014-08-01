@@ -102,6 +102,7 @@ default:
 "__signed__"         { return(SIGNED); }
 "sizeof"             { return(SIZEOF); }
 "__alignof__"        { return(ALIGNOF); }
+"__builtin_offsetof"        { return(BUILTIN_OFFSETOF); }
 "static"             { return(STATIC); }
 "__thread"           { return(THREAD); }
 "struct"             { return(STRUCT); }

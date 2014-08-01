@@ -274,6 +274,15 @@ public void OutputExpression(Expression exp, File f)
          OutputTypeName(exp.typeName, f, false);
          f.Puts(")");
          break;
+      case offsetOfExp:
+         f.Puts("__builtin_offsetof(");
+         if(exp.typeName)
+            OutputTypeName(exp.typeName, f, false);
+         f.Puts(", ");
+         if(exp.identifier)
+            OutputIdentifier(exp.identifier, f);
+         f.Puts(")");
+         break;
       case extensionInitializerExp:
          f.Puts("__extension__ (");
          if(exp.initializer.typeName)
