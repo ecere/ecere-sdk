@@ -627,6 +627,7 @@ extern struct Identifier * GetDeclId(struct Declarator * decl);
 struct ClassPropertyValue
 {
 struct __ecereNameSpace__ecere__com__Class * regClass;
+unsigned int staticClass;
 struct Identifier * id;
 struct Expression * exp;
 } ecere_gcc_struct;
@@ -2981,7 +2982,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(classPropValues, (uint64)(uintptr_t)(__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassPropertyValue);
 
-((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->regClass = regClass, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->id = def->__anon1.__anon1.id, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->exp = def->__anon1.__anon1.initializer->__anon1.exp, __ecereInstance1;
+((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->regClass = regClass, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->staticClass = (declMode == 3), ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->id = def->__anon1.__anon1.id, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->exp = def->__anon1.__anon1.initializer->__anon1.exp, __ecereInstance1;
 })));
 def->__anon1.__anon1.id = (((void *)0));
 def->__anon1.__anon1.initializer->__anon1.exp = (((void *)0));
@@ -3197,11 +3198,30 @@ char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(u
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
 })->exp->loc;
 ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
-s = QMkString(__extension__ ({
+{
+char nameSpace[1024] = "";
+char className[1024] = "";
+struct __ecereNameSpace__ecere__com__Class * regClass = __extension__ ({
 char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
 
 ((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
-})->regClass->name);
+})->regClass;
+
+GetNameSpaceString(regClass->nameSpace, nameSpace);
+if(__extension__ ({
+char * __ecTemp1 = (char *)(((struct __ecereNameSpace__ecere__com__Instance *)(uintptr_t)__ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(&v)));
+
+((struct ClassPropertyValue *)(__ecTemp1 + __ecereClass_ClassPropertyValue->offset));
+})->staticClass)
+{
+__ecereNameSpace__ecere__sys__GetLastDirectory(sourceFile, className);
+__ecereNameSpace__ecere__sys__ChangeCh(className, '.', '_');
+strcat(className, "}");
+}
+strcat(className, nameSpace);
+strcat(className, regClass->name);
+s = QMkString(className);
+}
 ListAdd(findClassArgs, MkExpString(s));
 (__ecereNameSpace__ecere__com__eSystem_Delete(s), s = 0);
 ListAdd(args, MkExpIdentifier(MkIdentifier("_class")));

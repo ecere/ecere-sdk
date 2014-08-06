@@ -1709,7 +1709,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
                }
                else if(def.type == classPropertyValueClassDef)
                {
-                  classPropValues.Add(ClassPropertyValue { regClass = regClass, id = def.id, exp = def.initializer.exp });
+                  classPropValues.Add(ClassPropertyValue { regClass = regClass, staticClass = (declMode == staticAccess), id = def.id, exp = def.initializer.exp });
                   def.id = null;
                   def.initializer.exp = null;
                }
@@ -1722,6 +1722,7 @@ static void ProcessClass(ClassType classType, OldList definitions, Symbol symbol
 class ClassPropertyValue
 {
    Class regClass;
+   bool staticClass;
    Identifier id;
    Expression exp;
 
@@ -1955,7 +1956,21 @@ public void ProcessClassDefinitions()
             yylloc = v.exp.loc;
 
          ListAdd(findClassArgs, MkExpIdentifier(MkIdentifier("module")));
-         s = QMkString(v.regClass.name);
+         {
+            char nameSpace[1024] = "";
+            char className[1024] = "";
+            Class regClass = v.regClass;
+            GetNameSpaceString(regClass.nameSpace, nameSpace);
+            if(v.staticClass)
+            {
+               GetLastDirectory(sourceFile, className);
+               ChangeCh(className, '.', '_');
+               strcat(className, "}");
+            }
+            strcat(className, nameSpace);
+            strcat(className, regClass.name);
+            s = QMkString(className);
+         }
          ListAdd(findClassArgs, MkExpString(s));
          delete s;
 
