@@ -1,5 +1,7 @@
 namespace com;
 
+// #define DISABLE_MEMMGR
+
 import "BinaryTree"
 import "OldList"
 import "String"
@@ -48,6 +50,28 @@ static uint memoryErrorsCount = 0;
 
 default:
 #define property _property
+
+#if defined(DISABLE_MEMMGR)
+
+#ifndef ECERE_BOOTSTRAP
+# include <malloc.h>
+#endif
+
+#if defined(__WIN32__)
+#ifdef ECERE_BOOTSTRAP
+uintsize _msize(void * p);
+#endif
+
+#  define msize _msize
+#else
+#ifdef ECERE_BOOTSTRAP
+uintsize malloc_usable_size(void * p);
+#endif
+
+#  define msize malloc_usable_size
+#endif
+
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -674,7 +698,7 @@ bool allocateInternal;
 #endif
 
 static uint TOTAL_MEM = 0;
-#ifndef MEMINFO
+#if !defined(MEMINFO) && !defined(DISABLE_MEMMGR)
 static uint OUTSIDE_MEM = 0;
 #endif
 
@@ -1053,7 +1077,7 @@ private struct BlockPool
    }
 };
 
-#ifndef MEMINFO
+#if !defined(MEMINFO) && !defined(DISABLE_MEMMGR)
 static BlockPool * pools; //[NUM_POOLS];
 
 /*static uint PosFibonacci(uint number)
@@ -1164,7 +1188,7 @@ public uint pow2i(uint number)
    return 1<<log2i(number);
 }
 
-#ifndef MEMINFO
+#if !defined(MEMINFO) && !defined(DISABLE_MEMMGR)
 static bool memoryInitialized = false;
 static void InitMemory()
 {
@@ -1190,7 +1214,7 @@ static void InitMemory()
 }
 #endif
 
-#ifndef MEMINFO
+#if !defined(MEMINFO) && !defined(DISABLE_MEMMGR)
 static void * _mymalloc(unsigned int size)
 {
    MemBlock block = null;
@@ -1360,9 +1384,7 @@ static void * _mycrealloc(void * pointer, unsigned int size)
    }
    return newPointer;
 }
-#endif
 
-#ifndef MEMINFO
 #undef realloc
 #undef crealloc
 #undef malloc
@@ -1378,7 +1400,11 @@ static void * _mycrealloc(void * pointer, unsigned int size)
 
 static void * _malloc(unsigned int size)
 {
+#if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+   return size ? malloc(size) : null;
+#else
    void * pointer;
+
 
 #if !defined(ECERE_BOOTSTRAP)
    memMutex.Wait();
@@ -1435,11 +1461,16 @@ static void * _malloc(unsigned int size)
    }
 #endif
    return pointer ? ((byte*)pointer + REDZONE) : null;
+#endif
 }
 
 static void * _calloc(int n, unsigned int size)
 {
+#if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+   return size ? calloc(n, size) : null;
+#else
    void * pointer;
+
 #if !defined(ECERE_BOOTSTRAP)
    memMutex.Wait();
 #endif
@@ -1494,11 +1525,18 @@ static void * _calloc(int n, unsigned int size)
    }
 #endif
    return pointer ? ((byte*)pointer + REDZONE) : null;
+#endif
 }
 
 static void * _realloc(void * pointer, unsigned int size)
 {
+#if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+   if(!size) { free(pointer); return null; }
+   return realloc(pointer, size);
+
+#else
    if(!size) { _free(pointer); return null; }
+
 #if !defined(ECERE_BOOTSTRAP)
    memMutex.Wait();
 #endif
@@ -1586,11 +1624,23 @@ static void * _realloc(void * pointer, unsigned int size)
    memMutex.Release();
 #endif
    return pointer ? ((byte *)pointer + REDZONE) : null;
+#endif
 }
 
 static void * _crealloc(void * pointer, unsigned int size)
 {
-   if(!size) return null;
+#if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+   uintsize s = pointer ? msize(pointer) : 0;
+   void * p;
+   if(!size) { free(pointer); return null; }
+
+   p = realloc(pointer, size);
+   if(size > s)
+      memset((byte *)p + s, 0, size - s);
+   return p;
+#else
+   if(!size) { _free(pointer); return null; }
+
 #if !defined(ECERE_BOOTSTRAP)
    memMutex.Wait();
 #endif
@@ -1678,12 +1728,16 @@ static void * _crealloc(void * pointer, unsigned int size)
    memMutex.Release();
 #endif
    return pointer ? ((byte *)pointer + REDZONE) : null;
+#endif
 }
 
 static void _free(void * pointer)
 {
    if(pointer)
    {
+#if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
+      free(pointer);
+#else
 #if !defined(ECERE_BOOTSTRAP)
       if(memMutex != pointer) memMutex.Wait();
 #endif
@@ -1757,13 +1811,13 @@ static void _free(void * pointer)
                {
                   if(address[-c-1] != 0xAB)
                   {
-                     printf("Buffer Underrun\n");
+                     printf("Buffer Underrun (%d bytes before)\n", c+1);
                      memoryErrorsCount++;
                      block.OutputStacks(block.freed);
                   }
                   if(address[c + size] != 0xAB)
                   {
-                     printf("Buffer Overrun\n");
+                     printf("Buffer Overrun (%d bytes past block of %d)\n", c);
                      memoryErrorsCount++;
                      block.OutputStacks(block.freed);
                   }
@@ -1791,6 +1845,8 @@ static void _free(void * pointer)
 #if !defined(ECERE_BOOTSTRAP)
       if(memMutex != pointer) memMutex.Release();
 #endif
+
+#endif
    }
 }
 
@@ -1807,6 +1863,14 @@ public void memswap(byte * a, byte * b, uint size)
       memcpy(b + c, buffer, s);
       c += s;
    }
+}
+
+public void CheckConsistency()
+{
+#ifdef MEMINFO
+   if(!memBlocks.Check())
+      printf("Memory Blocks Tree Integrity Failed\n");
+#endif
 }
 
 public void CheckMemory()
@@ -1899,13 +1963,13 @@ public void CheckMemory()
       {
          if(address[-c-1] != 0xAB)
          {
-            printf("Buffer Underrun\n");
+            printf("Buffer Underrun (%d bytes before)\n", c + 1);
             memoryErrorsCount++;
             block.OutputStacks(block.freed);
          }
          if(address[c + size] != 0xAB)
          {
-            printf("Buffer Overrun\n");
+            printf("Buffer Overrun (%d bytes past)\n", c);
             memoryErrorsCount++;
             block.OutputStacks(block.freed);
          }

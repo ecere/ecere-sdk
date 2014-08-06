@@ -216,6 +216,10 @@ return power;
 
 static unsigned int __ecereNameSpace__ecere__com__memoryInitialized = 0;
 
+void __ecereNameSpace__ecere__com__CheckConsistency()
+{
+}
+
 void __ecereNameSpace__ecere__com__CheckMemory()
 {
 }
@@ -1551,7 +1555,10 @@ return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 static void * __ecereNameSpace__ecere__com___crealloc(void * pointer, unsigned int size)
 {
 if(!size)
+{
+__ecereNameSpace__ecere__com___free(pointer);
 return (((void *)0));
+}
 pointer = __ecereNameSpace__ecere__com___mycrealloc(pointer, size);
 return pointer ? ((unsigned char *)pointer + 0) : (((void *)0));
 }
@@ -6649,6 +6656,7 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "usedSpace", "uint", 4
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::log2i", "uint ecere::com::log2i(uint number)", __ecereNameSpace__ecere__com__log2i, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::pow2i", "uint ecere::com::pow2i(uint number)", __ecereNameSpace__ecere__com__pow2i, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::memswap", "void ecere::com::memswap(byte * a, byte * b, uint size)", __ecereNameSpace__ecere__com__memswap, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::CheckConsistency", "void ecere::com::CheckConsistency(void)", __ecereNameSpace__ecere__com__CheckConsistency, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::CheckMemory", "void ecere::com::CheckMemory(void)", __ecereNameSpace__ecere__com__CheckMemory, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eSystem_RegisterClass", "ecere::com::Class ecere::com::eSystem_RegisterClass(ecere::com::ClassType type, const char * name, const char * baseName, int size, int sizeClass, bool (* Constructor)(void *), void (* Destructor)(void *), ecere::com::Module module, ecere::com::AccessMode declMode, ecere::com::AccessMode inheritanceAccess)", __ecereNameSpace__ecere__com__eSystem_RegisterClass, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::com::eClass_Unregister", "void ecere::com::eClass_Unregister(ecere::com::Class _class)", __ecereNameSpace__ecere__com__eClass_Unregister, module, 4);
