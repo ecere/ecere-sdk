@@ -858,10 +858,16 @@ static void ProcessExpression(Expression exp)
                   if(list.first)
                   {
                      Expression e = list.first;
-                     FreeType(exp.destType);
+                     Type destType = exp.destType;
                      *exp = *e;
                      list.Remove(e);
                      delete e;
+
+                     // Fixes PrintLn(Degrees { 1 })
+                     if(!exp.destType)
+                        exp.destType = destType;
+                     else
+                        FreeType(destType);
                      exp.expType = expType;
                      exp.prev = prev;
                      exp.next = next;

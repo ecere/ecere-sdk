@@ -2954,8 +2954,8 @@ ProcessInstMembers(inst, (((void *)0)), &list, 0);
 if(list.first)
 {
 struct Expression * e = list.first;
+struct Type * destType = exp->destType;
 
-FreeType(exp->destType);
 *exp = *e;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&list, e);
 ((e ? __extension__ ({
@@ -2963,6 +2963,10 @@ void * __ecerePtrToDelete = (e);
 
 __ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
 }) : 0), e = 0);
+if(!exp->destType)
+exp->destType = destType;
+else
+FreeType(destType);
 exp->expType = expType;
 exp->prev = prev;
 exp->next = next;
