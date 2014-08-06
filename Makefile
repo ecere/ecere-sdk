@@ -18,13 +18,17 @@ XBOOT := $(if $(CROSS_TARGET),GCC_PREFIX= TARGET_PLATFORM=$(HOST_PLATFORM) PLATF
 
 LIBVER := .0.44
 
-ifneq "$(ECERE_AUDIO)" "n"
+ifndef ECERE_AUDIO
+ECERE_AUDIO := n
+
 ifdef WINDOWS_TARGET
 ECERE_AUDIO := y
 endif
 
 ifdef LINUX_TARGET
+ifndef BSD_TARGET
 ECERE_AUDIO := y
+endif
 endif
 endif
 
