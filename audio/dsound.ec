@@ -184,9 +184,15 @@ public int OpenAudio(AudioSpec wanted, AudioSpec result)
    return 0;
 }
 
-public void PauseAudio(int value)
+public void PauseAudio(bool value)
 {
-   if(!value)
+   if(value)
+   {
+      dSoundThread.bDone = true;
+      SetEvent(dSoundThread.g_hNotificationEvent);
+      dSoundThread.Wait();
+   }
+   else
    {
       PlayBuffer(false);
       dSoundThread.Create();

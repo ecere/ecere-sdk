@@ -144,12 +144,15 @@ public int OpenAudio(AudioSpec wanted, AudioSpec result)
    return 1;
 }
 
-public void PauseAudio(int value)
+public void PauseAudio(bool value)
 {
-   if(!value)
+   if(value)
    {
-      soundThread.Create();
+      soundThread.done = true;
+      soundThread.Wait();
    }
+   else
+      soundThread.Create();
 }
 
 public void CloseAudio()

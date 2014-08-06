@@ -27,5 +27,5 @@ public bool AudioSetVolume(VolumeControl type, double percent);
 public bool AudioGetVolume(VolumeControl type, double * percent);
 public void AudioSetBalance(double percent);
 public int OpenAudio(AudioSpec wanted, AudioSpec result);
-public void PauseAudio(int value);
+public void PauseAudio(bool value);
 public void CloseAudio();
