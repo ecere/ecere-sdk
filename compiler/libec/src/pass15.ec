@@ -9250,6 +9250,7 @@ void ProcessExpressionType(Expression exp)
             {
                exp.expType = e.expType;
                if(e.expType) e.expType.refCount++;
+               exp.needCast = e.needCast;
             }
             if(!e.isConstant)
                exp.isConstant = false;

@@ -17070,6 +17070,7 @@ if(!exp->expType && !e->next)
 exp->expType = e->expType;
 if(e->expType)
 e->expType->refCount++;
+exp->needCast = e->needCast;
 }
 if(!e->isConstant)
 exp->isConstant = 0;
