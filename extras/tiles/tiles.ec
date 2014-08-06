@@ -155,7 +155,7 @@ static uint16 MapLine(byte *map, Point dim, Point start, Point end, Point * path
 
    if(xdiff>ydiff)
    {
-      length=xdiff+1;
+      length=(short)(xdiff+1);
       for(i=0; i<length; i++)
       {
          //Here
@@ -175,7 +175,7 @@ static uint16 MapLine(byte *map, Point dim, Point start, Point end, Point * path
    }
    else
    {
-      length=ydiff+1;
+      length=(short)(ydiff+1);
       for(i=0; i<length; i++)
       {
          //Here
