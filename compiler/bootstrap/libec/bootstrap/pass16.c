@@ -2480,7 +2480,11 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = e->from->
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(e->from->outgoing, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e);
-((e ? (__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? __extension__ ({
+void * __ecerePtrToDelete = (e);
+
+__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), e = 0);
 }
 else
 {
@@ -2901,7 +2905,11 @@ FreeType(exp->destType);
 {
 struct Expression * firstExp = list.first;
 
-((firstExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)firstExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(firstExp)) : 0), firstExp = 0);
+((firstExp ? __extension__ ({
+void * __ecerePtrToDelete = (firstExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), firstExp = 0);
 }
 FreeType(exp->destType);
 exp->destType = expType;
@@ -2950,7 +2958,11 @@ struct Expression * e = list.first;
 FreeType(exp->destType);
 *exp = *e;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&list, e);
-((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? __extension__ ({
+void * __ecerePtrToDelete = (e);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), e = 0);
 exp->expType = expType;
 exp->prev = prev;
 exp->next = next;
@@ -3025,7 +3037,11 @@ void * prev = dummyDecl->prev, * next = dummyDecl->next;
 *dummyDecl = *decl;
 dummyDecl->prev = prev;
 dummyDecl->next = next;
-((decl ? (__ecereClass_Declaration->Destructor ? __ecereClass_Declaration->Destructor((void *)decl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(decl)) : 0), decl = 0);
+((decl ? __extension__ ({
+void * __ecerePtrToDelete = (decl);
+
+__ecereClass_Declaration->Destructor ? __ecereClass_Declaration->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), decl = 0);
 decl = dummyDecl;
 }
 ProcessDeclaration(decl);
@@ -3159,7 +3175,11 @@ newCall->expType = exp->expType;
 *exp = *newCall;
 exp->prev = prev;
 exp->next = next;
-((newCall ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newCall) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newCall)) : 0), newCall = 0);
+((newCall ? __extension__ ({
+void * __ecerePtrToDelete = (newCall);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), newCall = 0);
 }
 }
 }

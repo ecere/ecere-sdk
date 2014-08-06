@@ -8304,7 +8304,11 @@ FreeExpContents(checkedExp);
 FreeType(checkedExp->expType);
 FreeType(checkedExp->destType);
 *checkedExp = *newExp;
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? __extension__ ({
+void * __ecerePtrToDelete = (newExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), newExp = 0);
 checkedExp->prev = prev;
 checkedExp->next = next;
 }
@@ -8313,7 +8317,11 @@ void FinishTemplatesContext(struct Context * context)
 {
 PopContext(context);
 FreeContext(context);
-((context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(context)) : 0), context = 0);
+((context ? __extension__ ({
+void * __ecerePtrToDelete = (context);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), context = 0);
 }
 
 static __attribute__((unused)) void UnusedFunction()
@@ -10097,7 +10105,11 @@ if(exp->destType)
 exp->destType->refCount--;
 if(exp->expType)
 exp->expType->refCount--;
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? __extension__ ({
+void * __ecerePtrToDelete = (newExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), newExp = 0);
 }
 else
 {
@@ -10161,7 +10173,11 @@ if(exp->destType)
 exp->destType->refCount--;
 if(exp->expType)
 exp->expType->refCount--;
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? __extension__ ({
+void * __ecerePtrToDelete = (newExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), newExp = 0);
 }
 else
 {
@@ -10219,7 +10235,11 @@ if(type)
 {
 FreeType(exp->destType);
 FreeType(exp->expType);
-((newExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)newExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newExp)) : 0), newExp = 0);
+((newExp ? __extension__ ({
+void * __ecerePtrToDelete = (newExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), newExp = 0);
 break;
 }
 }
@@ -11757,7 +11777,11 @@ FreeExpContents(exp);
 FreeType(exp->expType);
 FreeType(exp->destType);
 *exp = *exp2;
-((exp2 ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)exp2) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(exp2)) : 0), exp2 = 0);
+((exp2 ? __extension__ ({
+void * __ecerePtrToDelete = (exp2);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), exp2 = 0);
 break;
 }
 case '-':
@@ -12989,7 +13013,11 @@ struct Conversion * convert = converts.first;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&converts, convert);
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(conversions, convert);
 }
-((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? __extension__ ({
+void * __ecerePtrToDelete = (type);
+
+__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), type = 0);
 return 1;
 }
 }
@@ -12997,7 +13025,11 @@ return 1;
 }
 if(converts.first)
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&converts, (void *)(FreeConvert));
-((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? __extension__ ({
+void * __ecerePtrToDelete = (type);
+
+__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), type = 0);
 }
 }
 for(nameSpace = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BinaryTree_Get_first(&nameSpace->nameSpaces); nameSpace != (((void *)0)); nameSpace = (struct __ecereNameSpace__ecere__com__NameSpace *)__ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_next(((struct __ecereNameSpace__ecere__sys__BTNode *)nameSpace)))
@@ -13166,7 +13198,11 @@ FreeType(exp->destType);
 *exp = *e;
 exp->prev = prev;
 exp->next = next;
-((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? __extension__ ({
+void * __ecerePtrToDelete = (e);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), e = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(list), list = 0);
 }
 else
@@ -13941,7 +13977,11 @@ sourceExp->expType = dest;
 dest->refCount++;
 }
 flag = 1;
-((tempType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)tempType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(tempType)) : 0), tempType = 0);
+((tempType ? __extension__ ({
+void * __ecerePtrToDelete = (tempType);
+
+__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), tempType = 0);
 }
 }
 if(_class && _class->type == 2 && source->kind != 8)
@@ -14026,7 +14066,11 @@ dest->classObjectType = source->classObjectType;
 FreeType(source);
 source = _class->dataType;
 source->refCount++;
-((tempType ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)tempType) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(tempType)) : 0), tempType = 0);
+((tempType ? __extension__ ({
+void * __ecerePtrToDelete = (tempType);
+
+__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), tempType = 0);
 }
 }
 }
@@ -15715,7 +15759,11 @@ ProcessClass(_class->definitions, _class->symbol);
 if(inCompiler)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*ast), external);
-((external ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)external) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(external)) : 0), external = 0);
+((external ? __extension__ ({
+void * __ecerePtrToDelete = (external);
+
+__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), external = 0);
 }
 }
 else if(external->type == 4)
@@ -17035,7 +17083,11 @@ FreeType(exp->destType);
 *exp = *e;
 exp->prev = prev;
 exp->next = next;
-((e ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? __extension__ ({
+void * __ecerePtrToDelete = (e);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), e = 0);
 ProcessExpressionType(exp);
 }
 break;
@@ -18463,7 +18515,11 @@ FreeType(exp->expType);
 FreeType(exp->destType);
 exp->expType = expType;
 exp->destType = destType;
-((castExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)castExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(castExp)) : 0), castExp = 0);
+((castExp ? __extension__ ({
+void * __ecerePtrToDelete = (castExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), castExp = 0);
 exp->prev = prev;
 exp->next = next;
 }

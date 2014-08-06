@@ -2829,7 +2829,11 @@ short __simpleStruct0, __simpleStruct1;
 if(dataMember->name && __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&addTo->membersAlpha, dataMember->name))
 {
 __ecereNameSpace__ecere__com__DataMember_Free(dataMember);
-((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
+((dataMember ? __extension__ ({
+void * __ecerePtrToDelete = (dataMember);
+
+__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), dataMember = 0);
 return 0;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&addTo->members, dataMember);
@@ -2873,7 +2877,11 @@ short __simpleStruct0, __simpleStruct1;
 if(!_class || _class->comRedefinition || (dataMember->name && __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->members, dataMember->name)))
 {
 __ecereNameSpace__ecere__com__DataMember_Free(dataMember);
-((dataMember ? (__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)dataMember) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(dataMember)) : 0), dataMember = 0);
+((dataMember ? __extension__ ({
+void * __ecerePtrToDelete = (dataMember);
+
+__ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor ? __ecereClass___ecereNameSpace__ecere__com__DataMember->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), dataMember = 0);
 return 0;
 }
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, dataMember);

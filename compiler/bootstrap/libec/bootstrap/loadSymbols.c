@@ -1271,7 +1271,11 @@ FreeSymbol(data->symbol);
 FreeType(data->dataType);
 (__ecereNameSpace__ecere__com__eSystem_Delete(data->fullName), data->fullName = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(data->dataTypeString), data->dataTypeString = 0);
-((data ? (__ecereClass_GlobalData->Destructor ? __ecereClass_GlobalData->Destructor((void *)data) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)data) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(data)) : 0), data = 0);
+((data ? __extension__ ({
+void * __ecerePtrToDelete = (data);
+
+__ecereClass_GlobalData->Destructor ? __ecereClass_GlobalData->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), data = 0);
 }
 }
 

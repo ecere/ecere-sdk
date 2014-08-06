@@ -1178,7 +1178,11 @@ theGlobalContext = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Cont
 
 void __ecereDestroyModuleInstances_ecs()
 {
-((theGlobalContext ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)theGlobalContext) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(theGlobalContext)) : 0), theGlobalContext = 0);
+((theGlobalContext ? __extension__ ({
+void * __ecerePtrToDelete = (theGlobalContext);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), theGlobalContext = 0);
 }
 
 static void BindDCOMClient()

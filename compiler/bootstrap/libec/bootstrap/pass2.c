@@ -287,9 +287,9 @@ extern struct Expression * MkExpCall(struct Expression * expression, struct __ec
 
 extern void ProcessExpressionType(struct Expression * exp);
 
-extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
-
 extern struct Expression * MkExpExtensionCompound(struct Statement * compound);
+
+extern struct Expression * MkExpCondition(struct Expression * cond, struct __ecereNameSpace__ecere__sys__OldList * expressions, struct Expression * elseExp);
 
 extern void ProcessExpressionInstPass(struct Expression * exp);
 
@@ -2369,7 +2369,10 @@ else if(exp->expType && exp->expType->kind == 8 && exp->expType->__anon1._class 
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
 struct __ecereNameSpace__ecere__com__Class * _class;
+struct Statement * stmt;
 struct Expression * o;
+struct Statement * compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(VOID)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier("__ecerePtrToDelete"))), MkInitializerAssignment(MkExpBrackets(args)))))), MkListOne(stmt = MkExpressionStmt(list)));
+struct Expression * stmtExp = MkExpExtensionCompound(compound);
 
 for(_class = exp->expType->__anon1._class->__anon1.registered; _class && _class->type == 5; _class = _class->base)
 {
@@ -2382,15 +2385,15 @@ FullClassNameCat(className, _class->fullName, 0);
 if(!_class->symbol)
 _class->symbol = FindClass(_class->fullName);
 DeclareClass(curExternal, _class->symbol, className);
-ListAdd(list, MkExpCondition(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCall(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0)))), CopyExpression((*args).first))))), MkExpConstant("0")));
+ListAdd(list, MkExpCondition(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCall(MkExpPointer(QMkExpId(className), MkIdentifier("Destructor")), MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl((((void *)0)))), MkExpIdentifier(MkIdentifier("__ecerePtrToDelete")))))), MkExpConstant("0")));
 }
-ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
+ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), MkListOne(MkExpIdentifier(MkIdentifier("__ecerePtrToDelete")))));
 DeclareFunctionUtil(curExternal, "eSystem_Delete");
 o = CopyExpression(object);
 ProcessExpressionType(o);
 o->usage = (o->usage & ~0x1) | (((unsigned int)(1)) << 0);
 ProcessExpression(o);
-ListAdd(exp->__anon1.list, MkExpBrackets(MkListOne(MkExpCondition(o, MkListOne(MkExpBrackets(list)), MkExpConstant("0")))));
+ListAdd(exp->__anon1.list, MkExpBrackets(MkListOne(MkExpCondition(o, MkListOne(stmtExp), MkExpConstant("0")))));
 }
 else if(exp->expType && exp->expType->kind == 20)
 {
@@ -2543,7 +2546,11 @@ FreeType(exp->destType);
 *exp = *refExp;
 exp->prev = prev;
 exp->next = next;
-((refExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)refExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(refExp)) : 0), refExp = 0);
+((refExp ? __extension__ ({
+void * __ecerePtrToDelete = (refExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), refExp = 0);
 }
 if(exp->__anon1.op.op == '&' && !exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && exp->__anon1.op.exp2->expType && exp->__anon1.op.exp2->expType->kind == 20 && !exp->__anon1.op.exp2->expType->passAsTemplate)
 {
@@ -3188,7 +3195,11 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add((&*((struct Statement *)
 e->byReference = 1;
 FreeType(checkedExp->expType);
 FreeType(checkedExp->destType);
-((checkedExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)checkedExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(checkedExp)) : 0), checkedExp = 0);
+((checkedExp ? __extension__ ({
+void * __ecerePtrToDelete = (checkedExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), checkedExp = 0);
 }
 else if((!e->byReference && (!e->expType || !e->expType->classObjectType)) || (_class && _class->type == 5))
 {

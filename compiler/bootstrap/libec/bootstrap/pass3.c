@@ -1036,7 +1036,11 @@ if((*newSpecs).first)
 struct Specifier * newSpec = CopySpecifier((*newSpecs).first);
 
 *spec = *newSpec;
-((newSpec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)newSpec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newSpec)) : 0), newSpec = 0);
+((newSpec ? __extension__ ({
+void * __ecerePtrToDelete = (newSpec);
+
+__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), newSpec = 0);
 }
 FreeList(newSpecs, (void *)(FreeSpecifier));
 if(decl)
@@ -1059,7 +1063,11 @@ if((*newSpecs).first)
 struct Specifier * newSpec = CopySpecifier((*newSpecs).first);
 
 *spec = *newSpec;
-((newSpec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)newSpec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(newSpec)) : 0), newSpec = 0);
+((newSpec ? __extension__ ({
+void * __ecerePtrToDelete = (newSpec);
+
+__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), newSpec = 0);
 }
 if(decl)
 {
@@ -1255,7 +1263,11 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = m->incomi
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(m->incoming, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e);
-((e ? (__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? __extension__ ({
+void * __ecerePtrToDelete = (e);
+
+__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), e = 0);
 if(!((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)m->incoming + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->count)
 {
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove((&*list), m);
@@ -2292,7 +2304,11 @@ FreeExpContents(exp);
 FreeType(exp->expType);
 FreeType(exp->destType);
 *exp = *castExp;
-((castExp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)castExp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(castExp)) : 0), castExp = 0);
+((castExp ? __extension__ ({
+void * __ecerePtrToDelete = (castExp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), castExp = 0);
 exp->prev = prev;
 exp->next = next;
 InstDeclPassExpression(exp);

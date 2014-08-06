@@ -1049,6 +1049,10 @@ if(this->left)
 __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->left);
 if(this->right)
 __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Free(this->right);
-((this ? (__ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)this) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)this) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(this)) : 0), this = 0);
+((this ? __extension__ ({
+void * __ecerePtrToDelete = (this);
+
+__ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), this = 0);
 }
 

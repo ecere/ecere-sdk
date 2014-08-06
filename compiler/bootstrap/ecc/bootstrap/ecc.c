@@ -791,7 +791,11 @@ globalContext = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Context
 
 void __ecereDestroyModuleInstances_ecc()
 {
-((globalContext ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)globalContext) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(globalContext)) : 0), globalContext = 0);
+((globalContext ? __extension__ ({
+void * __ecerePtrToDelete = (globalContext);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), globalContext = 0);
 }
 
 struct Symbol;

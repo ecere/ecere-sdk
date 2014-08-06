@@ -2027,7 +2027,11 @@ struct Context * ctx = curContext;
 
 PopContext(ctx);
 FreeContext(ctx);
-((ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(ctx)) : 0), ctx = 0);
+((ctx ? __extension__ ({
+void * __ecerePtrToDelete = (ctx);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), ctx = 0);
 }
 ;
 break;
@@ -2037,7 +2041,11 @@ struct Context * ctx = curContext;
 
 PopContext(ctx);
 FreeContext(ctx);
-((ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(ctx)) : 0), ctx = 0);
+((ctx ? __extension__ ({
+void * __ecerePtrToDelete = (ctx);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), ctx = 0);
 }
 ;
 break;
@@ -2854,7 +2862,11 @@ case 374:
 {
 PopContext((*yyvaluep).context);
 FreeContext((*yyvaluep).context);
-(((*yyvaluep).context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)(*yyvaluep).context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete((*yyvaluep).context)) : 0), (*yyvaluep).context = 0);
+(((*yyvaluep).context ? __extension__ ({
+void * __ecerePtrToDelete = ((*yyvaluep).context);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), (*yyvaluep).context = 0);
 }
 ;
 break;

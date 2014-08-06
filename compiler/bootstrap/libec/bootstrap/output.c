@@ -1975,7 +1975,11 @@ unsigned int size;
 typeName->qualifiers = specs;
 typeName->declarator = decl;
 OutputTypeName(typeName, f, 1);
-((typeName ? (__ecereClass_TypeName->Destructor ? __ecereClass_TypeName->Destructor((void *)typeName) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(typeName)) : 0), typeName = 0);
+((typeName ? __extension__ ({
+void * __ecerePtrToDelete = (typeName);
+
+__ecereClass_TypeName->Destructor ? __ecereClass_TypeName->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), typeName = 0);
 size = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 

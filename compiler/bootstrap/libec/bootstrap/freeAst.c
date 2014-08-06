@@ -1059,7 +1059,11 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 void FreeTemplateType(struct TemplatedType * type)
 {
-((type ? (__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor((void *)type) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? __extension__ ({
+void * __ecerePtrToDelete = (type);
+
+__ecereClass_TemplatedType->Destructor ? __ecereClass_TemplatedType->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__BTNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), type = 0);
 }
 
 void FreeAttribute(struct Attribute * attr)
@@ -1067,7 +1071,11 @@ void FreeAttribute(struct Attribute * attr)
 (__ecereNameSpace__ecere__com__eSystem_Delete(attr->attr), attr->attr = 0);
 if(attr->exp)
 FreeExpression(attr->exp);
-((attr ? (__ecereClass_Attribute->Destructor ? __ecereClass_Attribute->Destructor((void *)attr) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(attr)) : 0), attr = 0);
+((attr ? __extension__ ({
+void * __ecerePtrToDelete = (attr);
+
+__ecereClass_Attribute->Destructor ? __ecereClass_Attribute->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), attr = 0);
 }
 
 void __ecereUnregisterModule_freeAst(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -1079,7 +1087,11 @@ void FreeAttrib(struct Attrib * attr)
 {
 if(attr->attribs)
 FreeList(attr->attribs, (void *)(FreeAttribute));
-((attr ? (__ecereClass_Attrib->Destructor ? __ecereClass_Attrib->Destructor((void *)attr) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(attr)) : 0), attr = 0);
+((attr ? __extension__ ({
+void * __ecerePtrToDelete = (attr);
+
+__ecereClass_Attrib->Destructor ? __ecereClass_Attrib->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), attr = 0);
 }
 
 void FreeExtDecl(struct ExtDecl * extDecl)
@@ -1088,7 +1100,11 @@ if(extDecl->type == 1 && extDecl->__anon1.attr)
 FreeAttrib(extDecl->__anon1.attr);
 else if(extDecl->type == 0)
 (__ecereNameSpace__ecere__com__eSystem_Delete(extDecl->__anon1.s), extDecl->__anon1.s = 0);
-((extDecl ? (__ecereClass_ExtDecl->Destructor ? __ecereClass_ExtDecl->Destructor((void *)extDecl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(extDecl)) : 0), extDecl = 0);
+((extDecl ? __extension__ ({
+void * __ecerePtrToDelete = (extDecl);
+
+__ecereClass_ExtDecl->Destructor ? __ecereClass_ExtDecl->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), extDecl = 0);
 }
 
 struct ClassDefinition;
@@ -1282,7 +1298,11 @@ for(member = type->__anon1.__anon1.members.first; member; member = next)
 next = member->next;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Remove(&type->__anon1.__anon1.members, member);
 (__ecereNameSpace__ecere__com__eSystem_Delete(member->name), member->name = 0);
-((member ? (__ecereClass___ecereNameSpace__ecere__sys__NamedLink64->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__NamedLink64->Destructor((void *)member) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(member)) : 0), member = 0);
+((member ? __extension__ ({
+void * __ecerePtrToDelete = (member);
+
+__ecereClass___ecereNameSpace__ecere__sys__NamedLink64->Destructor ? __ecereClass___ecereNameSpace__ecere__sys__NamedLink64->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), member = 0);
 }
 break;
 }
@@ -1324,7 +1344,11 @@ break;
 }
 (__ecereNameSpace__ecere__com__eSystem_Delete(type->name), type->name = 0);
 (__ecereNameSpace__ecere__com__eSystem_Delete(type->typeName), type->typeName = 0);
-((type ? (__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? __extension__ ({
+void * __ecerePtrToDelete = (type);
+
+__ecereClass_Type->Destructor ? __ecereClass_Type->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), type = 0);
 }
 }
 }
@@ -1736,7 +1760,11 @@ if(enumerator->id)
 FreeIdentifier(enumerator->id);
 if(enumerator->exp)
 FreeExpression(enumerator->exp);
-((enumerator ? (__ecereClass_Enumerator->Destructor ? __ecereClass_Enumerator->Destructor((void *)enumerator) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(enumerator)) : 0), enumerator = 0);
+((enumerator ? __extension__ ({
+void * __ecerePtrToDelete = (enumerator);
+
+__ecereClass_Enumerator->Destructor ? __ecereClass_Enumerator->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), enumerator = 0);
 }
 
 void FreeAsmField(struct AsmField * field)
@@ -1746,7 +1774,11 @@ FreeExpression(field->expression);
 if(field->symbolic)
 FreeIdentifier(field->symbolic);
 (__ecereNameSpace__ecere__com__eSystem_Delete(field->command), field->command = 0);
-((field ? (__ecereClass_AsmField->Destructor ? __ecereClass_AsmField->Destructor((void *)field) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(field)) : 0), field = 0);
+((field ? __extension__ ({
+void * __ecerePtrToDelete = (field);
+
+__ecereClass_AsmField->Destructor ? __ecereClass_AsmField->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), field = 0);
 }
 
 void FreeInitializer(struct Initializer * initializer)
@@ -1763,14 +1795,22 @@ break;
 }
 if(initializer->id)
 FreeIdentifier(initializer->id);
-((initializer ? (__ecereClass_Initializer->Destructor ? __ecereClass_Initializer->Destructor((void *)initializer) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(initializer)) : 0), initializer = 0);
+((initializer ? __extension__ ({
+void * __ecerePtrToDelete = (initializer);
+
+__ecereClass_Initializer->Destructor ? __ecereClass_Initializer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), initializer = 0);
 }
 
 void FreeDBIndexItem(struct DBIndexItem * item)
 {
 if(item->id)
 FreeIdentifier(item->id);
-((item ? (__ecereClass_DBIndexItem->Destructor ? __ecereClass_DBIndexItem->Destructor((void *)item) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(item)) : 0), item = 0);
+((item ? __extension__ ({
+void * __ecerePtrToDelete = (item);
+
+__ecereClass_DBIndexItem->Destructor ? __ecereClass_DBIndexItem->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), item = 0);
 }
 
 void FreeInitDeclarator(struct InitDeclarator * decl)
@@ -1779,7 +1819,11 @@ if(decl->declarator)
 FreeDeclarator(decl->declarator);
 if(decl->initializer)
 FreeInitializer(decl->initializer);
-((decl ? (__ecereClass_InitDeclarator->Destructor ? __ecereClass_InitDeclarator->Destructor((void *)decl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(decl)) : 0), decl = 0);
+((decl ? __extension__ ({
+void * __ecerePtrToDelete = (decl);
+
+__ecereClass_InitDeclarator->Destructor ? __ecereClass_InitDeclarator->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), decl = 0);
 }
 
 void FreeMemberInit(struct MemberInit * init)
@@ -1788,7 +1832,11 @@ if(init->initializer)
 FreeInitializer(init->initializer);
 if(init->identifiers)
 FreeList(init->identifiers, (void *)(FreeIdentifier));
-((init ? (__ecereClass_MemberInit->Destructor ? __ecereClass_MemberInit->Destructor((void *)init) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(init)) : 0), init = 0);
+((init ? __extension__ ({
+void * __ecerePtrToDelete = (init);
+
+__ecereClass_MemberInit->Destructor ? __ecereClass_MemberInit->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), init = 0);
 }
 
 void FreeSpecifierContents(struct Specifier *  spec);
@@ -1798,7 +1846,11 @@ void FreeSpecifier(struct Specifier * spec)
 if(spec)
 {
 FreeSpecifierContents(spec);
-((spec ? (__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)spec) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(spec)) : 0), spec = 0);
+((spec ? __extension__ ({
+void * __ecerePtrToDelete = (spec);
+
+__ecereClass_Specifier->Destructor ? __ecereClass_Specifier->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), spec = 0);
 }
 }
 
@@ -1808,7 +1860,11 @@ if(type->decl)
 FreeDeclarator(type->decl);
 if(type->specifiers)
 FreeList(type->specifiers, (void *)(FreeSpecifier));
-((type ? (__ecereClass_TemplateDatatype->Destructor ? __ecereClass_TemplateDatatype->Destructor((void *)type) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(type)) : 0), type = 0);
+((type ? __extension__ ({
+void * __ecerePtrToDelete = (type);
+
+__ecereClass_TemplateDatatype->Destructor ? __ecereClass_TemplateDatatype->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), type = 0);
 }
 
 void FreeIdentifier(struct Identifier * id)
@@ -1818,7 +1874,11 @@ FreeIdentifier(id->badID);
 (__ecereNameSpace__ecere__com__eSystem_Delete(id->string), id->string = 0);
 if(id->_class)
 FreeSpecifier(id->_class);
-((id ? (__ecereClass_Identifier->Destructor ? __ecereClass_Identifier->Destructor((void *)id) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(id)) : 0), id = 0);
+((id ? __extension__ ({
+void * __ecerePtrToDelete = (id);
+
+__ecereClass_Identifier->Destructor ? __ecereClass_Identifier->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), id = 0);
 }
 
 void FreeTypeName(struct TypeName * typeName)
@@ -1829,7 +1889,11 @@ if(typeName->declarator)
 FreeDeclarator(typeName->declarator);
 if(typeName->bitCount)
 FreeExpression(typeName->bitCount);
-((typeName ? (__ecereClass_TypeName->Destructor ? __ecereClass_TypeName->Destructor((void *)typeName) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(typeName)) : 0), typeName = 0);
+((typeName ? __extension__ ({
+void * __ecerePtrToDelete = (typeName);
+
+__ecereClass_TypeName->Destructor ? __ecereClass_TypeName->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), typeName = 0);
 }
 
 void FreePointer(struct Pointer * pointer)
@@ -1838,7 +1902,11 @@ if(pointer->pointer)
 FreePointer(pointer->pointer);
 if(pointer->qualifiers)
 FreeList(pointer->qualifiers, (void *)(FreeSpecifier));
-((pointer ? (__ecereClass_Pointer->Destructor ? __ecereClass_Pointer->Destructor((void *)pointer) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(pointer)) : 0), pointer = 0);
+((pointer ? __extension__ ({
+void * __ecerePtrToDelete = (pointer);
+
+__ecereClass_Pointer->Destructor ? __ecereClass_Pointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), pointer = 0);
 }
 
 void FreeTemplateArgument(struct TemplateArgument * arg)
@@ -1860,7 +1928,11 @@ break;
 }
 if(arg->name)
 FreeIdentifier(arg->name);
-((arg ? (__ecereClass_TemplateArgument->Destructor ? __ecereClass_TemplateArgument->Destructor((void *)arg) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(arg)) : 0), arg = 0);
+((arg ? __extension__ ({
+void * __ecerePtrToDelete = (arg);
+
+__ecereClass_TemplateArgument->Destructor ? __ecereClass_TemplateArgument->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), arg = 0);
 }
 
 void FreeDBTableEntry(struct DBTableEntry * entry)
@@ -1880,7 +1952,11 @@ if(entry->__anon1.items)
 FreeList(entry->__anon1.items, (void *)(FreeDBIndexItem));
 break;
 }
-((entry ? (__ecereClass_DBTableEntry->Destructor ? __ecereClass_DBTableEntry->Destructor((void *)entry) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(entry)) : 0), entry = 0);
+((entry ? __extension__ ({
+void * __ecerePtrToDelete = (entry);
+
+__ecereClass_DBTableEntry->Destructor ? __ecereClass_DBTableEntry->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), entry = 0);
 }
 
 void FreeDeclarator(struct Declarator * decl)
@@ -1921,7 +1997,11 @@ if(decl->__anon1.extended.extended)
 FreeExtDecl(decl->__anon1.extended.extended);
 break;
 }
-((decl ? (__ecereClass_Declarator->Destructor ? __ecereClass_Declarator->Destructor((void *)decl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(decl)) : 0), decl = 0);
+((decl ? __extension__ ({
+void * __ecerePtrToDelete = (decl);
+
+__ecereClass_Declarator->Destructor ? __ecereClass_Declarator->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), decl = 0);
 }
 
 void FreeTemplateParameter(struct TemplateParameter * param)
@@ -1939,7 +2019,11 @@ if(param->defaultArgument)
 FreeTemplateArgument(param->defaultArgument);
 if(param->baseType)
 FreeType(param->baseType);
-((param ? (__ecereClass_TemplateParameter->Destructor ? __ecereClass_TemplateParameter->Destructor((void *)param) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(param)) : 0), param = 0);
+((param ? __extension__ ({
+void * __ecerePtrToDelete = (param);
+
+__ecereClass_TemplateParameter->Destructor ? __ecereClass_TemplateParameter->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), param = 0);
 }
 
 void FreeDBTable(struct DBTableDef * table)
@@ -1948,7 +2032,11 @@ if(table->definitions)
 FreeList(table->definitions, (void *)(FreeDBTableEntry));
 if(table->name)
 (__ecereNameSpace__ecere__com__eSystem_Delete(table->name), table->name = 0);
-((table ? (__ecereClass_DBTableDef->Destructor ? __ecereClass_DBTableDef->Destructor((void *)table) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(table)) : 0), table = 0);
+((table ? __extension__ ({
+void * __ecerePtrToDelete = (table);
+
+__ecereClass_DBTableDef->Destructor ? __ecereClass_DBTableDef->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), table = 0);
 }
 
 void FreeSymbol(struct Symbol * symbol)
@@ -1971,9 +2059,17 @@ FreeList(symbol->templateParams, (void *)(FreeTemplateParameter));
 if(symbol->ctx)
 {
 FreeContext(symbol->ctx);
-((symbol->ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)symbol->ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(symbol->ctx)) : 0), symbol->ctx = 0);
+((symbol->ctx ? __extension__ ({
+void * __ecerePtrToDelete = (symbol->ctx);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), symbol->ctx = 0);
 }
-((symbol ? (__ecereClass_Symbol->Destructor ? __ecereClass_Symbol->Destructor((void *)symbol) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(symbol)) : 0), symbol = 0);
+((symbol ? __extension__ ({
+void * __ecerePtrToDelete = (symbol);
+
+__ecereClass_Symbol->Destructor ? __ecereClass_Symbol->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), symbol = 0);
 }
 
 void FreeModuleData(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -2167,7 +2263,11 @@ if(watcher->properties)
 FreeList(watcher->properties, (void *)(FreeIdentifier));
 if(watcher->compound)
 FreeStatement(watcher->compound);
-((watcher ? (__ecereClass_PropertyWatch->Destructor ? __ecereClass_PropertyWatch->Destructor((void *)watcher) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(watcher)) : 0), watcher = 0);
+((watcher ? __extension__ ({
+void * __ecerePtrToDelete = (watcher);
+
+__ecereClass_PropertyWatch->Destructor ? __ecereClass_PropertyWatch->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), watcher = 0);
 }
 
 void FreeProperty(struct PropertyDef * def)
@@ -2189,7 +2289,11 @@ FreeExpression(def->category);
 if(def->symbol)
 {
 }
-((def ? (__ecereClass_PropertyDef->Destructor ? __ecereClass_PropertyDef->Destructor((void *)def) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(def)) : 0), def = 0);
+((def ? __extension__ ({
+void * __ecerePtrToDelete = (def);
+
+__ecereClass_PropertyDef->Destructor ? __ecereClass_PropertyDef->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), def = 0);
 }
 
 void FreeClassFunction(struct ClassFunction *  func);
@@ -2202,7 +2306,11 @@ if(init->type == 1 && init->__anon1.function)
 {
 FreeClassFunction(init->__anon1.function);
 }
-((init ? (__ecereClass_MembersInit->Destructor ? __ecereClass_MembersInit->Destructor((void *)init) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(init)) : 0), init = 0);
+((init ? __extension__ ({
+void * __ecerePtrToDelete = (init);
+
+__ecereClass_MembersInit->Destructor ? __ecereClass_MembersInit->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), init = 0);
 }
 
 void FreeInstance(struct Instantiation * inst)
@@ -2246,7 +2354,11 @@ struct __ecereNameSpace__ecere__com__Instance * instance = (struct __ecereNameSp
 }
 if(inst->_class)
 FreeSpecifier(inst->_class);
-((inst ? (__ecereClass_Instantiation->Destructor ? __ecereClass_Instantiation->Destructor((void *)inst) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(inst)) : 0), inst = 0);
+((inst ? __extension__ ({
+void * __ecerePtrToDelete = (inst);
+
+__ecereClass_Instantiation->Destructor ? __ecereClass_Instantiation->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), inst = 0);
 }
 
 static void _FreeExpression(struct Expression * exp, unsigned int freePointer)
@@ -2432,7 +2544,11 @@ if(exp->expType)
 FreeType(exp->expType);
 if(exp->destType)
 FreeType(exp->destType);
-((exp ? (__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)exp) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(exp)) : 0), exp = 0);
+((exp ? __extension__ ({
+void * __ecerePtrToDelete = (exp);
+
+__ecereClass_Expression->Destructor ? __ecereClass_Expression->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), exp = 0);
 }
 }
 
@@ -2474,7 +2590,11 @@ FreeIdentifier(decl->__anon1.__anon2.id);
 break;
 }
 }
-((decl ? (__ecereClass_Declaration->Destructor ? __ecereClass_Declaration->Destructor((void *)decl) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(decl)) : 0), decl = 0);
+((decl ? __extension__ ({
+void * __ecerePtrToDelete = (decl);
+
+__ecereClass_Declaration->Destructor ? __ecereClass_Declaration->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), decl = 0);
 }
 
 void FreeStatement(struct Statement * stmt)
@@ -2517,7 +2637,11 @@ FreeList(stmt->__anon1.compound.statements, (void *)(FreeStatement));
 if(stmt->__anon1.compound.context)
 {
 FreeContext(stmt->__anon1.compound.context);
-((stmt->__anon1.compound.context ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)stmt->__anon1.compound.context) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(stmt->__anon1.compound.context)) : 0), stmt->__anon1.compound.context = 0);
+((stmt->__anon1.compound.context ? __extension__ ({
+void * __ecerePtrToDelete = (stmt->__anon1.compound.context);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), stmt->__anon1.compound.context = 0);
 }
 break;
 }
@@ -2608,7 +2732,11 @@ FreeList(stmt->__anon1._watch.watches, (stmt->type == 17) ? (void *)FreeProperty
 break;
 }
 }
-((stmt ? (__ecereClass_Statement->Destructor ? __ecereClass_Statement->Destructor((void *)stmt) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(stmt)) : 0), stmt = 0);
+((stmt ? __extension__ ({
+void * __ecerePtrToDelete = (stmt);
+
+__ecereClass_Statement->Destructor ? __ecereClass_Statement->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), stmt = 0);
 }
 
 void FreeFunction(struct FunctionDefinition * func)
@@ -2623,7 +2751,11 @@ if(func->declarations)
 FreeList(func->declarations, (void *)(FreeDeclaration));
 if(func->type)
 FreeType(func->type);
-((func ? (__ecereClass_FunctionDefinition->Destructor ? __ecereClass_FunctionDefinition->Destructor((void *)func) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(func)) : 0), func = 0);
+((func ? __extension__ ({
+void * __ecerePtrToDelete = (func);
+
+__ecereClass_FunctionDefinition->Destructor ? __ecereClass_FunctionDefinition->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), func = 0);
 }
 
 void FreeClassFunction(struct ClassFunction * func)
@@ -2642,7 +2774,11 @@ FreeList(func->specifiers, (void *)(FreeSpecifier));
 if(func->declarations)
 FreeList(func->declarations, (void *)(FreeDeclaration));
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Free(&func->attached, (((void *)0)));
-((func ? (__ecereClass_ClassFunction->Destructor ? __ecereClass_ClassFunction->Destructor((void *)func) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(func)) : 0), func = 0);
+((func ? __extension__ ({
+void * __ecerePtrToDelete = (func);
+
+__ecereClass_ClassFunction->Destructor ? __ecereClass_ClassFunction->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), func = 0);
 }
 
 void FreeClassDef(struct ClassDef * def)
@@ -2708,7 +2844,11 @@ FreePropertyWatch(def->__anon1.propertyWatch);
 break;
 }
 }
-((def ? (__ecereClass_ClassDef->Destructor ? __ecereClass_ClassDef->Destructor((void *)def) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(def)) : 0), def = 0);
+((def ? __extension__ ({
+void * __ecerePtrToDelete = (def);
+
+__ecereClass_ClassDef->Destructor ? __ecereClass_ClassDef->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), def = 0);
 }
 
 void FreeSpecifierContents(struct Specifier * spec)
@@ -2782,7 +2922,11 @@ spec->__anon1.__anon2.extDeclStruct = (((void *)0));
 if(spec->__anon1.__anon2.ctx)
 {
 FreeContext(spec->__anon1.__anon2.ctx);
-((spec->__anon1.__anon2.ctx ? (__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)spec->__anon1.__anon2.ctx) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(spec->__anon1.__anon2.ctx)) : 0), spec->__anon1.__anon2.ctx = 0);
+((spec->__anon1.__anon2.ctx ? __extension__ ({
+void * __ecerePtrToDelete = (spec->__anon1.__anon2.ctx);
+
+__ecereClass_Context->Destructor ? __ecereClass_Context->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), spec->__anon1.__anon2.ctx = 0);
 }
 break;
 case 7:
@@ -2803,7 +2947,11 @@ if(_class->_class)
 FreeSpecifier(_class->_class);
 if(_class->baseSpecs)
 FreeList(_class->baseSpecs, (void *)(FreeSpecifier));
-((_class ? (__ecereClass_ClassDefinition->Destructor ? __ecereClass_ClassDefinition->Destructor((void *)_class) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(_class)) : 0), _class = 0);
+((_class ? __extension__ ({
+void * __ecerePtrToDelete = (_class);
+
+__ecereClass_ClassDefinition->Destructor ? __ecereClass_ClassDefinition->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), _class = 0);
 }
 
 void FreeExternal(struct External * external)
@@ -2822,7 +2970,11 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = external-
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(external->incoming, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e);
-((e ? (__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? __extension__ ({
+void * __ecerePtrToDelete = (e);
+
+__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), e = 0);
 }
 while((e = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)external->outgoing + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first))
 {
@@ -2838,7 +2990,11 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(external->outgoing, (struct __ecereNameSpace__ecere__com__IteratorPointer *)e);
 if(!e->breakable)
 e->to->nonBreakableIncoming--;
-((e ? (__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)e) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(e)) : 0), e = 0);
+((e ? __extension__ ({
+void * __ecerePtrToDelete = (e);
+
+__ecereClass_TopoEdge->Destructor ? __ecereClass_TopoEdge->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), e = 0);
 }
 switch(external->type)
 {
@@ -2865,7 +3021,11 @@ if(external->__anon1.table)
 FreeDBTable(external->__anon1.table);
 break;
 }
-((external ? (__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)external) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(external)) : 0), external = 0);
+((external ? __extension__ ({
+void * __ecerePtrToDelete = (external);
+
+__ecereClass_External->Destructor ? __ecereClass_External->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), external = 0);
 }
 
 void __ecereRegisterModule_freeAst(struct __ecereNameSpace__ecere__com__Instance * module)

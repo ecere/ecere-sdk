@@ -1053,7 +1053,11 @@ static void ProcessExpression(Expression exp)
 
                OldList * list = MkList();
                Class _class;
+               Statement stmt;
                Expression o;
+               Statement compound = MkCompoundStmt(MkListOne(MkDeclaration(MkListOne(MkSpecifier(VOID)), MkListOne(MkInitDeclarator(MkDeclaratorPointer(MkPointer(null, null), MkDeclaratorIdentifier(MkIdentifier("__ecerePtrToDelete"))),
+                  MkInitializerAssignment(MkExpBrackets(args)))))), MkListOne(stmt = MkExpressionStmt(list)));
+               Expression stmtExp = MkExpExtensionCompound(compound);
                for(_class = exp.expType._class.registered; _class && _class.type == noHeadClass; _class = _class.base)
                {
                   char className[1024];
@@ -1079,14 +1083,14 @@ static void ProcessExpression(Expression exp)
                                  QMkExpId(className),
                                  MkIdentifier("Destructor")
                               ),
-                              MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null)), CopyExpression(args->first)))
+                              MkListOne(MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), QMkPtrDecl(null)), MkExpIdentifier(MkIdentifier("__ecerePtrToDelete")) /*CopyExpression(args->first)*/))
                            )
                         ),
                         MkExpConstant("0")
                      )
                   );
                }
-               ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), args));
+               ListAdd(list, MkExpCall(QMkExpId("ecere::com::eSystem_Delete"), MkListOne(MkExpIdentifier(MkIdentifier("__ecerePtrToDelete"))) /*args*/));
                DeclareFunctionUtil(curExternal, "eSystem_Delete");
                o = CopyExpression(object);
                ProcessExpressionType(o);
@@ -1099,7 +1103,8 @@ static void ProcessExpression(Expression exp)
                         MkExpCondition(
                            o,
                            MkListOne(
-                              MkExpBrackets(list)
+                              //MkExpBrackets(list)
+                              stmtExp
                            ),
                            MkExpConstant("0")
                         )
