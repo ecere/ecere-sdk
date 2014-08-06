@@ -69,7 +69,7 @@ namespace gfx::drivers;
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0500
+#define _WIN32_WINNT 0x0502
 #define String Sting_
 #include <windows.h>
 #undef String
