@@ -1400,6 +1400,9 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int usedInComparison;
+unsigned int ambiguousUnits;
+unsigned int parentOpDestType;
 unsigned int needTemplateCast;
 } ecere_gcc_struct;
 
@@ -7935,6 +7938,15 @@ break;
 }
 }
 
+unsigned int RelatedUnits(struct __ecereNameSpace__ecere__com__Class * c1, struct __ecereNameSpace__ecere__com__Class * c2)
+{
+if(c1->base->type == 3)
+c1 = c1->base;
+if(c2->base->type == 3)
+c2 = c2->base;
+return c1 == c2;
+}
+
 extern char *  __ecereNameSpace__ecere__com__PrintString(struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...);
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__sys__TempFile;
@@ -13194,6 +13206,12 @@ struct __ecereNameSpace__ecere__sys__OldList * list = exp->__anon1.list;
 struct Expression * prev = exp->prev;
 struct Expression * next = exp->next;
 
+if(exp->expType && exp->expType->kind == 8 && (!e->expType || e->expType->kind != 8))
+{
+FreeType(e->expType);
+e->expType = exp->expType;
+e->expType->refCount++;
+}
 ComputeExpression(e);
 FreeType(exp->expType);
 FreeType(exp->destType);
@@ -16202,6 +16220,8 @@ unsigned int useDestType = 0, useSideType = 0;
 struct Location oldyylloc = yylloc;
 unsigned int useSideUnit = 0;
 struct __ecereNameSpace__ecere__com__Class * destClass = (exp->destType && exp->destType->kind == 8 && exp->destType->__anon1._class) ? exp->destType->__anon1._class->__anon1.registered : (((void *)0));
+unsigned int powerOp = 0, relationOp = 0;
+struct __ecereNameSpace__ecere__com__Class * c1 = (((void *)0)), * c2 = (((void *)0));
 struct Type * dummy = (dummy = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Type), dummy->count = 1, dummy->refCount = 1, dummy);
 
 switch(exp->__anon1.op.op)
@@ -16234,6 +16254,7 @@ case GE_OP:
 case NE_OP:
 boolResult = 1;
 useSideType = 1;
+relationOp = 1;
 break;
 case '+':
 case '-':
@@ -16253,6 +16274,8 @@ case '/':
 case '%':
 useSideType = 1;
 useDestType = 1;
+if(exp->__anon1.op.op == '/')
+powerOp = 1;
 break;
 case '&':
 case '*':
@@ -16260,6 +16283,8 @@ if(exp->__anon1.op.exp1)
 {
 useSideType = 1;
 useDestType = 1;
+if(exp->__anon1.op.op == '*')
+powerOp = 1;
 }
 break;
 }
@@ -16303,6 +16328,17 @@ if(exp->__anon1.op.exp1->destType)
 FreeType(exp->__anon1.op.exp1->destType);
 exp->__anon1.op.exp1->destType = dummy;
 dummy->refCount++;
+if(powerOp)
+exp->__anon1.op.exp1->opDestType = 1;
+if(relationOp)
+exp->__anon1.op.exp1->usedInComparison = 1;
+}
+if(exp->__anon1.op.op == '+' || exp->__anon1.op.op == '-')
+{
+if(exp->opDestType)
+exp->__anon1.op.exp1->parentOpDestType = 1;
+if(exp->usedInComparison)
+exp->__anon1.op.exp1->usedInComparison = 1;
 }
 if(exp->__anon1.op.exp1->destType && exp->__anon1.op.op != '=')
 exp->__anon1.op.exp1->destType->count++;
@@ -16310,6 +16346,7 @@ ProcessExpressionType(exp->__anon1.op.exp1);
 if(exp->__anon1.op.exp1->destType && exp->__anon1.op.op != '=')
 exp->__anon1.op.exp1->destType->count--;
 exp->__anon1.op.exp1->opDestType = 0;
+exp->__anon1.op.exp1->usedInComparison = 0;
 if(!exp->__anon1.op.exp2 && (exp->__anon1.op.op == INC_OP || exp->__anon1.op.op == DEC_OP) && exp->__anon1.op.exp1->expType && exp->__anon1.op.exp1->expType->kind == 8 && exp->__anon1.op.exp1->expType->__anon1._class && exp->__anon1.op.exp1->expType->__anon1._class->__anon1.registered && exp->__anon1.op.exp1->expType->__anon1._class->__anon1.registered->type == 3)
 {
 exp->__anon1.op.exp2 = MkExpConstant("1");
@@ -16408,6 +16445,10 @@ if(exp->__anon1.op.exp2->destType)
 FreeType(exp->__anon1.op.exp2->destType);
 exp->__anon1.op.exp2->destType = dummy;
 dummy->refCount++;
+if(powerOp)
+exp->__anon1.op.exp2->opDestType = 1;
+if(relationOp)
+exp->__anon1.op.exp2->usedInComparison = 1;
 }
 if(type1 && boolResult && useSideType && type1->kind == 8 && type1->__anon1._class && type1->__anon1._class->__anon1.registered && (type1->__anon1._class->__anon1.registered->type == 2 || type1->__anon1._class->__anon1.registered->type == 4))
 {
@@ -16434,8 +16475,16 @@ e = (*e->__anon1.list).last;
 if(e->type == 11 && e->__anon1.cast.exp)
 e->__anon1.cast.exp->needCast = 1;
 }
+if(exp->__anon1.op.op == '+' || exp->__anon1.op.op == '-')
+{
+if(exp->opDestType)
+exp->__anon1.op.exp2->parentOpDestType = 1;
+if(exp->usedInComparison)
+exp->__anon1.op.exp2->usedInComparison = 1;
+}
 ProcessExpressionType(exp->__anon1.op.exp2);
 exp->__anon1.op.exp2->opDestType = 0;
+exp->__anon1.op.exp2->usedInComparison = 0;
 if(exp->__anon1.op.exp2->destType && exp->__anon1.op.op != '=')
 exp->__anon1.op.exp2->destType->count--;
 if(!assign && (exp->__anon1.op.exp1 || exp->__anon1.op.op == '~'))
@@ -16507,6 +16556,17 @@ if(type2)
 type2->refCount++;
 }
 }
+c1 = type1 && type1->kind == 8 && type1->__anon1._class ? type1->__anon1._class->__anon1.registered : (((void *)0));
+c2 = type2 && type2->kind == 8 && type2->__anon1._class ? type2->__anon1._class->__anon1.registered : (((void *)0));
+if(relationOp && ((exp->__anon1.op.exp1 && exp->__anon1.op.exp1->ambiguousUnits && (!c2 || c2->type != 3)) || (exp->__anon1.op.exp2 && exp->__anon1.op.exp2->ambiguousUnits && (!c1 || c1->type != 3))))
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "ambiguous units in relation operation\n", (((void *)0))));
+if(!relationOp && ((exp->__anon1.op.exp1 && exp->__anon1.op.exp1->ambiguousUnits) || (exp->__anon1.op.exp2 && exp->__anon1.op.exp2->ambiguousUnits)) && (!powerOp || !c1 || c1->type != 3 || !c2 || c2->type != 3 || !RelatedUnits(c1, c2)))
+{
+if(exp->opDestType || exp->usedInComparison)
+exp->ambiguousUnits = 1;
+else
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "ambiguous units\n", (((void *)0))));
+}
 dummy->kind = 0;
 if(exp->__anon1.op.op == SIZEOF)
 {
@@ -16535,6 +16595,10 @@ exp->expType->refCount++;
 }
 else if(!assign)
 {
+if(c1 && !c1->dataType)
+c1->dataType = ProcessTypeString(c1->dataTypeString, 0);
+if(c2 && !c2->dataType)
+c2->dataType = ProcessTypeString(c2->dataTypeString, 0);
 if(boolOps)
 {
 if(exp->__anon1.op.exp1)
@@ -16566,19 +16630,36 @@ exp->__anon1.op.exp2->expType = MkClassType("bool");
 exp->__anon1.op.exp2->expType->truth = 1;
 }
 }
+else if(powerOp && exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && ((c1 && c1->type == 3) || (c2 && c2->type == 3)))
+{
+if(c1 && c1->type == 3 && c2 && c2->type == 3)
+{
+if(c1->dataType->kind == 7)
+exp->expType = c1->dataType;
+else if(c2->dataType->kind == 7)
+exp->expType = c2->dataType;
+else if(c1->dataType->kind == 6)
+exp->expType = c1->dataType;
+else if(c2->dataType->kind == 6)
+exp->expType = c2->dataType;
+else
+exp->expType = c1->dataType;
+}
+else if((c1 && c1->type == 3) || exp->__anon1.op.op == '/')
+exp->expType = type1;
+else
+exp->expType = type2;
+if(exp->expType)
+exp->expType->refCount++;
+}
 else if(exp->__anon1.op.exp1 && exp->__anon1.op.exp2 && ((useSideType) || ((!type1 || type1->kind != 8 || !strcmp(type1->__anon1._class->string, "String")) && (!type2 || type2->kind != 8 || !strcmp(type2->__anon1._class->string, "String")))))
 {
 if(type1 && type2 && ((type1->kind == 8 && type1->__anon1._class && strcmp(type1->__anon1._class->string, "String")) == (type2->kind == 8 && type2->__anon1._class && strcmp(type2->__anon1._class->string, "String"))))
 {
-if(exp->__anon1.op.op == '-' && ((type1->kind == 8 && type1->__anon1._class->__anon1.registered && type1->__anon1._class->__anon1.registered->type == 4) || (type2->kind == 8 && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 4)))
+if(exp->__anon1.op.op == '-' && ((c1 && c1->type == 4) || (c2 && c2->type == 4)))
 {
-struct Type * intType;
+struct Type * intType = ProcessTypeString((c1 && c1->dataType->kind == 4) || (c2 && c2->dataType->kind == 4) ? "int64" : "int", 0);
 
-if(!type1->__anon1._class->__anon1.registered->dataType)
-type1->__anon1._class->__anon1.registered->dataType = ProcessTypeString(type1->__anon1._class->__anon1.registered->dataTypeString, 0);
-if(!type2->__anon1._class->__anon1.registered->dataType)
-type2->__anon1._class->__anon1.registered->dataType = ProcessTypeString(type2->__anon1._class->__anon1.registered->dataTypeString, 0);
-intType = ProcessTypeString((type1->__anon1._class->__anon1.registered->dataType->kind == 4 || type2->__anon1._class->__anon1.registered->dataType->kind == 4) ? "int64" : "int", 0);
 if(exp->__anon1.op.exp1->destType)
 FreeType(exp->__anon1.op.exp1->destType);
 if(exp->__anon1.op.exp2->destType)
@@ -16598,8 +16679,13 @@ FreeType(exp->__anon1.op.exp1->destType);
 exp->__anon1.op.exp1->destType = type2;
 type2->refCount++;
 }
-if(!boolResult && type1->kind == 8 && (!exp->destType || exp->destType->kind != 8) && type1->__anon1._class->__anon1.registered && type1->__anon1._class->__anon1.registered->type == 3 && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 3 && type1->__anon1._class->__anon1.registered != type2->__anon1._class->__anon1.registered)
+if(!boolResult && !exp->opDestType && (!exp->destType || exp->destType->kind != 8) && c1 && c1->type == 3 && c2 && c2->type == 3 && c1 != c2)
+{
+if(exp->usedInComparison || exp->parentOpDestType)
+exp->ambiguousUnits = 1;
+else
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "operating on %s and %s with an untyped result, assuming %s\n", (((void *)0))), type1->__anon1._class->string, type2->__anon1._class->string, type1->__anon1._class->string);
+}
 if(type1->kind == 13 && type1->__anon1.type->kind == 20 && type2->kind != 13)
 {
 struct Expression * argExp = GetTemplateArgExp(type1->__anon1.type->__anon1.templateParameter, thisClass, 1);
@@ -16619,6 +16705,7 @@ if(!exp->__anon1.op.exp2->expType)
 if(type2)
 FreeType(type2);
 type2 = exp->__anon1.op.exp2->expType = ProcessTypeString("int", 0);
+c2 = (((void *)0));
 type2->refCount++;
 }
 ProcessExpressionType(exp->__anon1.op.exp2);
@@ -16748,7 +16835,7 @@ Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatibl
 }
 }
 }
-else if(!boolResult && (!useSideUnit) && type2 && type1 && type2->kind == 8 && type1->kind != 8 && type2->__anon1._class && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 3)
+else if(!boolResult && !useSideUnit && c2 && c2->type == 3 && type1 && type1->kind != 8)
 {
 if(exp->__anon1.op.exp1->destType)
 FreeType(exp->__anon1.op.exp1->destType);
@@ -16760,7 +16847,7 @@ exp->expType = type2;
 if(type2)
 type2->refCount++;
 }
-else if(!boolResult && (!useSideUnit) && type1 && type2 && type1->kind == 8 && type2->kind != 8 && type1->__anon1._class && type1->__anon1._class->__anon1.registered && type1->__anon1._class->__anon1.registered->type == 3)
+else if(!boolResult && !useSideUnit && c1 && c1->type == 3 && type2 && type2->kind != 8)
 {
 if(exp->__anon1.op.exp2->destType)
 FreeType(exp->__anon1.op.exp2->destType);
@@ -16776,40 +16863,38 @@ else if(type1)
 {
 unsigned int valid = 0;
 
-if(!boolResult && useSideUnit && type1 && type1->kind == 8 && type1->__anon1._class->__anon1.registered && type1->__anon1._class->__anon1.registered->type == 3 && type2 && type2->kind != 8)
+if(!boolResult && useSideUnit && c1 && c1->type == 3 && type2 && type2->kind != 8)
 {
 if(exp->__anon1.op.exp2->destType)
 FreeType(exp->__anon1.op.exp2->destType);
-if(!type1->__anon1._class->__anon1.registered->dataType)
-type1->__anon1._class->__anon1.registered->dataType = ProcessTypeString(type1->__anon1._class->__anon1.registered->dataTypeString, 0);
-exp->__anon1.op.exp2->destType = type1->__anon1._class->__anon1.registered->dataType;
+exp->__anon1.op.exp2->destType = c1->dataType;
 exp->__anon1.op.exp2->destType->refCount++;
 CheckExpressionType(exp->__anon1.op.exp2, exp->__anon1.op.exp2->destType, 0, 0);
 if(type2)
 FreeType(type2);
 type2 = exp->__anon1.op.exp2->destType;
+c2 = type2 && type2->kind == 8 && type2->__anon1._class ? type2->__anon1._class->__anon1.registered : (((void *)0));
 if(type2)
 type2->refCount++;
 exp->expType = type2;
 type2->refCount++;
 }
-if(!boolResult && useSideUnit && type2 && type2->kind == 8 && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 3 && type1 && type1->kind != 8)
+if(!boolResult && useSideUnit && c2 && c2->type == 3 && type1 && type1->kind != 8)
 {
 if(exp->__anon1.op.exp1->destType)
 FreeType(exp->__anon1.op.exp1->destType);
-if(!type2->__anon1._class->__anon1.registered->dataType)
-type2->__anon1._class->__anon1.registered->dataType = ProcessTypeString(type2->__anon1._class->__anon1.registered->dataTypeString, 0);
-exp->__anon1.op.exp1->destType = type2->__anon1._class->__anon1.registered->dataType;
+exp->__anon1.op.exp1->destType = c2->dataType;
 exp->__anon1.op.exp1->destType->refCount++;
 CheckExpressionType(exp->__anon1.op.exp1, exp->__anon1.op.exp1->destType, 0, 0);
 type1 = exp->__anon1.op.exp1->destType;
+c1 = type1 && type1->kind == 8 && type1->__anon1._class ? type1->__anon1._class->__anon1.registered : (((void *)0));
 exp->expType = type1;
 type1->refCount++;
 }
 if(!boolResult || exp->__anon1.op.op == '>' || exp->__anon1.op.op == '<' || exp->__anon1.op.op == GE_OP || exp->__anon1.op.op == LE_OP)
 {
-unsigned int op1IsEnum = type1 && type1->kind == 8 && type1->__anon1._class && type1->__anon1._class->__anon1.registered && type1->__anon1._class->__anon1.registered->type == 4;
-unsigned int op2IsEnum = type2 && type2->kind == 8 && type2->__anon1._class && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 4;
+unsigned int op1IsEnum = c1 && c1->type == 4;
+unsigned int op2IsEnum = c2 && c2->type == 4;
 
 if(exp->__anon1.op.op == '*' || exp->__anon1.op.op == '/' || exp->__anon1.op.op == '-' || exp->__anon1.op.op == '|' || exp->__anon1.op.op == '^')
 {
@@ -16868,7 +16953,7 @@ valid = 1;
 }
 if(!valid)
 {
-if(type2 && type2->kind == 8 && type2->__anon1._class && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 3 && (type1->kind != 8 || !type1->__anon1._class || !type1->__anon1._class->__anon1.registered || type1->__anon1._class->__anon1.registered->type != 3))
+if(c2 && c2->type == 3 && (!c1 || c1->type != 3))
 {
 if(exp->__anon1.op.exp1->destType)
 FreeType(exp->__anon1.op.exp1->destType);
@@ -16918,13 +17003,13 @@ PrintType(exp->__anon1.op.exp1->expType, type1String, 0, 1);
 PrintType(exp->__anon1.op.exp2->expType, type2String, 0, 1);
 }
 Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "incompatible expressions %s (%s) and %s (%s)\n", (((void *)0))), expString1, type1String, expString2, type2String);
-if(type1->kind == 8 && type1->__anon1._class && type1->__anon1._class->__anon1.registered && type1->__anon1._class->__anon1.registered->type == 4)
+if(c1 && c1->type == 4)
 {
 exp->expType = exp->__anon1.op.exp1->expType;
 if(exp->__anon1.op.exp1->expType)
 exp->__anon1.op.exp1->expType->refCount++;
 }
-else if(type2->kind == 8 && type2->__anon1._class && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 4)
+else if(c2 && c2->type == 4)
 {
 exp->expType = exp->__anon1.op.exp2->expType;
 if(exp->__anon1.op.exp2->expType)
@@ -16936,7 +17021,7 @@ exp->__anon1.op.exp2->expType->refCount++;
 }
 else if(type2)
 {
-if(type2->kind == 8 && type2->__anon1._class && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 4)
+if(c2 && c2->type == 4)
 {
 struct Type * oldType = exp->__anon1.op.exp1->expType;
 
@@ -16962,7 +17047,7 @@ exp->__anon1.op.exp1->destType->refCount++;
 }
 else if(type2 && (!type1 || (type2->kind == 8 && type1->kind != 8)))
 {
-if(type1 && type2->__anon1._class && type2->__anon1._class->__anon1.registered && type2->__anon1._class->__anon1.registered->type == 3)
+if(type1 && c2 && c2->type == 3)
 {
 if(exp->__anon1.op.exp1->destType)
 FreeType(exp->__anon1.op.exp1->destType);
@@ -16985,7 +17070,7 @@ type2->refCount++;
 }
 else if(type1 && (!type2 || (type1->kind == 8 && type2->kind != 8)))
 {
-if(type2 && type1->__anon1._class && type1->__anon1._class->__anon1.registered && type1->__anon1._class->__anon1.registered->type == 3)
+if(c2 && c2->type == 3)
 {
 if(exp->__anon1.op.exp2->destType)
 FreeType(exp->__anon1.op.exp2->destType);
@@ -17058,6 +17143,8 @@ if(!e->next)
 {
 FreeType(e->destType);
 e->opDestType = exp->opDestType;
+e->usedInComparison = exp->usedInComparison;
+e->parentOpDestType = exp->parentOpDestType;
 e->destType = exp->destType;
 if(e->destType)
 {
@@ -17065,6 +17152,8 @@ exp->destType->refCount++;
 }
 }
 ProcessExpressionType(e);
+if(e->ambiguousUnits)
+exp->ambiguousUnits = 1;
 if(!exp->expType && !e->next)
 {
 exp->expType = e->expType;
@@ -19543,6 +19632,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ParseExpressionString", 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReplaceExpContents", "void ReplaceExpContents(Expression checkedExp, Expression newExp)", ReplaceExpContents, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ApplyAnyObjectLogic", "void ApplyAnyObjectLogic(Expression e)", ApplyAnyObjectLogic, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ApplyLocation", "void ApplyLocation(Expression exp, Location loc)", ApplyLocation, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("RelatedUnits", "bool RelatedUnits(ecere::com::Class c1, ecere::com::Class c2)", RelatedUnits, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ProcessExpressionType", "void ProcessExpressionType(Expression exp)", ProcessExpressionType, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("DeclareFunctionUtil", "void DeclareFunctionUtil(External neededBy, const String s)", DeclareFunctionUtil, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ComputeDataTypes", "void ComputeDataTypes(void)", ComputeDataTypes, module, 1);

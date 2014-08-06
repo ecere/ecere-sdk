@@ -226,7 +226,9 @@ Expression MoveExpContents(Expression exp)
       result.isConstant = exp.isConstant;
       result.byReference = exp.byReference;
       result.opDestType = exp.opDestType;
+      result.usedInComparison = exp.usedInComparison;
       result.needTemplateCast = exp.needTemplateCast;
+      result.parentOpDestType = exp.parentOpDestType;
    }
 
    return result;

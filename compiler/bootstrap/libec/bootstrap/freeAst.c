@@ -1523,6 +1523,9 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int usedInComparison;
+unsigned int ambiguousUnits;
+unsigned int parentOpDestType;
 unsigned int needTemplateCast;
 } ecere_gcc_struct;
 

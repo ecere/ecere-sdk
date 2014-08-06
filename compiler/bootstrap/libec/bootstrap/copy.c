@@ -882,6 +882,9 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int usedInComparison;
+unsigned int ambiguousUnits;
+unsigned int parentOpDestType;
 unsigned int needTemplateCast;
 } ecere_gcc_struct;
 
@@ -1545,7 +1548,9 @@ result->loc = exp->loc;
 result->isConstant = exp->isConstant;
 result->byReference = exp->byReference;
 result->opDestType = exp->opDestType;
+result->usedInComparison = exp->usedInComparison;
 result->needTemplateCast = exp->needTemplateCast;
+result->parentOpDestType = exp->parentOpDestType;
 }
 return result;
 }

@@ -119,7 +119,7 @@ public class Degrees : Angle
       //get { return (Angle)this * Pi / 180; }
       //set { return (Angle)(value * 180 / Pi); }
       get { return this * (double)Pi / 180; }
-      set { return (double)value * 180 / Pi; }
+      set { return Angle { value * 180 / Pi }; }
    }
 }
 

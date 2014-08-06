@@ -2074,6 +2074,9 @@ unsigned int addedThis;
 unsigned int needCast;
 unsigned int thisPtr;
 unsigned int opDestType;
+unsigned int usedInComparison;
+unsigned int ambiguousUnits;
+unsigned int parentOpDestType;
 unsigned int needTemplateCast;
 } ecere_gcc_struct;
 
@@ -2101,6 +2104,8 @@ this->addedThis = 0;
 this->needCast = 0;
 this->thisPtr = 0;
 this->opDestType = 0;
+this->parentOpDestType = 0;
+this->usedInComparison = 0;
 this->needTemplateCast = 0;
 }
 
@@ -2871,6 +2876,9 @@ __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "addedThis", "bool", 4
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "needCast", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "thisPtr", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "opDestType", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "usedInComparison", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "ambiguousUnits", "bool", 4, 4, 1);
+__ecereNameSpace__ecere__com__eClass_AddDataMember(class, "parentOpDestType", "bool", 4, 4, 1);
 __ecereNameSpace__ecere__com__eClass_AddDataMember(class, "needTemplateCast", "uint", 4, 4, 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "Enumerator", 0, sizeof(struct Enumerator), 0, (void *)0, (void *)0, module, 1, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)

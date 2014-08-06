@@ -672,6 +672,9 @@ public:
    bool needCast;
    bool thisPtr;
    bool opDestType;
+   bool usedInComparison;
+   bool ambiguousUnits;
+   bool parentOpDestType;
    uint needTemplateCast;
 
    void Clear()
@@ -692,6 +695,8 @@ public:
       needCast = false;
       thisPtr = false;
       opDestType = false;
+      parentOpDestType = false;
+      usedInComparison = false;
       needTemplateCast = 0;
    }
 };
