@@ -10947,7 +10947,7 @@ else if(source->__anon1._class && dest->__anon1._class && (dest->classObjectType
 return 1;
 else
 {
-if(enumBaseType && dest->__anon1._class && dest->__anon1._class->__anon1.registered && dest->__anon1._class->__anon1.registered->type == 4 && ((source->__anon1._class && source->__anon1._class->__anon1.registered && source->__anon1._class->__anon1.registered->type != 4) || source->kind == 8))
+if(dest->__anon1._class && dest->__anon1._class->__anon1.registered && source->__anon1._class && source->__anon1._class->__anon1.registered && (dest->casted || (enumBaseType && dest->__anon1._class->__anon1.registered->type == 4 && (source->kind == 8 || source->__anon1._class->__anon1.registered->type != 4))))
 {
 if(__ecereNameSpace__ecere__com__eClass_IsDerived(dest->__anon1._class->__anon1.registered, source->__anon1._class->__anon1.registered))
 {
