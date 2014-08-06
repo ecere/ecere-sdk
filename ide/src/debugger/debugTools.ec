@@ -1074,6 +1074,7 @@ void DebugComputeExpression(Expression exp)
                            Expression e = exp1;
                            uint offset = 0;
                            bool gotAddress = false;
+                           Type dataType;
 
                            while(((e.type == bracketsExp || e.type == extensionExpressionExp || e.type == extensionCompoundExp) && e.list) || e.type == castExp)
                            {
@@ -1095,12 +1096,22 @@ void DebugComputeExpression(Expression exp)
                            }
                            else
                               gotAddress = GetUInt64(e, &address);
-                           size = ComputeTypeSize(exp.expType); //exp.expType.arrayType.size;
-                           if(exp.expType && exp.expType.type && exp.expType.kind == arrayType)
+
+                           dataType = exp.expType;
+                           if(dataType && dataType.kind == classType && dataType._class.registered &&
+                                 (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
+                           {
+                              if(!dataType._class.registered.dataType && dataType._class.registered.dataTypeString)
+                                 dataType._class.registered.dataType = ProcessTypeString(dataType._class.registered.dataTypeString, false);
+                              dataType = dataType._class.registered.dataType;
+                           }
+
+                           size = ComputeTypeSize(dataType); //exp.expType.arrayType.size;
+                           if(dataType && dataType.type && dataType.kind == arrayType)
                               // For multilevels arrays
                               format = 'x';
                            else
-                              format = GetGdbFormatChar(exp.expType);
+                              format = GetGdbFormatChar(dataType);
                            while(e.type == opExp && e.op.op == '+' && e.op.exp1 && e.op.exp2)
                            {
                               Expression e1 = e.op.exp1, e2 = e.op.exp2;
@@ -1451,6 +1462,14 @@ void DebugComputeExpression(Expression exp)
             // 0 == size = ComputeTypeSize(exp.expType.arrayType);
             // 4 == size = ComputeTypeSize(exp.index.exp.expType);
             // 0 == size = ComputeTypeSize(exp.index.exp.expType.arrayType);
+
+            if(dataType && dataType.kind == classType && dataType._class.registered &&
+                  (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
+            {
+               if(!dataType._class.registered.dataType && dataType._class.registered.dataTypeString)
+                  dataType._class.registered.dataType = ProcessTypeString(dataType._class.registered.dataTypeString, false);
+               dataType = dataType._class.registered.dataType;
+            }
 
             size = ComputeTypeSize(dataType);
             if(dataType && dataType.type && dataType.kind == arrayType)
@@ -2162,10 +2181,10 @@ void DebugComputeExpression(Expression exp)
                         if(!dataType)
                            dataType = member.dataType = ProcessTypeString(member.dataTypeString, false);
 
-                        if(dataType.kind == classType && dataType._class.registered &&
+                        if(dataType && dataType.kind == classType && dataType._class.registered &&
                               (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
                         {
-                           if(dataType._class.registered.dataTypeString)
+                           if(!dataType._class.registered.dataType && dataType._class.registered.dataTypeString)
                               dataType._class.registered.dataType = ProcessTypeString(dataType._class.registered.dataTypeString, false);
                            dataType = dataType._class.registered.dataType;
                            if(!dataType)
@@ -2271,7 +2290,14 @@ void DebugComputeExpression(Expression exp)
                                  delete evaluation;
                                  expNew.destType = exp.expType;
                                  if(exp.expType)
+                                 {
                                     exp.expType.refCount++;
+                                    if(exp.expType.kind == classType && exp.expType._class && exp.expType._class.registered && exp.expType._class.registered.type == unitClass)
+                                    {
+                                       expNew.expType = exp.expType;
+                                       exp.expType.refCount++;
+                                    }
+                                 }
                                  //FreeType(memberExp.destType);
                                  FreeType(exp.expType);
                                  FreeType(exp.destType);
@@ -2332,7 +2358,11 @@ void DebugComputeExpression(Expression exp)
 
                         if(dataType.kind == classType && dataType._class.registered &&
                               (dataType._class.registered.type == enumClass || dataType._class.registered.type == bitClass || dataType._class.registered.type == unitClass))
+                        {
+                           if(dataType._class.registered.dataTypeString && !dataType._class.registered.dataType)
+                              dataType._class.registered.dataType = ProcessTypeString(dataType._class.registered.dataTypeString, false);
                            dataType = dataType._class.registered.dataType;
+                        }
 
                         format = GetGdbFormatChar(dataType);
 
