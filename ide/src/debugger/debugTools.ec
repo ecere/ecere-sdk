@@ -135,6 +135,25 @@ static char GetGdbFormatChar(Type type)
          exp.type == noDebuggerErrorExp || exp.type == memberPropertyErrorExp || exp.type == functionCallErrorExp || exp.type == divideBy0ErrorExp);
 }
 
+char * DebugPrintFloat(float result)
+{
+   char temp[350];
+   result.OnGetString(temp, null, null);
+   if(!strchr(temp, '.'))
+      strcat(temp, ".");
+   strcat(temp, "f");
+   return CopyString(temp);
+}
+
+char * DebugPrintDouble(double result)
+{
+   char temp[350];
+   result.OnGetString(temp, null, null);
+   if(!strchr(temp, '.'))
+      strcat(temp, ".0");
+   return CopyString(temp);
+}
+
 void DebugComputeExpression(Expression exp)
 {
 #ifdef _DEBUG
@@ -720,7 +739,7 @@ void DebugComputeExpression(Expression exp)
                                              float fValue;
                                              float (*Set)(float) = (void *)prop.Set;
                                              GetFloat(member.initializer.exp, &fValue);
-                                             exp.constant = PrintFloat(Set(fValue));
+                                             exp.constant = DebugPrintFloat(Set(fValue));
                                              exp.type = constantExp;
                                              break;
                                           }
@@ -729,7 +748,7 @@ void DebugComputeExpression(Expression exp)
                                              double dValue;
                                              double (*Set)(double) = (void *)prop.Set;
                                              GetDouble(member.initializer.exp, &dValue);
-                                             exp.constant = PrintDouble(Set(dValue));
+                                             exp.constant = DebugPrintDouble(Set(dValue));
                                              exp.type = constantExp;
                                              break;
                                           }
@@ -1154,8 +1173,8 @@ void DebugComputeExpression(Expression exp)
                                     case shortType:  exp.constant = expType.isSigned ? PrintShort(((short *)tmp)[offset]) : PrintUShort(((uint16 *)tmp)[offset]); break;
                                     case intType:    exp.constant = expType.isSigned ? PrintInt(((int *)tmp)[offset]) : PrintUInt(((uint *)tmp)[offset]); break;
                                     case int64Type:  exp.constant = expType.isSigned ? PrintInt64(((int64 *)tmp)[offset]) : PrintUInt64(((uint64 *)tmp)[offset]); break;
-                                    case floatType:  exp.constant = PrintFloat(((float *)tmp)[offset]); break;
-                                    case doubleType: exp.constant = PrintDouble(((double *)tmp)[offset]); break;
+                                    case floatType:  exp.constant = DebugPrintFloat(((float *)tmp)[offset]); break;
+                                    case doubleType: exp.constant = DebugPrintDouble(((double *)tmp)[offset]); break;
                                     default:
                                        exp.type = unknownErrorExp;
                                  }
@@ -1581,8 +1600,8 @@ void DebugComputeExpression(Expression exp)
                               case shortType:  exp.constant = expType.isSigned ? PrintShort(((short *)tmp)[offset]) : PrintUShort(((uint16 *)tmp)[offset]); break;
                               case intType:    exp.constant = expType.isSigned ? PrintInt(((int *)tmp)[offset]) : PrintUInt(((uint *)tmp)[offset]); break;
                               case int64Type:  exp.constant = expType.isSigned ? PrintInt64(((int64 *)tmp)[offset]) : PrintUInt64(((uint64 *)tmp)[offset]); break;
-                              case floatType:  exp.constant = PrintFloat(((float *)tmp)[offset]); break;
-                              case doubleType: exp.constant = PrintDouble(((double *)tmp)[offset]); break;
+                              case floatType:  exp.constant = DebugPrintFloat(((float *)tmp)[offset]); break;
+                              case doubleType: exp.constant = DebugPrintDouble(((double *)tmp)[offset]); break;
                               default:
                                  exp.type = unknownErrorExp;
                            }
@@ -1693,7 +1712,7 @@ void DebugComputeExpression(Expression exp)
                            FreeExpContents(exp);
                            exp.type = constantExp;
                            v = fn1(v);
-                           exp.constant = PrintDouble(v);
+                           exp.constant = DebugPrintDouble(v);
                            exp.isConstant = true;
                            resolved = true;
                         }
@@ -1721,7 +1740,7 @@ void DebugComputeExpression(Expression exp)
                            FreeExpContents(exp);
                            exp.type = constantExp;
                            v1 = fn2(v1, v2);
-                           exp.constant = PrintDouble(v1);
+                           exp.constant = DebugPrintDouble(v1);
                            exp.isConstant = true;
                            resolved = true;
                         }
@@ -1821,7 +1840,7 @@ void DebugComputeExpression(Expression exp)
                               GetFloat(memberExp, &value);
 
                               FreeExpContents(exp);
-                              exp.constant = PrintFloat(Get ? Get(value) : value);
+                              exp.constant = DebugPrintFloat(Get ? Get(value) : value);
                               exp.type = constantExp;
                               exp.isConstant = true;
                               supported = true;
@@ -1834,7 +1853,7 @@ void DebugComputeExpression(Expression exp)
                               GetDouble(memberExp, &value);
 
                               FreeExpContents(exp);
-                              exp.constant = PrintDouble(Get ? Get(value) : value);
+                              exp.constant = DebugPrintDouble(Get ? Get(value) : value);
                               exp.isConstant = true;
                               exp.type = constantExp;
                               supported = true;
@@ -2217,8 +2236,8 @@ void DebugComputeExpression(Expression exp)
                                     else
                                        constant = PrintUInt64(*(uint64 *)data);
                                     break;
-                                 case floatType: constant = PrintFloat(*(float *)data); break;
-                                 case doubleType: constant = PrintDouble(*(double *)data); break;
+                                 case floatType: constant = DebugPrintFloat(*(float *)data); break;
+                                 case doubleType: constant = DebugPrintDouble(*(double *)data); break;
                               }
                               if(constant)
                               {
@@ -2601,7 +2620,7 @@ void DebugComputeExpression(Expression exp)
                      else if(GetFloat(exp.cast.exp, &value))
                      {
                         FreeExpContents(exp);
-                        exp.constant = PrintFloat(value);
+                        exp.constant = DebugPrintFloat(value);
                         exp.type = constantExp;
                         exp.isConstant = true;
                      }
@@ -2626,7 +2645,7 @@ void DebugComputeExpression(Expression exp)
                      else if(GetDouble(exp.cast.exp, &value))
                      {
                         FreeExpContents(exp);
-                        exp.constant = PrintDouble(value);
+                        exp.constant = DebugPrintDouble(value);
                         exp.type = constantExp;
                         exp.isConstant = true;
                      }
@@ -2900,7 +2919,7 @@ void ApplyUnitConverters(Expression exp)
                      value = convertFn(value);
                }
                FreeExpContents(exp);
-               exp.constant = PrintFloat(value);
+               exp.constant = DebugPrintFloat(value);
                exp.type = constantExp;
                exp.isConstant = true;
             }
@@ -2931,7 +2950,7 @@ void ApplyUnitConverters(Expression exp)
                      value = convertFn(value);
                }
                FreeExpContents(exp);
-               exp.constant = PrintDouble(value);
+               exp.constant = DebugPrintDouble(value);
                exp.type = constantExp;
                exp.isConstant = true;
             }
