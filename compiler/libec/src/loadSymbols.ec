@@ -90,8 +90,11 @@ static void ReadDataMembers(Class regClass, DataMember member, File f)
             {
                //eClass_AddBitMember(regClass, name, line[0] ? line : 0, size, bitPos);
                BitMember member = eClass_AddBitMember(regClass, name, line[0] ? line : 0, 0, 0, memberAccess);
-               member.size = size;
-               member.pos = bitPos;
+               if(member)
+               {
+                  member.size = size;
+                  member.pos = bitPos;
+               }
             }
             else if(regClass)
             {

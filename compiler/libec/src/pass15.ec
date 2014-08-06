@@ -121,6 +121,7 @@ static void ReplaceClassMembers(Expression exp, Class _class)
          // First, check if the identifier is declared inside the function
          for(ctx = curContext; ctx != topContext.parent && !symbol; ctx = ctx.parent)
          {
+            if(!ctx) break;   // This happened opening old mapTileCache.ec from archives?
             symbol = (Symbol)ctx.symbols.FindString(id.string);
             if(symbol) break;
          }
@@ -4389,7 +4390,7 @@ public Operand GetOperand(Expression exp)
    Type type = exp.expType;
    if(type)
    {
-      while(type.kind == classType &&
+      while(type.kind == classType && type._class &&
          type._class.registered && (type._class.registered.type == bitClass || type._class.registered.type == unitClass || type._class.registered.type == enumClass))
       {
          if(!type._class.registered.dataType)

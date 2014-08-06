@@ -1173,8 +1173,11 @@ else if(regClass && regClass->type == 2)
 {
 struct __ecereNameSpace__ecere__com__BitMember * member = __ecereNameSpace__ecere__com__eClass_AddBitMember(regClass, name, line[0] ? line : 0, 0, 0, memberAccess);
 
+if(member)
+{
 member->size = size;
 member->pos = bitPos;
+}
 }
 else if(regClass)
 {

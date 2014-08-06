@@ -583,7 +583,7 @@ static bool ProcessInstMembers(Instantiation inst, Expression instExp, OldList l
                {
                   Identifier ident = null;
                   DataMember thisMember = null;
-                  if(member.identifiers)
+                  if(member.identifiers && member.identifiers->first)
                   {
                      DataMember _subMemberStack[256];
                      int _subMemberStackPos = 0;
@@ -938,9 +938,12 @@ static void ProcessExpression(Expression exp)
 
                      // TRICKY STUFF, UGLY HACK FOR stateSizeAnchor = SizeAnchor { size.w = 10 };
                      dummyDecl = MkDeclaration(null,null);
-                     if(!curCompound.compound.declarations)
-                        curCompound.compound.declarations = MkList();
-                     curCompound.compound.declarations->Insert(null, dummyDecl);
+                     if(curCompound)
+                     {
+                        if(!curCompound.compound.declarations)
+                           curCompound.compound.declarations = MkList();
+                        curCompound.compound.declarations->Insert(null, dummyDecl);
+                     }
 
                      sprintf(className, "__simpleStruct%d", curContext.simpleID++);
 

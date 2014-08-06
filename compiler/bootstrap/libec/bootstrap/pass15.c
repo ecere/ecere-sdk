@@ -7579,7 +7579,7 @@ struct Type * type = exp->expType;
 
 if(type)
 {
-while(type->kind == 8 && type->__anon1._class->__anon1.registered && (type->__anon1._class->__anon1.registered->type == 2 || type->__anon1._class->__anon1.registered->type == 3 || type->__anon1._class->__anon1.registered->type == 4))
+while(type->kind == 8 && type->__anon1._class && type->__anon1._class->__anon1.registered && (type->__anon1._class->__anon1.registered->type == 2 || type->__anon1._class->__anon1.registered->type == 3 || type->__anon1._class->__anon1.registered->type == 4))
 {
 if(!type->__anon1._class->__anon1.registered->dataType)
 type->__anon1._class->__anon1.registered->dataType = ProcessTypeString(type->__anon1._class->__anon1.registered->dataTypeString, 0);
@@ -9886,6 +9886,8 @@ if(!id->_class || !id->_class->__anon1.__anon1.name || strcmp(id->_class->__anon
 {
 for(ctx = curContext; ctx != topContext->parent && !symbol; ctx = ctx->parent)
 {
+if(!ctx)
+break;
 symbol = (struct Symbol *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&ctx->symbols, id->string);
 if(symbol)
 break;

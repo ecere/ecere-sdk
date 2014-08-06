@@ -1819,7 +1819,7 @@ for(member = (*members->__anon1.dataMembers).first; member; member = member->nex
 struct Identifier * ident = (((void *)0));
 struct __ecereNameSpace__ecere__com__DataMember * thisMember = (((void *)0));
 
-if(member->identifiers)
+if(member->identifiers && (*member->identifiers).first)
 {
 struct __ecereNameSpace__ecere__com__DataMember * _subMemberStack[256];
 int _subMemberStackPos = 0;
@@ -3000,9 +3000,12 @@ struct Declaration * dummyDecl;
 
 {
 dummyDecl = MkDeclaration((((void *)0)), (((void *)0)));
+if(curCompound)
+{
 if(!curCompound->__anon1.compound.declarations)
 curCompound->__anon1.compound.declarations = MkList();
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*curCompound->__anon1.compound.declarations), (((void *)0)), dummyDecl);
+}
 sprintf(className, "__simpleStruct%d", curContext->simpleID++);
 {
 struct __ecereNameSpace__ecere__sys__OldList * list = MkList();
