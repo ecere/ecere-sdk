@@ -2090,8 +2090,11 @@ PrintType(dataType, dataTypeString, 0, 1);
 {
 struct __ecereNameSpace__ecere__com__BitMember * member = __ecereNameSpace__ecere__com__eClass_AddBitMember(regClass, declId->string, dataTypeString, 0, 0, def->memberAccess);
 
+if(member)
+{
 member->size = bitSize;
 member->pos = bitPos;
+}
 dataMember = (struct __ecereNameSpace__ecere__com__DataMember *)member;
 }
 if(dataMember)

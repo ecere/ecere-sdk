@@ -500,9 +500,9 @@ unsigned int __ecereDll_Unload_ec(struct __ecereNameSpace__ecere__com__Instance 
 {
 if(__currentModule == module)
 {
-__ecereDestroyModuleInstances_ast();
-__ecereDestroyModuleInstances_loadSymbols();
 __ecereDestroyModuleInstances_pass1();
+__ecereDestroyModuleInstances_loadSymbols();
+__ecereDestroyModuleInstances_ast();
 __ecereNameSpace__ecere__UnloadTranslatedStrings("ec");
 }
 __ecereUnregisterModule_ast(module);

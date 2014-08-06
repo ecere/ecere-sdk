@@ -716,7 +716,7 @@ static void WriteMain(const char * fileName)
          bool destroyI18n = false;
          if(::modules.count)
          {
-            for(defModule = ::modules.first; defModule; defModule = defModule.next)
+            for(defModule = ::modules.last; defModule; defModule = defModule.prev)
                if(defModule.globalInstance)
                {
                   char moduleName[1024];

@@ -206,8 +206,11 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                            //if(!eClass_FindDataMember(regClass, declId.string))
                            {
                               BitMember member = eClass_AddBitMember(regClass, declId.string, dataTypeString, 0, 0, def.memberAccess);
-                              member.size = bitSize;
-                              member.pos = bitPos;
+                              if(member)
+                              {
+                                 member.size = bitSize;
+                                 member.pos = bitPos;
+                              }
                               dataMember = (DataMember)member;
                            }
                            if(dataMember)

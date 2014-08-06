@@ -2429,7 +2429,7 @@ unsigned int destroyI18n = 0;
 
 if(modules.count)
 {
-for(defModule = modules.first; defModule; defModule = defModule->next)
+for(defModule = modules.last; defModule; defModule = defModule->prev)
 if(defModule->globalInstance)
 {
 char moduleName[1024];
