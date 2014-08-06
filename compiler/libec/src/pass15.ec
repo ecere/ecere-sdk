@@ -3587,7 +3587,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
          else
             value = strtoull(computedExp.constant, null, 0);
       }
-      else if(computedExp.type == opExp && sourceExp.op.op == '-' && !computedExp.op.exp1 && computedExp.op.exp2 && computedExp.op.exp2.type == constantExp)
+      else if(computedExp.type == opExp && computedExp.op.op == '-' && !computedExp.op.exp1 && computedExp.op.exp2 && computedExp.op.exp2.type == constantExp)
       {
          if(source.isSigned)
             value = -strtoll(computedExp.op.exp2.constant, null, 0);

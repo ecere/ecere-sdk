@@ -13923,7 +13923,7 @@ value = strtoll(computedExp->__anon1.__anon1.constant, (((void *)0)), 0);
 else
 value = strtoull(computedExp->__anon1.__anon1.constant, (((void *)0)), 0);
 }
-else if(computedExp->type == 4 && sourceExp->__anon1.op.op == '-' && !computedExp->__anon1.op.exp1 && computedExp->__anon1.op.exp2 && computedExp->__anon1.op.exp2->type == 2)
+else if(computedExp->type == 4 && computedExp->__anon1.op.op == '-' && !computedExp->__anon1.op.exp1 && computedExp->__anon1.op.exp2 && computedExp->__anon1.op.exp2->type == 2)
 {
 if(source->isSigned)
 value = -strtoll(computedExp->__anon1.op.exp2->__anon1.__anon1.constant, (((void *)0)), 0);
