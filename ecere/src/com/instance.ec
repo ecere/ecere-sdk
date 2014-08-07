@@ -1817,7 +1817,7 @@ static void _free(void * pointer)
                   }
                   if(address[c + size] != 0xAB)
                   {
-                     printf("Buffer Overrun (%d bytes past block of %d)\n", c);
+                     printf("Buffer Overrun (%d bytes past block)\n", c);
                      memoryErrorsCount++;
                      block.OutputStacks(block.freed);
                   }
