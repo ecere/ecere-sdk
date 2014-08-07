@@ -3194,7 +3194,7 @@ class OpenGLDisplayDriver : DisplayDriver
             break;
          }
          case fogDensity:
-            glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { value }.f * nearPlane));
+            glFogf(GL_FOG_DENSITY, (float)(RenderStateFloat { ui = value }.f * nearPlane));
             break;
          case blend:
             if(value) glEnable(GL_BLEND); else glDisable(GL_BLEND);
