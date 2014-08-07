@@ -6,7 +6,7 @@ import "ecere"
 
 #define SCALE ((float)virtualDesktop.clientSize.h / WINDOW_HEIGHT)
 
-//#define FULLSCREEN
+// #define FULLSCREEN
 
 class Window3D : struct
 {
@@ -287,7 +287,11 @@ class Desktop3D : Window
 #ifdef FULLSCREEN
    anchor = { 0, 0, 0, 0 };
 #else
-   size = Size { WINDOW_WIDTH, WINDOW_HEIGHT };
+   clientSize = { WINDOW_WIDTH, WINDOW_HEIGHT };
+   //nativeDecorations = false;
+   hasClose = true;
+   borderStyle = sizable;
+   hasMaximize = true;
 #endif
 
    Object lookAt {};
@@ -1122,8 +1126,8 @@ class Desktop3D : Window
                   {
                      EditBox
                      {
-                        this, multiLine = true, is3D = true, borderStyle = Fixed, hasClose = true, text = "Video",
-                        size = Size { WINDOW_WIDTH, WINDOW_HEIGHT }, fileName = ":430.flc"
+                        this, multiLine = true, is3D = true, borderStyle = fixed, hasClose = true, //text = "EditBox",
+                        size = Size { WINDOW_WIDTH, WINDOW_HEIGHT } //fileName = ":430.flc"
                      }.Create();
                   }
                   else*/
@@ -1131,7 +1135,7 @@ class Desktop3D : Window
                      Picture
                      {
                         this, is3D = true, borderStyle = fixed, hasClose = true, text = "3D Window",
-                        size = Size { WINDOW_WIDTH, WINDOW_HEIGHT }, image = BitmapResource { fileName = shotFileNames[id] }, opacity = 1, inactive = false
+                        size = { WINDOW_WIDTH, WINDOW_HEIGHT }, image = BitmapResource { fileName = shotFileNames[id] }, opacity = 1, inactive = false
                      }.Create();
                   }
                   id++;
@@ -1295,6 +1299,9 @@ static void Update3DWindow(Window window, Box box)
    Window3D window3D = Desktop3DGetWindowHandle(window);
    int w = box.right - box.left + 1;
    int h = box.bottom - box.top + 1;
+   int offset = 0;
+   if(!virtualDesktop.nativeDecorations)
+      offset = (virtualDesktop.size.h - 1 - virtualDesktop.clientStart.y - virtualDesktop.clientSize.h);
 
    glBindTexture(GL_TEXTURE_2D, (int)(intptr)window3D.bitmap.driverData);
    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -1303,8 +1310,9 @@ static void Update3DWindow(Window window, Box box)
    glCopyTexSubImage2D(GL_TEXTURE_2D, 0,
       box.left,
       window.size.h - h - box.top,
-      box.left + virtualDesktop.clientStart.x,
-      virtualDesktop.size.h - virtualDesktop.clientStart.y - h - box.top, w, h);
+      box.left + virtualDesktop.nativeDecorations ? 0 : virtualDesktop.clientStart.x,
+
+      virtualDesktop.clientSize.h - h - box.top + offset, w, h);
 }
 
 class Orbit : GuiApplication

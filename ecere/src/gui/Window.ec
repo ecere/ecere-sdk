@@ -767,13 +767,21 @@ private:
 
             if(rootWindow.is3D)
             {
-               x += rootWindow.parent.clientStart.x;
-               y += rootWindow.parent.clientStart.y;
+               int dx = rootWindow.parent.parent.clientStart.x;
+               int dy = rootWindow.parent.parent.clientStart.y;
+               if(!rootWindow.parent.nativeDecorations)
+               {
+                  dx += rootWindow.parent.clientStart.x;
+                  dy += rootWindow.parent.clientStart.y;
+               }
+               x += dx;
+               y += dy;
+
                /*
-               mox.left += rootWindow.parent.clientStart.x;
-               mox.top += rootWindow.parent.clientStart.y;
-               mox.right += rootWindow.parent.clientStart.x;
-               mox.bottom += rootWindow.parent.clientStart.y;
+               mox.left += dx;
+               mox.top += dy;
+               mox.right += dx;
+               mox.bottom += dy;
                */
             }
          }
@@ -814,13 +822,21 @@ private:
             y -= rootWindow.absPosition.y;
             if(rootWindow.is3D)
             {
-               x += rootWindow.parent.clientStart.x;
-               y += rootWindow.parent.clientStart.y;
+               int dx = rootWindow.parent.parent.clientStart.x;
+               int dy = rootWindow.parent.parent.clientStart.y;
+               if(!rootWindow.parent.nativeDecorations)
+               {
+                  dx += rootWindow.parent.clientStart.x;
+                  dy += rootWindow.parent.clientStart.y;
+               }
+               x += dx;
+               y += dy;
+
                /*
-               mox.left += rootWindow.parent.clientStart.x;
-               mox.top += rootWindow.parent.clientStart.y;
-               mox.right += rootWindow.parent.clientStart.x;
-               mox.bottom += rootWindow.parent.clientStart.y;
+               mox.left += dx;
+               mox.top += dy;
+               mox.right += dx;
+               mox.bottom += dy;
                */
             }
          }
