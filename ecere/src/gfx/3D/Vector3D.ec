@@ -151,7 +151,7 @@ public struct Vector3D
    }
 };
 
-inline float FastInvSqrt(float x)
+public inline float FastInvSqrt(float x)
 {
   union { float f; uint u; } i;
   float halfX = x / 2;
