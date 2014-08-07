@@ -698,6 +698,8 @@ private:
          tempExtents[3].Free(null);
          delete tempExtents;
       }
+
+      delete controller;
    }
 
 //#if !defined(ECERE_VANILLA)
