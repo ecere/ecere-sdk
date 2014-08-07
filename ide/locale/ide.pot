@@ -31,8 +31,8 @@ msgstr " Properties"
 msgid " and its sub directories"
 msgstr " and its sub directories"
 
-#: ./src/project/Project.ec:2297
-#: ./src/project/Project.ec:2304
+#: ./src/project/Project.ec:2302
+#: ./src/project/Project.ec:2309
 msgid " and object files"
 msgstr " and object files"
 
@@ -137,7 +137,7 @@ msgstr "%s specific file(s) in project %s using the %s configuration...\n"
 msgid "%s specific file(s) in project %s...\n"
 msgstr "%s specific file(s) in project %s...\n"
 
-#: ./src/project/Project.ec:2302
+#: ./src/project/Project.ec:2307
 msgid "%s%s deleted\n"
 msgstr "%s%s deleted\n"
 
@@ -725,7 +725,7 @@ msgstr "Delete %s"
 msgid "Delete Folder"
 msgstr "Delete Folder"
 
-#: ./src/project/Project.ec:2295
+#: ./src/project/Project.ec:2300
 msgid "Deleting %s%s..."
 msgstr "Deleting %s%s..."
 
@@ -846,7 +846,7 @@ msgstr "Error creating directory"
 msgid "Error evaluating \"%s\""
 msgstr "Error evaluating \"%s\""
 
-#: ./src/project/Project.ec:2230
+#: ./src/project/Project.ec:2235
 msgid "Error executing make (%s) command\n"
 msgstr "Error executing make (%s) command\n"
 
@@ -913,7 +913,7 @@ msgstr "Extras Folder"
 msgid "Fast Math"
 msgstr "Fast Math"
 
-#: ./src/project/Project.ec:1967
+#: ./src/project/Project.ec:1972
 msgid "Fatal Error: child process terminated unexpectedly\n"
 msgstr "Fatal Error: child process terminated unexpectedly\n"
 
@@ -926,7 +926,7 @@ msgstr "Fatal Error: child process terminated unexpectedly\n"
 msgid "File"
 msgstr "File"
 
-#: ./src/project/Project.ec:2118
+#: ./src/project/Project.ec:2123
 #: ./src/project/ProjectView.ec:1202
 msgid "File %s is excluded from current build configuration.\n"
 msgstr "File %s is excluded from current build configuration.\n"
@@ -1167,7 +1167,7 @@ msgstr "Integer division by 0"
 msgid "Intermediate Objects Directory"
 msgstr "Intermediate Objects Directory"
 
-#: ./src/project/Project.ec:2303
+#: ./src/project/Project.ec:2308
 msgid "Intermediate objects directory"
 msgstr "Intermediate objects directory"
 
@@ -1226,12 +1226,12 @@ msgstr "License Agreements"
 msgid "Linker"
 msgstr "Linker"
 
-#: ./src/project/Project.ec:1759
+#: ./src/project/Project.ec:1764
 msgid "Linker "
 msgstr "Linker "
 
-#: ./src/project/Project.ec:1750
-#: ./src/project/Project.ec:1764
+#: ./src/project/Project.ec:1755
+#: ./src/project/Project.ec:1769
 msgid "Linker Error: "
 msgstr "Linker Error: "
 
@@ -1242,6 +1242,10 @@ msgstr "Linker Message: "
 #: ./src/ProjectSettings.ec:2172
 msgid "Linker Options"
 msgstr "Linker Options"
+
+#: ./src/project/Project.ec:1749
+msgid "Linker Warning: "
+msgstr "Linker Warning: "
 
 #: ./src/project/Project.ec:1646
 msgid "Linking...\n"
@@ -2043,7 +2047,7 @@ msgstr "Symbol \"%s\" not found"
 msgid "Tahoma"
 msgstr "Tahoma"
 
-#: ./src/project/Project.ec:2303
+#: ./src/project/Project.ec:2308
 msgid "Target"
 msgstr "Target"
 
@@ -2338,7 +2342,7 @@ msgid "\n"
 msgstr "\n"
 
 #: ./src/project/Project.ec:1470
-#: ./src/project/Project.ec:1959
+#: ./src/project/Project.ec:1964
 msgid "\nBuild cancelled by user.\n"
 msgstr "\nBuild cancelled by user.\n"
 
@@ -2346,11 +2350,11 @@ msgstr "\nBuild cancelled by user.\n"
 msgid "\nInstalling project %s using the %s configuration...\n"
 msgstr "\nInstalling project %s using the %s configuration...\n"
 
-#: ./src/project/Project.ec:2191
+#: ./src/project/Project.ec:2196
 msgid "\nMake outputs the following list of commands to choose from:\n"
 msgstr "\nMake outputs the following list of commands to choose from:\n"
 
-#: ./src/project/Project.ec:2225
+#: ./src/project/Project.ec:2230
 msgid "\nThe following command was chosen to be executed:\n%s\n"
 msgstr "\nThe following command was chosen to be executed:\n%s\n"
 
@@ -2394,7 +2398,7 @@ msgstr "err: Unable to create FIFO %s\n"
 msgid "err: Unable to open FIFO %s for read\n"
 msgstr "err: Unable to open FIFO %s for read\n"
 
-#: ./src/project/Project.ec:1979
+#: ./src/project/Project.ec:1984
 msgid "error"
 msgstr "error"
 
@@ -2402,7 +2406,7 @@ msgstr "error"
 msgid "error: unable to load :crossplatform.mk file inside ide binary."
 msgstr "error: unable to load :crossplatform.mk file inside ide binary."
 
-#: ./src/project/Project.ec:1979
+#: ./src/project/Project.ec:1984
 msgid "errors"
 msgstr "errors"
 
@@ -2429,7 +2433,7 @@ msgstr "in"
 msgid "inside %s, %s\n"
 msgstr "inside %s, %s\n"
 
-#: ./src/project/Project.ec:2296
+#: ./src/project/Project.ec:2301
 msgid "intermediate objects directory"
 msgstr "intermediate objects directory"
 
@@ -2437,11 +2441,11 @@ msgstr "intermediate objects directory"
 msgid "match"
 msgstr "match"
 
-#: ./src/project/Project.ec:1981
+#: ./src/project/Project.ec:1986
 msgid "no error, "
 msgstr "no error, "
 
-#: ./src/project/Project.ec:1986
+#: ./src/project/Project.ec:1991
 msgid "no warning\n"
 msgstr "no warning\n"
 
@@ -2467,7 +2471,7 @@ msgstr "s were "
 msgid "single file"
 msgstr "single file"
 
-#: ./src/project/Project.ec:2296
+#: ./src/project/Project.ec:2301
 msgid "target"
 msgstr "target"
 
@@ -2475,11 +2479,11 @@ msgstr "target"
 msgid "unknown source\n"
 msgstr "unknown source\n"
 
-#: ./src/project/Project.ec:1984
+#: ./src/project/Project.ec:1989
 msgid "warning"
 msgstr "warning"
 
-#: ./src/project/Project.ec:1984
+#: ./src/project/Project.ec:1989
 msgid "warnings"
 msgstr "warnings"
 
