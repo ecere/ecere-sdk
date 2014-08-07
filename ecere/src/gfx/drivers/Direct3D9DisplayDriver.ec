@@ -661,8 +661,8 @@ class Direct3D9DisplayDriver : DisplayDriver
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
    {
-      if(bitmap.picture)
-         IDirect3DTexture9_Release((IDirect3DTexture9 *)bitmap.picture);
+      if(bitmap.driverData)
+         IDirect3DTexture9_Release((IDirect3DTexture9 *)bitmap.driverData);
    }
 
    bool AllocateBitmap(DisplaySystem displaySystem, Bitmap bitmap, int width, int height, int stride, PixelFormat format, bool allocatePalette)
@@ -736,7 +736,7 @@ class Direct3D9DisplayDriver : DisplayDriver
 
             bitmap.driver.FreeBitmap(bitmap.displaySystem, bitmap);
             bitmap.driver = displaySystem.driver;
-            bitmap.picture = (void *)texture;
+            bitmap.driverData = (void *)texture;
 
             if(!result)
                FreeBitmap(displaySystem, bitmap);
@@ -929,7 +929,7 @@ class Direct3D9DisplayDriver : DisplayDriver
             (float)(sx+w) / (src.width-1), (float)(sy+h)/ (src.height-1) }
       };
 
-      IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, (IDirect3DBaseTexture9 *)src.picture);
+      IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, (IDirect3DBaseTexture9 *)src.driverData);
       IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2,
          vertex, sizeof(Vertex));
       IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, null);
@@ -951,7 +951,7 @@ class Direct3D9DisplayDriver : DisplayDriver
             (float)(sx+sw) / (src.width-1), (float)(sy+sh)/ (src.height-1) }
       };
 
-      IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, (IDirect3DBaseTexture9 *)src.picture);
+      IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, (IDirect3DBaseTexture9 *)src.driverData);
       IDirect3DDevice9_DrawPrimitiveUP(d3dSystem.d3dDevice, D3DPT_TRIANGLESTRIP, 2,
          vertex, sizeof(Vertex));
       IDirect3DDevice9_SetTexture(d3dSystem.d3dDevice, 0, null);
@@ -1283,7 +1283,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       {
          Bitmap map = material.baseMap;
 
-         IDirect3DDevice9_SetTexture(d3dDevice, 0, (IDirect3DBaseTexture9 *)map.picture);
+         IDirect3DDevice9_SetTexture(d3dDevice, 0, (IDirect3DBaseTexture9 *)map.driverData);
 
          if(material.flags.tile)
          {
