@@ -162,7 +162,7 @@ class TongIts : Window
    bool OnCreate()
    {
       int c;
-      RandomSeed((int)(GetTime() * 1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
       NewDeckOfCards();
       Shuffle();
       DealCards(numOfPlayers);

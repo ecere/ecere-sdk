@@ -454,7 +454,7 @@ class PokerApp : GuiApplication
    {
       int c;
       // Initialize Card Deck
-      RandomSeed((int)(GetTime() * 1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
       for(c = 0; c<52; c++)
          deck[c] = c;
 

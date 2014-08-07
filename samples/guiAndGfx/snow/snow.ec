@@ -30,7 +30,7 @@ class Snowing : Window
    int lastLine;
    Bitmap buffer { };
 
-   Snowing() { RandomSeed((uint)(GetTime() * 100000)); ((GuiApplication)__thisModule).timerResolution = 60; }
+   Snowing() { RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD)); ((GuiApplication)__thisModule).timerResolution = 60; }
 
    Timer timer
    {

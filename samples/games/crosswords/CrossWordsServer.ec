@@ -1,6 +1,6 @@
 import "crossWords"
 
-int seed;
+uint seed;
 
 // FOR COMMUNICATION //////////////////////////////////////////
 struct PlayedTile
@@ -185,7 +185,7 @@ class CrossWordsGame
             lettersAvailable[l] = lettersCount[language][l];
          }
 
-         seed = (uint)(GetTime() * 1000);
+         seed = (uint)(((uint64)(GetTime() * 1000)) & MAXDWORD);
          //seed = 256131322;
          RandomSeed(seed);
          //Logf("Seeded with %d\n", seed);

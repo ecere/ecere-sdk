@@ -379,7 +379,7 @@ class AIThread : Thread
       int startRating = EvaluateMaterial(chessState->board, chessState->turn);
       int depth = MAXDEPTH;
 
-      RandomSeed((int)(GetTime() * 1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
       aiMoveResult = FindMove(chessState, 0, &depth, &aiMove, startRating, null, 0, null, &abortAI);
 
       return 0;

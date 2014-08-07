@@ -83,7 +83,7 @@ class NeuralApp : Application
       int i,h,o;
       int c;
 
-      RandomSeed((int)(GetTime() * 1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
       // Input to hidden cells synapses
       for(i = 0; i<NUM_HIDDEN; i++)
          hiddenNeurons[i].Init();

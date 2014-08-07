@@ -23,7 +23,7 @@ class TicTacToe : Window
 
    TicTacToe()
    {
-      RandomSeed((uint)(GetTime() * 1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
    }
 
    TTTSquare FindTicTacToe(TTTSquare state[3][3])

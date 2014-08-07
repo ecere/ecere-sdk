@@ -263,7 +263,7 @@ class Tetrominoes : Window
             board[y][x] = 0;
       turn = CLIENT;
       Update(null);
-      RandomSeed((uint)(GetTime() * 1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
       nextPiece = GetRandom(0, 6);
       nextAngle = GetRandom(0, 3);
       NewPiece();

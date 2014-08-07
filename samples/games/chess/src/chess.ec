@@ -149,7 +149,7 @@ class Chess : Window
 
             EnableMenus();
 
-            RandomSeed((int)(GetTime() * 10000));
+            RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
 
             NewGame();
          }

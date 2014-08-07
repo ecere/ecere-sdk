@@ -154,7 +154,7 @@ class MyApp : GuiApplication
 {
    MyApp()
    {
-      RandomSeed((uint)(GetTime() * 1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
       SetDefaultIdField("id");
       SetDefaultNameField("name");
       ds = DataSource { driver = "EDB" };

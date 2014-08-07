@@ -70,7 +70,7 @@ static void Server_ShuffleDeck(Card * deck)
    int t;
    int count;
 
-   RandomSeed((int)(GetTime() * 1000));
+   RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
 
    count = GetRandom(1000, 2000);
    for(t = 0; t<count; t++)
@@ -172,7 +172,7 @@ void Server_StartGame(RuffGame game)
    int c;
 
    // New Game
-   RandomSeed((int)(GetTime() * 1000));
+   RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
    game.rounds[0].shuffle = (PlayerPosition)GetRandom(0, 3);
    game.round = 0;
    game.gameStarted = true;

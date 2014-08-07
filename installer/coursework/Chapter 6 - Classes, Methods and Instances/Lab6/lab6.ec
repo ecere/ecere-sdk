@@ -576,7 +576,7 @@ class RPGApp : Application
 
    void Main()
    {
-      RandomSeed((uint)(GetTime()*1000));
+      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
       PrintLn("Welcome to this great minimalist RPG!");
       PrintLn("You will need to save the princess from an Evil Sorcerer.");
       PrintLn("But first you should wander the realm to fight the sorcerer's minions, ");
