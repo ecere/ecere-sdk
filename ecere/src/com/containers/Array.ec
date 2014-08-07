@@ -40,13 +40,14 @@ public:
       *item = value;
       return true;
    }
-   IteratorPointer GetAtPosition(const I pos, bool create)
+   IteratorPointer GetAtPosition(const I pos, bool create, bool * justAdded)
    {
       if((int)pos > count && create)
       {
          if((int)pos + 1 > minAllocSize)
             array = renew array T[(int)pos + 1];
          count = (int)pos + 1;
+         if(justAdded) *justAdded = true;
       }
       return ((int)pos < count && array) ? (IteratorPointer)(array + (int)pos) : null;
    }

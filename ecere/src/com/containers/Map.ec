@@ -95,7 +95,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       MapNode<MT, V> newNode = (MapNode<MT, V>) _newNode;
       if(class(MT).type == structClass || class(V).type == structClass)
       {
-         MapNode<MT, V> realNode = (MapNode<MT, V>)GetAtPosition(newNode.key, true);
+         MapNode<MT, V> realNode = (MapNode<MT, V>)GetAtPosition(newNode.key, true, null);
          SetData(realNode, newNode.value);
          return newNode;
       }
@@ -171,7 +171,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
       return (MapNode<MT, V>)Container::Find(value);
    }
 
-   MapNode<MT, V> GetAtPosition(const MT pos, bool create)
+   MapNode<MT, V> GetAtPosition(const MT pos, bool create, bool * justAdded)
    {
       MapNode<MT, V> node = root ? root.Find(class(MT), pos) : null;
       if(!node && create)
@@ -196,6 +196,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          else
             onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(sizeof(void *)), (void *)pos);
          CustomAVLTree::Add((T)node);
+         if(justAdded) *justAdded = true;
       }
       return node;
    }
@@ -209,7 +210,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          for(i = source.GetFirst(); i; i = source.GetNext(i))
          {
             MapNode<MT, V> srcNode = (MapNode<MT, V>)source.GetData(i);
-            MapNode<MT, V> destNode = (MapNode<MT, V>)GetAtPosition(srcNode.key, true);
+            MapNode<MT, V> destNode = (MapNode<MT, V>)GetAtPosition(srcNode.key, true, null);
             SetData(destNode, srcNode.value);
          }
          // ADDED THIS HERE TO FREE BUILTIN CONTAINERS ASSIGNED TO A MAP
@@ -229,7 +230,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             for(i = value.GetFirst(); i; i = value.GetNext(i))
             {
                MapNode<MT, V> srcNode = (MapNode<MT, V>)i;
-               MapNode<MT, V> destNode = (MapNode<MT, V>)GetAtPosition(srcNode.key, true);
+               MapNode<MT, V> destNode = (MapNode<MT, V>)GetAtPosition(srcNode.key, true, null);
                SetData(destNode, GetData(srcNode));
             }
          }
@@ -276,7 +277,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          D data = (D)0;
          ((void (*)(void *, void *, void *))(void *)Kclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Kclass, &key, channel);
          ((void (*)(void *, void *, void *))(void *)Dclass._vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, &data, channel);
-         destNode = (MapNode<MT, V>)container.GetAtPosition(key, true);
+         destNode = (MapNode<MT, V>)container.GetAtPosition(key, true, null);
          container.SetData(destNode, data);
       }
       this = container;

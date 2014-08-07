@@ -3807,7 +3807,7 @@ class CodeEditor : Window
                            {
                               Map<String, bool> i18nStrings = object.i18nStrings;
                               bool i18n = true;
-                              if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false))
+                              if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false, null))
                                  i18n = false;
 
                               f.Printf("%s\"", i18n ? "$" : "");
@@ -4532,7 +4532,7 @@ class CodeEditor : Window
                         {
                            Map<String, bool> i18nStrings = classObject.i18nStrings;
                            bool i18n = true;
-                           if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false))
+                           if(i18nStrings && i18nStrings.GetAtPosition(prop.name, false, null))
                               i18n = false;
 
                            f.Printf("\n   %s%s = %s\"", specify ? "property::" : "", prop.name, i18n ? "$" : "");

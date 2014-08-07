@@ -428,7 +428,7 @@ private:
    }
 };
 
-public class CustomAVLTree<class BT:AVLNode, class KT = uint64> : Container<BT>
+public class CustomAVLTree<class BT:AVLNode, class KT = uint64> : Container<BT, I = KT>
 {
    class_fixed
 
@@ -502,5 +502,10 @@ public:
    IteratorPointer Find(BT value)
    {
       return (IteratorPointer)value;
+   }
+
+   BT GetAtPosition(const KT pos, bool create, bool * justAdded)
+   {
+      return root ? root.Find(class(KT), pos) : null;
    }
 }

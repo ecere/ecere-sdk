@@ -89,9 +89,10 @@ public:
    {
       if(container)
       {
+         bool justAdded = false;
          Free();
-         pointer = container.GetAtPosition(index, create);
-         return pointer != null;
+         pointer = container.GetAtPosition(index, create, &justAdded);
+         return !justAdded && pointer != null;
       }
       return false;
    }
@@ -111,7 +112,7 @@ public:
    virtual IteratorPointer GetNext(IteratorPointer pointer) { return null; }
    virtual D GetData(IteratorPointer pointer) { return (D)0; }
    virtual bool SetData(IteratorPointer pointer, D data);
-   virtual IteratorPointer GetAtPosition(const I pos, bool create) { return null; }
+   virtual IteratorPointer GetAtPosition(const I pos, bool create, bool * justAdded) { return null; }
 
    virtual IteratorPointer Insert(IteratorPointer after, T value);
    virtual IteratorPointer Add(T value);

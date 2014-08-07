@@ -258,7 +258,7 @@ uint64 __ecereMethod___ecereNameSpace__ecere__com__Container_GetData(struct __ec
 return (uint64)0;
 }
 
-struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__Container_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 pos, unsigned int create)
+struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__Container_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 pos, unsigned int create, unsigned int * justAdded)
 {
 return (((void *)0));
 }
@@ -966,13 +966,15 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Index(struct _
 {
 if(this->container)
 {
+unsigned int justAdded = 0;
+
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Free(this);
-this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create))__extension__ ({
+this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create, unsigned int *  justAdded))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this->container, index, create);
-return this->pointer != (((void *)0));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this->container, index, create, &justAdded);
+return !justAdded && this->pointer != (((void *)0));
 }
 return 0;
 }
@@ -1044,7 +1046,7 @@ __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetPrev", "ecere::
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetNext", "ecere::com::IteratorPointer GetNext(ecere::com::IteratorPointer pointer)", __ecereMethod___ecereNameSpace__ecere__com__Container_GetNext, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetData", "D GetData(ecere::com::IteratorPointer pointer)", __ecereMethod___ecereNameSpace__ecere__com__Container_GetData, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "SetData", "bool SetData(ecere::com::IteratorPointer pointer, D data)", 0, 1);
-__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetAtPosition", "ecere::com::IteratorPointer GetAtPosition(const I pos, bool create)", __ecereMethod___ecereNameSpace__ecere__com__Container_GetAtPosition, 1);
+__ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "GetAtPosition", "ecere::com::IteratorPointer GetAtPosition(const I pos, bool create, bool * justAdded)", __ecereMethod___ecereNameSpace__ecere__com__Container_GetAtPosition, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Insert", "ecere::com::IteratorPointer Insert(ecere::com::IteratorPointer after, T value)", 0, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Add", "ecere::com::IteratorPointer Add(T value)", 0, 1);
 __ecereNameSpace__ecere__com__eClass_AddVirtualMethod(class, "Remove", "void Remove(ecere::com::IteratorPointer it)", 0, 1);

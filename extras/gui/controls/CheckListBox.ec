@@ -205,7 +205,7 @@ class CheckListBox : ListBox
 
       for(r = row.firstRow; r; r = r.next)
       {
-         Iterator<DataRow> it { rowChecks };
+         Iterator<DataRow, DataRow> it { rowChecks };
 
          if(it.Find(r))
             it.Remove();
@@ -269,7 +269,7 @@ class CheckListBox : ListBox
             parent = rr.parent;
             while(rr)
             {
-               Iterator<DataRow> it { rowChecks };
+               Iterator<DataRow, DataRow> it { rowChecks };
                if(it.Find(rr))
                {
                   it.Remove();

@@ -938,6 +938,13 @@ while((item = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ec
 }
 }
 
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 pos, unsigned int create, unsigned int * justAdded)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
+
+return __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root ? __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))), ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[4].__anon1.__anon1.dataTypeClass, pos) : (((void *)0));
+}
+
 void __ecereUnregisterModule_CustomAVLTree(struct __ecereNameSpace__ecere__com__Instance * module)
 {
 
@@ -1018,7 +1025,7 @@ __ecereNameSpace__ecere__com__eClass_AddTemplateParameter(class, "T", 0, 0, (((v
 __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(class);
 if(class)
 class->fixed = (unsigned int)1;
-class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::CustomAVLTree", "ecere::com::Container<BT>", sizeof(struct __ecereNameSpace__ecere__com__CustomAVLTree), 0, (void *)0, (void *)0, module, 4, 1);
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(0, "ecere::com::CustomAVLTree", "ecere::com::Container<BT, I = KT>", sizeof(struct __ecereNameSpace__ecere__com__CustomAVLTree), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree = class;
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetFirst", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetFirst, 1);
@@ -1027,6 +1034,7 @@ __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetPrev", 0, __ecereMetho
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetNext", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetNext, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetData", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetData, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "SetData", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_SetData, 1);
+__ecereNameSpace__ecere__com__eClass_AddMethod(class, "GetAtPosition", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetAtPosition, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Add", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Add, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Remove", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Remove, 1);
 __ecereNameSpace__ecere__com__eClass_AddMethod(class, "Find", 0, __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Find, 1);
