@@ -3661,14 +3661,65 @@ public class LFBDisplayDriver : DisplayDriver
          delete mesh.texCoords;
    }
 
-   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh)
+   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags, int nVertices)
    {
       bool result = false;
-
-      if((!mesh.flags.vertices   || mesh.vertices  || (mesh.vertices  = new Vector3Df[mesh.nVertices])) &&
-         (!mesh.flags.normals    || mesh.normals   || (mesh.normals   = new Vector3Df[mesh.nVertices])) &&
-         (!mesh.flags.texCoords1 || mesh.texCoords || (mesh.texCoords = new Pointf  [mesh.nVertices])))
-         result = true;
+      if(mesh.nVertices == nVertices)
+      {
+         // Same number of vertices, adding features (Leaves the other features pointers alone)
+         if(mesh.flags != flags)
+         {
+            if(!mesh.flags.vertices && flags.vertices)
+            {
+               if(flags.doubleVertices)
+               {
+                  mesh.vertices = (Vector3Df *)new Vector3D[nVertices];
+               }
+               else
+                  mesh.vertices = new Vector3Df[nVertices];
+            }
+            if(!mesh.flags.normals && flags.normals)
+            {
+               if(flags.doubleNormals)
+               {
+                  mesh.normals = (Vector3Df *)new Vector3D[nVertices];
+               }
+               else
+                  mesh.normals = new Vector3Df[nVertices];
+            }
+            if(!mesh.flags.texCoords1 && flags.texCoords1)
+               mesh.texCoords = new Pointf[nVertices];
+            if(!mesh.flags.colors && flags.colors)
+               mesh.colors = new ColorRGBAf[nVertices];
+         }
+      }
+      else
+      {
+         // New number of vertices, reallocate all current and new features
+         flags |= mesh.flags;
+         if(flags.vertices)
+         {
+            if(flags.doubleVertices)
+            {
+               mesh.vertices = (Vector3Df *)renew mesh.vertices Vector3D[nVertices];
+            }
+            else
+               mesh.vertices = renew mesh.vertices Vector3Df[nVertices];
+         }
+         if(flags.normals)
+         {
+            if(flags.doubleNormals)
+            {
+               mesh.normals = (Vector3Df *)renew mesh.normals Vector3D[nVertices];
+            }
+            else
+               mesh.normals = renew mesh.normals Vector3Df[nVertices];
+         }
+         if(flags.texCoords1)
+            mesh.texCoords = renew mesh.texCoords Pointf[nVertices];
+         if(flags.colors)
+            mesh.colors = renew mesh.colors ColorRGBAf[nVertices];
+      }
       return result;
    }
 

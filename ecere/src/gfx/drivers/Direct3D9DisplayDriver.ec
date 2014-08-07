@@ -1377,7 +1377,7 @@ class Direct3D9DisplayDriver : DisplayDriver
       }
    }
 
-   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh)
+   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags, int nVertices)
    {
       D3DSystem d3dSystem = displaySystem.driverData;
       bool result = false;
@@ -1389,26 +1389,76 @@ class Direct3D9DisplayDriver : DisplayDriver
       {
          D3DMesh d3dMesh = mesh.data;
          result = true;
-         if((mesh.flags.vertices) && !d3dMesh.vertices)
+         if(mesh.nVertices == nVertices)
          {
-            mesh.vertices = new Vector3Df[mesh.nVertices];
-            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * mesh.nVertices,
-               d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.vertices, null))
-               result = false;
+            if(mesh.flags != flags)
+            {
+               // Same number of vertices, adding features (Leaves the other features pointers alone)
+               if(flags.vertices && !d3dMesh.vertices)
+               {
+                  mesh.vertices = new Vector3Df[nVertices];
+                  if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * nVertices,
+                     d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.vertices, null))
+                     result = false;
+               }
+               if(flags.normals && !d3dMesh.normals)
+               {
+                  mesh.normals = new Vector3Df[nVertices];
+                  if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * nVertices,
+                     d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.normals, null))
+                     result = false;
+               }
+               if(flags.texCoords1 && !d3dMesh.texCoords)
+               {
+                  mesh.texCoords = new Pointf[nVertices];
+                  if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Pointf) * nVertices,
+                     d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.texCoords, null))
+                     result = false;
+               }
+            }
          }
-         if((mesh.flags.normals) && !d3dMesh.normals)
+         else
          {
-            mesh.normals = new Vector3Df[mesh.nVertices];
-            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * mesh.nVertices,
-               d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.normals, null))
-               result = false;
-         }
-         if((mesh.flags.texCoords1) && !d3dMesh.texCoords)
-         {
-            mesh.texCoords = new Pointf[mesh.nVertices];
-            if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Pointf) * mesh.nVertices,
-               d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.texCoords, null))
-               result = false;
+            // New number of vertices, reallocate all current and new features
+            flags |= mesh.flags;
+
+            // Same number of vertices, adding features (Leaves the other features pointers alone)
+            if(flags.vertices)
+            {
+               if(d3dMesh.vertices)
+               {
+                  IDirect3DVertexBuffer9_Release(d3dMesh.vertices);
+                  d3dMesh.vertices = null;
+               }
+               mesh.vertices = renew mesh.vertices Vector3Df[nVertices];
+               if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * nVertices,
+                  d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.vertices, null))
+                  result = false;
+            }
+            if(flags.normals)
+            {
+               if(d3dMesh.normals)
+               {
+                  IDirect3DVertexBuffer9_Release(d3dMesh.normals);
+                  d3dMesh.normals = null;
+               }
+               mesh.normals = renew mesh.normals Vector3Df[nVertices];
+               if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Vector3Df) * nVertices,
+                  d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.normals, null))
+                  result = false;
+            }
+            if(flags.texCoords1)
+            {
+               if(d3dMesh.texCoords)
+               {
+                  IDirect3DVertexBuffer9_Release(d3dMesh.texCoords);
+                  d3dMesh.texCoords = null;
+               }
+               mesh.texCoords = renew mesh.texCoords Pointf[nVertices];
+               if(IDirect3DDevice9_CreateVertexBuffer(d3dDevice, sizeof(Pointf) * nVertices,
+                  d3dSystem.usage, 0, D3DPOOL_MANAGED, &d3dMesh.texCoords, null))
+                  result = false;
+            }
          }
       }
       return result;

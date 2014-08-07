@@ -3613,7 +3613,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
    }
 
-   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh)
+   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags, int nVertices)
    {
       bool result = false;
 
@@ -3622,26 +3622,85 @@ class OpenGLDisplayDriver : DisplayDriver
       if(mesh.data)
       {
          OGLMesh oglMesh = mesh.data;
-
-         if(mesh.flags.vertices && !oglMesh.vertices && !mesh.vertices)
+         if(mesh.nVertices == nVertices)
          {
-            mesh.vertices = mesh.flags.doubleVertices ? (Vector3Df *)new Vector3D[mesh.nVertices] : new Vector3Df[mesh.nVertices];
-            GLGenBuffers(1, &oglMesh.vertices);
+            // Same number of vertices, adding features (Leaves the other features pointers alone)
+            if(mesh.flags != flags)
+            {
+               if(!mesh.flags.vertices && flags.vertices)
+               {
+                  if(flags.doubleVertices)
+                  {
+                     mesh.vertices = (Vector3Df *)new Vector3D[nVertices];
+                  }
+                  else
+                     mesh.vertices = new Vector3Df[nVertices];
+                  if(!oglMesh.vertices)
+                     GLGenBuffers(1, &oglMesh.vertices);
+               }
+               if(!mesh.flags.normals && flags.normals)
+               {
+                  if(flags.doubleNormals)
+                  {
+                     mesh.normals = (Vector3Df *)new Vector3D[nVertices];
+                  }
+                  else
+                     mesh.normals = new Vector3Df[nVertices];
+                  if(!oglMesh.normals)
+                     GLGenBuffers( 1, &oglMesh.normals);
+               }
+               if(!mesh.flags.texCoords1 && flags.texCoords1)
+               {
+                  mesh.texCoords = new Pointf[nVertices];
+                  if(!oglMesh.texCoords)
+                     GLGenBuffers( 1, &oglMesh.texCoords);
+               }
+               if(!mesh.flags.colors && flags.colors)
+               {
+                  mesh.colors = new ColorRGBAf[nVertices];
+                  if(!oglMesh.colors)
+                     GLGenBuffers( 1, &oglMesh.colors);
+               }
+            }
          }
-         if(mesh.flags.normals && !oglMesh.normals && !mesh.normals)
+         else
          {
-            GLGenBuffers( 1, &oglMesh.normals);
-            mesh.normals = mesh.flags.doubleNormals ? (Vector3Df *)new Vector3D[mesh.nVertices] : new Vector3Df[mesh.nVertices];
-         }
-         if(mesh.flags.texCoords1 && !oglMesh.texCoords && !mesh.texCoords)
-         {
-            GLGenBuffers( 1, &oglMesh.texCoords);
-            mesh.texCoords = new Pointf[mesh.nVertices];
-         }
-         if(mesh.flags.colors && !oglMesh.colors && !mesh.colors)
-         {
-            GLGenBuffers( 1, &oglMesh.colors);
-            mesh.colors = new ColorRGBAf[mesh.nVertices];
+            // New number of vertices, reallocate all current and new features
+            flags |= mesh.flags;
+            if(flags.vertices)
+            {
+               if(flags.doubleVertices)
+               {
+                  mesh.vertices = (Vector3Df *)renew mesh.vertices Vector3D[nVertices];
+               }
+               else
+                  mesh.vertices = renew mesh.vertices Vector3Df[nVertices];
+               if(!oglMesh.vertices)
+                  GLGenBuffers(1, &oglMesh.vertices);
+            }
+            if(flags.normals)
+            {
+               if(flags.doubleNormals)
+               {
+                  mesh.normals = (Vector3Df *)renew mesh.normals Vector3D[nVertices];
+               }
+               else
+                  mesh.normals = renew mesh.normals Vector3Df[nVertices];
+               if(!oglMesh.normals)
+                  GLGenBuffers( 1, &oglMesh.normals);
+            }
+            if(flags.texCoords1)
+            {
+               mesh.texCoords = renew mesh.texCoords Pointf[nVertices];
+               if(!oglMesh.texCoords)
+                  GLGenBuffers( 1, &oglMesh.texCoords);
+            }
+            if(flags.colors)
+            {
+               mesh.colors = renew mesh.colors ColorRGBAf[nVertices];
+               if(!oglMesh.colors)
+                  GLGenBuffers( 1, &oglMesh.colors);
+            }
          }
          result = true;
       }
@@ -3655,25 +3714,25 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(vboAvailable)
       {
-         if(!(flags.vertices) || oglMesh.vertices)
+         if(flags.vertices && oglMesh.vertices)
          {
             GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.vertices);
             GLBufferData( mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, GL_STATIC_DRAW_ARB );
          }
 
-         if(!(flags.normals) || oglMesh.normals)
+         if(flags.normals && oglMesh.normals)
          {
             GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
             GLBufferData( mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, GL_STATIC_DRAW_ARB );
          }
 
-         if(!(flags.texCoords1) || oglMesh.texCoords)
+         if(flags.texCoords1 && oglMesh.texCoords)
          {
             GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
             GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(Pointf), mesh.texCoords, GL_STATIC_DRAW_ARB );
          }
 
-         if(!(flags.colors) || oglMesh.colors)
+         if(flags.colors && oglMesh.colors)
          {
             GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
             GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, GL_STATIC_DRAW_ARB );

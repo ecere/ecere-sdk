@@ -50,6 +50,7 @@ public:
       struct { int first, nVertices; };
    };
    Material material;
+
 private:
    void * data;
 };
@@ -122,14 +123,14 @@ public:
    bool Allocate(MeshFeatures what, int nVertices, DisplaySystem displaySystem)
    {
       bool result = false;
-      if((!this.nVertices || this.nVertices == nVertices) && (!this.displaySystem || this.displaySystem == displaySystem))
+      if(!this.displaySystem || this.displaySystem == displaySystem)
       {
-         flags |= what;
-         this.nVertices = nVertices;
          driver = displaySystem ? displaySystem.driver : (subclass(DisplayDriver))class(LFBDisplayDriver);
          if(driver.AllocateMesh == DisplayDriver::AllocateMesh) driver = (subclass(DisplayDriver))class(LFBDisplayDriver);
-         if(driver.AllocateMesh(displaySystem, this))
+         if(driver.AllocateMesh(displaySystem, this, what, nVertices))
          {
+            flags |= what;
+            this.nVertices = nVertices;
             if(Lock(what))
                result = true;
          }

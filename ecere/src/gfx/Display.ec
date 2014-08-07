@@ -158,7 +158,7 @@ public:
    virtual void ::SetRenderState(Display, RenderState, uint);
    virtual void ::SetLight(Display, int, Light);
    virtual void ::SetCamera(Display, Surface, Camera);
-   virtual bool ::AllocateMesh(DisplaySystem, Mesh);
+   virtual bool ::AllocateMesh(DisplaySystem, Mesh, MeshFeatures, int nVertices);
    virtual void ::FreeMesh(DisplaySystem, Mesh);
    virtual bool ::LockMesh(DisplaySystem, Mesh, MeshFeatures flags);
    virtual void ::UnlockMesh(DisplaySystem, Mesh, MeshFeatures flags);
