@@ -54,12 +54,12 @@ class GameVehicle {
          }
          else
             this = GameVehicle { };
-
-         if(!type)
-            channel.Get(type);
-         channel.Get(location);
-         channel.Get(velocity);
       }
+
+      if(!type)
+         channel.Get(type);
+      channel.Get(location);
+      channel.Get(velocity);
    }
 
    virtual void Update(Game game);
