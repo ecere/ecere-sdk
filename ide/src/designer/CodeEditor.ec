@@ -1752,7 +1752,7 @@ class CodeEditor : Window
          display.FontExtent(font, ")", 1, &parW, null);
 
          string[0] = 0;
-         if(editor.functionType)
+         if(editor.functionType && type.kind == functionType)
          {
             PrintType(type.returnType, string, true, true);
             display.FontExtent(font, string, strlen(string), &functionW, null);
@@ -1918,7 +1918,7 @@ class CodeEditor : Window
          display.FontExtent(font, ")", 1, &parW, null);
 
          string[0] = 0;
-         if(editor.functionType && type)
+         if(editor.functionType && type && type.kind == functionType)
          {
             PrintType(type.returnType, string, true, true);
             display.FontExtent(font, string, strlen(string), &functionW, null);
