@@ -342,7 +342,7 @@ class S3M
             }
             if(com != 255 && com)
             {
-               char fx = 'A'+(char)com-1;
+               char fx = (char)('A'+com-1);
                printf("%c%02X\n", fx, info);
                switch(fx)
                {
@@ -392,7 +392,7 @@ class S3M
             if(ins || gotVolume)
             {
                lastInst[channel] = &instruments[ins-1];
-               PlayNote(mixer, ins ? &instruments[ins-1] : null, note, octave, lastInst[channel] ? (byte)(volume*lastInst[channel]->header.volume/63) : (byte)volume, channel+1);
+               PlayNote(mixer, ins ? &instruments[ins-1] : null, note, octave, lastInst[channel] ? (byte)(volume*lastInst[channel]->header.volume/63) : (byte)volume, (uint16)(channel+1));
             }
             offsets[channel] = 0;
          }

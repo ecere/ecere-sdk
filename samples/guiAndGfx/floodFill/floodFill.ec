@@ -57,7 +57,7 @@ void FloodFill(Surface surface, int x0, int y0, ColorAlpha newColor)
                   if(*pictureUp == oldColor)
                   {
                      if(!upIn)
-                        stack.Add({ (uint16)x, (uint16)y - 1});
+                        stack.Add({ (uint16)x, (uint16)(y - 1)});
                      upIn = true;
                   }
                   else
@@ -69,7 +69,7 @@ void FloodFill(Surface surface, int x0, int y0, ColorAlpha newColor)
                   if(*pictureDown == oldColor)
                   {
                      if(!downIn)
-                        stack.Add({ (uint16)x, (uint16)y + 1});
+                        stack.Add({ (uint16)x, (uint16)(y + 1)});
                      downIn = true;
                   }
                   else
