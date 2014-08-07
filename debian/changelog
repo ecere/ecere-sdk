@@ -16,7 +16,7 @@ ecere-sdk (0.44.10-1) unstable; urgency=low
    * Various bug fixes
    * Memory leaks fixes
 
- -- Jerome St-Louis <jerstlouis@gmail.com>  Sat, 12 Jul 2014 19:00:00 -0500
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Sat, 7 Aug 2014 17:00:00 -0500
 
 ecere-sdk (0.44.09.9-1) unstable; urgency=low
 
