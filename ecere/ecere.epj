@@ -1297,6 +1297,11 @@ from wherever you obtained them.
                         },
                         {
                            "FileName" : "CocoaOpenGLDisplayDriver.ec",
+                           "Options" : {
+                              "IncludeDirs" : [
+                                 "src/gui/drivers/cocoa"
+                              ]
+                           },
                            "Platforms" : [
                               {
                                  "Name" : "apple",

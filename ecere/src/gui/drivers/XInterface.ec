@@ -2206,7 +2206,7 @@ class XInterface : Interface
                         }
                      }
 
-                     window.Position(x, y, w, h, um /*false /*true*/, true, true, true, false, unmaximized);
+                     window.Position(x, y, w, h, um, true, true, true, false, unmaximized);
 
                      // Break the anchors for moveable/resizable windows
                      // Avoid doing this if the translation wasn't in sync as it will cause the window to move around

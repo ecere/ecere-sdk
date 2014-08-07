@@ -3,8 +3,11 @@
 namespace gfx::drivers;
 
 #include <OpenGl/gl.h>
+#undef __BLOCKS__
+#include <stdlib.h>
 
-import "CocoaInterface.h"
+import "CocoaInterface.ec"
+#include "CocoaEcereBridge.h"
 
 import "Display"
 import "Window"
@@ -54,18 +57,18 @@ class SurfaceData : struct
 
 class MeshData : struct
 {
-   int vertices;
-   int normals;
-   int texCoords;
-   int texCoords2;
-   int colors;
+   uint vertices;
+   uint normals;
+   uint texCoords;
+   uint texCoords2;
+   uint colors;
 };
 
 class IndexData : struct
 {
    uint16 *indices;
-   int buffer;
-   int nIndices;
+   uint buffer;
+   uint nIndices;
 };
 
 #if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
@@ -141,7 +144,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       bool result = true;
 
       DisplayData displayData = display.driverData;
-      SystemData systemData = display.displaySystem.driverData;
+      //SystemData systemData = display.displaySystem.driverData;
 
       displayData = display.driverData = DisplayData { };
 
@@ -190,7 +193,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       bool result = true;
 
       DisplayData displayData = display.driverData;
-      SystemData systemData = display.displaySystem.driverData;
+      //SystemData systemData = display.displaySystem.driverData;
 
       printf("CocoaOpenGLDisplayDriver:DisplaySize(%i,%i) %s:%i\n", width, height, __FILE__, __LINE__);
 
@@ -261,7 +264,8 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
    void FreeBitmap(DisplaySystem displaySystem, Bitmap bitmap)
    {
-      glDeleteTextures(1, (int *)&bitmap.driverData);
+      uint glBitmap = (uint)(uintptr)bitmap.driverData;
+      glDeleteTextures(1, &glBitmap);
       bitmap.driverData = 0;
 
       bitmap.driver = class(LFBDisplayDriver);
@@ -273,7 +277,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       Bitmap mipMap { };
-      int glBitmap = -1;
+      uint glBitmap = 0;
 
       uint w = pow2i(Min(width, 1024)), h = pow2i(Min(height, 1024));
 
@@ -306,7 +310,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mipMap.picture);
       delete mipMap;
 
-      bitmap.driverData = (void *)glBitmap;
+      bitmap.driverData = (void *)(uintptr)glBitmap;
       bitmap.driver = displaySystem.driver;
       bitmap.width = w;
       bitmap.height = h;
@@ -326,7 +330,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       {
          int c, level;
          uint w = pow2i(Min(bitmap.width, 1024)), h = pow2i(Min(bitmap.height, 1024));
-         int glBitmap = -1;
+         uint glBitmap = 0;
 
          // Switch ARGB to RGBA
          //if(bitmap.format != pixelFormatRGBA)
@@ -343,9 +347,9 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       CocoaGlAssert();
          glGenTextures(1, &glBitmap);
       CocoaGlAssert();
-         if(glBitmap == -1)
+         if(glBitmap == 0)
          {
-            int error = glGetError();
+            //int error = glGetError();
             return false;
             //Print("");
          }
@@ -409,7 +413,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
          if(!bitmap.keepData)
             bitmap.driver.FreeBitmap(bitmap.displaySystem, bitmap);
-         bitmap.driverData = (void *)glBitmap;
+         bitmap.driverData = (void *)(uintptr)glBitmap;
          bitmap.driver = displaySystem.driver;
 
          if(!result)
@@ -1268,7 +1272,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
          {
             float pickX = display.display3D.pickX + surface.offset.x;
             float pickY = display.height - (display.display3D.pickY + surface.offset.y) - 1;
-            Matrix pickMatrix =
+            Matrix pickMatrix
             {
                {
                   w / display.display3D.pickWidth, 0, 0, 0,
@@ -1466,41 +1470,92 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
       }
    }
 
-   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh)
+   bool AllocateMesh(DisplaySystem displaySystem, Mesh mesh, MeshFeatures flags, int nVertices)
    {
       bool result = false;
       printf("CocoaOpenGLDisplayDriver: STUB! %s:%i\n", __FILE__, __LINE__);
-
-      if(!mesh.data)
-         mesh.data = MeshData { };
-
       if(mesh.data)
       {
-         MeshData meshData = mesh.data;
-
-         if(mesh.flags.vertices && !meshData.vertices && !mesh.vertices)
+         OGLMesh oglMesh = mesh.data;
+         if(mesh.nVertices == nVertices)
          {
-            mesh.vertices = mesh.flags.doubleVertices ? (Vector3Df *)new Vector3D[mesh.nVertices] : new Vector3Df[mesh.nVertices];
-            if(glGenBuffersARB)
-               glGenBuffersARB(1, &meshData.vertices);
+            // Same number of vertices, adding features (Leaves the other features pointers alone)
+            if(mesh.flags != flags)
+            {
+               if(!mesh.flags.vertices && flags.vertices)
+               {
+                  if(flags.doubleVertices)
+                  {
+                     mesh.vertices = (Vector3Df *)new Vector3D[nVertices];
+                  }
+                  else
+                     mesh.vertices = new Vector3Df[nVertices];
+                  if(!oglMesh.vertices)
+                     GLGenBuffers(1, &oglMesh.vertices);
+               }
+               if(!mesh.flags.normals && flags.normals)
+               {
+                  if(flags.doubleNormals)
+                  {
+                     mesh.normals = (Vector3Df *)new Vector3D[nVertices];
+                  }
+                  else
+                     mesh.normals = new Vector3Df[nVertices];
+                  if(!oglMesh.normals)
+                     GLGenBuffers( 1, &oglMesh.normals);
+               }
+               if(!mesh.flags.texCoords1 && flags.texCoords1)
+               {
+                  mesh.texCoords = new Pointf[nVertices];
+                  if(!oglMesh.texCoords)
+                     GLGenBuffers( 1, &oglMesh.texCoords);
+               }
+               if(!mesh.flags.colors && flags.colors)
+               {
+                  mesh.colors = new ColorRGBAf[nVertices];
+                  if(!oglMesh.colors)
+                     GLGenBuffers( 1, &oglMesh.colors);
+               }
+            }
          }
-         if(mesh.flags.normals && !meshData.normals && !mesh.normals)
+         else
          {
-            if(glGenBuffersARB)
-               glGenBuffersARB( 1, &meshData.normals);
-            mesh.normals = mesh.flags.doubleNormals ? (Vector3Df *)new Vector3D[mesh.nVertices] : new Vector3Df[mesh.nVertices];
-         }
-         if(mesh.flags.texCoords1 && !meshData.texCoords && !mesh.texCoords)
-         {
-            if(glGenBuffersARB)
-               glGenBuffersARB( 1, &meshData.texCoords);
-            mesh.texCoords = new Pointf[mesh.nVertices];
-         }
-         if(mesh.flags.colors && !meshData.colors && !mesh.colors)
-         {
-            if(glGenBuffersARB)
-               glGenBuffersARB( 1, &meshData.colors);
-            mesh.colors = new ColorRGBAf[mesh.nVertices];
+            // New number of vertices, reallocate all current and new features
+            flags |= mesh.flags;
+            if(flags.vertices)
+            {
+               if(flags.doubleVertices)
+               {
+                  mesh.vertices = (Vector3Df *)renew mesh.vertices Vector3D[nVertices];
+               }
+               else
+                  mesh.vertices = renew mesh.vertices Vector3Df[nVertices];
+               if(!oglMesh.vertices)
+                  GLGenBuffers(1, &oglMesh.vertices);
+            }
+            if(flags.normals)
+            {
+               if(flags.doubleNormals)
+               {
+                  mesh.normals = (Vector3Df *)renew mesh.normals Vector3D[nVertices];
+               }
+               else
+                  mesh.normals = renew mesh.normals Vector3Df[nVertices];
+               if(!oglMesh.normals)
+                  GLGenBuffers( 1, &oglMesh.normals);
+            }
+            if(flags.texCoords1)
+            {
+               mesh.texCoords = renew mesh.texCoords Pointf[nVertices];
+               if(!oglMesh.texCoords)
+                  GLGenBuffers( 1, &oglMesh.texCoords);
+            }
+            if(flags.colors)
+            {
+               mesh.colors = renew mesh.colors ColorRGBAf[nVertices];
+               if(!oglMesh.colors)
+                  GLGenBuffers( 1, &oglMesh.colors);
+            }
          }
          result = true;
       }
@@ -1606,15 +1661,15 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
       if(mesh)
       {
-         DisplayData displayData = display.driverData;
-         Mesh meshData = mesh.data;
+         //DisplayData displayData = display.driverData;
+         MeshData meshData = mesh.data;
 
          // *** Vertex Stream ***
          glEnableClientState(GL_VERTEX_ARRAY);
          if(!display.display3D.collectingHits && meshData)
          {
             if(glBindBufferARB)
-               glBindBufferARB(GL_ARRAY_BUFFER_ARB, (long)meshData.vertices);
+               glBindBufferARB(GL_ARRAY_BUFFER_ARB, meshData.vertices);
             glVertexPointer(3, mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, 0, glBindBufferARB ? null : mesh.vertices);
 
             // *** Normals Stream ***
@@ -1622,7 +1677,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
             {
                glEnableClientState(GL_NORMAL_ARRAY);
                if(glBindBufferARB)
-                  glBindBufferARB(GL_ARRAY_BUFFER_ARB, (long)meshData.normals);
+                  glBindBufferARB(GL_ARRAY_BUFFER_ARB, meshData.normals);
                glNormalPointer(mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, 0, glBindBufferARB ? null : mesh.normals);
             }
             else
@@ -1635,7 +1690,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
             {
                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                if(glBindBufferARB)
-                  glBindBufferARB( GL_ARRAY_BUFFER_ARB, (long)meshData.texCoords);
+                  glBindBufferARB( GL_ARRAY_BUFFER_ARB, meshData.texCoords);
                glTexCoordPointer(2, GL_FLOAT, 0, glBindBufferARB ? null : mesh.texCoords);
             }
             else
@@ -1648,7 +1703,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
             {
                glEnableClientState(GL_COLOR_ARRAY);
                if(glBindBufferARB)
-                  glBindBufferARB( GL_ARRAY_BUFFER_ARB, (long)meshData.colors);
+                  glBindBufferARB( GL_ARRAY_BUFFER_ARB, meshData.colors);
                glColorPointer(4, GL_FLOAT, 0, glBindBufferARB ? null : mesh.colors);
             }
             else
@@ -1692,7 +1747,7 @@ class CocoaOpenGLDisplayDriver : DisplayDriver
 
    void DrawPrimitives(Display display, PrimitiveSingle * primitive, Mesh mesh)
    {
-      DisplayData displayData = display.driverData;
+      //DisplayData displayData = display.driverData;
       printf("CocoaOpenGLDisplayDriver: STUB! %s:%i\n", __FILE__, __LINE__);
 
       if(primitive->type.vertexRange)

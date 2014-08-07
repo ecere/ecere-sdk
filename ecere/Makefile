@@ -413,6 +413,7 @@ PRJ_CFLAGS += \
 			 -I$(SYSROOT)/usr/X11/include \
 			 -I/usr/X11R6/include/freetype2 \
 			 -I/usr/X11R6/include \
+			 -Isrc/gui/drivers/cocoa \
 			 -I../deps/jpeg-9a \
 			 -I../deps/libpng-1.6.12 \
 			 -I../deps/libungif-4.1.1/lib,) \
