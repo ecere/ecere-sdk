@@ -151,6 +151,16 @@ public struct Vector3D
    }
 };
 
+inline float FastInvSqrt(float x)
+{
+  union { float f; uint u; } i;
+  float halfX = x / 2;
+  i.f = x;
+  i.u = 0x5f375a86 - (i.u >> 1);
+  x = i.f;
+  return x * (1.5f - (halfX * x * x));
+}
+
 public struct Vector3Df
 {
    float x, y, z;
@@ -190,6 +200,7 @@ public struct Vector3Df
 
    void Normalize(Vector3Df source)
    {
+      /*
       float m = source.length;
       if(m)
       {
@@ -199,6 +210,11 @@ public struct Vector3Df
       }
       else
          x = y = z = 0;
+      */
+      float i = FastInvSqrt(source.x * source.x + source.y * source.y + source.z * source.z);
+      x = source.x * i;
+      y = source.y * i;
+      z = source.z * i;
    }
 
    void MultMatrix(Vector3Df source, Matrix matrix)
