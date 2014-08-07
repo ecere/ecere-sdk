@@ -481,6 +481,8 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
+extern void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char *  string, long long value);
+
 extern struct __ecereNameSpace__ecere__com__Property * __ecereNameSpace__ecere__com__eClass_AddProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, const char *  dataType, void *  setStmt, void *  getStmt, int declMode);
 
 extern void __ecereNameSpace__ecere__com__eClass_DoneAddingTemplateParameters(struct __ecereNameSpace__ecere__com__Class * base);
@@ -714,32 +716,33 @@ char *  parsedCommand;
 struct __ecereNameSpace__ecere__com__NameSpace systemNameSpace;
 } ecere_gcc_struct;
 
+static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__AddSide;
+
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__AVLNode;
 
 static struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__CustomAVLTree;
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, const uint64 key)
 {
+unsigned char * a;
+unsigned int reference = 0;
+unsigned int offset = 0;
+int t = Tclass->type;
+int (* onCompare)(void *, void *, void *) = (void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare];
+
+reference = (t == 1000 && !Tclass->byValueSystemClass) || t == 2 || t == 4 || t == 3;
+offset = __ENDIAN_PAD(Tclass->typeSize);
+a = reference ? ((unsigned char *)&key) + offset : (unsigned char *)(uintptr_t)key;
+if(t == 1)
+{
+reference = 1;
+offset = __ENDIAN_PAD(sizeof(void *));
+}
 while(this)
 {
-int result;
-unsigned char * a, * b;
+unsigned char * b = reference ? ((unsigned char *)&this->key) + offset : (unsigned char *)(uintptr_t)(uint64)(this->key);
+int result = onCompare(Tclass, a, b);
 
-if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3)
-{
-a = (unsigned char *)&key;
-a += __ENDIAN_PAD(Tclass->typeSize);
-}
-else
-a = (unsigned char *)(uintptr_t)key;
-if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1)
-{
-b = (unsigned char *)&this->key;
-b += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
-}
-else
-b = (unsigned char *)(uintptr_t)(uint64)(this->key);
-result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 if(result < 0)
 this = this->left;
 else if(result > 0)
@@ -753,6 +756,8 @@ return this;
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__IteratorPointer;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint64;
+
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_uint;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
@@ -838,55 +843,46 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __e
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(value)));
 }
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Add(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, struct __ecereNameSpace__ecere__com__AVLNode * node)
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Add(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, struct __ecereNameSpace__ecere__com__AVLNode * node, int addSide)
 {
+int t;
+int (* onCompare)(void *, void *, void *);
+unsigned int offset = 0;
+unsigned int reference = 0;
+unsigned char * a;
+
 if(!Tclass)
 Tclass = __ecereClass_uint64;
+t = Tclass->type;
+onCompare = (void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare];
+if((t == 1000 && !Tclass->byValueSystemClass) || t == 2 || t == 4 || t == 3 || t == 1)
+{
+reference = 1;
+offset = __ENDIAN_PAD((t == 1) ? sizeof(void *) : Tclass->typeSize);
+}
+a = reference ? ((unsigned char *)&node->key + offset) : ((unsigned char *)(uintptr_t)(uint64)(node->key));
 while(1)
 {
 int result;
-unsigned char * a, * b;
 
-if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 || Tclass->type == 4 || Tclass->type == 3 || Tclass->type == 1)
-{
-a = (unsigned char *)&node->key;
-b = (unsigned char *)&this->key;
-a += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
-b += __ENDIAN_PAD((Tclass->type == 1) ? sizeof(void *) : Tclass->typeSize);
-}
+if(addSide)
+result = addSide;
 else
 {
-a = (unsigned char *)(uintptr_t)(uint64)(node->key);
-b = (unsigned char *)(uintptr_t)(uint64)(this->key);
+unsigned char * b = reference ? ((unsigned char *)&this->key + offset) : (unsigned char *)(uintptr_t)(uint64)(this->key);
+
+result = onCompare(Tclass, a, b);
 }
-result = ((int (*)(void *, void *, void *))(void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
 if(!result)
-{
 return 0;
-}
 else if(result > 0)
 {
 if(this->right)
 this = this->right;
 else
 {
-node->parent = this;
 this->right = node;
-node->depth = 0;
-{
-struct __ecereNameSpace__ecere__com__AVLNode * n;
-
-for(n = this; n; n = n->parent)
-{
-int __simpleStruct0, __simpleStruct1;
-int newDepth = (__simpleStruct0 = n->left ? (n->left->depth + 1) : 0, __simpleStruct1 = n->right ? (n->right->depth + 1) : 0, (__simpleStruct0 > __simpleStruct1) ? __simpleStruct0 : __simpleStruct1);
-
-if(newDepth == n->depth)
 break;
-n->depth = newDepth;
-}
-}
-return 1;
 }
 }
 else
@@ -895,8 +891,12 @@ if(this->left)
 this = this->left;
 else
 {
-node->parent = this;
 this->left = node;
+break;
+}
+}
+}
+node->parent = this;
 node->depth = 0;
 {
 struct __ecereNameSpace__ecere__com__AVLNode * n;
@@ -913,8 +913,74 @@ n->depth = newDepth;
 }
 return 1;
 }
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindEx(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, const uint64 key, struct __ecereNameSpace__ecere__com__AVLNode ** addTo, int * addSide)
+{
+unsigned char * a;
+unsigned int reference = 0;
+unsigned int offset = 0;
+int t = Tclass->type;
+int (* onCompare)(void *, void *, void *) = (void *)Tclass->_vTbl[__ecereVMethodID_class_OnCompare];
+
+reference = (t == 1000 && !Tclass->byValueSystemClass) || t == 2 || t == 4 || t == 3;
+offset = __ENDIAN_PAD(Tclass->typeSize);
+a = reference ? ((unsigned char *)&key) + offset : (unsigned char *)(uintptr_t)key;
+if(t == 1)
+{
+reference = 1;
+offset = __ENDIAN_PAD(sizeof(void *));
+}
+if(Tclass == __ecereClass_uint)
+{
+unsigned int ia = *(unsigned int *)a;
+
+while(this)
+{
+unsigned int ib = *(unsigned int *)(reference ? ((unsigned char *)&this->key) + offset : (unsigned char *)(uintptr_t)(uint64)(this->key));
+int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+{
+if(addTo)
+*addTo = this;
+if(addSide)
+*addSide = (int)result;
+}
+this = node;
+}
+else
+break;
 }
 }
+else
+{
+while(this)
+{
+unsigned char * b = reference ? ((unsigned char *)&this->key) + offset : (unsigned char *)(uintptr_t)(uint64)(this->key);
+int result = onCompare(Tclass, a, b);
+
+if(result)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * node = result < 0 ? this->left : this->right;
+
+if(!node)
+{
+if(addTo)
+*addTo = this;
+if(addSide)
+*addSide = (int)result;
+}
+this = node;
+}
+else
+break;
+}
+}
+return this;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Delete(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * _item)
@@ -931,11 +997,33 @@ void __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_Free(struct __ece
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
 struct __ecereNameSpace__ecere__com__AVLNode * item;
 
-while((item = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root)))))
+item = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root)));
+while(item)
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, (void *)(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))));
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(item)))), item = 0);
+if(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))->left)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * left = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))->left;
+
+((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))->left = (((void *)0));
+item = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(left)));
 }
+else if(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))->right)
+{
+struct __ecereNameSpace__ecere__com__AVLNode * right = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))->right;
+
+((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))->right = (((void *)0));
+item = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(right)));
+}
+else
+{
+struct __ecereNameSpace__ecere__com__AVLNode * parent = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(item)))->parent;
+
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(item)))), item = 0);
+item = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(parent)));
+}
+}
+__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root = (((void *)0));
+__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->count = 0;
 }
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 pos, unsigned int create, unsigned int * justAdded)
@@ -971,7 +1059,30 @@ if(!Tclass)
 {
 Tclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->templateArgs[0].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->templateArgs[0].__anon1.__anon1.dataTypeString);
 }
-if(__ecereMethod___ecereNameSpace__ecere__com__AVLNode_Add(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))), Tclass, ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node)))))
+if(__ecereMethod___ecereNameSpace__ecere__com__AVLNode_Add(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))), Tclass, ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node))), (int)0))
+__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node))));
+else
+return (((void *)0));
+}
+__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->count++;
+return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node)));
+}
+
+struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_AddEx(struct __ecereNameSpace__ecere__com__Instance * this, uint64 node, uint64 addNode, int addSide)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__CustomAVLTree * __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree = (struct __ecereNameSpace__ecere__com__CustomAVLTree *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
+
+if(!((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root))))
+__ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root = ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node)));
+else
+{
+struct __ecereNameSpace__ecere__com__Class * Tclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->templateArgs[0].__anon1.__anon1.dataTypeClass;
+
+if(!Tclass)
+{
+Tclass = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->templateArgs[0].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->templateArgs[0].__anon1.__anon1.dataTypeString);
+}
+if(__ecereMethod___ecereNameSpace__ecere__com__AVLNode_Add(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(addNode))), Tclass, ((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node))), addSide))
 __ecerePointer___ecereNameSpace__ecere__com__CustomAVLTree->root = __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Rebalance(((struct __ecereNameSpace__ecere__com__AVLNode *)((uintptr_t)(node))));
 else
 return (((void *)0));
@@ -994,6 +1105,12 @@ struct __ecereNameSpace__ecere__com__ClassTemplateArgument __simpleStruct0 =
 };
 struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
+class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(4, "ecere::com::AddSide", "int", 0, 0, (void *)0, (void *)0, module, 2, 1);
+if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
+__ecereClass___ecereNameSpace__ecere__com__AddSide = class;
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "compare", 0);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "left", -1);
+__ecereNameSpace__ecere__com__eEnum_AddFixedValue(class, "right", 1);
 class = __ecereNameSpace__ecere__com__eSystem_RegisterClass(5, "ecere::com::AVLNode", "ecere::com::IteratorPointer", sizeof(struct __ecereNameSpace__ecere__com__AVLNode), 0, (void *)0, (void *)0, module, 4, 1);
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application && class)
 __ecereClass___ecereNameSpace__ecere__com__AVLNode = class;

@@ -267,6 +267,8 @@ int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Find;
 
+struct __ecereNameSpace__ecere__com__IteratorPointer * __ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_AddEx(struct __ecereNameSpace__ecere__com__Instance * this, uint64 node, uint64 addNode, int addSide);
+
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll;
 
 int __ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst;
@@ -321,6 +323,8 @@ struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ece
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereProp___ecereNameSpace__ecere__com__AVLNode_Get_maximum(struct __ecereNameSpace__ecere__com__AVLNode * this);
 
 struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, const uint64 key);
+
+struct __ecereNameSpace__ecere__com__AVLNode * __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindEx(struct __ecereNameSpace__ecere__com__AVLNode * this, struct __ecereNameSpace__ecere__com__Class * Tclass, const uint64 key, struct __ecereNameSpace__ecere__com__AVLNode **  addTo, int *  addSide);
 
 struct __ecereNameSpace__ecere__com__MapNode * __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_prev(struct __ecereNameSpace__ecere__com__MapNode * this)
 {
@@ -675,28 +679,11 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Map_mapSrc), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Map_mapSrc);
 }
 
-void __ecereMethod___ecereNameSpace__ecere__com__Map_Free(struct __ecereNameSpace__ecere__com__Instance * this)
-{
-struct __ecereNameSpace__ecere__com__MapNode * node;
-
-while((node = (void *)(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root)))
-{
-struct __ecereNameSpace__ecere__com__MapNode * n = node;
-
-if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1)
-n = (struct __ecereNameSpace__ecere__com__MapNode *)(((unsigned char *)node) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->structSize - sizeof node->key);
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(__ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(n))))), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(n, 0));
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, (void *)(node));
-}
-}
-
 struct __ecereNameSpace__ecere__com__MapNode * __ecereMethod___ecereNameSpace__ecere__com__Map_GetAtPosition(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 pos, unsigned int create, unsigned int * justAdded)
 {
-struct __ecereNameSpace__ecere__com__MapNode * node = (void *)(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root ? __ecereMethod___ecereNameSpace__ecere__com__AVLNode_Find(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass, pos) : (((void *)0)));
+struct __ecereNameSpace__ecere__com__AVLNode * addNode = (((void *)0));
+int addSide = 0;
+struct __ecereNameSpace__ecere__com__MapNode * node = (void *)(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root ? __ecereMethod___ecereNameSpace__ecere__com__AVLNode_FindEx(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root, ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass, pos, &addNode, &addSide) : (((void *)0)));
 
 if(!node && create)
 {
@@ -725,7 +712,7 @@ if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 ||
 onCopy(Tclass, (unsigned char *)&node->key + __ENDIAN_PAD(Tclass->typeSize), (unsigned char *)((char *)&pos + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->typeSize)) + __ENDIAN_PAD(Tclass->typeSize));
 else
 onCopy(Tclass, (unsigned char *)&node->key + __ENDIAN_PAD(sizeof(void *)), (void *)(uintptr_t)pos);
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__ecereClass___ecereNameSpace__ecere__com__CustomAVLTree->_vTbl[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(this, (uint64)(uintptr_t)node);
+__ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_AddEx(this, (uint64)node, (uint64)addNode, addSide);
 if(justAdded)
 *justAdded = 1;
 }
@@ -795,6 +782,45 @@ void * __ecerePtrToDelete = (node);
 
 __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
 }) : 0), node = 0);
+}
+
+void __ecereMethod___ecereNameSpace__ecere__com__Map_Free(struct __ecereNameSpace__ecere__com__Instance * this)
+{
+struct __ecereNameSpace__ecere__com__MapNode * node = (void *)(((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root);
+size_t offset = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1 ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->structSize - sizeof node->key : 0;
+
+while(node)
+{
+if(node->left)
+{
+struct __ecereNameSpace__ecere__com__MapNode * left = node->left;
+
+node->left = (((void *)0));
+node = left;
+}
+else if(node->right)
+{
+struct __ecereNameSpace__ecere__com__MapNode * right = node->right;
+
+node->right = (((void *)0));
+node = right;
+}
+else
+{
+struct __ecereNameSpace__ecere__com__MapNode * parent = node->parent;
+struct __ecereNameSpace__ecere__com__MapNode * n = (struct __ecereNameSpace__ecere__com__MapNode *)((unsigned char *)node + offset);
+
+(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(__ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(n))))), __ecereProp___ecereNameSpace__ecere__com__MapNode_Set_value(n, 0));
+((node ? __extension__ ({
+void * __ecerePtrToDelete = (node);
+
+__ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__MapNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor ? __ecereClass___ecereNameSpace__ecere__com__AVLNode->Destructor((void *)__ecerePtrToDelete) : 0, __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor ? __ecereClass___ecereNameSpace__ecere__com__IteratorPointer->Destructor((void *)__ecerePtrToDelete) : 0, __ecereNameSpace__ecere__com__eSystem_Delete(__ecerePtrToDelete);
+}) : 0), node = 0);
+node = parent;
+}
+}
+((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->root = (((void *)0));
+((struct __ecereNameSpace__ecere__com__CustomAVLTree *)(((char *)this + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->count = 0;
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Map_Copy(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * source)

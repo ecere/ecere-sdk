@@ -8,6 +8,8 @@ extern int __ecereVMethodID_class_OnCompare;
 extern int __ecereVMethodID_class_OnCopy;
 private:
 
+enum AddSide : int { compare = 0, left = -1, right = 1};
+
 public class AVLNode<class T> : IteratorPointer
 {
    class_fixed
@@ -85,53 +87,45 @@ private:
       delete this;
    }
 
-   bool Add(Class Tclass, thisclass node)
+   bool Add(Class Tclass, thisclass node, AddSide addSide)
    {
+      ClassType t;
+      int (* onCompare)(void *, void *, void *);
+      uint offset = 0;
+      bool reference = false;
+      byte * a;
+
       if(!Tclass)
          Tclass = class(uint64);
+      t = Tclass.type;
+      onCompare = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
+      if((t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass || t == structClass)
+      {
+         reference = true;
+         offset = __ENDIAN_PAD((t == structClass) ? sizeof(void *) : Tclass.typeSize);
+      }
+      a = reference ? ((byte *)&node.key + offset) : ((byte *)(uintptr)node.key);
+
       while(true)
       {
-         // *** NEED COMPARISON OPERATOR SUPPORT HERE INVOKING OnCompare, AS WELL AS TYPE INFORMATION PASSED ***
          int result;
-         byte * a, * b;
-         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass)
-         {
-            a = (byte *)&node.key;
-            b = (byte *)&key;
-            a += __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize);
-            b += __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize);
-         }
+         if(addSide)
+            result = addSide;
          else
          {
-            a = (byte *)(uintptr)node.key;
-            b = (byte *)(uintptr)key;
+            byte * b = reference ? ((byte *)&key + offset) : (byte *)(uintptr)key;
+            result = onCompare(Tclass, a, b);
          }
-
-         result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
          if(!result)
-         {
             return false;
-         }
          else if(result > 0)
          {
             if(right)
                this = right;
             else
             {
-               node.parent = this;
       			right = node;
-               node.depth = 0;
-               {
-                  AVLNode<T> n;
-                  for(n = this; n; n = n.parent)
-                  {
-                     int newDepth = Max(n.left ? (n.left.depth+1) : 0, n.right ? (n.right.depth+1) : 0);
-                     if(newDepth == n.depth)
-                        break;
-                     n.depth = newDepth;
-                  }
-               }
-               return true;
+               break;
       		}
       	}
          else
@@ -140,56 +134,115 @@ private:
                this = left;
             else
             {
-               node.parent = this;
                left = node;
-               node.depth = 0;
-               {
-                  AVLNode<T> n;
-                  for(n = this; n; n = n.parent)
-                  {
-                     int newDepth = Max(n.left ? (n.left.depth+1) : 0, n.right ? (n.right.depth+1) : 0);
-                     if(newDepth == n.depth)
-                        break;
-                     n.depth = newDepth;
-                  }
-               }
-               return true;
+               break;
             }
       	}
       }
+      node.parent = this;
+      node.depth = 0;
+      {
+         AVLNode<T> n;
+         for(n = this; n; n = n.parent)
+         {
+            int newDepth = Max(n.left ? (n.left.depth+1) : 0, n.right ? (n.right.depth+1) : 0);
+            if(newDepth == n.depth)
+               break;
+            n.depth = newDepth;
+         }
+      }
+      return true;
    }
 
    public thisclass Find(Class Tclass, const T key)
    {
+      byte * a;
+      bool reference = false;
+      uint offset = 0;
+      ClassType t = Tclass.type;
+      int (* onCompare)(void *, void *, void *) = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
+
+      reference = (t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass;
+      offset = __ENDIAN_PAD(Tclass.typeSize);
+      a = reference ? ((byte *)&(uint64)key) + offset : (byte *)(uintptr)key;
+      if(t == structClass)
+      {
+         reference = true;
+         offset = __ENDIAN_PAD(sizeof(void *));
+      }
+
       while(this)
       {
          // *** NEED COMPARISON OPERATOR SUPPORT HERE INVOKING OnCompare, AS WELL AS TYPE INFORMATION PASSED ***
-         int result;
-         byte * a, * b;
-         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
-         {
-            a = (byte *)&(uint64)key;
-            a += __ENDIAN_PAD(Tclass.typeSize);
-         }
-         else
-            a = (byte *)(uintptr)key;
-
-         if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass || Tclass.type == structClass)
-         {
-            b = (byte *)&this.key;
-            b += __ENDIAN_PAD((Tclass.type == structClass) ? sizeof(void *) : Tclass.typeSize);
-         }
-         else
-            b = (byte *)(uintptr)this.key;
-
-         result = ((int (*)(void *, void *, void *))(void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare])(Tclass, a, b);
-
+         byte * b = reference ? ((byte *)&this.key) + offset : (byte *)(uintptr)this.key;
+         int result = onCompare(Tclass, a, b);
          if(result < 0)
             this = left;
          else if(result > 0)
             this = right;
          else
             break;
+      }
+      return this;
+   }
+
+   thisclass FindEx(Class Tclass, const T key, AVLNode */*thisclass **/ addTo, AddSide * addSide)
+   {
+      byte * a;
+      bool reference = false;
+      uint offset = 0;
+      ClassType t = Tclass.type;
+      int (* onCompare)(void *, void *, void *) = (void *)Tclass._vTbl[__ecereVMethodID_class_OnCompare];
+
+      reference = (t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass;
+      offset = __ENDIAN_PAD(Tclass.typeSize);
+      a = reference ? ((byte *)&(uint64)key) + offset : (byte *)(uintptr)key;
+      if(t == structClass)
+      {
+         reference = true;
+         offset = __ENDIAN_PAD(sizeof(void *));
+      }
+
+      if(Tclass == class(uint))
+      {
+         uint ia = *(uint *)a;
+         while(this)
+         {
+            uint ib = *(uint *)(reference ? ((byte *)&this.key) + offset : (byte *)(uintptr)this.key);
+            int result = ia > ib ? 1 : ia < ib ? -1 : 0;
+            if(result)
+            {
+               thisclass node = result < 0 ? left : right;
+               if(!node)
+               {
+                  if(addTo) *addTo = this;
+                  if(addSide) *addSide = (AddSide)result;
+               }
+               this = node;
+            }
+            else
+               break;
+         }
+      }
+      else
+      {
+         while(this)
+         {
+            byte * b = reference ? ((byte *)&this.key) + offset : (byte *)(uintptr)this.key;
+            int result = onCompare(Tclass, a, b);
+            if(result)
+            {
+               thisclass node = result < 0 ? left : right;
+               if(!node)
+               {
+                  if(addTo) *addTo = this;
+                  if(addSide) *addSide = (AddSide)result;
+               }
+               this = node;
+            }
+            else
+               break;
+         }
       }
       return this;
    }
@@ -426,7 +479,7 @@ private:
       right.SingleRotateRight();
       SingleRotateLeft();
    }
-};
+}
 
 public class CustomAVLTree<class BT:AVLNode, class KT = uint64> : Container<BT, I = KT>
 {
@@ -459,7 +512,28 @@ public:
             Tclass = class(BT).templateArgs[0].dataTypeClass =
                eSystem_FindClass(__thisModule.application, class(BT).templateArgs[0].dataTypeString);
          }
-         if(root.Add(Tclass /*class(BT).templateArgs[0].dataTypeClass*/, node))
+         if(root.Add(Tclass, node, 0))
+            root = node.Rebalance();
+         else
+            return null;
+      }
+      count++;
+      return (IteratorPointer)node;
+   }
+
+   private IteratorPointer AddEx(BT node, BT addNode, AddSide addSide)
+   {
+      if(!root)
+         root = node;
+      else
+      {
+         Class Tclass = class(BT).templateArgs[0].dataTypeClass;
+         if(!Tclass)
+         {
+            Tclass = class(BT).templateArgs[0].dataTypeClass =
+               eSystem_FindClass(__thisModule.application, class(BT).templateArgs[0].dataTypeString);
+         }
+         if(addNode.Add(Tclass, node, addSide))
             root = node.Rebalance();
          else
             return null;
@@ -491,12 +565,30 @@ public:
    void Free()
    {
       BT item;
-      while((item = root))
+      item = root;
+      while(item)
       {
-         // THIS SHOULDN'T BE CALLING THE VIRTUAL FUNCTION
-         CustomAVLTree::Remove(item);
-         delete item;
+         if(item.left)
+         {
+            BT left = item.left;
+            item.left = null;
+            item = left;
+         }
+         else if(item.right)
+         {
+            BT right = item.right;
+            item.right = null;
+            item = right;
+         }
+         else
+         {
+            BT parent = item.parent;
+            delete item;
+            item = parent;
+         }
       }
+      root = null;
+      count = 0;
    }
 
    IteratorPointer Find(BT value)

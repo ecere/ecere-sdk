@@ -139,18 +139,34 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
 
    void Free()
    {
-      MapNode<MT, V> node;
-      while((node = root))
+      MapNode<MT, V> node = root;
+      uintsize offset = class(MT).type == structClass ? class(MT).structSize - sizeof(node.AVLNode::key) : 0;
+      while(node)
       {
-         MapNode<MT, V> n = node;
+         if(node.left)
+         {
+            MapNode<MT, V> left = node.left;
+            node.left = null;
+            node = left;
+         }
+         else if(node.right)
+         {
+            MapNode<MT, V> right = node.right;
+            node.right = null;
+            node = right;
+         }
+         else
+         {
+            MapNode<MT, V> parent = node.parent;
+            MapNode<MT, V> n = (MapNode<MT, V>)((byte *)node + offset);
+            delete n.value;
+            delete node;
 
-         // Adjust node pointer for non-standard AVLNode
-         if(class(MT).type == structClass)
-            n = (MapNode<MT, V>)(((byte *) node) + class(MT).structSize - sizeof(node.AVLNode::key));
-
-         delete n.value;
-         Remove(node);
+            node = parent;
+         }
       }
+      root = null;
+      count = 0;
    }
 
    void Delete(MapNode<MT, V> node)
@@ -173,7 +189,9 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
 
    MapNode<MT, V> GetAtPosition(const MT pos, bool create, bool * justAdded)
    {
-      MapNode<MT, V> node = root ? root.Find(class(MT), pos) : null;
+      AVLNode addNode = null;
+      AddSide addSide = compare;
+      MapNode<MT, V> node = root ? root.FindEx(class(MT), pos, &addNode, &addSide) : null;
       if(!node && create)
       {
          Class Tclass = class(MT);
@@ -195,7 +213,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize));
          else
             onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(sizeof(void *)), (void *)pos);
-         CustomAVLTree::Add((T)node);
+         CustomAVLTree::AddEx((T)node, (T)addNode, addSide);
          if(justAdded) *justAdded = true;
       }
       return node;
