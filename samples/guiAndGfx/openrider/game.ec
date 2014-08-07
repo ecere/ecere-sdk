@@ -268,8 +268,9 @@ public:
 
    ~Game() { FreeAll(); }
    void FreeAll(void) {
-      for (i:vehicles)
-         delete i;
+      vehicles.Free();
+      delete vehicles;
+      delete lines;
       //we don't need to worry about the other things because they are automatically freed
    }
 
@@ -299,8 +300,7 @@ public:
       version_code = max_version_code_supported;
    }
    void ResetBall(void) {
-      for (i:vehicles)
-         delete i;
+      vehicles.Free();
       vehicles.size = 1;
 
       vehicles[0] = GameBall {

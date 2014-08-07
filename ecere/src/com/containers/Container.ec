@@ -294,7 +294,7 @@ public:
          container.Add(data);
       }
       if(isStruct)
-         delete data;
+         delete (void *)data;
       this = container;
    }
 }

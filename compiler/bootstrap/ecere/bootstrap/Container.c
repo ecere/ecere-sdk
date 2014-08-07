@@ -935,7 +935,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(container, data);
 }
 if(isStruct)
-(((void (* )(void *  _class, void *  data))class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(class->templateArgs[2].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(data)))), data = 0);
+(__ecereNameSpace__ecere__com__eSystem_Delete((void *)(uintptr_t)data), data = 0);
 (*this) = container;
 }
 
