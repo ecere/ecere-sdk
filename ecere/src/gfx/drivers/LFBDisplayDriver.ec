@@ -3666,6 +3666,7 @@ public class LFBDisplayDriver : DisplayDriver
       bool result = false;
       if(mesh.nVertices == nVertices)
       {
+         result = true;
          // Same number of vertices, adding features (Leaves the other features pointers alone)
          if(mesh.flags != flags)
          {
@@ -3695,6 +3696,7 @@ public class LFBDisplayDriver : DisplayDriver
       }
       else
       {
+         result = true;
          // New number of vertices, reallocate all current and new features
          flags |= mesh.flags;
          if(flags.vertices)
