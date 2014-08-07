@@ -6,6 +6,33 @@ public struct Line
 {
    Vector3D p0;
    Vector3D delta;
+
+   bool IntersectSphere(double radius, double * t)
+   {
+      double a = delta.DotProduct(delta);
+      double b = 2 * delta.DotProduct(p0);
+      double c = p0.DotProduct(p0) - radius * radius;
+      double disc = b * b - 4 * a * c;
+      if(disc >= 0)
+      {
+         double distSqrt = sqrt(disc);
+         double q = ((b < 0) ? (-b - distSqrt) : (-b + distSqrt)) /2;
+         double t0 = q / a, t1 = c / q;
+         if (t0 > t1)
+         {
+            double temp = t0;
+            t0 = t1;
+            t1 = temp;
+         }
+         if (t1 >= 0)
+         {
+            if(t)
+              *t = (t0 >= 0) ? t0 : t1;
+            return true;
+         }
+      }
+      return false;
+   }
 };
 
 public struct Plane
