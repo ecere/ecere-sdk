@@ -1832,7 +1832,7 @@ private:
                                     case 'f': case 'F': gotF++; if(gotF > 1 || !isReal) valid = false; break;
                                     case 'l': case 'L':
                                        gotL++;
-                                       if(gotL > 2 || isReal || (gotL == 2 && (s[i-1] != ch)))
+                                       if(gotL > 2 || (isReal && (gotL == 2 || gotF)) || (gotL == 2 && (s[i-1] != ch)))
                                        valid = false;
                                        break;
                                     case 'u': case 'U': gotU++; if(gotU > 1 || isReal) valid = false; break;
