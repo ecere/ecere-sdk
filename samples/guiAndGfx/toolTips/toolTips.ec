@@ -23,7 +23,9 @@ class ToolTipsDemo : Window
    ToolTip tt
    {
       button2, tip = "You can change fonts and colors!";
+#if defined(__WIN32__)
       alphaBlend = true, opacity = 0.75;
+#endif
       font = { "Comic Sans MS", 12 };
       background = lightSkyBlue, foreground = darkSlateBlue;
    };
