@@ -269,7 +269,7 @@ static void Decode(uint32 *output, byte *input, uint len)
       output[i] = ((uint32)input[j]) | (((uint32)input[j+1]) << 8) | (((uint32)input[j+2]) << 16) | (((uint32)input[j+3]) << 24);
 }
 
-void MD5Digest(char * string, int len, char * output)
+void MD5Digest(const char * string, int len, char * output)
 {
    byte bytes[16];
    int c;
@@ -283,4 +283,17 @@ void MD5Digest(char * string, int len, char * output)
       sprintf(output + len, "%02x", bytes[c]);
       len += 2;
    }
+}
+
+void MD5Digest64(const char * string, int len, uint64 * output)
+{
+   byte bytes[16];
+   MD5_CTX ctx;
+   MD5Init(&ctx);
+   MD5Update(&ctx, (byte *)string, len);
+   MD5Final(bytes, &ctx);
+   output[0] = ((uint64)bytes[ 0] << 56) | ((uint64)bytes[ 1] << 48) | ((uint64)bytes[ 2] << 40) | ((uint64)bytes[ 3] << 32) |
+               ((uint64)bytes[ 4] << 24) | ((uint64)bytes[ 5] << 16) | ((uint64)bytes[ 6] <<  8) | ((uint64)bytes[ 7]      );
+   output[1] = ((uint64)bytes[ 8] << 56) | ((uint64)bytes[ 9] << 48) | ((uint64)bytes[10] << 40) | ((uint64)bytes[11] << 32) |
+               ((uint64)bytes[12] << 24) | ((uint64)bytes[13] << 16) | ((uint64)bytes[14] <<  8) | ((uint64)bytes[15]      );
 }
