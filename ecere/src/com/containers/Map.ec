@@ -213,7 +213,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize));
          else
             onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(sizeof(void *)), (void *)pos);
-         CustomAVLTree::AddEx((T)node, (T)addNode, addSide);
+         CustomAVLTree::AddEx((T)(uintptr)node, (T)(uintptr)addNode, addSide);
          if(justAdded) *justAdded = true;
       }
       return node;

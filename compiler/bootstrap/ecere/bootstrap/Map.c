@@ -712,7 +712,7 @@ if((Tclass->type == 1000 && !Tclass->byValueSystemClass) || Tclass->type == 2 ||
 onCopy(Tclass, (unsigned char *)&node->key + __ENDIAN_PAD(Tclass->typeSize), (unsigned char *)((char *)&pos + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->typeSize)) + __ENDIAN_PAD(Tclass->typeSize));
 else
 onCopy(Tclass, (unsigned char *)&node->key + __ENDIAN_PAD(sizeof(void *)), (void *)(uintptr_t)pos);
-__ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_AddEx(this, (uint64)node, (uint64)addNode, addSide);
+__ecereMethod___ecereNameSpace__ecere__com__CustomAVLTree_AddEx(this, (uint64)(uintptr_t)node, (uint64)(uintptr_t)addNode, addSide);
 if(justAdded)
 *justAdded = 1;
 }

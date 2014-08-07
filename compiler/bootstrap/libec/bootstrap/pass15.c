@@ -16559,7 +16559,7 @@ type2->refCount++;
 c1 = type1 && type1->kind == 8 && type1->__anon1._class ? type1->__anon1._class->__anon1.registered : (((void *)0));
 c2 = type2 && type2->kind == 8 && type2->__anon1._class ? type2->__anon1._class->__anon1.registered : (((void *)0));
 if(relationOp && ((exp->__anon1.op.exp1 && exp->__anon1.op.exp1->ambiguousUnits && (!c2 || c2->type != 3)) || (exp->__anon1.op.exp2 && exp->__anon1.op.exp2->ambiguousUnits && (!c1 || c1->type != 3))))
-Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "ambiguous units in relation operation\n", (((void *)0))));
+Compiler_Warning(__ecereNameSpace__ecere__GetTranslatedString("ec", "ambiguous units in relational operation\n", (((void *)0))));
 if(!relationOp && ((exp->__anon1.op.exp1 && exp->__anon1.op.exp1->ambiguousUnits) || (exp->__anon1.op.exp2 && exp->__anon1.op.exp2->ambiguousUnits)) && (!powerOp || !c1 || c1->type != 3 || !c2 || c2->type != 3 || !RelatedUnits(c1, c2)))
 {
 if(exp->opDestType || exp->usedInComparison)
