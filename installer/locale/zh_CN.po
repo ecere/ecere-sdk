@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2014-07-11 19:30+0000\n"
-"PO-Revision-Date: 2014-07-11 23:06-0500\n"
+"PO-Revision-Date: 2014-08-07 00:46-0500\n"
 "Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Chinese (Simplified) <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -351,7 +351,7 @@ msgid "Req. Space"
 msgstr "所需空间"
 
 #: src/installer.ec:1783
-msgid "Resgistering File Types..."
+msgid "Registering File Types..."
 msgstr "正在注册文件类型..."
 
 #: src/installer.ec:291 src/installer.ec:292

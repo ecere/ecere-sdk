@@ -341,6 +341,8 @@ RESOURCES8 = \
 	../samples/audio/PlaySound/PlaySound.epj \
 	../samples/audio/PlaySound/sound.wav \
 	../samples/audio/S3MPlayer/keven1.s3m \
+	../samples/audio/SineTone/sineTone.ec \
+	../samples/audio/SineTone/sineTone.epj \
 	../samples/audio/Ecere\ Audio\ Library.odp \
 	../samples/db/EDATest/EDATest.ec \
 	../samples/db/EDATest/EDATest.epj \
@@ -365,10 +367,10 @@ RESOURCES8 = \
 	../samples/eC/fibonacci/fibo.ec \
 	../samples/eC/fibonacci/fibo.epj \
 	../samples/eC/FindPrime/findPrime.ec \
-	../samples/eC/FindPrime/PrimeTest.epj \
-	../samples/eC/HelloWorld/HelloWorld.ec \
-	../samples/eC/HelloWorld/HelloWorld.epj
+	../samples/eC/FindPrime/PrimeTest.epj
 RESOURCES9 = \
+	../samples/eC/HelloWorld/HelloWorld.ec \
+	../samples/eC/HelloWorld/HelloWorld.epj \
 	../samples/eC/neural/neural.ec \
 	../samples/eC/neural/neural.epj \
 	../samples/eC/neural/neurons.ec \
@@ -403,10 +405,10 @@ RESOURCES9 = \
 	../samples/games/stonePairs/res/remove.png \
 	../samples/games/stonePairs/res/arrow.png \
 	../samples/games/stonePairs/res/black.png \
-	../samples/games/stonePairs/res/blackGray.png \
-	../samples/games/stonePairs/res/board.jpg \
-	../samples/games/stonePairs/res/white.png
+	../samples/games/stonePairs/res/blackGray.png
 RESOURCES10 = \
+	../samples/games/stonePairs/res/board.jpg \
+	../samples/games/stonePairs/res/white.png \
 	../samples/games/stonePairs/res/whiteGray.png \
 	../samples/games/stonePairs/Building\ a\ simple\ board\ game\ with\ the\ Ecere\ SDK.odp \
 	../samples/games/stonePairs/game.ec \
@@ -441,11 +443,11 @@ RESOURCES10 = \
 	../samples/games/cards/res/6c.png \
 	../samples/games/cards/res/6d.png \
 	../samples/games/cards/res/6h.png \
-	../samples/games/cards/res/6s.png \
+	../samples/games/cards/res/6s.png
+RESOURCES11 = \
 	../samples/games/cards/res/7c.png \
 	../samples/games/cards/res/7d.png \
-	../samples/games/cards/res/7h.png
-RESOURCES11 = \
+	../samples/games/cards/res/7h.png \
 	../samples/games/cards/res/7s.png \
 	../samples/games/cards/res/8c.png \
 	../samples/games/cards/res/8d.png \
@@ -482,10 +484,10 @@ RESOURCES11 = \
 	../samples/games/cards/ruff/src/bet.ec \
 	../samples/games/cards/ruff/src/communication.ec \
 	../samples/games/cards/ruff/src/ruff.ec \
-	../samples/games/cards/ruff/src/scores.ec \
-	../samples/games/cards/ruff/src/server.ec \
-	../samples/games/cards/ruff/src/setup.ec
+	../samples/games/cards/ruff/src/scores.ec
 RESOURCES12 = \
+	../samples/games/cards/ruff/src/server.ec \
+	../samples/games/cards/ruff/src/setup.ec \
 	../samples/games/cards/ruff/src/trump.ec \
 	../samples/games/cards/ruff/ruff.epj \
 	../samples/games/cards/tongIts/tongits.ec \
@@ -517,10 +519,10 @@ RESOURCES12 = \
 	../samples/games/chess/res/bthr.jpg \
 	../samples/games/chess/res/chessSet.3ds \
 	../samples/games/chess/res/darkwood.jpg \
-	../samples/games/chess/res/lightwo1.jpg \
-	../samples/games/chess/res/whiteBishop.png \
-	../samples/games/chess/res/whiteKing.png
+	../samples/games/chess/res/lightwo1.jpg
 RESOURCES13 = \
+	../samples/games/chess/res/whiteBishop.png \
+	../samples/games/chess/res/whiteKing.png \
 	../samples/games/chess/res/whiteKnight.png \
 	../samples/games/chess/res/whitePawn.png \
 	../samples/games/chess/res/whiteQueen.png \
@@ -548,10 +550,10 @@ RESOURCES13 = \
 	../samples/guiAndGfx/bitmapsAndKB/res/castle.png \
 	../samples/guiAndGfx/bitmapsAndKB/res/dragon.png \
 	../samples/guiAndGfx/bitmapsAndKB/res/knight.png \
-	../samples/guiAndGfx/bitmapsAndKB/res/mage.png \
-	../samples/guiAndGfx/bitmapsAndKB/res/mountain.png \
-	../samples/guiAndGfx/bitmapsAndKB/res/mountains.png
+	../samples/guiAndGfx/bitmapsAndKB/res/mage.png
 RESOURCES14 = \
+	../samples/guiAndGfx/bitmapsAndKB/res/mountain.png \
+	../samples/guiAndGfx/bitmapsAndKB/res/mountains.png \
 	../samples/guiAndGfx/bitmapsAndKB/res/tree.png \
 	../samples/guiAndGfx/bitmapsAndKB/Bitmaps\ and\ Keyboard\ Input.odp \
 	../samples/guiAndGfx/childWindows/res/stone2.jpg \
@@ -579,11 +581,11 @@ RESOURCES14 = \
 	../samples/guiAndGfx/floodFill/floodFill.ec \
 	../samples/guiAndGfx/HelloForm/helloForm.ec \
 	../samples/guiAndGfx/HelloForm/helloForm.epj \
-	../samples/guiAndGfx/LinkLabel/linkLabel.ec \
+	../samples/guiAndGfx/LinkLabel/linkLabel.ec
+RESOURCES15 = \
 	../samples/guiAndGfx/LinkLabel/LinkLabel.epj \
 	../samples/guiAndGfx/mdiSample/mdiSample.ec \
-	../samples/guiAndGfx/mdiSample/mdiSample.epj
-RESOURCES15 = \
+	../samples/guiAndGfx/mdiSample/mdiSample.epj \
 	../samples/guiAndGfx/openrider/res/wheel.png \
 	../samples/guiAndGfx/openrider/samples/glitch.ort \
 	../samples/guiAndGfx/openrider/samples/sample.ort \
@@ -610,11 +612,11 @@ RESOURCES15 = \
 	../samples/guiAndGfx/skinning/res/thumbUp.png \
 	../samples/guiAndGfx/skinning/res/thumbVert.png \
 	../samples/guiAndGfx/skinning/res/topBorder.png \
-	../samples/guiAndGfx/skinning/res/topLeftBorder.png \
+	../samples/guiAndGfx/skinning/res/topLeftBorder.png
+RESOURCES16 = \
 	../samples/guiAndGfx/skinning/res/topRightBorder.png \
 	../samples/guiAndGfx/skinning/res/upLeft.png \
-	../samples/guiAndGfx/skinning/res/upMiddle.png
-RESOURCES16 = \
+	../samples/guiAndGfx/skinning/res/upMiddle.png \
 	../samples/guiAndGfx/skinning/res/upRight.png \
 	../samples/guiAndGfx/skinning/AcovelSkin.ec \
 	../samples/guiAndGfx/skinning/form1.ec \
@@ -642,11 +644,11 @@ RESOURCES16 = \
 	../samples/guiAndGfx/pictureRotateAlpha/rotate1.ec \
 	../samples/guiAndGfx/fractals/samples/colorful.frc \
 	../samples/guiAndGfx/fractals/samples/coolSpiral.frc \
-	../samples/guiAndGfx/fractals/samples/deep.frc \
+	../samples/guiAndGfx/fractals/samples/deep.frc
+RESOURCES17 = \
 	../samples/guiAndGfx/fractals/samples/hot.frc \
 	../samples/guiAndGfx/fractals/samples/hot2.frc \
-	../samples/guiAndGfx/fractals/samples/minibrot.frc
-RESOURCES17 = \
+	../samples/guiAndGfx/fractals/samples/minibrot.frc \
 	../samples/guiAndGfx/fractals/samples/MOI.frc \
 	../samples/guiAndGfx/fractals/samples/nicejulia.frc \
 	../samples/guiAndGfx/fractals/samples/oldColors.frc \
@@ -675,12 +677,12 @@ RESOURCES17 = \
 	../samples/net/networkFile/NetworkClient/client.ec \
 	../samples/net/networkFile/NetworkClient/NetworkClient.epj \
 	../samples/net/networkFile/NetworkServer/NetworkServer.epj \
-	../samples/net/networkFile/NetworkServer/server.ec \
+	../samples/net/networkFile/NetworkServer/server.ec
+RESOURCES18 = \
 	../samples/net/smtp/smtp.ec \
 	../samples/net/smtp/smtp.epj \
 	../samples/net/SocketSample/socketSample.ec \
-	../samples/net/SocketSample/SocketSample.epj
-RESOURCES18 = \
+	../samples/net/SocketSample/SocketSample.epj \
 	../samples/net/UDPSample/udptest.ec \
 	../samples/net/UDPSample/UDPTest.epj \
 	../samples/net/XMLSample/xmlSample.ec \
@@ -716,12 +718,12 @@ RESOURCES18 = \
 	../extras/gui/LicensesDialog.ec \
 	../extras/gui/RoundedSquare.ec \
 	../extras/gui/genericEditor.ec \
-	../extras/html/htmlParser.ec \
+	../extras/html/htmlParser.ec
+RESOURCES19 = \
 	../extras/html/HTMLView.ec \
 	../extras/html/lines.ec \
 	../extras/html/tables.ec \
-	../extras/res/licenses/crystalicons.LICENSE
-RESOURCES19 = \
+	../extras/res/licenses/crystalicons.LICENSE \
 	../extras/res/licenses/ecere.LICENSE \
 	../extras/res/licenses/ffi.LICENSE \
 	../extras/res/licenses/freetype.LICENSE \
@@ -755,11 +757,11 @@ RESOURCES19 = \
 	../extras/res/types/countryCode/at.png \
 	../extras/res/types/countryCode/au.png \
 	../extras/res/types/countryCode/aw.png \
-	../extras/res/types/countryCode/ax.png \
+	../extras/res/types/countryCode/ax.png
+RESOURCES20 = \
 	../extras/res/types/countryCode/az.png \
 	../extras/res/types/countryCode/ba.png \
-	../extras/res/types/countryCode/bb.png
-RESOURCES20 = \
+	../extras/res/types/countryCode/bb.png \
 	../extras/res/types/countryCode/bd.png \
 	../extras/res/types/countryCode/be.png \
 	../extras/res/types/countryCode/bf.png \
@@ -792,11 +794,11 @@ RESOURCES20 = \
 	../extras/res/types/countryCode/co.png \
 	../extras/res/types/countryCode/cr.png \
 	../extras/res/types/countryCode/cs.png \
-	../extras/res/types/countryCode/cu.png \
+	../extras/res/types/countryCode/cu.png
+RESOURCES21 = \
 	../extras/res/types/countryCode/cv.png \
 	../extras/res/types/countryCode/cx.png \
-	../extras/res/types/countryCode/cy.png
-RESOURCES21 = \
+	../extras/res/types/countryCode/cy.png \
 	../extras/res/types/countryCode/cz.png \
 	../extras/res/types/countryCode/de.png \
 	../extras/res/types/countryCode/dj.png \
@@ -829,11 +831,11 @@ RESOURCES21 = \
 	../extras/res/types/countryCode/gi.png \
 	../extras/res/types/countryCode/gl.png \
 	../extras/res/types/countryCode/gm.png \
-	../extras/res/types/countryCode/gn.png \
+	../extras/res/types/countryCode/gn.png
+RESOURCES22 = \
 	../extras/res/types/countryCode/gp.png \
 	../extras/res/types/countryCode/gq.png \
-	../extras/res/types/countryCode/gr.png
-RESOURCES22 = \
+	../extras/res/types/countryCode/gr.png \
 	../extras/res/types/countryCode/gs.png \
 	../extras/res/types/countryCode/gt.png \
 	../extras/res/types/countryCode/gu.png \
@@ -866,11 +868,11 @@ RESOURCES22 = \
 	../extras/res/types/countryCode/kp.png \
 	../extras/res/types/countryCode/kr.png \
 	../extras/res/types/countryCode/kw.png \
-	../extras/res/types/countryCode/ky.png \
+	../extras/res/types/countryCode/ky.png
+RESOURCES23 = \
 	../extras/res/types/countryCode/kz.png \
 	../extras/res/types/countryCode/la.png \
-	../extras/res/types/countryCode/lb.png
-RESOURCES23 = \
+	../extras/res/types/countryCode/lb.png \
 	../extras/res/types/countryCode/lc.png \
 	../extras/res/types/countryCode/li.png \
 	../extras/res/types/countryCode/lk.png \
@@ -903,11 +905,11 @@ RESOURCES23 = \
 	../extras/res/types/countryCode/my.png \
 	../extras/res/types/countryCode/mz.png \
 	../extras/res/types/countryCode/na.png \
-	../extras/res/types/countryCode/nc.png \
+	../extras/res/types/countryCode/nc.png
+RESOURCES24 = \
 	../extras/res/types/countryCode/ne.png \
 	../extras/res/types/countryCode/nf.png \
-	../extras/res/types/countryCode/ng.png
-RESOURCES24 = \
+	../extras/res/types/countryCode/ng.png \
 	../extras/res/types/countryCode/ni.png \
 	../extras/res/types/countryCode/nl.png \
 	../extras/res/types/countryCode/no.png \
@@ -940,11 +942,11 @@ RESOURCES24 = \
 	../extras/res/types/countryCode/sb.png \
 	../extras/res/types/countryCode/sc.png \
 	../extras/res/types/countryCode/scotland.png \
-	../extras/res/types/countryCode/sd.png \
+	../extras/res/types/countryCode/sd.png
+RESOURCES25 = \
 	../extras/res/types/countryCode/se.png \
 	../extras/res/types/countryCode/sg.png \
-	../extras/res/types/countryCode/sh.png
-RESOURCES25 = \
+	../extras/res/types/countryCode/sh.png \
 	../extras/res/types/countryCode/si.png \
 	../extras/res/types/countryCode/sj.png \
 	../extras/res/types/countryCode/sk.png \
@@ -977,11 +979,11 @@ RESOURCES25 = \
 	../extras/res/types/countryCode/ug.png \
 	../extras/res/types/countryCode/um.png \
 	../extras/res/types/countryCode/us.png \
-	../extras/res/types/countryCode/uy.png \
+	../extras/res/types/countryCode/uy.png
+RESOURCES26 = \
 	../extras/res/types/countryCode/uz.png \
 	../extras/res/types/countryCode/va.png \
-	../extras/res/types/countryCode/vc.png
-RESOURCES26 = \
+	../extras/res/types/countryCode/vc.png \
 	../extras/res/types/countryCode/ve.png \
 	../extras/res/types/countryCode/vg.png \
 	../extras/res/types/countryCode/vi.png \
@@ -1023,11 +1025,11 @@ RESOURCES26 = \
 	../extras/res/licenses/freetype.LICENSE \
 	../extras/res/licenses/harfbuzz.LICENSE \
 	../extras/res/licenses/jpg.LICENSE \
-	../extras/res/licenses/png.LICENSE \
+	../extras/res/licenses/png.LICENSE
+RESOURCES27 = \
 	../extras/res/licenses/sqlite.LICENSE \
 	../extras/res/licenses/tango.COPYING \
-	../extras/res/licenses/ungif.LICENSE
-RESOURCES27 = \
+	../extras/res/licenses/ungif.LICENSE \
 	../extras/res/licenses/upx.LICENSE \
 	../extras/res/licenses/zlib.README \
 	../LICENSE \
@@ -1063,11 +1065,11 @@ RESOURCES27 = \
 	tdm/binutils-2.23.2-tdm64-1/bin/nm.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/objcopy.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/objdump.exe \
-	tdm/binutils-2.23.2-tdm64-1/bin/ranlib.exe \
+	tdm/binutils-2.23.2-tdm64-1/bin/ranlib.exe
+RESOURCES28 = \
 	tdm/binutils-2.23.2-tdm64-1/bin/readelf.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/size.exe \
-	tdm/binutils-2.23.2-tdm64-1/bin/strings.exe
-RESOURCES28 = \
+	tdm/binutils-2.23.2-tdm64-1/bin/strings.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/strip.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/windmc.exe \
 	tdm/binutils-2.23.2-tdm64-1/bin/windres.exe \
@@ -1091,9 +1093,9 @@ RESOURCES28 = \
 	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/bin/strip.exe \
 	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.x \
 	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.xa \
-	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.xbn \
-	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.xn
+	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.xbn
 RESOURCES29 = \
+	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.xn \
 	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.xr \
 	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pe.xu \
 	tdm/binutils-2.23.2-tdm64-1/x86_64-w64-mingw32/lib/ldscripts/i386pep.x \
@@ -1116,10 +1118,10 @@ RESOURCES29 = \
 	tdm/gcc-4.8.1-tdm64-2-core/bin/libiconv-2.dll \
 	tdm/gcc-4.8.1-tdm64-2-core/bin/libquadmath-0.dll \
 	tdm/gcc-4.8.1-tdm64-2-core/bin/libquadmath_64-0.dll \
-	tdm/gcc-4.8.1-tdm64-2-core/bin/libssp-0.dll \
-	tdm/gcc-4.8.1-tdm64-2-core/bin/libssp_64-0.dll \
-	tdm/gcc-4.8.1-tdm64-2-core/bin/libwinpthread-1.dll
+	tdm/gcc-4.8.1-tdm64-2-core/bin/libssp-0.dll
 RESOURCES30 = \
+	tdm/gcc-4.8.1-tdm64-2-core/bin/libssp_64-0.dll \
+	tdm/gcc-4.8.1-tdm64-2-core/bin/libwinpthread-1.dll \
 	tdm/gcc-4.8.1-tdm64-2-core/bin/libwinpthread_64-1.dll \
 	tdm/gcc-4.8.1-tdm64-2-core/bin/x86_64-w64-mingw32-gcc-4.8.1.exe \
 	tdm/gcc-4.8.1-tdm64-2-core/bin/x86_64-w64-mingw32-gcc-ar.exe \
@@ -1137,10 +1139,10 @@ RESOURCES30 = \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/32/libssp.a \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/32/libssp.dll.a \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/32/libssp_nonshared.a \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ssp/ssp.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ssp/stdio.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ssp/string.h
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ssp/ssp.h
 RESOURCES31 = \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ssp/stdio.h \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ssp/string.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ssp/unistd.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/adxintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ammintrin.h \
@@ -1155,10 +1157,10 @@ RESOURCES31 = \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/f16cintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/float.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/fma4intrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/fmaintrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/fxsrintrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ia32intrin.h
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/fmaintrin.h
 RESOURCES32 = \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/fxsrintrin.h \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/ia32intrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/immintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/iso646.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/lwpintrin.h \
@@ -1173,10 +1175,10 @@ RESOURCES32 = \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/prfchwintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/quadmath.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/quadmath_weak.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/rdseedintrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/rtmintrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/smmintrin.h
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/rdseedintrin.h
 RESOURCES33 = \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/rtmintrin.h \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/smmintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/stdalign.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/stdarg.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/stdbool.h \
@@ -1191,10 +1193,10 @@ RESOURCES33 = \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/unwind.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/varargs.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/wmmintrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/x86intrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/xmmintrin.h \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/xopintrin.h
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/x86intrin.h
 RESOURCES34 = \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/xmmintrin.h \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/xopintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/xsaveintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/xsaveoptintrin.h \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/include/xtestintrin.h \
@@ -1209,10 +1211,10 @@ RESOURCES34 = \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/install-tools/mkheaders.conf \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/crtfastmath.o \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libgcc.a \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libgcc_s.a \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libgcov.a \
-	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libquadmath.a
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libgcc_s.a
 RESOURCES35 = \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libgcov.a \
+	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libquadmath.a \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libquadmath.dll.a \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libssp.a \
 	tdm/gcc-4.8.1-tdm64-2-core/lib/gcc/x86_64-w64-mingw32/4.8.1/libssp.dll.a \
@@ -1227,10 +1229,10 @@ RESOURCES35 = \
 	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/libgmp-3.dll \
 	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/libisl-10.dll \
 	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/liblto_plugin-0.dll \
-	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/liblto_plugin.dll.a \
-	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/libmpc-2.dll \
-	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/libmpfr-1.dll
+	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/liblto_plugin.dll.a
 RESOURCES36 = \
+	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/libmpc-2.dll \
+	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/libmpfr-1.dll \
 	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/lto-wrapper.exe \
 	tdm/gcc-4.8.1-tdm64-2-core/libexec/gcc/x86_64-w64-mingw32/4.8.1/lto1.exe \
 	tdm/gcc-4.8.1-tdm64-2-core/x86_64-w64-mingw32/include/pthread.h \
@@ -1248,11 +1250,11 @@ RESOURCES36 = \
 	tdm/gcc-4.8.1-tdm64-2-core/x86_64-w64-mingw32/lib32/libpthread_s.dll.a \
 	tdm/gcc-4.8.1-tdm64-2-core/x86_64-w64-mingw32/lib32/libwinpthread.a \
 	tdm/gcc-4.8.1-tdm64-2-core/x86_64-w64-mingw32/lib32/libwinpthread.dll.a \
-	tdm/gcc-4.8.1-tdm64-2-core/licenses/COPYING.ISL.txt \
+	tdm/gcc-4.8.1-tdm64-2-core/licenses/COPYING.ISL.txt
+RESOURCES37 = \
 	tdm/gcc-4.8.1-tdm64-2-core/licenses/COPYING.RUNTIME-gcc-tdm.txt \
 	tdm/gcc-4.8.1-tdm64-2-core/licenses/COPYING.winpthreads.txt \
-	tdm/gcc-4.8.1-tdm64-2-core/licenses/COPYING3-gcc-tdm.txt
-RESOURCES37 = \
+	tdm/gcc-4.8.1-tdm64-2-core/licenses/COPYING3-gcc-tdm.txt \
 	tdm/gcc-4.8.1-tdm64-2-core/licenses/COPYING3.LIB-gcc-tdm.txt \
 	tdm/gcc-4.8.1-tdm64-2-core/licenses/README-gcc-tdm64.txt \
 	tdm/gcc-4.8.1-tdm64-2-c++/bin/c++.exe \
@@ -1269,10 +1271,10 @@ RESOURCES37 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/backward_warning.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/binders.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/hashtable.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/hash_fun.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/hash_map \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/hash_set
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/hash_fun.h
 RESOURCES38 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/hash_map \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/hash_set \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/backward/strstream \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/algorithmfwd.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/allocator.h \
@@ -1285,10 +1287,10 @@ RESOURCES38 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/basic_string.tcc \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/boost_concept_check.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/c++0x_warning.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/char_traits.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/codecvt.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/concept_check.h
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/char_traits.h
 RESOURCES39 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/codecvt.h \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/concept_check.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/cpp_type_traits.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/cxxabi_forced.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/deque.tcc \
@@ -1301,10 +1303,10 @@ RESOURCES39 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/functional_hash.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/gslice.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/gslice_array.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/hashtable.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/hashtable_policy.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/hash_bytes.h
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/hashtable.h
 RESOURCES40 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/hashtable_policy.h \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/hash_bytes.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/indirect_array.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/ios_base.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/istream.tcc \
@@ -1317,10 +1319,10 @@ RESOURCES40 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/locale_facets_nonio.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/locale_facets_nonio.tcc \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/mask_array.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/memoryfwd.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/move.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/nested_exception.h
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/memoryfwd.h
 RESOURCES41 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/move.h \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/nested_exception.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/opt_random.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/ostream.tcc \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/ostream_insert.h \
@@ -1333,10 +1335,10 @@ RESOURCES41 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_compiler.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_constants.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_cursor.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_error.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_grep_matcher.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_grep_matcher.tcc
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_error.h
 RESOURCES42 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_grep_matcher.h \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_grep_matcher.tcc \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_nfa.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/regex_nfa.tcc \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/shared_ptr.h \
@@ -1349,10 +1351,10 @@ RESOURCES42 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_construct.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_deque.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_function.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_heap.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_iterator.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_iterator_base_funcs.h
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_heap.h
 RESOURCES43 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_iterator.h \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_iterator_base_funcs.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_iterator_base_types.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_list.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_map.h \
@@ -1365,10 +1367,10 @@ RESOURCES43 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_relops.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_set.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_stack.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_tempbuf.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_tree.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_uninitialized.h
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_tempbuf.h
 RESOURCES44 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_tree.h \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_uninitialized.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/stl_vector.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/streambuf.tcc \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/streambuf_iterator.h \
@@ -1381,10 +1383,10 @@ RESOURCES44 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/valarray_after.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/valarray_array.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/valarray_array.tcc \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/valarray_before.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/vector.tcc \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/array
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/valarray_before.h
 RESOURCES45 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/bits/vector.tcc \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/array \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/bitset \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/debug.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/deque \
@@ -1398,10 +1400,10 @@ RESOURCES45 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/multimap.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/multiset.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_base.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_iterator.h \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_iterator.tcc \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_local_iterator.h
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_iterator.h
 RESOURCES46 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_iterator.tcc \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_local_iterator.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_local_iterator.tcc \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_sequence.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/safe_sequence.tcc \
@@ -1414,9 +1416,9 @@ RESOURCES46 = \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/unordered_map \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/unordered_set \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/debug/vector \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/decimal/decimal \
-	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/decimal/decimal.h
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/decimal/decimal
 RESOURCES47 = \
+	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/decimal/decimal.h \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/ext/pb_ds/detail/binary_heap_/binary_heap_.hpp \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/ext/pb_ds/detail/binary_heap_/constructors_destructor_fn_imps.hpp \
 	tdm/gcc-4.8.1-tdm64-2-c++/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++/ext/pb_ds/detail/binary_heap_/const_iterator.hpp \
@@ -5501,6 +5503,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/audio/Piano/Piano.ec ../samples/audio/Piano/Piano.epj ../samples/audio/Piano/cello.wav ../samples/audio/Piano/piano.wav ../samples/audio/Piano/tone.wav ../samples/audio/Piano/xylophone.wav "samples/audio/Piano"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/audio/PlaySound/PlaySound.ec ../samples/audio/PlaySound/PlaySound.epj ../samples/audio/PlaySound/sound.wav "samples/audio/PlaySound"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/audio/S3MPlayer/keven1.s3m "samples/audio/S3MPlayer"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/audio/SineTone/sineTone.ec ../samples/audio/SineTone/sineTone.epj "samples/audio/SineTone"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/db/eda\ presentation.odp "samples/db"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/db/EDATest/EDATest.ec ../samples/db/EDATest/EDATest.epj "samples/db/EDATest"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../samples/db/MedDB/mainForm.ec ../samples/db/MedDB/med.ec ../samples/db/MedDB/med.edb ../samples/db/MedDB/med.epj "samples/db/MedDB"

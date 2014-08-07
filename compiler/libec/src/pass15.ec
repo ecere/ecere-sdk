@@ -8659,7 +8659,7 @@ void ProcessExpressionType(Expression exp)
          if(relationOp &&
             ( (exp.op.exp1 && exp.op.exp1.ambiguousUnits && (!c2 || c2.type != unitClass)) ||
                (exp.op.exp2 && exp.op.exp2.ambiguousUnits && (!c1 || c1.type != unitClass))) )
-            Compiler_Warning($"ambiguous units in relation operation\n");
+            Compiler_Warning($"ambiguous units in relational operation\n");
 
          if(!relationOp &&
             ((exp.op.exp1 && exp.op.exp1.ambiguousUnits) ||

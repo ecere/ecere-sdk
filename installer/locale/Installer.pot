@@ -92,6 +92,10 @@ msgstr "Associate with text files (*.txt)"
 msgid "Audio"
 msgstr "Audio"
 
+#: ./src/installer.ec:2
+msgid "August 7th, 2014"
+msgstr "August 7th, 2014"
+
 #: ./src/installer.ec:820
 msgid "Avail. Space"
 msgstr "Avail. Space"
@@ -291,10 +295,6 @@ msgstr "Installing Start Menu Icons..."
 msgid "Installing the Ecere SDK"
 msgstr "Installing the Ecere SDK"
 
-#: ./src/installer.ec:2
-msgid "July 12th, 2014"
-msgstr "July 12th, 2014"
-
 #: ./../ide/src/licensing.ec:38
 msgid "License Agreements"
 msgstr "License Agreements"
@@ -339,6 +339,10 @@ msgstr "Portable C Compiler / GNU Make"
 msgid "Quicklaunch Icon"
 msgstr "Quicklaunch Icon"
 
+#: ./src/installer.ec:1785
+msgid "Registering File Types..."
+msgstr "Registering File Types..."
+
 #: ./src/installer.ec:1545
 msgid "Registering uninstaller..."
 msgstr "Registering uninstaller..."
@@ -346,10 +350,6 @@ msgstr "Registering uninstaller..."
 #: ./src/installer.ec:819
 msgid "Req. Space"
 msgstr "Req. Space"
-
-#: ./src/installer.ec:1785
-msgid "Resgistering File Types..."
-msgstr "Resgistering File Types..."
 
 #: ./src/installer.ec:291
 #: ./src/installer.ec:292

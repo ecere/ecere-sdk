@@ -10,11 +10,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Basepath: ../\n"
 
-#: ./ecp.ec:1518
+#: ./ecp.ec:1521
 msgid "Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n"
 msgstr "Syntax:\n   ecp [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n"
 
-#: ./ecp.ec:822
+#: ./ecp.ec:825
 msgid "error: could not resolve value %s for enum %s in precompiler\n"
 msgstr "error: could not resolve value %s for enum %s in precompiler\n"
 

@@ -1,5 +1,5 @@
-static define versionString = "Ecere SDK v0.44.10 (pr1)";
-static define dateString = $"July 15th, 2014";
+static define versionString = "Ecere SDK v0.44.10 (pr2)";
+static define dateString = $"August 7th, 2014";
 static define builtOnString = $"built on ";
 static define withoutMinGW = $" (Without MinGW)";
 
@@ -1782,7 +1782,7 @@ class InstallThread : Thread
             associateOptions[AssociateOptions::AssociateIMG].selected)
          {
             ((GuiApplication)__thisModule).Lock();
-            installProgress.installing.caption = $"Resgistering File Types...";
+            installProgress.installing.caption = $"Registering File Types...";
             ((GuiApplication)__thisModule).Unlock();
             ((GuiApplication)__thisModule).SignalEvent();
 

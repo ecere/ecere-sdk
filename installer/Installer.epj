@@ -682,6 +682,13 @@
                         "../samples/audio/S3MPlayer/keven1.s3m"
                      ]
                   },
+                  {
+                     "Folder" : "SineTone",
+                     "Files" : [
+                        "../samples/audio/SineTone/sineTone.ec",
+                        "../samples/audio/SineTone/sineTone.epj"
+                     ]
+                  },
                   "../samples/audio/Ecere Audio Library.odp"
                ]
             },

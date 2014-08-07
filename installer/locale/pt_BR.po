@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: ecere\n"
 "Report-Msgid-Bugs-To: Ricardo Nabinger Sanchez <rnsanchez@wait4.org>\n"
 "POT-Creation-Date: 2014-03-19 01:00+0000\n"
-"PO-Revision-Date: 2014-03-27 23:13-0300\n"
-"Last-Translator: Ricardo Nabinger Sanchez <rnsanchez@wait4.org>\n"
+"PO-Revision-Date: 2014-08-07 00:46-0500\n"
+"Last-Translator: Jerome St-Louis <jerome@ecere.com>\n"
 "Language-Team: Brazilian Portuguese <pt_BR@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -116,8 +116,7 @@ msgid ""
 "By using it you agree to the terms and conditions of their individual "
 "licenses."
 msgstr ""
-"Ao usáa-lo você concorda com os termos e condições das licenças "
-"individuais."
+"Ao usáa-lo você concorda com os termos e condições das licenças individuais."
 
 #: src/installer.ec:313
 msgid "C++ Compiler"
@@ -195,7 +194,8 @@ msgstr "Ecere SDK v0.44.10 -- construído em 9 de março, 2014 "
 msgid ""
 "Ecere Software Development Kit Setup - v0.44.10 \"RyÅan-ji\" 64 Bit Edition"
 msgstr ""
-"Configurador do Ecere Software Development Kit - v0.44.10 \"RyÅan-ji\" Versão 64 Bits"
+"Configurador do Ecere Software Development Kit - v0.44.10 \"RyÅan-ji\" "
+"Versão 64 Bits"
 
 #: src/installer.ec:334
 msgid "Ecere Tutorials"
@@ -337,7 +337,8 @@ msgstr "Rede"
 msgid ""
 "Please wait while the Ecere Software Development Kit is being installed."
 msgstr ""
-"Por favor aguarde enquanto o Ecere Software Development Kit está sendo instalado."
+"Por favor aguarde enquanto o Ecere Software Development Kit está sendo "
+"instalado."
 
 #: ../ide/src/IDESettings.ec:738
 msgid "Portable C Compiler / GNU Make"
@@ -356,7 +357,7 @@ msgid "Req. Space"
 msgstr "Espaço Nec."
 
 #: src/installer.ec:1711
-msgid "Resgistering File Types..."
+msgid "Registering File Types..."
 msgstr "Registrando Tipos de Arquivos..."
 
 #: src/installer.ec:285 src/installer.ec:286
@@ -431,7 +432,8 @@ msgstr "A instalação não foi completada."
 
 #: ../ide/src/licensing.ec:53
 msgid "This program is based on these free open source software components."
-msgstr "Este programa é baseado nos seguintes componentes de software livre e aberto."
+msgstr ""
+"Este programa é baseado nos seguintes componentes de software livre e aberto."
 
 #: src/installer.ec:270
 msgid "Threading"
