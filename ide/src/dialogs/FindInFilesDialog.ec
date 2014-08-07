@@ -1021,8 +1021,8 @@ private:
             }
             if(inLineFindCount && !abortNow)
             {
-               char s1[6] = "      ";
-               char s2[4] = "    ";
+               char s1[7] = "      ";
+               char s2[5] = "    ";
                int len = strlen(line);
                s1[6 - HowManyDigits(lineNum)] = '\0';
                s2[4 - HowManyDigits(col)] = '\0';
