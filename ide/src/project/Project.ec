@@ -1697,16 +1697,17 @@ private:
                   {
                      char * module;
                      module = strstr(line, " ");
-                     if(module) module++;
                      if(module)
                      {
                         char * tokens[1];
-                        char * dashF = strstr(module, "-F ");
+                        char * dashF;
+                        while(*module == ' ') module++;
+                        dashF = strstr(module, "-F ");
                         if(dashF)
                         {
                            dashF+= 3;
                            while(*dashF && *dashF != ' ') dashF++;
-                           while(*dashF && *dashF == ' ') dashF++;
+                           while(*dashF == ' ') dashF++;
                            module = dashF;
                         }
                         Tokenize(module, 1, tokens, forArgsPassing/*(BackSlashEscaping)true*/);
