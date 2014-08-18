@@ -121,7 +121,7 @@ from wherever you obtained them.
                "../deps/jpeg-9a",
                "../deps/libpng-1.4.0",
                "../deps/libungif-4.1.1/lib",
-               "../deps/zlib",
+               "../deps/zlib-1.2.8",
                "../deps/freetype-2.3.12/include",
                "../deps/glext",
                "$(OPENSSL_INCLUDE_DIR)"
