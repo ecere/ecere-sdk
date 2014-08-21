@@ -1,18 +1,18 @@
 # HOST PLATFORM DETECTION
-ifeq "$(OS)" "Windows_NT"
+ifeq ($(OS),Windows_NT)
    HOST_PLATFORM := win32
    WINDOWS_HOST := defined
 else
  _UNAME := $(shell uname)
  UNAME_P := $(shell uname -p)
- ifeq "$(_UNAME)" "FreeBSD"
+ ifeq ($(_UNAME),FreeBSD)
  # Using Linux platform for Unix OSes for now 
  #   HOST_PLATFORM := bsd
     BSD_HOST := defined
     HOST_PLATFORM := linux
     LINUX_HOST := defined
  else
-  ifeq "$(_UNAME)" "Darwin"
+  ifeq ($(_UNAME),Darwin)
      HOST_PLATFORM := apple
      OSX_HOST := defined
   else
@@ -50,13 +50,13 @@ endif
 ifndef PLATFORM
    PLATFORM := $(TARGET_PLATFORM)
 endif
-ifeq "$(TARGET_PLATFORM)" "win32"
+ifeq ($(TARGET_PLATFORM),win32)
    WINDOWS_TARGET := defined
 else
-ifeq "$(TARGET_PLATFORM)" "apple"
+ifeq ($(TARGET_PLATFORM),apple)
    OSX_TARGET := defined
 else
-#ifeq "$(TARGET_PLATFORM)" "bsd"
+#ifeq ($(TARGET_PLATFORM),bsd)
 #   BSD_TARGET := defined
 #else
    LINUX_TARGET := defined
@@ -65,29 +65,29 @@ endif
 endif
 
 # CROSS_TARGET
-ifneq "$(TARGET_PLATFORM)" "$(HOST_PLATFORM)"
+ifneq ($(TARGET_PLATFORM),$(HOST_PLATFORM))
    CROSS_TARGET := defined
 endif
 
 # TARGET_TYPE
-ifeq "$(TARGET_TYPE)" "staticlib"
+ifeq ($(TARGET_TYPE),staticlib)
    STATIC_LIBRARY_TARGET := defined
 else
-ifeq "$(TARGET_TYPE)" "sharedlib"
+ifeq ($(TARGET_TYPE),sharedlib)
    SHARED_LIBRARY_TARGET := defined
 else
-ifeq "$(TARGET_TYPE)" "executable"
+ifeq ($(TARGET_TYPE),executable)
    EXECUTABLE_TARGET := defined
 endif
 endif
 endif
 
-ifeq "$(GCC_PREFIX)" "i586-mingw32msvc-"
+ifeq ($(GCC_PREFIX),i586-mingw32msvc-)
 export ARCH
 ARCH := x32
 endif
 
-ifeq "$(GCC_PREFIX)" "i686-w64-mingw32-"
+ifeq ($(GCC_PREFIX),i686-w64-mingw32-)
 export ARCH
 ARCH := x32
 endif
@@ -95,34 +95,34 @@ endif
 # Accept different things for ARCH but standardize on x32/x64
 # This will be used for object directories
 ifdef ARCH
- ifeq "$(ARCH)" "32"
+ ifeq ($(ARCH),32)
   override ARCH := x32
  endif
- ifeq "$(ARCH)" "x86"
+ ifeq ($(ARCH),x86)
   override ARCH := x32
  endif
- ifeq "$(ARCH)" "i386"
+ ifeq ($(ARCH),i386)
   override ARCH := x32
  endif
- ifeq "$(ARCH)" "i686"
+ ifeq ($(ARCH),i686)
   override ARCH := x32
  endif
- ifeq "$(ARCH)" "64"
+ ifeq ($(ARCH),64)
   override ARCH := x64
  endif
- ifeq "$(ARCH)" "amd64"
+ ifeq ($(ARCH),amd64)
   override ARCH := x64
  endif
- ifeq "$(ARCH)" "x86_64"
+ ifeq ($(ARCH),x86_64)
   override ARCH := x64
  endif
 
  # Set ARCH_FLAGS only if ARCH is set
- ifeq "$(ARCH)" "x64"
+ ifeq ($(ARCH),x64)
   TARGET_ARCH := x86_64
   ARCH_FLAGS := -m64
  endif
- ifeq "$(ARCH)" "x32"
+ ifeq ($(ARCH),x32)
   TARGET_ARCH := i386
   ARCH_FLAGS := -m32
  endif
@@ -138,8 +138,8 @@ endif
 # On Windows/32 bit systems, pass -m32 as TDM-GCC packaged with the installer produces 64 bit executables by default
 # Disable this if your compiler does not accept -m32
 ifndef ARCH
- ifeq "$(HOST_PLATFORM)" "win32"
-  ifeq "$(TARGET_PLATFORM)" "win32"
+ ifeq ($(HOST_PLATFORM),win32)
+  ifeq ($(TARGET_PLATFORM),win32)
    ifndef ProgramFiles(x86)
     ARCH := x32
     TARGET_ARCH := i386
@@ -157,7 +157,7 @@ endif
 # COMPILER SUFFIX
 COMPILER_SUFFIX = $(ARCH_SUFFIX)
 ifdef COMPILER
-ifneq "$(COMPILER)" "default"
+ifneq ($(COMPILER),default)
 COMPILER_SUFFIX = .$(COMPILER)$(ARCH_SUFFIX)
 endif
 endif
