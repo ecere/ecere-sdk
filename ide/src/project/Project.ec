@@ -2566,10 +2566,10 @@ private:
             f.Puts("ifdef WINDOWS_TARGET\n");
             f.Puts("WINDRES := $(GCC_PREFIX)windres\n");
             f.Puts(" ifdef ARCH\n");
-            f.Puts("  ifeq \"$(ARCH)\" \"x32\"\n");
+            f.Puts("  ifeq ($(ARCH),x32)\n");
             f.Puts("WINDRES_FLAGS := -F pe-i386\n");
             f.Puts("  else\n");
-            f.Puts("   ifeq \"$(ARCH)\" \"x64\"\n");
+            f.Puts("   ifeq ($(ARCH),x64)\n");
             f.Puts("WINDRES_FLAGS := -F pe-x86-64\n");
             f.Puts("   endif\n");
             f.Puts("  endif\n");
@@ -2863,7 +2863,7 @@ private:
                      if(ifCount)
                         f.Puts("else\n");
                      ifCount++;
-                     f.Printf("ifeq \"$(TARGET_TYPE)\" \"%s\"\n", TargetTypeToMakefileVariable(type));
+                     f.Printf("ifeq ($(TARGET_TYPE),%s)\n", TargetTypeToMakefileVariable(type));
 
                      GetMakefileTargetFileName(type, target, config);
                      strcpy(temp, targetDir);
@@ -3388,7 +3388,7 @@ private:
                   f.Puts("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
                f.Puts("endif\n");
                f.Puts("else\n");
-               //f.Puts("ifneq \"$(TARGET_ARCH)\" \"x86_64\"\n");
+               //f.Puts("ifneq ($(TARGET_ARCH),x86_64)\n");
                   f.Puts("\t$(UPX) $(UPXFLAGS) $(TARGET)\n");
                //f.Puts("endif\n");
                f.Puts("endif\n");

@@ -749,22 +749,22 @@ $(OBJ)matrixStack.sym: src/gfx/drivers/gl3/matrixStack.ec
 $(OBJ)shading.sym: src/gfx/drivers/gl3/shading.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shading.ec -o $(OBJ)shading.sym
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D8DisplayDriver.sym: src/gfx/drivers/Direct3D8DisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Direct3D8DisplayDriver.ec -o $(OBJ)Direct3D8DisplayDriver.sym
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D9DisplayDriver.sym: src/gfx/drivers/Direct3D9DisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Direct3D9DisplayDriver.ec -o $(OBJ)Direct3D9DisplayDriver.sym
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)DirectDrawDisplayDriver.sym: src/gfx/drivers/DirectDrawDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/DirectDrawDisplayDriver.ec -o $(OBJ)DirectDrawDisplayDriver.sym
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)GDIDisplayDriver.sym: src/gfx/drivers/GDIDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/GDIDisplayDriver.ec -o $(OBJ)GDIDisplayDriver.sym
 endif
@@ -778,7 +778,7 @@ $(OBJ)lfbConvert.sym: src/gfx/drivers/lfbConvert.ec
 $(OBJ)LFBDisplayDriver.sym: src/gfx/drivers/LFBDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/LFBDisplayDriver.ec -o $(OBJ)LFBDisplayDriver.sym
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)NCursesDisplayDriver.sym: src/gfx/drivers/NCursesDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.sym
 endif
@@ -786,27 +786,27 @@ endif
 $(OBJ)OpenGLDisplayDriver.sym: src/gfx/drivers/OpenGLDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.sym
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32BitmapPrinterDisplayDriver.sym: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.sym
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaOpenGLDisplayDriver.sym: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.sym
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32ConsoleDisplayDriver.sym: src/gfx/drivers/Win32ConsoleDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.sym
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32PrinterDisplayDriver.sym: src/gfx/drivers/Win32PrinterDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.sym
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.sym
 endif
@@ -913,32 +913,32 @@ $(OBJ)ReplaceDialog.sym: src/gui/dialogs/ReplaceDialog.ec
 $(OBJ)WindowList.sym: src/gui/dialogs/WindowList.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.sym
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaDispatch.sym: src/gui/drivers/cocoa/CocoaDispatch.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.sym
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaInterface.sym: src/gui/drivers/cocoa/CocoaInterface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.sym
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)NCursesInterface.sym: src/gui/drivers/NCursesInterface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.sym
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32Interface.sym: src/gui/drivers/Win32Interface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/Win32Interface.ec -o $(OBJ)Win32Interface.sym
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32ConsoleInterface.sym: src/gui/drivers/Win32ConsoleInterface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/Win32ConsoleInterface.ec -o $(OBJ)Win32ConsoleInterface.sym
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XInterface.sym: src/gui/drivers/XInterface.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/XInterface.ec -o $(OBJ)XInterface.sym
 endif
@@ -1176,22 +1176,22 @@ $(OBJ)matrixStack.c: src/gfx/drivers/gl3/matrixStack.ec $(OBJ)matrixStack.sym | 
 $(OBJ)shading.c: src/gfx/drivers/gl3/shading.ec $(OBJ)shading.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/gl3/shading.ec -o $(OBJ)shading.c -symbols $(OBJ)
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D8DisplayDriver.c: src/gfx/drivers/Direct3D8DisplayDriver.ec $(OBJ)Direct3D8DisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Direct3D8DisplayDriver.ec -o $(OBJ)Direct3D8DisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D9DisplayDriver.c: src/gfx/drivers/Direct3D9DisplayDriver.ec $(OBJ)Direct3D9DisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Direct3D9DisplayDriver.ec -o $(OBJ)Direct3D9DisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)DirectDrawDisplayDriver.c: src/gfx/drivers/DirectDrawDisplayDriver.ec $(OBJ)DirectDrawDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/DirectDrawDisplayDriver.ec -o $(OBJ)DirectDrawDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)GDIDisplayDriver.c: src/gfx/drivers/GDIDisplayDriver.ec $(OBJ)GDIDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/GDIDisplayDriver.ec -o $(OBJ)GDIDisplayDriver.c -symbols $(OBJ)
 endif
@@ -1205,7 +1205,7 @@ $(OBJ)lfbConvert.c: src/gfx/drivers/lfbConvert.ec $(OBJ)lfbConvert.sym | $(SYMBO
 $(OBJ)LFBDisplayDriver.c: src/gfx/drivers/LFBDisplayDriver.ec $(OBJ)LFBDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/LFBDisplayDriver.ec -o $(OBJ)LFBDisplayDriver.c -symbols $(OBJ)
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)NCursesDisplayDriver.c: src/gfx/drivers/NCursesDisplayDriver.ec $(OBJ)NCursesDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/NCursesDisplayDriver.ec -o $(OBJ)NCursesDisplayDriver.c -symbols $(OBJ)
 endif
@@ -1213,27 +1213,27 @@ endif
 $(OBJ)OpenGLDisplayDriver.c: src/gfx/drivers/OpenGLDisplayDriver.ec $(OBJ)OpenGLDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/OpenGLDisplayDriver.ec -o $(OBJ)OpenGLDisplayDriver.c -symbols $(OBJ)
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32BitmapPrinterDisplayDriver.c: src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec $(OBJ)Win32BitmapPrinterDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Win32BitmapPrinterDisplayDriver.ec -o $(OBJ)Win32BitmapPrinterDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaOpenGLDisplayDriver.c: src/gfx/drivers/CocoaOpenGLDisplayDriver.ec $(OBJ)CocoaOpenGLDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/CocoaOpenGLDisplayDriver.ec -o $(OBJ)CocoaOpenGLDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32ConsoleDisplayDriver.c: src/gfx/drivers/Win32ConsoleDisplayDriver.ec $(OBJ)Win32ConsoleDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Win32ConsoleDisplayDriver.ec -o $(OBJ)Win32ConsoleDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32PrinterDisplayDriver.c: src/gfx/drivers/Win32PrinterDisplayDriver.ec $(OBJ)Win32PrinterDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/Win32PrinterDisplayDriver.ec -o $(OBJ)Win32PrinterDisplayDriver.c -symbols $(OBJ)
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
 endif
@@ -1340,32 +1340,32 @@ $(OBJ)ReplaceDialog.c: src/gui/dialogs/ReplaceDialog.ec $(OBJ)ReplaceDialog.sym 
 $(OBJ)WindowList.c: src/gui/dialogs/WindowList.ec $(OBJ)WindowList.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/dialogs/WindowList.ec -o $(OBJ)WindowList.c -symbols $(OBJ)
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaDispatch.c: src/gui/drivers/cocoa/CocoaDispatch.ec $(OBJ)CocoaDispatch.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaDispatch.ec -o $(OBJ)CocoaDispatch.c -symbols $(OBJ)
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaInterface.c: src/gui/drivers/cocoa/CocoaInterface.ec $(OBJ)CocoaInterface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaInterface.ec -o $(OBJ)CocoaInterface.c -symbols $(OBJ)
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)NCursesInterface.c: src/gui/drivers/NCursesInterface.ec $(OBJ)NCursesInterface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/NCursesInterface.ec -o $(OBJ)NCursesInterface.c -symbols $(OBJ)
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32Interface.c: src/gui/drivers/Win32Interface.ec $(OBJ)Win32Interface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/Win32Interface.ec -o $(OBJ)Win32Interface.c -symbols $(OBJ)
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32ConsoleInterface.c: src/gui/drivers/Win32ConsoleInterface.ec $(OBJ)Win32ConsoleInterface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/Win32ConsoleInterface.ec -o $(OBJ)Win32ConsoleInterface.c -symbols $(OBJ)
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XInterface.c: src/gui/drivers/XInterface.ec $(OBJ)XInterface.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/XInterface.ec -o $(OBJ)XInterface.c -symbols $(OBJ)
 endif
@@ -1657,22 +1657,22 @@ $(OBJ)harfbuzz-impl.o: src/gfx/drivers/harfbuzz/harfbuzz-impl.c
 $(OBJ)harfbuzz-thai.o: src/gfx/drivers/harfbuzz/harfbuzz-thai.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-thai.c -o $(OBJ)harfbuzz-thai.o
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D8DisplayDriver.o: $(OBJ)Direct3D8DisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Direct3D8DisplayDriver.c -o $(OBJ)Direct3D8DisplayDriver.o
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D9DisplayDriver.o: $(OBJ)Direct3D9DisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Direct3D9DisplayDriver.c -o $(OBJ)Direct3D9DisplayDriver.o
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)DirectDrawDisplayDriver.o: $(OBJ)DirectDrawDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)DirectDrawDisplayDriver.c -o $(OBJ)DirectDrawDisplayDriver.o
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)GDIDisplayDriver.o: $(OBJ)GDIDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)GDIDisplayDriver.c -o $(OBJ)GDIDisplayDriver.o
 endif
@@ -1686,7 +1686,7 @@ $(OBJ)lfbConvert.o: $(OBJ)lfbConvert.c
 $(OBJ)LFBDisplayDriver.o: $(OBJ)LFBDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)LFBDisplayDriver.c -o $(OBJ)LFBDisplayDriver.o
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)NCursesDisplayDriver.o: $(OBJ)NCursesDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)NCursesDisplayDriver.c -o $(OBJ)NCursesDisplayDriver.o
 endif
@@ -1694,27 +1694,27 @@ endif
 $(OBJ)OpenGLDisplayDriver.o: $(OBJ)OpenGLDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)OpenGLDisplayDriver.c -o $(OBJ)OpenGLDisplayDriver.o
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32BitmapPrinterDisplayDriver.o: $(OBJ)Win32BitmapPrinterDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Win32BitmapPrinterDisplayDriver.c -o $(OBJ)Win32BitmapPrinterDisplayDriver.o
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaOpenGLDisplayDriver.o: $(OBJ)CocoaOpenGLDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)CocoaOpenGLDisplayDriver.c -o $(OBJ)CocoaOpenGLDisplayDriver.o
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32ConsoleDisplayDriver.o: $(OBJ)Win32ConsoleDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Win32ConsoleDisplayDriver.c -o $(OBJ)Win32ConsoleDisplayDriver.o
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32PrinterDisplayDriver.o: $(OBJ)Win32PrinterDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Win32PrinterDisplayDriver.c -o $(OBJ)Win32PrinterDisplayDriver.o
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 endif
@@ -1821,42 +1821,42 @@ $(OBJ)ReplaceDialog.o: $(OBJ)ReplaceDialog.c
 $(OBJ)WindowList.o: $(OBJ)WindowList.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)WindowList.c -o $(OBJ)WindowList.o
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaDispatch.o: $(OBJ)CocoaDispatch.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)CocoaDispatch.c -o $(OBJ)CocoaDispatch.o
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaEcereBridge.o: src/gui/drivers/cocoa/CocoaEcereBridge.m
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/CocoaEcereBridge.m -o $(OBJ)CocoaEcereBridge.o
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)CocoaInterface.o: $(OBJ)CocoaInterface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)CocoaInterface.c -o $(OBJ)CocoaInterface.o
 endif
 
-ifneq "$(OSX_TARGET)" ""
+ifneq ($(OSX_TARGET),)
 $(OBJ)EcereView.o: src/gui/drivers/cocoa/EcereView.m
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gui/drivers/cocoa/EcereView.m -o $(OBJ)EcereView.o
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)NCursesInterface.o: $(OBJ)NCursesInterface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)NCursesInterface.c -o $(OBJ)NCursesInterface.o
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32Interface.o: $(OBJ)Win32Interface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Win32Interface.c -o $(OBJ)Win32Interface.o
 endif
 
-ifneq "$(WINDOWS_TARGET)" ""
+ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Win32ConsoleInterface.o: $(OBJ)Win32ConsoleInterface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Win32ConsoleInterface.c -o $(OBJ)Win32ConsoleInterface.o
 endif
 
-ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)XInterface.o: $(OBJ)XInterface.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)XInterface.c -o $(OBJ)XInterface.o
 endif

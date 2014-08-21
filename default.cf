@@ -2,7 +2,7 @@ EC_BINS := $(_CF_DIR)$(if $(USE_BOOTSTRAP),compiler/bootstrap/obj/bin.$(HOST_PLA
 
 ifdef WINDOWS_HOST
  # Auto-Select MinGW-w64 when asking for 64 bit
- ifeq "$(ARCH)" "x64"
+ ifeq ($(ARCH),x64)
   GCC_PREFIX=x86_64-w64-mingw32-
  endif
 endif
@@ -24,10 +24,10 @@ export EAR := $(call sys_path,$(_CF_DIR)obj/$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(
 ifdef WINDOWS_TARGET
 WINDRES := $(GCC_PREFIX)windres
  ifdef ARCH
-  ifeq "$(ARCH)" "x32"
+  ifeq ($(ARCH),x32)
 WINDRES_FLAGS := -F pe-i386
   else
-   ifeq "$(ARCH)" "x64"
+   ifeq ($(ARCH),x64)
 WINDRES_FLAGS := -F pe-x86-64
    endif
   endif

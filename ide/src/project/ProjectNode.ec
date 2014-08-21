@@ -451,9 +451,9 @@ private:
    {
       if(!platforms.Find(unknown))  // unknown is "Common"
       {
-         // e.g. ifneq "$(or $(or $(OSX_TARGET),$(LINUX_TARGET)),$(WINDOWS_TARGET))"
+         // e.g. ifneq ($(or $(or $(OSX_TARGET),$(LINUX_TARGET)),$(WINDOWS_TARGET)),)
          int i = 0;
-         f.Puts("ifneq \"");
+         f.Puts("ifneq (");
          for(i = 0; platforms.count && i < platforms.count - 1; i++)
             f.Puts("$(or ");
          i = 0;
@@ -468,7 +468,7 @@ private:
                f.Puts(")");
             i++;
          }
-         f.Puts("\" \"\"\n");
+         f.Puts(",)\n");
          (*ifCount)++;
       }
       else
