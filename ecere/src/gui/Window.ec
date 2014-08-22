@@ -7577,11 +7577,10 @@ public:
                         (*&child.normalAnchor).top = y;
                         (*&child.normalAnchor).right.type = none;
                         (*&child.normalAnchor).bottom.type = none;
-
-                        child.normalSizeAnchor.isClientW = false;
-                        child.normalSizeAnchor.isClientH = false;
-                        child.normalSizeAnchor.size.w = w;
-                        child.normalSizeAnchor.size.h = h;
+                        (*&child.normalSizeAnchor).isClientW = false;
+                        (*&child.normalSizeAnchor).isClientH = false;
+                        (*&child.normalSizeAnchor).size.w = w;
+                        (*&child.normalSizeAnchor).size.h = h;
                         child.anchored = false;
                      }
 
@@ -7752,10 +7751,10 @@ public:
                         (*&child.normalAnchor).top = y;
                         (*&child.normalAnchor).right.type = none;
                         (*&child.normalAnchor).bottom.type = none;
-                        child.normalSizeAnchor.isClientW = false;
-                        child.normalSizeAnchor.isClientH = false;
-                        child.normalSizeAnchor.size.w = w;
-                        child.normalSizeAnchor.size.h = h;
+                        (*&child.normalSizeAnchor).isClientW = false;
+                        (*&child.normalSizeAnchor).isClientH = false;
+                        (*&child.normalSizeAnchor).size.w = w;
+                        (*&child.normalSizeAnchor).size.h = h;
                         child.anchored = false;
                      }
 
@@ -7817,10 +7816,10 @@ public:
                         (*&child.normalAnchor).top = y;
                         (*&child.normalAnchor).right.type = none;
                         (*&child.normalAnchor).bottom.type = none;
-                        child.normalSizeAnchor.isClientW = false;
-                        child.normalSizeAnchor.isClientH = false;
-                        child.normalSizeAnchor.size.w = w;
-                        child.normalSizeAnchor.size.h = h;
+                        (*&child.normalSizeAnchor).isClientW = false;
+                        (*&child.normalSizeAnchor).isClientH = false;
+                        (*&child.normalSizeAnchor).size.w = w;
+                        (*&child.normalSizeAnchor).size.h = h;
                         child.anchored = false;
                      }
 
@@ -9478,7 +9477,7 @@ public:
    property Point clientStart { get { value = clientStart; } };
    property Point absPosition { get { value = absPosition; } };
    property Anchor normalAnchor { get { value = normalAnchor; } };
-   // property Size normalSizeAnchor { get { value = normalSizeAnchor; } };
+   property SizeAnchor normalSizeAnchor { get { value = normalSizeAnchor; } };
    property bool active { get { return (bool)active; } };
    property bool created { get { return (bool)created; } };
    property bool destroyed { get { return (bool)destroyed; } };
