@@ -604,9 +604,10 @@ public:
    }
 
    property Menu parent { set { if(value) value.AddSubMenu(this); } };
-   property const char * text { set { text = (char *)value; /* CopyString(value);*/ } };
+   property const char * text { set { if(copyText) delete text; text = copyText ? CopyString(value) : (char *)value; } };
    property Key hotKey { set { hotKey = value; } };
    property bool hasMargin { set { hasMargin = value; } };
+   property bool copyText { set { copyText = value; } };
 
 private:
    OldList items;
@@ -618,6 +619,7 @@ private:
    int itemCount;
    bool mergeClients;
    bool hasMargin;
+   bool copyText;
 
    Menu()
    {
@@ -626,6 +628,7 @@ private:
 
    ~Menu()
    {
+      if(copyText) delete text;
       Clean(null);
       Clear();
    }
@@ -682,7 +685,10 @@ public class PopupMenu : Window
          }
          master.Update(null);
       }
+      incref window;
+      window.master.Activate();
       result = window.Destroy(0);
+      delete window;
       // This looks like a hack...
       RestoreCaret();
       return result;
