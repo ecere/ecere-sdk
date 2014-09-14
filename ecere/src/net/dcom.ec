@@ -38,6 +38,8 @@ typedef struct in_addr IN_ADDR;
 import "network"
 import "List"
 
+#if !defined(__EMSCRIPTEN__)
+
 // SERVER
 
 static enum DCOMPacketType
@@ -812,3 +814,5 @@ public:
       sendingOut = false;
    }
 }
+
+#endif // !defined(__EMSCRIPTEN__)

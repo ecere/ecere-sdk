@@ -5,7 +5,7 @@ import "instance"
 import "OpenGLDisplayDriver"
 #endif
 
-#if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX)
+#if (defined(__unix__) || defined(__APPLE__)) && !defined(ECERE_MINIGLX) && !defined(__EMSCRIPTEN__)
 
 #undef __BLOCKS__
 default:
@@ -50,16 +50,24 @@ typedef int X11Bool;
 
 #include <X11/Xatom.h>
 #include <X11/Xlib.h>
+#if !defined(__EMSCRIPTEN__)
 #include <X11/Xresource.h>
+#endif
 #include <X11/Xutil.h>
 #include <X11/XKBlib.h>
 #include <X11/keysym.h>
 #include <X11/cursorfont.h>
 #include <fcntl.h>
 #if !defined(ECERE_NO3D) && !defined(ECERE_NOGL)
+#if defined(__EMSCRIPTEN__)
+#include <GL/glfw.h>
+#else
 #include <GL/glx.h>
 #endif
+#endif
+#if !defined(__EMSCRIPTEN__)
 #include <X11/extensions/Xrender.h>
+#endif
 #include <X11/extensions/XShm.h>
 
 #undef Bool

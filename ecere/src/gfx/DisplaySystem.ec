@@ -1,6 +1,8 @@
 namespace gfx;
 
+#if !defined(__EMSCRIPTEN__)
 import "Mutex"
+#endif
 import "Display"
 
 String printingDocumentName;
@@ -168,7 +170,9 @@ public:
    bool Lock()
    {
       bool result = false;
+#if !defined(__EMSCRIPTEN__)
       mutex.Wait();
+#endif
 
       if(!current)
          result = driver.LockSystem(this);
@@ -184,7 +188,9 @@ public:
       if(!current)
          driver.UnlockSystem(this);
 
+#if !defined(__EMSCRIPTEN__)
       mutex.Release();
+#endif
    }
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D)
    // --- Materials List Management ---
@@ -329,5 +335,7 @@ private:
 
    void * driverData;
    int current;
+#if !defined(__EMSCRIPTEN__)
    Mutex mutex { };
+#endif
 };

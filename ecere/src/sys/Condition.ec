@@ -1,8 +1,14 @@
 #if defined(BUILDING_ECERE_COM)
+#if !defined(__EMSCRIPTEN__)
 import "Semaphore"
 #else
 import "ecere"
 #endif
+#else
+import "ecere"
+#endif
+
+#if !defined(__EMSCRIPTEN__)
 
 public class Condition : struct
 {
@@ -56,3 +62,5 @@ public:
       mutex.Wait();
    }
 }
+
+#endif // !defined(__EMSCRIPTEN__)

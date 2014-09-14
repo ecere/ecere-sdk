@@ -25,6 +25,8 @@ import "instance"
 import "Semaphore"
 #endif
 
+#if !defined(__EMSCRIPTEN__)
+
 public enum ThreadPriority
 {
    normal = 0,
@@ -168,3 +170,5 @@ public:
 
    property bool created { get { return started; } };
 }
+
+#endif // !defined(__EMSCRIPTEN__)

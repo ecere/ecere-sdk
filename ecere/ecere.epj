@@ -1873,6 +1873,12 @@ from wherever you obtained them.
                                  }
                               }
                            ]
+                        },
+                        {
+                           "FileName" : "EmscriptenInterface.ec",
+                           "Options" : {
+                              "ExcludeFromBuild" : false
+                           }
                         }
                      ],
                      "Options" : {

@@ -568,6 +568,7 @@ private:
       OldLink slave;
       ResPtr ptr;
 
+#if !defined(__EMSCRIPTEN__)
       if(fileMonitor)
       {
          int i, lockCount = guiApp.lockMutex.lockCount;
@@ -577,6 +578,7 @@ private:
          for(i = 0; i < lockCount; i++)
             guiApp.lockMutex.Wait();
       }
+#endif
 
       if(parent)
       {
@@ -661,7 +663,9 @@ private:
       delete statusBar;
 
       OnDestroyed();
+#if !defined(__EMSCRIPTEN__)
       delete mutex;
+#endif
       delete icon;
 
       if(((subclass(Window))_class).pureVTbl)
@@ -1858,7 +1862,9 @@ private:
                   child.display.width = display.width;
                   child.display.height = display.height;
                   child.display.driverData = display.driverData;
+#if !defined(__EMSCRIPTEN__)
                   child.display.mutex = null;
+#endif
                }
             }
          }
@@ -5968,7 +5974,9 @@ private:
       {
          if(guiApp.fullScreenMode && guiApp.desktop.display)
          {
+#if !defined(__EMSCRIPTEN__)
             guiApp.desktop.mutex.Wait();
+#endif
             guiApp.desktop.display.Lock(true);
 
             Update(extent);
@@ -5992,12 +6000,16 @@ private:
             }
 
             guiApp.desktop.display.Unlock();
+#if !defined(__EMSCRIPTEN__)
             guiApp.desktop.mutex.Release();
+#endif
          }
          else
          {
             Window rootWindow = this.rootWindow;
+#if !defined(__EMSCRIPTEN__)
             rootWindow.mutex.Wait();
+#endif
             display.Lock(true);
 
             Update(extent);
@@ -6005,7 +6017,9 @@ private:
                guiApp.SignalEvent();
             else
             {
+#if !defined(__EMSCRIPTEN__)
                guiApp.waitMutex.Wait();
+#endif
                guiApp.interfaceDriver.Lock(rootWindow);
                if(!rootWindow.style.hidden && rootWindow.dirty)
                {
@@ -6017,10 +6031,14 @@ private:
                   rootWindow.dirty = false;
                }
                guiApp.interfaceDriver.Unlock(rootWindow);
+#if !defined(__EMSCRIPTEN__)
                guiApp.waitMutex.Release();
+#endif
             }
             display.Unlock();
+#if !defined(__EMSCRIPTEN__)
             rootWindow.mutex.Release();
+#endif
          }
       }
    }
@@ -6153,6 +6171,7 @@ private:
 
    void SetupFileMonitor()
    {
+#if !defined(__EMSCRIPTEN__)
       if(!fileMonitor)
       {
          fileMonitor = FileMonitor
@@ -6171,6 +6190,7 @@ private:
          };
          incref fileMonitor;
       }
+#endif
    }
 
 public:
@@ -6221,8 +6241,10 @@ public:
                }
          }
 
+#if !defined(__EMSCRIPTEN__)
          if(parent == guiApp.desktop && !mutex)
             mutex = Mutex {};
+#endif
 
          if(style.isDocument)
          {
@@ -7446,7 +7468,9 @@ public:
       SetupFileMonitor();
       if(fileName)
       {
+#if !defined(__EMSCRIPTEN__)
          fileMonitor.fileName = null;
+#endif
          saving = true;
 
          if(OnSaveFile(fileName))
@@ -7454,7 +7478,9 @@ public:
             //if(OnFileModified != Window::OnFileModified)
             {
                saving = false;
+#if !defined(__EMSCRIPTEN__)
                fileMonitor.fileName = fileName;
+#endif
             }
             return true;
          }
@@ -7489,7 +7515,9 @@ public:
             sprintf(filePath, "Untitled %d", documentID);
             fileDialog.filePath = filePath;
          }
+#if !defined(__EMSCRIPTEN__)
          fileMonitor.fileName = null;
+#endif
 
          fileDialog.type = save;
          fileDialog.text = $"Save As";
@@ -7526,11 +7554,13 @@ public:
                break;
             }
          }
+#if !defined(__EMSCRIPTEN__)
          //if(OnFileModified != Window::OnFileModified && fileName)
          {
             if(fileName)
                fileMonitor.fileName = fileName;
          }
+#endif
          delete fileDialog;
       }
       return (bool)result; // Actually returning result from Yes/NoCancel message box
@@ -9360,8 +9390,10 @@ public:
             UpdateCaption();
 
          // if(style.isDocument)
+#if !defined(__EMSCRIPTEN__)
          if(!saving)
             fileMonitor.fileName = value;
+#endif
       }
       get { return fileName; }
    };
@@ -9669,10 +9701,14 @@ private:
    int numIcons;
    int positionID;
 
+#if !defined(__EMSCRIPTEN__)
    Mutex mutex;
+#endif
    WindowState lastState;
 
+#if !defined(__EMSCRIPTEN__)
    FileMonitor fileMonitor;
+#endif
 
    FontResource setFont, systemFont;
    FontResource usedFont;

@@ -24,6 +24,8 @@ namespace sys;
 
 import "System"
 
+#if !defined(__EMSCRIPTEN__)
+
 public class Semaphore : struct
 {
 #if defined(__WIN32__)
@@ -159,3 +161,5 @@ public:
       get { return maxCount; }
    };
 };
+
+#endif // !defined(__EMSCRIPTEN__)

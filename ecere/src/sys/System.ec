@@ -64,10 +64,12 @@ private:
 #if !defined(ECERE_BOOTSTRAP)
 import "units"
 import "Time"
+#if !defined(__EMSCRIPTEN__)
 import "Mutex"
 import "Semaphore"
 import "FileMonitor"
 import "Thread"
+#endif
 import "Archive"
 import "EARArchive"
 import "Date"
@@ -488,14 +490,18 @@ private struct System
    ErrorLevel errorLevel;
 
 #ifndef ECERE_BOOTSTRAP
+#if !defined(__EMSCRIPTEN__)
    Semaphore eventSemaphore;
+#endif
 
    //FileSystem fileSystems;
 
    // File Monitor
    OldList fileMonitors;
+#if !defined(__EMSCRIPTEN__)
    Mutex fileMonitorMutex;
    Thread fileMonitorThread;
+#endif
    bool systemTerminate;
 #endif
 };

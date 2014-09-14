@@ -27,6 +27,8 @@ namespace sys;
 
 import "instance"
 
+#if !defined(__EMSCRIPTEN__)
+
 // Moved this here from Thread.ec to make compiling ecereCOM in Debug easier
 public int64 GetCurrentThreadID()
 {
@@ -179,3 +181,5 @@ public:
 
    property int lockCount { get { return lockCount; } }
 };
+
+#endif // !defined(__EMSCRIPTEN__)
