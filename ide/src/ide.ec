@@ -3072,7 +3072,7 @@ class IDEWorkSpace : Window
                               {
                                  List<ProjectNode> nodes { };
                                  nodes.Add(node);
-                                 projectView.Compile(node.project, nodes, mods.ctrl && mods.shift, isCObject ? cObject : normal);
+                                 projectView.Compile(node.project, nodes, false, false, isCObject ? cObject : normal);
                                  delete nodes;
                               }
                            }
