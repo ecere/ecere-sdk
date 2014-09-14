@@ -2081,7 +2081,7 @@ private:
       }
    }
 
-   bool Build(BuildType buildType, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
+   bool Build(BuildType buildType, List<ProjectNode> onlyNodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw, SingleFileCompileMode mode)
    {
       bool result = false;
       DualPipe f;
@@ -2146,10 +2146,11 @@ private:
                      targetPlatform,
                      bitDepth ? " ARCH=" : "", bitDepth == 32 ? "32" : bitDepth == 64 ? "64" : "",
                      /*(bitDepth == 64 && compiler.targetPlatform == win32) ? " GCC_PREFIX=x86_64-w64-mingw32-" : (bitDepth == 32 && compiler.targetPlatform == win32) ? " GCC_PREFIX=i686-w64-mingw32-" : */"",
+
                      compilerName,
                      objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
                      topNode.path, justPrint ? " -n" : "", makeFilePath);
-               if(justPrint)
+               if(justPrint || raw)
                   ide.outputView.buildBox.Logf("%s\n", command);
                Execute(command);
             }
@@ -2179,7 +2180,7 @@ private:
 
          // TODO: support justPrint
          sprintf(command, "%s /useenv /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
-         if(justPrint)
+         if(justPrint || raw)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true/*, input = true*/ }, command)))
          {
@@ -2223,7 +2224,7 @@ private:
                (compiler.ccacheEnabled && !eC_Debug) ? "CCACHE=y " : "",
                (compiler.distccEnabled && !eC_Debug) ? "DISTCC=y " : "",
                (String)makeTargets, topNode.path, (justPrint || eC_Debug) ? " -n" : "", makeFilePath);
-         if(justPrint)
+         if(justPrint || raw)
             ide.outputView.buildBox.Logf("%s\n", command);
 
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
@@ -2260,7 +2261,7 @@ private:
                if(found)
                   result = true;
             }
-            else if(justPrint)
+            else if(justPrint || raw)
                result = ProcessPipeOutputRaw(f);
             else
                result = ProcessBuildPipeOutput(f, objDirExp, buildType, onlyNodes, compiler, config, bitDepth);
@@ -2283,7 +2284,7 @@ private:
       return result;
    }
 
-   void Clean(CompilerConfig compiler, ProjectConfig config, int bitDepth, CleanType cleanType, bool justPrint)
+   void Clean(CompilerConfig compiler, ProjectConfig config, int bitDepth, CleanType cleanType, bool justPrint, bool raw)
    {
       char makeFile[MAX_LOCATION];
       char makeFilePath[MAX_LOCATION];
@@ -2313,7 +2314,7 @@ private:
 
          // TODO: justPrint support
          sprintf(command, "%s /useenv /clean /nologo /logcommands %s.sln %s|Win32", compiler.makeCommand, name, config.name);
-         if(justPrint)
+         if(justPrint || raw)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
@@ -2336,14 +2337,14 @@ private:
                objFileExt ? " O=." : "", objFileExt ? objFileExt : "",
                cleanType == realClean ? "real" : "", cleanType == cleanTarget ? "target" : "",
                topNode.path, justPrint ? " -n": "", makeFilePath);
-         if(justPrint)
+         if(justPrint || raw)
             ide.outputView.buildBox.Logf("%s\n", command);
          if((f = DualPipeOpen(PipeOpenMode { output = true, error = true, input = true }, command)))
          {
             ide.outputView.buildBox.Tellf($"Deleting %s%s...",
                   cleanType == realClean ? $"intermediate objects directory" : $"target",
                   cleanType == clean ? $" and object files" : "");
-            if(justPrint)
+            if(justPrint || raw)
                ProcessPipeOutputRaw(f);
             else
                ProcessCleanPipeOutput(f, compiler, config);
@@ -2404,9 +2405,9 @@ private:
       delete target;
    }
 
-   bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, SingleFileCompileMode mode)
+   bool Compile(List<ProjectNode> nodes, CompilerConfig compiler, ProjectConfig config, int bitDepth, bool justPrint, bool raw, SingleFileCompileMode mode)
    {
-      return Build(build, nodes, compiler, config, bitDepth, justPrint, mode);
+      return Build(build, nodes, compiler, config, bitDepth, justPrint, raw, mode);
    }
 #endif
 
