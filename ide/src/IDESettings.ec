@@ -237,13 +237,15 @@ CompilerConfig MakeDefaultCompiler(const char * name, bool readOnly)
    return defaultCompiler;
 }
 
+#ifdef SETTINGS_TEST
+define settingsName = "ecereIDE-SettingsTest";
+#else
+define ideSettingsName = "ecereIDE";
+#endif
+
 class IDESettingsContainer : GlobalSettings
 {
-#ifdef SETTINGS_TEST
-   settingsName = "ecereIDESettingsTest";
-#else
-   settingsName = "ecereIDE";
-#endif
+   settingsName = ideSettingsName;
 
    virtual void OnLoad(GlobalSettingsData data);
 
@@ -270,12 +272,14 @@ private:
 
          strcpy(configFilePath, path);
          PathCat(configFilePath, "Data");
-         PathCat(configFilePath, "ecereIDE.ini");
+         PathCat(configFilePath, ideSettingsName);
+         ChangeExtension(configFilePath, "ini", configFilePath);
 
          strcpy(defaultConfigFilePath, path);
          PathCat(defaultConfigFilePath, "App");
          PathCat(defaultConfigFilePath, "DefaultData");
-         PathCat(defaultConfigFilePath, "ecereIDE.ini");
+         PathCat(defaultConfigFilePath, ideSettingsName);
+         ChangeExtension(defaultConfigFilePath, "ini", defaultConfigFilePath);
 
          if(FileExists(defaultConfigFilePath))
          {
