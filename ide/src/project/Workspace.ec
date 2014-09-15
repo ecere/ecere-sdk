@@ -134,11 +134,20 @@ public:
 
    Timer timer
    {
-      userData = this, delay = 2.5;
+      userData = this, delay = 1.0;
       bool DelayExpired()
       {
-         if(modified)
+         static bool skip = true;
+         if(skip)
+            skip = false;
+         else if(modified)
             Save();
+
+         if(ide.debugStart)
+         {
+            ide.MenuDebugStart(ide.debugStartResumeItem, 0);
+            ide.debugStart = false;
+         }
          return true;
       }
    };
