@@ -28,11 +28,7 @@ define makeDefaultCommand = (__runtimePlatform == win32) ? "mingw32-make" :
 
 class OldIDESettings : GlobalAppSettings
 {
-#ifdef SETTINGS_TEST
-   settingsName = "ecereIDESettingsTest";
-#else
-   settingsName = "ecereIDE";
-#endif
+   settingsName = ideSettingsName;
 
    List<CompilerConfig> compilerConfigs { };
    Array<String> recentFiles { };
