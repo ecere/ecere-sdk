@@ -1638,6 +1638,7 @@ class IDEWorkSpace : Window
    };
 
    bool noParsing;
+   bool debugStart;
 
 #ifdef GDB_DEBUG_GUI
    GDBDialog gdbDialog
@@ -3111,7 +3112,6 @@ class IDEWorkSpace : Window
    {
       int c;
       bool passThrough = false;
-      bool debugStart = false;
       bool debugWorkDir = false;
       char * passDebugWorkDir = null;
       bool openAsText = false;
@@ -3141,7 +3141,7 @@ class IDEWorkSpace : Window
          else if(!strcmp(app.argv[c], "-no-parsing"))
             ide.noParsing = true;
          else if(!strcmp(app.argv[c], "-debug-start"))
-            debugStart = true;
+            ide.debugStart = true;
          else if(!strcmp(app.argv[c], "-debug-work-dir"))
             debugWorkDir = true;
          else if(!strcmp(app.argv[c], "-@"))
@@ -3159,7 +3159,7 @@ class IDEWorkSpace : Window
             GetExtension(app.argv[c], ext);
             isProject = !openAsText && !strcmpi(ext, "epj");
 
-            if(isProject && c > (debugStart ? 2 : 1)) continue;
+            if(isProject && c > 1 + (ide.debugStart ? 1 : 0)) continue;
 
             // Create directory for projects (only)
             if(((dirAttribs = FileExists(parentPath)) && dirAttribs.isDirectory) || isProject)
@@ -3212,8 +3212,6 @@ class IDEWorkSpace : Window
          workspace.debugDir = passDebugWorkDir;
          delete passDebugWorkDir;
       }
-      if(debugStart)
-         ;//MenuDebugStart(debugStartResumeItem, 0); // <-- how TODO this without getting into the app.Wait lock
 
       UpdateToolBarActiveConfigs(false);
       UpdateToolBarActiveCompilers();
