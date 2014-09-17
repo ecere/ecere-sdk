@@ -5,6 +5,7 @@ class GenericEditor : Window
    text = " ";
    tabCycle = true;
    size = { 800, 600 };
+   fullRender = true;
 
    Array<FieldDataBox> dataBoxes { };
    Array<Label> labels { };
@@ -37,13 +38,19 @@ class GenericEditor : Window
          {
             if(strcmpi(f.name, "ID"))
             {
-               FieldDataBox box { editor = editor, field = f, text = f.name, size = { 200, 20 }, position = { 20, y + 16} };
+               int h = 20;
+               FieldDataBox box { editor = editor, field = f, text = f.name, size = { h = h }, anchor = { left = 20, top = y + 16, right = 20 } };
                Label label { editor.editArea, position = { 20, y }, labeledWindow = box };
+               if(eClass_IsDerived(f.type, class(DataList)) || eClass_IsDerived(f.type, class(IdList)) || eClass_IsDerived(f.type, class(MultiLineString)))
+               {
+                  h = 70;
+                  box.size.h = h;
+               }
                incref box;
                incref label;
                dataBoxes.Add(box);
                labels.Add(label);
-               y += 40;
+               y += 20 + h;
             }
          }
       }

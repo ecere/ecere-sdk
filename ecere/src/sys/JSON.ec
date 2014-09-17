@@ -38,7 +38,7 @@ public:
 
    void SkipEmpty()
    {
-      while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t'))
+      while(!f.Eof() && (!ch || ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t' || ch == '/'))
       {
          f.Getc(&ch);
       }

@@ -40,6 +40,11 @@ extern int __ecereVMethodID_class_OnUnserialize;
 extern int __ecereVMethodID_class_OnFree;
 private:
 
+static SerialBuffer collationBuffer1 { };
+static SerialBuffer collationBuffer2 { };
+static char storage1[512];
+static char storage2[512];
+
 int CollationCompare(Class type, int count1, const void * data1, int count2, const void * data2)
 {
    if(type.type == normalClass || type.type ==  noHeadClass)
@@ -66,11 +71,30 @@ int CollationCompare(Class type, int count1, const void * data1, int count2, con
    {
       void * inst1, * inst2;
       int result;
-      SerialBuffer buffer1 { size = count1, count = count1, buffer = (byte *)data1 };
-      SerialBuffer buffer2 { size = count2, count = count2, buffer = (byte *)data2 };
+      //SerialBuffer buffer1 { size = count1, count = count1, buffer = (byte *)data1 };
+      //SerialBuffer buffer2 { size = count2, count = count2, buffer = (byte *)data2 };
 
-      inst1 = new0 byte[type.structSize];
-      inst2 = new0 byte[type.structSize];
+      SerialBuffer buffer1 = collationBuffer1;
+      SerialBuffer buffer2 = collationBuffer2;
+      buffer1.buffer = (byte*)data1;
+      buffer1.size = count1;
+      buffer1.count = count1;
+      buffer1.pos = 0;
+      buffer2.buffer = (byte*)data2;
+      buffer2.size = count2;
+      buffer2.count = count2;
+      buffer2.pos = 0;
+
+      if(type.structSize > 512)
+      {
+         inst1 = new0 byte[type.structSize];
+         inst2 = new0 byte[type.structSize];
+      }
+      else
+      {
+         inst1 = storage1;
+         inst2 = storage2;
+      }
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, inst1, buffer1);
       ((void (*)(void *, void *, void *))(void *)type._vTbl[__ecereVMethodID_class_OnUnserialize])(type, inst2, buffer2);
 
@@ -78,10 +102,13 @@ int CollationCompare(Class type, int count1, const void * data1, int count2, con
 
       buffer1.buffer = null;
       buffer2.buffer = null;
-      delete buffer1;
-      delete buffer2;
-      delete inst1;
-      delete inst2;
+      //delete buffer1;
+      //delete buffer2;
+      if(type.structSize > 512)
+      {
+         delete inst1;
+         delete inst2;
+      }
       return result;
    }
    else
@@ -836,7 +863,7 @@ class SQLiteTable : Table
             result = sqlite3_create_collation_v2(db.db, type.fullName, SQLITE_UTF8, type, CollationCompare, null);
          }
       }
-      if(sqliteType != SQLITE_BLOB && eClass_IsDerived(type, class(eda::Id)))
+      if(sqliteType != SQLITE_BLOB && eClass_IsDerived(type, class(eda::Id)) && type != class(eda::Id))
       {
          Table * table = (Table *)(intptr)eClass_GetProperty(type, "table");
          if(table) refTable = *table;
@@ -1830,6 +1857,7 @@ class SQLiteRow : DriverRow
       if(updateStatement)
          sqlite3_finalize(updateStatement);
       sprintf(command, "UPDATE `%s` SET `%s` = ? WHERE ROWID = ?;", tbl.name, sqlFld.name);
+      // TODO: Shouldn't we cache those update statements per field?
       result = sqlite3_prepare_v2(tbl.db.db, command, -1, &updateStatement, null);
       sqlite3_bind_int64(updateStatement, 2, (sqlite3_int64)rowID);
       BindData(updateStatement, 1, (SQLiteField)fld, data, null);
