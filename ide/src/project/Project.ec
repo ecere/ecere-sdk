@@ -1564,11 +1564,12 @@ private:
                      ; // ignore this new gnu make error but what is it about?
                   else if(strstr(line, compiler.makeCommand) == line && line[lenMakeCommand] == ':')
                   {
-                     const char * module = strstr(line, "No rule to make target `");
+                     const char * moduleBackTick = strstr(line, "No rule to make target `");
+                     const char * module = moduleBackTick ? moduleBackTick : strstr(line, "No rule to make target '");
                      if(module)
                      {
                         char * end;
-                        module = strchr(module, '`') + 1;
+                        module = strchr(module, moduleBackTick ? '`' : '\'') + 1;
                         end = strchr(module, '\'');
                         if(end)
                         {
