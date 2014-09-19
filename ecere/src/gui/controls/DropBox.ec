@@ -121,6 +121,7 @@ public:
       get { return currentRow; }
    };
    property DataRow firstRow { get { return this ? listBox.firstRow : null; } };
+   property DataRow lastRow { get { return this ? listBox.lastRow : null; } };
    property const char * contents { property_category $"Data" set { if(editBox) editBox.contents = value; } get { return editBox ? editBox.contents : null; } };
    property bool editText
    {
