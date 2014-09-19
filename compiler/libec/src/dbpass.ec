@@ -454,6 +454,20 @@ static void ProcessStatement(Statement stmt)
             ProcessStatement(stmt.forStmt.stmt);
          break;
       }
+      case forEachStmt:
+      {
+         Expression exp;
+
+         for(exp = stmt.forEachStmt.exp ? stmt.forEachStmt.exp->first : null; exp; exp = exp.next)
+            ProcessExpression(exp);
+
+         for(exp = stmt.forEachStmt.filter ? stmt.forEachStmt.filter->first : null; exp; exp = exp.next)
+            ProcessExpression(exp);
+
+         if(stmt.forEachStmt.stmt)
+            ProcessStatement(stmt.forEachStmt.stmt);
+         break;
+      }
       case gotoStmt:
          break;
       case continueStmt:
