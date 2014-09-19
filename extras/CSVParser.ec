@@ -138,8 +138,13 @@ public:
 
                if(!inTextQuote && !escaped && ch == options.valueQuotes)
                {
-                  quoted = false;
-                  end = c;
+                  if(buffer[c+1] == options.valueQuotes)
+                     c++;
+                  else
+                  {
+                     quoted = false;
+                     end = c;
+                  }
                }
                if(options.escaped && ch == '\\')
                   escaped = true;
@@ -162,12 +167,19 @@ public:
                   {
                      int len = started ? (end-start) : 0;
                      String value = new char[len+1];
-                     if(options.escaped)
+                     if(options.escaped)  // Escaped with a backslash
                         UnescapeString(value, &buffer[start], len);
                      else
                      {
+                        String dq;
                         memcpy(value, &buffer[start], len);
                         value[len] = 0;
+                        while((dq = strstr(value, "\"\"")))
+                        {
+                           memmove(dq + 1, dq + 2, len - (uint)(dq + 2 - value) + 1);
+                           len--;
+                           value[len] = 0;
+                        }
                      }
                      values.Add(value);
                   }
@@ -209,8 +221,15 @@ public:
             UnescapeString(value, &buffer[start], len);
          else
          {
+            String dq;
             memcpy(value, &buffer[start], len);
             value[len] = 0;
+            while((dq = strstr(value, "\"\"")))
+            {
+               memmove(dq + 1, dq + 2, len - (uint)(dq + 2 - value) + 1);
+               len--;
+               value[len] = 0;
+            }
          }
          values.Add(value);
       }
