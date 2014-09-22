@@ -2955,7 +2955,7 @@ class Debugger
                               !strcmp(wh.type._class.registered.name, "String")))
                      {
 
-                        if(exp.expType.kind != arrayType || exp.hasAddress)
+                        if(exp.expType && (exp.expType.kind != arrayType || exp.hasAddress))
                         {
                            uint64 address;
                            char value[4196];
