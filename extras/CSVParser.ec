@@ -146,7 +146,7 @@ public:
                      end = c;
                   }
                }
-               if(options.escaped && ch == '\\')
+               if(!escaped && options.escaped && ch == '\\')
                   escaped = true;
                else
                   escaped = false;
