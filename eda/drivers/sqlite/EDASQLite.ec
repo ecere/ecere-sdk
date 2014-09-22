@@ -1294,7 +1294,10 @@ class SQLiteRow : DriverRow
             }
          }
          else
+         {
+            printf("SQLite Query Error: %s\n", queryString);
             status = false;
+         }
       }
       else
          curStatement = null;
