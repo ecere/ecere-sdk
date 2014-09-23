@@ -117,6 +117,9 @@ class SQLiteDataSource : DirFilesDataSourceDriver
          {
             bool success = true;
             char command[1024];
+
+            sqlite3_exec(db, "PRAGMA page_size=4096;", null, null, null);
+
             sprintf(command, "CREATE TABLE eda_table_fields(Table_Name TEXT, Name TEXT, Type TEXT, Length INT);");
             sqlite3_exec(db, command, null, null, null);
 
