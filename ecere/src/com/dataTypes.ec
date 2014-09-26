@@ -1996,25 +1996,63 @@ static char * Float_OnGetString(Class _class, float * data, char * string, void 
    {
       int c;
       int last = 0;
+      bool checkFor1 = true, checkFor9 = true;
       int numDigits = 7, num = 1;
+      int first9 = 0;
       char format[10];
+      char * dot;
+      int len;
       while(numDigits && num < f) numDigits--, num *= 10;
       sprintf(format, "%%.%df", numDigits);
 
       //sprintf(string, "%f", f);
       sprintf(string, format, f);
+      dot = strchr(string, '.');
 
-      c = strlen(string)-1;
+      len = strlen(string);
+      c = len-1;
       for( ; c >= 0; c--)
       {
-         if(string[c] != '0')
-            last = Max(last, c);
-         if(string[c] == '.')
+         char ch = string[c];
+         if(ch != '0' && dot)
+         {
+            if(ch == '1' && string + c - dot >= 6 && c == len - 1 && checkFor1)
+               checkFor1 = false;
+            else if(ch == '9' && string + c - dot >= 6 && c == len - 1 && checkFor9)
+               first9 = c;
+            else
+            {
+               last = Max(last, c);
+               checkFor9 = false;
+               checkFor1 = false;
+            }
+         }
+         if(ch == '.')
          {
             if(last == c)
                string[c] = 0;
             else
+            {
                string[last+1] = 0;
+               if(first9)
+               {
+                  while(--first9 > 0)
+                  {
+                     if(first9 != c)
+                        if(string[first9] < '9')
+                        {
+                           string[first9]++;
+                           break;
+                        }
+                  }
+                  if(first9 < c)
+                  {
+                     string[c-1] = '1';
+                     first9 = c;
+                  }
+                  string[first9] = 0;
+               }
+            }
             break;
          }
       }
