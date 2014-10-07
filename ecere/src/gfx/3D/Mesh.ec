@@ -593,6 +593,11 @@ public:
       return result;
    }
 
+   void * GetData()
+   {
+      return data;
+   }
+
 private:
 
    void SetMinMaxRadius(void)
