@@ -9870,33 +9870,36 @@ class WindowControllerInterface : ControllableWindow
 {
    bool OnKeyDown(Key key, unichar ch)
    {
-      bool result = ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyDown)((Window)controller.controlled, controller, key, ch);
+      bool result = controller.OnKeyDown ? ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyDown)((Window)controller.controlled, controller, key, ch) : true;
       if(result)
       {
          bool (* onKeyDown)(Window, Key, unichar) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyDown];
-         result = onKeyDown ? onKeyDown(controller.window, key, ch) : true;
+         if(onKeyDown)
+            result = onKeyDown(controller.window, key, ch);
       }
       return result;
    }
 
    bool OnKeyUp(Key key, unichar ch)
    {
-      bool result = ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyUp)((Window)controller.controlled, controller, key, ch);
+      bool result = controller.OnKeyUp ? ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyUp)((Window)controller.controlled, controller, key, ch) : true;
       if(result)
       {
          bool (* onKeyUp)(Window, Key, unichar) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp];
-         result = onKeyUp ? onKeyUp(controller.window, key, ch) : true;
+         if(onKeyUp)
+            result = onKeyUp(controller.window, key, ch);
       }
       return result;
    }
 
    bool OnKeyHit(Key key, unichar ch)
    {
-      bool result = ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyHit)((Window)controller.controlled, controller, key, ch);
+      bool result = controller.OnKeyHit ? ((bool(*)(Window, WindowController, Key, unichar))(void *)controller.OnKeyHit)((Window)controller.controlled, controller, key, ch) : true;
       if(result)
       {
          bool (* onKeyHit)(Window, Key, unichar) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyHit];
-         result = onKeyHit ? onKeyHit(controller.window, key, ch) : true;
+         if(onKeyHit)
+            result = onKeyHit(controller.window, key, ch);
       }
       return result;
    }
@@ -9905,114 +9908,177 @@ class WindowControllerInterface : ControllableWindow
    {
       bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMouseMove)((Window)controller.controlled, controller, x, y, mods);
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove])(controller.window, x, y, mods);
+      {
+         bool(* onMouseMove)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMouseMove];
+         if(onMouseMove)
+            result = onMouseMove(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnLeftButtonDown(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnLeftButtonDown)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnLeftButtonDown ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnLeftButtonDown)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown])(controller.window, x, y, mods);
+      {
+         bool(* onLeftButtonDown)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown];
+         if(onLeftButtonDown)
+            result = onLeftButtonDown(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnLeftButtonUp(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnLeftButtonUp)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnLeftButtonUp ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnLeftButtonUp)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp])(controller.window, x, y, mods);
+      {
+         bool(* onLeftButtonUp)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonUp];
+         if(onLeftButtonUp)
+            result = onLeftButtonUp(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnLeftDoubleClick(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnLeftDoubleClick)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnLeftDoubleClick ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnLeftDoubleClick)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick])(controller.window, x, y, mods);
+      {
+         bool(* onLeftDoubleClick)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick];
+         if(onLeftDoubleClick)
+            result = onLeftDoubleClick(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnRightButtonDown(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnRightButtonDown)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnRightButtonDown ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnRightButtonDown)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown])(controller.window, x, y, mods);
+      {
+         bool(* onRightButtonDown)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown];
+         if(onRightButtonDown)
+            result = onRightButtonDown(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnRightButtonUp(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnRightButtonUp)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnRightButtonUp ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnRightButtonUp)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp])(controller.window, x, y, mods);
+      {
+         bool(* onRightButtonUp)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonUp];
+         if(onRightButtonUp)
+            result = onRightButtonUp(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnRightDoubleClick(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnRightDoubleClick)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnRightDoubleClick ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnRightDoubleClick)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleClick])(controller.window, x, y, mods);
+      {
+         bool(* onRightDoubleClick)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleClick];
+         if(onRightDoubleClick)
+            result = onRightDoubleClick(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnMiddleButtonDown(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMiddleButtonDown)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnMiddleButtonDown ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMiddleButtonDown)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown])(controller.window, x, y, mods);
+      {
+         bool(* onMiddleButtonDown)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown];
+         if(onMiddleButtonDown)
+            result = onMiddleButtonDown(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnMiddleButtonUp(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMiddleButtonUp)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnMiddleButtonUp ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMiddleButtonUp)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonUp])(controller.window, x, y, mods);
+      {
+         bool(* onMiddleButtonUp)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonUp];
+         if(onMiddleButtonUp)
+            result = onMiddleButtonUp(controller.window, x, y, mods);
+      }
       return result;
    }
 
    bool OnMiddleDoubleClick(int x, int y, Modifiers mods)
    {
-      bool result = ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMiddleDoubleClick)((Window)controller.controlled, controller, x, y, mods);
+      bool result = controller.OnMiddleDoubleClick ? ((bool(*)(Window, WindowController, int, int, Modifiers))(void *)controller.OnMiddleDoubleClick)((Window)controller.controlled, controller, x, y, mods) : true;
       if(result)
-         result = ((bool(*)(Window, int, int, Modifiers))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleDoubleClick])(controller.window, x, y, mods);
+      {
+         bool(* onMiddleDoubleClick)(Window, int, int, Modifiers) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleDoubleClick];
+         if(onMiddleDoubleClick)
+            onMiddleDoubleClick(controller.window, x, y, mods);
+      }
       return result;
    }
 
    void OnResize(int width, int height)
    {
-      ((void(*)(Window, WindowController, int, int))(void *)controller.OnResize)((Window)controller.controlled, controller, width, height);
-      ((void(*)(Window, int, int))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnResize])(controller.window, width, height);
+      if(controller.OnResize)
+         ((void(*)(Window, WindowController, int, int))(void *)controller.OnResize)((Window)controller.controlled, controller, width, height);
+      {
+         void(* onResize)(Window, int, int) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnResize];
+         if(onResize)
+            onResize(controller.window, width, height);
+      }
    }
 
    void OnRedraw(Surface surface)
    {
-      ((void(*)(Window, WindowController, Surface))(void *)controller.OnRedraw)((Window)controller.controlled, controller, surface);
-      ((void(*)(Window, Surface))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw])(controller.window, surface);
+      if(controller.OnRedraw)
+         ((void(*)(Window, WindowController, Surface))(void *)controller.OnRedraw)((Window)controller.controlled, controller, surface);
+      {
+         void(* onRedraw)(Window, Surface) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRedraw];
+         if(onRedraw)
+            onRedraw(controller.window, surface);
+      }
    }
 
    bool OnCreate()
    {
-      bool result = ((bool(*)(Window, WindowController))(void *)controller.OnCreate)((Window)controller.controlled, controller);
+      bool result = controller.OnCreate ? ((bool(*)(Window, WindowController))(void *)controller.OnCreate)((Window)controller.controlled, controller) : true;
       if(result)
-         result = ((bool(*)(Window))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnCreate])(controller.window);
+      {
+         bool(* onCreate)(Window) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnCreate];
+         if(onCreate)
+            result = onCreate(controller.window);
+      }
       return result;
    }
 
    bool OnLoadGraphics()
    {
-      bool result = ((bool(*)(Window, WindowController))(void *)controller.OnLoadGraphics)((Window)controller.controlled, controller);
+      bool result = controller.OnLoadGraphics ? ((bool(*)(Window, WindowController))(void *)controller.OnLoadGraphics)((Window)controller.controlled, controller) : true;
       if(result)
-         result = ((bool(*)(Window))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLoadGraphics])(controller.window);
+      {
+         bool(* onLoadGraphics)(Window) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLoadGraphics];
+         if(onLoadGraphics)
+            result = onLoadGraphics(controller.window);
+      }
       return result;
    }
 
    void OnUnloadGraphics()
    {
-      ((void(*)(Window, WindowController))(void *)controller.OnUnloadGraphics)((Window)controller.controlled, controller);
-      ((void(*)(Window))(void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnUnloadGraphics])(controller.window);
+      if(controller.OnUnloadGraphics)
+         ((void(*)(Window, WindowController))(void *)controller.OnUnloadGraphics)((Window)controller.controlled, controller);
+      {
+         void(* onUnloadGraphics)(Window) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnUnloadGraphics];
+         if(onUnloadGraphics)
+            onUnloadGraphics(controller.window);
+      }
    }
 }
 
