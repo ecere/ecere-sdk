@@ -186,7 +186,7 @@ public class ToolTip : Window
          toolTip.closeTimer.Stop();
          if(!mods.isSideEffect && !toolTip.created && rootWindow.active)
             toolTip.timer.Start();
-         return toolTip.OrigOnMouseOver(this, x, y, mods);
+         return toolTip.OrigOnMouseOver ? toolTip.OrigOnMouseOver(this, x, y, mods) : true;
       }
       return true;
    }
@@ -198,7 +198,7 @@ public class ToolTip : Window
       {
          toolTip.timer.Stop();
          toolTip.closeTimer.Start();
-         return toolTip.OrigOnMouseLeave(this, mods);
+         return toolTip.OrigOnMouseLeave ? toolTip.OrigOnMouseLeave(this, mods) : true;
       }
       return true;
    }
@@ -210,7 +210,7 @@ public class ToolTip : Window
       {
          toolTip.timer.Stop();
          toolTip.Destroy(0);
-         return toolTip.OrigOnLeftButtonDown(this, x, y, mods);
+         return toolTip.OrigOnLeftButtonDown ? toolTip.OrigOnLeftButtonDown(this, x, y, mods) : true;
       }
       return true;
    }
@@ -227,7 +227,7 @@ public class ToolTip : Window
             toolTip.timer.Stop();
             toolTip.timer.Start();
          }
-         return toolTip.OrigOnMouseMove(this, x, y, mods);
+         return toolTip.OrigOnMouseMove ? toolTip.OrigOnMouseMove(this, x, y, mods) : true;
       }
       return true;
    }
