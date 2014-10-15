@@ -3521,7 +3521,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glEnable(GL_FOG);
 
       // Maps
-      if(material.baseMap && mesh.texCoords)
+      if(material.baseMap && (mesh.texCoords || mesh.flags.texCoords1))
       {
          Bitmap map = material.baseMap;
          glEnable(GL_TEXTURE_2D);
@@ -3836,7 +3836,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glVertexPointer(3, mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, 0, vboAvailable ? null : mesh.vertices);
 
             // *** Normals Stream ***
-            if(mesh.normals)
+            if(mesh.normals || mesh.flags.normals)
             {
                glEnableClientState(GL_NORMAL_ARRAY);
                GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
@@ -3846,7 +3846,7 @@ class OpenGLDisplayDriver : DisplayDriver
                glDisableClientState(GL_NORMAL_ARRAY);
 
             // *** Texture Coordinates Stream ***
-            if(mesh.texCoords)
+            if(mesh.texCoords || mesh.flags.texCoords1)
             {
                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
@@ -3856,7 +3856,7 @@ class OpenGLDisplayDriver : DisplayDriver
                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
             // *** Color Stream ***
-            if(mesh.colors)
+            if(mesh.colors || mesh.flags.colors)
             {
                glEnableClientState(GL_COLOR_ARRAY);
                GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
@@ -3870,21 +3870,21 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             GLBindBuffer( GL_ARRAY_BUFFER_ARB, 0);
             glVertexPointer(3,mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT,0,mesh.vertices);
-            if(mesh.normals && !display.display3D.collectingHits)
+            if((mesh.normals || mesh.flags.normals) && !display.display3D.collectingHits)
             {
                glEnableClientState(GL_NORMAL_ARRAY);
                glNormalPointer(mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, 0, mesh.normals);
             }
             else
                glDisableClientState(GL_NORMAL_ARRAY);
-            if(mesh.texCoords && !display.display3D.collectingHits)
+            if((mesh.texCoords || mesh.flags.texCoords1) && !display.display3D.collectingHits)
             {
                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                glTexCoordPointer(2, GL_FLOAT, 0, mesh.texCoords);
             }
             else
                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-            if(mesh.colors && !display.display3D.collectingHits)
+            if((mesh.colors || mesh.flags.colors) && !display.display3D.collectingHits)
             {
                glEnableClientState(GL_COLOR_ARRAY);
                glColorPointer(4, GL_FLOAT, 0, mesh.colors);
