@@ -931,11 +931,8 @@ class Win32Interface : Interface
             case WM_MOVE:
             {
                int x, y, w, h;
-               WINDOWPLACEMENT placement = { 0 };
                RECT rcWindow;
-               placement.length = sizeof(WINDOWPLACEMENT);
                GetWindowRect(windowHandle, &rcWindow);
-               GetWindowPlacement(windowHandle, &placement);
 
                x = rcWindow.left - desktopX;
                y = rcWindow.top  - desktopY;
