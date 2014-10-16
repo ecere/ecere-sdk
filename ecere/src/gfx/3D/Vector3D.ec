@@ -161,6 +161,16 @@ public /*inline */float FastInvSqrt(float x)
   return x * (1.5f - (halfX * x * x));
 }
 
+public /*inline */double FastInvSqrtDouble(double x)
+{
+   union { double d; uint64 u; } i;
+   double halfX = x / 2;
+   i.d = x;
+   i.u = 0x5fe6eb50c7b537a9LL - (i.u >> 1);
+   x = i.d;
+   return x * (1.5 - (halfX * x * x));
+}
+
 public struct Vector3Df
 {
    float x, y, z;
