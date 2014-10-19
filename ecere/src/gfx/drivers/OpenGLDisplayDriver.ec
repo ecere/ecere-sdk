@@ -1177,7 +1177,19 @@ void GLBindBuffer(int target, uint buffer)
 #endif
 }
 
-void GLBufferData(int type, GLenum target, int size, const GLvoid *data, GLenum usage)
+public void GLVertexPointer(int numCoords, int glType, int stride, void *pointer, int numVertices)
+{
+#ifdef __ANDROID__
+   if(type == GL_DOUBLE)
+      glesVertexPointerd(numCoords, stride, pointer, numVertices);
+   else if(type == GL_UNSIGNED_INT)
+      glesVertexPointeri(numCoords, stride, pointer, numVertices);
+   else
+#endif
+      glVertexPointer(numCoords, glType, stride, pointer);
+}
+
+public void GLBufferData(int type, GLenum target, int size, const GLvoid *data, GLenum usage)
 {
 #ifdef __ANDROID__
    if(type == GL_DOUBLE)
