@@ -140,7 +140,6 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    void Free()
    {
       MapNode<MT, V> node = root;
-      uintsize offset = class(MT).type == structClass ? class(MT).structSize - sizeof(node.AVLNode::key) : 0;
       while(node)
       {
          if(node.left)
@@ -158,8 +157,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
          else
          {
             MapNode<MT, V> parent = node.parent;
-            MapNode<MT, V> n = (MapNode<MT, V>)((byte *)node + offset);
-            delete n.value;
+            V value = GetData(node);
+            delete value;
             delete node;
 
             node = parent;
@@ -171,14 +170,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
 
    void Delete(MapNode<MT, V> node)
    {
-      MapNode<MT, V> n = node;
-
-      // Adjust node pointer for non-standard AVLNode
-      if(class(MT).type == structClass)
-         n = (MapNode<MT, V>)(((byte *) node) + class(MT).structSize - sizeof(node.AVLNode::key));
-
-      delete n.value;
-
+      V value = GetData(node);
+      delete value;
       Remove(node);
    }
 
