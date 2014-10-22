@@ -705,6 +705,10 @@ public class Font : struct
       }
 #endif
    }
+   public property int ascent
+   {
+      get { return (int)(this ? ascent * scale : 0); }
+   }
 };
 
 public class LFBDisplay : struct
