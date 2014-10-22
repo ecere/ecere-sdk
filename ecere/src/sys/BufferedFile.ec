@@ -344,19 +344,18 @@ public BufferedFile FileOpenBuffered(const char * fileName, FileOpenMode mode)
    BufferedFile result = null;
    //if(mode == read)
    {
-      BufferedFile f {};
-      if(f)
+      File handle = FileOpen(fileName, mode);
+      if(handle)
       {
-         f.mode = mode;
-         f.pos = 0;
-         if((f.handle = FileOpen(fileName, mode)))
+         BufferedFile f
          {
-            f.handle.buffered = true;
-            f.fileSize = f.handle.GetSize();
-            result = f;
-         }
-         if(!result)
-            delete f;
+            mode = mode;
+            pos = 0;
+            handle = handle;
+            fileSize = handle.GetSize();
+         };
+         handle.buffered = true;
+         result = f;
       }
    }
    return result;
