@@ -109,6 +109,12 @@ public enum AlphaWriteMode
    blend
 };
 
+public struct FontOutline
+{
+   float size, fade;
+   ColorAlpha color;
+};
+
 public class Surface
 {
 public:
@@ -131,6 +137,7 @@ private:
    bool blend;
    bool writeColor;
    ColorAlpha blitTint;
+   FontOutline outline;
 
    blitTint = white;
 
@@ -161,6 +168,11 @@ public:
       {
          return ((LFBSurface)driverData).bitmap;
       }
+   }
+   property FontOutline outline
+   {
+      set { outline = value; }
+      get { value = outline; }
    }
 
    ColorAlpha GetPixel(int x, int y)

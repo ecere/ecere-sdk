@@ -51,6 +51,7 @@ class SurfaceData : struct
    bool opaqueText;
    int  xOffset;
    bool writingText;
+   bool writingOutline;
 
    float foreground[4], background[4], bitmapMult[4];
 };

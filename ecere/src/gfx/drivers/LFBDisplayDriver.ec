@@ -62,6 +62,92 @@ import "Direct3D9DisplayDriver"
 
 #if !defined(ECERE_NOTRUETYPE)
 
+#if !defined(ECERE_VANILLA)
+import "edtaa3func"
+
+static void ComputeOutline(byte *out, byte *src, uint w, uint h, float size, float fade)
+{
+   uint i, numPixels = w * h;
+   short * distx = new short[2 * numPixels], * disty = distx + numPixels;
+   float * data = new0 float[4 * numPixels], * gx = data + numPixels, * gy = gx + numPixels, * dist = gy + numPixels;
+   float rb = Max(1.5f, size), ra = rb - (rb-1)*fade - 1;
+   float inv_rw = 1/(rb-ra);
+
+   for(i = 0; i < numPixels; i++)
+      data[i] = src[i] / 255;
+
+   computegradient(data, w, h, gx, gy);
+   edtaa3(data, gx, gy, w, h, distx, disty, dist);
+
+   for(i = 0; i < numPixels; i++)
+   {
+      float value = 1 - Max(0.0f, Min(1.0f, (dist[i]-ra)*inv_rw));
+      out[i] = (byte)(255 * value * value);
+   }
+   delete distx;
+   delete data;
+}
+
+static void BlitOutline(byte * dst, int dx, int dy, int w, int h, byte * src, int sx, int sy, int sw, int sh, int srcStride)
+{
+   sh = Min(h - dy, sh);
+   sw = Min(w - dx, sw);
+   if(sw > 0 && sh > 0)
+   {
+      int y;
+      for(y = 0; y < sh; y++)
+         memcpy(dst + w * (dy+y) + dx, src + srcStride * (sy+y) + sx, sw);
+   }
+}
+
+static void MeasureOutline(byte * image, int w, int h, int * _x1, int * _y1, int * _x2, int * _y2)
+{
+   int x1 = MAXINT, y1 = MAXINT, x2 = MININT, y2 = MININT;
+   int x, y;
+   for(x = 0; x < w && x1 == MAXINT; x++)
+   {
+      for(y = 0; y < h; y++)
+         if(image[(y*w)+x])
+         {
+            x1 = x;
+            break;
+         }
+   }
+   for(x = w-1; x >= 0 && x2 == MININT; x--)
+   {
+      for(y = 0; y < h; y++)
+         if(image[(y*w)+x])
+         {
+            x2 = x;
+            break;
+         }
+   }
+   for(y = 0; y < h && y1 == MAXINT; y++)
+   {
+      for(x = 0; x < w; x++)
+         if(image[(y*w)+x])
+         {
+            y1 = y;
+            break;
+         }
+   }
+   for(y = h-1; y >= 0 && y2 == MININT; y--)
+   {
+      for(x = 0; x < w; x++)
+         if(image[(y*w)+x])
+         {
+            y2 = y;
+            break;
+         }
+   }
+   *_x1 = x1;
+   *_y1 = y1;
+   *_x2 = x2;
+   *_y2 = y2;
+}
+
+#endif
+
 #define MAX_FONT_LINK_ENTRIES   10
 
 static HB_Script theCurrentScript;
@@ -348,6 +434,8 @@ class GlyphPack : BTNode
 {
    GlyphInfo glyphs[256];
    Bitmap bitmap { };
+   BinaryTree outlines { };
+   int cellWidth, cellHeight;
 
    void Render(Font font, int startFontEntry, DisplaySystem displaySystem)
    {
@@ -471,11 +559,17 @@ class GlyphPack : BTNode
          maxHeight = Max(maxHeight, ((faces[c]->glyph->metrics.height + 64 + (64 - (faces[c]->glyph->metrics.height & 0x3F))) >> 6));
          //maxHeight = Max(maxHeight, ((faces[c]->glyph->metrics.height) >> 6));
       }
-      cellWidth = maxWidth;
-      cellHeight = maxHeight;
+      this.cellWidth = cellWidth = maxWidth;
+      this.cellHeight = cellHeight = maxHeight;
 
-      width = pow2i(maxWidth * 16);
-      height = pow2i(maxHeight * 8);
+      width = maxWidth * 16;
+      height = maxHeight * 8;
+
+      if(true)
+      {
+         width = pow2i(height * 16);
+         height = pow2i(height * 8);
+      }
 
       if(bitmap.Allocate(null, width, height, 0, pixelFormatAlpha, false /*true*/))
       {
@@ -606,6 +700,7 @@ class GlyphPack : BTNode
 
          if(displaySystem && displaySystem.pixelFormat != pixelFormat4) // TODO: Add none PixelFormat
          {
+            bitmap.keepData = true; // For outlines
             displaySystem.Lock();
 #if defined(__WIN32__)
             // Is this check still required?
@@ -617,6 +712,167 @@ class GlyphPack : BTNode
             displaySystem.Unlock();
          }
       }
+#endif
+   }
+
+   void RenderOutline(GlyphPack outline, Font font, DisplaySystem displaySystem)
+   {
+#if !defined(ECERE_NOTRUETYPE) && !defined(ECERE_VANILLA)
+      unichar c;
+      int pCellWidth = this.cellWidth, pCellHeight = this.cellHeight;
+      int cellWidth, cellHeight;
+      int width, height;
+      uintptr key = outline.key;
+      float outlineSize = (float)(key >> 16);
+      float fade = ((uint32)key & 0xFFFF) / 255.f;
+      GlyphInfo * widest = null, * highest = null;
+      uint widestIndex = 0, highestIndex = 0;
+      GlyphInfo * glyph;
+      int minX1 = MAXINT, minY1 = MAXINT;
+      int maxX2 = MININT, maxY2 = MININT;
+      int timesBigger = 2;
+      byte * bigger = new byte[pCellWidth * pCellHeight * timesBigger*timesBigger];
+      byte * field = new byte[pCellWidth * pCellHeight * timesBigger*timesBigger];
+      int ox, oy;
+
+      // Test biggest glyphs to determine cell width & height:
+      for(c = 0; c < 128; c++)
+      {
+         glyph = &glyphs[c];
+         if(glyph->w > (widest ? widest->w : 0))
+            widest = glyph, widestIndex = c;
+         if(glyph->h > (highest ? highest->h : 0))
+            highest = glyph, highestIndex = c;
+      }
+
+      cellWidth = 0;
+      cellHeight = 0;
+      for(glyph = widest; glyph; glyph = (glyph == widest && glyph != highest) ? highest : null)
+      {
+         int index = (glyph == widest) ? widestIndex : highestIndex;
+         int x = (index & 0xF) * pCellWidth, y = (index >> 4) * pCellHeight;
+         int w = pCellWidth * timesBigger, h = pCellHeight * timesBigger;
+         int x1,y1,x2,y2;
+
+         memset(bigger, 0, w * h);
+         BlitOutline(bigger, (w - pCellWidth)/2, (h - pCellHeight)/2, w, h, bitmap.picture, x, y, pCellWidth, pCellHeight, bitmap.width);
+         ComputeOutline(field, bigger, w, h, outlineSize, fade);
+         MeasureOutline(field, w, h, &x1, &y1, &x2, &y2);
+         minX1 = Min(minX1, x1);
+         minY1 = Min(minY1, y1);
+         maxX2 = Max(maxX2, x2);
+         maxY2 = Max(maxY2, y2);
+      }
+      {
+         int x1 = (timesBigger*pCellWidth - pCellWidth)  / 2,  x2 = x1 + pCellWidth-1;
+         int y1 = (timesBigger*pCellHeight - pCellHeight) / 2,  y2 = y1 + pCellHeight-1;
+         ox = -Max(0, x1 - minX1);
+         oy = -Max(0, y1 - minY1);
+         cellWidth  = pCellWidth  - ox + Max(0, maxX2 - x2);
+         cellHeight = pCellHeight - oy + Max(0, maxY2 - y2);
+      }
+
+      width = cellWidth * 16;
+      height = cellHeight * 8;
+      if(true) //TEXTURES_MUST_BE_POWER_OF_2)
+      {
+          width = pow2i(width);
+          height = pow2i(height);
+      }
+
+      if(outline.bitmap.Allocate(null, width, height, 0, pixelFormatAlpha, false))
+      {
+         Bitmap bitmap = outline.bitmap;
+         byte * picture = (byte *)bitmap.picture;
+         memset(picture, 0, width * height);
+
+         for(c = 0; c < 128; c++)
+         {
+            GlyphInfo * glyph = &outline.glyphs[c];
+            int x1 = MAXINT, y1 = MAXINT, x2 = MININT, y2 = MININT;
+            int w = 0, h = 0;
+            memset(bigger, 0, cellWidth * cellHeight);
+            BlitOutline(bigger, -ox, -oy, cellWidth, cellHeight,
+                 this.bitmap.picture,
+                 (c & 0xF) * pCellWidth, (c >> 4) * pCellHeight,
+                 pCellWidth, pCellHeight,
+                 this.bitmap.width);
+
+            // Don't waste time on empty glyphs
+            if(glyphs[c].w)
+            {
+               ComputeOutline(field, bigger, cellWidth, cellHeight, outlineSize, fade);
+               MeasureOutline(field, cellWidth, cellHeight, &x1, &y1, &x2, &y2);
+               if(x2 > x1) w = x2-x1+1;
+               if(y2 > y1) h = y2-y1+1;
+            }
+            else
+               memset(field, 0, cellWidth * cellHeight);
+
+            glyph->x = (c & 0xF) * cellWidth;
+            glyph->y = (c >> 4)  * cellHeight;
+            BlitOutline(picture, glyph->x, glyph->y, width, height, field, 0, 0, cellWidth, cellHeight, cellWidth);
+
+            glyph->glyphNo = glyphs[c].glyphNo;
+            glyph->scale = glyphs[c].scale;
+            glyph->left = glyphs[c].left + ox;
+            glyph->top = glyphs[c].top + oy;
+            if(w) { glyph->x += x1; glyph->left += x1; }
+            if(h) { glyph->y += y1; glyph->top  += y1; }
+            glyph->w = w;
+            glyph->h = h;
+            glyph->bx = glyphs[c].bx;
+            glyph->by = glyphs[c].by;
+            glyph->ax = glyphs[c].ax;
+            glyph->ay = glyphs[c].ay;
+         }
+
+   #if 0
+         {
+            int c;
+            char fileName[256];
+            static int fid = 0;
+            for(c = 0; c<256; c++)
+               outline.bitmap.palette[c] = ColorAlpha { 255, { (byte)c,(byte)c,(byte)c } };
+            outline.bitmap.pixelFormat = pixelFormat8;
+
+            /*
+            //strcpy(fileName, faceName);
+            if(flags)
+               strcat(fileName, "Bold");
+            */
+            sprintf(fileName, "font%d", fid++);
+            ChangeExtension(fileName, "pcx", fileName);
+
+            outline.bitmap.Save(fileName, null, 0);
+            outline.bitmap.pixelFormat = pixelFormatAlpha;
+         }
+
+         /*{
+            static int num = 0;
+            char fileName[MAX_LOCATION];
+
+            sprintf(fileName, "template%03d.png", num);
+            bitmap.Save(fileName, null, 0);
+            sprintf(fileName, "outline%03d.png", num++);
+            outline.bitmap.Save(fileName, null, 0);
+         }*/
+   #endif
+         if(displaySystem && displaySystem.pixelFormat != pixelFormat4) // TODO: Add none PixelFormat
+         {
+            displaySystem.Lock();
+#if defined(__WIN32__)
+            // Is this check still required?
+            if(displaySystem.driver == class(OpenGLDisplayDriver) ||
+               displaySystem.driver == class(Direct3D8DisplayDriver) ||
+               displaySystem.driver == class(Direct3D9DisplayDriver))
+#endif
+               bitmap.MakeDD(displaySystem);
+            displaySystem.Unlock();
+         }
+      }
+      delete bigger;
+      delete field;
 #endif
    }
 }
@@ -783,6 +1039,7 @@ public:
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    Bitmap bitmap;
 
@@ -3184,11 +3441,12 @@ public class LFBDisplayDriver : DisplayDriver
    {
       if(font && font.fontEntries && font.fontEntries[0])
       {
+         LFBSurface lfbSurface = surface ? surface.driverData : null;
          int previousGlyph = 0;
          FT_Face previousFace = 0;
          int c, nb, glyphIndex = 0;
-         unichar lastPack = 0;
-         GlyphPack pack = font.asciiPack;
+         unichar lastPack = lfbSurface && lfbSurface.writingOutline ? -1 : 0;
+         GlyphPack pack = font.asciiPack, outline = null;
          int wc = 0;
          uint * glyphs = null;
          int numGlyphs = 0;
@@ -3511,11 +3769,24 @@ public class LFBDisplayDriver : DisplayDriver
                }
                pack.bitmap.alphaBlend = true;
                lastPack = packNo;
+#if !defined(ECERE_VANILLA)
+               if(lfbSurface && lfbSurface.writingOutline)
+               {
+                  uint outlineNo = (((uint)surface.outline.size) << 16) | (uint16)(Min(surface.outline.fade, 257.0f) * 255);
+                  outline = (GlyphPack)pack.outlines.Find(outlineNo);
+                  if(!outline)
+                  {
+                     outline = { key = outlineNo };
+                     pack.outlines.Add(outline);
+                     pack.RenderOutline(outline, font, displaySystem);
+                  }
+               }
+#endif
             }
             if(pack)
             {
                int index = rightToLeft ? (glyphIndex + 1) : (glyphIndex-1);
-               GlyphInfo * glyph = &pack.glyphs[glyphNo & 0x7F];
+               GlyphInfo * glyph = &(outline ? outline : pack).glyphs[glyphNo & 0x7F];
 
                int ax = (int)((numGlyphs ? shaper_item.advances[index] : glyph->ax) * glyph->scale);
                int offset = numGlyphs ? shaper_item.offsets[index].x : 0;
@@ -3538,7 +3809,7 @@ public class LFBDisplayDriver : DisplayDriver
                previousFace = curFontEntry.face;
 
                if(callback)
-                  callback(surface, display, ((*x) >> 6), y + (oy >> 6), glyph, pack.bitmap);
+                  callback(surface, display, ((*x) >> 6), y + (oy >> 6), glyph, (outline ? outline : pack).bitmap);
                *x += ax;
             }
             if(numGlyphs && (rightToLeft ? (glyphIndex < 0) : (glyphIndex == numGlyphs)))

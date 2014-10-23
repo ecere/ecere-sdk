@@ -76,6 +76,7 @@ static class D3D8Surface : struct
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    ColorAlpha background;
 };

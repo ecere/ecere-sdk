@@ -70,6 +70,7 @@ class XSurface : struct
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    ColorAlpha foreground, background;
    bool opaque;

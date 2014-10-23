@@ -109,6 +109,7 @@ _ECSOURCES2 = \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32ConsoleDisplayDriver.ec,) \
 	$(if $(WINDOWS_TARGET),src/gfx/drivers/Win32PrinterDisplayDriver.ec,) \
 	$(if $(or $(LINUX_TARGET),$(OSX_TARGET)),src/gfx/drivers/XDisplayDriver.ec,) \
+	src/gfx/drivers/edtaa3func.ec \
 	src/gfx/Bitmap.ec \
 	src/gfx/BitmapResource.ec \
 	src/gfx/Color.ec \
@@ -788,6 +789,9 @@ $(OBJ)XDisplayDriver.sym: src/gfx/drivers/XDisplayDriver.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.sym
 endif
 
+$(OBJ)edtaa3func.sym: src/gfx/drivers/edtaa3func.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/gfx/drivers/edtaa3func.ec) -o $(call quote_path,$@)
+
 $(OBJ)Bitmap.sym: src/gfx/Bitmap.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.sym
 
@@ -1199,6 +1203,9 @@ ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)XDisplayDriver.c: src/gfx/drivers/XDisplayDriver.ec $(OBJ)XDisplayDriver.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/XDisplayDriver.ec -o $(OBJ)XDisplayDriver.c -symbols $(OBJ)
 endif
+
+$(OBJ)edtaa3func.c: src/gfx/drivers/edtaa3func.ec $(OBJ)edtaa3func.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/gfx/drivers/edtaa3func.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
 $(OBJ)Bitmap.c: src/gfx/Bitmap.ec $(OBJ)Bitmap.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/Bitmap.ec -o $(OBJ)Bitmap.c -symbols $(OBJ)
@@ -1677,6 +1684,9 @@ ifneq "$(or $(LINUX_TARGET),$(OSX_TARGET))" ""
 $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 endif
+
+$(OBJ)edtaa3func.o: $(OBJ)edtaa3func.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)edtaa3func.c) -o $(call quote_path,$@)
 
 $(OBJ)Bitmap.o: $(OBJ)Bitmap.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o

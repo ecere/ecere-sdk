@@ -1277,6 +1277,7 @@ class OGLSurface : struct
    bool opaqueText;
    int xOffset;
    bool writingText;
+   bool writingOutline;
 
    float foreground[4], background[4], bitmapMult[4];
 } OGLSurface;
@@ -2348,9 +2349,15 @@ class OpenGLDisplayDriver : DisplayDriver
    {
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData;
+      Bitmap convBitmap = bitmap;
+      if(bitmap.keepData)
+      {
+         convBitmap = { };
+         convBitmap.Copy(bitmap);
+      }
 
       // Pre process the bitmap... First make it 32 bit
-      if(/*bitmap.pixelFormat == pixelFormatRGBA || */bitmap.Convert(null, pixelFormat888, null))
+      if(/*bitmap.pixelFormat == pixelFormatRGBA || */convBitmap.Convert(null, pixelFormat888, null))
       {
          int c, level;
          uint w = bitmap.width, h = bitmap.height;
@@ -2376,11 +2383,11 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                // ((ColorRGBA *)bitmap.picture)[c] = ((ColorAlpha *)bitmap.picture)[c];
                // TODO:
-               ColorAlpha color = ((ColorAlpha *)bitmap.picture)[c];
-               ((ColorRGBA *)bitmap.picture)[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
+               ColorAlpha color = ((ColorAlpha *)convBitmap.picture)[c];
+               ((ColorRGBA *)convBitmap.picture)[c] = ColorRGBA { color.color.r, color.color.g, color.color.b, color.a };
             }
          }
-         bitmap.pixelFormat = pixelFormat888;
+         // convBitmap.pixelFormat = pixelFormat888;
 
          glGetError();
          glGenTextures(1, &glBitmap);
@@ -2413,10 +2420,10 @@ class OpenGLDisplayDriver : DisplayDriver
             if(bitmap.width != w || bitmap.height != h)
             {
                mipMap = Bitmap { };
-               if(mipMap.Allocate(null, w, h, w, bitmap.pixelFormat, false))
+               if(mipMap.Allocate(null, w, h, w, convBitmap.pixelFormat, false))
                {
                   Surface mipSurface = mipMap.GetSurface(0,0,null);
-                  mipSurface.Filter(bitmap, 0,0,0,0, w, h, bitmap.width, bitmap.height);
+                  mipSurface.Filter(convBitmap, 0,0,0,0, w, h, convBitmap.width, convBitmap.height);
                   delete mipSurface;
                }
                else
@@ -2426,7 +2433,7 @@ class OpenGLDisplayDriver : DisplayDriver
                }
             }
             else
-               mipMap = bitmap;
+               mipMap = convBitmap;
 
             if(result)
             {
@@ -2445,13 +2452,12 @@ class OpenGLDisplayDriver : DisplayDriver
                   result = false;
                }
             }
-            if(mipMap != bitmap)
+            if(mipMap != convBitmap)
                delete mipMap;
             if(!mipMaps) break;
          }
 
-         if(!bitmap.keepData)
-            bitmap.driver.FreeBitmap(bitmap.displaySystem, bitmap);
+         convBitmap.driver.FreeBitmap(convBitmap.displaySystem, convBitmap);
          bitmap.driverData = (void *)(uintptr)glBitmap;
          bitmap.driver = displaySystem.driver;
 
@@ -3119,6 +3125,18 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSurface.writingText = true;
 
       glEnable(GL_TEXTURE_2D);
+
+      if(surface.outline.size)
+      {
+         ColorAlpha outlineColor = surface.outline.color;
+         glColor4ub(outlineColor.color.r, outlineColor.color.g, outlineColor.color.b, outlineColor.a);
+         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+         //glEnable(GL_BLEND);
+
+         oglSurface.writingOutline = true;
+         ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len);
+         oglSurface.writingOutline = false;
+      }
       glColor4fv(oglSurface.foreground);
 
       ((subclass(DisplayDriver))class(LFBDisplayDriver)).WriteText(display, surface, x, y, text, len);
