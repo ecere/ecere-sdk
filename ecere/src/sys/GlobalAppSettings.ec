@@ -252,7 +252,6 @@ private:
          {
             strcpy(buffer, "/etc/");
             path = GetFilePath(buffer, extension, create, false, false);
-            delete buffer;
             break;
          }
 #endif
@@ -273,8 +272,12 @@ private:
          {
             if(dotPrefix)
             {
-               PathCatSlash(location, ".");
-               strcat(location, settingsDirectory);
+               int len = strlen(settingsDirectory);
+               String s = new char[len + 2];
+               s[0] = '.';
+               memcpy(s + 1, settingsDirectory, len + 1);
+               PathCatSlash(location, s);
+               delete s;
             }
             else
                PathCatSlash(location, settingsDirectory);
@@ -284,7 +287,7 @@ private:
          }
          if(attribs.isDirectory || attribs.isDrive)
          {
-            char * name = new char[strlen(settingsName) + strlen(extension) + 2];
+            char * name = new char[strlen(settingsName) + strlen(extension) + 4];
             if(dotPrefix && !settingsDirectory)
             {
                strcpy(name, ".");
