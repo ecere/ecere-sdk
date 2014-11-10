@@ -415,6 +415,8 @@ class GlyphPack : BTNode
             }
             //FT_Set_Char_Size(fontEntry.face, (int)(font.size * 64), (int)(font.size * 64), 96, 96);
             fontEntry.scale = FaceSetCharSize(fontEntry.face, font.size);
+            if(!font.scale)
+               font.scale = fontEntry.scale;
             if(!c)
             {
                if(!fontEntry.face->units_per_EM)
