@@ -1,3 +1,4 @@
+
 #if defined(__ANDROID__)
 #include <android/log.h>
 
@@ -14,7 +15,7 @@ namespace sys;
 #define uint _uint
 #define set _set
 #define String _String
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #else
@@ -56,7 +57,7 @@ public class Mutex : struct
 
    Mutex()
    {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #ifdef _DEBUG
       mutex = CreateMutex(null, FALSE, null);
 #else
@@ -85,7 +86,7 @@ public class Mutex : struct
 
    ~Mutex()
    {
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #ifdef _DEBUG
       CloseHandle(mutex);
 #else
@@ -105,7 +106,7 @@ public:
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Waiting on Mutex %x\n", (int)GetCurrentThreadID(), this);
          */
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #ifdef _DEBUG
          if(WaitForSingleObject(mutex, INFINITE /*2000*/) == WAIT_TIMEOUT)
             PrintLn("Deadlock?");
@@ -151,7 +152,7 @@ public:
 #else
             ;
 #endif
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #ifdef _DEBUG
          ReleaseMutex(mutex);
 #else

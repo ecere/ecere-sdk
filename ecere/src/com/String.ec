@@ -9,7 +9,7 @@ default:
 #undef __BLOCKS__
 #include <stdlib.h>
 #if !defined(ECERE_BOOTSTRAP) // quick fix for now
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
 #define WIN32_LEAN_AND_MEAN
 #define String _String
 #include <windows.h>

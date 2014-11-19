@@ -29,6 +29,7 @@ public class AVLTree<class AT> : CustomAVLTree<BT = AVLNode<AT>, KT = AT, T = AT
    AVLNode<AT> Add(AT value)
    {
       AVLNode<AT> node;
+      // TODO: Optimize this here to use FindEx/AddEx...
       if(class(AT).type == structClass)
       {
          node = (AVLNode<AT>)new0 byte[sizeof(class AVLNode) + class(AT).structSize - sizeof(node.key)];

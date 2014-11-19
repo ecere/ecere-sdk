@@ -1,5 +1,6 @@
 namespace sys;
 
+import "instance"
 import "System"
 import "Array"
 

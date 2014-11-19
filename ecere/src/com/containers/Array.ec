@@ -1,6 +1,11 @@
 namespace com;
 
+import "instance"
 import "Container"
+
+#ifdef _DEBUG
+// #define MEMTRACKING
+#endif
 
 public class Array : Container
 {
@@ -128,8 +133,27 @@ public:
             if(value > minAllocSize)
                array = renew0 array T[value];
             else if(value > count)
-               memset(array + count, 0, (value - count) * class(T).typeSize);
+            {
+               /*
+               void * a = array + count;
+               void * b = (byte *)array + count * class(T).typeSize;
+
+               if(a != b)
+                  printf("Oh");
+               */
+               //memset(array + count, 0, (value - count) * class(T).typeSize);
+               /*if(!strcmp(class(T).name, "TessPrim"))
+                  printf("Memsetting to 0 from %d for %d bytes\n", count * class(T).typeSize, (value - count) * class(T).typeSize);*/
+               memset((byte *)array + count * class(T).typeSize, 0, (value - count) * class(T).typeSize);
+            }
             count = value;
+#if defined(_DEBUG) && !defined(MEMINFO) && defined(MEMTRACKING)
+            if(array)
+            {
+               MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
+               block._class = class(T);
+            }
+#endif
          }
       }
    }

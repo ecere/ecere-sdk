@@ -1,3 +1,4 @@
+import "instance"
 #ifndef ECERE_NOFILE
 import "File"
 #endif
@@ -127,7 +128,7 @@ public dllexport void LoadTranslatedStrings(const String moduleName, const char 
       }
    }
 
-   if(f)
+   if(0) //f)
    {
       uint magic = 0;
       f.Read(&magic, sizeof(uint), 1);

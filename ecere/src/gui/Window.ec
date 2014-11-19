@@ -1664,6 +1664,7 @@ private:
    public void ExternalPosition(int x, int y, int w, int h)
    {
       Position(x, y, w, h, false, true, true, true, false, false);
+      /* TO REVIEW: Redj's code trying to fix position saving
       if(style.fixed)
       {
          if(state == normal)
@@ -1673,6 +1674,7 @@ private:
             anchored = false;
          }
       }
+      */
    }
 
    // (w, h): Full window size
@@ -7596,6 +7598,7 @@ public:
                         (*&child.normalAnchor).top = y;
                         (*&child.normalAnchor).right.type = none;
                         (*&child.normalAnchor).bottom.type = none;
+
                         (*&child.normalSizeAnchor).isClientW = false;
                         (*&child.normalSizeAnchor).isClientH = false;
                         (*&child.normalSizeAnchor).size.w = w;
