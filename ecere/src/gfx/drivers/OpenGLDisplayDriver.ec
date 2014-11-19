@@ -10,6 +10,8 @@ namespace gfx::drivers;
    #define GL_GLEXT_PROTOTYPES
 #endif
 
+#define pointer _pointer
+
 #ifdef ECERE_MINIGLX
 
 //#include <GL/miniglx.h>
@@ -84,6 +86,8 @@ namespace gfx::drivers;
    #include <GL/glext.h>
 
 #endif
+
+#undef pointer
 
 import "Display"
 
@@ -370,7 +374,7 @@ static int curStack = 0;
 #if defined(_GLES)
 
    // OpenGL ES Porting Kit
-
+#if defined(__ANDROID__)
    #define glBindFramebuffer        glBindFramebufferOES
    #define glBindRenderbuffer       glBindRenderbufferOES
    #define GL_FRAMEBUFFER           GL_FRAMEBUFFER_OES
@@ -382,7 +386,6 @@ static int curStack = 0;
    #define glDeleteFramebuffers     glDeleteFramebuffersOES
    #define glDeleteRenderbuffers    glDeleteRenderbuffersOES
 
-#if defined(__ANDROID__)
    #define GL_POLYGON_STIPPLE 0xFFFF
    #define GL_LINE_STIPPLE 0xFFFF
    #define GL_LINE 0xFFFF

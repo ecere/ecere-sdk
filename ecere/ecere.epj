@@ -436,6 +436,7 @@ from wherever you obtained them.
       {
          "Name" : "GLES",
          "Options" : {
+            "Debug" : true,
             "PreprocessorDefinitions" : [
                "_GLES"
             ]
