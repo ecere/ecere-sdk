@@ -419,6 +419,52 @@ static double nearPlane = 1;
 
 #endif
 
+#if defined(ECERE_NO3D) || defined(ECERE_VANILLA)
+public union Matrix
+{
+   double array[16];
+   double m[4][4];
+
+   void Identity()
+   {
+      FillBytesBy4(this, 0, sizeof(Matrix) >> 2);
+      m[0][0]=m[1][1]=m[2][2]=m[3][3]=1;
+   }
+
+   void Transpose(Matrix source)
+   {
+      int i,j;
+      for(i=0; i<4; i++)
+         for(j=0; j<4; j++)
+            m[j][i] = source.m[i][j];
+   }
+
+   void Multiply(Matrix a, Matrix b)
+   {
+      // We need a full matrix multiplication for the Projection matrix
+      m[0][0]=a.m[0][0]*b.m[0][0] + a.m[0][1]*b.m[1][0] + a.m[0][2]*b.m[2][0] + a.m[0][3]*b.m[3][0];
+      m[0][1]=a.m[0][0]*b.m[0][1] + a.m[0][1]*b.m[1][1] + a.m[0][2]*b.m[2][1] + a.m[0][3]*b.m[3][1];
+      m[0][2]=a.m[0][0]*b.m[0][2] + a.m[0][1]*b.m[1][2] + a.m[0][2]*b.m[2][2] + a.m[0][3]*b.m[3][2];
+      m[0][3]=a.m[0][0]*b.m[0][3] + a.m[0][1]*b.m[1][3] + a.m[0][2]*b.m[2][3] + a.m[0][3]*b.m[3][3];
+
+      m[1][0]=a.m[1][0]*b.m[0][0] + a.m[1][1]*b.m[1][0] + a.m[1][2]*b.m[2][0] + a.m[1][3]*b.m[3][0];
+      m[1][1]=a.m[1][0]*b.m[0][1] + a.m[1][1]*b.m[1][1] + a.m[1][2]*b.m[2][1] + a.m[1][3]*b.m[3][1];
+      m[1][2]=a.m[1][0]*b.m[0][2] + a.m[1][1]*b.m[1][2] + a.m[1][2]*b.m[2][2] + a.m[1][3]*b.m[3][2];
+      m[1][3]=a.m[1][0]*b.m[0][3] + a.m[1][1]*b.m[1][3] + a.m[1][2]*b.m[2][3] + a.m[1][3]*b.m[3][3];
+
+      m[2][0]=a.m[2][0]*b.m[0][0] + a.m[2][1]*b.m[1][0] + a.m[2][2]*b.m[2][0] + a.m[2][3]*b.m[3][0];
+      m[2][1]=a.m[2][0]*b.m[0][1] + a.m[2][1]*b.m[1][1] + a.m[2][2]*b.m[2][1] + a.m[2][3]*b.m[3][1];
+      m[2][2]=a.m[2][0]*b.m[0][2] + a.m[2][1]*b.m[1][2] + a.m[2][2]*b.m[2][2] + a.m[2][3]*b.m[3][2];
+      m[2][3]=a.m[2][0]*b.m[0][3] + a.m[2][1]*b.m[1][3] + a.m[2][2]*b.m[2][3] + a.m[2][3]*b.m[3][3];
+
+      m[3][0]=a.m[3][0]*b.m[0][0] + a.m[3][1]*b.m[1][0] + a.m[3][2]*b.m[2][0] + a.m[3][3]*b.m[3][0];
+      m[3][1]=a.m[3][0]*b.m[0][1] + a.m[3][1]*b.m[1][1] + a.m[3][2]*b.m[2][1] + a.m[3][3]*b.m[3][1];
+      m[3][2]=a.m[3][0]*b.m[0][2] + a.m[3][1]*b.m[1][2] + a.m[3][2]*b.m[2][2] + a.m[3][3]*b.m[3][2];
+      m[3][3]=a.m[3][0]*b.m[0][3] + a.m[3][1]*b.m[1][3] + a.m[3][2]*b.m[2][3] + a.m[3][3]*b.m[3][3];
+   }
+};
+#endif
+
 // Our own matrix stack
 static Matrix matrixStack[3][32];
 static int matrixIndex[3];
@@ -894,6 +940,7 @@ public void glesFrustum( double l, double r, double b, double t, double n, doubl
    }
 }
 
+#if !defined(ECERE_NO3D) && !defined(ECERE_VANILLA)
 public void glesRotated( double a, double b, double c, double d )
 {
    Quaternion q;
@@ -934,6 +981,7 @@ public void glesMultMatrixd( double * i )
    matrixStack[curStack][matrixIndex[curStack]] = r;
    LoadCurMatrix();
 }
+#endif
 
 public void glesMatrixMode(int mode)
 {
@@ -2816,9 +2864,18 @@ class OpenGLDisplayDriver : DisplayDriver
       //Logf("Area\n");
 
       glColor4fv(oglSurface.background);
+
+#ifdef __EMSCRIPTEN__
+      glBegin(GL_QUADS);
+      glVertex2f(x1+surface.offset.x, y1+surface.offset.y);
+      glVertex2f(x1+surface.offset.x, y2+surface.offset.y+1);
+      glVertex2f(x2+surface.offset.x+1, y2+surface.offset.y+1);
+      glVertex2f(x2+surface.offset.x+1, y1+surface.offset.y);
+      glEnd();
+#else
       glRecti(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);
-
+#endif
       /*
       glRectf(x1+surface.offset.x, y1+surface.offset.y,
               x2+surface.offset.x + 1, y2+surface.offset.y + 1);

@@ -441,6 +441,19 @@ from wherever you obtained them.
                "_GLES"
             ]
          }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC",
+               "ECERE_VANILLA",
+               "NOBLENDING"
+            ],
+            "TargetType" : "StaticLibrary",
+            "TargetFileName" : "ecereStatic"
+         }
       }
    ],
    "Files" : [
@@ -653,6 +666,12 @@ from wherever you obtained them.
                                  }
                               }
                            ]
+                        },
+                        {
+                           "Name" : "Emscripten",
+                           "Options" : {
+                              "ExcludeFromBuild" : true
+                           }
                         }
                      ]
                   },
@@ -695,6 +714,12 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -717,6 +742,12 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         },
@@ -731,7 +762,17 @@ from wherever you obtained them.
                               }
                            ]
                         },
-                        "PNGFormat.ec",
+                        {
+                           "FileName" : "PNGFormat.ec",
+                           "Configurations" : [
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
+                              }
+                           ]
+                        },
                         {
                            "FileName" : "RGBFormat.ec",
                            "Configurations" : [
@@ -757,6 +798,12 @@ from wherever you obtained them.
                                        }
                                     }
                                  ]
+                              },
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : true
+                                 }
                               }
                            ]
                         }
@@ -1876,9 +1923,14 @@ from wherever you obtained them.
                         },
                         {
                            "FileName" : "EmscriptenInterface.ec",
-                           "Options" : {
-                              "ExcludeFromBuild" : false
-                           }
+                           "Configurations" : [
+                              {
+                                 "Name" : "Emscripten",
+                                 "Options" : {
+                                    "ExcludeFromBuild" : false
+                                 }
+                              }
+                           ]
                         }
                      ],
                      "Options" : {
@@ -2074,6 +2126,12 @@ from wherever you obtained them.
                            }
                         }
                      ]
+                  },
+                  {
+                     "Name" : "Emscripten",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
                   }
                ]
             },

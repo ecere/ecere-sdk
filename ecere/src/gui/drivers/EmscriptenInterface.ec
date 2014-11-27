@@ -39,6 +39,7 @@ class EmscriptenInterface : Interface
    bool ::Initialize()
    {
       sflnprintf("class(EmscriptenInterface) ::Initialize [STUB!]\n");
+      guiApp.desktop.ExternalPosition(0,0, 640, 480);
       return true;
    }
 
