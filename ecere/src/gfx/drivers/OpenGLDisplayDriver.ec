@@ -655,9 +655,12 @@ static int vertexCount;
 static int normalCount;
 static float *vertexPointer;
 static float *normalPointer;
-static GLenum beginMode;
-static unsigned int beginBufferSize, normalBufferSize;
+static GLenum beginMode = -1;
+static uint beginBufferSize, normalBufferSize;
 static int numVertexCoords = 2;
+static bool vertexColorValues = false;
+static int vertexStride = 4;
+static int vertexOffset = 2;
 
 public void glesRecti(int a, int b, int c, int d)
 {
@@ -674,10 +677,15 @@ public void glesBegin(GLenum mode)
    beginMode = mode;
    beginCount = 0;
    vertexCount = 0;
+   vertexColorValues = false;
+   vertexOffset = 2;
+   vertexStride = 4;
+   numVertexCoords = 2;
+
    if(!vertexPointer)
    {
       normalBufferSize = beginBufferSize = 1024;  // default number of vertices
-      vertexPointer = new float[beginBufferSize * 5];
+      vertexPointer = new float[beginBufferSize * vertexStride];
       normalPointer = new float[normalBufferSize * 3];
    }
 }
@@ -689,20 +697,20 @@ public void glesTexCoord2f(float x, float y)
    if(vertexCount + numVertexCoords > beginBufferSize)
    {
       beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * 5];
+      vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
    }
 
-   vertexPointer[count*(2+numVertexCoords)  ] = x;
-   vertexPointer[count*(2+numVertexCoords)+1] = y;
+   vertexPointer[count*vertexStride  ] = x;
+   vertexPointer[count*vertexStride+1] = y;
    count++;
 
    if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
    {
-      vertexPointer[count*(2+numVertexCoords)  ] = vertexPointer[(count-4)*(2+numVertexCoords)];
-      vertexPointer[count*(2+numVertexCoords)+1] = vertexPointer[(count-4)*(2+numVertexCoords)+1];
+      vertexPointer[count*vertexStride  ] = vertexPointer[(count-4)*vertexStride];
+      vertexPointer[count*vertexStride+1] = vertexPointer[(count-4)*vertexStride+1];
       count++;
-      vertexPointer[count*(2+numVertexCoords)  ] = vertexPointer[(count-3)*(2+numVertexCoords)];
-      vertexPointer[count*(2+numVertexCoords)+1] = vertexPointer[(count-3)*(2+numVertexCoords)+1];
+      vertexPointer[count*vertexStride  ] = vertexPointer[(count-3)*vertexStride];
+      vertexPointer[count*vertexStride+1] = vertexPointer[(count-3)*vertexStride+1];
       count++;
    }
 }
@@ -713,23 +721,25 @@ public void glesTexCoord2fv(float * a)         { glesTexCoord2f(a[0], a[1]); }
 public void glesVertex2f(float x, float y)
 {
    numVertexCoords = 2;
+   vertexStride = vertexOffset + numVertexCoords;
+
    if(vertexCount + 4 > beginBufferSize)
    {
       beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * 5];
+      vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
    }
 
-   vertexPointer[vertexCount*4+2] = x;
-   vertexPointer[vertexCount*4+3] = y;
+   vertexPointer[vertexCount*vertexStride+vertexOffset] = x;
+   vertexPointer[vertexCount*vertexStride+vertexOffset + 1] = y;
    vertexCount++;
 
    if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
    {
-      vertexPointer[vertexCount*4+2] = vertexPointer[(vertexCount-4)*4+2];
-      vertexPointer[vertexCount*4+3] = vertexPointer[(vertexCount-4)*4+3];
+      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset];
+      vertexPointer[vertexCount*vertexStride+vertexOffset + 1] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset + 1];
       vertexCount++;
-      vertexPointer[vertexCount*4+2] = vertexPointer[(vertexCount-3)*4+2];
-      vertexPointer[vertexCount*4+3] = vertexPointer[(vertexCount-3)*4+3];
+      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset];
+      vertexPointer[vertexCount*vertexStride+vertexOffset + 1] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset + 1];
       vertexCount++;
    }
    beginCount++;
@@ -742,10 +752,16 @@ public void glesEnd(void)
    int mode = beginMode;
    if(mode == GL_QUADS)        mode = GL_TRIANGLES;
    else if(mode == GL_POLYGON) mode = GL_TRIANGLE_FAN;
+
    GLSelectVBO(0);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-   glTexCoordPointer(numVertexCoords, GL_FLOAT, (numVertexCoords+2)*sizeof(float),vertexPointer);
-   glVertexPointer  (numVertexCoords, GL_FLOAT, (numVertexCoords+2)*sizeof(float),vertexPointer+2);
+   glTexCoordPointer(2, GL_FLOAT,  vertexStride * sizeof(float), vertexPointer);
+   if(vertexColorValues)
+   {
+      glEnableClientState(GL_COLOR_ARRAY);
+      glColorPointer(4, GL_FLOAT, vertexStride * sizeof(float), vertexPointer + 2);
+   }
+   glVertexPointer  (numVertexCoords, GL_FLOAT, (vertexStride)*sizeof(float),vertexPointer+vertexOffset);
    if(normalCount && normalCount == vertexCount)
    {
       glEnableClientState(GL_NORMAL_ARRAY);
@@ -755,8 +771,13 @@ public void glesEnd(void)
    glDrawArrays(mode, 0, vertexCount);
    if(normalCount)
       glDisableClientState(GL_NORMAL_ARRAY);
+   if(vertexColorValues)
+      glDisableClientState(GL_COLOR_ARRAY);
    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
    normalCount = 0;
+   vertexColorValues = false;
+   numVertexCoords = 2;
+   beginMode = -1;
 }
 
 // Vertex Pointer
@@ -815,19 +836,59 @@ public void glesTexReuseDoubleVP(int numCoords)
    glTexCoordPointer(numCoords, GL_FLOAT, 0, floatVPBuffer);
 }
 
+public void glesColor4f(float r, float g, float b, float a)
+{
+   if(beginMode != (GLenum)-1)
+   {
+      int count = vertexCount;
+
+      vertexColorValues = true;
+      vertexOffset = 6;
+      vertexStride = vertexOffset + numVertexCoords;
+
+      if(vertexCount + vertexStride > beginBufferSize)
+      {
+         beginBufferSize = beginBufferSize + beginBufferSize/2;
+         vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
+      }
+
+      vertexPointer[count*vertexStride + 2] = r;
+      vertexPointer[count*vertexStride + 3] = g;
+      vertexPointer[count*vertexStride + 4] = b;
+      vertexPointer[count*vertexStride + 5] = a;
+      count++;
+
+      if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
+      {
+         vertexPointer[count*vertexStride + 2] = vertexPointer[(count-4) * vertexStride + 2];
+         vertexPointer[count*vertexStride + 3] = vertexPointer[(count-4) * vertexStride + 3];
+         vertexPointer[count*vertexStride + 4] = vertexPointer[(count-4) * vertexStride + 4];
+         vertexPointer[count*vertexStride + 5] = vertexPointer[(count-4) * vertexStride + 5];
+         count++;
+         vertexPointer[count*vertexStride + 2] = vertexPointer[(count-3) * vertexStride + 2];
+         vertexPointer[count*vertexStride + 3] = vertexPointer[(count-3) * vertexStride + 3];
+         vertexPointer[count*vertexStride + 4] = vertexPointer[(count-3) * vertexStride + 4];
+         vertexPointer[count*vertexStride + 5] = vertexPointer[(count-3) * vertexStride + 5];
+         count++;
+      }
+   }
+   else
+      glColor4f(r, g, b, a);
+}
+
 public void glesColor3f( float r, float g, float b )
 {
-   glColor4f(r, g, b, 1.0f);
+   glesColor4f(r, g, b, 1.0f);
 }
 
 public void glesColor4ub(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-   glColor4f(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
+   glesColor4f(r/255.0f, g/255.0f, b/255.0f, a/255.0f);
 }
 
 public void glesColor4fv(float * a)
 {
-   glColor4f(a[0], a[1], a[2], a[3]);
+   glesColor4f(a[0], a[1], a[2], a[3]);
 }
 
 public void glesBufferDatad(int target, int size, void * data, int usage)
@@ -1070,26 +1131,28 @@ void glesMultMatrixd( double * i )
 public void glesVertex3f( float x, float y, float z )
 {
    numVertexCoords = 3;
-   if(vertexCount + 4 > beginBufferSize)
+   vertexStride = vertexOffset + numVertexCoords;
+
+   if(vertexCount + vertexStride > beginBufferSize)
    {
       beginBufferSize = beginBufferSize + beginBufferSize/2;
-      vertexPointer = renew vertexPointer float[beginBufferSize * 5];
+      vertexPointer = renew vertexPointer float[beginBufferSize * vertexStride];
    }
 
-   vertexPointer[vertexCount*5+2] = x;
-   vertexPointer[vertexCount*5+3] = y;
-   vertexPointer[vertexCount*5+4] = z;
+   vertexPointer[vertexCount*vertexStride+vertexOffset] = x;
+   vertexPointer[vertexCount*vertexStride+vertexOffset+1] = y;
+   vertexPointer[vertexCount*vertexStride+vertexOffset+2] = z;
    vertexCount++;
 
    if(beginMode == GL_QUADS && ((beginCount % 4) == 3))
    {
-      vertexPointer[vertexCount*5+2] = vertexPointer[(vertexCount-4)*5+2];
-      vertexPointer[vertexCount*5+3] = vertexPointer[(vertexCount-4)*5+3];
-      vertexPointer[vertexCount*5+4] = vertexPointer[(vertexCount-4)*5+4];
+      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset];
+      vertexPointer[vertexCount*vertexStride+vertexOffset+1] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset+1];
+      vertexPointer[vertexCount*vertexStride+vertexOffset+2] = vertexPointer[(vertexCount-4)*vertexStride+vertexOffset+2];
       vertexCount++;
-      vertexPointer[vertexCount*5+2] = vertexPointer[(vertexCount-3)*5+2];
-      vertexPointer[vertexCount*5+3] = vertexPointer[(vertexCount-3)*5+3];
-      vertexPointer[vertexCount*5+4] = vertexPointer[(vertexCount-3)*5+4];
+      vertexPointer[vertexCount*vertexStride+vertexOffset] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset];
+      vertexPointer[vertexCount*vertexStride+vertexOffset+1] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset+1];
+      vertexPointer[vertexCount*vertexStride+vertexOffset+2] = vertexPointer[(vertexCount-3)*vertexStride+vertexOffset+2];
       vertexCount++;
    }
    beginCount++;
@@ -1264,6 +1327,7 @@ void GLBindBuffer(int target, uint buffer)
 #endif
       glBindBufferARB(target, buffer);
 #endif
+   currentVertexBuffer = buffer;
 }
 
 public void GLVertexPointer(int numCoords, int glType, int stride, void *ptr, int numVertices)
