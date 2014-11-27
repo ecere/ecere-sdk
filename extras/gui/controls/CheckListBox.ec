@@ -354,6 +354,13 @@ public:
       return false;
    }
 
+   bool IsFullyChecked(DataRow row)
+   {
+      DataRow parent;
+      for(parent = row; parent; parent = parent.parent) if(rowChecks.Find(parent)) return true;
+      return false;
+   }
+
    virtual void Window::NotifyChecked(CheckListBox listBox, DataRow row);
 
    void SetDisabled(DataRow row, bool disabled)
