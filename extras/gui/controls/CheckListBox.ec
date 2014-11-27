@@ -345,12 +345,22 @@ class CheckListBox : ListBox
 public:
    bool IsChecked(DataRow row)
    {
-      CheckListBoxButton button = buttonMaps[(uintptr)row];
+      if(IsFullyChecked(row))
+         return true;
+      else
+      {
+         CheckListBoxButton button = buttonMaps[(uintptr)row];
+         // For partially checked because of children:
+         if(button && button.checked)
+            return true;
+      }
+      return false;
+   }
+
+   bool IsFullyChecked(DataRow row)
+   {
       DataRow parent;
       for(parent = row; parent; parent = parent.parent) if(rowChecks.Find(parent)) return true;
-      // For partially checked because of children:
-      if(button && button.checked)
-         return true;
       return false;
    }
 
