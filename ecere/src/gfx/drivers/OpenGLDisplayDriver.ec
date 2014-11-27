@@ -101,6 +101,16 @@ import "Display"
 
 static double nearPlane = 1;
 
+public double glesGetNearPlane()
+{
+   return nearPlane;
+}
+
+public void glesSetNearPlane(double value)
+{
+   nearPlane = value;
+}
+
 #define glLoadMatrix glLoadMatrixd
 #define glMultMatrix glMultMatrixd
 #define glGetMatrix  glGetDoublev
