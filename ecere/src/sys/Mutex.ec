@@ -27,8 +27,6 @@ namespace sys;
 
 import "instance"
 
-#if !defined(__EMSCRIPTEN__)
-
 // Moved this here from Thread.ec to make compiling ecereCOM in Debug easier
 public int64 GetCurrentThreadID()
 {
@@ -41,6 +39,8 @@ public int64 GetCurrentThreadID()
 
 public class Mutex : struct
 {
+#if !defined(__EMSCRIPTEN__)
+
 //   class_fixed
 #if defined(__WIN32__)
 #ifdef _DEBUG
@@ -51,6 +51,7 @@ public class Mutex : struct
 #else
    pthread_mutex_t mutex;
 #endif
+#endif
 
 #ifdef _DEBUG
    int64 owningThread;
@@ -59,7 +60,8 @@ public class Mutex : struct
 
    Mutex()
    {
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 #ifdef _DEBUG
       mutex = CreateMutex(null, FALSE, null);
 #else
@@ -79,6 +81,8 @@ public class Mutex : struct
       pthread_mutex_init(&mutex, &attr);
       pthread_mutexattr_destroy(&attr);
 #endif
+#endif
+
       lockCount = 0;
 #ifdef _DEBUG
       owningThread = 0;
@@ -88,7 +92,8 @@ public class Mutex : struct
 
    ~Mutex()
    {
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 #ifdef _DEBUG
       CloseHandle(mutex);
 #else
@@ -97,6 +102,7 @@ public class Mutex : struct
 #else
       pthread_mutex_destroy(&mutex);
 #endif
+#endif
    }
 
 public:
@@ -104,11 +110,12 @@ public:
    {
       if(this)
       {
+#if !defined(__EMSCRIPTEN__)
          /*
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Waiting on Mutex %x\n", (int)GetCurrentThreadID(), this);
          */
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 #ifdef _DEBUG
          if(WaitForSingleObject(mutex, INFINITE /*2000*/) == WAIT_TIMEOUT)
             PrintLn("Deadlock?");
@@ -128,6 +135,8 @@ public:
 #endif
 #endif
 
+#endif
+
 #ifdef _DEBUG
          owningThread = GetCurrentThreadID();
 #endif
@@ -139,6 +148,7 @@ public:
    {
       if(this)
       {
+#if !defined(__EMSCRIPTEN__)
          /*
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Releasing Mutex %x\n", (int)GetCurrentThreadID(), this);
@@ -154,7 +164,7 @@ public:
 #else
             ;
 #endif
-#if defined(__WIN32__) && !defined(__EMSCRIPTEN__)
+#if defined(__WIN32__)
 #ifdef _DEBUG
          ReleaseMutex(mutex);
 #else
@@ -172,6 +182,8 @@ public:
          pthread_mutex_unlock(&mutex);
 #endif
 #endif
+#endif
+
 #ifdef _DEBUG
          if(lockCount < 0)
             PrintLn("WARNING: lockCount < 0");
@@ -181,5 +193,3 @@ public:
 
    property int lockCount { get { return lockCount; } }
 };
-
-#endif // !defined(__EMSCRIPTEN__)

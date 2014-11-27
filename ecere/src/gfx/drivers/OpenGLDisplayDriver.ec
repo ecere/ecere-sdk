@@ -86,7 +86,6 @@ namespace gfx::drivers;
    #define uint _uint
 
    #include <GL/gl.h>
-   #include <GL/glut.h>
 
    //#include <GLES/gl.h>
    //#include <EGL/egl.h>
@@ -3449,7 +3448,9 @@ class OpenGLDisplayDriver : DisplayDriver
          case ambient:
          {
             float ambient[4] = { ((Color)value).r/255.0f, ((Color)value).g/255.0f, ((Color)value).b/255.0f, 1.0f };
+#if !defined(__EMSCRIPTEN__)
             glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+#endif
             break;
          }
          case alphaWrite:
