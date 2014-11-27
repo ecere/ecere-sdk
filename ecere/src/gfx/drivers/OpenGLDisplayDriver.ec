@@ -1213,7 +1213,7 @@ public void glesTerminate()
 }
 
 static GLuint stippleTexture;
-#if defined(_GLES)
+#if defined(_GLES) || defined(__EMSCRIPTEN__)
 static bool stippleEnabled;
 #endif
 
@@ -1245,8 +1245,10 @@ public void glesLineStipple( int i, unsigned short j )
 
 public void glesLightModeli( unsigned int pname, int param )
 {
+#if !defined(__EMSCRIPTEN__)
    if(pname == GL_LIGHT_MODEL_TWO_SIDE)
       glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, param);
+#endif
 }
 
 #ifdef __ANDROID__
@@ -1295,7 +1297,7 @@ bool GLSelectVBO(uint vbo)
 
 void GLGenBuffers(int count, uint * buffer)
 {
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
    glGenBuffers(count, buffer);
 #else
 #if defined(__WIN32__)
@@ -1307,7 +1309,7 @@ void GLGenBuffers(int count, uint * buffer)
 
 void GLDeleteBuffers(int count, GLuint * buffer)
 {
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
    glDeleteBuffers(count, buffer);
 #else
 #if defined(__WIN32__)
@@ -1319,7 +1321,7 @@ void GLDeleteBuffers(int count, GLuint * buffer)
 
 void GLBindBuffer(int target, uint buffer)
 {
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
    glBindBuffer(target, buffer);
 #else
 #if defined(__WIN32__)
@@ -1352,7 +1354,7 @@ public void GLBufferData(int type, GLenum target, int size, const GLvoid *data, 
    else
 #endif
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(__EMSCRIPTEN__)
       glBufferData(target, size, data, usage);
 #else
 
@@ -2856,7 +2858,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       glColor4fv(oglSurface.foreground);
       glBegin(GL_LINES);
-#ifdef _GLES
+#if defined(_GLES) || defined(__EMSCRIPTEN__)
       if(stippleEnabled)
       {
          glTexCoord2f(0.5f, 0);
@@ -2889,7 +2891,7 @@ class OpenGLDisplayDriver : DisplayDriver
       //Logf("Rectangle\n");
 
       glColor4fv(oglSurface.foreground);
-#ifdef _GLES
+#if defined(_GLES) || defined(__EMSCRIPTEN__)
       if(stippleEnabled)
       {
          glBegin(GL_LINES);
@@ -3121,6 +3123,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void StretchDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
+#if !defined(__EMSCRIPTEN__)
       float s2dw,s2dh,d2sw,d2sh;
       //bool flipX = false, flipY = false;
 
@@ -3217,10 +3220,12 @@ class OpenGLDisplayDriver : DisplayDriver
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
          glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
+#endif
    }
 
    void BlitDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h)
    {
+#if !defined(__EMSCRIPTEN__)
       //Logf("BlitDI\n");
 
       //Clip against the edges of the source
@@ -3281,6 +3286,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
          glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
       }
+#endif
    }
 
    void FilterDI(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
@@ -3381,7 +3387,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(stipple)
       {
-#if defined(_GLES)
+#if defined(_GLES) || defined(__EMSCRIPTEN__)
          stippleEnabled = true;
          glesLineStipple(1, (uint16)stipple);
 #else
@@ -3391,7 +3397,7 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else
       {
-#if defined(_GLES)
+#if defined(_GLES) || defined(__EMSCRIPTEN__)
          stippleEnabled = false;
          glMatrixMode(GL_TEXTURE);
          glLoadIdentity();

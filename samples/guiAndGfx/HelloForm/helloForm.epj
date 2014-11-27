@@ -42,7 +42,8 @@
             ],
             "Libraries" : [
                "ecereStatic",
-               "freetype"
+               "freetype",
+               "z"
             ],
             "LibraryDirs" : [
                "../../../ecere/obj/emscripten.linux.emscripten.x32"
