@@ -1307,7 +1307,7 @@ private:
 
          if(flags.camera && cameraTarget)
          {
-            // DeterMine angle to look at target
+            // Determine angle to look at target
             Vector3D position, direction;
             if(flags.root || !parent)
                position = transform.position;

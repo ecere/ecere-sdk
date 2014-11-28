@@ -448,7 +448,6 @@ from wherever you obtained them.
             "Debug" : true,
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
-               "ECERE_VANILLA",
                "NOBLENDING"
             ],
             "TargetType" : "StaticLibrary",
@@ -666,12 +665,6 @@ from wherever you obtained them.
                                  }
                               }
                            ]
-                        },
-                        {
-                           "Name" : "Emscripten",
-                           "Options" : {
-                              "ExcludeFromBuild" : true
-                           }
                         }
                      ]
                   },
