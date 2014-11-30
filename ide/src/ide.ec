@@ -448,10 +448,10 @@ class IDEMainFrame : Window
    hasMenuBar = true;
    icon = { ":icon.png" };
    text = titleECEREIDE;
-#if 0 //def _DEBUG
+#if defined(__linux__) // 0 //def _DEBUG
    //stayOnTop = true;
-   size = { 800, 600 };
-   anchor = { top = 0, right = 0, bottom = 0 };
+   //size = { 800, 600 };
+   anchor = { left = 0, top = 0, right = 0, bottom = 92 };
 #else
    state = maximized;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
