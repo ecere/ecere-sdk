@@ -173,7 +173,9 @@ public:
       }
    }
 
-   void Delete(LT item)
+   // TOFIX: This compiles without error but produces bad code, since the virtual method prototype is an IteratorPointer which should be a pointer, not a uint64
+   //void Delete(LT item)
+   void Delete(void * item)
    {
       Remove(item);
       delete item;
