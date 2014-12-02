@@ -1265,6 +1265,8 @@ class AndroidActivity : AndroidAppGlue
             for(c = app.classes.first; c && !eClass_IsDerived(c, class(GuiApplication)); c = c.next);
             if(!c) c = class(GuiApplication);
 
+            guiApp.lockMutex.Release();   // TOCHECK: Seems the evolve is losing our mutex lock here ?
+
             // Evolve the Application into it
             eInstance_Evolve((Instance *)&__androidCurrentModule, c);
             guiApp = (GuiApplication)__androidCurrentModule;
@@ -1274,6 +1276,8 @@ class AndroidActivity : AndroidAppGlue
                *&guiApp.currentSkin = null;
                guiApp.SelectSkin(skin);
             }
+
+            guiApp.lockMutex.Wait();
 
             // Call Main()
             ((void (*)(void *))(void *)__androidCurrentModule._vTbl[12])(__androidCurrentModule);
