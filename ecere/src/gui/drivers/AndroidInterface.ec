@@ -25,7 +25,7 @@ import "Condition"
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "ecere-app", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "ecere-app", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "ecere-app", __VA_ARGS__))
-#ifdef _DEBUG
+#ifndef _DEBUG
 #define LOGV(...)  ((void)0)
 #else
 #define LOGV(...)  ((void)__android_log_print(ANDROID_LOG_VERBOSE, "ecere-app", __VA_ARGS__))
@@ -348,25 +348,25 @@ private:
 static void onDestroy(ANativeActivity* activity)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("Destroy: %p\n", activity);
+   LOGI("Destroy: %p\n", activity);
    app.cleanup();
    app.Wait();
    delete androidActivity;
    delete __androidCurrentModule;
-   LOGV("THE END.");
+   LOGI("THE END.");
 }
 
 static void onStart(ANativeActivity* activity)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("Start: %p\n", activity);
+   LOGI("Start: %p\n", activity);
    app.set_activity_state(start);
 }
 
 static void onResume(ANativeActivity* activity)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("Resume: %p\n", activity);
+   LOGI("Resume: %p\n", activity);
    app.set_activity_state(resume);
 }
 
@@ -374,7 +374,7 @@ static void* onSaveInstanceState(ANativeActivity* activity, size_t* outLen)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
    void* savedState = null;
-   LOGV("SaveInstanceState: %p\n", activity);
+   LOGI("SaveInstanceState: %p\n", activity);
    app.mutex.Wait();
    app.stateSaved = false;
    app.write_cmd(saveState);
@@ -394,63 +394,63 @@ static void* onSaveInstanceState(ANativeActivity* activity, size_t* outLen)
 static void onPause(ANativeActivity* activity)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("Pause: %p\n", activity);
+   LOGI("Pause: %p\n", activity);
    app.set_activity_state(pause);
 }
 
 static void onStop(ANativeActivity* activity)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("Stop: %p\n", activity);
+   LOGI("Stop: %p\n", activity);
    app.set_activity_state(stop);
 }
 
 static void onConfigurationChanged(ANativeActivity* activity)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("ConfigurationChanged: %p\n", activity);
+   LOGI("ConfigurationChanged: %p\n", activity);
    app.write_cmd(configChanged);
 }
 
 static void onLowMemory(ANativeActivity* activity)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("LowMemory: %p\n", activity);
+   LOGI("LowMemory: %p\n", activity);
    app.write_cmd(lowMemory);
 }
 
 static void onWindowFocusChanged(ANativeActivity* activity, int focused)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("WindowFocusChanged: %p -- %d\n", activity, focused);
+   LOGI("WindowFocusChanged: %p -- %d\n", activity, focused);
    app.write_cmd(focused ? gainedFocus : lostFocus);
 }
 
 static void onNativeWindowCreated(ANativeActivity* activity, ANativeWindow* window)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("NativeWindowCreated: %p -- %p\n", activity, window);
+   LOGI("NativeWindowCreated: %p -- %p\n", activity, window);
    app.set_window(window);
 }
 
 static void onNativeWindowDestroyed(ANativeActivity* activity, ANativeWindow* window)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("NativeWindowDestroyed: %p -- %p\n", activity, window);
+   LOGI("NativeWindowDestroyed: %p -- %p\n", activity, window);
    app.set_window(null);
 }
 
 static void onInputQueueCreated(ANativeActivity* activity, AInputQueue* queue)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("InputQueueCreated: %p -- %p\n", activity, queue);
+   LOGI("InputQueueCreated: %p -- %p\n", activity, queue);
    app.set_input(queue);
 }
 
 static void onInputQueueDestroyed(ANativeActivity* activity, AInputQueue* queue)
 {
    AndroidAppGlue app = (AndroidAppGlue)activity->instance;
-   LOGV("InputQueueDestroyed: %p -- %p\n", activity, queue);
+   LOGI("InputQueueDestroyed: %p -- %p\n", activity, queue);
    app.inputQueue = null;
    app.set_input(null);
 }
@@ -477,7 +477,7 @@ default dllexport void ANativeActivity_onCreate(ANativeActivity* activity, void*
    __thisModule = null;
    __androidCurrentModule = null;
 
-   LOGV("Creating: %p\n", activity);
+   LOGI("Creating: %p\n", activity);
 
    //(*activity->vm)->AttachCurrentThread(activity->vm, &env, 0);
    clazz = (*env)->GetObjectClass(env, activity->clazz);
