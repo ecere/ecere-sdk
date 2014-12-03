@@ -26,7 +26,7 @@ class GIFFormat : BitmapFormat
    {
       bool result = false;
 
-#if GIFLIB_MAJOR > 5
+#if GIFLIB_MAJOR >= 5
       GifFileType * gifFile = DGifOpen(f, ReadData, null);
 #else
       GifFileType * gifFile = DGifOpen(f, ReadData);
@@ -105,7 +105,11 @@ class GIFFormat : BitmapFormat
                result = true;
             }
          }
+#if GIFLIB_MAJOR >= 5
+         DGifCloseFile(gifFile, null);
+#else
          DGifCloseFile(gifFile);
+#endif
       }
 
       if(!result)
