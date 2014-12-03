@@ -7258,6 +7258,7 @@ namespace com;
 import "Map"
 
 Map<Class, int> blocksByClass { };
+Map<Class, uintsize> sizeByClass { };
 #endif
 
 public void queryMemInfo(char * string)
@@ -7266,7 +7267,7 @@ public void queryMemInfo(char * string)
    char s[1024];
    int p;
    uint numBlocks = 0;
-   //uintsize nonClassBytes = 0;
+   uintsize totalMemUsed = 0;
    sprintf(s, "Total System Memory Usage: %.02f\n", TOTAL_MEM / 1048576.0f);
    strcat(string, s);
 
@@ -7278,12 +7279,14 @@ public void queryMemInfo(char * string)
          numBlocks += pool->totalSize;
          sprintf(s, "%8d bytes: %d blocks in %d parts (%.02f mb used; taking up %.02f mb space)\n",
             pool->blockSize, pool->numBlocks, pool->numParts, pool->usedSpace / 1048576.0f, pool->totalSize * pool->blockSpace / 1048576.0f);
+         totalMemUsed += pool->usedSpace;
          strcat(string, s);
       }
    }
-/*
+
 
    blocksByClass.Free();
+   sizeByClass.Free();
    memMutex.Wait();
    for(p = 0; pools && p < NUM_POOLS; p++)
    {
@@ -7293,8 +7296,7 @@ public void queryMemInfo(char * string)
       {
          Class c = block._class;
          blocksByClass[c]++;
-         if(!c)
-            nonClassBytes += block.size;
+         sizeByClass[c] += block.size;
       }
    }
    memMutex.Release();
@@ -7306,8 +7308,8 @@ public void queryMemInfo(char * string)
       {
          int c = it.data;
          Class _class = it.key; //&c;
-         uintsize size = _class ? _class.structSize : nonClassBytes;
-         float totalSize = (float)size * (_class ? c : 1) / 1048576.0f;
+         uintsize size = sizeByClass[_class];
+         float totalSize = (float) size / 1048576.0f;
          if(totalSize > 1)
          {
             sprintf(s, "%s (%d bytes): %d instances (%.02f mb used)\n", _class ? _class.name : "(none)", (int)size, c, totalSize);
@@ -7315,9 +7317,12 @@ public void queryMemInfo(char * string)
          }
       }
    }
-*/
+
    sprintf(s, "Non-pooled memory: %.02f\n", OUTSIDE_MEM / 1048576.0f);
    strcat(string, s);
+   sprintf(s, "Total Memory in use: %.02f\n", (float)(totalMemUsed + OUTSIDE_MEM) / 1048576.0f);
+   strcat(string, s);
+
    sprintf(s, "Total Blocks Count: %d (%.02f mb overhead)\n", numBlocks, (float)sizeof(struct MemBlock) * numBlocks / 1048576.0f);
    strcat(string, s);
 #ifdef MEMORYGUARD
