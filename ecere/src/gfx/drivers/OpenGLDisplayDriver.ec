@@ -525,6 +525,7 @@ static int curStack = 0;
    #define glColor4fv            glesColor4fv
    #define glLineStipple         glesLineStipple
    #define glNormal3fv           glesNormal3fv
+   #define glNormal3f            glesNormal3f
    #define glTexCoord2fv         glesTexCoord2fv
    #define glColorMaterial       glesColorMaterial
 
@@ -3895,7 +3896,6 @@ class OpenGLDisplayDriver : DisplayDriver
          mesh.data = OGLMesh { };
       if(mesh.data)
       {
-         OGLMesh oglMesh = mesh.data;
          if(mesh.nVertices == nVertices)
          {
             // Same number of vertices, adding features (Leaves the other features pointers alone)
@@ -3909,8 +3909,6 @@ class OpenGLDisplayDriver : DisplayDriver
                   }
                   else
                      mesh.vertices = new Vector3Df[nVertices];
-                  if(!oglMesh.vertices)
-                     GLGenBuffers(1, &oglMesh.vertices);
                }
                if(!mesh.flags.normals && flags.normals)
                {
@@ -3920,20 +3918,14 @@ class OpenGLDisplayDriver : DisplayDriver
                   }
                   else
                      mesh.normals = new Vector3Df[nVertices];
-                  if(!oglMesh.normals)
-                     GLGenBuffers( 1, &oglMesh.normals);
                }
                if(!mesh.flags.texCoords1 && flags.texCoords1)
                {
                   mesh.texCoords = new Pointf[nVertices];
-                  if(!oglMesh.texCoords)
-                     GLGenBuffers( 1, &oglMesh.texCoords);
                }
                if(!mesh.flags.colors && flags.colors)
                {
                   mesh.colors = new ColorRGBAf[nVertices];
-                  if(!oglMesh.colors)
-                     GLGenBuffers( 1, &oglMesh.colors);
                }
             }
          }
@@ -3949,8 +3941,6 @@ class OpenGLDisplayDriver : DisplayDriver
                }
                else
                   mesh.vertices = renew mesh.vertices Vector3Df[nVertices];
-               if(!oglMesh.vertices)
-                  GLGenBuffers(1, &oglMesh.vertices);
             }
             if(flags.normals)
             {
@@ -3960,20 +3950,14 @@ class OpenGLDisplayDriver : DisplayDriver
                }
                else
                   mesh.normals = renew mesh.normals Vector3Df[nVertices];
-               if(!oglMesh.normals)
-                  GLGenBuffers( 1, &oglMesh.normals);
             }
             if(flags.texCoords1)
             {
                mesh.texCoords = renew mesh.texCoords Pointf[nVertices];
-               if(!oglMesh.texCoords)
-                  GLGenBuffers( 1, &oglMesh.texCoords);
             }
             if(flags.colors)
             {
                mesh.colors = renew mesh.colors ColorRGBAf[nVertices];
-               if(!oglMesh.colors)
-                  GLGenBuffers( 1, &oglMesh.colors);
             }
          }
          result = true;
@@ -3988,26 +3972,34 @@ class OpenGLDisplayDriver : DisplayDriver
 
       if(vboAvailable)
       {
-         if(flags.vertices && oglMesh.vertices)
+         if(flags.vertices)
          {
+            if(!oglMesh.vertices)
+               GLGenBuffers(1, &oglMesh.vertices);
             GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.vertices);
             GLBufferData( mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.vertices, GL_STATIC_DRAW_ARB );
          }
 
-         if(flags.normals && oglMesh.normals)
+         if(flags.normals)
          {
+            if(!oglMesh.normals)
+               GLGenBuffers(1, &oglMesh.normals);
             GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
             GLBufferData( mesh.flags.doubleNormals ? GL_DOUBLE : GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * (mesh.flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)), mesh.normals, GL_STATIC_DRAW_ARB );
          }
 
-         if(flags.texCoords1 && oglMesh.texCoords)
+         if(flags.texCoords1)
          {
+            if(!oglMesh.texCoords)
+               GLGenBuffers(1, &oglMesh.texCoords);
             GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
             GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(Pointf), mesh.texCoords, GL_STATIC_DRAW_ARB );
          }
 
-         if(flags.colors && oglMesh.colors)
+         if(flags.colors)
          {
+            if(!oglMesh.colors)
+               GLGenBuffers( 1, &oglMesh.colors);
             GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
             GLBufferData( GL_FLOAT, GL_ARRAY_BUFFER_ARB, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, GL_STATIC_DRAW_ARB );
          }
@@ -4086,16 +4078,16 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.vertices );
             if(mesh.flags.doubleVertices)
-               glVertexPointerd(3, 0, (double *)(vboAvailable ? null : mesh.vertices), mesh.nVertices);
+               glVertexPointerd(3, 0, oglMesh.vertices ? null : (double *)mesh.vertices, mesh.nVertices);
             else
-               glVertexPointer(3, GL_FLOAT, 0, vboAvailable ? null : mesh.vertices);
+               glVertexPointer(3, GL_FLOAT, 0, oglMesh.vertices ? null : mesh.vertices);
 
             // *** Normals Stream ***
             if(mesh.normals || mesh.flags.normals)
             {
                glEnableClientState(GL_NORMAL_ARRAY);
                GLBindBuffer(GL_ARRAY_BUFFER_ARB, oglMesh.normals);
-               glNormalPointer(/*mesh.flags.doubleNormals ? GL_DOUBLE : */GL_FLOAT, 0, vboAvailable ? null : mesh.normals);
+               glNormalPointer(/*mesh.flags.doubleNormals ? GL_DOUBLE : */GL_FLOAT, 0, oglMesh.normals ? null : mesh.normals);
             }
             else
                glDisableClientState(GL_NORMAL_ARRAY);
@@ -4105,7 +4097,7 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                glEnableClientState(GL_TEXTURE_COORD_ARRAY);
                GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.texCoords);
-               glTexCoordPointer(2, GL_FLOAT, 0, vboAvailable ? null : mesh.texCoords);
+               glTexCoordPointer(2, GL_FLOAT, 0, oglMesh.texCoords ? null : mesh.texCoords);
             }
             else
                glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -4115,11 +4107,10 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                glEnableClientState(GL_COLOR_ARRAY);
                GLBindBuffer( GL_ARRAY_BUFFER_ARB, oglMesh.colors);
-               glColorPointer(4, GL_FLOAT, 0, vboAvailable ? null : mesh.colors);
+               glColorPointer(4, GL_FLOAT, 0, oglMesh.colors ? null : mesh.colors);
             }
             else
                glDisableClientState(GL_COLOR_ARRAY);
-
          }
          else
          {
