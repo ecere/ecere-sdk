@@ -1801,7 +1801,7 @@ private:
                                  message = $"Linker ";
                                  numWarnings++;
                               }
-                              else if(!strstr(line, "error:"))
+                              else if(strstr(line, "error:"))
                               {
                                  message = $"Linker Error: ";
                                  numErrors++;
