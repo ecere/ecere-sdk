@@ -1889,6 +1889,7 @@ class IDEWorkSpace : Window
       }
       if(!toolBar.activeCompiler.currentRow && toolBar.activeCompiler.firstRow)
          toolBar.activeCompiler.SelectRow(toolBar.activeCompiler.firstRow);
+      toolBar.activeBitDepth.SelectRow(toolBar.activeBitDepth.FindRow(workspace ? workspace.bitDepth : 0));
    }
 
    void UpdateToolBarActiveConfigs(bool selectionOnly)
