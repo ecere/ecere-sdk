@@ -3628,19 +3628,34 @@ bool GetInstalledFileOrFolder(const char * subDir, const char * name, char * pat
 #else
    if(!found)
    {
+      char * p = null;
       char * tokens[256];
       int c, numTokens;
 
       GetEnvironment("XDG_DATA_DIRS", v, maxPathLen);
       numTokens = TokenizeWith(v, sizeof(tokens) / sizeof(byte *), tokens, ":", false);
+      if(!numTokens)
+      {
+         p = new char[MAX_LOCATION];
+         p[0] = '\0';
+         strcat(p, "/usr/share");
+         tokens[0] = p;
+         numTokens = 1;
+      }
       for(c=0; c<numTokens; c++)
       {
          strncpy(path, tokens[c], MAX_LOCATION); path[MAX_LOCATION-1] = '\0';
          PathCat(path, sdkDirName);
          PathCat(path, subDir);
-         if(name) PathCat(path, name);
-         if(FileExists(path) & attribs) found = true;
+         if(name)
+            PathCat(path, name);
+         if(FileExists(path) & attribs)
+         {
+            found = true;
+            break;
+         }
       }
+      delete p;
    }
 #endif
    delete v;
