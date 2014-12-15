@@ -4235,11 +4235,11 @@ switch(curParam->type)
 {
 case 0:
 argument.__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(value);
+argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, value);
+if(!argument.__anon1.__anon1.dataTypeClass)
 argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, value);
 if(!argument.__anon1.__anon1.dataTypeClass)
 argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, value);
-if(!argument.__anon1.__anon1.dataTypeClass)
-argument.__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, value);
 break;
 case 2:
 {
@@ -4339,11 +4339,11 @@ templatedClass->templateArgs[curParamID] = param->defaultArg;
 __ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[curParamID]);
 if(param->type == 0 && param->defaultArg.__anon1.__anon1.dataTypeString)
 {
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString);
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
 templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, param->defaultArg.__anon1.__anon1.dataTypeString);
 if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
 templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, param->defaultArg.__anon1.__anon1.dataTypeString);
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString);
 }
 }
 curParamID++;
@@ -4456,6 +4456,8 @@ templateString[len++] = '\0';
 }
 __ecereNameSpace__ecere__com__FreeTemplateArg(templatedClass, param, c);
 (*arg).__anon1.__anon1.dataTypeString = __ecereNameSpace__ecere__sys__CopyString(templateString);
+(*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, templateString);
+if(!(*arg).__anon1.__anon1.dataTypeClass)
 (*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, templateString);
 if(!(*arg).__anon1.__anon1.dataTypeClass)
 (*arg).__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, templateString);
@@ -4508,11 +4510,11 @@ templatedClass->templateArgs[curParamID] = param->defaultArg;
 __ecereNameSpace__ecere__com__CopyTemplateArg(param, &templatedClass->templateArgs[curParamID]);
 if(param->type == 0 && param->defaultArg.__anon1.__anon1.dataTypeString)
 {
+templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString);
+if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
 templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, param->defaultArg.__anon1.__anon1.dataTypeString);
 if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
 templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, param->defaultArg.__anon1.__anon1.dataTypeString);
-if(!templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass)
-templatedClass->templateArgs[curParamID].__anon1.__anon1.dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, param->defaultArg.__anon1.__anon1.dataTypeString);
 }
 }
 curParamID++;
@@ -4618,9 +4620,9 @@ strcpy(className, templatedClass->templateArgs[id].__anon1.__anon1.dataTypeStrin
 id++;
 }
 }
-memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, className);
-if(!memberClass)
 memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(findModule, className);
+if(!memberClass)
+memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(templatedClass->module, className);
 if(!memberClass)
 memberClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)templatedClass->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, className);
 }
