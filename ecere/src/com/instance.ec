@@ -3640,9 +3640,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
             {
                case type:
                   argument.dataTypeString = CopyString(value);
-                  argument.dataTypeClass = eSystem_FindClass(_class.module, value);
-                  if(!argument.dataTypeClass) argument.dataTypeClass = eSystem_FindClass(_class.module.application, value);
-                  if(!argument.dataTypeClass) argument.dataTypeClass = eSystem_FindClass(findModule, value);
+                  argument.dataTypeClass = eSystem_FindClass(findModule, value);
+                  if(!argument.dataTypeClass)
+                     argument.dataTypeClass = eSystem_FindClass(_class.module, value);
+                  if(!argument.dataTypeClass)
+                     argument.dataTypeClass = eSystem_FindClass(_class.module.application, value);
                   break;
                case expression:
                {
@@ -3740,11 +3742,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
             CopyTemplateArg(param, templatedClass.templateArgs[curParamID]);
             if(param.type == type && param.defaultArg.dataTypeString)
             {
-               templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module, param.defaultArg.dataTypeString);
+               templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(findModule, param.defaultArg.dataTypeString);
+               if(!templatedClass.templateArgs[curParamID].dataTypeClass)
+                  templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module, param.defaultArg.dataTypeString);
                if(!templatedClass.templateArgs[curParamID].dataTypeClass)
                   templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module.application, param.defaultArg.dataTypeString);
-               if(!templatedClass.templateArgs[curParamID].dataTypeClass)
-                  templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(findModule, param.defaultArg.dataTypeString);
             }
          }
          curParamID++;
@@ -3868,7 +3870,9 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                      FreeTemplateArg(templatedClass, param, c);
 
                      arg->dataTypeString = CopyString(templateString);
-                     arg->dataTypeClass = eSystem_FindClass(templatedClass.module, templateString);
+                     arg->dataTypeClass = eSystem_FindClass(findModule, templateString);
+                     if(!arg->dataTypeClass)
+                        arg->dataTypeClass = eSystem_FindClass(templatedClass.module, templateString);
                      if(!arg->dataTypeClass)
                         arg->dataTypeClass = eSystem_FindClass(templatedClass.module.application, templateString);
                   }
@@ -3920,11 +3924,11 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                CopyTemplateArg(param, templatedClass.templateArgs[curParamID]);
                if(param.type == type && param.defaultArg.dataTypeString)
                {
-                  templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module, param.defaultArg.dataTypeString);
+                  templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(findModule, param.defaultArg.dataTypeString);
+                  if(!templatedClass.templateArgs[curParamID].dataTypeClass)
+                     templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module, param.defaultArg.dataTypeString);
                   if(!templatedClass.templateArgs[curParamID].dataTypeClass)
                      templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(templatedClass.module.application, param.defaultArg.dataTypeString);
-                  if(!templatedClass.templateArgs[curParamID].dataTypeClass)
-                     templatedClass.templateArgs[curParamID].dataTypeClass = eSystem_FindClass(findModule, param.defaultArg.dataTypeString);
                }
             }
             curParamID++;
@@ -4022,10 +4026,10 @@ static void ComputeClassParameters(Class templatedClass, const char * templatePa
                         id++;
                      }
                   }
-                  memberClass = eSystem_FindClass(templatedClass.module, className);
                   // TESTING: Added this here...
+                  memberClass = eSystem_FindClass(findModule, className);
                   if(!memberClass)
-                     memberClass = eSystem_FindClass(findModule, className);
+                     memberClass = eSystem_FindClass(templatedClass.module, className);
                   if(!memberClass)
                      memberClass = eSystem_FindClass(templatedClass.module.application, className);
                }
