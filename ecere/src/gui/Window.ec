@@ -6442,6 +6442,11 @@ public:
             Box realBox;
 
             // Testing this to avoid repetitve full update to take time...
+            if(rootWindow.fullRender)
+            {
+               rootWindow.dirty = true;
+               return;
+            }
             if(dirtyArea.count == 1)
             {
                BoxItem item = (BoxItem)ACCESS_ITEM(dirtyArea, dirtyArea.first);
