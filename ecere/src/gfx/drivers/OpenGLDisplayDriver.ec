@@ -2664,6 +2664,8 @@ class OpenGLDisplayDriver : DisplayDriver
          convBitmap.driver.FreeBitmap(convBitmap.displaySystem, convBitmap);
          bitmap.driverData = (void *)(uintptr)glBitmap;
          bitmap.driver = displaySystem.driver;
+         if(bitmap.keepData)
+            delete convBitmap;
 
          if(!result)
             FreeBitmap(displaySystem, bitmap);
