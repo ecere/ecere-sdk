@@ -1029,6 +1029,7 @@ void glesColorMaterial(int a, int b)
 void glesTerminate()
 {
    delete vertexPointer;
+   delete normalPointer;
    beginBufferSize = 0;
 
    delete floatVPBuffer;
