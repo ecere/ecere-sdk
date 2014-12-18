@@ -1106,12 +1106,18 @@ static bool OnGetDataFromString(Class _class, void ** data, const char * string)
 
 static void OnCopy(Class _class, void ** data, void * newData)
 {
-   // TO IMPROVE: Inherit from Unit class for better performance?
    if(_class.type == unitClass || _class.type == bitClass || _class.type == enumClass)
    {
+      // An OnCopy is pointless for these, just copy the value
+      /*
       Class dataType = eSystem_FindClass(_class.module, _class.dataTypeString);
       if(dataType)
          ((void (*)(void *, void *, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnCopy])(dataType, data, newData);
+      */
+      if(newData)
+         memcpy(data, newData, _class.typeSize);
+      else
+         memset(data, 0, _class.typeSize);
    }
    else if(_class.type != structClass && (_class.type != systemClass || _class.byValueSystemClass))
    {

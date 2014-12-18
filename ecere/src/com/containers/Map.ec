@@ -203,7 +203,8 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
             node = MapNode<MT, V> { key = pos };
          }
          if((Tclass.type == systemClass && !Tclass.byValueSystemClass) || Tclass.type == bitClass || Tclass.type == enumClass || Tclass.type == unitClass)
-            onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize));
+            // onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize));
+            memcpy((byte *)&node.key + __ENDIAN_PAD(Tclass.typeSize), (byte *)&pos + __ENDIAN_PAD(Tclass.typeSize), Tclass.typeSize);
          else
             onCopy(Tclass, (byte *)&node.key + __ENDIAN_PAD(sizeof(void *)), (void *)pos);
          CustomAVLTree::AddEx((T)(uintptr)node, (T)(uintptr)addNode, addSide);
