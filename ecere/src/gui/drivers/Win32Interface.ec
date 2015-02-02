@@ -584,9 +584,9 @@ class Win32Interface : Interface
                break;
             case WM_PAINT:
             {
+               PAINTSTRUCT ps;
                if(!window.alphaBlend || window.display.pixelFormat != pixelFormat888)
                {
-                  PAINTSTRUCT ps;
 
 /*
 #define ACCESS_ITEM(l, id) \
@@ -620,6 +620,11 @@ class Win32Interface : Interface
                   }
                      // TODO: Fix precompiler with
                      // window.UpdateDirty((Box *)&ps.rcPaint);
+                  EndPaint(windowHandle, &ps);
+               }
+               else
+               {
+                  BeginPaint(windowHandle, &ps);
                   EndPaint(windowHandle, &ps);
                }
                break;
