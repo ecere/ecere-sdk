@@ -236,10 +236,23 @@ void AeroSnapPosition(Window window, int x, int y, int w, int h)
          }
          w = gw;
          h = gh;
-         guiApp.interfaceDriver.PositionRootWindow(window, x, y, w, h, move, true);
+         if(window.state == minimized && !window.nativeDecorations && !window.hasMinimize)
+            y -= 26000;
+          guiApp.interfaceDriver.PositionRootWindow(window, x, y, w, h, move, true);
       }
    }
    window.ExternalPosition(x, y, w, h);
+}
+
+void Win32UpdateStyle(Window window)
+{
+   DWORD style = GetWindowLong(window.windowHandle, GWL_EXSTYLE);
+   if(window.showInTaskBar)
+      style |= WS_EX_APPWINDOW;
+   else
+      style &= ~WS_EX_APPWINDOW;
+
+   SetWindowLong(window.windowHandle, GWL_EXSTYLE, style);
 }
 
 class Win32Interface : Interface
@@ -486,12 +499,15 @@ class Win32Interface : Interface
 
                      HWND modalWindow = modalRoot ? modalRoot.windowHandle : null;
 
-                     FLASHWINFO flashInfo = { 0 };
-                     flashInfo.cbSize = sizeof(FLASHWINFO);
-                     flashInfo.hwnd = window.windowHandle;
-                     flashInfo.uCount = 0;
-                     flashInfo.dwFlags = FLASHW_STOP;
-                     FlashWindowEx((void *)&flashInfo);
+                     if(window.creationActivation == flash || window.hasMinimize || window.borderStyle != sizableThin)
+                     {
+                        FLASHWINFO flashInfo = { 0 };
+                        flashInfo.cbSize = sizeof(FLASHWINFO);
+                        flashInfo.hwnd = window.windowHandle;
+                        flashInfo.uCount = 0;
+                        flashInfo.dwFlags = FLASHW_STOP;
+                        FlashWindowEx((void *)&flashInfo);
+                     }
 
                      if(modalWindow && modalWindow != windowHandle)
                         modalRoot.ExternalActivate(true, true, window, null);
@@ -1394,7 +1410,7 @@ class Win32Interface : Interface
          if(window.style.stayOnTop)
             exStyle |= WS_EX_TOPMOST;
 
-         if(rootWindow && (window._isModal || window.style.interim))
+         if(rootWindow && (window._isModal || window.style.interim || (window.style.thin && !window.style.showInTaskBar)))
             parentWindow = rootWindow.is3D ? rootWindow.parent.windowHandle : rootWindow.windowHandle;
 
          if(window.alphaBlend)
@@ -1402,7 +1418,7 @@ class Win32Interface : Interface
             exStyle |= WS_EX_LAYERED; // | WS_EX_TRANSPARENT;
 
          // Toolwindow will disappear if they don't have AppWindow set
-         if(window.style.showInTaskBar || (!parentWindow && window.style.thin))
+         if(window.style.showInTaskBar) // Took this out as a way to prevent sticky notes from showing in task bar... ( added flag to Communicator ) || (!parentWindow && window.style.thin))
          {
             exStyle |= WS_EX_APPWINDOW;
             parentWindow = null;
