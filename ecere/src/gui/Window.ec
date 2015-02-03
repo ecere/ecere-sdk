@@ -3368,7 +3368,7 @@ private:
             if(rootWindow.active)
                guiApp.interfaceDriver.StopMoving(rootWindow);
          }
-         ReleaseCapture();
+         guiApp.windowCaptured.ReleaseCapture();
          guiApp.resizeX = guiApp.resizeY = guiApp.resizeEndX = guiApp.resizeEndY = false;
          guiApp.windowIsResizing = false;
       }
