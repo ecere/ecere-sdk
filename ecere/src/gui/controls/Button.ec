@@ -560,6 +560,7 @@ public class Button : CommonControl
 
    bool OnLeftButtonUp(int x, int y, Modifiers mods)
    {
+      bool result = true;
       if(!(buttonStyle.toggle))
       {
          bool releasedResult;
@@ -586,10 +587,8 @@ public class Button : CommonControl
                Update(null);
                if(releasedResult)
                {
-                  if(NotifyClicked(master, this, x,y, mods))
-                     return true;
-                  else
-                     return false;
+                  if(!NotifyClicked(master, this, x,y, mods))
+                     result = false;
                }
             }
             else
@@ -600,7 +599,7 @@ public class Button : CommonControl
             }
          }
       }
-      return true;
+      return result;
    }
 
    bool OnLeftDoubleClick(int x, int y, Modifiers mods)
