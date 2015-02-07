@@ -4,7 +4,11 @@ import "Window"
 
 class ButtonBits { bool bevel:1, scale:1, offset:1, stayDown:1, checkBox:1, toggle:1, radio:1, keyRepeat:1, bevelOver:1, ellipsis:1, stayUp:1; };
 
+#if defined(HIGH_DPI)
+#define CAPTION_DISTANCE   36
+#else
 #define CAPTION_DISTANCE   18
+#endif
 
 public enum ButtonState /*: byte*/ { up, down, over, disabled, upChecked, downChecked, overChecked, disabledChecked };
 //use and extend preexisting enum? -> public enum Alignment { left, right, center };
@@ -157,7 +161,11 @@ public class Button : CommonControl
       // Checkbox
       if(buttonStyle.checkBox && !buttonBitmap)
       {
+#if defined(HIGH_DPI)
+         int height = 32;
+#else
          int height = 16;
+#endif
          int start = (clientSize.h - height) / 2;
 
          if(!isEnabled)
@@ -193,10 +201,17 @@ public class Button : CommonControl
                surface.SetForeground(Color { 85, 85, 85 });
             else
                surface.SetForeground(foreground /*black*/);
+#ifdef HIGH_DPI
+               surface.DrawLine(8, start+16, 14,start+22);
+               surface.DrawLine(8, start+18, 14,start+24);
+               surface.DrawLine(14, start+22, 19,start+6);
+               surface.DrawLine(14, start+24, 19,start+8);
+#else
             surface.DrawLine(4, start+8, 7,start+11);
             surface.DrawLine(4, start+9, 7,start+12);
             surface.DrawLine(7, start+11, 11,start+3);
             surface.DrawLine(7, start+12, 11,start+4);
+#endif
          }
       }
 

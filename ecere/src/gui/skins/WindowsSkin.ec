@@ -605,7 +605,11 @@ public class WindowsSkin_Window : Window
 
 
 #define PUREVTBL(c)     (*(void ***)((byte *)class(c).data + sizeof(uintptr)))
+#if defined(HIGH_DPI)
+#define CAPTION_DISTANCE   36
+#else
 #define CAPTION_DISTANCE   18
+#endif
 
 default:
 static __attribute__((unused)) void Dummy()
@@ -670,7 +674,11 @@ public class WindowsSkin_Button : Button
          // Checkbox
          if(isCheckbox && !buttonBitmap)
          {
+#if defined(HIGH_DPI)
+            int height = 32;
+#else
             int height = 16;
+#endif
             int start = (clientSize.h - height) / 2;
 
             if(!isEnabled)
@@ -706,10 +714,17 @@ public class WindowsSkin_Button : Button
                   surface.SetForeground(Color { 85, 85, 85 });
                else
                   surface.SetForeground(black);
+#ifdef HIGH_DPI
+               surface.DrawLine(8, start+16, 14,start+22);
+               surface.DrawLine(8, start+18, 14,start+24);
+               surface.DrawLine(14, start+22, 19,start+6);
+               surface.DrawLine(14, start+24, 19,start+8);
+#else
                surface.DrawLine(4, start+8, 7,start+11);
                surface.DrawLine(4, start+9, 7,start+12);
                surface.DrawLine(7, start+11, 11,start+3);
                surface.DrawLine(7, start+12, 11,start+4);
+#endif
             }
          }
 
