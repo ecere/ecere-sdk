@@ -38,7 +38,7 @@ public:
 
 private:
    Timer prev, next;
-   Seconds delay;
+   public Seconds delay;
    Time lastTime;
    Window window;
    bool dispatched;

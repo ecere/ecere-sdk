@@ -546,7 +546,7 @@ sprintf(fileName, "/usr/share/locale/%s/LC_MESSAGES/%s.mo", genericLocale, name)
 f = __ecereNameSpace__ecere__sys__FileOpen(fileName, 1);
 }
 }
-if(f)
+if(0)
 {
 unsigned int magic = 0;
 

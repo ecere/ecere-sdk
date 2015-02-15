@@ -1513,7 +1513,8 @@ private:
    unsigned startFrame, endFrame;
    int frame;
    Vector3Df pivot;
-   Transform transform;
+
+   public Transform transform;
    Matrix matrix;
    Matrix localMatrix;
    void * tag;

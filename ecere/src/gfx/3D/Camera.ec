@@ -598,7 +598,7 @@ private:
    FovDirection fovDirection;
    Object cameraObject;
    Object target;
-   Vector3D position;
+   public Vector3D position;
    Quaternion orientation;
    Euler eulerOrientation;
    float aspectRatio;

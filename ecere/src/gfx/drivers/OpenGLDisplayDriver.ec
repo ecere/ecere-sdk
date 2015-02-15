@@ -109,9 +109,10 @@ namespace gfx::drivers;
 
 #if defined(__EMSCRIPTEN__)
 #define EM_MODE
+// #define _GLES
 #endif
 
-#define EM_MODE
+//#define EM_MODE
 
 #undef pointer
 
@@ -3625,7 +3626,6 @@ class OpenGLDisplayDriver : DisplayDriver
             position[1] = direction.y;
             position[2] = direction.z;
 
-            PrintLn("position");
             glLightfv(GL_LIGHT0 + id, GL_POSITION, position);
          }
       }
@@ -3706,10 +3706,10 @@ class OpenGLDisplayDriver : DisplayDriver
          // ...
 
          glEnable(GL_DEPTH_TEST);
-#if !defined(EM_MODE)
+//#if !defined(EM_MODE)
          glEnable(GL_LIGHTING);
          glShadeModel(GL_SMOOTH);
-#endif
+//#endif
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
 
@@ -3725,9 +3725,9 @@ class OpenGLDisplayDriver : DisplayDriver
          glDisable(GL_LIGHTING);
          glDisable(GL_FOG);
          glDisable(GL_TEXTURE_2D);
-#if !defined(EM_MODE)
+//#if !defined(EM_MODE)
          glShadeModel(GL_FLAT);
-#endif
+//#endif
          glEnable(GL_BLEND);
          glDisable(GL_MULTISAMPLE_ARB);
 
