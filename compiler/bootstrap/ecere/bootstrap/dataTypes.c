@@ -1350,10 +1350,10 @@ static void __ecereNameSpace__ecere__com__OnCopy(struct __ecereNameSpace__ecere_
 {
 if(_class->type == 3 || _class->type == 2 || _class->type == 4)
 {
-struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(_class->module, _class->dataTypeString);
-
-if(dataType)
-((void (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnCopy])(dataType, data, newData);
+if(newData)
+memcpy(data, newData, _class->typeSize);
+else
+memset(data, 0, _class->typeSize);
 }
 else if(_class->type != 1 && (_class->type != 1000 || _class->byValueSystemClass))
 {

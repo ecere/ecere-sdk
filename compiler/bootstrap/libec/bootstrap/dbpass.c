@@ -2144,6 +2144,18 @@ if(stmt->__anon1.forStmt.stmt)
 ProcessStatement(stmt->__anon1.forStmt.stmt);
 break;
 }
+case 18:
+{
+struct Expression * exp;
+
+for(exp = stmt->__anon1.forEachStmt.exp ? (*stmt->__anon1.forEachStmt.exp).first : (((void *)0)); exp; exp = exp->next)
+ProcessExpression(exp);
+for(exp = stmt->__anon1.forEachStmt.filter ? (*stmt->__anon1.forEachStmt.filter).first : (((void *)0)); exp; exp = exp->next)
+ProcessExpression(exp);
+if(stmt->__anon1.forEachStmt.stmt)
+ProcessStatement(stmt->__anon1.forEachStmt.stmt);
+break;
+}
 case 9:
 break;
 case 10:

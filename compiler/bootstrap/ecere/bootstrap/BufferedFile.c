@@ -207,9 +207,9 @@ int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock;
 
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Unlock;
 
-void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value);
-
 int __ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize;
+
+void __ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(struct __ecereNameSpace__ecere__com__Instance * this, unsigned int value);
 
 struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(struct __ecereNameSpace__ecere__com__Instance * this);
 
@@ -854,29 +854,18 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__Fi
 struct __ecereNameSpace__ecere__com__Instance * result = (((void *)0));
 
 {
-struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__BufferedFile);
+struct __ecereNameSpace__ecere__com__Instance * handle = __ecereNameSpace__ecere__sys__FileOpen(fileName, mode);
 
-if(f)
+if(handle)
 {
-((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + __ecereClass___ecereNameSpace__ecere__sys__File->structSize)))->mode = mode;
-((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + __ecereClass___ecereNameSpace__ecere__sys__File->structSize)))->pos = 0;
-if((__extension__ ({
-void * __ecTemp1 = (f);
-
-__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Set_handle(__ecTemp1, __ecereNameSpace__ecere__sys__FileOpen(fileName, mode));
-__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(__ecTemp1);
-})))
-{
-__ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f), 1);
-((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + __ecereClass___ecereNameSpace__ecere__sys__File->structSize)))->fileSize = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f);
+struct __ecereNameSpace__ecere__com__Instance * f = (f = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__BufferedFile), ((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + __ecereClass___ecereNameSpace__ecere__sys__File->structSize)))->mode = mode, ((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + __ecereClass___ecereNameSpace__ecere__sys__File->structSize)))->pos = 0, __ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Set_handle(f, handle), ((struct __ecereNameSpace__ecere__sys__BufferedFile *)(((char *)f + __ecereClass___ecereNameSpace__ecere__sys__File->structSize)))->fileSize = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = handle;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(__ecereProp___ecereNameSpace__ecere__sys__BufferedFile_Get_handle(f));
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(handle), f);
+
+__ecereProp___ecereNameSpace__ecere__sys__File_Set_buffered(handle, 1);
 result = f;
-}
-if(!result)
-(__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
 }
 return result;

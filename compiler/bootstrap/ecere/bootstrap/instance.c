@@ -1437,6 +1437,7 @@ if(newBlock)
 __ecereNameSpace__ecere__com__TOTAL_MEM += size - newBlock->size;
 __ecereNameSpace__ecere__com__OUTSIDE_MEM += size - newBlock->size;
 newPointer = ((struct __ecereNameSpace__ecere__com__MemBlock *)newBlock + 1);
+newBlock->size = size;
 }
 }
 }
@@ -2613,47 +2614,6 @@ for(deriv = _class->derivatives.first; deriv; deriv = deriv->next)
 __ecereNameSpace__ecere__com__FixOffsets(deriv->data);
 }
 
-struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, const char * type, unsigned int size, unsigned int alignment, int declMode)
-{
-if(_class && name)
-{
-if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->members, name))
-{
-struct __ecereNameSpace__ecere__com__DataMember * dataMember;
-
-if(alignment)
-{
-short __simpleStruct0;
-unsigned int pointerAlignment = alignment == 0xF000F000;
-
-if(pointerAlignment)
-alignment = sizeof(void *);
-if(pointerAlignment && _class->structAlignment <= 4)
-_class->pointerAlignment = 1;
-else if(!pointerAlignment && alignment >= 8)
-_class->pointerAlignment = 0;
-_class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
-if(_class->memberOffset % alignment)
-_class->memberOffset += alignment - (_class->memberOffset % alignment);
-}
-dataMember = __extension__ ({
-struct __ecereNameSpace__ecere__com__DataMember * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__DataMember));
-
-__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), __ecereInstance1->id = _class->memberID++, __ecereInstance1->_class = _class, __ecereInstance1->offset = _class->memberOffset, __ecereInstance1->memberOffset = size, __ecereInstance1->memberAccess = declMode, __ecereInstance1->membersAlpha.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, __ecereInstance1;
-});
-__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, dataMember);
-_class->memberOffset += size;
-__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->members, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
-struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
-
-__ecereInstance1->name = dataMember->name, __ecereInstance1->data = dataMember, __ecereInstance1;
-}));
-return dataMember;
-}
-}
-return (((void *)0));
-}
-
 void __ecereNameSpace__ecere__com__eEnum_AddFixedValue(struct __ecereNameSpace__ecere__com__Class * _class, const char * string, long long value)
 {
 if(_class && _class->type == 4)
@@ -3242,6 +3202,62 @@ if(!theClass)
 theClass = __ecereNameSpace__ecere__com__eSystem_FindClass(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application, string);
 (__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 (*this) = (void *)theClass;
+}
+
+struct __ecereNameSpace__ecere__com__DataMember * __ecereNameSpace__ecere__com__eClass_AddDataMember(struct __ecereNameSpace__ecere__com__Class * _class, const char * name, const char * type, unsigned int size, unsigned int alignment, int declMode)
+{
+if(_class && name)
+{
+if(!__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_FindString(&_class->members, name))
+{
+struct __ecereNameSpace__ecere__com__DataMember * dataMember;
+
+if(alignment)
+{
+short __simpleStruct0;
+unsigned int pointerAlignment = alignment == 0xF000F000;
+unsigned int force64Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 2) ? 1 : 0;
+unsigned int force32Bits = (((struct __ecereNameSpace__ecere__com__Application *)(((char *)((struct __ecereNameSpace__ecere__com__Module *)(((char *)_class->module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->isGUIApp & 4) ? 1 : 0;
+
+if((force32Bits || force64Bits) && !strcmp(_class->name, "AVLNode") && !strcmp(name, "__ecerePrivateData0"))
+{
+if(force64Bits)
+{
+type = "byte[32]";
+size = 32;
+}
+if(force32Bits)
+{
+type = "byte[16]";
+size = 16;
+}
+}
+if(pointerAlignment)
+alignment = sizeof(void *);
+if(pointerAlignment && _class->structAlignment <= 4)
+_class->pointerAlignment = 1;
+else if(!pointerAlignment && alignment >= 8)
+_class->pointerAlignment = 0;
+_class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+if(_class->memberOffset % alignment)
+_class->memberOffset += alignment - (_class->memberOffset % alignment);
+}
+dataMember = __extension__ ({
+struct __ecereNameSpace__ecere__com__DataMember * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__DataMember));
+
+__ecereInstance1->name = __ecereNameSpace__ecere__sys__CopyString(name), __ecereInstance1->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(type), __ecereInstance1->id = _class->memberID++, __ecereInstance1->_class = _class, __ecereInstance1->offset = _class->memberOffset, __ecereInstance1->memberOffset = size, __ecereInstance1->memberAccess = declMode, __ecereInstance1->membersAlpha.CompareKey = (void *)__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_CompareString, __ecereInstance1;
+});
+__ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&_class->membersAndProperties, dataMember);
+_class->memberOffset += size;
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&_class->members, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct __ecereNameSpace__ecere__com__BTNamedLink * __ecereInstance1 = __ecereNameSpace__ecere__com__eSystem_New0(sizeof(struct __ecereNameSpace__ecere__com__BTNamedLink));
+
+__ecereInstance1->name = dataMember->name, __ecereInstance1->data = dataMember, __ecereInstance1;
+}));
+return dataMember;
+}
+}
+return (((void *)0));
 }
 
 static void __ecereNameSpace__ecere__com__Application_Destructor(struct __ecereNameSpace__ecere__com__Instance * app)

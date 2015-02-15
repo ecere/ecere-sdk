@@ -1055,7 +1055,10 @@ struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
+{
 result = 0;
+break;
+}
 if((ch != '\n') && (ch != '\r') && (ch != ' ') && (ch != ',') && (ch != '\t'))
 break;
 if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({

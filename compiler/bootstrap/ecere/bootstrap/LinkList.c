@@ -429,6 +429,18 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecereP
 return (struct __ecereNameSpace__ecere__com__IteratorPointer *)((void *)((uintptr_t)(value)));
 }
 
+void __ecereMethod___ecereNameSpace__ecere__com__LinkList_Delete(struct __ecereNameSpace__ecere__com__Instance * this, void * item)
+{
+__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
+
+((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, item);
+(__ecereNameSpace__ecere__com__eSystem_Delete(item), item = 0);
+}
+
 void * __ecereMethod___ecereNameSpace__ecere__com__LinkList_GetPrev(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * item)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
@@ -593,18 +605,6 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, ((void *)((uintptr_t)(item))));
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(item)))), item = 0);
 }
-}
-
-void __ecereMethod___ecereNameSpace__ecere__com__LinkList_Delete(struct __ecereNameSpace__ecere__com__Instance * this, uint64 item)
-{
-__attribute__((unused)) struct __ecereNameSpace__ecere__com__LinkList * __ecerePointer___ecereNameSpace__ecere__com__LinkList = (struct __ecereNameSpace__ecere__com__LinkList *)(this ? (((char *)this) + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance)) : 0);
-
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, ((void *)((uintptr_t)(item))));
-(((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[3].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(item)))), item = 0);
 }
 
 void __ecereUnregisterModule_LinkList(struct __ecereNameSpace__ecere__com__Instance * module)
