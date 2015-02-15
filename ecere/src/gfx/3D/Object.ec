@@ -1525,9 +1525,11 @@ private:
    unsigned startFrame, endFrame;
    int frame;
    Vector3Df pivot;
-   Transform transform;
-   Matrix matrix;
-   Matrix localMatrix;
+
+   public Transform transform;
+   public Matrix matrix;
+   public Matrix localMatrix;
+
    void * tag;
    Vector3Df min, max, center;
    Vector3D wmin, wmax, wcenter;

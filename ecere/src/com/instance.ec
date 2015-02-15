@@ -1154,6 +1154,7 @@ static uint log1_5i(uint number)
          break;
       current = current * 3 / 2;
       if(current == 1) current = 2;
+      if(current & 7) current += 8 - (current & 7);
    }
    return pos;
 }
@@ -1166,6 +1167,7 @@ static uint pow1_5(uint number)
    {
       current = current * 3 / 2;
       if(current == 1) current = 2;
+      if(current & 7) current += 8 - (current & 7);
    }
    return (uint)current;
 }
@@ -1181,6 +1183,7 @@ static uint pow1_5i(uint number)
          return (uint)current;
       current = current * 3 / 2;
       if(current == 1) current = 2;
+      if(current & 7) current += 8 - (current & 7);
    }
    return (uint)current;
 }
@@ -2090,8 +2093,12 @@ static void FixDerivativesBase(Class base, Class mod)
       // _class.memberID = _class.startMemberID = (base && (type == normalClass || type == noHeadClass || type == structClass)) ? base.memberID : 0;
 
       if(type == normalClass || type == noHeadClass)
+      {
          // Use 'memberOffset' for nohead class as the members get added without padding
          _class.offset = (base && (base.templateClass ? (type == normalClass ? base.templateClass.structSize : base.templateClass.memberOffset) : (type == normalClass ? base.structSize : base.memberOffset)) && base.type != systemClass) ? (base.templateClass ? base.templateClass.structSize : base.structSize) : ((type == noHeadClass) ? 0 : sizeof(class Instance));
+         if(_class.structAlignment && (_class.offset % _class.structAlignment))
+            _class.offset += _class.structAlignment - _class.offset % _class.structAlignment;
+      }
       else
          _class.offset = 0; // Force set to 0
 
@@ -5271,7 +5278,7 @@ public dllexport DataMember eClass_AddDataMember(Class _class, const char * name
                }
             }
 
-            if(pointerAlignment) alignment = sizeof(void *);
+            if(pointerAlignment) alignment = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
 
             if(pointerAlignment && _class.structAlignment <= 4)
                _class.pointerAlignment = 1;
@@ -5280,6 +5287,8 @@ public dllexport DataMember eClass_AddDataMember(Class _class, const char * name
 
             _class.structAlignment = Max(_class.structAlignment, alignment);
 
+            if(_class.offset % alignment)
+               _class.offset += alignment - (_class.offset % alignment);
             if(_class.memberOffset % alignment)
                _class.memberOffset += alignment - (_class.memberOffset % alignment);
          }
@@ -5313,7 +5322,9 @@ public dllexport DataMember eMember_AddDataMember(DataMember member, const char 
       if(alignment)
       {
          bool pointerAlignment = alignment == 0xF000F000;
-         if(pointerAlignment) alignment = sizeof(void *);
+         bool force64Bits = false; //(member._class.module.application.isGUIApp & 2) ? true : false;
+         bool force32Bits = false; //(member._class.module.application.isGUIApp & 4) ? true : false;
+         if(pointerAlignment) alignment = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
 
          if(pointerAlignment && member.structAlignment <= 4)
             member.pointerAlignment = 1;

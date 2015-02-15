@@ -6,7 +6,7 @@ public class Timer
 {
 public:
    property void * userData { set { window = value; } get { return window; } };
-   property Seconds delay { set { delay = value; } get { return delay; } };
+   property Seconds delay { set { _delay = value; } get { return _delay; } };
    property bool started { set { if(value) Start(); else Stop(); } get { return started; } };
 
    ~Timer()
@@ -38,7 +38,7 @@ public:
 
 private:
    Timer prev, next;
-   Seconds delay;
+   public Seconds _delay;  // NOTE: Made public for Emscripten alignment issues
    Time lastTime;
    Window window;
    bool dispatched;

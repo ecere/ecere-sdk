@@ -2017,9 +2017,11 @@ if(alignment)
 {
 short __simpleStruct0;
 unsigned int pointerAlignment = alignment == 0xF000F000;
+unsigned int force64Bits = 0;
+unsigned int force32Bits = 0;
 
 if(pointerAlignment)
-alignment = sizeof(void *);
+alignment = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
 if(pointerAlignment && member->structAlignment <= 4)
 member->pointerAlignment = 1;
 else if(!pointerAlignment && alignment >= 8)
@@ -3238,12 +3240,14 @@ size = 16;
 }
 }
 if(pointerAlignment)
-alignment = sizeof(void *);
+alignment = force64Bits ? 8 : force32Bits ? 4 : sizeof(void *);
 if(pointerAlignment && _class->structAlignment <= 4)
 _class->pointerAlignment = 1;
 else if(!pointerAlignment && alignment >= 8)
 _class->pointerAlignment = 0;
 _class->structAlignment = (__simpleStruct0 = _class->structAlignment, (__simpleStruct0 > alignment) ? __simpleStruct0 : alignment);
+if(_class->offset % alignment)
+_class->offset += alignment - (_class->offset % alignment);
 if(_class->memberOffset % alignment)
 _class->memberOffset += alignment - (_class->memberOffset % alignment);
 }
@@ -4743,7 +4747,11 @@ dataTypeString = enumBase ? enumBase->dataTypeString : base->dataTypeString;
 offsetClass = base ? (base->templateClass ? base->templateClass->sizeClass : base->sizeClass) : (type == 5 ? 0 : 0);
 totalSizeClass = offsetClass + sizeClass;
 if(type == 0 || type == 5)
+{
 _class->offset = (base && (base->templateClass ? (type == 0 ? base->templateClass->structSize : base->templateClass->memberOffset) : (type == 0 ? base->structSize : base->memberOffset)) && base->type != 1000) ? (base->templateClass ? base->templateClass->structSize : base->structSize) : ((type == 5) ? 0 : sizeof(struct __ecereNameSpace__ecere__com__Instance));
+if(_class->structAlignment && (_class->offset % _class->structAlignment))
+_class->offset += _class->structAlignment - _class->offset % _class->structAlignment;
+}
 else
 _class->offset = 0;
 if(type == 1)

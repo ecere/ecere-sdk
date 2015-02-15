@@ -4588,7 +4588,7 @@ private:
    int rowCount;
    int rowHeight;
    int fontH;
-   double typingTimeOut;
+   public double typingTimeOut;
    char * typedString;
 
    int mouseX, mouseY;
