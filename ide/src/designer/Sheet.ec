@@ -1630,7 +1630,11 @@ public:
             }
 
             if(dataType)
-               editData = ((Window (*)(void *, void *, DataBox, void *, int, int, int, int, void*))(void *)dataType._vTbl[__ecereVMethodID_class_OnEdit])(dataType, dataPtr, dataBox, obsolete,  x, y, w, h, object /*unused*/);
+            {
+               Window (* onEdit)(void *, void *, DataBox, void *, int, int, int, int, void*) = (void *)dataType._vTbl[__ecereVMethodID_class_OnEdit];
+               if(onEdit)
+                  editData = onEdit(dataType, dataPtr, dataBox, obsolete,  x, y, w, h, object /*unused*/);
+            }
 
             delete data;
             delete subData;
@@ -1820,7 +1824,8 @@ public:
 
          if(dataType)
          {
-            if(((bool (*)(void *, void *, Window, void *))(void *)dataType._vTbl[__ecereVMethodID_class_OnSaveEdit])(dataType, dataPtr, editControl, null))
+            bool (* onSaveEdit)(void *, void *, Window, void *) = (void *)dataType._vTbl[__ecereVMethodID_class_OnSaveEdit];
+            if(!onSaveEdit || onSaveEdit(dataType, dataPtr, editControl, null))
             {
                if(mainDataType.type == bitClass && this.subMember)
                {

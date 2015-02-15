@@ -344,7 +344,7 @@ class OptionBox<class Z> : CommonControl
          ob.Unset();
          return false;
       }
-      return ((bool(*)(Window, Key, unichar)) ob.chainKeyDown)(this, key, ch);
+      return ob.chainKeyDown ? ((bool(*)(Window, Key, unichar)) ob.chainKeyDown)(this, key, ch) : true;
    }
 
    // code: 0 = not set anywhere, 1 = overridden here, 2 = inherited
@@ -1970,9 +1970,11 @@ class CompilerTab : Tab
       {
          if(id)
          {
+            void (* onDisplay)(void *, void *, void *, int, int, int, void *, uint, uint) = (void *)class(ProjectNode)._vTbl[__ecereVMethodID_class_OnDisplay];
+
             ide.projectView.drawingInProjectSettingsDialogHeader = true;
-            ((void (*)(void *, void *, void *, int, int, int, void *, uint, uint))(void *)class(ProjectNode)._vTbl[__ecereVMethodID_class_OnDisplay])(class(ProjectNode),
-               (void *)(intptr)id, surface, 8, 2, clientSize.w, ide.projectView, Alignment::left, DataDisplayFlags { selected = true });
+            if(onDisplay)
+               onDisplay(class(ProjectNode), (void *)(intptr)id, surface, 8, 2, clientSize.w, ide.projectView, Alignment::left, DataDisplayFlags { selected = true });
             ide.projectView.drawingInProjectSettingsDialogHeader = false;
          }
       }

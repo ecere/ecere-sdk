@@ -457,11 +457,16 @@ void __ecereMethod___ecereNameSpace__ecere__com__Container_OnFree(struct __ecere
 {
 if((struct __ecereNameSpace__ecere__com__Instance *)this)
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(this);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (void)1;
+}));
 (__ecereNameSpace__ecere__com__eInstance_DecRef(this), this = 0);
 }
 }
@@ -498,114 +503,173 @@ struct __ecereNameSpace__ecere__com__NameSpace publicNameSpace;
 
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this)
 {
-return ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+return (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this->container, this->pointer);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer) : (uint64)1;
+}));
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__Iterator_Set_data(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value)
 {
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData])(this->container, this->pointer, value);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer, value) : (unsigned int)1;
+}));
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Prev(struct __ecereNameSpace__ecere__com__Iterator * this)
 {
 if(this->pointer && this->container)
-this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+this->pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetPrev])(this->container, this->pointer);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetPrev]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 else if(this->container)
-this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+this->pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetLast])(this->container);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetLast]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 return this->pointer != (((void *)0));
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(struct __ecereNameSpace__ecere__com__Iterator * this)
 {
 if(this->pointer && this->container)
-this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+this->pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this->container, this->pointer);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 else if(this->container)
-this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+this->pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this->container);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 return this->pointer != (((void *)0));
 }
 
 uint64 __ecereMethod___ecereNameSpace__ecere__com__Iterator_GetData(struct __ecereNameSpace__ecere__com__Iterator * this)
 {
-return ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+return (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this->container, this->pointer);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer) : (uint64)1;
+}));
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_SetData(struct __ecereNameSpace__ecere__com__Iterator * this, uint64 value)
 {
-return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
+return (__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData])(this->container, this->pointer, value);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer, value) : (unsigned int)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Iterator_Remove(struct __ecereNameSpace__ecere__com__Iterator * this)
 {
 if(this->container)
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this->container, this->pointer);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer) : (void)1;
+}));
 this->pointer = (((void *)0));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Iterator_Free(struct __ecereNameSpace__ecere__com__Iterator * this)
 {
 if(this->container)
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_FreeIterator])(this->container, this->pointer);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_FreeIterator]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, this->pointer) : (void)1;
+}));
 }
 
 void __ecereDestructor___ecereNameSpace__ecere__com__Container(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 {
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll])(this);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (void)1;
+}));
 }
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__Container_Set_copySrc(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * value)
 {
-if(value)
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__Instance * source))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__Instance * source);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__Instance * source))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Copy])(this, value);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Copy]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, value) : (void)1;
+}));
 __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__Container_copySrc), __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__Container_copySrc);
 }
 
@@ -613,78 +677,133 @@ void __ecereProp___ecereNameSpace__ecere__com__Container_Get_firstIterator(struc
 {
 struct __ecereNameSpace__ecere__com__Iterator __simpleStruct0;
 
-*value = (__simpleStruct0.container = (struct __ecereNameSpace__ecere__com__Instance *)this, __simpleStruct0.pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+*value = (__simpleStruct0.container = (struct __ecereNameSpace__ecere__com__Instance *)this, __simpleStruct0.pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this), __simpleStruct0);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})), __simpleStruct0);
 }
 
 void __ecereProp___ecereNameSpace__ecere__com__Container_Get_lastIterator(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Iterator * value)
 {
 struct __ecereNameSpace__ecere__com__Iterator __simpleStruct0;
 
-*value = (__simpleStruct0.container = (struct __ecereNameSpace__ecere__com__Instance *)this, __simpleStruct0.pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+*value = (__simpleStruct0.container = (struct __ecereNameSpace__ecere__com__Instance *)this, __simpleStruct0.pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetLast])(this), __simpleStruct0);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetLast]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})), __simpleStruct0);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Container_RemoveAll(struct __ecereNameSpace__ecere__com__Instance * this)
 {
 struct __ecereNameSpace__ecere__com__IteratorPointer * i, * next;
 
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+for(i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this), next = i ? ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})), next = i ? (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this, i) : (((void *)0)); i; i = next, next = i ? ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})) : (((void *)0)); i; i = next, next = i ? (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this, i) : (((void *)0)))
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})) : (((void *)0)))
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (void)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Container_Copy(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * source)
 {
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll])(this);
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (void)1;
+}));
+for(i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(source); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(source) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})); i; i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(source, i))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(source, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+uint64 data = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = source;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(source, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(source, i) : (uint64)1;
+}));
 
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(this, data);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, data) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 }
 }
 
@@ -768,15 +887,25 @@ int __ecereMethod___ecereNameSpace__ecere__com__Container_GetCount(struct __ecer
 int count = 0;
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+for(i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})); i; i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this, i))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 count++;
 return count;
 }
@@ -785,16 +914,26 @@ void __ecereMethod___ecereNameSpace__ecere__com__Container_Free(struct __ecereNa
 {
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 
-while((i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+while((i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this)))
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * i))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}))))
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * i);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * i))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Delete])(this, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Delete]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (void)1;
+}));
 }
 
 const char * __ecereMethod___ecereNameSpace__ecere__com__Container_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Instance * this, char * tempString, void * fieldData, unsigned int * needClass)
@@ -806,22 +945,37 @@ unsigned int first = 1;
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 
 tempString[0] = '\0';
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+for(i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})); i; i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this, i))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 {
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+uint64 data = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (uint64)1;
+}));
 const char * result;
 
 itemString[0] = '\0';
@@ -839,29 +993,64 @@ return tempString;
 
 void __ecereMethod___ecereNameSpace__ecere__com__Container_TakeOut(struct __ecereNameSpace__ecere__com__Instance * this, const uint64 d)
 {
-struct __ecereNameSpace__ecere__com__IteratorPointer * i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 value))__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Find])(this, d);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Find]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, d) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 
 if(i)
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (void)1;
+}));
 }
 
 static __attribute__((unused)) void UnusedFunction()
 {
 int a;
 
-((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare])(__ecereClass_int, (void *)&a, (((void *)0)));
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy])(__ecereClass_int, (void *)&a, (((void *)0)));
-((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, (void *)&a, (((void *)0)), (((void *)0)), (((void *)0)));
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSerialize])(__ecereClass_int, (void *)&a, (((void *)0)));
-((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnUnserialize])(__ecereClass_int, (void *)&a, (((void *)0)));
+(__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , const void * object);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * object))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCompare]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0))) : (int)1;
+}));
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , const void * newData);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const void * newData))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnCopy]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0))) : (void)1;
+}));
+(__extension__ ({
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0)), (((void *)0)), (((void *)0))) : (const char * )1;
+}));
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * channel);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnSerialize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0))) : (void)1;
+}));
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , struct __ecereNameSpace__ecere__com__Instance * channel);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, struct __ecereNameSpace__ecere__com__Instance * channel))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnUnserialize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0))) : (void)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Container_OnCopy(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Instance ** this, struct __ecereNameSpace__ecere__com__Instance * source)
@@ -870,11 +1059,16 @@ if((struct __ecereNameSpace__ecere__com__Instance *)source)
 {
 struct __ecereNameSpace__ecere__com__Instance * container = __ecereNameSpace__ecere__com__eInstance_New(((struct __ecereNameSpace__ecere__com__Instance *)(char *)source)->_class);
 
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__Instance * source))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__Instance * source);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__Instance * source))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Copy])(container, (struct __ecereNameSpace__ecere__com__Instance *)source);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Copy]);
+__internal_VirtualMethod ? __internal_VirtualMethod(container, (struct __ecereNameSpace__ecere__com__Instance *)source) : (void)1;
+}));
 (*this) = container;
 }
 else
@@ -892,22 +1086,37 @@ int (* onCompare)(void *, const void *, const void *) = (void *)Dclass->_vTbl[__
 
 if(byRef)
 {
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+for(i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})); i; i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this, i))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+uint64 data = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, i);
-int result = onCompare(Dclass, ((char *)&value + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)), ((char *)&data + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (uint64)1;
+}));
+int result = ((int (*)(void *, const void *, const void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare])(Dclass, ((char *)&value + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)), ((char *)&data + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)));
 
 if(!result)
 return i;
@@ -915,22 +1124,37 @@ return i;
 }
 else
 {
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+for(i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})); i; i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this, i))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+uint64 data = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, i);
-int result = onCompare(Dclass, (const void *)(uintptr_t)value, (const void *)(uintptr_t)data);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (uint64)1;
+}));
+int result = ((int (*)(void *, const void *, const void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnCompare])(Dclass, (const void *)(uintptr_t)value, (const void *)(uintptr_t)data);
 
 if(!result)
 return i;
@@ -941,47 +1165,77 @@ return (((void *)0));
 
 void __ecereMethod___ecereNameSpace__ecere__com__Container_Delete(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__IteratorPointer * i)
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+uint64 data = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (uint64)1;
+}));
 
 (((void (* )(void *  _class, void *  data))((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnFree])(((struct __ecereNameSpace__ecere__com__Instance * )(char * )this)->_class->templateArgs[2].__anon1.__anon1.dataTypeClass, ((void * )((uintptr_t)(data)))), data = 0);
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * it))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove])(this, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Remove]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (void)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__com__Container_OnSerialize(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
-unsigned int count = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+unsigned int count = (__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount])(this);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetCount]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (int)1;
+}));
 struct __ecereNameSpace__ecere__com__IteratorPointer * i;
 struct __ecereNameSpace__ecere__com__Class * Dclass = class->templateArgs[2].__anon1.__anon1.dataTypeClass;
 unsigned int isNormalClass = (Dclass->type == 0) && Dclass->structSize;
 
 __ecereMethod___ecereNameSpace__ecere__com__IOChannel_Put(channel, __ecereClass_uint, (void *)&count);
-for(i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+for(i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst])(this); i; i = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetFirst]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})); i; i = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(this, i))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 {
-uint64 data = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+uint64 data = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData])(this, i);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, i) : (uint64)1;
+}));
 struct __ecereNameSpace__ecere__com__Class * Eclass = isNormalClass ? ((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)((uintptr_t)((uint64)(data)))))->_class : Dclass;
 
 ((void (*)(void *, void *, void *))(void *)Eclass->_vTbl[__ecereVMethodID_class_OnSerialize])(Eclass, ((Dclass->type == 1000 && !Dclass->byValueSystemClass) || Dclass->type == 2 || Dclass->type == 4 || Dclass->type == 3) ? ((char *)&data + __ENDIAN_PAD(class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)) : (void *)(uintptr_t)data, channel);
@@ -1006,11 +1260,16 @@ memset((char *)(uintptr_t)data, 0, Dclass->structSize);
 else
 data = (uint64)0;
 ((void (*)(void *, void *, void *))(void *)Dclass->_vTbl[__ecereVMethodID_class_OnUnserialize])(Dclass, isStruct ? (void *)(uintptr_t)data : ((char *)&data + __ENDIAN_PAD(class->templateArgs[2].__anon1.__anon1.dataTypeClass->typeSize)), channel);
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(container, data);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add]);
+__internal_VirtualMethod ? __internal_VirtualMethod(container, data) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 }
 if(isStruct)
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)(uintptr_t)data), data = 0);
@@ -1031,11 +1290,16 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Find(struct __
 if(this->container)
 {
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Free(this);
-this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 value))__extension__ ({
+this->pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Find])(this->container, value);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Find]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, value) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 }
 return this->pointer != (((void *)0));
 }
@@ -1047,11 +1311,16 @@ if(this->container)
 unsigned int justAdded = 0;
 
 __ecereMethod___ecereNameSpace__ecere__com__Iterator_Free(this);
-this->pointer = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create, unsigned int *  justAdded))__extension__ ({
+this->pointer = (__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create, unsigned int *  justAdded);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create, unsigned int *  justAdded))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->container;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Container->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition])(this->container, index, create, &justAdded);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->container, index, create, &justAdded) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 return !justAdded && this->pointer != (((void *)0));
 }
 return 0;

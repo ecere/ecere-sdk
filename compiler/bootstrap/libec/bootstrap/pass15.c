@@ -8245,17 +8245,27 @@ unsigned int backOutputLineNumbers = outputLineNumbers;
 outputLineNumbers = 0;
 if(exp)
 OutputExpression(exp, f);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__TempFile->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(f, 0, 0);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, 0, 0) : (unsigned int)1;
+}));
 count = strlen(string);
-count += ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+count += (__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__TempFile->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, string + count, 1, 1023);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, string + count, 1, 1023) : (int)1;
+}));
 string[count] = '\0';
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 outputLineNumbers = backOutputLineNumbers;
@@ -8353,23 +8363,38 @@ static __attribute__((unused)) void UnusedFunction()
 {
 int a;
 
-((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass_int, (void *)&a, 0, 0, 0);
+(__extension__ ({
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, 0, 0, 0) : (const char * )1;
+}));
 }
 
 struct Expression * ParseExpressionString(char * expression)
 {
 parseError = 0;
 fileInput = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+(__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(fileInput, expression, 1, strlen(expression));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write]);
+__internal_VirtualMethod ? __internal_VirtualMethod(fileInput, expression, 1, strlen(expression)) : (int)1;
+}));
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, 0, 0);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+__internal_VirtualMethod ? __internal_VirtualMethod(fileInput, 0, 0) : (unsigned int)1;
+}));
 echoOn = 0;
 parsedExpression = (((void *)0));
 resetScanner();
@@ -16042,16 +16067,26 @@ struct __ecereNameSpace__ecere__com__Instance * backInput = fileInput;
 
 definedExpStack[definedExpStackPos++] = definedExp;
 fileInput = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+(__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(fileInput, definedExp->value, 1, strlen(definedExp->value));
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write]);
+__internal_VirtualMethod ? __internal_VirtualMethod(fileInput, definedExp->value, 1, strlen(definedExp->value)) : (int)1;
+}));
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = fileInput;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(fileInput, 0, 0);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+__internal_VirtualMethod ? __internal_VirtualMethod(fileInput, 0, 0) : (unsigned int)1;
+}));
 echoOn = 0;
 parsedExpression = (((void *)0));
 resetScanner();

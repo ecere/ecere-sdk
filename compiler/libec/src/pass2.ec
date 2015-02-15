@@ -1643,10 +1643,14 @@ static void ProcessExpression(Expression exp)
          bool typedObject = false;
          Type ellipsisDestType = null;
          bool usedEllipsis = false;
+         Expression expCallExp = exp.call.exp;
+         OldList * arguments = exp.call.arguments;
+         bool handleNullVMethod = false;
+         TypeName typeName = null;
 
-         if(exp.call.arguments)
+         if(arguments)
          {
-            for(e = exp.call.arguments->first; e; e = e.next)
+            for(e = arguments->first; e; e = e.next)
             {
                e.usage.usageGet = true;
                e.usage.usageArg = true;
@@ -1655,24 +1659,23 @@ static void ProcessExpression(Expression exp)
                exp.tempCount = Max(exp.tempCount, e.tempCount);
             }
          }
-         exp.call.exp.usage.usageGet = true;
-         exp.call.exp.usage.usageCall = true;
-         exp.call.exp.tempCount = exp.tempCount;
+         expCallExp.usage.usageGet = true;
+         expCallExp.usage.usageCall = true;
+         expCallExp.tempCount = exp.tempCount;
 
-         ProcessExpression(exp.call.exp);
+         ProcessExpression(expCallExp);
 
-         if(exp.call.exp.expType && exp.call.exp.expType.kind == methodType)
+         if(expCallExp.expType && expCallExp.expType.kind == methodType)
          {
             bool nullMemberExp = false;
-            Expression memberExp = (exp.call.exp.type == ExpressionType::memberExp) ? exp.call.exp : null;
+            Expression memberExp = (expCallExp.type == ExpressionType::memberExp) ? expCallExp : null;
 
-            Class _class = exp.call.exp.expType.methodClass;     // For Virtual Method
-            Class argClass = exp.call.exp.expType.methodClass;  // Class actually passed
-            Method method = exp.call.exp.expType.method;
+            Class _class = expCallExp.expType.methodClass;     // For Virtual Method
+            Class argClass = expCallExp.expType.methodClass;  // Class actually passed
+            Method method = expCallExp.expType.method;
             if(method.type == virtualMethod)
             {
                char name[1024];
-               TypeName typeName;
                Declarator decl;
                Context back;
                OldList * specs = MkList();
@@ -1736,7 +1739,6 @@ static void ProcessExpression(Expression exp)
 
                typeName = MkTypeName(specs, decl);
 
-               // Added !exp.call.exp.expType.methodClass
                if(memberExp && memberExp.member.exp.expType)
                {
                   Type type = memberExp.member.exp.expType;
@@ -1783,7 +1785,8 @@ static void ProcessExpression(Expression exp)
                   Class regClass = (type && type.kind == classType && type._class) ? type._class.registered : null;
                   char className[1024];
 
-                  if(!exp.call.exp.expType.methodClass && !_class && type && type.classObjectType)
+                  // Added !exp.call.exp.expType.methodClass
+                  if(!expCallExp.expType.methodClass && !_class && type && type.classObjectType)
                      strcpy(className, "class");
                   else
                   {
@@ -1798,7 +1801,7 @@ static void ProcessExpression(Expression exp)
                         cl = class(int);
 
                      // To avoid declaring classes templatized after this class template (e.g. public struct Iterator<class T, class IT = int> { Container<T, IT> container; } )
-                     if(cl.templateClass && !_class && exp.call.exp.expType._class && !exp.call.exp.expType.methodClass &&
+                     if(cl.templateClass && !_class && expCallExp.expType._class && !expCallExp.expType.methodClass &&
                         (type.kind == subClassType || (regClass && regClass.type == normalClass && strcmp(regClass.dataTypeString, "char *"))))
                         cl = cl.templateClass;
 
@@ -1812,20 +1815,24 @@ static void ProcessExpression(Expression exp)
                      DeclareClass(curExternal, cl.symbol, className);
                   }
 
-                  if(type && type.kind == subClassType && !_class && !exp.call.exp.expType.methodClass && memberExp)
+                  if(type && type.kind == subClassType && !_class && !expCallExp.expType.methodClass && memberExp)
                   {
-                     exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
+                     expCallExp = MkExpBrackets(MkListOne(MkExpCast(typeName,
                         MkExpIndex(MkExpPointer(CopyExpression(memberExp.member.exp), MkIdentifier("_vTbl")),
                         MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+
+                     handleNullVMethod = true;
                   }
-                  else if(_class || exp.call.exp.expType.methodClass || !memberExp ||
+                  else if(_class || expCallExp.expType.methodClass || !memberExp ||
                          !regClass || regClass.type != normalClass || !strcmp(regClass.dataTypeString, "char *"))
                   {
                      if(!memberExp)
-                        FreeExpression(exp.call.exp);
-                     exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
+                        FreeExpression(expCallExp);
+                     expCallExp = MkExpBrackets(MkListOne(MkExpCast(typeName,
                         MkExpIndex(MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl")),
                         MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+
+                     handleNullVMethod = true;
                   }
                   else
                   {
@@ -1833,25 +1840,31 @@ static void ProcessExpression(Expression exp)
                      // as opposed to the File class vTbl one
 
                      // ({ Instance __internal_ClassInst = e; __internal_ClassInst ? __internal_ClassInst._vTbl : __ecereClass_...; })
-                     Expression c;
+                     Expression vTblExp;
                      Context context = PushContext();
                      OldList * specs;
-                     c = MkExpExtensionCompound(MkCompoundStmt(
-                           MkListOne(MkDeclaration(
+                     OldList * declList = MkListOne(MkDeclaration(
                               (specs = MkListOne(MkSpecifierName("Instance"))),
                               MkListOne(MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__internal_ClassInst")),
-                                 MkInitializerAssignment(CopyExpression(memberExp.member.exp)))))),
-                           MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
+                                 MkInitializerAssignment(CopyExpression(memberExp.member.exp))))));
+                     OldList * stmtList = MkListOne(MkExpressionStmt(MkListOne(MkExpCondition(
                               MkExpIdentifier(MkIdentifier("__internal_ClassInst")),
                               MkListOne(MkExpPointer(MkExpIdentifier(MkIdentifier("__internal_ClassInst")), MkIdentifier("_vTbl"))),
-                              MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))))));
+                              MkExpPointer(MkExpIdentifier(MkIdentifier(className)), MkIdentifier("_vTbl"))))));
+
+                     vTblExp = MkExpExtensionCompound(MkCompoundStmt(declList, stmtList));
+
                      if(type.specConst)
                         specs->Insert(null, MkSpecifier(CONST));
-                     c.loc = exp.loc;
-                     c.compound.compound.context = context;
+
+                     vTblExp.loc = exp.loc;
+                     vTblExp.compound.compound.context = context;
                      PopContext(context);
-                     exp.call.exp = MkExpBrackets(MkListOne(MkExpCast(typeName,
-                        MkExpIndex(c, MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+
+                     expCallExp = MkExpBrackets(MkListOne(MkExpCast(typeName,
+                        MkExpIndex(vTblExp, MkListOne(MkExpIdentifier(MkIdentifier(name)))))));
+
+                     handleNullVMethod = true;
                   }
                }
             }
@@ -1864,12 +1877,12 @@ static void ProcessExpression(Expression exp)
                strcat(name, method.name);
 
                if(!memberExp)
-                  FreeExpression(exp.call.exp);
-               exp.call.exp = MkExpIdentifier(MkIdentifier(name));
+                  FreeExpression(expCallExp);
+               expCallExp = MkExpIdentifier(MkIdentifier(name));
                DeclareMethod(curExternal, method, name);
                if(memberExp && memberExp.expType && method.dataType)
                {
-                  exp.call.exp.expType = method.dataType;
+                  expCallExp.expType = method.dataType;
                   method.dataType.refCount++;
                }
             }
@@ -1877,8 +1890,8 @@ static void ProcessExpression(Expression exp)
             {
                if(method.dataType && !method.dataType.staticMethod && !method.dataType.extraParam)
                {
-                  if(!exp.call.arguments)
-                     exp.call.arguments = MkList();
+                  if(!arguments)
+                     arguments = MkList();
 
                   // Testing this (COMMENTED OUT TESTING, CALLING METHODS ON ENUM/UNIT ADDED & IN FRONT OF VARIABLES
                   /*
@@ -1938,12 +1951,12 @@ static void ProcessExpression(Expression exp)
                         if(memberExp.member.exp.type == bracketsExp && memberExp.member.exp.list && memberExp.member.exp.list->count == 1 &&
                            ((Expression)memberExp.member.exp.list->first).type == opExp && ((Expression)memberExp.member.exp.list->first).op.op == '*' && !((Expression)memberExp.member.exp.list->first).op.exp1)
                         {
-                           exp.call.arguments->Insert(null, ((Expression)memberExp.member.exp.list->first).op.exp2);
+                           arguments->Insert(null, ((Expression)memberExp.member.exp.list->first).op.exp2);
                            ((Expression)memberExp.member.exp.list->first).op.exp2 = null;
                         }
                         else if(memberExp.member.exp.type == opExp && memberExp.member.exp.op.op == '*' && !memberExp.member.exp.op.exp1)
                         {
-                           exp.call.arguments->Insert(null, memberExp.member.exp.op.exp2);
+                           arguments->Insert(null, memberExp.member.exp.op.exp2);
                            memberExp.member.exp.op.exp2 = null;
                         }
                         else if(!memberExp.member.exp.byReference || stillAddReferenceOp)
@@ -2009,17 +2022,17 @@ static void ProcessExpression(Expression exp)
                               (parentExp ? parentExp : newExp).destType = destType;
                               if(checkedExp.expType) checkedExp.expType.refCount++;
                            }
-                           exp.call.arguments->Insert(null, parentExp ? parentExp : newExp);
+                           arguments->Insert(null, parentExp ? parentExp : newExp);
                         }
                         else
                         {
-                           exp.call.arguments->Insert(null, memberExp.member.exp);
+                           arguments->Insert(null, memberExp.member.exp);
                            nullMemberExp = true;
                         }
                      }
                      else
                      {
-                        exp.call.arguments->Insert(null, memberExp.member.exp);
+                        arguments->Insert(null, memberExp.member.exp);
                         nullMemberExp = true;
                      }
 
@@ -2067,12 +2080,12 @@ static void ProcessExpression(Expression exp)
                               if(type.specConst)
                                  specs->Insert(null, MkSpecifier(CONST));
 
-                              exp.call.arguments->Insert(null, c);
+                              arguments->Insert(null, c);
 
                               memberExpMemberExp = null; // We used this
                            }
                            else
-                              exp.call.arguments->Insert(null, MkExpIdentifier(MkIdentifier(className)));
+                              arguments->Insert(null, MkExpIdentifier(MkIdentifier(className)));
                         }
                      }
 
@@ -2081,7 +2094,7 @@ static void ProcessExpression(Expression exp)
                   }
                   else
                   {
-                     exp.call.arguments->Insert(null, memberExp.member.exp);
+                     arguments->Insert(null, memberExp.member.exp);
                      nullMemberExp = true;
                   }
                }
@@ -2097,9 +2110,9 @@ static void ProcessExpression(Expression exp)
             }
          }
 
-         if(exp.call.arguments)
+         if(arguments)
          {
-            for(e = exp.call.arguments->first; e; e = e.next)
+            for(e = arguments->first; e; e = e.next)
             {
                Type destType = (e.destType && e.destType.kind == ellipsisType) ? ellipsisDestType : e.destType;
                //if(e.destType && e.destType.kind == classType && e.destType._class && !strcmp(e.destType._class.string, "class"))
@@ -2178,8 +2191,8 @@ static void ProcessExpression(Expression exp)
                            {
                               /*
                               Expression newExp = e.op.exp2;
-                              exp.call.arguments->Insert(e.prev, newExp);
-                              exp.call.arguments->Remove(e);
+                              arguments->Insert(e.prev, newExp);
+                              arguments->Remove(e);
                               e.op.exp2 = null;
                               FreeExpContents(e);
                               e = newExp;
@@ -2200,8 +2213,8 @@ static void ProcessExpression(Expression exp)
 
                               if(parentExp.type == callExp)
                               {
-                                 exp.call.arguments->Insert(e.prev, newExp);
-                                 exp.call.arguments->Remove(e);
+                                 arguments->Insert(e.prev, newExp);
+                                 arguments->Remove(e);
                                  e = newExp;
                               }
                               else if(parentExp.type == bracketsExp || parentExp.type == extensionExpressionExp)
@@ -2342,8 +2355,8 @@ static void ProcessExpression(Expression exp)
                               }
                               if(parentExp.type == callExp)
                               {
-                                 exp.call.arguments->Insert(e.prev, newExp);
-                                 exp.call.arguments->Remove(e);
+                                 arguments->Insert(e.prev, newExp);
+                                 arguments->Remove(e);
                                  e = newExp;
                               }
                               else if(parentExp.type == bracketsExp || parentExp.type == extensionExpressionExp)
@@ -2403,7 +2416,7 @@ static void ProcessExpression(Expression exp)
                               ((Expression)e.list->first).cast.exp.op.exp2 &&
                               ((Expression)e.list->first).cast.exp.op.exp2.type == extensionInitializerExp)
                            {
-                              exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
+                              arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
                            }
                            else
                            {
@@ -2423,11 +2436,11 @@ static void ProcessExpression(Expression exp)
                               if(type.specConst)
                                  specs->Insert(null, MkSpecifier(CONST));
 
-                              exp.call.arguments->Insert(e.prev, c);
+                              arguments->Insert(e.prev, c);
                            }
                         }
                         else
-                           exp.call.arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
+                           arguments->Insert(e.prev, MkExpIdentifier(MkIdentifier(className)));
                      }
                   }
                }
@@ -2443,12 +2456,67 @@ static void ProcessExpression(Expression exp)
             if(ellipsisDestType)
             {
                if(usedEllipsis ||
-                  (exp.call.exp.expType && exp.call.exp.expType.kind == functionType && exp.call.exp.expType.params.last &&
-                   ((Type)exp.call.exp.expType.params.last).kind == ellipsisType))
+                  (expCallExp.expType && expCallExp.expType.kind == functionType && expCallExp.expType.params.last &&
+                   ((Type)expCallExp.expType.params.last).kind == ellipsisType))
                {
-                  exp.call.arguments->Insert(exp.call.arguments->last, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null),null)),MkExpConstant("0")));
+                  arguments->Insert(arguments->last, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null, null),null)),MkExpConstant("0")));
                }
             }
+         }
+
+         if(handleNullVMethod)
+         {
+            Expression compoundExp;
+            Context context = PushContext();
+            OldList * declList = MkList();
+            OldList * stmtList = MkList();
+            TypeName castTypeName;
+            OldList * specs = MkList();
+            Specifier spec;
+
+            for(spec = typeName.qualifiers ? typeName.qualifiers->first : null; spec; spec = spec.next)
+            {
+               if(spec.type != extendedSpecifier)
+                  specs->Add(CopySpecifier(spec));
+            }
+
+            if(typeName.declarator.type == pointerDeclarator)
+            {
+               Pointer p = typeName.declarator.pointer.pointer.pointer;
+               castTypeName = MkTypeName(specs, CopyDeclarator(typeName.declarator.declarator.declarator.declarator));
+               while(p)
+               {
+                  Pointer pp;
+                  for(pp = castTypeName.declarator.pointer.pointer; pp.pointer; pp = pp.pointer);
+                  pp.pointer = MkPointer(null, null);
+                  pp.qualifiers = CopyList(p.qualifiers, CopySpecifier);
+                  p = p.pointer;
+               }
+            }
+            else
+               castTypeName = MkTypeName(specs, CopyDeclarator(typeName.declarator.declarator.declarator.declarator));
+
+            compoundExp = MkExpExtensionCompound(MkCompoundStmt(declList, stmtList));
+
+            declList->Add(MkDeclaration(CopyList(typeName.qualifiers, CopySpecifier),
+               MkListOne(MkInitDeclarator(PlugDeclarator(CopyDeclarator(typeName.declarator), MkDeclaratorIdentifier(MkIdentifier("__internal_VirtualMethod"))), null))));
+
+            stmtList->Add(MkExpressionStmt(MkListOne(MkExpOp(MkExpIdentifier(MkIdentifier("__internal_VirtualMethod")), '=', expCallExp))));
+            stmtList->Add(MkExpressionStmt(MkListOne(MkExpCondition(
+               MkExpIdentifier(MkIdentifier("__internal_VirtualMethod")),
+               MkListOne(MkExpCall(MkExpIdentifier(MkIdentifier("__internal_VirtualMethod")), arguments)), MkExpCast(castTypeName, MkExpConstant("1"))))));
+
+            compoundExp.loc = exp.loc;
+            compoundExp.compound.compound.context = context;
+            PopContext(context);
+
+            exp.type = bracketsExp;
+            exp.list = MkListOne(compoundExp);
+         }
+         else
+         {
+            exp.call.exp = expCallExp;
+            exp.call.arguments = arguments;
          }
          break;
       }

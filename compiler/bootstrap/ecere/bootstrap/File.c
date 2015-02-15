@@ -793,22 +793,32 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_ReadData(struct __
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+return (__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(this, bytes, 1, numBytes);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, bytes, 1, numBytes) : (int)1;
+}));
 }
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_WriteData(struct __ecereNameSpace__ecere__com__Instance * this, const unsigned char * bytes, unsigned int numBytes)
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+return (__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(this, bytes, 1, numBytes);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, bytes, 1, numBytes) : (int)1;
+}));
 }
 
 const char * __ecereMethod___ecereNameSpace__ecere__sys__File_OnGetString(struct __ecereNameSpace__ecere__com__Class * class, struct __ecereNameSpace__ecere__com__Instance * this, char * tempString, void * fieldData, unsigned int * needClass)
@@ -817,11 +827,16 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePoint
 
 if((struct __ecereNameSpace__ecere__com__Instance *)this)
 {
-__ecereNameSpace__ecere__sys__PrintSize(tempString, ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+__ecereNameSpace__ecere__sys__PrintSize(tempString, (__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize])(this), 2);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_GetSize]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+})), 2);
 return tempString;
 }
 return (((void *)0));
@@ -960,11 +975,16 @@ unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_Unlock(struct __ec
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int type, uint64 start, uint64 length, unsigned int wait))__extension__ ({
+return (__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int type, uint64 start, uint64 length, unsigned int wait);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int type, uint64 start, uint64 length, unsigned int wait))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock])(this, 0, start, length, wait);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Lock]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, 0, start, length, wait) : (unsigned int)1;
+}));
 }
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char * format, ...)
@@ -980,11 +1000,16 @@ va_list args;
 __builtin_va_start(args, format);
 vsnprintf(text, sizeof (text), format, args);
 text[sizeof (text) - 1] = 0;
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(this, text))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, text) : (unsigned int)1;
+})))
 result = strlen(text);
 __builtin_va_end(args);
 }
@@ -1006,11 +1031,16 @@ int c = 0;
 unsigned int result = 1;
 
 s[c] = 0;
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(this))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+})))
 {
 result = 0;
 }
@@ -1020,11 +1050,16 @@ while(c < max - 1)
 {
 char ch = 0;
 
-if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
+if(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, &ch) : (unsigned int)1;
+})))
 {
 result = 0;
 break;
@@ -1050,22 +1085,32 @@ unsigned int result = 1;
 *string = 0;
 while(1)
 {
-if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
+if(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, &ch) : (unsigned int)1;
+})))
 {
 result = 0;
 break;
 }
 if((ch != '\n') && (ch != '\r') && (ch != ' ') && (ch != ',') && (ch != '\t'))
 break;
-if(((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+if((__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(this))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+})))
 break;
 }
 if(result)
@@ -1084,11 +1129,16 @@ c--;
 }
 else
 string[c] = ch;
-if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
+if(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, &ch) : (unsigned int)1;
+})))
 {
 c++;
 result = 0;
@@ -1142,11 +1192,16 @@ unsigned int __ecereProp___ecereNameSpace__ecere__sys__File_Get_eof(struct __ece
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-return ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+return (__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(this);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+}));
 }
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLineEx(struct __ecereNameSpace__ecere__com__Instance * this, char * s, int max, unsigned int * hasNewLineChar)
@@ -1155,21 +1210,31 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePoint
 int c = 0;
 
 s[c] = '\0';
-if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+if(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(this))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+})))
 {
 char ch = '\0';
 
 while(c < max - 1)
 {
-if(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
+if(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char *  ch))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc])(this, &ch))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Getc]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, &ch) : (unsigned int)1;
+})))
 break;
 if(ch == '\n')
 break;
@@ -1187,16 +1252,26 @@ void __ecereMethod___ecereNameSpace__ecere__sys__File_Close(struct __ecereNameSp
 {
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePointer___ecereNameSpace__ecere__sys__File = (struct __ecereNameSpace__ecere__sys__File *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__File->offset) : 0);
 
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput])(this);
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseOutput]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (void)1;
+}));
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput])(this);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_CloseInput]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (void)1;
+}));
 }
 
 void __ecereMethod___ecereNameSpace__ecere__sys__File_PrintLn(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...)
@@ -1207,16 +1282,26 @@ char buffer[4096];
 
 __builtin_va_start(args, object);
 __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(this, buffer);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char ch))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer) : (unsigned int)1;
+}));
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, char ch);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char ch))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc])(this, '\n');
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, '\n') : (unsigned int)1;
+}));
 __builtin_va_end(args);
 }
 
@@ -1228,11 +1313,16 @@ char buffer[4096];
 
 __builtin_va_start(args, object);
 __ecereNameSpace__ecere__com__PrintStdArgsToBuffer(buffer, sizeof (buffer), class, object, args);
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts])(this, buffer);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer) : (unsigned int)1;
+}));
 __builtin_va_end(args);
 }
 
@@ -1252,11 +1342,16 @@ if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)result)->_class && 
 if(!((struct __ecereNameSpace__ecere__com__Instance *)(char *)result)->_refCount)
 result->_refCount++;
 result->_refCount++;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = result;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(result, 0, 0);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+__internal_VirtualMethod ? __internal_VirtualMethod(result, 0, 0) : (unsigned int)1;
+}));
 }
 else
 result = (((void *)0));
@@ -1347,24 +1442,39 @@ struct __ecereNameSpace__ecere__com__Instance * f = __ecereNameSpace__ecere__sys
 if(f)
 {
 (*this) = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass___ecereNameSpace__ecere__sys__TempFile);
-while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+while(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(f))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f) : (unsigned int)1;
+})))
 {
 unsigned char buffer[4096];
-unsigned int read = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+unsigned int read = (__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(f, buffer, 1, sizeof (buffer));
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, buffer, 1, sizeof (buffer)) : (int)1;
+}));
 
-((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+(__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = (*this);
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : class->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])((*this), buffer, 1, read);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write]);
+__internal_VirtualMethod ? __internal_VirtualMethod((*this), buffer, 1, read) : (int)1;
+}));
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 return 1;
@@ -1384,28 +1494,48 @@ if(f)
 unsigned char buffer[65536];
 
 result = 1;
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(this, 0, 0);
-while(!((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, 0, 0) : (unsigned int)1;
+}));
+while(!(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof])(this))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Eof]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this) : (unsigned int)1;
+})))
 {
-unsigned int count = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+unsigned int count = (__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read])(this, buffer, 1, sizeof (buffer));
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Read]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, buffer, 1, sizeof (buffer)) : (int)1;
+}));
 
-if(count && !((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
+if(count && !(__extension__ ({
+int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count);
+
+__internal_VirtualMethod = ((int (*)(struct __ecereNameSpace__ecere__com__Instance *, const void *  buffer, unsigned int size, unsigned int count))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write])(f, buffer, 1, count))
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Write]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, buffer, 1, count) : (int)1;
+})))
 {
 result = 0;
 break;
@@ -1413,11 +1543,16 @@ break;
 }
 (__ecereNameSpace__ecere__com__eInstance_DecRef(f), f = 0);
 }
-((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, int pos, int mode))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek])(this, 0, 0);
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, 0, 0) : (unsigned int)1;
+}));
 return result;
 }
 

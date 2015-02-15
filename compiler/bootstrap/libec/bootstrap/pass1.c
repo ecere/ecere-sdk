@@ -2859,7 +2859,12 @@ case 1:
 char memberTypeString[132] = "TemplateMemberType::";
 unsigned int needClass = 1;
 
-((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType->_vTbl[__ecereVMethodID_class_OnGetString])(__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType, (void *)&param->__anon1.memberType, memberTypeString + strlen(memberTypeString), (((void *)0)), &needClass);
+(__extension__ ({
+const char *  (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Class * , const void * , char *  tempString, void *  fieldData, unsigned int *  needClass);
+
+__internal_VirtualMethod = ((const char *  (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, char *  tempString, void *  fieldData, unsigned int *  needClass))__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType->_vTbl[__ecereVMethodID_class_OnGetString]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass___ecereNameSpace__ecere__com__TemplateMemberType, (void *)&param->__anon1.memberType, memberTypeString + strlen(memberTypeString), (((void *)0)), &needClass) : (const char * )1;
+}));
 ListAdd(args, MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(memberTypeString))));
 break;
 }
@@ -2978,15 +2983,20 @@ ListAdd(registerModuleBody->__anon1.compound.statements, stmt);
 }
 else if(def->type == 11)
 {
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = classPropValues;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(classPropValues, (uint64)(uintptr_t)(__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add]);
+__internal_VirtualMethod ? __internal_VirtualMethod(classPropValues, (uint64)(uintptr_t)(__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_ClassPropertyValue);
 
 ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->regClass = regClass, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->staticClass = (declMode == 3), ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->id = def->__anon1.__anon1.id, ((struct ClassPropertyValue *)(((char *)__ecereInstance1 + __ecereClass_ClassPropertyValue->offset)))->exp = def->__anon1.__anon1.initializer->__anon1.exp, __ecereInstance1;
-})));
+}))) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 def->__anon1.__anon1.id = (((void *)0));
 def->__anon1.__anon1.initializer->__anon1.exp = (((void *)0));
 }
@@ -3253,11 +3263,16 @@ __ecereInstance1->parent = registerModuleBody->__anon1.compound.context, __ecere
 ListAdd(registerModuleBody->__anon1.compound.statements, compoundStmt);
 }
 }
-((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
+(__extension__ ({
+void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
+
+__internal_VirtualMethod = ((void (*)(struct __ecereNameSpace__ecere__com__Instance *))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = classPropValues;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__List->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free])(classPropValues);
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Free]);
+__internal_VirtualMethod ? __internal_VirtualMethod(classPropValues) : (void)1;
+}));
 }
 }
 

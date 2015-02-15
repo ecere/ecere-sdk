@@ -2214,16 +2214,26 @@ void __ecereMethod_External_CreateEdge(struct External * this, struct External *
 {
 struct TopoEdge * e = (e = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_TopoEdge), e->from = from, e->to = this, e->breakable = soft, e);
 
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = from->outgoing;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(from->outgoing, (uint64)(uintptr_t)(e));
-((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add]);
+__internal_VirtualMethod ? __internal_VirtualMethod(from->outgoing, (uint64)(uintptr_t)(e)) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
+(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, uint64 value))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this->incoming;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add])(this->incoming, (uint64)(uintptr_t)(e));
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_Add]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this->incoming, (uint64)(uintptr_t)(e)) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+}));
 if(!soft)
 this->nonBreakableIncoming++;
 }
@@ -2282,11 +2292,16 @@ void __ecereMethod_External_CreateUniqueEdge(struct External * this, struct Exte
 struct TopoEdge * i;
 struct __ecereNameSpace__ecere__com__Instance * __internalLinkList = from->outgoing;
 
-for(i = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; i; i = (struct TopoEdge *)((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+for(i = ((struct __ecereNameSpace__ecere__com__LinkList *)(((char *)__internalLinkList + 0 + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->first; i; i = (struct TopoEdge *)(__extension__ ({
+struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
 struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = __internalLinkList;
 
 __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__LinkList->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext])(__internalLinkList, (struct __ecereNameSpace__ecere__com__IteratorPointer *)i))
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetNext]);
+__internal_VirtualMethod ? __internal_VirtualMethod(__internalLinkList, (struct __ecereNameSpace__ecere__com__IteratorPointer *)i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
+})))
 if(i->to == this)
 {
 if(i->breakable && !soft)
