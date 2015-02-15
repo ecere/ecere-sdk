@@ -854,11 +854,13 @@ void glesFrustum( double l, double r, double b, double t, double n, double f )
 
 void glesRotated( double a, double b, double c, double d )
 {
-   Matrix m;
    Quaternion q;
-   q.RotationAxis({(float)b,(float)-c,(float)d}, a );
+   Matrix m, r;
+
+   q.RotationAxis({(float)b,(float)c,(float)-d}, a );
    m.RotationQuaternion(q);
-   matrixStack[curStack][matrixIndex[curStack]].Rotate(q);
+   r.Multiply(m, matrixStack[curStack][matrixIndex[curStack]]);
+   matrixStack[curStack][matrixIndex[curStack]] = r;
    LoadCurMatrix();
 }
 void glesScaled( double a, double b, double c )
@@ -893,7 +895,7 @@ void glesMultMatrixd( double * i )
 
 void glesMatrixMode(int mode)
 {
-   curStack = mode == GL_MODELVIEW ? 0 : mode == GL_PROJECTION ? 1 : 2;
+   curStack = (mode == GL_MODELVIEW) ? 0 : (mode == GL_PROJECTION) ? 1 : 2;
    glMatrixMode(mode);
 }
 
